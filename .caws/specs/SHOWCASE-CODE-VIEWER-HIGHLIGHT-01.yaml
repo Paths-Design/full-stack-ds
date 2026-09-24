@@ -1,0 +1,40 @@
+id: SHOWCASE-CODE-VIEWER-HIGHLIGHT-01
+title: 'Use canonical syntax highlighting in showcase source viewers'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-09-24T18:03:46.011Z'
+updated_at: '2026-09-24T18:03:46.011Z'
+created_by_session: '01a0d419-00f5-7790-91f0-4c2a690e8a97'
+blast_radius:
+  modules:
+    - 'showcase CodeViewer and source panes'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/components/CodeViewer.tsx'
+    - 'src/components/shared-controls.test.tsx'
+    - 'src/styles/app.css'
+  out: []
+invariants:
+  - 'Displayed source, line numbers, trace hit ranges, and copied bytes remain aligned with the original code'
+  - 'Syntax kinds and colors come from the existing CodeBlock tokenizer and styles'
+acceptance:
+  - id: A1
+    given: 'a Stack or component source file with a known extension'
+    when: 'its CodeViewer renders'
+    then: 'visible source carries the matching language and nonplain canonical syntax tokens without changing source text'
+  - id: A2
+    given: 'a source file with trace hits'
+    when: 'the highlighted viewer renders and a hit is activated'
+    then: 'line numbers and clickable trace ranges remain aligned and the selected hit still identifies its contract path'
+  - id: A3
+    given: 'a viewer showing any source file'
+    when: 'Copy is activated'
+    then: 'the clipboard receives the exact unmodified source text'
+non_functional: {}
+contracts:
+  - name: 'code-viewer-highlight'
+    type: behavior
+    path: 'src/components/CodeViewer.tsx'
