@@ -61,4 +61,51 @@ describe('shared controls used by the showcase', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Copy code to clipboard' }));
     expect(writeText).toHaveBeenCalledWith('first\n  second');
   });
+  it('uses CodeBlock syntax tokens in line-numbered source without changing the displayed code', () => {
+    const source = '// layout primitive\nexport const Stack = <div title="ready" />;';
+    const { container } = render(<CodeViewer code={source} filename="stack.tsx" />);
+    const block = container.querySelector('pre');
+    expect(block).toHaveAttribute('data-language', 'tsx');
+    expect(block?.querySelector('[data-token="comment"]')).toHaveTextContent('// layout primitive');
+    expect(block?.querySelector('[data-token="keyword"]')).toHaveTextContent('export');
+    expect(block?.querySelector('[data-token="string"]')).toHaveTextContent('"ready"');
+    expect([...container.querySelectorAll('.source-viewer__line')].map((line) => line.children[1]?.textContent)).toEqual(source.split('\n'));
+  });
+  it.each([
+    ['Button.css', '.button { color: red; }', 'css', 'property', 'color'],
+    ['Button.tokens.json', '{"size": 2}', 'json', 'property', '"size"'],
+    ['guide.md', '# Tokens', 'markdown', 'keyword', '#'],
+  ])('selects %s syntax from its filename', (filename, source, language, tokenKind, tokenText) => {
+    const { container } = render(<CodeViewer code={source} filename={filename} />);
+    expect(container.querySelector('pre')).toHaveAttribute('data-language', language);
+    expect(container.querySelector(`[data-token="${tokenKind}"]`)).toHaveTextContent(tokenText);
+  });
+  it('keeps trace ranges clickable after syntax coloring', () => {
+    const scrollIntoView = vi.fn();
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+    const hit = {
+      contractPath: 'anatomy.dom.bindings.value',
+      explanation: 'Value binding',
+      kind: 'binding' as const,
+      start: { line: 0, column: 6 },
+      length: 5,
+    };
+    const onHitClick = vi.fn();
+    try {
+      const { container } = render(
+        <CodeViewer code={'const value = "ready";'} filename="Button.tsx" hits={[hit]} selectedHitIndex={0} onHitClick={onHitClick} />,
+      );
+      const annotation = container.querySelector('[data-hit-index="0"]');
+      expect(annotation).toHaveTextContent('value');
+      expect(annotation).toHaveAttribute('data-selected', 'true');
+      expect(container.querySelector('[data-token="keyword"]')).toHaveTextContent('const');
+      expect(container.querySelector('[data-token="string"]')).toHaveTextContent('"ready"');
+      expect(scrollIntoView).toHaveBeenCalledOnce();
+      fireEvent.click(annotation!);
+      expect(onHitClick).toHaveBeenCalledWith(hit);
+    } finally {
+      Object.defineProperty(Element.prototype, 'scrollIntoView', { configurable: true, value: originalScrollIntoView });
+    }
+  });
 });
