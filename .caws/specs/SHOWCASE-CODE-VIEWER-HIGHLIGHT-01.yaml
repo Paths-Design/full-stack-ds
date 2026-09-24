@@ -46,3 +46,10 @@ evidence:
     command: pnpm exec vitest run src/components/shared-controls.test.tsx
     exit_code: 0
     commit_sha: ac7a1fb5c38b108ac417c6c53b8a800a4e71ae11
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Button Developer browser: source has data-language=tsx, 498 canonical token spans, 8 trace buttons; clicking first hit opened tooltip variant → variants.size. Focused Vitest trace test checked selected range, matching value text, scroll target, and click callback; 10/10 suite passed in tmp/code-viewer-highlight-vitest.log."
+    recorded_at: "2026-09-24T18:26:57.474Z"
+    command: pnpm exec vitest run src/components/shared-controls.test.tsx
+    exit_code: 0
+    commit_sha: ac7a1fb5c38b108ac417c6c53b8a800a4e71ae11
