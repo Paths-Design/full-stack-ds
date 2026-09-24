@@ -53,3 +53,10 @@ evidence:
     command: pnpm exec vitest run src/components/shared-controls.test.tsx
     exit_code: 0
     commit_sha: ac7a1fb5c38b108ac417c6c53b8a800a4e71ae11
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Focused Vitest copy test asserted navigator.clipboard.writeText receives exact original source first\\\\n  second, with newline and spaces, after Copy; 10/10 suite passed in tmp/code-viewer-highlight-vitest.log. CodeViewer passes original code to writeText unchanged."
+    recorded_at: "2026-09-24T18:27:05.661Z"
+    command: pnpm exec vitest run src/components/shared-controls.test.tsx
+    exit_code: 0
+    commit_sha: ac7a1fb5c38b108ac417c6c53b8a800a4e71ae11
