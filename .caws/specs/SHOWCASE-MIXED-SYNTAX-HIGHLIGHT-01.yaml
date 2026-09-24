@@ -70,3 +70,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/highlight/tokenize.test.ts packages/ds-react/src/primitives/highlight/__tests__/codeblock-highlight.test.tsx src/components/shared-controls.test.tsx
     exit_code: 0
     commit_sha: "34c6530ef55af94c6bd7922c2b00bc050443000c"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Bound worktree: governed:rail PASS, root pnpm test 305 files/4383 tests PASS, test:frameworks PASS (Vue/Lit/Svelte/Angular/RN); browser Stack visuals checked; copy and trace regression tests passed. Main SHA-256 file tmp/mixed-syntax-tokenizer-sha256.log shows canonical tokenizer equals all five web copies; focused main tests 61/61 PASS. CAWS checks commit reachability; Vitest command outcomes were directly observed, not re-executed by CAWS."
+    recorded_at: "2026-09-24T21:26:56.929Z"
+    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "34c6530ef55af94c6bd7922c2b00bc050443000c"
