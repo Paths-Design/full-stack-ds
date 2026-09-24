@@ -50,8 +50,10 @@ export type HighlightLanguage =
   | "jsx"
   | "markdown"
   | "plaintext"
+  | "svelte"
   | "tsx"
-  | "typescript";
+  | "typescript"
+  | "vue";
 
 const JS_KEYWORDS = new Set([
   "as",
@@ -210,6 +212,103 @@ function scanQuoted(input: string, pos: number, quote: string): string {
   return input.slice(pos);
 }
 
+function looksLikeTypeProperty(input: string, pos: number, word: string): boolean {
+  const lineStart = input.lastIndexOf("\n", pos - 1) + 1;
+  if (input.slice(lineStart, pos).trim() !== "") return false;
+  let cursor = pos + word.length;
+  if (input[cursor] === "?") cursor += 1;
+  while (input[cursor] === " " || input[cursor] === "\t") cursor += 1;
+  return input[cursor] === ":";
+}
+
+function findExpressionEnd(input: string, start: number): number {
+  let depth = 1;
+  let pos = start;
+  while (pos < input.length) {
+    const ch = input[pos] ?? "";
+    if (ch === '"' || ch === "'" || ch === "`") {
+      pos += Math.max(1, scanQuoted(input, pos, ch).length);
+      continue;
+    }
+    if (ch === "/" && input[pos + 1] === "/") {
+      const end = input.indexOf("\n", pos + 2);
+      pos = end === -1 ? input.length : end;
+      continue;
+    }
+    if (ch === "/" && input[pos + 1] === "*") {
+      const end = input.indexOf("*/", pos + 2);
+      pos = end === -1 ? input.length : end + 2;
+      continue;
+    }
+    if (ch === "{") depth += 1;
+    if (ch === "}" && --depth === 0) return pos;
+    pos += 1;
+  }
+  return -1;
+}
+
+function pushTokenRange(tokens: HighlightToken[], start: number, end: number, sink: TokenSink): void {
+  let offset = 0;
+  for (const token of tokens) {
+    const tokenEnd = offset + token.text.length;
+    const from = Math.max(start, offset);
+    const to = Math.min(end, tokenEnd);
+    if (to > from) sink.push(token.kind, token.text.slice(from - offset, to - offset));
+    offset = tokenEnd;
+    if (offset >= end) break;
+  }
+}
+
+function tokenizeTaggedTemplate(
+  input: string,
+  start: number,
+  language: "css" | "html",
+  sink: TokenSink,
+  options: { jsx: boolean; typescript: boolean },
+): number {
+  const expressions: { start: number; end: number }[] = [];
+  let pos = start + 1;
+  while (pos < input.length) {
+    if (input[pos] === "\\") {
+      pos += 2;
+      continue;
+    }
+    if (input[pos] === "$" && input[pos + 1] === "{") {
+      const end = findExpressionEnd(input, pos + 2);
+      if (end === -1) break;
+      expressions.push({ start: pos, end });
+      pos = end + 1;
+      continue;
+    }
+    if (input[pos] === "`") {
+      const body = input.slice(start + 1, pos);
+      const embedded: HighlightToken[] = [];
+      const embeddedSink: TokenSink = { push: (kind, text) => {
+        if (text) embedded.push({ kind, text });
+      } };
+      if (language === "css") tokenizeCss(body, embeddedSink);
+      else tokenizeHtml(body, embeddedSink);
+      sink.push("punctuation", "`");
+      let cursor = 0;
+      for (const expression of expressions) {
+        const relativeStart = expression.start - start - 1;
+        const relativeEnd = expression.end - start - 1;
+        pushTokenRange(embedded, cursor, relativeStart, sink);
+        sink.push("punctuation", "${");
+        tokenizeJsFamily(input.slice(expression.start + 2, expression.end), sink, options);
+        sink.push("punctuation", "}");
+        cursor = relativeEnd + 1;
+      }
+      pushTokenRange(embedded, cursor, body.length, sink);
+      sink.push("punctuation", "`");
+      return pos + 1;
+    }
+    pos += 1;
+  }
+  sink.push("string", input.slice(start));
+  return input.length;
+}
+
 function tokenizeJsFamily(
   input: string,
   sink: TokenSink,
@@ -319,10 +418,17 @@ function tokenizeJsFamily(
       const wasJsxText = jsxText;
       jsxText = false;
       const word = readWord(input, pos, /[A-Za-z0-9_$]/y);
+      if ((word === "css" || word === "html") && input[pos + word.length] === "`") {
+        sink.push("definition", word);
+        pos = tokenizeTaggedTemplate(input, pos + word.length, word, sink, options);
+        continue;
+      }
       if (JS_STATIC_WORDS.has(word)) {
         sink.push("static", word);
       } else if (JS_KEYWORDS.has(word)) {
         sink.push("keyword", word);
+      } else if (options.typescript && looksLikeTypeProperty(input, pos, word)) {
+        sink.push("property", word);
       } else if (looksLikeCall(input, pos + word.length)) {
         sink.push("definition", word);
       } else if (wasJsxText) {
@@ -589,6 +695,60 @@ function tokenizeHtml(input: string, sink: TokenSink): void {
   }
 }
 
+function tagEnd(input: string, start: number): number {
+  let quote = "";
+  for (let pos = start + 1; pos < input.length; pos += 1) {
+    const ch = input[pos] ?? "";
+    if (quote) {
+      if (ch === quote) quote = "";
+    } else if (ch === '"' || ch === "'") {
+      quote = ch;
+    } else if (ch === ">") {
+      return pos + 1;
+    }
+  }
+  return -1;
+}
+
+function tokenizeSingleFileComponent(input: string, sink: TokenSink): void {
+  let markupStart = 0;
+  let scan = 0;
+  while (scan < input.length) {
+    const open = input.indexOf("<", scan);
+    if (open === -1) break;
+    if (input.startsWith("<!--", open)) {
+      const commentEnd = input.indexOf("-->", open + 4);
+      scan = commentEnd === -1 ? input.length : commentEnd + 3;
+      continue;
+    }
+    const end = tagEnd(input, open);
+    if (end === -1) break;
+    const name = /^<\s*(script|style)\b/i.exec(input.slice(open, end))?.[1]?.toLowerCase();
+    if (!name) {
+      scan = end;
+      continue;
+    }
+    const closePattern = new RegExp(`</${name}\\s*>`, "gi");
+    closePattern.lastIndex = end;
+    const close = closePattern.exec(input);
+    if (!close) break;
+    tokenizeHtml(input.slice(markupStart, end), sink);
+    const body = input.slice(end, close.index);
+    if (name === "style") {
+      tokenizeCss(body, sink);
+    } else if (/\blang\s*=\s*["'](?:ts|typescript)["']/i.test(input.slice(open, end))) {
+      tokenizeJsFamily(body, sink, { jsx: false, typescript: true });
+    } else {
+      tokenizeJsFamily(body, sink, { jsx: false, typescript: false });
+    }
+    const closeEnd = close.index + close[0].length;
+    tokenizeHtml(input.slice(close.index, closeEnd), sink);
+    markupStart = closeEnd;
+    scan = closeEnd;
+  }
+  tokenizeHtml(input.slice(markupStart), sink);
+}
+
 const BASH_STATIC_WORDS = new Set(["false", "true"]);
 
 function tokenizeBash(input: string, sink: TokenSink): void {
@@ -804,6 +964,10 @@ export function tokenizeCode(code: string, language: string): HighlightToken[] {
       break;
     case "html":
       tokenizeHtml(source, sink);
+      break;
+    case "svelte":
+    case "vue":
+      tokenizeSingleFileComponent(source, sink);
       break;
     case "bash":
       tokenizeBash(source, sink);

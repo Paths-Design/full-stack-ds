@@ -117,8 +117,10 @@
         "jsx",
         "markdown",
         "plaintext",
+        "svelte",
         "tsx",
-        "typescript"
+        "typescript",
+        "vue"
       ]
     },
     "CodeBlockTokenType": {

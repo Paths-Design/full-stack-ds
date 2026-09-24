@@ -80,6 +80,25 @@ describe('shared controls used by the showcase', () => {
     expect(container.querySelector('pre')).toHaveAttribute('data-language', language);
     expect(container.querySelector(`[data-token="${tokenKind}"]`)).toHaveTextContent(tokenText);
   });
+  it.each(['Stack.svelte', 'Stack.vue'])('shows embedded TypeScript and CSS syntax in %s', (filename) => {
+    const source = '<script lang="ts">\ninterface Props {\n  layout?: \'stack\' | \'inline\';\n}\n</script>\n<style>\n.stack { color: red; }\n</style>';
+    const { container } = render(<CodeViewer code={source} filename={filename} />);
+    expect(container.querySelector('pre')).toHaveAttribute('data-language', filename.endsWith('.vue') ? 'vue' : 'svelte');
+    const layoutLine = [...container.querySelectorAll('.source-viewer__line')].find((line) => line.textContent?.includes('layout?:'));
+    expect(layoutLine?.querySelector('[data-token="property"]')).toHaveTextContent('layout');
+    expect(layoutLine?.querySelectorAll('[data-token="string"]')).toHaveLength(2);
+    const styleLine = [...container.querySelectorAll('.source-viewer__line')].find((line) => line.textContent?.includes('color: red'));
+    expect(styleLine?.querySelector('[data-token="property"]')).toHaveTextContent('color');
+    expect([...container.querySelectorAll('.source-viewer__line')].map((line) => line.children[1]?.textContent)).toEqual(source.split('\n'));
+  });
+  it('shows Lit tagged CSS and HTML syntax in the source viewer', () => {
+    const source = 'static styles = css`a { color: red; }`;\nrender() { return html`<slot></slot>`; }';
+    const { container } = render(<CodeViewer code={source} filename="Stack.ts" />);
+    expect(container.querySelector('pre')).toHaveAttribute('data-language', 'typescript');
+    expect(container.querySelector('[data-token="property"]')).toHaveTextContent('color');
+    expect(container.querySelector('[data-token="tag"]')).toHaveTextContent('slot');
+    expect([...container.querySelectorAll('.source-viewer__line')].map((line) => line.children[1]?.textContent)).toEqual(source.split('\n'));
+  });
   it('keeps trace ranges clickable after syntax coloring', () => {
     const scrollIntoView = vi.fn();
     const originalScrollIntoView = Element.prototype.scrollIntoView;

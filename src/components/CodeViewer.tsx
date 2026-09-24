@@ -38,10 +38,10 @@ const SOURCE_LANGUAGES: Record<string, CodeBlockLanguage> = {
   md: "markdown",
   scss: "css",
   sh: "bash",
-  svelte: "html",
+  svelte: "svelte",
   ts: "typescript",
   tsx: "tsx",
-  vue: "html",
+  vue: "vue",
 };
 
 function languageForFilename(filename?: string): CodeBlockLanguage {
