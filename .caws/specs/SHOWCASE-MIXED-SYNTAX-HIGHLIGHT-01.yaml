@@ -2,9 +2,11 @@ id: SHOWCASE-MIXED-SYNTAX-HIGHLIGHT-01
 title: 'Highlight Svelte, Vue, and Lit embedded syntax'
 risk_tier: 2
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Svelte, Vue, and Lit syntax highlighting verified on the Stack showcase and through the governed rail'
 created_at: '2026-09-24T21:04:17.717Z'
-updated_at: '2026-09-24T21:04:36.318Z'
+updated_at: '2026-09-24T21:28:06.875Z'
 created_by_session: '01a0d419-00f5-7790-91f0-4c2a690e8a97'
 blast_radius:
   modules:
