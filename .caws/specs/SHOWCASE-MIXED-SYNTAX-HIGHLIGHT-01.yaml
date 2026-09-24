@@ -63,3 +63,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/highlight/tokenize.test.ts packages/ds-react/src/primitives/highlight/__tests__/codeblock-highlight.test.tsx src/components/shared-controls.test.tsx
     exit_code: 0
     commit_sha: "34c6530ef55af94c6bd7922c2b00bc050443000c"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Merged Stack browser: Lit Stack.ts css tagged body shows box-sizing as CSS property and html tagged body shows slot as HTML tag. Canonical test checks css/html interpolations, ordinary template string, and byte-for-byte round-trip; focused main run 61/61 passed in tmp/mixed-syntax-focused-main.log."
+    recorded_at: "2026-09-24T21:26:48.151Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/highlight/tokenize.test.ts packages/ds-react/src/primitives/highlight/__tests__/codeblock-highlight.test.tsx src/components/shared-controls.test.tsx
+    exit_code: 0
+    commit_sha: "34c6530ef55af94c6bd7922c2b00bc050443000c"
