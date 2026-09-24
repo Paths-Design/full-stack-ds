@@ -9,7 +9,7 @@ import { tokenizeCode } from "../../primitives/highlight/tokenize.js";
 // @custom:end
 
 // @generated:start types
-export type CodeBlockLanguage = "bash" | "css" | "html" | "javascript" | "json" | "jsx" | "markdown" | "plaintext" | "tsx" | "typescript";
+export type CodeBlockLanguage = "bash" | "css" | "html" | "javascript" | "json" | "jsx" | "markdown" | "plaintext" | "svelte" | "tsx" | "typescript" | "vue";
 // @generated:end
 
 // @custom:start types

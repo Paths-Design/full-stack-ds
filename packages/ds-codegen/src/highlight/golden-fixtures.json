@@ -284,6 +284,616 @@
           "text": "BUILD OK <no markup> & done"
         }
       ]
+    },
+    {
+      "language": "svelte",
+      "code": "<script lang=\"ts\">\ninterface Props {\n  layout?: 'stack' | 'inline';\n}\n</script>\n<div>Ready</div>\n<style>\n.stack { color: red; }\n</style>",
+      "expected": [
+        {
+          "kind": "punctuation",
+          "text": "<"
+        },
+        {
+          "kind": "tag",
+          "text": "script"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "property",
+          "text": "lang"
+        },
+        {
+          "kind": "punctuation",
+          "text": "="
+        },
+        {
+          "kind": "string",
+          "text": "\"ts\""
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "keyword",
+          "text": "interface"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "definition",
+          "text": "Props"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "punctuation",
+          "text": "{"
+        },
+        {
+          "kind": "plain",
+          "text": "\n  "
+        },
+        {
+          "kind": "property",
+          "text": "layout"
+        },
+        {
+          "kind": "punctuation",
+          "text": "?:"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "string",
+          "text": "'stack'"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "punctuation",
+          "text": "|"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "string",
+          "text": "'inline'"
+        },
+        {
+          "kind": "punctuation",
+          "text": ";"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "}"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "</"
+        },
+        {
+          "kind": "tag",
+          "text": "script"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "<"
+        },
+        {
+          "kind": "tag",
+          "text": "div"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "Ready"
+        },
+        {
+          "kind": "punctuation",
+          "text": "</"
+        },
+        {
+          "kind": "tag",
+          "text": "div"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "<"
+        },
+        {
+          "kind": "tag",
+          "text": "style"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "."
+        },
+        {
+          "kind": "plain",
+          "text": "stack "
+        },
+        {
+          "kind": "punctuation",
+          "text": "{"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "property",
+          "text": "color"
+        },
+        {
+          "kind": "punctuation",
+          "text": ":"
+        },
+        {
+          "kind": "plain",
+          "text": " red"
+        },
+        {
+          "kind": "punctuation",
+          "text": ";"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "punctuation",
+          "text": "}"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "</"
+        },
+        {
+          "kind": "tag",
+          "text": "style"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        }
+      ]
+    },
+    {
+      "language": "vue",
+      "code": "<script lang=\"ts\">\ninterface Props {\n  layout?: 'stack' | 'inline';\n}\n</script>\n<div>Ready</div>\n<style>\n.stack { color: red; }\n</style>",
+      "expected": [
+        {
+          "kind": "punctuation",
+          "text": "<"
+        },
+        {
+          "kind": "tag",
+          "text": "script"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "property",
+          "text": "lang"
+        },
+        {
+          "kind": "punctuation",
+          "text": "="
+        },
+        {
+          "kind": "string",
+          "text": "\"ts\""
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "keyword",
+          "text": "interface"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "definition",
+          "text": "Props"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "punctuation",
+          "text": "{"
+        },
+        {
+          "kind": "plain",
+          "text": "\n  "
+        },
+        {
+          "kind": "property",
+          "text": "layout"
+        },
+        {
+          "kind": "punctuation",
+          "text": "?:"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "string",
+          "text": "'stack'"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "punctuation",
+          "text": "|"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "string",
+          "text": "'inline'"
+        },
+        {
+          "kind": "punctuation",
+          "text": ";"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "}"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "</"
+        },
+        {
+          "kind": "tag",
+          "text": "script"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "<"
+        },
+        {
+          "kind": "tag",
+          "text": "div"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "Ready"
+        },
+        {
+          "kind": "punctuation",
+          "text": "</"
+        },
+        {
+          "kind": "tag",
+          "text": "div"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "<"
+        },
+        {
+          "kind": "tag",
+          "text": "style"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "."
+        },
+        {
+          "kind": "plain",
+          "text": "stack "
+        },
+        {
+          "kind": "punctuation",
+          "text": "{"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "property",
+          "text": "color"
+        },
+        {
+          "kind": "punctuation",
+          "text": ":"
+        },
+        {
+          "kind": "plain",
+          "text": " red"
+        },
+        {
+          "kind": "punctuation",
+          "text": ";"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "punctuation",
+          "text": "}"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "punctuation",
+          "text": "</"
+        },
+        {
+          "kind": "tag",
+          "text": "style"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">"
+        }
+      ]
+    },
+    {
+      "language": "typescript",
+      "code": "const style = css`a { color: ${this.color}; }`;\nconst view = html`<slot name=${this.name}></slot>`;",
+      "expected": [
+        {
+          "kind": "keyword",
+          "text": "const"
+        },
+        {
+          "kind": "plain",
+          "text": " style "
+        },
+        {
+          "kind": "punctuation",
+          "text": "="
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "definition",
+          "text": "css"
+        },
+        {
+          "kind": "punctuation",
+          "text": "`"
+        },
+        {
+          "kind": "plain",
+          "text": "a "
+        },
+        {
+          "kind": "punctuation",
+          "text": "{"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "property",
+          "text": "color"
+        },
+        {
+          "kind": "punctuation",
+          "text": ":"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "punctuation",
+          "text": "${"
+        },
+        {
+          "kind": "keyword",
+          "text": "this"
+        },
+        {
+          "kind": "punctuation",
+          "text": "."
+        },
+        {
+          "kind": "plain",
+          "text": "color"
+        },
+        {
+          "kind": "punctuation",
+          "text": "};"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "punctuation",
+          "text": "}`;"
+        },
+        {
+          "kind": "plain",
+          "text": "\n"
+        },
+        {
+          "kind": "keyword",
+          "text": "const"
+        },
+        {
+          "kind": "plain",
+          "text": " view "
+        },
+        {
+          "kind": "punctuation",
+          "text": "="
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "definition",
+          "text": "html"
+        },
+        {
+          "kind": "punctuation",
+          "text": "`<"
+        },
+        {
+          "kind": "tag",
+          "text": "slot"
+        },
+        {
+          "kind": "plain",
+          "text": " "
+        },
+        {
+          "kind": "property",
+          "text": "name"
+        },
+        {
+          "kind": "punctuation",
+          "text": "=${"
+        },
+        {
+          "kind": "keyword",
+          "text": "this"
+        },
+        {
+          "kind": "punctuation",
+          "text": "."
+        },
+        {
+          "kind": "plain",
+          "text": "name"
+        },
+        {
+          "kind": "punctuation",
+          "text": "}></"
+        },
+        {
+          "kind": "tag",
+          "text": "slot"
+        },
+        {
+          "kind": "punctuation",
+          "text": ">`;"
+        }
+      ]
     }
   ]
 }

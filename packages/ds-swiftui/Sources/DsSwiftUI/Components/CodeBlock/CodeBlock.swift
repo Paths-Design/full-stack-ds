@@ -12,8 +12,10 @@ public enum CodeBlockLanguage: String, CaseIterable {
     case jsx
     case markdown
     case plaintext
+    case svelte
     case tsx
     case typescript
+    case vue
 }
 public enum CodeBlockTokenType: String, CaseIterable {
     case comment

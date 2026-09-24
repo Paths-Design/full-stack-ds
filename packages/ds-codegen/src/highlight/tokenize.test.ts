@@ -109,6 +109,44 @@ describe("tokenizeCode", () => {
     expect(kindsBy("true")).toBe("static");
     expect(kindsBy("boolean")).toBe("definition");
   });
+  it("colors interface member names and string unions without coloring typed variables as properties", () => {
+    const code = "interface Props {\n  layout?: 'stack' | 'inline';\n}\nconst layout: string = 'stack';";
+    const tokens = tokenizeCode(code, "typescript");
+    expect(roundTrip(tokens)).toBe(code);
+    expect(tokens.some((token) => token.kind === "property" && token.text === "layout")).toBe(true);
+    expect(tokens.some((token) => token.kind === "string" && token.text === "'stack'")).toBe(true);
+    expect(tokens.some((token) => token.kind === "plain" && token.text.includes("layout"))).toBe(true);
+  });
+  it.each(["svelte", "vue"])("colors %s script, markup, and style with exact source round-trip", (language) => {
+    const code = [
+      "<!-- component -->",
+      '<script lang="ts">',
+      "interface Props {",
+      "  layout?: 'stack' | 'inline';",
+      "}",
+      "</script>",
+      '<div title="<script>">Ready</div>',
+      "<style>",
+      ".stack { color: red; }",
+      "</style>",
+    ].join("\n");
+    const tokens = tokenizeCode(code, language);
+    expect(roundTrip(tokens)).toBe(code);
+    expect(tokens.some((token) => token.kind === "property" && token.text === "layout")).toBe(true);
+    expect(tokens.some((token) => token.kind === "string" && token.text === "'stack'")).toBe(true);
+    expect(tokens.some((token) => token.kind === "tag" && token.text === "div")).toBe(true);
+    expect(tokens.some((token) => token.kind === "property" && token.text === "color")).toBe(true);
+    expect(tokens.some((token) => token.kind === "string" && token.text === '"<script>"')).toBe(true);
+  });
+  it("colors Lit css and html tagged bodies and their expressions while leaving ordinary templates as strings", () => {
+    const code = "const style = css`a { color: ${this.color}; }`;\nconst view = html`<slot name=${this.name}></slot>`;\nconst raw = `plain ${value}`;";
+    const tokens = tokenizeCode(code, "typescript");
+    expect(roundTrip(tokens)).toBe(code);
+    expect(tokens.some((token) => token.kind === "property" && token.text === "color")).toBe(true);
+    expect(tokens.some((token) => token.kind === "tag" && token.text === "slot")).toBe(true);
+    expect(tokens.filter((token) => token.kind === "keyword" && token.text === "this")).toHaveLength(2);
+    expect(tokens.some((token) => token.kind === "string" && token.text === "`plain ${value}`")).toBe(true);
+  });
 
   it("classifies tsx markup: tags, attribute properties, strings, and text children", () => {
     const tokens = tokenizeCode(CASES[1]!.code, "tsx");
