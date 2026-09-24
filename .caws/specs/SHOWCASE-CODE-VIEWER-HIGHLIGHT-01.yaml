@@ -38,3 +38,11 @@ contracts:
   - name: 'code-viewer-highlight'
     type: behavior
     path: 'src/components/CodeViewer.tsx'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Main Stack browser 127.0.0.1:5179/#/primitive/Stack: stack.tsx data-language=tsx with 267 canonical token spans; stack.css data-language=css with 103 spans; rendered source unchanged. Focused Vitest: 10/10 passed, tmp/code-viewer-highlight-vitest.log."
+    recorded_at: "2026-09-24T18:26:38.225Z"
+    command: pnpm exec vitest run src/components/shared-controls.test.tsx
+    exit_code: 0
+    commit_sha: ac7a1fb5c38b108ac417c6c53b8a800a4e71ae11
