@@ -55,3 +55,11 @@ contracts:
   - name: 'codeblock-highlight'
     type: behavior
     path: 'packages/ds-contracts/components/CodeBlock/CodeBlock.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Merged Stack browser: Stack.svelte and Stack.vue now show layout as property orange, quoted union values as string coral, and embedded style color as CSS property; full source text remains line-aligned. Canonical and showcase focused tests passed 61/61 on main; tmp/mixed-syntax-focused-main.log."
+    recorded_at: "2026-09-24T21:26:39.220Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/highlight/tokenize.test.ts packages/ds-react/src/primitives/highlight/__tests__/codeblock-highlight.test.tsx src/components/shared-controls.test.tsx
+    exit_code: 0
+    commit_sha: "34c6530ef55af94c6bd7922c2b00bc050443000c"
