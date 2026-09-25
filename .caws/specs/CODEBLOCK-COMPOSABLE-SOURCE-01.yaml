@@ -65,3 +65,11 @@ contracts:
   - name: 'codeblock-source'
     type: behavior
     path: 'packages/ds-contracts/components/CodeBlock/CodeBlock.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Reviewed main@11791744 source and executed logs in ignored docs/internal/codeblock-composable-source-01/: governed rail PASS; root 4391 tests; all framework suites; Chromium CodeBlock facts on five web targets; SwiftUI source/brand tests and 47-test package run; forced Compose source/brand tests; both native settings consumer compiles. Canonical LF/CRLF/trailing source, invalid/disabled fallback, and line parts asserted. Logs are machine-local and intentionally untracked."
+    recorded_at: "2026-09-25T04:52:33.301Z"
+    command: "pnpm run governed:rail"
+    exit_code: 0
+    commit_sha: "117917443cd4279d8ad9f94da575a8207c4ca925"
