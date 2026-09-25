@@ -80,3 +80,10 @@ evidence:
     command: pnpm test
     exit_code: 0
     commit_sha: "117917443cd4279d8ad9f94da575a8207c4ca925"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Manual browser review on the Vite development server at desktop and 390px, in dark and light themes: source/header legible, gutter aligned, card preview stable with no nested showcase, page width 390px without page overflow; code overflow remains inside CodeBlock. Token/brand slot tests passed. Governed rail, root/framework tests, typecheck:all, Chromium rail (104 pass/1 existing skip), Swift/Compose package and consumer lanes, lint, docs claims/links all passed; machine-local logs in ignored docs/internal/codeblock-composable-source-01/. Visual observation is bounded to those inspected states."
+    recorded_at: "2026-09-25T04:53:08.801Z"
+    command: "FSDS_E2E_PORT=5191 pnpm run e2e:rail"
+    exit_code: 0
+    commit_sha: "117917443cd4279d8ad9f94da575a8207c4ca925"
