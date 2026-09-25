@@ -571,6 +571,13 @@ export interface HighlightTransformIR {
   gateProp: string | undefined;
   /** anatomy.parts entry realized as one span per token (tag `span`, multiple). */
   tokenPart: string;
+  /** Optional prop bindings for consumer tokens and line presentation. */
+  tokens: PropBindingExpression | undefined;
+  tokensProp: string | undefined;
+  lineNumbers: PropBindingExpression | undefined;
+  lineNumbersProp: string | undefined;
+  linePart: string | undefined;
+  gutterPart: string | undefined;
 }
 
 /**
@@ -875,7 +882,7 @@ export interface KeyboardActionIR {
  * - Lit: tagged `html` template with `@change=${...}` and `<slot></slot>`
  *
  * Slot/children placement: `tag === "slot"` or `tag === "children"` marks the
- * node as a placeholder for consumer-provided content. Each framework chooses
+ * node as an insertion point for consumer-provided content. Each framework chooses
  * its idiomatic representation.
  */
 export interface DomNodeIR {
@@ -898,7 +905,7 @@ export interface DomNodeIR {
   keyboardPanel?: boolean;
   /** Invoking host for a keyboard-open action; carries the return-focus ref. */
   keyboardAnchor?: boolean;
-  /** HTML tag, or `"slot"`/`"children"` placeholder. */
+  /** HTML tag, or `"slot"`/`"children"` insertion point. */
   tag: string;
   /**
    * Bare component name (e.g. `"Button"`, `"Input"`) when this node renders
@@ -1257,7 +1264,7 @@ export interface CssBlockIR {
   selector: string;
   declarations: Record<string, string>;
   /**
-   * Non-declaration lines (e.g. token placeholder comments) emitted inside
+   * Non-declaration lines (e.g. token reference comments) emitted inside
    * the block, after declarations, in stable order.
    */
   comments?: string[];
@@ -2179,7 +2186,7 @@ export function buildComponentIR(
 
 /**
  * Walk the IR's dom tree and return true iff it contains a `{ tag: "children" }`
- * placeholder. Used by framework emitters to gate the `children` prop on the
+ * insertion point. Used by framework emitters to gate the `children` prop on the
  * generated component's public API: if the contract anatomy doesn't declare
  * a children placement, the component does not accept children and the prop
  * should not appear in the typed interface.
@@ -2576,6 +2583,26 @@ function validateDomNode(
           `span is realized per token.`,
         );
       }
+      if (transform.tokensProp !== undefined) {
+        const tokenType = requireProp(transform.tokensProp, "tokens");
+        const tokenTypeIR = propTypeIR.get(transform.tokensProp);
+        if (tokenTypeIR?.kind !== "array" || tokenTypeIR.items.kind !== "ref") {
+          throw new Error(`[${componentName}] DOM content.tokens requires an array of a named token type; got '${tokenType}'.`);
+        }
+      }
+      if (transform.lineNumbersProp !== undefined) {
+        const lineType = requireProp(transform.lineNumbersProp, "lineNumbers");
+        if (lineType !== "boolean") {
+          throw new Error(`[${componentName}] DOM content.lineNumbers requires boolean; got '${lineType}'.`);
+        }
+      }
+      for (const [field, partName] of [["linePart", transform.linePart], ["gutterPart", transform.gutterPart]] as const) {
+        if (partName === undefined) continue;
+        const detail = anatomyDetails[partName];
+        if (detail?.tag !== "span" || detail.multiple !== true) {
+          throw new Error(`[${componentName}] DOM content.${field} must name a multiple span anatomy part.`);
+        }
+      }
     }
   }
 
@@ -2697,6 +2724,8 @@ function validateDomNode(
       ];
       if (transform.transform === "highlight") {
         transformInputs.push(["language", transform.language]);
+        if (transform.tokens !== undefined) transformInputs.push(["tokens", transform.tokens]);
+        if (transform.lineNumbers !== undefined) transformInputs.push(["lineNumbers", transform.lineNumbers]);
       }
       if (transform.gate !== undefined) {
         transformInputs.push(["gate", transform.gate]);
@@ -3773,6 +3802,8 @@ function parseContentDirective(
   }
 
   const language = parseTransformBinding(content.language, "language");
+  const tokens = content.tokens !== undefined ? parseTransformBinding(content.tokens, "tokens") : undefined;
+  const lineNumbers = content.lineNumbers !== undefined ? parseTransformBinding(content.lineNumbers, "lineNumbers") : undefined;
   if (!content.tokenPart) {
     throw new Error(
       `${where}: content-transform "highlight" requires \`tokenPart\` ` +
@@ -3788,6 +3819,12 @@ function parseContentDirective(
     gate,
     gateProp: gate?.prop,
     tokenPart: content.tokenPart,
+    tokens,
+    tokensProp: tokens?.prop,
+    lineNumbers,
+    lineNumbersProp: lineNumbers?.prop,
+    linePart: content.linePart,
+    gutterPart: content.gutterPart,
   };
 }
 
@@ -3922,7 +3959,7 @@ function parseIterate(node: ContractDomNode): IterationIR | undefined {
   if (source.kind === "prop") {
     sourceProp = source.prop;
   } else if (source.kind === "channel" && source.field === "value") {
-    // Placeholder; the validator resolves the channel to its valueProp.
+    // The validator resolves the channel to its valueProp.
     sourceProp = "";
   } else {
     throw new Error(
@@ -3984,7 +4021,7 @@ function parseCssVarBindings(node: ContractDomNode): CssVarBindingIR[] {
  * shapes:
  *   - `"src"`      → `{ ifProp: "src",      ifNegated: false }`  (existing)
  *   - `"!src"`     → `{ ifProp: "src",      ifNegated: true  }`  (new)
- *   - `"children"` → `{ ifProp: "children", ifNegated: false }`  (special placeholder)
+ *   - `"children"` → `{ ifProp: "children", ifNegated: false }`  (special content insertion)
  *   - undefined    → `{ ifProp: undefined,  ifNegated: false }`
  *
  * Why negation lives here, not as a general expression: the contract's
@@ -5983,7 +6020,7 @@ function buildCssBlocks(
  * Compute the framework-neutral list of CSS blocks for a contract.
  *
  * This is the single source of truth for selector expansion (BEM blocks,
- * variant modifiers, state modifiers, part-level placeholders, focus,
+ * variant modifiers, state modifiers, part-level insertion points, focus,
  * tokens). `css.ts#generateCSS` formats this output as a CSS string;
  * the IR carries the same blocks so non-string consumers (Vue's
  * `<style>`, doc generators, design tokens) can inspect them directly.
@@ -6301,6 +6338,8 @@ export function deriveWebDomCarriers(
     if (node.part) producedParts.add(node.part);
     if (isHighlightTransform(node.content)) {
       producedParts.add(node.content.tokenPart);
+      if (node.content.linePart) producedParts.add(node.content.linePart);
+      if (node.content.gutterPart) producedParts.add(node.content.gutterPart);
     } else if (isMarkdownTransform(node.content)) {
       for (const part of Object.values(node.content.blockParts)) producedParts.add(part);
       for (const part of Object.values(node.content.markParts)) producedParts.add(part);

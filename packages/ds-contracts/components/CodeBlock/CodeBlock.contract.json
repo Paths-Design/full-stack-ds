@@ -9,6 +9,8 @@
       "root",
       "code",
       "source",
+      "line",
+      "gutter",
       "token"
     ],
     "details": {
@@ -27,6 +29,18 @@
         "description": "Automatic literal source renderer used when no consumer content is supplied.",
         "role": "content"
       },
+      "line": {
+        "tag": "span",
+        "description": "One lossless source line; reusable by annotated consumer content.",
+        "role": "content",
+        "multiple": true
+      },
+      "gutter": {
+        "tag": "span",
+        "description": "Presentational line number excluded from the accessible and copied source.",
+        "role": "context",
+        "multiple": true
+      },
       "token": {
         "tag": "span",
         "description": "Single syntax-token span produced by the highlight transform. Carries the token's literal text and a data-token kind attribute from the CodeBlockTokenType vocabulary; text-only by construction.",
@@ -38,7 +52,8 @@
       "tag": "pre",
       "part": "root",
       "bindings": {
-        "data-language": "prop:language"
+        "data-language": "prop:language",
+        "data-line-numbers": "prop:showLineNumbers"
       },
       "children": [
         {
@@ -63,7 +78,11 @@
                 "source": "prop:code",
                 "language": "prop:language",
                 "gate": "prop:highlight",
-                "tokenPart": "token"
+                "tokenPart": "token",
+                "tokens": "prop:tokens",
+                "lineNumbers": "prop:showLineNumbers",
+                "linePart": "line",
+                "gutterPart": "gutter"
               }
             }
           ]
@@ -98,6 +117,20 @@
           },
           "description": "Gate for the highlight content transform. When true (default) the source is rendered as one span per syntax token; when false it is rendered as a single plain text run.",
           "default": true
+        },
+        {
+          "name": "tokens",
+          "propType": {
+            "kind": "array",
+            "items": { "kind": "ref", "to": "CodeBlockToken" }
+          },
+          "description": "Optional lossless syntax token stream. Invalid streams render the canonical code as plain text."
+        },
+        {
+          "name": "showLineNumbers",
+          "propType": { "kind": "boolean" },
+          "description": "Display a presentational one-based line gutter without adding numbers to the source text.",
+          "default": false
         }
       ]
     },
@@ -106,6 +139,10 @@
     }
   },
   "types": {
+    "CodeBlockToken": {
+      "kind": "alias",
+      "alias": "{ kind: CodeBlockTokenType; text: string }"
+    },
     "CodeBlockLanguage": {
       "kind": "union",
       "values": [

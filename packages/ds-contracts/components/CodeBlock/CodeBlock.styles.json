@@ -137,6 +137,29 @@
       }
     }
   },
+  ".code-block__line": {
+    "white-space": { "literal": "pre", "platforms": ["web"] }
+  },
+  ".code-block__gutter": {
+    "display": { "literal": "none", "platforms": ["web"] }
+  },
+  ".code-block[data-line-numbers=\"true\"] .code-block__gutter": {
+    "display": { "literal": "inline-block", "platforms": ["web"] },
+    "min-width": { "literal": "4ch", "platforms": ["web"] },
+    "padding-inline-end": {
+      "resolvesTo": "code-block.gutter.size.gap",
+      "fallback": "4px"
+    },
+    "color": {
+      "resolvesTo": "code-block.gutter.color.number",
+      "fallback": "#474647"
+    },
+    "text-align": { "literal": "right", "platforms": ["web"] },
+    "user-select": { "literal": "none", "platforms": ["web"] }
+  },
+  ".code-block__gutter::before": {
+    "content": { "literal": "attr(data-line)", "platforms": ["web"] }
+  },
   ".code-block__token[data-token=\"plain\"]": {
     "color": {
       "resolvesTo": "code-block.token.color.plain",

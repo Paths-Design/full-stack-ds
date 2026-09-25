@@ -1,8 +1,8 @@
 import { useMemo, useRef, useEffect, useState } from "react";
-import { Card, Button, CodeBlock, Stack, Toast, Tooltip  } from "@full-stack-ds/react";
+import { Card, CardHeader, CardContent, Button, CodeBlock, CodeBlockLine, CodeBlockToken, Stack, Toast, Tooltip } from "@full-stack-ds/react";
 import type { CodeBlockLanguage } from "@full-stack-ds/react";
 import {
-  tokenizeCode,
+  prepareHighlightSource,
   type HighlightToken,
 } from "../../packages/ds-react/src/primitives/highlight/tokenize";
 import type { TraceHit } from "../trace/types";
@@ -49,19 +49,6 @@ function languageForFilename(filename?: string): CodeBlockLanguage {
   return SOURCE_LANGUAGES[extension] ?? "plaintext";
 }
 
-// Tokenize the whole file first so multiline strings and comments keep the
-// same lexical state as CodeBlock's unannotated rendering.
-function tokensByLine(code: string, language: CodeBlockLanguage): HighlightToken[][] {
-  const lines: HighlightToken[][] = [[]];
-  for (const token of tokenizeCode(code, language)) {
-    token.text.split("\n").forEach((part, index) => {
-      if (index > 0) lines.push([]);
-      if (part) lines[lines.length - 1].push({ kind: token.kind, text: part });
-    });
-  }
-  return lines;
-}
-
 function tokensInRange(tokens: HighlightToken[], start: number, end: number): HighlightToken[] {
   const range: HighlightToken[] = [];
   let offset = 0;
@@ -79,9 +66,9 @@ function tokensInRange(tokens: HighlightToken[], start: number, end: number): Hi
 
 function renderTokens(tokens: HighlightToken[]) {
   return tokens.map((token, index) => (
-    <span key={index} className="code-block__token" data-token={token.kind}>
+    <CodeBlockToken key={index} kind={token.kind}>
       {token.text}
-    </span>
+    </CodeBlockToken>
   ));
 }
 
@@ -117,25 +104,25 @@ export function CodeViewer({ code, filename, hits = [], onHitClick, selectedHitI
   };
 
   const lines = useMemo(() => {
-    const raw = code.split("\n");
-    const highlighted = tokensByLine(code, language);
+    const source = prepareHighlightSource(code, language);
     const byLine: Record<number, { hit: TraceHit; index: number; col: number; len: number }[]> = {};
     hits.forEach((h, idx) => {
       const line = h.start.line;
       if (!byLine[line]) byLine[line] = [];
       byLine[line].push({ hit: h, index: idx, col: h.start.column, len: h.length });
     });
-    return raw.map((text, i) => {
+    return source.lines.map((line, i) => {
+      const text = line.tokens.map((token) => token.text).join("");
       let offset = 0;
       const segments: HighlightedSegment[] = segmentLine(text, byLine[i] ?? []).map((segment) => {
         const start = offset;
         offset += segment.text.length;
         return {
           ...segment,
-          tokens: tokensInRange(highlighted[i] ?? [], start, offset),
+          tokens: tokensInRange([...line.tokens], start, offset),
         };
       });
-      return { lineNumber: i + 1, segments };
+      return { lineNumber: line.number, ending: line.ending, segments };
     });
   }, [code, hits, language]);
 
@@ -148,16 +135,19 @@ export function CodeViewer({ code, filename, hits = [], onHitClick, selectedHitI
   return (
     <Card className="showcase-card">
       {filename && (
-        <Stack variant="horizontal" className="panel-toolbar stack-gap-00">
+        <CardHeader className="panel-toolbar">
+        <Stack variant="horizontal" className="stack-gap-00">
           <Stack variant="horizontal" className="stack-gap-04" style={{ alignItems: "baseline" }}>
             <span>{filename}</span>
-            <span className="subtle">{code.split("\n").length} lines</span>
+            <span className="subtle">{lines.length} lines</span>
           </Stack>
           <Button variant="ghost" size="small" ariaLabel="Copy code to clipboard" onClick={copyCode}>
             Copy
           </Button>
         </Stack>
+        </CardHeader>
       )}
+      <CardContent>
       <Toast
         open={copied}
         onOpenChange={setCopied}
@@ -168,25 +158,9 @@ export function CodeViewer({ code, filename, hits = [], onHitClick, selectedHitI
         {filename ?? "Source"}
       </Toast>
       <div ref={containerRef}>
-        <CodeBlock className="source-viewer__code" code={code} language={language}>
-          {lines.map(({ lineNumber, segments }) => (
-            <Stack as="span" key={lineNumber} variant="horizontal" className="source-viewer__line stack-gap-00">
-              <span
-                className="subtle"
-                aria-hidden="true"
-                style={{
-                  display: "inline-block",
-                  width: 36,
-                  flexShrink: 0,
-                  textAlign: "right",
-                  paddingRight: 12,
-                  userSelect: "none",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {lineNumber}
-              </span>
-              <span style={{ flex: 1, minWidth: 0 }}>
+        <CodeBlock className="source-viewer__code" code={code} language={language} showLineNumbers>
+          {lines.map(({ lineNumber, ending, segments }) => (
+            <CodeBlockLine key={lineNumber} number={lineNumber} ending={ending}>
                 {segments.map((seg, idx) =>
                   seg.hit ? (
                     <Tooltip key={idx} placement="top" className="source-viewer__trace">
@@ -207,14 +181,14 @@ export function CodeViewer({ code, filename, hits = [], onHitClick, selectedHitI
                       </Tooltip.Content>
                     </Tooltip>
                   ) : (
-                    <span key={idx}>{seg.text ? renderTokens(seg.tokens) : "​"}</span>
+                    <span key={idx}>{renderTokens(seg.tokens)}</span>
                   ),
                 )}
-              </span>
-            </Stack>
+            </CodeBlockLine>
           ))}
         </CodeBlock>
       </div>
+      </CardContent>
     </Card>
   );
 }

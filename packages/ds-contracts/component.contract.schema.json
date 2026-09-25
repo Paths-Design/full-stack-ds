@@ -614,6 +614,24 @@
                 "tokenPart": {
                   "type": "string",
                   "description": "`highlight` only: `anatomy.parts` entry realized as one span per token. The part must exist, be `tag: \"span\"`, and be marked `multiple: true`."
+                },
+                "tokens": {
+                  "type": "string",
+                  "pattern": "^prop:[A-Za-z_$][\\w$-]*$",
+                  "description": "Optional binding to an externally supplied lossless syntax-token array."
+                },
+                "lineNumbers": {
+                  "type": "string",
+                  "pattern": "^prop:[A-Za-z_$][\\w$-]*$",
+                  "description": "Optional binding to the boolean line-number display prop."
+                },
+                "linePart": {
+                  "type": "string",
+                  "description": "Anatomy part for one lossless source line."
+                },
+                "gutterPart": {
+                  "type": "string",
+                  "description": "Anatomy part for a presentational line number."
                 }
               }
             },

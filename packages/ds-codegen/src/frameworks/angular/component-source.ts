@@ -1520,7 +1520,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
   // driven by IR content-transform facts, never per-component name lore.
   if (ir.dom && collectContentTransforms(ir.dom).some((t) => t.transform === "highlight")) {
     lines.push(
-      `import { tokenizeCode } from "../../primitives/highlight/tokenize.js";`,
+      `import { prepareHighlightSource } from "../../primitives/highlight/tokenize.js";`,
     );
   }
   // content-transform: the markdown runtime when the tree carries a
@@ -1717,10 +1717,16 @@ function generateDomTreeComponent(ir: ComponentIR): string {
           defaultAwareAngularClassPropAccessor(transform.languageProp, styledByName),
           transform.language.path,
         );
+        const tokensExpr = transform.tokensProp
+          ? defaultAwareAngularClassPropAccessor(transform.tokensProp, styledByName)
+          : "undefined";
+        const gateExpr = transform.gateProp
+          ? defaultAwareAngularClassPropAccessor(transform.gateProp, styledByName)
+          : "true";
         contentTransformGetterLines.push(
           ``,
-          `  get ${getterName}(): Array<{ kind: string; text: string }> {`,
-          `    return tokenizeCode(${sourceExpr}, ${languageExpr});`,
+          `  get ${getterName}() {`,
+          `    return prepareHighlightSource(${sourceExpr}, ${languageExpr}, { tokens: ${tokensExpr}, highlight: ${gateExpr} });`,
           `  }`,
         );
       }
@@ -2856,29 +2862,17 @@ function renderAngularDomNode(
             `node (tag="${node.tag}", part="${node.part ?? "?"}")`,
         );
       }
-      const tokenClass = `${ctx.classRecipe}__${transform.tokenPart}`;
-      const tokenSpan =
-        `<span *ngFor="let token of ${tokenGetter}" ` +
-        `[ngClass]="'${tokenClass}'" ` +
-        `[attr.data-token]="token.kind">{{ token.text }}</span>`;
-      if (transform.gate !== undefined) {
-        const gateExpr = defaultAwareAngularTemplatePropAccessor(
-          transform.gateProp ?? transform.gate.prop,
-          ctx.styledByName,
-        );
-        const sourceExpr = appendPath(
-          defaultAwareAngularTemplatePropAccessor(
-            transform.sourceProp,
-            ctx.styledByName,
-          ),
-          transform.source.path,
-        );
+      if (transform.linePart && transform.gutterPart) {
         contentLines.push(
-          `${sp}<ng-container *ngIf="${gateExpr}">${tokenSpan}</ng-container>`,
-          `${sp}<ng-container *ngIf="!(${gateExpr})">{{ ${sourceExpr} }}</ng-container>`,
+          `${sp}<span *ngFor="let line of ${tokenGetter}.lines" class="${ctx.classRecipe}__${transform.linePart}">` +
+          `<span class="${ctx.classRecipe}__${transform.gutterPart}" [attr.data-line]="line.number" aria-hidden="true"></span>` +
+          `<ng-container *ngFor="let token of line.tokens">` +
+          `<span *ngIf="line.highlighted" class="${ctx.classRecipe}__${transform.tokenPart}" [attr.data-token]="token.kind">{{ token.text }}</span>` +
+          `<ng-container *ngIf="!line.highlighted">{{ token.text }}</ng-container>` +
+          `</ng-container>{{ line.ending }}</span>`,
         );
       } else {
-        contentLines.push(`${sp}${tokenSpan}`);
+        contentLines.push(`${sp}<span *ngFor="let line of ${tokenGetter}.lines">{{ line.tokens.map((token) => token.text).join('') + line.ending }}</span>`);
       }
     } else if (isMarkdownTransform(node.content)) {
       // FEAT-MARKDOWN-CONTENT-TRANSFORM-01: the content iterates the class

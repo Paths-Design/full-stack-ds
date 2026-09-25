@@ -18,6 +18,8 @@
   --fsds-code-block-token-color-static: var(--fsds-semantic-color-foreground-syntax-static, #900909);
   --fsds-code-block-token-color-string: var(--fsds-semantic-color-foreground-syntax-string, #900909);
   --fsds-code-block-token-color-tag: var(--fsds-semantic-color-foreground-syntax-tag, #900909);
+  --fsds-code-block-gutter-color-number: var(--fsds-semantic-color-foreground-secondary, #474647);
+  --fsds-code-block-gutter-size-gap: var(--fsds-core-spacing-size-03, 4px);
 }
 /* @generated:end */
 

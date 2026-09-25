@@ -1,7 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { tokenizeCode } from '../../primitives/highlight/tokenize.js';
+import { prepareHighlightSource } from '../../primitives/highlight/tokenize.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
 
@@ -11,6 +11,8 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 
 // @generated:start types
 export type CodeBlockLanguage = "bash" | "css" | "html" | "javascript" | "json" | "jsx" | "markdown" | "plaintext" | "svelte" | "tsx" | "typescript" | "vue";
+export type CodeBlockTokenType = "comment" | "definition" | "keyword" | "plain" | "property" | "punctuation" | "static" | "string" | "tag";
+export type CodeBlockToken = { kind: CodeBlockTokenType; text: string };
 // @generated:end
 
 // @custom:start types
@@ -87,6 +89,8 @@ export class CodeBlockElement extends LitElement {
       --fsds-code-block-token-color-static: var(--fsds-semantic-color-foreground-syntax-static, #900909);
       --fsds-code-block-token-color-string: var(--fsds-semantic-color-foreground-syntax-string, #900909);
       --fsds-code-block-token-color-tag: var(--fsds-semantic-color-foreground-syntax-tag, #900909);
+      --fsds-code-block-gutter-color-number: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --fsds-code-block-gutter-size-gap: var(--fsds-core-spacing-size-03, 4px);
     }
 
     @layer components.defaults {
@@ -116,12 +120,33 @@ export class CodeBlockElement extends LitElement {
       padding: var(--fsds-code-block-design-root-spacing-padding, var(--fsds-code-block-size-padding-default, 16px));
       tab-size: 2;
       white-space: pre;
+
+      &[data-line-numbers="true"] .code-block__gutter {
+        display: inline-block;
+        min-width: 4ch;
+        padding-inline-end: var(--fsds-code-block-gutter-size-gap, 4px);
+        color: var(--fsds-code-block-gutter-color-number, #474647);
+        text-align: right;
+        user-select: none;
+      }
     }
 
     .code-block__code {
       display: block;
       font-family: var(--fsds-code-block-design-code-typography-family, inherit);
       font-size: var(--fsds-code-block-design-code-typography-size, inherit);
+    }
+
+    .code-block__line {
+      white-space: pre;
+    }
+
+    .code-block__gutter {
+      display: none;
+    }
+
+    .code-block__gutter::before {
+      content: attr(data-line);
     }
 
     .code-block__token[data-token="plain"] {
@@ -165,6 +190,8 @@ export class CodeBlockElement extends LitElement {
   @property({ type: String }) code!: string;
   @property({ type: String }) language!: CodeBlockLanguage;
   @property({ type: Boolean }) highlight?: boolean = true;
+  @property({ attribute: false }) tokens?: CodeBlockToken[];
+  @property({ type: Boolean }) showLineNumbers?: boolean = false;
 
   // Tracks whether any content has been slotted in — used by the
   // conditional label wrapper (if: "children" in the contract dom tree).
@@ -191,7 +218,7 @@ export class CodeBlockElement extends LitElement {
   }
 
   override render() {
-    return html`<pre class="${this.computeClasses()}" data-language=${ifDefined(this.language)} data-fsds-box=""><code class=${'code-block__code'} spellcheck="false" data-language=${ifDefined(this.language)}><slot></slot>${!this._hasChildren ? html`<span class=${'code-block__source'}>${(this.highlight ?? true) ? tokenizeCode(this.code, this.language).map((token, tokenIndex) => html`<span class=${'code-block__token'} data-token=${token.kind}>${token.text}</span>`) : this.code}</span>` : nothing}</code></pre>`;
+    return html`<pre class="${this.computeClasses()}" data-language=${ifDefined(this.language)} ?data-line-numbers=${(this.showLineNumbers ?? false)} data-fsds-box=""><code class=${'code-block__code'} spellcheck="false" data-language=${ifDefined(this.language)}><slot></slot>${!this._hasChildren ? html`<span class=${'code-block__source'}>${prepareHighlightSource(this.code, this.language, { tokens: this.tokens, highlight: (this.highlight ?? true) }).lines.map((line) => html`<span class="code-block__line"><span class="code-block__gutter" data-line=${line.number} aria-hidden="true"></span>${line.tokens.map((token) => line.highlighted ? html`<span class="code-block__token" data-token=${token.kind}>${token.text}</span>` : token.text)}${line.ending}</span>`)}</span>` : nothing}</code></pre>`;
   }
 }
 

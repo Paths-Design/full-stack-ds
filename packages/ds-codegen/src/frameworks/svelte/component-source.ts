@@ -78,7 +78,7 @@ function svelteTableAttrBinding(attr: NativeTableAttr): string {
       return `{${attr}}`; // id, style, scope
   }
 }
-import { translateNonReactType } from "../../non-react-types.js";
+import { emitNonReactTypeAliases, translateNonReactType } from "../../non-react-types.js";
 import { resolveComponentRefImports } from "../component-ref-imports.js";
 import { renderSections, type Section } from "../../preserve.js";
 import {
@@ -170,27 +170,10 @@ export function generateSvelteComponentSource(ir: ComponentIR): string {
 // ---------------------------------------------------------------------------
 
 function generateTypeAliases(ir: ComponentIR): string {
-  const lines: string[] = [];
-  const emitted = new Set<string>();
-
-  // Emit named types from ir.definedTypes that are referenced in styledProps
-  for (const p of ir.styledProps) {
-    if (SVELTE_SKIP_PROPS.has(p.name)) continue;
-    for (const ref of p.typeRefs) {
-      if (emitted.has(ref)) continue;
-      const def = ir.definedTypes[ref];
-      if (!def) continue;
-      if (def.kind === "union" && def.values) {
-        lines.push(`type ${ref} = ${def.values.map((v) => `"${v}"`).join(" | ")};`);
-        emitted.add(ref);
-      } else if (def.kind === "alias" && def.alias) {
-        lines.push(`type ${ref} = ${svelteType(def.alias)};`);
-        emitted.add(ref);
-      }
-    }
-  }
-
-  return lines.join("\n");
+  return emitNonReactTypeAliases({
+    ...ir,
+    styledProps: ir.styledProps.filter((prop) => !SVELTE_SKIP_PROPS.has(prop.name)),
+  }, { keyword: "type" }).join("\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -215,7 +198,7 @@ function generatePropsBlock(ir: ComponentIR): string {
   }
   lines.push(`  class?: string;`);
   // Only expose a `children` snippet when the component actually renders
-  // children — i.e. the dom tree has a `{ tag: "children" }` placeholder,
+  // children — i.e. the dom tree has a `{ tag: "children" }` region,
   // OR the component uses the legacy no-dom-tree path (which always wraps
   // body in `<Stack>{@render children?.()}</Stack>`).
   const acceptsChildren = ir.dom ? hasChildrenPlaceholder(ir) : true;
@@ -1466,7 +1449,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
   // driven by IR content-transform facts, never per-component name lore.
   if (collectContentTransforms(ir.dom).some((t) => t.transform === "highlight")) {
     importLines.push(
-      `import { tokenizeCode } from "../../primitives/highlight/tokenize.js";`,
+      `import { prepareHighlightSource } from "../../primitives/highlight/tokenize.js";`,
     );
   }
   if (collectContentTransforms(ir.dom).some(isMarkdownTransform)) {
@@ -1958,19 +1941,22 @@ function renderSvelteDomNode(
         sveltePropAccessor(transform.languageProp, ctx),
         transform.language.path,
       );
-      const each =
-        `{#each tokenizeCode(${sourceExpr}, ${languageExpr}) as token, tokenIndex}` +
-        `<span class="${ctx.classRecipe}__${transform.tokenPart}" ` +
-        `data-token={token.kind}>{token.text}</span>` +
-        `{/each}`;
-      if (transform.gate !== undefined) {
-        const gateExpr = appendPath(
-          sveltePropAccessor(transform.gateProp ?? "", ctx),
-          transform.gate.path,
-        );
-        textContentExpr = `{#if ${gateExpr}}${each}{:else}{${sourceExpr}}{/if}`;
+      const gateExpr = transform.gate !== undefined
+        ? appendPath(sveltePropAccessor(transform.gateProp ?? "", ctx), transform.gate.path)
+        : "true";
+      const tokensExpr = transform.tokensProp ? sveltePropAccessor(transform.tokensProp, ctx) : "undefined";
+      const prepared = `prepareHighlightSource(${sourceExpr}, ${languageExpr}, { tokens: ${tokensExpr}, highlight: ${gateExpr} })`;
+      if (transform.linePart && transform.gutterPart) {
+        textContentExpr =
+          `{#each ${prepared}.lines as line (line.number)}` +
+          `<span class="${ctx.classRecipe}__${transform.linePart}">` +
+          `<span class="${ctx.classRecipe}__${transform.gutterPart}" data-line={line.number} aria-hidden="true"></span>` +
+          `{#each line.tokens as token}` +
+          `{#if line.highlighted}` +
+          `<span class="${ctx.classRecipe}__${transform.tokenPart}" data-token={token.kind}>{token.text}</span>` +
+          `{:else}{token.text}{/if}{/each}{line.ending}</span>{/each}`;
       } else {
-        textContentExpr = each;
+        textContentExpr = `{#each ${prepared}.lines as line}{line.tokens.map((token) => token.text).join('') + line.ending}{/each}`;
       }
     } else if (isMarkdownTransform(node.content)) {
       // FEAT-MARKDOWN-CONTENT-TRANSFORM-01: the template iterates the

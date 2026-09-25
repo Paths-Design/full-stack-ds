@@ -1681,7 +1681,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
   // driven by IR content-transform facts, never per-component name lore.
   if (ir.dom && collectContentTransforms(ir.dom).some((t) => t.transform === "highlight")) {
     lines.push(
-      `import { tokenizeCode } from '../../primitives/highlight/tokenize.js';`,
+      `import { prepareHighlightSource } from '../../primitives/highlight/tokenize.js';`,
     );
   }
   if (ir.dom && collectContentTransforms(ir.dom).some(isMarkdownTransform)) {
@@ -2861,19 +2861,22 @@ function renderLitDomNode(
         litPropAccessor(transform.languageProp, ctx),
         transform.language.path,
       );
-      const tokenClass = `${ctx.classRecipe}__${transform.tokenPart}`;
-      const tokenMap =
-        `tokenizeCode(${sourceExpr}, ${languageExpr})` +
-        `.map((token, tokenIndex) => html\`<span class=\${'${tokenClass}'} ` +
-        `data-token=\${token.kind}>\${token.text}</span>\`)`;
-      if (transform.gate !== undefined) {
-        const gateExpr = appendPath(
-          litPropAccessor(transform.gateProp ?? transform.gate.prop, ctx),
-          transform.gate.path,
-        );
-        contentInline = `\${${gateExpr} ? ${tokenMap} : ${sourceExpr}}`;
+      const gateExpr = transform.gate !== undefined
+        ? appendPath(litPropAccessor(transform.gateProp ?? transform.gate.prop, ctx), transform.gate.path)
+        : "true";
+      const tokensExpr = transform.tokensProp ? litPropAccessor(transform.tokensProp, ctx) : "undefined";
+      const prepared = `prepareHighlightSource(${sourceExpr}, ${languageExpr}, { tokens: ${tokensExpr}, highlight: ${gateExpr} })`;
+      if (transform.linePart && transform.gutterPart) {
+        const lineClass = `${ctx.classRecipe}__${transform.linePart}`;
+        const gutterClass = `${ctx.classRecipe}__${transform.gutterPart}`;
+        const tokenClass = `${ctx.classRecipe}__${transform.tokenPart}`;
+        contentInline = `\${${prepared}.lines.map((line) => html\`<span class="${lineClass}">` +
+          `<span class="${gutterClass}" data-line=\${line.number} aria-hidden="true"></span>` +
+          `\${line.tokens.map((token) => line.highlighted ? ` +
+          `html\`<span class="${tokenClass}" data-token=\${token.kind}>\${token.text}</span>\` : token.text)}` +
+          `\${line.ending}</span>\`)}`;
       } else {
-        contentInline = `\${${tokenMap}}`;
+        contentInline = `\${${prepared}.lines.map((line) => line.tokens.map((token) => token.text).join('') + line.ending)}`;
       }
     } else if (isMarkdownTransform(node.content)) {
       // FEAT-MARKDOWN-CONTENT-TRANSFORM-01: the content is the structural

@@ -29,12 +29,33 @@
   padding: var(--fsds-code-block-design-root-spacing-padding, var(--fsds-code-block-size-padding-default, 16px));
   tab-size: 2;
   white-space: pre;
+
+  &[data-line-numbers="true"] .code-block__gutter {
+    display: inline-block;
+    min-width: 4ch;
+    padding-inline-end: var(--fsds-code-block-gutter-size-gap, 4px);
+    color: var(--fsds-code-block-gutter-color-number, #474647);
+    text-align: right;
+    user-select: none;
+  }
 }
 
 .code-block__code {
   display: block;
   font-family: var(--fsds-code-block-design-code-typography-family, inherit);
   font-size: var(--fsds-code-block-design-code-typography-size, inherit);
+}
+
+.code-block__line {
+  white-space: pre;
+}
+
+.code-block__gutter {
+  display: none;
+}
+
+.code-block__gutter::before {
+  content: attr(data-line);
 }
 
 .code-block__token[data-token="plain"] {

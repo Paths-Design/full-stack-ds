@@ -25,20 +25,19 @@
  * guessing a parse. Unknown languages degrade to a single plain run.
  */
 
-export type HighlightTokenKind =
-  | "comment"
-  | "definition"
-  | "keyword"
-  | "plain"
-  | "property"
-  | "punctuation"
-  | "static"
-  | "string"
-  | "tag";
+import { prepareSourceLines, type HighlightSource, type HighlightToken, type HighlightTokenKind } from "./source-model.js";
+export { prepareSourceLines } from "./source-model.js";
+export type { HighlightToken, HighlightTokenKind, HighlightLine, HighlightSource } from "./source-model.js";
 
-export interface HighlightToken {
-  readonly kind: HighlightTokenKind;
-  readonly text: string;
+/** Resolve one canonical source into lossless lines for every web renderer. */
+export function prepareHighlightSource(
+  code: string,
+  language: string,
+  options: { readonly tokens?: readonly HighlightToken[] | null; readonly highlight?: boolean } = {},
+): HighlightSource {
+  const source = code ?? "";
+  if (options.highlight === false) return prepareSourceLines(source, undefined, false);
+  return prepareSourceLines(source, options.tokens === undefined ? tokenizeCode(source, language) : options.tokens, true);
 }
 
 export type HighlightLanguage =

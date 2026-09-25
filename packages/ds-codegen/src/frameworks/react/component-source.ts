@@ -121,6 +121,19 @@ export function generateReactComponentSource(
       )
       .join("\n\n");
   }
+  const highlightPresentation = collectContentTransforms(ir.dom).find(
+    (transform) => transform.transform === "highlight" && transform.linePart && transform.gutterPart,
+  );
+  if (highlightPresentation && highlightPresentation.transform === "highlight") {
+    const lineName = `${ir.name}Line`;
+    const tokenName = `${ir.name}Token`;
+    subcomponentsBody += `\n\nexport interface ${lineName}Props { number: number; children?: ReactNode; ending?: string; className?: string }\n` +
+      `export function ${lineName}({ number, children, ending = "", className }: ${lineName}Props) {\n` +
+      `  return <span className={["${ir.classRecipe.base}__${highlightPresentation.linePart}", className].filter(Boolean).join(" ")}><span className="${ir.classRecipe.base}__${highlightPresentation.gutterPart}" data-line={number} aria-hidden="true" />{children}{ending}</span>;\n}\n\n` +
+      `export interface ${tokenName}Props { kind: ${ir.name}TokenType; children?: ReactNode; className?: string }\n` +
+      `export function ${tokenName}({ kind, children, className }: ${tokenName}Props) {\n` +
+      `  return <span className={["${ir.classRecipe.base}__${highlightPresentation.tokenPart}", className].filter(Boolean).join(" ")} data-token={kind}>{children}</span>;\n}`;
+  }
 
   const componentBody = generateRootComponent(ir);
 
@@ -251,7 +264,7 @@ export function generateReactComponentSource(
   }
   if (collectContentTransforms(ir.dom).some((t) => t.transform === "highlight")) {
     importLines.push(
-      `import { tokenizeCode } from "../../primitives/highlight/tokenize";`,
+      `import { prepareHighlightSource } from "../../primitives/highlight/tokenize";`,
     );
   }
   if (needsAnchoredHooks) {
@@ -552,11 +565,9 @@ function collectReactImports(ir: ComponentIR): string[] {
 /**
  * Emit type alias declarations from the contract's `types` block.
  *
- * Unresolved type references are *not* emitted as `TODO`/`unknown` stubs.
- * They are surfaced by the CLI from `ir.unresolvedTypeRefs` (warning by
- * default; failure under `--strict-types`). Generated source therefore
- * stays free of placeholder identifiers — a missing type is now a contract
- * authoring problem, not a generated-code TODO.
+ * Unresolved type references are surfaced by the CLI through
+ * `ir.unresolvedTypeRefs` (warning by default; failure under
+ * `--strict-types`). A missing type is a contract authoring error.
  */
 function generateTypes(ir: ComponentIR): string {
   const lines: string[] = [];
@@ -653,7 +664,7 @@ function generatePropsInterface(ir: ComponentIR): string {
   if (!propNames.has("data-testid")) lines.push(`  "data-testid"?: string;`);
   // Only expose a `children` prop when the component actually renders
   // children. For dom-tree components, that means a `{ tag: "children" }`
-  // placeholder in the contract. For legacy no-dom-tree components, the
+  // region in the contract. For legacy no-dom-tree components, the
   // emitter always wraps the body in `<Stack>{children}</Stack>`, so they
   // always accept children. Visual leaf components (e.g. <Image>, <Spinner>)
   // get a clean API with no dead prop.
@@ -1804,7 +1815,7 @@ function wrapReactFieldAssociationProvider(
 /**
  * Generate a React component that renders the contract's `dom` tree. Native
  * HTML elements with attribute and event bindings; consumer-provided children
- * land at the `tag: "slot"` / `tag: "children"` placeholder. Unlike the
+ * land at the `tag: "slot"` / `tag: "children"` region. Unlike the
  * legacy path, this does not wrap in `<Stack>` — `dom.tag` is the rendered
  * root, matching the contract's intent.
  *
@@ -2210,6 +2221,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
 
   const renderCtx: ReactRenderContext = {
     classRecipe: classRecipe.base,
+    componentName: ir.name,
     channelByName,
     isRoot: true,
     cssPrefix: ir.cssPrefix,
@@ -2299,6 +2311,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
 
 interface ReactRenderContext {
   classRecipe: string;
+  componentName?: string;
   channelByName: Map<string, NormalizedChannelIR>;
   isRoot: boolean;
   /**
@@ -2592,17 +2605,23 @@ function renderReactDomNode(
       const languageExpr =
         renderReactBinding("textContent", transform.language, ctx) ??
         transform.languageProp;
-      const tokenMap =
-        `tokenizeCode(${sourceExpr}, ${languageExpr}).map((token, tokenIndex) => ` +
-        `(<span key={tokenIndex} className="${ctx.classRecipe}__${transform.tokenPart}" ` +
-        `data-token={token.kind}>{token.text}</span>))`;
-      if (transform.gate !== undefined) {
-        const gateExpr =
-          renderReactBinding("textContent", transform.gate, ctx) ??
-          transform.gateProp;
-        textChildren.push(`{${gateExpr} ? (${tokenMap}) : (${sourceExpr})}`);
+      const gateExpr = transform.gate !== undefined
+        ? (renderReactBinding("textContent", transform.gate, ctx) ?? transform.gateProp)
+        : "true";
+      const tokensExpr = transform.tokensProp ?? "undefined";
+      const prepared = `prepareHighlightSource(${sourceExpr}, ${languageExpr}, { tokens: ${tokensExpr}, highlight: ${gateExpr} })`;
+      if (transform.linePart && transform.gutterPart) {
+        const lineName = `${ctx.componentName}Line`;
+        const tokenName = `${ctx.componentName}Token`;
+        textChildren.push(
+          `{${prepared}.lines.map((line) => (` +
+          `<${lineName} key={line.number} number={line.number} ending={line.ending}>` +
+          `{line.tokens.map((token, tokenIndex) => line.highlighted ? (` +
+          `<${tokenName} key={tokenIndex} kind={token.kind}>{token.text}</${tokenName}>` +
+          `) : token.text)}</${lineName}>))}`,
+        );
       } else {
-        textChildren.push(`{${tokenMap}}`);
+        textChildren.push(`{${prepared}.lines.flatMap((line) => [...line.tokens.map((token) => token.text), line.ending])}`);
       }
     } else if (isMarkdownTransform(node.content)) {
       // FEAT-MARKDOWN-CONTENT-TRANSFORM-01: the content is the structural

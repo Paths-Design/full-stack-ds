@@ -418,8 +418,8 @@ function callbackArgument(propType: string, valueType: string | undefined): stri
   // Array channel values (e.g. selection: string[], multi-select: string[]).
   // Returning a string literal here produces a type-mismatched demo handler:
   // `onValueChange?.("test")` where the signature expects string[]. Emit an
-  // empty array placeholder so the demo typechecks. The handler is a no-op
-  // demo stub anyway; the literal value is irrelevant to behavior.
+  // empty array so the demo matches the declared argument type. The handler
+  // demonstrates the callback shape without mutating state.
   if (valueType && /\[\]$/.test(valueType)) return "[]";
   return `"test"`;
 }
@@ -1527,7 +1527,7 @@ function isBooleanShapedPropType(pt: PropTypeIR): boolean {
 /**
  * Generate a Vue 3 SFC that renders the contract's `dom` tree. Native
  * HTML elements with `:` and `@` bindings; consumer-provided children land
- * at the `tag: "slot"` / `tag: "children"` placeholder via `<slot />`.
+ * at the `tag: "slot"` / `tag: "children"` region via `<slot />`.
  * Calls the generated `useX` composable in script setup, exposing
  * channel state to the template via reactive bindings.
  *
@@ -1616,7 +1616,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
   // driven by IR content-transform facts, never per-component name lore.
   if (collectContentTransforms(ir.dom).some((t) => t.transform === "highlight")) {
     importLines.push(
-      `import { tokenizeCode } from "../../primitives/highlight/tokenize.js";`,
+      `import { prepareHighlightSource } from "../../primitives/highlight/tokenize.js";`,
     );
   }
   if (collectContentTransforms(ir.dom).some(isMarkdownTransform)) {
@@ -2181,20 +2181,21 @@ function renderVueDomNode(
         vuePropAccessor(transform.languageProp, ctx),
         transform.language.path,
       );
-      const span =
-        `<span v-for="(token, tokenIndex) in tokenizeCode(${sourceExpr}, ${languageExpr})" ` +
-        `:key="tokenIndex" class="${ctx.classRecipe}__${transform.tokenPart}" ` +
-        `:data-token="token.kind">{{ token.text }}</span>`;
-      if (transform.gate !== undefined) {
-        const gateExpr = appendPath(
-          vuePropAccessor(transform.gateProp ?? "", ctx),
-          transform.gate.path,
-        );
+      const gateExpr = transform.gate !== undefined
+        ? appendPath(vuePropAccessor(transform.gateProp ?? "", ctx), transform.gate.path)
+        : "true";
+      const tokensExpr = transform.tokensProp ? vuePropAccessor(transform.tokensProp, ctx) : "undefined";
+      const prepared = `prepareHighlightSource(${sourceExpr}, ${languageExpr}, { tokens: ${tokensExpr}, highlight: ${gateExpr} })`;
+      if (transform.linePart && transform.gutterPart) {
         textChildren.push(
-          `<template v-if="${gateExpr}">${span}</template><template v-else>{{ ${sourceExpr} }}</template>`,
+          `<span v-for="line in ${prepared}.lines" :key="line.number" class="${ctx.classRecipe}__${transform.linePart}">` +
+          `<span class="${ctx.classRecipe}__${transform.gutterPart}" :data-line="line.number" aria-hidden="true"></span>` +
+          `<template v-for="(token, tokenIndex) in line.tokens" :key="tokenIndex">` +
+          `<span v-if="line.highlighted" class="${ctx.classRecipe}__${transform.tokenPart}" :data-token="token.kind">{{ token.text }}</span>` +
+          `<template v-else>{{ token.text }}</template></template>{{ line.ending }}</span>`,
         );
       } else {
-        textChildren.push(span);
+        textChildren.push(`<span v-for="line in ${prepared}.lines" :key="line.number">{{ line.tokens.map((token) => token.text).join('') + line.ending }}</span>`);
       }
     } else if (isMarkdownTransform(node.content)) {
       // FEAT-MARKDOWN-CONTENT-TRANSFORM-01: the template mounts the local
