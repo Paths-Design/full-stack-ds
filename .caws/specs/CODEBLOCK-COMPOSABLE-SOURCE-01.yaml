@@ -73,3 +73,10 @@ evidence:
     command: "pnpm run governed:rail"
     exit_code: 0
     commit_sha: "117917443cd4279d8ad9f94da575a8207c4ca925"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "main@11791744: src/components/shared-controls.test.tsx executed in pnpm test (13 tests) asserts Card-composed CodeViewer uses generated CodeBlock, line text aligns exactly, trace hit selection/click callback works, and clipboard.writeText receives exact canonical code. Browser review observed Card preview stable, trace click selected the hit, and Copy showed success feedback; direct browser clipboard read-back was unavailable. Root log: ignored docs/internal/codeblock-composable-source-01/codeblock-root-tests-final.log."
+    recorded_at: "2026-09-25T04:52:51.083Z"
+    command: pnpm test
+    exit_code: 0
+    commit_sha: "117917443cd4279d8ad9f94da575a8207c4ca925"
