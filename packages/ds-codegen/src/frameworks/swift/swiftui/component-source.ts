@@ -34,7 +34,8 @@ import type {
   NormalizedChannelIR,
   TokenFactIR,
 } from "../../../ir.js";
-import { collectCollapseIntents, isContentTransform, nativeRootClipping } from "../../../ir.js";
+import { collectCollapseIntents, collectContentTransforms, isContentTransform, nativeRootClipping } from "../../../ir.js";
+import { emitSwiftHighlightComponent } from "./highlight-source.js";
 // Shared native emission-class substrate: the structural class facts this
 // emitter dispatches on are target-neutral and live exactly once there
 // (FEAT-COMPOSE-ADMISSION-SUBSTRATE-01). This file used to steward them.
@@ -101,6 +102,10 @@ export function generateSwiftUIComponentSource(ir: ComponentIR): string {
 function emitSwiftUIComponentSource(ir: ComponentIR): string {
   const radioGroup = emitNativeRadioGroup(ir, swiftExportName(ir.name));
   if (radioGroup) return [emitImports(), emitTypes(ir), radioGroup].join("\n\n") + "\n";
+  const highlight = collectContentTransforms(ir.dom).find((content) => content.transform === "highlight");
+  if (highlight?.linePart && highlight.gutterPart) {
+    return [emitImports(), emitTypes(ir), emitSwiftHighlightComponent(ir, highlight, emitTokenScopesSection(ir).join("\n"))].join("\n\n") + "\n";
+  }
   const collapseIntents = collectCollapseIntents(ir);
   const isNativeToggle = collapseIntents.has("native-toggle-affordance");
 
