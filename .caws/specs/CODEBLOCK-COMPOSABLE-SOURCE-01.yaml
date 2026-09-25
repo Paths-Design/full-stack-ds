@@ -1,0 +1,57 @@
+id: CODEBLOCK-COMPOSABLE-SOURCE-01
+title: 'Composable CodeBlock source, line presentation, and supplied tokens'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-09-25T01:35:55.346Z'
+updated_at: '2026-09-25T01:35:55.346Z'
+created_by_session: '01a0d419-00f5-7790-91f0-4c2a690e8a97'
+blast_radius:
+  modules:
+    - 'CodeBlock contract, content-transform IR, generated target renderers, and showcase CodeViewer'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/CodeBlock'
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-react/src/components'
+    - 'packages/ds-vue/src/components'
+    - 'packages/ds-svelte/src/components'
+    - 'packages/ds-angular/src/components'
+    - 'packages/ds-lit/src/components'
+    - 'packages/ds-react-native/src/components'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components'
+    - 'packages/ds-swiftui/Tests'
+    - 'packages/ds-jetpack-compose/library/src'
+    - 'packages/ds-jetpack-compose/library/src/test'
+    - 'packages/ds-figma-plugin/src/generated/components/CodeBlock'
+    - 'src/components'
+    - 'src/styles/app.css'
+    - 'e2e'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/architecture/design/showcase-component-adoption.md'
+  out: []
+invariants:
+  - 'The canonical code string remains the lossless source for display, selection, and copying'
+  - 'Supplied token kinds stay inside the CodeBlock contract vocabulary and resolve through component-scoped tokens'
+  - 'Generated renderers derive from contract and IR without component-name special cases'
+acceptance:
+  - id: A1
+    given: 'a CodeBlock with optional supplied tokens and showLineNumbers'
+    when: 'rendered on five web and three native targets'
+    then: 'valid streams and line gutters display with themed syntax colors while plain and invalid streams preserve source text'
+  - id: A2
+    given: 'CodeViewer source with line and trace annotations'
+    when: 'rendered in a Card'
+    then: 'shared CodeBlock parts preserve source alignment, trace clicks, and canonical copy behavior'
+  - id: A3
+    given: 'default and branded themes and desktop and narrow layouts'
+    when: 'CodeBlock source cards are viewed'
+    then: 'syntax, gutter, and header visuals remain legible and the governed gates pass'
+non_functional: {}
+contracts:
+  - name: 'codeblock-source'
+    type: behavior
+    path: 'packages/ds-contracts/components/CodeBlock/CodeBlock.contract.json'
