@@ -3,11 +3,12 @@ import type {
   ComponentInstanceIR,
   ComponentIR,
   DomNodeIR,
+  HighlightTransformIR,
   NormalizedChannelIR,
   NormalizedDismissalTriggerIR,
   ResolvedPropIR,
 } from "../../ir.js";
-import { collectCollapseIntents, composeBindingProjectionExpression, composeChannelUpdateExpression, composeValueMapExpression, isContentTransform } from "../../ir.js";
+import { collectCollapseIntents, collectContentTransforms, composeBindingProjectionExpression, composeChannelUpdateExpression, composeValueMapExpression, isContentTransform } from "../../ir.js";
 import { nativeRootClipping } from "../../ir.js";
 import { resolveComponentRefImports } from "../component-ref-imports.js";
 import {
@@ -108,9 +109,59 @@ function generateReactNativeComponentFile(ir: ComponentIR): string {
   sections.push(
     isCompoundSelectionContainer(ir)
       ? emitCompoundSelectionComponent(ir)
-      : emitComponent(ir),
+      : nativeHighlightTransform(ir)
+        ? emitHighlightPresentation(ir, nativeHighlightTransform(ir)!)
+        : emitComponent(ir),
   );
   return sections.filter(Boolean).join("\n\n") + "\n";
+}
+
+function nativeHighlightTransform(ir: ComponentIR): HighlightTransformIR | undefined {
+  return collectContentTransforms(ir.dom).find(
+    (transform): transform is HighlightTransformIR => transform.transform === "highlight" && Boolean(transform.linePart && transform.gutterPart),
+  );
+}
+
+function emitHighlightPresentation(ir: ComponentIR, transform: HighlightTransformIR): string {
+  const lineName = `${ir.name}${capitalize(transform.linePart!)}`;
+  const tokenName = `${ir.name}${capitalize(transform.tokenPart)}`;
+  const sourceProp = transform.sourceProp;
+  const suppliedProp = transform.tokensProp ?? "undefined";
+  const gateProp = transform.gateProp ?? "undefined";
+  const lineNumbersProp = transform.lineNumbersProp ?? "undefined";
+  const palettePrefix = `${ir.cssPrefix}.${transform.tokenPart}.color.`;
+  const palette = ir.tokenScopes.flatMap((scope) => scope.values)
+    .filter((value) => value.name.startsWith(palettePrefix))
+    .map((value) => ({ kind: value.name.slice(palettePrefix.length), slot: value.name }));
+  const gutterColor = `${ir.cssPrefix}.${transform.gutterPart}.color.number`;
+  const gutterGap = `${ir.cssPrefix}.${transform.gutterPart}.size.gap`;
+  const lines = ["// @generated:start component"];
+  lines.push(`export interface ${lineName}Props { number: number; showLineNumbers?: boolean; children?: ReactNode }`);
+  lines.push(`export function ${lineName}({ number, showLineNumbers = false, children }: ${lineName}Props) {`);
+  lines.push(`  const fsdsTheme = useFsdsTheme();`);
+  lines.push(`  const tokens = useMemo(() => resolve${ir.name}Tokens(fsdsTheme), [fsdsTheme]);`);
+  lines.push(`  const styles = useMemo(() => create${ir.name}Styles(fsdsTheme), [fsdsTheme]);`);
+  lines.push(`  return <View style={{ flexDirection: "row" }}><RNText accessible={false} style={{ display: showLineNumbers ? "flex" : "none", minWidth: 32, textAlign: "right", color: tokens.root?.[${JSON.stringify(gutterColor)}] as string | undefined, marginRight: tokens.root?.[${JSON.stringify(gutterGap)}] as number | undefined }}>{number}</RNText><RNText style={styles.rootText}>{children}</RNText></View>;`);
+  lines.push(`}`);
+  lines.push(`export interface ${tokenName}Props { kind: ${ir.name}TokenType; children?: ReactNode }`);
+  lines.push(`export function ${tokenName}({ kind, children }: ${tokenName}Props) {`);
+  lines.push(`  const fsdsTheme = useFsdsTheme();`);
+  lines.push(`  const tokens = useMemo(() => resolve${ir.name}Tokens(fsdsTheme), [fsdsTheme]);`);
+  lines.push(`  const colors: Partial<Record<${ir.name}TokenType, string | undefined>> = {`);
+  for (const { kind, slot } of palette) lines.push(`    ${JSON.stringify(kind)}: tokens.root?.[${JSON.stringify(slot)}] as string | undefined,`);
+  lines.push(`  };`);
+  lines.push(`  return <RNText style={{ color: colors[kind] }}>{children}</RNText>;`);
+  lines.push(`}`);
+  lines.push(`export function ${ir.name}({ ${sourceProp}, ${suppliedProp}: suppliedTokens, ${gateProp} = true, ${lineNumbersProp} = false, children, style, testID, accessibilityLabel, accessibilityLabelledBy }: ${ir.name}Props) {`);
+  lines.push(`  const fsdsTheme = useFsdsTheme();`);
+  lines.push(`  const styles = useMemo(() => create${ir.name}Styles(fsdsTheme), [fsdsTheme]);`);
+  lines.push(`  const source = useMemo(() => prepareSourceLines(${sourceProp}, suppliedTokens, ${gateProp}), [${sourceProp}, suppliedTokens, ${gateProp}]);`);
+  lines.push(`  return <View testID={testID} style={[styles.root, style]} accessible accessibilityLabel={accessibilityLabel ?? ${sourceProp}} accessibilityLabelledBy={accessibilityLabelledBy}>`);
+  lines.push(`    {children ? (typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children) : source.lines.map((line) => <${lineName} key={line.number} number={line.number} showLineNumbers={${lineNumbersProp}}>{line.tokens.map((token, index) => source.highlighted ? <${tokenName} key={index} kind={token.kind}>{token.text}</${tokenName}> : token.text)}</${lineName}>)}`);
+  lines.push(`  </View>;`);
+  lines.push(`}`);
+  lines.push("// @generated:end");
+  return lines.join("\n");
 }
 
 /**
@@ -515,8 +566,11 @@ function emitImports(ir: ComponentIR): string {
       .join(", ")} } from "react";`,
     `import { useFsdsTheme } from "../../tokens";`,
     `import { create${ir.name}Styles } from "./${ir.name}.styles";`,
-    usesNativeToggle(ir) || rnAutoDismiss(ir)
+    usesNativeToggle(ir) || rnAutoDismiss(ir) || nativeHighlightTransform(ir)
       ? `import { resolve${ir.name}Tokens } from "./${ir.name}.tokens";`
+      : "",
+    nativeHighlightTransform(ir)
+      ? `import { prepareSourceLines } from "../../primitives/highlight/source-model";`
       : "",
     isCompoundSelectionContainer(ir)
       ? `import { createCompoundContext } from "../../primitives/hooks";`

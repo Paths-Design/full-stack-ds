@@ -876,11 +876,11 @@ test.describe("Runtime rail — CodeBlock highlight (golden token stream)", () =
         language: golden.language,
       });
       const facts = await readCodeBlockTokenFacts(page, framework);
-      expect(facts.spanCount).toBe(golden.kinds.length);
-      expect(facts.kinds).toEqual(golden.kinds);
-      // Text-only span children reassemble the source exactly — the
-      // lossless round-trip invariant at runtime.
-      expect(facts.spanText).toBe(golden.code);
+      expect(facts.spanCount).toBe(golden.visibleTokens.length);
+      expect(facts.kinds).toEqual(golden.visibleTokens.map((token) => token.kind));
+      // The line wrapper owns exact endings; token parts own visible syntax.
+      expect(facts.spanText).toBe(golden.visibleTokens.map((token) => token.text).join(""));
+      expect(facts.plainText).toBe(golden.code);
     });
   }
 });
@@ -914,7 +914,7 @@ test.describe("Runtime rail — CodeBlock gate-off plain run", () => {
 function loadGoldenTypescriptCase(): {
   language: string;
   code: string;
-  kinds: string[];
+  visibleTokens: { kind: string; text: string }[];
 } {
   const fixture = JSON.parse(
     readFileSync(
@@ -933,7 +933,13 @@ function loadGoldenTypescriptCase(): {
   };
   const ts = fixture.cases.find((c) => c.language === "typescript");
   if (!ts) throw new Error("golden fixtures: typescript case missing");
-  return { language: ts.language, code: ts.code, kinds: ts.expected.map((t) => t.kind) };
+  return {
+    language: ts.language,
+    code: ts.code,
+    visibleTokens: ts.expected.flatMap((token) =>
+      token.text.split(/\r?\n/).filter(Boolean).map((text) => ({ kind: token.kind, text })),
+    ),
+  };
 }
 
 /**

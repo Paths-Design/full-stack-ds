@@ -108,5 +108,15 @@
     "resolvesTo": "semantic.color.foreground.syntax.tag",
     "fallback": "#900909",
     "layer": "semantic"
+  },
+  "code-block.gutter.color.number": {
+    "resolvesTo": "semantic.color.foreground.secondary",
+    "fallback": "#474647",
+    "layer": "semantic"
+  },
+  "code-block.gutter.size.gap": {
+    "resolvesTo": "core.spacing.size.03",
+    "fallback": "4px",
+    "layer": "core"
   }
 }

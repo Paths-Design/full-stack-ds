@@ -22,7 +22,8 @@ import { composeTokenReads, consumedComposeTokenScopes } from "../native-token-c
  * defect corrected to the Kotlin elvis operator).
  */
 import type { ComponentIR, DomNodeIR, NormalizedChannelIR } from "../../ir.js";
-import { collectCollapseIntents } from "../../ir.js";
+import { collectCollapseIntents, collectContentTransforms } from "../../ir.js";
+import { emitComposeHighlightComponent } from "./highlight-source.js";
 // Shared native emission-class substrate (FEAT-COMPOSE-ADMISSION-SUBSTRATE-01):
 // the structural class facts this emitter dispatches on are target-neutral
 // and live exactly once there — swift's emitter used to steward them.
@@ -6617,6 +6618,8 @@ function emitViewportEdgeSurface(ir: ComponentIR): string {
 export function generateJetpackComposeComponentSource(
   ir: ComponentIR,
 ): string {
+  const highlight = collectContentTransforms(ir.dom).find((content) => content.transform === "highlight");
+  if (highlight?.linePart && highlight.gutterPart) return emitComposeHighlightComponent(ir, highlight);
   // Collapse intents dispatch FIRST, mirroring the swift dispatcher's
   // precedence: a contract that declares a native collapse owns its
   // realization even if its dom shape would also match a control class.

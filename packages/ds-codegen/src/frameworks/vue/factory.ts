@@ -24,6 +24,8 @@ import type {
   GeneratedFile,
 } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
+import { collectContentTransforms } from "../../ir.js";
+import { vueHighlightParts } from "../highlight-web-parts.js";
 import type { PrimitiveIR } from "../../primitive-contract.js";
 import {
   generateVueComponentSource,
@@ -83,6 +85,12 @@ export function createVueEmitter(): FrameworkEmitter {
           preservable: true,
         },
       ];
+      for (const transform of collectContentTransforms(ir.dom)) {
+        if (transform.transform !== "highlight" || !transform.linePart || !transform.gutterPart) continue;
+        for (const part of vueHighlightParts(ir, transform)) {
+          files.push({ relativePath: `${ir.name}/${part.name}.vue`, contents: part.content, preservable: false });
+        }
+      }
 
       if (isDisclosureContainer(ir)) {
         // Repeated-disclosure container (Accordion): emit Item/Trigger/Content
@@ -184,4 +192,3 @@ export function createVueEmitter(): FrameworkEmitter {
     },
   };
 }
-

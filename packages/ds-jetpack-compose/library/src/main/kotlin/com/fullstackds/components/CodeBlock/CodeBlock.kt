@@ -3,20 +3,26 @@ package com.fullstackds.components.codeblock
 
 // @generated:start imports
 import androidx.compose.foundation.background
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.layout.Box
-import androidx.compose.runtime.CompositionLocalProvider
-import com.fullstackds.tokens.LocalFsdsContentColor
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import com.fullstackds.tokens.LocalFsdsContentColor
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
@@ -24,20 +30,109 @@ import com.fullstackds.tokens.toFsdsSp
 // @generated:end
 
 // @generated:start component
+enum class CodeBlockTokenType(val wire: String) {
+    Comment("comment"),
+    Definition("definition"),
+    Keyword("keyword"),
+    Plain("plain"),
+    Property("property"),
+    Punctuation("punctuation"),
+    Static("static"),
+    String("string"),
+    Tag("tag"),
+}
+
+data class CodeBlockToken(val kind: CodeBlockTokenType, val text: String)
+
+@Composable
+fun CodeBlockToken(token: CodeBlockToken, modifier: Modifier = Modifier, style: TextStyle = TextStyle.Default) {
+    val fsdsTheme = LocalFsdsTheme.current
+    fun layeredSlot(slotName: String): String? = codeBlockTokenScopes["root"]?.get(slotName)?.let { fsdsTheme.resolve(it) }
+    val tokenColor = when (token.kind) {
+        CodeBlockTokenType.Comment -> layeredSlot("code-block.token.color.comment")?.toFsdsColor()
+        CodeBlockTokenType.Definition -> layeredSlot("code-block.token.color.definition")?.toFsdsColor()
+        CodeBlockTokenType.Keyword -> layeredSlot("code-block.token.color.keyword")?.toFsdsColor()
+        CodeBlockTokenType.Plain -> layeredSlot("code-block.token.color.plain")?.toFsdsColor()
+        CodeBlockTokenType.Property -> layeredSlot("code-block.token.color.property")?.toFsdsColor()
+        CodeBlockTokenType.Punctuation -> layeredSlot("code-block.token.color.punctuation")?.toFsdsColor()
+        CodeBlockTokenType.Static -> layeredSlot("code-block.token.color.static")?.toFsdsColor()
+        CodeBlockTokenType.String -> layeredSlot("code-block.token.color.string")?.toFsdsColor()
+        CodeBlockTokenType.Tag -> layeredSlot("code-block.token.color.tag")?.toFsdsColor()
+    }
+    BasicText(token.text, modifier = modifier, style = style.copy(color = tokenColor ?: style.color))
+}
+
+@Composable
+fun CodeBlockLine(number: Int, showLineNumbers: Boolean = false, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    val fsdsTheme = LocalFsdsTheme.current
+    fun layeredSlot(slotName: String): String? = codeBlockTokenScopes["root"]?.get(slotName)?.let { fsdsTheme.resolve(it) }
+    val gutterColor = layeredSlot("code-block.gutter.color.number")?.toFsdsColor() ?: Color.Unspecified
+    val gutterGap = layeredSlot("code-block.gutter.size.gap")?.toFsdsDp() ?: 0.dp
+    Row(modifier = modifier, verticalAlignment = Alignment.Top) {
+        if (showLineNumbers) {
+            BasicText(
+                number.toString(),
+                modifier = Modifier.widthIn(min = 28.dp).padding(end = gutterGap).clearAndSetSemantics { },
+                style = TextStyle(color = gutterColor, textAlign = TextAlign.End),
+            )
+        }
+        content()
+    }
+}
+
+internal data class FsdsSourceLine(val tokens: List<CodeBlockToken>)
+
+internal fun fsdsSplitSource(code: String, tokens: List<CodeBlockToken>?, highlight: Boolean): Pair<List<FsdsSourceLine>, Boolean> {
+    val valid = highlight && tokens != null && tokens.joinToString("") { it.text } == code
+    val stream = if (valid) tokens!! else listOf(CodeBlockToken(CodeBlockTokenType.Plain, code))
+    val lines = mutableListOf<FsdsSourceLine>()
+    var current = mutableListOf<CodeBlockToken>()
+    val text = StringBuilder()
+    var kind: CodeBlockTokenType? = null
+    var skipLF = false
+    fun flushToken() {
+        if (text.isNotEmpty()) current.add(CodeBlockToken(kind!!, text.toString()))
+        text.clear()
+    }
+    fun flushLine() {
+        flushToken()
+        kind = null
+        lines.add(FsdsSourceLine(current))
+        current = mutableListOf()
+    }
+    for (token in stream) {
+        for (character in token.text) {
+            if (skipLF) {
+                skipLF = false
+                if (character == '\n') continue
+            }
+            if (character == '\r' || character == '\n') {
+                flushLine()
+                skipLF = character == '\r'
+                continue
+            }
+            if (kind != token.kind) {
+                flushToken()
+                kind = token.kind
+            }
+            text.append(character)
+        }
+    }
+    flushLine()
+    return Pair(lines, valid)
+}
+
 @Composable
 fun CodeBlock(
     code: String,
     modifier: Modifier = Modifier,
+    tokens: List<CodeBlockToken>? = null,
+    highlight: Boolean = true,
+    showLineNumbers: Boolean = false,
     content: (@Composable () -> Unit)? = null,
 ) {
     val fsdsTheme = LocalFsdsTheme.current
-    fun layeredSlot(slotName: String): String? {
-        for (key in listOf("root")) {
-            val def = codeBlockTokenScopes[key]?.get(slotName)
-            if (def != null) return fsdsTheme.resolve(def)
-        }
-        return null
-    }
+    fun layeredSlot(slotName: String): String? = codeBlockTokenScopes["root"]?.get(slotName)?.let { fsdsTheme.resolve(it) }
     val containerColor = layeredSlot("code-block.color.background.default")?.toFsdsColor()
     val contentColor = layeredSlot("code-block.color.foreground.primary")?.toFsdsColor()
     val cornerRadius = layeredSlot("code-block.size.radius.default")?.toFsdsDp() ?: 0.dp
@@ -45,29 +140,34 @@ fun CodeBlock(
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
     val paddingBlockEnd = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp
-    val minHeight = layeredSlot("box-model.min-height")?.toFsdsDp()
     val fsdsFontSize = layeredSlot("code-block.size.fontSize.default")?.toFsdsSp()
-
     val shape = RoundedCornerShape(cornerRadius)
-    val chromeModifier = Modifier
-        .clip(shape)
+    val chromeModifier = Modifier.clip(shape)
         .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
-        .then(if (minHeight != null) Modifier.height(minHeight) else Modifier)
-    val fsdsTextStyle = TextStyle(
-        fontSize = fsdsFontSize ?: TextUnit.Unspecified,
-        color = contentColor ?: Color.Unspecified,
-    )
+    val sourceStyle = TextStyle(fontSize = fsdsFontSize ?: TextUnit.Unspecified, color = contentColor ?: Color.Unspecified)
     if (content != null) {
         CompositionLocalProvider(LocalFsdsContentColor provides (contentColor ?: Color.Unspecified)) {
             Box(modifier.then(chromeModifier)) { content() }
         }
     } else {
-    BasicText(
-        text = code,
-        modifier = modifier.then(chromeModifier),
-        style = fsdsTextStyle,
-    )
+        val (lines, highlighted) = fsdsSplitSource(code, tokens, highlight)
+        if (!showLineNumbers && !highlighted) {
+            BasicText(code, modifier = modifier.then(chromeModifier), style = sourceStyle)
+        } else {
+            Column(modifier.then(chromeModifier).clearAndSetSemantics { contentDescription = code }) {
+                lines.forEachIndexed { index, line ->
+                    CodeBlockLine(number = index + 1, showLineNumbers = showLineNumbers) {
+                        Row {
+                            line.tokens.forEach { token ->
+                                if (highlighted) CodeBlockToken(token, style = sourceStyle)
+                                else BasicText(token.text, style = sourceStyle)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 // @generated:end

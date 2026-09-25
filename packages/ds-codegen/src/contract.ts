@@ -426,8 +426,13 @@ export interface ContractHighlightTransform {
   language?: string;
   /** Binding naming the boolean prop gating the transform, e.g. `"prop:highlight"`. */
   gate?: string;
+  /** Optional lossless token stream and line-number display bindings. */
+  tokens?: string;
+  lineNumbers?: string;
   /** anatomy part realized as one span per token. */
   tokenPart: string;
+  linePart?: string;
+  gutterPart?: string;
 }
 
 /**

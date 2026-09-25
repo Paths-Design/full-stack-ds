@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { tokenizeCode } from "./tokenize.js";
+import { prepareHighlightSource, prepareSourceLines, tokenizeCode } from "./tokenize.js";
 import type { HighlightToken, HighlightTokenKind } from "./tokenize.js";
 
 const KIND_ENUM: readonly HighlightTokenKind[] = [
@@ -61,6 +61,65 @@ const CASES: { language: string; code: string }[] = [
 function roundTrip(tokens: HighlightToken[]): string {
   return tokens.map((token) => token.text).join("");
 }
+
+describe("prepareHighlightSource", () => {
+  it("keeps CRLF whole when supplied token boundaries split the pair", () => {
+    const source = prepareSourceLines("a\r\nb", [
+      { kind: "keyword", text: "a\r" },
+      { kind: "string", text: "\nb" },
+    ]);
+    expect(source.highlighted).toBe(true);
+    expect(source.lines).toEqual([
+      { number: 1, tokens: [{ kind: "keyword", text: "a" }], ending: "\r\n", highlighted: true },
+      { number: 2, tokens: [{ kind: "string", text: "b" }], ending: "", highlighted: true },
+    ]);
+    expect(prepareSourceLines("a\r\nb").highlighted).toBe(false);
+  });
+  it("keeps supplied token colors and exact LF/CRLF line endings", () => {
+    const code = "one\r\ntwo\n";
+    const result = prepareHighlightSource(code, "plaintext", {
+      tokens: [{ kind: "keyword", text: "one\r\ntwo\n" }],
+    });
+    expect(result).toEqual({
+      highlighted: true,
+      lines: [
+        { number: 1, tokens: [{ kind: "keyword", text: "one" }], ending: "\r\n", highlighted: true },
+        { number: 2, tokens: [{ kind: "keyword", text: "two" }], ending: "\n", highlighted: true },
+        { number: 3, tokens: [], ending: "", highlighted: true },
+      ],
+    });
+    expect(result.lines.map((line) => line.tokens.map((token) => token.text).join("") + line.ending).join("")).toBe(code);
+  });
+
+  it("falls back to plain canonical source for mismatched or unknown supplied tokens", () => {
+    for (const tokens of [
+      [{ kind: "keyword", text: "different" }],
+      [{ kind: "unknown", text: "source" }],
+    ]) {
+      const result = prepareHighlightSource("source", "typescript", { tokens: tokens as HighlightToken[] });
+      expect(result.highlighted).toBe(false);
+      expect(result.lines).toEqual([{ number: 1, tokens: [{ kind: "plain", text: "source" }], ending: "", highlighted: false }]);
+    }
+  });
+
+  it("makes highlight=false suppress supplied and automatic coloring", () => {
+    const code = "const x = 1";
+    expect(prepareHighlightSource(code, "typescript", {
+      highlight: false,
+      tokens: [{ kind: "keyword", text: code }],
+    })).toEqual({
+      highlighted: false,
+      lines: [{ number: 1, tokens: [{ kind: "plain", text: code }], ending: "", highlighted: false }],
+    });
+    expect(prepareHighlightSource(code, "typescript", { highlight: false }).highlighted).toBe(false);
+  });
+
+  it("keeps empty source as one empty numbered line", () => {
+    expect(prepareHighlightSource("", "plaintext", { tokens: [] }).lines).toEqual([
+      { number: 1, tokens: [], ending: "", highlighted: true },
+    ]);
+  });
+});
 
 describe("tokenizeCode", () => {
   it("is lossless: token texts concatenate back to the exact input for every language", () => {

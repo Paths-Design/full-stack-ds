@@ -44,6 +44,8 @@ import "./Chip/Chip.css";
 export { default as Chip } from "./Chip/Chip.vue";
 import "./CodeBlock/CodeBlock.css";
 export { default as CodeBlock } from "./CodeBlock/CodeBlock.vue";
+export { default as CodeBlockLine } from "./CodeBlock/CodeBlockLine.vue";
+export { default as CodeBlockToken } from "./CodeBlock/CodeBlockToken.vue";
 import "./CodeSnippet/CodeSnippet.css";
 export { default as CodeSnippet } from "./CodeSnippet/CodeSnippet.vue";
 import "./Command/Command.css";

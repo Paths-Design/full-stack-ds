@@ -63,6 +63,7 @@ import {
 } from "../../semantics.js";
 import { toKebab } from "../../contract.js";
 import { resolveComponentRefImports } from "../component-ref-imports.js";
+import { litHighlightParts } from "../highlight-web-parts.js";
 import { emitLitInlineCss, escapeCssForLitTemplate } from "../../css.js";
 import {
   isCompoundStateContainer,
@@ -1582,7 +1583,10 @@ export function generateLitComponentSource(ir: ComponentIR): string {
     )
     .map((part) => generateCompoundPartClass(ir, part))
     .join("\n\n");
+  const highlightCandidate = ir.dom ? collectContentTransforms(ir.dom).find(isHighlightTransform) : undefined;
+  const highlight = highlightCandidate?.linePart && highlightCandidate.gutterPart ? highlightCandidate : undefined;
   const componentBody =
+    (highlight ? litHighlightParts(ir, highlight) + "\n\n" : "") +
     (ir.dom ? generateDomTreeClassBody(ir) : generateClassBody(ir)) +
     (compoundClasses ? "\n\n" + compoundClasses : "");
 
@@ -1681,7 +1685,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
   // driven by IR content-transform facts, never per-component name lore.
   if (ir.dom && collectContentTransforms(ir.dom).some((t) => t.transform === "highlight")) {
     lines.push(
-      `import { tokenizeCode } from '../../primitives/highlight/tokenize.js';`,
+      `import { prepareHighlightSource } from '../../primitives/highlight/tokenize.js';`,
     );
   }
   if (ir.dom && collectContentTransforms(ir.dom).some(isMarkdownTransform)) {
@@ -2861,19 +2865,19 @@ function renderLitDomNode(
         litPropAccessor(transform.languageProp, ctx),
         transform.language.path,
       );
-      const tokenClass = `${ctx.classRecipe}__${transform.tokenPart}`;
-      const tokenMap =
-        `tokenizeCode(${sourceExpr}, ${languageExpr})` +
-        `.map((token, tokenIndex) => html\`<span class=\${'${tokenClass}'} ` +
-        `data-token=\${token.kind}>\${token.text}</span>\`)`;
-      if (transform.gate !== undefined) {
-        const gateExpr = appendPath(
-          litPropAccessor(transform.gateProp ?? transform.gate.prop, ctx),
-          transform.gate.path,
-        );
-        contentInline = `\${${gateExpr} ? ${tokenMap} : ${sourceExpr}}`;
+      const gateExpr = transform.gate !== undefined
+        ? appendPath(litPropAccessor(transform.gateProp ?? transform.gate.prop, ctx), transform.gate.path)
+        : "true";
+      const tokensExpr = transform.tokensProp ? litPropAccessor(transform.tokensProp, ctx) : "undefined";
+      const prepared = `prepareHighlightSource(${sourceExpr}, ${languageExpr}, { tokens: ${tokensExpr}, highlight: ${gateExpr} })`;
+      if (transform.linePart && transform.gutterPart) {
+        const lineNumbersExpr = transform.lineNumbersProp ? litPropAccessor(transform.lineNumbersProp, ctx) : "false";
+        contentInline = `\${${prepared}.lines.map((line) => html\`<fsds-${ctx.classRecipe}-line .number=\${line.number} ?show-line-numbers=\${${lineNumbersExpr}}>` +
+          `\${line.tokens.map((token) => line.highlighted ? ` +
+          `html\`<fsds-${ctx.classRecipe}-token .kind=\${token.kind} data-token=\${token.kind}>\${token.text}</fsds-${ctx.classRecipe}-token>\` : token.text)}` +
+          `</fsds-${ctx.classRecipe}-line>\${line.ending}\`)}`;
       } else {
-        contentInline = `\${${tokenMap}}`;
+        contentInline = `\${${prepared}.lines.map((line) => line.tokens.map((token) => token.text).join('') + line.ending)}`;
       }
     } else if (isMarkdownTransform(node.content)) {
       // FEAT-MARKDOWN-CONTENT-TRANSFORM-01: the content is the structural

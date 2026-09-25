@@ -91,20 +91,22 @@ export function emitNonReactTypeAliases(
   const seen = new Set<string>();
   const lines: string[] = [];
 
-  for (const p of ir.styledProps) {
-    for (const ref of p.typeRefs) {
-      if (seen.has(ref)) continue;
-      const def = ir.definedTypes[ref];
-      if (!def) continue;
-      seen.add(ref);
-      if (def.kind === "union" && def.values) {
-        lines.push(
-          `${keyword} ${ref} = ${def.values.map((v) => `"${v}"`).join(" | ")};`,
-        );
-      } else if (def.kind === "alias" && def.alias) {
-        lines.push(`${keyword} ${ref} = ${translateNonReactType(def.alias)};`);
+  const emit = (ref: string): void => {
+    if (seen.has(ref)) return;
+    const def = ir.definedTypes[ref];
+    if (!def) return;
+    seen.add(ref);
+    if (def.kind === "alias" && def.alias) {
+      for (const dependency of Object.keys(ir.definedTypes)) {
+        if (dependency !== ref && new RegExp(`\\b${dependency}\\b`).test(def.alias)) emit(dependency);
       }
     }
-  }
+    if (def.kind === "union" && def.values) {
+      lines.push(`${keyword} ${ref} = ${def.values.map((v) => `"${v}"`).join(" | ")};`);
+    } else if (def.kind === "alias" && def.alias) {
+      lines.push(`${keyword} ${ref} = ${translateNonReactType(def.alias)};`);
+    }
+  };
+  for (const p of ir.styledProps) for (const ref of p.typeRefs) emit(ref);
   return lines;
 }

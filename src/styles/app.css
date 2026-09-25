@@ -557,6 +557,10 @@ button {
   color: var(--fsds-semantic-color-foreground-secondary);
 }
 
+.showcase-card .card__header.panel-toolbar {
+  flex-direction: row;
+}
+
 /* Tables */
 .props-table {
   width: 100%;

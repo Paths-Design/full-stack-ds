@@ -128,6 +128,8 @@ const SHARED_EMITTER_SOURCES: readonly string[] = [
   "packages/ds-codegen/src/contract.ts",
   "packages/ds-codegen/src/css.ts",
   "packages/ds-codegen/src/emitter.ts",
+  "packages/ds-codegen/src/highlight/source-model.ts",
+  "packages/ds-codegen/src/highlight/tokenize.ts",
   "packages/ds-codegen/src/ir.ts",
   "packages/ds-codegen/src/preserve.ts",
   "packages/ds-codegen/src/registry.ts",
@@ -805,6 +807,9 @@ function emitForTarget(
     if (binding.emitter.shipsContentTransformRuntime) {
       writeContentTransformRuntime(binding);
     }
+    if (binding.id === "react-native") {
+      writeNativeSourceRuntime(binding);
+    }
     writeBarrel(binding);
   }
 
@@ -1178,7 +1183,7 @@ type WriteResolution =
  *   4. Existing file has no markers (legacy):
  *        - with --migrate         → snapshot existing as `<name>.legacy.<ext>`
  *                                   and write the fresh marker scaffold with
- *                                   a TODO pointing at the snapshot.
+ *                                   a migration notice pointing at the snapshot.
  *        - without --migrate      → skip with a hint to re-run with --migrate.
  *
  * Files not marked `preservable` are written verbatim; preservation is
@@ -1263,8 +1268,8 @@ function inferCommentStyle(absPath: string): CommentStyle {
 
 /**
  * Per-file-type list of custom region ids to consider when injecting the
- * legacy migration TODO. The first match in the generated section list
- * receives the TODO; if no candidate matches, the TODO is appended as
+ * legacy migration notice. The first match in the generated section list
+ * receives the notice; if no candidate matches, the notice is appended as
  * a new custom region named after the first candidate.
  */
 function candidateMigrationIdsFor(absPath: string): readonly string[] {
@@ -1339,6 +1344,11 @@ function writeContentTransformRuntime(binding: TargetBinding): void {
       label: "highlight tokenizer",
     },
     {
+      dir: "highlight",
+      file: "source-model.ts",
+      label: "source line model",
+    },
+    {
       dir: "markdown",
       file: "markdown.ts",
       label: "markdown parser",
@@ -1360,6 +1370,14 @@ function writeContentTransformRuntime(binding: TargetBinding): void {
       `\n  RUNTIME  ${path.relative(cwd, absolutePath)} (${runtime.label})`,
     );
   }
+}
+
+function writeNativeSourceRuntime(binding: TargetBinding): void {
+  const sourcePath = path.join(cwd, "packages/ds-codegen/src/highlight/source-model.ts");
+  const absolutePath = path.join(binding.componentsRoot, "..", "primitives", "highlight", "source-model.ts");
+  fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
+  fs.copyFileSync(sourcePath, absolutePath);
+  console.log(`\n  RUNTIME  ${path.relative(cwd, absolutePath)} (source line model)`);
 }
 
 /**
