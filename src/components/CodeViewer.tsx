@@ -136,7 +136,6 @@ export function CodeViewer({ code, filename, hits = [], onHitClick, selectedHitI
     <Card className="showcase-card">
       {filename && (
         <CardHeader className="panel-toolbar">
-        <Stack variant="horizontal" className="stack-gap-00">
           <Stack variant="horizontal" className="stack-gap-04" style={{ alignItems: "baseline" }}>
             <span>{filename}</span>
             <span className="subtle">{lines.length} lines</span>
@@ -144,7 +143,6 @@ export function CodeViewer({ code, filename, hits = [], onHitClick, selectedHitI
           <Button variant="ghost" size="small" ariaLabel="Copy code to clipboard" onClick={copyCode}>
             Copy
           </Button>
-        </Stack>
         </CardHeader>
       )}
       <CardContent>
