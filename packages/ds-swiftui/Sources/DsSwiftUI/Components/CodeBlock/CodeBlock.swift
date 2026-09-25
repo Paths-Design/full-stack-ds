@@ -35,6 +35,11 @@ public enum CodeBlockTokenType: String, CaseIterable {
 enum CodeBlockTokens {
     public static let scopes: FsdsComponentTokenScopes = [
         "root": [
+            "box-model.padding-block-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-block-start", name: "box-model.padding-block-start", ref: "semantic.surface.size.padding-block", fallback: .string("16px")),
+            "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
+            "code-block.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-color-background-default", name: "code-block.color.background.default", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
+            "code-block.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-color-foreground-primary", name: "code-block.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
+            "code-block.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-size-radius-default", name: "code-block.size.radius.default", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
             "code-block.token.color.plain": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-plain", name: "code-block.token.color.plain", ref: "semantic.color.foreground.syntax.plain", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
             "code-block.token.color.comment": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-comment", name: "code-block.token.color.comment", ref: "semantic.color.foreground.syntax.comment.color", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
             "code-block.token.color.keyword": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-keyword", name: "code-block.token.color.keyword", ref: "semantic.color.foreground.syntax.keyword", fallback: .adaptive(light: "#013ab0", dark: "#00a9fb")),
@@ -44,6 +49,8 @@ enum CodeBlockTokens {
             "code-block.token.color.static": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-static", name: "code-block.token.color.static", ref: "semantic.color.foreground.syntax.static", fallback: .adaptive(light: "#900909", dark: "#ee8181")),
             "code-block.token.color.string": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-string", name: "code-block.token.color.string", ref: "semantic.color.foreground.syntax.string", fallback: .adaptive(light: "#900909", dark: "#ee8181")),
             "code-block.token.color.tag": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-tag", name: "code-block.token.color.tag", ref: "semantic.color.foreground.syntax.tag", fallback: .adaptive(light: "#900909", dark: "#ee8181")),
+            "code-block.gutter.color.number": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-gutter-color-number", name: "code-block.gutter.color.number", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
+            "code-block.gutter.size.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-gutter-size-gap", name: "code-block.gutter.size.gap", ref: "core.spacing.size.03", fallback: .string("4px")),
         ],
     ]
 }
@@ -98,11 +105,14 @@ public struct CodeBlockLine<Content: View>: View {
         resolveFsdsLayeredTokens(CodeBlockTokens.scopes, fsdsTheme, layers: ["root"])
     }
 
+    private func colorSlot(_ name: String) -> Color? { layered[name]??.color }
+    private func pxSlot(_ name: String) -> CGFloat? { layered[name]??.px }
+
     public var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: layered["code-block.gutter.size.gap"]??.px ?? 0) {
+        HStack(alignment: .firstTextBaseline, spacing: pxSlot("code-block.gutter.size.gap") ?? 0) {
             if showLineNumbers {
                 SwiftUI.Text(String(number))
-                    .foregroundColor(layered["code-block.gutter.color.number"]??.color ?? .secondary)
+                    .foregroundColor(colorSlot("code-block.gutter.color.number") ?? .secondary)
                     .frame(minWidth: 28, alignment: .trailing)
                     .accessibilityHidden(true)
             }
@@ -111,12 +121,12 @@ public struct CodeBlockLine<Content: View>: View {
     }
 }
 
-private struct FsdsSourceLine {
+struct FsdsSourceLine {
     var tokens: [CodeBlockToken]
 }
 
 @MainActor
-private func fsdsSplitSource(_ code: String, tokens: [CodeBlockToken]?, highlight: Bool) -> (lines: [FsdsSourceLine], highlighted: Bool) {
+func fsdsSplitSource(_ code: String, tokens: [CodeBlockToken]?, highlight: Bool) -> (lines: [FsdsSourceLine], highlighted: Bool) {
     let valid = highlight && tokens != nil && tokens!.map(\.text).joined() == code
     let stream = valid ? tokens! : [CodeBlockToken(kind: .plain, text: code)]
     var lines: [FsdsSourceLine] = []
@@ -173,6 +183,9 @@ public struct CodeBlock: View {
         resolveFsdsLayeredTokens(CodeBlockTokens.scopes, fsdsTheme, layers: ["root"])
     }
 
+    private func colorSlot(_ name: String) -> Color? { layered[name]??.color }
+    private func pxSlot(_ name: String) -> CGFloat? { layered[name]??.px }
+
     public var body: some View {
         let source = fsdsSplitSource(code, tokens: tokens, highlight: highlight)
         Group {
@@ -202,11 +215,11 @@ public struct CodeBlock: View {
             }
         }
         .font(.system(.body, design: .monospaced))
-        .padding(.vertical, layered["box-model.padding-block-start"]??.px ?? 0)
-        .padding(.horizontal, layered["box-model.padding-inline-start"]??.px ?? 0)
-        .background(layered["code-block.color.background.default"]??.color ?? .clear)
-        .clipShape(RoundedRectangle(cornerRadius: layered["code-block.size.radius.default"]??.px ?? 0))
-        .foregroundColor(layered["code-block.color.foreground.primary"]??.color ?? .primary)
+        .padding(.vertical, pxSlot("box-model.padding-block-start") ?? 0)
+        .padding(.horizontal, pxSlot("box-model.padding-inline-start") ?? 0)
+        .background(colorSlot("code-block.color.background.default") ?? .clear)
+        .clipShape(RoundedRectangle(cornerRadius: pxSlot("code-block.size.radius.default") ?? 0))
+        .foregroundColor(colorSlot("code-block.color.foreground.primary") ?? .primary)
     }
 }
 // @generated:end

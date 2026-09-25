@@ -61,11 +61,14 @@ public struct ${lineName}<Content: View>: View {
         resolveFsdsLayeredTokens(${name}Tokens.scopes, fsdsTheme, layers: ["root"])
     }
 
+    private func colorSlot(_ name: String) -> Color? { layered[name]??.color }
+    private func pxSlot(_ name: String) -> CGFloat? { layered[name]??.px }
+
     public var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: layered["${prefix}.${transform.gutterPart}.size.gap"]??.px ?? 0) {
+        HStack(alignment: .firstTextBaseline, spacing: pxSlot("${prefix}.${transform.gutterPart}.size.gap") ?? 0) {
             if showLineNumbers {
                 SwiftUI.Text(String(number))
-                    .foregroundColor(layered["${prefix}.${transform.gutterPart}.color.number"]??.color ?? .secondary)
+                    .foregroundColor(colorSlot("${prefix}.${transform.gutterPart}.color.number") ?? .secondary)
                     .frame(minWidth: 28, alignment: .trailing)
                     .accessibilityHidden(true)
             }
@@ -74,12 +77,12 @@ public struct ${lineName}<Content: View>: View {
     }
 }
 
-private struct FsdsSourceLine {
+struct FsdsSourceLine {
     var tokens: [${tokenName}]
 }
 
 @MainActor
-private func fsdsSplitSource(_ code: String, tokens: [${tokenName}]?, highlight: Bool) -> (lines: [FsdsSourceLine], highlighted: Bool) {
+func fsdsSplitSource(_ code: String, tokens: [${tokenName}]?, highlight: Bool) -> (lines: [FsdsSourceLine], highlighted: Bool) {
     let valid = highlight && tokens != nil && tokens!.map(\.text).joined() == code
     let stream = valid ? tokens! : [${tokenName}(kind: .plain, text: code)]
     var lines: [FsdsSourceLine] = []
@@ -136,6 +139,9 @@ public struct ${name}: View {
         resolveFsdsLayeredTokens(${name}Tokens.scopes, fsdsTheme, layers: ["root"])
     }
 
+    private func colorSlot(_ name: String) -> Color? { layered[name]??.color }
+    private func pxSlot(_ name: String) -> CGFloat? { layered[name]??.px }
+
     public var body: some View {
         let source = fsdsSplitSource(${transform.sourceProp}, tokens: ${transform.tokensProp}, highlight: ${transform.gateProp})
         Group {
@@ -165,11 +171,11 @@ public struct ${name}: View {
             }
         }
         .font(.system(.body, design: .monospaced))
-        .padding(.vertical, layered["box-model.padding-block-start"]??.px ?? 0)
-        .padding(.horizontal, layered["box-model.padding-inline-start"]??.px ?? 0)
-        .background(layered["${prefix}.color.background.default"]??.color ?? .clear)
-        .clipShape(RoundedRectangle(cornerRadius: layered["${prefix}.size.radius.default"]??.px ?? 0))
-        .foregroundColor(layered["${prefix}.color.foreground.primary"]??.color ?? .primary)
+        .padding(.vertical, pxSlot("box-model.padding-block-start") ?? 0)
+        .padding(.horizontal, pxSlot("box-model.padding-inline-start") ?? 0)
+        .background(colorSlot("${prefix}.color.background.default") ?? .clear)
+        .clipShape(RoundedRectangle(cornerRadius: pxSlot("${prefix}.size.radius.default") ?? 0))
+        .foregroundColor(colorSlot("${prefix}.color.foreground.primary") ?? .primary)
     }
 }
 // @generated:end`;

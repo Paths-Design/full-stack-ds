@@ -80,9 +80,9 @@ fun CodeBlockLine(number: Int, showLineNumbers: Boolean = false, modifier: Modif
     }
 }
 
-private data class FsdsSourceLine(val tokens: List<CodeBlockToken>)
+internal data class FsdsSourceLine(val tokens: List<CodeBlockToken>)
 
-private fun fsdsSplitSource(code: String, tokens: List<CodeBlockToken>?, highlight: Boolean): Pair<List<FsdsSourceLine>, Boolean> {
+internal fun fsdsSplitSource(code: String, tokens: List<CodeBlockToken>?, highlight: Boolean): Pair<List<FsdsSourceLine>, Boolean> {
     val valid = highlight && tokens != null && tokens.joinToString("") { it.text } == code
     val stream = if (valid) tokens!! else listOf(CodeBlockToken(CodeBlockTokenType.Plain, code))
     val lines = mutableListOf<FsdsSourceLine>()
