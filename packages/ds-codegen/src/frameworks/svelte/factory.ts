@@ -23,6 +23,8 @@ import type {
   GeneratedFile,
 } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
+import { collectContentTransforms } from "../../ir.js";
+import { svelteHighlightParts } from "../highlight-web-parts.js";
 import type { PrimitiveIR } from "../../primitive-contract.js";
 import {
   generateSvelteComponentSource,
@@ -82,6 +84,12 @@ export function createSvelteEmitter(): FrameworkEmitter {
           preservable: true,
         },
       ];
+      for (const transform of collectContentTransforms(ir.dom)) {
+        if (transform.transform !== "highlight" || !transform.linePart || !transform.gutterPart) continue;
+        for (const part of svelteHighlightParts(ir, transform)) {
+          files.push({ relativePath: `${ir.name}/${part.name}.svelte`, contents: part.content, preservable: false });
+        }
+      }
       if (isDisclosureContainer(ir)) {
         // Repeated-disclosure container (Accordion): Item/Trigger/Content SFCs
         // wired via setContext/getContext disclosure context.

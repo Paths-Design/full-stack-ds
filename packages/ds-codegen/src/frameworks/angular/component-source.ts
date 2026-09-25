@@ -68,6 +68,7 @@ import {
 } from "../../semantics.js";
 import { toKebab as sharedToKebab } from "../../contract.js";
 import { resolveComponentRefImports } from "../component-ref-imports.js";
+import { angularHighlightParts } from "../highlight-web-parts.js";
 import {
   collectIconGlyphNodes,
   ICON_GLYPH_PATH_ATTRS,
@@ -1589,6 +1590,8 @@ function angularIdRefListExpr(
 
 function generateDomTreeComponent(ir: ComponentIR): string {
   if (!ir.dom) throw new Error("generateDomTreeComponent requires ir.dom");
+  const candidateHighlight = collectContentTransforms(ir.dom).find(isHighlightTransform);
+  const highlight = candidateHighlight?.linePart && candidateHighlight.gutterPart ? candidateHighlight : undefined;
 
   const selector = toKebab(ir.name);
   const className = `${ir.name}Component`;
@@ -1737,6 +1740,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
 
   const ctx: AngularRenderContext = {
     classRecipe: ir.classRecipe.base,
+    componentName: ir.name,
     channelByName,
     styledByName,
     isRoot: true,
@@ -1759,8 +1763,12 @@ function generateDomTreeComponent(ir: ComponentIR): string {
         }
       : {}),
   };
-  const template = renderAngularDomNode(ir.dom, ctx, 0);
+  const rawTemplate = renderAngularDomNode(ir.dom, ctx, 0);
   const hasChildrenGuard = treeHasChildrenGuard(ir.dom);
+  const usesProjectionProbe = Boolean(highlight && hasChildrenGuard);
+  const template = usesProjectionProbe
+    ? rawTemplate.replace("<ng-content />", `<span data-fsds-projection=""><ng-content /></span>`)
+    : rawTemplate;
   const usesMemberOf = treeUsesMemberOfPredicate(ir.dom);
   const usesNgIf = treeUsesNgIf(ir.dom);
   const usesNgFor = treeUsesNgFor(ir.dom);
@@ -1775,6 +1783,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   }
   if (usesNgIf) decoratorImports.push("NgIf");
   if (usesNgFor) decoratorImports.push("NgFor");
+  if (highlight) decoratorImports.push(`${ir.name}${capitalizeAngular(highlight.linePart!)}Component`, `${ir.name}${capitalizeAngular(highlight.tokenPart)}Component`);
   if (ir.root.polymorphicTagProp) {
     decoratorImports.push("NgSwitch", "NgSwitchCase");
     if (ir.dom.children.length > 0 || ir.dom.content) decoratorImports.push("NgTemplateOutlet");
@@ -1786,6 +1795,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   }
 
   const lines: string[] = [];
+  if (highlight) lines.push(angularHighlightParts(ir, highlight), "");
   // ICON-CATALOG-RUNTIME-DELIVERY-01: module-scope size-hints maps, one per
   // glyph node that declares `sizeHints`, emitted ahead of the decorator
   // (matching the React emitter's module-scope const placement).
@@ -1828,7 +1838,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   // against a page element resolved from the active step's selector.
   const rootPortal = portalsRootToBody(ir) || selectorAnchor !== null;
   const lifecycleInterfaces: string[] = [];
-  if (hasChildrenGuard) lifecycleInterfaces.push("AfterContentInit");
+  if (hasChildrenGuard && !usesProjectionProbe) lifecycleInterfaces.push("AfterContentInit");
   if (rootPortal) lifecycleInterfaces.push("OnInit", "OnDestroy");
   if (lifecycleInterfaces.length > 0) {
     lines.push(
@@ -2156,6 +2166,18 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   // Mirrors Vue's `v-if="$slots.default"` / Svelte's `{#if children}`.
   if (hasChildrenGuard) {
     lines.push(``);
+    if (usesProjectionProbe) {
+      lines.push(`  private _el = inject(ElementRef<HTMLElement>);`);
+      lines.push(`  protected get hasContent(): boolean {`);
+      lines.push(`    const host = this._el.nativeElement as HTMLElement;`);
+      lines.push(`    const projection = host.querySelector("[data-fsds-projection]");`);
+      lines.push(`    const nodes: Node[] = projection ? Array.from(projection.childNodes) : [];`);
+      lines.push(`    return nodes.some((node) =>`);
+      lines.push(`      node.nodeType === Node.ELEMENT_NODE ||`);
+      lines.push(`      (node.nodeType === Node.TEXT_NODE && node.textContent?.trim() !== ""),`);
+      lines.push(`    );`);
+      lines.push(`  }`);
+    } else {
     lines.push(
       `  // Tracks whether any content has been projected — used by *ngIf="hasContent".`,
     );
@@ -2176,6 +2198,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     );
     lines.push(`    );`);
     lines.push(`  }`);
+    }
   }
 
   // ICON-CATALOG-RUNTIME-DELIVERY-01: getters resolving the requested
@@ -2481,6 +2504,7 @@ interface AngularRenderContext {
   /** Ancestor pre elements preserve template formatting as literal text. */
   preformatted?: boolean;
   classRecipe: string;
+  componentName?: string;
   channelByName: Map<string, NormalizedChannelIR>;
   /** Prop-name → resolved styled-prop lookup, mirroring the lit emitter's `styledByName`. Populated at root construction and carried into nested contexts via the `{ ...ctx }` spread. */
   styledByName: Map<string, { type: string; defaultExpr?: string }>;
@@ -2864,12 +2888,11 @@ function renderAngularDomNode(
       }
       if (transform.linePart && transform.gutterPart) {
         contentLines.push(
-          `${sp}<span *ngFor="let line of ${tokenGetter}.lines" class="${ctx.classRecipe}__${transform.linePart}">` +
-          `<span class="${ctx.classRecipe}__${transform.gutterPart}" [attr.data-line]="line.number" aria-hidden="true"></span>` +
+          `${sp}<fsds-${ctx.classRecipe}-line *ngFor="let line of ${tokenGetter}.lines" [number]="line.number" [ending]="line.ending">` +
           `<ng-container *ngFor="let token of line.tokens">` +
-          `<span *ngIf="line.highlighted" class="${ctx.classRecipe}__${transform.tokenPart}" [attr.data-token]="token.kind">{{ token.text }}</span>` +
+          `<fsds-${ctx.classRecipe}-token *ngIf="line.highlighted" [kind]="token.kind">{{ token.text }}</fsds-${ctx.classRecipe}-token>` +
           `<ng-container *ngIf="!line.highlighted">{{ token.text }}</ng-container>` +
-          `</ng-container>{{ line.ending }}</span>`,
+          `</ng-container></fsds-${ctx.classRecipe}-line>`,
         );
       } else {
         contentLines.push(`${sp}<span *ngFor="let line of ${tokenGetter}.lines">{{ line.tokens.map((token) => token.text).join('') + line.ending }}</span>`);
@@ -3009,7 +3032,7 @@ function renderAngularDomNode(
       // class body generator inject `hasContent` + an `ngAfterContentInit` hook
       // that reads the host element's text/child nodes to determine presence.
       withIfGuard = [
-        `${pad}<ng-container *ngIf="hasContent">`,
+        `${pad}<ng-container *ngIf="${node.ifNegated ? "!" : ""}hasContent">`,
         (compact ? body : body.replace(/^/gm, "  ")),
         `${pad}</ng-container>`,
       ].join(separator);

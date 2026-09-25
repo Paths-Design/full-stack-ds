@@ -1618,6 +1618,11 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     importLines.push(
       `import { prepareHighlightSource } from "../../primitives/highlight/tokenize.js";`,
     );
+    for (const transform of collectContentTransforms(ir.dom)) {
+      if (transform.transform !== "highlight" || !transform.linePart || !transform.gutterPart) continue;
+      importLines.push(`import ${ir.name}${capitalize(transform.linePart)}Part from "./${ir.name}${capitalize(transform.linePart)}.vue";`);
+      importLines.push(`import ${ir.name}${capitalize(transform.tokenPart)}Part from "./${ir.name}${capitalize(transform.tokenPart)}.vue";`);
+    }
   }
   if (collectContentTransforms(ir.dom).some(isMarkdownTransform)) {
     importLines.push(
@@ -1847,6 +1852,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
   const booleanChannel = channels.find((c) => c.valueType === "boolean");
   const ctx: VueRenderContext = {
     classRecipe: classRecipe.base,
+    componentName: ir.name,
     channelByName,
     isRoot: true,
     cssPrefix: ir.cssPrefix,
@@ -1973,6 +1979,7 @@ interface VueRenderContext {
   /** Ancestor pre elements preserve template formatting as literal text. */
   preformatted?: boolean;
   classRecipe: string;
+  componentName?: string;
   channelByName: Map<string, NormalizedChannelIR>;
   isRoot: boolean;
   /** Component cssPrefix for the root's data-fsds-component identification attr. */
@@ -2188,11 +2195,10 @@ function renderVueDomNode(
       const prepared = `prepareHighlightSource(${sourceExpr}, ${languageExpr}, { tokens: ${tokensExpr}, highlight: ${gateExpr} })`;
       if (transform.linePart && transform.gutterPart) {
         textChildren.push(
-          `<span v-for="line in ${prepared}.lines" :key="line.number" class="${ctx.classRecipe}__${transform.linePart}">` +
-          `<span class="${ctx.classRecipe}__${transform.gutterPart}" :data-line="line.number" aria-hidden="true"></span>` +
+          `<${ctx.componentName}${capitalize(transform.linePart)}Part v-for="line in ${prepared}.lines" :key="line.number" :number="line.number" :ending="line.ending">` +
           `<template v-for="(token, tokenIndex) in line.tokens" :key="tokenIndex">` +
-          `<span v-if="line.highlighted" class="${ctx.classRecipe}__${transform.tokenPart}" :data-token="token.kind">{{ token.text }}</span>` +
-          `<template v-else>{{ token.text }}</template></template>{{ line.ending }}</span>`,
+          `<${ctx.componentName}${capitalize(transform.tokenPart)}Part v-if="line.highlighted" :kind="token.kind">{{ token.text }}</${ctx.componentName}${capitalize(transform.tokenPart)}Part>` +
+          `<template v-else>{{ token.text }}</template></template></${ctx.componentName}${capitalize(transform.linePart)}Part>`,
         );
       } else {
         textChildren.push(`<span v-for="line in ${prepared}.lines" :key="line.number">{{ line.tokens.map((token) => token.text).join('') + line.ending }}</span>`);

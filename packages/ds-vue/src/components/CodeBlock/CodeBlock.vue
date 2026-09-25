@@ -2,6 +2,8 @@
 // @generated:start imports
 import { computed } from "vue";
 import { prepareHighlightSource } from "../../primitives/highlight/tokenize.js";
+import CodeBlockLinePart from "./CodeBlockLine.vue";
+import CodeBlockTokenPart from "./CodeBlockToken.vue";
 // @generated:end
 
 // @custom:start imports
@@ -50,5 +52,5 @@ const classNames = computed(() => [
 </script>
 
 <template>
-<pre :class="classNames" :data-language="props.language" :data-line-numbers="props.showLineNumbers" :data-testid="props.dataTestid" data-fsds-component="code-block" data-fsds-box=""><code :class="'code-block__code'" spellcheck="false" :data-language="props.language"><slot /><span v-if="!$slots.default" :class="'code-block__source'"><span v-for="line in prepareHighlightSource(props.code, props.language, { tokens: props.tokens, highlight: props.highlight }).lines" :key="line.number" class="code-block__line"><span class="code-block__gutter" :data-line="line.number" aria-hidden="true"></span><template v-for="(token, tokenIndex) in line.tokens" :key="tokenIndex"><span v-if="line.highlighted" class="code-block__token" :data-token="token.kind">{{ token.text }}</span><template v-else>{{ token.text }}</template></template>{{ line.ending }}</span></span></code></pre>
+<pre :class="classNames" :data-language="props.language" :data-line-numbers="props.showLineNumbers" :data-testid="props.dataTestid" data-fsds-component="code-block" data-fsds-box=""><code :class="'code-block__code'" spellcheck="false" :data-language="props.language"><slot /><span v-if="!$slots.default" :class="'code-block__source'"><CodeBlockLinePart v-for="line in prepareHighlightSource(props.code, props.language, { tokens: props.tokens, highlight: props.highlight }).lines" :key="line.number" :number="line.number" :ending="line.ending"><template v-for="(token, tokenIndex) in line.tokens" :key="tokenIndex"><CodeBlockTokenPart v-if="line.highlighted" :kind="token.kind">{{ token.text }}</CodeBlockTokenPart><template v-else>{{ token.text }}</template></template></CodeBlockLinePart></span></code></pre>
 </template>

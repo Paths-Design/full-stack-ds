@@ -20,6 +20,37 @@ export type CodeBlockToken = { kind: CodeBlockTokenType; text: string };
 // @custom:end
 
 // @generated:start component
+export class CodeBlockLineElement extends LitElement {
+  static override styles = css`
+    :host { display: inline; white-space: pre; }
+    .code-block__gutter { display: none; user-select: none; }
+    .code-block__gutter::before { content: attr(data-line); }
+    :host([show-line-numbers]) .code-block__gutter { display: inline-block; min-width: 2ch; text-align: right; margin-right: var(--fsds-code-block-gutter-size-gap, 4px); color: var(--fsds-code-block-gutter-color-number, #474647); }
+  `;
+  @property({ type: Number }) number = 1;
+  @property({ type: String }) ending = "";
+  @property({ type: Boolean, attribute: "show-line-numbers" }) showLineNumbers = false;
+  override render() { return html`<span class="code-block__line"><span class="code-block__gutter" data-line=${this.number} aria-hidden="true"></span><slot></slot>${this.ending}</span>`; }
+}
+customElements.define('fsds-code-block-line', CodeBlockLineElement);
+
+export class CodeBlockTokenElement extends LitElement {
+  static override styles = css`
+    .code-block__token[data-token="comment"] { color: var(--fsds-code-block-token-color-comment, #474647); }
+    .code-block__token[data-token="definition"] { color: var(--fsds-code-block-token-color-definition, #900909); }
+    .code-block__token[data-token="keyword"] { color: var(--fsds-code-block-token-color-keyword, #013ab0); }
+    .code-block__token[data-token="plain"] { color: var(--fsds-code-block-token-color-plain, #141414); }
+    .code-block__token[data-token="property"] { color: var(--fsds-code-block-token-color-property, #6c3a00); }
+    .code-block__token[data-token="punctuation"] { color: var(--fsds-code-block-token-color-punctuation, #013ab0); }
+    .code-block__token[data-token="static"] { color: var(--fsds-code-block-token-color-static, #900909); }
+    .code-block__token[data-token="string"] { color: var(--fsds-code-block-token-color-string, #900909); }
+    .code-block__token[data-token="tag"] { color: var(--fsds-code-block-token-color-tag, #900909); }
+  `;
+  @property({ type: String, attribute: "data-token", reflect: true }) kind: CodeBlockTokenType = "plain";
+  override render() { return html`<span class="code-block__token" data-token=${this.kind}><slot></slot></span>`; }
+}
+customElements.define('fsds-code-block-token', CodeBlockTokenElement);
+
 export class CodeBlockElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -218,7 +249,7 @@ export class CodeBlockElement extends LitElement {
   }
 
   override render() {
-    return html`<pre class="${this.computeClasses()}" data-language=${ifDefined(this.language)} ?data-line-numbers=${(this.showLineNumbers ?? false)} data-fsds-box=""><code class=${'code-block__code'} spellcheck="false" data-language=${ifDefined(this.language)}><slot></slot>${!this._hasChildren ? html`<span class=${'code-block__source'}>${prepareHighlightSource(this.code, this.language, { tokens: this.tokens, highlight: (this.highlight ?? true) }).lines.map((line) => html`<span class="code-block__line"><span class="code-block__gutter" data-line=${line.number} aria-hidden="true"></span>${line.tokens.map((token) => line.highlighted ? html`<span class="code-block__token" data-token=${token.kind}>${token.text}</span>` : token.text)}${line.ending}</span>`)}</span>` : nothing}</code></pre>`;
+    return html`<pre class="${this.computeClasses()}" data-language=${ifDefined(this.language)} ?data-line-numbers=${(this.showLineNumbers ?? false)} data-fsds-box=""><code class=${'code-block__code'} spellcheck="false" data-language=${ifDefined(this.language)}><slot></slot>${!this._hasChildren ? html`<span class=${'code-block__source'}>${prepareHighlightSource(this.code, this.language, { tokens: this.tokens, highlight: (this.highlight ?? true) }).lines.map((line) => html`<fsds-code-block-line .number=${line.number} ?show-line-numbers=${(this.showLineNumbers ?? false)}>${line.tokens.map((token) => line.highlighted ? html`<fsds-code-block-token .kind=${token.kind} data-token=${token.kind}>${token.text}</fsds-code-block-token>` : token.text)}</fsds-code-block-line>${line.ending}`)}</span>` : nothing}</code></pre>`;
   }
 }
 

@@ -1,13 +1,13 @@
 import type { ComponentIR, HighlightTransformIR } from "../../ir.js";
+import { highlightTokenTypes } from "../../highlight/token-types.js";
 
 /** Compose realization of the framework-neutral supplied-source transform. */
 export function emitComposeHighlightComponent(ir: ComponentIR, transform: HighlightTransformIR): string {
   const name = ir.name;
   const segment = name.toLowerCase();
   const tokenScopes = `${name.charAt(0).toLowerCase()}${name.slice(1)}TokenScopes`;
-  const tokenName = `${name}${transform.tokenPart.charAt(0).toUpperCase()}${transform.tokenPart.slice(1)}`;
+  const { tokenName, kindName: tokenType } = highlightTokenTypes(ir, transform);
   const lineName = `${name}${transform.linePart!.charAt(0).toUpperCase()}${transform.linePart!.slice(1)}`;
-  const tokenType = `${tokenName}Type`;
   const prefix = ir.cssPrefix;
   const palette = ir.definedTypes[tokenType];
   if (palette?.kind !== "union" || !palette.values) throw new Error(`${name}: highlight token kinds require a union`);

@@ -31,6 +31,8 @@ export { default as CardNote } from "./Card/CardNote.svelte";
 export { default as Checkbox } from "./Checkbox/Checkbox.svelte";
 export { default as Chip } from "./Chip/Chip.svelte";
 export { default as CodeBlock } from "./CodeBlock/CodeBlock.svelte";
+export { default as CodeBlockLine } from "./CodeBlock/CodeBlockLine.svelte";
+export { default as CodeBlockToken } from "./CodeBlock/CodeBlockToken.svelte";
 export { default as CodeSnippet } from "./CodeSnippet/CodeSnippet.svelte";
 export { default as Command } from "./Command/Command.svelte";
 export { default as CommandGroup } from "./Command/CommandGroup.svelte";

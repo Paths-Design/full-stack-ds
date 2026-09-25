@@ -1451,6 +1451,11 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     importLines.push(
       `import { prepareHighlightSource } from "../../primitives/highlight/tokenize.js";`,
     );
+    for (const transform of collectContentTransforms(ir.dom)) {
+      if (transform.transform !== "highlight" || !transform.linePart || !transform.gutterPart) continue;
+      importLines.push(`import ${ir.name}${capitalizeSvelte(transform.linePart)}Part from "./${ir.name}${capitalizeSvelte(transform.linePart)}.svelte";`);
+      importLines.push(`import ${ir.name}${capitalizeSvelte(transform.tokenPart)}Part from "./${ir.name}${capitalizeSvelte(transform.tokenPart)}.svelte";`);
+    }
   }
   if (collectContentTransforms(ir.dom).some(isMarkdownTransform)) {
     importLines.push(
@@ -1659,6 +1664,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
   const booleanChannel = channels.find((c) => c.valueType === "boolean");
   const ctx: SvelteRenderContext = {
     classRecipe: classRecipe.base,
+    componentName: ir.name,
     channelByName,
     hookVar,
     isRoot: true,
@@ -1752,6 +1758,7 @@ interface SvelteRenderContext {
   /** Ancestor pre elements preserve template formatting as literal text. */
   preformatted?: boolean;
   classRecipe: string;
+  componentName?: string;
   channelByName: Map<string, NormalizedChannelIR>;
   hookVar: string;
   isRoot: boolean;
@@ -1949,12 +1956,11 @@ function renderSvelteDomNode(
       if (transform.linePart && transform.gutterPart) {
         textContentExpr =
           `{#each ${prepared}.lines as line (line.number)}` +
-          `<span class="${ctx.classRecipe}__${transform.linePart}">` +
-          `<span class="${ctx.classRecipe}__${transform.gutterPart}" data-line={line.number} aria-hidden="true"></span>` +
+          `<${ctx.componentName}${capitalizeSvelte(transform.linePart)}Part number={line.number} ending={line.ending}>` +
           `{#each line.tokens as token}` +
           `{#if line.highlighted}` +
-          `<span class="${ctx.classRecipe}__${transform.tokenPart}" data-token={token.kind}>{token.text}</span>` +
-          `{:else}{token.text}{/if}{/each}{line.ending}</span>{/each}`;
+          `<${ctx.componentName}${capitalizeSvelte(transform.tokenPart)}Part kind={token.kind}>{token.text}</${ctx.componentName}${capitalizeSvelte(transform.tokenPart)}Part>` +
+          `{:else}{token.text}{/if}{/each}</${ctx.componentName}${capitalizeSvelte(transform.linePart)}Part>{/each}`;
       } else {
         textContentExpr = `{#each ${prepared}.lines as line}{line.tokens.map((token) => token.text).join('') + line.ending}{/each}`;
       }

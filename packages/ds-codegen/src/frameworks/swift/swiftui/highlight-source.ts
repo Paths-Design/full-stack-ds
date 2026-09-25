@@ -1,4 +1,5 @@
 import type { ComponentIR, HighlightTransformIR } from "../../../ir.js";
+import { highlightTokenTypes } from "../../../highlight/token-types.js";
 
 /** SwiftUI realization of the framework-neutral supplied-source transform. */
 export function emitSwiftHighlightComponent(
@@ -7,9 +8,8 @@ export function emitSwiftHighlightComponent(
   tokenScopes: string,
 ): string {
   const name = ir.name;
-  const tokenName = `${name}${transform.tokenPart.charAt(0).toUpperCase()}${transform.tokenPart.slice(1)}`;
+  const { tokenName, kindName: tokenType } = highlightTokenTypes(ir, transform);
   const lineName = `${name}${transform.linePart!.charAt(0).toUpperCase()}${transform.linePart!.slice(1)}`;
-  const tokenType = `${tokenName}Type`;
   const prefix = ir.cssPrefix;
   const tokenColor = (kind: string) => `${prefix}.${transform.tokenPart}.color.${kind}`;
   const palette = ir.definedTypes[tokenType];

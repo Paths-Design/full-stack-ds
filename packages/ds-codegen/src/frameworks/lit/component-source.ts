@@ -63,6 +63,7 @@ import {
 } from "../../semantics.js";
 import { toKebab } from "../../contract.js";
 import { resolveComponentRefImports } from "../component-ref-imports.js";
+import { litHighlightParts } from "../highlight-web-parts.js";
 import { emitLitInlineCss, escapeCssForLitTemplate } from "../../css.js";
 import {
   isCompoundStateContainer,
@@ -1582,7 +1583,10 @@ export function generateLitComponentSource(ir: ComponentIR): string {
     )
     .map((part) => generateCompoundPartClass(ir, part))
     .join("\n\n");
+  const highlightCandidate = ir.dom ? collectContentTransforms(ir.dom).find(isHighlightTransform) : undefined;
+  const highlight = highlightCandidate?.linePart && highlightCandidate.gutterPart ? highlightCandidate : undefined;
   const componentBody =
+    (highlight ? litHighlightParts(ir, highlight) + "\n\n" : "") +
     (ir.dom ? generateDomTreeClassBody(ir) : generateClassBody(ir)) +
     (compoundClasses ? "\n\n" + compoundClasses : "");
 
@@ -2867,14 +2871,11 @@ function renderLitDomNode(
       const tokensExpr = transform.tokensProp ? litPropAccessor(transform.tokensProp, ctx) : "undefined";
       const prepared = `prepareHighlightSource(${sourceExpr}, ${languageExpr}, { tokens: ${tokensExpr}, highlight: ${gateExpr} })`;
       if (transform.linePart && transform.gutterPart) {
-        const lineClass = `${ctx.classRecipe}__${transform.linePart}`;
-        const gutterClass = `${ctx.classRecipe}__${transform.gutterPart}`;
-        const tokenClass = `${ctx.classRecipe}__${transform.tokenPart}`;
-        contentInline = `\${${prepared}.lines.map((line) => html\`<span class="${lineClass}">` +
-          `<span class="${gutterClass}" data-line=\${line.number} aria-hidden="true"></span>` +
+        const lineNumbersExpr = transform.lineNumbersProp ? litPropAccessor(transform.lineNumbersProp, ctx) : "false";
+        contentInline = `\${${prepared}.lines.map((line) => html\`<fsds-${ctx.classRecipe}-line .number=\${line.number} ?show-line-numbers=\${${lineNumbersExpr}}>` +
           `\${line.tokens.map((token) => line.highlighted ? ` +
-          `html\`<span class="${tokenClass}" data-token=\${token.kind}>\${token.text}</span>\` : token.text)}` +
-          `\${line.ending}</span>\`)}`;
+          `html\`<fsds-${ctx.classRecipe}-token .kind=\${token.kind} data-token=\${token.kind}>\${token.text}</fsds-${ctx.classRecipe}-token>\` : token.text)}` +
+          `</fsds-${ctx.classRecipe}-line>\${line.ending}\`)}`;
       } else {
         contentInline = `\${${prepared}.lines.map((line) => line.tokens.map((token) => token.text).join('') + line.ending)}`;
       }
