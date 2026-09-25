@@ -5,7 +5,7 @@ mode: feature
 lifecycle_state: active
 worktree: codeblock-composable
 created_at: '2026-09-25T01:35:55.346Z'
-updated_at: '2026-09-25T04:41:08.298Z'
+updated_at: '2026-09-25T04:45:59.863Z'
 created_by_session: '01a0d419-00f5-7790-91f0-4c2a690e8a97'
 blast_radius:
   modules:
@@ -36,6 +36,7 @@ scope:
     - docs/architecture/design/box-model-primitive.md
     - docs/architecture/design/component-design-bindings.md
     - docs/normal-form.md
+    - README.md
   out: []
 invariants:
   - 'The canonical code string remains the lossless source for display, selection, and copying'
