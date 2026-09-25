@@ -33,6 +33,22 @@
       "layoutVariant": null
     },
     {
+      "name": "line",
+      "semanticElement": null,
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "gutter",
+      "semanticElement": null,
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
       "name": "token",
       "semanticElement": null,
       "nativeTag": "span",
@@ -67,6 +83,24 @@
       "required": false,
       "description": "Gate for the highlight content transform. When true (default) the source is rendered as one span per syntax token; when false it is rendered as a single plain text run.",
       "defaultExpr": "true",
+      "nodeKind": null
+    },
+    {
+      "name": "tokens",
+      "safeName": "tokens",
+      "type": "CodeBlockToken[]",
+      "required": false,
+      "description": "Optional lossless syntax token stream. Invalid streams render the canonical code as plain text.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "showLineNumbers",
+      "safeName": "showLineNumbers",
+      "type": "boolean",
+      "required": false,
+      "description": "Display a presentational one-based line gutter without adding numbers to the source text.",
+      "defaultExpr": "false",
       "nodeKind": null
     }
   ],
@@ -464,6 +498,8 @@
           "--fsds-code-block-token-color-static": "var(--fsds-semantic-color-foreground-syntax-static, #900909)",
           "--fsds-code-block-token-color-string": "var(--fsds-semantic-color-foreground-syntax-string, #900909)",
           "--fsds-code-block-token-color-tag": "var(--fsds-semantic-color-foreground-syntax-tag, #900909)",
+          "--fsds-code-block-gutter-color-number": "var(--fsds-semantic-color-foreground-secondary, #474647)",
+          "--fsds-code-block-gutter-size-gap": "var(--fsds-core-spacing-size-03, 4px)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
@@ -497,6 +533,35 @@
           "display": "block",
           "font-family": "inherit",
           "font-size": "inherit"
+        }
+      },
+      {
+        "selector": ".code-block__line",
+        "declarations": {
+          "white-space": "pre"
+        }
+      },
+      {
+        "selector": ".code-block__gutter",
+        "declarations": {
+          "display": "none"
+        }
+      },
+      {
+        "selector": ".code-block[data-line-numbers=\"true\"] .code-block__gutter",
+        "declarations": {
+          "display": "inline-block",
+          "min-width": "4ch",
+          "padding-inline-end": "var(--fsds-code-block-gutter-size-gap, 4px)",
+          "color": "var(--fsds-code-block-gutter-color-number, #474647)",
+          "text-align": "right",
+          "user-select": "none"
+        }
+      },
+      {
+        "selector": ".code-block__gutter::before",
+        "declarations": {
+          "content": "attr(data-line)"
         }
       },
       {
