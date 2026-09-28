@@ -5,7 +5,7 @@ mode: feature
 lifecycle_state: active
 worktree: motion-loading-loops
 created_at: '2026-09-28T05:09:05.914Z'
-updated_at: '2026-09-28T05:09:07.457Z'
+updated_at: '2026-09-28T05:19:41.482Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
@@ -36,6 +36,8 @@ scope:
     - 'e2e/motion-loops.spec.ts'
     - 'docs/architecture/motion-substrate.md'
     - 'docs/current-implementation-snapshot.md'
+    - packages/ds-figma-plugin/src/generated/components/Skeleton/
+    - packages/ds-figma-plugin/src/generated/components/Spinner/
   out: []
 invariants:
   - 'Motion lowering selects typed effect and part facts, never component identity.'
