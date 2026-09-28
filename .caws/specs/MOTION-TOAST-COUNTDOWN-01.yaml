@@ -67,3 +67,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-react/src/primitives/hooks/__tests__/presence-budget.test.ts
     commit_sha: "9c0398bc"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "10 browser cases across React Vue Svelte Angular Lit plus observed showcase bar; tmp/motion-toast-countdown/toast-browser-final.log"
+    recorded_at: "2026-09-28T08:43:57.891Z"
+    command: FSDS_E2E_PORT=5196 pnpm exec playwright test e2e/motion-countdown.spec.ts --workers=2
+    exit_code: 0
+    artifact_path: e2e/motion-countdown.spec.ts
+    commit_sha: "9c0398bc"
