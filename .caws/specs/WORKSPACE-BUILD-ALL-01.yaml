@@ -32,3 +32,12 @@ non_functional: {}
 contracts:
   - name: 'workspace-build-order'
     type: behavior
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Fresh CAWS worktree with isolated frozen install and no reused dist outputs: pnpm run build:all exited 0. Log test-results/workspace-build-all/fsds-build-all.log records tokens/iconography/codegen, then frameworks, then examples/plugin, then root Vite build. Governed rail, 4601 root tests and all framework suites also passed; generated logs remain ignored."
+    recorded_at: "2026-09-28T20:12:01.543Z"
+    command: "pnpm run build:all"
+    exit_code: 0
+    artifact_path: package.json
+    commit_sha: "902a67b8"
