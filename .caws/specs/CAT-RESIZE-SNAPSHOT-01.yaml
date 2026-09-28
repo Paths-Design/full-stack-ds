@@ -39,3 +39,11 @@ evidence:
     exit_code: 0
     artifact_path: test-results/cat-resize-evidence/typing-cat-resize/report.json
     commit_sha: e055c740
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Trusted Stats and Draft link clicks reach every projected iframe after fresh loads and resizes across the six-size DPR 1/2 matrix; 338 total checks pass including uncaught-error checks. Existing verify-cat.mjs passes 31 interaction checks. Typecheck, 36 example tests, governed rail, 4601 root tests, all framework suites and scoped CAWS gates pass."
+    recorded_at: "2026-09-28T20:02:36.142Z"
+    command: "CAT_URL=http://127.0.0.1:5189/cat.html HEADED=1 node e2e/verify-cat-resize.mjs"
+    exit_code: 0
+    artifact_path: test-results/cat-resize-evidence/typing-cat-resize/report.json
+    commit_sha: e055c740
