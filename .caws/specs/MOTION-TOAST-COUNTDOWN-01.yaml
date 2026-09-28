@@ -2,9 +2,10 @@ id: MOTION-TOAST-COUNTDOWN-01
 title: 'Bind Toast countdown to its authoritative presence budget'
 risk_tier: 3
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: motion-toast-countdown
 created_at: '2026-09-28T07:15:35.720Z'
-updated_at: '2026-09-28T07:15:35.720Z'
+updated_at: '2026-09-28T07:15:55.283Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
