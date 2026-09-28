@@ -83,3 +83,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/motion-ir.test.ts
     commit_sha: a0fbff388e4dc3432a318447e4c72a4761f22518
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Renamed Unfamiliar contract and colliding variant axis use the same CSS lowering without component-name dispatch. Runtime checks observe exactly one animation on the bound part and none on Skeleton child shapes. Logs: tmp/motion-loading-loops/focused.log and runtime.log. Ownership validation is bounded to loop conflicts and direct authored target declarations."
+    recorded_at: "2026-09-28T05:48:26.141Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/motion-ir.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/motion-ir.test.ts
+    commit_sha: a0fbff388e4dc3432a318447e4c72a4761f22518
