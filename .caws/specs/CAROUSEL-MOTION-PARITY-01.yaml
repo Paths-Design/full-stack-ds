@@ -102,3 +102,8 @@ evidence:
     evidence_ref: "Review baseline ed11396a: React Native Carousel exports index/onIndexChange/autoPlay/duration/indicator but ignores them and emits Pressable controls without onPress. fsds.targets.json does not allowlist Carousel for SwiftUI, Jetpack Compose, Unity or Godot. These are explicit open platform implementation gaps, not established parity."
     recorded_at: "2026-09-28T10:01:43.551Z"
     commit_sha: ed11396a
+  - criterion_id: A6
+    status: fail
+    evidence_ref: "Review baseline ed11396a: CI runs e2e:rail (runtime-rail.spec.ts only) and e2e:render-binding, neither includes e2e/carousel.spec.ts. The current motion audit inspects CSS and legacy motion.transitions, not sequence runtime bindings. Real child-component motion fixtures are absent outside React."
+    recorded_at: "2026-09-28T10:01:52.100Z"
+    commit_sha: ed11396a
