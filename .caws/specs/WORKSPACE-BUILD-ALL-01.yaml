@@ -2,9 +2,11 @@ id: WORKSPACE-BUILD-ALL-01
 title: 'Build all pnpm workspace packages before the showcase'
 risk_tier: 2
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Add and document dependency-ordered workspace build:all with showcase last; verified by a successful cold worktree build and repository gates.'
 created_at: '2026-09-28T20:05:31.658Z'
-updated_at: '2026-09-28T20:05:32.965Z'
+updated_at: '2026-09-28T20:12:03.287Z'
 created_by_session: '01a0e989-e319-7363-9f6b-df741e560457'
 blast_radius:
   modules:
