@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-09-28
-verified_at_commit: 3fd6f2eb23aaf8bc4dfa7c24cb42b1b64e2f7850
+verified_at_commit: b5453c4866ec2311e72a1aa216ed7faf8a19f3fd
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -251,3 +251,7 @@ establish rendered layout on Android devices.
 ## Carousel motion reconciliation
 
 Carousel adds normalized sequence and motion facts without another rendered primitive contract. Renamed-contract tests exercise each web emitter to guard against component-name dispatch. Native sequence execution remains explicitly unrealized; the SwiftUI and Compose allowlists do not yet include Carousel.
+
+Each Carousel indicator mode explicitly selects its visible decorations in the
+style contract, including the combined mode; the variant audit checks those
+carriers and browser tests check the resulting visibility.
