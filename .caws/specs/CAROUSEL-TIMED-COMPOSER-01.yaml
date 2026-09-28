@@ -82,12 +82,12 @@ evidence:
     commit_sha: b62540e4
   - criterion_id: A3
     status: pass
-    evidence_ref: "All 16 executed browser cases passed: both progress treatments, manual controls, hidden/inert inactive content, reduced-motion projections and actual React Card composition. Other framework fixtures compose consumer DOM children."
-    recorded_at: "2026-09-28T09:27:36.773Z"
+    evidence_ref: "All 16 browser cases passed after explicit per-mode style realization, with both indicators, accessible controls, hidden/inert inactive slides and reduced motion. Real Card composition is witnessed in React; other frameworks use consumer DOM fixtures."
+    recorded_at: "2026-09-28T09:43:02.024Z"
     command: FSDS_E2E_PORT=5199 pnpm exec playwright test e2e/carousel.spec.ts --workers=2
     exit_code: 0
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/browser.log
-    commit_sha: "2bf4fbe2"
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/final-browser.log
+    commit_sha: b62540e4
   - criterion_id: A4
     status: pass
     evidence_ref: "All five browser realizations verify opposite slide directions, interrupted reversal from the current transform and cancellation under reduced motion. Mirrored unit cases pin wrap direction, 1280px capped duration and a full dwell budget after animation completion."
