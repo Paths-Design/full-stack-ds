@@ -76,12 +76,12 @@ contracts:
     path: 'packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.test.ts'
 evidence:
   - criterion_id: A1
-    status: fail
-    evidence_ref: "Review baseline ed11396a: all five real-browser pointer Stop probes leave the control named Stop slide rotation after clicking it; focusin clears playing before click toggles it back on. Reproducer and outputs: tmp/carousel-review/review.spec.cjs and browser.log. These ignored files were inspected, not claimed as committed artifacts."
-    recorded_at: "2026-09-28T10:00:47.440Z"
-    command: pnpm exec playwright test --config=/tmp/fsds-carousel-review/playwright.config.cjs
-    exit_code: 1
-    commit_sha: ed11396a
+    status: pass
+    evidence_ref: "At 2f746ddd, real Chromium pointer activation preserves Stop through focus and click, remains stopped for 3000ms after pointer leave, and explicit Start advances in React Vue Svelte Angular Lit. Five executed tests passed; /tmp/carousel-pointer-green.log. Controller baseline had five corresponding failures before repair."
+    recorded_at: "2026-09-28T17:54:42.608Z"
+    command: "FSDS_E2E_PORT=5199 pnpm exec playwright test e2e/carousel.spec.ts --grep \"pointer Stop\" --workers=1"
+    exit_code: 0
+    commit_sha: "2f746ddd"
   - criterion_id: A2
     status: fail
     evidence_ref: "Review baseline ed11396a: a real generated Lit Card has display contents and zero host width; its rendered child stays at x=520 from animation start to midpoint. Existing cross-framework tests inject articles and miss this. Reproducer: tmp/carousel-review/review.spec.cjs, browser.log."
