@@ -15,8 +15,8 @@ export function declaredLeaves(value: unknown, prefix = ""): string[] {
   }
   return [prefix];
 }
-export function accountComponent(contract: ComponentContract, admitted: boolean) {
-  const ir = buildComponentIR(contract);
+export function accountComponent(contract: ComponentContract, admitted: boolean, tokens = contract.tokens) {
+  const ir = buildComponentIR({ ...contract, tokens });
   let source = "", adapter: string | null = null, diagnostic: string | null = null;
   try {
     adapter = unityLowering(ir).base;
@@ -46,13 +46,15 @@ export function inventory(root: string) {
   return entries.map(entry => {
     const bytes = fs.readFileSync(entry.absPath);
     const contract = JSON.parse(bytes.toString()) as ComponentContract;
+    let tokens: ComponentContract["tokens"];
     const sidecars = ["tokens", "styles"].flatMap(kind => {
       const p = entry.absPath.replace(".contract.json", `.${kind}.json`);
       if (!fs.existsSync(p)) return [];
       const data = fs.readFileSync(p);
+      if (kind === "tokens") tokens = JSON.parse(data.toString());
       return [{ kind, sha256: createHash("sha256").update(data).digest("hex"), obligations: declaredLeaves(JSON.parse(data.toString())).map(pointer => ({ pointer, disposition: "unassessed" })) }];
     });
-    return { ...accountComponent(contract, target.components!.includes(entry.name)), contractSha256: createHash("sha256").update(bytes).digest("hex"), sidecars };
+    return { ...accountComponent(contract, target.components!.includes(entry.name), tokens), contractSha256: createHash("sha256").update(bytes).digest("hex"), sidecars };
   });
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

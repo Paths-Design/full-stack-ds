@@ -28,9 +28,12 @@ export function loadCorpusContract(name: string): ComponentContract {
     name,
     `${name}.contract.json`,
   );
-  return JSON.parse(
-    fs.readFileSync(contractPath, "utf8"),
-  ) as unknown as ComponentContract;
+  const contract = JSON.parse(fs.readFileSync(contractPath, "utf8")) as ComponentContract;
+  for (const kind of ["tokens", "styles"] as const) {
+    const sidecar = contractPath.replace(".contract.json", `.${kind}.json`);
+    if (fs.existsSync(sidecar)) contract[kind] = JSON.parse(fs.readFileSync(sidecar, "utf8"));
+  }
+  return contract;
 }
 
 export function corpusIR(name: string): ComponentIR {

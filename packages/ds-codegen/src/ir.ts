@@ -66,6 +66,7 @@ import {
 import { resolveStyleProfile } from "./box-model.js";
 import { resolveIdRelationships } from "./id-relationships.js";
 import { tokenSlug } from "./token-path.js";
+import { buildMotionLoops, type MotionLoopIR } from "./motion-loops.js";
 
 // ---------------------------------------------------------------------------
 // IR types
@@ -1300,6 +1301,7 @@ export interface KeyframeIR {
  * `ContractMotion` on why a `trigger` cannot be lowered yet.
  */
 export interface MotionIR {
+  loops: MotionLoopIR[];
   honorsReducedMotion: boolean;
   reducedMotion: 'respect' | 'disable' | 'reduce' | 'ignore' | null;
   transitions: Array<{
@@ -5992,6 +5994,7 @@ export function buildMotion(contract: ComponentContract): MotionIR {
   return {
     reducedMotion,
     honorsReducedMotion: reducedMotion !== 'ignore',
+    loops: buildMotionLoops(contract, buildParts(contract), buildTokenFacts(contract.tokens ?? {})),
     transitions: (motion?.transitions ?? []).map((t) => ({
       name: t.name,
       trigger: t.trigger ?? null,

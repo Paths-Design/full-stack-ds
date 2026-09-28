@@ -483,8 +483,7 @@
           "background-color": "var(--fsds-skeleton-color-base, #f7f7f7)",
           "border-radius": "var(--fsds-skeleton-radius-md, 8px)",
           "transition-duration": "var(--fsds-skeleton-anim-duration, 400ms)",
-          "transition-timing-function": "var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1))",
-          "animation": "skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite"
+          "transition-timing-function": "var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1))"
         }
       },
       {
@@ -499,15 +498,13 @@
         "selector": ".skeleton:has(.skeleton__stack)",
         "declarations": {
           "background-color": "transparent",
-          "animation": "none",
           "height": "auto"
         }
       },
       {
         "selector": ".skeleton:has(.skeleton__stack) .skeleton__shape",
         "declarations": {
-          "height": "var(--fsds-skeleton-shape-height-text, 1rem)",
-          "animation": "skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite"
+          "height": "var(--fsds-skeleton-shape-height-text, 1rem)"
         }
       },
       {
@@ -570,12 +567,6 @@
         }
       },
       {
-        "selector": ".skeleton--shimmer",
-        "declarations": {
-          "animation": "skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite"
-        }
-      },
-      {
         "selector": ".skeleton--wipe",
         "declarations": {
           "--fsds-skeleton-color-base": "var(--fsds-semantic-color-background-tertiary, #d0d0d0)",
@@ -596,18 +587,6 @@
         }
       },
       {
-        "selector": ".skeleton--pulse",
-        "declarations": {
-          "animation": "skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 3) ease-in-out infinite"
-        }
-      },
-      {
-        "selector": ".skeleton--none",
-        "declarations": {
-          "animation": "none"
-        }
-      },
-      {
         "selector": ".skeleton--compact",
         "declarations": {
           "--fsds-skeleton-gap-md": "var(--fsds-skeleton-gap-compact, 4px)"
@@ -624,32 +603,15 @@
         "declarations": {
           "--fsds-skeleton-gap-md": "var(--fsds-skeleton-gap-spacious, 24px)"
         }
+      },
+      {
+        "selector": ".skeleton--none",
+        "declarations": {
+          "animation": "none"
+        }
       }
     ],
     "keyframes": [
-      {
-        "name": "skeleton-shimmer",
-        "frames": [
-          {
-            "selector": "0%",
-            "declarations": {
-              "opacity": "1"
-            }
-          },
-          {
-            "selector": "50%",
-            "declarations": {
-              "opacity": "0.5"
-            }
-          },
-          {
-            "selector": "100%",
-            "declarations": {
-              "opacity": "1"
-            }
-          }
-        ]
-      },
       {
         "name": "skeleton-wipe",
         "frames": [

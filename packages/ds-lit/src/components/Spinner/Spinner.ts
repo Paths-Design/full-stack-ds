@@ -108,7 +108,6 @@ export class SpinnerElement extends LitElement {
       border-width: var(--fsds-spinner-design-visual-border-width, var(--fsds-spinner-thickness-regular, 3px));
       border-color: var(--fsds-spinner-design-visual-border-color, var(--fsds-spinner-color-track, #d0d0d0));
       border-top-color: var(--fsds-spinner-design-visual-border-top-color, var(--fsds-spinner-color-accent, #d92d2e));
-      animation: spin var(--fsds-spinner-anim-duration, 800ms) linear infinite;
     }
 
     .spinner--xs {
@@ -138,15 +137,29 @@ export class SpinnerElement extends LitElement {
     .spinner--bold .spinner__visual {
       border-width: var(--fsds-spinner-design-condition-f69ec4fadb37-border-width, var(--fsds-spinner-thickness-bold, 4px));
     }
+
+    .spinner__visual {
+      animation: fsds-spinner-spin calc(var(--fsds-spinner-anim-duration, 800ms) * 1) cubic-bezier(0, 0, 1, 1) infinite;
+    }
     }
 
-    @keyframes spin {
-      from {
+    @keyframes fsds-spinner-spin {
+      0% {
         transform: rotate(0deg);
       }
-      to {
+      100% {
         transform: rotate(360deg);
       }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .spinner,
+      .spinner__visual {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+      .spinner__visual { animation: none; transform: rotate(0deg); }
     }
   `;
 

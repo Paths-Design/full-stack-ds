@@ -393,8 +393,7 @@
           "border-style": "solid",
           "border-width": "var(--fsds-spinner-thickness-regular, 3px)",
           "border-color": "var(--fsds-spinner-color-track, #d0d0d0)",
-          "border-top-color": "var(--fsds-spinner-color-accent, #d92d2e)",
-          "animation": "spin var(--fsds-spinner-anim-duration, 800ms) linear infinite"
+          "border-top-color": "var(--fsds-spinner-color-accent, #d92d2e)"
         }
       },
       {
@@ -440,25 +439,7 @@
         }
       }
     ],
-    "keyframes": [
-      {
-        "name": "spin",
-        "frames": [
-          {
-            "selector": "from",
-            "declarations": {
-              "transform": "rotate(0deg)"
-            }
-          },
-          {
-            "selector": "to",
-            "declarations": {
-              "transform": "rotate(360deg)"
-            }
-          }
-        ]
-      }
-    ]
+    "keyframes": []
   },
   "behavior": {
     "channels": [],

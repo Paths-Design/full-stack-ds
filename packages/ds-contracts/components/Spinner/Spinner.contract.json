@@ -50,32 +50,46 @@
       "members": [
         {
           "name": "size",
-          "propType": { "kind": "ref", "to": "SpinnerSize" },
+          "propType": {
+            "kind": "ref",
+            "to": "SpinnerSize"
+          },
           "description": "Visual size token"
         },
         {
           "name": "thickness",
-          "propType": { "kind": "ref", "to": "SpinnerThickness" },
+          "propType": {
+            "kind": "ref",
+            "to": "SpinnerThickness"
+          },
           "description": "Stroke thickness token"
         },
         {
           "name": "ariaHidden",
-          "propType": { "kind": "boolean" },
+          "propType": {
+            "kind": "boolean"
+          },
           "description": "If decorative only, set ariaHidden; else provide label"
         },
         {
           "name": "label",
-          "propType": { "kind": "string" },
+          "propType": {
+            "kind": "string"
+          },
           "description": "Localized label for screen reader users; ignored if ariaHidden"
         },
         {
           "name": "inline",
-          "propType": { "kind": "boolean" },
+          "propType": {
+            "kind": "boolean"
+          },
           "description": "Inline layout (align with baseline)"
         },
         {
           "name": "showAfterMs",
-          "propType": { "kind": "number" },
+          "propType": {
+            "kind": "number"
+          },
           "description": "Delay before showing (ms) to avoid spinner flash"
         }
       ]
@@ -160,14 +174,48 @@
       "allowed": false
     }
   },
-  "keyframes": {
-    "spin": {
-      "from": {
-        "transform": "rotate(0deg)"
-      },
-      "to": {
-        "transform": "rotate(360deg)"
+  "motion": {
+    "reducedMotion": "respect",
+    "loops": [
+      {
+        "name": "spin",
+        "target": {
+          "part": "visual"
+        },
+        "driver": {
+          "kind": "repeat"
+        },
+        "effect": {
+          "kind": "rotation",
+          "keyframes": [
+            {
+              "offset": 0,
+              "value": 0
+            },
+            {
+              "offset": 1,
+              "value": 360
+            }
+          ]
+        },
+        "timing": {
+          "duration": {
+            "token": "spinner.anim.duration",
+            "multiplier": 1
+          },
+          "easing": {
+            "cubicBezier": [
+              0,
+              0,
+              1,
+              1
+            ]
+          }
+        },
+        "reducedMotion": {
+          "value": 0
+        }
       }
-    }
+    ]
   }
 }

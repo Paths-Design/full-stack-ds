@@ -143,17 +143,14 @@ export class SkeletonElement extends LitElement {
       border-radius: var(--fsds-skeleton-design-root-shape-radius, var(--fsds-skeleton-radius-md, 8px));
       transition-duration: var(--fsds-skeleton-design-root-motion-duration, var(--fsds-skeleton-anim-duration, 400ms));
       transition-timing-function: var(--fsds-skeleton-design-root-motion-easing, var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)));
-      animation: skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
 
       &:has(.skeleton__stack) {
         background-color: var(--fsds-skeleton-design-condition-bb9852400063-background-fill, transparent);
-        animation: none;
         height: auto;
       }
 
       &:has(.skeleton__stack) .skeleton__shape {
         height: var(--fsds-skeleton-design-condition-f1cb085b34e5-sizing-height, var(--fsds-skeleton-shape-height-text, 1rem));
-        animation: skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
       }
     }
 
@@ -201,10 +198,6 @@ export class SkeletonElement extends LitElement {
       min-width: 80px;
     }
 
-    .skeleton--shimmer {
-      animation: skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
-    }
-
     .skeleton--wipe {
       overflow: hidden;
       position: relative;
@@ -220,16 +213,29 @@ export class SkeletonElement extends LitElement {
       animation: skeleton-wipe calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
     }
 
-    .skeleton--pulse {
-      animation: skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 3) ease-in-out infinite;
-    }
-
     .skeleton--none {
       animation: none;
     }
+
+    .skeleton--shimmer {
+      animation: fsds-skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite;
     }
 
-    @keyframes skeleton-shimmer {
+    .skeleton--pulse {
+      animation: fsds-skeleton-pulse calc(var(--fsds-skeleton-anim-duration, 400ms) * 3) cubic-bezier(0.42, 0, 0.58, 1) infinite;
+    }
+    }
+
+    @keyframes skeleton-wipe {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    @keyframes fsds-skeleton-shimmer {
       0% {
         opacity: 1;
       }
@@ -241,13 +247,29 @@ export class SkeletonElement extends LitElement {
       }
     }
 
-    @keyframes skeleton-wipe {
+    @keyframes fsds-skeleton-pulse {
       0% {
-        transform: translateX(-100%);
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
       }
       100% {
-        transform: translateX(100%);
+        opacity: 1;
       }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skeleton,
+      .skeleton--wipe::after,
+      .skeleton--shimmer,
+      .skeleton--pulse {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+      .skeleton--shimmer { animation: none; opacity: 1; }
+      .skeleton--pulse { animation: none; opacity: 1; }
     }
   `;
 

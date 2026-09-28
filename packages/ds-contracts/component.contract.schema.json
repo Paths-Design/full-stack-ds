@@ -411,7 +411,7 @@
     },
     "slots": {
       "type": "object",
-      "description": "Named slot anchors keyed by slot name. Each entry declares whether the slot is required and an optional CSS selector consumers or test harnesses can use to locate the slot in rendered output. Complements anatomy.details — anatomy describes the part's semantic role; slots describes its DOM anchor.",
+      "description": "Named slot anchors keyed by slot name. Each entry declares whether the slot is required and an optional CSS selector consumers or test harnesses can use to locate the slot in rendered output. Complements anatomy.details \u2014 anatomy describes the part's semantic role; slots describes its DOM anchor.",
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
@@ -421,7 +421,7 @@
         "properties": {
           "required": {
             "type": "boolean",
-            "description": "Two senses, distinguished by part ownership. For consumer-supplied regions (anatomy.dom named slots, public subcomponents): every valid composition must supply the region — curated usage frames are audited against this (FEAT-SLOT-REQUIRED-USAGE-BINDING-01). For component-owned anchors: the anchor is guaranteed present in rendered output. The `root` entry anchors the host itself."
+            "description": "Two senses, distinguished by part ownership. For consumer-supplied regions (anatomy.dom named slots, public subcomponents): every valid composition must supply the region \u2014 curated usage frames are audited against this (FEAT-SLOT-REQUIRED-USAGE-BINDING-01). For component-owned anchors: the anchor is guaranteed present in rendered output. The `root` entry anchors the host itself."
           },
           "selector": {
             "type": "string",
@@ -832,7 +832,7 @@
     },
     "propMember": {
       "type": "object",
-      "description": "A single prop exposed by the component. Declares its type as EITHER a legacy TS-string `type` OR a structured framework-neutral `propType` (exactly one) — the same XOR as designedPropMember/constrainedPropMember, so legacy-bucket (styled/hook) members can migrate to the structured grammar in place (CODEGEN-PROP-TYPE-IR-LEGACY-BUCKET-REFS-01).",
+      "description": "A single prop exposed by the component. Declares its type as EITHER a legacy TS-string `type` OR a structured framework-neutral `propType` (exactly one) \u2014 the same XOR as designedPropMember/constrainedPropMember, so legacy-bucket (styled/hook) members can migrate to the structured grammar in place (CODEGEN-PROP-TYPE-IR-LEGACY-BUCKET-REFS-01).",
       "required": [
         "name",
         "description"
@@ -2022,6 +2022,13 @@
         "reducedMotionStrategy": {
           "type": "string",
           "description": "How the reduced-motion adaptation is applied. Free-form."
+        },
+        "loops": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/motionLoop"
+          },
+          "description": "Part-bound repeating motion. Shared web CSS lowering supports opacity and rotation; other targets remain unrealized."
         }
       }
     },
@@ -2230,7 +2237,7 @@
         "targetPart": {
           "type": "string",
           "minLength": 1,
-          "description": "Anatomy part that owns this trigger's interaction (required for overlayClick): the dismissal click handler binds on this element, not the root — the root is pointer-events:none under a full-cover overlay and can never be the hit target (FIX-OVERLAY-CLICK-DISMISSAL-BINDING-01)."
+          "description": "Anatomy part that owns this trigger's interaction (required for overlayClick): the dismissal click handler binds on this element, not the root \u2014 the root is pointer-events:none under a full-cover overlay and can never be the hit target (FIX-OVERLAY-CLICK-DISMISSAL-BINDING-01)."
         },
         "description": {
           "type": "string"
@@ -2635,7 +2642,7 @@
                 "roving-first",
                 "roving-last"
               ],
-              "description": "Closed realization vocabulary (FEAT-A11Y-COMPOSITE-KEYBOARD-01). When present, the Semantic IR lowers the entry into an emitted keydown realization on the `when` part's node in every web framework; the op sequence derives only from declared facts. `open` requires exactly one boolean channel (set true, then move focus into the surface per `focus.initialFocus`, or to the first item when already open). `select` requires `compositeControl.part === when` (activate the item through the composite channel exactly as its pointer activation does, then, when the contract declares dismissal and `focus.returnFocus`, close and refocus the return part). `roving-*` requires `focus.strategy === \"roving\"` and a declared roving item set — a `compositeControl` item part or an anatomy part carrying `focusable: \"roving\"` (move DOM focus among the item parts, honoring `focus.orientation` and `focus.wrap`). Absent `behavior`, the entry is declaration-only: realized by native host semantics (button Enter/Space) or a behavior primitive (dismissal Escape), which the a11y-realization audit classifies."
+              "description": "Closed realization vocabulary (FEAT-A11Y-COMPOSITE-KEYBOARD-01). When present, the Semantic IR lowers the entry into an emitted keydown realization on the `when` part's node in every web framework; the op sequence derives only from declared facts. `open` requires exactly one boolean channel (set true, then move focus into the surface per `focus.initialFocus`, or to the first item when already open). `select` requires `compositeControl.part === when` (activate the item through the composite channel exactly as its pointer activation does, then, when the contract declares dismissal and `focus.returnFocus`, close and refocus the return part). `roving-*` requires `focus.strategy === \"roving\"` and a declared roving item set \u2014 a `compositeControl` item part or an anatomy part carrying `focusable: \"roving\"` (move DOM focus among the item parts, honoring `focus.orientation` and `focus.wrap`). Absent `behavior`, the entry is declaration-only: realized by native host semantics (button Enter/Space) or a behavior primitive (dismissal Escape), which the a11y-realization audit classifies."
             }
           }
         },
@@ -2801,6 +2808,178 @@
             "max": {
               "type": "integer",
               "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "motionLoop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "target",
+        "driver",
+        "effect",
+        "timing",
+        "reducedMotion"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "part"
+          ],
+          "properties": {
+            "part": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "driver": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "repeat"
+            }
+          }
+        },
+        "when": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "variant",
+            "equals"
+          ],
+          "properties": {
+            "variant": {
+              "type": "string",
+              "minLength": 1
+            },
+            "equals": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "effect": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "keyframes"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "opacity",
+                "rotation"
+              ]
+            },
+            "keyframes": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "offset",
+                  "value"
+                ],
+                "properties": {
+                  "offset": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "timing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "duration",
+            "easing"
+          ],
+          "properties": {
+            "duration": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "token"
+              ],
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "multiplier": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              }
+            },
+            "easing": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "token"
+                  ],
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "cubicBezier"
+                  ],
+                  "properties": {
+                    "cubicBezier": {
+                      "type": "array",
+                      "minItems": 4,
+                      "maxItems": 4,
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "reducedMotion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
             }
           }
         }
