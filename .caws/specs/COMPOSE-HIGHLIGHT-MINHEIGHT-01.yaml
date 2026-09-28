@@ -32,3 +32,12 @@ contracts:
   - name: 'compose-token-parity'
     type: contract-test
     path: 'scripts/compose-parity-diff.test.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "The shared source chrome resolves box-model.min-height and applies heightIn before padding for all three rendering branches; renamed-contract emission assertions pass. Compose token parity passes across 52 components; Kotlin library compile and tests pass. Full admission rail, 4419 root tests, framework suites, lint and docs pass. Raw logs: tmp/compose-highlight-minheight/. No Android rendered-layout claim. Citation verification checks tracked source/commit reachability; test commands were executed separately."
+    recorded_at: "2026-09-28T06:30:04.599Z"
+    command: "./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon"
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/consumer-content.test.ts
+    commit_sha: "99a273dadf60701609b3b6231dac73f2bc033e63"
