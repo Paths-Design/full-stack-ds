@@ -1,0 +1,19 @@
+@layer components {
+/* @generated:start tokens */
+.carousel {
+  --fsds-carousel-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+  --fsds-carousel-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+  --fsds-carousel-color-progress: var(--fsds-semantic-color-foreground-primary, #141414);
+  --fsds-carousel-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+  --fsds-carousel-size-dot-size: var(--fsds-core-spacing-size-04, 8px);
+  --fsds-carousel-size-active-size: var(--fsds-core-spacing-size-08, 32px);
+  --fsds-carousel-size-control-size: var(--fsds-core-spacing-size-08, 32px);
+  --fsds-carousel-size-radius: var(--fsds-core-shape-radius-full, 9999px);
+}
+/* @generated:end */
+
+/* @custom:start overrides */
+
+/* @custom:end */
+
+}

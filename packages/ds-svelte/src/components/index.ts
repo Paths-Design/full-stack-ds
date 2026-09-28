@@ -28,6 +28,7 @@ export { default as CardHeader } from "./Card/CardHeader.svelte";
 export { default as CardLink } from "./Card/CardLink.svelte";
 export { default as CardMedia } from "./Card/CardMedia.svelte";
 export { default as CardNote } from "./Card/CardNote.svelte";
+export { default as Carousel } from "./Carousel/Carousel.svelte";
 export { default as Checkbox } from "./Checkbox/Checkbox.svelte";
 export { default as Chip } from "./Chip/Chip.svelte";
 export { default as CodeBlock } from "./CodeBlock/CodeBlock.svelte";
