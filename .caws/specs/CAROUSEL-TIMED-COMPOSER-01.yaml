@@ -87,3 +87,11 @@ evidence:
     exit_code: 0
     artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/browser.log
     commit_sha: "2bf4fbe2"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "All five browser realizations verify opposite slide directions, interrupted reversal from the current transform and cancellation under reduced motion. Mirrored unit cases pin wrap direction, 1280px capped duration and a full dwell budget after animation completion."
+    recorded_at: "2026-09-28T09:27:46.404Z"
+    command: pnpm test
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/root.log
+    commit_sha: "2bf4fbe2"
