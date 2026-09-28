@@ -91,3 +91,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/motion-ir.test.ts
     commit_sha: a0fbff388e4dc3432a318447e4c72a4761f22518
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "All 10 Chromium witnesses pass across React Vue Svelte Angular Lit: sampled 90-degree rotation and 0.5 opacity, token timing overrides, exclusive modes, multiline none settlement and visible static states under live reduced-motion changes. Consumer block layout supplies Skeleton width; Lit uses its public animate attribute. Raw log tmp/motion-loading-loops/runtime.log."
+    recorded_at: "2026-09-28T05:48:34.645Z"
+    command: FSDS_E2E_PORT=5198 pnpm exec playwright test e2e/motion-loops.spec.ts --workers=2
+    exit_code: 0
+    artifact_path: e2e/motion-loops.spec.ts
+    commit_sha: a0fbff388e4dc3432a318447e4c72a4761f22518
