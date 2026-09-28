@@ -2,9 +2,11 @@ id: CAROUSEL-TIMED-COMPOSER-01
 title: 'Compose Carousel with one slide budget and alternative progress indicators'
 risk_tier: 3
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Timed Carousel and directional size-aware motion verified with executed local tests and corrected source citations'
 created_at: '2026-09-28T08:02:44.534Z'
-updated_at: '2026-09-28T09:48:18.898Z'
+updated_at: '2026-09-28T09:50:05.850Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
