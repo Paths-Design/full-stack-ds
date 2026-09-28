@@ -204,6 +204,12 @@
       "platforms": [
         "web"
       ]
+    },
+    "display": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
     }
   },
   ".carousel__fill:dir(rtl)": {
@@ -257,17 +263,7 @@
       "platforms": [
         "web"
       ]
-    }
-  },
-  ".carousel--pagination .carousel__ring": {
-    "display": {
-      "literal": "none",
-      "platforms": [
-        "web"
-      ]
-    }
-  },
-  ".carousel--next .carousel__fill": {
+    },
     "display": {
       "literal": "none",
       "platforms": [
@@ -574,6 +570,22 @@
   ".carousel:not([data-sequence-root]) > .carousel__viewport": {
     "visibility": {
       "literal": "hidden",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel--pagination .carousel__fill, .carousel--both .carousel__fill": {
+    "display": {
+      "literal": "block",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel--next .carousel__ring, .carousel--both .carousel__ring": {
+    "display": {
+      "literal": "block",
       "platforms": [
         "web"
       ]

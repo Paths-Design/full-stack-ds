@@ -314,7 +314,8 @@
           "inset": "0",
           "background-color": "var(--fsds-carousel-color-progress, #141414)",
           "transform-origin": "left center",
-          "pointer-events": "none"
+          "pointer-events": "none",
+          "display": "none"
         }
       },
       {
@@ -332,18 +333,7 @@
           "background": "conic-gradient(currentColor calc(var(--sequence-progress, 0) * 1turn), transparent 0)",
           "mask": "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0)",
           "color": "var(--fsds-carousel-color-progress, #141414)",
-          "pointer-events": "none"
-        }
-      },
-      {
-        "selector": ".carousel--pagination .carousel__ring",
-        "declarations": {
-          "display": "none"
-        }
-      },
-      {
-        "selector": ".carousel--next .carousel__fill",
-        "declarations": {
+          "pointer-events": "none",
           "display": "none"
         }
       },
@@ -426,6 +416,18 @@
         "selector": ".carousel:not([data-sequence-root]) > .carousel__viewport",
         "declarations": {
           "visibility": "hidden"
+        }
+      },
+      {
+        "selector": ".carousel--pagination .carousel__fill, .carousel--both .carousel__fill",
+        "declarations": {
+          "display": "block"
+        }
+      },
+      {
+        "selector": ".carousel--next .carousel__ring, .carousel--both .carousel__ring",
+        "declarations": {
+          "display": "block"
         }
       }
     ],
