@@ -1,0 +1,45 @@
+id: MOTION-PRINCIPLES-01
+title: 'Establish compositional motion principles and preserve declaration provenance'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-09-28T04:47:53.537Z'
+updated_at: '2026-09-28T04:47:53.537Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Motion IR declaration custody and architecture documentation'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/motion-substrate.md'
+    - 'docs/architecture/presence-surfaces.md'
+    - 'docs/README.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/motion-ir.test.ts'
+  out: []
+invariants:
+  - 'Existing motion declarations remain declaration-only and generated component behavior is unchanged.'
+  - 'Motion principles distinguish design intent from executable support and keep platform syntax out of semantic contracts.'
+acceptance:
+  - id: A1
+    given: 'the current motion and presence implementation'
+    when: 'the architecture document is read'
+    then: 'ownership composition size policy platform realization and revision principles are documented with explicit support boundaries and resolvable links.'
+  - id: A2
+    given: 'authored motion declarations including missing and free-form triggers'
+    when: 'ComponentIR is built'
+    then: 'original trigger text or null survives with explicit declaration-only status without parsing it into an executable binding.'
+  - id: A3
+    given: 'the additive IR change'
+    when: 'governed rail root tests framework tests and documentation checks run'
+    then: 'checks pass and tracked generated component bytes remain unchanged.'
+rollback:
+  - 'Revert the source and documentation commits; no runtime state migration is introduced.'
+non_functional: {}
+contracts:
+  - name: 'motion-declaration-custody'
+    type: contract-test
+    path: 'packages/ds-codegen/src/motion-ir.test.ts'
