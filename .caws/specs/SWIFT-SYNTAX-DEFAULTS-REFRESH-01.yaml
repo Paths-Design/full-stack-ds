@@ -2,9 +2,10 @@ id: SWIFT-SYNTAX-DEFAULTS-REFRESH-01
 title: 'Refresh Swift syntax defaults for pending source presentation changes'
 risk_tier: 3
 mode: chore
-lifecycle_state: draft
+lifecycle_state: active
+worktree: swift-syntax-defaults-refresh
 created_at: '2026-09-28T06:36:33.731Z'
-updated_at: '2026-09-28T06:36:33.731Z'
+updated_at: '2026-09-28T06:36:35.254Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
