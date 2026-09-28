@@ -24,3 +24,12 @@ acceptance:
     then: 'the committed table matches the graph and Swift tests and remaining pre-push audits pass.'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "The generator adds nine graph-derived adaptive syntax colors; its --check reports up to date. Swift package tests pass: 47 reported, four existing skips, zero failures. Full rail, 4419 root tests and framework suites pass. All remaining pre-push behavior, a11y, styling, reference, custom-region, motion, carrier and variant audits plus doc checks pass. Raw logs preserved at tmp/swift-syntax-defaults/. Citation verification checks source/commit reachability; executions were observed separately."
+    recorded_at: "2026-09-28T06:42:54.994Z"
+    command: swift test --package-path packages/ds-swiftui
+    exit_code: 0
+    artifact_path: packages/ds-swiftui/Sources/DsSwiftUI/Tokens/FsdsTheme.swift
+    commit_sha: df12120ccd5483d76ba30d2b7d6c9f5010cbd381
