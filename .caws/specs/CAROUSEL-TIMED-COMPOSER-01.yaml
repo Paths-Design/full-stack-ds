@@ -87,9 +87,8 @@ evidence:
     commit_sha: b62540e4
   - criterion_id: A4
     status: pass
-    evidence_ref: "Final tests pin capped size scaling, wrapping direction and a full budget after movement. All five browser realizations pass actual computed-transform direction, interrupted reversal and reduced-motion cancellation checks."
-    recorded_at: "2026-09-28T09:43:09.823Z"
+    evidence_ref: "Final mirrored unit cases establish wrapping, capped width scaling and full dwell after movement; five browser realizations establish computed-transform direction, interruption and reduced-motion cancellation. Inspected ignored logs: tmp/carousel-timed/final-root.log and final-browser.log; commit verification does not rerun these commands."
+    recorded_at: "2026-09-28T09:49:16.053Z"
     command: pnpm test
     exit_code: 0
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/final-root.log
     commit_sha: b62540e4
