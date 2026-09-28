@@ -79,3 +79,11 @@ evidence:
     exit_code: 0
     artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/root.log
     commit_sha: "2bf4fbe2"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "All 16 executed browser cases passed: both progress treatments, manual controls, hidden/inert inactive content, reduced-motion projections and actual React Card composition. Other framework fixtures compose consumer DOM children."
+    recorded_at: "2026-09-28T09:27:36.773Z"
+    command: FSDS_E2E_PORT=5199 pnpm exec playwright test e2e/carousel.spec.ts --workers=2
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/browser.log
+    commit_sha: "2bf4fbe2"
