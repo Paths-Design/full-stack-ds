@@ -82,3 +82,8 @@ evidence:
     command: pnpm exec playwright test --config=/tmp/fsds-carousel-review/playwright.config.cjs
     exit_code: 1
     commit_sha: ed11396a
+  - criterion_id: A2
+    status: fail
+    evidence_ref: "Review baseline ed11396a: a real generated Lit Card has display contents and zero host width; its rendered child stays at x=520 from animation start to midpoint. Existing cross-framework tests inject articles and miss this. Reproducer: tmp/carousel-review/review.spec.cjs, browser.log."
+    recorded_at: "2026-09-28T10:01:17.698Z"
+    commit_sha: ed11396a
