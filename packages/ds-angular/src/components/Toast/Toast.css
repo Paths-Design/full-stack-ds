@@ -83,6 +83,22 @@
 .toast__action:empty {
   display: none;
 }
+
+.toast__progress {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  transform-origin: left center;
+  pointer-events: none;
+  border-end-start-radius: inherit;
+  border-end-end-radius: inherit;
+  height: var(--fsds-toast-progress-height, 2px);
+  background-color: var(--fsds-toast-progress-color, #141414);
+}
+
+.toast__progress:dir(rtl) {
+  transform-origin: right center;
+}
 /* @generated:end */
 
 }

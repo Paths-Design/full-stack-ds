@@ -48,6 +48,7 @@ const behavior = useToast({
 const autoDismiss = useAutoDismiss({
   open: () => Boolean(behavior.open.value),
   durationMs: () => props.duration === undefined ? 6000 : props.duration,
+    reducedMotionSteps: 10,
   onDismiss: () => behavior.setOpen(false),
 });
 // @generated:end
@@ -86,6 +87,7 @@ const instanceId = useId();
           </div>
           <button :class="'toast__close'" type="button" aria-label="Dismiss" @click="() => behavior.setOpen(!behavior.open.value)"></button>
         </div>
+        <div :class="'toast__progress'" hidden :ref="autoDismiss.bindProgress" aria-hidden="true"></div>
       </div>
     </div>
   </Teleport>
