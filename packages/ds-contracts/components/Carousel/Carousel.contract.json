@@ -1,0 +1,421 @@
+{
+  "$schema": "../../component.contract.schema.json",
+  "name": "Carousel",
+  "description": "Composes consumer content into a circular slide sequence with optional timed rotation and a shared elapsed-budget projection. Supply one direct child element for each slide label.",
+  "layer": "composer",
+  "category": "structure",
+  "anatomy": {
+    "parts": [
+      "root",
+      "rotation",
+      "viewport",
+      "controls",
+      "previous",
+      "pagination",
+      "picker",
+      "fill",
+      "next",
+      "ring",
+      "marker"
+    ],
+    "details": {
+      "root": {
+        "tag": "section",
+        "subcomponent": false,
+        "description": "root of the composed slide sequence.",
+        "role": "root"
+      },
+      "rotation": {
+        "tag": "button",
+        "subcomponent": false,
+        "description": "rotation of the composed slide sequence.",
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true
+      },
+      "viewport": {
+        "tag": "div",
+        "subcomponent": false,
+        "description": "viewport of the composed slide sequence.",
+        "role": "content"
+      },
+      "controls": {
+        "tag": "div",
+        "subcomponent": false,
+        "description": "controls of the composed slide sequence.",
+        "role": "content"
+      },
+      "previous": {
+        "tag": "button",
+        "subcomponent": false,
+        "description": "previous of the composed slide sequence.",
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true
+      },
+      "pagination": {
+        "tag": "div",
+        "subcomponent": false,
+        "description": "pagination of the composed slide sequence.",
+        "role": "content"
+      },
+      "picker": {
+        "tag": "button",
+        "subcomponent": false,
+        "description": "picker of the composed slide sequence.",
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true
+      },
+      "fill": {
+        "tag": "span",
+        "subcomponent": false,
+        "description": "fill of the composed slide sequence.",
+        "role": "decoration"
+      },
+      "next": {
+        "tag": "button",
+        "subcomponent": false,
+        "description": "next of the composed slide sequence.",
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true
+      },
+      "ring": {
+        "tag": "span",
+        "subcomponent": false,
+        "description": "ring of the composed slide sequence.",
+        "role": "decoration"
+      },
+      "marker": {
+        "tag": "span",
+        "role": "decoration",
+        "subcomponent": false,
+        "description": "Visible dot or active pill within the larger picker hit area."
+      }
+    },
+    "dom": {
+      "tag": "section",
+      "part": "root",
+      "attrs": {
+        "role": "region",
+        "aria-roledescription": "carousel"
+      },
+      "bindings": {
+        "aria-label": "prop:label"
+      },
+      "children": [
+        {
+          "tag": "button",
+          "part": "rotation",
+          "attrs": {
+            "type": "button",
+            "aria-label": "Start slide rotation"
+          },
+          "content": "literal:Start slide rotation"
+        },
+        {
+          "tag": "div",
+          "part": "viewport",
+          "attrs": {
+            "aria-live": "off",
+            "aria-atomic": "false"
+          },
+          "children": [
+            {
+              "tag": "children"
+            }
+          ]
+        },
+        {
+          "tag": "div",
+          "part": "controls",
+          "children": [
+            {
+              "tag": "button",
+              "part": "previous",
+              "attrs": {
+                "type": "button",
+                "aria-label": "Previous slide"
+              },
+              "children": [
+                {
+                  "componentRef": "fsds.Icon",
+                  "attrs": {
+                    "name": "arrow-left",
+                    "size": "sm"
+                  }
+                }
+              ]
+            },
+            {
+              "tag": "div",
+              "part": "pagination",
+              "attrs": {
+                "role": "group",
+                "aria-label": "Choose slide"
+              },
+              "children": [
+                {
+                  "tag": "button",
+                  "part": "picker",
+                  "attrs": {
+                    "type": "button"
+                  },
+                  "children": [
+                    {
+                      "tag": "span",
+                      "part": "marker",
+                      "attrs": {
+                        "aria-hidden": "true"
+                      },
+                      "children": [
+                        {
+                          "tag": "span",
+                          "part": "fill",
+                          "attrs": {
+                            "aria-hidden": "true"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "iterate": {
+                    "source": "prop:slides",
+                    "kind": "array",
+                    "itemType": "string"
+                  },
+                  "bindings": {
+                    "aria-label": "iter:item"
+                  }
+                }
+              ]
+            },
+            {
+              "tag": "button",
+              "part": "next",
+              "attrs": {
+                "type": "button",
+                "aria-label": "Next slide"
+              },
+              "children": [
+                {
+                  "tag": "span",
+                  "part": "ring",
+                  "attrs": {
+                    "aria-hidden": "true"
+                  }
+                },
+                {
+                  "componentRef": "fsds.Icon",
+                  "attrs": {
+                    "name": "arrow-right",
+                    "size": "sm"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "props": {
+    "styled": {
+      "members": [
+        {
+          "name": "slides",
+          "propType": {
+            "kind": "array",
+            "items": {
+              "kind": "string"
+            }
+          },
+          "default": [],
+          "description": "Accessible slide labels, in the same order as the direct child elements in the viewport."
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "description": "Controlled active slide index."
+        },
+        {
+          "name": "defaultIndex",
+          "type": "number",
+          "default": 0,
+          "description": "Initial index for uncontrolled composition."
+        },
+        {
+          "name": "onIndexChange",
+          "propType": {
+            "kind": "callback",
+            "params": [
+              {
+                "name": "index",
+                "type": {
+                  "kind": "number"
+                }
+              }
+            ],
+            "returns": {
+              "kind": "void"
+            }
+          },
+          "description": "Requests the next active slide index."
+        },
+        {
+          "name": "autoPlay",
+          "type": "boolean",
+          "default": false,
+          "description": "Opt in to automatic rotation. Keyboard focus stops it until the rotation control explicitly restarts it."
+        },
+        {
+          "name": "duration",
+          "type": "number | null",
+          "description": "Active milliseconds per slide. null or a nonpositive value disables the timer."
+        },
+        {
+          "name": "indicator",
+          "type": "CarouselIndicator",
+          "default": "pagination",
+          "description": "Display the elapsed budget in the current pagination pill, around Next, or both."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "Featured content",
+          "description": "Accessible name for the carousel region."
+        }
+      ]
+    }
+  },
+  "channels": {
+    "slide": {
+      "value": "index",
+      "defaultValue": "defaultIndex",
+      "onChange": "onIndexChange",
+      "valueType": "number"
+    }
+  },
+  "types": {
+    "CarouselIndicator": {
+      "kind": "union",
+      "values": [
+        "pagination",
+        "next",
+        "both"
+      ]
+    }
+  },
+  "variants": {
+    "indicator": [
+      "pagination",
+      "next",
+      "both"
+    ]
+  },
+  "sequence": {
+    "channel": "slide",
+    "itemsProp": "slides",
+    "viewport": "viewport",
+    "previous": "previous",
+    "next": "next",
+    "rotation": "rotation",
+    "picker": "picker",
+    "timing": {
+      "durationProp": "duration",
+      "autoPlayProp": "autoPlay",
+      "durationToken": "carousel.timing.advance"
+    },
+    "labels": {
+      "start": "Start slide rotation",
+      "stop": "Stop slide rotation",
+      "item": "slide"
+    }
+  },
+  "motion": {
+    "reducedMotion": "respect",
+    "progress": [
+      {
+        "target": {
+          "part": "fill"
+        },
+        "driver": {
+          "kind": "budget",
+          "source": "sequence.advance"
+        },
+        "effect": "elapsed-width",
+        "reducedMotion": {
+          "kind": "steps",
+          "steps": 10
+        }
+      },
+      {
+        "target": {
+          "part": "ring"
+        },
+        "driver": {
+          "kind": "budget",
+          "source": "sequence.advance"
+        },
+        "effect": "elapsed-ring",
+        "reducedMotion": {
+          "kind": "steps",
+          "steps": 10
+        }
+      }
+    ],
+    "sequenceTransition": {
+      "target": {
+        "part": "viewport",
+        "scope": "children"
+      },
+      "driver": {
+        "kind": "channel",
+        "source": "sequence.index"
+      },
+      "effect": "slide-inline",
+      "durationToken": "carousel.motion.duration",
+      "easingToken": "carousel.motion.easing",
+      "size": {
+        "referenceWidth": 320,
+        "minMultiplier": 0.5,
+        "maxMultiplier": 2
+      },
+      "reducedMotion": "instant"
+    }
+  },
+  "focus": {
+    "strategy": "none",
+    "description": "Native buttons use normal tab order. Focus entering the carousel stops automatic rotation until explicit restart."
+  },
+  "a11y": {
+    "role": "region",
+    "apgPattern": "carousel",
+    "labeling": [
+      "aria-label"
+    ],
+    "keyboard": [
+      {
+        "key": "Enter|Space",
+        "action": "Activate the focused rotation, previous, next or slide picker button.",
+        "when": "focused"
+      }
+    ]
+  },
+  "a2ui": {
+    "category": "layout",
+    "children": {
+      "allowed": true,
+      "slot": "children",
+      "accepts": [
+        "*"
+      ]
+    },
+    "usageHints": [
+      "Supply one direct child element per slide label.",
+      "Automatic rotation is opt in.",
+      "Choose pagination, next, or both timer projections."
+    ]
+  }
+}
