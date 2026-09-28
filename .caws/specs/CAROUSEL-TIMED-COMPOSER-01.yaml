@@ -66,11 +66,10 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Final source b62540e4 passed the six-target admission rail, 4576 root tests and all framework suites. The renamed-contract tests establish generic lowering. Runtime logs and source revisions are preserved in verification.json."
-    recorded_at: "2026-09-28T09:42:44.557Z"
+    evidence_ref: "Final b62540e4 source passed governed:rail, 4576 root tests and all framework suites, including renamed-contract generation. Inspected local runtime logs: tmp/carousel-timed/verification.json and final-rail.log; these ignored logs are not committed artifacts. Mechanical verification here establishes commit reachability; command execution was observed separately."
+    recorded_at: "2026-09-28T09:48:47.480Z"
     command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
     exit_code: 0
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/verification.json
     commit_sha: b62540e4
   - criterion_id: A2
     status: pass
