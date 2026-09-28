@@ -1,3 +1,4 @@
+import { sequenceConfig } from "../../sequence.js";
 /**
  * Vue 3 SFC emission, IR-driven.
  *
@@ -1631,6 +1632,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     importLines.push(`import { h, Fragment, defineComponent, type VNode } from "vue";`);
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   const importsBody = importLines.join("\n");
 
   const typesBody = emitNonReactTypeAliases(ir).join("\n");
@@ -1685,6 +1687,13 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       `  onDismiss: () => behavior.set${capitalize(autoDismissChannel.name)}(false),`,
       `});`,
     );
+  }
+  if (ir.motion.sequence) {
+    const seq = ir.motion.sequence;
+    hookLines.push(`const sequence = useSequence(${sequenceConfig(seq, ir.cssPrefix)}, () => ({`,
+      `  index: behavior.${seq.channel}.value, labels: props.${seq.itemsProp}, autoPlay: props.${seq.timing.autoPlayProp},`,
+      `  durationMs: props.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : props.${seq.timing.durationProp},`,
+      `  onIndexChange: behavior.set${capitalize(seq.channel)},`, `}));`);
   }
   const hookBody = hookLines.join("\n");
 
@@ -1858,6 +1867,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     isRoot: true,
     cssPrefix: ir.cssPrefix,
     countdownPart: ir.motion.countdown?.target.name,
+    sequence: Boolean(ir.motion.sequence),
     autoDismissPause: Boolean(autoDismissPolicy && autoDismissChannel),
     rootRole: ir.root.rootRole,
     rootPolymorphicTag: ir.root.polymorphicTagProp,
@@ -1987,6 +1997,7 @@ interface VueRenderContext {
   /** Component cssPrefix for the root's data-fsds-component identification attr. */
   cssPrefix?: string;
   /** When true, bind the auto-dismiss pause listeners on the root via v-on. */
+  sequence?: boolean;
   autoDismissPause?: boolean;
   countdownPart?: string;
   overlayClickSetter?: string;
@@ -2446,6 +2457,7 @@ function renderVueDomNode(
         `:style="{ position: 'fixed', top: \`\${anchoredPosition.top}px\`, left: \`\${anchoredPosition.left}px\`, visibility: anchoredPosition.ready ? 'visible' : 'hidden' }"`,
       );
     }
+    if (ctx.sequence) attrs.push(`:ref="sequence.bindRoot"`);
     if (ctx.autoDismissPause) {
       attrs.push(`v-on="autoDismiss.pauseListeners"`);
     }

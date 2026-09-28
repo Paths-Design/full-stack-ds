@@ -38,6 +38,8 @@ export { default as CardHeader } from "./Card/CardHeader.vue";
 export { default as CardLink } from "./Card/CardLink.vue";
 export { default as CardMedia } from "./Card/CardMedia.vue";
 export { default as CardNote } from "./Card/CardNote.vue";
+import "./Carousel/Carousel.css";
+export { default as Carousel } from "./Carousel/Carousel.vue";
 import "./Checkbox/Checkbox.css";
 export { default as Checkbox } from "./Checkbox/Checkbox.vue";
 import "./Chip/Chip.css";

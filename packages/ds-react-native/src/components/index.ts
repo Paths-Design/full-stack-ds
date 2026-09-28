@@ -18,6 +18,8 @@ export { Calendar } from "./Calendar/Calendar";
 export type { CalendarProps } from "./Calendar/Calendar";
 export { Card } from "./Card/Card";
 export type { CardProps } from "./Card/Card";
+export { Carousel } from "./Carousel/Carousel";
+export type { CarouselProps } from "./Carousel/Carousel";
 export { Checkbox } from "./Checkbox/Checkbox";
 export type { CheckboxProps } from "./Checkbox/Checkbox";
 export { Chip } from "./Chip/Chip";

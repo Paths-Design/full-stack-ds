@@ -38,7 +38,7 @@ The category enum is intentionally pragmatic rather than ontologically pure. It 
 | `category` | what user-facing role does this serve? | action, input, feedback, glyph, display, structure, surface |
 | `morphology` | what geometry / default affordance does it have? | `fixed-square`, `content-inline`, `identity-inline`, `linear-meter`, `loading-block`, `replaced-media` |
 
-`morphology` selects a `StyleProfile` supplying box-model slot defaults plus root structural CSS, layered **between** the BoxModel primitive defaults and the component token sidecar — the sidecar still wins. When absent, the component keeps the legacy two-way primitive-under-sidecar merge, so adoption is incremental: 7 of <!-- component-count -->52 contracts declare it today.
+`morphology` selects a `StyleProfile` supplying box-model slot defaults plus root structural CSS, layered **between** the BoxModel primitive defaults and the component token sidecar — the sidecar still wins. When absent, the component keeps the legacy two-way primitive-under-sidecar merge, so adoption is incremental: 7 of <!-- component-count -->53 contracts declare it today.
 
 `category` therefore stays behavioral and is no longer asked to carry geometry. It remains intentionally pragmatic rather than ontologically pure, and should still not be read as a complete semantic theory of UI.
 

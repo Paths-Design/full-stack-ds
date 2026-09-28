@@ -1,4 +1,4 @@
-import { Card, Chip, CodeSnippet, Details, Stack, Stat, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@full-stack-ds/react";
+import { Card, Carousel, Chip, CodeSnippet, Details, Stack, Stat, Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@full-stack-ds/react";
 import type { Bundle, TargetCensus } from "../types/data";
 import { buildHref } from "../router";
 
@@ -144,6 +144,15 @@ export function Home({ bundle }: HomeProps) {
         numbers below are censused from the <CodeSnippet text="packages/" /> tree at build
         time, so they always reflect what is actually here.
       </p>
+
+      <section className="section" aria-label="Explore the system">
+        <h2 className="section-title">Explore the system</h2>
+        <Carousel slides={["Browse components", "Explore tokens", "Read the architecture"]} label="Explore the system" duration={null}>
+          <Card><h3>Build with composed parts</h3><p>Browse component anatomy, properties, and working examples.</p><a href={buildHref({ kind: "component", name: "Carousel", tab: "design" })}>Explore Carousel</a></Card>
+          <Card><h3>Follow a design decision</h3><p>Trace reusable values through the token system.</p><a href="#/tokens">Explore tokens</a></Card>
+          <Card><h3>Understand the contract</h3><p>See how shared semantics become framework components.</p><a href="#/architecture">Read the architecture</a></Card>
+        </Carousel>
+      </section>
 
       <div className="home-stats">
         <div className="home-stat">

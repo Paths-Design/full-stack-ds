@@ -565,8 +565,37 @@ export interface ContractMotionCountdown {
   reducedMotion: { kind: "steps"; steps: number };
 }
 
+/** A finite, circular content sequence. Children of viewport are the slides. */
+export interface ContractSequence {
+  labels: { start: string; stop: string; item: string };
+  channel: string;
+  itemsProp: string;
+  viewport: string;
+  previous: string;
+  next: string;
+  rotation: string;
+  picker: string;
+  timing: { durationProp: string; autoPlayProp: string; durationToken: string };
+}
+export interface ContractMotionProgress {
+  target: { part: string };
+  driver: { kind: "budget"; source: "sequence.advance" };
+  effect: "elapsed-width" | "elapsed-ring";
+  reducedMotion: { kind: "steps"; steps: number };
+}
+export interface ContractSequenceTransition {
+  target: { part: string; scope: "children" };
+  driver: { kind: "channel"; source: "sequence.index" };
+  effect: "slide-inline";
+  durationToken: string;
+  easingToken: string;
+  size: { referenceWidth: number; minMultiplier: number; maxMultiplier: number };
+  reducedMotion: "instant";
+}
 export interface ContractMotion {
+  sequenceTransition?: ContractSequenceTransition;
   countdown?: ContractMotionCountdown;
+  progress?: ContractMotionProgress[];
   description?: string;
   transitions?: ContractMotionTransition[];
   /** Executable repeating effects; currently lowered by the shared web CSS backend. */
@@ -976,6 +1005,7 @@ export interface ComponentContract {
   formControl?: ContractFormControl;
   compositeControl?: ContractCompositeControl;
   motion?: ContractMotion;
+  sequence?: ContractSequence;
   focus?: ContractFocus;
   portal?: ContractPortal;
   textOverflow?: ContractTextOverflow;

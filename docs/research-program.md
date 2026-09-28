@@ -67,7 +67,7 @@ domain.
 
 ### Where each row lives
 
-- **Components.** `<!-- component-count -->52` contracts, one rendered
+- **Components.** `<!-- component-count -->53` contracts, one rendered
   primitive (`Stack`), `<!-- web-framework-count -->5` Web DOM emitters plus
   React Native admitted on the same rail, and registered native/design-tool
   targets outside it (`<!-- registered-target-count -->11` registered targets,
@@ -138,7 +138,7 @@ A named artifact — `Button`, `histogram`, `Icon`, a props table — is a theor
 of the substrate, not an authored primitive. The repository has four concrete
 instances of this inversion:
 
-- the primitive count staying at one across `<!-- component-count -->52`
+- the primitive count staying at one across `<!-- component-count -->53`
   components;
 - chart names banned below the projection layer (the analytical doctrine's
   single invariant);
@@ -161,7 +161,7 @@ where a substrate proves it can say no.
 
 Counts are pressure, not results:
 
-- "`<!-- component-count -->52` components now compile for target X" is useful,
+- "`<!-- component-count -->53` components now compile for target X" is useful,
   mostly incremental, evidence.
 - "Removing this analytical coordinate makes two semantically distinct
   relations indistinguishable" is a result (the stage-1.5 necessity census).

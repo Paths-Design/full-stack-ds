@@ -60,6 +60,7 @@ describe("motion declaration custody", () => {
     delete contract.motion;
     expect(buildComponentIR(contract).motion).toEqual({
       countdown: null,
+      sequence: null,
       loops: [],
       reducedMotion: null,
       honorsReducedMotion: true,

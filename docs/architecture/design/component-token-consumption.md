@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component token consumption
 owner: "@darianrosebrook"
-updated: 2026-09-06
-verified_at_commit: 8d12146d8b3d38213c16d95296be1e87b24d5e2e
+updated: 2026-09-28
+verified_at_commit: 3fd6f2eb23aaf8bc4dfa7c24cb42b1b64e2f7850
 governs:
   - packages/ds-codegen/src/css-token-consumption.ts
   - packages/ds-codegen/src/validation/component-token-consumption.ts
@@ -53,3 +53,7 @@ Real native consumers are retained: Accordion border width, AlertNotice foregrou
 The focused tests introduce orphan declarations, sever property consumers, create disconnected aliases and cycles, and check that native projection retains real lookups while omitting unrelated data. Browser tests exercise defaults, clearing overrides, shared box precedence, nested isolation, and representative interactions. The campaign also compares sampled default computed styles before and after retirement and reviews the composed default/retokened gallery.
 
 The static gate establishes dependency reachability, not arbitrary CSS value validity, accessibility adequacy, selector reachability in every state, or visual correctness under every theme. Native source projection does not by itself establish device behavior or cross-framework visual parity.
+
+## Carousel motion reconciliation
+
+Carousel adds compile-time behavior consumers for its advance dwell and spatial transition duration/easing. The sequence IR validates those references and supplies their resolved values to the web controllers. They are intentionally absent from the CSS declaration closure; changing a CSS variable does not retime these JavaScript behaviors.
