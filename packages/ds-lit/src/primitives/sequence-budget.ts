@@ -22,6 +22,7 @@ export function createSequenceBudget(config: SequenceConfig) {
   let slides: HTMLElement[] = [];
   let playing = false;
   let focusStopped = false;
+  let pointerRotationIntent: boolean | undefined;
   let previousAutoPlay: boolean | undefined;
   let previousIndex: number | undefined;
   let previousLabels: string | undefined;
@@ -74,7 +75,7 @@ export function createSequenceBudget(config: SequenceConfig) {
     motion = undefined;
     current.animations.forEach(animation => animation.cancel());
     current.restore();
-    if (current.outgoing !== activeSlide) {
+    if (slides.includes(current.outgoing) && current.outgoing !== activeSlide) {
       current.outgoing.hidden = true;
       current.outgoing.style.setProperty("display", "none", "important");
     }
@@ -172,12 +173,18 @@ export function createSequenceBudget(config: SequenceConfig) {
     const previous = slides;
     slides = Array.from(viewport?.children ?? []).flatMap(el => el instanceof HTMLSlotElement
       ? el.assignedElements({ flatten: true }) : [el]).filter((el): el is HTMLElement => el instanceof HTMLElement);
+    // Release animation ownership before returning removed content to its consumer.
+    if (motion && !slides.includes(motion.outgoing)) finishMotion();
     if (activeSlide && !slides.includes(activeSlide)) { finishMotion(); activeSlide = undefined; }
     for (const slide of previous) if (!slides.includes(slide)) restoreSlide(slide);
   };
   const syncBudget = (restart = false) => {
     if (!options || !connected) return;
     budget.sync(valid(), options.durationMs);
+    // Reopening an invalid composition resets the budget's pause reasons.
+    // Reconcile every sequence-owned reason from its current owner.
+    if (motion) budget.pause("transition");
+    else budget.resume("transition");
     if (hovered) budget.pause("hover");
     else budget.resume("hover");
     if (!playing || pending) budget.pause("rotation");
@@ -196,12 +203,27 @@ export function createSequenceBudget(config: SequenceConfig) {
     options.onIndexChange(value);
   };
   const stop = () => { focusStopped = true; playing = false; render(); syncBudget(); };
-  const click = (event: Event) => {
+  const control = (event: Event) => {
     const target = event.composedPath().find(node => node instanceof HTMLButtonElement) as HTMLButtonElement | undefined;
-    if (!target || target.closest("[data-sequence-root]") !== root || target.disabled) return;
+    return target && target.closest("[data-sequence-root]") === root && !target.disabled ? target : undefined;
+  };
+  const clearPointerIntent = () => { pointerRotationIntent = undefined; };
+  const pointerDown = (event: Event) => {
+    clearPointerIntent();
+    if ((event as PointerEvent).button === 0 && control(event)?.matches(config.parts.rotation)) {
+      // Focus may stop rotation between pointerdown and click. Keep the action
+      // the user pressed; keyboard activation instead uses the focused state.
+      pointerRotationIntent = !playing;
+    }
+  };
+  const click = (event: Event) => {
+    const intent = event instanceof MouseEvent && event.detail > 0 ? pointerRotationIntent : undefined;
+    clearPointerIntent();
+    const target = control(event);
+    if (!target) return;
     if (target.matches(config.parts.rotation)) {
       focusStopped = false;
-      playing = !playing;
+      playing = intent ?? !playing;
       pending = false;
       render(); syncBudget();
     } else if (target.matches(config.parts.next)) request(index() + 1);
@@ -216,11 +238,14 @@ export function createSequenceBudget(config: SequenceConfig) {
   const refresh = () => { readSlides(); render(); syncBudget(); };
   const disconnect = () => {
     connected = false;
+    clearPointerIntent();
     observer?.disconnect();
     finishMotion();
     activeSlide = undefined;
     slides.forEach(restoreSlide);
     root?.removeEventListener("click", click);
+    root?.removeEventListener("pointerdown", pointerDown);
+    root?.removeEventListener("pointercancel", clearPointerIntent);
     root?.removeEventListener("focusin", stop);
     root?.removeEventListener("pointerenter", enter);
     root?.removeEventListener("pointerleave", leave);
@@ -232,6 +257,8 @@ export function createSequenceBudget(config: SequenceConfig) {
     connected = true;
     root.dataset.sequenceRoot = "";
     root.addEventListener("click", click);
+    root.addEventListener("pointerdown", pointerDown);
+    root.addEventListener("pointercancel", clearPointerIntent);
     root.addEventListener("focusin", stop);
     root.addEventListener("pointerenter", enter);
     root.addEventListener("pointerleave", leave);

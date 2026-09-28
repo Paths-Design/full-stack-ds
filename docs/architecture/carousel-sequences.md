@@ -10,6 +10,7 @@ governs:
   - packages/ds-contracts/components/Carousel/
 caws_specs:
   - CAROUSEL-TIMED-COMPOSER-01
+  - CAROUSEL-MOTION-PARITY-01
 ---
 
 # Carousel sequences
@@ -39,6 +40,8 @@ bounded Web DOM realization of the [motion substrate](motion-substrate.md).
   carousel stops it until Start is explicitly activated. Hover and a hidden
   document pause active time independently; removing either pause must not
   remove another. Next, Previous and picker buttons retain focus.
+  A pointer activation retains the rotation action pressed before focus entered;
+  pressing Stop must not restart rotation when focus stops it first.
 - **Completion is a request.** A controlled parent must acknowledge the new
   index before another timed advance is possible. An acknowledged index or
   changed label sequence starts a fresh budget. Indices wrap for navigation.
@@ -83,6 +86,10 @@ navigation interrupts from the current rendered transform. Completion releases
 the next slide's full reading budget; animation completion never changes index.
 Changing to reduced motion cancels movement immediately. Teardown restores the
 consumer's inline styles and semantics.
+Removing either participating slide cancels its movement before returning the
+element to its consumer. Settled animation promises cannot subsequently mutate
+released content. A temporary label/child mismatch or timing update recomputes
+the movement pause, so presentation cannot consume the incoming reading budget.
 
 The IR validates ownership and lowers the facts once. Each web emitter attaches
 the controller through its framework lifecycle. The shared presence budget owns

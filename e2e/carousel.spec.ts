@@ -42,6 +42,22 @@ async function mount(page: Page, framework: string) {
 const progress = (page: Page, selector: string) => page.locator(selector).evaluate(el => Number((el as HTMLElement).style.getPropertyValue("--sequence-progress")));
 
 for (const framework of frameworks) {
+  test(`${framework}: pointer Stop remains stopped after focus and allows explicit restart`, async ({ page }) => {
+    await mount(page, framework);
+    const rotation = page.locator(".carousel__rotation");
+    await expect(rotation).toHaveAccessibleName("Stop slide rotation");
+    await rotation.click();
+    await expect(rotation).toHaveAccessibleName("Start slide rotation");
+    await page.mouse.move(0, 0);
+    await page.clock.runFor(3000);
+    await expect(page.locator(".carousel__picker").nth(0)).toHaveAttribute("aria-disabled", "true");
+    await rotation.click();
+    await expect(rotation).toHaveAccessibleName("Stop slide rotation");
+    await page.mouse.move(0, 0);
+    await page.clock.runFor(1020);
+    await expect(page.locator(".carousel__picker").nth(1)).toHaveAttribute("aria-disabled", "true");
+  });
+
   test(`${framework}: one slide budget drives pill, ring, advance and focus stop`, async ({ page }) => {
     await mount(page, framework);
     await page.clock.runFor(400);
