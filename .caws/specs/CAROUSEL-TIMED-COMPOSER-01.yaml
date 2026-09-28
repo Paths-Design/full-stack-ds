@@ -73,11 +73,10 @@ evidence:
     commit_sha: b62540e4
   - criterion_id: A2
     status: pass
-    evidence_ref: "Final executed mirrored-controller tests pin one authoritative budget, synchronized indicators, controlled acknowledgement and composable interaction pauses. Final browser tests exercise the generated timers."
-    recorded_at: "2026-09-28T09:42:52.310Z"
+    evidence_ref: "Executed mirrored sequence-budget tests establish one budget, synchronized pill/ring, acknowledgement and composable pauses. Inspected ignored runtime log: tmp/carousel-timed/final-root.log. The cited source is b62540e4; mechanical commit verification does not rerun the recorded command."
+    recorded_at: "2026-09-28T09:48:56.667Z"
     command: pnpm test
     exit_code: 0
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/final-root.log
     commit_sha: b62540e4
   - criterion_id: A3
     status: pass
