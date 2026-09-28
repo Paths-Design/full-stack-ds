@@ -80,11 +80,10 @@ evidence:
     commit_sha: b62540e4
   - criterion_id: A3
     status: pass
-    evidence_ref: "All 16 browser cases passed after explicit per-mode style realization, with both indicators, accessible controls, hidden/inert inactive slides and reduced motion. Real Card composition is witnessed in React; other frameworks use consumer DOM fixtures."
-    recorded_at: "2026-09-28T09:43:02.024Z"
+    evidence_ref: "All 16 executed browser cases passed on final sources: per-mode indicator visibility, accessible controls, hidden/inert inactive content and reduced motion. Real React Card composition and five web DOM consumer fixtures are covered. Inspected ignored log: tmp/carousel-timed/final-browser.log; commit verification does not rerun Playwright."
+    recorded_at: "2026-09-28T09:49:06.404Z"
     command: FSDS_E2E_PORT=5199 pnpm exec playwright test e2e/carousel.spec.ts --workers=2
     exit_code: 0
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/final-browser.log
     commit_sha: b62540e4
   - criterion_id: A4
     status: pass
