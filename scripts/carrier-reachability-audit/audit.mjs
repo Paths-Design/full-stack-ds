@@ -70,7 +70,7 @@ export const ALL_COMPONENTS = () =>
     .sort();
 
 /**
- * Load a contract with its styles sidecar merged onto `contract.styles`,
+ * Load a contract with its styles and timing-token sidecars,
  * mirroring what `cli.ts` does before semantic validation runs. Schema
  * validation is deliberately skipped — `generate:validate` already gates it,
  * and duplicating it here would give this rail a second opinion about contract
@@ -81,6 +81,8 @@ export function loadMergedContract(name) {
   if (!contract) return null;
   const styles = readJSON(resolve(CONTRACTS, name, `${name}.styles.json`));
   if (styles) contract.styles = styles;
+  const tokens = readJSON(resolve(CONTRACTS, name, `${name}.tokens.json`));
+  if (tokens) contract.tokens = tokens;
   return contract;
 }
 

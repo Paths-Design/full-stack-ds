@@ -157,7 +157,7 @@ export function classify(component) {
   // is realized by `.<prefix>--<axis>-<value>`, a disjoint one by the bare
   // `.<prefix>--<value>`. Both forms come from `classRecipe`, so the audit and
   // the emitters cannot disagree about spelling.
-  const ir = buildComponentIR(contract);
+  const ir = buildComponentIR({ ...contract, tokens: tokensJson, styles: stylesJson });
   const carriers = deriveWebDomCarriers(ir, contract);
   const taintedAxes = taintedAxesFromIR(ir);
   const collisions = collisionsOf(variants);
