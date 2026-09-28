@@ -1,7 +1,7 @@
 /** Mirrored web primitive: one active-time budget, with an optional DOM projection.
  * Framework wrappers own lifecycle. Progress never owns dismissal or another clock.
  */
-export function createPresenceBudget(onDismiss: () => void, reducedMotionSteps = 10) {
+export function createPresenceBudget(onDismiss: () => void, reducedMotionSteps = 10, onProgress?: (remaining: number, enabled: boolean, reduced: boolean) => void) {
   let timer: ReturnType<typeof setTimeout> | undefined;
   let frame: number | undefined;
   let duration = 0;
@@ -25,17 +25,19 @@ export function createPresenceBudget(onDismiss: () => void, reducedMotionSteps =
     timer = undefined;
   };
   const paint = () => {
-    if (!target) return;
-    target.hidden = !enabled;
     const fraction = enabled ? Math.min(1, left() / duration) : 0;
     const value = media?.matches
       ? Math.ceil(fraction * reducedMotionSteps) / reducedMotionSteps : fraction;
-    target.style.transform = `scaleX(${value})`;
+    onProgress?.(fraction, enabled, media?.matches ?? false);
+    if (target) {
+      target.hidden = !enabled;
+      target.style.transform = `scaleX(${value})`;
+    }
   };
   const draw = () => {
     frame = undefined;
     paint();
-    if (target && timer !== undefined) frame = requestAnimationFrame(draw);
+    if ((target || onProgress) && timer !== undefined) frame = requestAnimationFrame(draw);
   };
   const render = () => {
     cancelFrame();
@@ -112,7 +114,13 @@ export function createPresenceBudget(onDismiss: () => void, reducedMotionSteps =
         event.currentTarget.contains(event.relatedTarget)) return;
     resume("focus");
   };
-  return { sync, pause, resume, bindProgress, destroy, focusOut,
+  const restart = () => {
+    clearTimer();
+    remaining = duration;
+    start();
+    render();
+  };
+  return { sync, pause, resume, bindProgress, destroy, focusOut, restart,
     /** Read-only projection for consumers; never a second time source. */
     snapshot: () => ({ enabled, remainingMs: left(), durationMs: duration, paused: reasons.size > 0 }),
   };
