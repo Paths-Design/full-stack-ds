@@ -25,9 +25,12 @@ If an older doc says "future work" but the snapshot says "implemented," treat th
 Package manager is **pnpm@10.14.0** (enforced). Node 22 in CI. `npm`/`yarn` lockfiles are gitignored.
 
 ```bash
-# Showcase app (React)
+# Showcase app only (React)
 pnpm run dev
 pnpm run build
+
+# Workspace build scripts in dependency order, then the showcase
+pnpm run build:all
 
 # Codegen (default target = react)
 pnpm run generate                              # React only
@@ -118,6 +121,12 @@ pnpm run docs:check-claims                     # Marked doc values match their d
 pnpm run docs:check-claims:fix                 # Rewrites stale marked counts in place
 pnpm run docs:check-links                      # Every relative .md link in a tracked doc resolves
 ```
+
+`build:all` derives package order from workspace dependencies, runs existing
+workspace `build` scripts, and builds the root showcase last. Packages without
+a build script are skipped (including the source-only React Native package and
+example). It does not regenerate component sources or run native/engine lanes
+outside pnpm; use the existing generation and target-specific commands for those.
 
 **Governed doc numbers.** Any count you write in prose will rot. Mark it instead, in ANY tracked
 markdown file, and `docs:check-claims` derives and enforces it:

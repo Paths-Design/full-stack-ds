@@ -473,9 +473,12 @@ The `@full-stack-ds/*` packages are **workspace-only** today. They are not publi
 ## Commands
 
 ```bash
-# Showcase app
+# Showcase app only
 pnpm run dev
 pnpm run build
+
+# All workspace builds, then the showcase
+pnpm run build:all
 
 # Codegen and validation
 pnpm run generate
@@ -521,6 +524,19 @@ pnpm run typecheck:angular
 pnpm run typecheck:lit
 pnpm run typecheck:all
 ```
+
+`build` builds only the root showcase. `build:all` runs every workspace's
+existing `build` script in dependency order (dependencies before consumers),
+then builds the showcase after those builds succeed. pnpm derives this order
+from the workspace manifests; independent packages may build concurrently.
+This includes token/iconography outputs, framework packages, the Figma plugin,
+and web examples such as the spatial console.
+
+Workspaces without a `build` script, including the source-only React Native
+package and example, are skipped. Native and engine lanes outside the pnpm
+workspace keep their separate commands. `build:all` builds the checked-in
+component sources; use `generate -- --target=all` or `governed:rail` when you
+also need to regenerate components from contracts.
 
 ## Current component corpus
 
