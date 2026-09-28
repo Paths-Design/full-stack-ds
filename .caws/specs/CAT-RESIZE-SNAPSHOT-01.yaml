@@ -33,11 +33,11 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Chrome 153.0.8010.53: rendered background and fresh per-device RGB witnesses pass at 1440x900, 1200x800, 1000x600, 800x1000, 390x844, 1920x1080 and return, DPR 1/2, fresh loads and resize cycles, headed and headless. Baseline produced 36 viewport/pixel failures. Does not reproduce or prove resolution of the reported Arc Chromium 154 intermittent blank snapshot."
-    recorded_at: "2026-09-28T20:02:35.521Z"
+    evidence_ref: "Executed pixel witnesses: test-results/cat-resize-evidence/typing-cat-resize/report.json and cat-resize-headed.log (ignored runtime evidence). Chrome 153.0.8010.53 passed fresh/resize RGB and opacity checks at six viewport sizes and DPR 1/2; baseline had 36 failures. The artifact field identifies committed verifier source, not generated output. Arc Chromium 154 intermittent blank snapshot remains unverified."
+    recorded_at: "2026-09-28T20:03:28.997Z"
     command: "CAT_URL=http://127.0.0.1:5189/cat.html HEADED=1 node e2e/verify-cat-resize.mjs"
     exit_code: 0
-    artifact_path: test-results/cat-resize-evidence/typing-cat-resize/report.json
+    artifact_path: examples/spatial-console/web/e2e/verify-cat-resize.mjs
     commit_sha: e055c740
   - criterion_id: A2
     status: pass
