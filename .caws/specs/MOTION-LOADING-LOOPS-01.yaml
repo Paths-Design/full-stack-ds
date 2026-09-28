@@ -2,9 +2,11 @@ id: MOTION-LOADING-LOOPS-01
 title: 'Bind repeating motion to Skeleton and Spinner parts'
 risk_tier: 3
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Validated part-bound loading loops across web targets with token timing and static reduced-motion states; docs and local gates pass with deferred capabilities explicit.'
 created_at: '2026-09-28T05:09:05.914Z'
-updated_at: '2026-09-28T05:42:16.765Z'
+updated_at: '2026-09-28T05:49:39.493Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
