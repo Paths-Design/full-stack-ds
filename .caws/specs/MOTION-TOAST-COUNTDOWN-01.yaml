@@ -59,3 +59,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/motion-ir.test.ts
     commit_sha: "9c0398bc"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "All five mirrored budget engines: 60 passing cases; tmp/motion-toast-countdown/toast-budget-tests.log"
+    recorded_at: "2026-09-28T08:43:56.876Z"
+    command: pnpm exec vitest run packages/ds-react/src/primitives/hooks/__tests__/presence-budget.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-react/src/primitives/hooks/__tests__/presence-budget.test.ts
+    commit_sha: "9c0398bc"
