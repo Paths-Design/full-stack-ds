@@ -74,3 +74,11 @@ contracts:
   - name: 'carousel-regressions'
     type: contract-test
     path: 'packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.test.ts'
+evidence:
+  - criterion_id: A1
+    status: fail
+    evidence_ref: "Review baseline ed11396a: all five real-browser pointer Stop probes leave the control named Stop slide rotation after clicking it; focusin clears playing before click toggles it back on. Reproducer and outputs: tmp/carousel-review/review.spec.cjs and browser.log. These ignored files were inspected, not claimed as committed artifacts."
+    recorded_at: "2026-09-28T10:00:47.440Z"
+    command: pnpm exec playwright test --config=/tmp/fsds-carousel-review/playwright.config.cjs
+    exit_code: 1
+    commit_sha: ed11396a
