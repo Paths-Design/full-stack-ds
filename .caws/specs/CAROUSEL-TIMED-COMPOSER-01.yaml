@@ -1,0 +1,53 @@
+id: CAROUSEL-TIMED-COMPOSER-01
+title: 'Compose Carousel with one slide budget and alternative progress indicators'
+risk_tier: 3
+mode: feature
+lifecycle_state: draft
+created_at: '2026-09-28T08:02:44.534Z'
+updated_at: '2026-09-28T08:02:44.534Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Carousel contracts, sequence budget primitives, Motion IR and web generation'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts'
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'docs'
+    - 'e2e'
+    - 'src'
+    - 'scripts'
+    - 'fsds.targets.json'
+  out: []
+invariants:
+  - 'One authoritative slide budget drives advancement and every progress projection; presentation never owns advancement.'
+  - 'Autoplay is optional; focus requires explicit restart and inactive slides are not interactive or announced.'
+acceptance:
+  - id: A1
+    given: 'a Carousel contract and generic sequence-budget facts'
+    when: 'generated for the web targets'
+    then: 'manual navigation and a timed option realize without component-name lore'
+  - id: A2
+    given: 'timed Carousel playback'
+    when: 'the active slide changes, interaction pauses, focus stops or the user restarts'
+    then: 'one budget drives advancement and both the active pagination fill and next-button ring remain synchronized'
+  - id: A3
+    given: 'Carousel examples'
+    when: 'inspected in browsers and under reduced motion'
+    then: 'both requested indicator treatments work with accessible controls and hidden inactive content'
+rollback:
+  - 'Revert the Carousel slice and regenerate its contract projections.'
+non_functional: {}
+contracts:
+  - name: 'carousel'
+    type: contract-test
+    path: 'packages/ds-codegen/src/carousel.test.ts'
