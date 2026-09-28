@@ -1,0 +1,34 @@
+id: COMPOSE-HIGHLIGHT-MINHEIGHT-01
+title: 'Preserve minimum height in Compose supplied-source chrome'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-09-28T06:22:56.953Z'
+updated_at: '2026-09-28T06:22:56.953Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Compose supplied-source lowering'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/highlight-source.ts'
+    - 'packages/ds-codegen/src/frameworks/consumer-content.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/CodeBlock/'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'Minimum height constrains all source branches without imposing a fixed height or component-name dispatch.'
+acceptance:
+  - id: A1
+    given: 'token-backed source chrome'
+    when: 'Compose output is generated'
+    then: 'the minimum-height slot resolves and heightIn applies to the shared outer chrome with parity and native compile checks passing.'
+rollback:
+  - 'Revert the emitter and generated minimum-height binding together.'
+non_functional: {}
+contracts:
+  - name: 'compose-token-parity'
+    type: contract-test
+    path: 'scripts/compose-parity-diff.test.mjs'
