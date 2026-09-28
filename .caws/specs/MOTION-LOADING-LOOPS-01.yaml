@@ -74,3 +74,12 @@ contracts:
   - name: 'loading-loop-runtime'
     type: contract-test
     path: 'e2e/motion-loops.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Executed 28 motion tests: resolved parts, variant selection, typed timing, finite ordered keyframes, static values, schema rejection and conflicting owners. Raw log tmp/motion-loading-loops/focused.log; full root suite also passes. Citation verification checks tracked source/commit reachability; command execution was observed separately."
+    recorded_at: "2026-09-28T05:48:18.015Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/motion-ir.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/motion-ir.test.ts
+    commit_sha: a0fbff388e4dc3432a318447e4c72a4761f22518
