@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
-updated: 2026-09-24
-verified_at_commit: aca0029e6fdc420eda82929b3a683ebcbebe0ca8
+updated: 2026-09-27
+verified_at_commit: 918770bfb47696499c525aa1620e93d9fbf66776
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -57,6 +57,15 @@ Native token consumption also requires target-specific evidence. Compose's direc
 The [showcase usability follow-up](architecture/design/showcase-usability.md) separates component facts from consumer orchestration: Card no longer encodes task status as border chrome; Dialog carries bounded sizing; Walkthrough declares callback and index bindings while its example owns launch, sequence boundaries, and dismissal. Those bindings exposed generic Lit default-expression and React Native channel-read emission defects, repaired in the corresponding backends. Browser checks establish the showcase interactions; they do not establish built-in tour persistence or native anchored-tour behavior.
 
 The [preformatted-content repair](architecture/design/preformatted-content.md) follows another browser counterexample: template indentation became visible text inside CodeBlock. The contract already declared a `pre` host. Vue, Angular, Svelte, and Lit now carry that HTML context through template emission, suppressing generator whitespace without trimming authored values. Exact-text browser checks cover the Web targets with highlighting enabled and disabled; this is a template-realization repair, not a new token or component-specific emitter exception.
+
+The [loading-motion pilot](architecture/motion-substrate.md#first-executable-contract-repeating-loading-indicators)
+adds a bounded executable witness: contracts bind repeat drivers to anatomy parts,
+MotionIR resolves timing tokens and effect values, and shared Web CSS realizes
+Spinner rotation and Skeleton opacity. A renamed contract challenges component
+identity assumptions; browser witnesses sample progress, token timing, variants
+and static reduced-motion states. Legacy transition prose remains declaration-only.
+This extends the executable contract vocabulary without establishing native motion,
+shared clocks, geometry-sensitive timing or a universal animation runtime.
 
 ## The discipline this is an instance of
 

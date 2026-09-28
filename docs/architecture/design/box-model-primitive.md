@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
-updated: 2026-09-24
-verified_at_commit: aca0029e6fdc420eda82929b3a683ebcbebe0ca8
+updated: 2026-09-27
+verified_at_commit: 918770bfb47696499c525aa1620e93d9fbf66776
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -70,3 +70,9 @@ Padding uses logical axes and sides so it follows writing mode. Margin belongs t
 Portal surfaces need their own applicable boundary/selector; this does not transport an ancestor's custom properties into a portal. Native emitters project the normalized material facts down to the slots their generated code reads. Shared CSS controls do not imply a native override API, identical behavior on all host elements, or visual correctness for every possible value.
 
 Brand-expression reconciliation at the verification stamp above reviewed the CLI destination-validation addition: it does not change the box schema, primitive defaults, IR merge or shared reset rules. Component-specific brand variables live in a separate namespace; they do not bypass the public box-control boundary.
+
+Motion reconciliation reviewed the declaration-custody and loading-loop changes
+since the prior stamp. `webCssBlocks` now also consumes resolved loop facts; the
+box default merge, boundary reset, and consumer fallback rules remain unchanged.
+The root suite retains the box-model and framework boundary witnesses. Loading
+loops do not introduce a geometry resolver or size-sensitive timing policy.
