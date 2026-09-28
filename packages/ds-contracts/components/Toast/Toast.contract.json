@@ -13,7 +13,8 @@
       "description",
       "row",
       "action",
-      "close"
+      "close",
+      "progress"
     ],
     "details": {
       "root": {
@@ -73,6 +74,11 @@
             "aria-label"
           ]
         }
+      },
+      "progress": {
+        "tag": "div",
+        "description": "Decorative remaining auto-dismiss budget at the bottom of the card.",
+        "role": "decoration"
       }
     },
     "dom": {
@@ -135,6 +141,13 @@
                   }
                 }
               ]
+            },
+            {
+              "tag": "div",
+              "part": "progress",
+              "attrs": {
+                "aria-hidden": "true"
+              }
             }
           ]
         }
@@ -152,8 +165,21 @@
         },
         {
           "name": "onOpenChange",
-          "type": "(open: boolean) => void",
-          "description": "Called when the toast is dismissed."
+          "description": "Called when the toast is dismissed.",
+          "propType": {
+            "kind": "callback",
+            "params": [
+              {
+                "name": "open",
+                "type": {
+                  "kind": "boolean"
+                }
+              }
+            ],
+            "returns": {
+              "kind": "void"
+            }
+          }
         },
         {
           "name": "title",
@@ -175,7 +201,7 @@
         {
           "name": "duration",
           "type": "number | null",
-          "description": "Auto-dismiss budget in milliseconds. undefined uses the design token default (toast.timing.auto-dismiss → semantic.motion.dwell.notification); null or 0 disables auto-dismissal. The timer pauses while the toast is hovered or contains focus (WCAG 2.2.1)."
+          "description": "Active-time auto-dismiss budget in milliseconds. undefined uses the design token default; null or 0 disables dismissal and the countdown bar. Hover, focus within and hidden documents pause the same budget. Changing duration resets the budget while preserving active pause reasons."
         }
       ]
     }
@@ -263,11 +289,11 @@
   },
   "motion": {
     "reducedMotion": "respect",
-    "reducedMotionStrategy": "Duration set to 0 so enter/exit collapses to immediate show/hide.",
+    "reducedMotionStrategy": "The countdown uses discrete remaining-budget steps under reduced motion. Legacy enter/exit declarations remain unrealized.",
     "transitions": [
       {
         "name": "open",
-        "trigger": "openness=hidden→visible",
+        "trigger": "openness=hidden\u2192visible",
         "phase": "enter",
         "properties": [
           "opacity",
@@ -278,7 +304,7 @@
       },
       {
         "name": "close",
-        "trigger": "openness=visible→hidden",
+        "trigger": "openness=visible\u2192hidden",
         "phase": "exit",
         "properties": [
           "opacity",
@@ -287,7 +313,21 @@
         "duration": "core.motion.duration.short",
         "easing": "core.motion.easing.emphasized-out"
       }
-    ]
+    ],
+    "countdown": {
+      "target": {
+        "part": "progress"
+      },
+      "driver": {
+        "kind": "budget",
+        "source": "surface.autoDismiss"
+      },
+      "effect": "remaining-width",
+      "reducedMotion": {
+        "kind": "steps",
+        "steps": 10
+      }
+    }
   },
   "focus": {
     "strategy": "none",
@@ -396,9 +436,9 @@
   "a2ui": {
     "category": "overlay",
     "usageHints": [
-      "Trigger toasts via the useToast hook or ToastProvider API — do not render Toast directly",
+      "Trigger toasts via the useToast hook or ToastProvider API \u2014 do not render Toast directly",
       "Use variant to set the visual style (default, success, warning, error)",
-      "Toasts are live regions — screen readers announce them without requiring focus",
+      "Toasts are live regions \u2014 screen readers announce them without requiring focus",
       "Keep toast messages brief; use an action button only for critical reversible operations"
     ],
     "children": {

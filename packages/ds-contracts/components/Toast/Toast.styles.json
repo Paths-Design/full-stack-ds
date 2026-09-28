@@ -343,6 +343,10 @@
     "toast.surface.border": {
       "resolvesTo": "semantic.color.border.info",
       "fallback": "#034fd6"
+    },
+    "toast.progress.color": {
+      "resolvesTo": "semantic.color.foreground.on.info.subtle",
+      "fallback": "#013ab0"
     }
   },
   "--success": {
@@ -357,6 +361,10 @@
     "toast.surface.border": {
       "resolvesTo": "semantic.color.border.success",
       "fallback": "#3a6614"
+    },
+    "toast.progress.color": {
+      "resolvesTo": "semantic.color.foreground.on.success.subtle",
+      "fallback": "#2c4f09"
     }
   },
   "--warning": {
@@ -371,6 +379,10 @@
     "toast.surface.border": {
       "resolvesTo": "semantic.color.border.warning",
       "fallback": "#8b4b00"
+    },
+    "toast.progress.color": {
+      "resolvesTo": "semantic.color.foreground.on.warning.subtle",
+      "fallback": "#6c3a00"
     }
   },
   "--error": {
@@ -385,11 +397,81 @@
     "toast.surface.border": {
       "resolvesTo": "semantic.color.border.danger",
       "fallback": "#b31b1b"
+    },
+    "toast.progress.color": {
+      "resolvesTo": "semantic.color.foreground.on.danger.subtle",
+      "fallback": "#900909"
     }
   },
   ".toast__action:empty": {
     "display": {
       "literal": "none",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "progress": {
+    "position": {
+      "literal": "absolute",
+      "platforms": [
+        "web"
+      ]
+    },
+    "inset-inline": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "bottom": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "transform-origin": {
+      "literal": "left center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "pointer-events": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-end-start-radius": {
+      "literal": "inherit",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-end-end-radius": {
+      "literal": "inherit",
+      "platforms": [
+        "web"
+      ]
+    },
+    "height": {
+      "resolvesTo": "toast.progress.height",
+      "fallback": "2px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background-color": {
+      "resolvesTo": "toast.progress.color",
+      "fallback": "#141414",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".toast__progress:dir(rtl)": {
+    "transform-origin": {
+      "literal": "right center",
       "platforms": [
         "web"
       ]

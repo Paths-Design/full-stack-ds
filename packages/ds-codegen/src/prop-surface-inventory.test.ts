@@ -42,7 +42,7 @@ describe("prop-surface harness — internal consistency (A2)", () => {
   // deliberate, visible edit here.
   it("styled members authoring a propType are exactly the in-place migrations, and obey the shared rules", () => {
     const styledMigrated = reports.filter((r) => r.styledWithPropType.length > 0);
-    expect(styledMigrated.map((r) => r.component).sort()).toEqual(["Details", "Postcard", "Walkthrough"]);
+    expect(styledMigrated.map((r) => r.component).sort()).toEqual(["Details", "Postcard", "Toast", "Walkthrough"]);
     for (const r of styledMigrated) {
       expect(r.doubleAuthored).toEqual([]);
       expect(r.refs.every((x) => x.resolves)).toBe(true);

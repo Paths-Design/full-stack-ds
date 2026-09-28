@@ -1647,7 +1647,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
     litImports.push("type PropertyValues");
   }
   const lines: string[] = [`import { ${litImports.join(", ")} } from 'lit';`];
-  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir)) lines.push(`import { ref } from 'lit/directives/ref.js';`);
+  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown) lines.push(`import { ref } from 'lit/directives/ref.js';`);
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   // Always include `property`; add `state` when the dom tree has a children
   // guard so the private _hasChildren reactive field can be declared.
@@ -1795,6 +1795,7 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     isRoot: true,
     fieldAssociationControlSlug: ir.fieldAssociation?.provides?.controlSlug,
     idRefGatedSlots: collectLitIdRefGatedSlots(ir),
+    countdownPart: ir.motion.countdown?.target.name,
     autoDismissPause: Boolean(
       resolveSurfaceAutoDismiss(ir) &&
         channels.some((c) => c.valueType === "boolean"),
@@ -1937,6 +1938,7 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
         `  private autoDismiss = new AutoDismissController(this, {`,
         `    open: () => Boolean(this.behavior.${autoDismissChannel.name}),`,
         `    durationMs: () => this.${autoDismissPolicy.durationProp} === undefined ? ${autoDismissPolicy.defaultMs ?? "undefined"} : this.${autoDismissPolicy.durationProp},`,
+        ...(ir.motion.countdown ? [`    reducedMotionSteps: ${ir.motion.countdown.reducedMotion.steps},`] : []),
         `    onDismiss: () => this.behavior.set${capitalizeLit(autoDismissChannel.name)}(false),`,
         `  });`,
       );
@@ -2420,6 +2422,7 @@ interface LitRenderContext {
   idRefGatedSlots?: Set<string>;
   /** When true, bind auto-dismiss pause listeners on the template root. */
   autoDismissPause?: boolean;
+  countdownPart?: string;
   hasOverlayClick?: boolean;
   rootPolymorphicTag?: {
     propName: string;
@@ -2589,6 +2592,8 @@ function renderLitDomNode(
   if (node.focusContainer || node.keyboardPanel) attrs.push(`\${ref(element => { this.interactionPanel = element instanceof HTMLElement ? element : undefined; })}`);
   if (node.keyboardAnchor) attrs.push(`\${ref(element => { this.interactionAnchor = element instanceof HTMLElement ? element : undefined; })}`);
   const classParts: string[] = [];
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`hidden`);
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`\${ref(this.autoDismiss.bindProgress)}`);
   if (node.part) classParts.push(`'${ctx.classRecipe}__${node.part}'`);
 
   for (const [key, value] of Object.entries(node.attrs)) {

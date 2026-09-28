@@ -66,6 +66,7 @@ import {
 import { resolveStyleProfile } from "./box-model.js";
 import { resolveIdRelationships } from "./id-relationships.js";
 import { tokenSlug } from "./token-path.js";
+import { buildMotionCountdown, type MotionCountdownIR } from "./motion-countdown.js";
 import { buildMotionLoops, type MotionLoopIR } from "./motion-loops.js";
 
 // ---------------------------------------------------------------------------
@@ -1301,6 +1302,7 @@ export interface KeyframeIR {
  * `ContractMotion` on why a `trigger` cannot be lowered yet.
  */
 export interface MotionIR {
+  countdown: MotionCountdownIR | null;
   loops: MotionLoopIR[];
   honorsReducedMotion: boolean;
   reducedMotion: 'respect' | 'disable' | 'reduce' | 'ignore' | null;
@@ -5994,6 +5996,7 @@ export function buildMotion(contract: ComponentContract): MotionIR {
   return {
     reducedMotion,
     honorsReducedMotion: reducedMotion !== 'ignore',
+    countdown: buildMotionCountdown(contract, buildParts(contract)),
     loops: buildMotionLoops(contract, buildParts(contract), buildTokenFacts(contract.tokens ?? {})),
     transitions: (motion?.transitions ?? []).map((t) => ({
       name: t.name,

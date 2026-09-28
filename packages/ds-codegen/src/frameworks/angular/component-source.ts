@@ -1434,7 +1434,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
   ) {
     coreNames.push("effect");
   }
-  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir)) coreNames.push("ViewChild", "ElementRef");
+  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown) coreNames.push("ViewChild", "ElementRef");
   if (channelInputs(ir).size > 0) coreNames.push("signal", "Injector", "runInInjectionContext", "untracked");
   // When any dom node uses `if: "children"`, the component needs AfterContentInit
   // and ElementRef to detect content projection at runtime.
@@ -1745,6 +1745,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     styledByName,
     isRoot: true,
     rootRole: ir.root.rootRole,
+    countdownPart: ir.motion.countdown?.target.name,
     autoDismissPause: autoDismissActive,
     rootPolymorphicTag: ir.root.polymorphicTagProp,
     iconGlyphIdents,
@@ -1853,7 +1854,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   for (const p of ir.styledProps) {
     if (ANGULAR_RESERVED.has(p.name)) continue;
     const propLine = generateInputProp(p);
-    if (controlledChannels.has(p.name)) {
+    if (controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name) {
       const type = lowerAngularPropType(p.propType);
       lines.push(`  private readonly input${capitalizeAngular(p.safeName)} = signal<${type} | undefined>(undefined);`);
       lines.push(`  @Input() get ${p.safeName}(): ${type} | undefined { return this.input${capitalizeAngular(p.safeName)}(); }`);
@@ -1986,10 +1987,16 @@ function generateDomTreeComponent(ir: ComponentIR): string {
         `  protected autoDismiss = createAutoDismiss({`,
         `    open: () => Boolean(this.behavior.${autoDismissChannel.name}()),`,
         `    durationMs: () => this.${autoDismissPolicy.durationProp} === undefined ? ${autoDismissPolicy.defaultMs ?? "undefined"} : this.${autoDismissPolicy.durationProp},`,
+        ...(ir.motion.countdown ? [`    reducedMotionSteps: ${ir.motion.countdown.reducedMotion.steps},`] : []),
         `    onDismiss: () => this.behavior.set${capitalizeAngular(autoDismissChannel.name)}(false),`,
         `    destroyRef: this.destroyRef,`,
         `  });`,
         `  private autoDismissEffect = effect(() => this.autoDismiss.sync());`,
+        ...(ir.motion.countdown ? [
+          `  @ViewChild("countdownProgress") set countdownProgress(el: ElementRef<HTMLElement> | undefined) {`,
+          `    this.autoDismiss.bindProgress(el?.nativeElement);`,
+          `  }`,
+        ] : []),
       );
     }
   }
@@ -2517,6 +2524,7 @@ interface AngularRenderContext {
   rootRole?: string;
   /** When true, bind auto-dismiss pause listeners on the template root. */
   autoDismissPause?: boolean;
+  countdownPart?: string;
   overlayClickSetter?: string;
   overlayClickEnabledProp?: string;
   overlayClickTargetPart?: string;
@@ -2647,6 +2655,8 @@ function renderAngularDomNode(
   if (node.focusContainer || node.keyboardPanel) attrs.push(`#interactionPanel`);
   if (node.keyboardAnchor) attrs.push(`#interactionAnchor`);
   const classParts: string[] = [];
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`hidden`);
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`#countdownProgress`);
   if (node.part) classParts.push(`'${ctx.classRecipe}__${node.part}'`);
 
   for (const [key, value] of Object.entries(node.attrs)) {
@@ -2800,7 +2810,7 @@ function renderAngularDomNode(
         `(pointerenter)="autoDismiss.pauseListeners.pointerenter()"`,
         `(pointerleave)="autoDismiss.pauseListeners.pointerleave()"`,
         `(focusin)="autoDismiss.pauseListeners.focusin()"`,
-        `(focusout)="autoDismiss.pauseListeners.focusout()"`,
+        `(focusout)="autoDismiss.pauseListeners.focusout($event)"`,
       );
     }
     // Selector-anchored root: fixed-position style computed against the

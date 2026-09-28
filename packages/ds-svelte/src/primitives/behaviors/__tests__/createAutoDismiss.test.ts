@@ -51,7 +51,7 @@ describe("createAutoDismiss — timer semantics", () => {
     }
   });
 
-  it("a later sync restarts the budget from scratch", () => {
+  it("a sync with unchanged inputs preserves the remaining budget", () => {
     vi.useFakeTimers();
     const onDismiss = vi.fn();
     const api = createAutoDismiss({
@@ -62,9 +62,9 @@ describe("createAutoDismiss — timer semantics", () => {
     api.sync();
     vi.advanceTimersByTime(4000);
     api.sync();
-    vi.advanceTimersByTime(4000);
+    vi.advanceTimersByTime(999);
     expect(onDismiss).not.toHaveBeenCalled();
-    vi.advanceTimersByTime(1000);
+    vi.advanceTimersByTime(1);
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 });
@@ -84,7 +84,7 @@ describe("createAutoDismiss — pause/resume budget", () => {
     vi.advanceTimersByTime(60000); // paused: no fire
     expect(onDismiss).not.toHaveBeenCalled();
     api.pauseListeners.onpointerleave();
-    vi.advanceTimersByTime(2999);
+    vi.advanceTimersByTime(999);
     expect(onDismiss).not.toHaveBeenCalled();
     vi.advanceTimersByTime(1);
     expect(onDismiss).toHaveBeenCalledTimes(1);

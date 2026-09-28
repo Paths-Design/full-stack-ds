@@ -1675,6 +1675,8 @@ function emitNode(
   keyExpr?: string,
 ): string | null {
   if (!node) return null;
+  // No native countdown executor is admitted; omit its decorative carrier.
+  if (ir.motion.countdown && ir.motion.countdown.target.name === node.part) return null;
   if (node.tag === "children" || node.tag === "slot") {
     // ARCH-COMPOSER-SLOT-PROJECTION-001: project named slots distinctly via the
     // `slots` prop (parity with React/Vue/Lit/Angular), not a single `{children}`

@@ -2029,6 +2029,9 @@
             "$ref": "#/$defs/motionLoop"
           },
           "description": "Part-bound repeating motion. Shared web CSS lowering supports opacity and rotation; other targets remain unrealized."
+        },
+        "countdown": {
+          "$ref": "#/$defs/motionCountdown"
         }
       }
     },
@@ -2980,6 +2983,68 @@
           "properties": {
             "value": {
               "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "motionCountdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target",
+        "driver",
+        "effect",
+        "reducedMotion"
+      ],
+      "properties": {
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "part"
+          ],
+          "properties": {
+            "part": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "driver": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "kind": {
+              "const": "budget"
+            },
+            "source": {
+              "const": "surface.autoDismiss"
+            }
+          }
+        },
+        "effect": {
+          "const": "remaining-width"
+        },
+        "reducedMotion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "steps"
+          ],
+          "properties": {
+            "kind": {
+              "const": "steps"
+            },
+            "steps": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 20
             }
           }
         }
