@@ -29,6 +29,85 @@ for (const [name, create] of Object.entries({ react, vue, svelte, angular, lit }
     });
     afterEach(() => { sequence.destroy(); root.remove(); vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); });
 
+    const holdMotion = () => {
+      const animations: { finish: () => void; cancel: ReturnType<typeof vi.fn> }[] = [];
+      for (const slide of Array.from(select(".viewport").children) as HTMLElement[]) {
+        slide.animate = (() => {
+          let finish!: () => void;
+          const finished = new Promise<void>(resolve => { finish = resolve; });
+          const cancel = vi.fn();
+          animations.push({ finish, cancel });
+          return { finished, cancel } as unknown as Animation;
+        }) as HTMLElement["animate"];
+      }
+      return animations;
+    };
+    it("preserves Stop intent through pointerdown, focus and click, then allows explicit Start", () => {
+      const rotation = select(".rotation");
+      rotation.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true, button: 0 }));
+      rotation.focus();
+      rotation.dispatchEvent(new MouseEvent("click", { bubbles: true, detail: 1 }));
+      expect(rotation.textContent).toBe("Start slide rotation");
+      vi.advanceTimersByTime(2000);
+      expect(options.onIndexChange).not.toHaveBeenCalled();
+      rotation.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true, button: 0 }));
+      rotation.dispatchEvent(new MouseEvent("click", { bubbles: true, detail: 1 }));
+      expect(rotation.textContent).toBe("Stop slide rotation");
+      vi.advanceTimersByTime(1000);
+      expect(options.onIndexChange).toHaveBeenCalledExactlyOnceWith(1);
+    });
+    it("does not carry abandoned pointer intent into keyboard activation", () => {
+      const rotation = select(".rotation");
+      rotation.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true, button: 0 }));
+      rotation.focus();
+      rotation.click(); // Keyboard and assistive activation has no pointer click count.
+      expect(rotation.textContent).toBe("Stop slide rotation");
+      vi.advanceTimersByTime(1000);
+      expect(options.onIndexChange).toHaveBeenCalledExactlyOnceWith(1);
+    });
+    it("releases outgoing content before a new owner takes control", async () => {
+      const animations = holdMotion();
+      const outgoing = select(".viewport").children[0] as HTMLElement;
+      sequence.sync({ ...options, index: 1 });
+      const releasedAnimations = [...animations];
+      expect(releasedAnimations).toHaveLength(2);
+      const owner = document.createElement("aside");
+      root.append(owner);
+      owner.append(outgoing);
+      await Promise.resolve(); // Observe the actual consumer removal.
+      for (const animation of releasedAnimations) expect(animation.cancel).toHaveBeenCalledOnce();
+      expect(outgoing.hidden).toBe(false);
+      expect(outgoing.style.display).toBe("");
+      expect(outgoing.getAttribute("aria-hidden")).toBeNull();
+      expect(outgoing.style.position).toBe("");
+      outgoing.style.display = "grid";
+      outgoing.setAttribute("aria-label", "New owner");
+      animations.forEach(animation => animation.finish());
+      await Promise.resolve(); await Promise.resolve();
+      sequence.sync({ ...options, index: 1, labels: ["B", "C"] });
+      expect(outgoing.hidden).toBe(false);
+      expect(outgoing.style.display).toBe("grid");
+      expect(outgoing.getAttribute("aria-label")).toBe("New owner");
+    });
+    it.each(["composition", "duration"])("keeps reading time paused through %s changes during movement", async change => {
+      const animations = holdMotion();
+      options = { ...options, index: 1 };
+      sequence.sync(options);
+      if (change === "composition") sequence.sync({ ...options, labels: [] });
+      else options = { ...options, durationMs: 2000 };
+      sequence.sync(options);
+      const duration = options.durationMs!;
+      vi.advanceTimersByTime(500);
+      expect(sequence.snapshot().paused).toBe(true);
+      expect(sequence.snapshot().remainingMs).toBe(duration);
+      animations.forEach(animation => animation.finish());
+      await Promise.resolve(); await Promise.resolve();
+      vi.advanceTimersByTime(duration - 1);
+      expect(options.onIndexChange).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1);
+      expect(options.onIndexChange).toHaveBeenCalledExactlyOnceWith(2);
+    });
+
     it("shares the elapsed fraction and makes one request against an unacknowledged index", () => {
       vi.advanceTimersByTime(400);
       expect(progress(".fill")).toBeCloseTo(0.4, 1);
