@@ -33,6 +33,11 @@ val codeBlockTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.surface.size.padding-inline",
             fallback = "16px",
         ),
+        "box-model.min-height" to ComponentTokenDefinition(
+            name = "box-model.min-height",
+            cssVar = "--fsds-box-model-min-height",
+            literal = "0",
+        ),
         "code-block.color.background.default" to ComponentTokenDefinition(
             name = "code-block.color.background.default",
             cssVar = "--fsds-code-block-color-background-default",
