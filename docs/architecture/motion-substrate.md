@@ -376,10 +376,11 @@ The legacy reduced-motion path does not separately realize all policy distinctio
 in the older motion schema; executable loops require a static value and respect
 for the user preference.
 
-Repetition and the shared Toast budget are executable drivers. A state-driven
-part transition and a second budget consumer must still challenge whether the
-model generalizes beyond these witnesses. Size-sensitive timing must be calibrated with spatial witnesses;
-Spinner's fixed period does not yet satisfy that design direction. The ant/elephant
+Repetition, the shared Toast budget and [Carousel sequences](carousel-sequences.md)
+are executable drivers. Carousel reuses the budget for advancement and admits a
+bounded index-driven slide transition with token duration/easing and capped
+viewport-width scaling. That spatial witness is a first calibration, not a
+universal perceptual law. Spinner's fixed period does not scale with size. The ant/elephant
 constraint remains about comparable spatial movement, not a multiplier imposed on
 all durations or on Skeleton's non-spatial opacity.
 
