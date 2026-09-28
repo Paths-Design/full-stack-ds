@@ -62,3 +62,12 @@ contracts:
   - name: 'carousel'
     type: contract-test
     path: 'packages/ds-codegen/src/carousel.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Renamed-contract generation tests, full root/framework suites and required six-target rail passed. Ignored runtime logs were inspected directly; verification.json records commands, source revision, SHA256 digests and identical integrated implementation bytes."
+    recorded_at: "2026-09-28T09:27:17.274Z"
+    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/verification.json
+    commit_sha: "2bf4fbe2"
