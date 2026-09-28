@@ -8,6 +8,7 @@ export { BreadcrumbsElement, BreadcrumbsItemElement, BreadcrumbsListElement } fr
 export { ButtonElement } from "./Button/Button.js";
 export { CalendarElement, CalendarHeaderElement } from "./Calendar/Calendar.js";
 export { CardElement, CardActionsElement, CardBadgeElement, CardContentElement, CardDescriptionElement, CardFooterElement, CardHeaderElement, CardLinkElement, CardMediaElement, CardNoteElement } from "./Card/Card.js";
+export { CarouselElement } from "./Carousel/Carousel.js";
 export { CheckboxElement } from "./Checkbox/Checkbox.js";
 export { ChipElement } from "./Chip/Chip.js";
 export { CodeBlockElement, CodeBlockLineElement, CodeBlockTokenElement } from "./CodeBlock/CodeBlock.js";
