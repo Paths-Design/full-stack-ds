@@ -49,6 +49,13 @@ acceptance:
     given: 'Carousel examples'
     when: 'inspected in browsers and under reduced motion'
     then: 'both requested indicator treatments work with accessible controls and hidden inactive content'
+  - id: A4
+    given: 'A composed sequence with a spatial transition profile'
+    when: 'Next Previous wrap interruption or reduced-motion preference changes occur'
+    then: >-
+      Outgoing and incoming slides move in the requested inline direction with token
+      timing and capped size scaling while the next reading budget waits for
+      movement to settle
 rollback:
   - 'Revert the Carousel slice and regenerate its contract projections.'
 non_functional: {}
