@@ -71,3 +71,11 @@ evidence:
     exit_code: 0
     artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/verification.json
     commit_sha: "2bf4fbe2"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "The executed sequence-budget tests across all five mirrored controllers pin one budget, synchronized pill/ring, stale controlled acknowledgement, focus stop/restart and independent hover/document pauses. Browser cases confirm the generated controls and timing."
+    recorded_at: "2026-09-28T09:27:27.309Z"
+    command: pnpm test
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/root.log
+    commit_sha: "2bf4fbe2"
