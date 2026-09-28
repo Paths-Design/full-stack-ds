@@ -92,3 +92,8 @@ evidence:
     evidence_ref: "Review baseline ed11396a: moving the outgoing article outside the viewport during animation leaves it hidden=true and display=none under its new owner in all five mirrored controllers. Source: sequence-budget readSlides restores removed nodes but finishMotion still owns the detached outgoing node. Probe: tmp/carousel-review/lifecycle.json."
     recorded_at: "2026-09-28T10:01:26.542Z"
     commit_sha: ed11396a
+  - criterion_id: A4
+    status: fail
+    evidence_ref: "Review baseline ed11396a: valid-to-invalid-to-valid label cardinality during unsettled movement clears the transition pause in all five mirrors; snapshot paused=false and remainingMs falls from 1000 to 900 after 100ms. Probe: tmp/carousel-review/lifecycle.json."
+    recorded_at: "2026-09-28T10:01:35.190Z"
+    commit_sha: ed11396a
