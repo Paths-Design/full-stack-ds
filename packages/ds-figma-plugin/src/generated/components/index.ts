@@ -9,6 +9,7 @@ import Breadcrumbs from "./Breadcrumbs/Breadcrumbs.figma.json" with { type: "jso
 import Button from "./Button/Button.figma.json" with { type: "json" };
 import Calendar from "./Calendar/Calendar.figma.json" with { type: "json" };
 import Card from "./Card/Card.figma.json" with { type: "json" };
+import Carousel from "./Carousel/Carousel.figma.json" with { type: "json" };
 import Checkbox from "./Checkbox/Checkbox.figma.json" with { type: "json" };
 import Chip from "./Chip/Chip.figma.json" with { type: "json" };
 import CodeBlock from "./CodeBlock/CodeBlock.figma.json" with { type: "json" };
@@ -63,6 +64,7 @@ export const figmaComponentRegistry = {
   "Button": Button,
   "Calendar": Calendar,
   "Card": Card,
+  "Carousel": Carousel,
   "Checkbox": Checkbox,
   "Chip": Chip,
   "CodeBlock": CodeBlock,
