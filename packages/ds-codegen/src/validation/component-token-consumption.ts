@@ -38,6 +38,11 @@ export function inspectComponentTokenConsumption(contract: ComponentContract, wo
     ...(admitted("swiftui") ? nativeTokenScopes(ir, nativeSlotArguments(createSwiftUIEmitter().emitComponent(ir, { componentsRoot: "packages/ds-swiftui/Sources/DsSwiftUI/Components", contractsRoot: "packages/ds-contracts" }).map(file => file.contents).join("\n"), ["colorSlot", "pxSlot"]), true) : []),
   ].flatMap(scope => scope.values.map(value => value.name)));
   const behavior = new Set<string>();
+  if (ir.motion.sequence) behavior.add(ir.motion.sequence.timing.durationToken);
+  if (ir.motion.sequence?.transition) {
+    behavior.add(ir.motion.sequence.transition.durationToken);
+    behavior.add(ir.motion.sequence.transition.easingToken);
+  }
   // This is the same capability-selected policy the timer emitters consume.
   // Reading a compiled default is distinct from reading a CSS runtime override.
   const autoDismiss = resolveSurfaceAutoDismiss(ir);

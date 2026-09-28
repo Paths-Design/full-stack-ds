@@ -1,3 +1,4 @@
+import { sequenceConfig } from "../../sequence.js";
 /**
  * Lit LitElement emission, IR-driven.
  *
@@ -1647,7 +1648,8 @@ function generateDomTreeImports(ir: ComponentIR): string {
     litImports.push("type PropertyValues");
   }
   const lines: string[] = [`import { ${litImports.join(", ")} } from 'lit';`];
-  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown) lines.push(`import { ref } from 'lit/directives/ref.js';`);
+  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown || ir.motion.sequence) lines.push(`import { ref } from 'lit/directives/ref.js';`);
+  if (ir.motion.sequence) lines.push(`import { SequenceController } from "../../primitives/controllers/SequenceController.js";`);
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   // Always include `property`; add `state` when the dom tree has a children
   // guard so the private _hasChildren reactive field can be declared.
@@ -1796,6 +1798,7 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     fieldAssociationControlSlug: ir.fieldAssociation?.provides?.controlSlug,
     idRefGatedSlots: collectLitIdRefGatedSlots(ir),
     countdownPart: ir.motion.countdown?.target.name,
+    sequence: Boolean(ir.motion.sequence),
     autoDismissPause: Boolean(
       resolveSurfaceAutoDismiss(ir) &&
         channels.some((c) => c.valueType === "boolean"),
@@ -1928,6 +1931,13 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     lines.push(`  }`);
     // Ephemeral-surface auto-dismiss (WCAG 2.2.1). The controller re-syncs
     // on host updates; pause listeners land on the template root.
+    if (ir.motion.sequence) {
+      const seq = ir.motion.sequence;
+      lines.push(`  private sequence = new SequenceController(this, ${sequenceConfig(seq, ir.cssPrefix)}, () => ({`,
+        `    index: this.behavior.${seq.channel}, labels: this.${seq.itemsProp} ?? [], autoPlay: this.${seq.timing.autoPlayProp} ?? false,`,
+        `    durationMs: this.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : this.${seq.timing.durationProp},`,
+        `    onIndexChange: (value) => this.behavior.set${capitalizeLit(seq.channel)}(value),`, `  }));`);
+    }
     const autoDismissPolicy = resolveSurfaceAutoDismiss(ir);
     const autoDismissChannel = autoDismissPolicy
       ? channels.find((c) => c.valueType === "boolean")
@@ -2421,6 +2431,7 @@ interface LitRenderContext {
    */
   idRefGatedSlots?: Set<string>;
   /** When true, bind auto-dismiss pause listeners on the template root. */
+  sequence?: boolean;
   autoDismissPause?: boolean;
   countdownPart?: string;
   hasOverlayClick?: boolean;
@@ -2818,6 +2829,7 @@ function renderLitDomNode(
   if (ctx.isRoot) {
     attrs.push(`data-fsds-box=""`);
     attrs.unshift(`class="\${this.computeClasses()}"`);
+    if (ctx.sequence) attrs.push(`\${ref(this.sequence.bindRoot)}`);
     if (ctx.autoDismissPause) {
       attrs.push(
         `@pointerenter=\${this.autoDismiss.pauseListeners.pointerenter}`,

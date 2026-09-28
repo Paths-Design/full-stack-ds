@@ -1,3 +1,4 @@
+import { sequenceConfig } from "../../sequence.js";
 /**
  * React-specific component source emission.
  *
@@ -292,6 +293,7 @@ export function generateReactComponentSource(
       `import { ${fieldAssocImports.join(", ")} } from "../../primitives/hooks";`,
     );
   }
+  if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   if (resolveSurfaceAutoDismiss(ir) && ir.behavior.normalizedChannels.some((c) => c.valueType === "boolean")) {
     importLines.push(`import { useAutoDismiss } from "../../primitives/hooks";`);
   }
@@ -2083,6 +2085,13 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
   // *.timing.auto-dismiss token (generation-resolved default) with the
   // contract's duration prop as the consumer override; pause props land on
   // the root element (WCAG 2.2.1 Timing Adjustable).
+  if (ir.motion.sequence) {
+    const seq = ir.motion.sequence;
+    lines.push(`  const sequence = useSequence(${sequenceConfig(seq, ir.cssPrefix)}, {`,
+      `    index: ${seq.channel}, labels: ${seq.itemsProp}, autoPlay: ${seq.timing.autoPlayProp},`,
+      `    durationMs: ${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : ${seq.timing.durationProp},`,
+      `    onIndexChange: set${capitalize(seq.channel)},`, `  });`);
+  }
   const autoDismissPolicy = resolveSurfaceAutoDismiss(ir);
   const autoDismissChannel = autoDismissPolicy
     ? channels.find((c) => c.valueType === "boolean")
@@ -2229,6 +2238,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     cssPrefix: ir.cssPrefix,
     useStackRoot: reactDomRootUsesStack(ir),
     countdownPart: ir.motion.countdown?.target.name,
+    sequence: Boolean(ir.motion.sequence),
     autoDismissPause: Boolean(autoDismissPolicy && autoDismissChannel),
     overlayClickSetter,
     overlayClickEnabledProp: overlayClickTrigger?.enabledByProp,
@@ -2326,6 +2336,7 @@ interface ReactRenderContext {
   /** Render the root DOM node through <Stack as="..."> without imposing layout. */
   useStackRoot?: boolean;
   /** When true, spread the auto-dismiss pause props onto the root element. */
+  sequence?: boolean;
   autoDismissPause?: boolean;
   countdownPart?: string;
   /** When set, emit onClick to dismiss the overlay on the targetPart click. */
@@ -2892,6 +2903,7 @@ function renderReactDomNode(
     if (ctx.cssPrefix) {
       attrs.push(`data-fsds-component="${ctx.cssPrefix}" data-fsds-box=""`);
     }
+    if (ctx.sequence) attrs.push(`ref={sequence.bindRoot}`);
     if (ctx.autoDismissPause) {
       attrs.push(`{...autoDismissPauseProps}`);
     }

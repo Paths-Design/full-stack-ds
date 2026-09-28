@@ -1,3 +1,4 @@
+import { sequenceConfig } from "../../sequence.js";
 /**
  * Svelte 5 SFC emission, IR-driven.
  *
@@ -1462,6 +1463,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
       `import { parseMarkdown, type MarkdownBlock, type MarkdownMark } from "../../primitives/markdown/markdown.js";`,
     );
   }
+  if (ir.motion.sequence) importLines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
   const importsBody = importLines.join("\n");
 
   const typesBody = generateTypeAliases(ir);
@@ -1559,6 +1561,15 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     );
   }
   const anchoredPositionBody = anchoredPositionLines.join("\n");
+  if (ir.motion.sequence) {
+    const seq = ir.motion.sequence;
+    hookLines.push(`const sequence = createSequenceBudget(${sequenceConfig(seq, ir.cssPrefix)});`,
+      `$effect(() => { sequence.sync({`,
+      `  index: ${hookVar}.${seq.channel}, labels: ${jsAccessorFor(seq.itemsProp)}, autoPlay: ${jsAccessorFor(seq.timing.autoPlayProp)},`,
+      `  durationMs: ${jsAccessorFor(seq.timing.durationProp)} === undefined ? ${seq.timing.defaultMs} : ${jsAccessorFor(seq.timing.durationProp)},`,
+      `  onIndexChange: ${hookVar}.set${capitalizeSvelte(seq.channel)},`, `}); });`,
+      `$effect(() => () => sequence.destroy());`);
+  }
   const hookBody = hookLines.join("\n");
 
   // ICON-CATALOG-RUNTIME-DELIVERY-01: glyph nodes get a size-hints const
@@ -1674,6 +1685,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     rootUsePortal,
     rootSelectorAnchored: selectorAnchor !== null,
     countdownPart: ir.motion.countdown?.target.name,
+    sequence: Boolean(ir.motion.sequence),
     autoDismissPause: Boolean(autoDismissPolicy && autoDismissChannel),
     rootRole: ir.root.rootRole,
     rootPolymorphicTag: ir.root.polymorphicTagProp,
@@ -1779,6 +1791,7 @@ interface SvelteRenderContext {
    */
   fieldAssociationConsumerPart?: string;
   /** When true, attach auto-dismiss pause listeners to the root element. */
+  sequence?: boolean;
   autoDismissPause?: boolean;
   countdownPart?: string;
   // `a11y.role` from the contract — emitted on the root element when set.
@@ -2170,6 +2183,7 @@ function renderSvelteDomNode(
         `this={${jsAccessorFor(ctx.rootPolymorphicTag.propName)} ?? "${ctx.rootPolymorphicTag.defaultTag}"}`,
       );
     }
+    if (ctx.sequence) attrs.push(`use:sequence.bindRoot`);
     if (ctx.autoDismissPause) {
       attrs.push(
         `onpointerenter={autoDismiss.pauseListeners.onpointerenter}`,
