@@ -43,3 +43,10 @@ contracts:
   - name: 'motion-declaration-custody'
     type: contract-test
     path: 'packages/ds-codegen/src/motion-ir.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Reviewed docs/architecture/motion-substrate.md at 921f6304: ownership, composition, bounded size policy, native starting-style realization, capability boundaries, and evidence-led revision are explicit. docs:check-claims and docs:check-links passed; logs in tmp/motion-principles/."
+    recorded_at: "2026-09-28T05:02:03.763Z"
+    artifact_path: tmp/motion-principles/docs-links.log
+    commit_sha: "921f6304"
