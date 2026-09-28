@@ -58,3 +58,9 @@ evidence:
     exit_code: 0
     artifact_path: tmp/motion-principles/focused-tests.log
     commit_sha: "921f6304"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At source 921f6304, governed:rail passed; pnpm test passed 4398 tests; test:frameworks completed all target suites (Lit retained two skips); docs checks and motion audit passed. git diff --exit-code after regeneration/tests passed with no generated changes. Logs: tmp/motion-principles/{rail,root-tests,framework-tests,docs-claims,docs-links,motion-audit}.log. Scoped CAWS gates passed."
+    recorded_at: "2026-09-28T05:02:04.885Z"
+    artifact_path: tmp/motion-principles/framework-tests.log
+    commit_sha: "921f6304"
