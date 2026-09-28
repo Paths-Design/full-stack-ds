@@ -66,12 +66,12 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Renamed-contract generation tests, full root/framework suites and required six-target rail passed. Ignored runtime logs were inspected directly; verification.json records commands, source revision, SHA256 digests and identical integrated implementation bytes."
-    recorded_at: "2026-09-28T09:27:17.274Z"
+    evidence_ref: "Final source b62540e4 passed the six-target admission rail, 4576 root tests and all framework suites. The renamed-contract tests establish generic lowering. Runtime logs and source revisions are preserved in verification.json."
+    recorded_at: "2026-09-28T09:42:44.557Z"
     command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
     exit_code: 0
     artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/verification.json
-    commit_sha: "2bf4fbe2"
+    commit_sha: b62540e4
   - criterion_id: A2
     status: pass
     evidence_ref: "The executed sequence-budget tests across all five mirrored controllers pin one budget, synchronized pill/ring, stale controlled acknowledgement, focus stop/restart and independent hover/document pauses. Browser cases confirm the generated controls and timing."
