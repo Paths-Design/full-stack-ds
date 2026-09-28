@@ -5,7 +5,7 @@ status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
 updated: 2026-09-28
-verified_at_commit: c2ad29f940d3cd01adde96da4ee43e884cd695e8
+verified_at_commit: 3fd6f2eb23aaf8bc4dfa7c24cb42b1b64e2f7850
 governs:
   - packages/ds-codegen/src/design-properties.ts
   - packages/ds-contracts/component.styles.schema.json
@@ -138,3 +138,7 @@ named component tokens; a style binding for `transition-duration` does not also
 control a loop's animation duration. No automatic motion-profile design control
 or inspector driver editor is introduced. The Web lowering consumes loop facts
 without adding them to the static style facts used by native backends.
+
+## Carousel motion reconciliation
+
+Carousel uses token-backed style consumers for its dots, ring and controls. Its advance duration and slide duration/easing are generation-resolved behavior inputs, not live CSS inspector overrides. The sequence controller owns progress and direct-child movement transforms; these are not newly exposed design-property controls.
