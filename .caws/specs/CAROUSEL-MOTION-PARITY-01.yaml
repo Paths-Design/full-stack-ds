@@ -1,0 +1,76 @@
+id: CAROUSEL-MOTION-PARITY-01
+title: 'Repair Carousel lifecycle defects and establish framework and platform parity'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-09-28T09:59:04.162Z'
+updated_at: '2026-09-28T09:59:04.162Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Sequence motion contract, controllers, platform realizations and independent parity witnesses'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts'
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-swift-smoke'
+    - 'packages/ds-compose-smoke'
+    - 'packages/ds-unity'
+    - 'packages/ds-godot'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'docs'
+    - 'src'
+    - 'e2e'
+    - 'scripts'
+    - 'fsds.targets.json'
+    - 'package.json'
+    - '.github/workflows'
+  out: []
+invariants:
+  - 'One authoritative time budget controls advancement and all visual projections; movement completion only releases reading time.'
+  - 'Consumer content is never mutated after ownership ends; interaction preserves user intent and reduced-motion preference.'
+  - 'A target is not considered at parity because it compiles or emits inert scaffolding; platform-specific semantics require executed evidence.'
+acceptance:
+  - id: A1
+    given: 'autoplay with an unfocused rotation button'
+    when: 'a user clicks Stop through real pointer focus and click events'
+    then: 'rotation remains stopped in every web framework and explicit Start remains available'
+  - id: A2
+    given: 'actual generated Card or other framework-owned children in each web target'
+    when: 'next previous wrapping and interruption occur'
+    then: 'rendered content boxes move directionally with size-aware token timing including transparent custom-element hosts and reduced motion skips spatial movement'
+  - id: A3
+    given: 'a transitioning outgoing slide'
+    when: 'it is removed or transferred to a different owner'
+    then: 'cancellation restores its consumer styles and semantics and no old animation or controller later hides or mutates it'
+  - id: A4
+    given: 'movement is in progress'
+    when: 'label and child validity or timer settings change'
+    then: 'transition and interaction pause reasons remain composed and the incoming slide receives its full reading budget after settlement'
+  - id: A5
+    given: 'the registered execution targets React Native SwiftUI Jetpack Compose Unity and Godot'
+    when: 'Carousel is consumed on each platform'
+    then: 'manual and timed navigation progress indicators motion interruption reduced motion and platform-appropriate pause and accessibility behavior have actual implementation and runtime evidence rather than inert exported controls; exclusions require explicit user agreement and do not count as parity'
+  - id: A6
+    given: 'framework and platform parity fixtures'
+    when: 'CI and available local platform lanes run'
+    then: 'real composed-content behavioral tests execute and meaningful mutations of timer control animation ownership and backend bindings fail the relevant gates; descriptor-only Figma carries the declared semantics without claiming execution'
+rollback:
+  - 'Revert each bounded repair slice and regenerate approved source projections; preserve review and runtime evidence.'
+non_functional: {}
+contracts:
+  - name: 'carousel-sequence'
+    type: behavior
+  - name: 'carousel-regressions'
+    type: contract-test
+    path: 'packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.test.ts'
