@@ -1304,6 +1304,10 @@ export interface MotionIR {
   reducedMotion: 'respect' | 'disable' | 'reduce' | 'ignore' | null;
   transitions: Array<{
     name: string;
+    /** Authored text retained verbatim for migration/diagnostics; NOT a bound driver. */
+    trigger: string | null;
+    /** Status of this declaration, independent of animation authored in styles/keyframes. */
+    realization: 'declaration-only';
     phase: 'enter' | 'exit' | 'move' | 'attention' | null;
     properties: string[];
     durationRef: string | null;
@@ -5990,6 +5994,8 @@ export function buildMotion(contract: ComponentContract): MotionIR {
     honorsReducedMotion: reducedMotion !== 'ignore',
     transitions: (motion?.transitions ?? []).map((t) => ({
       name: t.name,
+      trigger: t.trigger ?? null,
+      realization: 'declaration-only',
       phase: t.phase ?? null,
       properties: t.properties ?? [],
       durationRef: t.duration ?? null,

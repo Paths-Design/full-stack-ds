@@ -361,5 +361,7 @@ full-screen takeover; no corpus contract uses it.
 
 ## References
 
+- [Compositional motion](motion-substrate.md) — evolving motion principles, shared progress, and the boundary between logical presence and visual exit retention. This is design direction, not an implemented exit controller.
+
 - `docs/normal-form.md` — the compositional-system architecture that this family slots into.
 - `packages/ds-contracts/component.contract.schema.json` — the `surface` block schema, alongside the `portal`, `dismissal`, and `focus` blocks it coordinates with.

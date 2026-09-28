@@ -48,6 +48,7 @@ docs/
     a2ui-projection.md                   # Agent-facing descriptor projection
   architecture/
     presence-surfaces.md                 # Tooltip/popover/dialog/sheet family doctrine
+    motion-substrate.md                  # Motion principles and declaration/realization boundary
     tokens-architecture.md               # Design token graph + cascade + drift gate
     component-layering.md                # .css (structure) vs .tokens.css (realization)
     composer-slot-projection.md          # Named-slot projection across targets
