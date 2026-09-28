@@ -60,7 +60,6 @@ evidence:
     commit_sha: "921f6304"
   - criterion_id: A3
     status: pass
-    evidence_ref: "At source 921f6304, governed:rail passed; pnpm test passed 4398 tests; test:frameworks completed all target suites (Lit retained two skips); docs checks and motion audit passed. git diff --exit-code after regeneration/tests passed with no generated changes. Logs: tmp/motion-principles/{rail,root-tests,framework-tests,docs-claims,docs-links,motion-audit}.log. Scoped CAWS gates passed."
-    recorded_at: "2026-09-28T05:02:04.885Z"
-    artifact_path: tmp/motion-principles/framework-tests.log
+    evidence_ref: "Manually adjudicated actual saved execution at source 921f6304: governed:rail passed; root 4398 tests passed; all framework suites completed with two existing Lit skips; docs checks and motion audit passed; post-run generated diff empty. Ignored logs: tmp/motion-principles/{rail,root-tests,framework-tests,docs-claims,docs-links,motion-audit}.log. CLI commit verification checks source reachability only and does not re-execute these commands."
+    recorded_at: "2026-09-28T05:04:01.815Z"
     commit_sha: "921f6304"
