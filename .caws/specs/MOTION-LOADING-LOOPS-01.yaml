@@ -101,9 +101,9 @@ evidence:
     commit_sha: a0fbff388e4dc3432a318447e4c72a4761f22518
   - criterion_id: A4
     status: pass
-    evidence_ref: "Observed rail pass, 4419 root tests pass, framework suites pass with two existing Lit skips, typecheck/lint/docs claims/links pass, motion/dead-slot/token-reference/carrier/variant/behavior audits pass without new ledger exceptions. Docs separate web loop execution from unsupported backends and deferred capabilities. Final source a0fbff388e4dc3432a318447e4c72a4761f22518; ignored raw logs and SHA256 inventory at tmp/motion-loading-loops/verification.json. CAWS verifies citation reachability, not execution of the recorded command."
-    recorded_at: "2026-09-28T05:48:43.141Z"
-    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    evidence_ref: "Observed rail pass, 4419 root tests pass, framework suites pass with two existing Lit skips, typecheck/lint/docs claims/links pass, motion/dead-slot/token-reference/carrier/variant/behavior audits pass without new ledger exceptions. Docs separate web loop execution from unsupported backends and deferred capabilities. Final source a0fbff388e4dc3432a318447e4c72a4761f22518; ignored raw logs and SHA256 inventory at tmp/motion-loading-loops/verification.json. CAWS verifies citation reachability, not execution of the recorded command. The final full-suite command below ran after the rail as a separate invocation."
+    recorded_at: "2026-09-28T05:49:10.989Z"
+    command: "pnpm test && pnpm run test:frameworks"
     exit_code: 0
     artifact_path: docs/architecture/motion-substrate.md
     commit_sha: a0fbff388e4dc3432a318447e4c72a4761f22518
