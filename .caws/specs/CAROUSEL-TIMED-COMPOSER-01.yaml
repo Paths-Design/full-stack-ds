@@ -90,9 +90,9 @@ evidence:
     commit_sha: b62540e4
   - criterion_id: A4
     status: pass
-    evidence_ref: "All five browser realizations verify opposite slide directions, interrupted reversal from the current transform and cancellation under reduced motion. Mirrored unit cases pin wrap direction, 1280px capped duration and a full dwell budget after animation completion."
-    recorded_at: "2026-09-28T09:27:46.404Z"
+    evidence_ref: "Final tests pin capped size scaling, wrapping direction and a full budget after movement. All five browser realizations pass actual computed-transform direction, interrupted reversal and reduced-motion cancellation checks."
+    recorded_at: "2026-09-28T09:43:09.823Z"
     command: pnpm test
     exit_code: 0
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/root.log
-    commit_sha: "2bf4fbe2"
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/carousel-timed/final-root.log
+    commit_sha: b62540e4
