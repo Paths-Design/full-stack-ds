@@ -95,10 +95,12 @@ evidence:
     exit_code: 0
     commit_sha: "2f746ddd"
   - criterion_id: A4
-    status: fail
-    evidence_ref: "Review baseline ed11396a: valid-to-invalid-to-valid label cardinality during unsettled movement clears the transition pause in all five mirrors; snapshot paused=false and remainingMs falls from 1000 to 900 after 100ms. Probe: tmp/carousel-review/lifecycle.json."
-    recorded_at: "2026-09-28T10:01:35.190Z"
-    commit_sha: ed11396a
+    status: pass
+    evidence_ref: "At 2f746ddd, composition and duration changes during unsettled motion retain the full reading budget and defer advancement until a full dwell after settlement in all five mirrors. Existing focus hover hidden-document and reduced-motion checks remain green. Composition baseline failed in all five mirrors. Repaired suite 85 passed; /tmp/carousel-lifecycle-green.log."
+    recorded_at: "2026-09-28T17:54:43.851Z"
+    command: pnpm exec vitest run packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.test.ts
+    exit_code: 0
+    commit_sha: "2f746ddd"
   - criterion_id: A5
     status: fail
     evidence_ref: "Review baseline ed11396a: React Native Carousel exports index/onIndexChange/autoPlay/duration/indicator but ignores them and emits Pressable controls without onPress. fsds.targets.json does not allowlist Carousel for SwiftUI, Jetpack Compose, Unity or Godot. These are explicit open platform implementation gaps, not established parity."
