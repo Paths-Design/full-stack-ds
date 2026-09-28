@@ -2,9 +2,11 @@ id: CAT-RESIZE-SNAPSHOT-01
 title: 'Keep typing-cat device screens painted across window sizes'
 risk_tier: 2
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Land canvas-origin mounts, portrait-safe camera framing and pixel/input regression checks; Chrome 153 resize witnesses pass, while the reported Arc Chromium 154 intermittent blank snapshot remains unverified.'
 created_at: '2026-09-28T19:44:01.363Z'
-updated_at: '2026-09-28T19:44:10.205Z'
+updated_at: '2026-09-28T20:02:54.053Z'
 created_by_session: '01a0e989-e319-7363-9f6b-df741e560457'
 blast_radius:
   modules:
