@@ -5,7 +5,7 @@ mode: feature
 lifecycle_state: active
 worktree: motion-loading-loops
 created_at: '2026-09-28T05:09:05.914Z'
-updated_at: '2026-09-28T05:35:44.767Z'
+updated_at: '2026-09-28T05:42:16.765Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
@@ -46,6 +46,7 @@ scope:
     - scripts/carrier-reachability-audit/audit.mjs
     - scripts/variant-style-audit/audit.mjs
     - scripts/behavior-realization-audit/audit.mjs
+    - docs/architecture/design/component-design-bindings.md
   out: []
 invariants:
   - 'Motion lowering selects typed effect and part facts, never component identity.'
