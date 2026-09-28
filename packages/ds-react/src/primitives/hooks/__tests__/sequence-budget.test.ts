@@ -22,7 +22,7 @@ for (const [name, create] of Object.entries({ react, vue, svelte, angular, lit }
       root = document.createElement("section");
       root.innerHTML = '<button class="rotation"></button><div class="viewport"><article>A<button>Action A</button></article><article style="display:flex">B<button>Action B</button></article><article>C</article></div><button class="previous"></button><button class="picker"><span class="fill"></span></button><button class="picker"><span class="fill"></span></button><button class="picker"><span class="fill"></span></button><button class="next"><span class="ring"></span></button>';
       document.body.append(root);
-      sequence = create({ labels: { start: "Start slide rotation", stop: "Stop slide rotation", item: "slide" }, parts: { viewport: ".viewport", previous: ".previous", next: ".next", rotation: ".rotation", picker: ".picker" }, progress: [{ selector: ".fill", effect: "elapsed-width", steps: 10 }, { selector: ".ring", effect: "elapsed-ring", steps: 10 }] });
+      sequence = create({ transition: { durationMs: 250, easing: "ease", referenceWidth: 320, minMultiplier: 0.5, maxMultiplier: 2 }, labels: { start: "Start slide rotation", stop: "Stop slide rotation", item: "slide" }, parts: { viewport: ".viewport", previous: ".previous", next: ".next", rotation: ".rotation", picker: ".picker" }, progress: [{ selector: ".fill", effect: "elapsed-width", steps: 10 }, { selector: ".ring", effect: "elapsed-ring", steps: 10 }] });
       options = { index: 0, labels: ["A", "B", "C"], autoPlay: true, durationMs: 1000, onIndexChange: vi.fn() };
       sequence.bindRoot(root);
       sequence.sync(options);
@@ -85,6 +85,7 @@ for (const [name, create] of Object.entries({ react, vue, svelte, angular, lit }
       select(".previous").click();
       expect(options.onIndexChange).toHaveBeenCalledExactlyOnceWith(2);
       expect(select(".ring").hidden).toBe(true);
+      expect(select(".rotation").hidden).toBe(true);
       const inactive = select(".viewport").children[1] as HTMLElement;
       expect(inactive.hidden).toBe(true);
       expect(inactive.inert).toBe(true);
@@ -129,6 +130,56 @@ for (const [name, create] of Object.entries({ react, vue, svelte, angular, lit }
       expect(options.onIndexChange).not.toHaveBeenCalled();
       (root.lastElementChild as HTMLElement).click();
       expect(options.onIndexChange).toHaveBeenCalledExactlyOnceWith(1);
+    });
+    it("slides in the requested direction and gives the new content a full budget after movement", async () => {
+      const animations: { frames: Keyframe[]; duration: number; finish: () => void; cancel: ReturnType<typeof vi.fn> }[] = [];
+      vi.spyOn(select(".viewport"), "getBoundingClientRect").mockReturnValue({ width: 1280 } as DOMRect);
+      for (const slide of Array.from(select(".viewport").children) as HTMLElement[]) {
+        slide.animate = ((frames: Keyframe[], timing: KeyframeAnimationOptions) => {
+          let finish!: () => void;
+          const finished = new Promise<void>(resolve => { finish = resolve; });
+          const cancel = vi.fn();
+          animations.push({ frames, duration: Number(timing.duration), finish, cancel });
+          return { finished, cancel } as unknown as Animation;
+        }) as HTMLElement["animate"];
+      }
+      options.onIndexChange = (index) => { options = { ...options, index }; sequence.sync(options); };
+      sequence.sync(options);
+      select(".previous").click();
+      expect(options.index).toBe(2);
+      expect(animations[0].frames[1].transform).toBe("translateX(100%)");
+      expect(animations[1].frames[0].transform).toBe("translateX(-100%)");
+      expect(animations[0].duration).toBe(500);
+      expect(select(".viewport").children[0].getAttribute("aria-hidden")).toBe("true");
+      expect((select(".viewport").children[0] as HTMLElement).hidden).toBe(false);
+      vi.advanceTimersByTime(2000);
+      expect(options.index).toBe(2);
+      expect(sequence.snapshot().remainingMs).toBe(1000);
+      animations.forEach(animation => animation.finish());
+      await Promise.resolve(); await Promise.resolve();
+      expect((select(".viewport").children[0] as HTMLElement).hidden).toBe(true);
+      vi.advanceTimersByTime(999);
+      expect(options.index).toBe(2);
+      vi.advanceTimersByTime(1);
+      expect(options.index).toBe(0);
+      expect(animations[2].frames[1].transform).toBe("translateX(-100%)");
+      expect(animations[3].frames[0].transform).toBe("translateX(100%)");
+      media.matches = true; media.dispatchEvent(new Event("change"));
+      expect(animations[2].cancel).toHaveBeenCalled();
+      expect((select(".viewport").children[2] as HTMLElement).hidden).toBe(true);
+    });
+    it("returns consumer styles and semantics before reconnecting slide elements", () => {
+      const second = select(".viewport").children[1] as HTMLElement;
+      expect(second.style.display).toBe("none");
+      sequence.destroy();
+      expect(second.style.display).toBe("flex");
+      expect(second.hidden).toBe(false);
+      expect(second.inert).toBeFalsy();
+      expect(second.getAttribute("aria-roledescription")).toBeNull();
+      sequence.sync({ ...options, index: 1 });
+      expect(second.hidden).toBe(false);
+      expect(second.style.display).toBe("flex");
+      expect(second.getAttribute("aria-label")).toBe("B");
     });
     it("cleans clocks and reconnects without accumulating listeners", () => {
       sequence.destroy(); vi.advanceTimersByTime(2000);

@@ -2,6 +2,7 @@ import { createPresenceBudget } from "./presence-budget.js";
 
 export interface SequenceConfig {
   labels: { start: string; stop: string; item: string };
+  transition?: { durationMs: number; easing: string; referenceWidth: number; minMultiplier: number; maxMultiplier: number };
   parts: Record<"viewport" | "previous" | "next" | "rotation" | "picker", string>;
   progress: Array<{ selector: string; effect: "elapsed-width" | "elapsed-ring"; steps: number }>;
 }
@@ -26,8 +27,25 @@ export function createSequenceBudget(config: SequenceConfig) {
   let previousLabels: string | undefined;
   let pending = false;
   let connected = false;
+  let reducedMotion = false;
+  let activeSlide: HTMLElement | undefined;
+  let requestedIndex: number | undefined;
+  let requestedDirection = 1;
+  let motion: { outgoing: HTMLElement; animations: Animation[]; restore: () => void } | undefined;
   let hovered = false;
-  const originalDisplay = new WeakMap<HTMLElement, { value: string; priority: string }>();
+  const originalDisplay = new WeakMap<HTMLElement, { value: string; priority: string; inert: boolean; attrs: Record<string, string | null> }>();
+  const restoreSlide = (slide: HTMLElement) => {
+    const original = originalDisplay.get(slide);
+    if (!original) return;
+    if (original.value) slide.style.setProperty("display", original.value, original.priority);
+    else slide.style.removeProperty("display");
+    slide.inert = original.inert;
+    for (const [key, value] of Object.entries(original.attrs)) {
+      if (value === null) slide.removeAttribute(key);
+      else slide.setAttribute(key, value);
+    }
+    originalDisplay.delete(slide);
+  };
   const all = (selector: string) => Array.from(root?.querySelectorAll<HTMLElement>(selector) ?? [])
     .filter(el => el.closest("[data-sequence-root]") === root);
   const part = (key: keyof SequenceConfig["parts"]) => all(config.parts[key])[0];
@@ -36,6 +54,8 @@ export function createSequenceBudget(config: SequenceConfig) {
   const budget = createPresenceBudget(() => {
     if (!pending && playing && valid()) request(index() + 1);
   }, 10, (remaining, enabled, reduced) => {
+    reducedMotion = reduced;
+    if (reduced) finishMotion();
     for (const binding of config.progress) {
       const elapsed = 1 - remaining;
       const value = reduced ? Math.floor(elapsed * binding.steps) / binding.steps : elapsed;
@@ -48,24 +68,89 @@ export function createSequenceBudget(config: SequenceConfig) {
       }
     }
   });
+  const finishMotion = () => {
+    const current = motion;
+    if (!current) return;
+    motion = undefined;
+    current.animations.forEach(animation => animation.cancel());
+    current.restore();
+    if (current.outgoing !== activeSlide) {
+      current.outgoing.hidden = true;
+      current.outgoing.style.setProperty("display", "none", "important");
+    }
+    budget.resume("transition");
+  };
+  const beginMotion = (from: HTMLElement, to: HTMLElement, direction: number, fromTransform: string, toTransform?: string) => {
+    const profile = config.transition;
+    const viewport = part("viewport");
+    if (!profile || !viewport || reducedMotion || typeof to.animate !== "function") return;
+    const width = viewport.getBoundingClientRect().width;
+    const multiplier = Math.min(profile.maxMultiplier, Math.max(profile.minMultiplier, Math.sqrt(width / profile.referenceWidth)));
+    const duration = profile.durationMs * multiplier;
+    const sign = direction * (getComputedStyle(viewport).direction === "rtl" ? -1 : 1);
+    const originals = ["position", "left", "top", "width"].map(key => [key, from.style.getPropertyValue(key), from.style.getPropertyPriority(key)]);
+    const oldDisplay = originalDisplay.get(from)!;
+    from.hidden = false;
+    if (oldDisplay.value) from.style.setProperty("display", oldDisplay.value, oldDisplay.priority);
+    else from.style.removeProperty("display");
+    from.style.position = "absolute";
+    from.style.left = "0";
+    from.style.top = "0";
+    from.style.width = `${width}px`;
+    const animations = [
+      from.animate([{ transform: fromTransform }, { transform: `translateX(${-sign * 100}%)` }], { duration, easing: profile.easing, fill: "both" }),
+      to.animate([{ transform: toTransform ?? `translateX(${sign * 100}%)` }, { transform: "none" }], { duration, easing: profile.easing, fill: "both" }),
+    ];
+    const current = { outgoing: from, animations, restore: () => {
+      for (const [key, value, priority] of originals) {
+        if (value) from.style.setProperty(key, value, priority);
+        else from.style.removeProperty(key);
+      }
+    } };
+    motion = current;
+    budget.pause("transition");
+    // Presentation completion only releases reading time; it never advances.
+    void Promise.all(animations.map(animation => animation.finished)).then(() => {
+      if (motion === current) finishMotion();
+    }, () => { if (motion === current) finishMotion(); });
+  };
   const render = () => {
     if (!root || !options) return;
-    root.dataset.sequencePlaying = String(playing);
+    const nextSlide = slides[index()];
+    const previousSlide = activeSlide;
+    const changedSlide = previousSlide && nextSlide && previousSlide !== nextSlide;
+    const fromTransform = changedSlide ? getComputedStyle(previousSlide).transform : "none";
+    const toTransform = changedSlide && motion?.outgoing === nextSlide ? getComputedStyle(nextSlide).transform : undefined;
+    if (changedSlide) finishMotion();
+    activeSlide = nextSlide;
+    const timed = typeof options.durationMs === "number" && Number.isFinite(options.durationMs) && options.durationMs > 0;
+    root.dataset.sequencePlaying = String(playing && timed);
     const viewport = part("viewport");
-    viewport?.setAttribute("aria-live", playing ? "off" : "polite");
+    viewport?.setAttribute("aria-live", playing && timed ? "off" : "polite");
     slides.forEach((slide, i) => {
-      if (!originalDisplay.has(slide)) originalDisplay.set(slide, { value: slide.style.getPropertyValue("display"), priority: slide.style.getPropertyPriority("display") });
+      if (!originalDisplay.has(slide)) originalDisplay.set(slide, {
+        value: slide.style.getPropertyValue("display"), priority: slide.style.getPropertyPriority("display"),
+        inert: slide.inert,
+        attrs: Object.fromEntries(["hidden", "role", "aria-label", "aria-roledescription", "aria-hidden"].map(key => [key, slide.getAttribute(key)])),
+      });
       const display = originalDisplay.get(slide)!;
-      if (i === index()) {
+      const visible = i === index() || slide === motion?.outgoing;
+      if (visible) {
         if (display.value) slide.style.setProperty("display", display.value, display.priority);
         else slide.style.removeProperty("display");
       } else slide.style.setProperty("display", "none", "important");
-      slide.hidden = i !== index();
+      slide.hidden = !visible;
       slide.inert = i !== index();
+      slide.setAttribute("aria-hidden", String(i !== index()));
       slide.setAttribute("role", "group");
       slide.setAttribute("aria-roledescription", config.labels.item);
       slide.setAttribute("aria-label", options!.labels[i] ?? `${i + 1} of ${slides.length}`);
     });
+    if (changedSlide) {
+      const direction = requestedIndex === index() ? requestedDirection : Math.sign(index() - slides.indexOf(previousSlide)) || 1;
+      beginMotion(previousSlide, nextSlide, direction, fromTransform, toTransform);
+      requestedIndex = undefined;
+    }
     all(config.parts.picker).forEach((picker, i) => {
       picker.dataset.sequenceActive = String(i === index());
       picker.setAttribute("aria-disabled", String(i === index() || !valid()));
@@ -76,6 +161,7 @@ export function createSequenceBudget(config: SequenceConfig) {
     }
     const rotation = part("rotation");
     if (rotation) {
+      rotation.hidden = !timed;
       const label = playing ? config.labels.stop : config.labels.start;
       rotation.textContent = label;
       rotation.setAttribute("aria-label", label);
@@ -83,8 +169,11 @@ export function createSequenceBudget(config: SequenceConfig) {
   };
   const readSlides = () => {
     const viewport = part("viewport");
+    const previous = slides;
     slides = Array.from(viewport?.children ?? []).flatMap(el => el instanceof HTMLSlotElement
       ? el.assignedElements({ flatten: true }) : [el]).filter((el): el is HTMLElement => el instanceof HTMLElement);
+    if (activeSlide && !slides.includes(activeSlide)) { finishMotion(); activeSlide = undefined; }
+    for (const slide of previous) if (!slides.includes(slide)) restoreSlide(slide);
   };
   const syncBudget = (restart = false) => {
     if (!options || !connected) return;
@@ -98,6 +187,8 @@ export function createSequenceBudget(config: SequenceConfig) {
   const request = (next: number) => {
     if (!options || !valid()) return;
     const value = (next + slides.length) % slides.length;
+    requestedIndex = value;
+    requestedDirection = Math.sign(next - index()) || 1;
     // Wait for the controlled channel to acknowledge. Never repeat requests
     // against stale consumer state, including a delayed timer callback.
     pending = true;
@@ -126,6 +217,9 @@ export function createSequenceBudget(config: SequenceConfig) {
   const disconnect = () => {
     connected = false;
     observer?.disconnect();
+    finishMotion();
+    activeSlide = undefined;
+    slides.forEach(restoreSlide);
     root?.removeEventListener("click", click);
     root?.removeEventListener("focusin", stop);
     root?.removeEventListener("pointerenter", enter);
