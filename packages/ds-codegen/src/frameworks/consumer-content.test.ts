@@ -24,6 +24,9 @@ it("lowers a renamed annotated-source contract through native highlight facts", 
   expect(compose).toContain("fun AnnotatedSourceLine(");
   expect(compose).toContain("tokens.joinToString(\"\") { it.text } == code");
   expect(compose).toContain("if (content != null)");
+  expect(compose).toContain('layeredSlot("box-model.min-height")?.toFsdsDp()');
+  expect(compose).toContain("Modifier.heightIn(min = minHeight).clip(shape)");
+  expect(compose.match(/modifier\.then\(chromeModifier\)/g)).toHaveLength(3);
   const native = JSON.stringify(generateReactNativeComponentSource(ir));
   expect(native).toContain("prepareSourceLines(code, suppliedTokens, highlight)");
   expect(native).toContain("showLineNumbers");

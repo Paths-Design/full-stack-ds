@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-09-27
-verified_at_commit: 918770bfb47696499c525aa1620e93d9fbf66776
+verified_at_commit: b5fa22434c3553a5f6de3dd1a63cdc7f382eff5d
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -237,3 +237,9 @@ lowerings actually consume. See [the page attempts](architecture/design/retoken-
 It demonstrates that, for the <!-- component-count -->52 components built so far, a single typed contract corpus drives idiomatic source across React, Vue, Svelte, Angular, and Lit through one shared IR and one primitive — with React Native admitted to the same rail, the full-corpus SwiftUI emitter carrying bounded compile/test/paint/host-interaction facts outside it, and the partial-corpus Jetpack Compose emitter carrying compile and resolver-test facts outside it — with fail-closed boundary checks and preserved custom regions across regenerations. The IR centralizes semantic interpretation in the codegen layer, with focused builders beside its main assembly module; that relocation is an observable complexity cost, not evidence that the IR is small. A reader can clone the repo, regenerate, and inspect the IR and representative contracts directly.
 
 It does not demonstrate that every compositional system must take this shape, that the contract will continue to hold past 100 components, that native behavior is broadly runtime-correct, that macOS host facts transfer to iOS/Android devices, or that the architecture transfers to substrates outside UI engineering. The Unity pilot adds a further bounded import/interaction witness. The Godot comparative pilot adds shared state traces across a Unity Editor panel and a Godot exported application, plus a narrow foreground-token projection. Neither establishes a broader native guarantee. Those are open questions, named here so the reader does not have to infer them.
+
+The Compose supplied-source follow-up restores consumption of the shared
+minimum-height slot in its outer chrome. All source branches use a minimum
+constraint rather than a fixed height. Token parity, renamed-contract source
+checks and Kotlin library compilation/tests establish the binding; they do not
+establish rendered layout on Android devices.

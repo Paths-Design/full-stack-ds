@@ -22,6 +22,7 @@ package com.fullstackds.components.${segment}
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -136,6 +137,7 @@ fun ${name}(
     fun layeredSlot(slotName: String): String? = ${tokenScopes}["root"]?.get(slotName)?.let { fsdsTheme.resolve(it) }
     val containerColor = layeredSlot("${prefix}.color.background.default")?.toFsdsColor()
     val contentColor = layeredSlot("${prefix}.color.foreground.primary")?.toFsdsColor()
+    val minHeight = layeredSlot("box-model.min-height")?.toFsdsDp() ?: 0.dp
     val cornerRadius = layeredSlot("${prefix}.size.radius.default")?.toFsdsDp() ?: 0.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
@@ -143,7 +145,7 @@ fun ${name}(
     val paddingBlockEnd = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp
     val fsdsFontSize = layeredSlot("${prefix}.size.fontSize.default")?.toFsdsSp()
     val shape = RoundedCornerShape(cornerRadius)
-    val chromeModifier = Modifier.clip(shape)
+    val chromeModifier = Modifier.heightIn(min = minHeight).clip(shape)
         .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
     val sourceStyle = TextStyle(fontSize = fsdsFontSize ?: TextUnit.Unspecified, color = contentColor ?: Color.Unspecified)
