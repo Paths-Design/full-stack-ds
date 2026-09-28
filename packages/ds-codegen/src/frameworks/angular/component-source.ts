@@ -1,3 +1,4 @@
+import { sequenceConfig } from "../../sequence.js";
 /**
  * Angular standalone component emission, IR-driven.
  *
@@ -1434,6 +1435,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
   ) {
     coreNames.push("effect");
   }
+  if (ir.motion.sequence) coreNames.push("effect", "signal", "ViewChild", "ElementRef");
   if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown) coreNames.push("ViewChild", "ElementRef");
   if (channelInputs(ir).size > 0) coreNames.push("signal", "Injector", "runInInjectionContext", "untracked");
   // When any dom node uses `if: "children"`, the component needs AfterContentInit
@@ -1483,6 +1485,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
     `import { ${[...new Set(coreNames)].join(", ")} } from "@angular/core";`,
     `import { ${commonImports} } from "@angular/common";`,
   ];
+  if (ir.motion.sequence) lines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.compoundParts.length > 0) {
     lines.push(`import { StackComponent } from "../../primitives/index.js";`);
@@ -1746,6 +1749,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     isRoot: true,
     rootRole: ir.root.rootRole,
     countdownPart: ir.motion.countdown?.target.name,
+    sequence: Boolean(ir.motion.sequence),
     autoDismissPause: autoDismissActive,
     rootPolymorphicTag: ir.root.polymorphicTagProp,
     iconGlyphIdents,
@@ -1854,7 +1858,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   for (const p of ir.styledProps) {
     if (ANGULAR_RESERVED.has(p.name)) continue;
     const propLine = generateInputProp(p);
-    if (controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name) {
+    if (controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name || (ir.motion.sequence && [ir.motion.sequence.itemsProp, ir.motion.sequence.timing.durationProp, ir.motion.sequence.timing.autoPlayProp].includes(p.name))) {
       const type = lowerAngularPropType(p.propType);
       lines.push(`  private readonly input${capitalizeAngular(p.safeName)} = signal<${type} | undefined>(undefined);`);
       lines.push(`  @Input() get ${p.safeName}(): ${type} | undefined { return this.input${capitalizeAngular(p.safeName)}(); }`);
@@ -2003,6 +2007,17 @@ function generateDomTreeComponent(ir: ComponentIR): string {
 
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
 
+  if (ir.motion.sequence) {
+    const seq = ir.motion.sequence;
+    lines.push(`  protected sequence = createSequenceBudget(${sequenceConfig(seq, ir.cssPrefix)});`,
+      `  private sequenceCleanup = this.destroyRef.onDestroy(() => this.sequence.destroy());`,
+      `  private sequenceEffect = effect(() => this.sequence.sync({`,
+      `    index: this.behavior.${seq.channel}(), labels: this.${seq.itemsProp} ?? [], autoPlay: this.${seq.timing.autoPlayProp} ?? false,`,
+      `    durationMs: this.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : this.${seq.timing.durationProp},`,
+      `    onIndexChange: (value) => this.behavior.set${capitalizeAngular(seq.channel)}(value),`, `  }));`,
+      `  @ViewChild("sequenceRoot") set sequenceRoot(el: ElementRef<HTMLElement> | undefined) {`,
+      `    this.sequence.bindRoot(el?.nativeElement);`, `  }`);
+  }
   // classes computed
   lines.push(``);
   lines.push(...generateDomTreeClassesComputed(ir));
@@ -2523,6 +2538,7 @@ interface AngularRenderContext {
    */
   rootRole?: string;
   /** When true, bind auto-dismiss pause listeners on the template root. */
+  sequence?: boolean;
   autoDismissPause?: boolean;
   countdownPart?: string;
   overlayClickSetter?: string;
@@ -2805,6 +2821,7 @@ function renderAngularDomNode(
     if (ctx.rootRole && !("role" in node.attrs) && !("role" in node.bindings)) {
       attrs.push(`role="${ctx.rootRole}"`);
     }
+    if (ctx.sequence) attrs.push(`#sequenceRoot`);
     if (ctx.autoDismissPause) {
       attrs.push(
         `(pointerenter)="autoDismiss.pauseListeners.pointerenter()"`,

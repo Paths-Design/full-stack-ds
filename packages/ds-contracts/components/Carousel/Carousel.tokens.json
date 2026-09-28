@@ -1,0 +1,57 @@
+{
+  "carousel.color.foreground": {
+    "resolvesTo": "semantic.color.foreground.primary",
+    "fallback": "#141414",
+    "layer": "semantic"
+  },
+  "carousel.color.track": {
+    "resolvesTo": "semantic.color.border.subtle",
+    "fallback": "#d0d0d0",
+    "layer": "semantic"
+  },
+  "carousel.color.progress": {
+    "resolvesTo": "semantic.color.foreground.primary",
+    "fallback": "#141414",
+    "layer": "semantic"
+  },
+  "carousel.spacing.gap": {
+    "resolvesTo": "core.spacing.size.04",
+    "fallback": "8px",
+    "layer": "core"
+  },
+  "carousel.timing.advance": {
+    "resolvesTo": "core.motion.dwell.medium",
+    "fallback": "6000ms",
+    "layer": "core"
+  },
+  "carousel.size.dot-size": {
+    "resolvesTo": "core.spacing.size.04",
+    "fallback": "8px",
+    "layer": "core"
+  },
+  "carousel.size.active-size": {
+    "resolvesTo": "core.spacing.size.08",
+    "fallback": "32px",
+    "layer": "core"
+  },
+  "carousel.size.control-size": {
+    "resolvesTo": "core.spacing.size.08",
+    "fallback": "32px",
+    "layer": "core"
+  },
+  "carousel.size.radius": {
+    "resolvesTo": "core.shape.radius.full",
+    "fallback": "9999px",
+    "layer": "core"
+  },
+  "carousel.motion.duration": {
+    "resolvesTo": "core.motion.duration.medium",
+    "fallback": "250ms",
+    "layer": "core"
+  },
+  "carousel.motion.easing": {
+    "resolvesTo": "core.motion.easing.standard",
+    "fallback": "cubic-bezier(0.4, 0, 0.2, 1)",
+    "layer": "core"
+  }
+}

@@ -1,0 +1,463 @@
+{
+  "schemaVersion": 1,
+  "source": "@full-stack-ds/codegen/frameworks/figma",
+  "component": {
+    "name": "Carousel",
+    "cssPrefix": "carousel",
+    "rootElement": "section",
+    "effectiveRole": null
+  },
+  "anatomy": [
+    {
+      "name": "root",
+      "semanticElement": null,
+      "nativeTag": "section",
+      "isCompound": false,
+      "isRootOnly": true,
+      "layoutVariant": null
+    },
+    {
+      "name": "rotation",
+      "semanticElement": null,
+      "nativeTag": "button",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "viewport",
+      "semanticElement": null,
+      "nativeTag": "div",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "controls",
+      "semanticElement": null,
+      "nativeTag": "div",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "previous",
+      "semanticElement": null,
+      "nativeTag": "button",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "pagination",
+      "semanticElement": null,
+      "nativeTag": "div",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "picker",
+      "semanticElement": null,
+      "nativeTag": "button",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "fill",
+      "semanticElement": "div",
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "next",
+      "semanticElement": null,
+      "nativeTag": "button",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "ring",
+      "semanticElement": null,
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "marker",
+      "semanticElement": null,
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    }
+  ],
+  "props": [
+    {
+      "name": "slides",
+      "safeName": "slides",
+      "type": "string[]",
+      "required": false,
+      "description": "Accessible slide labels, in the same order as the direct child elements in the viewport.",
+      "defaultExpr": "[]",
+      "nodeKind": null
+    },
+    {
+      "name": "index",
+      "safeName": "index",
+      "type": "number",
+      "required": false,
+      "description": "Controlled active slide index.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "defaultIndex",
+      "safeName": "defaultIndex",
+      "type": "number",
+      "required": false,
+      "description": "Initial index for uncontrolled composition.",
+      "defaultExpr": "0",
+      "nodeKind": null
+    },
+    {
+      "name": "onIndexChange",
+      "safeName": "onIndexChange",
+      "type": "(index: number) => void",
+      "required": false,
+      "description": "Requests the next active slide index.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "autoPlay",
+      "safeName": "autoPlay",
+      "type": "boolean",
+      "required": false,
+      "description": "Opt in to automatic rotation. Keyboard focus stops it until the rotation control explicitly restarts it.",
+      "defaultExpr": "false",
+      "nodeKind": null
+    },
+    {
+      "name": "duration",
+      "safeName": "duration",
+      "type": "number | null",
+      "required": false,
+      "description": "Active milliseconds per slide. null or a nonpositive value disables the timer.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "indicator",
+      "safeName": "indicator",
+      "type": "CarouselIndicator",
+      "required": false,
+      "description": "Display the elapsed budget in the current pagination pill, around Next, or both.",
+      "defaultExpr": "\"pagination\"",
+      "nodeKind": null
+    },
+    {
+      "name": "label",
+      "safeName": "label",
+      "type": "string",
+      "required": false,
+      "description": "Accessible name for the carousel region.",
+      "defaultExpr": "\"Featured content\"",
+      "nodeKind": null
+    }
+  ],
+  "designBindings": [],
+  "variants": {
+    "indicator": [
+      "pagination",
+      "next",
+      "both"
+    ]
+  },
+  "states": {
+    "flat": [],
+    "dimensions": null
+  },
+  "classRecipe": {
+    "base": "carousel",
+    "valueModifiers": [
+      {
+        "propName": "indicator",
+        "safeName": "indicator",
+        "defaultExpr": "\"pagination\""
+      }
+    ],
+    "booleanModifiers": []
+  },
+  "root": {
+    "element": "section",
+    "explicitRole": "region",
+    "implicitRole": "region",
+    "labeling": [
+      "aria-label"
+    ],
+    "keyboard": [
+      {
+        "key": "Enter|Space",
+        "action": "Activate the focused rotation, previous, next or slide picker button.",
+        "when": "focused"
+      }
+    ]
+  },
+  "css": {
+    "blocks": [
+      {
+        "selector": ".carousel",
+        "declarations": {
+          "--fsds-box-model-padding": "0",
+          "--fsds-box-model-padding-block": "0",
+          "--fsds-box-model-padding-block-start": "0",
+          "--fsds-box-model-padding-block-end": "0",
+          "--fsds-box-model-padding-inline": "0",
+          "--fsds-box-model-padding-inline-start": "0",
+          "--fsds-box-model-padding-inline-end": "0",
+          "--fsds-box-model-gap": "0",
+          "--fsds-box-model-width": "auto",
+          "--fsds-box-model-min-width": "0",
+          "--fsds-box-model-max-width": "none",
+          "--fsds-box-model-height": "auto",
+          "--fsds-box-model-min-height": "0",
+          "--fsds-box-model-max-height": "none",
+          "--fsds-carousel-color-foreground": "var(--fsds-semantic-color-foreground-primary, #141414)",
+          "--fsds-carousel-color-track": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-carousel-color-progress": "var(--fsds-semantic-color-foreground-primary, #141414)",
+          "--fsds-carousel-spacing-gap": "var(--fsds-core-spacing-size-04, 8px)",
+          "--fsds-carousel-timing-advance": "var(--fsds-core-motion-dwell-medium, 6000ms)",
+          "--fsds-carousel-size-dot-size": "var(--fsds-core-spacing-size-04, 8px)",
+          "--fsds-carousel-size-active-size": "var(--fsds-core-spacing-size-08, 32px)",
+          "--fsds-carousel-size-control-size": "var(--fsds-core-spacing-size-08, 32px)",
+          "--fsds-carousel-size-radius": "var(--fsds-core-shape-radius-full, 9999px)",
+          "--fsds-carousel-motion-duration": "var(--fsds-core-motion-duration-medium, 250ms)",
+          "--fsds-carousel-motion-easing": "var(--fsds-core-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1))",
+          "padding-block-start": "var(--fsds-box-model-padding-block-start)",
+          "padding-block-end": "var(--fsds-box-model-padding-block-end)",
+          "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
+          "padding-inline-end": "var(--fsds-box-model-padding-inline-end)",
+          "gap": "var(--fsds-carousel-spacing-gap, 8px)",
+          "width": "var(--fsds-box-model-width)",
+          "min-width": "var(--fsds-box-model-min-width)",
+          "max-width": "var(--fsds-box-model-max-width)",
+          "height": "var(--fsds-box-model-height)",
+          "min-height": "var(--fsds-box-model-min-height)",
+          "max-height": "var(--fsds-box-model-max-height)",
+          "display": "flex",
+          "flex-direction": "column",
+          "color": "var(--fsds-carousel-color-foreground, #141414)"
+        }
+      },
+      {
+        "selector": ".carousel__viewport",
+        "declarations": {
+          "min-width": "0",
+          "position": "relative",
+          "overflow": "hidden"
+        }
+      },
+      {
+        "selector": ".carousel__viewport > [hidden]",
+        "declarations": {
+          "display": "none !important"
+        }
+      },
+      {
+        "selector": ".carousel__controls",
+        "declarations": {
+          "display": "flex",
+          "align-items": "center",
+          "justify-content": "center",
+          "gap": "var(--fsds-carousel-spacing-gap, 8px)"
+        }
+      },
+      {
+        "selector": ".carousel__pagination",
+        "declarations": {
+          "display": "flex",
+          "align-items": "center",
+          "gap": "var(--fsds-carousel-spacing-gap, 8px)"
+        }
+      },
+      {
+        "selector": ".carousel__picker",
+        "declarations": {
+          "position": "relative",
+          "padding": "0",
+          "border": "0",
+          "cursor": "pointer",
+          "display": "inline-flex",
+          "align-items": "center",
+          "justify-content": "center",
+          "width": "24px",
+          "height": "24px",
+          "background": "transparent"
+        }
+      },
+      {
+        "selector": ".carousel__picker[data-sequence-active=\"true\"]",
+        "declarations": {
+          "width": "48px"
+        }
+      },
+      {
+        "selector": ".carousel__fill",
+        "declarations": {
+          "position": "absolute",
+          "inset": "0",
+          "background-color": "var(--fsds-carousel-color-progress, #141414)",
+          "transform-origin": "left center",
+          "pointer-events": "none"
+        }
+      },
+      {
+        "selector": ".carousel__fill:dir(rtl)",
+        "declarations": {
+          "transform-origin": "right center"
+        }
+      },
+      {
+        "selector": ".carousel__ring",
+        "declarations": {
+          "position": "absolute",
+          "inset": "-4px",
+          "border-radius": "50%",
+          "background": "conic-gradient(currentColor calc(var(--sequence-progress, 0) * 1turn), transparent 0)",
+          "mask": "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0)",
+          "color": "var(--fsds-carousel-color-progress, #141414)",
+          "pointer-events": "none"
+        }
+      },
+      {
+        "selector": ".carousel--pagination .carousel__ring",
+        "declarations": {
+          "display": "none"
+        }
+      },
+      {
+        "selector": ".carousel--next .carousel__fill",
+        "declarations": {
+          "display": "none"
+        }
+      },
+      {
+        "selector": ".carousel [hidden]",
+        "declarations": {
+          "display": "none !important"
+        }
+      },
+      {
+        "selector": ".carousel__next",
+        "declarations": {
+          "display": "inline-flex",
+          "align-items": "center",
+          "justify-content": "center",
+          "position": "relative",
+          "min-width": "var(--fsds-carousel-size-control-size, 32px)",
+          "min-height": "var(--fsds-carousel-size-control-size, 32px)",
+          "border": "1px solid currentColor",
+          "border-radius": "var(--fsds-carousel-size-radius, 9999px)",
+          "background": "transparent",
+          "color": "inherit",
+          "cursor": "pointer"
+        }
+      },
+      {
+        "selector": ".carousel__previous",
+        "declarations": {
+          "display": "inline-flex",
+          "align-items": "center",
+          "justify-content": "center",
+          "position": "relative",
+          "min-width": "var(--fsds-carousel-size-control-size, 32px)",
+          "min-height": "var(--fsds-carousel-size-control-size, 32px)",
+          "border": "1px solid currentColor",
+          "border-radius": "var(--fsds-carousel-size-radius, 9999px)",
+          "background": "transparent",
+          "color": "inherit",
+          "cursor": "pointer"
+        }
+      },
+      {
+        "selector": ".carousel__rotation",
+        "declarations": {
+          "display": "inline-flex",
+          "align-items": "center",
+          "justify-content": "center",
+          "position": "relative",
+          "min-width": "var(--fsds-carousel-size-control-size, 32px)",
+          "min-height": "var(--fsds-carousel-size-control-size, 32px)",
+          "border": "1px solid currentColor",
+          "border-radius": "var(--fsds-carousel-size-radius, 9999px)",
+          "background": "transparent",
+          "color": "inherit",
+          "cursor": "pointer",
+          "align-self": "flex-start",
+          "padding-inline": "12px",
+          "font": "inherit"
+        }
+      },
+      {
+        "selector": ".carousel__marker",
+        "declarations": {
+          "width": "var(--fsds-carousel-size-dot-size, 8px)",
+          "height": "var(--fsds-carousel-size-dot-size, 8px)",
+          "border-radius": "var(--fsds-carousel-size-radius, 9999px)",
+          "overflow": "hidden",
+          "background-color": "var(--fsds-carousel-color-track, #d0d0d0)",
+          "display": "block",
+          "position": "relative"
+        }
+      },
+      {
+        "selector": ".carousel__picker[data-sequence-active=\"true\"] .carousel__marker",
+        "declarations": {
+          "width": "var(--fsds-carousel-size-active-size, 32px)"
+        }
+      },
+      {
+        "selector": ".carousel:not([data-sequence-root]) > .carousel__viewport",
+        "declarations": {
+          "visibility": "hidden"
+        }
+      }
+    ],
+    "keyframes": []
+  },
+  "behavior": {
+    "channels": [
+      {
+        "name": "slide",
+        "valueProp": "index",
+        "defaultValueProp": "defaultIndex",
+        "changeHandlerProp": "onIndexChange",
+        "valueType": "number",
+        "callbackKind": "value",
+        "isDisclosureChannel": false,
+        "disclosurePriority": 9007199254740991
+      }
+    ],
+    "dismissalTriggers": [],
+    "events": [],
+    "form": null,
+    "focus": {
+      "strategy": "none",
+      "description": "Native buttons use normal tab order. Focus entering the carousel stops automatic rotation until explicit restart."
+    },
+    "portal": null
+  },
+  "surface": null,
+  "figma": {
+    "intendedUse": "figma-library-materialization",
+    "documentationFrame": "Carousel / Documentation",
+    "componentSetName": "Carousel",
+    "propertySource": "IR styledProps + variants + states + behavior"
+  }
+}

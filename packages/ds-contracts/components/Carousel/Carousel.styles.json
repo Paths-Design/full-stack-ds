@@ -1,0 +1,582 @@
+{
+  "root": {
+    "display": {
+      "literal": "flex",
+      "platforms": [
+        "web"
+      ]
+    },
+    "flex-direction": {
+      "literal": "column",
+      "platforms": [
+        "web"
+      ]
+    },
+    "gap": {
+      "resolvesTo": "carousel.spacing.gap",
+      "fallback": "8px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "color": {
+      "resolvesTo": "carousel.color.foreground",
+      "fallback": "#141414",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "viewport": {
+    "min-width": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "position": {
+      "literal": "relative",
+      "platforms": [
+        "web"
+      ]
+    },
+    "overflow": {
+      "literal": "hidden",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel__viewport > [hidden]": {
+    "display": {
+      "literal": "none !important",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "controls": {
+    "display": {
+      "literal": "flex",
+      "platforms": [
+        "web"
+      ]
+    },
+    "align-items": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "justify-content": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "gap": {
+      "resolvesTo": "carousel.spacing.gap",
+      "fallback": "8px",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "pagination": {
+    "display": {
+      "literal": "flex",
+      "platforms": [
+        "web"
+      ]
+    },
+    "align-items": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "gap": {
+      "resolvesTo": "carousel.spacing.gap",
+      "fallback": "8px",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "picker": {
+    "position": {
+      "literal": "relative",
+      "platforms": [
+        "web"
+      ]
+    },
+    "padding": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "cursor": {
+      "literal": "pointer",
+      "platforms": [
+        "web"
+      ]
+    },
+    "display": {
+      "literal": "inline-flex",
+      "platforms": [
+        "web"
+      ]
+    },
+    "align-items": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "justify-content": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "width": {
+      "literal": "24px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "height": {
+      "literal": "24px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background": {
+      "literal": "transparent",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel__picker[data-sequence-active=\"true\"]": {
+    "width": {
+      "literal": "48px",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "fill": {
+    "position": {
+      "literal": "absolute",
+      "platforms": [
+        "web"
+      ]
+    },
+    "inset": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background-color": {
+      "resolvesTo": "carousel.color.progress",
+      "fallback": "#141414",
+      "platforms": [
+        "web"
+      ]
+    },
+    "transform-origin": {
+      "literal": "left center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "pointer-events": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel__fill:dir(rtl)": {
+    "transform-origin": {
+      "literal": "right center",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "ring": {
+    "position": {
+      "literal": "absolute",
+      "platforms": [
+        "web"
+      ]
+    },
+    "inset": {
+      "literal": "-4px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-radius": {
+      "literal": "50%",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background": {
+      "literal": "conic-gradient(currentColor calc(var(--sequence-progress, 0) * 1turn), transparent 0)",
+      "platforms": [
+        "web"
+      ]
+    },
+    "mask": {
+      "literal": "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0)",
+      "platforms": [
+        "web"
+      ]
+    },
+    "color": {
+      "resolvesTo": "carousel.color.progress",
+      "fallback": "#141414",
+      "platforms": [
+        "web"
+      ]
+    },
+    "pointer-events": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel--pagination .carousel__ring": {
+    "display": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel--next .carousel__fill": {
+    "display": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel [hidden]": {
+    "display": {
+      "literal": "none !important",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "next": {
+    "display": {
+      "literal": "inline-flex",
+      "platforms": [
+        "web"
+      ]
+    },
+    "align-items": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "justify-content": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "position": {
+      "literal": "relative",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-width": {
+      "resolvesTo": "carousel.size.control-size",
+      "fallback": "32px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-height": {
+      "resolvesTo": "carousel.size.control-size",
+      "fallback": "32px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border": {
+      "literal": "1px solid currentColor",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-radius": {
+      "resolvesTo": "carousel.size.radius",
+      "fallback": "9999px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background": {
+      "literal": "transparent",
+      "platforms": [
+        "web"
+      ]
+    },
+    "color": {
+      "literal": "inherit",
+      "platforms": [
+        "web"
+      ]
+    },
+    "cursor": {
+      "literal": "pointer",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "previous": {
+    "display": {
+      "literal": "inline-flex",
+      "platforms": [
+        "web"
+      ]
+    },
+    "align-items": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "justify-content": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "position": {
+      "literal": "relative",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-width": {
+      "resolvesTo": "carousel.size.control-size",
+      "fallback": "32px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-height": {
+      "resolvesTo": "carousel.size.control-size",
+      "fallback": "32px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border": {
+      "literal": "1px solid currentColor",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-radius": {
+      "resolvesTo": "carousel.size.radius",
+      "fallback": "9999px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background": {
+      "literal": "transparent",
+      "platforms": [
+        "web"
+      ]
+    },
+    "color": {
+      "literal": "inherit",
+      "platforms": [
+        "web"
+      ]
+    },
+    "cursor": {
+      "literal": "pointer",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "rotation": {
+    "display": {
+      "literal": "inline-flex",
+      "platforms": [
+        "web"
+      ]
+    },
+    "align-items": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "justify-content": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "position": {
+      "literal": "relative",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-width": {
+      "resolvesTo": "carousel.size.control-size",
+      "fallback": "32px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-height": {
+      "resolvesTo": "carousel.size.control-size",
+      "fallback": "32px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border": {
+      "literal": "1px solid currentColor",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-radius": {
+      "resolvesTo": "carousel.size.radius",
+      "fallback": "9999px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background": {
+      "literal": "transparent",
+      "platforms": [
+        "web"
+      ]
+    },
+    "color": {
+      "literal": "inherit",
+      "platforms": [
+        "web"
+      ]
+    },
+    "cursor": {
+      "literal": "pointer",
+      "platforms": [
+        "web"
+      ]
+    },
+    "align-self": {
+      "literal": "flex-start",
+      "platforms": [
+        "web"
+      ]
+    },
+    "padding-inline": {
+      "literal": "12px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "font": {
+      "literal": "inherit",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "marker": {
+    "width": {
+      "resolvesTo": "carousel.size.dot-size",
+      "fallback": "8px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "height": {
+      "resolvesTo": "carousel.size.dot-size",
+      "fallback": "8px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-radius": {
+      "resolvesTo": "carousel.size.radius",
+      "fallback": "9999px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "overflow": {
+      "literal": "hidden",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background-color": {
+      "resolvesTo": "carousel.color.track",
+      "fallback": "#d0d0d0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "display": {
+      "literal": "block",
+      "platforms": [
+        "web"
+      ]
+    },
+    "position": {
+      "literal": "relative",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel__picker[data-sequence-active=\"true\"] .carousel__marker": {
+    "width": {
+      "resolvesTo": "carousel.size.active-size",
+      "fallback": "32px",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".carousel:not([data-sequence-root]) > .carousel__viewport": {
+    "visibility": {
+      "literal": "hidden",
+      "platforms": [
+        "web"
+      ]
+    }
+  }
+}

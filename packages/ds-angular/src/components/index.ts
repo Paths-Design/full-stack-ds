@@ -8,6 +8,7 @@ export { BreadcrumbsComponent, BreadcrumbsItemComponent, BreadcrumbsListComponen
 export { ButtonComponent } from "./Button/Button.component.js";
 export { CalendarComponent, CalendarHeaderComponent } from "./Calendar/Calendar.component.js";
 export { CardComponent, CardActionsComponent, CardBadgeComponent, CardContentComponent, CardDescriptionComponent, CardFooterComponent, CardHeaderComponent, CardLinkComponent, CardMediaComponent, CardNoteComponent } from "./Card/Card.component.js";
+export { CarouselComponent } from "./Carousel/Carousel.component.js";
 export { CheckboxComponent } from "./Checkbox/Checkbox.component.js";
 export { ChipComponent } from "./Chip/Chip.component.js";
 export { CodeBlockComponent, CodeBlockLineComponent, CodeBlockTokenComponent } from "./CodeBlock/CodeBlock.component.js";

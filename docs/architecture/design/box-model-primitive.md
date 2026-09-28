@@ -5,7 +5,7 @@ status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
 updated: 2026-09-28
-verified_at_commit: c2ad29f940d3cd01adde96da4ee43e884cd695e8
+verified_at_commit: 3fd6f2eb23aaf8bc4dfa7c24cb42b1b64e2f7850
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -76,3 +76,7 @@ since the prior stamp. `webCssBlocks` now also consumes resolved loop facts; the
 box default merge, boundary reset, and consumer fallback rules remain unchanged.
 The root suite retains the box-model and framework boundary witnesses. Loading
 loops do not introduce a geometry resolver or size-sensitive timing policy.
+
+## Carousel motion reconciliation
+
+Carousel keeps the existing box-model normalization and boundary markers. Its viewport width is measured only by the sequence motion controller to scale movement duration; it does not change the shared geometry defaults or override precedence.

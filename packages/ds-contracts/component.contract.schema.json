@@ -479,6 +479,97 @@
     "a2ui": {
       "$ref": "#/$defs/a2uiContract",
       "description": "Agent-facing authoring metadata. Keep lean \u2014 the runtime deriver pulls props, enum, default, events, form from the existing contract blocks."
+    },
+    "sequence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel",
+        "itemsProp",
+        "viewport",
+        "previous",
+        "next",
+        "rotation",
+        "picker",
+        "timing",
+        "labels"
+      ],
+      "properties": {
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "itemsProp": {
+          "type": "string",
+          "minLength": 1
+        },
+        "viewport": {
+          "type": "string",
+          "minLength": 1
+        },
+        "previous": {
+          "type": "string",
+          "minLength": 1
+        },
+        "next": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rotation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "picker": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timing": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "durationProp",
+            "autoPlayProp",
+            "durationToken"
+          ],
+          "properties": {
+            "durationProp": {
+              "type": "string",
+              "minLength": 1
+            },
+            "autoPlayProp": {
+              "type": "string",
+              "minLength": 1
+            },
+            "durationToken": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "start",
+            "stop",
+            "item"
+          ],
+          "properties": {
+            "start": {
+              "type": "string",
+              "minLength": 1
+            },
+            "stop": {
+              "type": "string",
+              "minLength": 1
+            },
+            "item": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {
@@ -2032,6 +2123,160 @@
         },
         "countdown": {
           "$ref": "#/$defs/motionCountdown"
+        },
+        "progress": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "target",
+              "driver",
+              "effect",
+              "reducedMotion"
+            ],
+            "properties": {
+              "target": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "part"
+                ],
+                "properties": {
+                  "part": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "driver": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "source"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "budget"
+                  },
+                  "source": {
+                    "const": "sequence.advance"
+                  }
+                }
+              },
+              "effect": {
+                "enum": [
+                  "elapsed-width",
+                  "elapsed-ring"
+                ]
+              },
+              "reducedMotion": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "steps"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "steps"
+                  },
+                  "steps": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 20
+                  }
+                }
+              }
+            }
+          }
+        },
+        "sequenceTransition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "target",
+            "driver",
+            "effect",
+            "durationToken",
+            "easingToken",
+            "size",
+            "reducedMotion"
+          ],
+          "properties": {
+            "target": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "part",
+                "scope"
+              ],
+              "properties": {
+                "part": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "scope": {
+                  "const": "children"
+                }
+              }
+            },
+            "driver": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "channel"
+                },
+                "source": {
+                  "const": "sequence.index"
+                }
+              }
+            },
+            "effect": {
+              "const": "slide-inline"
+            },
+            "durationToken": {
+              "type": "string",
+              "minLength": 1
+            },
+            "easingToken": {
+              "type": "string",
+              "minLength": 1
+            },
+            "size": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "referenceWidth",
+                "minMultiplier",
+                "maxMultiplier"
+              ],
+              "properties": {
+                "referenceWidth": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "minMultiplier": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "maxMultiplier": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                }
+              }
+            },
+            "reducedMotion": {
+              "const": "instant"
+            }
+          }
         }
       }
     },
