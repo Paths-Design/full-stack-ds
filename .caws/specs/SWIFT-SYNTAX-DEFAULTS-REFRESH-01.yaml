@@ -1,0 +1,26 @@
+id: SWIFT-SYNTAX-DEFAULTS-REFRESH-01
+title: 'Refresh Swift syntax defaults for pending source presentation changes'
+risk_tier: 3
+mode: chore
+lifecycle_state: draft
+created_at: '2026-09-28T06:36:33.731Z'
+updated_at: '2026-09-28T06:36:33.731Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Generated Swift semantic defaults'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Tokens/FsdsTheme.swift'
+  out: []
+invariants:
+  - 'The table is derived from the committed resolved token graph and Swift references; no authored values or gate exceptions are introduced.'
+acceptance:
+  - id: A1
+    given: 'current Swift component references'
+    when: 'semantic defaults are regenerated and checked'
+    then: 'the committed table matches the graph and Swift tests and remaining pre-push audits pass.'
+non_functional: {}
+contracts: []
