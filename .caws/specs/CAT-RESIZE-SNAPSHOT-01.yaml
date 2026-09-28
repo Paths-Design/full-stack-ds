@@ -1,0 +1,32 @@
+id: CAT-RESIZE-SNAPSHOT-01
+title: 'Keep typing-cat device screens painted across window sizes'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-09-28T19:44:01.363Z'
+updated_at: '2026-09-28T19:44:01.363Z'
+created_by_session: '01a0e989-e319-7363-9f6b-df741e560457'
+blast_radius:
+  modules:
+    - 'Typing cat and drawable surface compatibility'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/spatial-console/web'
+  out: []
+invariants:
+  - 'Device iframe viewport sizes and projected input remain accurate'
+acceptance:
+  - id: A1
+    given: 'three device frames'
+    when: 'the window loads and resizes across landscape and portrait viewports'
+    then: 'every visible screen contains opaque site pixels'
+  - id: A2
+    given: 'a resized desk'
+    when: 'trusted input targets a projected device control'
+    then: 'the intended control receives input'
+non_functional: {}
+contracts:
+  - name: 'screen-snapshot'
+    type: behavior
