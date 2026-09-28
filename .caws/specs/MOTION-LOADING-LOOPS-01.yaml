@@ -1,0 +1,65 @@
+id: MOTION-LOADING-LOOPS-01
+title: 'Bind repeating motion to Skeleton and Spinner parts'
+risk_tier: 3
+mode: feature
+lifecycle_state: draft
+created_at: '2026-09-28T05:09:05.914Z'
+updated_at: '2026-09-28T05:09:05.914Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Repeating motion schema, IR, shared web CSS lowering, and loading contracts'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-contracts/components/Skeleton/'
+    - 'packages/ds-contracts/components/Spinner/'
+    - 'packages/ds-codegen/src/contract.ts'
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/css.ts'
+    - 'packages/ds-codegen/src/motion-loops.ts'
+    - 'packages/ds-codegen/src/motion-loops.test.ts'
+    - 'packages/ds-codegen/src/motion-ir.test.ts'
+    - 'packages/ds-react/src/components/Skeleton/'
+    - 'packages/ds-react/src/components/Spinner/'
+    - 'packages/ds-vue/src/components/Skeleton/'
+    - 'packages/ds-vue/src/components/Spinner/'
+    - 'packages/ds-svelte/src/components/Skeleton/'
+    - 'packages/ds-svelte/src/components/Spinner/'
+    - 'packages/ds-angular/src/components/Skeleton/'
+    - 'packages/ds-angular/src/components/Spinner/'
+    - 'packages/ds-lit/src/components/Skeleton/'
+    - 'packages/ds-lit/src/components/Spinner/'
+    - 'e2e/motion-loops.spec.ts'
+    - 'docs/architecture/motion-substrate.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Motion lowering selects typed effect and part facts, never component identity.'
+  - 'Legacy transitions stay declaration-only; native loop support and Skeleton wipe migration remain explicitly unclaimed.'
+acceptance:
+  - id: A1
+    given: 'Skeleton and Spinner contracts'
+    when: 'typed repeating motion is normalized'
+    then: 'targets variants timings endpoints and static reduced-motion values are validated and malformed or competing declarations fail closed.'
+  - id: A2
+    given: 'a differently named component using the same loop declaration'
+    when: 'it is generated'
+    then: 'the same effect and timing lower without name-specific branches and migrated loading animations have one owner.'
+  - id: A3
+    given: 'the generated web loading components'
+    when: 'runtime probes exercise animation progress variants token timing and reduced motion'
+    then: 'Spinner rotates Skeleton opacity changes none stops multiline motion and reduced-motion static states remain visible.'
+  - id: A4
+    given: 'the completed slice'
+    when: 'full governed rail root and framework tests documentation checks and relevant motion/token audits run'
+    then: 'checks pass and documentation distinguishes web realization from unsupported backends.'
+rollback:
+  - 'Revert authored motion model and contract migration together with generated source changes.'
+non_functional: {}
+contracts:
+  - name: 'loading-loop-runtime'
+    type: contract-test
+    path: 'e2e/motion-loops.spec.ts'
