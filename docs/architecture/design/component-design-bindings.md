@@ -5,7 +5,7 @@ status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
 updated: 2026-09-28
-verified_at_commit: 3fd6f2eb23aaf8bc4dfa7c24cb42b1b64e2f7850
+verified_at_commit: b5453c4866ec2311e72a1aa216ed7faf8a19f3fd
 governs:
   - packages/ds-codegen/src/design-properties.ts
   - packages/ds-contracts/component.styles.schema.json
@@ -142,3 +142,7 @@ without adding them to the static style facts used by native backends.
 ## Carousel motion reconciliation
 
 Carousel uses token-backed style consumers for its dots, ring and controls. Its advance duration and slide duration/easing are generation-resolved behavior inputs, not live CSS inspector overrides. The sequence controller owns progress and direct-child movement transforms; these are not newly exposed design-property controls.
+
+Each Carousel indicator mode explicitly selects its visible decorations in the
+style contract, including the combined mode; the variant audit checks those
+carriers and browser tests check the resulting visibility.

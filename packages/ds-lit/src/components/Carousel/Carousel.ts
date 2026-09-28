@@ -151,6 +151,7 @@ export class CarouselElement extends LitElement {
       background-color: var(--fsds-carousel-color-progress, #141414);
       transform-origin: left center;
       pointer-events: none;
+      display: none;
     }
 
     .carousel__fill:dir(rtl) {
@@ -165,13 +166,6 @@ export class CarouselElement extends LitElement {
       mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
       color: var(--fsds-carousel-color-progress, #141414);
       pointer-events: none;
-    }
-
-    .carousel--pagination .carousel__ring {
-      display: none;
-    }
-
-    .carousel--next .carousel__fill {
       display: none;
     }
 
@@ -236,6 +230,14 @@ export class CarouselElement extends LitElement {
 
     .carousel__picker[data-sequence-active="true"] .carousel__marker {
       width: var(--fsds-carousel-size-active-size, 32px);
+    }
+
+    .carousel--pagination .carousel__fill, .carousel--both .carousel__fill {
+      display: block;
+    }
+
+    .carousel--next .carousel__ring, .carousel--both .carousel__ring {
+      display: block;
     }
     }
   `;
