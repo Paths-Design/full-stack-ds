@@ -11,6 +11,7 @@
     "worktree:check": "node scripts/worktree-install.mjs --check",
     "dev": "vite",
     "build": "vite build",
+    "build:all": "pnpm --recursive --sort --filter '!full-stack-design-system' run build && pnpm run build",
     "fixtures:sync": "node scripts/sync-analytical-fixtures.mjs",
     "fixtures:check": "node scripts/sync-analytical-fixtures.mjs --check",
     "analytical:emit-schemas": "tsx packages/ds-codegen/src/analytical/emit-schemas.ts",
