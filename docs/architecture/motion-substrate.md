@@ -306,10 +306,65 @@ rotation and opacity, override token timing, change Skeleton modes and toggle
 reduced motion across the web frameworks. They establish those behaviors in the
 tested browser, not visual quality or universal browser support.
 
+## Second executable contract: a shared Toast countdown budget
+
+Toast declares an owned `progress` decoration along the bottom of `item`:
+
+```json
+{
+  "countdown": {
+    "target": { "part": "progress" },
+    "driver": { "kind": "budget", "source": "surface.autoDismiss" },
+    "effect": "remaining-width",
+    "reducedMotion": { "kind": "steps", "steps": 10 }
+  }
+}
+```
+
+The schema deliberately admits one countdown target and one existing budget source.
+The IR binds the target to an empty, decorative anatomy part and requires the
+surface's timeout policy and duration prop. Missing targets, unsupported policies,
+repeat-loop ownership on the same part, and directly authored competing motion
+properties are rejected. Arbitrary selector overlap analysis remains outside this
+bounded ownership check. A renamed component witness exercises the same emitters.
+
+All five web frameworks bind the part to their presence-budget primitive. The
+existing `toast.timing.auto-dismiss` token supplies the generation-resolved default;
+`duration` is its runtime override. CSS custom-property changes to that dwell token
+do **not** retime the JavaScript budget. Progress color and height are ordinary
+runtime CSS token bindings, with intent variants selecting the foreground color.
+No countdown-specific duration or easing is admitted. Spatial size policies must
+not stretch a message's reading time.
+
+The timer owns one monotonic active-time deadline. Animation frames only read its
+remaining fraction and project a horizontal scale; their completion never dismisses
+the surface. Hover, focus within, manual pause, and document-hidden reasons compose.
+Moving focus between descendants retains the pause. Opening starts a fresh budget;
+changing duration resets it while retaining current pause reasons. A hidden document
+pauses active time; browser/OS suspension without a visibility event is not a separately
+admitted policy. Closing or unmounting cancels work, and a completed run requests
+dismissal once even when a controlled consumer keeps the surface open.
+
+Null, zero, negative, non-finite, or absent primitive durations disable the budget
+and hide the decoration (the component resolves an omitted duration to its token
+first). Reduced motion rounds the remaining fraction upward to the declared number
+of steps, with no interpolation. Live preference changes alter only presentation;
+they do not restart or shorten the budget. The decorative bar adds no competing live
+announcement. Its origin follows horizontal LTR/RTL direction; vertical writing
+modes are not claimed.
+
+`e2e/motion-countdown.spec.ts` checks the bottom placement, progress/deadline agreement,
+overlapping pauses, disabled/reset budgets, dismissal callback, and live reduced-motion
+changes in each web framework. Primitive tests cover hidden documents, focus transfer,
+invalid durations, teardown and exactly-once completion. React Native omits this
+unsupported decoration; other native targets and Figma have no admitted countdown
+executor. A public animation-adapter takeover protocol, multiple targets sharing a
+budget, carousel advancement, and entry/exit retention remain future witnesses.
+
 ## Current boundary and evidence-led revision
 
 The [MotionIR builder](../../packages/ds-codegen/src/ir.ts) retains legacy
-transition intent separately from executable loops. Each authored transition
+transition intent separately from executable loops and countdown bindings. Each authored transition
 trigger remains verbatim (or null when absent), with
 `realization: "declaration-only"`. No trigger prose is promoted to a bound driver.
 Authored style/keyframe declarations remain an independent legacy path.
@@ -321,9 +376,9 @@ The legacy reduced-motion path does not separately realize all policy distinctio
 in the older motion schema; executable loops require a static value and respect
 for the user preference.
 
-Repetition is the first executable driver. A state-driven part transition and a
-shared-budget witness must independently challenge whether the model generalizes
-beyond loops. Size-sensitive timing must be calibrated with spatial witnesses;
+Repetition and the shared Toast budget are executable drivers. A state-driven
+part transition and a second budget consumer must still challenge whether the
+model generalizes beyond these witnesses. Size-sensitive timing must be calibrated with spatial witnesses;
 Spinner's fixed period does not yet satisfy that design direction. The ant/elephant
 constraint remains about comparable spatial movement, not a multiplier imposed on
 all durations or on Skeleton's non-spatial opacity.

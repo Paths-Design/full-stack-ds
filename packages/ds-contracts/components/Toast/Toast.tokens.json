@@ -76,5 +76,15 @@
     "resolvesTo": "semantic.motion.dwell.notification",
     "fallback": "6000ms",
     "layer": "semantic"
+  },
+  "toast.progress.color": {
+    "resolvesTo": "semantic.color.foreground.primary",
+    "fallback": "#141414",
+    "layer": "semantic"
+  },
+  "toast.progress.height": {
+    "resolvesTo": "core.spacing.size.02",
+    "fallback": "2px",
+    "layer": "core"
   }
 }

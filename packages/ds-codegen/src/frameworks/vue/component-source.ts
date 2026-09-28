@@ -1681,6 +1681,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       `const autoDismiss = useAutoDismiss({`,
       `  open: () => Boolean(behavior.${autoDismissChannel.name}.value),`,
       `  durationMs: () => props.${autoDismissPolicy.durationProp} === undefined ? ${autoDismissPolicy.defaultMs ?? "undefined"} : props.${autoDismissPolicy.durationProp},`,
+      ...(ir.motion.countdown ? [`    reducedMotionSteps: ${ir.motion.countdown.reducedMotion.steps},`] : []),
       `  onDismiss: () => behavior.set${capitalize(autoDismissChannel.name)}(false),`,
       `});`,
     );
@@ -1856,6 +1857,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     channelByName,
     isRoot: true,
     cssPrefix: ir.cssPrefix,
+    countdownPart: ir.motion.countdown?.target.name,
     autoDismissPause: Boolean(autoDismissPolicy && autoDismissChannel),
     rootRole: ir.root.rootRole,
     rootPolymorphicTag: ir.root.polymorphicTagProp,
@@ -1986,6 +1988,7 @@ interface VueRenderContext {
   cssPrefix?: string;
   /** When true, bind the auto-dismiss pause listeners on the root via v-on. */
   autoDismissPause?: boolean;
+  countdownPart?: string;
   overlayClickSetter?: string;
   overlayClickEnabledProp?: string;
   overlayClickTargetPart?: string;
@@ -2157,6 +2160,8 @@ function renderVueDomNode(
   if (node.focusContainer || node.keyboardPanel) attrs.push(`:ref="bindInteractionPanel"`);
   if (node.keyboardAnchor) attrs.push(`:ref="bindInteractionAnchor"`);
   const classParts: string[] = [];
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`hidden`);
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`:ref="autoDismiss.bindProgress"`);
   if (node.part) classParts.push(`'${ctx.classRecipe}__${node.part}'`);
 
   for (const [key, value] of Object.entries(node.attrs)) {

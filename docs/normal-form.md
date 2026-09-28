@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
-updated: 2026-09-27
-verified_at_commit: b5fa22434c3553a5f6de3dd1a63cdc7f382eff5d
+updated: 2026-09-28
+verified_at_commit: c2ad29f940d3cd01adde96da4ee43e884cd695e8
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -64,6 +64,10 @@ MotionIR resolves timing tokens and effect values, and shared Web CSS realizes
 Spinner rotation and Skeleton opacity. A renamed contract challenges component
 identity assumptions; browser witnesses sample progress, token timing, variants
 and static reduced-motion states. Legacy transition prose remains declaration-only.
+The Toast countdown additionally binds a decorative part to the existing surface
+budget: web animation frames project remaining active time, while the budget alone
+requests dismissal. Pause reasons compose and reduced motion substitutes discrete
+steps without changing time. Native countdown carriers are not executable.
 This extends the executable contract vocabulary without establishing native motion,
 shared clocks, geometry-sensitive timing or a universal animation runtime.
 

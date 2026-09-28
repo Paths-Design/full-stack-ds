@@ -1,5 +1,5 @@
 // @generated:start imports
-import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, effect, signal, Injector, runInInjectionContext, untracked, OnInit, OnDestroy, ElementRef } from "@angular/core";
+import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, effect, ViewChild, ElementRef, signal, Injector, runInInjectionContext, untracked, OnInit, OnDestroy } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
 import { StackComponent } from "../../primitives/index.js";
 import { useToast } from "./useToast.js";
@@ -27,7 +27,7 @@ let nextInstanceId = 0;
   standalone: true,
   imports: [NgClass, NgIf],
   host: { "data-fsds-component": "toast" },
-  template: `<div [ngClass]="classes()" aria-label="Notifications" [attr.aria-live]="(politeness ?? 'polite')" data-fsds-box="" role="region" (pointerenter)="autoDismiss.pauseListeners.pointerenter()" (pointerleave)="autoDismiss.pauseListeners.pointerleave()" (focusin)="autoDismiss.pauseListeners.focusin()" (focusout)="autoDismiss.pauseListeners.focusout()">
+  template: `<div [ngClass]="classes()" aria-label="Notifications" [attr.aria-live]="(politeness ?? 'polite')" data-fsds-box="" role="region" (pointerenter)="autoDismiss.pauseListeners.pointerenter()" (pointerleave)="autoDismiss.pauseListeners.pointerleave()" (focusin)="autoDismiss.pauseListeners.focusin()" (focusout)="autoDismiss.pauseListeners.focusout($event)">
   <ng-container *ngIf="behavior.open()">
     <div [ngClass]="'toast__item'" role="status" [attr.aria-labelledby]="itemAriaLabelledby">
       <div [ngClass]="'toast__row'">
@@ -44,6 +44,7 @@ let nextInstanceId = 0;
         </div>
         <button [ngClass]="'toast__close'" type="button" aria-label="Dismiss" (click)="behavior.setOpen(!behavior.open())"></button>
       </div>
+      <div [ngClass]="'toast__progress'" hidden #countdownProgress aria-hidden="true"></div>
     </div>
   </ng-container>
 </div>`,
@@ -57,7 +58,9 @@ export class ToastComponent implements OnInit, OnDestroy {
   @Input() title?: string;
   @Input() variant?: ToastVariant = "info";
   @Input() politeness?: ToastPoliteness = "polite";
-  @Input() duration?: number | null;
+  private readonly inputDuration = signal<number | null | undefined>(undefined);
+  @Input() get duration(): number | null | undefined { return this.inputDuration(); }
+  set duration(value: number | null | undefined) { this.inputDuration.set(value); }
   @Input() class?: string;
 
   protected readonly instanceId = `fsds-toast-${nextInstanceId++}`;
@@ -76,10 +79,14 @@ export class ToastComponent implements OnInit, OnDestroy {
   protected autoDismiss = createAutoDismiss({
     open: () => Boolean(this.behavior.open()),
     durationMs: () => this.duration === undefined ? 6000 : this.duration,
+    reducedMotionSteps: 10,
     onDismiss: () => this.behavior.setOpen(false),
     destroyRef: this.destroyRef,
   });
   private autoDismissEffect = effect(() => this.autoDismiss.sync());
+  @ViewChild("countdownProgress") set countdownProgress(el: ElementRef<HTMLElement> | undefined) {
+    this.autoDismiss.bindProgress(el?.nativeElement);
+  }
 
   classes(): string {
     return [

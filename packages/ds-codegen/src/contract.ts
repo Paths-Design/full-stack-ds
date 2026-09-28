@@ -558,7 +558,15 @@ export interface ContractMotionTransition {
  * per-component emitter lore would accumulate. It is typed here so the
  * motion-realization rail can derive obligations from it.
  */
+export interface ContractMotionCountdown {
+  target: { part: string };
+  driver: { kind: "budget"; source: "surface.autoDismiss" };
+  effect: "remaining-width";
+  reducedMotion: { kind: "steps"; steps: number };
+}
+
 export interface ContractMotion {
+  countdown?: ContractMotionCountdown;
   description?: string;
   transitions?: ContractMotionTransition[];
   /** Executable repeating effects; currently lowered by the shared web CSS backend. */

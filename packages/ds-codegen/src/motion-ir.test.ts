@@ -1,3 +1,9 @@
+import { generateReactComponentSource } from "./frameworks/react/component-source.js";
+import { generateVueComponentSource } from "./frameworks/vue/component-source.js";
+import { generateSvelteComponentSource } from "./frameworks/svelte/component-source.js";
+import { generateAngularComponentSource } from "./frameworks/angular/component-source.js";
+import { generateLitComponentSource } from "./frameworks/lit/component-source.js";
+import { generateReactNativeComponentSource } from "./frameworks/react-native/component-source.js";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -53,6 +59,7 @@ describe("motion declaration custody", () => {
     const contract = loadContract("Accordion");
     delete contract.motion;
     expect(buildComponentIR(contract).motion).toEqual({
+      countdown: null,
       loops: [],
       reducedMotion: null,
       honorsReducedMotion: true,
@@ -172,5 +179,51 @@ describe("part-bound repeating motion", () => {
     raw.motion.loops[0].driver.kind = "repeat";
     raw.motion.loops[0].effect.kind = "pathMorph";
     expect(validator.validateComponent(raw).ok).toBe(false);
+  });
+});
+
+
+describe("surface-budget countdown binding", () => {
+  it("binds an unfamiliar component and part to the existing budget with no new duration", () => {
+    const contract = load("Toast");
+    contract.name = "UnfamiliarNotice";
+    for (const block of Object.values(contract.styles ?? {})) for (const entry of Object.values(block)) {
+      if (entry.design) entry.design.slot = entry.design.slot.replace("toast.design.", "unfamiliar-notice.design.");
+    }
+    const ir = buildComponentIR(contract);
+    expect(ir.motion.countdown?.target.name).toBe("progress");
+    expect(ir.motion.countdown?.driver).toEqual({ kind: "budget", source: "surface.autoDismiss" });
+    expect(ir.motion.countdown?.reducedMotion).toEqual({ kind: "steps", steps: 10 });
+    expect(ir.motion.countdown?.realization).toEqual({ web: "presence-budget", nonWeb: "unrealized" });
+    expect(ir.motion.countdown).not.toHaveProperty("timing");
+    for (const source of [generateReactComponentSource(ir, "../../primitives"),
+      generateVueComponentSource(ir), generateSvelteComponentSource(ir),
+      generateAngularComponentSource(ir), generateLitComponentSource(ir)]) {
+      expect(source).toContain("autoDismiss.bindProgress");
+      expect(source).toContain("reducedMotionSteps: 10");
+    }
+    expect(generateReactNativeComponentSource(ir)).not.toContain("style={styles.progress}");
+  });
+
+  it.each([
+    (c: ComponentContract) => { delete c.surface!.timing; },
+    (c: ComponentContract) => { c.surface!.dismissal = ["close-button"]; },
+    (c: ComponentContract) => { c.motion!.countdown!.target.part = "missing"; },
+    (c: ComponentContract) => { c.motion!.countdown!.target.part = "item"; },
+    (c: ComponentContract) => { c.motion!.countdown!.reducedMotion.steps = 0; },
+    (c: ComponentContract) => { c.motion!.countdown!.reducedMotion.steps = 3.5; },
+    (c: ComponentContract) => { c.motion!.reducedMotion = "ignore"; },
+    (c: ComponentContract) => { c.styles!.progress.transform = { literal: "rotate(90deg)", platforms: ["web"] }; },
+    (c: ComponentContract) => { c.motion!.loops = [{ ...load().motion!.loops![0], target: { part: "progress" } }]; },
+  ])("rejects unresolved, unsafe or competing countdown declarations (%#)", (mutate) => {
+    const contract = load("Toast");
+    mutate(contract);
+    expect(() => buildComponentIR(contract)).toThrow("MOTION_COUNTDOWN_INVALID");
+  });
+
+  it("does not accept an independent duration through the schema", () => {
+    const contract = loadContract("Toast");
+    Object.assign(contract.motion!.countdown!, { duration: 1000 });
+    expect(createContractValidator({ contractsRoot }).validateComponent(contract).ok).toBe(false);
   });
 });

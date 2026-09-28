@@ -1510,12 +1510,13 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
       `const autoDismiss = createAutoDismiss({`,
       `  open: () => Boolean(${hookVar}.${autoDismissChannel.name}),`,
       `  durationMs: () => ${durationAccessor} === undefined ? ${autoDismissPolicy.defaultMs ?? "undefined"} : ${durationAccessor},`,
+      ...(ir.motion.countdown ? [`    reducedMotionSteps: ${ir.motion.countdown.reducedMotion.steps},`] : []),
       `  onDismiss: () => ${hookVar}.${setter}(false),`,
       `});`,
       `$effect(() => {`,
       `  autoDismiss.sync();`,
-      `  return () => autoDismiss.destroy();`,
       `});`,
+      `$effect(() => () => autoDismiss.destroy());`,
     );
   }
   // Selector-anchored root panel: resolve the active element from the
@@ -1672,6 +1673,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     fieldAssociationConsumerPart: assocConsumerPart,
     rootUsePortal,
     rootSelectorAnchored: selectorAnchor !== null,
+    countdownPart: ir.motion.countdown?.target.name,
     autoDismissPause: Boolean(autoDismissPolicy && autoDismissChannel),
     rootRole: ir.root.rootRole,
     rootPolymorphicTag: ir.root.polymorphicTagProp,
@@ -1778,6 +1780,7 @@ interface SvelteRenderContext {
   fieldAssociationConsumerPart?: string;
   /** When true, attach auto-dismiss pause listeners to the root element. */
   autoDismissPause?: boolean;
+  countdownPart?: string;
   // `a11y.role` from the contract — emitted on the root element when set.
   // React/Lit/Angular all forward this; Svelte was the odd one out and lost
   // the role attribute on dom-tree components.
@@ -1913,6 +1916,8 @@ function renderSvelteDomNode(
   if (node.focusContainer || node.keyboardPanel) attrs.push(`bind:this={${ctx.hookVar}.panelRef.el}`);
   if (node.keyboardAnchor) attrs.push(`bind:this={${ctx.hookVar}.anchorRef.el}`);
   const classParts: string[] = [];
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`hidden`);
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`use:autoDismiss.bindProgress`);
   if (node.part) classParts.push(`'${ctx.classRecipe}__${node.part}'`);
 
   for (const [key, value] of Object.entries(node.attrs)) {

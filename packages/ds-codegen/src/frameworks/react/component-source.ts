@@ -2089,11 +2089,13 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     : undefined;
   if (autoDismissPolicy && autoDismissChannel) {
     lines.push(
-      `  const autoDismissPauseProps = useAutoDismiss({`,
+      `  const autoDismiss = useAutoDismiss({`,
       `    open: Boolean(${autoDismissChannel.name}),`,
       `    durationMs: ${autoDismissPolicy.durationProp} === undefined ? ${autoDismissPolicy.defaultMs ?? "undefined"} : ${autoDismissPolicy.durationProp},`,
+      ...(ir.motion.countdown ? [`    reducedMotionSteps: ${ir.motion.countdown.reducedMotion.steps},`] : []),
       `    onDismiss: () => set${capitalize(autoDismissChannel.name)}(false),`,
-      `  }).getPauseProps();`,
+      `  });`,
+      `  const autoDismissPauseProps = autoDismiss.getPauseProps();`,
       ``,
     );
   }
@@ -2226,6 +2228,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     isRoot: true,
     cssPrefix: ir.cssPrefix,
     useStackRoot: reactDomRootUsesStack(ir),
+    countdownPart: ir.motion.countdown?.target.name,
     autoDismissPause: Boolean(autoDismissPolicy && autoDismissChannel),
     overlayClickSetter,
     overlayClickEnabledProp: overlayClickTrigger?.enabledByProp,
@@ -2324,6 +2327,7 @@ interface ReactRenderContext {
   useStackRoot?: boolean;
   /** When true, spread the auto-dismiss pause props onto the root element. */
   autoDismissPause?: boolean;
+  countdownPart?: string;
   /** When set, emit onClick to dismiss the overlay on the targetPart click. */
   overlayClickSetter?: string;
   /** Prop name that controls whether overlay click dismissal is enabled. */
@@ -2561,6 +2565,8 @@ function renderReactDomNode(
   const attrs: string[] = [];
   const classParts: string[] = [];
 
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`hidden`);
+  if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`ref={autoDismiss.bindProgress}`);
   if (node.part) classParts.push(`"${ctx.classRecipe}__${node.part}"`);
 
   for (const [key, value] of Object.entries(node.attrs)) {

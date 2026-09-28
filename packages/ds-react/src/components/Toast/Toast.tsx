@@ -115,11 +115,13 @@ export function Toast({
     onOpenChange,
   });
 
-  const autoDismissPauseProps = useAutoDismiss({
+  const autoDismiss = useAutoDismiss({
     open: Boolean(open),
     durationMs: duration === undefined ? 6000 : duration,
+    reducedMotionSteps: 10,
     onDismiss: () => setOpen(false),
-  }).getPauseProps();
+  });
+  const autoDismissPauseProps = autoDismiss.getPauseProps();
 
   const classNames = [
     "toast",
@@ -153,6 +155,7 @@ export function Toast({
             ) : null}
             <button className="toast__close" type="button" aria-label="Dismiss" onClick={() => setOpen(!open)} />
           </div>
+          <div className="toast__progress" hidden ref={autoDismiss.bindProgress} aria-hidden="true" />
         </div>
       ) : null}
     </Stack>

@@ -43,12 +43,13 @@ const behavior = useToast({
 const autoDismiss = createAutoDismiss({
   open: () => Boolean(behavior.open),
   durationMs: () => duration === undefined ? 6000 : duration,
+    reducedMotionSteps: 10,
   onDismiss: () => behavior.setOpen(false),
 });
 $effect(() => {
   autoDismiss.sync();
-  return () => autoDismiss.destroy();
 });
+$effect(() => () => autoDismiss.destroy());
 // @generated:end
 
 // @generated:start classes
@@ -88,6 +89,7 @@ const instanceId = $props.id();
       {/if}
       <button class={'toast__close'} type="button" aria-label="Dismiss" onclick={() => behavior.setOpen(!behavior.open)}></button>
     </div>
+    <div class={'toast__progress'} hidden use:autoDismiss.bindProgress aria-hidden="true"></div>
   </div>
   {/if}
 </div>

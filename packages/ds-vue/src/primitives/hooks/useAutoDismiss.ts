@@ -1,105 +1,32 @@
 import { onBeforeUnmount, watchEffect } from "vue";
+import { createPresenceBudget } from "../presence-budget.js";
 
 export interface UseAutoDismissOptions {
-  /** Getter for the open state. The timer only runs while open. */
   open: () => boolean;
-  /**
-   * Getter for the presence budget in milliseconds (design default flows
-   * from the component's `*.timing.auto-dismiss` token). `undefined`,
-   * `null`, or `0` disables the timer.
-   */
   durationMs: () => number | null | undefined;
-  /** Called when the budget elapses. */
   onDismiss: () => void;
-  /**
-   * Pause while the surface is hovered or contains focus (WCAG 2.2.1
-   * Timing Adjustable). Default true.
-   */
   pauseOnInteraction?: boolean;
+  reducedMotionSteps?: number;
 }
 
-export interface UseAutoDismissResult {
-  pause: () => void;
-  resume: () => void;
-  /** Bind to the surface element via `v-on` to wire interaction pausing. */
-  pauseListeners: {
-    pointerenter: () => void;
-    pointerleave: () => void;
-    focusin: () => void;
-    focusout: () => void;
+export function useAutoDismiss(options: UseAutoDismissOptions) {
+  const budget = createPresenceBudget(() => options.onDismiss(), options.reducedMotionSteps);
+  const sync = () => budget.sync(options.open(), options.durationMs());
+  const interaction = (fn: () => void) => () => {
+    if (options.pauseOnInteraction !== false) fn();
   };
-}
-
-/**
- * Vue equivalent of React's useAutoDismiss. Tracks the remaining budget
- * across pause/resume so a hover near the end of the budget does not
- * grant a fresh full budget on leave.
- */
-export function useAutoDismiss(options: UseAutoDismissOptions): UseAutoDismissResult {
-  const pauseOnInteraction = options.pauseOnInteraction ?? true;
-
-  let timer: ReturnType<typeof setTimeout> | null = null;
-  let deadline = 0;
-  let remaining = 0;
-  let paused = false;
-
-  const clear = () => {
-    if (timer !== null) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  };
-
-  const start = (ms: number) => {
-    clear();
-    deadline = Date.now() + ms;
-    timer = setTimeout(() => {
-      timer = null;
-      options.onDismiss();
-    }, ms);
-  };
-
-  const pause = () => {
-    if (timer === null) return;
-    remaining = Math.max(deadline - Date.now(), 0);
-    paused = true;
-    clear();
-  };
-
-  const resume = () => {
-    if (!paused) return;
-    paused = false;
-    start(remaining);
-  };
-
-  watchEffect(() => {
-    const duration = options.durationMs();
-    paused = false;
-    if (!options.open() || typeof duration !== "number" || duration <= 0) {
-      clear();
-      return;
-    }
-    start(duration);
-  });
-
-  onBeforeUnmount(clear);
-
-  return {
-    pause,
-    resume,
+  watchEffect(sync);
+  onBeforeUnmount(budget.destroy);
+  return { ...budget, sync,
+    bindProgress: (el: unknown) => budget.bindProgress(el instanceof Element ? el : null),
     pauseListeners: {
-      pointerenter: () => {
-        if (pauseOnInteraction) pause();
-      },
-      pointerleave: () => {
-        if (pauseOnInteraction) resume();
-      },
-      focusin: () => {
-        if (pauseOnInteraction) pause();
-      },
-      focusout: () => {
-        if (pauseOnInteraction) resume();
+      pointerenter: interaction(() => budget.pause("hover")),
+      pointerleave: interaction(() => budget.resume("hover")),
+      focusin: interaction(() => budget.pause("focus")),
+      focusout: (event?: { currentTarget: EventTarget | null; relatedTarget: EventTarget | null }) => {
+        if (options.pauseOnInteraction !== false) budget.focusOut(event);
       },
     },
   };
 }
+export type UseAutoDismissResult = ReturnType<typeof useAutoDismiss>;
