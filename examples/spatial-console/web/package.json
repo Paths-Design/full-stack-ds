@@ -9,7 +9,8 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "verify:runtime": "node e2e/verify-runtime.mjs",
-    "verify:cat": "node e2e/verify-cat.mjs"
+    "verify:cat": "node e2e/verify-cat.mjs",
+    "verify:cat:resize": "node e2e/verify-cat-resize.mjs"
   },
   "dependencies": {
     "@full-stack-ds/lit": "workspace:*",

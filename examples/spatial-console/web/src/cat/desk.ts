@@ -809,6 +809,10 @@ export function createDesk(canvas: HTMLCanvasElement, screens: {
     cssSize = { width: canvas.clientWidth, height: canvas.clientHeight };
     renderer.setSize(cssSize.width, cssSize.height, false);
     camera.aspect = cssSize.width / cssSize.height;
+    // Preserve the desk's horizontal framing in narrow windows. Keeping a
+    // fixed vertical FOV crops the tablet and phone as the aspect shrinks.
+    // Inspector views retain their deliberately close camera framing.
+    if (!inspect) camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(40 / 2)) * Math.max(1, 1.6 / camera.aspect)));
     camera.updateProjectionMatrix();
   };
   resize();
