@@ -50,3 +50,12 @@ contracts:
   - name: 'countdown'
     type: contract-test
     path: 'packages/ds-codegen/src/motion-ir.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: IR validation and renamed-contract web emitter tests; tmp/motion-toast-countdown/toast-ir-final.log
+    recorded_at: "2026-09-28T08:43:15.903Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/motion-ir.test.ts packages/ds-codegen/src/prop-surface-inventory.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/motion-ir.test.ts
+    commit_sha: "9c0398bc"
