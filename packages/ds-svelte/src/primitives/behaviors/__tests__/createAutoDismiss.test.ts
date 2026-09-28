@@ -84,7 +84,7 @@ describe("createAutoDismiss — pause/resume budget", () => {
     vi.advanceTimersByTime(60000); // paused: no fire
     expect(onDismiss).not.toHaveBeenCalled();
     api.pauseListeners.onpointerleave();
-    vi.advanceTimersByTime(999);
+    vi.advanceTimersByTime(2999);
     expect(onDismiss).not.toHaveBeenCalled();
     vi.advanceTimersByTime(1);
     expect(onDismiss).toHaveBeenCalledTimes(1);
