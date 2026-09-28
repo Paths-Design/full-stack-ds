@@ -41,3 +41,9 @@ evidence:
     exit_code: 0
     artifact_path: package.json
     commit_sha: "902a67b8"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "README Commands and AGENTS guidance distinguish showcase-only build, dependency-sorted workspace build:all, source-only skipped packages, and separate generation/native lanes. docs:check-claims and docs:check-links passed; source reviewed against actual build log."
+    recorded_at: "2026-09-28T20:12:02.275Z"
+    artifact_path: README.md
+    commit_sha: "902a67b8"
