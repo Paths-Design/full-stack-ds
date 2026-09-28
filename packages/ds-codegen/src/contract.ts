@@ -561,12 +561,32 @@ export interface ContractMotionTransition {
 export interface ContractMotion {
   description?: string;
   transitions?: ContractMotionTransition[];
+  /** Executable repeating effects; currently lowered by the shared web CSS backend. */
+  loops?: ContractMotionLoop[];
   /**
    * `respect` honors `prefers-reduced-motion`; `disable` always skips;
    * `reduce` uses shorter variants; `ignore` does not adapt.
    */
   reducedMotion?: 'respect' | 'disable' | 'reduce' | 'ignore';
   reducedMotionStrategy?: string;
+}
+
+/** A bounded repeating-motion vocabulary. Rotation values are degrees. */
+export interface ContractMotionLoop {
+  name: string;
+  target: { part: string };
+  driver: { kind: "repeat" };
+  when?: { variant: string; equals: string };
+  effect: {
+    kind: "opacity" | "rotation";
+    keyframes: Array<{ offset: number; value: number }>;
+  };
+  timing: {
+    duration: { token: string; multiplier?: number };
+    easing: { token: string } | { cubicBezier: [number, number, number, number] };
+  };
+  /** Static value in the effect's units; never inferred from the final frame. */
+  reducedMotion: { value: number };
 }
 
 /**

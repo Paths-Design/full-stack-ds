@@ -275,6 +275,57 @@ function blockAnimates(declarations: Record<string, string>): boolean {
   );
 }
 
+function loopCss(ir: ComponentIR) {
+  // Source: bound MotionIR + classRecipe. Applies by effect/target/variant facts.
+  // This lowering can leave when another web executor owns these declarations.
+  return ir.motion.loops.map((loop) => {
+    const base = ir.classRecipe.base;
+    const modifier = loop.when
+      ? ir.classRecipe.valueModifiers.find((entry) => entry.propName === loop.when!.variant)
+      : undefined;
+    if (loop.when && !modifier) throw new Error("[MOTION_LOOP_INVALID] variant has no class carrier");
+    const root = loop.when
+      ? `.${base}--${modifier?.valuePrefix ?? ""}${loop.when.equals}`
+      : `.${base}`;
+    const target = loop.target.name === "root" ? `.${base}` : `.${base}__${loop.target.name}`;
+    const selector = loop.target.name === "root" ? root : loop.when ? `${root} ${target}` : target;
+    const property = loop.effect.kind === "rotation" ? "transform" : "opacity";
+    for (const block of ir.cssBlocks.filter((block) => block.selector === target || block.selector === selector)) {
+      if (Object.keys(block.declarations).some((key) => key === "animation" ||
+          key.startsWith("animation-") || key === property)) {
+        throw new Error(`[MOTION_LOOP_OWNER] ${selector}: authored style competes with ${loop.name}`);
+      }
+    }
+    const name = `fsds-${base}-${loop.name}`;
+    if (ir.keyframes.some((frames) => frames.name === name)) {
+      throw new Error(`[MOTION_LOOP_OWNER] keyframe name collision: ${name}`);
+    }
+    const value = (n: number) => loop.effect.kind === "rotation" ? `rotate(${n}deg)` : String(n);
+    const duration = `var(${loop.timing.duration.cssVar}, ${loop.timing.duration.rawValue})`;
+    const easing = "token" in loop.timing.easing
+      ? `var(${loop.timing.easing.token.cssVar}, ${loop.timing.easing.token.rawValue})`
+      : `cubic-bezier(${loop.timing.easing.cubicBezier.join(", ")})`;
+    return {
+      selector,
+      declarations: {
+        animation: `${name} calc(${duration} * ${loop.timing.multiplier}) ${easing} infinite`,
+      },
+      keyframe: {
+        name,
+        frames: loop.effect.keyframes.map((frame) => ({
+          selector: `${frame.offset * 100}%`,
+          declarations: { [property]: value(frame.value) },
+        })),
+      },
+      staticDeclaration: `${property}: ${value(loop.reducedMotion.value)};`,
+    };
+  });
+}
+
+function webKeyframes(ir: ComponentIR): KeyframeIR[] {
+  return [...ir.keyframes, ...loopCss(ir).map((loop) => loop.keyframe)];
+}
+
 /**
  * Derive the `prefers-reduced-motion` block from the declarations that were
  * actually emitted (RAIL-REDUCED-MOTION-01).
@@ -288,7 +339,8 @@ function blockAnimates(declarations: Record<string, string>): boolean {
  * unconditionally. Reading the emitted blocks means the neutralising rule
  * cannot name a selector that no longer animates, or miss one that started to.
  *
- * The lowering zeroes durations rather than setting `animation: none`.
+ * The legacy lowering zeroes durations rather than setting `animation: none`.
+ * Executable loops instead declare their own explicit static presentation.
  * `none` drops an animation's final state, so a `forwards` fill that is the
  * only thing making an element visible would leave it stuck at its `from`
  * frame — reduced motion must remove the MOTION, not the end state. A ~0
@@ -301,7 +353,7 @@ export function reducedMotionBlock(ir: ComponentIR): string {
   // Nothing animates -> nothing to neutralise. Emitting an empty media query
   // would make the rail's "has a reduced-motion block" check pass for every
   // component regardless of whether it moves, which is worse than no block.
-  const selectors = ir.cssBlocks
+  const selectors = webCssBlocks(ir)
     .filter((block) => blockAnimates(block.declarations))
     .map((block) => block.selector);
   if (selectors.length === 0) return "";
@@ -317,6 +369,9 @@ export function reducedMotionBlock(ir: ComponentIR): string {
     `    animation-iteration-count: 1;\n` +
     `    transition-duration: 0.01ms;\n` +
     `  }\n` +
+    loopCss(ir).map((loop) =>
+      `  ${loop.selector} { animation: none; ${loop.staticDeclaration} }\n`,
+    ).join("") +
     `}`
   );
 }
@@ -336,8 +391,8 @@ function webCssBlocks(ir: ComponentIR): ComponentIR["cssBlocks"] {
   const rootSelector = `.${ir.cssPrefix}`;
   const defaults = ir.cssBlocks.find(block => block.selector === rootSelector)?.declarations ?? {};
   const bindings = ir.designBindings ?? [];
-  return ir.cssBlocks.map(block => {
-    const declarations = { ...block.declarations };
+  return [...ir.cssBlocks, ...loopCss(ir)].map(block => {
+    const declarations: Record<string, string> = { ...block.declarations };
     if (block.selector === rootSelector) {
       for (const [property, value] of Object.entries(declarations)) {
         const match = value.match(/^var\((--fsds-box-model-[a-z-]+)\)$/);
@@ -375,7 +430,7 @@ export function webTokenConsumption(ir: ComponentIR) {
       .map(([name, value]) => `${name}: ${value};`).join("\n")
   }\n}`).join("\n");
   return analyzeCssTokenConsumption([
-    declarations, ...ir.keyframes.map(formatKeyframes), emitBoxModelBoundaryCss(),
+    declarations, ...webKeyframes(ir).map(formatKeyframes), emitBoxModelBoundaryCss(),
   ]);
 }
 
@@ -391,7 +446,7 @@ export function emitCss(ir: ComponentIR): string {
   // pre-content via `renderSections`' "between" region.
   const importLine = `@import "../../primitives/box-model.css";\n@import "./${ir.name}.tokens.css";`;
   const stylesBody = grouped.join("\n\n").trimEnd();
-  const keyframesBody = ir.keyframes.map(formatKeyframes).join("\n").trimEnd();
+  const keyframesBody = webKeyframes(ir).map(formatKeyframes).join("\n").trimEnd();
 
   const sections: Section[] = [
     { kind: "between", body: importLine },
@@ -558,12 +613,14 @@ export function emitLitInlineCss(ir: ComponentIR): string {
     .map((g) => formatGroupedBlock(g))
     .filter((s) => s.length > 0);
 
-  const keyframesBody = ir.keyframes.map(formatKeyframes).join("\n").trimEnd();
+  const keyframesBody = webKeyframes(ir).map(formatKeyframes).join("\n").trimEnd();
 
   const parts: string[] = [emitBoxModelBoundaryCss(true)];
   if (tokensGroups.length > 0) parts.push(tokensGroups.join("\n\n"));
   if (propertyGroups.length > 0) parts.push(`@layer components.defaults {\n${propertyGroups.join("\n\n")}\n}`);
   if (keyframesBody) parts.push(keyframesBody);
+  // Loop adaptation must live inside the same shadow root as its animation.
+  if (ir.motion.loops.length) parts.push(reducedMotionBlock(ir));
 
   return parts.join("\n\n").trimEnd();
 }

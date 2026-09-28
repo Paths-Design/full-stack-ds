@@ -11,6 +11,7 @@ governs:
   - packages/ds-tokens/src/motion/
 caws_specs:
   - MOTION-PRINCIPLES-01
+  - MOTION-LOADING-LOOPS-01
 ---
 
 # Compositional motion
@@ -20,8 +21,8 @@ state change, a time budget, or another source of progress. Components compose
 these relationships. Tokens supply reusable design values; realization backends
 translate the relationships into platform behavior.
 
-This document establishes design direction, not a claim that the substrate is
-implemented. Principles, proposed representations, and observed support are
+This document establishes design direction. The repeating loading-indicator
+pilot below implements a bounded part of that direction. Principles, proposed representations, and observed support are
 separate below. Revise the principles when evidence challenges them; do not
 preserve an abstraction merely because it was written first.
 
@@ -241,40 +242,102 @@ These witnesses define what an implementation must demonstrate. Cross-framework
 compilation and CSS-property presence cannot substitute for runtime observations
 of the named target, driver, lifecycle, and adaptation.
 
+## First executable contract: repeating loading indicators
+
+`motion.loops` is the first admitted authoring shape. It binds a repeat driver to
+an owned, rendered anatomy part, with typed effect values, token timing and an
+explicit static presentation for reduced motion. For example, Spinner declares:
+
+```json
+{
+  "name": "spin",
+  "target": { "part": "visual" },
+  "driver": { "kind": "repeat" },
+  "effect": {
+    "kind": "rotation",
+    "keyframes": [{ "offset": 0, "value": 0 }, { "offset": 1, "value": 360 }]
+  },
+  "timing": {
+    "duration": { "token": "spinner.anim.duration" },
+    "easing": { "cubicBezier": [0, 0, 1, 1] }
+  },
+  "reducedMotion": { "value": 0 }
+}
+```
+
+This object is an entry in `motion.loops`, not a standalone component contract.
+Rotation values are degrees; opacity values are in `[0, 1]`. Offsets increase
+strictly from zero to one. Duration resolves through a component token, with an
+optional positive multiplier; easing is a token resolving to a cubic Bézier curve
+or an explicit tuple. This preserves token ownership without making the token
+own the animated part. CSS custom-property overrides update timing through the
+browser's animation rules; this pilot does not promise phase continuity when
+timing changes.
+
+Skeleton adds `when: { "variant": "animate", "equals": "shimmer" }` (or `pulse`)
+and animates root opacity through `1 → 0.5 → 1`. Its duration multipliers preserve
+the existing timing distinction. The root owns the entire multiline presentation:
+child shapes do not run another opacity animation. Selecting `none` leaves no
+repeat driver active. Skeleton's `wipe` still uses its authored pseudo-element
+CSS; moving that effect into motion requires an explicit anatomy carrier.
+
+The [schema](../../packages/ds-contracts/component.contract.schema.json) and
+[normalizer](../../packages/ds-codegen/src/motion-loops.ts) reject unknown parts,
+variant values, invalid timing/effect values and overlapping loop owners. This
+first lowering conservatively permits one animation per target, except for
+mutually exclusive values of the same variant axis. Direct authored animation or
+effect declarations on that target also conflict. This is a bounded ownership
+check, not a general proof that arbitrary selectors, external CSS or adapters
+cannot compete. Repeated-item identity and cross-component coordination are not
+admitted by these root/visual witnesses.
+
+The shared web lowerer generates keyframes and variant selectors from IR facts.
+React, Vue, Svelte, Angular and Lit consume that lowering. Reduced motion removes
+the loop and applies the declared static value, including when the preference
+changes while mounted. Lit carries this rule inside the shadow root. Native
+loop execution, Figma loop export/execution, runtime adapters, entry/exit retention,
+shared clocks and geometry-sensitive timing remain unimplemented. Existing
+non-web static component output is not evidence of motion support.
+
+[Unit witnesses](../../packages/ds-codegen/src/motion-ir.test.ts) include a
+renamed component and a colliding variant value to challenge component-name and
+selector assumptions. [Browser witnesses](../../e2e/motion-loops.spec.ts) sample
+rotation and opacity, override token timing, change Skeleton modes and toggle
+reduced motion across the web frameworks. They establish those behaviors in the
+tested browser, not visual quality or universal browser support.
+
 ## Current boundary and evidence-led revision
 
-The existing [MotionIR builder](../../packages/ds-codegen/src/ir.ts) carries
-transition intent for inspection; style/keyframe declarations independently
-produce animation. The first foundation preserves each authored trigger verbatim
-(or null when absent), with `realization: "declaration-only"` on each transition.
-This describes that declaration's lowering status, not whether the component has
-any animation through other mechanisms. No string is promoted to a bound driver.
+The [MotionIR builder](../../packages/ds-codegen/src/ir.ts) retains legacy
+transition intent separately from executable loops. Each authored transition
+trigger remains verbatim (or null when absent), with
+`realization: "declaration-only"`. No trigger prose is promoted to a bound driver.
+Authored style/keyframe declarations remain an independent legacy path.
 
 The existing [motion audit](../../scripts/motion-realization-audit/audit.mjs)
 checks property presence and reference resolution against generated CSS and a
 gap ledger. It does not establish part/trigger correspondence or runtime motion.
-The existing reduced-motion CSS path also does not separately realize all the
-policy distinctions in the motion schema.
+The legacy reduced-motion path does not separately realize all policy distinctions
+in the older motion schema; executable loops require a static value and respect
+for the user preference.
 
-Promotion to executable motion requires a resolved target, a bound driver,
-validated effects/tokens, and a supported lowering with lifecycle evidence.
-The first executable binding should pair a state-driven part transition with
-a differently named witness using the same machinery. A shared-budget witness
-then challenges whether the model generalizes beyond transitions. These are
-admission criteria; this document does not schedule or certify those features.
+Repetition is the first executable driver. A state-driven part transition and a
+shared-budget witness must independently challenge whether the model generalizes
+beyond loops. Size-sensitive timing must be calibrated with spatial witnesses;
+Spinner's fixed period does not yet satisfy that design direction. The ant/elephant
+constraint remains about comparable spatial movement, not a multiplier imposed on
+all durations or on Skeleton's non-spatial opacity.
 
-Keep the following choices provisional until witnesses distinguish alternatives:
-the public authoring shape; timing bands and size metric; run-time theme/geometry
-retargeting; clock suspension policy; and adapter packaging. A maximal universal
-animation runtime risks duplicating platform machinery; CSS-only recipes cannot
-by themselves govern shared clocks and renderer retention. Start with explicit
-bindings and the smallest shared runtime required by the admitted behavior.
+Keep the public authoring shape, timing bands, size metric, theme/geometry
+retargeting, clock suspension and adapter packaging provisional until witnesses
+distinguish alternatives. A maximal universal runtime risks duplicating platform
+machinery; CSS-only recipes cannot govern shared clocks and renderer retention.
+Start with explicit bindings and the smallest runtime needed by admitted behavior.
 
 When a witness refutes a principle, record the case, revise the principle and its
 test together, and update the snapshot's support boundary. Keep exact syntax in
-schema/API references once admitted. Keep this document focused on rationale,
-ownership, constraints, and what evidence could change them. Do not weaken an
-existing claim merely to reclassify a failing implementation as complete.
+schema/API references once admitted. Do not weaken an existing claim merely to
+reclassify a failing implementation as complete.
 
 Further references:
 - [DTCG transition composite](https://www.designtokens.org/tr/2025.10/format/#transition)

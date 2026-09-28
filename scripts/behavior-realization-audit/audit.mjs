@@ -160,7 +160,10 @@ export function loadCorpus() {
   const all = new Map();
   for (const n of ALL_COMPONENTS()) {
     const c = readJSON(resolve(CONTRACTS, n, `${n}.contract.json`));
-    if (c && typeof c.name === "string") all.set(n, c);
+    if (c && typeof c.name === "string") {
+      c.tokens = readJSON(resolve(CONTRACTS, n, `${n}.tokens.json`)) ?? {};
+      all.set(n, c);
+    }
   }
   return all;
 }

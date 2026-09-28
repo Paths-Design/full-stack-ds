@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
-updated: 2026-09-24
-verified_at_commit: aca0029e6fdc420eda82929b3a683ebcbebe0ca8
+updated: 2026-09-27
+verified_at_commit: 918770bfb47696499c525aa1620e93d9fbf66776
 governs:
   - packages/ds-codegen/src/design-properties.ts
   - packages/ds-contracts/component.styles.schema.json
@@ -127,3 +127,14 @@ component rule is introduced. `e2e/showcase-usability.spec.ts` checks a scoped
 Dialog width/height override, body scrolling, and restoration after clearing.
 Card status borders and duplicate badge paint were removed at the contract
 source, including their retired design addresses.
+
+## Loading-loop timing
+
+The [motion pilot](../motion-substrate.md#first-executable-contract-repeating-loading-indicators)
+moves Spinner rotation and Skeleton opacity out of authored animation strings
+into part-bound loop declarations. Existing style design bindings retain their
+addresses and property consumers. Loop duration and easing use the explicitly
+named component tokens; a style binding for `transition-duration` does not also
+control a loop's animation duration. No automatic motion-profile design control
+or inspector driver editor is introduced. The Web lowering consumes loop facts
+without adding them to the static style facts used by native backends.

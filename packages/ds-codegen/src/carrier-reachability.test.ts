@@ -21,6 +21,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { buildComponentIR, deriveWebDomCarriers } from "./ir.js";
+import { loadCorpusContract } from "./frameworks/corpus-fixtures.js";
 import { getCssPrefix } from "./contract.js";
 import type { ComponentContract } from "./contract.js";
 import { validateStylesCarrierReachability } from "./validation/styles.js";
@@ -317,9 +318,7 @@ describe("corpus consistency — the derivation must not UNDER-claim", () => {
 
     const underClaimed: string[] = [];
     for (const name of components) {
-      const contract = JSON.parse(
-        readFileSync(resolve(CONTRACTS, name, `${name}.contract.json`), "utf8"),
-      ) as ComponentContract;
+      const contract = loadCorpusContract(name);
       const srcPath = resolve(REACT, name, `${name}.tsx`);
       if (!existsSync(srcPath)) continue;
       const prefix = getCssPrefix(contract);

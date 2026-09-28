@@ -37,12 +37,6 @@
         "property": "motion.easing",
         "slot": "skeleton.design.root.motion.easing"
       }
-    },
-    "animation": {
-      "literal": "skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite",
-      "platforms": [
-        "web"
-      ]
     }
   },
   "shape": {
@@ -80,12 +74,6 @@
         "slot": "skeleton.design.condition-bb9852400063.background.fill"
       }
     },
-    "animation": {
-      "literal": "none",
-      "platforms": [
-        "web"
-      ]
-    },
     "height": {
       "literal": "auto",
       "platforms": [
@@ -101,12 +89,6 @@
         "property": "sizing.height",
         "slot": "skeleton.design.condition-f1cb085b34e5.sizing.height"
       }
-    },
-    "animation": {
-      "literal": "skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite",
-      "platforms": [
-        "web"
-      ]
     }
   },
   "stack": {
@@ -269,14 +251,6 @@
       ]
     }
   },
-  "--shimmer": {
-    "animation": {
-      "literal": "skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite",
-      "platforms": [
-        "web"
-      ]
-    }
-  },
   "--wipe": {
     "skeleton.color.base": {
       "resolvesTo": "semantic.color.background.tertiary",
@@ -339,22 +313,6 @@
       ]
     }
   },
-  "--pulse": {
-    "animation": {
-      "literal": "skeleton-shimmer calc(var(--fsds-skeleton-anim-duration, 400ms) * 3) ease-in-out infinite",
-      "platforms": [
-        "web"
-      ]
-    }
-  },
-  "--none": {
-    "animation": {
-      "literal": "none",
-      "platforms": [
-        "web"
-      ]
-    }
-  },
   "--compact": {
     "skeleton.gap.md": {
       "resolvesTo": "skeleton.gap.compact",
@@ -371,6 +329,14 @@
     "skeleton.gap.md": {
       "resolvesTo": "skeleton.gap.spacious",
       "fallback": "24px"
+    }
+  },
+  "--none": {
+    "animation": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
     }
   }
 }

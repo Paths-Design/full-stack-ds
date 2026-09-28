@@ -77,12 +77,6 @@
         "property": "border.top.color",
         "slot": "spinner.design.visual.border.top.color"
       }
-    },
-    "animation": {
-      "literal": "spin var(--fsds-spinner-anim-duration, 800ms) linear infinite",
-      "platforms": [
-        "web"
-      ]
     }
   },
   "--xs": {

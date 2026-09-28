@@ -57,12 +57,17 @@
             {
               "tag": "div",
               "part": "row",
-              "iterate": { "source": "prop:lines", "kind": "count" },
+              "iterate": {
+                "source": "prop:lines",
+                "kind": "count"
+              },
               "children": [
                 {
                   "tag": "div",
                   "part": "shape",
-                  "attrs": { "aria-hidden": "true" }
+                  "attrs": {
+                    "aria-hidden": "true"
+                  }
                 }
               ]
             }
@@ -76,46 +81,66 @@
       "members": [
         {
           "name": "variant",
-          "propType": { "kind": "ref", "to": "SkeletonVariant" },
+          "propType": {
+            "kind": "ref",
+            "to": "SkeletonVariant"
+          },
           "description": "Visual variant",
           "default": "block"
         },
         {
           "name": "animate",
-          "propType": { "kind": "ref", "to": "SkeletonAnimate" },
+          "propType": {
+            "kind": "ref",
+            "to": "SkeletonAnimate"
+          },
           "description": "Animation style",
           "default": "shimmer"
         },
         {
           "name": "density",
-          "propType": { "kind": "ref", "to": "SkeletonDensity" },
+          "propType": {
+            "kind": "ref",
+            "to": "SkeletonDensity"
+          },
           "description": "Spacing density to match surrounding content",
           "default": "regular"
         },
         {
           "name": "aspectRatio",
-          "propType": { "kind": "string" },
+          "propType": {
+            "kind": "string"
+          },
           "description": "CSS aspect-ratio value to size the placeholder"
         },
         {
           "name": "lines",
-          "propType": { "kind": "number" },
+          "propType": {
+            "kind": "number"
+          },
           "description": "Number of line rows to render. When set, the root becomes a container for that many rows instead of a single shape."
         },
         {
           "name": "radius",
-          "propType": { "kind": "ref", "to": "SkeletonRadius" },
+          "propType": {
+            "kind": "ref",
+            "to": "SkeletonRadius"
+          },
           "description": "Border radius token"
         },
         {
           "name": "decorative",
-          "propType": { "kind": "boolean" },
+          "propType": {
+            "kind": "boolean"
+          },
           "description": "Set true for decorative skeletons that should not announce to screen readers.",
           "default": true
         },
         {
           "name": "ariaLabel",
-          "propType": { "kind": "string" },
+          "propType": {
+            "kind": "string"
+          },
           "description": "Localized loading label when decorative is false."
         }
       ]
@@ -213,17 +238,6 @@
     "keyboard": []
   },
   "keyframes": {
-    "skeleton-shimmer": {
-      "0%": {
-        "opacity": "1"
-      },
-      "50%": {
-        "opacity": "0.5"
-      },
-      "100%": {
-        "opacity": "1"
-      }
-    },
     "skeleton-wipe": {
       "0%": {
         "transform": "translateX(-100%)"
@@ -244,5 +258,99 @@
     "children": {
       "allowed": false
     }
+  },
+  "motion": {
+    "reducedMotion": "respect",
+    "loops": [
+      {
+        "name": "shimmer",
+        "target": {
+          "part": "root"
+        },
+        "driver": {
+          "kind": "repeat"
+        },
+        "effect": {
+          "kind": "opacity",
+          "keyframes": [
+            {
+              "offset": 0,
+              "value": 1
+            },
+            {
+              "offset": 0.5,
+              "value": 0.5
+            },
+            {
+              "offset": 1,
+              "value": 1
+            }
+          ]
+        },
+        "timing": {
+          "duration": {
+            "token": "skeleton.anim.duration",
+            "multiplier": 2
+          },
+          "easing": {
+            "token": "skeleton.anim.easing"
+          }
+        },
+        "reducedMotion": {
+          "value": 1
+        },
+        "when": {
+          "variant": "animate",
+          "equals": "shimmer"
+        }
+      },
+      {
+        "name": "pulse",
+        "target": {
+          "part": "root"
+        },
+        "driver": {
+          "kind": "repeat"
+        },
+        "effect": {
+          "kind": "opacity",
+          "keyframes": [
+            {
+              "offset": 0,
+              "value": 1
+            },
+            {
+              "offset": 0.5,
+              "value": 0.5
+            },
+            {
+              "offset": 1,
+              "value": 1
+            }
+          ]
+        },
+        "timing": {
+          "duration": {
+            "token": "skeleton.anim.duration",
+            "multiplier": 3
+          },
+          "easing": {
+            "cubicBezier": [
+              0.42,
+              0,
+              0.58,
+              1
+            ]
+          }
+        },
+        "reducedMotion": {
+          "value": 1
+        },
+        "when": {
+          "variant": "animate",
+          "equals": "pulse"
+        }
+      }
+    ]
   }
 }
