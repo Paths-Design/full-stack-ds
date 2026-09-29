@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://caws.dev/schemas/session-log.schema.json",
   "title": "CAWS Session Log Artifact",
-  "description": "CAWS-MANAGED-HOOK hook_pack=shared hook_pack_version=87 caws_min_major=11 edit_stance: YOURS TO EDIT. This is a starting schema, not a locked one — extend it as your session-log contract grows. JSON carries the managed marker in this description field because JSON has no comment syntax; the marker is only how caws init finds the file it can offer updates for, not a keep-out sign. JSON artifacts stored under .caws/sessions/<session-id>/ by .caws/hooks/session-log.sh and its renderer.",
+  "description": "CAWS-MANAGED-HOOK hook_pack=shared hook_pack_version=88 caws_min_major=11 edit_stance: YOURS TO EDIT. This is a starting schema, not a locked one — extend it as your session-log contract grows. JSON carries the managed marker in this description field because JSON has no comment syntax; the marker is only how caws init finds the file it can offer updates for, not a keep-out sign. JSON artifacts stored under .caws/sessions/<session-id>/ by .caws/hooks/session-log.sh and its renderer.",
   "oneOf": [
     {
       "$ref": "#/$defs/turnArtifact"

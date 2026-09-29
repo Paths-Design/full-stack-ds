@@ -1,7 +1,7 @@
 #!/bin/bash
 # CAWS-MANAGED-HOOK
 # hook_pack: shared
-# hook_pack_version: 87
+# hook_pack_version: 88
 # caws_min_major: 11
 # lineage_refs: 8,16,25,27,28,29,30,31
 # edit_stance: YOURS TO EDIT. This is a starting hook, not a locked one — shape it

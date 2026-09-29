@@ -1,6 +1,6 @@
 # CAWS-MANAGED-HOOK
 # hook_pack: shared
-# hook_pack_version: 87
+# hook_pack_version: 88
 # caws_min_major: 11
 # lineage_refs: 1,4,6,8,11,12,13,16,17,19,22,23,24,25,26,27,28,29,30,31
 # edit_stance: GENERATED PROJECTION. Edit packages/caws-cli/surfaces/registry.json

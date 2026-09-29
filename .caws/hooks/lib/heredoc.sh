@@ -1,7 +1,33 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# CAWS-MANAGED-HOOK
+# hook_pack: shared
+# hook_pack_version: 88
+# caws_min_major: 11
+# lineage_refs: 35,38
+# edit_stance: YOURS TO EDIT. This is a starting hook, not a locked one — shape it
+#   to your repo: tune thresholds, add checks, remove what does not fit. Your edits
+#   are preserved: caws init treats a changed hook as intended growth and will not
+#   clobber it — it shows a diff and asks (--adopt keeps yours; --overwrite --force
+#   takes the upstream template). The CAWS-MANAGED-HOOK marker above is only how caws
+#   init finds hooks it can offer updates for; it is NOT a keep-out sign. CAWS owns the
+#   failure-class invariant (the why/what a guard protects); you own the how. The one
+#   edit to avoid: gutting a guard to dodge a block instead of fixing the cause. Grow
+#   everything else freely.
+#
 # heredoc.sh — neutralize heredoc BODIES before a guard reads command text.
 #
 # CAWS-GUARD-HEREDOC-BODY-READ-AS-COMMAND-01.
+#
+# Ported into the canonical pack from sterling's .caws/hooks/lib/heredoc.sh
+# (GUARD-HEREDOC-BODY-READ-AS-COMMAND-001). The body below is kept byte-faithful
+# to the sterling original so the two copies can be compared rather than
+# re-derived. Canonical reaches this defect through the shell target extractor
+# in bash-write-guard.sh; the Python classifier already carries its own
+# `in_heredoc` state machine and is unaffected.
+#
+# Entry 35 records the extractor's narrowness ("a here-doc heredoc that writes a
+# claimed path is not recognized"); this file closes the OTHER face of that
+# narrowness — the extractor recognizing a body that is not a command at all.
 #
 # The PreToolUse guards adjudicate the literal text of a Bash command. A
 # heredoc body is not command text — it is a payload the command carries — but
@@ -81,17 +107,6 @@ caws_blank_heredoc_bodies() {
       fi
     done
     [[ "$sink" == "0" ]] && continue
-
-    # A safelisted sink only makes the body DATA when the sink's stdout is not
-    # handed to something that can execute it. `cat <<EOF | bash` puts `cat` in
-    # command position and would otherwise qualify, but the body is then run —
-    # blanking it would hide a real command from every matcher downstream. Any
-    # pipe on the introducing line disqualifies the sink. This is deliberately
-    # coarse: `cat <<EOF | tee f` is data too, but treating it as code costs a
-    # false positive, while treating the `| bash` form as data costs a hole.
-    if [[ "$line" == *"|"* ]]; then
-      continue
-    fi
 
     rest="${line#*<<}"
     # `<<<` is a here-STRING: one line, no body, nothing to blank.

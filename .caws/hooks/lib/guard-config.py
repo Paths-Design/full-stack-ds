@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # CAWS-MANAGED-HOOK
 # hook_pack: shared
-# hook_pack_version: 87
+# hook_pack_version: 88
 # caws_min_major: 11
 # lineage_refs: (new — CAWS-HOOKS-GUARD-CONFIG-TIER2-01)
 # edit_stance: YOURS TO EDIT. This is a starting hook lib, not a locked one —

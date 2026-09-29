@@ -1,7 +1,7 @@
 #!/bin/bash
 # CAWS-MANAGED-HOOK
 # hook_pack: shared
-# hook_pack_version: 87
+# hook_pack_version: 88
 # caws_min_major: 11
 # edit_stance: YOURS TO EDIT. This is a starting hook, not a locked one — shape it
 #   to your repo: tune thresholds, add checks, remove what does not fit. Your edits
@@ -900,4 +900,166 @@ caws_bash_token_records() {
     printf '%s\0%s\0%s\0' "${CAWS_TOK_KIND[$i]}" "${CAWS_TOK_VALUE[$i]}" "${CAWS_TOK_DYNAMIC[$i]}"
     i=$((i+1))
   done
+}
+
+# --- cross-repository predicate + interpreter write literals ----------------
+# CAWS-GUARD-REMEDIATION-CROSS-REPO-CONSISTENCY-01 promoted both of these out
+# of bash-write-guard.sh so a SECOND consumer can reach them: block-dangerous
+# must know whether an opaque payload's write target is cross-repo before it
+# decides which remediation to print. Two guards disagreeing about what
+# "foreign" means is the defect this placement removes — one guard would refuse
+# a route the other guard is busy recommending, which is what session 1aa3f0bd
+# followed out of the repo.
+#
+# Both take their roots as ARGUMENTS. This library reads no ambient state, so
+# each caller's posture stays its own decision rather than a hidden property of
+# the library.
+
+# caws_foreign_repo_root <target> <project_dir>
+#   Echo the root of the git repository owning <target> when that repository is
+#   NOT <project_dir>. Empty output means no other repository owns the path.
+#
+#   The boundary is deliberately NARROWER than scope-guard's "any absolute path
+#   outside the project": applying that to Bash would refuse ordinary scratch
+#   (`cat > /tmp/patch.py`), which is normal and safe. The harm actually named
+#   is mutating files outside the governing repo, so the predicate is "inside a
+#   DIFFERENT git repository" — which /tmp is not.
+caws_foreign_repo_root() {
+  local target="$1" project_dir="${2:-}" dir
+  [[ -n "$project_dir" ]] || return 0
+  case "$target" in
+    "$project_dir"|"$project_dir"/*) return 0 ;;
+    /*) ;;
+    *) return 0 ;;
+  esac
+  dir="$target"
+  [[ -d "$dir" ]] || dir="$(dirname "$dir")"
+  while [[ -n "$dir" && "$dir" != "/" ]]; do
+    if [[ -e "$dir/.git" ]]; then
+      [[ "$dir" != "$project_dir" ]] && printf '%s' "$dir"
+      return 0
+    fi
+    dir="$(dirname "$dir")"
+  done
+  return 0
+}
+
+# The write verbs that make an interpreter payload a WRITE payload. The open()
+# arm requires a literal first argument AND a literal mode string containing
+# w/a/x/+, so a read-only open does not register.
+CAWS_PY_WRITE_VERBS="\.write_text\(|\.write_bytes\(|os\.(replace|rename|remove|unlink)\(|shutil\.(copyfile|copy|move)\(|open\([^)]*['\"][^'\"]*['\"][[:space:]]*,[[:space:]]*['\"][rwa+bt]*[wax+][rwa+bt]*['\"]"
+CAWS_NODE_WRITE_VERBS="(writeFileSync|appendFileSync|fs\.(writeFile|appendFile|copyFile)|createWriteStream)\(|fs\.(renameSync|unlinkSync|rmSync)\("
+
+# _caws_interp_payload_literals <payload> <verbs_regex>
+#   Emit slash-bearing path fragments from ONE interpreter payload, when and
+#   only when the payload also contains a write verb for that language.
+#
+#   Co-occurrence is what keeps reads legal: open("<sibling>/x").read() has no
+#   write verb and yields nothing.
+#
+#   Fragments, not quote-delimited spans: when the code rides inside a quoted
+#   -c/-e argument the outer "..." consumes the inner '...' and a span matcher
+#   loses the real literal. A fragment reads the same in a script file, a
+#   heredoc body, and a nested inline quote.
+_caws_interp_payload_literals() {
+  local payload="$1" verbs_re="$2" frag
+  printf '%s' "$payload" | grep -qE "$verbs_re" || return 0
+  while IFS= read -r frag; do
+    [[ -z "$frag" ]] && continue
+    printf '%s\n' "$frag"
+  done < <(printf '%s' "$payload" | grep -oE "[A-Za-z0-9_./~-]*/[A-Za-z0-9_./~-]*" || true)
+}
+
+# caws_bash_interpreter_write_literals <command> [cwd]
+#   Emit the path literals an interpreter invoked by <command> may WRITE to:
+#   from the inline -c/-e code, quoted arguments and heredoc bodies, and from
+#   the content of an entry script named on the command line.
+#
+#   This is WEAKER evidence than a named shell operand — a literal in a script
+#   body says the script may write there, not that it will. Callers must treat
+#   it accordingly; it is adjudicated at the cross-repository boundary only and
+#   must never be fed to an ownership oracle, where any in-project path merely
+#   MENTIONED in a script would become a claim conflict.
+#
+#   What it cannot see: a target COMPUTED at runtime — concatenated from shell
+#   variables, read out of a config file, or piped in via `python3 -`. That is
+#   a real residual; callers must state it rather than imply completeness.
+caws_bash_interpreter_write_literals() {
+  local cmd="$1" cwd="${2:-.}" verbs_re=""
+  # Detect an interpreter as a COMMAND TOKEN, tokenizing the way the verb
+  # extractors do, so `node` inside a path (./node_modules/.bin/tsc) never
+  # matches and a chained invocation still does.
+  local padded
+  padded="$(printf '%s' "$cmd" \
+    | sed -E 's/[0-9]*>&[0-9-]+/ /g; s/&>>?[0-9]*/ /g' \
+    | sed -E 's/>>/ __CAWS_APPEND__ /g; s/>/ > /g; s/__CAWS_APPEND__/>>/g; s/\|/ | /g; s/;/ ; /g; s/&&/ \&\& /g')"
+  # shellcheck disable=SC2206
+  local toks=( $padded )
+  local n=${#toks[@]} i t
+  for ((i=0; i<n; i++)); do
+    t="${toks[$i]}"
+    case "$t" in
+      python|python[0-9]*|python[0-9]*.*) verbs_re="$CAWS_PY_WRITE_VERBS" ;;
+      node|nodejs) verbs_re="$CAWS_NODE_WRITE_VERBS" ;;
+      *) continue ;;
+    esac
+    # Payload 1: the command text itself — inline -c/-e code, quoted path
+    # arguments, and interpreter heredoc bodies. Deliberately the RAW command
+    # (not the heredoc-BLANKED text the operand extractor reads) so an
+    # interpreter heredoc body stays visible.
+    _caws_interp_payload_literals "$cmd" "$verbs_re"
+    # Payload 2: the entry script FILE named on the command line (bounded read).
+    local j=$((i+1)) t2 script=""
+    while [[ $j -lt $n ]]; do
+      t2="${toks[$j]}"
+      case "$t2" in
+        -c|-e|-m) j=$((j+2)); continue ;;
+        -*) j=$((j+1)); continue ;;
+      esac
+      case "$t2" in
+        /*.py|/*.js|/*.mjs|/*.cjs) script="$t2" ;;
+        *.py|*.js|*.mjs|*.cjs) script="$cwd/$t2" ;;
+      esac
+      if [[ -n "$script" ]]; then
+        [[ -f "$script" ]] || script=""
+        [[ -n "$script" ]] && break
+      fi
+      j=$((j+1))
+    done
+    if [[ -n "$script" ]]; then
+      local body=""
+      body="$(head -c 524288 "$script" 2>/dev/null || true)"
+      _caws_interp_payload_literals "$body" "$verbs_re"
+    fi
+  done
+}
+
+# caws_bash_interpreter_foreign_repo <command> <project_dir> [cwd] [home]
+#   Echo the FIRST foreign repository root an interpreter write literal in
+#   <command> resolves into; empty when there is none.
+#
+#   A literal may be composed relative to $HOME rather than the agent cwd —
+#   `Path.home() / "Desktop/Projects/<sibling>/..."` was the shape in the field
+#   — so a non-absolute literal is resolved against BOTH roots and reports
+#   foreign if EITHER resolution lands in a different repository.
+caws_bash_interpreter_foreign_repo() {
+  local cmd="$1" project_dir="$2" cwd="${3:-.}" home="${4:-${HOME:-/nonexistent-home}}"
+  local frag res fr
+  while IFS= read -r frag; do
+    [[ -z "$frag" ]] && continue
+    local -a cands=()
+    case "$frag" in
+      /*) cands=( "$frag" ) ;;
+      ~*) cands=( "$cwd/$frag" "$home/${frag#\~}" ) ;;
+      *)  cands=( "$cwd/$frag" "$home/$frag" ) ;;
+    esac
+    for res in "${cands[@]}"; do
+      fr="$(caws_foreign_repo_root "$res" "$project_dir")"
+      if [[ -n "$fr" ]]; then
+        printf '%s\n' "$fr"
+        return 0
+      fi
+    done
+  done < <(caws_bash_interpreter_write_literals "$cmd" "$cwd")
+  return 0
 }

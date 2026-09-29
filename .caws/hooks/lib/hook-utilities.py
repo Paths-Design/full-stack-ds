@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # CAWS-MANAGED-HOOK
 # hook_pack: shared
-# hook_pack_version: 87
+# hook_pack_version: 88
 # caws_min_major: 11
 # edit_stance: YOURS TO EDIT. This is a starting hook, not a locked one — shape it
 #   to your repo: tune thresholds, add checks, remove what does not fit. Your edits

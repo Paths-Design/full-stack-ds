@@ -2,7 +2,7 @@
 /*
 # CAWS-MANAGED-HOOK
 # hook_pack: shared
-# hook_pack_version: 87
+# hook_pack_version: 88
 # caws_min_major: 11
 # lineage_refs: 4,8,13,20,32
 # edit_stance: YOURS TO EDIT. This is a starting hook, not a locked one — shape it

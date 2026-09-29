@@ -1,7 +1,7 @@
 #!/bin/bash
 # CAWS-MANAGED-HOOK
 # hook_pack: shared
-# hook_pack_version: 87
+# hook_pack_version: 88
 # caws_min_major: 11
 # lineage_refs: 4,8,13,20,32
 # edit_stance: YOURS TO EDIT. This is a starting hook, not a locked one — shape it
@@ -148,25 +148,15 @@ AGENT_CWD="${HOOK_CWD:-${CAWS_PROJECT_DIR:-.}}"
 # actually names is mutating "files (especially executables) outside its
 # governing repo" — so the predicate here is "inside a DIFFERENT git
 # repository", which /tmp is not.
+# CAWS-GUARD-REMEDIATION-CROSS-REPO-CONSISTENCY-01 moved the predicate itself
+# into lib/bash-mutation-targets.sh (caws_foreign_repo_root) because
+# block-dangerous needs the SAME answer: its opaque-exec remediation used to
+# offer "write the probe to a script file and run it by path" even when the
+# payload's write target was in another repository — a route this guard
+# refuses. One guard recommending what another refuses is how an agent gets
+# walked out of the repo, so the two now read one implementation.
 foreign_repo_root() {
-  # Echo the root of the git repository owning $1 when that repository is not
-  # this project. Empty output means no other repository owns the path.
-  local target="$1" dir
-  case "$target" in
-    "$PROJECT_DIR"|"$PROJECT_DIR"/*) return 0 ;;
-    /*) ;;
-    *) return 0 ;;
-  esac
-  dir="$target"
-  [[ -d "$dir" ]] || dir="$(dirname "$dir")"
-  while [[ -n "$dir" && "$dir" != "/" ]]; do
-    if [[ -e "$dir/.git" ]]; then
-      [[ "$dir" != "$PROJECT_DIR" ]] && printf '%s' "$dir"
-      return 0
-    fi
-    dir="$(dirname "$dir")"
-  done
-  return 0
+  caws_foreign_repo_root "$1" "$PROJECT_DIR"
 }
 
 # --- target extraction (NARROW) --------------------------------------------
@@ -185,6 +175,17 @@ if ! declare -F caws_bash_mutation_candidates >/dev/null 2>&1; then
   printf '{"decision":"block","reason":"CAWS bash-write-guard: cannot load lib/bash-mutation-targets.sh, so Bash-mutation targets cannot be extracted. Failing closed. Restore the hook pack: caws init adapters install"}\n'
   exit 2
 fi
+# A lib PRESENT but older than this guard is the more dangerous shape: the
+# entry point above resolves, the guard runs, and the cross-repo arm silently
+# adjudicates nothing — a fail-OPEN that no output reports. Each function this
+# guard depends on is therefore checked by name, not inferred from one.
+for _fn in caws_foreign_repo_root caws_bash_interpreter_write_literals; do
+  if ! declare -F "$_fn" >/dev/null 2>&1; then
+    echo "[bash-write-guard] CAWS hook infrastructure incomplete: lib/bash-mutation-targets.sh loaded but does not provide $_fn — the cross-repository arm cannot run. Failing CLOSED. Update the shared hook libs with: caws init adapters install" >&2
+    printf '{"decision":"block","reason":"CAWS bash-write-guard: lib/bash-mutation-targets.sh is present but stale (missing %s), so the cross-repository boundary cannot be adjudicated. Failing closed. Update the hook pack: caws init adapters install"}\n' "$_fn"
+    exit 2
+  fi
+done
 
 extract_targets() {
   # Two channels, both consumed, because an ownership gate wants every path a
@@ -216,19 +217,18 @@ abspath() {
 # interpreter names no write target on the shell command line, so the
 # recognizer above extracts nothing and the guard adjudicates an empty
 # candidate set. Writing the scratch script is permitted by design (see the
-# /tmp rationale on foreign_repo_root); running it was never adjudicated at
-# all. That pair is a complete cross-repo write channel, and it is the one
+# /tmp rationale on caws_foreign_repo_root); running it was never adjudicated
+# at all. That pair is a complete cross-repo write channel, and it is the one
 # session 1aa3f0bd used: `cat > /tmp/apply-fix.mjs` carrying a sibling-repo
 # path, then `node /tmp/apply-fix.mjs`, both exit 0.
 #
-# This scan closes the detectable half: write targets that appear as PATH
-# LITERALS inside the interpreter's payload — inline -c/-e code, quoted
-# arguments, heredoc bodies, or the content of a script file named on the
-# command line. It is a CO-OCCURRENCE predicate: a payload is a write payload
-# only when it holds BOTH a write verb of that interpreter's language AND a
-# slash-bearing path fragment. Co-occurrence is what keeps reads legal
-# (open("<sibling>/x").read() has no write verb), and "inside a DIFFERENT git
-# repository" is what keeps /tmp scratch legal.
+# The scan closes the detectable half: write targets that appear as PATH
+# LITERALS inside the interpreter's payload. It lives in
+# lib/bash-mutation-targets.sh (caws_bash_interpreter_write_literals, with the
+# co-occurrence rationale) so block-dangerous reads the SAME answer when it
+# chooses which remediation to print
+# (CAWS-GUARD-REMEDIATION-CROSS-REPO-CONSISTENCY-01). The wrapper below adds
+# only the sentinel the decide loop dispatches on.
 #
 # Interpreter candidates are adjudicated at the CROSS-REPOSITORY boundary ONLY
 # and never enter the worktree-claim oracle. A literal in a script body is
@@ -242,76 +242,12 @@ abspath() {
 # variables, read out of a config file, or piped in via `python3 -`. That is a
 # real residual, named honestly in scope-guard's refusal rather than papered
 # over, and it is never an admitted route.
-#
-# The open() arm requires a literal first argument AND a literal mode string
-# containing w/a/x/+, so a read-only open does not register as a write verb.
-PY_WRITE_VERBS="\.write_text\(|\.write_bytes\(|os\.(replace|rename|remove|unlink)\(|shutil\.(copyfile|copy|move)\(|open\([^)]*['\"][^'\"]*['\"][[:space:]]*,[[:space:]]*['\"][rwa+bt]*[wax+][rwa+bt]*['\"]"
-NODE_WRITE_VERBS="(writeFileSync|appendFileSync|fs\.(writeFile|appendFile|copyFile)|createWriteStream)\(|fs\.(renameSync|unlinkSync|rmSync)\("
-
-scan_interpreter_payload() {
-  # Emit __INTERP__-prefixed path-literal candidates from one interpreter
-  # payload, when and only when that payload contains a write verb for the
-  # language. Candidates are slash-bearing FRAGMENTS rather than
-  # quote-delimited spans: when the code rides inside a quoted -c/-e argument,
-  # matching on quotes lets the outer "..." consume the inner '...' and the
-  # real path literal disappears. Fragments read the same in a script file, a
-  # heredoc body, and a nested inline quote.
-  local payload="$1" verbs_re="$2" frag
-  printf '%s' "$payload" | grep -qE "$verbs_re" || return 0
+scan_interpreter_targets() {
+  local frag
   while IFS= read -r frag; do
     [[ -z "$frag" ]] && continue
     printf '__INTERP__%s\n' "$frag"
-  done < <(printf '%s' "$payload" | grep -oE "[A-Za-z0-9_./~-]*/[A-Za-z0-9_./~-]*" || true)
-}
-
-scan_interpreter_targets() {
-  local cmd="$1" verbs_re=""
-  # Detect an interpreter as a COMMAND TOKEN, tokenizing the way the verb
-  # extractors do, so `node` inside a path (./node_modules/.bin/tsc) never
-  # matches and a chained invocation still does.
-  local padded
-  padded="$(printf '%s' "$cmd" \
-    | sed -E 's/[0-9]*>&[0-9-]+/ /g; s/&>>?[0-9]*/ /g' \
-    | sed -E 's/>>/ __CAWS_APPEND__ /g; s/>/ > /g; s/__CAWS_APPEND__/>>/g; s/\|/ | /g; s/;/ ; /g; s/&&/ \&\& /g')"
-  # shellcheck disable=SC2206
-  local toks=( $padded )
-  local n=${#toks[@]} i t
-  for ((i=0; i<n; i++)); do
-    t="${toks[$i]}"
-    case "$t" in
-      python|python[0-9]*|python[0-9]*.*) verbs_re="$PY_WRITE_VERBS" ;;
-      node|nodejs) verbs_re="$NODE_WRITE_VERBS" ;;
-      *) continue ;;
-    esac
-    # Payload 1: the command text itself — inline -c/-e code, quoted path
-    # arguments, and interpreter heredoc bodies. extract_targets reads the
-    # heredoc-BLANKED text; this scanner deliberately reads the RAW command so
-    # an interpreter heredoc body stays visible.
-    scan_interpreter_payload "$cmd" "$verbs_re"
-    # Payload 2: the entry script FILE named on the command line (bounded read).
-    local j=$((i+1)) t2 script=""
-    while [[ $j -lt $n ]]; do
-      t2="${toks[$j]}"
-      case "$t2" in
-        -c|-e|-m) j=$((j+2)); continue ;;
-        -*) j=$((j+1)); continue ;;
-      esac
-      case "$t2" in
-        /*.py|/*.js|/*.mjs|/*.cjs) script="$t2" ;;
-        *.py|*.js|*.mjs|*.cjs) script="$AGENT_CWD/$t2" ;;
-      esac
-      if [[ -n "$script" ]]; then
-        [[ -f "$script" ]] || script=""
-        [[ -n "$script" ]] && break
-      fi
-      j=$((j+1))
-    done
-    if [[ -n "$script" ]]; then
-      local body=""
-      body="$(head -c 524288 "$script" 2>/dev/null || true)"
-      scan_interpreter_payload "$body" "$verbs_re"
-    fi
-  done
+  done < <(caws_bash_interpreter_write_literals "$1" "$AGENT_CWD")
 }
 
 # --- decide -----------------------------------------------------------------

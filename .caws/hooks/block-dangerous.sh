@@ -1,7 +1,7 @@
 #!/bin/bash
 # CAWS-MANAGED-HOOK
 # hook_pack: shared
-# hook_pack_version: 87
+# hook_pack_version: 88
 # caws_min_major: 11
 # lineage_refs: 1,17
 # edit_stance: YOURS TO EDIT. This is a starting hook, not a locked one — shape it
@@ -70,6 +70,14 @@ caws_source_lib emit.sh 2>/dev/null || true
 # a missing lib degrades escalation to block-only (never to an unverified
 # kill), matching agent-pid.sh's own fail-open contract.
 [[ -f "$SCRIPT_DIR/lib/agent-pid.sh" ]] && source "$SCRIPT_DIR/lib/agent-pid.sh"
+# shellcheck source=lib/bash-mutation-targets.sh
+# CAWS-GUARD-REMEDIATION-CROSS-REPO-CONSISTENCY-01: supplies
+# caws_bash_interpreter_foreign_repo, which decides WHICH opaque-exec
+# remediation this guard may print. Sourced best-effort, but the absence is
+# never silent in the output: the remediation selector below falls back to the
+# text that omits the script-file route, so a missing lib narrows advice rather
+# than restoring the sentence the lib exists to suppress.
+[[ -f "$SCRIPT_DIR/lib/bash-mutation-targets.sh" ]] && source "$SCRIPT_DIR/lib/bash-mutation-targets.sh"
 
 # DANGER-LATCH-QUARANTINE-TRAP-001: the armed sentinel is a TRAP, not a sticky
 # warning. A trapped session is quarantined: only a fixed read-only allowlist
@@ -698,7 +706,43 @@ case "$DECISION" in
       # entirely in the agent's own hands. Keyed to the exact classifier reason
       # so it cannot swallow any other capability ask or a deny.
       if [[ "$SOURCE" == "capability" && "$REASON" == "opaque execution — cannot prove payload"* ]]; then
-        FULL_REASON="CAWS command-safety: $REASON. This inline payload cannot be verified, so it is refused — but the session danger latch was NOT armed and you can proceed immediately by rewriting it. Do this instead: (1) write the probe to a script file in your scope (e.g. a .py or .js file) and run it by path — file payloads are inspectable and are not opaque; or (2) for read-only inspection, use the Read tool / cat / jq against the file directly; or (3) if the payload is genuinely a literal with no \$VAR/\$()/backtick, inline it without shell interpolation. Do NOT rephrase the same opaque -c/-e to evade this. Command was: $COMMAND"
+        # CAWS-GUARD-REMEDIATION-CROSS-REPO-CONSISTENCY-01: which remediation
+        # is printable depends on where the payload would WRITE.
+        #
+        # "Write the probe to a script file and run it by path" is sound advice
+        # for an ordinary opaque payload and it is the proximate cause of a
+        # cross-repo write when it is not. In session 1aa3f0bd the agent was
+        # refused a direct Bash write into a sibling repository, read this
+        # sentence, wrote a script to /tmp, and ran it by path. The route the
+        # sentence names is one bash-write-guard refuses — so a guard was
+        # recommending what its sibling blocks, at the exact moment the agent
+        # was looking for a way through. A remediation that names a refused
+        # route is worse than no remediation: it reads as authorization, and it
+        # comes from the guard itself.
+        #
+        # Three states, and the default is the conservative one:
+        #   detector says cross-repo  -> name the repository, drop the route
+        #   detector unavailable      -> drop the route (cannot prove it safe)
+        #   detector says not cross-repo -> full remediation, route included
+        _OPAQUE_XREPO=""
+        _OPAQUE_DETECTOR="unavailable"
+        if declare -F caws_bash_interpreter_foreign_repo >/dev/null 2>&1 &&
+          declare -F caws_foreign_repo_root >/dev/null 2>&1; then
+          _OPAQUE_DETECTOR="ok"
+          _OPAQUE_XREPO="$(caws_bash_interpreter_foreign_repo \
+            "$COMMAND" "${CAWS_PROJECT_DIR:-.}" "$(pwd)" "${HOME:-/nonexistent-home}" 2>/dev/null || true)"
+        fi
+        _OPAQUE_HEAD="CAWS command-safety: $REASON. This inline payload cannot be verified, so it is refused — but the session danger latch was NOT armed and you can proceed immediately by rewriting it."
+        _OPAQUE_READ_ARM="for read-only inspection, use the Read tool / cat / jq against the file directly"
+        _OPAQUE_LITERAL_ARM="if the payload is genuinely a literal with no \$VAR/\$()/backtick, inline it without shell interpolation"
+        _OPAQUE_TAIL="Do NOT rephrase the same opaque -c/-e to evade this. Command was: $COMMAND"
+        if [[ -n "$_OPAQUE_XREPO" ]]; then
+          FULL_REASON="$_OPAQUE_HEAD This payload also names a write target inside a DIFFERENT git repository ($_OPAQUE_XREPO), and that — not the opacity — is the harder boundary: a cross-repository write is refused whether it comes from a direct Bash mutation, an inline interpreter payload, or a script file run by path, so rewriting this as a script would not help. Do this instead: (1) make the change from a session rooted in $_OPAQUE_XREPO, which is the only place that work is governed; or (2) $_OPAQUE_READ_ARM — a cross-repository READ is fine. $_OPAQUE_TAIL"
+        elif [[ "$_OPAQUE_DETECTOR" != "ok" ]]; then
+          FULL_REASON="$_OPAQUE_HEAD The shared target library (lib/bash-mutation-targets.sh) did not load, so this guard cannot tell whether the payload writes outside this repository and will not suggest a rewrite that might. Do this instead: (1) $_OPAQUE_READ_ARM; or (2) $_OPAQUE_LITERAL_ARM; or (3) restore the hook libs with \`caws init adapters install\` for the full remediation. $_OPAQUE_TAIL"
+        else
+          FULL_REASON="$_OPAQUE_HEAD Do this instead: (1) write the probe to a script file in your scope (e.g. a .py or .js file) and run it by path — file payloads are inspectable and are not opaque. A script file's write targets are adjudicated exactly as a direct write, so this makes the payload reviewable; it does not reach anywhere a direct write could not; or (2) $_OPAQUE_READ_ARM; or (3) $_OPAQUE_LITERAL_ARM. $_OPAQUE_TAIL"
+        fi
         emit_block_json "$FULL_REASON"
         exit 0
       fi
