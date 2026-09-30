@@ -278,6 +278,8 @@ export class DialogElement extends LitElement {
     onOpenChange: (v) => this.onOpenChange?.(v),
     closeOnEscape: this.closeOnEscape,
     closeOnBackdropClick: this.closeOnBackdropClick,
+    initialFocus: () => this.initialFocus,
+    returnFocus: () => this.returnFocus,
     modal: () => this.modal,
   });
   }
