@@ -84,3 +84,11 @@ evidence:
     exit_code: 0
     artifact_path: e2e/input-styling.spec.ts
     commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Manually inspected post-merge receipt docs/internal/input-visual-audit/fix-2ea8c7ac/postmerge-browser.log: all five web targets in light/dark theme the named search input and consume selected/unselected-hover option fills. Contract selected-text contrast validation passed. Tracked citation is the executed test source; runtime receipts remain ignored."
+    recorded_at: "2026-09-30T19:57:26.798Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/input-styling.spec.ts --workers=2"
+    exit_code: 0
+    artifact_path: e2e/input-styling.spec.ts
+    commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
