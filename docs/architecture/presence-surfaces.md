@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: Presence Surfaces — the architectural family for tooltips, popovers, dialogs, menus, selects, toasts, coachmarks, and sheets
 owner: "@darianrosebrook"
-updated: 2026-09-06
+updated: 2026-09-30
 governs:
   - packages/ds-contracts/components/Tooltip/Tooltip.contract.json
   - packages/ds-contracts/components/Popover/Popover.contract.json
@@ -240,6 +240,8 @@ is axis-derived. `buildSurfaceIR` normalizes attachment to `part`, `selector`,
 ```
 
 Dialog's existing top-level `focus` block carries `strategy: "trap"`, `initialFocus: "prop:initialFocus"`, `returnFocus: "prop:returnFocus"`, `scrollLock: true`, and `wrap: true`. The optional focus props accept CSS selectors or element IDs; absent targets fall back to the first available child on opening and the previously focused element on closing. The focus lifecycle follows the mounted panel through portal changes. The `modal` prop gates trapping and scroll locking through `surface.modalityProp`; non-modal dialogs preserve outside focus. This policy does not declare or realize outside `inert`.
+
+Opening-focus runtime witnesses live in [the Dialog focus rail](../../e2e/dialog-focus.spec.ts). It checks the five Web adapters and the React showcase's conditional mount; package tests additionally cover element IDs, malformed selectors, typing and portal relocation. The shared substrate also serves Sheet's existing trap policy.
 
 ### Toast
 

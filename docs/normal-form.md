@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
-updated: 2026-09-28
-verified_at_commit: b5453c4866ec2311e72a1aa216ed7faf8a19f3fd
+updated: 2026-09-30
+verified_at_commit: d2f56f5fba630df20f7cee53c20a37cbaa59d6e9
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -190,6 +190,8 @@ These are not hypothetical. They are the symptoms that show up across the broade
 `buildKeyboardActions` in `ir.ts` shows what the discipline buys when a realization has to reach every target at once. A structured `a11y.keyboard` entry may declare a `behavior` drawn from a closed vocabulary — `open`, `select`, and the four `roving-*` moves — and the IR lowers it into a keydown realization bound to the `when` part's rendered node. The op sequence is derived from declared facts only: the boolean channel for `open`, the `compositeControl` part for `select`, and `focus.strategy`, `focus.orientation` and `focus.wrap` for the roving moves. All five web emitters consume that op sequence; none of them knows which component it came from. The vocabulary being closed is the load-bearing part — an open one would let a contract smuggle a per-component instruction through as data. An entry that omits `behavior` produces no IR fact at all and stays declaration-only, realized by native host semantics or a behavior primitive, which keeps the declaration honest about what it does and does not attach.
 
 These builders make the distinction between declared intent and an attached, observable realization explicit.
+
+The Dialog opening-focus repair is a further bounded realization of the same split. The contract binds optional selector/element-ID props; `focusTargetProps` derives their primitive targets in the IR; each web adapter follows its mounted panel and preserves the activation's return target through portal replacement. Renamed-policy tests reject dependence on conventional prop names, and `e2e/dialog-focus.spec.ts` checks opening, static-content targeting, wrapping, return and non-modal focus across the five Web targets. The React conditional-composition regression fails with the original hook. This does not establish outside inertness, native focus parity, or realization of the contract's legacy transition prose.
 
 ## The cross-paradigm spread is the test
 
