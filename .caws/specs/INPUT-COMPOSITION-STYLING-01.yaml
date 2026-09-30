@@ -100,3 +100,11 @@ evidence:
     exit_code: 0
     artifact_path: e2e/input-styling.spec.ts
     commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Manually inspected ignored validation.json and rail/root/frameworks logs under docs/internal/input-visual-audit/fix-2ea8c7ac/: required admission rail passed all six admitted targets; 4601 root tests passed; Vue/Lit/Svelte/Angular/RN suites passed with two existing Lit skips. Checked 2ea8c7ac package/src/e2e source is byte-identical to merged main. Lint, styling/usage gates, docs, native token parity and SwiftUI/Compose consumer compiles passed. Tracked citation is the contract; CLI verifies source/commit custody, not execution. No native runtime or remote CI claim."
+    recorded_at: "2026-09-30T19:57:28.830Z"
+    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    artifact_path: packages/ds-contracts/components/Field/Field.contract.json
+    commit_sha: "2ea8c7ac7b6885bec31335c496ad206cfa0a1084"
