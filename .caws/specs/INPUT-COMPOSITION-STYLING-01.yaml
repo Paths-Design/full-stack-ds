@@ -92,3 +92,11 @@ evidence:
     exit_code: 0
     artifact_path: e2e/input-styling.spec.ts
     commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Manually inspected docs/internal/input-visual-audit/fix-2ea8c7ac/validation.json and postmerge-browser.log: Settings ToggleSwitch keeps its fill and changes fill on activation; all 33 checks pass. Token layer order precedes components and reset is in core. Three unchanged-main sensitivity controls failed before merge. Tracked artifact is test source; generated run artifacts are ignored."
+    recorded_at: "2026-09-30T19:57:27.733Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/input-styling.spec.ts --workers=2"
+    exit_code: 0
+    artifact_path: e2e/input-styling.spec.ts
+    commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
