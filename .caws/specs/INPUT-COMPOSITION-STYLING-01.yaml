@@ -67,3 +67,12 @@ contracts:
   - name: 'input-composition'
     type: behavior
     path: 'packages/ds-contracts/components/Field/Field.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Manually inspected post-merge Chromium receipt docs/internal/input-visual-audit/fix-2ea8c7ac/postmerge-browser.log: Field Input/Select composition checks in light/dark pass for one child-owned surface/ring, explicit invalid Input and error-description association. Browser MCP edit-profile Dialog confirms one ring. The tracked artifact below is the test source; generated runtime receipts remain ignored."
+    recorded_at: "2026-09-30T19:57:24.860Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/input-styling.spec.ts --workers=2"
+    exit_code: 0
+    artifact_path: e2e/input-styling.spec.ts
+    commit_sha: "8ff5608746e7d0fda4414dd6259409dc6ace5e1e"
