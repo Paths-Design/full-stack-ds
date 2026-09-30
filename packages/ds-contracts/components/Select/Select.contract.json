@@ -11,6 +11,7 @@
       "text",
       "content",
       "search",
+      "searchInput",
       "options",
       "option",
       "emptyState"
@@ -60,9 +61,7 @@
       "search": {
         "tag": "div",
         "description": "Optional search field wrapper for filtering available options.",
-        "role": "group",
-        "interactive": true,
-        "focusable": true
+        "role": "group"
       },
       "options": {
         "tag": "div",
@@ -88,6 +87,13 @@
         "tag": "div",
         "description": "Message region shown when no options are available.",
         "role": "content"
+      },
+      "searchInput": {
+        "tag": "input",
+        "description": "The themed, named text control inside the optional search region.",
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true
       }
     },
     "dom": {
@@ -142,6 +148,11 @@
                   "tag": "input",
                   "attrs": {
                     "type": "text"
+                  },
+                  "part": "searchInput",
+                  "bindings": {
+                    "aria-label": "prop:searchLabel",
+                    "disabled": "prop:disabled"
                   }
                 }
               ]
@@ -399,6 +410,14 @@
           },
           "description": "Visible prompt when no selected value matches an option.",
           "default": "Select an option"
+        },
+        {
+          "name": "searchLabel",
+          "propType": {
+            "kind": "string"
+          },
+          "description": "Accessible name for the search text control.",
+          "default": "Search options"
         }
       ]
     }
@@ -547,7 +566,7 @@
   "focus": {
     "strategy": "roving",
     "orientation": "vertical",
-    "initialFocus": "search",
+    "initialFocus": "searchInput",
     "returnFocus": "trigger",
     "wrap": true
   },

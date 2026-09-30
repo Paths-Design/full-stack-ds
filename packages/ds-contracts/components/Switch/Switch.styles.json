@@ -167,8 +167,10 @@
       }
     },
     "top": {
-      "resolvesTo": "switch.size.md.track.padding",
-      "fallback": "1px"
+      "literal": "50%",
+      "platforms": [
+        "web"
+      ]
     },
     "left": {
       "resolvesTo": "switch.size.md.track.padding",
@@ -211,17 +213,15 @@
       "platforms": [
         "web"
       ]
+    },
+    "transform": {
+      "literal": "translateY(-50%)",
+      "platforms": [
+        "web"
+      ]
     }
   },
   "input": {
-    "outline-color": {
-      "resolvesTo": "switch.color.input.outline.focus",
-      "fallback": "#0566fe",
-      "design": {
-        "property": "focus.color",
-        "slot": "switch.design.input.focus.color"
-      }
-    },
     "position": {
       "literal": "absolute",
       "platforms": [
@@ -444,10 +444,6 @@
         "slot": "switch.design.condition-97b936929ea8.sizing.height"
       }
     },
-    "top": {
-      "resolvesTo": "switch.size.sm.track.padding",
-      "fallback": "1px"
-    },
     "left": {
       "resolvesTo": "switch.size.sm.track.padding",
       "fallback": "1px"
@@ -514,10 +510,6 @@
         "slot": "switch.design.condition-9a61de98af78.sizing.height"
       }
     },
-    "top": {
-      "resolvesTo": "switch.size.lg.track.padding",
-      "fallback": "1px"
-    },
     "left": {
       "resolvesTo": "switch.size.lg.track.padding",
       "fallback": "1px"
@@ -531,6 +523,24 @@
     "translate": {
       "resolvesTo": "switch.size.lg.thumb.translate.on",
       "fallback": "36px"
+    }
+  },
+  ".switch:has(.switch__input:focus-visible) .switch__track": {
+    "outline-width": {
+      "resolvesTo": "switch.focus.ring.width",
+      "fallback": "2px"
+    },
+    "outline-color": {
+      "resolvesTo": "switch.focus.ring.color",
+      "fallback": "#0566fe"
+    },
+    "outline-style": {
+      "resolvesTo": "switch.focus.ring.style",
+      "fallback": "solid"
+    },
+    "outline-offset": {
+      "resolvesTo": "switch.focus.ring.offset",
+      "fallback": "2px"
     }
   }
 }

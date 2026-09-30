@@ -287,72 +287,6 @@
       "platforms": [
         "web"
       ]
-    },
-    "padding": {
-      "resolvesTo": "select.size.padding.default",
-      "fallback": "4px",
-      "design": {
-        "property": "spacing.padding",
-        "slot": "select.design.search.spacing.padding"
-      }
-    },
-    "border-style": {
-      "literal": "solid",
-      "platforms": [
-        "web"
-      ],
-      "design": {
-        "property": "border.style",
-        "slot": "select.design.search.border.style"
-      }
-    },
-    "border-width": {
-      "resolvesTo": "select.size.border.default",
-      "fallback": "1px",
-      "design": {
-        "property": "border.width",
-        "slot": "select.design.search.border.width"
-      }
-    },
-    "border-radius": {
-      "resolvesTo": "select.size.radius.default",
-      "fallback": "6px",
-      "design": {
-        "property": "shape.radius",
-        "slot": "select.design.search.shape.radius"
-      }
-    },
-    "border-color": {
-      "resolvesTo": "select.color.border.default",
-      "fallback": "#a0a0a1",
-      "design": {
-        "property": "border.color",
-        "slot": "select.design.search.border.color"
-      }
-    },
-    "background-color": {
-      "resolvesTo": "select.color.background.default",
-      "fallback": "#ffffff",
-      "design": {
-        "property": "background.fill",
-        "slot": "select.design.search.background.fill"
-      }
-    },
-    "color": {
-      "resolvesTo": "select.color.foreground.default",
-      "fallback": "#141414",
-      "design": {
-        "property": "foreground.color",
-        "slot": "select.design.search.foreground.color"
-      }
-    },
-    "font-size": {
-      "resolvesTo": "select.font.size.default",
-      "fallback": "16px",
-      "design": {
-        "property": "typography.size",
-        "slot": "select.design.search.typography.size"
-      }
     }
   },
   "options": {
@@ -475,6 +409,14 @@
       "platforms": [
         "web"
       ]
+    },
+    "background-color": {
+      "resolvesTo": "select.color.background.default",
+      "fallback": "#ffffff",
+      "design": {
+        "property": "background.fill",
+        "slot": "select.design.option.background.fill"
+      }
     }
   },
   "emptyState": {
@@ -609,8 +551,8 @@
       "fallback": "#f5a2a1"
     },
     "select.color.foreground.default": {
-      "resolvesTo": "semantic.color.foreground.accent",
-      "fallback": "#d92d2e"
+      "resolvesTo": "semantic.color.foreground.primary",
+      "fallback": "#141414"
     }
   },
   ".select--sm .select__trigger": {
@@ -641,6 +583,124 @@
         "property": "sizing.height",
         "slot": "select.design.condition-d393d0052010.sizing.height"
       }
+    }
+  },
+  "searchInput": {
+    "padding": {
+      "resolvesTo": "select.size.padding.default",
+      "fallback": "4px",
+      "design": {
+        "property": "spacing.padding",
+        "slot": "select.design.search-input.spacing.padding"
+      }
+    },
+    "border-style": {
+      "literal": "solid",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "border.style",
+        "slot": "select.design.search-input.border.style"
+      }
+    },
+    "border-width": {
+      "resolvesTo": "select.size.border.default",
+      "fallback": "1px",
+      "design": {
+        "property": "border.width",
+        "slot": "select.design.search-input.border.width"
+      }
+    },
+    "border-radius": {
+      "resolvesTo": "select.size.radius.default",
+      "fallback": "6px",
+      "design": {
+        "property": "shape.radius",
+        "slot": "select.design.search-input.shape.radius"
+      }
+    },
+    "border-color": {
+      "resolvesTo": "select.color.border.default",
+      "fallback": "#a0a0a1",
+      "design": {
+        "property": "border.color",
+        "slot": "select.design.search-input.border.color"
+      }
+    },
+    "background-color": {
+      "resolvesTo": "select.color.background.default",
+      "fallback": "#ffffff",
+      "design": {
+        "property": "background.fill",
+        "slot": "select.design.search-input.background.fill"
+      }
+    },
+    "color": {
+      "resolvesTo": "select.color.foreground.default",
+      "fallback": "#141414",
+      "design": {
+        "property": "foreground.color",
+        "slot": "select.design.search-input.foreground.color"
+      }
+    },
+    "font-size": {
+      "resolvesTo": "select.font.size.default",
+      "fallback": "16px",
+      "design": {
+        "property": "typography.size",
+        "slot": "select.design.search-input.typography.size"
+      }
+    },
+    "width": {
+      "literal": "100%",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-width": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "box-sizing": {
+      "literal": "border-box",
+      "platforms": [
+        "web"
+      ]
+    },
+    "font-family": {
+      "literal": "inherit",
+      "platforms": [
+        "web"
+      ]
+    },
+    "line-height": {
+      "resolvesTo": "select.font.lineHeight.default",
+      "fallback": "1.5",
+      "design": {
+        "property": "typography.line-height",
+        "slot": "select.design.search-input.typography.line-height"
+      }
+    }
+  },
+  ".select__searchInput:focus-visible": {
+    "outline-width": {
+      "resolvesTo": "select.focus.ring.width",
+      "fallback": "2px"
+    },
+    "outline-color": {
+      "resolvesTo": "select.focus.ring.color",
+      "fallback": "#0566fe"
+    },
+    "outline-style": {
+      "resolvesTo": "select.focus.ring.style",
+      "fallback": "solid"
+    },
+    "outline-offset": {
+      "resolvesTo": "select.focus.ring.offset",
+      "fallback": "2px"
     }
   }
 }

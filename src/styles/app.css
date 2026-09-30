@@ -75,22 +75,25 @@ a {
   text-decoration: none;
 }
 
-button {
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  /*
-   * Reset the native UA button surface. Without this, a bare <button> keeps the
-   * platform `buttonface` background (a light system gray, ~#efefef) and
-   * `appearance: auto`, which does NOT follow the dark theme — so muted text on
-   * a class designed for <a> (e.g. .sidebar-item, reused for the Header brand
-   * picker buttons) lands on a light surface in dark mode and fails contrast.
-   * Only the surface is reset here; border/padding are left to each component
-   * so existing layouts are unaffected. Components that want a fill (.icon-btn,
-   * .button) set their own background.
-   */
-  appearance: none;
-  background: transparent;
+/* Foundation resets yield to package component layers. */
+@layer core {
+  button {
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    /*
+     * Reset the native UA button surface. Without this, a bare <button> keeps the
+     * platform `buttonface` background (a light system gray, ~#efefef) and
+     * `appearance: auto`, which does NOT follow the dark theme — so muted text on
+     * a class designed for <a> (e.g. .sidebar-item, reused for the Header brand
+     * picker buttons) lands on a light surface in dark mode and fails contrast.
+     * Only the surface is reset here; border/padding are left to each component
+     * so existing layouts are unaffected. Components that want a fill (.icon-btn,
+     * .button) set their own background.
+     */
+    appearance: none;
+    background: transparent;
+  }
 }
 
 ::selection {

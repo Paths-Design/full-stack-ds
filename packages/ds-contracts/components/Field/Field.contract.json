@@ -33,7 +33,7 @@
       },
       "control": {
         "tag": "div",
-        "description": "Slot host for the input, select, or other form control.",
+        "description": "Layout-only slot host. The child control owns its surface, focus ring, invalid and disabled state.",
         "role": "content"
       },
       "help": {
@@ -144,17 +144,17 @@
         {
           "name": "required",
           "propType": { "kind": "boolean" },
-          "description": "Marks the field as required. Surfaces as aria-required on the control element."
+          "description": "Marks the field wrapper as required. Set required on the child control as well."
         },
         {
           "name": "disabled",
           "propType": { "kind": "boolean" },
-          "description": "Disables the field and all of its child controls."
+          "description": "Dims the field metadata. Set disabled on the child control to disable interaction."
         },
         {
           "name": "readOnly",
           "propType": { "kind": "boolean" },
-          "description": "Puts the field into read-only mode. The value is visible but not editable."
+          "description": "Marks the field wrapper as read-only. Set readOnly on the child control to prevent editing."
         },
         {
           "name": "value",
@@ -334,7 +334,8 @@
     "usageHints": [
       "Wrap every form control in a Field to ensure consistent label/error placement",
       "Provide the control via the control slot (e.g. an Input); the label, help, and error regions are their own named slots",
-      "Set status=invalid for the error treatment; supply the message through the error slot"
+      "Set status=invalid for the error treatment; supply the message through the error slot",
+      "Set invalid, disabled, and required on the child control explicitly; Field owns layout and label/description association."
     ],
     "children": {
       "allowed": false,

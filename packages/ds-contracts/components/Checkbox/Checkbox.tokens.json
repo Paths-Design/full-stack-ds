@@ -73,5 +73,10 @@
     "resolvesTo": "semantic.focus.ring.offset",
     "fallback": "2px",
     "layer": "semantic"
+  },
+  "checkbox.color.mark.default": {
+    "resolvesTo": "semantic.color.foreground.on.brand",
+    "fallback": "#ffffff",
+    "layer": "semantic"
   }
 }
