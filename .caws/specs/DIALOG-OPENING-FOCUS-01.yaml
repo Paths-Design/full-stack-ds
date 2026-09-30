@@ -1,0 +1,58 @@
+id: DIALOG-OPENING-FOCUS-01
+title: 'Preserve surface focus through portal mounting and realize selector focus props'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-09-30T22:39:11.168Z'
+updated_at: '2026-09-30T22:39:11.168Z'
+created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
+blast_radius:
+  modules:
+    - 'Web focus-trap and portal primitives'
+    - 'Contract focus policy IR and web emitter wiring'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-figma-plugin'
+    - 'e2e/dialog-focus.spec.ts'
+    - 'docs/architecture/presence-surfaces.md'
+    - 'docs/internal/input-visual-audit'
+    - 'scripts/custom-region-audit/known-authored-regions.json'
+  out: []
+invariants:
+  - 'Focus policy remains contract-owned and emitter rules do not branch on component identity'
+  - 'Non-modal surfaces do not trap focus or steal initial focus'
+  - 'Portal destinations respect composition boundaries and SSR safety'
+acceptance:
+  - id: A1
+    given: 'Dialog opens from a real launcher and is mounted through a portal'
+    when: 'portal children settle'
+    then: 'focus remains on a connected element inside the dialog and Tab wraps in both directions'
+  - id: A2
+    given: 'a dialog selector or element ID initialFocus prop names an enabled child'
+    when: 'the dialog opens'
+    then: 'that child receives focus across all five web frameworks with safe fallback for absent targets'
+  - id: A3
+    given: 'a modal dialog was opened by a launcher'
+    when: 'it closes or unmounts'
+    then: 'focus returns to the connected launcher and non-modal dialogs preserve outside focus'
+  - id: A4
+    given: 'governed contracts and shared primitive lifecycle'
+    when: 'generated packages and existing framework suites are validated'
+    then: 'the required admission rail and root plus framework tests pass without hand-edited generated code'
+non_functional: {}
+contracts:
+  - name: 'dialog-focus'
+    type: behavior
+    path: 'packages/ds-contracts/components/Dialog/Dialog.contract.json'
