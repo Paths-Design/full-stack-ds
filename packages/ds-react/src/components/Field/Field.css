@@ -4,20 +4,19 @@
 
 /* @generated:start styles */
 .field {
-  padding-block-start: var(--fsds-box-model-padding-block-start, var(--fsds-semantic-input-size-medium-padding-block, 4px));
-  padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-input-size-medium-padding-block, 4px));
-  padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
-  padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
+  padding-block-start: var(--fsds-box-model-padding-block-start, 0);
+  padding-block-end: var(--fsds-box-model-padding-block-end, 0);
+  padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
+  padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
   gap: var(--fsds-field-design-root-spacing-gap, var(--fsds-field-gap-y, 8px));
   width: var(--fsds-box-model-width, auto);
   min-width: var(--fsds-box-model-min-width, 0);
   max-width: var(--fsds-box-model-max-width, none);
   height: var(--fsds-box-model-height, auto);
-  min-height: var(--fsds-box-model-min-height, var(--fsds-semantic-input-size-medium-min-height, 32px));
+  min-height: var(--fsds-box-model-min-height, 0);
   max-height: var(--fsds-box-model-max-height, none);
   display: flex;
   flex-direction: column;
-  border-radius: var(--fsds-field-design-root-shape-radius, var(--fsds-field-radius, 6px));
 }
 
 .field__label {
@@ -39,12 +38,6 @@
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  border-style: var(--fsds-field-design-control-border-style, solid);
-  border-width: var(--fsds-field-design-control-border-width, 1px);
-  border-radius: var(--fsds-field-design-control-shape-radius, var(--fsds-field-radius, 6px));
-  border-color: var(--fsds-field-design-control-border-color, var(--fsds-field-color-border, #d0d0d0));
-  background-color: var(--fsds-field-design-control-background-fill, var(--fsds-field-color-bg, #ffffff));
-  padding: var(--fsds-field-design-control-spacing-padding, var(--fsds-field-pad-x, 12px));
 }
 
 .field__help {
@@ -72,25 +65,8 @@
   color: var(--fsds-field-design-validating-indicator-foreground-color, var(--fsds-field-color-fg, #141414));
 }
 
-.field__control:focus-within:not([aria-disabled="true"]) {
-  border-color: var(--fsds-field-design-condition-81979563e542-border-color, var(--fsds-field-color-focus-border, #0566fe));
-  outline-width: var(--fsds-field-design-condition-81979563e542-focus-width, var(--fsds-field-focus-ring-width, 2px));
-  outline-color: var(--fsds-field-design-condition-81979563e542-focus-color, var(--fsds-field-focus-ring-color, #0566fe));
-  outline-style: var(--fsds-field-design-condition-81979563e542-focus-style, var(--fsds-field-focus-ring-style, solid));
-  outline-offset: var(--fsds-field-design-condition-81979563e542-focus-offset, var(--fsds-field-focus-ring-offset, 2px));
-}
-
-.field--invalid .field__control {
-  border-color: var(--fsds-field-design-condition-ec647a1139d6-border-color, var(--fsds-field-color-invalid-border, #b31b1b));
-}
-
-.field--disabled .field__control {
-  opacity: var(--fsds-field-design-condition-348628f5568b-appearance-opacity, 0.5);
-  cursor: not-allowed;
-}
-
-.field--valid .field__control {
-  border-color: var(--fsds-field-design-condition-1a227523a299-border-color, var(--fsds-field-color-valid-border, #3a6614));
+.field--disabled .field__header, .field--disabled .field__meta {
+  opacity: 0.5;
 }
 /* @generated:end */
 

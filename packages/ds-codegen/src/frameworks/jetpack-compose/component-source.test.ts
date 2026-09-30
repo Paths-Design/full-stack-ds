@@ -546,8 +546,8 @@ describe("generateJetpackComposeComponentSource — named-slot composer (FEAT-CO
     const source = generateJetpackComposeComponentSource(irFor("Field"));
     const tokens = generateJetpackComposeTokensFile(irFor("Field"));
     for (const slot of [
-      "field.color.bg", "field.color.fg", "field.color.border", "field.color.invalid-text",
-      "field.label.color", "field.label.fontSize", "field.radius", "field.gap.y", "field.gap.meta",
+      "field.color.fg", "field.color.invalid-text",
+      "field.label.color", "field.label.fontSize", "field.gap.y", "field.gap.meta",
       "box-model.gap",
     ]) {
       expect(source).toContain(`layeredSlot(${JSON.stringify(slot)})`);
@@ -559,12 +559,16 @@ describe("generateJetpackComposeComponentSource — named-slot composer (FEAT-CO
       expect(reads, definition[1]).toContain(definition[1]!);
     }
     for (const slot of [
+      "field.color.bg", "field.color.border", "field.radius",
       "field.color.invalid-border", "field.color.valid-border", "field.color.focus-border",
       "field.focus.ring.width", "field.focus.ring.color", "field.focus.ring.style",
       "field.focus.ring.offset", "field.pad.x",
     ]) {
       expect(tokens).not.toContain(`name = ${JSON.stringify(slot)}`);
     }
+    expect(source).not.toContain("fieldBackground");
+    expect(source).not.toContain("fieldBorder");
+    expect(source).not.toContain(".clip(fieldShape)");
   });
 
 });

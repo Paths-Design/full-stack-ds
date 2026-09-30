@@ -20,7 +20,7 @@ export type SelectOption = { value: string; label: string; disabled?: boolean };
 // @custom:end
 
 // @generated:start props
-export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "className" | "data-testid" | "defaultOpen" | "defaultValue" | "disabled" | "empty" | "filterFn" | "multiple" | "onChange" | "onOpenChange" | "open" | "options" | "placeholder" | "position" | "searchable" | "size" | "triggerLabel" | "value"> {
+export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "className" | "data-testid" | "defaultOpen" | "defaultValue" | "disabled" | "empty" | "filterFn" | "multiple" | "onChange" | "onOpenChange" | "open" | "options" | "placeholder" | "position" | "searchLabel" | "searchable" | "size" | "triggerLabel" | "value"> {
   options?: SelectOption[];
   value?: string | string[];
   defaultValue?: string | string[];
@@ -36,6 +36,7 @@ export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "child
   searchable?: boolean;
   empty?: boolean;
   placeholder?: string;
+  searchLabel?: string;
   position?: string;
   className?: string;
   "data-testid"?: string;
@@ -121,6 +122,7 @@ export function Select({
   searchable,
   empty,
   placeholder = "Select an option",
+  searchLabel = "Search options",
   ...rest
 }: SelectProps) {
   const { panelRef, anchorRef, selection, setSelection, open, setOpen, handleTriggerKeydown, handleContentKeydown, handleOptionKeydown } = useSelect({
@@ -157,7 +159,7 @@ export function Select({
       <div className="select__content" role="listbox" onKeyDown={handleContentKeydown} tabIndex={-1} ref={panelRef} id={`${instanceId}-content`}>
         {searchable ? (
           <div className="select__search">
-            <input type="text" />
+            <input className="select__searchInput" type="text" aria-label={searchLabel} disabled={disabled} />
           </div>
         ) : null}
         <div className="select__options">

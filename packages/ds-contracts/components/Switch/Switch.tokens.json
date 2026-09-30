@@ -64,11 +64,6 @@
     "fallback": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
     "layer": "semantic"
   },
-  "switch.color.input.outline.focus": {
-    "resolvesTo": "semantic.color.border.focus",
-    "fallback": "#0566fe",
-    "layer": "semantic"
-  },
   "switch.size.md.track.width": {
     "resolvesTo": "core.spacing.size.09",
     "fallback": "48px",
@@ -176,5 +171,25 @@
   },
   "switch.size.lg.thumb.translate.on": {
     "literal": "36px"
+  },
+  "switch.focus.ring.width": {
+    "resolvesTo": "semantic.focus.ring.width",
+    "fallback": "2px",
+    "layer": "semantic"
+  },
+  "switch.focus.ring.color": {
+    "resolvesTo": "semantic.focus.ring.color",
+    "fallback": "#0566fe",
+    "layer": "semantic"
+  },
+  "switch.focus.ring.style": {
+    "resolvesTo": "semantic.focus.ring.style",
+    "fallback": "solid",
+    "layer": "semantic"
+  },
+  "switch.focus.ring.offset": {
+    "resolvesTo": "semantic.focus.ring.offset",
+    "fallback": "2px",
+    "layer": "semantic"
   }
 }

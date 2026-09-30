@@ -79,6 +79,7 @@ export class CheckboxElement extends LitElement {
       --fsds-checkbox-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-checkbox-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
       --fsds-checkbox-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --fsds-checkbox-color-mark-default: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
 
       &:hover .checkbox__indicator {
         --fsds-checkbox-color-border-default: var(--fsds-semantic-color-border-hover, #888889);
@@ -88,8 +89,13 @@ export class CheckboxElement extends LitElement {
         --fsds-checkbox-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
       }
 
+      &:has(.checkbox__input:indeterminate) .checkbox__indicator {
+        --fsds-checkbox-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+      }
+
       &:has(.checkbox__input:disabled) .checkbox__indicator {
         --fsds-checkbox-color-background-default: var(--fsds-semantic-color-background-disabled, #d0d0d0);
+        --fsds-checkbox-color-mark-default: var(--fsds-semantic-color-foreground-disabled, #727272);
       }
     }
 
@@ -115,6 +121,24 @@ export class CheckboxElement extends LitElement {
         outline-color: var(--fsds-checkbox-design-condition-0c6bee9c3217-focus-color, var(--fsds-checkbox-focus-ring-color, #0566fe));
         outline-style: var(--fsds-checkbox-design-condition-0c6bee9c3217-focus-style, var(--fsds-checkbox-focus-ring-style, solid));
         outline-offset: var(--fsds-checkbox-design-condition-0c6bee9c3217-focus-offset, var(--fsds-checkbox-focus-ring-offset, 2px));
+      }
+
+      &:has(.checkbox__input:checked) .checkbox__indicator::after {
+        width: 5px;
+        height: 9px;
+        border-style: solid;
+        border-width: 0 2px 2px 0;
+        transform: translate(-50%, -65%) rotate(45deg);
+        opacity: 1;
+      }
+
+      &:has(.checkbox__input:indeterminate) .checkbox__indicator::after {
+        width: 8px;
+        height: 2px;
+        border-width: 0;
+        background-color: var(--fsds-checkbox-color-mark-default, #ffffff);
+        transform: translate(-50%, -50%);
+        opacity: 1;
       }
     }
 
@@ -142,6 +166,16 @@ export class CheckboxElement extends LitElement {
       border-width: var(--fsds-checkbox-design-indicator-border-width, var(--fsds-checkbox-border-width, 1px));
       box-sizing: border-box;
       transition-duration: var(--fsds-checkbox-design-indicator-motion-duration, var(--fsds-checkbox-transition-duration, 150ms));
+    }
+
+    .checkbox__indicator::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      opacity: 0;
+      box-sizing: border-box;
+      border-color: var(--fsds-checkbox-color-mark-default, #ffffff);
     }
     }
   `;

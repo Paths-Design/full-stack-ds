@@ -12,26 +12,22 @@ val fieldTokenScopes: ComponentTokenScopes = mapOf(
         "box-model.padding-block-start" to ComponentTokenDefinition(
             name = "box-model.padding-block-start",
             cssVar = "--fsds-box-model-padding-block-start",
-            ref = "semantic.input.size.medium.padding-block",
-            fallback = "4px",
+            literal = "0",
         ),
         "box-model.padding-block-end" to ComponentTokenDefinition(
             name = "box-model.padding-block-end",
             cssVar = "--fsds-box-model-padding-block-end",
-            ref = "semantic.input.size.medium.padding-block",
-            fallback = "4px",
+            literal = "0",
         ),
         "box-model.padding-inline-start" to ComponentTokenDefinition(
             name = "box-model.padding-inline-start",
             cssVar = "--fsds-box-model-padding-inline-start",
-            ref = "semantic.input.size.medium.padding-inline",
-            fallback = "8px",
+            literal = "0",
         ),
         "box-model.padding-inline-end" to ComponentTokenDefinition(
             name = "box-model.padding-inline-end",
             cssVar = "--fsds-box-model-padding-inline-end",
-            ref = "semantic.input.size.medium.padding-inline",
-            fallback = "8px",
+            literal = "0",
         ),
         "box-model.gap" to ComponentTokenDefinition(
             name = "box-model.gap",
@@ -47,8 +43,7 @@ val fieldTokenScopes: ComponentTokenScopes = mapOf(
         "box-model.min-height" to ComponentTokenDefinition(
             name = "box-model.min-height",
             cssVar = "--fsds-box-model-min-height",
-            ref = "semantic.input.size.medium.min-height",
-            fallback = "32px",
+            literal = "0",
         ),
         "field.gap.y" to ComponentTokenDefinition(
             name = "field.gap.y",
@@ -62,29 +57,11 @@ val fieldTokenScopes: ComponentTokenScopes = mapOf(
             ref = "core.spacing.size.03",
             fallback = "4px",
         ),
-        "field.radius" to ComponentTokenDefinition(
-            name = "field.radius",
-            cssVar = "--fsds-field-radius",
-            ref = "semantic.shape.control.radius.default",
-            fallback = "6px",
-        ),
-        "field.color.bg" to ComponentTokenDefinition(
-            name = "field.color.bg",
-            cssVar = "--fsds-field-color-bg",
-            ref = "semantic.color.background.elevated",
-            fallback = "#ffffff",
-        ),
         "field.color.fg" to ComponentTokenDefinition(
             name = "field.color.fg",
             cssVar = "--fsds-field-color-fg",
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
-        ),
-        "field.color.border" to ComponentTokenDefinition(
-            name = "field.color.border",
-            cssVar = "--fsds-field-color-border",
-            ref = "semantic.color.border.subtle",
-            fallback = "#d0d0d0",
         ),
         "field.color.invalid-text" to ComponentTokenDefinition(
             name = "field.color.invalid-text",
@@ -106,20 +83,14 @@ val fieldTokenScopes: ComponentTokenScopes = mapOf(
         ),
     ),
     "variant_idle" to mapOf(
-        "field.color.border" to ComponentTokenDefinition(
-            name = "field.color.border",
-            cssVar = "--fsds-field-color-border",
-            ref = "semantic.color.border.subtle",
-            fallback = "#d0d0d0",
+        "field.color.fg" to ComponentTokenDefinition(
+            name = "field.color.fg",
+            cssVar = "--fsds-field-color-fg",
+            ref = "semantic.color.foreground.primary",
+            fallback = "#141414",
         ),
     ),
     "variant_validating" to mapOf(
-        "field.color.border" to ComponentTokenDefinition(
-            name = "field.color.border",
-            cssVar = "--fsds-field-color-border",
-            ref = "semantic.color.border.accent",
-            fallback = "#d92d2e",
-        ),
         "field.color.fg" to ComponentTokenDefinition(
             name = "field.color.fg",
             cssVar = "--fsds-field-color-fg",
@@ -128,12 +99,6 @@ val fieldTokenScopes: ComponentTokenScopes = mapOf(
         ),
     ),
     "variant_valid" to mapOf(
-        "field.color.border" to ComponentTokenDefinition(
-            name = "field.color.border",
-            cssVar = "--fsds-field-color-border",
-            ref = "semantic.color.feedback.border.success",
-            fallback = "#3a6614",
-        ),
         "field.color.fg" to ComponentTokenDefinition(
             name = "field.color.fg",
             cssVar = "--fsds-field-color-fg",
@@ -142,12 +107,6 @@ val fieldTokenScopes: ComponentTokenScopes = mapOf(
         ),
     ),
     "variant_invalid" to mapOf(
-        "field.color.border" to ComponentTokenDefinition(
-            name = "field.color.border",
-            cssVar = "--fsds-field-color-border",
-            ref = "semantic.color.border.danger",
-            fallback = "#b31b1b",
-        ),
         "field.color.fg" to ComponentTokenDefinition(
             name = "field.color.fg",
             cssVar = "--fsds-field-color-fg",

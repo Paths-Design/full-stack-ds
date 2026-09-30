@@ -19,14 +19,6 @@
         "property": "spacing.gap",
         "slot": "field.design.root.spacing.gap"
       }
-    },
-    "border-radius": {
-      "resolvesTo": "field.radius",
-      "fallback": "6px",
-      "design": {
-        "property": "shape.radius",
-        "slot": "field.design.root.shape.radius"
-      }
     }
   },
   "label": {
@@ -115,58 +107,6 @@
       "platforms": [
         "web"
       ]
-    },
-    "border-style": {
-      "literal": "solid",
-      "platforms": [
-        "web"
-      ],
-      "design": {
-        "property": "border.style",
-        "slot": "field.design.control.border.style"
-      }
-    },
-    "border-width": {
-      "literal": "1px",
-      "platforms": [
-        "web"
-      ],
-      "design": {
-        "property": "border.width",
-        "slot": "field.design.control.border.width"
-      }
-    },
-    "border-radius": {
-      "resolvesTo": "field.radius",
-      "fallback": "6px",
-      "design": {
-        "property": "shape.radius",
-        "slot": "field.design.control.shape.radius"
-      }
-    },
-    "border-color": {
-      "resolvesTo": "field.color.border",
-      "fallback": "#d0d0d0",
-      "design": {
-        "property": "border.color",
-        "slot": "field.design.control.border.color"
-      }
-    },
-    "background-color": {
-      "resolvesTo": "field.color.bg",
-      "fallback": "#ffffff",
-      "design": {
-        "property": "background.fill",
-        "slot": "field.design.control.background.fill"
-      }
-    },
-    "padding": {
-      "resolvesTo": "field.pad.x",
-      "fallback": "12px",
-      "design": {
-        "property": "spacing.padding",
-        "slot": "field.design.control.spacing.padding"
-      }
     }
   },
   "help": {
@@ -271,120 +211,36 @@
       }
     }
   },
-  ".field__control:focus-within": {
-    "border-color": {
-      "resolvesTo": "field.color.focus-border",
-      "fallback": "#0566fe",
-      "design": {
-        "property": "border.color",
-        "slot": "field.design.condition-81979563e542.border.color"
-      }
-    },
-    "outline-width": {
-      "resolvesTo": "field.focus.ring.width",
-      "fallback": "2px",
-      "design": {
-        "property": "focus.width",
-        "slot": "field.design.condition-81979563e542.focus.width"
-      }
-    },
-    "outline-color": {
-      "resolvesTo": "field.focus.ring.color",
-      "fallback": "#0566fe",
-      "design": {
-        "property": "focus.color",
-        "slot": "field.design.condition-81979563e542.focus.color"
-      }
-    },
-    "outline-style": {
-      "resolvesTo": "field.focus.ring.style",
-      "fallback": "solid",
-      "design": {
-        "property": "focus.style",
-        "slot": "field.design.condition-81979563e542.focus.style"
-      }
-    },
-    "outline-offset": {
-      "resolvesTo": "field.focus.ring.offset",
-      "fallback": "2px",
-      "design": {
-        "property": "focus.offset",
-        "slot": "field.design.condition-81979563e542.focus.offset"
-      }
-    }
-  },
-  ".field--invalid .field__control": {
-    "border-color": {
-      "resolvesTo": "field.color.invalid-border",
-      "fallback": "#b31b1b",
-      "design": {
-        "property": "border.color",
-        "slot": "field.design.condition-ec647a1139d6.border.color"
-      }
-    }
-  },
-  ".field--disabled .field__control": {
-    "opacity": {
-      "literal": "0.5",
-      "platforms": [
-        "web"
-      ],
-      "design": {
-        "property": "appearance.opacity",
-        "slot": "field.design.condition-348628f5568b.appearance.opacity"
-      }
-    },
-    "cursor": {
-      "literal": "not-allowed",
-      "platforms": [
-        "web"
-      ]
-    }
-  },
-  ".field--valid .field__control": {
-    "border-color": {
-      "resolvesTo": "field.color.valid-border",
-      "fallback": "#3a6614",
-      "design": {
-        "property": "border.color",
-        "slot": "field.design.condition-1a227523a299.border.color"
-      }
-    }
-  },
   "--idle": {
-    "field.color.border": {
-      "resolvesTo": "semantic.color.border.subtle",
-      "fallback": "#d0d0d0"
+    "field.color.fg": {
+      "resolvesTo": "semantic.color.foreground.primary",
+      "fallback": "#141414"
     }
   },
   "--validating": {
-    "field.color.border": {
-      "resolvesTo": "semantic.color.border.accent",
-      "fallback": "#d92d2e"
-    },
     "field.color.fg": {
       "resolvesTo": "semantic.color.foreground.secondary",
       "fallback": "#474647"
     }
   },
   "--valid": {
-    "field.color.border": {
-      "resolvesTo": "semantic.color.feedback.border.success",
-      "fallback": "#3a6614"
-    },
     "field.color.fg": {
       "resolvesTo": "semantic.color.foreground.success",
       "fallback": "#497f21"
     }
   },
   "--invalid": {
-    "field.color.border": {
-      "resolvesTo": "semantic.color.border.danger",
-      "fallback": "#b31b1b"
-    },
     "field.color.fg": {
       "resolvesTo": "semantic.color.foreground.danger",
       "fallback": "#d92d2e"
+    }
+  },
+  ".field--disabled .field__header, .field--disabled .field__meta": {
+    "opacity": {
+      "literal": "0.5",
+      "platforms": [
+        "web"
+      ]
     }
   }
 }

@@ -10,6 +10,7 @@
   --fsds-checkbox-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
   --fsds-checkbox-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
   --fsds-checkbox-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+  --fsds-checkbox-color-mark-default: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
 
   &:hover .checkbox__indicator {
     --fsds-checkbox-color-border-default: var(--fsds-semantic-color-border-hover, #888889);
@@ -19,8 +20,13 @@
     --fsds-checkbox-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
   }
 
+  &:has(.checkbox__input:indeterminate) .checkbox__indicator {
+    --fsds-checkbox-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+  }
+
   &:has(.checkbox__input:disabled) .checkbox__indicator {
     --fsds-checkbox-color-background-default: var(--fsds-semantic-color-background-disabled, #d0d0d0);
+    --fsds-checkbox-color-mark-default: var(--fsds-semantic-color-foreground-disabled, #727272);
   }
 }
 /* @generated:end */

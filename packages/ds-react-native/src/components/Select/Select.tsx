@@ -28,6 +28,7 @@ export interface SelectProps {
   searchable?: boolean;
   empty?: boolean;
   placeholder?: string;
+  searchLabel?: string;
   position?: "bottom" | "top" | "auto";
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -48,6 +49,7 @@ export function Select({
   searchable,
   empty,
   placeholder = "Select an option",
+  searchLabel = "Search options",
   defaultValue = undefined,
   onChange,
   defaultOpen = false,
@@ -104,7 +106,10 @@ export function Select({
           style={styles.search}
         >
           <TextInput
-            style={styles.root}
+            style={styles.searchInput}
+            accessibilityLabel={searchLabel}
+            editable={!(disabled)}
+            accessibilityState={{ disabled: disabled }}
           />
         </View>
         ) : null}

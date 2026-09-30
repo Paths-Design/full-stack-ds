@@ -33,11 +33,12 @@ interface Props {
   searchable?: boolean;
   empty?: boolean;
   placeholder?: string;
+  searchLabel?: string;
   position?: string;
   class?: string;
 }
 
-let { options = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}], value, defaultValue = "beta", onChange, open, defaultOpen = true, onOpenChange, multiple, disabled, triggerLabel = "Select an option", size = "md", filterFn, searchable, empty, placeholder = "Select an option", position, class: className }: Props = $props();
+let { options = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}], value, defaultValue = "beta", onChange, open, defaultOpen = true, onOpenChange, multiple, disabled, triggerLabel = "Select an option", size = "md", filterFn, searchable, empty, placeholder = "Select an option", searchLabel = "Search options", position, class: className }: Props = $props();
 // @generated:end
 
 // @generated:start hook
@@ -82,7 +83,7 @@ const instanceId = $props.id();
   <div class={'select__content'} bind:this={behavior.panelRef.el} role="listbox" onkeydown={behavior.handleContentKeydown} tabindex="-1" id={`${instanceId}-content`}>
     {#if searchable}
     <div class={'select__search'}>
-      <input type="text" />
+      <input class={'select__searchInput'} type="text" aria-label={searchLabel} disabled={disabled} />
     </div>
     {/if}
     <div class={'select__options'}>

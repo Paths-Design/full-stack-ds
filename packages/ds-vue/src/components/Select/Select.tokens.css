@@ -46,7 +46,7 @@
 
 .select__option[aria-selected="true"] {
   --fsds-select-color-background-default: var(--fsds-semantic-color-background-highlight, #f5a2a1);
-  --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-accent, #d92d2e);
+  --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
 }
 /* @generated:end */
 

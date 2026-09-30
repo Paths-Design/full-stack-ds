@@ -1,23 +1,15 @@
 {
   "box-model.padding-block-start": {
-    "resolvesTo": "semantic.input.size.medium.padding-block",
-    "fallback": "4px",
-    "layer": "semantic"
+    "literal": "0"
   },
   "box-model.padding-block-end": {
-    "resolvesTo": "semantic.input.size.medium.padding-block",
-    "fallback": "4px",
-    "layer": "semantic"
+    "literal": "0"
   },
   "box-model.padding-inline-start": {
-    "resolvesTo": "semantic.input.size.medium.padding-inline",
-    "fallback": "8px",
-    "layer": "semantic"
+    "literal": "0"
   },
   "box-model.padding-inline-end": {
-    "resolvesTo": "semantic.input.size.medium.padding-inline",
-    "fallback": "8px",
-    "layer": "semantic"
+    "literal": "0"
   },
   "box-model.gap": {
     "resolvesTo": "semantic.input.size.medium.gap",
@@ -25,9 +17,7 @@
     "layer": "semantic"
   },
   "box-model.min-height": {
-    "resolvesTo": "semantic.input.size.medium.min-height",
-    "fallback": "32px",
-    "layer": "semantic"
+    "literal": "0"
   },
   "field.gap.y": {
     "resolvesTo": "semantic.spacing.density.compact.sm",
@@ -39,49 +29,14 @@
     "fallback": "4px",
     "layer": "core"
   },
-  "field.radius": {
-    "resolvesTo": "semantic.shape.control.radius.default",
-    "fallback": "6px",
-    "layer": "semantic"
-  },
-  "field.pad.x": {
-    "resolvesTo": "semantic.spacing.density.compact.md",
-    "fallback": "12px",
-    "layer": "semantic"
-  },
-  "field.color.bg": {
-    "resolvesTo": "semantic.color.background.elevated",
-    "fallback": "#ffffff",
-    "layer": "semantic"
-  },
   "field.color.fg": {
     "resolvesTo": "semantic.color.foreground.primary",
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "field.color.border": {
-    "resolvesTo": "semantic.color.border.subtle",
-    "fallback": "#d0d0d0",
-    "layer": "semantic"
-  },
-  "field.color.focus-border": {
-    "resolvesTo": "semantic.color.border.focus",
-    "fallback": "#0566fe",
-    "layer": "semantic"
-  },
-  "field.color.invalid-border": {
-    "resolvesTo": "semantic.color.border.danger",
-    "fallback": "#b31b1b",
-    "layer": "semantic"
-  },
   "field.color.invalid-text": {
     "resolvesTo": "semantic.color.foreground.danger",
     "fallback": "#d92d2e",
-    "layer": "semantic"
-  },
-  "field.color.valid-border": {
-    "resolvesTo": "semantic.color.feedback.border.success",
-    "fallback": "#3a6614",
     "layer": "semantic"
   },
   "field.label.fontSize": {
@@ -92,26 +47,6 @@
   "field.label.color": {
     "resolvesTo": "semantic.color.foreground.secondary",
     "fallback": "#474647",
-    "layer": "semantic"
-  },
-  "field.focus.ring.width": {
-    "resolvesTo": "semantic.focus.ring.width",
-    "fallback": "2px",
-    "layer": "semantic"
-  },
-  "field.focus.ring.color": {
-    "resolvesTo": "semantic.focus.ring.color",
-    "fallback": "#0566fe",
-    "layer": "semantic"
-  },
-  "field.focus.ring.style": {
-    "resolvesTo": "semantic.focus.ring.style",
-    "fallback": "solid",
-    "layer": "semantic"
-  },
-  "field.focus.ring.offset": {
-    "resolvesTo": "semantic.focus.ring.offset",
-    "fallback": "2px",
     "layer": "semantic"
   }
 }

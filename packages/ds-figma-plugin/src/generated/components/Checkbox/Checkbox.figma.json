@@ -430,6 +430,7 @@
           "--fsds-checkbox-focus-ring-color": "var(--fsds-semantic-focus-ring-color, #0566fe)",
           "--fsds-checkbox-focus-ring-style": "var(--fsds-semantic-focus-ring-style, solid)",
           "--fsds-checkbox-focus-ring-offset": "var(--fsds-semantic-focus-ring-offset, 2px)",
+          "--fsds-checkbox-color-mark-default": "var(--fsds-semantic-color-foreground-on-brand, #ffffff)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
@@ -489,18 +490,59 @@
         }
       },
       {
-        "selector": ".checkbox:has(.checkbox__input:disabled) .checkbox__indicator",
-        "declarations": {
-          "--fsds-checkbox-color-background-default": "var(--fsds-semantic-color-background-disabled, #d0d0d0)"
-        }
-      },
-      {
         "selector": ".checkbox:has(.checkbox__input:focus-visible) .checkbox__indicator",
         "declarations": {
           "outline-width": "var(--fsds-checkbox-focus-ring-width, 2px)",
           "outline-color": "var(--fsds-checkbox-focus-ring-color, #0566fe)",
           "outline-style": "var(--fsds-checkbox-focus-ring-style, solid)",
           "outline-offset": "var(--fsds-checkbox-focus-ring-offset, 2px)"
+        }
+      },
+      {
+        "selector": ".checkbox__indicator::after",
+        "declarations": {
+          "content": "\"\"",
+          "position": "absolute",
+          "top": "50%",
+          "left": "50%",
+          "opacity": "0",
+          "box-sizing": "border-box",
+          "border-color": "var(--fsds-checkbox-color-mark-default, #ffffff)"
+        }
+      },
+      {
+        "selector": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+        "declarations": {
+          "width": "5px",
+          "height": "9px",
+          "border-style": "solid",
+          "border-width": "0 2px 2px 0",
+          "transform": "translate(-50%, -65%) rotate(45deg)",
+          "opacity": "1"
+        }
+      },
+      {
+        "selector": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator",
+        "declarations": {
+          "--fsds-checkbox-color-background-default": "var(--fsds-semantic-color-action-background-primary-default, #0566fe)"
+        }
+      },
+      {
+        "selector": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+        "declarations": {
+          "width": "8px",
+          "height": "2px",
+          "border-width": "0",
+          "background-color": "var(--fsds-checkbox-color-mark-default, #ffffff)",
+          "transform": "translate(-50%, -50%)",
+          "opacity": "1"
+        }
+      },
+      {
+        "selector": ".checkbox:has(.checkbox__input:disabled) .checkbox__indicator",
+        "declarations": {
+          "--fsds-checkbox-color-background-default": "var(--fsds-semantic-color-background-disabled, #d0d0d0)",
+          "--fsds-checkbox-color-mark-default": "var(--fsds-semantic-color-foreground-disabled, #727272)"
         }
       }
     ],

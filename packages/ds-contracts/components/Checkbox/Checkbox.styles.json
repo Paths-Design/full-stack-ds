@@ -179,12 +179,6 @@
       "fallback": "#0566fe"
     }
   },
-  ".checkbox:has(.checkbox__input:disabled) .checkbox__indicator": {
-    "checkbox.color.background.default": {
-      "resolvesTo": "semantic.color.background.disabled",
-      "fallback": "#d0d0d0"
-    }
-  },
   ".checkbox:has(.checkbox__input:focus-visible) .checkbox__indicator": {
     "outline-width": {
       "resolvesTo": "checkbox.focus.ring.width",
@@ -217,6 +211,138 @@
         "property": "focus.offset",
         "slot": "checkbox.design.condition-0c6bee9c3217.focus.offset"
       }
+    }
+  },
+  ".checkbox__indicator::after": {
+    "content": {
+      "literal": "\"\"",
+      "platforms": [
+        "web"
+      ]
+    },
+    "position": {
+      "literal": "absolute",
+      "platforms": [
+        "web"
+      ]
+    },
+    "top": {
+      "literal": "50%",
+      "platforms": [
+        "web"
+      ]
+    },
+    "left": {
+      "literal": "50%",
+      "platforms": [
+        "web"
+      ]
+    },
+    "opacity": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "box-sizing": {
+      "literal": "border-box",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-color": {
+      "resolvesTo": "checkbox.color.mark.default",
+      "fallback": "#ffffff"
+    }
+  },
+  ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after": {
+    "width": {
+      "literal": "5px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "height": {
+      "literal": "9px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-style": {
+      "literal": "solid",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-width": {
+      "literal": "0 2px 2px 0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "transform": {
+      "literal": "translate(-50%, -65%) rotate(45deg)",
+      "platforms": [
+        "web"
+      ]
+    },
+    "opacity": {
+      "literal": "1",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator": {
+    "checkbox.color.background.default": {
+      "resolvesTo": "semantic.color.action.background.primary.default",
+      "fallback": "#0566fe"
+    }
+  },
+  ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after": {
+    "width": {
+      "literal": "8px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "height": {
+      "literal": "2px",
+      "platforms": [
+        "web"
+      ]
+    },
+    "border-width": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "background-color": {
+      "resolvesTo": "checkbox.color.mark.default",
+      "fallback": "#ffffff"
+    },
+    "transform": {
+      "literal": "translate(-50%, -50%)",
+      "platforms": [
+        "web"
+      ]
+    },
+    "opacity": {
+      "literal": "1",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".checkbox:has(.checkbox__input:disabled) .checkbox__indicator": {
+    "checkbox.color.background.default": {
+      "resolvesTo": "semantic.color.background.disabled",
+      "fallback": "#d0d0d0"
+    },
+    "checkbox.color.mark.default": {
+      "resolvesTo": "semantic.color.foreground.disabled",
+      "fallback": "#727272"
     }
   }
 }

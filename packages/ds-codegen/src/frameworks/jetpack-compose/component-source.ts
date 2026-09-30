@@ -5740,11 +5740,8 @@ function emitPassiveTreeItem(ir: ComponentIR): string {
  * Named divergences (ledgered in docs/architecture/native-target-admission.md):
  *   - the declared string channel is not threaded: the `control` slot owns the
  *     value, so a wrapper-level channel would be a second source of truth;
- *   - `field.color.invalid-border` / `valid-border` / `focus-border`,
- *     `field.focus.ring.*` and `field.pad.x` are unclaimed — the status
- *     variants already override `field.color.border` in the layer the lookup
- *     reads, no focus interaction state is kept v1, and the merged box-model
- *     padding pool is the inset authority;
+ *   - chrome modifiers are emitted only when corresponding token slots exist;
+ *     a layout-only composer does not paint or clip its slotted controls;
  *   - `name` / `id` / `required` / `disabled` / `readOnly` / `validate` /
  *     `validating` are not lowered (form wiring and validation are the
  *     consumer's, the region slots carry the outcome).
@@ -5881,9 +5878,9 @@ function emitNamedSlotComposer(ir: ComponentIR): string {
   lines.push(`    Column(`);
   lines.push(`        modifier`);
   lines.push(`            .requiredSizeIn(minWidth = fieldMinWidth, minHeight = fieldMinHeight)`);
-  lines.push(`            .clip(fieldShape)`);
-  lines.push(`            .then(if (fieldBackground != null) Modifier.background(fieldBackground, fieldShape) else Modifier)`);
-  lines.push(`            .then(if (fieldBorder != null) Modifier.border(1.dp, fieldBorder, fieldShape) else Modifier)`);
+  if (radiusSlot) lines.push(`            .clip(fieldShape)`);
+  if (bgSlot) lines.push(`            .then(if (fieldBackground != null) Modifier.background(fieldBackground, fieldShape) else Modifier)`);
+  if (borderSlot) lines.push(`            .then(if (fieldBorder != null) Modifier.border(1.dp, fieldBorder, fieldShape) else Modifier)`);
   lines.push(`            .padding(fieldPadding)`);
   lines.push(`,`);
   lines.push(`        verticalArrangement = Arrangement.spacedBy(fieldGap),`);
