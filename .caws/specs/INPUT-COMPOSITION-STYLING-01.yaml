@@ -2,9 +2,11 @@ id: INPUT-COMPOSITION-STYLING-01
 title: 'Repair input surfaces and composed focus/state styling'
 risk_tier: 2
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Fixed input surface ownership, checkbox marks, Switch visible focus and alignment, Select search and selection styling, and consumer cascade; validated all five web previews, required suites, admission rail, and native consumer compilation.'
 created_at: '2026-09-30T19:06:31.819Z'
-updated_at: '2026-09-30T19:23:14.494Z'
+updated_at: '2026-09-30T19:59:16.263Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
