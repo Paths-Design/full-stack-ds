@@ -284,13 +284,14 @@ describe("generateSwiftUIComponentSource — named-slot composer (Field)", () =>
     // No trailing comma on the final region parameter.
   });
 
-  it("realizes short-form chrome slots and layers the status axis", () => {
+  it("keeps Field layout-only while layering its text status axis", () => {
     const source = emitField();
     expect(source).toContain("enum FieldTokens {");
-    expect(source).toContain('.adaptive(light: "#ffffff", dark:');
-    expect(source).toContain('colorSlot("color.bg") ?? .accentColor');
-    expect(source).toContain('pxSlot("radius", requireRadius: true) ?? 0');
-    expect(source).toContain('colorSlot("color.border") ?? .clear');
+    expect(source).not.toContain('colorSlot("color.bg")');
+    expect(source).not.toContain('colorSlot("color.border")');
+    expect(source).not.toContain(".background(");
+    expect(source).not.toContain(".clipShape(");
+    expect(source).toContain('colorSlot("color.fg") ?? .primary');
     expect(source).toContain("status: FieldStatus? = nil,");
     expect(source).toContain('status.map { "variant_\\($0.rawValue)" }');
   });

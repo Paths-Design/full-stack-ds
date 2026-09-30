@@ -193,11 +193,11 @@ describe("FEAT-MOBILE-IR-001: no component-name lore in projection (A4)", () => 
 describe("FEAT-MOBILE-IR-001: native availability for Switch + Details (A5)", () => {
   it("Switch projects the full expected fact count, not merely some facts", () => {
     // HARDENING (A4): `length > 0` would pass even if the projection emitted a
-    // single fact and dropped the rest. Switch's sidecar declares 38
-    // fact-projecting entries (32 ref-backed + 6 literal); pin the exact count
+    // single fact and dropped the rest. Switch's sidecar declares 41
+    // fact-projecting entries (35 ref-backed + 6 literal); pin the exact count
     // so a projection that silently drops slots is caught.
     const ir = buildComponentIR(loadContract("Switch"));
-    expect(ir.tokenFacts.length).toBe(38);
+    expect(ir.tokenFacts.length).toBe(41);
     expect(ir.tokenFacts.filter((t) => t.isLiteral).length).toBe(6);
   });
 

@@ -51,12 +51,10 @@ fun Field(
         }
         return null
     }
-    val fieldBackground = layeredSlot("field.color.bg")?.toFsdsColor()
     val fieldForeground = layeredSlot("field.color.fg")?.toFsdsColor()
-    val fieldBorder = layeredSlot("field.color.border")?.toFsdsColor()
     val fieldInvalidText = layeredSlot("field.color.invalid-text")?.toFsdsColor()
     val fieldLabelColor = layeredSlot("field.label.color")?.toFsdsColor()
-    val fieldRadius = layeredSlot("field.radius")?.toFsdsDp() ?: 0.dp
+    val fieldRadius = 0.dp
     val fieldGap = layeredSlot("field.gap.y")?.toFsdsDp() ?: layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val fieldMetaGap = layeredSlot("field.gap.meta")?.toFsdsDp() ?: 0.dp
     val fieldMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp
@@ -67,9 +65,6 @@ fun Field(
     Column(
         modifier
             .requiredSizeIn(minWidth = fieldMinWidth, minHeight = fieldMinHeight)
-            .clip(fieldShape)
-            .then(if (fieldBackground != null) Modifier.background(fieldBackground, fieldShape) else Modifier)
-            .then(if (fieldBorder != null) Modifier.border(1.dp, fieldBorder, fieldShape) else Modifier)
             .padding(fieldPadding)
 ,
         verticalArrangement = Arrangement.spacedBy(fieldGap),
