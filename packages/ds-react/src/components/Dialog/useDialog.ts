@@ -21,8 +21,10 @@ export interface UseDialogOptions {
   closeOnBackdropClick?: boolean;
   /** When false the surface is non-blocking: no focus trap, no scroll lock. */
   modal?: boolean;
-  /** Element to focus when the component activates. */
-  initialFocus?: RefObject<HTMLElement | null>;
+  /** CSS selector or element ID used by the focus policy. */
+  initialFocus?: string;
+  /** CSS selector or element ID used by the focus policy. */
+  returnFocus?: string;
 }
 
 export interface UseDialogResult {
@@ -54,7 +56,8 @@ export function useDialog(options: UseDialogOptions = {}): UseDialogResult {
 
   useFocusTrap(panelRef, {
     active: openness && (options.modal ?? true),
-    initialFocusRef: options.initialFocus,
+    initialFocus: options.initialFocus,
+    returnFocus: options.returnFocus,
   });
 
   useScrollLock(openness && (options.modal ?? true));

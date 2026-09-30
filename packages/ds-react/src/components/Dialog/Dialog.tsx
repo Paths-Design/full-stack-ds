@@ -146,6 +146,8 @@ export function Dialog({
     open: controlledOpen,
     defaultOpen,
     onOpenChange,
+    initialFocus,
+    returnFocus,
     modal,
     closeOnEscape,
     closeOnBackdropClick,
