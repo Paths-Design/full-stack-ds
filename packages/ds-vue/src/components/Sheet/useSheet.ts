@@ -37,7 +37,9 @@ export function useSheet(options: UseSheetOptions = {}): UseSheetResult {
 
   const panelRef = ref<HTMLElement | null>(null);
   const blocking = computed(() => openness.value && (options.modal?.() ?? true));
-  useFocusTrap(panelRef, { active: blocking });
+  useFocusTrap(panelRef, {
+    active: blocking,
+  });
 
   useScrollLock(blocking);
 
