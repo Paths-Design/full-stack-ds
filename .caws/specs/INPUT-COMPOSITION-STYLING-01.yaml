@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: input-styling
 created_at: '2026-09-30T19:06:31.819Z'
-updated_at: '2026-09-30T19:12:46.099Z'
+updated_at: '2026-09-30T19:16:52.048Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
@@ -34,6 +34,8 @@ scope:
     - 'e2e/input-styling.spec.ts'
     - 'docs/current-implementation-snapshot.md'
     - packages/ds-figma-plugin/
+    - packages/ds-unity/
+    - packages/ds-godot/
   out: []
 invariants:
   - 'Component styling intent remains in authored contracts and style/token sidecars; emitters contain no component-name exceptions.'
