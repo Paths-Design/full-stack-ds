@@ -1,4 +1,4 @@
-import dialog from "../../ds-contracts/components/Dialog/Dialog.contract.json";
+import dialog from "../../ds-contracts/components/Dialog/Dialog.contract.json" with { type: "json" };
 import { describe, expect, it } from "vitest";
 import type { ComponentContract } from "./contract.js";
 import { buildComponentIR, focusTargetProps } from "./ir.js";
