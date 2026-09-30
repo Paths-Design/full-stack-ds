@@ -72,58 +72,43 @@ export class FieldElement extends LitElement {
     .field {
       --fsds-field-gap-y: var(--fsds-semantic-spacing-density-compact-sm, 8px);
       --fsds-field-gap-meta: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-field-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-field-pad-x: var(--fsds-semantic-spacing-density-compact-md, 12px);
-      --fsds-field-color-bg: var(--fsds-semantic-color-background-elevated, #ffffff);
       --fsds-field-color-fg: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-field-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-field-color-focus-border: var(--fsds-semantic-color-border-focus, #0566fe);
-      --fsds-field-color-invalid-border: var(--fsds-semantic-color-border-danger, #b31b1b);
       --fsds-field-color-invalid-text: var(--fsds-semantic-color-foreground-danger, #d92d2e);
-      --fsds-field-color-valid-border: var(--fsds-semantic-color-feedback-border-success, #3a6614);
       --fsds-field-label-font-size: var(--fsds-semantic-typography-body-small-font-size, 14px);
       --fsds-field-label-color: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-field-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-field-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-field-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-field-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
     }
 
     .field--idle {
-      --fsds-field-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-field-color-fg: var(--fsds-semantic-color-foreground-primary, #141414);
     }
 
     .field--validating {
-      --fsds-field-color-border: var(--fsds-semantic-color-border-accent, #d92d2e);
       --fsds-field-color-fg: var(--fsds-semantic-color-foreground-secondary, #474647);
     }
 
     .field--valid {
-      --fsds-field-color-border: var(--fsds-semantic-color-feedback-border-success, #3a6614);
       --fsds-field-color-fg: var(--fsds-semantic-color-foreground-success, #497f21);
     }
 
     .field--invalid {
-      --fsds-field-color-border: var(--fsds-semantic-color-border-danger, #b31b1b);
       --fsds-field-color-fg: var(--fsds-semantic-color-foreground-danger, #d92d2e);
     }
 
     @layer components.defaults {
     .field {
-      padding-block-start: var(--fsds-box-model-padding-block-start, var(--fsds-semantic-input-size-medium-padding-block, 4px));
-      padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-input-size-medium-padding-block, 4px));
-      padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
-      padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
+      padding-block-start: var(--fsds-box-model-padding-block-start, 0);
+      padding-block-end: var(--fsds-box-model-padding-block-end, 0);
+      padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
+      padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
       gap: var(--fsds-field-design-root-spacing-gap, var(--fsds-field-gap-y, 8px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
-      min-height: var(--fsds-box-model-min-height, var(--fsds-semantic-input-size-medium-min-height, 32px));
+      min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-radius: var(--fsds-field-design-root-shape-radius, var(--fsds-field-radius, 6px));
     }
 
     .field__label {
@@ -145,12 +130,6 @@ export class FieldElement extends LitElement {
       flex-direction: column;
       width: 100%;
       box-sizing: border-box;
-      border-style: var(--fsds-field-design-control-border-style, solid);
-      border-width: var(--fsds-field-design-control-border-width, 1px);
-      border-radius: var(--fsds-field-design-control-shape-radius, var(--fsds-field-radius, 6px));
-      border-color: var(--fsds-field-design-control-border-color, var(--fsds-field-color-border, #d0d0d0));
-      background-color: var(--fsds-field-design-control-background-fill, var(--fsds-field-color-bg, #ffffff));
-      padding: var(--fsds-field-design-control-spacing-padding, var(--fsds-field-pad-x, 12px));
     }
 
     .field__help {
@@ -178,25 +157,8 @@ export class FieldElement extends LitElement {
       color: var(--fsds-field-design-validating-indicator-foreground-color, var(--fsds-field-color-fg, #141414));
     }
 
-    .field__control:focus-within:not([aria-disabled="true"]) {
-      border-color: var(--fsds-field-design-condition-81979563e542-border-color, var(--fsds-field-color-focus-border, #0566fe));
-      outline-width: var(--fsds-field-design-condition-81979563e542-focus-width, var(--fsds-field-focus-ring-width, 2px));
-      outline-color: var(--fsds-field-design-condition-81979563e542-focus-color, var(--fsds-field-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-field-design-condition-81979563e542-focus-style, var(--fsds-field-focus-ring-style, solid));
-      outline-offset: var(--fsds-field-design-condition-81979563e542-focus-offset, var(--fsds-field-focus-ring-offset, 2px));
-    }
-
-    .field--invalid .field__control {
-      border-color: var(--fsds-field-design-condition-ec647a1139d6-border-color, var(--fsds-field-color-invalid-border, #b31b1b));
-    }
-
-    .field--disabled .field__control {
-      opacity: var(--fsds-field-design-condition-348628f5568b-appearance-opacity, 0.5);
-      cursor: not-allowed;
-    }
-
-    .field--valid .field__control {
-      border-color: var(--fsds-field-design-condition-1a227523a299-border-color, var(--fsds-field-color-valid-border, #3a6614));
+    .field--disabled .field__header, .field--disabled .field__meta {
+      opacity: 0.5;
     }
     }
   `;
@@ -318,58 +280,43 @@ export class FieldHeaderElement extends LitElement {
     .field {
       --fsds-field-gap-y: var(--fsds-semantic-spacing-density-compact-sm, 8px);
       --fsds-field-gap-meta: var(--fsds-core-spacing-size-03, 4px);
-      --fsds-field-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-field-pad-x: var(--fsds-semantic-spacing-density-compact-md, 12px);
-      --fsds-field-color-bg: var(--fsds-semantic-color-background-elevated, #ffffff);
       --fsds-field-color-fg: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-field-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-field-color-focus-border: var(--fsds-semantic-color-border-focus, #0566fe);
-      --fsds-field-color-invalid-border: var(--fsds-semantic-color-border-danger, #b31b1b);
       --fsds-field-color-invalid-text: var(--fsds-semantic-color-foreground-danger, #d92d2e);
-      --fsds-field-color-valid-border: var(--fsds-semantic-color-feedback-border-success, #3a6614);
       --fsds-field-label-font-size: var(--fsds-semantic-typography-body-small-font-size, 14px);
       --fsds-field-label-color: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-field-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
-      --fsds-field-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-field-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
-      --fsds-field-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
     }
 
     .field--idle {
-      --fsds-field-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-field-color-fg: var(--fsds-semantic-color-foreground-primary, #141414);
     }
 
     .field--validating {
-      --fsds-field-color-border: var(--fsds-semantic-color-border-accent, #d92d2e);
       --fsds-field-color-fg: var(--fsds-semantic-color-foreground-secondary, #474647);
     }
 
     .field--valid {
-      --fsds-field-color-border: var(--fsds-semantic-color-feedback-border-success, #3a6614);
       --fsds-field-color-fg: var(--fsds-semantic-color-foreground-success, #497f21);
     }
 
     .field--invalid {
-      --fsds-field-color-border: var(--fsds-semantic-color-border-danger, #b31b1b);
       --fsds-field-color-fg: var(--fsds-semantic-color-foreground-danger, #d92d2e);
     }
 
     @layer components.defaults {
     .field {
-      padding-block-start: var(--fsds-box-model-padding-block-start, var(--fsds-semantic-input-size-medium-padding-block, 4px));
-      padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-input-size-medium-padding-block, 4px));
-      padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
-      padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-input-size-medium-padding-inline, 8px));
+      padding-block-start: var(--fsds-box-model-padding-block-start, 0);
+      padding-block-end: var(--fsds-box-model-padding-block-end, 0);
+      padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
+      padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
       gap: var(--fsds-field-design-root-spacing-gap, var(--fsds-field-gap-y, 8px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
-      min-height: var(--fsds-box-model-min-height, var(--fsds-semantic-input-size-medium-min-height, 32px));
+      min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-radius: var(--fsds-field-design-root-shape-radius, var(--fsds-field-radius, 6px));
     }
 
     .field__label {
@@ -391,12 +338,6 @@ export class FieldHeaderElement extends LitElement {
       flex-direction: column;
       width: 100%;
       box-sizing: border-box;
-      border-style: var(--fsds-field-design-control-border-style, solid);
-      border-width: var(--fsds-field-design-control-border-width, 1px);
-      border-radius: var(--fsds-field-design-control-shape-radius, var(--fsds-field-radius, 6px));
-      border-color: var(--fsds-field-design-control-border-color, var(--fsds-field-color-border, #d0d0d0));
-      background-color: var(--fsds-field-design-control-background-fill, var(--fsds-field-color-bg, #ffffff));
-      padding: var(--fsds-field-design-control-spacing-padding, var(--fsds-field-pad-x, 12px));
     }
 
     .field__help {
@@ -424,25 +365,8 @@ export class FieldHeaderElement extends LitElement {
       color: var(--fsds-field-design-validating-indicator-foreground-color, var(--fsds-field-color-fg, #141414));
     }
 
-    .field__control:focus-within:not([aria-disabled="true"]) {
-      border-color: var(--fsds-field-design-condition-81979563e542-border-color, var(--fsds-field-color-focus-border, #0566fe));
-      outline-width: var(--fsds-field-design-condition-81979563e542-focus-width, var(--fsds-field-focus-ring-width, 2px));
-      outline-color: var(--fsds-field-design-condition-81979563e542-focus-color, var(--fsds-field-focus-ring-color, #0566fe));
-      outline-style: var(--fsds-field-design-condition-81979563e542-focus-style, var(--fsds-field-focus-ring-style, solid));
-      outline-offset: var(--fsds-field-design-condition-81979563e542-focus-offset, var(--fsds-field-focus-ring-offset, 2px));
-    }
-
-    .field--invalid .field__control {
-      border-color: var(--fsds-field-design-condition-ec647a1139d6-border-color, var(--fsds-field-color-invalid-border, #b31b1b));
-    }
-
-    .field--disabled .field__control {
-      opacity: var(--fsds-field-design-condition-348628f5568b-appearance-opacity, 0.5);
-      cursor: not-allowed;
-    }
-
-    .field--valid .field__control {
-      border-color: var(--fsds-field-design-condition-1a227523a299-border-color, var(--fsds-field-color-valid-border, #3a6614));
+    .field--disabled .field__header, .field--disabled .field__meta {
+      opacity: 0.5;
     }
     }
   `;

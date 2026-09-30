@@ -117,7 +117,7 @@ export class SelectElement extends LitElement {
 
     .select__option[aria-selected="true"] {
       --fsds-select-color-background-default: var(--fsds-semantic-color-background-highlight, #f5a2a1);
-      --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-accent, #d92d2e);
+      --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
     }
 
     @layer components.defaults {
@@ -184,14 +184,6 @@ export class SelectElement extends LitElement {
     .select__search {
       display: flex;
       align-items: center;
-      padding: var(--fsds-select-design-search-spacing-padding, var(--fsds-select-size-padding-default, 4px));
-      border-style: var(--fsds-select-design-search-border-style, solid);
-      border-width: var(--fsds-select-design-search-border-width, var(--fsds-select-size-border-default, 1px));
-      border-radius: var(--fsds-select-design-search-shape-radius, var(--fsds-select-size-radius-default, 6px));
-      border-color: var(--fsds-select-design-search-border-color, var(--fsds-select-color-border-default, #a0a0a1));
-      background-color: var(--fsds-select-design-search-background-fill, var(--fsds-select-color-background-default, #ffffff));
-      color: var(--fsds-select-design-search-foreground-color, var(--fsds-select-color-foreground-default, #141414));
-      font-size: var(--fsds-select-design-search-typography-size, var(--fsds-select-font-size-default, 16px));
     }
 
     .select__options {
@@ -215,6 +207,7 @@ export class SelectElement extends LitElement {
       width: 100%;
       text-align: start;
       font: inherit;
+      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background-default, #ffffff));
     }
 
     .select__emptyState {
@@ -246,6 +239,29 @@ export class SelectElement extends LitElement {
     .select--lg .select__trigger {
       height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, 48px));
     }
+
+    .select__searchInput {
+      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding-default, 4px));
+      border-style: var(--fsds-select-design-search-input-border-style, solid);
+      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border-default, 1px));
+      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius-default, 6px));
+      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border-default, #a0a0a1));
+      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background-default, #ffffff));
+      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground-default, #141414));
+      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size-default, 16px));
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      font-family: inherit;
+      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height-default, 1.5));
+    }
+
+    .select__searchInput:focus-visible:not([aria-disabled="true"]) {
+      outline-width: var(--fsds-select-focus-ring-width, 2px);
+      outline-color: var(--fsds-select-focus-ring-color, #0566fe);
+      outline-style: var(--fsds-select-focus-ring-style, solid);
+      outline-offset: var(--fsds-select-focus-ring-offset, 2px);
+    }
     }
   `;
 
@@ -264,6 +280,7 @@ export class SelectElement extends LitElement {
   @property({ type: Boolean }) searchable?: boolean;
   @property({ type: Boolean }) empty?: boolean;
   @property({ type: String }) placeholder?: string = "Select an option";
+  @property({ type: String }) searchLabel?: string = "Search options";
   @property() position?: string;
   private interactionPanel?: HTMLElement;
   private interactionAnchor?: HTMLElement;
@@ -308,7 +325,7 @@ export class SelectElement extends LitElement {
   <div class=${'select__content'} ${ref(element => { this.interactionPanel = element instanceof HTMLElement ? element : undefined; })} role="listbox" @keydown=${(e: KeyboardEvent) => this.behavior.handleContentKeydown(e)} tabindex="-1" id="select-content" data-fsds-channel-renders="open">
     ${this.searchable ? html`
     <div class=${'select__search'}>
-      <input type="text" />
+      <input class=${'select__searchInput'} type="text" aria-label=${ifDefined((this.searchLabel ?? "Search options"))} ?disabled=${this.disabled ?? false} />
     </div>
     ` : nothing}
     <div class=${'select__options'}>
@@ -427,7 +444,7 @@ export class SelectTriggerElement extends LitElement {
 
     .select__option[aria-selected="true"] {
       --fsds-select-color-background-default: var(--fsds-semantic-color-background-highlight, #f5a2a1);
-      --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-accent, #d92d2e);
+      --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
     }
 
     @layer components.defaults {
@@ -494,14 +511,6 @@ export class SelectTriggerElement extends LitElement {
     .select__search {
       display: flex;
       align-items: center;
-      padding: var(--fsds-select-design-search-spacing-padding, var(--fsds-select-size-padding-default, 4px));
-      border-style: var(--fsds-select-design-search-border-style, solid);
-      border-width: var(--fsds-select-design-search-border-width, var(--fsds-select-size-border-default, 1px));
-      border-radius: var(--fsds-select-design-search-shape-radius, var(--fsds-select-size-radius-default, 6px));
-      border-color: var(--fsds-select-design-search-border-color, var(--fsds-select-color-border-default, #a0a0a1));
-      background-color: var(--fsds-select-design-search-background-fill, var(--fsds-select-color-background-default, #ffffff));
-      color: var(--fsds-select-design-search-foreground-color, var(--fsds-select-color-foreground-default, #141414));
-      font-size: var(--fsds-select-design-search-typography-size, var(--fsds-select-font-size-default, 16px));
     }
 
     .select__options {
@@ -525,6 +534,7 @@ export class SelectTriggerElement extends LitElement {
       width: 100%;
       text-align: start;
       font: inherit;
+      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background-default, #ffffff));
     }
 
     .select__emptyState {
@@ -555,6 +565,29 @@ export class SelectTriggerElement extends LitElement {
 
     .select--lg .select__trigger {
       height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, 48px));
+    }
+
+    .select__searchInput {
+      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding-default, 4px));
+      border-style: var(--fsds-select-design-search-input-border-style, solid);
+      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border-default, 1px));
+      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius-default, 6px));
+      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border-default, #a0a0a1));
+      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background-default, #ffffff));
+      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground-default, #141414));
+      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size-default, 16px));
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      font-family: inherit;
+      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height-default, 1.5));
+    }
+
+    .select__searchInput:focus-visible:not([aria-disabled="true"]) {
+      outline-width: var(--fsds-select-focus-ring-width, 2px);
+      outline-color: var(--fsds-select-focus-ring-color, #0566fe);
+      outline-style: var(--fsds-select-focus-ring-style, solid);
+      outline-offset: var(--fsds-select-focus-ring-offset, 2px);
     }
     }
   `;
@@ -663,7 +696,7 @@ export class SelectContentElement extends LitElement {
 
     .select__option[aria-selected="true"] {
       --fsds-select-color-background-default: var(--fsds-semantic-color-background-highlight, #f5a2a1);
-      --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-accent, #d92d2e);
+      --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
     }
 
     @layer components.defaults {
@@ -730,14 +763,6 @@ export class SelectContentElement extends LitElement {
     .select__search {
       display: flex;
       align-items: center;
-      padding: var(--fsds-select-design-search-spacing-padding, var(--fsds-select-size-padding-default, 4px));
-      border-style: var(--fsds-select-design-search-border-style, solid);
-      border-width: var(--fsds-select-design-search-border-width, var(--fsds-select-size-border-default, 1px));
-      border-radius: var(--fsds-select-design-search-shape-radius, var(--fsds-select-size-radius-default, 6px));
-      border-color: var(--fsds-select-design-search-border-color, var(--fsds-select-color-border-default, #a0a0a1));
-      background-color: var(--fsds-select-design-search-background-fill, var(--fsds-select-color-background-default, #ffffff));
-      color: var(--fsds-select-design-search-foreground-color, var(--fsds-select-color-foreground-default, #141414));
-      font-size: var(--fsds-select-design-search-typography-size, var(--fsds-select-font-size-default, 16px));
     }
 
     .select__options {
@@ -761,6 +786,7 @@ export class SelectContentElement extends LitElement {
       width: 100%;
       text-align: start;
       font: inherit;
+      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background-default, #ffffff));
     }
 
     .select__emptyState {
@@ -791,6 +817,29 @@ export class SelectContentElement extends LitElement {
 
     .select--lg .select__trigger {
       height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, 48px));
+    }
+
+    .select__searchInput {
+      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding-default, 4px));
+      border-style: var(--fsds-select-design-search-input-border-style, solid);
+      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border-default, 1px));
+      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius-default, 6px));
+      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border-default, #a0a0a1));
+      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background-default, #ffffff));
+      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground-default, #141414));
+      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size-default, 16px));
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      font-family: inherit;
+      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height-default, 1.5));
+    }
+
+    .select__searchInput:focus-visible:not([aria-disabled="true"]) {
+      outline-width: var(--fsds-select-focus-ring-width, 2px);
+      outline-color: var(--fsds-select-focus-ring-color, #0566fe);
+      outline-style: var(--fsds-select-focus-ring-style, solid);
+      outline-offset: var(--fsds-select-focus-ring-offset, 2px);
     }
     }
   `;
@@ -899,7 +948,7 @@ export class SelectOptionElement extends LitElement {
 
     .select__option[aria-selected="true"] {
       --fsds-select-color-background-default: var(--fsds-semantic-color-background-highlight, #f5a2a1);
-      --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-accent, #d92d2e);
+      --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
     }
 
     @layer components.defaults {
@@ -966,14 +1015,6 @@ export class SelectOptionElement extends LitElement {
     .select__search {
       display: flex;
       align-items: center;
-      padding: var(--fsds-select-design-search-spacing-padding, var(--fsds-select-size-padding-default, 4px));
-      border-style: var(--fsds-select-design-search-border-style, solid);
-      border-width: var(--fsds-select-design-search-border-width, var(--fsds-select-size-border-default, 1px));
-      border-radius: var(--fsds-select-design-search-shape-radius, var(--fsds-select-size-radius-default, 6px));
-      border-color: var(--fsds-select-design-search-border-color, var(--fsds-select-color-border-default, #a0a0a1));
-      background-color: var(--fsds-select-design-search-background-fill, var(--fsds-select-color-background-default, #ffffff));
-      color: var(--fsds-select-design-search-foreground-color, var(--fsds-select-color-foreground-default, #141414));
-      font-size: var(--fsds-select-design-search-typography-size, var(--fsds-select-font-size-default, 16px));
     }
 
     .select__options {
@@ -997,6 +1038,7 @@ export class SelectOptionElement extends LitElement {
       width: 100%;
       text-align: start;
       font: inherit;
+      background-color: var(--fsds-select-design-option-background-fill, var(--fsds-select-color-background-default, #ffffff));
     }
 
     .select__emptyState {
@@ -1027,6 +1069,29 @@ export class SelectOptionElement extends LitElement {
 
     .select--lg .select__trigger {
       height: var(--fsds-select-design-condition-d393d0052010-sizing-height, var(--fsds-select-size-lg-height, 48px));
+    }
+
+    .select__searchInput {
+      padding: var(--fsds-select-design-search-input-spacing-padding, var(--fsds-select-size-padding-default, 4px));
+      border-style: var(--fsds-select-design-search-input-border-style, solid);
+      border-width: var(--fsds-select-design-search-input-border-width, var(--fsds-select-size-border-default, 1px));
+      border-radius: var(--fsds-select-design-search-input-shape-radius, var(--fsds-select-size-radius-default, 6px));
+      border-color: var(--fsds-select-design-search-input-border-color, var(--fsds-select-color-border-default, #a0a0a1));
+      background-color: var(--fsds-select-design-search-input-background-fill, var(--fsds-select-color-background-default, #ffffff));
+      color: var(--fsds-select-design-search-input-foreground-color, var(--fsds-select-color-foreground-default, #141414));
+      font-size: var(--fsds-select-design-search-input-typography-size, var(--fsds-select-font-size-default, 16px));
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      font-family: inherit;
+      line-height: var(--fsds-select-design-search-input-typography-line-height, var(--fsds-select-font-line-height-default, 1.5));
+    }
+
+    .select__searchInput:focus-visible:not([aria-disabled="true"]) {
+      outline-width: var(--fsds-select-focus-ring-width, 2px);
+      outline-color: var(--fsds-select-focus-ring-color, #0566fe);
+      outline-style: var(--fsds-select-focus-ring-style, solid);
+      outline-offset: var(--fsds-select-focus-ring-offset, 2px);
     }
     }
   `;

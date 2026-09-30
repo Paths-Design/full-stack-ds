@@ -76,7 +76,6 @@ export class SwitchElement extends LitElement {
       --fsds-switch-color-track-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-switch-color-thumb-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-switch-color-thumb-shadow-default: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
-      --fsds-switch-color-input-outline-focus: var(--fsds-semantic-color-border-focus, #0566fe);
       --fsds-switch-size-md-track-width: var(--fsds-core-spacing-size-09, 48px);
       --fsds-switch-size-md-track-height: var(--fsds-core-spacing-size-07, 24px);
       --fsds-switch-size-md-track-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
@@ -101,6 +100,10 @@ export class SwitchElement extends LitElement {
       --fsds-switch-size-md-thumb-translate-on: 24px;
       --fsds-switch-size-lg-thumb-translate-off: 0;
       --fsds-switch-size-lg-thumb-translate-on: 36px;
+      --fsds-switch-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --fsds-switch-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --fsds-switch-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+      --fsds-switch-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
 
       &:has(.switch__input:checked) .switch__track {
         --fsds-switch-color-track-background-default: var(--fsds-semantic-color-foreground-accent, #d92d2e);
@@ -136,6 +139,13 @@ export class SwitchElement extends LitElement {
       &:has(.switch__input:checked) .switch__thumb {
         translate: var(--fsds-switch-size-md-thumb-translate-on, 24px);
       }
+
+      &:has(.switch__input:focus-visible) .switch__track {
+        outline-width: var(--fsds-switch-focus-ring-width, 2px);
+        outline-color: var(--fsds-switch-focus-ring-color, #0566fe);
+        outline-style: var(--fsds-switch-focus-ring-style, solid);
+        outline-offset: var(--fsds-switch-focus-ring-offset, 2px);
+      }
     }
 
     .switch__track {
@@ -159,17 +169,17 @@ export class SwitchElement extends LitElement {
       box-shadow: var(--fsds-switch-design-thumb-elevation-shadow, var(--fsds-switch-color-thumb-shadow-default, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a));
       width: var(--fsds-switch-design-thumb-sizing-width, var(--fsds-switch-size-md-thumb-size, 16px));
       height: var(--fsds-switch-design-thumb-sizing-height, var(--fsds-switch-size-md-thumb-height, 16px));
-      top: var(--fsds-switch-size-md-track-padding, 1px);
+      top: 50%;
       left: var(--fsds-switch-size-md-track-padding, 1px);
       translate: var(--fsds-switch-size-md-thumb-translate-off, 0);
       display: block;
       position: absolute;
       border-radius: var(--fsds-switch-design-thumb-shape-radius, 50%);
       box-sizing: border-box;
+      transform: translateY(-50%);
     }
 
     .switch__input {
-      outline-color: var(--fsds-switch-design-input-focus-color, var(--fsds-switch-color-input-outline-focus, #0566fe));
       position: absolute;
       width: 1px;
       height: 1px;
@@ -221,7 +231,6 @@ export class SwitchElement extends LitElement {
     .switch--sm .switch__thumb {
       width: var(--fsds-switch-design-condition-97b936929ea8-sizing-width, var(--fsds-switch-size-sm-thumb-size, 12px));
       height: var(--fsds-switch-design-condition-97b936929ea8-sizing-height, var(--fsds-switch-size-sm-thumb-height, 12px));
-      top: var(--fsds-switch-size-sm-track-padding, 1px);
       left: var(--fsds-switch-size-sm-track-padding, 1px);
       translate: var(--fsds-switch-size-sm-thumb-translate-off, 0);
     }
@@ -240,7 +249,6 @@ export class SwitchElement extends LitElement {
     .switch--lg .switch__thumb {
       width: var(--fsds-switch-design-condition-9a61de98af78-sizing-width, var(--fsds-switch-size-lg-thumb-size, 24px));
       height: var(--fsds-switch-design-condition-9a61de98af78-sizing-height, var(--fsds-switch-size-lg-thumb-height, 24px));
-      top: var(--fsds-switch-size-lg-track-padding, 1px);
       left: var(--fsds-switch-size-lg-track-padding, 1px);
       translate: var(--fsds-switch-size-lg-thumb-translate-off, 0);
     }
