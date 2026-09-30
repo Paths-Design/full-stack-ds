@@ -34,6 +34,7 @@ interface Props {
   searchable?: boolean;
   empty?: boolean;
   placeholder?: string;
+  searchLabel?: string;
   position?: string;
   class?: string;
   dataTestid?: string;
@@ -53,6 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
   searchable: undefined,
   empty: undefined,
   placeholder: "Select an option",
+  searchLabel: "Search options",
 });
 // @generated:end
 
@@ -99,7 +101,7 @@ const instanceId = useId();
     </button>
     <div v-if="behavior.open.value" :class="'select__content'" :ref="bindInteractionPanel" role="listbox" @keydown="behavior.handleContentKeydown" tabindex="-1" :id="`${instanceId}-content`">
       <div v-if="props.searchable" :class="'select__search'">
-        <input type="text" />
+        <input :class="'select__searchInput'" type="text" :aria-label="props.searchLabel" :disabled="props.disabled" />
       </div>
       <div :class="'select__options'">
         <button v-for="(item, index) in (props.options ?? [])" :key="index" :class="'select__option'" role="option" type="button" @click="() => behavior.setSelection(props.multiple ? ((Array.isArray(behavior.selection.value) ? behavior.selection.value : behavior.selection.value == null ? [] : [behavior.selection.value]).includes(item.value) ? (Array.isArray(behavior.selection.value) ? behavior.selection.value : behavior.selection.value == null ? [] : [behavior.selection.value]).filter((v) => v !== item.value) : [...(Array.isArray(behavior.selection.value) ? behavior.selection.value : behavior.selection.value == null ? [] : [behavior.selection.value]), item.value]) : item.value)" @keydown="(e) => behavior.handleOptionKeydown(e, item.value)" tabindex="-1" :aria-selected="(Array.isArray(behavior.selection.value) ? behavior.selection.value.includes(item.value) : item.value === behavior.selection.value)" :data-value="item.value" :disabled="item.disabled" :aria-disabled="item.disabled">
