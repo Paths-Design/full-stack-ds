@@ -36,7 +36,7 @@ let nextInstanceId = 0;
     <div [ngClass]="'select__content'" #interactionPanel role="listbox" (keydown)="behavior.handleContentKeydown($event)" tabindex="-1" [attr.id]="instanceId + '-content'">
       <ng-container *ngIf="searchable">
         <div [ngClass]="'select__search'">
-          <input type="text" />
+          <input [ngClass]="'select__searchInput'" type="text" [attr.aria-label]="(searchLabel ?? 'Search options')" [disabled]="disabled" />
         </div>
       </ng-container>
       <div [ngClass]="'select__options'">
@@ -76,6 +76,7 @@ export class SelectComponent {
   @Input() searchable?: boolean;
   @Input() empty?: boolean;
   @Input() placeholder?: string = "Select an option";
+  @Input() searchLabel?: string = "Search options";
   @Input() class?: string;
 
   protected readonly instanceId = `fsds-select-${nextInstanceId++}`;
