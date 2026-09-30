@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: dialog-focus
 created_at: '2026-09-30T22:39:11.168Z'
-updated_at: '2026-09-30T22:39:39.047Z'
+updated_at: '2026-09-30T23:11:50.005Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
@@ -30,6 +30,9 @@ scope:
     - 'docs/architecture/presence-surfaces.md'
     - 'docs/internal/input-visual-audit'
     - 'scripts/custom-region-audit/known-authored-regions.json'
+    - docs/architecture/design/box-model-primitive.md
+    - docs/architecture/design/component-design-bindings.md
+    - docs/normal-form.md
   out: []
 invariants:
   - 'Focus policy remains contract-owned and emitter rules do not branch on component identity'
