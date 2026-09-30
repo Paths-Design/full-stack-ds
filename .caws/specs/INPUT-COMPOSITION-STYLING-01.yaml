@@ -1,0 +1,65 @@
+id: INPUT-COMPOSITION-STYLING-01
+title: 'Repair input surfaces and composed focus/state styling'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-09-30T19:06:31.819Z'
+updated_at: '2026-09-30T19:06:31.819Z'
+created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
+blast_radius:
+  modules:
+    - 'Input contract styling and generated target realizations'
+    - 'Showcase reset cascade and browser regression checks'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Field/'
+    - 'packages/ds-contracts/components/Checkbox/'
+    - 'packages/ds-contracts/components/Switch/'
+    - 'packages/ds-contracts/components/Select/'
+    - 'packages/ds-contracts/components/ToggleSwitch/'
+    - 'packages/ds-react/src/'
+    - 'packages/ds-vue/src/'
+    - 'packages/ds-svelte/src/'
+    - 'packages/ds-angular/src/'
+    - 'packages/ds-lit/src/'
+    - 'packages/ds-react-native/src/'
+    - 'packages/ds-swiftui/'
+    - 'packages/ds-jetpack-compose/'
+    - 'packages/ds-figma/'
+    - 'packages/ds-codegen/src/'
+    - 'src/styles/app.css'
+    - 'e2e/input-styling.spec.ts'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Component styling intent remains in authored contracts and style/token sidecars; emitters contain no component-name exceptions.'
+  - 'Consumer CSS overrides remain possible without important declarations.'
+  - 'Existing form-control state and label/description associations remain intact.'
+acceptance:
+  - id: A1
+    given: 'Field compositions with Input and Select'
+    when: 'controls receive focus or invalid state'
+    then: 'controls own one visible focus ring and one surface with explicit invalid treatment.'
+  - id: A2
+    given: 'checkbox and switch controls'
+    when: 'mixed state or keyboard focus is active'
+    then: 'mixed marks and visible focus indicators render and switch thumbs remain centered.'
+  - id: A3
+    given: 'open searchable Select and selected options'
+    when: 'light or dark theme is used'
+    then: 'the search input is themed and selected/hover fills are consumed.'
+  - id: A4
+    given: 'showcase composition consumers and generated web targets'
+    when: 'button control state changes'
+    then: 'package-defined fills/colors survive the consumer reset and scoped browser checks pass.'
+  - id: A5
+    given: 'regenerated outputs'
+    when: 'governed rail and root/framework suites run'
+    then: 'generated source is admitted and existing checks pass.'
+non_functional: {}
+contracts:
+  - name: 'input-composition'
+    type: behavior
+    path: 'packages/ds-contracts/components/Field/Field.contract.json'
