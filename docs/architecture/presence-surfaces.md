@@ -239,7 +239,7 @@ is axis-derived. `buildSurfaceIR` normalizes attachment to `part`, `selector`,
 }
 ```
 
-The existing top-level `focus` block on the same contract carries `trap: true`, `outsideInert: true`, `returnFocus: true`. The codegen reads `surface.modality === "blocking"` to know it should consult those `focus` fields; it does not duplicate them.
+Dialog's existing top-level `focus` block carries `strategy: "trap"`, `initialFocus: "prop:initialFocus"`, `returnFocus: "prop:returnFocus"`, `scrollLock: true`, and `wrap: true`. The optional focus props accept CSS selectors or element IDs; absent targets fall back to the first available child on opening and the previously focused element on closing. The focus lifecycle follows the mounted panel through portal changes. The `modal` prop gates trapping and scroll locking through `surface.modalityProp`; non-modal dialogs preserve outside focus. This policy does not declare or realize outside `inert`.
 
 ### Toast
 

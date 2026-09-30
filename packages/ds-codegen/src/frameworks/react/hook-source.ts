@@ -27,6 +27,7 @@ import {
   type PartIR,
   type ResolvedPropIR,
   keyboardModeGateProps,
+  focusTargetProps,
   pickPrimaryDisclosureChannel,
   resolveInitialFocusSelector,
   resolveRovingItemSelector,
@@ -388,19 +389,9 @@ function generateOptionsInterface(
     lines.push(`  ${modalityGate.prop}?: boolean;`);
   }
 
-  if (bindings.useFocusTrap) {
-    const initial = ir.behavior.focus?.initialFocus;
-    const returnTo = ir.behavior.focus?.returnFocus;
-    if (initial?.startsWith("prop:")) {
-      lines.push(
-        `  /** Element to focus when the component activates. */`,
-      );
-      lines.push(`  ${initial.slice(5)}?: RefObject<HTMLElement | null>;`);
-    }
-    if (returnTo?.startsWith("prop:")) {
-      lines.push(`  /** Element to focus when the component deactivates. */`);
-      lines.push(`  ${returnTo.slice(5)}?: RefObject<HTMLElement | null>;`);
-    }
+  for (const { prop } of focusTargetProps(ir)) {
+    lines.push(`  /** CSS selector or element ID used by the focus policy. */`);
+    lines.push(`  ${prop}?: string;`);
   }
 
   if (bindings.usePortal) {
@@ -928,22 +919,11 @@ function generateBody(ir: ComponentIR, bindings: PrimitiveBindings): string {
       (c) => c.isDisclosureChannel,
     );
     const activeExpr = blockingExpr(ir, channel ? channel.name : "true");
-    const initial = ir.behavior.focus?.initialFocus;
-    const returnTo = ir.behavior.focus?.returnFocus;
-    const initialRef =
-      initial?.startsWith("prop:")
-        ? `options.${initial.slice(5)}`
-        : "undefined";
-    const returnRef =
-      returnTo?.startsWith("prop:")
-        ? `options.${returnTo.slice(5)}`
-        : "undefined";
     lines.push(`  useFocusTrap(panelRef, {`);
     lines.push(`    active: ${activeExpr},`);
-    if (initialRef !== "undefined")
-      lines.push(`    initialFocusRef: ${initialRef},`);
-    if (returnRef !== "undefined")
-      lines.push(`    returnFocusRef: ${returnRef},`);
+    for (const { target, prop } of focusTargetProps(ir)) {
+      lines.push(`    ${target}: options.${prop},`);
+    }
     lines.push(`  });`, ``);
   }
 

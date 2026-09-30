@@ -5281,6 +5281,22 @@ export function keyboardModeGateProps(ir: ComponentIR): string[] {
   return props;
 }
 
+/**
+ * Props consumed by a trapping surface's focus policy.
+ * Source fact: normalized focus bindings; applies by focus strategy.
+ */
+export function focusTargetProps(ir: ComponentIR): Array<{
+  target: "initialFocus" | "returnFocus"; prop: string;
+}> {
+  if (ir.behavior.focus?.strategy !== "trap") return [];
+  const result: Array<{ target: "initialFocus" | "returnFocus"; prop: string }> = [];
+  for (const target of ["initialFocus", "returnFocus"] as const) {
+    const binding = ir.behavior.focus[target];
+    if (binding?.startsWith("prop:")) result.push({ target, prop: binding.slice(5) });
+  }
+  return result;
+}
+
 function roleSelectorOf(node: DomNodeIR): string | undefined {
   const role = node.attrs.role;
   return role ? `[role="${role}"]` : undefined;
