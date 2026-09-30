@@ -46,6 +46,7 @@ import {
   isMarkdownTransform,
   contentBindingOrTransformSource,
   keyboardModeGateProps,
+  focusTargetProps,
   type NativeTableAttr,
 } from "../../ir.js";
 
@@ -1665,6 +1666,9 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     // select behavior reads, getter-shaped like every other option.
     for (const gate of keyboardModeGateProps(ir)) {
       hookLines.push(`  ${gate}: () => props.${propAccess(gate)},`);
+    }
+    for (const { prop } of focusTargetProps(ir)) {
+      hookLines.push(`  ${prop}: () => props.${propAccess(prop)},`);
     }
     const modalityGate = ir.surface?.modalityGate;
     if (modalityGate) {

@@ -47,11 +47,21 @@ describe("useFocusTrap — activation and focus management", () => {
 
   it("focuses the initialFocusRef element when provided", async () => {
     const target = document.createElement("button");
-    document.body.appendChild(target);
-    const { active } = makeHost(target);
+    const { active, container } = makeHost(target);
+    container().appendChild(target);
     active.value = true;
     await Promise.resolve();
     expect(document.activeElement).toBe(target);
+    target.remove();
+  });
+
+  it("rejects an initial ref outside the trapped panel", async () => {
+    const target = document.createElement("button");
+    document.body.appendChild(target);
+    const { active, first } = makeHost(target);
+    active.value = true;
+    await Promise.resolve();
+    expect(document.activeElement).toBe(first());
     target.remove();
   });
 

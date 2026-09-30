@@ -48,6 +48,8 @@ const behavior = useDialog({
   onOpenChange: () => onOpenChange,
   closeOnEscape: () => closeOnEscape,
   closeOnBackdropClick: () => closeOnBackdropClick,
+  initialFocus: () => initialFocus,
+  returnFocus: () => returnFocus,
   modal: () => modal,
 });
 // @generated:end

@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
-updated: 2026-09-28
-verified_at_commit: b5453c4866ec2311e72a1aa216ed7faf8a19f3fd
+updated: 2026-09-30
+verified_at_commit: d2f56f5fba630df20f7cee53c20a37cbaa59d6e9
 governs:
   - packages/ds-codegen/src/design-properties.ts
   - packages/ds-contracts/component.styles.schema.json
@@ -94,6 +94,8 @@ The inspector has a Design properties section grouped by source part/condition a
 - `e2e/fixtures/design-bindings-gallery.tsx` is a real generated React composition for visual and interaction review. Screenshots go to ignored Playwright output.
 
 These witnesses do not prove every conditional selector is reachable, arbitrary retokening is accessible, full cross-framework visual parity, native runtime overrides, or complete coverage of design-tool paint/effect features. Broader binding coverage and visual fidelity remain separate claims.
+
+The 2026-09-30 recheck at `d2f56f5f` passed the component-token-consumption cases on all five Web targets and the isolated box/part override, Button override, and Switch interaction cases. The broader `design-bindings.spec.ts` suite remains red: Card clears to a 12px gap while its test expects 4px; Lit's Card gap override remains at 12px instead of 37px; the inspector test still calls native-select APIs on the custom Select; and the composed-gallery border-radius assertion expects 24px but observes 12px. Those test, Card, preview, and inspector sources are unchanged from `48a16b63`, before the Dialog focus repair. These are unresolved design-binding verification gaps, not evidence of universal override coverage.
 
 ## Single-line text in composed feeds
 

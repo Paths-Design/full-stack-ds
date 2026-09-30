@@ -50,6 +50,7 @@ import {
   compositeActivationMember,
   groupKeyboardActionsByPart,
   keyboardModeGateProps,
+  focusTargetProps,
 } from "../../ir.js";
 import type { ContractTypeDef } from "../../contract.js";
 import {
@@ -1922,6 +1923,9 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     // keyboard select handler reads the live gate on every keydown.
     for (const gate of keyboardModeGateProps(ir)) {
       lines.push(`    ${gate}: () => this.${gate},`);
+    }
+    for (const { prop } of focusTargetProps(ir)) {
+      lines.push(`    ${prop}: () => this.${prop},`);
     }
     const modalityGate = ir.surface?.modalityGate;
     if (modalityGate) {

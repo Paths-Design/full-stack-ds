@@ -37,6 +37,7 @@ import {
   isMarkdownTransform,
   contentBindingOrTransformSource,
   keyboardModeGateProps,
+  focusTargetProps,
   groupKeyboardActionsByPart,
   compositeActivationMember,
   keyboardHandlerParts,
@@ -1998,6 +1999,9 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
   }
   // The modality gate decides whether the hook's focus trap and scroll lock
   // engage (surface.modalityProp).
+  for (const { prop } of focusTargetProps(ir)) {
+    hookOptionsLines.push(`    ${prop}`);
+  }
   const modalityGate = ir.surface?.modalityGate;
   if (modalityGate) {
     const safe =

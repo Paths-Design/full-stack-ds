@@ -398,7 +398,7 @@
   "focus": {
     "strategy": "trap",
     "initialFocus": "prop:initialFocus",
-    "returnFocus": "trigger",
+    "returnFocus": "prop:returnFocus",
     "scrollLock": true,
     "wrap": true
   },

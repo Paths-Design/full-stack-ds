@@ -35,7 +35,8 @@ export function useSheet(opts: UseSheetOptions = {}): UseSheetResult {
   });
 
   const panelRef = { el: null as HTMLElement | null };
-  createFocusTrap({ getActive: () => opennessState.value && (opts.modal?.() ?? true), containerRef: panelRef });
+  createFocusTrap({ getActive: () => opennessState.value && (opts.modal?.() ?? true), containerRef: panelRef,
+  });
 
   createScrollLock(() => opennessState.value && (opts.modal?.() ?? true));
 

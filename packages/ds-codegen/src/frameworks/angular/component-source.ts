@@ -56,6 +56,7 @@ import {
   isMarkdownTransform,
   contentBindingOrTransformSource,
   keyboardModeGateProps,
+  focusTargetProps,
 } from "../../ir.js";
 import {
   emitNonReactTypeAliases,
@@ -1967,6 +1968,9 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     // values on every keydown.
     for (const gate of keyboardModeGateProps(ir)) {
       lines.push(`    ${gate}: () => this.${gate},`);
+    }
+    for (const { prop } of focusTargetProps(ir)) {
+      lines.push(`    ${prop}: () => this.${prop},`);
     }
     const modalityGate = ir.surface?.modalityGate;
     if (modalityGate) {

@@ -15,6 +15,7 @@ import type { ComponentIR, KeyboardActionIR, NormalizedChannelIR } from "../../i
 import {
   keyboardHandlerParts,
   keyboardModeGateProps,
+  focusTargetProps,
   resolveInitialFocusSelector,
   resolveRovingItemSelector,
 } from "../../ir.js";
@@ -191,6 +192,10 @@ function generateOptionsInterface(
     lines.push(`  /** Mode gate the keyboard select behavior reads. */`);
     lines.push(`  ${gate}?: () => boolean | undefined;`);
   }
+  for (const { prop } of focusTargetProps(ir)) {
+    lines.push(`  ${prop}?: () => string | undefined;`);
+  }
+
   const modalityGate = ir.surface?.modalityGate;
   if (modalityGate) {
     lines.push(`  /** When false the surface is non-blocking: no focus trap, no scroll lock. */`);
@@ -561,7 +566,10 @@ function generateBody(ir: ComponentIR, bindings: PrimitiveBindings): string {
       channel ? `${channel.name}State.value` : "true",
     );
     lines.push(
-      `  createFocusTrap({ getActive: ${activeGetter}, containerRef: panelRef });`,
+      `  createFocusTrap({ getActive: ${activeGetter}, containerRef: panelRef,`,
+      ...focusTargetProps(ir).map(({ target, prop }) =>
+        `    get${capitalize(target)}: opts.${prop},`),
+      `  });`,
     );
     lines.push(``);
   }

@@ -56,6 +56,8 @@ const behavior = useDialog({
   onOpenChange: props.onOpenChange,
   closeOnEscape: props.closeOnEscape,
   closeOnBackdropClick: props.closeOnBackdropClick,
+  initialFocus: () => props.initialFocus,
+  returnFocus: () => props.returnFocus,
   modal: () => props.modal,
 });
 function bindInteractionPanel(element: unknown): void { behavior.panelRef.value = element instanceof HTMLElement ? element : null; }

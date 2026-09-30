@@ -23,6 +23,7 @@ import type {
 import {
   keyboardHandlerParts,
   keyboardModeGateProps,
+  focusTargetProps,
   resolveInitialFocusSelector,
   resolveRovingItemSelector,
 } from "../../ir.js";import { renderSections, type Section } from "../../preserve.js";
@@ -203,6 +204,10 @@ function generateOptionsInterface(
     lines.push(`  /** Mode gate the keyboard select behavior reads. */`);
     lines.push(`  ${gate}?: () => boolean | undefined;`);
   }
+  for (const { prop } of focusTargetProps(ir)) {
+    lines.push(`  ${prop}?: () => string | undefined;`);
+  }
+
   const modalityGate = ir.surface?.modalityGate;
   if (modalityGate) {
     lines.push(`  /** When false the surface is non-blocking: no focus trap, no scroll lock. */`);
@@ -488,6 +493,9 @@ function generateClassBody(ir: ComponentIR, bindings: PrimitiveBindings): string
     lines.push(`    this.focusTrap = new FocusTrapController(host, {`);
     lines.push(`      getActive: () => ${activeExpr},`);
     lines.push(`      getContainer: () => opts.containerEl ?? null,`);
+    for (const { target, prop } of focusTargetProps(ir)) {
+      lines.push(`      get${capitalize(target)}: opts.${prop},`);
+    }
     lines.push(`    });`);
   }
 

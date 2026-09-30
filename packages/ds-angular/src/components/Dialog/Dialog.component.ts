@@ -82,6 +82,8 @@ export class DialogComponent implements OnInit, OnDestroy {
     onOpenChange: (v) => this.onOpenChange?.(v),
     closeOnEscape: this.closeOnEscape,
     closeOnBackdropClick: this.closeOnBackdropClick,
+    initialFocus: () => this.initialFocus,
+    returnFocus: () => this.returnFocus,
     modal: () => this.modal,
     destroyRef: this.destroyRef,
   })));

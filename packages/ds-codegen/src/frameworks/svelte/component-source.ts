@@ -46,6 +46,7 @@ import {
   groupKeyboardActionsByPart,
   compositeActivationMember,
   keyboardModeGateProps,
+  focusTargetProps,
   NATIVE_FOCUSABLE_TAGS,
   type NativeTableAttr,
 } from "../../ir.js";
@@ -1494,6 +1495,9 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     for (const gate of keyboardModeGateProps(ir)) {
       const accessor = jsAccessorFor(gate);
       hookLines.push(`  ${gate}: () => ${accessor},`);
+    }
+    for (const { prop } of focusTargetProps(ir)) {
+      hookLines.push(`  ${prop}: () => ${jsAccessorFor(prop)},`);
     }
     const modalityGate = ir.surface?.modalityGate;
     if (modalityGate) {
