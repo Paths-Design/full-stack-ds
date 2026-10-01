@@ -2,9 +2,11 @@ id: DESIGN-DOCUMENT-PAPER-01
 title: 'Define shared Designer and Animator paper model, schemas and design coverage ledger'
 risk_tier: 2
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Paper model and original schemas/examples landed; corrected evidence citations rechecked; runtime remains unimplemented and broad root timeout is recorded.'
 created_at: '2026-10-01T07:12:19.497Z'
-updated_at: '2026-10-01T07:56:03.345Z'
+updated_at: '2026-10-01T16:10:31.145Z'
 created_by_session: '01a0f5b0-8c29-7670-82de-50f7c08d07da'
 blast_radius:
   modules:
