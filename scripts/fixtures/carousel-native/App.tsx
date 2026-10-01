@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { AccessibilityInfo, Button, Platform, Text, View } from 'react-native';
 import { useSequence, SequenceChildren } from '../../../packages/ds-react-native/src/primitives/useSequence';
+import { BudgetProgress } from '../../../packages/ds-react-native/src/primitives/budget-progress';
 
 const labels = ['First', 'Second', 'Third'];
 const buildIdentity = '__FSDS_NATIVE_BUILD_ID__';
@@ -65,5 +66,11 @@ export default function NativeCarouselWitness() {
     <View style={{ flexDirection: 'row', marginTop: 20 }}><Button title="Previous" onPress={sequence.previous} /><Button title="Next" onPress={sequence.next} /></View>
     <Text accessibilityLabel="Current slide">Slide {index + 1}</Text>
     <Text style={{ marginTop: 20 }}>{status}</Text>
+    <Text style={{ marginTop: 24 }}>Native progress projection samples</Text>
+    {[0, 0.25, 0.5, 0.75, 1].map(elapsed => <View key={elapsed} style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginTop: 12 }}>
+      <Text style={{ width: 40 }}>{elapsed * 100}%</Text>
+      <BudgetProgress effect="elapsed-width" elapsed={elapsed} reducedMotion={false} steps={10} width={120} height={8} thickness={3} color="#2463ba" trackColor="#cccccc" />
+      <BudgetProgress effect="elapsed-ring" elapsed={elapsed} reducedMotion={false} steps={10} width={32} height={32} thickness={3} color="#2463ba" trackColor="#cccccc" />
+    </View>)}
   </View>;
 }

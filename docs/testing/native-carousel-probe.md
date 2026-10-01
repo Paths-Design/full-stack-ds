@@ -10,6 +10,13 @@ creates an isolated third-party host under ignored `tmp/native-carousel-host`;
 neither that host nor downloaded dependencies belong in Git. Source hashes and
 the built JavaScript bundle hash accompany the native receipt.
 
+The fixture also renders the production `BudgetProgress` fill and ring at
+0%, 25%, 50%, 75% and 100%. Take a simulator screenshot after launch to inspect
+the quarter arcs and fill lengths. These samples establish bounded native
+geometry, not a running countdown. Shared-clock pause/reset and reduced-motion
+substitution are tested separately in the React Native package; generated
+Carousel progress integration remains unfinished.
+
 ## Running locally
 
 Requirements: Xcode with an available iOS simulator runtime, Node, Corepack,

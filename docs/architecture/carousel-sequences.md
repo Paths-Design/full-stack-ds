@@ -167,8 +167,18 @@ full reading budget after settlement. Its unit tests observe the animation API
 boundary, including delayed callbacks after interruption and teardown. Removing
 the ownership guards makes those regressions fail; these tests do not execute
 the native animation driver.
-The generated component does not yet pass the movement profile into that primitive.
-Progress fill/ring rendering, native styling and icons, rotation-control visibility
+`BudgetProgress` renders elapsed-width and elapsed-ring projections from that
+same clock value, with contract-selected discrete steps under reduced motion.
+It owns no timer or advancement callback and is decorative for accessibility.
+Native border arcs and clipping render the ring without another drawing dependency.
+The package tests exercise pause, resume, reset and preference changes through
+the actual sequence adapter; removing step quantization fails the reduced-motion
+regression. These remain host-shim behavior tests. An iOS Release fixture also
+renders the five quarter-step samples for both shapes, inspected as actual pixels.
+
+The generated component does not yet pass the movement profile into that primitive
+or bind `BudgetProgress` to its anatomy parts. Generated progress bindings,
+native styling and icons, rotation-control visibility
 for disabled timers, and generated-component simulator/device witnesses remain unfinished. Accordingly
 the IR's native sequence capability remains unrealized and the parity criterion
 remains open. SwiftUI, Compose, Unity and Godot still need their sequence realizations.

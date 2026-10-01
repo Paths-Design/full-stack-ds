@@ -16,7 +16,7 @@ const shellQuote = value => `'${value.replaceAll("'", "'\\''")}'`;
 const hashFile = path => createHash('sha256').update(readFileSync(path)).digest('hex');
 const appBundle = join(proof, 'build/Build/Products/Release-iphonesimulator/FsdsCarouselWitness.app/main.jsbundle');
 function inputs() {
-  const paths = ['primitives/useSequence.tsx', 'primitives/sequence-budget.ts', 'primitives/sequence-motion.tsx'];
+  const paths = ['primitives/useSequence.tsx', 'primitives/sequence-budget.ts', 'primitives/sequence-motion.tsx', 'primitives/budget-progress.tsx'];
   const hashes = Object.fromEntries([...paths.map(path => join(runtime, path)), fixture].map(path => [path, hashFile(path)]));
   return { hashes, identity: createHash('sha256').update(JSON.stringify(hashes)).digest('hex') };
 }
@@ -29,7 +29,7 @@ function prepare() {
   manifest.packageManager = 'pnpm@10.14.0';
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
   const prepared = inputs();
-  writeFileSync(join(host, 'App.tsx'), readFileSync(fixture, 'utf8').replace('../../../packages/ds-react-native/src/primitives/useSequence', 'fsds-sequence-under-test').replace('__FSDS_NATIVE_BUILD_ID__', prepared.identity));
+  writeFileSync(join(host, 'App.tsx'), readFileSync(fixture, 'utf8').replace('../../../packages/ds-react-native/src/primitives/useSequence', 'fsds-sequence-under-test').replace('../../../packages/ds-react-native/src/primitives/budget-progress', 'fsds-budget-progress-under-test').replace('__FSDS_NATIVE_BUILD_ID__', prepared.identity));
   writeFileSync(join(proof, 'prepared-inputs.json'), JSON.stringify(prepared, null, 2));
   writeFileSync(join(host, 'metro.config.js'), `const path = require('node:path');
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
@@ -41,6 +41,7 @@ module.exports = mergeConfig(getDefaultConfig(__dirname), {
     disableHierarchicalLookup: true,
     resolveRequest(context, name, platform) {
       if (name === 'fsds-sequence-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'primitives/useSequence.tsx')};
+      if (name === 'fsds-budget-progress-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'primitives/budget-progress.tsx')};
       return context.resolveRequest(context, name, platform);
     }
   }
