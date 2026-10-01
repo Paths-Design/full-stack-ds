@@ -367,3 +367,11 @@ full-screen takeover; no corpus contract uses it.
 
 - `docs/normal-form.md` — the compositional-system architecture that this family slots into.
 - `packages/ds-contracts/component.contract.schema.json` — the `surface` block schema, alongside the `portal`, `dismissal`, and `focus` blocks it coordinates with.
+
+## Paged content inside a presence surface
+
+A dialog or coachmark may host an ordered flow without changing its presence
+classification. [Paged collections](paged-collections.md) governs position
+selection and its content/validation ownership boundary. Presence continues
+to govern opening, dismissal, modality, and focus containment. Pagination
+alone does not establish a dialog workflow or a walkthrough migration.

@@ -1,6 +1,7 @@
 import { createPresenceBudget } from "./presence-budget.js";
 
 export interface SequenceConfig {
+  delegatedPicker?: boolean;
   labels: { start: string; stop: string; item: string };
   transition?: { durationMs: number; easing: string; referenceWidth: number; minMultiplier: number; maxMultiplier: number };
   parts: Record<"viewport" | "previous" | "next" | "rotation" | "picker", string>;
@@ -56,8 +57,23 @@ export function createSequenceBudget(config: SequenceConfig) {
     }
     originalDisplay.delete(slide);
   };
-  const all = (selector: string) => Array.from(root?.querySelectorAll<HTMLElement>(selector) ?? [])
-    .filter(el => el.closest("[data-sequence-root]") === root);
+  const sequenceOwner = (element: Element): Element | null => {
+    const owner = element.closest("[data-sequence-root]");
+    if (owner) return owner;
+    const tree = element.getRootNode();
+    return tree instanceof ShadowRoot ? sequenceOwner(tree.host) : null;
+  };
+  const all = (selector: string): HTMLElement[] => {
+    let scopes: (Element | ShadowRoot)[] = root ? [root] : [];
+    for (const step of selector.split(" ")) {
+      scopes = scopes.flatMap(scope => {
+        const tree = scope instanceof Element && scope.shadowRoot ? scope.shadowRoot : scope;
+        if (tree instanceof ShadowRoot) observer?.observe(tree, { childList: true, subtree: true });
+        return Array.from(tree.querySelectorAll<HTMLElement>(step));
+      });
+    }
+    return scopes.filter((element): element is HTMLElement => element instanceof HTMLElement && sequenceOwner(element) === root);
+  };
   const part = (key: keyof SequenceConfig["parts"]) => all(config.parts[key])[0];
   const index = () => Math.max(0, Math.min(slides.length - 1, Math.trunc(options?.index ?? 0) || 0));
   const valid = () => Boolean(options && slides.length === options.labels.length && slides.length > 1);
@@ -70,7 +86,7 @@ export function createSequenceBudget(config: SequenceConfig) {
       const elapsed = 1 - remaining;
       const value = reduced ? Math.floor(elapsed * binding.steps) / binding.steps : elapsed;
       for (const el of all(binding.selector)) {
-        const picker = el.closest(config.parts.picker);
+        const picker = all(config.parts.picker).find(picker => picker.contains(el));
         const active = !picker || picker.getAttribute("data-sequence-active") === "true";
         el.hidden = !enabled || !active;
         el.style.setProperty("--sequence-progress", String(value));
@@ -215,7 +231,7 @@ export function createSequenceBudget(config: SequenceConfig) {
   const stop = () => { focusStopped = true; playing = false; render(); syncBudget(); };
   const control = (event: Event) => {
     const target = event.composedPath().find(node => node instanceof HTMLButtonElement) as HTMLButtonElement | undefined;
-    return target && target.closest("[data-sequence-root]") === root && !target.disabled ? target : undefined;
+    return target && sequenceOwner(target) === root && !target.disabled ? target : undefined;
   };
   const clearPointerIntent = () => { pointerRotationIntent = undefined; };
   const pointerDown = (event: Event) => {
@@ -238,7 +254,7 @@ export function createSequenceBudget(config: SequenceConfig) {
       render(); syncBudget();
     } else if (target.matches(config.parts.next)) request(index() + 1);
     else if (target.matches(config.parts.previous)) request(index() - 1);
-    else if (target.matches(config.parts.picker)) {
+    else if (config.delegatedPicker !== false && target.matches(config.parts.picker)) {
       const selected = all(config.parts.picker).indexOf(target);
       if (selected !== index()) request(selected);
     }
@@ -301,5 +317,8 @@ export function createSequenceBudget(config: SequenceConfig) {
     root = next;
     if (options) sync(options);
   };
-  return { sync, bindRoot, destroy: disconnect, snapshot: budget.snapshot };
+  const requestIndex = (next: number) => {
+    if (Number.isInteger(next) && next >= 0 && next < slides.length && next !== index()) request(next);
+  };
+  return { sync, bindRoot, requestIndex, destroy: disconnect, snapshot: budget.snapshot };
 }

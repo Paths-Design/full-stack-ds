@@ -150,3 +150,12 @@ loops and surface countdown facts for other components; older descriptors may
 omit the motion field. It does not attach Figma prototype timers or transitions,
 and source capability facts inside the metadata are not a claim that Figma
 executes them.
+
+## Reusable position selection
+
+Carousel consumes [Pagination](paged-collections.md) as a component instance.
+Pagination owns the choice buttons, markers, labels and decorative fill;
+Carousel retains the content viewport, previous/next actions and advance
+budget. Composed part addresses are resolved against the contract corpus,
+while the child callback requests a position through the sequence controller.
+Indicator presentation does not make Pagination a carousel-specific surface.

@@ -78,7 +78,7 @@ hold. Each rung is mechanically checked; none is a judgment call.
 ## Current per-target state
 
 SwiftUI admits its explicit allowlist: `<!-- target-component-count:swiftui -->52`
-of `<!-- component-count -->53` contracts. Jetpack Compose admits
+of `<!-- component-count -->55` contracts. Jetpack Compose admits
 `<!-- target-component-count:jetpack-compose -->52`, realized through the
 emitter paths below (each dispatches on the substrate or its documented
 local twin):
@@ -119,7 +119,7 @@ intent owns the realization before any structural class is consulted.
 
 ## Remaining components — required class and blocker
 
-The compose allowlist does not yet admit <!-- target-component-remainder:jetpack-compose -->1 corpus
+The compose allowlist does not yet admit <!-- target-component-remainder:jetpack-compose -->3 corpus
 contracts. Each row below names the class that would carry one, whether that
 class needs a shared-substrate move (the predicate is currently swift-local)
 or is target-local, and the concrete blocker or decision that gates the

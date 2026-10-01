@@ -1,3 +1,4 @@
+import { pagedBindingExpression } from "../../paging.js";
 import { sequenceConfig } from "../../sequence.js";
 /**
  * Vue 3 SFC emission, IR-driven.
@@ -1633,6 +1634,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     importLines.push(`import { h, Fragment, defineComponent, type VNode } from "vue";`);
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   const importsBody = importLines.join("\n");
 
@@ -1698,6 +1700,11 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       `  index: behavior.${seq.channel}.value, labels: props.${seq.itemsProp}, autoPlay: props.${seq.timing.autoPlayProp},`,
       `  durationMs: props.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : props.${seq.timing.durationProp},`,
       `  onIndexChange: behavior.set${capitalize(seq.channel)},`, `}));`);
+  }
+  if (ir.pagedSet) {
+    const page = ir.pagedSet;
+    hookLines.push(`const pagedSet = usePagedSet(() => ({ index: behavior.${page.channel}.value, items: props.${page.itemsProp},`,
+      `  count: ${page.countProp ? `props.${page.countProp}` : "undefined"}, disabled: ${page.disabledProp ? `props.${page.disabledProp}` : "false"}, onIndexChange: behavior.set${capitalize(page.channel)} }));`);
   }
   const hookBody = hookLines.join("\n");
 
@@ -2266,7 +2273,9 @@ function renderVueDomNode(
       attrs.push(`@click="(e: MouseEvent) => { if (canActivateInteraction(e, ${activation!.cancelNativeDefault})) behavior.set${capitalize(disclosure.name)}(${next}); }"`);
       continue;
     }
-    const rendered = renderVueEvent(eventName, expr, ctx);
+    const rendered = (expr.kind === "channel" && expr.forwardValue || expr.kind === "paged" && expr.action && node.componentRef)
+      ? renderVueBinding("on" + eventName.charAt(0).toUpperCase() + eventName.slice(1), expr, ctx)
+      : renderVueEvent(eventName, expr, ctx);
     if (rendered === null) continue;
     attrs.push(rendered);
   }
@@ -2719,6 +2728,7 @@ function renderVueTextContent(
   ctx: VueRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `{{ ${pagedBindingExpression(expr, "pagedSet")} }}`;
     case "prop":
       return `{{ ${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)} }}`;
     case "literal":
@@ -2800,6 +2810,7 @@ function renderVueBinding(
   ctx: VueRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `:${attr}="${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "prop":
       return `:${attr}="${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
@@ -2819,6 +2830,7 @@ function renderVueBinding(
     case "channel": {
       const ch = ctx.channelByName.get(expr.channel);
       if (!ch) return null;
+      if (expr.forwardValue) return `:${attr}="${expr.forwardValue === "sequence" ? "sequence.requestIndex" : expr.forwardValue === "pagedSet" ? "pagedSet.request" : `behavior.set${capitalize(ch.name)}`}"`;
       if (expr.field === "value") {
         // Reference behavior.<name>.value — Vue's auto-unwrap only kicks in
         // for top-level refs in template scope. For nested property access
@@ -2952,6 +2964,7 @@ function renderVueBindingValue(
   ctx: VueRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(vuePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3033,6 +3046,7 @@ function renderVueEvent(
   ctx: VueRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `@${eventName}="${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "prop":
       return `@${eventName}="${vuePropAccessor(expr.prop, ctx)}?.()"`;
     case "literal":

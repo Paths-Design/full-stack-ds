@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component token consumption
 owner: "@darianrosebrook"
-updated: 2026-09-30
-verified_at_commit: 38c798cb0eb2
+updated: 2026-10-01
+verified_at_commit: 395ecdbff
 governs:
   - packages/ds-codegen/src/css-token-consumption.ts
   - packages/ds-codegen/src/validation/component-token-consumption.ts
@@ -65,3 +65,7 @@ onto consumed dictionaries must not hide an unknown lookup. React Native uses fu
 slot identities; Swift accepts its emitted full names or role suffixes; Compose
 retains scope identity for direct reads. This closes a gap where a renamed
 CodeBlock background could silently fall back to an unpainted native surface.
+
+## Paging composition reconciliation
+
+Composed motion targets require the referenced contract corpus when building IR. The CLI now hydrates referenced style/token sidecars and passes that corpus into token-consumption validation, so child-owned decorative parts can be resolved and checked. The property dependency walk, cycle rejection, target dictionaries, and no-debt rule remain unchanged. Pagination owns its consumed picker tokens; PageNavigator needs no component token sidecar for its literal design-bound defaults. The admission and dead-slot gates pass for this corpus.

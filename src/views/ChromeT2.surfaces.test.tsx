@@ -5,6 +5,7 @@
  * Activity feed's Postcards + Calendar, and the About dialog's markdown.
  */
 import { cleanup, render, screen } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { CommandPalette } from "../components/CommandPalette";
 import { AboutDialog } from "../components/AboutDialog";
@@ -76,6 +77,17 @@ describe("SettingsView", () => {
 });
 
 describe("ActivityView", () => {
+  it("shares an accepted page with Pagination while owning the feed projection", () => {
+    const activity = Array.from({ length: 13 }, (_, index) => ({ ...EVENTS[0], id: `event-${index}`, title: `Entry ${index + 1}` }));
+    render(<ActivityView bundle={{ ...bundle, activity }} />);
+    expect(screen.getAllByRole("article")).toHaveLength(12);
+    expect(screen.queryByText("Entry 13")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "2" }));
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+    expect(screen.getByText("Entry 13")).toBeDefined();
+    expect(screen.queryByText("Entry 1")).toBeNull();
+    expect(screen.getByRole("button", { name: "2" })).toHaveAttribute("aria-current", "true");
+  });
   it("renders real feed data as Postcards with an activity Calendar", () => {
     render(<ActivityView bundle={bundle} />);
     expect(screen.getByRole("heading", { name: "Activity" })).toBeDefined();

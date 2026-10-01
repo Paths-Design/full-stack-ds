@@ -20,7 +20,7 @@ async function mount(page: Page, framework: string) {
   await page.locator("body[data-fsds-ready]").waitFor({ state: "attached" });
   await page.clock.install(); await page.clock.pauseAt(new Date());
   await configure(page);
-  await expect(page.locator(".carousel__picker")).toHaveCount(3);
+  await expect(page.locator(".pagination__item")).toHaveCount(3);
   // The generic preview accepts a text child, not component trees. Supply
   // owned consumer elements at the DOM boundary; the React showcase test
   // below separately exercises actual framework-rendered Card composition.
@@ -42,6 +42,19 @@ async function mount(page: Page, framework: string) {
 const progress = (page: Page, selector: string) => page.locator(selector).evaluate(el => Number((el as HTMLElement).style.getPropertyValue("--sequence-progress")));
 
 for (const framework of frameworks) {
+  test(`${framework}: composed Pagination picks a slide through the owning sequence`, async ({ page }) => {
+    await mount(page, framework);
+    await page.locator(".pagination__item").nth(2).click();
+    await page.clock.runFor(400);
+    await expect(page.locator("article").nth(2)).toBeVisible();
+    await expect(page.locator("article").nth(0)).toBeHidden();
+    await expect(page.locator(".pagination__item").nth(2)).toHaveAttribute("aria-current", "true");
+    await expect(page.locator(".carousel__rotation")).toHaveAccessibleName("Start slide rotation");
+    await page.mouse.move(0, 0);
+    await page.clock.runFor(3000);
+    await expect(page.locator("article").nth(2)).toBeVisible();
+  });
+
   test(`${framework}: pointer Stop remains stopped after focus and allows explicit restart`, async ({ page }) => {
     await mount(page, framework);
     const rotation = page.locator(".carousel__rotation");
@@ -50,24 +63,24 @@ for (const framework of frameworks) {
     await expect(rotation).toHaveAccessibleName("Start slide rotation");
     await page.mouse.move(0, 0);
     await page.clock.runFor(3000);
-    await expect(page.locator(".carousel__picker").nth(0)).toHaveAttribute("aria-disabled", "true");
+    await expect(page.locator(".pagination__item").nth(0)).toHaveAttribute("aria-disabled", "true");
     await rotation.click();
     await expect(rotation).toHaveAccessibleName("Stop slide rotation");
     await page.mouse.move(0, 0);
     await page.clock.runFor(1020);
-    await expect(page.locator(".carousel__picker").nth(1)).toHaveAttribute("aria-disabled", "true");
+    await expect(page.locator(".pagination__item").nth(1)).toHaveAttribute("aria-disabled", "true");
   });
 
   test(`${framework}: one slide budget drives pill, ring, advance and focus stop`, async ({ page }) => {
     await mount(page, framework);
     await page.clock.runFor(400);
     expect(await progress(page, ".carousel__ring")).toBeCloseTo(0.4, 1);
-    expect(await progress(page, '.carousel__picker[data-sequence-active="true"] .carousel__fill'))
+    expect(await progress(page, '.pagination__item[data-sequence-active="true"] .pagination__fill'))
       .toBe(await progress(page, ".carousel__ring"));
     await page.clock.runFor(620);
     await expect(page.locator("article").nth(1)).toBeVisible();
     await expect(page.locator("article").nth(0)).toBeHidden();
-    await expect(page.locator(".carousel__picker").nth(1)).toHaveAttribute("aria-disabled", "true");
+    await expect(page.locator(".pagination__item").nth(1)).toHaveAttribute("aria-disabled", "true");
     await page.locator(".carousel__next").focus();
     await expect(page.locator(".carousel__rotation")).toHaveAccessibleName("Start slide rotation");
     await page.locator(".carousel__next").evaluate(el => (el as HTMLElement).blur());
@@ -83,7 +96,7 @@ for (const framework of frameworks) {
     await mount(page, framework);
     await page.locator(".carousel__next").click();
     await page.clock.runFor(20);
-    await expect(page.locator(".carousel__picker").nth(1)).toHaveAttribute("aria-disabled", "true");
+    await expect(page.locator(".pagination__item").nth(1)).toHaveAttribute("aria-disabled", "true");
     const inspect = () => page.locator("article").evaluateAll(elements => elements.map(el => {
       const animation = el.getAnimations()[0];
       if (!animation) return null;
@@ -102,7 +115,7 @@ for (const framework of frameworks) {
     await expect(page.locator("article").nth(0)).toHaveAttribute("inert", "");
     await page.locator(".carousel__previous").click();
     await page.clock.runFor(20);
-    await expect(page.locator(".carousel__picker").nth(0)).toHaveAttribute("aria-disabled", "true");
+    await expect(page.locator(".pagination__item").nth(0)).toHaveAttribute("aria-disabled", "true");
     const reverse = await inspect();
     expect(reverse[1]!.frames.at(-1)).toBe("translateX(100%)");
     expect(reverse[0]!.frames[0]).toMatch(/^matrix/);
@@ -121,14 +134,14 @@ for (const framework of frameworks) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect.poll(() => progress(page, ".carousel__ring")).toBe(0.4);
     await configure(page, { indicator: "pagination" });
-    // Svelte previews remount on config changes; an empty elapsed fill has
-    // zero area until the newly mounted timer receives its first frames.
-    await page.clock.runFor(120);
+    // Preview reconfiguration can remount the controller. Advance beyond the
+    // first reduced-motion step before asserting the transformed fill has area.
+    await page.clock.runFor(400);
     await expect(page.locator(".carousel__ring")).toBeHidden();
-    await expect(page.locator('.carousel__picker[data-sequence-active="true"] .carousel__fill')).toBeVisible();
+    await expect(page.locator('.pagination__item[data-sequence-active="true"] .pagination__fill')).toBeVisible();
     await configure(page, { indicator: "next" });
     await expect(page.locator(".carousel__ring")).toBeVisible();
-    await expect(page.locator(".carousel__fill").first()).toBeHidden();
+    await expect(page.locator(".pagination__fill").first()).toBeHidden();
     await configure(page, { duration: null, autoPlay: false });
     await expect(page.locator(".carousel__ring")).toBeHidden();
     await page.locator(".carousel__next").click();
@@ -198,7 +211,7 @@ test("Lit generated Cards move their rendered content through transparent hosts"
 test("React showcase composes actual Cards and both visual treatments", async ({ page }) => {
   await page.goto("/#/component/Carousel/design");
   const example = page.locator('[data-usage-example="timed-both"]');
-  await expect(example.locator(".carousel__picker")).toHaveCount(3);
+  await expect(example.locator(".pagination__item")).toHaveCount(3);
   await expect(example.locator(".card").nth(0)).toBeVisible();
   await expect(example.locator(".card").nth(1)).toBeHidden();
   await example.locator(".carousel__next").click();

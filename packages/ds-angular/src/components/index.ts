@@ -28,6 +28,8 @@ export { MarkdownComponent, MarkdownBlockRendererComponent, MarkdownMarkRenderer
 export { NavListComponent, NavListItemComponent, NavListListComponent } from "./NavList/NavList.component.js";
 export { NavTreeComponent, NavTreeItemComponent, NavTreeListComponent } from "./NavTree/NavTree.component.js";
 export { OTPComponent, OTPGroupComponent } from "./OTP/OTP.component.js";
+export { PageNavigatorComponent } from "./PageNavigator/PageNavigator.component.js";
+export { PaginationComponent } from "./Pagination/Pagination.component.js";
 export { PopoverComponent } from "./Popover/Popover.component.js";
 export { PostcardComponent, PostcardContentComponent, PostcardFooterComponent, PostcardHeaderComponent } from "./Postcard/Postcard.component.js";
 export { ProfileFlagComponent } from "./ProfileFlag/ProfileFlag.component.js";

@@ -1,0 +1,39 @@
+@import "../../primitives/box-model.css";
+@import "./PageNavigator.tokens.css";
+@layer components.defaults {
+
+/* @generated:start styles */
+.page-navigator {
+  padding-block-start: var(--fsds-box-model-padding-block-start, 0);
+  padding-block-end: var(--fsds-box-model-padding-block-end, 0);
+  padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
+  padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
+  gap: var(--fsds-page-navigator-design-root-spacing-gap, 8px);
+  width: var(--fsds-box-model-width, auto);
+  min-width: var(--fsds-box-model-min-width, 0);
+  max-width: var(--fsds-box-model-max-width, none);
+  height: var(--fsds-box-model-height, auto);
+  min-height: var(--fsds-box-model-min-height, 0);
+  max-height: var(--fsds-box-model-max-height, none);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.page-navigator__field {
+  width: var(--fsds-page-navigator-design-field-sizing-width, 64px);
+}
+
+.page-navigator__input {
+  width: var(--fsds-page-navigator-design-input-sizing-width, 100%);
+}
+
+.page-navigator__total {
+  font-variant-numeric: tabular-nums;
+}
+/* @generated:end */
+
+}
+/* @custom:start overrides */
+
+/* @custom:end */

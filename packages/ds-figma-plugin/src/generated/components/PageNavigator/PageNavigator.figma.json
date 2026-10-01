@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "source": "@full-stack-ds/codegen/frameworks/figma",
+  "component": {
+    "name": "PageNavigator",
+    "cssPrefix": "page-navigator",
+    "rootElement": "div",
+    "effectiveRole": "group"
+  },
+  "anatomy": [
+    {
+      "name": "root",
+      "semanticElement": null,
+      "nativeTag": "div",
+      "isCompound": false,
+      "isRootOnly": true,
+      "layoutVariant": null
+    },
+    {
+      "name": "previous",
+      "semanticElement": null,
+      "nativeTag": null,
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "previousIcon",
+      "semanticElement": null,
+      "nativeTag": null,
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "field",
+      "semanticElement": null,
+      "nativeTag": "div",
+      "isCompound": false,
+      "isRootOnly": true,
+      "layoutVariant": null
+    },
+    {
+      "name": "input",
+      "semanticElement": "input",
+      "nativeTag": null,
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "context",
+      "semanticElement": null,
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": true,
+      "layoutVariant": null
+    },
+    {
+      "name": "total",
+      "semanticElement": null,
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "next",
+      "semanticElement": null,
+      "nativeTag": null,
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "nextIcon",
+      "semanticElement": null,
+      "nativeTag": null,
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "commit",
+      "semanticElement": null,
+      "nativeTag": null,
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "choices",
+      "semanticElement": null,
+      "nativeTag": null,
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    }
+  ],
+  "props": [
+    {
+      "name": "pages",
+      "safeName": "pages",
+      "type": "string[]",
+      "required": false,
+      "description": "Accessible labels in position order. For numbered pagination supply page-number labels; index remains zero-based.",
+      "defaultExpr": "[]",
+      "nodeKind": null
+    },
+    {
+      "name": "index",
+      "safeName": "index",
+      "type": "number",
+      "required": false,
+      "description": "Accepted current position for controlled use.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "defaultIndex",
+      "safeName": "defaultIndex",
+      "type": "number",
+      "required": false,
+      "description": "Initial position for uncontrolled selection.",
+      "defaultExpr": "0",
+      "nodeKind": null
+    },
+    {
+      "name": "onIndexChange",
+      "safeName": "onIndexChange",
+      "type": "(index: number) => void",
+      "required": false,
+      "description": "Requests a position; content fetching, visibility and acceptance belong to the consumer.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "presentation",
+      "safeName": "presentation",
+      "type": "PageNavigatorPresentation",
+      "required": false,
+      "description": "Indicators for a small set, or visible numbered/labeled pages.",
+      "defaultExpr": "\"indicators\"",
+      "nodeKind": null
+    },
+    {
+      "name": "label",
+      "safeName": "label",
+      "type": "string",
+      "required": false,
+      "description": "Accessible name for this set of choices.",
+      "defaultExpr": "\"Page navigation\"",
+      "nodeKind": null
+    },
+    {
+      "name": "disabled",
+      "safeName": "disabled",
+      "type": "boolean",
+      "required": false,
+      "description": "Prevent selection while the owning flow is unavailable.",
+      "defaultExpr": "false",
+      "nodeKind": null
+    },
+    {
+      "name": "pageCount",
+      "safeName": "pageCount",
+      "type": "number",
+      "required": false,
+      "description": "Known finite total. Omit to use the pages length; count-only navigation can leave pages empty.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "pageLabel",
+      "safeName": "pageLabel",
+      "type": "string",
+      "required": false,
+      "description": "Consumer-authored pageLabel text for the composed navigator.",
+      "defaultExpr": "\"Current page\"",
+      "nodeKind": null
+    },
+    {
+      "name": "previousLabel",
+      "safeName": "previousLabel",
+      "type": "string",
+      "required": false,
+      "description": "Consumer-authored previousLabel text for the composed navigator.",
+      "defaultExpr": "\"Previous page\"",
+      "nodeKind": null
+    },
+    {
+      "name": "nextLabel",
+      "safeName": "nextLabel",
+      "type": "string",
+      "required": false,
+      "description": "Consumer-authored nextLabel text for the composed navigator.",
+      "defaultExpr": "\"Next page\"",
+      "nodeKind": null
+    },
+    {
+      "name": "ofLabel",
+      "safeName": "ofLabel",
+      "type": "string",
+      "required": false,
+      "description": "Consumer-authored ofLabel text for the composed navigator.",
+      "defaultExpr": "\"of\"",
+      "nodeKind": null
+    },
+    {
+      "name": "commitLabel",
+      "safeName": "commitLabel",
+      "type": "string",
+      "required": false,
+      "description": "Consumer-authored commitLabel text for the composed navigator.",
+      "defaultExpr": "\"Go\"",
+      "nodeKind": null
+    },
+    {
+      "name": "showChoices",
+      "safeName": "showChoices",
+      "type": "boolean",
+      "required": false,
+      "description": "Compose clickable position choices alongside the field and bounded controls.",
+      "defaultExpr": "false",
+      "nodeKind": null
+    }
+  ],
+  "designBindings": [
+    {
+      "property": "spacing.gap",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "page-navigator.design.root.spacing.gap",
+      "cssVar": "--fsds-page-navigator-design-root-spacing-gap",
+      "cssProperty": "gap",
+      "selectorKey": "root",
+      "part": "root",
+      "defaultValue": "8px",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".page-navigator"
+    },
+    {
+      "property": "sizing.width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "page-navigator.design.field.sizing.width",
+      "cssVar": "--fsds-page-navigator-design-field-sizing-width",
+      "cssProperty": "width",
+      "selectorKey": "field",
+      "part": "field",
+      "defaultValue": "64px",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".page-navigator__field"
+    },
+    {
+      "property": "sizing.width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "page-navigator.design.input.sizing.width",
+      "cssVar": "--fsds-page-navigator-design-input-sizing-width",
+      "cssProperty": "width",
+      "selectorKey": "input",
+      "part": "input",
+      "defaultValue": "100%",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".page-navigator__input"
+    }
+  ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": null,
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": []
+    }
+  },
+  "variants": {},
+  "states": {
+    "flat": [],
+    "dimensions": null
+  },
+  "classRecipe": {
+    "base": "page-navigator",
+    "valueModifiers": [],
+    "booleanModifiers": [
+      {
+        "propName": "disabled",
+        "safeName": "disabled"
+      }
+    ]
+  },
+  "root": {
+    "element": "div",
+    "explicitRole": "group",
+    "effectiveRole": "group",
+    "labeling": [
+      "aria-label"
+    ],
+    "keyboard": [
+      {
+        "key": "Enter",
+        "action": "Commit the one-based page field as a bounded position request.",
+        "when": "focused"
+      },
+      {
+        "key": "Escape",
+        "action": "Restore the accepted position in the page field.",
+        "when": "focused"
+      }
+    ]
+  },
+  "css": {
+    "blocks": [
+      {
+        "selector": ".page-navigator",
+        "declarations": {
+          "--fsds-box-model-padding": "0",
+          "--fsds-box-model-padding-block": "0",
+          "--fsds-box-model-padding-block-start": "0",
+          "--fsds-box-model-padding-block-end": "0",
+          "--fsds-box-model-padding-inline": "0",
+          "--fsds-box-model-padding-inline-start": "0",
+          "--fsds-box-model-padding-inline-end": "0",
+          "--fsds-box-model-gap": "0",
+          "--fsds-box-model-width": "auto",
+          "--fsds-box-model-min-width": "0",
+          "--fsds-box-model-max-width": "none",
+          "--fsds-box-model-height": "auto",
+          "--fsds-box-model-min-height": "0",
+          "--fsds-box-model-max-height": "none",
+          "padding-block-start": "var(--fsds-box-model-padding-block-start)",
+          "padding-block-end": "var(--fsds-box-model-padding-block-end)",
+          "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
+          "padding-inline-end": "var(--fsds-box-model-padding-inline-end)",
+          "gap": "8px",
+          "width": "var(--fsds-box-model-width)",
+          "min-width": "var(--fsds-box-model-min-width)",
+          "max-width": "var(--fsds-box-model-max-width)",
+          "height": "var(--fsds-box-model-height)",
+          "min-height": "var(--fsds-box-model-min-height)",
+          "max-height": "var(--fsds-box-model-max-height)",
+          "display": "flex",
+          "align-items": "center",
+          "flex-wrap": "wrap"
+        }
+      },
+      {
+        "selector": ".page-navigator__field",
+        "declarations": {
+          "width": "64px"
+        }
+      },
+      {
+        "selector": ".page-navigator__input",
+        "declarations": {
+          "width": "100%"
+        }
+      },
+      {
+        "selector": ".page-navigator__total",
+        "declarations": {
+          "font-variant-numeric": "tabular-nums"
+        }
+      }
+    ],
+    "keyframes": []
+  },
+  "behavior": {
+    "channels": [
+      {
+        "name": "page",
+        "valueProp": "index",
+        "defaultValueProp": "defaultIndex",
+        "changeHandlerProp": "onIndexChange",
+        "valueType": "number",
+        "callbackKind": "value",
+        "isDisclosureChannel": false,
+        "disclosurePriority": 9007199254740991
+      }
+    ],
+    "dismissalTriggers": [],
+    "events": [],
+    "form": null,
+    "focus": {
+      "strategy": "none"
+    },
+    "portal": null
+  },
+  "surface": null,
+  "pagedSet": {
+    "realization": "descriptor-only",
+    "facts": {
+      "channel": "page",
+      "itemsProp": "pages",
+      "countProp": "pageCount",
+      "disabledProp": "disabled"
+    }
+  },
+  "figma": {
+    "intendedUse": "figma-library-materialization",
+    "documentationFrame": "PageNavigator / Documentation",
+    "componentSetName": "PageNavigator",
+    "propertySource": "IR styledProps + variants + states + behavior"
+  }
+}

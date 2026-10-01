@@ -12,11 +12,8 @@
       "controls",
       "previous",
       "pagination",
-      "picker",
-      "fill",
       "next",
-      "ring",
-      "marker"
+      "ring"
     ],
     "details": {
       "root": {
@@ -54,24 +51,9 @@
         "focusable": true
       },
       "pagination": {
-        "tag": "div",
-        "subcomponent": false,
-        "description": "pagination of the composed slide sequence.",
-        "role": "content"
-      },
-      "picker": {
-        "tag": "button",
-        "subcomponent": false,
-        "description": "picker of the composed slide sequence.",
-        "role": "trigger",
-        "interactive": true,
-        "focusable": true
-      },
-      "fill": {
-        "tag": "span",
-        "subcomponent": false,
-        "description": "fill of the composed slide sequence.",
-        "role": "decoration"
+        "componentRef": "fsds.Pagination",
+        "role": "content",
+        "description": "Reusable position selection composed with the slide channel; Pagination owns its buttons and markers."
       },
       "next": {
         "tag": "button",
@@ -86,12 +68,6 @@
         "subcomponent": false,
         "description": "ring of the composed slide sequence.",
         "role": "decoration"
-      },
-      "marker": {
-        "tag": "span",
-        "role": "decoration",
-        "subcomponent": false,
-        "description": "Visible dot or active pill within the larger picker hit area."
       }
     },
     "dom": {
@@ -149,47 +125,28 @@
               ]
             },
             {
-              "tag": "div",
+              "componentRef": "fsds.Pagination",
               "part": "pagination",
               "attrs": {
-                "role": "group",
-                "aria-label": "Choose slide"
+                "label": "Choose slide",
+                "presentation": "indicators"
               },
-              "children": [
-                {
-                  "tag": "button",
-                  "part": "picker",
-                  "attrs": {
-                    "type": "button"
-                  },
-                  "children": [
-                    {
-                      "tag": "span",
-                      "part": "marker",
-                      "attrs": {
-                        "aria-hidden": "true"
-                      },
-                      "children": [
-                        {
-                          "tag": "span",
-                          "part": "fill",
-                          "attrs": {
-                            "aria-hidden": "true"
-                          }
-                        }
-                      ]
-                    }
-                  ],
-                  "iterate": {
-                    "source": "prop:slides",
-                    "kind": "array",
-                    "itemType": "string"
-                  },
-                  "bindings": {
-                    "aria-label": "iter:item"
+              "bindings": {
+                "pages": "prop:slides",
+                "index": "channel:slide.value",
+                "progress": {
+                  "kind": "map",
+                  "source": "prop:indicator",
+                  "values": {
+                    "pagination": "elapsed",
+                    "next": "none",
+                    "both": "elapsed"
                   }
                 }
-              ]
+              },
+              "events": {
+                "indexChange": "channel:slide.onChange"
+              }
             },
             {
               "tag": "button",
@@ -276,9 +233,12 @@
         },
         {
           "name": "indicator",
-          "type": "CarouselIndicator",
           "default": "pagination",
-          "description": "Display the elapsed budget in the current pagination pill, around Next, or both."
+          "description": "Display the elapsed budget in the current pagination pill, around Next, or both.",
+          "propType": {
+            "kind": "ref",
+            "to": "CarouselIndicator"
+          }
         },
         {
           "name": "label",
@@ -321,7 +281,10 @@
     "previous": "previous",
     "next": "next",
     "rotation": "rotation",
-    "picker": "picker",
+    "picker": {
+      "componentPart": "pagination",
+      "part": "item"
+    },
     "timing": {
       "durationProp": "duration",
       "autoPlayProp": "autoPlay",
@@ -338,6 +301,7 @@
     "progress": [
       {
         "target": {
+          "componentPart": "pagination",
           "part": "fill"
         },
         "driver": {

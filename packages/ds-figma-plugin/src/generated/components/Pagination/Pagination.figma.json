@@ -1,0 +1,649 @@
+{
+  "schemaVersion": 1,
+  "source": "@full-stack-ds/codegen/frameworks/figma",
+  "component": {
+    "name": "Pagination",
+    "cssPrefix": "pagination",
+    "rootElement": "div",
+    "effectiveRole": "group"
+  },
+  "anatomy": [
+    {
+      "name": "root",
+      "semanticElement": null,
+      "nativeTag": "div",
+      "isCompound": false,
+      "isRootOnly": true,
+      "layoutVariant": null
+    },
+    {
+      "name": "item",
+      "semanticElement": "li",
+      "nativeTag": "button",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "marker",
+      "semanticElement": null,
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "fill",
+      "semanticElement": "div",
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
+      "name": "label",
+      "semanticElement": "label",
+      "nativeTag": "span",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    }
+  ],
+  "props": [
+    {
+      "name": "pages",
+      "safeName": "pages",
+      "type": "string[]",
+      "required": false,
+      "description": "Accessible labels in position order. For numbered pagination supply page-number labels; index remains zero-based.",
+      "defaultExpr": "[]",
+      "nodeKind": null
+    },
+    {
+      "name": "index",
+      "safeName": "index",
+      "type": "number",
+      "required": false,
+      "description": "Accepted current position for controlled use.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "defaultIndex",
+      "safeName": "defaultIndex",
+      "type": "number",
+      "required": false,
+      "description": "Initial position for uncontrolled selection.",
+      "defaultExpr": "0",
+      "nodeKind": null
+    },
+    {
+      "name": "onIndexChange",
+      "safeName": "onIndexChange",
+      "type": "(index: number) => void",
+      "required": false,
+      "description": "Requests a position; content fetching, visibility and acceptance belong to the consumer.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "presentation",
+      "safeName": "presentation",
+      "type": "PaginationPresentation",
+      "required": false,
+      "description": "Indicators for a small set, or visible numbered/labeled pages.",
+      "defaultExpr": "\"indicators\"",
+      "nodeKind": null
+    },
+    {
+      "name": "label",
+      "safeName": "label",
+      "type": "string",
+      "required": false,
+      "description": "Accessible name for this set of choices.",
+      "defaultExpr": "\"Choose page\"",
+      "nodeKind": null
+    },
+    {
+      "name": "disabled",
+      "safeName": "disabled",
+      "type": "boolean",
+      "required": false,
+      "description": "Prevent selection while the owning flow is unavailable.",
+      "defaultExpr": "false",
+      "nodeKind": null
+    },
+    {
+      "name": "progress",
+      "safeName": "progress",
+      "type": "PaginationProgress",
+      "required": false,
+      "description": "Enable a decorative elapsed projection supplied by an enclosing owner. This component never starts a timer.",
+      "defaultExpr": "\"none\"",
+      "nodeKind": null
+    }
+  ],
+  "designBindings": [
+    {
+      "property": "spacing.gap",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "pagination.design.root.spacing.gap",
+      "cssVar": "--fsds-pagination-design-root-spacing-gap",
+      "cssProperty": "gap",
+      "selectorKey": "root",
+      "part": "root",
+      "defaultValue": "8px",
+      "resolvesTo": "pagination.spacing.gap",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "pagination.design.root.foreground.color",
+      "cssVar": "--fsds-pagination-design-root-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": "root",
+      "part": "root",
+      "defaultValue": "#141414",
+      "resolvesTo": "pagination.color.foreground",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination"
+    },
+    {
+      "property": "spacing.padding",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "pagination.design.item.spacing.padding",
+      "cssVar": "--fsds-pagination-design-item-spacing-padding",
+      "cssProperty": "padding",
+      "selectorKey": "item",
+      "part": "item",
+      "defaultValue": "0",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__item"
+    },
+    {
+      "property": "sizing.width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "pagination.design.item.sizing.width",
+      "cssVar": "--fsds-pagination-design-item-sizing-width",
+      "cssProperty": "width",
+      "selectorKey": "item",
+      "part": "item",
+      "defaultValue": "24px",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__item"
+    },
+    {
+      "property": "sizing.height",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "pagination.design.item.sizing.height",
+      "cssVar": "--fsds-pagination-design-item-sizing-height",
+      "cssProperty": "height",
+      "selectorKey": "item",
+      "part": "item",
+      "defaultValue": "24px",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__item"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "pagination.design.item.foreground.color",
+      "cssVar": "--fsds-pagination-design-item-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": "item",
+      "part": "item",
+      "defaultValue": "inherit",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__item"
+    },
+    {
+      "property": "sizing.width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "pagination.design.marker.sizing.width",
+      "cssVar": "--fsds-pagination-design-marker-sizing-width",
+      "cssProperty": "width",
+      "selectorKey": "marker",
+      "part": "marker",
+      "defaultValue": "8px",
+      "resolvesTo": "pagination.size.dot-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__marker"
+    },
+    {
+      "property": "sizing.height",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "pagination.design.marker.sizing.height",
+      "cssVar": "--fsds-pagination-design-marker-sizing-height",
+      "cssProperty": "height",
+      "selectorKey": "marker",
+      "part": "marker",
+      "defaultValue": "8px",
+      "resolvesTo": "pagination.size.dot-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__marker"
+    },
+    {
+      "property": "shape.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "pagination.design.marker.shape.radius",
+      "cssVar": "--fsds-pagination-design-marker-shape-radius",
+      "cssProperty": "border-radius",
+      "selectorKey": "marker",
+      "part": "marker",
+      "defaultValue": "9999px",
+      "resolvesTo": "pagination.size.radius",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__marker"
+    },
+    {
+      "property": "background.fill",
+      "group": "background",
+      "valueType": "color",
+      "slot": "pagination.design.marker.background.fill",
+      "cssVar": "--fsds-pagination-design-marker-background-fill",
+      "cssProperty": "background-color",
+      "selectorKey": "marker",
+      "part": "marker",
+      "defaultValue": "#d0d0d0",
+      "resolvesTo": "pagination.color.track",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__marker"
+    },
+    {
+      "property": "background.fill",
+      "group": "background",
+      "valueType": "color",
+      "slot": "pagination.design.fill.background.fill",
+      "cssVar": "--fsds-pagination-design-fill-background-fill",
+      "cssProperty": "background-color",
+      "selectorKey": "fill",
+      "part": "fill",
+      "defaultValue": "#141414",
+      "resolvesTo": "pagination.color.foreground",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination__fill"
+    },
+    {
+      "property": "sizing.width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "pagination.design.condition-aea309601ea3.sizing.width",
+      "cssVar": "--fsds-pagination-design-condition-aea309601ea3-sizing-width",
+      "cssProperty": "width",
+      "selectorKey": ".pagination--indicators .pagination__item[data-current=\"true\"] .pagination__marker",
+      "part": null,
+      "defaultValue": "32px",
+      "resolvesTo": "pagination.size.active-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination--indicators .pagination__item[data-current=\"true\"] .pagination__marker"
+    },
+    {
+      "property": "background.fill",
+      "group": "background",
+      "valueType": "color",
+      "slot": "pagination.design.condition-a2b8c9e94dbf.background.fill",
+      "cssVar": "--fsds-pagination-design-condition-a2b8c9e94dbf-background-fill",
+      "cssProperty": "background-color",
+      "selectorKey": ".pagination--pages .pagination__item[data-current=\"true\"]",
+      "part": null,
+      "defaultValue": "#0566fe",
+      "resolvesTo": "pagination.color.current",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination--pages .pagination__item[data-current=\"true\"]"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "pagination.design.condition-a2b8c9e94dbf.foreground.color",
+      "cssVar": "--fsds-pagination-design-condition-a2b8c9e94dbf-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": ".pagination--pages .pagination__item[data-current=\"true\"]",
+      "part": null,
+      "defaultValue": "#fafafa",
+      "resolvesTo": "pagination.color.on-current",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination--pages .pagination__item[data-current=\"true\"]"
+    },
+    {
+      "property": "sizing.width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "pagination.design.condition-d13042c5cc6d.sizing.width",
+      "cssVar": "--fsds-pagination-design-condition-d13042c5cc6d-sizing-width",
+      "cssProperty": "width",
+      "selectorKey": ".pagination--pages .pagination__item",
+      "part": null,
+      "defaultValue": "auto",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination--pages .pagination__item"
+    },
+    {
+      "property": "sizing.min-width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "pagination.design.condition-d13042c5cc6d.sizing.min-width",
+      "cssVar": "--fsds-pagination-design-condition-d13042c5cc6d-sizing-min-width",
+      "cssProperty": "min-width",
+      "selectorKey": ".pagination--pages .pagination__item",
+      "part": null,
+      "defaultValue": "24px",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination--pages .pagination__item"
+    },
+    {
+      "property": "spacing.padding",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "pagination.design.condition-d13042c5cc6d.spacing.padding",
+      "cssVar": "--fsds-pagination-design-condition-d13042c5cc6d-spacing-padding",
+      "cssProperty": "padding",
+      "selectorKey": ".pagination--pages .pagination__item",
+      "part": null,
+      "defaultValue": "4px 8px",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination--pages .pagination__item"
+    },
+    {
+      "property": "shape.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "pagination.design.condition-d13042c5cc6d.shape.radius",
+      "cssVar": "--fsds-pagination-design-condition-d13042c5cc6d-shape-radius",
+      "cssProperty": "border-radius",
+      "selectorKey": ".pagination--pages .pagination__item",
+      "part": null,
+      "defaultValue": "4px",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".pagination--pages .pagination__item"
+    }
+  ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": null,
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": []
+    }
+  },
+  "variants": {
+    "presentation": [
+      "indicators",
+      "pages"
+    ],
+    "progress": [
+      "none",
+      "elapsed"
+    ]
+  },
+  "states": {
+    "flat": [],
+    "dimensions": null
+  },
+  "classRecipe": {
+    "base": "pagination",
+    "valueModifiers": [
+      {
+        "propName": "presentation",
+        "safeName": "presentation",
+        "defaultExpr": "\"indicators\""
+      },
+      {
+        "propName": "progress",
+        "safeName": "progress",
+        "defaultExpr": "\"none\""
+      }
+    ],
+    "booleanModifiers": [
+      {
+        "propName": "disabled",
+        "safeName": "disabled"
+      }
+    ]
+  },
+  "root": {
+    "element": "div",
+    "explicitRole": "group",
+    "effectiveRole": "group",
+    "labeling": [
+      "aria-label"
+    ],
+    "keyboard": [
+      {
+        "key": "Enter|Space",
+        "action": "Request the focused position.",
+        "when": "focused"
+      }
+    ]
+  },
+  "css": {
+    "blocks": [
+      {
+        "selector": ".pagination",
+        "declarations": {
+          "--fsds-box-model-padding": "0",
+          "--fsds-box-model-padding-block": "0",
+          "--fsds-box-model-padding-block-start": "0",
+          "--fsds-box-model-padding-block-end": "0",
+          "--fsds-box-model-padding-inline": "0",
+          "--fsds-box-model-padding-inline-start": "0",
+          "--fsds-box-model-padding-inline-end": "0",
+          "--fsds-box-model-gap": "0",
+          "--fsds-box-model-width": "auto",
+          "--fsds-box-model-min-width": "0",
+          "--fsds-box-model-max-width": "none",
+          "--fsds-box-model-height": "auto",
+          "--fsds-box-model-min-height": "0",
+          "--fsds-box-model-max-height": "none",
+          "--fsds-pagination-color-foreground": "var(--fsds-semantic-color-foreground-primary, #141414)",
+          "--fsds-pagination-color-track": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-pagination-spacing-gap": "var(--fsds-core-spacing-size-04, 8px)",
+          "--fsds-pagination-size-dot-size": "var(--fsds-core-spacing-size-04, 8px)",
+          "--fsds-pagination-size-active-size": "var(--fsds-core-spacing-size-08, 32px)",
+          "--fsds-pagination-size-radius": "var(--fsds-core-shape-radius-full, 9999px)",
+          "--fsds-pagination-color-on-current": "var(--fsds-semantic-color-foreground-inverse, #fafafa)",
+          "--fsds-pagination-color-current": "var(--fsds-semantic-color-action-background-primary-default, #0566fe)",
+          "padding-block-start": "var(--fsds-box-model-padding-block-start)",
+          "padding-block-end": "var(--fsds-box-model-padding-block-end)",
+          "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
+          "padding-inline-end": "var(--fsds-box-model-padding-inline-end)",
+          "gap": "var(--fsds-pagination-spacing-gap, 8px)",
+          "width": "var(--fsds-box-model-width)",
+          "min-width": "var(--fsds-box-model-min-width)",
+          "max-width": "var(--fsds-box-model-max-width)",
+          "height": "var(--fsds-box-model-height)",
+          "min-height": "var(--fsds-box-model-min-height)",
+          "max-height": "var(--fsds-box-model-max-height)",
+          "display": "flex",
+          "align-items": "center",
+          "color": "var(--fsds-pagination-color-foreground, #141414)"
+        }
+      },
+      {
+        "selector": ".pagination__item",
+        "declarations": {
+          "position": "relative",
+          "padding": "0",
+          "border": "0",
+          "cursor": "pointer",
+          "display": "inline-flex",
+          "align-items": "center",
+          "justify-content": "center",
+          "width": "24px",
+          "height": "24px",
+          "background": "transparent",
+          "font": "inherit",
+          "color": "inherit"
+        }
+      },
+      {
+        "selector": ".pagination__marker",
+        "declarations": {
+          "width": "var(--fsds-pagination-size-dot-size, 8px)",
+          "height": "var(--fsds-pagination-size-dot-size, 8px)",
+          "border-radius": "var(--fsds-pagination-size-radius, 9999px)",
+          "overflow": "hidden",
+          "background-color": "var(--fsds-pagination-color-track, #d0d0d0)",
+          "display": "block",
+          "position": "relative"
+        }
+      },
+      {
+        "selector": ".pagination__fill",
+        "declarations": {
+          "position": "absolute",
+          "inset": "0",
+          "background-color": "var(--fsds-pagination-color-foreground, #141414)",
+          "transform-origin": "left center",
+          "display": "none"
+        }
+      },
+      {
+        "selector": ".pagination__label",
+        "declarations": {
+          "display": "none"
+        }
+      },
+      {
+        "selector": ".pagination--pages .pagination__label",
+        "declarations": {
+          "display": "inline"
+        }
+      },
+      {
+        "selector": ".pagination--pages .pagination__marker",
+        "declarations": {
+          "display": "none"
+        }
+      },
+      {
+        "selector": ".pagination--indicators .pagination__item[data-current=\"true\"] .pagination__marker",
+        "declarations": {
+          "width": "var(--fsds-pagination-size-active-size, 32px)"
+        }
+      },
+      {
+        "selector": ".pagination--pages .pagination__item[data-current=\"true\"]",
+        "declarations": {
+          "background-color": "var(--fsds-pagination-color-current, #0566fe)",
+          "color": "var(--fsds-pagination-color-on-current, #fafafa)"
+        }
+      },
+      {
+        "selector": ".pagination__fill[hidden]",
+        "declarations": {
+          "display": "none !important"
+        }
+      },
+      {
+        "selector": ".pagination--elapsed .pagination__fill",
+        "declarations": {
+          "display": "block"
+        }
+      },
+      {
+        "selector": ".pagination--pages .pagination__item",
+        "declarations": {
+          "width": "auto",
+          "min-width": "24px",
+          "padding": "4px 8px",
+          "border-radius": "4px"
+        }
+      },
+      {
+        "selector": ".pagination__fill:dir(rtl)",
+        "declarations": {
+          "transform-origin": "right center"
+        }
+      }
+    ],
+    "keyframes": []
+  },
+  "behavior": {
+    "channels": [
+      {
+        "name": "page",
+        "valueProp": "index",
+        "defaultValueProp": "defaultIndex",
+        "changeHandlerProp": "onIndexChange",
+        "valueType": "number",
+        "callbackKind": "value",
+        "isDisclosureChannel": false,
+        "disclosurePriority": 9007199254740991
+      }
+    ],
+    "dismissalTriggers": [],
+    "events": [],
+    "form": null,
+    "focus": {
+      "strategy": "none",
+      "description": "Normal native button tab order; selection does not move focus into consumer content."
+    },
+    "portal": null
+  },
+  "surface": null,
+  "pagedSet": {
+    "realization": "descriptor-only",
+    "facts": {
+      "channel": "page",
+      "itemsProp": "pages",
+      "disabledProp": "disabled"
+    }
+  },
+  "figma": {
+    "intendedUse": "figma-library-materialization",
+    "documentationFrame": "Pagination / Documentation",
+    "componentSetName": "Pagination",
+    "propertySource": "IR styledProps + variants + states + behavior"
+  }
+}

@@ -1,3 +1,4 @@
+import { compositionCss } from "../composition-css";
 // Vite plugin: React preview pipeline.
 //
 // Responsibilities at a glance:
@@ -165,7 +166,7 @@ export function reactPreviewPlugin(): Plugin {
           const entryId = `${VIRTUAL_ID_PREFIX}${parsed.componentName}/entry.tsx`;
           const html = buildReactPreviewShellHtml({
             componentName: parsed.componentName,
-            componentCss: component.sources.react?.css?.code,
+            componentCss: compositionCss(bundle.components, parsed.componentName, "react"),
             tokensCss: bundle.tokensCss,
             entryId,
           });

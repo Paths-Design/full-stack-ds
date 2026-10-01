@@ -41,42 +41,6 @@
   gap: var(--fsds-carousel-design-controls-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
 }
 
-.carousel__pagination {
-  display: flex;
-  align-items: center;
-  gap: var(--fsds-carousel-design-pagination-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
-}
-
-.carousel__picker {
-  position: relative;
-  padding: var(--fsds-carousel-design-picker-spacing-padding, 0);
-  border: 0;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: transparent;
-}
-
-.carousel__picker[data-sequence-active="true"] {
-  width: 48px;
-}
-
-.carousel__fill {
-  position: absolute;
-  inset: 0;
-  background-color: var(--fsds-carousel-design-fill-background-fill, var(--fsds-carousel-color-progress, #141414));
-  transform-origin: left center;
-  pointer-events: none;
-  display: none;
-}
-
-.carousel__fill:dir(rtl) {
-  transform-origin: right center;
-}
-
 .carousel__ring {
   position: absolute;
   inset: -4px;
@@ -135,24 +99,6 @@
   align-self: flex-start;
   padding-inline: var(--fsds-carousel-design-rotation-spacing-padding-inline, 12px);
   font: inherit;
-}
-
-.carousel__marker {
-  width: var(--fsds-carousel-design-marker-sizing-width, var(--fsds-carousel-size-dot-size, 8px));
-  height: var(--fsds-carousel-design-marker-sizing-height, var(--fsds-carousel-size-dot-size, 8px));
-  border-radius: var(--fsds-carousel-design-marker-shape-radius, var(--fsds-carousel-size-radius, 9999px));
-  overflow: hidden;
-  background-color: var(--fsds-carousel-design-marker-background-fill, var(--fsds-carousel-color-track, #d0d0d0));
-  display: block;
-  position: relative;
-}
-
-.carousel__picker[data-sequence-active="true"] .carousel__marker {
-  width: var(--fsds-carousel-design-condition-2d8237d36499-sizing-width, var(--fsds-carousel-size-active-size, 32px));
-}
-
-.carousel--pagination .carousel__fill, .carousel--both .carousel__fill {
-  display: block;
 }
 
 .carousel--next .carousel__ring, .carousel--both .carousel__ring {

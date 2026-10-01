@@ -1,0 +1,3 @@
+{"name": "page-field", "description": "A composed current-page field, known total and bounded navigation. Enter, blur or Go commits the draft.", "tree": {"fsds.PageNavigator": {"props": {"pageCount": 15}}}}
+{"name": "combined-controls", "description": "One accepted position drives the field and selectable stages. The surrounding flow owns validation and completion.", "tree": {"fsds.PageNavigator": {"props": {"pages": ["Profile", "Preferences", "Confirm"], "presentation": "pages", "defaultIndex": 1, "showChoices": true}}}}
+{"name": "empty-set", "description": "Empty collections expose zero total and disable navigation.", "tree": {"fsds.PageNavigator": {"props": {"pageCount": 0}}}}

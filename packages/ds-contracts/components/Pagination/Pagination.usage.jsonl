@@ -1,0 +1,4 @@
+{"name": "indicators", "description": "Standalone position selection for a finite flow. Pagination does not own the flow content.", "tree": {"fsds.Pagination": {"props": {"pages": ["Overview", "Details", "Review"]}}}}
+{"name": "numbered-pages", "description": "Visible page labels with a zero-based accepted index, suitable for composing with result pages.", "tree": {"fsds.Pagination": {"props": {"pages": ["1", "2", "3", "4", "5"], "presentation": "pages", "defaultIndex": 1}}}}
+{"name": "dialog-stages", "description": "Labeled stages can share the same control; the dialog retains presence and validation policy.", "tree": {"fsds.Pagination": {"props": {"pages": ["Profile", "Preferences", "Confirm"], "presentation": "pages"}}}}
+{"name": "unavailable", "description": "The content owner can disable selection while a page is unavailable.", "tree": {"fsds.Pagination": {"props": {"pages": ["1", "2", "3"], "presentation": "pages", "disabled": true}}}}

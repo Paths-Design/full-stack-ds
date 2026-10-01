@@ -1,10 +1,11 @@
 // @generated:start imports
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createCarouselStyles } from "./Carousel.styles";
 import { Icon } from "../Icon/Icon";
+import { Pagination } from "../Pagination/Pagination";
 // @generated:end
 
 // @generated:start types
@@ -32,7 +33,11 @@ export interface CarouselProps {
 // @generated:start component
 export function Carousel({
   slides = [],
+  index: controlledSlide,
+  indicator = "pagination",
   label = "Featured content",
+  defaultIndex = 0,
+  onIndexChange,
   children,
   style,
   testID,
@@ -41,6 +46,13 @@ export function Carousel({
 }: CarouselProps) {
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createCarouselStyles(fsdsTheme), [fsdsTheme]);
+  const [uncontrolledSlide, setUncontrolledSlide] = useState<number>((defaultIndex ?? 0) as number);
+  const slide = controlledSlide ?? uncontrolledSlide;
+  const setSlideValue = useCallback((next: number) => {
+    if (controlledSlide === undefined) setUncontrolledSlide(next);
+    onIndexChange?.(next);
+  }, [controlledSlide, onIndexChange]);
+
   return (
     <View
       testID={testID}
@@ -71,28 +83,14 @@ export function Carousel({
             size="sm"
           />
         </Pressable>
-        <View
-          style={styles.pagination}
-        >
-          {(slides ?? []).map((item, index) => (
-              <Pressable
-                key={index}
-                style={styles.picker}
-                accessibilityLabel={item}
-                accessibilityRole="button"
-              >
-                <View
-                  style={styles.marker}
-                  accessible={false}
-                >
-                  <View
-                    style={styles.fill}
-                    accessible={false}
-                  />
-                </View>
-              </Pressable>
-            ))}
-        </View>
+        <Pagination
+          pages={slides}
+          index={slide}
+          progress={(indicator === "pagination" ? "elapsed" : (indicator === "next" ? "none" : "elapsed"))}
+          label="Choose slide"
+          presentation="indicators"
+          onIndexChange={setSlideValue}
+        />
         <Pressable
           style={styles.next}
           accessibilityRole="button"

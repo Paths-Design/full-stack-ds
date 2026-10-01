@@ -1,3 +1,4 @@
+import { compositionCss } from "../composition-css";
 // Vite plugin: Svelte preview pipeline.
 //
 // Same shape as fsds-react-preview / fsds-vue-preview. Serves an HTML shell
@@ -108,7 +109,7 @@ export function sveltePreviewPlugin(): Plugin {
           const html = buildCommonPreviewShellHtml({
             componentName: parsed.componentName,
             framework: "svelte",
-            componentCss: component.sources.svelte?.css?.code,
+            componentCss: compositionCss(bundle.components, parsed.componentName, "svelte"),
             tokensCss: bundle.tokensCss,
             entryId,
           });

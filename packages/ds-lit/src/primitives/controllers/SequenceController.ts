@@ -8,5 +8,6 @@ export class SequenceController implements ReactiveController {
   }
   hostUpdated() { this.sequence.sync(this.options()); }
   hostDisconnected() { this.sequence.destroy(); }
+  requestIndex = (index: number) => this.sequence.requestIndex(index);
   bindRoot = (element: Element | undefined) => this.sequence.bindRoot(element);
 }

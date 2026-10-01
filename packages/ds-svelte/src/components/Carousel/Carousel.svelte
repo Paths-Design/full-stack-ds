@@ -2,6 +2,7 @@
 // @generated:start imports
 import { useCarousel } from "./useCarousel.svelte.js";
 import Icon from "../Icon/Icon.svelte";
+import Pagination from "../Pagination/Pagination.svelte";
 import { createSequenceBudget } from "../../primitives/sequence-budget.js";
 // @generated:end
 
@@ -40,7 +41,7 @@ const behavior = useCarousel({
   defaultIndex: () => defaultIndex,
   onIndexChange: () => onIndexChange,
 });
-const sequence = createSequenceBudget({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__picker"},"progress":[{"selector":".carousel__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]});
+const sequence = createSequenceBudget({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]});
 $effect(() => { sequence.sync({
   index: behavior.slide, labels: slides, autoPlay: autoPlay,
   durationMs: duration === undefined ? 6000 : duration,
@@ -73,15 +74,7 @@ const classes = $derived(
     <button class={'carousel__previous'} type="button" aria-label="Previous slide">
       <Icon name="arrow-left" size="sm" />
     </button>
-    <div class={'carousel__pagination'} role="group" aria-label="Choose slide">
-      {#each (slides ?? []) as item, index (index)}
-      <button class={'carousel__picker'} type="button" aria-label={item}>
-        <span class={'carousel__marker'} aria-hidden="true">
-          <span class={'carousel__fill'} aria-hidden="true"></span>
-        </span>
-      </button>
-      {/each}
-    </div>
+    <Pagination class={'carousel__pagination'} label="Choose slide" presentation="indicators" onIndexChange={sequence.requestIndex} pages={slides} index={behavior.slide} progress={(indicator === "pagination" ? "elapsed" : (indicator === "next" ? "none" : "elapsed"))} />
     <button class={'carousel__next'} type="button" aria-label="Next slide">
       <span class={'carousel__ring'} aria-hidden="true"></span>
       <Icon name="arrow-right" size="sm" />

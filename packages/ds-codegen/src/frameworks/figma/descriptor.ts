@@ -53,6 +53,7 @@ export type FigmaComponentDescriptorV1 = {
     portal: unknown;
   };
   surface: unknown;
+  pagedSet?: { realization: "descriptor-only"; facts: { channel: string; itemsProp: string; countProp?: string; disabledProp?: string } };
   figma: {
     intendedUse: "figma-library-materialization";
     documentationFrame: string;
@@ -117,6 +118,11 @@ export function assertFigmaComponentDescriptorV1(
   }
 
   if (!isRecord(descriptor.css)) throw new Error("css block is required.");
+  if (descriptor.pagedSet !== undefined) {
+    if (!isRecord(descriptor.pagedSet) || descriptor.pagedSet.realization !== "descriptor-only" || !isRecord(descriptor.pagedSet.facts)) throw new Error("pagedSet must contain descriptor-only normalized facts.");
+    assertString(descriptor.pagedSet.facts.channel, "pagedSet.facts.channel");
+    assertString(descriptor.pagedSet.facts.itemsProp, "pagedSet.facts.itemsProp");
+  }
   if (descriptor.motion !== undefined) {
     if (!isRecord(descriptor.motion) || descriptor.motion.realization !== "descriptor-only") {
       throw new Error("motion.realization must be descriptor-only.");

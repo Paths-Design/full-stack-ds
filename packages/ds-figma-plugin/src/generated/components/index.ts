@@ -29,6 +29,8 @@ import Markdown from "./Markdown/Markdown.figma.json" with { type: "json" };
 import NavList from "./NavList/NavList.figma.json" with { type: "json" };
 import NavTree from "./NavTree/NavTree.figma.json" with { type: "json" };
 import OTP from "./OTP/OTP.figma.json" with { type: "json" };
+import PageNavigator from "./PageNavigator/PageNavigator.figma.json" with { type: "json" };
+import Pagination from "./Pagination/Pagination.figma.json" with { type: "json" };
 import Popover from "./Popover/Popover.figma.json" with { type: "json" };
 import Postcard from "./Postcard/Postcard.figma.json" with { type: "json" };
 import ProfileFlag from "./ProfileFlag/ProfileFlag.figma.json" with { type: "json" };
@@ -84,6 +86,8 @@ export const figmaComponentRegistry = {
   "NavList": NavList,
   "NavTree": NavTree,
   "OTP": OTP,
+  "PageNavigator": PageNavigator,
+  "Pagination": Pagination,
   "Popover": Popover,
   "Postcard": Postcard,
   "ProfileFlag": ProfileFlag,
