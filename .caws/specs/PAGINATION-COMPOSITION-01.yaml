@@ -84,11 +84,11 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Controlled/uncontrolled Pagination tests assert accepted aria-current, repeated-label identity, disabled/empty behavior and requests without content/time; all five web standalone browser cases pass in the reconciled 42-case run."
-    recorded_at: "2026-10-01T09:31:55.959Z"
+    evidence_ref: "Controlled/uncontrolled Pagination tests assert accepted aria-current, repeated-label identity, disabled/empty behavior and requests without content/time; all five web standalone browser cases pass in the reconciled 42-case run. Raw executed-check output: docs/internal/pagination-composition/pagination-reconciled-root.log; receipt: docs/internal/pagination-composition/receipt.json. Runtime assertions were executed and inspected separately; CAWS re-derives the committed source witness and commit because its runner does not execute Vitest or Playwright. Generated test-output logs remain ignored under repository policy."
+    recorded_at: "2026-10-01T09:40:47.663Z"
     command: pnpm test -- --maxWorkers=1
     exit_code: 0
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/docs/internal/pagination-composition/pagination-reconciled-root.log
+    artifact_path: src/consumption/pagination.test.tsx
     commit_sha: "205a2ca05ecefb00dc1d5dda495e6e6c51e5dc00"
   - criterion_id: A2
     status: pass
