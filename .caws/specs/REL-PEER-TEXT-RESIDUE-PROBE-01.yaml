@@ -72,3 +72,10 @@ evidence:
     test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A2 output-only observation detects plausible identity range and task corruption"
     commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
     test_verified_at: "34150a3b1427e97b81aff7bec5a54646836277ba"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: All eight omitted values independently changed with identical entire artifact; exact omitted dataset/key/field inventory asserted; unsupported host task and presentation-only residue independently checked.
+    recorded_at: "2026-10-01T18:31:12.938Z"
+    test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A3 actual information loss is distinct from presentation residue and unsupported tasks"
+    commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
+    test_verified_at: "93b91e66fd4b648ed2f718e809aeaa77bb9b183d"
