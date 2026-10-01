@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-09-30
-verified_at_commit: db803d5714f5f083c285dddd1e0400be8eb09abb
+verified_at_commit: 9b7b89725912ab92f130ae935e2ebe7b8492899a
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -269,3 +269,9 @@ Carousel adds normalized sequence and motion facts without another rendered prim
 Each Carousel indicator mode explicitly selects its visible decorations in the
 style contract, including the combined mode; the variant audit checks those
 carriers and browser tests check the resulting visibility.
+
+Figma descriptors carry normalized motion facts with a `descriptor-only`
+realization label. Their serialized sequence metadata preserves the control
+channel, shared reading budget, both progress bindings and size-aware movement
+profile. Renamed-channel and transfer tests establish that metadata survives
+emission; they do not establish a Figma prototype or native execution.
