@@ -2,9 +2,11 @@ id: DOCS-INTERNAL-PROJECTION-BOUNDARY-01
 title: 'Exclude internal documents from showcase projection even when tracked'
 risk_tier: 2
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Public docs exclude internal tracked and injected sources, verified by inspected source and executed regression corpus root framework and rail receipts; generated receipts remain ignored.'
 created_at: '2026-10-01T03:26:35.488Z'
-updated_at: '2026-10-01T03:41:12.571Z'
+updated_at: '2026-10-01T03:41:50.976Z'
 created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
 blast_radius:
   modules:
