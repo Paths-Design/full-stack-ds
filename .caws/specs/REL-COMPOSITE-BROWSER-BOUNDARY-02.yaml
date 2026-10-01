@@ -94,3 +94,10 @@ evidence:
     command: "pnpm run e2e:analytical"
     exit_code: 0
     commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Different-endpoint and distinct-snapshot browser cases recover each member by dataset, view path and typed grain; swapping dataset bindings at unchanged keys/totals fails view identity. Unit extent check excludes unused field values. Retained browser/baseline-report.json, inspected Different-endpoints and Distinct-snapshots screenshots, gates/root.log under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:31.800Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
