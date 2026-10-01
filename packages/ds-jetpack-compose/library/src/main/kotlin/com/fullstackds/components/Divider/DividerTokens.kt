@@ -39,9 +39,9 @@ val dividerTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "divider.color.default" to ComponentTokenDefinition(
-            name = "divider.color.default",
-            cssVar = "--fsds-divider-color-default",
+        "divider.color" to ComponentTokenDefinition(
+            name = "divider.color",
+            cssVar = "--fsds-divider-color",
             ref = "semantic.color.border.light",
             fallback = "#b8b8b8",
         ),

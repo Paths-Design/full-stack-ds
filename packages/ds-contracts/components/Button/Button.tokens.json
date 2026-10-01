@@ -79,7 +79,7 @@
     "fallback": "#0566fe",
     "layer": "semantic"
   },
-  "button.size.gap.default": {
+  "button.size.gap": {
     "resolvesTo": "semantic.action.size.medium.gap",
     "fallback": "8px",
     "layer": "semantic"

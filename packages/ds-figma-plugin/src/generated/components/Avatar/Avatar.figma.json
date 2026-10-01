@@ -90,7 +90,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "9999px",
-      "resolvesTo": "avatar.size.radius.default",
+      "resolvesTo": "avatar.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -106,7 +106,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#f7f7f7",
-      "resolvesTo": "avatar.color.background.default",
+      "resolvesTo": "avatar.color.background",
       "editableTargets": [
         "web"
       ],
@@ -138,7 +138,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#b8b8b8",
-      "resolvesTo": "avatar.color.border.default",
+      "resolvesTo": "avatar.color.border",
       "editableTargets": [
         "web"
       ],
@@ -169,7 +169,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "1px",
-      "resolvesTo": "avatar.size.border.default",
+      "resolvesTo": "avatar.size.border",
       "editableTargets": [
         "web"
       ],
@@ -185,7 +185,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "16px",
-      "resolvesTo": "avatar.size.default",
+      "resolvesTo": "avatar.size",
       "editableTargets": [
         "web"
       ],
@@ -201,7 +201,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "16px",
-      "resolvesTo": "avatar.size.default",
+      "resolvesTo": "avatar.size",
       "editableTargets": [
         "web"
       ],
@@ -238,6 +238,21 @@
         "web"
       ],
       "selector": ".avatar"
+    },
+    {
+      "property": "media.fit",
+      "group": "media",
+      "valueType": "enum",
+      "slot": "avatar.design.image.media.fit",
+      "cssVar": "--fsds-avatar-design-image-media-fit",
+      "cssProperty": "object-fit",
+      "selectorKey": "image",
+      "part": "image",
+      "defaultValue": "cover",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".avatar__image"
     },
     {
       "property": "sizing.width",
@@ -439,16 +454,16 @@
           "--fsds-box-model-height": "var(--fsds-semantic-glyph-size-medium-extent, 16px)",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-avatar-size-default": "var(--fsds-core-spacing-size-06, 16px)",
+          "--fsds-avatar-size": "var(--fsds-core-spacing-size-06, 16px)",
           "--fsds-avatar-size-small": "var(--fsds-core-spacing-size-06, 16px)",
           "--fsds-avatar-size-medium": "var(--fsds-core-spacing-size-07, 24px)",
           "--fsds-avatar-size-large": "var(--fsds-core-spacing-size-08, 32px)",
           "--fsds-avatar-size-extra-large": "var(--fsds-core-spacing-size-09, 48px)",
-          "--fsds-avatar-size-radius-default": "var(--fsds-semantic-shape-control-radius-pill, 9999px)",
-          "--fsds-avatar-size-border-default": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
-          "--fsds-avatar-color-background-default": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
+          "--fsds-avatar-size-radius": "var(--fsds-semantic-shape-control-radius-pill, 9999px)",
+          "--fsds-avatar-size-border": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
+          "--fsds-avatar-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "--fsds-avatar-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-avatar-color-border-default": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-avatar-color-border": "var(--fsds-semantic-color-border-light, #b8b8b8)",
           "--fsds-avatar-typography-font-weight-medium": "var(--fsds-core-typography-weight-medium, 500)",
           "--fsds-avatar-typography-font-family-sans": "var(--fsds-core-typography-font-family-sans, \"Inter\", sans-serif)",
           "display": "inline-flex",
@@ -461,20 +476,20 @@
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
           "padding-inline-end": "var(--fsds-box-model-padding-inline-end)",
           "gap": "var(--fsds-box-model-gap)",
-          "width": "var(--fsds-avatar-size-default, 16px)",
+          "width": "var(--fsds-avatar-size, 16px)",
           "min-width": "var(--fsds-box-model-min-width)",
           "max-width": "var(--fsds-box-model-max-width)",
-          "height": "var(--fsds-avatar-size-default, 16px)",
+          "height": "var(--fsds-avatar-size, 16px)",
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
           "overflow": "hidden",
           "position": "relative",
-          "border-radius": "var(--fsds-avatar-size-radius-default, 9999px)",
-          "background-color": "var(--fsds-avatar-color-background-default, #f7f7f7)",
+          "border-radius": "var(--fsds-avatar-size-radius, 9999px)",
+          "background-color": "var(--fsds-avatar-color-background, #f7f7f7)",
           "color": "var(--fsds-avatar-color-foreground-primary, #141414)",
-          "border-color": "var(--fsds-avatar-color-border-default, #b8b8b8)",
+          "border-color": "var(--fsds-avatar-color-border, #b8b8b8)",
           "border-style": "solid",
-          "border-width": "var(--fsds-avatar-size-border-default, 1px)",
+          "border-width": "var(--fsds-avatar-size-border, 1px)",
           "font-weight": "var(--fsds-avatar-typography-font-weight-medium, 500)",
           "font-family": "var(--fsds-avatar-typography-font-family-sans, \"Inter\", sans-serif)"
         }

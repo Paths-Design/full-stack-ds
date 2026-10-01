@@ -10,8 +10,8 @@
 
 .switch__track {
   transition: background-color var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing);
-  background-color: var(--fsds-switch-color-track-background-default);
-  border-color: var(--fsds-switch-color-track-border-default);
+  background-color: var(--fsds-switch-color-track-background);
+  border-color: var(--fsds-switch-color-track-border);
   width: var(--fsds-switch-size-md-track-width);
   height: var(--fsds-switch-size-md-track-height);
   border-radius: var(--fsds-switch-size-md-track-radius);
@@ -25,8 +25,8 @@
 
 .switch__thumb {
   transition: translate var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing), background-color var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing);
-  background-color: var(--fsds-switch-color-thumb-background-default);
-  box-shadow: var(--fsds-switch-color-thumb-shadow-default);
+  background-color: var(--fsds-switch-color-thumb-background);
+  box-shadow: var(--fsds-switch-color-thumb-shadow);
   width: var(--fsds-switch-size-md-thumb-size);
   height: var(--fsds-switch-size-md-thumb-height);
   top: var(--fsds-switch-size-md-track-padding);

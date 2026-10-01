@@ -14,7 +14,7 @@ enum MarkdownTokens {
             "box-model.padding-block-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-block-start", name: "box-model.padding-block-start", literal: .string("0")),
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", literal: .string("0")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", literal: .string("0")),
-            "markdown.color.foreground.default": FsdsComponentTokenDefinition(cssVar: "--fsds-markdown-color-foreground-default", name: "markdown.color.foreground.default", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
+            "markdown.color.foreground": FsdsComponentTokenDefinition(cssVar: "--fsds-markdown-color-foreground", name: "markdown.color.foreground", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
         ],
     ]
 }
@@ -46,7 +46,7 @@ public struct Markdown: View {
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var foreground: Color { colorSlot("color.foreground.default") ?? .primary }
+    private var foreground: Color { colorSlot("color.foreground") ?? .primary }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

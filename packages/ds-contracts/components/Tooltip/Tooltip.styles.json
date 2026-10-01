@@ -23,7 +23,7 @@
   },
   "content": {
     "background-color": {
-      "resolvesTo": "tooltip.color.background.default",
+      "resolvesTo": "tooltip.color.background",
       "fallback": "#141414",
       "design": {
         "property": "background.fill",
@@ -31,7 +31,7 @@
       }
     },
     "color": {
-      "resolvesTo": "tooltip.color.foreground.default",
+      "resolvesTo": "tooltip.color.foreground",
       "fallback": "#fafafa",
       "design": {
         "property": "foreground.color",
@@ -39,7 +39,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "tooltip.color.border.default",
+      "resolvesTo": "tooltip.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
@@ -47,7 +47,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "tooltip.size.radius.default",
+      "resolvesTo": "tooltip.size.radius",
       "fallback": "4px",
       "design": {
         "property": "shape.radius",

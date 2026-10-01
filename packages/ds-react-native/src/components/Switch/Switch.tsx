@@ -61,9 +61,9 @@ export function Switch({
       accessibilityLabelledBy={accessibilityLabelledBy}
       accessibilityRole="switch"
       accessibilityState={{ checked: checked, disabled: disabled }}
-      trackColor={{ false: (tokens.root?.["switch.color.track.background.default"] as string | undefined), true: (tokens.checked?.["switch.color.track.background.default"] as string | undefined) ?? (tokens.root?.["switch.color.track.background.default"] as string | undefined) }}
-      ios_backgroundColor={(tokens.root?.["switch.color.track.background.default"] as string | undefined)}
-      thumbColor={(tokens.checked?.["switch.color.thumb.background.default"] as string | undefined) ?? (tokens.root?.["switch.color.thumb.background.default"] as string | undefined)}
+      trackColor={{ false: (tokens.root?.["switch.color.track.background"] as string | undefined), true: (tokens.checked?.["switch.color.track.background"] as string | undefined) ?? (tokens.root?.["switch.color.track.background"] as string | undefined) }}
+      ios_backgroundColor={(tokens.root?.["switch.color.track.background"] as string | undefined)}
+      thumbColor={(tokens.checked?.["switch.color.thumb.background"] as string | undefined) ?? (tokens.root?.["switch.color.thumb.background"] as string | undefined)}
     />
   );
 }

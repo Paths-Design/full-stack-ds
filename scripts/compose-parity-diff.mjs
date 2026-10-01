@@ -90,9 +90,9 @@ const CHROME_ROLE_TEXT_CONTROL = new RegExp(
   ["input\\.(?:color|size|typography)\\.", "box-model\\.(?:padding|min-width|min-height)"].join("|"),
 );
 /** Font-size role: claimed by the prop-text leaf path (the corpus's
- *  text-leaf size vocabulary — `code-block.size.fontSize.default` etc.). */
+ *  text-leaf size vocabulary — `code-block.size.fontSize` etc.). */
 const FONT_SIZE_ROLE = /\.size\.fontSize\.|\.typography\.fontSize\./;
-/** Text-color role: claimed by the progress path (`progress.color.text.default`). */
+/** Text-color role: claimed by the progress path (`progress.color.text`). */
 const TEXT_COLOR_ROLE = /\.color\.text\./;
 /** Typography role: claimed only for typography-bearing content-role roots
  *  (slot-evidence: the scopes carry `text.size.*` keys). Covers the slots the

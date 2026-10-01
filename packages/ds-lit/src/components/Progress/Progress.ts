@@ -72,7 +72,7 @@ export class ProgressElement extends LitElement {
 
 
     .progress {
-      --fsds-progress-color-text-default: var(--fsds-semantic-color-foreground-secondary, #474647);
+      --fsds-progress-color-text: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-progress-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
       --fsds-progress-motion-duration-indeterminate: var(--fsds-core-motion-duration-extra-long1, 1500ms);
       --fsds-progress-color-track-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
@@ -97,7 +97,7 @@ export class ProgressElement extends LitElement {
       height: var(--fsds-box-model-height, 8px);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      color: var(--fsds-progress-design-root-foreground-color, var(--fsds-progress-color-text-default, #474647));
+      color: var(--fsds-progress-design-root-foreground-color, var(--fsds-progress-color-text, #474647));
       transition-duration: var(--fsds-progress-design-root-motion-duration, var(--fsds-progress-motion-duration-indeterminate, 1500ms));
     }
 
@@ -118,7 +118,7 @@ export class ProgressElement extends LitElement {
 
     .progress__value {
       display: inline-block;
-      color: var(--fsds-progress-design-value-foreground-color, var(--fsds-progress-color-text-default, #474647));
+      color: var(--fsds-progress-design-value-foreground-color, var(--fsds-progress-color-text, #474647));
       font-size: var(--fsds-progress-design-value-typography-size, 0.875em);
       margin-left: var(--fsds-progress-spacing-gap, 2px);
     }

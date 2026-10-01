@@ -1548,26 +1548,22 @@
     "Avatar": {
       "color": {
         "background": {
-          "default": {
-            "$type": "color",
-            "$value": "{color.palette.lime.100}",
-            "$extensions": {
-              "fsds.light": "{color.palette.lime.100}",
-              "fsds.dark": "{color.palette.lime.900}"
-            },
-            "$description": "Component-scoped override: artist/profile avatars get a lime-tinted fill instead of the neutral-gray secondary background every other component sharing that semantic path still uses."
-          }
+          "$type": "color",
+          "$value": "{color.palette.lime.100}",
+          "$extensions": {
+            "fsds.light": "{color.palette.lime.100}",
+            "fsds.dark": "{color.palette.lime.900}"
+          },
+          "$description": "Component-scoped override: artist/profile avatars get a lime-tinted fill instead of the neutral-gray secondary background every other component sharing that semantic path still uses."
         },
         "border": {
-          "default": {
-            "$type": "color",
-            "$value": "{color.palette.lime.300}",
-            "$extensions": {
-              "fsds.light": "{color.palette.lime.300}",
-              "fsds.dark": "{color.palette.lime.700}"
-            },
-            "$description": "Subtle lime ring, distinct from the generic neutral avatar border"
-          }
+          "$type": "color",
+          "$value": "{color.palette.lime.300}",
+          "$extensions": {
+            "fsds.light": "{color.palette.lime.300}",
+            "fsds.dark": "{color.palette.lime.700}"
+          },
+          "$description": "Subtle lime ring, distinct from the generic neutral avatar border"
         }
       }
     },

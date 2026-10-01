@@ -69,8 +69,8 @@ fun Popover(
         val def = popoverTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val panelBorder = layeredSlot("popover.color.border.default")?.toFsdsColor()
-    val panelRadius = layeredSlot("popover.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val panelBorder = layeredSlot("popover.color.border")?.toFsdsColor()
+    val panelRadius = layeredSlot("popover.size.radius")?.toFsdsDp() ?: 0.dp
     val panelGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val panelPadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
     val panelMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp

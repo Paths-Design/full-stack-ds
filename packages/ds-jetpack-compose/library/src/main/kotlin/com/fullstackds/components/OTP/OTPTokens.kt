@@ -50,9 +50,9 @@ val otpTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.input.size.medium.min-height",
             fallback = "32px",
         ),
-        "otp.color.background.default" to ComponentTokenDefinition(
-            name = "otp.color.background.default",
-            cssVar = "--fsds-otp-color-background-default",
+        "otp.color.background" to ComponentTokenDefinition(
+            name = "otp.color.background",
+            cssVar = "--fsds-otp-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
@@ -62,15 +62,15 @@ val otpTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "otp.color.border.default" to ComponentTokenDefinition(
-            name = "otp.color.border.default",
-            cssVar = "--fsds-otp-color-border-default",
+        "otp.color.border" to ComponentTokenDefinition(
+            name = "otp.color.border",
+            cssVar = "--fsds-otp-color-border",
             ref = "semantic.color.border.light",
             fallback = "#b8b8b8",
         ),
-        "otp.size.radius.default" to ComponentTokenDefinition(
-            name = "otp.size.radius.default",
-            cssVar = "--fsds-otp-size-radius-default",
+        "otp.size.radius" to ComponentTokenDefinition(
+            name = "otp.size.radius",
+            cssVar = "--fsds-otp-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),

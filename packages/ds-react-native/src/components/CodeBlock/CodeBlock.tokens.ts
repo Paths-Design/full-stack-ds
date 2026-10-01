@@ -45,39 +45,33 @@ export const codeBlockTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "code-block.color.background.default": {
-      name: "code-block.color.background.default",
-      cssVar: "--fsds-code-block-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
-    },
     "code-block.color.foreground.primary": {
       name: "code-block.color.foreground.primary",
       cssVar: "--fsds-code-block-color-foreground-primary",
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "code-block.color.border.default": {
-      name: "code-block.color.border.default",
-      cssVar: "--fsds-code-block-color-border-default",
+    "code-block.color.border": {
+      name: "code-block.color.border",
+      cssVar: "--fsds-code-block-color-border",
       ref: "semantic.color.border.subtle",
       fallback: "#d0d0d0",
     },
-    "code-block.size.radius.default": {
-      name: "code-block.size.radius.default",
-      cssVar: "--fsds-code-block-size-radius-default",
+    "code-block.size.radius": {
+      name: "code-block.size.radius",
+      cssVar: "--fsds-code-block-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },
-    "code-block.size.border.default": {
-      name: "code-block.size.border.default",
-      cssVar: "--fsds-code-block-size-border-default",
+    "code-block.size.border": {
+      name: "code-block.size.border",
+      cssVar: "--fsds-code-block-size-border",
       ref: "semantic.shape.control.border.defaultWidth",
       fallback: 1,
     },
-    "code-block.size.fontSize.default": {
-      name: "code-block.size.fontSize.default",
-      cssVar: "--fsds-code-block-size-font-size-default",
+    "code-block.size.fontSize": {
+      name: "code-block.size.fontSize",
+      cssVar: "--fsds-code-block-size-font-size",
       ref: "core.typography.ramp.3",
       fallback: 14,
     },

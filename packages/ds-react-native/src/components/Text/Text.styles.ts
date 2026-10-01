@@ -17,7 +17,7 @@ export function createTextStyles(theme?: FsdsTheme) {
     root_variant_capitalize: definedStyle({ textTransform: "capitalize" }),
     root_variant_caption: definedStyle({ fontSize: (tokens.variant_caption?.["text.size.md"] as number | undefined), fontWeight: (tokens.root?.["text.typography.fontWeight.regular"] as TextStyle["fontWeight"]) }),
     root_variant_center: definedStyle({ textAlign: "center" }),
-    root_variant_code: definedStyle({ fontSize: (tokens.variant_code?.["text.size.md"] as number | undefined), fontFamily: "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace" }),
+    root_variant_code: definedStyle({ fontSize: (tokens.variant_code?.["text.size.md"] as number | undefined), fontFamily: "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace" }),
     root_variant_display: definedStyle({ fontSize: (tokens.variant_display?.["text.size.md"] as number | undefined), fontWeight: (tokens.root?.["text.typography.fontWeight.bold"] as TextStyle["fontWeight"]) }),
     root_variant_headline: definedStyle({ fontSize: (tokens.variant_headline?.["text.size.md"] as number | undefined), fontWeight: (tokens.root?.["text.typography.fontWeight.bold"] as TextStyle["fontWeight"]) }),
     root_variant_justify: definedStyle({ textAlign: "justify" }),

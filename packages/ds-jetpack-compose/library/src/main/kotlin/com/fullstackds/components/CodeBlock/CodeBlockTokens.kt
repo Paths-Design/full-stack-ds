@@ -38,9 +38,9 @@ val codeBlockTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "code-block.color.background.default" to ComponentTokenDefinition(
-            name = "code-block.color.background.default",
-            cssVar = "--fsds-code-block-color-background-default",
+        "code-block.color.background" to ComponentTokenDefinition(
+            name = "code-block.color.background",
+            cssVar = "--fsds-code-block-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
@@ -50,15 +50,15 @@ val codeBlockTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "code-block.size.radius.default" to ComponentTokenDefinition(
-            name = "code-block.size.radius.default",
-            cssVar = "--fsds-code-block-size-radius-default",
+        "code-block.size.radius" to ComponentTokenDefinition(
+            name = "code-block.size.radius",
+            cssVar = "--fsds-code-block-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),
-        "code-block.size.fontSize.default" to ComponentTokenDefinition(
-            name = "code-block.size.fontSize.default",
-            cssVar = "--fsds-code-block-size-font-size-default",
+        "code-block.size.fontSize" to ComponentTokenDefinition(
+            name = "code-block.size.fontSize",
+            cssVar = "--fsds-code-block-size-font-size",
             ref = "core.typography.ramp.3",
             fallback = "0.875rem",
         ),

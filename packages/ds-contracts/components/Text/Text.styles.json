@@ -279,14 +279,15 @@
       }
     },
     "font-family": {
-      "literal": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "typography.family",
         "slot": "text.design.condition-3a2bffe9ebbb.typography.family"
-      }
+      },
+      "fallback": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "resolvesTo": "semantic.typography.semanticFamily.mono"
     },
     "line-height": {
       "resolvesTo": "text.typography.lineHeight.body",
@@ -546,8 +547,23 @@
     }
   },
   ".text[data-truncate=\"true\"]": {
-    "overflow": { "literal": "hidden", "platforms": ["web"] },
-    "white-space": { "literal": "nowrap", "platforms": ["web"] },
-    "text-overflow": { "literal": "ellipsis", "platforms": ["web"] }
+    "overflow": {
+      "literal": "hidden",
+      "platforms": [
+        "web"
+      ]
+    },
+    "white-space": {
+      "literal": "nowrap",
+      "platforms": [
+        "web"
+      ]
+    },
+    "text-overflow": {
+      "literal": "ellipsis",
+      "platforms": [
+        "web"
+      ]
+    }
   }
 }

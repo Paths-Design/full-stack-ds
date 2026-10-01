@@ -136,7 +136,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#b8b8b8",
-      "resolvesTo": "card.color.border.default",
+      "resolvesTo": "card.color.border",
       "editableTargets": [
         "web"
       ],
@@ -168,7 +168,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "16px",
-      "resolvesTo": "card.size.padding.default",
+      "resolvesTo": "card.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -184,7 +184,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "8px",
-      "resolvesTo": "card.size.radius.default",
+      "resolvesTo": "card.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -200,7 +200,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "4px",
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -435,7 +435,7 @@
       "selectorKey": "header",
       "part": "header",
       "defaultValue": "4px",
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -483,7 +483,7 @@
       "selectorKey": "media",
       "part": "media",
       "defaultValue": "8px",
-      "resolvesTo": "card.size.radius.default",
+      "resolvesTo": "card.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -499,7 +499,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "4px",
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -531,7 +531,7 @@
       "selectorKey": "footer",
       "part": "footer",
       "defaultValue": "4px",
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -547,7 +547,7 @@
       "selectorKey": "footer",
       "part": "footer",
       "defaultValue": "#b8b8b8",
-      "resolvesTo": "card.color.border.default",
+      "resolvesTo": "card.color.border",
       "editableTargets": [
         "web"
       ],
@@ -593,7 +593,7 @@
       "selectorKey": "actions",
       "part": "actions",
       "defaultValue": "4px",
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -723,12 +723,12 @@
           "--fsds-box-model-max-height": "none",
           "--fsds-card-color-background-default": "var(--fsds-semantic-color-background-primary, #ffffff)",
           "--fsds-card-color-background-hover": "var(--fsds-semantic-color-background-hover, #f7f7f7)",
-          "--fsds-card-color-border-default": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-card-color-border": "var(--fsds-semantic-color-border-light, #b8b8b8)",
           "--fsds-card-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-card-size-padding-default": "var(--fsds-core-spacing-size-06, 16px)",
+          "--fsds-card-size-padding": "var(--fsds-core-spacing-size-06, 16px)",
           "--fsds-card-size-padding-inset": "var(--fsds-core-spacing-size-04, 8px)",
-          "--fsds-card-size-radius-default": "var(--fsds-semantic-shape-radius-medium, 8px)",
-          "--fsds-card-size-gap-default": "var(--fsds-core-spacing-size-03, 4px)",
+          "--fsds-card-size-radius": "var(--fsds-semantic-shape-radius-medium, 8px)",
+          "--fsds-card-size-gap": "var(--fsds-core-spacing-size-03, 4px)",
           "--fsds-card-typography-line-height-heading": "var(--fsds-semantic-typography-line-height-heading, 1)",
           "--fsds-card-typography-line-height-normal": "var(--fsds-semantic-typography-line-height-normal, 1.5)",
           "--fsds-card-elevation-resting": "var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a)",
@@ -740,7 +740,7 @@
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
           "padding-inline-end": "var(--fsds-box-model-padding-inline-end)",
-          "gap": "var(--fsds-card-size-gap-default, 4px)",
+          "gap": "var(--fsds-card-size-gap, 4px)",
           "width": "var(--fsds-box-model-width)",
           "min-width": "var(--fsds-box-model-min-width)",
           "max-width": "var(--fsds-box-model-max-width)",
@@ -748,10 +748,10 @@
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
           "background-color": "var(--fsds-card-color-background-default, #ffffff)",
-          "border-color": "var(--fsds-card-color-border-default, #b8b8b8)",
+          "border-color": "var(--fsds-card-color-border, #b8b8b8)",
           "color": "var(--fsds-card-color-foreground-primary, #141414)",
-          "padding": "var(--fsds-card-size-padding-default, 16px)",
-          "border-radius": "var(--fsds-card-size-radius-default, 8px)",
+          "padding": "var(--fsds-card-size-padding, 16px)",
+          "border-radius": "var(--fsds-card-size-radius, 8px)",
           "line-height": "var(--fsds-card-typography-line-height-normal, 1.5)",
           "display": "flex",
           "flex-direction": "column",
@@ -800,7 +800,7 @@
           "display": "flex",
           "align-items": "flex-start",
           "justify-content": "space-between",
-          "gap": "var(--fsds-card-size-gap-default, 4px)",
+          "gap": "var(--fsds-card-size-gap, 4px)",
           "line-height": "var(--fsds-card-typography-line-height-heading, 1)",
           "color": "var(--fsds-card-color-foreground-primary, #141414)"
         }
@@ -811,7 +811,7 @@
           "display": "block",
           "width": "100%",
           "overflow": "hidden",
-          "border-radius": "var(--fsds-card-size-radius-default, 8px)"
+          "border-radius": "var(--fsds-card-size-radius, 8px)"
         }
       },
       {
@@ -819,7 +819,7 @@
         "declarations": {
           "display": "flex",
           "flex-direction": "column",
-          "gap": "var(--fsds-card-size-gap-default, 4px)",
+          "gap": "var(--fsds-card-size-gap, 4px)",
           "flex": "1 1 auto",
           "color": "var(--fsds-card-color-foreground-primary, #141414)"
         }
@@ -837,10 +837,10 @@
           "display": "flex",
           "align-items": "center",
           "justify-content": "flex-end",
-          "gap": "var(--fsds-card-size-gap-default, 4px)",
-          "padding-top": "var(--fsds-card-size-padding-default, 16px)",
+          "gap": "var(--fsds-card-size-gap, 4px)",
+          "padding-top": "var(--fsds-card-size-padding, 16px)",
           "margin-top": "auto",
-          "border-top-color": "var(--fsds-card-color-border-default, #b8b8b8)",
+          "border-top-color": "var(--fsds-card-color-border, #b8b8b8)",
           "border-top-style": "solid",
           "border-top-width": "1px"
         }
@@ -850,7 +850,7 @@
         "declarations": {
           "display": "flex",
           "align-items": "center",
-          "gap": "var(--fsds-card-size-gap-default, 4px)"
+          "gap": "var(--fsds-card-size-gap, 4px)"
         }
       },
       {

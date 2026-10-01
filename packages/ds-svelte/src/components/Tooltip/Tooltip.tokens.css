@@ -1,11 +1,11 @@
 @layer components {
 /* @generated:start tokens */
 :root {
-  --fsds-tooltip-color-background-default: var(--fsds-semantic-color-background-inverse, #141414);
-  --fsds-tooltip-color-foreground-default: var(--fsds-semantic-color-foreground-on-inverse, #fafafa);
-  --fsds-tooltip-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+  --fsds-tooltip-color-background: var(--fsds-semantic-color-background-inverse, #141414);
+  --fsds-tooltip-color-foreground: var(--fsds-semantic-color-foreground-on-inverse, #fafafa);
+  --fsds-tooltip-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
   --fsds-tooltip-size-padding-x: var(--fsds-core-spacing-size-04, 8px);
-  --fsds-tooltip-size-radius-default: var(--fsds-semantic-shape-radius-small, 4px);
+  --fsds-tooltip-size-radius: var(--fsds-semantic-shape-radius-small, 4px);
   --fsds-tooltip-size-max-width: 200px;
   --fsds-tooltip-typography-font-size: var(--fsds-semantic-typography-caption-01, 14px);
   --fsds-tooltip-layer-content: var(--fsds-core-layer-tooltip, 1800);

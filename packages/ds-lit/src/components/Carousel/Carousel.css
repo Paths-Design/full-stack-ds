@@ -8,7 +8,7 @@
   padding-block-end: var(--fsds-box-model-padding-block-end, 0);
   padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
   padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-  gap: var(--fsds-carousel-spacing-gap, 8px);
+  gap: var(--fsds-carousel-design-root-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
   width: var(--fsds-box-model-width, auto);
   min-width: var(--fsds-box-model-min-width, 0);
   max-width: var(--fsds-box-model-max-width, none);
@@ -17,7 +17,7 @@
   max-height: var(--fsds-box-model-max-height, none);
   display: flex;
   flex-direction: column;
-  color: var(--fsds-carousel-color-foreground, #141414);
+  color: var(--fsds-carousel-design-root-foreground-color, var(--fsds-carousel-color-foreground, #141414));
 
   &:not([data-sequence-root]) > .carousel__viewport {
     visibility: hidden;
@@ -38,18 +38,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--fsds-carousel-spacing-gap, 8px);
+  gap: var(--fsds-carousel-design-controls-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
 }
 
 .carousel__pagination {
   display: flex;
   align-items: center;
-  gap: var(--fsds-carousel-spacing-gap, 8px);
+  gap: var(--fsds-carousel-design-pagination-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
 }
 
 .carousel__picker {
   position: relative;
-  padding: 0;
+  padding: var(--fsds-carousel-design-picker-spacing-padding, 0);
   border: 0;
   cursor: pointer;
   display: inline-flex;
@@ -67,7 +67,7 @@
 .carousel__fill {
   position: absolute;
   inset: 0;
-  background-color: var(--fsds-carousel-color-progress, #141414);
+  background-color: var(--fsds-carousel-design-fill-background-fill, var(--fsds-carousel-color-progress, #141414));
   transform-origin: left center;
   pointer-events: none;
   display: none;
@@ -80,10 +80,10 @@
 .carousel__ring {
   position: absolute;
   inset: -4px;
-  border-radius: 50%;
+  border-radius: var(--fsds-carousel-design-ring-shape-radius, 50%);
   background: conic-gradient(currentColor calc(var(--sequence-progress, 0) * 1turn), transparent 0);
   mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0);
-  color: var(--fsds-carousel-color-progress, #141414);
+  color: var(--fsds-carousel-design-ring-foreground-color, var(--fsds-carousel-color-progress, #141414));
   pointer-events: none;
   display: none;
 }
@@ -97,12 +97,12 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  min-width: var(--fsds-carousel-size-control-size, 32px);
-  min-height: var(--fsds-carousel-size-control-size, 32px);
+  min-width: var(--fsds-carousel-design-next-sizing-min-width, var(--fsds-carousel-size-control-size, 32px));
+  min-height: var(--fsds-carousel-design-next-sizing-min-height, var(--fsds-carousel-size-control-size, 32px));
   border: 1px solid currentColor;
-  border-radius: var(--fsds-carousel-size-radius, 9999px);
+  border-radius: var(--fsds-carousel-design-next-shape-radius, var(--fsds-carousel-size-radius, 9999px));
   background: transparent;
-  color: inherit;
+  color: var(--fsds-carousel-design-next-foreground-color, inherit);
   cursor: pointer;
 }
 
@@ -111,12 +111,12 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  min-width: var(--fsds-carousel-size-control-size, 32px);
-  min-height: var(--fsds-carousel-size-control-size, 32px);
+  min-width: var(--fsds-carousel-design-previous-sizing-min-width, var(--fsds-carousel-size-control-size, 32px));
+  min-height: var(--fsds-carousel-design-previous-sizing-min-height, var(--fsds-carousel-size-control-size, 32px));
   border: 1px solid currentColor;
-  border-radius: var(--fsds-carousel-size-radius, 9999px);
+  border-radius: var(--fsds-carousel-design-previous-shape-radius, var(--fsds-carousel-size-radius, 9999px));
   background: transparent;
-  color: inherit;
+  color: var(--fsds-carousel-design-previous-foreground-color, inherit);
   cursor: pointer;
 }
 
@@ -125,30 +125,30 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  min-width: var(--fsds-carousel-size-control-size, 32px);
-  min-height: var(--fsds-carousel-size-control-size, 32px);
+  min-width: var(--fsds-carousel-design-rotation-sizing-min-width, var(--fsds-carousel-size-control-size, 32px));
+  min-height: var(--fsds-carousel-design-rotation-sizing-min-height, var(--fsds-carousel-size-control-size, 32px));
   border: 1px solid currentColor;
-  border-radius: var(--fsds-carousel-size-radius, 9999px);
+  border-radius: var(--fsds-carousel-design-rotation-shape-radius, var(--fsds-carousel-size-radius, 9999px));
   background: transparent;
-  color: inherit;
+  color: var(--fsds-carousel-design-rotation-foreground-color, inherit);
   cursor: pointer;
   align-self: flex-start;
-  padding-inline: 12px;
+  padding-inline: var(--fsds-carousel-design-rotation-spacing-padding-inline, 12px);
   font: inherit;
 }
 
 .carousel__marker {
-  width: var(--fsds-carousel-size-dot-size, 8px);
-  height: var(--fsds-carousel-size-dot-size, 8px);
-  border-radius: var(--fsds-carousel-size-radius, 9999px);
+  width: var(--fsds-carousel-design-marker-sizing-width, var(--fsds-carousel-size-dot-size, 8px));
+  height: var(--fsds-carousel-design-marker-sizing-height, var(--fsds-carousel-size-dot-size, 8px));
+  border-radius: var(--fsds-carousel-design-marker-shape-radius, var(--fsds-carousel-size-radius, 9999px));
   overflow: hidden;
-  background-color: var(--fsds-carousel-color-track, #d0d0d0);
+  background-color: var(--fsds-carousel-design-marker-background-fill, var(--fsds-carousel-color-track, #d0d0d0));
   display: block;
   position: relative;
 }
 
 .carousel__picker[data-sequence-active="true"] .carousel__marker {
-  width: var(--fsds-carousel-size-active-size, 32px);
+  width: var(--fsds-carousel-design-condition-2d8237d36499-sizing-width, var(--fsds-carousel-size-active-size, 32px));
 }
 
 .carousel--pagination .carousel__fill, .carousel--both .carousel__fill {

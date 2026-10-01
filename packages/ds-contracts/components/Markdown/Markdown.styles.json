@@ -1,7 +1,7 @@
 {
   "root": {
     "color": {
-      "resolvesTo": "markdown.color.foreground.default",
+      "resolvesTo": "markdown.color.foreground",
       "fallback": "#141414",
       "design": {
         "property": "foreground.color",
@@ -9,7 +9,7 @@
       }
     },
     "font-size": {
-      "resolvesTo": "markdown.typography.fontSize.default",
+      "resolvesTo": "markdown.typography.fontSize",
       "fallback": "0.875rem",
       "design": {
         "property": "typography.size",
@@ -17,7 +17,7 @@
       }
     },
     "line-height": {
-      "resolvesTo": "markdown.typography.lineHeight.default",
+      "resolvesTo": "markdown.typography.lineHeight",
       "fallback": "1.5",
       "design": {
         "property": "typography.line-height",

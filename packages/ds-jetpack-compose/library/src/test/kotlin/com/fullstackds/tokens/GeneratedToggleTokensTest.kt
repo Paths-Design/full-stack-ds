@@ -13,7 +13,7 @@ class GeneratedToggleTokensTest {
         val root = switchTokenScopes.getValue("root")
         val checked = switchTokenScopes.getValue("checked")
         val disabled = switchTokenScopes.getValue("disabled")
-        val slot = "switch.color.track.background.default"
+        val slot = "switch.color.track.background"
         assertEquals("#d0d0d0", FsdsTheme().resolve(root.getValue(slot)))
         assertEquals("#d92d2e", FsdsTheme().resolve(checked.getValue(slot)))
         assertEquals("#d0d0d0", FsdsTheme().resolve(disabled.getValue(slot)))

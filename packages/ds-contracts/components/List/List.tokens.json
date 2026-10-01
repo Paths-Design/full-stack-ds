@@ -9,12 +9,12 @@
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "list.color.border.default": {
+  "list.color.border": {
     "resolvesTo": "semantic.color.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
   },
-  "list.size.padding.default": {
+  "list.size.padding": {
     "resolvesTo": "core.spacing.size.06",
     "fallback": "16px",
     "layer": "core"

@@ -30,7 +30,7 @@
       ]
     },
     "background-color": {
-      "resolvesTo": "image.color.background.default",
+      "resolvesTo": "image.color.background",
       "fallback": "#f7f7f7",
       "design": {
         "property": "background.fill",

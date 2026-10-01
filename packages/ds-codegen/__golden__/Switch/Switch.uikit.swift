@@ -96,10 +96,10 @@ public final class Switch: UIControl {
         trackView.layer.masksToBounds = true
         thumbView.layer.masksToBounds = true
 
-        // SRC: contract.tokens.root["switch.color.track.background.default"]
+        // SRC: contract.tokens.root["switch.color.track.background"]
         //      fallback=#cecece
         trackView.backgroundColor = UIColor(white: 0.81, alpha: 1.0)
-        // SRC: contract.tokens.root["switch.color.thumb.background.default"]
+        // SRC: contract.tokens.root["switch.color.thumb.background"]
         //      fallback=#ffffff
         thumbView.backgroundColor = .white
 

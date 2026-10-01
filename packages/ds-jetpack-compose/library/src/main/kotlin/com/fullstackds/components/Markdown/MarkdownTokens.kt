@@ -34,15 +34,15 @@ val markdownTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "markdown.color.foreground.default" to ComponentTokenDefinition(
-            name = "markdown.color.foreground.default",
-            cssVar = "--fsds-markdown-color-foreground-default",
+        "markdown.color.foreground" to ComponentTokenDefinition(
+            name = "markdown.color.foreground",
+            cssVar = "--fsds-markdown-color-foreground",
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "markdown.typography.fontSize.default" to ComponentTokenDefinition(
-            name = "markdown.typography.fontSize.default",
-            cssVar = "--fsds-markdown-typography-font-size-default",
+        "markdown.typography.fontSize" to ComponentTokenDefinition(
+            name = "markdown.typography.fontSize",
+            cssVar = "--fsds-markdown-typography-font-size",
             ref = "core.typography.ramp.3",
             fallback = "0.875rem",
         ),

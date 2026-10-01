@@ -47,10 +47,10 @@ fun Shuttle(
         val def = shuttleTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val containerColor = layeredSlot("shuttle.color.background.default")?.toFsdsColor()
+    val containerColor = layeredSlot("shuttle.color.background")?.toFsdsColor()
     val contentColor = layeredSlot("shuttle.color.foreground.primary")?.toFsdsColor()
-    val borderColor = layeredSlot("shuttle.color.border.default")?.toFsdsColor()
-    val cornerRadius = layeredSlot("shuttle.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val borderColor = layeredSlot("shuttle.color.border")?.toFsdsColor()
+    val cornerRadius = layeredSlot("shuttle.size.radius")?.toFsdsDp() ?: 0.dp
     val listGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val listPadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
     val listMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp

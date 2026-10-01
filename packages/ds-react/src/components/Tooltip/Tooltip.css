@@ -24,10 +24,10 @@
 }
 
 [data-tooltip-content] {
-  background-color: var(--fsds-tooltip-design-content-background-fill, var(--fsds-tooltip-color-background-default, #141414));
-  color: var(--fsds-tooltip-design-content-foreground-color, var(--fsds-tooltip-color-foreground-default, #fafafa));
-  border-color: var(--fsds-tooltip-design-content-border-color, var(--fsds-tooltip-color-border-default, #d0d0d0));
-  border-radius: var(--fsds-tooltip-design-content-shape-radius, var(--fsds-tooltip-size-radius-default, 4px));
+  background-color: var(--fsds-tooltip-design-content-background-fill, var(--fsds-tooltip-color-background, #141414));
+  color: var(--fsds-tooltip-design-content-foreground-color, var(--fsds-tooltip-color-foreground, #fafafa));
+  border-color: var(--fsds-tooltip-design-content-border-color, var(--fsds-tooltip-color-border, #d0d0d0));
+  border-radius: var(--fsds-tooltip-design-content-shape-radius, var(--fsds-tooltip-size-radius, 4px));
   padding: var(--fsds-tooltip-design-content-spacing-padding, var(--fsds-tooltip-size-padding-x, 8px));
   max-width: var(--fsds-tooltip-design-content-sizing-max-width, var(--fsds-tooltip-size-max-width, 200px));
   z-index: var(--fsds-tooltip-layer-content, 1800);

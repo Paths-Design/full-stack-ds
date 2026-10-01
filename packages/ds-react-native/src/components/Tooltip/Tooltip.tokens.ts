@@ -46,21 +46,15 @@ export const tooltipTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "tooltip.color.background.default": {
-      name: "tooltip.color.background.default",
-      cssVar: "--fsds-tooltip-color-background-default",
-      ref: "semantic.color.background.inverse",
-      fallback: "#141414",
-    },
-    "tooltip.color.border.default": {
-      name: "tooltip.color.border.default",
-      cssVar: "--fsds-tooltip-color-border-default",
+    "tooltip.color.border": {
+      name: "tooltip.color.border",
+      cssVar: "--fsds-tooltip-color-border",
       ref: "semantic.color.border.subtle",
       fallback: "#d0d0d0",
     },
-    "tooltip.size.radius.default": {
-      name: "tooltip.size.radius.default",
-      cssVar: "--fsds-tooltip-size-radius-default",
+    "tooltip.size.radius": {
+      name: "tooltip.size.radius",
+      cssVar: "--fsds-tooltip-size-radius",
       ref: "semantic.shape.radius.small",
       fallback: 4,
     },

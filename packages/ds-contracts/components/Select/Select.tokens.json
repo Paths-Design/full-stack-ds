@@ -29,37 +29,37 @@
     "fallback": "32px",
     "layer": "semantic"
   },
-  "select.color.background.default": {
+  "select.color.background": {
     "resolvesTo": "semantic.color.background.primary",
     "fallback": "#ffffff",
     "layer": "semantic"
   },
-  "select.color.foreground.default": {
+  "select.color.foreground": {
     "resolvesTo": "semantic.color.foreground.primary",
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "select.color.border.default": {
+  "select.color.border": {
     "resolvesTo": "semantic.color.border.primary",
     "fallback": "#a0a0a1",
     "layer": "semantic"
   },
-  "select.color.placeholder.default": {
+  "select.color.placeholder": {
     "resolvesTo": "semantic.color.foreground.secondary",
     "fallback": "#474647",
     "layer": "semantic"
   },
-  "select.size.padding.default": {
+  "select.size.padding": {
     "resolvesTo": "core.spacing.size.03",
     "fallback": "4px",
     "layer": "core"
   },
-  "select.size.radius.default": {
+  "select.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"
   },
-  "select.size.border.default": {
+  "select.size.border": {
     "resolvesTo": "semantic.shape.control.border.defaultWidth",
     "fallback": "1px",
     "layer": "semantic"
@@ -79,12 +79,12 @@
     "fallback": "48px",
     "layer": "semantic"
   },
-  "select.font.size.default": {
+  "select.font.size": {
     "resolvesTo": "semantic.typography.body.02",
     "fallback": "16px",
     "layer": "semantic"
   },
-  "select.font.lineHeight.default": {
+  "select.font.lineHeight": {
     "resolvesTo": "semantic.typography.line.height.body",
     "fallback": "1.5",
     "layer": "semantic"

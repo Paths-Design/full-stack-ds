@@ -38,9 +38,9 @@ val codeSnippetTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "code-snippet.color.background.default" to ComponentTokenDefinition(
-            name = "code-snippet.color.background.default",
-            cssVar = "--fsds-code-snippet-color-background-default",
+        "code-snippet.color.background" to ComponentTokenDefinition(
+            name = "code-snippet.color.background",
+            cssVar = "--fsds-code-snippet-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
@@ -50,15 +50,15 @@ val codeSnippetTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "code-snippet.size.radius.default" to ComponentTokenDefinition(
-            name = "code-snippet.size.radius.default",
-            cssVar = "--fsds-code-snippet-size-radius-default",
+        "code-snippet.size.radius" to ComponentTokenDefinition(
+            name = "code-snippet.size.radius",
+            cssVar = "--fsds-code-snippet-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),
-        "code-snippet.size.fontSize.default" to ComponentTokenDefinition(
-            name = "code-snippet.size.fontSize.default",
-            cssVar = "--fsds-code-snippet-size-font-size-default",
+        "code-snippet.size.fontSize" to ComponentTokenDefinition(
+            name = "code-snippet.size.fontSize",
+            cssVar = "--fsds-code-snippet-size-font-size",
             ref = "core.typography.ramp.3",
             fallback = "0.875rem",
         ),

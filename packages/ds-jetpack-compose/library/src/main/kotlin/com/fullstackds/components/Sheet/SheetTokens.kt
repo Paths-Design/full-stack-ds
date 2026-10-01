@@ -50,11 +50,23 @@ val sheetTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
+        "sheet.color.background" to ComponentTokenDefinition(
+            name = "sheet.color.background",
+            cssVar = "--fsds-sheet-color-background",
+            ref = "semantic.color.background.primary",
+            fallback = "#ffffff",
+        ),
         "sheet.color.border" to ComponentTokenDefinition(
             name = "sheet.color.border",
             cssVar = "--fsds-sheet-color-border",
             ref = "semantic.color.border.light",
             fallback = "#b8b8b8",
+        ),
+        "sheet.color.text" to ComponentTokenDefinition(
+            name = "sheet.color.text",
+            cssVar = "--fsds-sheet-color-text",
+            ref = "semantic.color.foreground.primary",
+            fallback = "#141414",
         ),
         "sheet.border.width" to ComponentTokenDefinition(
             name = "sheet.border.width",

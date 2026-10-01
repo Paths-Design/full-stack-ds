@@ -8,7 +8,7 @@
   padding-block-end: var(--fsds-box-model-padding-block-end, 0);
   padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
   padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-  gap: var(--fsds-links-design-root-spacing-gap, var(--fsds-links-spacing-gap-default, 2px));
+  gap: var(--fsds-links-design-root-spacing-gap, var(--fsds-links-spacing-gap, 2px));
   width: var(--fsds-box-model-width, auto);
   min-width: var(--fsds-box-model-min-width, 0);
   max-width: var(--fsds-box-model-max-width, none);
@@ -17,7 +17,7 @@
   max-height: var(--fsds-box-model-max-height, none);
   color: var(--fsds-links-design-root-foreground-color, var(--fsds-links-color-foreground-default, #d92d2e));
   font-size: var(--fsds-links-design-root-typography-size, var(--fsds-links-size-font-size-medium, 1rem));
-  text-decoration-color: var(--fsds-links-color-underline-default, #b8b8b8);
+  text-decoration-color: var(--fsds-links-color-underline, #b8b8b8);
   text-decoration-line: underline;
   text-underline-offset: 2px;
   transition-property: color, text-decoration-color;

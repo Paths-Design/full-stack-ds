@@ -71,9 +71,9 @@ export class ToggleSwitchElement extends LitElement {
 
     .toggle-switch {
       --fsds-toggle-switch-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-toggle-switch-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-toggle-switch-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
-      --fsds-toggle-switch-border-radius-default: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+      --fsds-toggle-switch-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --fsds-toggle-switch-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-toggle-switch-border-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
       --fsds-toggle-switch-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
       --fsds-toggle-switch-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
       --fsds-toggle-switch-color-background-checked: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
@@ -100,9 +100,9 @@ export class ToggleSwitchElement extends LitElement {
       display: inline-flex;
       align-items: center;
       background-color: var(--fsds-toggle-switch-design-root-background-fill, var(--fsds-toggle-switch-color-background-default, #f7f7f7));
-      color: var(--fsds-toggle-switch-design-root-foreground-color, var(--fsds-toggle-switch-color-foreground-default, #141414));
-      border-color: var(--fsds-toggle-switch-design-root-border-color, var(--fsds-toggle-switch-color-border-default, #b8b8b8));
-      border-radius: var(--fsds-toggle-switch-design-root-shape-radius, var(--fsds-toggle-switch-border-radius-default, 9999px));
+      color: var(--fsds-toggle-switch-design-root-foreground-color, var(--fsds-toggle-switch-color-foreground, #141414));
+      border-color: var(--fsds-toggle-switch-design-root-border-color, var(--fsds-toggle-switch-color-border, #b8b8b8));
+      border-radius: var(--fsds-toggle-switch-design-root-shape-radius, var(--fsds-toggle-switch-border-radius, 9999px));
       transition-duration: var(--fsds-toggle-switch-design-root-motion-duration, var(--fsds-toggle-switch-motion-duration-fast, 150ms));
       border-style: var(--fsds-toggle-switch-design-root-border-style, solid);
       border-width: var(--fsds-toggle-switch-design-root-border-width, 1px);

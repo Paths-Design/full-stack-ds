@@ -1,7 +1,7 @@
 {
   "root": {
     "padding": {
-      "resolvesTo": "details.size.padding.default",
+      "resolvesTo": "details.size.padding",
       "fallback": "16px",
       "design": {
         "property": "spacing.padding",
@@ -9,7 +9,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "details.size.radius.default",
+      "resolvesTo": "details.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -25,7 +25,7 @@
       }
     },
     "gap": {
-      "resolvesTo": "details.spacing.gap.default",
+      "resolvesTo": "details.spacing.gap",
       "fallback": "2px",
       "design": {
         "property": "spacing.gap",
@@ -129,7 +129,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "details.spacing.gap.default",
+      "resolvesTo": "details.spacing.gap",
       "fallback": "2px",
       "design": {
         "property": "spacing.gap",
@@ -143,7 +143,7 @@
       ]
     },
     "padding": {
-      "resolvesTo": "details.size.padding.default",
+      "resolvesTo": "details.size.padding",
       "fallback": "16px",
       "design": {
         "property": "spacing.padding",
@@ -184,7 +184,7 @@
     },
     "outline-color": {
       "resolvesTo": "details.focus.ring.color",
-      "fallback": "#d92d2e",
+      "fallback": "#0566fe",
       "design": {
         "property": "focus.color",
         "slot": "details.design.condition-2b765dd646fc.focus.color"
@@ -199,14 +199,15 @@
       }
     },
     "outline-style": {
-      "literal": "solid",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "focus.style",
         "slot": "details.design.condition-2b765dd646fc.focus.style"
-      }
+      },
+      "resolvesTo": "semantic.focus.ring.style",
+      "fallback": "solid"
     }
   },
   "summaryContent": {
@@ -223,7 +224,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "details.spacing.gap.default",
+      "resolvesTo": "details.spacing.gap",
       "fallback": "2px",
       "design": {
         "property": "spacing.gap",
@@ -317,7 +318,7 @@
       ]
     },
     "padding": {
-      "resolvesTo": "details.size.padding.default",
+      "resolvesTo": "details.size.padding",
       "fallback": "16px",
       "design": {
         "property": "spacing.padding",
@@ -342,7 +343,7 @@
     }
   },
   "--compact": {
-    "details.size.padding.default": {
+    "details.size.padding": {
       "resolvesTo": "details.size.padding.compact",
       "fallback": "8px"
     },
@@ -352,7 +353,7 @@
     }
   },
   "--inline": {
-    "details.size.padding.default": {
+    "details.size.padding": {
       "resolvesTo": "core.spacing.size.07",
       "fallback": "24px"
     },

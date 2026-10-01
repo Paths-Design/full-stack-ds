@@ -26,7 +26,7 @@ An existing style entry can expose an independent override without moving its de
 ```json
 {
   "border-radius": {
-    "resolvesTo": "card.size.radius.default",
+    "resolvesTo": "card.size.radius",
     "fallback": "8px",
     "design": {
       "property": "shape.radius",
@@ -36,7 +36,7 @@ An existing style entry can expose an independent override without moving its de
 }
 ```
 
-Web CSS reads `var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px))`. No declaration supplies a default to the new public override. Its absence is intentional; a brand or consumer can set it on a component or ancestor. Clearing it restores the original resolution chain. A malformed *present* CSS value is not repaired by `var()` fallback; callers must supply a value compatible with the property.
+Web CSS reads `var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px))`. No declaration supplies a default to the new public override. Its absence is intentional; a brand or consumer can set it on a component or ancestor. Clearing it restores the original resolution chain. A malformed *present* CSS value is not repaired by `var()` fallback; callers must supply a value compatible with the property.
 
 The component IR publishes the property identity, value category, anatomy part when unambiguous, source selector, expanded selector, public slot, default value/reference, and editable target family. Complex selectors retain their exact identity instead of guessing an anatomy part or state. Independently addressed consumers cannot share a public design slot accidentally. Shared defaults remain possible through their original token references.
 

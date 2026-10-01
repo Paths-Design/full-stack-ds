@@ -73,8 +73,8 @@ export class ListElement extends LitElement {
 
     .list {
       --fsds-list-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-list-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-list-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-list-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-list-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-list-size-sm: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-list-size-md: var(--fsds-semantic-typography-body-02, 16px);
       --fsds-list-size-lg: var(--fsds-semantic-typography-body-01, 18px);
@@ -98,8 +98,8 @@ export class ListElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       color: var(--fsds-list-design-root-foreground-color, var(--fsds-list-color-foreground-primary, #141414));
-      border-color: var(--fsds-list-design-root-border-color, var(--fsds-list-color-border-default, #d0d0d0));
-      padding: var(--fsds-list-design-root-spacing-padding, var(--fsds-list-size-padding-default, 16px));
+      border-color: var(--fsds-list-design-root-border-color, var(--fsds-list-color-border, #d0d0d0));
+      padding: var(--fsds-list-design-root-spacing-padding, var(--fsds-list-size-padding, 16px));
     }
 
     .list--size-sm {
@@ -174,7 +174,7 @@ export class ListElement extends LitElement {
     .list--variant-divided > * + * {
       border-block-start-width: var(--fsds-list-design-condition-d02d544e812f-border-block-start-width, 1px);
       border-block-start-style: solid;
-      border-block-start-color: var(--fsds-list-design-condition-d02d544e812f-border-block-start-color, var(--fsds-list-color-border-default, #d0d0d0));
+      border-block-start-color: var(--fsds-list-design-condition-d02d544e812f-border-block-start-color, var(--fsds-list-color-border, #d0d0d0));
     }
 
     .list--variant-spaced > * {

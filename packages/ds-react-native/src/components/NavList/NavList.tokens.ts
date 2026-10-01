@@ -47,9 +47,9 @@ export const navListTokenScopes = {
       ref: "semantic.color.background.transparent",
       fallback: "transparent",
     },
-    "nav-list.size.radius.default": {
-      name: "nav-list.size.radius.default",
-      cssVar: "--fsds-nav-list-size-radius-default",
+    "nav-list.size.radius": {
+      name: "nav-list.size.radius",
+      cssVar: "--fsds-nav-list-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },

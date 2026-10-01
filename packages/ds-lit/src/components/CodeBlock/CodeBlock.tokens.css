@@ -1,14 +1,14 @@
 @layer components {
 /* @generated:start tokens */
 .code-block {
-  --fsds-code-block-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+  --fsds-code-block-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
   --fsds-code-block-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-  --fsds-code-block-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-  --fsds-code-block-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
-  --fsds-code-block-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
-  --fsds-code-block-size-border-default: var(--fsds-semantic-shape-control-border-default-width, 1px);
-  --fsds-code-block-size-font-size-default: var(--fsds-core-typography-ramp-3, 0.875rem);
-  --fsds-code-block-typography-line-height-default: var(--fsds-semantic-typography-line-height-body, 1.5);
+  --fsds-code-block-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+  --fsds-code-block-size-padding: var(--fsds-core-spacing-size-06, 16px);
+  --fsds-code-block-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+  --fsds-code-block-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+  --fsds-code-block-size-font-size: var(--fsds-core-typography-ramp-3, 0.875rem);
+  --fsds-code-block-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
   --fsds-code-block-token-color-plain: var(--fsds-semantic-color-foreground-syntax-plain, #141414);
   --fsds-code-block-token-color-comment: var(--fsds-semantic-color-foreground-syntax-comment-color, #474647);
   --fsds-code-block-token-color-keyword: var(--fsds-semantic-color-foreground-syntax-keyword, #013ab0);

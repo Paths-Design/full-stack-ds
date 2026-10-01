@@ -25,6 +25,11 @@ describe("contract-bound sequence composition", () => {
   it("lowers renamed parts and channels through every web backend without Carousel lore", () => {
     const contract = load();
     contract.name = "FeatureSequence";
+    for (const block of Object.values(contract.styles ?? {})) {
+      for (const entry of Object.values(block)) {
+        if (entry.design) entry.design.slot = entry.design.slot.replace(/^carousel\./, 'feature-sequence.');
+      }
+    }
     contract.channels!.position = contract.channels!.slide;
     delete contract.channels!.slide;
     contract.sequence!.channel = "position";

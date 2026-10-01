@@ -40,15 +40,15 @@ export const markdownTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "markdown.color.foreground.default": {
-      name: "markdown.color.foreground.default",
-      cssVar: "--fsds-markdown-color-foreground-default",
+    "markdown.color.foreground": {
+      name: "markdown.color.foreground",
+      cssVar: "--fsds-markdown-color-foreground",
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "markdown.typography.fontSize.default": {
-      name: "markdown.typography.fontSize.default",
-      cssVar: "--fsds-markdown-typography-font-size-default",
+    "markdown.typography.fontSize": {
+      name: "markdown.typography.fontSize",
+      cssVar: "--fsds-markdown-typography-font-size",
       ref: "core.typography.ramp.3",
       fallback: 14,
     },

@@ -2,13 +2,13 @@
 .switch {
   --fsds-switch-motion-duration: var(--fsds-semantic-motion-interaction-press-duration, 100ms);
   --fsds-switch-motion-easing: var(--fsds-semantic-motion-interaction-press-easing, ease-out);
-  --fsds-switch-color-track-background-default: var(--fsds-semantic-color-background-tertiary, #cecece);
+  --fsds-switch-color-track-background: var(--fsds-semantic-color-background-tertiary, #cecece);
   --fsds-switch-color-track-background-checked: var(--fsds-semantic-color-foreground-accent, #d9292b);
   --fsds-switch-color-track-background-disabled: var(--fsds-semantic-color-background-disabled, #efefef);
-  --fsds-switch-color-track-border-default: var(--fsds-semantic-color-border-subtle, #aeaeae);
-  --fsds-switch-color-thumb-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
+  --fsds-switch-color-track-border: var(--fsds-semantic-color-border-subtle, #aeaeae);
+  --fsds-switch-color-thumb-background: var(--fsds-semantic-color-background-primary, #ffffff);
   --fsds-switch-color-thumb-background-checked: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
-  --fsds-switch-color-thumb-shadow-default: var(--fsds-semantic-elevation-surface-raised, 0 1px 2px rgba(0, 0, 0, 0.1));
+  --fsds-switch-color-thumb-shadow: var(--fsds-semantic-elevation-surface-raised, 0 1px 2px rgba(0, 0, 0, 0.1));
   --fsds-switch-color-input-outline-focus: var(--fsds-semantic-color-border-focus, #d9292b);
   --fsds-switch-size-md-track-width: var(--fsds-core-spacing-size-09, 48px);
   --fsds-switch-size-md-track-height: var(--fsds-core-spacing-size-07, 24px);

@@ -347,6 +347,21 @@
         "web"
       ],
       "selector": ".field__validatingIndicator"
+    },
+    {
+      "property": "appearance.opacity",
+      "group": "appearance",
+      "valueType": "number",
+      "slot": "field.design.condition-65ec9a7bfb9a.appearance.opacity",
+      "cssVar": "--fsds-field-design-condition-65ec9a7bfb9a-appearance-opacity",
+      "cssProperty": "opacity",
+      "selectorKey": ".field--disabled .field__header, .field--disabled .field__meta",
+      "part": null,
+      "defaultValue": "0.5",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".field--disabled .field__header, .field--disabled .field__meta"
     }
   ],
   "variants": {

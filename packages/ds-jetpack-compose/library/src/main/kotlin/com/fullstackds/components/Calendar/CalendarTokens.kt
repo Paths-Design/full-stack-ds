@@ -45,9 +45,9 @@ val calendarTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "calendar.color.background.default" to ComponentTokenDefinition(
-            name = "calendar.color.background.default",
-            cssVar = "--fsds-calendar-color-background-default",
+        "calendar.color.background" to ComponentTokenDefinition(
+            name = "calendar.color.background",
+            cssVar = "--fsds-calendar-color-background",
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
@@ -63,9 +63,9 @@ val calendarTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.secondary",
             fallback = "#474647",
         ),
-        "calendar.color.border.default" to ComponentTokenDefinition(
-            name = "calendar.color.border.default",
-            cssVar = "--fsds-calendar-color-border-default",
+        "calendar.color.border" to ComponentTokenDefinition(
+            name = "calendar.color.border",
+            cssVar = "--fsds-calendar-color-border",
             ref = "semantic.color.border.subtle",
             fallback = "#d0d0d0",
         ),
@@ -99,9 +99,9 @@ val calendarTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.focus.ring.color",
             fallback = "#0566fe",
         ),
-        "calendar.size.padding.default" to ComponentTokenDefinition(
-            name = "calendar.size.padding.default",
-            cssVar = "--fsds-calendar-size-padding-default",
+        "calendar.size.padding" to ComponentTokenDefinition(
+            name = "calendar.size.padding",
+            cssVar = "--fsds-calendar-size-padding",
             ref = "core.spacing.size.06",
             fallback = "16px",
         ),
@@ -117,9 +117,9 @@ val calendarTokenScopes: ComponentTokenScopes = mapOf(
             ref = "core.spacing.size.07",
             fallback = "24px",
         ),
-        "calendar.size.radius.default" to ComponentTokenDefinition(
-            name = "calendar.size.radius.default",
-            cssVar = "--fsds-calendar-size-radius-default",
+        "calendar.size.radius" to ComponentTokenDefinition(
+            name = "calendar.size.radius",
+            cssVar = "--fsds-calendar-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),

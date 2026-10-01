@@ -2,14 +2,14 @@
 /* @generated:start tokens */
 .blockquote {
   --fsds-blockquote-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
-  --fsds-blockquote-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-  --fsds-blockquote-color-border-default: var(--fsds-semantic-color-border-accent, #d92d2e);
+  --fsds-blockquote-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+  --fsds-blockquote-color-border: var(--fsds-semantic-color-border-accent, #d92d2e);
   --fsds-blockquote-typography-font-style: var(--fsds-semantic-typography-font-style-italic, italic);
   --fsds-blockquote-typography-font-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
-  --fsds-blockquote-size-padding-default: var(--fsds-core-spacing-size-05, 12px);
+  --fsds-blockquote-size-padding: var(--fsds-core-spacing-size-05, 12px);
   --fsds-blockquote-size-padding-sm: var(--fsds-core-spacing-size-04, 8px);
   --fsds-blockquote-size-padding-lg: var(--fsds-core-spacing-size-07, 24px);
-  --fsds-blockquote-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+  --fsds-blockquote-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
   --fsds-blockquote-size-border-accent: var(--fsds-core-spacing-size-03, 4px);
   --fsds-blockquote-size-font-size-sm: var(--fsds-core-typography-ramp-3, 0.875rem);
   --fsds-blockquote-size-font-size-md: var(--fsds-core-typography-ramp-4, 1rem);
@@ -17,31 +17,31 @@
 }
 
 .blockquote--default {
-  --fsds-blockquote-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+  --fsds-blockquote-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
 }
 
 .blockquote--bordered {
-  --fsds-blockquote-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
-  --fsds-blockquote-size-padding-default: var(--fsds-core-spacing-size-05, 12px);
+  --fsds-blockquote-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+  --fsds-blockquote-size-padding: var(--fsds-core-spacing-size-05, 12px);
 }
 
 .blockquote--highlighted {
-  --fsds-blockquote-color-background-default: var(--fsds-semantic-color-background-accent-subtle, #95dafb);
+  --fsds-blockquote-color-background: var(--fsds-semantic-color-background-accent-subtle, #95dafb);
   --fsds-blockquote-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
 }
 
 .blockquote--sm {
-  --fsds-blockquote-size-padding-default: var(--fsds-blockquote-size-padding-sm, 8px);
+  --fsds-blockquote-size-padding: var(--fsds-blockquote-size-padding-sm, 8px);
   --fsds-blockquote-size-font-size-md: var(--fsds-blockquote-size-font-size-sm, 0.875rem);
 }
 
 .blockquote--md {
-  --fsds-blockquote-size-padding-default: var(--fsds-core-spacing-size-05, 12px);
+  --fsds-blockquote-size-padding: var(--fsds-core-spacing-size-05, 12px);
   --fsds-blockquote-size-font-size-md: var(--fsds-core-typography-ramp-4, 1rem);
 }
 
 .blockquote--lg {
-  --fsds-blockquote-size-padding-default: var(--fsds-blockquote-size-padding-lg, 24px);
+  --fsds-blockquote-size-padding: var(--fsds-blockquote-size-padding-lg, 24px);
   --fsds-blockquote-size-font-size-md: var(--fsds-blockquote-size-font-size-lg, 1.125rem);
 }
 /* @generated:end */

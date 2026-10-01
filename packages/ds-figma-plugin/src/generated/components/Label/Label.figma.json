@@ -48,7 +48,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#141414",
-      "resolvesTo": "label.color.text.default",
+      "resolvesTo": "label.color.text",
       "editableTargets": [
         "web"
       ],
@@ -64,7 +64,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "1.2",
-      "resolvesTo": "label.typo.lineHeight.default",
+      "resolvesTo": "label.typo.lineHeight",
       "editableTargets": [
         "web"
       ],
@@ -114,8 +114,8 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-label-color-text-default": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-label-typo-line-height-default": "var(--fsds-semantic-typography-line-height-tight, 1.2)",
+          "--fsds-label-color-text": "var(--fsds-semantic-color-foreground-primary, #141414)",
+          "--fsds-label-typo-line-height": "var(--fsds-semantic-typography-line-height-tight, 1.2)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
@@ -127,8 +127,8 @@
           "height": "var(--fsds-box-model-height)",
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
-          "color": "var(--fsds-label-color-text-default, #141414)",
-          "line-height": "var(--fsds-label-typo-line-height-default, 1.2)"
+          "color": "var(--fsds-label-color-text, #141414)",
+          "line-height": "var(--fsds-label-typo-line-height, 1.2)"
         }
       }
     ],

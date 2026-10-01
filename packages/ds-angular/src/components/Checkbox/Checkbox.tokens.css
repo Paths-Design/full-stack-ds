@@ -1,8 +1,8 @@
 @layer components {
 /* @generated:start tokens */
 .checkbox {
-  --fsds-checkbox-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
-  --fsds-checkbox-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
+  --fsds-checkbox-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+  --fsds-checkbox-color-border: var(--fsds-semantic-color-border-default, #a0a0a1);
   --fsds-checkbox-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
   --fsds-checkbox-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
   --fsds-checkbox-transition-duration: var(--fsds-core-motion-duration-short, 150ms);
@@ -10,23 +10,23 @@
   --fsds-checkbox-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
   --fsds-checkbox-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
   --fsds-checkbox-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-  --fsds-checkbox-color-mark-default: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
+  --fsds-checkbox-color-mark: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
 
   &:hover .checkbox__indicator {
-    --fsds-checkbox-color-border-default: var(--fsds-semantic-color-border-hover, #888889);
+    --fsds-checkbox-color-border: var(--fsds-semantic-color-border-hover, #888889);
   }
 
   &:has(.checkbox__input:checked) .checkbox__indicator {
-    --fsds-checkbox-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+    --fsds-checkbox-color-background: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
   }
 
   &:has(.checkbox__input:indeterminate) .checkbox__indicator {
-    --fsds-checkbox-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+    --fsds-checkbox-color-background: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
   }
 
   &:has(.checkbox__input:disabled) .checkbox__indicator {
-    --fsds-checkbox-color-background-default: var(--fsds-semantic-color-background-disabled, #d0d0d0);
-    --fsds-checkbox-color-mark-default: var(--fsds-semantic-color-foreground-disabled, #727272);
+    --fsds-checkbox-color-background: var(--fsds-semantic-color-background-disabled, #d0d0d0);
+    --fsds-checkbox-color-mark: var(--fsds-semantic-color-foreground-disabled, #727272);
   }
 }
 /* @generated:end */

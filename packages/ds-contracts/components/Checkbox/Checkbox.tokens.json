@@ -29,12 +29,12 @@
     "fallback": "32px",
     "layer": "semantic"
   },
-  "checkbox.color.background.default": {
+  "checkbox.color.background": {
     "resolvesTo": "semantic.color.background.primary",
     "fallback": "#ffffff",
     "layer": "semantic"
   },
-  "checkbox.color.border.default": {
+  "checkbox.color.border": {
     "resolvesTo": "semantic.color.border.default",
     "fallback": "#a0a0a1",
     "layer": "semantic"
@@ -74,7 +74,7 @@
     "fallback": "2px",
     "layer": "semantic"
   },
-  "checkbox.color.mark.default": {
+  "checkbox.color.mark": {
     "resolvesTo": "semantic.color.foreground.on.brand",
     "fallback": "#ffffff",
     "layer": "semantic"

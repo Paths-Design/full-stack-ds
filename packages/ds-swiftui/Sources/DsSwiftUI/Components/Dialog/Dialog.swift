@@ -21,22 +21,22 @@ enum DialogTokens {
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
-            "dialog.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-background-default", name: "dialog.color.background.default", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
-            "dialog.color.foreground.default": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-foreground-default", name: "dialog.color.foreground.default", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "dialog.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-border-default", name: "dialog.color.border.default", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
-            "dialog.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-size-radius-default", name: "dialog.size.radius.default", ref: "semantic.shape.radius.large", fallback: .string("16px")),
+            "dialog.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-background", name: "dialog.color.background", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
+            "dialog.color.foreground": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-foreground", name: "dialog.color.foreground", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
+            "dialog.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-border", name: "dialog.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "dialog.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-size-radius", name: "dialog.size.radius", ref: "semantic.shape.radius.large", fallback: .string("16px")),
         ],
         "part_backdrop": [
-            "dialog.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-background-default", name: "dialog.color.background.default", ref: "semantic.color.overlay.scrim", fallback: .string("#00000066")),
+            "dialog.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-background", name: "dialog.color.background", ref: "semantic.color.overlay.scrim", fallback: .string("#00000066")),
         ],
         "part_body": [
-            "dialog.color.foreground.default": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-foreground-default", name: "dialog.color.foreground.default", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
+            "dialog.color.foreground": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-foreground", name: "dialog.color.foreground", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
         ],
         "part_closeButton": [
-            "dialog.color.foreground.default": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-foreground-default", name: "dialog.color.foreground.default", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
+            "dialog.color.foreground": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-foreground", name: "dialog.color.foreground", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
         ],
         "hover": [
-            "dialog.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-background-default", name: "dialog.color.background.default", ref: "semantic.color.background.hover", fallback: .adaptive(light: "#f7f7f7", dark: "#474647")),
+            "dialog.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-background", name: "dialog.color.background", ref: "semantic.color.background.hover", fallback: .adaptive(light: "#f7f7f7", dark: "#474647")),
         ],
     ]
 }
@@ -88,10 +88,10 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var background: Color { colorSlot("color.background.default") ?? .accentColor }
-    private var foreground: Color { colorSlot("color.foreground.default") ?? .primary }
-    private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
-    private var radius: CGFloat { pxSlot("size.radius.default") ?? 0 }
+    private var background: Color { colorSlot("color.background") ?? .accentColor }
+    private var foreground: Color { colorSlot("color.foreground") ?? .primary }
+    private var borderColor: Color { colorSlot("color.border") ?? .clear }
+    private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

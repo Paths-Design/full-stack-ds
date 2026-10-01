@@ -104,9 +104,9 @@ export class AccordionElement extends LitElement {
       --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
       --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-accordion-focus-width: var(--fsds-semantic-shape-control-border-focus-width, 2px);
-      --fsds-accordion-focus-color: var(--fsds-semantic-color-border-accent, #d92d2e);
-      --fsds-accordion-focus-offset: var(--fsds-core-spacing-size-01, 1px);
+      --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
       --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
       --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
     }
@@ -168,9 +168,9 @@ export class AccordionElement extends LitElement {
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #d92d2e));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 1px));
-      outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, solid);
+      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+      outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
@@ -376,9 +376,9 @@ export class AccordionItemElement extends LitElement {
       --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
       --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-accordion-focus-width: var(--fsds-semantic-shape-control-border-focus-width, 2px);
-      --fsds-accordion-focus-color: var(--fsds-semantic-color-border-accent, #d92d2e);
-      --fsds-accordion-focus-offset: var(--fsds-core-spacing-size-01, 1px);
+      --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
       --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
       --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
     }
@@ -440,9 +440,9 @@ export class AccordionItemElement extends LitElement {
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #d92d2e));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 1px));
-      outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, solid);
+      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+      outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
@@ -557,9 +557,9 @@ export class AccordionTriggerElement extends LitElement {
       --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
       --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-accordion-focus-width: var(--fsds-semantic-shape-control-border-focus-width, 2px);
-      --fsds-accordion-focus-color: var(--fsds-semantic-color-border-accent, #d92d2e);
-      --fsds-accordion-focus-offset: var(--fsds-core-spacing-size-01, 1px);
+      --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
       --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
       --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
     }
@@ -621,9 +621,9 @@ export class AccordionTriggerElement extends LitElement {
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #d92d2e));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 1px));
-      outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, solid);
+      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+      outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
@@ -783,9 +783,9 @@ export class AccordionContentElement extends LitElement {
       --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
       --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-accordion-focus-width: var(--fsds-semantic-shape-control-border-focus-width, 2px);
-      --fsds-accordion-focus-color: var(--fsds-semantic-color-border-accent, #d92d2e);
-      --fsds-accordion-focus-offset: var(--fsds-core-spacing-size-01, 1px);
+      --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
       --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
       --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
     }
@@ -847,9 +847,9 @@ export class AccordionContentElement extends LitElement {
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #d92d2e));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 1px));
-      outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, solid);
+      outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+      outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {

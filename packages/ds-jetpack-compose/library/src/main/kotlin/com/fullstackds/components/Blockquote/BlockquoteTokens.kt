@@ -44,39 +44,39 @@ val blockquoteTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.secondary",
             fallback = "#474647",
         ),
-        "blockquote.color.background.default" to ComponentTokenDefinition(
-            name = "blockquote.color.background.default",
-            cssVar = "--fsds-blockquote-color-background-default",
+        "blockquote.color.background" to ComponentTokenDefinition(
+            name = "blockquote.color.background",
+            cssVar = "--fsds-blockquote-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
-        "blockquote.size.radius.default" to ComponentTokenDefinition(
-            name = "blockquote.size.radius.default",
-            cssVar = "--fsds-blockquote-size-radius-default",
+        "blockquote.size.radius" to ComponentTokenDefinition(
+            name = "blockquote.size.radius",
+            cssVar = "--fsds-blockquote-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),
     ),
     "variant_default" to mapOf(
-        "blockquote.color.background.default" to ComponentTokenDefinition(
-            name = "blockquote.color.background.default",
-            cssVar = "--fsds-blockquote-color-background-default",
+        "blockquote.color.background" to ComponentTokenDefinition(
+            name = "blockquote.color.background",
+            cssVar = "--fsds-blockquote-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
     ),
     "variant_bordered" to mapOf(
-        "blockquote.color.background.default" to ComponentTokenDefinition(
-            name = "blockquote.color.background.default",
-            cssVar = "--fsds-blockquote-color-background-default",
+        "blockquote.color.background" to ComponentTokenDefinition(
+            name = "blockquote.color.background",
+            cssVar = "--fsds-blockquote-color-background",
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
     ),
     "variant_highlighted" to mapOf(
-        "blockquote.color.background.default" to ComponentTokenDefinition(
-            name = "blockquote.color.background.default",
-            cssVar = "--fsds-blockquote-color-background-default",
+        "blockquote.color.background" to ComponentTokenDefinition(
+            name = "blockquote.color.background",
+            cssVar = "--fsds-blockquote-color-background",
             ref = "semantic.color.background.accentSubtle",
             fallback = "#95dafb",
         ),

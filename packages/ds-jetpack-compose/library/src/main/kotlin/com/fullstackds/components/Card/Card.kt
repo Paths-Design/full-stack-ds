@@ -49,8 +49,8 @@ fun Card(
     }
     val cardBackground = layeredSlot("card.color.background.default")?.toFsdsColor()
     val cardForeground = layeredSlot("card.color.foreground.primary")?.toFsdsColor()
-    val cardBorder = layeredSlot("card.color.border.default")?.toFsdsColor()
-    val cardRadius = layeredSlot("card.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val cardBorder = layeredSlot("card.color.border")?.toFsdsColor()
+    val cardRadius = layeredSlot("card.size.radius")?.toFsdsDp() ?: 0.dp
     val cardGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val cardMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp
     val cardMinHeight = layeredSlot("box-model.min-height")?.toFsdsDp() ?: 0.dp

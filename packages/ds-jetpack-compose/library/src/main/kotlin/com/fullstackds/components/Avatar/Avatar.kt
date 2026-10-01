@@ -50,12 +50,12 @@ fun Avatar(
         }
         return null
     }
-    val avatarBackground = layeredSlot("avatar.color.background.default")?.toFsdsColor()
+    val avatarBackground = layeredSlot("avatar.color.background")?.toFsdsColor()
     val avatarForeground = layeredSlot("avatar.color.foreground.primary")?.toFsdsColor()
-    val avatarBorder = layeredSlot("avatar.color.border.default")?.toFsdsColor()
+    val avatarBorder = layeredSlot("avatar.color.border")?.toFsdsColor()
     val avatarWeight = layeredSlot("avatar.typography.fontWeight.medium")?.toFsdsWeight()
-    val avatarRadius = layeredSlot("avatar.size.radius.default")?.toFsdsDp() ?: 0.dp
-    val avatarBorderWidth = layeredSlot("avatar.size.border.default")?.toFsdsDp() ?: 0.dp
+    val avatarRadius = layeredSlot("avatar.size.radius")?.toFsdsDp() ?: 0.dp
+    val avatarBorderWidth = layeredSlot("avatar.size.border")?.toFsdsDp() ?: 0.dp
     val avatarGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val avatarMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp
     val avatarMinHeight = layeredSlot("box-model.min-height")?.toFsdsDp() ?: 0.dp

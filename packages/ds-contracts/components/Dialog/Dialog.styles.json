@@ -64,7 +64,7 @@
         "web"
       ]
     },
-    "dialog.color.background.default": {
+    "dialog.color.background": {
       "resolvesTo": "semantic.color.overlay.scrim",
       "fallback": "#00000066"
     }
@@ -91,7 +91,7 @@
       ]
     },
     "background-color": {
-      "resolvesTo": "dialog.color.background.default",
+      "resolvesTo": "dialog.color.background",
       "fallback": "#ffffff",
       "design": {
         "property": "background.fill",
@@ -99,7 +99,7 @@
       }
     },
     "color": {
-      "resolvesTo": "dialog.color.foreground.default",
+      "resolvesTo": "dialog.color.foreground",
       "fallback": "#141414",
       "design": {
         "property": "foreground.color",
@@ -107,7 +107,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "dialog.color.border.default",
+      "resolvesTo": "dialog.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
@@ -137,7 +137,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "dialog.size.radius.default",
+      "resolvesTo": "dialog.size.radius",
       "fallback": "16px",
       "design": {
         "property": "shape.radius",
@@ -145,7 +145,7 @@
       }
     },
     "box-shadow": {
-      "resolvesTo": "dialog.elevation.default",
+      "resolvesTo": "dialog.elevation",
       "fallback": "0px 12px 16px #0000000f, 0px 25px 50px #00000026",
       "design": {
         "property": "elevation.shadow",
@@ -237,7 +237,7 @@
       "fallback": "24px"
     },
     "border-bottom-color": {
-      "resolvesTo": "dialog.color.border.default",
+      "resolvesTo": "dialog.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.bottom.color",
@@ -305,7 +305,7 @@
       }
     },
     "color": {
-      "resolvesTo": "dialog.color.foreground.default",
+      "resolvesTo": "dialog.color.foreground",
       "fallback": "#141414",
       "design": {
         "property": "foreground.color",
@@ -342,7 +342,7 @@
         "web"
       ]
     },
-    "dialog.color.foreground.default": {
+    "dialog.color.foreground": {
       "resolvesTo": "semantic.color.foreground.secondary",
       "fallback": "#474647"
     },
@@ -417,7 +417,7 @@
       "fallback": "24px"
     },
     "border-top-color": {
-      "resolvesTo": "dialog.color.border.default",
+      "resolvesTo": "dialog.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.top.color",
@@ -534,13 +534,13 @@
         "web"
       ]
     },
-    "dialog.color.foreground.default": {
+    "dialog.color.foreground": {
       "resolvesTo": "semantic.color.foreground.secondary",
       "fallback": "#474647"
     }
   },
   ".dialog__closeButton:hover": {
-    "dialog.color.background.default": {
+    "dialog.color.background": {
       "resolvesTo": "semantic.color.background.hover",
       "fallback": "#f7f7f7"
     }

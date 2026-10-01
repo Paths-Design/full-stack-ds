@@ -36,8 +36,8 @@ fun Checkbox(
     var uncontrolledChecked by remember { mutableStateOf(defaultChecked) }
     val resolvedChecked = checked ?: uncontrolledChecked
     val fsdsTheme = LocalFsdsTheme.current
-    val boxColorUnchecked = fsdsTheme.resolve(checkboxTokenScopes["root"]?.get("checkbox.color.background.default"))?.toFsdsColor()
-    val boxBorderColor = fsdsTheme.resolve(checkboxTokenScopes["root"]?.get("checkbox.color.border.default"))?.toFsdsColor()
+    val boxColorUnchecked = fsdsTheme.resolve(checkboxTokenScopes["root"]?.get("checkbox.color.background"))?.toFsdsColor()
+    val boxBorderColor = fsdsTheme.resolve(checkboxTokenScopes["root"]?.get("checkbox.color.border"))?.toFsdsColor()
     val focusRingColor = fsdsTheme.resolve(checkboxTokenScopes["root"]?.get("checkbox.focus.ring.color"))?.toFsdsColor()
     val boxBorderWidth = fsdsTheme.resolve(checkboxTokenScopes["root"]?.get("checkbox.border.width"))?.toFsdsDp() ?: 1.dp
     val boxRadius = fsdsTheme.resolve(checkboxTokenScopes["root"]?.get("checkbox.border.radius"))?.toFsdsDp() ?: 4.dp

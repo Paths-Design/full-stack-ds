@@ -1,5 +1,5 @@
 {
-  "profile-flag.color.background.default": {
+  "profile-flag.color.background": {
     "resolvesTo": "semantic.color.background.primary",
     "fallback": "#ffffff",
     "layer": "semantic"
@@ -14,12 +14,12 @@
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "profile-flag.size.radius.default": {
+  "profile-flag.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"
   },
-  "profile-flag.spacing.gap.default": {
+  "profile-flag.spacing.gap": {
     "resolvesTo": "core.spacing.size.03",
     "fallback": "4px",
     "layer": "core"

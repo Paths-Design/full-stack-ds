@@ -3,10 +3,10 @@
 .switch {
   --fsds-switch-motion-duration: var(--fsds-semantic-motion-interaction-press-duration, 100ms);
   --fsds-switch-motion-easing: var(--fsds-semantic-motion-interaction-press-easing, cubic-bezier(0.4, 0, 0.2, 1));
-  --fsds-switch-color-track-background-default: var(--fsds-semantic-color-background-tertiary, #d0d0d0);
-  --fsds-switch-color-track-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-  --fsds-switch-color-thumb-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
-  --fsds-switch-color-thumb-shadow-default: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
+  --fsds-switch-color-track-background: var(--fsds-semantic-color-background-tertiary, #d0d0d0);
+  --fsds-switch-color-track-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+  --fsds-switch-color-thumb-background: var(--fsds-semantic-color-background-primary, #ffffff);
+  --fsds-switch-color-thumb-shadow: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
   --fsds-switch-size-md-track-width: var(--fsds-core-spacing-size-09, 48px);
   --fsds-switch-size-md-track-height: var(--fsds-core-spacing-size-07, 24px);
   --fsds-switch-size-md-track-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
@@ -37,15 +37,15 @@
   --fsds-switch-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
 
   &:has(.switch__input:checked) .switch__track {
-    --fsds-switch-color-track-background-default: var(--fsds-semantic-color-foreground-accent, #d92d2e);
+    --fsds-switch-color-track-background: var(--fsds-semantic-color-foreground-accent, #d92d2e);
   }
 
   &:has(.switch__input:checked) .switch__thumb {
-    --fsds-switch-color-thumb-background-default: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
+    --fsds-switch-color-thumb-background: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
   }
 
   &:has(.switch__input:disabled) .switch__track {
-    --fsds-switch-color-track-background-default: var(--fsds-semantic-color-background-disabled, #d0d0d0);
+    --fsds-switch-color-track-background: var(--fsds-semantic-color-background-disabled, #d0d0d0);
   }
 }
 /* @generated:end */

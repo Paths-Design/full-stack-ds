@@ -17,14 +17,22 @@
       "fallback": "8px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "spacing.gap",
+        "slot": "carousel.design.root.spacing.gap"
+      }
     },
     "color": {
       "resolvesTo": "carousel.color.foreground",
       "fallback": "#141414",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "foreground.color",
+        "slot": "carousel.design.root.foreground.color"
+      }
     }
   },
   "viewport": {
@@ -79,7 +87,11 @@
       "fallback": "8px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "spacing.gap",
+        "slot": "carousel.design.controls.spacing.gap"
+      }
     }
   },
   "pagination": {
@@ -100,7 +112,11 @@
       "fallback": "8px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "spacing.gap",
+        "slot": "carousel.design.pagination.spacing.gap"
+      }
     }
   },
   "picker": {
@@ -114,7 +130,11 @@
       "literal": "0",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "spacing.padding",
+        "slot": "carousel.design.picker.spacing.padding"
+      }
     },
     "border": {
       "literal": "0",
@@ -191,7 +211,11 @@
       "fallback": "#141414",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "background.fill",
+        "slot": "carousel.design.fill.background.fill"
+      }
     },
     "transform-origin": {
       "literal": "left center",
@@ -237,7 +261,11 @@
       "literal": "50%",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "shape.radius",
+        "slot": "carousel.design.ring.shape.radius"
+      }
     },
     "background": {
       "literal": "conic-gradient(currentColor calc(var(--sequence-progress, 0) * 1turn), transparent 0)",
@@ -256,7 +284,11 @@
       "fallback": "#141414",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "foreground.color",
+        "slot": "carousel.design.ring.foreground.color"
+      }
     },
     "pointer-events": {
       "literal": "none",
@@ -309,14 +341,22 @@
       "fallback": "32px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.min-width",
+        "slot": "carousel.design.next.sizing.min-width"
+      }
     },
     "min-height": {
       "resolvesTo": "carousel.size.control-size",
       "fallback": "32px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.min-height",
+        "slot": "carousel.design.next.sizing.min-height"
+      }
     },
     "border": {
       "literal": "1px solid currentColor",
@@ -329,7 +369,11 @@
       "fallback": "9999px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "shape.radius",
+        "slot": "carousel.design.next.shape.radius"
+      }
     },
     "background": {
       "literal": "transparent",
@@ -341,7 +385,11 @@
       "literal": "inherit",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "foreground.color",
+        "slot": "carousel.design.next.foreground.color"
+      }
     },
     "cursor": {
       "literal": "pointer",
@@ -380,14 +428,22 @@
       "fallback": "32px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.min-width",
+        "slot": "carousel.design.previous.sizing.min-width"
+      }
     },
     "min-height": {
       "resolvesTo": "carousel.size.control-size",
       "fallback": "32px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.min-height",
+        "slot": "carousel.design.previous.sizing.min-height"
+      }
     },
     "border": {
       "literal": "1px solid currentColor",
@@ -400,7 +456,11 @@
       "fallback": "9999px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "shape.radius",
+        "slot": "carousel.design.previous.shape.radius"
+      }
     },
     "background": {
       "literal": "transparent",
@@ -412,7 +472,11 @@
       "literal": "inherit",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "foreground.color",
+        "slot": "carousel.design.previous.foreground.color"
+      }
     },
     "cursor": {
       "literal": "pointer",
@@ -451,14 +515,22 @@
       "fallback": "32px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.min-width",
+        "slot": "carousel.design.rotation.sizing.min-width"
+      }
     },
     "min-height": {
       "resolvesTo": "carousel.size.control-size",
       "fallback": "32px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.min-height",
+        "slot": "carousel.design.rotation.sizing.min-height"
+      }
     },
     "border": {
       "literal": "1px solid currentColor",
@@ -471,7 +543,11 @@
       "fallback": "9999px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "shape.radius",
+        "slot": "carousel.design.rotation.shape.radius"
+      }
     },
     "background": {
       "literal": "transparent",
@@ -483,7 +559,11 @@
       "literal": "inherit",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "foreground.color",
+        "slot": "carousel.design.rotation.foreground.color"
+      }
     },
     "cursor": {
       "literal": "pointer",
@@ -501,7 +581,11 @@
       "literal": "12px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "spacing.padding-inline",
+        "slot": "carousel.design.rotation.spacing.padding-inline"
+      }
     },
     "font": {
       "literal": "inherit",
@@ -516,21 +600,33 @@
       "fallback": "8px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.width",
+        "slot": "carousel.design.marker.sizing.width"
+      }
     },
     "height": {
       "resolvesTo": "carousel.size.dot-size",
       "fallback": "8px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.height",
+        "slot": "carousel.design.marker.sizing.height"
+      }
     },
     "border-radius": {
       "resolvesTo": "carousel.size.radius",
       "fallback": "9999px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "shape.radius",
+        "slot": "carousel.design.marker.shape.radius"
+      }
     },
     "overflow": {
       "literal": "hidden",
@@ -543,7 +639,11 @@
       "fallback": "#d0d0d0",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "background.fill",
+        "slot": "carousel.design.marker.background.fill"
+      }
     },
     "display": {
       "literal": "block",
@@ -564,7 +664,11 @@
       "fallback": "32px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.width",
+        "slot": "carousel.design.condition-2d8237d36499.sizing.width"
+      }
     }
   },
   ".carousel:not([data-sequence-root]) > .carousel__viewport": {

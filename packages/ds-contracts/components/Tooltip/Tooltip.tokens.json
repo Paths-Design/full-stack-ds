@@ -29,17 +29,17 @@
     "fallback": "64px",
     "layer": "semantic"
   },
-  "tooltip.color.background.default": {
+  "tooltip.color.background": {
     "resolvesTo": "semantic.color.background.inverse",
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "tooltip.color.foreground.default": {
+  "tooltip.color.foreground": {
     "resolvesTo": "semantic.color.foreground.on-inverse",
     "fallback": "#fafafa",
     "layer": "semantic"
   },
-  "tooltip.color.border.default": {
+  "tooltip.color.border": {
     "resolvesTo": "semantic.color.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
@@ -49,7 +49,7 @@
     "fallback": "8px",
     "layer": "core"
   },
-  "tooltip.size.radius.default": {
+  "tooltip.size.radius": {
     "resolvesTo": "semantic.shape.radius.small",
     "fallback": "4px",
     "layer": "semantic"

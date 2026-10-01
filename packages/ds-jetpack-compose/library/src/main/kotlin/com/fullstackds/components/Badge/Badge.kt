@@ -52,10 +52,7 @@ fun Badge(
         BadgeVariant.Default -> fsdsTheme.resolve(badgeTokenScopes["root"]?.get("badge.color.background.default"))?.toFsdsColor()
         else -> layeredSlot("badge.color.background.default")?.toFsdsColor()
     }
-    val borderColor = when (variant) {
-        BadgeVariant.Default -> fsdsTheme.resolve(badgeTokenScopes["root"]?.get("badge.color.border.default"))?.toFsdsColor()
-        else -> layeredSlot("badge.color.border.default")?.toFsdsColor()
-    }
+    val borderColor = layeredSlot("badge.color.border")?.toFsdsColor()
     val contentColor = layeredSlot("badge.color.foreground.primary")?.toFsdsColor()
     val cornerRadius = layeredSlot("badge.size.radius")?.toFsdsDp() ?: 0.dp
     val gap = layeredSlot("badge.spacing.gap")?.toFsdsDp() ?: 0.dp

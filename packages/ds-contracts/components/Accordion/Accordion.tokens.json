@@ -80,19 +80,19 @@
     "layer": "core"
   },
   "accordion.focus.width": {
-    "resolvesTo": "semantic.shape.control.border.focusWidth",
+    "resolvesTo": "semantic.focus.ring.width",
     "fallback": "2px",
     "layer": "semantic"
   },
   "accordion.focus.color": {
-    "resolvesTo": "semantic.color.border.accent",
-    "fallback": "#d92d2e",
+    "resolvesTo": "semantic.focus.ring.color",
+    "fallback": "#0566fe",
     "layer": "semantic"
   },
   "accordion.focus.offset": {
-    "resolvesTo": "core.spacing.size.01",
-    "fallback": "1px",
-    "layer": "core"
+    "resolvesTo": "semantic.focus.ring.offset",
+    "fallback": "2px",
+    "layer": "semantic"
   },
   "accordion.opacity.disabled": {
     "resolvesTo": "semantic.interaction.disabled.opacity",

@@ -125,7 +125,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#141414",
-      "resolvesTo": "toggle-switch.color.foreground.default",
+      "resolvesTo": "toggle-switch.color.foreground",
       "editableTargets": [
         "web"
       ],
@@ -141,7 +141,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#b8b8b8",
-      "resolvesTo": "toggle-switch.color.border.default",
+      "resolvesTo": "toggle-switch.color.border",
       "editableTargets": [
         "web"
       ],
@@ -157,7 +157,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "9999px",
-      "resolvesTo": "toggle-switch.border.radius.default",
+      "resolvesTo": "toggle-switch.border.radius",
       "editableTargets": [
         "web"
       ],
@@ -449,9 +449,9 @@
           "--fsds-box-model-min-height": "var(--fsds-semantic-action-size-medium-min-height, 32px)",
           "--fsds-box-model-max-height": "none",
           "--fsds-toggle-switch-color-background-default": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
-          "--fsds-toggle-switch-color-foreground-default": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-toggle-switch-color-border-default": "var(--fsds-semantic-color-border-light, #b8b8b8)",
-          "--fsds-toggle-switch-border-radius-default": "var(--fsds-semantic-shape-control-radius-pill, 9999px)",
+          "--fsds-toggle-switch-color-foreground": "var(--fsds-semantic-color-foreground-primary, #141414)",
+          "--fsds-toggle-switch-color-border": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-toggle-switch-border-radius": "var(--fsds-semantic-shape-control-radius-pill, 9999px)",
           "--fsds-toggle-switch-motion-duration-fast": "var(--fsds-core-motion-duration-short, 150ms)",
           "--fsds-toggle-switch-color-background-hover": "var(--fsds-semantic-interaction-background-hover, #f7f7f7)",
           "--fsds-toggle-switch-color-background-checked": "var(--fsds-semantic-color-action-background-primary-default, #0566fe)",
@@ -474,9 +474,9 @@
           "display": "inline-flex",
           "align-items": "center",
           "background-color": "var(--fsds-toggle-switch-color-background-default, #f7f7f7)",
-          "color": "var(--fsds-toggle-switch-color-foreground-default, #141414)",
-          "border-color": "var(--fsds-toggle-switch-color-border-default, #b8b8b8)",
-          "border-radius": "var(--fsds-toggle-switch-border-radius-default, 9999px)",
+          "color": "var(--fsds-toggle-switch-color-foreground, #141414)",
+          "border-color": "var(--fsds-toggle-switch-color-border, #b8b8b8)",
+          "border-radius": "var(--fsds-toggle-switch-border-radius, 9999px)",
           "transition-duration": "var(--fsds-toggle-switch-motion-duration-fast, 150ms)",
           "border-style": "solid",
           "border-width": "1px",

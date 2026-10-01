@@ -85,11 +85,11 @@ export class TooltipElement extends LitElement {
       }
     }
     .tooltip {
-      --fsds-tooltip-color-background-default: var(--fsds-semantic-color-background-inverse, #141414);
-      --fsds-tooltip-color-foreground-default: var(--fsds-semantic-color-foreground-on-inverse, #fafafa);
-      --fsds-tooltip-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-tooltip-color-background: var(--fsds-semantic-color-background-inverse, #141414);
+      --fsds-tooltip-color-foreground: var(--fsds-semantic-color-foreground-on-inverse, #fafafa);
+      --fsds-tooltip-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-tooltip-size-padding-x: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-tooltip-size-radius-default: var(--fsds-semantic-shape-radius-small, 4px);
+      --fsds-tooltip-size-radius: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-tooltip-size-max-width: 200px;
       --fsds-tooltip-typography-font-size: var(--fsds-semantic-typography-caption-01, 14px);
       --fsds-tooltip-layer-content: var(--fsds-core-layer-tooltip, 1800);
@@ -114,10 +114,10 @@ export class TooltipElement extends LitElement {
       align-items: center;
     }
     [data-tooltip-content] {
-      background-color: var(--fsds-tooltip-design-content-background-fill, var(--fsds-tooltip-color-background-default, #141414));
-      color: var(--fsds-tooltip-design-content-foreground-color, var(--fsds-tooltip-color-foreground-default, #fafafa));
-      border-color: var(--fsds-tooltip-design-content-border-color, var(--fsds-tooltip-color-border-default, #d0d0d0));
-      border-radius: var(--fsds-tooltip-design-content-shape-radius, var(--fsds-tooltip-size-radius-default, 4px));
+      background-color: var(--fsds-tooltip-design-content-background-fill, var(--fsds-tooltip-color-background, #141414));
+      color: var(--fsds-tooltip-design-content-foreground-color, var(--fsds-tooltip-color-foreground, #fafafa));
+      border-color: var(--fsds-tooltip-design-content-border-color, var(--fsds-tooltip-color-border, #d0d0d0));
+      border-radius: var(--fsds-tooltip-design-content-shape-radius, var(--fsds-tooltip-size-radius, 4px));
       padding: var(--fsds-tooltip-design-content-spacing-padding, var(--fsds-tooltip-size-padding-x, 8px));
       max-width: var(--fsds-tooltip-design-content-sizing-max-width, var(--fsds-tooltip-size-max-width, 200px));
       z-index: var(--fsds-tooltip-layer-content, 1800);
@@ -283,11 +283,11 @@ export class TooltipTriggerElement extends LitElement {
       }
     }
     .tooltip {
-      --fsds-tooltip-color-background-default: var(--fsds-semantic-color-background-inverse, #141414);
-      --fsds-tooltip-color-foreground-default: var(--fsds-semantic-color-foreground-on-inverse, #fafafa);
-      --fsds-tooltip-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-tooltip-color-background: var(--fsds-semantic-color-background-inverse, #141414);
+      --fsds-tooltip-color-foreground: var(--fsds-semantic-color-foreground-on-inverse, #fafafa);
+      --fsds-tooltip-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-tooltip-size-padding-x: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-tooltip-size-radius-default: var(--fsds-semantic-shape-radius-small, 4px);
+      --fsds-tooltip-size-radius: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-tooltip-size-max-width: 200px;
       --fsds-tooltip-typography-font-size: var(--fsds-semantic-typography-caption-01, 14px);
       --fsds-tooltip-layer-content: var(--fsds-core-layer-tooltip, 1800);
@@ -312,10 +312,10 @@ export class TooltipTriggerElement extends LitElement {
       align-items: center;
     }
     [data-tooltip-content] {
-      background-color: var(--fsds-tooltip-design-content-background-fill, var(--fsds-tooltip-color-background-default, #141414));
-      color: var(--fsds-tooltip-design-content-foreground-color, var(--fsds-tooltip-color-foreground-default, #fafafa));
-      border-color: var(--fsds-tooltip-design-content-border-color, var(--fsds-tooltip-color-border-default, #d0d0d0));
-      border-radius: var(--fsds-tooltip-design-content-shape-radius, var(--fsds-tooltip-size-radius-default, 4px));
+      background-color: var(--fsds-tooltip-design-content-background-fill, var(--fsds-tooltip-color-background, #141414));
+      color: var(--fsds-tooltip-design-content-foreground-color, var(--fsds-tooltip-color-foreground, #fafafa));
+      border-color: var(--fsds-tooltip-design-content-border-color, var(--fsds-tooltip-color-border, #d0d0d0));
+      border-radius: var(--fsds-tooltip-design-content-shape-radius, var(--fsds-tooltip-size-radius, 4px));
       padding: var(--fsds-tooltip-design-content-spacing-padding, var(--fsds-tooltip-size-padding-x, 8px));
       max-width: var(--fsds-tooltip-design-content-sizing-max-width, var(--fsds-tooltip-size-max-width, 200px));
       z-index: var(--fsds-tooltip-layer-content, 1800);
@@ -459,11 +459,11 @@ export class TooltipContentElement extends LitElement {
 
 
     .tooltip {
-      --fsds-tooltip-color-background-default: var(--fsds-semantic-color-background-inverse, #141414);
-      --fsds-tooltip-color-foreground-default: var(--fsds-semantic-color-foreground-on-inverse, #fafafa);
-      --fsds-tooltip-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-tooltip-color-background: var(--fsds-semantic-color-background-inverse, #141414);
+      --fsds-tooltip-color-foreground: var(--fsds-semantic-color-foreground-on-inverse, #fafafa);
+      --fsds-tooltip-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-tooltip-size-padding-x: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-tooltip-size-radius-default: var(--fsds-semantic-shape-radius-small, 4px);
+      --fsds-tooltip-size-radius: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-tooltip-size-max-width: 200px;
       --fsds-tooltip-typography-font-size: var(--fsds-semantic-typography-caption-01, 14px);
       --fsds-tooltip-layer-content: var(--fsds-core-layer-tooltip, 1800);
@@ -491,10 +491,10 @@ export class TooltipContentElement extends LitElement {
     }
 
     [data-tooltip-content] {
-      background-color: var(--fsds-tooltip-design-content-background-fill, var(--fsds-tooltip-color-background-default, #141414));
-      color: var(--fsds-tooltip-design-content-foreground-color, var(--fsds-tooltip-color-foreground-default, #fafafa));
-      border-color: var(--fsds-tooltip-design-content-border-color, var(--fsds-tooltip-color-border-default, #d0d0d0));
-      border-radius: var(--fsds-tooltip-design-content-shape-radius, var(--fsds-tooltip-size-radius-default, 4px));
+      background-color: var(--fsds-tooltip-design-content-background-fill, var(--fsds-tooltip-color-background, #141414));
+      color: var(--fsds-tooltip-design-content-foreground-color, var(--fsds-tooltip-color-foreground, #fafafa));
+      border-color: var(--fsds-tooltip-design-content-border-color, var(--fsds-tooltip-color-border, #d0d0d0));
+      border-radius: var(--fsds-tooltip-design-content-shape-radius, var(--fsds-tooltip-size-radius, 4px));
       padding: var(--fsds-tooltip-design-content-spacing-padding, var(--fsds-tooltip-size-padding-x, 8px));
       max-width: var(--fsds-tooltip-design-content-sizing-max-width, var(--fsds-tooltip-size-max-width, 200px));
       z-index: var(--fsds-tooltip-layer-content, 1800);

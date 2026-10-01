@@ -70,9 +70,9 @@ fun Select(
         val def = selectTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val selectBg = layeredSlot("select.color.background.default")?.toFsdsColor()
-    val selectBorder = layeredSlot("select.color.border.default")?.toFsdsColor()
-    val selectRadius = layeredSlot("select.size.radius.default")?.toFsdsDp() ?: 4.dp
+    val selectBg = layeredSlot("select.color.background")?.toFsdsColor()
+    val selectBorder = layeredSlot("select.color.border")?.toFsdsColor()
+    val selectRadius = layeredSlot("select.size.radius")?.toFsdsDp() ?: 4.dp
     val selectGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val selectPadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
     val selectMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp
@@ -84,7 +84,7 @@ fun Select(
         .requiredSizeIn(minWidth = selectMinWidth, minHeight = selectMinHeight)
         .clip(selectShape)
         .then(if (selectBg != null) Modifier.background(selectBg, selectShape) else Modifier)
-        .then(if (selectBorder != null) Modifier.border(layeredSlot("select.size.border.default")?.toFsdsDp() ?: 1.dp, selectBorder, selectShape) else Modifier)
+        .then(if (selectBorder != null) Modifier.border(layeredSlot("select.size.border")?.toFsdsDp() ?: 1.dp, selectBorder, selectShape) else Modifier)
         .padding(selectPadding)
     Box {
         Row(

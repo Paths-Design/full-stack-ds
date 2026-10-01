@@ -18,10 +18,10 @@ enum CodeSnippetTokens {
             "box-model.padding-block-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-block-start", name: "box-model.padding-block-start", ref: "semantic.surface.size.padding-block", fallback: .string("16px")),
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.display.size.gap", fallback: .string("4px")),
-            "code-snippet.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-background-default", name: "code-snippet.color.background.default", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
+            "code-snippet.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-background", name: "code-snippet.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "code-snippet.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-foreground-primary", name: "code-snippet.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "code-snippet.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-border-default", name: "code-snippet.color.border.default", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
-            "code-snippet.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-size-radius-default", name: "code-snippet.size.radius.default", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
+            "code-snippet.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-border", name: "code-snippet.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "code-snippet.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-size-radius", name: "code-snippet.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]
 }
@@ -53,10 +53,10 @@ public struct CodeSnippet: View {
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var background: Color { colorSlot("color.background.default") ?? .accentColor }
+    private var background: Color { colorSlot("color.background") ?? .accentColor }
     private var foreground: Color { colorSlot("color.foreground.primary") ?? .primary }
-    private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
-    private var radius: CGFloat { pxSlot("size.radius.default") ?? 0 }
+    private var borderColor: Color { colorSlot("color.border") ?? .clear }
+    private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

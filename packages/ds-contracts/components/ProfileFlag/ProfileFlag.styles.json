@@ -1,7 +1,7 @@
 {
   "root": {
     "background-color": {
-      "resolvesTo": "profile-flag.color.background.default",
+      "resolvesTo": "profile-flag.color.background",
       "fallback": "#ffffff",
       "design": {
         "property": "background.fill",
@@ -25,7 +25,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "profile-flag.size.radius.default",
+      "resolvesTo": "profile-flag.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -33,7 +33,7 @@
       }
     },
     "gap": {
-      "resolvesTo": "profile-flag.spacing.gap.default",
+      "resolvesTo": "profile-flag.spacing.gap",
       "fallback": "4px",
       "design": {
         "property": "spacing.gap",

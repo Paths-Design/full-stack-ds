@@ -45,9 +45,9 @@ val showMoreTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.action.size.medium.min-height",
             fallback = "32px",
         ),
-        "show-more.color.background.default" to ComponentTokenDefinition(
-            name = "show-more.color.background.default",
-            cssVar = "--fsds-show-more-color-background-default",
+        "show-more.color.background" to ComponentTokenDefinition(
+            name = "show-more.color.background",
+            cssVar = "--fsds-show-more-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
@@ -57,9 +57,9 @@ val showMoreTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "show-more.size.radius.default" to ComponentTokenDefinition(
-            name = "show-more.size.radius.default",
-            cssVar = "--fsds-show-more-size-radius-default",
+        "show-more.size.radius" to ComponentTokenDefinition(
+            name = "show-more.size.radius",
+            cssVar = "--fsds-show-more-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),

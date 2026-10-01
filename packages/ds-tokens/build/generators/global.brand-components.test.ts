@@ -46,9 +46,8 @@ describe("componentTokenPathToCSSVar", () => {
         "avatar",
         "color",
         "background",
-        "default",
       ]),
-    ).toBe("--fsds-avatar-color-background-default");
+    ).toBe("--fsds-avatar-color-background");
   });
 
   it("preserves camelCase segments verbatim (tokenSlug never lowercases mid-path)", () => {

@@ -39,9 +39,9 @@
  * Heuristic limits:
  *   - The script only touches color / size / text / motion families that
  *     have a clear `.default` canonical. Families with anatomy-part
- *     infixes (e.g. `switch.color.track.background.default` vs `...checked`)
+ *     infixes (e.g. `switch.color.track.background` vs `...checked`)
  *     are handled — the family's prefix is everything before the last
- *     segment, so the canonical is `switch.color.track.background.default`
+ *     segment, so the canonical is `switch.color.track.background`
  *     and the variants are `switch.color.track.background.{checked, disabled}`.
  *   - State-keyed terminal segments (hover/active/focus/disabled/checked)
  *     get the same treatment — those redirections land at state selectors

@@ -73,7 +73,7 @@ export class ImageElement extends LitElement {
 
 
     .image {
-      --fsds-image-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --fsds-image-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-image-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-image-size-xs: 24px;
       --fsds-image-size-sm: 32px;
@@ -104,7 +104,7 @@ export class ImageElement extends LitElement {
       aspect-ratio: var(--fsds-image-design-root-sizing-aspect-ratio, var(--fsds-image-prop-aspect-ratio, auto));
       object-fit: var(--fsds-image-design-root-media-fit, var(--fsds-image-prop-object-fit, fill));
       object-position: var(--fsds-image-design-root-media-position, var(--fsds-image-prop-object-position, 50% 50%));
-      background-color: var(--fsds-image-design-root-background-fill, var(--fsds-image-color-background-default, #f7f7f7));
+      background-color: var(--fsds-image-design-root-background-fill, var(--fsds-image-color-background, #f7f7f7));
       color: var(--fsds-image-design-root-foreground-color, var(--fsds-image-color-foreground-primary, #141414));
     }
 

@@ -47,15 +47,15 @@ export const switchTokenScopes = {
       ref: "semantic.action.size.medium.min-height",
       fallback: 32,
     },
-    "switch.color.track.background.default": {
-      name: "switch.color.track.background.default",
-      cssVar: "--fsds-switch-color-track-background-default",
+    "switch.color.track.background": {
+      name: "switch.color.track.background",
+      cssVar: "--fsds-switch-color-track-background",
       ref: "semantic.color.background.tertiary",
       fallback: "#d0d0d0",
     },
-    "switch.color.thumb.background.default": {
-      name: "switch.color.thumb.background.default",
-      cssVar: "--fsds-switch-color-thumb-background-default",
+    "switch.color.thumb.background": {
+      name: "switch.color.thumb.background",
+      cssVar: "--fsds-switch-color-thumb-background",
       ref: "semantic.color.background.primary",
       fallback: "#ffffff",
     },
@@ -103,15 +103,15 @@ export const switchTokenScopes = {
     },
   },
   "checked": {
-    "switch.color.track.background.default": {
-      name: "switch.color.track.background.default",
-      cssVar: "--fsds-switch-color-track-background-default",
+    "switch.color.track.background": {
+      name: "switch.color.track.background",
+      cssVar: "--fsds-switch-color-track-background",
       ref: "semantic.color.foreground.accent",
       fallback: "#d92d2e",
     },
-    "switch.color.thumb.background.default": {
-      name: "switch.color.thumb.background.default",
-      cssVar: "--fsds-switch-color-thumb-background-default",
+    "switch.color.thumb.background": {
+      name: "switch.color.thumb.background",
+      cssVar: "--fsds-switch-color-thumb-background",
       ref: "semantic.color.foreground.on.brand",
       fallback: "#ffffff",
     },

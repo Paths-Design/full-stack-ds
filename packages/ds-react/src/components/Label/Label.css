@@ -15,8 +15,8 @@
   height: var(--fsds-box-model-height, auto);
   min-height: var(--fsds-box-model-min-height, 0);
   max-height: var(--fsds-box-model-max-height, none);
-  color: var(--fsds-label-design-root-foreground-color, var(--fsds-label-color-text-default, #141414));
-  line-height: var(--fsds-label-design-root-typography-line-height, var(--fsds-label-typo-line-height-default, 1.2));
+  color: var(--fsds-label-design-root-foreground-color, var(--fsds-label-color-text, #141414));
+  line-height: var(--fsds-label-design-root-typography-line-height, var(--fsds-label-typo-line-height, 1.2));
 }
 /* @generated:end */
 

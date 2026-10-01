@@ -73,18 +73,18 @@ export class DetailsElement extends LitElement {
 
 
     .details {
-      --fsds-details-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-details-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-details-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-details-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-details-size-icon: var(--fsds-core-spacing-size-05, 12px);
       --fsds-details-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-details-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
       --fsds-details-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-details-color-border-default: var(--fsds-semantic-color-border-primary, #a0a0a1);
       --fsds-details-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
-      --fsds-details-focus-ring-width: var(--fsds-semantic-shape-control-border-focus-width, 2px);
-      --fsds-details-focus-ring-color: var(--fsds-semantic-color-border-accent, #d92d2e);
-      --fsds-details-focus-ring-offset: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-details-spacing-gap-default: var(--fsds-core-spacing-size-02, 2px);
+      --fsds-details-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --fsds-details-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --fsds-details-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --fsds-details-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
       --fsds-details-typography-line-height-body: var(--fsds-semantic-typography-line-height-body, 1.5);
       --fsds-details-typography-font-weight-medium: var(--fsds-semantic-typography-font-weight-medium, 500);
       --fsds-details-size-padding-compact: var(--fsds-core-spacing-size-04, 8px);
@@ -95,12 +95,12 @@ export class DetailsElement extends LitElement {
     }
 
     .details--compact {
-      --fsds-details-size-padding-default: var(--fsds-details-size-padding-compact, 8px);
+      --fsds-details-size-padding: var(--fsds-details-size-padding-compact, 8px);
       --fsds-details-typography-line-height-body: var(--fsds-core-spacing-size-06, 16px);
     }
 
     .details--inline {
-      --fsds-details-size-padding-default: var(--fsds-core-spacing-size-07, 24px);
+      --fsds-details-size-padding: var(--fsds-core-spacing-size-07, 24px);
       --fsds-details-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-details-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
     }
@@ -111,15 +111,15 @@ export class DetailsElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-details-design-root-spacing-gap, var(--fsds-details-spacing-gap-default, 2px));
+      gap: var(--fsds-details-design-root-spacing-gap, var(--fsds-details-spacing-gap, 2px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      padding: var(--fsds-details-design-root-spacing-padding, var(--fsds-details-size-padding-default, 16px));
-      border-radius: var(--fsds-details-design-root-shape-radius, var(--fsds-details-size-radius-default, 6px));
+      padding: var(--fsds-details-design-root-spacing-padding, var(--fsds-details-size-padding, 16px));
+      border-radius: var(--fsds-details-design-root-shape-radius, var(--fsds-details-size-radius, 6px));
       background-color: var(--fsds-details-design-root-background-fill, var(--fsds-details-color-background-default, #ffffff));
       line-height: var(--fsds-details-design-root-typography-line-height, var(--fsds-details-typography-line-height-body, 1.5));
       display: block;
@@ -143,24 +143,24 @@ export class DetailsElement extends LitElement {
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: var(--fsds-details-design-summary-spacing-gap, var(--fsds-details-spacing-gap-default, 2px));
+      gap: var(--fsds-details-design-summary-spacing-gap, var(--fsds-details-spacing-gap, 2px));
       list-style: none;
-      padding: var(--fsds-details-design-summary-spacing-padding, var(--fsds-details-size-padding-default, 16px));
+      padding: var(--fsds-details-design-summary-spacing-padding, var(--fsds-details-size-padding, 16px));
       color: var(--fsds-details-design-summary-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
       font-weight: var(--fsds-details-design-summary-typography-weight, var(--fsds-details-typography-font-weight-medium, 500));
     }
 
     .details__summary:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-details-design-condition-2b765dd646fc-focus-width, var(--fsds-details-focus-ring-width, 2px));
-      outline-color: var(--fsds-details-design-condition-2b765dd646fc-focus-color, var(--fsds-details-focus-ring-color, #d92d2e));
+      outline-color: var(--fsds-details-design-condition-2b765dd646fc-focus-color, var(--fsds-details-focus-ring-color, #0566fe));
       outline-offset: var(--fsds-details-design-condition-2b765dd646fc-focus-offset, var(--fsds-details-focus-ring-offset, 2px));
-      outline-style: var(--fsds-details-design-condition-2b765dd646fc-focus-style, solid);
+      outline-style: var(--fsds-details-design-condition-2b765dd646fc-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .details__summaryContent {
       display: flex;
       align-items: center;
-      gap: var(--fsds-details-design-summary-content-spacing-gap, var(--fsds-details-spacing-gap-default, 2px));
+      gap: var(--fsds-details-design-summary-content-spacing-gap, var(--fsds-details-spacing-gap, 2px));
       flex: 1 1 auto;
     }
 
@@ -181,7 +181,7 @@ export class DetailsElement extends LitElement {
 
     .details__content {
       display: block;
-      padding: var(--fsds-details-design-content-spacing-padding, var(--fsds-details-size-padding-default, 16px));
+      padding: var(--fsds-details-design-content-spacing-padding, var(--fsds-details-size-padding, 16px));
       color: var(--fsds-details-design-content-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
       line-height: var(--fsds-details-design-content-typography-line-height, var(--fsds-details-typography-line-height-body, 1.5));
     }
@@ -301,18 +301,18 @@ export class DetailsContentElement extends LitElement {
 
 
     .details {
-      --fsds-details-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-details-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-details-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-details-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-details-size-icon: var(--fsds-core-spacing-size-05, 12px);
       --fsds-details-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-details-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
       --fsds-details-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-details-color-border-default: var(--fsds-semantic-color-border-primary, #a0a0a1);
       --fsds-details-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
-      --fsds-details-focus-ring-width: var(--fsds-semantic-shape-control-border-focus-width, 2px);
-      --fsds-details-focus-ring-color: var(--fsds-semantic-color-border-accent, #d92d2e);
-      --fsds-details-focus-ring-offset: var(--fsds-core-spacing-size-02, 2px);
-      --fsds-details-spacing-gap-default: var(--fsds-core-spacing-size-02, 2px);
+      --fsds-details-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+      --fsds-details-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --fsds-details-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --fsds-details-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
       --fsds-details-typography-line-height-body: var(--fsds-semantic-typography-line-height-body, 1.5);
       --fsds-details-typography-font-weight-medium: var(--fsds-semantic-typography-font-weight-medium, 500);
       --fsds-details-size-padding-compact: var(--fsds-core-spacing-size-04, 8px);
@@ -323,12 +323,12 @@ export class DetailsContentElement extends LitElement {
     }
 
     .details--compact {
-      --fsds-details-size-padding-default: var(--fsds-details-size-padding-compact, 8px);
+      --fsds-details-size-padding: var(--fsds-details-size-padding-compact, 8px);
       --fsds-details-typography-line-height-body: var(--fsds-core-spacing-size-06, 16px);
     }
 
     .details--inline {
-      --fsds-details-size-padding-default: var(--fsds-core-spacing-size-07, 24px);
+      --fsds-details-size-padding: var(--fsds-core-spacing-size-07, 24px);
       --fsds-details-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-details-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
     }
@@ -339,15 +339,15 @@ export class DetailsContentElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, 0);
       padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
       padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-details-design-root-spacing-gap, var(--fsds-details-spacing-gap-default, 2px));
+      gap: var(--fsds-details-design-root-spacing-gap, var(--fsds-details-spacing-gap, 2px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      padding: var(--fsds-details-design-root-spacing-padding, var(--fsds-details-size-padding-default, 16px));
-      border-radius: var(--fsds-details-design-root-shape-radius, var(--fsds-details-size-radius-default, 6px));
+      padding: var(--fsds-details-design-root-spacing-padding, var(--fsds-details-size-padding, 16px));
+      border-radius: var(--fsds-details-design-root-shape-radius, var(--fsds-details-size-radius, 6px));
       background-color: var(--fsds-details-design-root-background-fill, var(--fsds-details-color-background-default, #ffffff));
       line-height: var(--fsds-details-design-root-typography-line-height, var(--fsds-details-typography-line-height-body, 1.5));
       display: block;
@@ -371,24 +371,24 @@ export class DetailsContentElement extends LitElement {
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: var(--fsds-details-design-summary-spacing-gap, var(--fsds-details-spacing-gap-default, 2px));
+      gap: var(--fsds-details-design-summary-spacing-gap, var(--fsds-details-spacing-gap, 2px));
       list-style: none;
-      padding: var(--fsds-details-design-summary-spacing-padding, var(--fsds-details-size-padding-default, 16px));
+      padding: var(--fsds-details-design-summary-spacing-padding, var(--fsds-details-size-padding, 16px));
       color: var(--fsds-details-design-summary-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
       font-weight: var(--fsds-details-design-summary-typography-weight, var(--fsds-details-typography-font-weight-medium, 500));
     }
 
     .details__summary:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-details-design-condition-2b765dd646fc-focus-width, var(--fsds-details-focus-ring-width, 2px));
-      outline-color: var(--fsds-details-design-condition-2b765dd646fc-focus-color, var(--fsds-details-focus-ring-color, #d92d2e));
+      outline-color: var(--fsds-details-design-condition-2b765dd646fc-focus-color, var(--fsds-details-focus-ring-color, #0566fe));
       outline-offset: var(--fsds-details-design-condition-2b765dd646fc-focus-offset, var(--fsds-details-focus-ring-offset, 2px));
-      outline-style: var(--fsds-details-design-condition-2b765dd646fc-focus-style, solid);
+      outline-style: var(--fsds-details-design-condition-2b765dd646fc-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .details__summaryContent {
       display: flex;
       align-items: center;
-      gap: var(--fsds-details-design-summary-content-spacing-gap, var(--fsds-details-spacing-gap-default, 2px));
+      gap: var(--fsds-details-design-summary-content-spacing-gap, var(--fsds-details-spacing-gap, 2px));
       flex: 1 1 auto;
     }
 
@@ -409,7 +409,7 @@ export class DetailsContentElement extends LitElement {
 
     .details__content {
       display: block;
-      padding: var(--fsds-details-design-content-spacing-padding, var(--fsds-details-size-padding-default, 16px));
+      padding: var(--fsds-details-design-content-spacing-padding, var(--fsds-details-size-padding, 16px));
       color: var(--fsds-details-design-content-foreground-color, var(--fsds-details-color-foreground-primary, #141414));
       line-height: var(--fsds-details-design-content-typography-line-height, var(--fsds-details-typography-line-height-body, 1.5));
     }

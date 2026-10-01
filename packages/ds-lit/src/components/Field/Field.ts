@@ -158,7 +158,7 @@ export class FieldElement extends LitElement {
     }
 
     .field--disabled .field__header, .field--disabled .field__meta {
-      opacity: 0.5;
+      opacity: var(--fsds-field-design-condition-65ec9a7bfb9a-appearance-opacity, 0.5);
     }
     }
   `;
@@ -366,7 +366,7 @@ export class FieldHeaderElement extends LitElement {
     }
 
     .field--disabled .field__header, .field--disabled .field__meta {
-      opacity: 0.5;
+      opacity: var(--fsds-field-design-condition-65ec9a7bfb9a-appearance-opacity, 0.5);
     }
     }
   `;

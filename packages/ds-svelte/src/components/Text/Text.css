@@ -69,7 +69,7 @@
 
 .text--code {
   font-size: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-size, var(--fsds-text-size-md, 1rem));
-  font-family: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-family, ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace);
+  font-family: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-family, var(--fsds-semantic-typography-semantic-family-mono, "Monaspace", ui-monospace, SFMono-Regular, Menlo, monospace));
   line-height: var(--fsds-text-design-condition-3a2bffe9ebbb-typography-line-height, var(--fsds-text-typography-line-height-body, 1.5));
 }
 

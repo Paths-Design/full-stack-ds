@@ -50,9 +50,9 @@ fun ShowMore(
         }
         return null
     }
-    val containerColor = layeredSlot("show-more.color.background.default")?.toFsdsColor()
+    val containerColor = layeredSlot("show-more.color.background")?.toFsdsColor()
     val contentColor = layeredSlot("show-more.color.foreground.primary")?.toFsdsColor()
-    val cornerRadius = layeredSlot("show-more.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val cornerRadius = layeredSlot("show-more.size.radius")?.toFsdsDp() ?: 0.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp

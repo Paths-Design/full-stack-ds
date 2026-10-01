@@ -45,9 +45,9 @@ val imageTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "image.color.background.default" to ComponentTokenDefinition(
-            name = "image.color.background.default",
-            cssVar = "--fsds-image-color-background-default",
+        "image.color.background" to ComponentTokenDefinition(
+            name = "image.color.background",
+            cssVar = "--fsds-image-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),

@@ -24,12 +24,12 @@
     "fallback": "#727272",
     "layer": "semantic"
   },
-  "links.color.underline.default": {
+  "links.color.underline": {
     "resolvesTo": "semantic.color.border.light",
     "fallback": "#b8b8b8",
     "layer": "semantic"
   },
-  "links.spacing.gap.default": {
+  "links.spacing.gap": {
     "resolvesTo": "core.spacing.size.02",
     "fallback": "2px",
     "layer": "core"

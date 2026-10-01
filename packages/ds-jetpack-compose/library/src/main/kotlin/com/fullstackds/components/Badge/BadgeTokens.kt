@@ -52,9 +52,9 @@ val badgeTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "badge.color.border.default" to ComponentTokenDefinition(
-            name = "badge.color.border.default",
-            cssVar = "--fsds-badge-color-border-default",
+        "badge.color.border" to ComponentTokenDefinition(
+            name = "badge.color.border",
+            cssVar = "--fsds-badge-color-border",
             ref = "semantic.color.border.subtle",
             fallback = "#d0d0d0",
         ),
@@ -108,9 +108,9 @@ val badgeTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.on.info.subtle",
             fallback = "#013ab0",
         ),
-        "badge.color.border.default" to ComponentTokenDefinition(
-            name = "badge.color.border.default",
-            cssVar = "--fsds-badge-color-border-default",
+        "badge.color.border" to ComponentTokenDefinition(
+            name = "badge.color.border",
+            cssVar = "--fsds-badge-color-border",
             ref = "semantic.color.border.info",
             fallback = "#034fd6",
         ),
@@ -128,9 +128,9 @@ val badgeTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.on.success.subtle",
             fallback = "#2c4f09",
         ),
-        "badge.color.border.default" to ComponentTokenDefinition(
-            name = "badge.color.border.default",
-            cssVar = "--fsds-badge-color-border-default",
+        "badge.color.border" to ComponentTokenDefinition(
+            name = "badge.color.border",
+            cssVar = "--fsds-badge-color-border",
             ref = "semantic.color.border.success",
             fallback = "#3a6614",
         ),
@@ -148,9 +148,9 @@ val badgeTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.on.warning.subtle",
             fallback = "#6c3a00",
         ),
-        "badge.color.border.default" to ComponentTokenDefinition(
-            name = "badge.color.border.default",
-            cssVar = "--fsds-badge-color-border-default",
+        "badge.color.border" to ComponentTokenDefinition(
+            name = "badge.color.border",
+            cssVar = "--fsds-badge-color-border",
             ref = "semantic.color.border.warning",
             fallback = "#8b4b00",
         ),
@@ -168,9 +168,9 @@ val badgeTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.on.danger.subtle",
             fallback = "#900909",
         ),
-        "badge.color.border.default" to ComponentTokenDefinition(
-            name = "badge.color.border.default",
-            cssVar = "--fsds-badge-color-border-default",
+        "badge.color.border" to ComponentTokenDefinition(
+            name = "badge.color.border",
+            cssVar = "--fsds-badge-color-border",
             ref = "semantic.color.border.danger",
             fallback = "#b31b1b",
         ),
@@ -188,9 +188,9 @@ val badgeTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.inverse",
             fallback = "#fafafa",
         ),
-        "badge.color.border.default" to ComponentTokenDefinition(
-            name = "badge.color.border.default",
-            cssVar = "--fsds-badge-color-border-default",
+        "badge.color.border" to ComponentTokenDefinition(
+            name = "badge.color.border",
+            cssVar = "--fsds-badge-color-border",
             ref = "semantic.color.background.danger.strong",
             fallback = "#b31b1b",
         ),

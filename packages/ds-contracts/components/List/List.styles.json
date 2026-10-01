@@ -9,7 +9,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "list.color.border.default",
+      "resolvesTo": "list.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
@@ -17,7 +17,7 @@
       }
     },
     "padding": {
-      "resolvesTo": "list.size.padding.default",
+      "resolvesTo": "list.size.padding",
       "fallback": "16px",
       "design": {
         "property": "spacing.padding",
@@ -205,7 +205,7 @@
       ]
     },
     "border-block-start-color": {
-      "resolvesTo": "list.color.border.default",
+      "resolvesTo": "list.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.block-start.color",

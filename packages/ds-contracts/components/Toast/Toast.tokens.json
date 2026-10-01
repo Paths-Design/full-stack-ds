@@ -49,7 +49,7 @@
     "fallback": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
     "layer": "semantic"
   },
-  "toast.color.default": {
+  "toast.color": {
     "resolvesTo": "semantic.color.foreground.primary",
     "fallback": "#141414",
     "layer": "semantic"

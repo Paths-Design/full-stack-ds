@@ -29,19 +29,19 @@
   &:has(.checkbox__input:checked) .checkbox__indicator::after {
     width: 5px;
     height: 9px;
-    border-style: solid;
-    border-width: 0 2px 2px 0;
+    border-style: var(--fsds-checkbox-design-condition-94add815057f-border-style, solid);
+    border-width: var(--fsds-checkbox-design-condition-94add815057f-border-width, 0 2px 2px 0);
     transform: translate(-50%, -65%) rotate(45deg);
-    opacity: 1;
+    opacity: var(--fsds-checkbox-design-condition-94add815057f-appearance-opacity, 1);
   }
 
   &:has(.checkbox__input:indeterminate) .checkbox__indicator::after {
     width: 8px;
     height: 2px;
-    border-width: 0;
-    background-color: var(--fsds-checkbox-color-mark-default, #ffffff);
+    border-width: var(--fsds-checkbox-design-condition-b54308f8dcd4-border-width, 0);
+    background-color: var(--fsds-checkbox-design-condition-b54308f8dcd4-background-fill, var(--fsds-checkbox-color-mark, #ffffff));
     transform: translate(-50%, -50%);
-    opacity: 1;
+    opacity: var(--fsds-checkbox-design-condition-b54308f8dcd4-appearance-opacity, 1);
   }
 }
 
@@ -63,8 +63,8 @@
   width: 16px;
   height: 16px;
   border-radius: var(--fsds-checkbox-design-indicator-shape-radius, var(--fsds-checkbox-border-radius, 4px));
-  border-color: var(--fsds-checkbox-design-indicator-border-color, var(--fsds-checkbox-color-border-default, #a0a0a1));
-  background-color: var(--fsds-checkbox-design-indicator-background-fill, var(--fsds-checkbox-color-background-default, #ffffff));
+  border-color: var(--fsds-checkbox-design-indicator-border-color, var(--fsds-checkbox-color-border, #a0a0a1));
+  background-color: var(--fsds-checkbox-design-indicator-background-fill, var(--fsds-checkbox-color-background, #ffffff));
   border-style: var(--fsds-checkbox-design-indicator-border-style, solid);
   border-width: var(--fsds-checkbox-design-indicator-border-width, var(--fsds-checkbox-border-width, 1px));
   box-sizing: border-box;
@@ -76,9 +76,9 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  opacity: 0;
+  opacity: var(--fsds-checkbox-design-condition-c8a599f99e6e-appearance-opacity, 0);
   box-sizing: border-box;
-  border-color: var(--fsds-checkbox-color-mark-default, #ffffff);
+  border-color: var(--fsds-checkbox-design-condition-c8a599f99e6e-border-color, var(--fsds-checkbox-color-mark, #ffffff));
 }
 /* @generated:end */
 

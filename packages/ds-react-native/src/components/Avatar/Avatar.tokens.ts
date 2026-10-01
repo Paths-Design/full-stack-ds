@@ -64,23 +64,17 @@ export const avatarTokenScopes = {
       ref: "core.spacing.size.09",
       fallback: 48,
     },
-    "avatar.size.radius.default": {
-      name: "avatar.size.radius.default",
-      cssVar: "--fsds-avatar-size-radius-default",
+    "avatar.size.radius": {
+      name: "avatar.size.radius",
+      cssVar: "--fsds-avatar-size-radius",
       ref: "semantic.shape.control.radius.pill",
       fallback: 9999,
     },
-    "avatar.size.border.default": {
-      name: "avatar.size.border.default",
-      cssVar: "--fsds-avatar-size-border-default",
+    "avatar.size.border": {
+      name: "avatar.size.border",
+      cssVar: "--fsds-avatar-size-border",
       ref: "semantic.shape.control.border.defaultWidth",
       fallback: 1,
-    },
-    "avatar.color.background.default": {
-      name: "avatar.color.background.default",
-      cssVar: "--fsds-avatar-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
     },
     "avatar.color.foreground.primary": {
       name: "avatar.color.foreground.primary",
@@ -88,9 +82,9 @@ export const avatarTokenScopes = {
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "avatar.color.border.default": {
-      name: "avatar.color.border.default",
-      cssVar: "--fsds-avatar-color-border-default",
+    "avatar.color.border": {
+      name: "avatar.color.border",
+      cssVar: "--fsds-avatar-color-border",
       ref: "semantic.color.border.light",
       fallback: "#b8b8b8",
     },

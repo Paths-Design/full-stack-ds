@@ -34,9 +34,9 @@ val progressTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "progress.color.text.default" to ComponentTokenDefinition(
-            name = "progress.color.text.default",
-            cssVar = "--fsds-progress-color-text-default",
+        "progress.color.text" to ComponentTokenDefinition(
+            name = "progress.color.text",
+            cssVar = "--fsds-progress-color-text",
             ref = "semantic.color.foreground.secondary",
             fallback = "#474647",
         ),

@@ -45,9 +45,9 @@ fun Dialog(
         val def = dialogTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val panelBg = layeredSlot("dialog.color.background.default")?.toFsdsColor()
-    val panelBorder = layeredSlot("dialog.color.border.default")?.toFsdsColor()
-    val panelRadius = layeredSlot("dialog.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val panelBg = layeredSlot("dialog.color.background")?.toFsdsColor()
+    val panelBorder = layeredSlot("dialog.color.border")?.toFsdsColor()
+    val panelRadius = layeredSlot("dialog.size.radius")?.toFsdsDp() ?: 0.dp
     val panelGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val panelPadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
     val panelMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp

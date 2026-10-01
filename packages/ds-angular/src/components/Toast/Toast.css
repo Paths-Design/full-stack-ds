@@ -55,7 +55,7 @@
 
 .toast__description {
   flex: 1 1 auto;
-  color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color-default, #141414));
+  color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color, #141414));
   font-size: var(--fsds-toast-design-description-typography-size, inherit);
 }
 
@@ -65,7 +65,7 @@
   background: transparent;
   border: 0;
   cursor: pointer;
-  color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color-default, #141414));
+  color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color, #141414));
 }
 
 .toast__close {
@@ -76,7 +76,7 @@
   border: 0;
   border-radius: var(--fsds-toast-design-close-shape-radius, 9999px);
   cursor: pointer;
-  color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color-default, #141414));
+  color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color, #141414));
   flex-shrink: 0;
 }
 
@@ -90,10 +90,10 @@
   bottom: 0;
   transform-origin: left center;
   pointer-events: none;
-  border-end-start-radius: inherit;
-  border-end-end-radius: inherit;
-  height: var(--fsds-toast-progress-height, 2px);
-  background-color: var(--fsds-toast-progress-color, #141414);
+  border-end-start-radius: var(--fsds-toast-design-progress-shape-end-start-radius, inherit);
+  border-end-end-radius: var(--fsds-toast-design-progress-shape-end-end-radius, inherit);
+  height: var(--fsds-toast-design-progress-sizing-height, var(--fsds-toast-progress-height, 2px));
+  background-color: var(--fsds-toast-design-progress-background-fill, var(--fsds-toast-progress-color, #141414));
 }
 
 .toast__progress:dir(rtl) {

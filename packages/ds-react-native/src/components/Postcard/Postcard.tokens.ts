@@ -64,15 +64,15 @@ export const postcardTokenScopes = {
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "postcard.size.radius.default": {
-      name: "postcard.size.radius.default",
-      cssVar: "--fsds-postcard-size-radius-default",
+    "postcard.size.radius": {
+      name: "postcard.size.radius",
+      cssVar: "--fsds-postcard-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },
-    "postcard.size.border.default": {
-      name: "postcard.size.border.default",
-      cssVar: "--fsds-postcard-size-border-default",
+    "postcard.size.border": {
+      name: "postcard.size.border",
+      cssVar: "--fsds-postcard-size-border",
       ref: "semantic.shape.control.border.defaultWidth",
       fallback: 1,
     },

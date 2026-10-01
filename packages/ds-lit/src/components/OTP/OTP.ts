@@ -70,10 +70,10 @@ export class OTPElement extends LitElement {
 
 
     .otp {
-      --fsds-otp-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --fsds-otp-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-otp-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-otp-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
-      --fsds-otp-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-otp-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-otp-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-otp-color-border-accent: var(--fsds-semantic-color-border-accent, #d92d2e);
       --fsds-otp-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-otp-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
@@ -113,9 +113,9 @@ export class OTPElement extends LitElement {
       box-sizing: border-box;
       border-style: var(--fsds-otp-design-field-border-style, solid);
       border-width: var(--fsds-otp-design-field-border-width, 1px);
-      border-radius: var(--fsds-otp-design-field-shape-radius, var(--fsds-otp-size-radius-default, 6px));
-      border-color: var(--fsds-otp-design-field-border-color, var(--fsds-otp-color-border-default, #b8b8b8));
-      background-color: var(--fsds-otp-design-field-background-fill, var(--fsds-otp-color-background-default, #f7f7f7));
+      border-radius: var(--fsds-otp-design-field-shape-radius, var(--fsds-otp-size-radius, 6px));
+      border-color: var(--fsds-otp-design-field-border-color, var(--fsds-otp-color-border, #b8b8b8));
+      background-color: var(--fsds-otp-design-field-background-fill, var(--fsds-otp-color-background, #f7f7f7));
       color: var(--fsds-otp-design-field-foreground-color, var(--fsds-otp-color-foreground-primary, #141414));
     }
 
@@ -234,10 +234,10 @@ export class OTPGroupElement extends LitElement {
 
 
     .otp {
-      --fsds-otp-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --fsds-otp-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-otp-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-otp-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
-      --fsds-otp-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-otp-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-otp-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-otp-color-border-accent: var(--fsds-semantic-color-border-accent, #d92d2e);
       --fsds-otp-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-otp-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
@@ -277,9 +277,9 @@ export class OTPGroupElement extends LitElement {
       box-sizing: border-box;
       border-style: var(--fsds-otp-design-field-border-style, solid);
       border-width: var(--fsds-otp-design-field-border-width, 1px);
-      border-radius: var(--fsds-otp-design-field-shape-radius, var(--fsds-otp-size-radius-default, 6px));
-      border-color: var(--fsds-otp-design-field-border-color, var(--fsds-otp-color-border-default, #b8b8b8));
-      background-color: var(--fsds-otp-design-field-background-fill, var(--fsds-otp-color-background-default, #f7f7f7));
+      border-radius: var(--fsds-otp-design-field-shape-radius, var(--fsds-otp-size-radius, 6px));
+      border-color: var(--fsds-otp-design-field-border-color, var(--fsds-otp-color-border, #b8b8b8));
+      background-color: var(--fsds-otp-design-field-background-fill, var(--fsds-otp-color-background, #f7f7f7));
       color: var(--fsds-otp-design-field-foreground-color, var(--fsds-otp-color-foreground-primary, #141414));
     }
 

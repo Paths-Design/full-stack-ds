@@ -253,7 +253,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "4px",
-      "resolvesTo": "select.size.padding.default",
+      "resolvesTo": "select.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -269,7 +269,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "4px",
-      "resolvesTo": "select.size.padding.default",
+      "resolvesTo": "select.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -300,7 +300,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "1px",
-      "resolvesTo": "select.size.border.default",
+      "resolvesTo": "select.size.border",
       "editableTargets": [
         "web"
       ],
@@ -316,7 +316,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "6px",
-      "resolvesTo": "select.size.radius.default",
+      "resolvesTo": "select.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -332,7 +332,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "#a0a0a1",
-      "resolvesTo": "select.color.border.default",
+      "resolvesTo": "select.color.border",
       "editableTargets": [
         "web"
       ],
@@ -348,7 +348,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "#ffffff",
-      "resolvesTo": "select.color.background.default",
+      "resolvesTo": "select.color.background",
       "editableTargets": [
         "web"
       ],
@@ -364,7 +364,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "#141414",
-      "resolvesTo": "select.color.foreground.default",
+      "resolvesTo": "select.color.foreground",
       "editableTargets": [
         "web"
       ],
@@ -380,7 +380,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "16px",
-      "resolvesTo": "select.font.size.default",
+      "resolvesTo": "select.font.size",
       "editableTargets": [
         "web"
       ],
@@ -396,7 +396,7 @@
       "selectorKey": "trigger",
       "part": "trigger",
       "defaultValue": "1.5",
-      "resolvesTo": "select.font.lineHeight.default",
+      "resolvesTo": "select.font.lineHeight",
       "editableTargets": [
         "web"
       ],
@@ -412,7 +412,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "#ffffff",
-      "resolvesTo": "select.color.background.default",
+      "resolvesTo": "select.color.background",
       "editableTargets": [
         "web"
       ],
@@ -443,7 +443,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "1px",
-      "resolvesTo": "select.size.border.default",
+      "resolvesTo": "select.size.border",
       "editableTargets": [
         "web"
       ],
@@ -459,7 +459,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "6px",
-      "resolvesTo": "select.size.radius.default",
+      "resolvesTo": "select.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -475,7 +475,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "#a0a0a1",
-      "resolvesTo": "select.color.border.default",
+      "resolvesTo": "select.color.border",
       "editableTargets": [
         "web"
       ],
@@ -506,7 +506,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "4px",
-      "resolvesTo": "select.size.padding.default",
+      "resolvesTo": "select.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -522,7 +522,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "4px",
-      "resolvesTo": "select.size.padding.default",
+      "resolvesTo": "select.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -568,7 +568,7 @@
       "selectorKey": "option",
       "part": "option",
       "defaultValue": "4px",
-      "resolvesTo": "select.size.padding.default",
+      "resolvesTo": "select.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -584,7 +584,7 @@
       "selectorKey": "option",
       "part": "option",
       "defaultValue": "4px",
-      "resolvesTo": "select.size.padding.default",
+      "resolvesTo": "select.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -600,7 +600,7 @@
       "selectorKey": "option",
       "part": "option",
       "defaultValue": "6px",
-      "resolvesTo": "select.size.radius.default",
+      "resolvesTo": "select.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -616,7 +616,22 @@
       "selectorKey": "option",
       "part": "option",
       "defaultValue": "#141414",
-      "resolvesTo": "select.color.foreground.default",
+      "resolvesTo": "select.color.foreground",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".select__option"
+    },
+    {
+      "property": "typography.alignment",
+      "group": "typography",
+      "valueType": "enum",
+      "slot": "select.design.option.typography.alignment",
+      "cssVar": "--fsds-select-design-option-typography-alignment",
+      "cssProperty": "text-align",
+      "selectorKey": "option",
+      "part": "option",
+      "defaultValue": "start",
       "editableTargets": [
         "web"
       ],
@@ -632,7 +647,7 @@
       "selectorKey": "option",
       "part": "option",
       "defaultValue": "#ffffff",
-      "resolvesTo": "select.color.background.default",
+      "resolvesTo": "select.color.background",
       "editableTargets": [
         "web"
       ],
@@ -663,7 +678,7 @@
       "selectorKey": "emptyState",
       "part": "emptyState",
       "defaultValue": "4px",
-      "resolvesTo": "select.size.padding.default",
+      "resolvesTo": "select.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -679,7 +694,7 @@
       "selectorKey": "emptyState",
       "part": "emptyState",
       "defaultValue": "#474647",
-      "resolvesTo": "select.color.placeholder.default",
+      "resolvesTo": "select.color.placeholder",
       "editableTargets": [
         "web"
       ],
@@ -822,7 +837,7 @@
       "selectorKey": "searchInput",
       "part": "searchInput",
       "defaultValue": "4px",
-      "resolvesTo": "select.size.padding.default",
+      "resolvesTo": "select.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -853,7 +868,7 @@
       "selectorKey": "searchInput",
       "part": "searchInput",
       "defaultValue": "1px",
-      "resolvesTo": "select.size.border.default",
+      "resolvesTo": "select.size.border",
       "editableTargets": [
         "web"
       ],
@@ -869,7 +884,7 @@
       "selectorKey": "searchInput",
       "part": "searchInput",
       "defaultValue": "6px",
-      "resolvesTo": "select.size.radius.default",
+      "resolvesTo": "select.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -885,7 +900,7 @@
       "selectorKey": "searchInput",
       "part": "searchInput",
       "defaultValue": "#a0a0a1",
-      "resolvesTo": "select.color.border.default",
+      "resolvesTo": "select.color.border",
       "editableTargets": [
         "web"
       ],
@@ -901,7 +916,7 @@
       "selectorKey": "searchInput",
       "part": "searchInput",
       "defaultValue": "#ffffff",
-      "resolvesTo": "select.color.background.default",
+      "resolvesTo": "select.color.background",
       "editableTargets": [
         "web"
       ],
@@ -917,7 +932,7 @@
       "selectorKey": "searchInput",
       "part": "searchInput",
       "defaultValue": "#141414",
-      "resolvesTo": "select.color.foreground.default",
+      "resolvesTo": "select.color.foreground",
       "editableTargets": [
         "web"
       ],
@@ -933,7 +948,22 @@
       "selectorKey": "searchInput",
       "part": "searchInput",
       "defaultValue": "16px",
-      "resolvesTo": "select.font.size.default",
+      "resolvesTo": "select.font.size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".select__searchInput"
+    },
+    {
+      "property": "typography.family",
+      "group": "typography",
+      "valueType": "fontFamily",
+      "slot": "select.design.search-input.typography.family",
+      "cssVar": "--fsds-select-design-search-input-typography-family",
+      "cssProperty": "font-family",
+      "selectorKey": "searchInput",
+      "part": "searchInput",
+      "defaultValue": "inherit",
       "editableTargets": [
         "web"
       ],
@@ -949,11 +979,75 @@
       "selectorKey": "searchInput",
       "part": "searchInput",
       "defaultValue": "1.5",
-      "resolvesTo": "select.font.lineHeight.default",
+      "resolvesTo": "select.font.lineHeight",
       "editableTargets": [
         "web"
       ],
       "selector": ".select__searchInput"
+    },
+    {
+      "property": "focus.width",
+      "group": "focus",
+      "valueType": "dimension",
+      "slot": "select.design.condition-2e1e5676c9c1.focus.width",
+      "cssVar": "--fsds-select-design-condition-2e1e5676c9c1-focus-width",
+      "cssProperty": "outline-width",
+      "selectorKey": ".select__searchInput:focus-visible",
+      "part": null,
+      "defaultValue": "2px",
+      "resolvesTo": "select.focus.ring.width",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".select__searchInput:focus-visible:not([aria-disabled=\"true\"])"
+    },
+    {
+      "property": "focus.color",
+      "group": "focus",
+      "valueType": "color",
+      "slot": "select.design.condition-2e1e5676c9c1.focus.color",
+      "cssVar": "--fsds-select-design-condition-2e1e5676c9c1-focus-color",
+      "cssProperty": "outline-color",
+      "selectorKey": ".select__searchInput:focus-visible",
+      "part": null,
+      "defaultValue": "#0566fe",
+      "resolvesTo": "select.focus.ring.color",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".select__searchInput:focus-visible:not([aria-disabled=\"true\"])"
+    },
+    {
+      "property": "focus.style",
+      "group": "focus",
+      "valueType": "enum",
+      "slot": "select.design.condition-2e1e5676c9c1.focus.style",
+      "cssVar": "--fsds-select-design-condition-2e1e5676c9c1-focus-style",
+      "cssProperty": "outline-style",
+      "selectorKey": ".select__searchInput:focus-visible",
+      "part": null,
+      "defaultValue": "solid",
+      "resolvesTo": "select.focus.ring.style",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".select__searchInput:focus-visible:not([aria-disabled=\"true\"])"
+    },
+    {
+      "property": "focus.offset",
+      "group": "focus",
+      "valueType": "dimension",
+      "slot": "select.design.condition-2e1e5676c9c1.focus.offset",
+      "cssVar": "--fsds-select-design-condition-2e1e5676c9c1-focus-offset",
+      "cssProperty": "outline-offset",
+      "selectorKey": ".select__searchInput:focus-visible",
+      "part": null,
+      "defaultValue": "2px",
+      "resolvesTo": "select.focus.ring.offset",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".select__searchInput:focus-visible:not([aria-disabled=\"true\"])"
     }
   ],
   "variants": {
@@ -1160,18 +1254,18 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "var(--fsds-semantic-input-size-medium-min-height, 32px)",
           "--fsds-box-model-max-height": "none",
-          "--fsds-select-color-background-default": "var(--fsds-semantic-color-background-primary, #ffffff)",
-          "--fsds-select-color-foreground-default": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-select-color-border-default": "var(--fsds-semantic-color-border-primary, #a0a0a1)",
-          "--fsds-select-color-placeholder-default": "var(--fsds-semantic-color-foreground-secondary, #474647)",
-          "--fsds-select-size-padding-default": "var(--fsds-core-spacing-size-03, 4px)",
-          "--fsds-select-size-radius-default": "var(--fsds-semantic-shape-control-radius-default, 6px)",
-          "--fsds-select-size-border-default": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
+          "--fsds-select-color-background": "var(--fsds-semantic-color-background-primary, #ffffff)",
+          "--fsds-select-color-foreground": "var(--fsds-semantic-color-foreground-primary, #141414)",
+          "--fsds-select-color-border": "var(--fsds-semantic-color-border-primary, #a0a0a1)",
+          "--fsds-select-color-placeholder": "var(--fsds-semantic-color-foreground-secondary, #474647)",
+          "--fsds-select-size-padding": "var(--fsds-core-spacing-size-03, 4px)",
+          "--fsds-select-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
+          "--fsds-select-size-border": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
           "--fsds-select-size-sm-height": "var(--fsds-semantic-control-size-sm-height, 24px)",
           "--fsds-select-size-md-height": "var(--fsds-semantic-control-size-md-height, 32px)",
           "--fsds-select-size-lg-height": "var(--fsds-semantic-control-size-lg-height, 48px)",
-          "--fsds-select-font-size-default": "var(--fsds-semantic-typography-body-02, 16px)",
-          "--fsds-select-font-line-height-default": "var(--fsds-semantic-typography-line-height-body, 1.5)",
+          "--fsds-select-font-size": "var(--fsds-semantic-typography-body-02, 16px)",
+          "--fsds-select-font-line-height": "var(--fsds-semantic-typography-line-height-body, 1.5)",
           "--fsds-select-focus-ring-width": "var(--fsds-semantic-focus-ring-width, 2px)",
           "--fsds-select-focus-ring-color": "var(--fsds-semantic-focus-ring-color, #0566fe)",
           "--fsds-select-focus-ring-style": "var(--fsds-semantic-focus-ring-style, solid)",
@@ -1209,16 +1303,16 @@
           "display": "inline-flex",
           "align-items": "center",
           "justify-content": "space-between",
-          "gap": "var(--fsds-select-size-padding-default, 4px)",
-          "padding": "var(--fsds-select-size-padding-default, 4px)",
+          "gap": "var(--fsds-select-size-padding, 4px)",
+          "padding": "var(--fsds-select-size-padding, 4px)",
           "border-style": "solid",
-          "border-width": "var(--fsds-select-size-border-default, 1px)",
-          "border-radius": "var(--fsds-select-size-radius-default, 6px)",
-          "border-color": "var(--fsds-select-color-border-default, #a0a0a1)",
-          "background-color": "var(--fsds-select-color-background-default, #ffffff)",
-          "color": "var(--fsds-select-color-foreground-default, #141414)",
-          "font-size": "var(--fsds-select-font-size-default, 16px)",
-          "line-height": "var(--fsds-select-font-line-height-default, 1.5)",
+          "border-width": "var(--fsds-select-size-border, 1px)",
+          "border-radius": "var(--fsds-select-size-radius, 6px)",
+          "border-color": "var(--fsds-select-color-border, #a0a0a1)",
+          "background-color": "var(--fsds-select-color-background, #ffffff)",
+          "color": "var(--fsds-select-color-foreground, #141414)",
+          "font-size": "var(--fsds-select-font-size, 16px)",
+          "line-height": "var(--fsds-select-font-line-height, 1.5)",
           "cursor": "pointer",
           "width": "100%",
           "box-sizing": "border-box"
@@ -1227,18 +1321,18 @@
       {
         "selector": ".select__content",
         "declarations": {
-          "background-color": "var(--fsds-select-color-background-default, #ffffff)",
+          "background-color": "var(--fsds-select-color-background, #ffffff)",
           "border-style": "solid",
-          "border-width": "var(--fsds-select-size-border-default, 1px)",
-          "border-radius": "var(--fsds-select-size-radius-default, 6px)",
-          "border-color": "var(--fsds-select-color-border-default, #a0a0a1)",
+          "border-width": "var(--fsds-select-size-border, 1px)",
+          "border-radius": "var(--fsds-select-size-radius, 6px)",
+          "border-color": "var(--fsds-select-color-border, #a0a0a1)",
           "box-shadow": "0 4px 16px rgba(0,0,0,0.12)",
-          "padding": "var(--fsds-select-size-padding-default, 4px)",
+          "padding": "var(--fsds-select-size-padding, 4px)",
           "max-height": "320px",
           "overflow-y": "auto",
           "display": "flex",
           "flex-direction": "column",
-          "gap": "var(--fsds-select-size-padding-default, 4px)"
+          "gap": "var(--fsds-select-size-padding, 4px)"
         }
       },
       {
@@ -1264,24 +1358,24 @@
         "declarations": {
           "display": "flex",
           "align-items": "center",
-          "gap": "var(--fsds-select-size-padding-default, 4px)",
-          "padding": "var(--fsds-select-size-padding-default, 4px)",
-          "border-radius": "var(--fsds-select-size-radius-default, 6px)",
-          "color": "var(--fsds-select-color-foreground-default, #141414)",
+          "gap": "var(--fsds-select-size-padding, 4px)",
+          "padding": "var(--fsds-select-size-padding, 4px)",
+          "border-radius": "var(--fsds-select-size-radius, 6px)",
+          "color": "var(--fsds-select-color-foreground, #141414)",
           "cursor": "pointer",
           "border": "0",
           "width": "100%",
           "text-align": "start",
           "font": "inherit",
-          "background-color": "var(--fsds-select-color-background-default, #ffffff)"
+          "background-color": "var(--fsds-select-color-background, #ffffff)"
         }
       },
       {
         "selector": ".select__emptyState",
         "declarations": {
           "text-align": "center",
-          "padding": "var(--fsds-select-size-padding-default, 4px)",
-          "color": "var(--fsds-select-color-placeholder-default, #474647)"
+          "padding": "var(--fsds-select-size-padding, 4px)",
+          "color": "var(--fsds-select-color-placeholder, #474647)"
         }
       },
       {
@@ -1291,21 +1385,21 @@
           "outline-color": "var(--fsds-select-focus-ring-color, #0566fe)",
           "outline-style": "var(--fsds-select-focus-ring-style, solid)",
           "outline-offset": "var(--fsds-select-focus-ring-offset, 2px)",
-          "--fsds-select-color-border-default": "var(--fsds-semantic-color-border-accent, #d92d2e)"
+          "--fsds-select-color-border": "var(--fsds-semantic-color-border-accent, #d92d2e)"
         }
       },
       {
         "selector": ".select__trigger:hover:not([aria-disabled=\"true\"])",
         "declarations": {
-          "--fsds-select-color-border-default": "var(--fsds-semantic-color-border-bold, #888889)",
-          "--fsds-select-color-background-default": "var(--fsds-semantic-color-background-hover, #f7f7f7)",
-          "--fsds-select-color-foreground-default": "var(--fsds-semantic-color-foreground-hover, #474647)"
+          "--fsds-select-color-border": "var(--fsds-semantic-color-border-bold, #888889)",
+          "--fsds-select-color-background": "var(--fsds-semantic-color-background-hover, #f7f7f7)",
+          "--fsds-select-color-foreground": "var(--fsds-semantic-color-foreground-hover, #474647)"
         }
       },
       {
         "selector": ".select--open .select__trigger",
         "declarations": {
-          "--fsds-select-color-border-default": "var(--fsds-semantic-color-border-accent, #d92d2e)"
+          "--fsds-select-color-border": "var(--fsds-semantic-color-border-accent, #d92d2e)"
         }
       },
       {
@@ -1313,23 +1407,23 @@
         "declarations": {
           "cursor": "not-allowed",
           "opacity": "0.5",
-          "--fsds-select-color-background-default": "var(--fsds-semantic-color-background-disabled, #d0d0d0)",
-          "--fsds-select-color-foreground-default": "var(--fsds-semantic-color-foreground-disabled, #727272)",
-          "--fsds-select-color-border-default": "var(--fsds-semantic-color-border-disabled, #b8b8b8)"
+          "--fsds-select-color-background": "var(--fsds-semantic-color-background-disabled, #d0d0d0)",
+          "--fsds-select-color-foreground": "var(--fsds-semantic-color-foreground-disabled, #727272)",
+          "--fsds-select-color-border": "var(--fsds-semantic-color-border-disabled, #b8b8b8)"
         }
       },
       {
         "selector": ".select__option:hover:not([aria-disabled=\"true\"])",
         "declarations": {
-          "--fsds-select-color-background-default": "var(--fsds-semantic-color-background-hover, #f7f7f7)",
-          "--fsds-select-color-foreground-default": "var(--fsds-semantic-color-foreground-hover, #474647)"
+          "--fsds-select-color-background": "var(--fsds-semantic-color-background-hover, #f7f7f7)",
+          "--fsds-select-color-foreground": "var(--fsds-semantic-color-foreground-hover, #474647)"
         }
       },
       {
         "selector": ".select__option[aria-selected=\"true\"]",
         "declarations": {
-          "--fsds-select-color-background-default": "var(--fsds-semantic-color-background-highlight, #f5a2a1)",
-          "--fsds-select-color-foreground-default": "var(--fsds-semantic-color-foreground-primary, #141414)"
+          "--fsds-select-color-background": "var(--fsds-semantic-color-background-highlight, #f5a2a1)",
+          "--fsds-select-color-foreground": "var(--fsds-semantic-color-foreground-primary, #141414)"
         }
       },
       {
@@ -1353,19 +1447,19 @@
       {
         "selector": ".select__searchInput",
         "declarations": {
-          "padding": "var(--fsds-select-size-padding-default, 4px)",
+          "padding": "var(--fsds-select-size-padding, 4px)",
           "border-style": "solid",
-          "border-width": "var(--fsds-select-size-border-default, 1px)",
-          "border-radius": "var(--fsds-select-size-radius-default, 6px)",
-          "border-color": "var(--fsds-select-color-border-default, #a0a0a1)",
-          "background-color": "var(--fsds-select-color-background-default, #ffffff)",
-          "color": "var(--fsds-select-color-foreground-default, #141414)",
-          "font-size": "var(--fsds-select-font-size-default, 16px)",
+          "border-width": "var(--fsds-select-size-border, 1px)",
+          "border-radius": "var(--fsds-select-size-radius, 6px)",
+          "border-color": "var(--fsds-select-color-border, #a0a0a1)",
+          "background-color": "var(--fsds-select-color-background, #ffffff)",
+          "color": "var(--fsds-select-color-foreground, #141414)",
+          "font-size": "var(--fsds-select-font-size, 16px)",
           "width": "100%",
           "min-width": "0",
           "box-sizing": "border-box",
           "font-family": "inherit",
-          "line-height": "var(--fsds-select-font-line-height-default, 1.5)"
+          "line-height": "var(--fsds-select-font-line-height, 1.5)"
         }
       },
       {

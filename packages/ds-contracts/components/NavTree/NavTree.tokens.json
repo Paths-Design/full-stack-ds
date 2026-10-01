@@ -1,20 +1,92 @@
 {
-  "nav-tree.color.foreground.default": { "resolvesTo": "semantic.color.foreground.secondary", "fallback": "#474647", "layer": "semantic" },
-  "nav-tree.color.foreground.hover": { "resolvesTo": "semantic.color.foreground.primary", "fallback": "#141414", "layer": "semantic" },
-  "nav-tree.color.foreground.current": { "resolvesTo": "semantic.color.foreground.primary", "fallback": "#141414", "layer": "semantic" },
-  "nav-tree.color.foreground.heading": { "resolvesTo": "semantic.color.foreground.secondary", "fallback": "#474647", "layer": "semantic" },
-  "nav-tree.color.foreground.headingHover": { "resolvesTo": "semantic.color.foreground.primary", "fallback": "#141414", "layer": "semantic" },
-  "nav-tree.color.connector": { "resolvesTo": "semantic.color.border.subtle", "fallback": "#d0d0d0", "layer": "semantic" },
-  "nav-tree.color.outline.focus": { "resolvesTo": "semantic.color.border.accent", "fallback": "#d92d2e", "layer": "semantic" },
-  "nav-tree.size.indent": { "resolvesTo": "core.spacing.size.06", "fallback": "16px", "layer": "core" },
-  "nav-tree.size.margin.group": { "resolvesTo": "core.spacing.size.04", "fallback": "8px", "layer": "core" },
-  "nav-tree.size.padding.block": { "resolvesTo": "core.spacing.size.02", "fallback": "2px", "layer": "core" },
-  "nav-tree.size.padding.inline": { "resolvesTo": "core.spacing.size.04", "fallback": "8px", "layer": "core" },
-  "nav-tree.size.fontSize.heading": { "resolvesTo": "semantic.typography.caption.03", "fallback": "10px", "layer": "semantic" },
-  "nav-tree.size.fontSize.item": { "resolvesTo": "semantic.typography.body.03", "fallback": "14px", "layer": "semantic" },
-  "nav-tree.size.radius.default": { "resolvesTo": "semantic.shape.control.radius.default", "fallback": "6px", "layer": "semantic" },
-  "nav-tree.size.gap.heading": { "resolvesTo": "core.spacing.size.03", "fallback": "4px", "layer": "core" },
-  "nav-tree.size.gap.item": { "resolvesTo": "core.spacing.size.01", "fallback": "1px", "layer": "core" },
-  "nav-tree.stateLayer.hover": { "resolvesTo": "semantic.interaction.stateLayer.hover", "fallback": "0.04", "layer": "semantic" },
-  "nav-tree.stateLayer.selected": { "resolvesTo": "semantic.interaction.stateLayer.selected", "fallback": "0.08", "layer": "semantic" }
+  "nav-tree.color.foreground.default": {
+    "resolvesTo": "semantic.color.foreground.secondary",
+    "fallback": "#474647",
+    "layer": "semantic"
+  },
+  "nav-tree.color.foreground.hover": {
+    "resolvesTo": "semantic.color.foreground.primary",
+    "fallback": "#141414",
+    "layer": "semantic"
+  },
+  "nav-tree.color.foreground.current": {
+    "resolvesTo": "semantic.color.foreground.primary",
+    "fallback": "#141414",
+    "layer": "semantic"
+  },
+  "nav-tree.color.foreground.heading": {
+    "resolvesTo": "semantic.color.foreground.secondary",
+    "fallback": "#474647",
+    "layer": "semantic"
+  },
+  "nav-tree.color.foreground.headingHover": {
+    "resolvesTo": "semantic.color.foreground.primary",
+    "fallback": "#141414",
+    "layer": "semantic"
+  },
+  "nav-tree.color.connector": {
+    "resolvesTo": "semantic.color.border.subtle",
+    "fallback": "#d0d0d0",
+    "layer": "semantic"
+  },
+  "nav-tree.color.outline.focus": {
+    "resolvesTo": "semantic.focus.ring.color",
+    "fallback": "#0566fe",
+    "layer": "semantic"
+  },
+  "nav-tree.size.indent": {
+    "resolvesTo": "core.spacing.size.06",
+    "fallback": "16px",
+    "layer": "core"
+  },
+  "nav-tree.size.margin.group": {
+    "resolvesTo": "core.spacing.size.04",
+    "fallback": "8px",
+    "layer": "core"
+  },
+  "nav-tree.size.padding.block": {
+    "resolvesTo": "core.spacing.size.02",
+    "fallback": "2px",
+    "layer": "core"
+  },
+  "nav-tree.size.padding.inline": {
+    "resolvesTo": "core.spacing.size.04",
+    "fallback": "8px",
+    "layer": "core"
+  },
+  "nav-tree.size.fontSize.heading": {
+    "resolvesTo": "semantic.typography.caption.03",
+    "fallback": "10px",
+    "layer": "semantic"
+  },
+  "nav-tree.size.fontSize.item": {
+    "resolvesTo": "semantic.typography.body.03",
+    "fallback": "14px",
+    "layer": "semantic"
+  },
+  "nav-tree.size.radius": {
+    "resolvesTo": "semantic.shape.control.radius.default",
+    "fallback": "6px",
+    "layer": "semantic"
+  },
+  "nav-tree.size.gap.heading": {
+    "resolvesTo": "core.spacing.size.03",
+    "fallback": "4px",
+    "layer": "core"
+  },
+  "nav-tree.size.gap.item": {
+    "resolvesTo": "core.spacing.size.01",
+    "fallback": "1px",
+    "layer": "core"
+  },
+  "nav-tree.stateLayer.hover": {
+    "resolvesTo": "semantic.interaction.stateLayer.hover",
+    "fallback": "0.04",
+    "layer": "semantic"
+  },
+  "nav-tree.stateLayer.selected": {
+    "resolvesTo": "semantic.interaction.stateLayer.selected",
+    "fallback": "0.08",
+    "layer": "semantic"
+  }
 }

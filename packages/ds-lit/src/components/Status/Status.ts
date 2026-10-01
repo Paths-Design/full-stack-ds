@@ -69,45 +69,45 @@ export class StatusElement extends LitElement {
 
 
     .status {
-      --fsds-status-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+      --fsds-status-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-status-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-status-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-status-size-radius-default: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+      --fsds-status-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-status-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
       --fsds-status-size-min-height: var(--fsds-semantic-glyph-badge-size-md-min-height, 24px);
       --fsds-status-size-font-size: var(--fsds-semantic-glyph-badge-size-md-font-size, 12px);
-      --fsds-status-size-border-default: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --fsds-status-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
       --fsds-status-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
       --fsds-status-typography-line-height: var(--fsds-semantic-typography-line-height-collapse, 1);
     }
 
     .status--info {
-      --fsds-status-color-background-default: var(--fsds-semantic-color-background-info-subtle, #95dafb);
+      --fsds-status-color-background: var(--fsds-semantic-color-background-info-subtle, #95dafb);
       --fsds-status-color-foreground-primary: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
-      --fsds-status-color-border-default: var(--fsds-semantic-color-border-info, #034fd6);
+      --fsds-status-color-border: var(--fsds-semantic-color-border-info, #034fd6);
     }
 
     .status--success {
-      --fsds-status-color-background-default: var(--fsds-semantic-color-background-success-subtle, #b3dba7);
+      --fsds-status-color-background: var(--fsds-semantic-color-background-success-subtle, #b3dba7);
       --fsds-status-color-foreground-primary: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
-      --fsds-status-color-border-default: var(--fsds-semantic-color-border-success, #3a6614);
+      --fsds-status-color-border: var(--fsds-semantic-color-border-success, #3a6614);
     }
 
     .status--warning {
-      --fsds-status-color-background-default: var(--fsds-semantic-color-background-warning-subtle, #fdc67f);
+      --fsds-status-color-background: var(--fsds-semantic-color-background-warning-subtle, #fdc67f);
       --fsds-status-color-foreground-primary: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
-      --fsds-status-color-border-default: var(--fsds-semantic-color-border-warning, #8b4b00);
+      --fsds-status-color-border: var(--fsds-semantic-color-border-warning, #8b4b00);
     }
 
     .status--danger {
-      --fsds-status-color-background-default: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
+      --fsds-status-color-background: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
       --fsds-status-color-foreground-primary: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
-      --fsds-status-color-border-default: var(--fsds-semantic-color-border-danger, #b31b1b);
+      --fsds-status-color-border: var(--fsds-semantic-color-border-danger, #b31b1b);
     }
 
     .status--error {
-      --fsds-status-color-background-default: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
+      --fsds-status-color-background: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
       --fsds-status-color-foreground-primary: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
-      --fsds-status-color-border-default: var(--fsds-semantic-color-border-danger, #b31b1b);
+      --fsds-status-color-border: var(--fsds-semantic-color-border-danger, #b31b1b);
     }
 
     @layer components.defaults {
@@ -129,11 +129,11 @@ export class StatusElement extends LitElement {
       box-sizing: border-box;
       white-space: nowrap;
       border-style: var(--fsds-status-design-root-border-style, solid);
-      background-color: var(--fsds-status-design-root-background-fill, var(--fsds-status-color-background-default, #f7f7f7));
+      background-color: var(--fsds-status-design-root-background-fill, var(--fsds-status-color-background, #f7f7f7));
       color: var(--fsds-status-design-root-foreground-color, var(--fsds-status-color-foreground-primary, #474647));
-      border-color: var(--fsds-status-design-root-border-color, var(--fsds-status-color-border-default, #d0d0d0));
-      border-width: var(--fsds-status-design-root-border-width, var(--fsds-status-size-border-default, 1px));
-      border-radius: var(--fsds-status-design-root-shape-radius, var(--fsds-status-size-radius-default, 9999px));
+      border-color: var(--fsds-status-design-root-border-color, var(--fsds-status-color-border, #d0d0d0));
+      border-width: var(--fsds-status-design-root-border-width, var(--fsds-status-size-border, 1px));
+      border-radius: var(--fsds-status-design-root-shape-radius, var(--fsds-status-size-radius, 9999px));
       font-size: var(--fsds-status-design-root-typography-size, var(--fsds-status-size-font-size, 12px));
       font-weight: var(--fsds-status-design-root-typography-weight, var(--fsds-status-text-weight, 500));
       line-height: var(--fsds-status-design-root-typography-line-height, var(--fsds-status-typography-line-height, 1));

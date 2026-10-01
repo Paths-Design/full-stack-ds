@@ -1,7 +1,7 @@
 {
   "root": {
     "color": {
-      "resolvesTo": "progress.color.text.default",
+      "resolvesTo": "progress.color.text",
       "fallback": "#474647",
       "design": {
         "property": "foreground.color",
@@ -95,7 +95,7 @@
       ]
     },
     "color": {
-      "resolvesTo": "progress.color.text.default",
+      "resolvesTo": "progress.color.text",
       "fallback": "#474647",
       "design": {
         "property": "foreground.color",

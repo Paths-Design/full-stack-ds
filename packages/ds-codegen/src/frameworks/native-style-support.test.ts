@@ -80,9 +80,9 @@ describe("native root clipping support", () => {
   it("preserves clipping without a radius token and makes radius rejection reach the composer", () => {
     const contract = fixture("hidden");
     const source = generateSwiftUIComponentSource(buildComponentIR(contract));
-    expect(source).toContain('pxSlot("size.radius.default", requireRadius: true)');
+    expect(source).toContain('pxSlot("size.radius", requireRadius: true)');
     expect(source).toContain("fsdsRequireRadius(value, slot: suffix)");
-    delete contract.tokens!["card.size.radius.default"];
+    delete contract.tokens!["card.size.radius"];
     const square = generateSwiftUIComponentSource(buildComponentIR(contract));
     expect(square).toContain(".clipped()");
   });

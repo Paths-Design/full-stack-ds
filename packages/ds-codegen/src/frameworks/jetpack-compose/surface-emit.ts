@@ -1,3 +1,4 @@
+import { matchesTokenRole } from '../token-role.js';
 /**
  * Jetpack Compose Anchored Presence Surface emitter
  * (FEAT-COMPOSE-ANCHORED-SURFACES-01).
@@ -46,7 +47,7 @@ const kotlinEnumName = (value: string): string =>
 function slot(ir: ComponentIR, suffix: string) {
   return ir.tokenScopes
     .find((scope) => scope.scope === "root")
-    ?.values.find((value) => value.name.endsWith(suffix));
+    ?.values.find((value) => matchesTokenRole(value.name, suffix));
 }
 
 export function generateJetpackComposeSurfaceFiles(
@@ -76,7 +77,7 @@ export function generateJetpackComposeSurfaceFiles(
 
   const bgSlot = slot(ir, ".color.background.default");
   const borderSlot = slot(ir, ".color.border.default");
-  const radiusSlot = slot(ir, ".size.radius.default");
+  const radiusSlot = slot(ir, ".size.radius");
   const gapSlot = slot(ir, "box-model.gap");
   const minWidthSlot = slot(ir, "box-model.min-width");
   const minHeightSlot = slot(ir, "box-model.min-height");

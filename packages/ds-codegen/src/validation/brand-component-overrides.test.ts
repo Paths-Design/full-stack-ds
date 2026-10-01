@@ -15,6 +15,12 @@ function fixture(): ComponentContract {
 }
 
 describe("brand component destinations", () => {
+  it('accepts a neutral base and explicit variant address without overlapping nested token leaves', () => {
+    const contract = fixture();
+    contract.tokens = { 'test.size': { literal: '16px' }, 'test.size.small': { literal: '12px' } };
+    contract.styles = { root: { width: { resolvesTo: 'test.size', fallback: '16px' } }, '--small': { width: { resolvesTo: 'test.size.small', fallback: '12px' } } };
+    expect(validateBrandComponentOverrides('Test', { size: { $type: 'dimension', $value: '20px' }, 'size.small': { $type: 'dimension', $value: '14px' } }, contract)).toEqual([]);
+  });
   it("accepts consumed tokens and unset-by-default design slots, including zero values", () => {
     expect(validateBrandComponentOverrides("Test", {
       radius: { $value: "4px" },

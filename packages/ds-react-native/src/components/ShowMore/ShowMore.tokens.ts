@@ -47,27 +47,21 @@ export const showMoreTokenScopes = {
       ref: "semantic.action.size.medium.min-height",
       fallback: 32,
     },
-    "show-more.color.background.default": {
-      name: "show-more.color.background.default",
-      cssVar: "--fsds-show-more-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
-    },
     "show-more.color.foreground.secondary": {
       name: "show-more.color.foreground.secondary",
       cssVar: "--fsds-show-more-color-foreground-secondary",
       ref: "semantic.color.foreground.secondary",
       fallback: "#474647",
     },
-    "show-more.color.border.default": {
-      name: "show-more.color.border.default",
-      cssVar: "--fsds-show-more-color-border-default",
+    "show-more.color.border": {
+      name: "show-more.color.border",
+      cssVar: "--fsds-show-more-color-border",
       ref: "semantic.color.border.light",
       fallback: "#b8b8b8",
     },
-    "show-more.size.radius.default": {
-      name: "show-more.size.radius.default",
-      cssVar: "--fsds-show-more-size-radius-default",
+    "show-more.size.radius": {
+      name: "show-more.size.radius",
+      cssVar: "--fsds-show-more-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },

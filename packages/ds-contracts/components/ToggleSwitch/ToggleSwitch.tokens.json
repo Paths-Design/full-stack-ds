@@ -39,17 +39,17 @@
     "fallback": "#f7f7f7",
     "layer": "semantic"
   },
-  "toggle-switch.color.foreground.default": {
+  "toggle-switch.color.foreground": {
     "resolvesTo": "semantic.color.foreground.primary",
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "toggle-switch.color.border.default": {
+  "toggle-switch.color.border": {
     "resolvesTo": "semantic.color.border.light",
     "fallback": "#b8b8b8",
     "layer": "semantic"
   },
-  "toggle-switch.border.radius.default": {
+  "toggle-switch.border.radius": {
     "resolvesTo": "semantic.shape.control.radius.pill",
     "fallback": "9999px",
     "layer": "semantic"

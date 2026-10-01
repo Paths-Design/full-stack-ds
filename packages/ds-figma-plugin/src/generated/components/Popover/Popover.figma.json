@@ -134,7 +134,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "#d0d0d0",
-      "resolvesTo": "popover.color.border.default",
+      "resolvesTo": "popover.color.border",
       "editableTargets": [
         "web"
       ],
@@ -150,7 +150,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "6px",
-      "resolvesTo": "popover.size.radius.default",
+      "resolvesTo": "popover.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -166,7 +166,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "16px",
-      "resolvesTo": "popover.size.padding.default",
+      "resolvesTo": "popover.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -182,7 +182,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "8px",
-      "resolvesTo": "popover.size.gap.default",
+      "resolvesTo": "popover.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -198,7 +198,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "0px 8px 10px #0000000a, 0px 20px 25px #0000001a",
-      "resolvesTo": "popover.elevation.default",
+      "resolvesTo": "popover.elevation",
       "editableTargets": [
         "web"
       ],
@@ -363,12 +363,12 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-popover-size-padding-default": "var(--fsds-core-spacing-size-06, 16px)",
-          "--fsds-popover-size-radius-default": "var(--fsds-semantic-shape-control-radius-default, 6px)",
-          "--fsds-popover-size-gap-default": "var(--fsds-core-spacing-size-04, 8px)",
+          "--fsds-popover-size-padding": "var(--fsds-core-spacing-size-06, 16px)",
+          "--fsds-popover-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
+          "--fsds-popover-size-gap": "var(--fsds-core-spacing-size-04, 8px)",
           "--fsds-popover-color-background-content": "var(--fsds-semantic-color-background-elevated, #ffffff)",
-          "--fsds-popover-color-border-default": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
-          "--fsds-popover-elevation-default": "var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a)",
+          "--fsds-popover-color-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-popover-elevation": "var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a)",
           "--fsds-popover-layer-content": "var(--fsds-core-layer-dropdown, 1000)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
@@ -401,11 +401,11 @@
           "contain": "layout paint style",
           "animation": "popover-enter var(--fsds-core-motion-duration-short, 150ms) var(--fsds-core-motion-easing-emphasized-out, cubic-bezier(0.4, 0, 0.2, 1)) forwards",
           "background-color": "var(--fsds-popover-color-background-content, #ffffff)",
-          "border-color": "var(--fsds-popover-color-border-default, #d0d0d0)",
-          "border-radius": "var(--fsds-popover-size-radius-default, 6px)",
-          "padding": "var(--fsds-popover-size-padding-default, 16px)",
-          "gap": "var(--fsds-popover-size-gap-default, 8px)",
-          "box-shadow": "var(--fsds-popover-elevation-default, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a)",
+          "border-color": "var(--fsds-popover-color-border, #d0d0d0)",
+          "border-radius": "var(--fsds-popover-size-radius, 6px)",
+          "padding": "var(--fsds-popover-size-padding, 16px)",
+          "gap": "var(--fsds-popover-size-gap, 8px)",
+          "box-shadow": "var(--fsds-popover-elevation, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a)",
           "z-index": "var(--fsds-popover-layer-content, 1000)",
           "display": "inline-block",
           "border-style": "solid",

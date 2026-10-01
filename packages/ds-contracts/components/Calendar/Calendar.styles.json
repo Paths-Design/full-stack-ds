@@ -13,7 +13,7 @@
       ]
     },
     "background-color": {
-      "resolvesTo": "calendar.color.background.default",
+      "resolvesTo": "calendar.color.background",
       "fallback": "#ffffff",
       "design": {
         "property": "background.fill",
@@ -29,7 +29,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "calendar.color.border.default",
+      "resolvesTo": "calendar.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
@@ -57,7 +57,7 @@
       }
     },
     "padding": {
-      "resolvesTo": "calendar.size.padding.default",
+      "resolvesTo": "calendar.size.padding",
       "fallback": "16px",
       "design": {
         "property": "spacing.padding",
@@ -65,7 +65,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "calendar.size.radius.default",
+      "resolvesTo": "calendar.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -73,7 +73,7 @@
       }
     },
     "box-shadow": {
-      "resolvesTo": "calendar.elevation.default",
+      "resolvesTo": "calendar.elevation",
       "fallback": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
       "design": {
         "property": "elevation.shadow",
@@ -101,7 +101,7 @@
       ]
     },
     "padding-bottom": {
-      "resolvesTo": "calendar.size.padding.default",
+      "resolvesTo": "calendar.size.padding",
       "fallback": "16px"
     }
   },

@@ -53,21 +53,15 @@ export const toggleSwitchTokenScopes = {
       ref: "semantic.color.background.secondary",
       fallback: "#f7f7f7",
     },
-    "toggle-switch.color.foreground.default": {
-      name: "toggle-switch.color.foreground.default",
-      cssVar: "--fsds-toggle-switch-color-foreground-default",
-      ref: "semantic.color.foreground.primary",
-      fallback: "#141414",
-    },
-    "toggle-switch.color.border.default": {
-      name: "toggle-switch.color.border.default",
-      cssVar: "--fsds-toggle-switch-color-border-default",
+    "toggle-switch.color.border": {
+      name: "toggle-switch.color.border",
+      cssVar: "--fsds-toggle-switch-color-border",
       ref: "semantic.color.border.light",
       fallback: "#b8b8b8",
     },
-    "toggle-switch.border.radius.default": {
-      name: "toggle-switch.border.radius.default",
-      cssVar: "--fsds-toggle-switch-border-radius-default",
+    "toggle-switch.border.radius": {
+      name: "toggle-switch.border.radius",
+      cssVar: "--fsds-toggle-switch-border-radius",
       ref: "semantic.shape.control.radius.pill",
       fallback: 9999,
     },

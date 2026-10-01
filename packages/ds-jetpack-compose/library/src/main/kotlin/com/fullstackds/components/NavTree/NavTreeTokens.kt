@@ -80,9 +80,9 @@ val navTreeTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.typography.caption.03",
             fallback = "10px",
         ),
-        "nav-tree.size.radius.default" to ComponentTokenDefinition(
-            name = "nav-tree.size.radius.default",
-            cssVar = "--fsds-nav-tree-size-radius-default",
+        "nav-tree.size.radius" to ComponentTokenDefinition(
+            name = "nav-tree.size.radius",
+            cssVar = "--fsds-nav-tree-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),

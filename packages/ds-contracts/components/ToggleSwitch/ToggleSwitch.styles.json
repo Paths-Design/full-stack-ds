@@ -21,7 +21,7 @@
       }
     },
     "color": {
-      "resolvesTo": "toggle-switch.color.foreground.default",
+      "resolvesTo": "toggle-switch.color.foreground",
       "fallback": "#141414",
       "design": {
         "property": "foreground.color",
@@ -29,7 +29,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "toggle-switch.color.border.default",
+      "resolvesTo": "toggle-switch.color.border",
       "fallback": "#b8b8b8",
       "design": {
         "property": "border.color",
@@ -37,7 +37,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "toggle-switch.border.radius.default",
+      "resolvesTo": "toggle-switch.border.radius",
       "fallback": "9999px",
       "design": {
         "property": "shape.radius",

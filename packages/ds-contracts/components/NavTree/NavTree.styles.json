@@ -131,7 +131,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "nav-tree.size.radius.default",
+      "resolvesTo": "nav-tree.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -173,7 +173,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "nav-tree.size.radius.default",
+      "resolvesTo": "nav-tree.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -409,7 +409,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "nav-tree.size.radius.default",
+      "resolvesTo": "nav-tree.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -454,20 +454,48 @@
     }
   },
   ".nav-tree__item > *:focus-visible": {
-    "outline": {
-      "literal": "2px solid var(--fsds-nav-tree-color-outline-focus, #d92d2e)",
-      "platforms": [
-        "web"
-      ]
-    },
     "outline-offset": {
-      "literal": "1px",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "focus.offset",
         "slot": "nav-tree.design.condition-62c009a6b895.focus.offset"
+      },
+      "resolvesTo": "semantic.focus.ring.offset",
+      "fallback": "2px"
+    },
+    "outline-color": {
+      "resolvesTo": "nav-tree.color.outline.focus",
+      "fallback": "#0566fe",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "focus.color",
+        "slot": "nav-tree.design.condition-62c009a6b895.focus.color"
+      }
+    },
+    "outline-width": {
+      "resolvesTo": "semantic.focus.ring.width",
+      "fallback": "2px",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "focus.width",
+        "slot": "nav-tree.design.condition-62c009a6b895.focus.width"
+      }
+    },
+    "outline-style": {
+      "resolvesTo": "semantic.focus.ring.style",
+      "fallback": "solid",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "focus.style",
+        "slot": "nav-tree.design.condition-62c009a6b895.focus.style"
       }
     }
   },
@@ -522,20 +550,48 @@
     }
   },
   ".nav-tree__headingLink:focus-visible": {
-    "outline": {
-      "literal": "2px solid var(--fsds-nav-tree-color-outline-focus, #d92d2e)",
-      "platforms": [
-        "web"
-      ]
-    },
     "outline-offset": {
-      "literal": "1px",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "focus.offset",
         "slot": "nav-tree.design.condition-9ee8c188e4b8.focus.offset"
+      },
+      "resolvesTo": "semantic.focus.ring.offset",
+      "fallback": "2px"
+    },
+    "outline-color": {
+      "resolvesTo": "nav-tree.color.outline.focus",
+      "fallback": "#0566fe",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "focus.color",
+        "slot": "nav-tree.design.condition-9ee8c188e4b8.focus.color"
+      }
+    },
+    "outline-width": {
+      "resolvesTo": "semantic.focus.ring.width",
+      "fallback": "2px",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "focus.width",
+        "slot": "nav-tree.design.condition-9ee8c188e4b8.focus.width"
+      }
+    },
+    "outline-style": {
+      "resolvesTo": "semantic.focus.ring.style",
+      "fallback": "solid",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "focus.style",
+        "slot": "nav-tree.design.condition-9ee8c188e4b8.focus.style"
       }
     }
   }

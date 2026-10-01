@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "component.tokens.schema.json",
   "title": "Component Tokens Sidecar",
-  "description": "Flat slot pool for a single component. Each top-level key is a slot name (e.g. \"switch.color.track.background.default\"); each value is a tokenResolution that resolves the slot to the global token graph (or carries a literal). The slot is declared as a CSS custom property on the component's root selector and read by consumers in <Name>.styles.json. No anatomy/state grouping; no `property` field — which property reads the slot is the concern of styles.json.",
+  "description": "Flat slot pool for a single component. Each top-level key is a slot name (e.g. \"switch.color.track.background\"); each value is a tokenResolution that resolves the slot to the global token graph (or carries a literal). The slot is declared as a CSS custom property on the component's root selector and read by consumers in <Name>.styles.json. No anatomy/state grouping; no `property` field — which property reads the slot is the concern of styles.json.",
   "type": "object",
   "additionalProperties": {
     "$ref": "#/$defs/tokenResolution"

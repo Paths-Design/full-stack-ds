@@ -9,7 +9,7 @@
       }
     },
     "padding": {
-      "resolvesTo": "postcard.size.padding.default",
+      "resolvesTo": "postcard.size.padding",
       "fallback": "16px",
       "design": {
         "property": "spacing.padding",
@@ -17,7 +17,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "postcard.size.radius.default",
+      "resolvesTo": "postcard.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -25,7 +25,7 @@
       }
     },
     "gap": {
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "fallback": "12px",
       "design": {
         "property": "spacing.gap",
@@ -63,7 +63,7 @@
       }
     },
     "border-width": {
-      "resolvesTo": "postcard.size.border.default",
+      "resolvesTo": "postcard.size.border",
       "fallback": "1px",
       "design": {
         "property": "border.width",
@@ -133,7 +133,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "fallback": "12px",
       "design": {
         "property": "spacing.gap",
@@ -177,7 +177,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "fallback": "12px",
       "design": {
         "property": "spacing.gap",
@@ -204,7 +204,7 @@
         "web"
       ]
     },
-    "postcard.size.gap.default": {
+    "postcard.size.gap": {
       "resolvesTo": "core.spacing.size.03",
       "fallback": "4px"
     }
@@ -283,7 +283,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "fallback": "12px",
       "design": {
         "property": "spacing.gap",
@@ -291,7 +291,7 @@
       }
     },
     "padding-top": {
-      "resolvesTo": "postcard.size.padding.default",
+      "resolvesTo": "postcard.size.padding",
       "fallback": "16px"
     },
     "border-top-color": {
@@ -313,7 +313,7 @@
       }
     },
     "border-top-width": {
-      "resolvesTo": "postcard.size.border.default",
+      "resolvesTo": "postcard.size.border",
       "fallback": "1px",
       "design": {
         "property": "border.top.width",
@@ -343,7 +343,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "fallback": "12px",
       "design": {
         "property": "spacing.gap",
@@ -372,7 +372,7 @@
         "slot": "postcard.design.stat.typography.size"
       }
     },
-    "postcard.size.gap.default": {
+    "postcard.size.gap": {
       "resolvesTo": "core.spacing.size.03",
       "fallback": "4px"
     },

@@ -91,7 +91,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#d0d0d0",
-      "resolvesTo": "list.color.border.default",
+      "resolvesTo": "list.color.border",
       "editableTargets": [
         "web"
       ],
@@ -107,7 +107,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "16px",
-      "resolvesTo": "list.size.padding.default",
+      "resolvesTo": "list.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -217,7 +217,7 @@
       "selectorKey": ".list--variant-divided > * + *",
       "part": null,
       "defaultValue": "#d0d0d0",
-      "resolvesTo": "list.color.border.default",
+      "resolvesTo": "list.color.border",
       "editableTargets": [
         "web"
       ],
@@ -341,8 +341,8 @@
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
           "--fsds-list-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-list-color-border-default": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
-          "--fsds-list-size-padding-default": "var(--fsds-core-spacing-size-06, 16px)",
+          "--fsds-list-color-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-list-size-padding": "var(--fsds-core-spacing-size-06, 16px)",
           "--fsds-list-size-sm": "var(--fsds-semantic-typography-body-03, 14px)",
           "--fsds-list-size-md": "var(--fsds-semantic-typography-body-02, 16px)",
           "--fsds-list-size-lg": "var(--fsds-semantic-typography-body-01, 18px)",
@@ -362,8 +362,8 @@
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
           "color": "var(--fsds-list-color-foreground-primary, #141414)",
-          "border-color": "var(--fsds-list-color-border-default, #d0d0d0)",
-          "padding": "var(--fsds-list-size-padding-default, 16px)"
+          "border-color": "var(--fsds-list-color-border, #d0d0d0)",
+          "padding": "var(--fsds-list-size-padding, 16px)"
         }
       },
       {
@@ -472,7 +472,7 @@
         "declarations": {
           "border-block-start-width": "1px",
           "border-block-start-style": "solid",
-          "border-block-start-color": "var(--fsds-list-color-border-default, #d0d0d0)"
+          "border-block-start-color": "var(--fsds-list-color-border, #d0d0d0)"
         }
       },
       {

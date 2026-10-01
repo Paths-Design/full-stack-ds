@@ -21,10 +21,10 @@ enum TooltipTokens {
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
-            "tooltip.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-tooltip-color-background-default", name: "tooltip.color.background.default", ref: "semantic.color.background.inverse", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "tooltip.color.foreground.default": FsdsComponentTokenDefinition(cssVar: "--fsds-tooltip-color-foreground-default", name: "tooltip.color.foreground.default", ref: "semantic.color.foreground.on-inverse", fallback: .adaptive(light: "#fafafa", dark: "#141414")),
-            "tooltip.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-tooltip-color-border-default", name: "tooltip.color.border.default", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
-            "tooltip.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-tooltip-size-radius-default", name: "tooltip.size.radius.default", ref: "semantic.shape.radius.small", fallback: .string("4px")),
+            "tooltip.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-tooltip-color-background", name: "tooltip.color.background", ref: "semantic.color.background.inverse", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
+            "tooltip.color.foreground": FsdsComponentTokenDefinition(cssVar: "--fsds-tooltip-color-foreground", name: "tooltip.color.foreground", ref: "semantic.color.foreground.on-inverse", fallback: .adaptive(light: "#fafafa", dark: "#141414")),
+            "tooltip.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-tooltip-color-border", name: "tooltip.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "tooltip.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-tooltip-size-radius", name: "tooltip.size.radius", ref: "semantic.shape.radius.small", fallback: .string("4px")),
         ],
     ]
 }
@@ -76,10 +76,10 @@ public struct Tooltip<Trigger: View, Content: View>: View {
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var background: Color { colorSlot("color.background.default") ?? .accentColor }
-    private var foreground: Color { colorSlot("color.foreground.default") ?? .primary }
-    private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
-    private var radius: CGFloat { pxSlot("size.radius.default") ?? 0 }
+    private var background: Color { colorSlot("color.background") ?? .accentColor }
+    private var foreground: Color { colorSlot("color.foreground") ?? .primary }
+    private var borderColor: Color { colorSlot("color.border") ?? .clear }
+    private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

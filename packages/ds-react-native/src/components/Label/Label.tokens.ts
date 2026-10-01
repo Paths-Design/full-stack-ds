@@ -41,9 +41,9 @@ export const labelTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "label.color.text.default": {
-      name: "label.color.text.default",
-      cssVar: "--fsds-label-color-text-default",
+    "label.color.text": {
+      name: "label.color.text",
+      cssVar: "--fsds-label-color-text",
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },

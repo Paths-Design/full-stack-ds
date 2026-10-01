@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { DESIGN_PROPERTIES, buildDesignBindings } from '../packages/ds-codegen/dist/design-properties.js';
+import { DESIGN_PROPERTIES, buildDesignBindings, requiresDesignBinding } from '../packages/ds-codegen/dist/design-properties.js';
 import { listComponentContracts, findComponentStyles } from '../packages/ds-codegen/dist/contracts-fs.js';
 const write = process.argv.includes('--write');
 const report = [];
@@ -18,8 +18,7 @@ for (const discovered of listComponentContracts(path.resolve('packages/ds-contra
       const definition = DESIGN_PROPERTIES[property];
       // Structural layout is opt-in. Intrinsic sizing literals stay fixed;
       // already token-backed sizing is an existing authored design choice.
-      if (!definition || definition.group === 'layout' || (definition.group === 'sizing' && !entry.resolvesTo) || entry.design) continue;
-      if (entry.platforms && !entry.platforms.includes('web')) continue;
+      if (!requiresDesignBinding(property, entry) || entry.design) continue;
       if (entry.literal === undefined && entry.fallback === undefined) throw new Error(`${contract.name}/${selector}/${property}: missing fallback`);
       const scope = /^[a-zA-Z][a-zA-Z0-9]*$/.test(selector)
         ? selector.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()

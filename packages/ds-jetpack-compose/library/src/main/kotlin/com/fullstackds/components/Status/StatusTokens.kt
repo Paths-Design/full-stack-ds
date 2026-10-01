@@ -38,9 +38,9 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "status.color.background.default" to ComponentTokenDefinition(
-            name = "status.color.background.default",
-            cssVar = "--fsds-status-color-background-default",
+        "status.color.background" to ComponentTokenDefinition(
+            name = "status.color.background",
+            cssVar = "--fsds-status-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
@@ -50,17 +50,17 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.secondary",
             fallback = "#474647",
         ),
-        "status.size.radius.default" to ComponentTokenDefinition(
-            name = "status.size.radius.default",
-            cssVar = "--fsds-status-size-radius-default",
+        "status.size.radius" to ComponentTokenDefinition(
+            name = "status.size.radius",
+            cssVar = "--fsds-status-size-radius",
             ref = "semantic.shape.control.radius.pill",
             fallback = "9999px",
         ),
     ),
     "variant_info" to mapOf(
-        "status.color.background.default" to ComponentTokenDefinition(
-            name = "status.color.background.default",
-            cssVar = "--fsds-status-color-background-default",
+        "status.color.background" to ComponentTokenDefinition(
+            name = "status.color.background",
+            cssVar = "--fsds-status-color-background",
             ref = "semantic.color.background.info.subtle",
             fallback = "#95dafb",
         ),
@@ -72,9 +72,9 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
         ),
     ),
     "variant_success" to mapOf(
-        "status.color.background.default" to ComponentTokenDefinition(
-            name = "status.color.background.default",
-            cssVar = "--fsds-status-color-background-default",
+        "status.color.background" to ComponentTokenDefinition(
+            name = "status.color.background",
+            cssVar = "--fsds-status-color-background",
             ref = "semantic.color.background.success.subtle",
             fallback = "#b3dba7",
         ),
@@ -86,9 +86,9 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
         ),
     ),
     "variant_warning" to mapOf(
-        "status.color.background.default" to ComponentTokenDefinition(
-            name = "status.color.background.default",
-            cssVar = "--fsds-status-color-background-default",
+        "status.color.background" to ComponentTokenDefinition(
+            name = "status.color.background",
+            cssVar = "--fsds-status-color-background",
             ref = "semantic.color.background.warning.subtle",
             fallback = "#fdc67f",
         ),
@@ -100,9 +100,9 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
         ),
     ),
     "variant_danger" to mapOf(
-        "status.color.background.default" to ComponentTokenDefinition(
-            name = "status.color.background.default",
-            cssVar = "--fsds-status-color-background-default",
+        "status.color.background" to ComponentTokenDefinition(
+            name = "status.color.background",
+            cssVar = "--fsds-status-color-background",
             ref = "semantic.color.background.danger.subtle",
             fallback = "#fac2c2",
         ),
@@ -114,9 +114,9 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
         ),
     ),
     "variant_error" to mapOf(
-        "status.color.background.default" to ComponentTokenDefinition(
-            name = "status.color.background.default",
-            cssVar = "--fsds-status-color-background-default",
+        "status.color.background" to ComponentTokenDefinition(
+            name = "status.color.background",
+            cssVar = "--fsds-status-color-background",
             ref = "semantic.color.background.danger.subtle",
             fallback = "#fac2c2",
         ),

@@ -21,8 +21,8 @@ enum PopoverTokens {
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
-            "popover.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-popover-size-radius-default", name: "popover.size.radius.default", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
-            "popover.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-popover-color-border-default", name: "popover.color.border.default", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "popover.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-popover-size-radius", name: "popover.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
+            "popover.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-popover-color-border", name: "popover.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
         ],
     ]
 }
@@ -74,8 +74,8 @@ public struct Popover<Trigger: View, Content: View>: View {
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
-    private var radius: CGFloat { pxSlot("size.radius.default") ?? 0 }
+    private var borderColor: Color { colorSlot("color.border") ?? .clear }
+    private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

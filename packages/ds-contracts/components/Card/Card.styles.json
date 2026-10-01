@@ -9,7 +9,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "card.color.border.default",
+      "resolvesTo": "card.color.border",
       "fallback": "#b8b8b8",
       "design": {
         "property": "border.color",
@@ -25,7 +25,7 @@
       }
     },
     "padding": {
-      "resolvesTo": "card.size.padding.default",
+      "resolvesTo": "card.size.padding",
       "fallback": "16px",
       "design": {
         "property": "spacing.padding",
@@ -33,7 +33,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "card.size.radius.default",
+      "resolvesTo": "card.size.radius",
       "fallback": "8px",
       "design": {
         "property": "shape.radius",
@@ -41,7 +41,7 @@
       }
     },
     "gap": {
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "fallback": "4px",
       "design": {
         "property": "spacing.gap",
@@ -237,7 +237,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "fallback": "4px",
       "design": {
         "property": "spacing.gap",
@@ -281,7 +281,7 @@
       ]
     },
     "border-radius": {
-      "resolvesTo": "card.size.radius.default",
+      "resolvesTo": "card.size.radius",
       "fallback": "8px",
       "design": {
         "property": "shape.radius",
@@ -303,7 +303,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "fallback": "4px",
       "design": {
         "property": "spacing.gap",
@@ -357,7 +357,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "fallback": "4px",
       "design": {
         "property": "spacing.gap",
@@ -365,7 +365,7 @@
       }
     },
     "padding-top": {
-      "resolvesTo": "card.size.padding.default",
+      "resolvesTo": "card.size.padding",
       "fallback": "16px"
     },
     "margin-top": {
@@ -375,7 +375,7 @@
       ]
     },
     "border-top-color": {
-      "resolvesTo": "card.color.border.default",
+      "resolvesTo": "card.color.border",
       "fallback": "#b8b8b8",
       "design": {
         "property": "border.top.color",
@@ -419,7 +419,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "card.size.gap.default",
+      "resolvesTo": "card.size.gap",
       "fallback": "4px",
       "design": {
         "property": "spacing.gap",

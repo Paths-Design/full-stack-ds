@@ -29,17 +29,17 @@
     "fallback": "64px",
     "layer": "semantic"
   },
-  "popover.size.padding.default": {
+  "popover.size.padding": {
     "resolvesTo": "core.spacing.size.06",
     "fallback": "16px",
     "layer": "core"
   },
-  "popover.size.radius.default": {
+  "popover.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"
   },
-  "popover.size.gap.default": {
+  "popover.size.gap": {
     "resolvesTo": "core.spacing.size.04",
     "fallback": "8px",
     "layer": "core"
@@ -49,12 +49,12 @@
     "fallback": "#ffffff",
     "layer": "semantic"
   },
-  "popover.color.border.default": {
+  "popover.color.border": {
     "resolvesTo": "semantic.color.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
   },
-  "popover.elevation.default": {
+  "popover.elevation": {
     "resolvesTo": "semantic.elevation.surface.popover",
     "fallback": "0px 8px 10px #0000000a, 0px 20px 25px #0000001a",
     "layer": "semantic"

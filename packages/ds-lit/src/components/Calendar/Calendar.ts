@@ -69,25 +69,25 @@ export class CalendarElement extends LitElement {
 
 
     .calendar {
-      --fsds-calendar-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
+      --fsds-calendar-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-calendar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-calendar-color-foreground-muted: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-calendar-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-calendar-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-calendar-color-day-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
       --fsds-calendar-color-day-selected-background: var(--fsds-semantic-color-background-accent, #d92d2e);
       --fsds-calendar-color-day-selected-foreground: var(--fsds-semantic-color-foreground-inverse, #fafafa);
       --fsds-calendar-color-today-ring: var(--fsds-semantic-color-border-accent, #d92d2e);
       --fsds-calendar-color-focus-ring: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-calendar-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-calendar-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-calendar-size-cell: var(--fsds-core-spacing-size-08, 32px);
       --fsds-calendar-size-nav: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-calendar-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-calendar-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-calendar-size-radius-day: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-calendar-typography-caption-size: var(--fsds-semantic-typography-body-02, 16px);
       --fsds-calendar-typography-day-size: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-calendar-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-calendar-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-calendar-elevation-default: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
+      --fsds-calendar-elevation: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
     }
 
     @layer components.defaults {
@@ -105,21 +105,21 @@ export class CalendarElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: inline-block;
       box-sizing: border-box;
-      background-color: var(--fsds-calendar-design-root-background-fill, var(--fsds-calendar-color-background-default, #ffffff));
+      background-color: var(--fsds-calendar-design-root-background-fill, var(--fsds-calendar-color-background, #ffffff));
       color: var(--fsds-calendar-design-root-foreground-color, var(--fsds-calendar-color-foreground-primary, #141414));
-      border-color: var(--fsds-calendar-design-root-border-color, var(--fsds-calendar-color-border-default, #d0d0d0));
+      border-color: var(--fsds-calendar-design-root-border-color, var(--fsds-calendar-color-border, #d0d0d0));
       border-width: var(--fsds-calendar-design-root-border-width, 1px);
       border-style: var(--fsds-calendar-design-root-border-style, solid);
-      padding: var(--fsds-calendar-design-root-spacing-padding, var(--fsds-calendar-size-padding-default, 16px));
-      border-radius: var(--fsds-calendar-design-root-shape-radius, var(--fsds-calendar-size-radius-default, 6px));
-      box-shadow: var(--fsds-calendar-design-root-elevation-shadow, var(--fsds-calendar-elevation-default, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a));
+      padding: var(--fsds-calendar-design-root-spacing-padding, var(--fsds-calendar-size-padding, 16px));
+      border-radius: var(--fsds-calendar-design-root-shape-radius, var(--fsds-calendar-size-radius, 6px));
+      box-shadow: var(--fsds-calendar-design-root-elevation-shadow, var(--fsds-calendar-elevation, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a));
     }
 
     .calendar__header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: var(--fsds-calendar-size-padding-default, 16px);
+      padding-bottom: var(--fsds-calendar-size-padding, 16px);
     }
 
     .calendar__nav {
@@ -326,25 +326,25 @@ export class CalendarHeaderElement extends LitElement {
 
 
     .calendar {
-      --fsds-calendar-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
+      --fsds-calendar-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-calendar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-calendar-color-foreground-muted: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-calendar-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-calendar-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-calendar-color-day-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
       --fsds-calendar-color-day-selected-background: var(--fsds-semantic-color-background-accent, #d92d2e);
       --fsds-calendar-color-day-selected-foreground: var(--fsds-semantic-color-foreground-inverse, #fafafa);
       --fsds-calendar-color-today-ring: var(--fsds-semantic-color-border-accent, #d92d2e);
       --fsds-calendar-color-focus-ring: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-calendar-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-calendar-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-calendar-size-cell: var(--fsds-core-spacing-size-08, 32px);
       --fsds-calendar-size-nav: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-calendar-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-calendar-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-calendar-size-radius-day: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-calendar-typography-caption-size: var(--fsds-semantic-typography-body-02, 16px);
       --fsds-calendar-typography-day-size: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-calendar-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-calendar-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-calendar-elevation-default: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
+      --fsds-calendar-elevation: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
     }
 
     @layer components.defaults {
@@ -362,21 +362,21 @@ export class CalendarHeaderElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: inline-block;
       box-sizing: border-box;
-      background-color: var(--fsds-calendar-design-root-background-fill, var(--fsds-calendar-color-background-default, #ffffff));
+      background-color: var(--fsds-calendar-design-root-background-fill, var(--fsds-calendar-color-background, #ffffff));
       color: var(--fsds-calendar-design-root-foreground-color, var(--fsds-calendar-color-foreground-primary, #141414));
-      border-color: var(--fsds-calendar-design-root-border-color, var(--fsds-calendar-color-border-default, #d0d0d0));
+      border-color: var(--fsds-calendar-design-root-border-color, var(--fsds-calendar-color-border, #d0d0d0));
       border-width: var(--fsds-calendar-design-root-border-width, 1px);
       border-style: var(--fsds-calendar-design-root-border-style, solid);
-      padding: var(--fsds-calendar-design-root-spacing-padding, var(--fsds-calendar-size-padding-default, 16px));
-      border-radius: var(--fsds-calendar-design-root-shape-radius, var(--fsds-calendar-size-radius-default, 6px));
-      box-shadow: var(--fsds-calendar-design-root-elevation-shadow, var(--fsds-calendar-elevation-default, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a));
+      padding: var(--fsds-calendar-design-root-spacing-padding, var(--fsds-calendar-size-padding, 16px));
+      border-radius: var(--fsds-calendar-design-root-shape-radius, var(--fsds-calendar-size-radius, 6px));
+      box-shadow: var(--fsds-calendar-design-root-elevation-shadow, var(--fsds-calendar-elevation, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a));
     }
 
     .calendar__header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: var(--fsds-calendar-size-padding-default, 16px);
+      padding-bottom: var(--fsds-calendar-size-padding, 16px);
     }
 
     .calendar__nav {

@@ -24,7 +24,7 @@
     "fallback": "4px",
     "layer": "semantic"
   },
-  "code-block.color.background.default": {
+  "code-block.color.background": {
     "resolvesTo": "semantic.color.background.secondary",
     "fallback": "#f7f7f7",
     "layer": "semantic"
@@ -34,32 +34,32 @@
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "code-block.color.border.default": {
+  "code-block.color.border": {
     "resolvesTo": "semantic.color.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
   },
-  "code-block.size.padding.default": {
+  "code-block.size.padding": {
     "resolvesTo": "core.spacing.size.06",
     "fallback": "16px",
     "layer": "core"
   },
-  "code-block.size.radius.default": {
+  "code-block.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"
   },
-  "code-block.size.border.default": {
+  "code-block.size.border": {
     "resolvesTo": "semantic.shape.control.border.defaultWidth",
     "fallback": "1px",
     "layer": "semantic"
   },
-  "code-block.size.fontSize.default": {
+  "code-block.size.fontSize": {
     "resolvesTo": "core.typography.ramp.3",
     "fallback": "0.875rem",
     "layer": "core"
   },
-  "code-block.typography.lineHeight.default": {
+  "code-block.typography.lineHeight": {
     "resolvesTo": "semantic.typography.line.height.body",
     "fallback": "1.5",
     "layer": "semantic"

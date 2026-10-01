@@ -17,21 +17,21 @@
   max-height: var(--fsds-box-model-max-height, none);
   display: inline-block;
   box-sizing: border-box;
-  background-color: var(--fsds-calendar-design-root-background-fill, var(--fsds-calendar-color-background-default, #ffffff));
+  background-color: var(--fsds-calendar-design-root-background-fill, var(--fsds-calendar-color-background, #ffffff));
   color: var(--fsds-calendar-design-root-foreground-color, var(--fsds-calendar-color-foreground-primary, #141414));
-  border-color: var(--fsds-calendar-design-root-border-color, var(--fsds-calendar-color-border-default, #d0d0d0));
+  border-color: var(--fsds-calendar-design-root-border-color, var(--fsds-calendar-color-border, #d0d0d0));
   border-width: var(--fsds-calendar-design-root-border-width, 1px);
   border-style: var(--fsds-calendar-design-root-border-style, solid);
-  padding: var(--fsds-calendar-design-root-spacing-padding, var(--fsds-calendar-size-padding-default, 16px));
-  border-radius: var(--fsds-calendar-design-root-shape-radius, var(--fsds-calendar-size-radius-default, 6px));
-  box-shadow: var(--fsds-calendar-design-root-elevation-shadow, var(--fsds-calendar-elevation-default, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a));
+  padding: var(--fsds-calendar-design-root-spacing-padding, var(--fsds-calendar-size-padding, 16px));
+  border-radius: var(--fsds-calendar-design-root-shape-radius, var(--fsds-calendar-size-radius, 6px));
+  box-shadow: var(--fsds-calendar-design-root-elevation-shadow, var(--fsds-calendar-elevation, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a));
 }
 
 .calendar__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: var(--fsds-calendar-size-padding-default, 16px);
+  padding-bottom: var(--fsds-calendar-size-padding, 16px);
 }
 
 .calendar__nav {

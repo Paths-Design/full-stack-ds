@@ -46,21 +46,15 @@ export const otpTokenScopes = {
       ref: "semantic.input.size.medium.min-height",
       fallback: 32,
     },
-    "otp.color.background.default": {
-      name: "otp.color.background.default",
-      cssVar: "--fsds-otp-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
-    },
-    "otp.color.border.default": {
-      name: "otp.color.border.default",
-      cssVar: "--fsds-otp-color-border-default",
+    "otp.color.border": {
+      name: "otp.color.border",
+      cssVar: "--fsds-otp-color-border",
       ref: "semantic.color.border.light",
       fallback: "#b8b8b8",
     },
-    "otp.size.radius.default": {
-      name: "otp.size.radius.default",
-      cssVar: "--fsds-otp-size-radius-default",
+    "otp.size.radius": {
+      name: "otp.size.radius",
+      cssVar: "--fsds-otp-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },

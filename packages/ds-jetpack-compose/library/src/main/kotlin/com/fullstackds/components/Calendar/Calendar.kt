@@ -77,22 +77,22 @@ fun Calendar(
         val def = calendarTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val gridBackground = layeredSlot("calendar.color.background.default")?.toFsdsColor()
+    val gridBackground = layeredSlot("calendar.color.background")?.toFsdsColor()
     val gridForeground = layeredSlot("calendar.color.foreground.primary")?.toFsdsColor()
     val gridMuted = layeredSlot("calendar.color.foreground.muted")?.toFsdsColor()
-    val gridBorder = layeredSlot("calendar.color.border.default")?.toFsdsColor()
+    val gridBorder = layeredSlot("calendar.color.border")?.toFsdsColor()
     val dayHover = layeredSlot("calendar.color.day.hover")?.toFsdsColor()
     val daySelectedBackground = layeredSlot("calendar.color.day.selected.background")?.toFsdsColor()
     val daySelectedForeground = layeredSlot("calendar.color.day.selected.foreground")?.toFsdsColor()
     val todayRing = layeredSlot("calendar.color.today.ring")?.toFsdsColor()
     val focusRing = layeredSlot("calendar.color.focus.ring")?.toFsdsColor()
-    val gridRadius = layeredSlot("calendar.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val gridRadius = layeredSlot("calendar.size.radius")?.toFsdsDp() ?: 0.dp
     val dayRadius = layeredSlot("calendar.size.radius.day")?.toFsdsDp() ?: 0.dp
     val cellSize = layeredSlot("calendar.size.cell")?.toFsdsDp() ?: 0.dp
     val navSize = layeredSlot("calendar.size.nav")?.toFsdsDp() ?: 0.dp
     val ringWidth = layeredSlot("calendar.focus.ring.width")?.toFsdsDp() ?: 0.dp
     val gridGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
-    val gridInset = layeredSlot("calendar.size.padding.default")?.toFsdsDp() ?: 0.dp
+    val gridInset = layeredSlot("calendar.size.padding")?.toFsdsDp() ?: 0.dp
     val gridMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp
     val gridMinHeight = layeredSlot("box-model.min-height")?.toFsdsDp() ?: 0.dp
     val gridPadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)

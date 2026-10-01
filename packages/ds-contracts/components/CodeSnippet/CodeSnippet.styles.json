@@ -1,7 +1,7 @@
 {
   "root": {
     "background-color": {
-      "resolvesTo": "code-snippet.color.background.default",
+      "resolvesTo": "code-snippet.color.background",
       "fallback": "#f7f7f7",
       "design": {
         "property": "background.fill",
@@ -9,7 +9,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "code-snippet.color.border.default",
+      "resolvesTo": "code-snippet.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
@@ -27,7 +27,7 @@
       }
     },
     "border-width": {
-      "resolvesTo": "code-snippet.size.border.default",
+      "resolvesTo": "code-snippet.size.border",
       "fallback": "1px",
       "design": {
         "property": "border.width",
@@ -35,7 +35,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "code-snippet.size.radius.default",
+      "resolvesTo": "code-snippet.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -51,17 +51,18 @@
       }
     },
     "font-family": {
-      "literal": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "typography.family",
         "slot": "code-snippet.design.root.typography.family"
-      }
+      },
+      "fallback": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "resolvesTo": "semantic.typography.semanticFamily.mono"
     },
     "font-size": {
-      "resolvesTo": "code-snippet.size.fontSize.default",
+      "resolvesTo": "code-snippet.size.fontSize",
       "fallback": "0.875rem",
       "design": {
         "property": "typography.size",
@@ -69,7 +70,7 @@
       }
     },
     "line-height": {
-      "resolvesTo": "code-snippet.typography.lineHeight.default",
+      "resolvesTo": "code-snippet.typography.lineHeight",
       "fallback": "1.5",
       "design": {
         "property": "typography.line-height",

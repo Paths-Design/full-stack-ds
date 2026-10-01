@@ -109,7 +109,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "#141414",
-      "resolvesTo": "tooltip.color.background.default",
+      "resolvesTo": "tooltip.color.background",
       "editableTargets": [
         "web"
       ],
@@ -125,7 +125,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "#fafafa",
-      "resolvesTo": "tooltip.color.foreground.default",
+      "resolvesTo": "tooltip.color.foreground",
       "editableTargets": [
         "web"
       ],
@@ -141,7 +141,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "#d0d0d0",
-      "resolvesTo": "tooltip.color.border.default",
+      "resolvesTo": "tooltip.color.border",
       "editableTargets": [
         "web"
       ],
@@ -157,7 +157,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "4px",
-      "resolvesTo": "tooltip.size.radius.default",
+      "resolvesTo": "tooltip.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -329,11 +329,11 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-tooltip-color-background-default": "var(--fsds-semantic-color-background-inverse, #141414)",
-          "--fsds-tooltip-color-foreground-default": "var(--fsds-semantic-color-foreground-on-inverse, #fafafa)",
-          "--fsds-tooltip-color-border-default": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-tooltip-color-background": "var(--fsds-semantic-color-background-inverse, #141414)",
+          "--fsds-tooltip-color-foreground": "var(--fsds-semantic-color-foreground-on-inverse, #fafafa)",
+          "--fsds-tooltip-color-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
           "--fsds-tooltip-size-padding-x": "var(--fsds-core-spacing-size-04, 8px)",
-          "--fsds-tooltip-size-radius-default": "var(--fsds-semantic-shape-radius-small, 4px)",
+          "--fsds-tooltip-size-radius": "var(--fsds-semantic-shape-radius-small, 4px)",
           "--fsds-tooltip-size-max-width": "200px",
           "--fsds-tooltip-typography-font-size": "var(--fsds-semantic-typography-caption-01, 14px)",
           "--fsds-tooltip-layer-content": "var(--fsds-core-layer-tooltip, 1800)",
@@ -361,10 +361,10 @@
       {
         "selector": "[data-tooltip-content]",
         "declarations": {
-          "background-color": "var(--fsds-tooltip-color-background-default, #141414)",
-          "color": "var(--fsds-tooltip-color-foreground-default, #fafafa)",
-          "border-color": "var(--fsds-tooltip-color-border-default, #d0d0d0)",
-          "border-radius": "var(--fsds-tooltip-size-radius-default, 4px)",
+          "background-color": "var(--fsds-tooltip-color-background, #141414)",
+          "color": "var(--fsds-tooltip-color-foreground, #fafafa)",
+          "border-color": "var(--fsds-tooltip-color-border, #d0d0d0)",
+          "border-radius": "var(--fsds-tooltip-size-radius, 4px)",
           "padding": "var(--fsds-tooltip-size-padding-x, 8px)",
           "max-width": "var(--fsds-tooltip-size-max-width, 200px)",
           "z-index": "var(--fsds-tooltip-layer-content, 1800)",

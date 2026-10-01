@@ -321,7 +321,7 @@
       "selectorKey": "description",
       "part": "description",
       "defaultValue": "#141414",
-      "resolvesTo": "toast.color.default",
+      "resolvesTo": "toast.color",
       "editableTargets": [
         "web"
       ],
@@ -352,7 +352,7 @@
       "selectorKey": "action",
       "part": "action",
       "defaultValue": "#141414",
-      "resolvesTo": "toast.color.default",
+      "resolvesTo": "toast.color",
       "editableTargets": [
         "web"
       ],
@@ -383,11 +383,73 @@
       "selectorKey": "close",
       "part": "close",
       "defaultValue": "#141414",
-      "resolvesTo": "toast.color.default",
+      "resolvesTo": "toast.color",
       "editableTargets": [
         "web"
       ],
       "selector": ".toast__close"
+    },
+    {
+      "property": "shape.end-start.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "toast.design.progress.shape.end-start.radius",
+      "cssVar": "--fsds-toast-design-progress-shape-end-start-radius",
+      "cssProperty": "border-end-start-radius",
+      "selectorKey": "progress",
+      "part": "progress",
+      "defaultValue": "inherit",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".toast__progress"
+    },
+    {
+      "property": "shape.end-end.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "toast.design.progress.shape.end-end.radius",
+      "cssVar": "--fsds-toast-design-progress-shape-end-end-radius",
+      "cssProperty": "border-end-end-radius",
+      "selectorKey": "progress",
+      "part": "progress",
+      "defaultValue": "inherit",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".toast__progress"
+    },
+    {
+      "property": "sizing.height",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "toast.design.progress.sizing.height",
+      "cssVar": "--fsds-toast-design-progress-sizing-height",
+      "cssProperty": "height",
+      "selectorKey": "progress",
+      "part": "progress",
+      "defaultValue": "2px",
+      "resolvesTo": "toast.progress.height",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".toast__progress"
+    },
+    {
+      "property": "background.fill",
+      "group": "background",
+      "valueType": "color",
+      "slot": "toast.design.progress.background.fill",
+      "cssVar": "--fsds-toast-design-progress-background-fill",
+      "cssProperty": "background-color",
+      "selectorKey": "progress",
+      "part": "progress",
+      "defaultValue": "#141414",
+      "resolvesTo": "toast.progress.color",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".toast__progress"
     }
   ],
   "variants": {
@@ -509,7 +571,7 @@
           "--fsds-toast-surface-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
           "--fsds-toast-surface-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
           "--fsds-toast-surface-shadow": "var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a)",
-          "--fsds-toast-color-default": "var(--fsds-semantic-color-foreground-primary, #141414)",
+          "--fsds-toast-color": "var(--fsds-semantic-color-foreground-primary, #141414)",
           "--fsds-toast-spacing-padding": "var(--fsds-core-spacing-size-05, 12px)",
           "--fsds-toast-spacing-gap": "var(--fsds-core-spacing-size-04, 8px)",
           "--fsds-toast-spacing-stack-gap": "var(--fsds-core-spacing-size-04, 8px)",
@@ -576,7 +638,7 @@
         "selector": ".toast__description",
         "declarations": {
           "flex": "1 1 auto",
-          "color": "var(--fsds-toast-color-default, #141414)",
+          "color": "var(--fsds-toast-color, #141414)",
           "font-size": "inherit"
         }
       },
@@ -588,7 +650,7 @@
           "background": "transparent",
           "border": "0",
           "cursor": "pointer",
-          "color": "var(--fsds-toast-color-default, #141414)"
+          "color": "var(--fsds-toast-color, #141414)"
         }
       },
       {
@@ -601,7 +663,7 @@
           "border": "0",
           "border-radius": "9999px",
           "cursor": "pointer",
-          "color": "var(--fsds-toast-color-default, #141414)",
+          "color": "var(--fsds-toast-color, #141414)",
           "flex-shrink": "0"
         }
       },
@@ -609,7 +671,7 @@
         "selector": ".toast--info",
         "declarations": {
           "--fsds-toast-surface-bg": "var(--fsds-semantic-color-background-info-subtle, #95dafb)",
-          "--fsds-toast-color-default": "var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0)",
+          "--fsds-toast-color": "var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0)",
           "--fsds-toast-surface-border": "var(--fsds-semantic-color-border-info, #034fd6)",
           "--fsds-toast-progress-color": "var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0)"
         }
@@ -618,7 +680,7 @@
         "selector": ".toast--success",
         "declarations": {
           "--fsds-toast-surface-bg": "var(--fsds-semantic-color-background-success-subtle, #b3dba7)",
-          "--fsds-toast-color-default": "var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09)",
+          "--fsds-toast-color": "var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09)",
           "--fsds-toast-surface-border": "var(--fsds-semantic-color-border-success, #3a6614)",
           "--fsds-toast-progress-color": "var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09)"
         }
@@ -627,7 +689,7 @@
         "selector": ".toast--warning",
         "declarations": {
           "--fsds-toast-surface-bg": "var(--fsds-semantic-color-background-warning-subtle, #fdc67f)",
-          "--fsds-toast-color-default": "var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00)",
+          "--fsds-toast-color": "var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00)",
           "--fsds-toast-surface-border": "var(--fsds-semantic-color-border-warning, #8b4b00)",
           "--fsds-toast-progress-color": "var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00)"
         }
@@ -636,7 +698,7 @@
         "selector": ".toast--error",
         "declarations": {
           "--fsds-toast-surface-bg": "var(--fsds-semantic-color-background-danger-subtle, #fac2c2)",
-          "--fsds-toast-color-default": "var(--fsds-semantic-color-foreground-on-danger-subtle, #900909)",
+          "--fsds-toast-color": "var(--fsds-semantic-color-foreground-on-danger-subtle, #900909)",
           "--fsds-toast-surface-border": "var(--fsds-semantic-color-border-danger, #b31b1b)",
           "--fsds-toast-progress-color": "var(--fsds-semantic-color-foreground-on-danger-subtle, #900909)"
         }

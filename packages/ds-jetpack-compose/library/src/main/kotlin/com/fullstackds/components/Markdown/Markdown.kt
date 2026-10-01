@@ -32,13 +32,13 @@ fun Markdown(
         }
         return null
     }
-    val contentColor = layeredSlot("markdown.color.foreground.default")?.toFsdsColor()
+    val contentColor = layeredSlot("markdown.color.foreground")?.toFsdsColor()
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
     val paddingBlockEnd = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp
     val minHeight = layeredSlot("box-model.min-height")?.toFsdsDp()
-    val fsdsFontSize = layeredSlot("markdown.typography.fontSize.default")?.toFsdsSp()
+    val fsdsFontSize = layeredSlot("markdown.typography.fontSize")?.toFsdsSp()
 
     val chromeModifier = Modifier
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)

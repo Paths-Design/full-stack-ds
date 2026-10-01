@@ -1373,9 +1373,9 @@ export interface TokenFactIR {
  * declarations; native targets lower it to theme-resolved JS values.
  */
 export interface TokenScopeValueIR {
-  /** Component-local slot path, e.g. `switch.color.track.background.default`. */
+  /** Component-local slot path, e.g. `switch.color.track.background`. */
   name: string;
-  /** CSS custom-property name for the same slot, e.g. `--fsds-switch-color-track-background-default`. */
+  /** CSS custom-property name for the same slot, e.g. `--fsds-switch-color-track-background`. */
   cssVar: string;
   /** Selector whose scope owns this value in the web token artifact. */
   selector: string;

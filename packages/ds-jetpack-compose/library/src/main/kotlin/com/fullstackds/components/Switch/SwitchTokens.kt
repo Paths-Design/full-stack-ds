@@ -45,21 +45,21 @@ val switchTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.action.size.medium.min-height",
             fallback = "32px",
         ),
-        "switch.color.track.background.default" to ComponentTokenDefinition(
-            name = "switch.color.track.background.default",
-            cssVar = "--fsds-switch-color-track-background-default",
+        "switch.color.track.background" to ComponentTokenDefinition(
+            name = "switch.color.track.background",
+            cssVar = "--fsds-switch-color-track-background",
             ref = "semantic.color.background.tertiary",
             fallback = "#d0d0d0",
         ),
-        "switch.color.track.border.default" to ComponentTokenDefinition(
-            name = "switch.color.track.border.default",
-            cssVar = "--fsds-switch-color-track-border-default",
+        "switch.color.track.border" to ComponentTokenDefinition(
+            name = "switch.color.track.border",
+            cssVar = "--fsds-switch-color-track-border",
             ref = "semantic.color.border.subtle",
             fallback = "#d0d0d0",
         ),
-        "switch.color.thumb.background.default" to ComponentTokenDefinition(
-            name = "switch.color.thumb.background.default",
-            cssVar = "--fsds-switch-color-thumb-background-default",
+        "switch.color.thumb.background" to ComponentTokenDefinition(
+            name = "switch.color.thumb.background",
+            cssVar = "--fsds-switch-color-thumb-background",
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
@@ -77,23 +77,23 @@ val switchTokenScopes: ComponentTokenScopes = mapOf(
         ),
     ),
     "checked" to mapOf(
-        "switch.color.track.background.default" to ComponentTokenDefinition(
-            name = "switch.color.track.background.default",
-            cssVar = "--fsds-switch-color-track-background-default",
+        "switch.color.track.background" to ComponentTokenDefinition(
+            name = "switch.color.track.background",
+            cssVar = "--fsds-switch-color-track-background",
             ref = "semantic.color.foreground.accent",
             fallback = "#d92d2e",
         ),
-        "switch.color.thumb.background.default" to ComponentTokenDefinition(
-            name = "switch.color.thumb.background.default",
-            cssVar = "--fsds-switch-color-thumb-background-default",
+        "switch.color.thumb.background" to ComponentTokenDefinition(
+            name = "switch.color.thumb.background",
+            cssVar = "--fsds-switch-color-thumb-background",
             ref = "semantic.color.foreground.on.brand",
             fallback = "#ffffff",
         ),
     ),
     "disabled" to mapOf(
-        "switch.color.track.background.default" to ComponentTokenDefinition(
-            name = "switch.color.track.background.default",
-            cssVar = "--fsds-switch-color-track-background-default",
+        "switch.color.track.background" to ComponentTokenDefinition(
+            name = "switch.color.track.background",
+            cssVar = "--fsds-switch-color-track-background",
             ref = "semantic.color.background.disabled",
             fallback = "#d0d0d0",
         ),

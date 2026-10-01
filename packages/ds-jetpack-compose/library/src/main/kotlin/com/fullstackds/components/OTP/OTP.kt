@@ -45,10 +45,10 @@ fun OTP(
         val def = otpTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val fieldBg = layeredSlot("otp.color.background.default")?.toFsdsColor()
+    val fieldBg = layeredSlot("otp.color.background")?.toFsdsColor()
     val fieldText = layeredSlot("otp.color.foreground.primary")?.toFsdsColor()
-    val fieldBorder = layeredSlot("otp.color.border.default")?.toFsdsColor()
-    val fieldRadius = layeredSlot("otp.size.radius.default")?.toFsdsDp() ?: 4.dp
+    val fieldBorder = layeredSlot("otp.color.border")?.toFsdsColor()
+    val fieldRadius = layeredSlot("otp.size.radius")?.toFsdsDp() ?: 4.dp
     val fieldGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val fieldPadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
     val fieldMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp

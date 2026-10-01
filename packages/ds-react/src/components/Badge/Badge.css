@@ -23,7 +23,7 @@
   border-style: var(--fsds-badge-design-root-border-style, solid);
   background-color: var(--fsds-badge-design-root-background-fill, var(--fsds-badge-color-background-default, #f7f7f7));
   color: var(--fsds-badge-design-root-foreground-color, var(--fsds-badge-color-foreground-primary, #141414));
-  border-color: var(--fsds-badge-design-root-border-color, var(--fsds-badge-color-border-default, #d0d0d0));
+  border-color: var(--fsds-badge-design-root-border-color, var(--fsds-badge-color-border, #d0d0d0));
   border-width: var(--fsds-badge-design-root-border-width, var(--fsds-badge-size-border, 1px));
   border-radius: var(--fsds-badge-design-root-shape-radius, var(--fsds-badge-size-radius, 9999px));
   padding-block: var(--fsds-badge-design-root-spacing-padding-block, var(--fsds-badge-size-padding-y, 2px));

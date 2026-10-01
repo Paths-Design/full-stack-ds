@@ -4,7 +4,7 @@ const buttonCssBlocks = [
   {
     selector: ".button",
     declarations: {
-      "--fsds-button-size-gap-default": "var(--fsds-core-spacing-size-04, 8px)",
+      "--fsds-button-size-gap": "var(--fsds-core-spacing-size-04, 8px)",
       "--fsds-button-size-radius": "var(--fsds-core-shape-radius-full, 9999px)",
       "--fsds-button-size-border": "var(--fsds-core-shape-border-width-hairline, 1px)",
       "--fsds-button-color-background-default":
@@ -153,17 +153,17 @@ const statusCssBlocks = [
   {
     selector: ".status",
     declarations: {
-      "--fsds-status-color-background-default":
+      "--fsds-status-color-background":
         "var(--fsds-semantic-color-background-primary, #ffffff)",
       "--fsds-status-color-foreground-primary":
         "var(--fsds-semantic-color-foreground-primary, #141414)",
-      "--fsds-status-color-border-default":
+      "--fsds-status-color-border":
         "var(--fsds-semantic-color-border-primary, #f29495)",
-      "--fsds-status-size-radius-default":
+      "--fsds-status-size-radius":
         "var(--fsds-core-shape-radius-full, 9999px)",
       "--fsds-status-size-padding-default":
         "var(--fsds-core-spacing-size-04, 8px)",
-      "--fsds-status-size-border-default":
+      "--fsds-status-size-border":
         "var(--fsds-core-shape-border-width-hairline, 1px)",
     },
   },

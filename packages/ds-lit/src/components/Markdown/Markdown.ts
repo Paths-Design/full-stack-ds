@@ -70,9 +70,9 @@ export class MarkdownElement extends LitElement {
 
 
     .markdown {
-      --fsds-markdown-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-markdown-typography-font-size-default: var(--fsds-core-typography-ramp-3, 0.875rem);
-      --fsds-markdown-typography-line-height-default: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --fsds-markdown-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+      --fsds-markdown-typography-font-size: var(--fsds-core-typography-ramp-3, 0.875rem);
+      --fsds-markdown-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
     }
 
     @layer components.defaults {
@@ -88,9 +88,9 @@ export class MarkdownElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      color: var(--fsds-markdown-design-root-foreground-color, var(--fsds-markdown-color-foreground-default, #141414));
-      font-size: var(--fsds-markdown-design-root-typography-size, var(--fsds-markdown-typography-font-size-default, 0.875rem));
-      line-height: var(--fsds-markdown-design-root-typography-line-height, var(--fsds-markdown-typography-line-height-default, 1.5));
+      color: var(--fsds-markdown-design-root-foreground-color, var(--fsds-markdown-color-foreground, #141414));
+      font-size: var(--fsds-markdown-design-root-typography-size, var(--fsds-markdown-typography-font-size, 0.875rem));
+      line-height: var(--fsds-markdown-design-root-typography-line-height, var(--fsds-markdown-typography-line-height, 1.5));
     }
 
     .markdown__codeBlock {

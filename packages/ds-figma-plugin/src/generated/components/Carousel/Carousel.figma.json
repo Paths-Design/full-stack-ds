@@ -171,7 +171,418 @@
       "nodeKind": null
     }
   ],
-  "designBindings": [],
+  "designBindings": [
+    {
+      "property": "spacing.gap",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "carousel.design.root.spacing.gap",
+      "cssVar": "--fsds-carousel-design-root-spacing-gap",
+      "cssProperty": "gap",
+      "selectorKey": "root",
+      "part": "root",
+      "defaultValue": "8px",
+      "resolvesTo": "carousel.spacing.gap",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "carousel.design.root.foreground.color",
+      "cssVar": "--fsds-carousel-design-root-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": "root",
+      "part": "root",
+      "defaultValue": "#141414",
+      "resolvesTo": "carousel.color.foreground",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel"
+    },
+    {
+      "property": "spacing.gap",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "carousel.design.controls.spacing.gap",
+      "cssVar": "--fsds-carousel-design-controls-spacing-gap",
+      "cssProperty": "gap",
+      "selectorKey": "controls",
+      "part": "controls",
+      "defaultValue": "8px",
+      "resolvesTo": "carousel.spacing.gap",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__controls"
+    },
+    {
+      "property": "spacing.gap",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "carousel.design.pagination.spacing.gap",
+      "cssVar": "--fsds-carousel-design-pagination-spacing-gap",
+      "cssProperty": "gap",
+      "selectorKey": "pagination",
+      "part": "pagination",
+      "defaultValue": "8px",
+      "resolvesTo": "carousel.spacing.gap",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__pagination"
+    },
+    {
+      "property": "spacing.padding",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "carousel.design.picker.spacing.padding",
+      "cssVar": "--fsds-carousel-design-picker-spacing-padding",
+      "cssProperty": "padding",
+      "selectorKey": "picker",
+      "part": "picker",
+      "defaultValue": "0",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__picker"
+    },
+    {
+      "property": "background.fill",
+      "group": "background",
+      "valueType": "color",
+      "slot": "carousel.design.fill.background.fill",
+      "cssVar": "--fsds-carousel-design-fill-background-fill",
+      "cssProperty": "background-color",
+      "selectorKey": "fill",
+      "part": "fill",
+      "defaultValue": "#141414",
+      "resolvesTo": "carousel.color.progress",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__fill"
+    },
+    {
+      "property": "shape.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "carousel.design.ring.shape.radius",
+      "cssVar": "--fsds-carousel-design-ring-shape-radius",
+      "cssProperty": "border-radius",
+      "selectorKey": "ring",
+      "part": "ring",
+      "defaultValue": "50%",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__ring"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "carousel.design.ring.foreground.color",
+      "cssVar": "--fsds-carousel-design-ring-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": "ring",
+      "part": "ring",
+      "defaultValue": "#141414",
+      "resolvesTo": "carousel.color.progress",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__ring"
+    },
+    {
+      "property": "sizing.min-width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.next.sizing.min-width",
+      "cssVar": "--fsds-carousel-design-next-sizing-min-width",
+      "cssProperty": "min-width",
+      "selectorKey": "next",
+      "part": "next",
+      "defaultValue": "32px",
+      "resolvesTo": "carousel.size.control-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__next"
+    },
+    {
+      "property": "sizing.min-height",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.next.sizing.min-height",
+      "cssVar": "--fsds-carousel-design-next-sizing-min-height",
+      "cssProperty": "min-height",
+      "selectorKey": "next",
+      "part": "next",
+      "defaultValue": "32px",
+      "resolvesTo": "carousel.size.control-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__next"
+    },
+    {
+      "property": "shape.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "carousel.design.next.shape.radius",
+      "cssVar": "--fsds-carousel-design-next-shape-radius",
+      "cssProperty": "border-radius",
+      "selectorKey": "next",
+      "part": "next",
+      "defaultValue": "9999px",
+      "resolvesTo": "carousel.size.radius",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__next"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "carousel.design.next.foreground.color",
+      "cssVar": "--fsds-carousel-design-next-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": "next",
+      "part": "next",
+      "defaultValue": "inherit",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__next"
+    },
+    {
+      "property": "sizing.min-width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.previous.sizing.min-width",
+      "cssVar": "--fsds-carousel-design-previous-sizing-min-width",
+      "cssProperty": "min-width",
+      "selectorKey": "previous",
+      "part": "previous",
+      "defaultValue": "32px",
+      "resolvesTo": "carousel.size.control-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__previous"
+    },
+    {
+      "property": "sizing.min-height",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.previous.sizing.min-height",
+      "cssVar": "--fsds-carousel-design-previous-sizing-min-height",
+      "cssProperty": "min-height",
+      "selectorKey": "previous",
+      "part": "previous",
+      "defaultValue": "32px",
+      "resolvesTo": "carousel.size.control-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__previous"
+    },
+    {
+      "property": "shape.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "carousel.design.previous.shape.radius",
+      "cssVar": "--fsds-carousel-design-previous-shape-radius",
+      "cssProperty": "border-radius",
+      "selectorKey": "previous",
+      "part": "previous",
+      "defaultValue": "9999px",
+      "resolvesTo": "carousel.size.radius",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__previous"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "carousel.design.previous.foreground.color",
+      "cssVar": "--fsds-carousel-design-previous-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": "previous",
+      "part": "previous",
+      "defaultValue": "inherit",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__previous"
+    },
+    {
+      "property": "sizing.min-width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.rotation.sizing.min-width",
+      "cssVar": "--fsds-carousel-design-rotation-sizing-min-width",
+      "cssProperty": "min-width",
+      "selectorKey": "rotation",
+      "part": "rotation",
+      "defaultValue": "32px",
+      "resolvesTo": "carousel.size.control-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__rotation"
+    },
+    {
+      "property": "sizing.min-height",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.rotation.sizing.min-height",
+      "cssVar": "--fsds-carousel-design-rotation-sizing-min-height",
+      "cssProperty": "min-height",
+      "selectorKey": "rotation",
+      "part": "rotation",
+      "defaultValue": "32px",
+      "resolvesTo": "carousel.size.control-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__rotation"
+    },
+    {
+      "property": "shape.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "carousel.design.rotation.shape.radius",
+      "cssVar": "--fsds-carousel-design-rotation-shape-radius",
+      "cssProperty": "border-radius",
+      "selectorKey": "rotation",
+      "part": "rotation",
+      "defaultValue": "9999px",
+      "resolvesTo": "carousel.size.radius",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__rotation"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "carousel.design.rotation.foreground.color",
+      "cssVar": "--fsds-carousel-design-rotation-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": "rotation",
+      "part": "rotation",
+      "defaultValue": "inherit",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__rotation"
+    },
+    {
+      "property": "spacing.padding-inline",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "carousel.design.rotation.spacing.padding-inline",
+      "cssVar": "--fsds-carousel-design-rotation-spacing-padding-inline",
+      "cssProperty": "padding-inline",
+      "selectorKey": "rotation",
+      "part": "rotation",
+      "defaultValue": "12px",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__rotation"
+    },
+    {
+      "property": "sizing.width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.marker.sizing.width",
+      "cssVar": "--fsds-carousel-design-marker-sizing-width",
+      "cssProperty": "width",
+      "selectorKey": "marker",
+      "part": "marker",
+      "defaultValue": "8px",
+      "resolvesTo": "carousel.size.dot-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__marker"
+    },
+    {
+      "property": "sizing.height",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.marker.sizing.height",
+      "cssVar": "--fsds-carousel-design-marker-sizing-height",
+      "cssProperty": "height",
+      "selectorKey": "marker",
+      "part": "marker",
+      "defaultValue": "8px",
+      "resolvesTo": "carousel.size.dot-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__marker"
+    },
+    {
+      "property": "shape.radius",
+      "group": "shape",
+      "valueType": "dimension",
+      "slot": "carousel.design.marker.shape.radius",
+      "cssVar": "--fsds-carousel-design-marker-shape-radius",
+      "cssProperty": "border-radius",
+      "selectorKey": "marker",
+      "part": "marker",
+      "defaultValue": "9999px",
+      "resolvesTo": "carousel.size.radius",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__marker"
+    },
+    {
+      "property": "background.fill",
+      "group": "background",
+      "valueType": "color",
+      "slot": "carousel.design.marker.background.fill",
+      "cssVar": "--fsds-carousel-design-marker-background-fill",
+      "cssProperty": "background-color",
+      "selectorKey": "marker",
+      "part": "marker",
+      "defaultValue": "#d0d0d0",
+      "resolvesTo": "carousel.color.track",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__marker"
+    },
+    {
+      "property": "sizing.width",
+      "group": "sizing",
+      "valueType": "dimension",
+      "slot": "carousel.design.condition-2d8237d36499.sizing.width",
+      "cssVar": "--fsds-carousel-design-condition-2d8237d36499-sizing-width",
+      "cssProperty": "width",
+      "selectorKey": ".carousel__picker[data-sequence-active=\"true\"] .carousel__marker",
+      "part": null,
+      "defaultValue": "32px",
+      "resolvesTo": "carousel.size.active-size",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".carousel__picker[data-sequence-active=\"true\"] .carousel__marker"
+    }
+  ],
   "variants": {
     "indicator": [
       "pagination",

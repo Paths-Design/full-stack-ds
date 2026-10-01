@@ -117,7 +117,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#474647",
-      "resolvesTo": "progress.color.text.default",
+      "resolvesTo": "progress.color.text",
       "editableTargets": [
         "web"
       ],
@@ -197,7 +197,7 @@
       "selectorKey": "value",
       "part": "value",
       "defaultValue": "#474647",
-      "resolvesTo": "progress.color.text.default",
+      "resolvesTo": "progress.color.text",
       "editableTargets": [
         "web"
       ],
@@ -362,7 +362,7 @@
           "--fsds-box-model-height": "8px",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-progress-color-text-default": "var(--fsds-semantic-color-foreground-secondary, #474647)",
+          "--fsds-progress-color-text": "var(--fsds-semantic-color-foreground-secondary, #474647)",
           "--fsds-progress-spacing-gap": "var(--fsds-core-spacing-size-02, 2px)",
           "--fsds-progress-motion-duration-indeterminate": "var(--fsds-core-motion-duration-extra-long1, 1500ms)",
           "--fsds-progress-color-track-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
@@ -383,7 +383,7 @@
           "height": "var(--fsds-box-model-height)",
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
-          "color": "var(--fsds-progress-color-text-default, #474647)",
+          "color": "var(--fsds-progress-color-text, #474647)",
           "transition-duration": "var(--fsds-progress-motion-duration-indeterminate, 1500ms)"
         }
       },
@@ -410,7 +410,7 @@
         "selector": ".progress__value",
         "declarations": {
           "display": "inline-block",
-          "color": "var(--fsds-progress-color-text-default, #474647)",
+          "color": "var(--fsds-progress-color-text, #474647)",
           "font-size": "0.875em",
           "margin-left": "var(--fsds-progress-spacing-gap, 2px)"
         }

@@ -4,12 +4,12 @@
     "fallback": "16px",
     "layer": "semantic"
   },
-  "details.size.padding.default": {
+  "details.size.padding": {
     "resolvesTo": "core.spacing.size.06",
     "fallback": "16px",
     "layer": "core"
   },
-  "details.size.radius.default": {
+  "details.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"
@@ -45,21 +45,21 @@
     "layer": "semantic"
   },
   "details.focus.ring.width": {
-    "resolvesTo": "semantic.shape.control.border.focusWidth",
+    "resolvesTo": "semantic.focus.ring.width",
     "fallback": "2px",
     "layer": "semantic"
   },
   "details.focus.ring.color": {
-    "resolvesTo": "semantic.color.border.accent",
-    "fallback": "#d92d2e",
+    "resolvesTo": "semantic.focus.ring.color",
+    "fallback": "#0566fe",
     "layer": "semantic"
   },
   "details.focus.ring.offset": {
-    "resolvesTo": "core.spacing.size.02",
+    "resolvesTo": "semantic.focus.ring.offset",
     "fallback": "2px",
-    "layer": "core"
+    "layer": "semantic"
   },
-  "details.spacing.gap.default": {
+  "details.spacing.gap": {
     "resolvesTo": "core.spacing.size.02",
     "fallback": "2px",
     "layer": "core"

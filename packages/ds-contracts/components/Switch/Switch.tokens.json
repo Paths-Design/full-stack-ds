@@ -44,22 +44,22 @@
     "fallback": "cubic-bezier(0.4, 0, 0.2, 1)",
     "layer": "semantic"
   },
-  "switch.color.track.background.default": {
+  "switch.color.track.background": {
     "resolvesTo": "semantic.color.background.tertiary",
     "fallback": "#d0d0d0",
     "layer": "semantic"
   },
-  "switch.color.track.border.default": {
+  "switch.color.track.border": {
     "resolvesTo": "semantic.color.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
   },
-  "switch.color.thumb.background.default": {
+  "switch.color.thumb.background": {
     "resolvesTo": "semantic.color.background.primary",
     "fallback": "#ffffff",
     "layer": "semantic"
   },
-  "switch.color.thumb.shadow.default": {
+  "switch.color.thumb.shadow": {
     "resolvesTo": "semantic.elevation.surface.raised",
     "fallback": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
     "layer": "semantic"

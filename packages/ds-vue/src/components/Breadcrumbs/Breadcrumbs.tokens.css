@@ -6,9 +6,9 @@
   --fsds-breadcrumbs-color-border-subtle: var(--fsds-semantic-color-border-subtle, #d0d0d0);
   --fsds-breadcrumbs-typography-line-height-collapse: var(--fsds-semantic-typography-line-height-collapse, 1);
   --fsds-breadcrumbs-shape-radius-medium: var(--fsds-semantic-shape-control-radius-default, 6px);
-  --fsds-breadcrumbs-spacing-gap-default: var(--fsds-core-spacing-size-04, 8px);
-  --fsds-breadcrumbs-spacing-padding-default: var(--fsds-core-spacing-size-04, 8px);
-  --fsds-breadcrumbs-color-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+  --fsds-breadcrumbs-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+  --fsds-breadcrumbs-spacing-padding: var(--fsds-core-spacing-size-04, 8px);
+  --fsds-breadcrumbs-color-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
 }
 /* @generated:end */
 

@@ -14,10 +14,10 @@ enum AvatarTokens {
             "box-model.padding-block-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-block-start", name: "box-model.padding-block-start", literal: .string("0")),
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", literal: .string("0")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", literal: .string("0")),
-            "avatar.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-size-radius-default", name: "avatar.size.radius.default", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
-            "avatar.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-background-default", name: "avatar.color.background.default", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
+            "avatar.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-size-radius", name: "avatar.size.radius", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
+            "avatar.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-background", name: "avatar.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "avatar.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-foreground-primary", name: "avatar.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "avatar.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-border-default", name: "avatar.color.border.default", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "avatar.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-border", name: "avatar.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
         ],
     ]
 }
@@ -54,10 +54,10 @@ public struct Avatar: View {
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var background: Color { colorSlot("color.background.default") ?? .accentColor }
+    private var background: Color { colorSlot("color.background") ?? .accentColor }
     private var foreground: Color { colorSlot("color.foreground.primary") ?? .primary }
-    private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
-    private var radius: CGFloat { pxSlot("size.radius.default") ?? 0 }
+    private var borderColor: Color { colorSlot("color.border") ?? .clear }
+    private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }
