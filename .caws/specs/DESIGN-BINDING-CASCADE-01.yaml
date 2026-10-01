@@ -71,3 +71,17 @@ evidence:
     exit_code: 0
     artifact_path: e2e/design-bindings.spec.ts
     commit_sha: "70c443edbf8deaac8228aef101f97148832cad51"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Fail-fast package run on final production bytes PASS: required six-target rail; root 4619 tests/313 files; Vue 773, Lit 544 (2 existing Table skips), Svelte 676, Angular 508, RN 187; lint; 4218 brand refs/zero unresolved; 594 contrast pairs across base plus ten brands and two themes. Token build committed-output drift check and doc claims/links PASS. Forty binding/brand browser cases PASS in owned lane; 31 binding/editor/token cases PASS after merge. git diff 8aeef5daf for generator, emitted CSS, browser test and binding doc is empty on main. Raw fsds-design-bindings-* receipts preserved; initial main preview startup timeout was rerun successfully and retained separately."
+    recorded_at: "2026-10-01T00:42:47.354Z"
+    command: "set -e
+pnpm run governed:rail
+pnpm test
+pnpm run test:frameworks
+pnpm run lint
+pnpm run tokens:check-brand-refs
+pnpm run tokens:check-contrast"
+    exit_code: 0
+    artifact_path: e2e/design-bindings.spec.ts
+    commit_sha: "70c443edbf8deaac8228aef101f97148832cad51"
