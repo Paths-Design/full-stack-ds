@@ -1,0 +1,40 @@
+id: FIGMA-MOTION-DESCRIPTOR-01
+title: 'Preserve normalized motion facts in Figma descriptors'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-01T06:21:11.002Z'
+updated_at: '2026-10-01T06:21:11.002Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Figma descriptor emitter and generated transfer metadata'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/figma'
+    - 'packages/ds-codegen/src/carousel.test.ts'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'docs/architecture/carousel-sequences.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'Figma motion metadata cannot claim prototype or native execution.'
+  - 'The descriptor copies normalized IR without component-specific semantics.'
+acceptance:
+  - id: A1
+    given: 'normalized motion IR including renamed Carousel channels'
+    when: 'Figma descriptors are serialized'
+    then: 'timing progress movement and reduced-motion facts survive with an explicit descriptor-only realization'
+  - id: A2
+    given: 'existing Figma descriptor consumers and generated target sources'
+    when: 'focused regressions package tests typechecks and the required admission rail run'
+    then: 'the additive metadata preserves consumer compatibility and source generation integrity'
+rollback:
+  - 'Revert the descriptor projection and regenerate tracked Figma sources.'
+non_functional: {}
+contracts:
+  - name: 'figma-motion-transfer'
+    type: schema
+    path: 'packages/ds-codegen/src/frameworks/figma/descriptor.ts'
