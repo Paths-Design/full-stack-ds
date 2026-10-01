@@ -115,3 +115,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
     exit_code: 0
     commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Qualified ratio-on-hue refuses; an empty target channel inventory is unsupported; absent cyclic licence and bare proportion stay unproven."
+    recorded_at: "2026-10-01T01:31:40.530Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
