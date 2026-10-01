@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Linking, Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { NativeGlyph } from "../../primitives/glyph";
 import { useFsdsTheme } from "../../tokens";
 import { createNavTreeStyles } from "./NavTree.styles";
 // @generated:end
@@ -29,6 +30,7 @@ export function NavTree({
   label,
   href,
   icon,
+  iconSize = "sm",
   children,
   style,
   testID,
@@ -52,8 +54,7 @@ export function NavTree({
           style={styles.icon}
           accessible={false}
         >
-          <View
-            style={styles.root}
+          <NativeGlyph name={icon ?? ""} size={({"sm":16,"md":20} as Record<string, number>)[String(iconSize)]}
           />
         </View>
         ) : null}

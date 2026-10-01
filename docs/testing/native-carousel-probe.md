@@ -33,8 +33,11 @@ substitution are tested separately in the React Native package. Generated
 Carousel bindings now deliver the same deadline sample to its local ring and
 the repeated fill in its composed Pagination. Host-shim tests exercise active
 selection, shared elapsed values, reduced motion and composition isolation.
-These tests do not establish native pixel appearance: the receiving styles
-and control icons remain unfinished.
+These tests do not establish native pixel appearance. The receiving progress
+styles remain unfinished. Generated native glyphs now consume the committed
+icon catalog through `react-native-svg`; their path, sizing, optional-name and
+label ownership checks run at the native host boundary. Actual arrow pixels
+still require a fresh simulator witness.
 
 ## Generated component witness
 
@@ -48,6 +51,12 @@ This mode uses `Generated.tsx` and writes to
 `tmp/native-carousel-generated-proof`. Install that directory's Release app and
 capture it using the same procedure below. Every native package source file and
 the fixture participate in the build identity, including composed dependencies.
+The identity also includes the committed icon catalog, host script and package
+manifest, native package manifest, and workspace lockfile. The host installs
+`react-native-svg` 15.15.5 and runs CocoaPods integration. Native consumers must
+install the package's declared SVG peer and link its native implementation.
+The generated witness additionally renders two labelled icons at different
+sizes and colors for visual inspection alongside the Carousel's own arrows.
 The actor accepts the index requested by the generated component's clock; it
 never calls the sequence primitive directly. The receiver requires the generated
 producer kind and matching source/bundle identity.

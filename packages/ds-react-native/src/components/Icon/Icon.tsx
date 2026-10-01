@@ -1,7 +1,8 @@
 // @generated:start imports
-import type { AccessibilityRole, StyleProp, ViewStyle } from "react-native";
+import type { AccessibilityRole, StyleProp, TextStyle } from "react-native";
 import { View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { NativeGlyph } from "../../primitives/glyph";
 import { useFsdsTheme } from "../../tokens";
 import { createIconStyles } from "./Icon.styles";
 // @generated:end
@@ -17,7 +18,7 @@ export interface IconProps {
   decorative?: boolean;
   ariaLabel?: string;
   children?: ReactNode;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<TextStyle>;
   testID?: string;
   accessibilityLabel?: string;
   accessibilityLabelledBy?: string | string[];
@@ -26,6 +27,7 @@ export interface IconProps {
 
 // @generated:start component
 export function Icon({
+  name,
   size = "md",
   decorative = true,
   ariaLabel,
@@ -36,7 +38,7 @@ export function Icon({
 }: IconProps) {
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createIconStyles(fsdsTheme), [fsdsTheme]);
-  const variantStyleForSize = size !== undefined ? ({ "sm": styles.root_variant_sm, "md": styles.root_variant_md, "lg": styles.root_variant_lg, "xl": styles.root_variant_xl } as Record<string, ViewStyle | undefined>)[size] : undefined;
+  const variantStyleForSize = size !== undefined ? ({ "sm": styles.root_variant_sm, "md": styles.root_variant_md, "lg": styles.root_variant_lg, "xl": styles.root_variant_xl } as Record<string, TextStyle | undefined>)[size] : undefined;
   return (
     <View
       testID={testID}
@@ -46,8 +48,8 @@ export function Icon({
       accessibilityLabel={accessibilityLabel ?? ariaLabel}
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
-      <View
-        style={styles.root}
+      <NativeGlyph name={name ?? ""} size={({"sm":16,"md":20,"lg":24,"xl":32} as Record<string, number>)[String(size)]}
+        frameStyle={[styles.root, variantStyleForSize, style]}
       />
     </View>
   );

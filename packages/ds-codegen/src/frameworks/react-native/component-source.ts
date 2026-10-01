@@ -568,6 +568,7 @@ function emitImports(ir: ComponentIR, component: string): string {
       .join(", ")} } from "react";`,
     ir.pagedSet ? `import { usePagedSet } from "../../primitives/hooks/usePaging";` : "",
     nativeMotionImports(component),
+    component.includes("<NativeGlyph") ? `import { NativeGlyph } from "../../primitives/glyph";` : "",
     `import { useFsdsTheme } from "../../tokens";`,
     `import { create${ir.name}Styles } from "./${ir.name}.styles";`,
     usesNativeToggle(ir) || rnAutoDismiss(ir) || nativeHighlightTransform(ir) || ir.motion.sequence
@@ -601,6 +602,7 @@ function collectRnComponents(
     return;
   }
   if (node.tag === "children" || node.tag === "slot") return;
+  if (node.iconGlyph) return;
   // componentRef nodes import a sibling DS component (collected separately by
   // collectRnComponentRefImports), not an RN primitive — skip the primitive
   // mapping but still recurse into children (which may use primitives).
@@ -891,6 +893,10 @@ function collectNodeRuntimeUsage(
   }
   const component = rnComponentForNode(node);
   if (node.ifProp) collectGuardRuntimeUsage(node.ifProp, ir, usage);
+  if (node.iconGlyph) {
+    collectBindingRuntimeUsage(node.iconGlyph.nameFrom, ir, usage);
+    if (node.iconGlyph.sizeFrom) collectBindingRuntimeUsage(node.iconGlyph.sizeFrom, ir, usage);
+  }
   if (node.iteration) collectBindingRuntimeUsage(node.iteration.source, ir, usage);
   // FEAT-CODEBLOCK-HIGHLIGHT-01: a content transform degrades to plain
   // text on React Native (no DOM spans) — only the source binding is read.
@@ -1733,6 +1739,23 @@ function emitNode(
   if (node.componentInstance) return emitComponentRefNode(node, node.componentInstance, ir, depth);
   if (node.iteration) return emitIteration(node, ir, depth);
 
+  if (node.iconGlyph) {
+    const glyph = node.iconGlyph;
+    const pad = INDENT.repeat(depth);
+    const name = bindingExpr(glyph.nameFrom, ir);
+    const size = glyph.sizeFrom ? bindingExpr(glyph.sizeFrom, ir) : undefined;
+    const pixels = size && glyph.sizeHints
+      ? `(${JSON.stringify(glyph.sizeHints)} as Record<string, number>)[String(${size})]` : size;
+    let props = emitNodeProps(node, ir, "View", depth + 1, keyExpr);
+    // An unnamed nested SVG has no part styles. Reusing the default root
+    // style here would apply the containing component's layout a second time.
+    if (!node.part && node !== ir.dom) props = props.filter(prop => !prop.trimStart().startsWith("style="));
+    if (ir.dom?.children.length === 1 && ir.dom.children[0] === node) {
+      const frame = ["styles.root", ...rootVariantStyleConstNames(ir), "style"].join(", ");
+      props.push(`${pad}  frameStyle={[${frame}]}`);
+    }
+    return applyIfGuard([`${pad}<NativeGlyph name={${name} ?? ""}${pixels ? ` size={${pixels}}` : ""}`, ...props, `${pad}/>`].join("\n"), node, ir, pad);
+  }
 
   // Native has no label activation forwarding or radio widget. Collapse a
   // label's nested radio into one accessible, visible press target.
@@ -2314,6 +2337,7 @@ function rootStyleType(ir: ComponentIR): "ImageStyle" | "TextStyle" | "ViewStyle
   const component = ir.dom ? rnComponentForNode(ir.dom) : "View";
   if (component === "RNImage") return "ImageStyle";
   if (component === "RNText") return "TextStyle";
+  if (ir.dom?.iconGlyph || (ir.dom?.children.length === 1 && ir.dom.children[0]?.iconGlyph)) return "TextStyle";
   return "ViewStyle";
 }
 

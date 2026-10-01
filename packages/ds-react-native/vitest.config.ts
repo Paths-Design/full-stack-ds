@@ -13,6 +13,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      "react-native-svg": new URL("./src/test-react-native-svg.tsx", import.meta.url).pathname,
       "react-native": new URL("./src/test-react-native.tsx", import.meta.url).pathname,
     },
   },
