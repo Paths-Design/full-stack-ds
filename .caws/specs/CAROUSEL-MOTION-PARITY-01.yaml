@@ -3,6 +3,7 @@ title: 'Repair Carousel lifecycle defects and establish framework and platform p
 risk_tier: 2
 mode: fix
 lifecycle_state: active
+worktree: carousel-native-sequence
 created_at: '2026-09-28T09:59:04.162Z'
 updated_at: '2026-09-28T10:09:04.534Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
@@ -106,14 +107,12 @@ evidence:
     commit_sha: "2f746ddd"
   - criterion_id: A5
     status: fail
-    evidence_ref: "Review baseline ed11396a: React Native Carousel exports index/onIndexChange/autoPlay/duration/indicator but ignores them and emits Pressable controls without onPress. fsds.targets.json does not allowlist Carousel for SwiftUI, Jetpack Compose, Unity or Godot. These are explicit open platform implementation gaps, not established parity."
-    recorded_at: "2026-09-28T10:01:43.551Z"
-    commit_sha: ed11396a
+    evidence_ref: "Local unmerged checkpoint 53d7899a4: BudgetProgress projects the existing native sequence clock into fill and ring, without timers or advancement callbacks. Package suite 214 pass, native typecheck and authored-source lint pass. Pause/resume/reset and mid-budget reduced-motion preference tests execute the real hook through the host shim; removing step quantization produces one regression failure, and restored inputs match built hashes. Release iOS simulator screenshot inspected at 0/25/50/75/100 percent shows native clockwise arcs and matching fill lengths; fixture uses explicit samples, not generated Carousel countdown wiring. Screenshot, built hashes and native layout receipt preserved in /tmp/carousel-native-progress-witness; earlier forward-motion recording remains in /tmp/carousel-native-ios-witness. Generated motion/progress integration, styling/icons, remaining controls and other native targets remain unfinished, with emitter edits awaiting human CAWS false-positive reprieve. This does not satisfy native parity."
+    recorded_at: "2026-10-01T06:19:32.866Z"
+    artifact_path: /tmp/carousel-native-progress-witness/carousel-native-progress-samples.png
+    commit_sha: "53d7899a4663dfef2f2a125923c3a7c9b76117fb"
   - criterion_id: A6
     status: fail
-    evidence_ref: "At 6ae348621, the CI Carousel command now includes real Card compositions for all five web frameworks. Healthy browser suite 27 passed; intentional root-binding loss failed all five composition tests (/tmp/carousel-composition-binding-mutant.log), then restored healthy code passed again. Shared lifecycle assertions run in each web package; root 4657 and all framework suites passed. Vue coverage is 88.14 percent with the unchanged 87 percent floor, repairing the observed coverage gap. Governed rail and lint pass. Native execution lanes, remaining timer/ownership mutation obligations, Swift Carousel emission and Figma descriptor review remain open, so these bounded improvements do not satisfy A6."
-    recorded_at: "2026-10-01T04:56:31.522Z"
-    command: "CI=true FSDS_E2E_PORT=5202 pnpm run e2e:carousel"
-    exit_code: 0
-    artifact_path: /tmp/carousel-composition-final-browser.log
-    commit_sha: "6ae348621"
+    evidence_ref: "Figma descriptor gap is repaired and merged independently under FIGMA-MOTION-DESCRIPTOR-01 at 99f0741c8. That spec records passing serialized semantics, descriptor-only boundary, 4659 root tests, framework suites, 87 plugin tests, typechecks, lint, docs and admission rail. Native work remains unmerged at 53d7899a4 with bounded iOS primitive movement/progress samples and callback/pause/reduced-motion mutation evidence; full generated-native behavior and other platform realizations remain incomplete. Overall parity A6 stays fail."
+    recorded_at: "2026-10-01T06:31:48.409Z"
+    commit_sha: "99f0741c8f29ca4acd5ad0bd1c35127418e7daa4"

@@ -1,0 +1,55 @@
+id: FIGMA-MOTION-DESCRIPTOR-01
+title: 'Preserve normalized motion facts in Figma descriptors'
+risk_tier: 2
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Descriptor repair landed with verified source citations and inspected local gate results; generated logs remain untracked.'
+created_at: '2026-10-01T06:21:11.002Z'
+updated_at: '2026-10-01T06:35:06.997Z'
+created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
+blast_radius:
+  modules:
+    - 'Figma descriptor emitter and generated transfer metadata'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/figma'
+    - 'packages/ds-codegen/src/carousel.test.ts'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'docs/architecture/carousel-sequences.md'
+    - 'docs/normal-form.md'
+  out: []
+invariants:
+  - 'Figma motion metadata cannot claim prototype or native execution.'
+  - 'The descriptor copies normalized IR without component-specific semantics.'
+acceptance:
+  - id: A1
+    given: 'normalized motion IR including renamed Carousel channels'
+    when: 'Figma descriptors are serialized'
+    then: 'timing progress movement and reduced-motion facts survive with an explicit descriptor-only realization'
+  - id: A2
+    given: 'existing Figma descriptor consumers and generated target sources'
+    when: 'focused regressions package tests typechecks and the required admission rail run'
+    then: 'the additive metadata preserves consumer compatibility and source generation integrity'
+rollback:
+  - 'Revert the descriptor projection and regenerate tracked Figma sources.'
+non_functional: {}
+contracts:
+  - name: 'figma-motion-transfer'
+    type: schema
+    path: 'packages/ds-codegen/src/frameworks/figma/descriptor.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Verified landed source citation for normalized motion descriptor repair. The serialized Carousel regression preserves renamed channel, timing, both progress bindings and size profile; the descriptor tests preserve reduced-motion facts and reject executable Figma claims. Agent-executed root run passed 4659 tests in /tmp/carousel-figma-landing-root.log; CAWS does not execute Vitest, so this record distinguishes verified commit reachability from those inspected test results. Generated logs remain untracked per repository policy."
+    recorded_at: "2026-10-01T06:35:04.785Z"
+    command: pnpm test
+    exit_code: 0
+    commit_sha: "480b40817"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Verified landed source citation for additive descriptor compatibility. At this tested source, governed:rail passed, root tests passed 4659, all framework suites completed with existing skips, Figma plugin tests passed 87, and plugin typecheck, scoped lint and doc gates passed. Agent-executed outputs are in /tmp/carousel-figma-landing-*.log and copied to ignored tmp/carousel-figma-evidence; logs are not tracked proof artifacts. CAWS verifies the commit citation, not these Vitest/rail execution results. No Figma execution or native behavioral parity is claimed."
+    recorded_at: "2026-10-01T06:35:05.716Z"
+    commit_sha: "56c33b3ef"
