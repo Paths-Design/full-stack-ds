@@ -46,3 +46,12 @@ contracts:
   - name: 'design-bindings'
     type: behavior
     path: 'packages/ds-codegen/src/design-properties.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "31 Chromium cases PASS on merged main 70c443ed: all five web targets accept component/shared spacing overrides and restore the loaded 12px Card gap; default and Forest brand radii restore to 12px/24px after ancestor 29px and local 35px overrides are cleared in light/dark themes. New mixed-design/token generator case retains local token defaults but rejects local public design declarations. Before-fix baseline: seven failures including gallery inherited-radius failure. Raw main-browser/final-browser/unit/baseline logs retained under ignored docs/internal/input-visual-audit/design-bindings/."
+    recorded_at: "2026-10-01T00:42:21.039Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/design-bindings.spec.ts e2e/editor-binding-rail.spec.ts e2e/component-token-consumption.spec.ts --project=chromium --workers=2"
+    exit_code: 0
+    artifact_path: e2e/design-bindings.spec.ts
+    commit_sha: "70c443edbf8deaac8228aef101f97148832cad51"
