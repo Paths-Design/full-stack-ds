@@ -4,7 +4,7 @@ A falsifiable architectural claim about contract-governed compositional systems,
 
 ## Current state routing
 
-Start with [`docs/current-implementation-snapshot.md`](docs/current-implementation-snapshot.md) when deciding what the project currently proves. Older architecture docs remain useful, but several were written before the latest implementation slices landed. The snapshot records the current claim boundary — ledger last updated <!-- snapshot-updated -->2026-09-28: what is implemented, what is CI-gated, what is only a foundation, and what remains a non-claim.
+Start with [`docs/current-implementation-snapshot.md`](docs/current-implementation-snapshot.md) when deciding what the project currently proves. Older architecture docs remain useful, but several were written before the latest implementation slices landed. The snapshot records the current claim boundary — ledger last updated <!-- snapshot-updated -->2026-09-30: what is implemented, what is CI-gated, what is only a foundation, and what remains a non-claim.
 
 Use this README as the orientation surface. Use the snapshot as the freshness index. Use the detailed docs under `docs/` for doctrine and rationale.
 
