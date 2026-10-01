@@ -5,7 +5,7 @@ mode: feature
 lifecycle_state: active
 worktree: analytical-composite-browser
 created_at: '2026-10-01T02:28:52.351Z'
-updated_at: '2026-10-01T02:43:18.876Z'
+updated_at: '2026-10-01T02:44:32.761Z'
 created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
 blast_radius:
   modules:
@@ -24,6 +24,7 @@ scope:
     - 'docs/current-implementation-snapshot.md'
     - vitest.config.ts
     - vitest.showcase.config.ts
+    - src/views/AnalyticalFixturesScratchView.smoke.test.tsx
   out: []
 invariants:
   - 'The browser consumes produced artifacts without evaluator imports source rows or requalification'
