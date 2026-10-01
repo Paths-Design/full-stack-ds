@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/definition.schema.json",
+  "title": "Reusable definition candidate interface",
+  "description": "Draft interface only; no implementation, complete definition tree or adapter proof.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "version": {
+      "$ref": "common.schema.json#/$defs/revision"
+    },
+    "label": {
+      "$ref": "common.schema.json#/$defs/text"
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "label": {
+            "$ref": "common.schema.json#/$defs/text"
+          },
+          "valueType": {
+            "$ref": "common.schema.json#/$defs/valueType"
+          },
+          "defaultBinding": {
+            "$ref": "common.schema.json#/$defs/binding"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "valueType"
+        ]
+      },
+      "minItems": 0
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "property": {
+                  "$ref": "common.schema.json#/$defs/property"
+                },
+                "valueType": {
+                  "$ref": "common.schema.json#/$defs/valueType"
+                },
+                "defaultBinding": {
+                  "$ref": "common.schema.json#/$defs/binding"
+                },
+                "animatable": {
+                  "type": "boolean"
+                },
+                "consumerId": {
+                  "$ref": "common.schema.json#/$defs/id"
+                }
+              },
+              "required": [
+                "property",
+                "valueType",
+                "animatable",
+                "consumerId"
+              ]
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "id",
+          "properties"
+        ]
+      },
+      "minItems": 0
+    },
+    "slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "allowedNodeKinds": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "frame",
+                "group",
+                "rectangle",
+                "text",
+                "component-instance"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "minItems": {
+            "$ref": "common.schema.json#/$defs/ticks"
+          },
+          "maxItems": {
+            "$ref": "common.schema.json#/$defs/ticks"
+          },
+          "fallback": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "empty"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "kind": {
+                    "const": "definition-content"
+                  },
+                  "contentId": {
+                    "$ref": "common.schema.json#/$defs/id"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "contentId"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "allowedNodeKinds",
+          "minItems",
+          "maxItems",
+          "fallback"
+        ]
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "version",
+    "label",
+    "parameters",
+    "parts",
+    "slots"
+  ]
+}

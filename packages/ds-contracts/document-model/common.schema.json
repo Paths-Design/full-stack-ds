@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/common.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/common.schema.json",
   "title": "Shared document candidate common",
-  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
   "$defs": {
     "id": {
       "type": "string",
@@ -250,7 +250,7 @@
       }
     },
     "version": {
-      "const": "0.1.0"
+      "const": "0.2.0"
     },
     "dependencyRef": {
       "type": "object",
@@ -302,6 +302,16 @@
         "sourceId",
         "definitionId",
         "version"
+      ]
+    },
+    "valueType": {
+      "enum": [
+        "number",
+        "string",
+        "boolean",
+        "dimension",
+        "duration",
+        "cubicBezier"
       ]
     }
   }

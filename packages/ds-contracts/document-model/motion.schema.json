@@ -1,0 +1,467 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/motion.schema.json",
+  "title": "Candidate property keys and scene-local tracks",
+  "description": "Absolute scene-local keys; implicit composition start and terminal hold require a future evaluator.",
+  "$defs": {
+    "time": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "ticks"
+            },
+            "ticks": {
+              "$ref": "common.schema.json#/$defs/ticks"
+            }
+          },
+          "required": [
+            "kind",
+            "ticks"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "binding"
+            },
+            "binding": {
+              "allOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/binding"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "valueType": {
+                      "const": "duration"
+                    }
+                  },
+                  "required": [
+                    "valueType"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "binding"
+          ]
+        }
+      ]
+    },
+    "keyframe": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "at": {
+              "$ref": "#/$defs/time"
+            },
+            "value": {
+              "oneOf": [
+                {
+                  "allOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/binding"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "valueType": {
+                          "const": "dimension"
+                        }
+                      },
+                      "required": [
+                        "valueType"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "allOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/binding"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "valueType": {
+                          "const": "number"
+                        }
+                      },
+                      "required": [
+                        "valueType"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "interpolation": {
+              "const": "linear"
+            },
+            "easing": {
+              "allOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/binding"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "valueType": {
+                      "const": "cubicBezier"
+                    }
+                  },
+                  "required": [
+                    "valueType"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "at",
+            "value",
+            "interpolation",
+            "easing"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "at": {
+              "$ref": "#/$defs/time"
+            },
+            "value": {
+              "allOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/binding"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "valueType": {
+                      "const": "boolean"
+                    }
+                  },
+                  "required": [
+                    "valueType"
+                  ]
+                }
+              ]
+            },
+            "interpolation": {
+              "const": "step"
+            }
+          },
+          "required": [
+            "id",
+            "at",
+            "value",
+            "interpolation"
+          ]
+        }
+      ]
+    },
+    "track": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "sceneId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "partId": {
+              "allOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                {
+                  "not": {
+                    "const": "root"
+                  }
+                }
+              ]
+            },
+            "property": {
+              "enum": [
+                "transform.translation.x",
+                "transform.translation.y",
+                "appearance.opacity",
+                "appearance.visible"
+              ]
+            }
+          },
+          "required": [
+            "nodeId",
+            "property"
+          ]
+        },
+        "keyframes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/keyframe"
+          },
+          "minItems": 1
+        },
+        "coordinateSpace": {
+          "enum": [
+            "parent",
+            "none"
+          ]
+        },
+        "composition": {
+          "const": "replace"
+        },
+        "reducedMotion": {
+          "enum": [
+            "base",
+            "jump-to-end"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "sceneId",
+        "target",
+        "keyframes",
+        "coordinateSpace",
+        "composition",
+        "reducedMotion"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "object",
+                "properties": {
+                  "property": {
+                    "const": "transform.translation.x"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "coordinateSpace": {
+                "const": "parent"
+              },
+              "keyframes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "allOf": [
+                        {
+                          "$ref": "common.schema.json#/$defs/binding"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "valueType": {
+                              "const": "dimension"
+                            }
+                          },
+                          "required": [
+                            "valueType"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "object",
+                "properties": {
+                  "property": {
+                    "const": "transform.translation.y"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "coordinateSpace": {
+                "const": "parent"
+              },
+              "keyframes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "allOf": [
+                        {
+                          "$ref": "common.schema.json#/$defs/binding"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "valueType": {
+                              "const": "dimension"
+                            }
+                          },
+                          "required": [
+                            "valueType"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "object",
+                "properties": {
+                  "property": {
+                    "const": "appearance.opacity"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "coordinateSpace": {
+                "const": "none"
+              },
+              "keyframes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "allOf": [
+                        {
+                          "$ref": "common.schema.json#/$defs/binding"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "valueType": {
+                              "const": "number"
+                            }
+                          },
+                          "required": [
+                            "valueType"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "object",
+                "properties": {
+                  "property": {
+                    "const": "appearance.visible"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "coordinateSpace": {
+                "const": "none"
+              },
+              "keyframes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "allOf": [
+                        {
+                          "$ref": "common.schema.json#/$defs/binding"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "valueType": {
+                              "const": "boolean"
+                            }
+                          },
+                          "required": [
+                            "valueType"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$ref": "#/$defs/track"
+}

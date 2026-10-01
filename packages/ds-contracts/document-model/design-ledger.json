@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "0.2.0",
   "updated": "2026-10-01",
   "records": [
     {
@@ -9,8 +9,8 @@
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
       "relationships": ["page owns visual graph", "track targets node identity"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Deletion repair, duplicate-with-motion remapping, cross-page references and reparent conversion policy"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["General deletion repair, duplicate-with-motion remapping, cross-page references, inactive-node cleanup and reparent conversion policy"],
       "proofObligations": ["Rename/reparent preserve addressed references; duplicate remaps without collisions"],
       "runtimeRefs": []
     },
@@ -21,8 +21,8 @@
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
       "relationships": ["instance references source/definition/version", "parameters belong to instance or definition"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Definition discovery, property capability declarations, slot constraints, parameter migrations and version update protocol"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Definition discovery and implementation/visual-tree representation, conditional edit points, content fallback expansion, parameter migrations and version update admission"],
       "proofObligations": ["One instance edit preserves other instances and definition source"],
       "runtimeRefs": []
     },
@@ -33,8 +33,8 @@
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
       "relationships": ["kind profile -> definition -> node -> scene -> evaluated motion"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Defaults and override ownership for scene, sequence, track and media records; conditional and layout-dependent consumer defaults"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Defaults for sequence/scene/media records and conditional/layout-dependent consumers; profile support for non-root parts"],
       "proofObligations": ["Literal zero survives; reset removes binding and restores default/reference; invalid present value refuses"],
       "runtimeRefs": []
     },
@@ -45,7 +45,7 @@
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
       "relationships": ["manifest selects sources/revisions/context", "bindings address source and token path"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
       "remainingDesign": ["DTCG import/export coverage, alias and composite validation, Resolver contexts, watching, collisions and unsaved-source custody"],
       "proofObligations": ["Source round trip preserves references/metadata; token update reaches both views; cycle/missing ref rejects atomically"],
       "runtimeRefs": []
@@ -68,10 +68,10 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["scene references frame", "track belongs to scene"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Scene-local structural additions/removals versus shared-root edits, and simultaneous evaluation isolation"],
-      "proofObligations": ["Independent scene overrides do not mutate visual base or another scene"],
+      "relationships": ["scene -> composition identity", "composition -> explicit local members and root", "instance -> shared definition; local bindings and supplied slots"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Scene creation/duplication and reusable composition instances; simultaneous evaluation isolation and storyboard representative sampling"],
+      "proofObligations": ["Editing one independent composition does not mutate another consumer; deliberate composition sharing shares base edits while scene tracks remain isolated"],
       "runtimeRefs": []
     },
     {
@@ -104,22 +104,22 @@
       "designCoverage": "specified",
       "schemaCoverage": "represented",
       "runtimeStatus": "not-implemented",
-      "relationships": ["resolution produces base", "track evaluation produces presentation values"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
+      "relationships": ["composition base -> implicit start", "selected property key owns its authored value", "last key -> derived terminal hold; no saved base mutation"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
       "remainingDesign": [],
-      "proofObligations": ["Scrub and playback leave authored defaults, bindings and constraints unchanged"],
+      "proofObligations": ["Static scenes and implicit/explicit starts match independent samples; selected-key edits preserve base; terminal hold and scrubbing never author values"],
       "runtimeRefs": []
     },
     {
       "id": "design.timing",
-      "requirement": "Timing has explicit units, timebase, normalized offsets and retiming policy",
+      "requirement": "Timing has explicit units, a timebase, scene-local keys and token time movement policy",
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
       "relationships": ["duration binding -> exact ticks", "scene local time -> sequence occurrence time"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Frame rates, rational rates, rounding, absolute keyframe mode, duration mismatch reconciliation and interpolation precision"],
-      "proofObligations": ["Independent linear samples match worked expectations; duration change retimes normalized keys and flags overflow"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Frame/rational sampling, rounding, interpolation precision, token time bounds reconciliation and recipe retiming"],
+      "proofObligations": ["Independent linear samples match the worked expectations; time-token changes move addressed keys and report order/bounds incompatibility without resizing the scene"],
       "runtimeRefs": []
     },
     {
@@ -129,8 +129,8 @@
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
       "relationships": ["track addresses scene/node/property"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Conflict detection and intervals; additive, blend and priority composition; zero-duration evaluation"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Semantic writer/order/bounds validation, additive/blended motion and interval composition"],
       "proofObligations": ["Initial subset rejects simultaneous writers before evaluation rather than using array order"],
       "runtimeRefs": []
     },
@@ -165,8 +165,8 @@
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
       "relationships": ["both views submit same operations", "session state owns viewport/playhead/panel"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Storyboard sample time, neighboring-scene navigation and selection/playhead retention, and explicit element insertion destination when scenes share a visual root"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Storyboard sampling/navigation/selection retention, auto-key and multi-key editing"],
       "proofObligations": ["Equivalent edits yield equal semantic state; collapsing timeline changes no authored object"],
       "runtimeRefs": []
     },
@@ -177,8 +177,8 @@
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
       "relationships": ["header identifies page/version", "transaction owns atomic operations"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Complete mutation algebra, schema migrations, stale writes, deduplication and operation validation"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Operation admission, complete graph mutation algebra, schema migrations, stale/deduplicated writes and rejected-request audit"],
       "proofObligations": ["Reject stale/duplicate/malformed request without partial mutation; replay restores semantic state"],
       "runtimeRefs": []
     },
@@ -189,8 +189,8 @@
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
       "relationships": ["undo references accepted edit", "checkpoint derives from log"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Inverse operations, branches, compaction, torn append, fsync/rename receipts, pending edits and cross-file saves"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Inverse execution and before-image custody, branch history, compaction, torn append/fsync, pending edits and cross-file saves"],
       "proofObligations": ["Crash fault injection yields prior or complete next revision; redo preserves references"],
       "runtimeRefs": []
     },
@@ -297,8 +297,8 @@
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
       "relationships": ["project pins source revisions", "definition update affects eligible instances"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Content-addressed custody, relocation, missing/relink decisions, pin/update protocol, impact analysis and atomic dependency edits"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": ["Content-addressed custody, relocation, pin/update admission and atomic dependency/source/page edits"],
       "proofObligations": ["Incompatible update identifies affected instances/tracks and does not delete bindings"],
       "runtimeRefs": []
     },
@@ -337,6 +337,18 @@
       "remainingDesign": ["Source provenance, import confidence, stable source correspondence and authored-versus-resolved classification"],
       "proofObligations": ["Import of values equal to defaults does not silently claim explicit override intent"],
       "runtimeRefs": []
+    },
+    {
+      "id": "design.property-keys",
+      "requirement": "Object/property keys use composition-backed starts, explicit key selection and terminal hold without snapshotting whole scenes",
+      "designCoverage": "specified",
+      "schemaCoverage": "represented",
+      "runtimeStatus": "not-implemented",
+      "relationships": ["scene -> composition start", "property track -> stable addressed keys", "end marker -> terminal evaluated state"],
+      "decisionRefs": ["docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "remainingDesign": [],
+      "proofObligations": ["Independent static/base-edit/selected-key/explicit-start/last-key-removal and visibility observations match authored tables; scrubbing changes no base state"],
+      "runtimeRefs": []
     }
   ],
   "changes": [
@@ -367,6 +379,19 @@
     {"date": "2026-10-01", "requirementId": "design.dependencies", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
     {"date": "2026-10-01", "requirementId": "design.agent-parity", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
     {"date": "2026-10-01", "requirementId": "design.interchange", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.provenance", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."}
+    {"date": "2026-10-01", "requirementId": "design.provenance", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
+    {"date": "2026-10-01", "requirementId": "design.identity", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.definitions", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.defaults", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.tokens", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.scenes", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.base-motion", "from": "specified", "to": "specified", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.timing", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.track-conflicts", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.views", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.jsonl", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.history-recovery", "from": "open", "to": "open", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.dependencies", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
+    {"date": "2026-10-01", "requirementId": "design.property-keys", "from": null, "to": "specified", "rationale": "Split concrete property-key semantics from broader timing and base/evaluated-value families; runtime evaluator remains absent."}
   ]
 }

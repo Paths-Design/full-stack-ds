@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/paper-expectations.schema.json",
+  "title": "Independent future-runtime oracle records",
+  "description": "Source-authored expectations; validation never calculates animation, inheritance or history.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "basis": {
+      "const": "authored-future-runtime-oracle"
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "animation"
+              },
+              "id": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "setup": {
+                "$ref": "common.schema.json#/$defs/text"
+              },
+              "sceneId": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "nodeId": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "samples": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "atTicks": {
+                      "$ref": "common.schema.json#/$defs/ticks"
+                    },
+                    "x": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "atTicks",
+                    "x"
+                  ]
+                },
+                "minItems": 1
+              },
+              "baseX": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind",
+              "id",
+              "setup",
+              "sceneId",
+              "nodeId",
+              "samples",
+              "baseX"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "ownership"
+              },
+              "id": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "setup": {
+                "$ref": "common.schema.json#/$defs/text"
+              },
+              "consumers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "nodeId": {
+                      "$ref": "common.schema.json#/$defs/id"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "opacity": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "leadingNodeIds": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "common.schema.json#/$defs/id"
+                      },
+                      "minItems": 0
+                    }
+                  },
+                  "required": [
+                    "nodeId",
+                    "label",
+                    "opacity",
+                    "leadingNodeIds"
+                  ]
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "kind",
+              "id",
+              "setup",
+              "consumers"
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "history"
+              },
+              "id": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "setup": {
+                "$ref": "common.schema.json#/$defs/text"
+              },
+              "transactionId": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "undoTransactionId": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "restoredIds": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                "minItems": 1
+              },
+              "baseOverridePresent": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "kind",
+              "id",
+              "setup",
+              "transactionId",
+              "undoTransactionId",
+              "restoredIds",
+              "baseOverridePresent"
+            ]
+          }
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "basis",
+    "cases"
+  ]
+}

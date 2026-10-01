@@ -1,15 +1,33 @@
 {
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "0.2.0",
   "projectId": "project.paper",
   "pageId": "page.scratch",
   "revision": 1,
-  "roots": [
-    "node.frame"
+  "compositions": [
+    {
+      "id": "composition.A",
+      "label": "Consumer A",
+      "rootNodeId": "node.frameA",
+      "nodeIds": [
+        "node.frameA",
+        "node.buttonA",
+        "node.arrow"
+      ]
+    },
+    {
+      "id": "composition.B",
+      "label": "Consumer B",
+      "rootNodeId": "node.frameB",
+      "nodeIds": [
+        "node.frameB",
+        "node.buttonB"
+      ]
+    }
   ],
   "nodes": [
     {
-      "id": "node.frame",
-      "label": "Notice study",
+      "id": "node.frameA",
+      "label": "Scene A",
       "defaultProfileRef": {
         "sourceId": "project.defaults",
         "profileId": "defaults.frame"
@@ -34,7 +52,7 @@
       },
       "children": [
         {
-          "nodeId": "node.notice"
+          "nodeId": "node.buttonA"
         }
       ],
       "kind": "frame",
@@ -44,8 +62,100 @@
       "clipContent": true
     },
     {
-      "id": "node.notice",
-      "label": "Primary notice",
+      "id": "node.buttonA",
+      "label": "Button A",
+      "defaultProfileRef": {
+        "sourceId": "project.defaults",
+        "profileId": "defaults.component-instance"
+      },
+      "properties": {
+        "appearance.opacity": {
+          "kind": "literal",
+          "valueType": "number",
+          "value": 0.4
+        }
+      },
+      "children": [],
+      "kind": "component-instance",
+      "definitionRef": {
+        "sourceId": "project.components",
+        "definitionId": "definition.button",
+        "version": "example-v2"
+      },
+      "parameterBindings": {
+        "label": {
+          "kind": "literal",
+          "valueType": "string",
+          "value": "Next"
+        }
+      },
+      "partOverrides": [],
+      "slotBindings": [
+        {
+          "slotId": "leading",
+          "nodeIds": [
+            "node.arrow"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "node.arrow",
+      "label": "Local arrow",
+      "defaultProfileRef": {
+        "sourceId": "project.defaults",
+        "profileId": "defaults.text"
+      },
+      "properties": {
+        "appearance.visible": {
+          "kind": "literal",
+          "valueType": "boolean",
+          "value": false
+        }
+      },
+      "children": [],
+      "kind": "text",
+      "content": "\u2192"
+    },
+    {
+      "id": "node.frameB",
+      "label": "Scene B",
+      "defaultProfileRef": {
+        "sourceId": "project.defaults",
+        "profileId": "defaults.frame"
+      },
+      "properties": {
+        "sizing.width": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 480,
+            "unit": "px"
+          }
+        },
+        "sizing.height": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 240,
+            "unit": "px"
+          }
+        }
+      },
+      "children": [
+        {
+          "nodeId": "node.buttonB"
+        }
+      ],
+      "kind": "frame",
+      "layout": {
+        "kind": "freeform"
+      },
+      "clipContent": true
+    },
+    {
+      "id": "node.buttonB",
+      "label": "Button B",
       "defaultProfileRef": {
         "sourceId": "project.defaults",
         "profileId": "defaults.component-instance"
@@ -55,183 +165,123 @@
       "kind": "component-instance",
       "definitionRef": {
         "sourceId": "project.components",
-        "definitionId": "definition.notice",
-        "version": "example-v1"
+        "definitionId": "definition.button",
+        "version": "example-v2"
       },
-      "parameterBindings": {
-        "label": {
-          "kind": "literal",
-          "valueType": "string",
-          "value": "Saved"
-        }
-      }
+      "parameterBindings": {},
+      "partOverrides": [],
+      "slotBindings": []
     }
   ],
   "scenes": [
     {
-      "id": "scene.entry",
-      "label": "Enter",
-      "rootNodeId": "node.frame",
-      "durationTicks": 1000,
-      "overrides": []
+      "id": "scene.A",
+      "label": "Scene A",
+      "compositionId": "composition.A",
+      "durationTicks": 100
     },
     {
-      "id": "scene.exit",
-      "label": "Exit",
-      "rootNodeId": "node.frame",
-      "durationTicks": 1000,
-      "overrides": [
-        {
-          "nodeId": "node.notice",
-          "properties": {
-            "appearance.opacity": {
-              "kind": "literal",
-              "valueType": "number",
-              "value": 0.6
-            }
-          }
-        }
-      ]
+      "id": "scene.B",
+      "label": "Scene B",
+      "compositionId": "composition.B",
+      "durationTicks": 100
     }
   ],
   "tracks": [
     {
-      "id": "track.entry",
-      "sceneId": "scene.entry",
+      "id": "track.buttonX",
+      "sceneId": "scene.A",
       "target": {
-        "nodeId": "node.notice",
+        "nodeId": "node.buttonA",
         "property": "transform.translation.x"
-      },
-      "startTicks": 0,
-      "duration": {
-        "kind": "token",
-        "valueType": "duration",
-        "sourceId": "project.motion",
-        "path": "motion.slideDuration"
       },
       "keyframes": [
         {
-          "offset": 0,
-          "value": {
-            "kind": "literal",
-            "valueType": "dimension",
-            "value": {
-              "value": -100,
-              "unit": "px"
+          "id": "key.arrival",
+          "at": {
+            "kind": "binding",
+            "binding": {
+              "kind": "token",
+              "valueType": "duration",
+              "sourceId": "project.motion",
+              "path": "motion.arrival"
             }
-          }
-        },
-        {
-          "offset": 1,
+          },
           "value": {
-            "kind": "literal",
+            "kind": "token",
             "valueType": "dimension",
-            "value": {
-              "value": 0,
-              "unit": "px"
-            }
+            "sourceId": "project.motion",
+            "path": "motion.endX"
+          },
+          "interpolation": "linear",
+          "easing": {
+            "kind": "token",
+            "valueType": "cubicBezier",
+            "sourceId": "project.motion",
+            "path": "motion.linear"
           }
         }
       ],
-      "easing": {
-        "kind": "token",
-        "valueType": "cubicBezier",
-        "sourceId": "project.motion",
-        "path": "motion.linear"
-      },
-      "composition": "replace",
-      "fill": "both",
       "coordinateSpace": "parent",
+      "composition": "replace",
       "reducedMotion": "jump-to-end"
     },
     {
-      "id": "track.exit",
-      "sceneId": "scene.exit",
+      "id": "track.arrowVisible",
+      "sceneId": "scene.A",
       "target": {
-        "nodeId": "node.notice",
-        "property": "transform.translation.x"
-      },
-      "startTicks": 0,
-      "duration": {
-        "kind": "token",
-        "valueType": "duration",
-        "sourceId": "project.motion",
-        "path": "motion.slideDuration"
+        "nodeId": "node.arrow",
+        "property": "appearance.visible"
       },
       "keyframes": [
         {
-          "offset": 0,
+          "id": "key.showArrow",
+          "at": {
+            "kind": "ticks",
+            "ticks": 20
+          },
           "value": {
             "kind": "literal",
-            "valueType": "dimension",
-            "value": {
-              "value": 0,
-              "unit": "px"
-            }
-          }
-        },
-        {
-          "offset": 1,
-          "value": {
-            "kind": "literal",
-            "valueType": "dimension",
-            "value": {
-              "value": 100,
-              "unit": "px"
-            }
-          }
+            "valueType": "boolean",
+            "value": true
+          },
+          "interpolation": "step"
         }
       ],
-      "easing": {
-        "kind": "token",
-        "valueType": "cubicBezier",
-        "sourceId": "project.motion",
-        "path": "motion.linear"
-      },
+      "coordinateSpace": "none",
       "composition": "replace",
-      "fill": "both",
-      "coordinateSpace": "parent",
       "reducedMotion": "jump-to-end"
     }
   ],
   "sequences": [
     {
       "id": "sequence.study",
-      "label": "Notice entry and exit",
+      "label": "Two Button consumers",
       "occurrences": [
         {
-          "id": "occurrence.entry",
-          "sceneId": "scene.entry",
+          "id": "occurrence.A",
+          "sceneId": "scene.A",
           "atTicks": 0,
           "sourceInTicks": 0,
-          "sourceOutTicks": 1000
+          "sourceOutTicks": 100
         },
         {
-          "id": "occurrence.exit",
-          "sceneId": "scene.exit",
-          "atTicks": 1000,
+          "id": "occurrence.B",
+          "sceneId": "scene.B",
+          "atTicks": 100,
           "sourceInTicks": 0,
-          "sourceOutTicks": 1000
+          "sourceOutTicks": 100
         }
       ],
       "transitions": [
         {
           "id": "transition.cut",
           "kind": "cut",
-          "fromOccurrenceId": "occurrence.entry",
-          "toOccurrenceId": "occurrence.exit"
+          "fromOccurrenceId": "occurrence.A",
+          "toOccurrenceId": "occurrence.B"
         }
       ]
     }
   ],
-  "annotations": [
-    {
-      "id": "annotation.intent",
-      "target": {
-        "kind": "page",
-        "id": "page.scratch"
-      },
-      "text": "Study one instance in two temporal scenes without generating component code."
-    }
-  ]
+  "annotations": []
 }

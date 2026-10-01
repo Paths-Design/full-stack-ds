@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "0.2.0",
+  "id": "definition.button",
+  "version": "example-v2",
+  "label": "Original paper Button",
+  "parameters": [
+    {
+      "id": "label",
+      "label": "Label",
+      "valueType": "string",
+      "defaultBinding": {
+        "kind": "literal",
+        "valueType": "string",
+        "value": "Continue"
+      }
+    },
+    {
+      "id": "disabled",
+      "label": "Disabled",
+      "valueType": "boolean",
+      "defaultBinding": {
+        "kind": "literal",
+        "valueType": "boolean",
+        "value": false
+      }
+    },
+    {
+      "id": "tone",
+      "label": "Tone",
+      "valueType": "string",
+      "defaultBinding": {
+        "kind": "literal",
+        "valueType": "string",
+        "value": "primary"
+      },
+      "options": [
+        "primary",
+        "quiet"
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "id": "root",
+      "properties": [
+        {
+          "property": "transform.translation.x",
+          "valueType": "dimension",
+          "defaultBinding": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          "animatable": true,
+          "consumerId": "button.root.transform.translation.x"
+        },
+        {
+          "property": "transform.translation.y",
+          "valueType": "dimension",
+          "defaultBinding": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          "animatable": true,
+          "consumerId": "button.root.transform.translation.y"
+        },
+        {
+          "property": "appearance.opacity",
+          "valueType": "number",
+          "defaultBinding": {
+            "kind": "token",
+            "valueType": "number",
+            "sourceId": "project.motion",
+            "path": "button.opacity"
+          },
+          "animatable": true,
+          "consumerId": "button.root.appearance.opacity"
+        },
+        {
+          "property": "appearance.visible",
+          "valueType": "boolean",
+          "defaultBinding": {
+            "kind": "literal",
+            "valueType": "boolean",
+            "value": true
+          },
+          "animatable": true,
+          "consumerId": "button.root.appearance.visible"
+        }
+      ]
+    },
+    {
+      "id": "label",
+      "properties": [
+        {
+          "property": "typography.fontSize",
+          "valueType": "dimension",
+          "defaultBinding": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 16,
+              "unit": "px"
+            }
+          },
+          "animatable": false,
+          "consumerId": "button.label.fontSize"
+        }
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "id": "leading",
+      "allowedNodeKinds": [
+        "text",
+        "rectangle",
+        "component-instance"
+      ],
+      "minItems": 0,
+      "maxItems": 1,
+      "fallback": {
+        "kind": "empty"
+      }
+    }
+  ]
+}

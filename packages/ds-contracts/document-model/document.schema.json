@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/document.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/document.schema.json",
   "title": "Shared document candidate document",
-  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -18,13 +18,6 @@
     "revision": {
       "type": "integer",
       "minimum": 0
-    },
-    "roots": {
-      "type": "array",
-      "items": {
-        "$ref": "common.schema.json#/$defs/id"
-      },
-      "minItems": 0
     },
     "nodes": {
       "type": "array",
@@ -45,40 +38,19 @@
           "label": {
             "type": "string"
           },
-          "rootNodeId": {
-            "$ref": "common.schema.json#/$defs/id"
-          },
           "durationTicks": {
             "type": "integer",
             "minimum": 1
           },
-          "overrides": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "nodeId": {
-                  "$ref": "common.schema.json#/$defs/id"
-                },
-                "properties": {
-                  "$ref": "common.schema.json#/$defs/properties"
-                }
-              },
-              "required": [
-                "nodeId",
-                "properties"
-              ]
-            },
-            "minItems": 0
+          "compositionId": {
+            "$ref": "common.schema.json#/$defs/id"
           }
         },
         "required": [
           "id",
           "label",
-          "rootNodeId",
-          "durationTicks",
-          "overrides"
+          "compositionId",
+          "durationTicks"
         ]
       },
       "minItems": 0
@@ -86,244 +58,7 @@
     "tracks": {
       "type": "array",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "$ref": "common.schema.json#/$defs/id"
-          },
-          "sceneId": {
-            "$ref": "common.schema.json#/$defs/id"
-          },
-          "target": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "nodeId": {
-                "$ref": "common.schema.json#/$defs/id"
-              },
-              "property": {
-                "enum": [
-                  "transform.translation.x",
-                  "transform.translation.y",
-                  "appearance.opacity"
-                ]
-              }
-            },
-            "required": [
-              "nodeId",
-              "property"
-            ]
-          },
-          "startTicks": {
-            "$ref": "common.schema.json#/$defs/ticks"
-          },
-          "duration": {
-            "allOf": [
-              {
-                "$ref": "common.schema.json#/$defs/binding"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "valueType": {
-                    "const": "duration"
-                  }
-                },
-                "required": [
-                  "valueType"
-                ]
-              }
-            ]
-          },
-          "keyframes": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "offset": {
-                  "type": "number",
-                  "minimum": 0,
-                  "maximum": 1
-                },
-                "value": {
-                  "$ref": "common.schema.json#/$defs/binding"
-                }
-              },
-              "required": [
-                "offset",
-                "value"
-              ]
-            },
-            "minItems": 2
-          },
-          "easing": {
-            "allOf": [
-              {
-                "$ref": "common.schema.json#/$defs/binding"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "valueType": {
-                    "const": "cubicBezier"
-                  }
-                },
-                "required": [
-                  "valueType"
-                ]
-              }
-            ]
-          },
-          "composition": {
-            "const": "replace"
-          },
-          "fill": {
-            "enum": [
-              "none",
-              "backwards",
-              "forwards",
-              "both"
-            ]
-          },
-          "coordinateSpace": {
-            "enum": [
-              "parent",
-              "none"
-            ]
-          },
-          "reducedMotion": {
-            "enum": [
-              "jump-to-end",
-              "retain-base"
-            ]
-          }
-        },
-        "required": [
-          "id",
-          "sceneId",
-          "target",
-          "startTicks",
-          "duration",
-          "keyframes",
-          "easing",
-          "composition",
-          "fill",
-          "coordinateSpace",
-          "reducedMotion"
-        ],
-        "allOf": [
-          {
-            "if": {
-              "properties": {
-                "target": {
-                  "type": "object",
-                  "properties": {
-                    "property": {
-                      "const": "appearance.opacity"
-                    }
-                  },
-                  "required": [
-                    "property"
-                  ]
-                }
-              },
-              "required": [
-                "target"
-              ]
-            },
-            "then": {
-              "properties": {
-                "coordinateSpace": {
-                  "const": "none"
-                },
-                "keyframes": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "value": {
-                        "allOf": [
-                          {
-                            "$ref": "common.schema.json#/$defs/binding"
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "valueType": {
-                                "const": "number"
-                              }
-                            },
-                            "required": [
-                              "valueType"
-                            ]
-                          },
-                          {
-                            "if": {
-                              "type": "object",
-                              "properties": {
-                                "kind": {
-                                  "const": "literal"
-                                }
-                              },
-                              "required": [
-                                "kind"
-                              ]
-                            },
-                            "then": {
-                              "type": "object",
-                              "properties": {
-                                "value": {
-                                  "type": "number",
-                                  "minimum": 0,
-                                  "maximum": 1
-                                }
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "else": {
-              "properties": {
-                "coordinateSpace": {
-                  "const": "parent"
-                },
-                "keyframes": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "value": {
-                        "allOf": [
-                          {
-                            "$ref": "common.schema.json#/$defs/binding"
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "valueType": {
-                                "const": "dimension"
-                              }
-                            },
-                            "required": [
-                              "valueType"
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ]
+        "$ref": "motion.schema.json#/$defs/track"
       },
       "minItems": 0
     },
@@ -451,6 +186,39 @@
         ]
       },
       "minItems": 0
+    },
+    "compositions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rootNodeId": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "nodeIds": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "rootNodeId",
+          "nodeIds"
+        ]
+      },
+      "minItems": 0
     }
   },
   "required": [
@@ -458,7 +226,7 @@
     "projectId",
     "pageId",
     "revision",
-    "roots",
+    "compositions",
     "nodes",
     "scenes",
     "tracks",

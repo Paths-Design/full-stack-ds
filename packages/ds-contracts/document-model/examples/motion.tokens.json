@@ -1,17 +1,16 @@
 {
-  "$description": "Original small paper example; not a token conformance fixture.",
   "motion": {
-    "slideDuration": {
+    "arrival": {
       "$type": "duration",
       "$value": {
-        "value": 1000,
+        "value": 20,
         "unit": "ms"
       }
     },
-    "slideDistance": {
+    "endX": {
       "$type": "dimension",
       "$value": {
-        "value": 100,
+        "value": 20,
         "unit": "px"
       }
     },
@@ -23,6 +22,12 @@
         1,
         1
       ]
+    }
+  },
+  "button": {
+    "opacity": {
+      "$type": "number",
+      "$value": 0.8
     }
   }
 }

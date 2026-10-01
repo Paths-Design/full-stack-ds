@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "0.2.0",
   "id": "project.defaults",
-  "revision": "example-v1",
+  "revision": "example-v2",
   "profiles": [
     {
       "id": "defaults.frame",
@@ -54,6 +54,30 @@
           "kind": "literal",
           "valueType": "number",
           "value": 1
+        }
+      }
+    },
+    {
+      "id": "defaults.text",
+      "nodeKind": "text",
+      "properties": {
+        "transform.translation.x": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "appearance.opacity": {
+          "kind": "literal",
+          "valueType": "number",
+          "value": 1
+        },
+        "appearance.visible": {
+          "kind": "literal",
+          "valueType": "boolean",
+          "value": true
         }
       }
     }
