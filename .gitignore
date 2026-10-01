@@ -80,6 +80,9 @@ CLAUDE.md
 .claude/cache/
 .claude/hooks/state/
 
+# DeepSeek Harness runtime logs are local; adapter documentation stays tracked.
+.dsh/logs/
+
 # Codex agent runtime — per-machine agent tooling (hooks, worktrees,
 # claim oracle). Not repo source; eslint also ignores .codex/** (see
 # eslint.config.js). AGENTS.md is left untracked, not gitignored.
