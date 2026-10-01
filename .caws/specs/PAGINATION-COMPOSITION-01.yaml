@@ -116,9 +116,9 @@ evidence:
     commit_sha: "205a2ca05ecefb00dc1d5dda495e6e6c51e5dc00"
   - criterion_id: A5
     status: pass
-    evidence_ref: "paging.test.ts generates renamed, display-only and selectable activity projections through every web emitter. Frozen completion/progress records remain unchanged after position requests in the mirrored policy tests across six runtime packages. The Card usage sidecar provides a display-only summary. Values alone add no button/events; interactive projection explicitly binds request and leaves activity state with its owner."
-    recorded_at: "2026-10-01T09:33:16.519Z"
+    evidence_ref: "paging.test.ts generates renamed, display-only and selectable activity projections through every web emitter. Frozen completion/progress records remain unchanged after position requests in the mirrored policy tests across six runtime packages. The Card usage sidecar provides a display-only summary. Values alone add no button/events; interactive projection explicitly binds request and leaves activity state with its owner. Raw executed-check output: docs/internal/pagination-composition/pagination-reconciled-root.log; receipt: docs/internal/pagination-composition/receipt.json. Runtime assertions were executed and inspected separately; CAWS re-derives the committed source witness and commit because its runner does not execute Vitest or Playwright. Generated test-output logs remain ignored under repository policy."
+    recorded_at: "2026-10-01T09:40:51.164Z"
     command: pnpm test -- --maxWorkers=1
     exit_code: 0
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/docs/internal/pagination-composition/pagination-reconciled-root.log
+    artifact_path: packages/ds-codegen/src/paging.test.ts
     commit_sha: "205a2ca05ecefb00dc1d5dda495e6e6c51e5dc00"
