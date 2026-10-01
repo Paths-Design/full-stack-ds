@@ -1,0 +1,328 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/edit-operation.schema.json",
+  "title": "Candidate composition-owned edit operation",
+  "description": "Paper operation shape only; admission, atomic effects and inverse execution remain unimplemented.",
+  "type": "object",
+  "unevaluatedProperties": false,
+  "allOf": [
+    {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "composition"
+            },
+            "compositionId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "compositionId"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "owner"
+      ]
+    },
+    {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "insert-node"
+            },
+            "node": {
+              "$ref": "visual-node.schema.json"
+            },
+            "destination": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "parentNodeId": {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                "slotId": {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                "index": {
+                  "$ref": "common.schema.json#/$defs/ticks"
+                }
+              },
+              "required": [
+                "parentNodeId",
+                "index"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "node",
+            "destination"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "supply-slot"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "slotId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "nodeIds": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "minItems": 0
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "slotId",
+            "nodeIds"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "reset-slot"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "slotId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "slotId"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "set-binding"
+            },
+            "address": {
+              "$ref": "#/$defs/address"
+            },
+            "binding": {
+              "$ref": "common.schema.json#/$defs/binding"
+            }
+          },
+          "required": [
+            "kind",
+            "address",
+            "binding"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "reset-binding"
+            },
+            "address": {
+              "$ref": "#/$defs/address"
+            }
+          },
+          "required": [
+            "kind",
+            "address"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "add-track"
+            },
+            "track": {
+              "$ref": "motion.schema.json#/$defs/track"
+            }
+          },
+          "required": [
+            "kind",
+            "track"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "remove-track"
+            },
+            "sceneId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "trackId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "sceneId",
+            "trackId"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "add-keyframe"
+            },
+            "sceneId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "trackId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "keyframe": {
+              "$ref": "motion.schema.json#/$defs/keyframe"
+            }
+          },
+          "required": [
+            "kind",
+            "sceneId",
+            "trackId",
+            "keyframe"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "edit-keyframe"
+            },
+            "sceneId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "trackId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "keyframe": {
+              "$ref": "motion.schema.json#/$defs/keyframe"
+            }
+          },
+          "required": [
+            "kind",
+            "sceneId",
+            "trackId",
+            "keyframe"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "remove-keyframe"
+            },
+            "sceneId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "trackId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "keyframeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "sceneId",
+            "trackId",
+            "keyframeId"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "remove-inserted-node"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "insertTransactionId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "insertTransactionId"
+          ]
+        }
+      ]
+    }
+  ],
+  "$defs": {
+    "address": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "parameter"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "parameterId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "parameterId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "property"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "partId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "property": {
+              "$ref": "common.schema.json#/$defs/property"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "property"
+          ]
+        }
+      ]
+    }
+  }
+}

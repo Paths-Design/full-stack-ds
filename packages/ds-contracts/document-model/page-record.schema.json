@@ -142,59 +142,99 @@
             "operations": {
               "type": "array",
               "items": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "kind": {
-                        "const": "set-node-property"
-                      },
-                      "nodeId": {
-                        "$ref": "common.schema.json#/$defs/id"
-                      },
-                      "property": {
-                        "$ref": "common.schema.json#/$defs/property"
-                      },
-                      "binding": {
-                        "$ref": "common.schema.json#/$defs/binding"
-                      }
-                    },
-                    "required": [
-                      "kind",
-                      "nodeId",
-                      "property",
-                      "binding"
-                    ]
-                  },
-                  {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                      "kind": {
-                        "const": "reset-node-property"
-                      },
-                      "nodeId": {
-                        "$ref": "common.schema.json#/$defs/id"
-                      },
-                      "property": {
-                        "$ref": "common.schema.json#/$defs/property"
-                      }
-                    },
-                    "required": [
-                      "kind",
-                      "nodeId",
-                      "property"
-                    ]
-                  }
-                ]
+                "$ref": "edit-operation.schema.json"
               },
               "minItems": 1
+            },
+            "history": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "edit"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "undo"
+                    },
+                    "ofTransactionId": {
+                      "$ref": "common.schema.json#/$defs/id"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "ofTransactionId"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "redo"
+                    },
+                    "ofTransactionId": {
+                      "$ref": "common.schema.json#/$defs/id"
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "ofTransactionId"
+                  ]
+                }
+              ]
             }
           },
           "required": [
             "kind",
-            "operations"
+            "operations",
+            "history"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "type": "object",
+                "properties": {
+                  "operations": {
+                    "type": "array",
+                    "contains": {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "const": "remove-inserted-node"
+                        }
+                      },
+                      "required": [
+                        "kind"
+                      ]
+                    }
+                  }
+                }
+              },
+              "then": {
+                "type": "object",
+                "properties": {
+                  "history": {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "const": "undo"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           ]
         }
       },
