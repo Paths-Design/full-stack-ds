@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/default-profile.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/default-profile.schema.json",
   "title": "Shared document candidate default-profile",
-  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
   "type": "object",
   "additionalProperties": false,
   "properties": {

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/visual-node.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/visual-node.schema.json",
   "title": "Shared document candidate visual node",
-  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
   "$ref": "#/$defs/node",
   "$defs": {
     "node": {
@@ -205,12 +205,62 @@
                   "additionalProperties": {
                     "$ref": "common.schema.json#/$defs/binding"
                   }
+                },
+                "children": {
+                  "type": "array",
+                  "maxItems": 0
+                },
+                "partOverrides": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "partId": {
+                        "$ref": "common.schema.json#/$defs/id"
+                      },
+                      "properties": {
+                        "$ref": "common.schema.json#/$defs/properties"
+                      }
+                    },
+                    "required": [
+                      "partId",
+                      "properties"
+                    ]
+                  },
+                  "minItems": 0
+                },
+                "slotBindings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "slotId": {
+                        "$ref": "common.schema.json#/$defs/id"
+                      },
+                      "nodeIds": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "common.schema.json#/$defs/id"
+                        },
+                        "minItems": 0
+                      }
+                    },
+                    "required": [
+                      "slotId",
+                      "nodeIds"
+                    ]
+                  },
+                  "minItems": 0
                 }
               },
               "required": [
                 "kind",
                 "definitionRef",
-                "parameterBindings"
+                "parameterBindings",
+                "partOverrides",
+                "slotBindings"
               ]
             }
           ]
