@@ -28,7 +28,6 @@ contracts: []
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "e0822fe1f preserves the original DSH adapter document byte-identically; git ls-files .dsh lists only .dsh/AGENTS.md; git check-ignore verifies the explicit logs directory rule for both .log and .json files. Documentation gates, governed rail, root tests and all framework tests passed, and regeneration left no tracked drift."
-    recorded_at: "2026-10-01T17:31:25.867Z"
-    artifact_path: /private/tmp/dsh-checkpoint-verification.txt
+    evidence_ref: "Commit e0822fe1f contains only .dsh/AGENTS.md and the explicit .dsh/logs/ ignore rule. Original bytes were compared with the committed document; git ls-files .dsh listed only that document; git check-ignore covered real .log files and a synthetic .json path. Documentation checks, governed rail, root tests and all framework suites passed; worktree was clean after regeneration. Raw Git verification output is local generated evidence at tmp/dsh-checkpoint-verification.txt."
+    recorded_at: "2026-10-01T17:33:51.104Z"
     commit_sha: e0822fe1f4415deb0e0970cfd4bfca5e877113f7
