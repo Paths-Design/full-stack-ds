@@ -19,11 +19,10 @@ import type {
  * graph — derives mechanically from `git ls-files` + frontmatter + parsed
  * relative links. Nothing is hand-maintained, so nothing can drift stale.
  *
- * The corpus boundary matches the two doc gates (docs-claims-check,
- * docs-link-check): git-tracked files only. Untracked machine-local state
- * (docs/internal/, a contributor's CLAUDE.md) can never enter a payload. A
- * brand-new file appears after `git add -N` — "the site is what is committed"
- * is the invariant, not an inconvenience.
+ * The public corpus consists of git-tracked markdown, excluding docs/internal/
+ * even when authored audit notes there remain tracked. Untracked machine-local
+ * state and internal bodies never enter a payload. A brand-new public file
+ * appears after `git add -N`; tracking alone does not admit internal documents.
  *
  * Pure with respect to I/O via DocsSource so tests inject fixtures; the git
  * implementation is one small adapter. Deterministic by construction: sorted
@@ -46,10 +45,14 @@ export interface DocsSource {
 const SCOPE_ROOT_FILES = new Set(["README.md"]);
 
 export function isInScope(relPath: string): boolean {
-  return SCOPE_ROOT_FILES.has(relPath) || (relPath.startsWith("docs/") && relPath.endsWith(".md"));
+  return SCOPE_ROOT_FILES.has(relPath) || (
+    relPath.startsWith("docs/") &&
+    !relPath.startsWith("docs/internal/") &&
+    relPath.endsWith(".md")
+  );
 }
 
-/** Git-backed source: tracked files under docs/ plus the root README. */
+/** Git-backed source: public tracked docs/ markdown plus the root README. */
 export function gitDocsSource(repoRoot: string): DocsSource {
   return {
     listFiles() {
@@ -170,7 +173,7 @@ export function extractMarkdownLinks(body: string): { href: string; line: number
  * unreadable files — fail-closed, never a silently empty site.
  */
 export function projectDocs(source: DocsSource): DocsProjection {
-  const files = source.listFiles().slice().sort();
+  const files = source.listFiles().filter(isInScope).sort();
   const pages = new Map<string, DocsPage>();
   const routes = new Map<string, string>();
 

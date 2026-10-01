@@ -164,13 +164,15 @@ describe("projectDocs — fail-closed paths", () => {
 });
 
 describe("scope and link extraction units", () => {
-  it("admits exactly the tracked corpus shape", () => {
+  it("admits public markdown and excludes internal documents even when tracked", () => {
     expect(isInScope("README.md")).toBe(true);
     expect(isInScope("docs/a/b.md")).toBe(true);
     expect(isInScope("docs/README.md")).toBe(true);
     expect(isInScope("AGENTS.md")).toBe(false);
     expect(isInScope("CLAUDE.md")).toBe(false);
-    expect(isInScope("docs/internal/x.md")).toBe(true); // excluded by git, not by shape
+    expect(isInScope("docs/internal/x.md")).toBe(false);
+    expect(isInScope("docs/internal/nested/x.md")).toBe(false);
+    expect(isInScope("docs/internal-guide.md")).toBe(true);
     expect(isInScope("docs/img.png")).toBe(false);
     expect(isInScope("packages/ds-react/README.md")).toBe(false);
   });
@@ -180,5 +182,28 @@ describe("scope and link extraction units", () => {
       "a [x](b.md) c\n```\n[f](fenced.md)\n```\n![](img.md)\n[d](d.md \"title\")"
     );
     expect(links.map((link) => link.href)).toEqual(["b.md", "d.md"]);
+  });
+});
+
+describe("projectDocs — internal corpus boundary", () => {
+  it("omits internal pages and graph endpoints without reading their bodies", () => {
+    const files = {
+      ...FIXTURES,
+      "docs/internal/adjudication.md": "# Private internal note\n[public](../README.md)",
+    };
+    const source = sourceFrom(files);
+    const readPaths: string[] = [];
+    const result = projectDocs({
+      listFiles: source.listFiles,
+      read: (relPath) => {
+        readPaths.push(relPath);
+        return source.read(relPath);
+      },
+    });
+    expect(readPaths).toEqual(Object.keys(FIXTURES).sort());
+    expect(result.index.map((entry) => entry.relPath).sort()).toEqual(Object.keys(FIXTURES).sort());
+    expect([...result.pages.values()].map((page) => page.relPath)).toEqual(Object.keys(FIXTURES).sort());
+    expect(result.graph.nodes.map((node) => node.relPath).sort()).toEqual(Object.keys(FIXTURES).sort());
+    expect(result.graph).toEqual(projectDocs(sourceFrom(FIXTURES)).graph);
   });
 });
