@@ -1,0 +1,48 @@
+id: DESIGN-BINDING-CASCADE-01
+title: 'Preserve scoped design overrides across brand defaults and repair binding witnesses'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-01T00:19:18.493Z'
+updated_at: '2026-10-01T00:19:18.493Z'
+created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
+blast_radius:
+  modules:
+    - 'Brand CSS generation and Web design-binding consumers'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens/build'
+    - 'packages/ds-tokens/generated'
+    - 'e2e/design-bindings.spec.ts'
+    - 'e2e/fixtures/design-bindings-gallery.tsx'
+    - 'docs/architecture/design/component-design-bindings.md'
+    - 'docs/internal/input-visual-audit'
+    - 'src/components/properties-panel'
+  out: []
+invariants:
+  - 'Public component design overrides inherit from consumer scopes; shared box controls remain component-local'
+  - 'Component token defaults retain brand precedence without redefining contract values to satisfy stale tests'
+acceptance:
+  - id: A1
+    given: 'branded and unbranded generated components'
+    when: 'ancestor or local design overrides are applied and cleared'
+    then: 'consumer values win and clearing restores the current token or brand default in the five Web previews'
+  - id: A2
+    given: 'the properties inspector with its generated Select'
+    when: 'a user changes part scope and returns'
+    then: 'edits persist and clearing restores the rendered default using real Select interactions'
+  - id: A3
+    given: 'default and retokened composed controls'
+    when: 'shape spacing media and interactive states are exercised'
+    then: 'the declared consumer styles render without leaking to the sibling and controls remain usable'
+  - id: A4
+    given: 'corrected brand CSS generation and binding witnesses'
+    when: 'required package gates and the design binding browser suites run'
+    then: 'all affected cases pass with committed owned sources and reproducible runtime receipts'
+non_functional: {}
+contracts:
+  - name: 'design-bindings'
+    type: behavior
+    path: 'packages/ds-codegen/src/design-properties.ts'
