@@ -79,3 +79,10 @@ evidence:
     test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A3 actual information loss is distinct from presentation residue and unsupported tasks"
     commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
     test_verified_at: "93b91e66fd4b648ed2f718e809aeaa77bb9b183d"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: Changed member and population change recovered claims; paragraph and traversal bytes change with invariant claims; baseline disguised as layout is unsupported; source/output mutations leave selected custody intact.
+    recorded_at: "2026-10-01T18:31:22.752Z"
+    test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A4 semantic changes affect claims while formatting and detached mutation preserve custody"
+    commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
+    test_verified_at: cd8779f77bef156baba6c6235eae86ca3797f71b
