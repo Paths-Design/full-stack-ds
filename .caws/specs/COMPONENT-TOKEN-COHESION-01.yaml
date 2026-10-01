@@ -119,3 +119,11 @@ evidence:
     exit_code: 0
     artifact_path: docs/internal/input-visual-audit/component-token-cohesion/fsds-cohesion-browser-final.log
     commit_sha: "38c798cb0eb2"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "117 public neutral-base renames preserve values/references, with nine intentional focus corrections separately enumerated. State sibling defaults and explicit variants remain; no aliases emitted. 4627 root tests, all package suites, 70 browser cases, final required admission rail, native consumption/parity, lint/types, token drift and restamped documentation gates pass. Generated report cleanup remains blocked and source is not yet merged; receipts identify source and documentation commits."
+    recorded_at: "2026-10-01T02:28:05.797Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/internal/input-visual-audit/component-token-cohesion/receipts.json
+    commit_sha: ba64f2655
