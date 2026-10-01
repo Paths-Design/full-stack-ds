@@ -1,0 +1,76 @@
+id: REL-COMPOSITE-BROWSER-BOUNDARY-02
+title: 'Preserve shared scale and dataset identity at the analytical browser boundary'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-01T07:31:50.486Z'
+updated_at: '2026-10-01T07:31:50.486Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Selected composite metric artifact, pure browser consumer, independent observer and production CI proof'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical/composite-selection.ts'
+    - 'packages/ds-codegen/src/analytical/composite-artifacts.ts'
+    - 'packages/ds-codegen/src/analytical/composite-output.test.ts'
+    - 'src/components/analytical/'
+    - 'scripts/analytical-composite-preview.ts'
+    - 'scripts/analytical-browser-proof.mjs'
+    - 'scripts/analytical-composite-preview.test.ts'
+    - 'e2e/analytical-composite.spec.ts'
+    - 'e2e/analytical-observer.ts'
+    - 'playwright.analytical.config.ts'
+    - 'package.json'
+    - '.github/workflows/analytical-browser.yml'
+    - 'docs/architecture/analytical-composite-output.md'
+  out: []
+invariants:
+  - 'Analytical legality remains upstream of format support; lawful readback survives metric refusal'
+  - 'A selected shared position scale has one finite visible affine mapping for every participating range'
+  - 'Dataset, view, typed grain and standing custody survive rendering and observation'
+  - 'L0-L2 ratification and M4/M5/M6 nonclaims remain unchanged'
+acceptance:
+  - id: A1
+    given: 'publication records and live refs'
+    when: 'release context is reconciled'
+    then: 'prior authorization payload manifest remote state and CI failure attribution are preserved with their proof limits'
+  - id: A2
+    given: 'single and multiple ranges, distinct snapshots and nested composites'
+    when: 'real qualification judgment selection lowering and browser rendering run'
+    then: 'each has finite faithful output or an explicit format disposition'
+  - id: A3
+    given: 'shared position surfaces at two viewport sizes'
+    when: 'equal coordinates and distances are measured'
+    then: 'a common visible affine mapping holds and per-range auto-fitting is detected'
+  - id: A4
+    given: 'datasets with different endpoint names and identical typed keys'
+    when: 'ranges and marks render'
+    then: 'only participants set bounds and dataset plus view identity determines each mark, with swapped bindings detected'
+  - id: A5
+    given: 'missing standing scale marks or usable transforms and non-finite recovery'
+    when: 'independent observation runs'
+    then: 'every unavailable observation produces a diagnostic and ordinary geometry mutation remains detected'
+  - id: A6
+    given: 'lawful readback with unsupported or unproven metric realization'
+    when: 'preview renders'
+    then: 'readback persists with separate metric disposition while analytically failed inputs acquire no lawful output'
+  - id: A7
+    given: 'corrective source and representative old custody defects'
+    when: 'focused custody and sensitivity checks run'
+    then: 'source and output mutations cannot alter authority, unminted lowering fails and common carrier identity holds'
+  - id: A8
+    given: 'a fresh production build'
+    when: 'the named analytical browser CI invocation runs'
+    then: 'reports screenshots revision and built-byte identities are retained, renderer mutation fails its oracle, and forbidden source import fails the build guard'
+  - id: A9
+    given: 'completed verification'
+    when: 'corrective documentation and closure are recorded'
+    then: 'exact supported shapes format refusals evidence locations and remaining program milestones are stated without broader completion claims'
+non_functional: {}
+contracts:
+  - name: 'browser-custody'
+    type: contract-test
+    path: 'e2e/analytical-composite.spec.ts'
