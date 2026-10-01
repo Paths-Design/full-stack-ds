@@ -22,6 +22,8 @@ type EncodedResult = Omit<QualifiedRelationResult, "observations"> & {
 export interface CompositeMetricArtifact {
   kind: "composite-metric";
   scale: MetricScale;
+  /** One viewport for the selected shared-position scope, derived from participating endpoints. */
+  viewport: { x: number; width: number };
   carrier: Omit<CompositeCarrier, "datasets"> & { datasets: Array<{ id: string; result: EncodedResult }> };
 }
 export type CompositeArtifact = CompositeReadbackArtifact | CompositeMetricArtifact;
