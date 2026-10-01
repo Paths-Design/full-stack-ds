@@ -43,3 +43,11 @@ evidence:
     exit_code: 0
     artifact_path: /private/tmp/fsds-docs-internal-after.log
     commit_sha: "6a6a3ee7f8174f88d49d51fab6c2631995345830"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: Real tracked corpus exclusion passes; worktree governed rail all six targets pass; root 318 files and 4642 tests pass; all framework commands and staged CAWS scope/budget gates pass.
+    recorded_at: "2026-10-01T03:38:25.601Z"
+    command: pnpm test -- --maxWorkers=2
+    exit_code: 0
+    artifact_path: /private/tmp/fsds-docs-fix-root.log
+    commit_sha: "6a6a3ee7f8174f88d49d51fab6c2631995345830"
