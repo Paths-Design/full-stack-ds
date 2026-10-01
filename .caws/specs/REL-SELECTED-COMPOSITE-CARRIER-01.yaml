@@ -1,0 +1,62 @@
+id: REL-SELECTED-COMPOSITE-CARRIER-01
+title: 'Carry selected analytical meaning through detached readback and metric artifacts'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-01T01:44:11.962Z'
+updated_at: '2026-10-01T01:44:11.962Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Immutable selected composite carrier and output-only artifact recovery'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical/composite-selection.ts'
+    - 'packages/ds-codegen/src/analytical/composite-artifacts.ts'
+    - 'packages/ds-codegen/src/analytical/composite-output.test.ts'
+    - 'docs/architecture/analytical-composite-output.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Output selection consumes retained carried meaning; downstream consumers never reinterpret source rows or mutable declarations'
+  - 'A metric range cannot choose between conflicting carried endpoint values or manufacture quantity/unit authority'
+  - 'Stage-2 ratification M5 and M6 remain open; no endpoint roles ordering or aggregation expansion is claimed'
+acceptance:
+  - id: A1
+    given: 'a retained nested qualified composite'
+    when: 'selection snapshots it and source/request data change'
+    then: 'datasets identities field facts view bindings standing and derived relationships remain immutable'
+  - id: A2
+    given: 'refused unproven unsupported or empty requests'
+    when: 'selection and lowering run'
+    then: 'no output exists and cast unselected lowering is refused'
+  - id: A3
+    given: 'a selected composite'
+    when: 'detached readback and calibrated metric artifacts are independently decoded using only output'
+    then: 'complete carried values identities relationships and standing survive'
+  - id: A4
+    given: 'co-registered snapshots with conflicting endpoint values'
+    when: 'metric selection requests their shared derived range'
+    then: 'endpoint incoherence is surfaced without choosing an output'
+  - id: A5
+    given: 'a metric request'
+    when: 'quantity licences units or lossless scale support are absent'
+    then: 'the request cannot silently produce unlawful geometry'
+  - id: A6
+    given: 'output mutations of values associations ranges panels or standing'
+    when: 'output-only recovery runs'
+    then: 'each mutation changes the recovered observation'
+  - id: A7
+    given: 'unfamiliar renamed fields and reordered source populations'
+    when: 'the generic pipeline runs'
+    then: 'preservation holds without form or fixture branches and stage-2 claims remain unchanged'
+non_functional: {}
+contracts:
+  - name: 'selected-composite'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/composite-selection.ts'
+  - name: 'artifact-preservation'
+    type: contract-test
+    path: 'packages/ds-codegen/src/analytical/composite-output.test.ts'
