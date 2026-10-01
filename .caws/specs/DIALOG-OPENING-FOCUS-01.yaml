@@ -59,3 +59,12 @@ contracts:
   - name: 'dialog-focus'
     type: behavior
     path: 'packages/ds-contracts/components/Dialog/Dialog.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Merged-main real showcase launcher executed in Chromium: connected close button inside Edit profile after portal settlement, Shift+Tab inside, Escape restores launcher. Raw main-runtime.json and main-final-probe.log under ignored docs/internal/input-visual-audit/dialog-focus/. 44-case focus/modality browser run additionally passed both Tab directions across all five web targets. Artifact/commit custody checked by --verify; runtime execution was manually inspected."
+    recorded_at: "2026-10-01T00:06:31.492Z"
+    command: node docs/internal/input-visual-audit/dialog-focus/main-probe.mjs
+    exit_code: 0
+    artifact_path: e2e/dialog-focus.spec.ts
+    commit_sha: d774a76e36acbeb71e4cef9bac122c32cef8deb7
