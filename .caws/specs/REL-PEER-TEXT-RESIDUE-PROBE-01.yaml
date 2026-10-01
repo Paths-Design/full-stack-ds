@@ -57,3 +57,11 @@ contracts:
   - name: 'peer-text-preservation'
     type: behavior
     path: 'packages/ds-codegen/src/analytical/peer-text-probe.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Fresh compiled real qualification/selection/lowering path, output-only facts fixed before consumer; retained output and observations at tmp/verification/analytical-peer-text/8801f8a37cb38778a28d21145b22ce7b83501561/proof/; fresh canonical proof also passed after merge 51df071e9."
+    recorded_at: "2026-10-01T18:30:30.615Z"
+    test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A1 actual compiled consumer preserves scoped identities and bounded facts"
+    commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
+    test_verified_at: d6abdb1ff3994d62f8894fc5cc412f8473bb66cd
