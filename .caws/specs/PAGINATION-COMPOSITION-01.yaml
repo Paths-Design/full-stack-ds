@@ -81,3 +81,12 @@ contracts:
     type: behavior
   - name: 'composed-sequence'
     type: api
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Controlled/uncontrolled Pagination tests assert accepted aria-current, repeated-label identity, disabled/empty behavior and requests without content/time; all five web standalone browser cases pass in the reconciled 42-case run."
+    recorded_at: "2026-10-01T09:31:55.959Z"
+    command: pnpm test -- --maxWorkers=1
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/docs/internal/pagination-composition/pagination-reconciled-root.log
+    commit_sha: "205a2ca05ecefb00dc1d5dda495e6e6c51e5dc00"
