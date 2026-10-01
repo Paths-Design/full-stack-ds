@@ -2,9 +2,10 @@ id: FIX-SHORTCUT-LANG-DOMAIN-TOKENS-01
 title: 'Stop shortcut-language-check flagging placeholder/todo/XXX domain tokens in UI code'
 risk_tier: 2
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: shortcut-domain-tokens
 created_at: '2026-10-01T16:26:57.208Z'
-updated_at: '2026-10-01T16:26:57.208Z'
+updated_at: '2026-10-01T16:27:11.949Z'
 created_by_session: '6c844fb2-94fa-4a17-bd31-3b8e163b8ac2'
 blast_radius:
   modules:
