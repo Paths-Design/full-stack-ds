@@ -1,0 +1,62 @@
+id: COMPONENT-TOKEN-COHESION-01
+title: 'Cohesive component focus typography and design binding coverage'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-01T01:14:59.463Z'
+updated_at: '2026-10-01T01:14:59.463Z'
+created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
+blast_radius:
+  modules:
+    - 'Component style defaults and common design override coverage across generated targets'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-codegen/src/design-properties.ts'
+    - 'packages/ds-codegen/src/design-properties.test.ts'
+    - 'packages/ds-codegen/src/validation'
+    - 'packages/ds-react'
+    - 'packages/ds-vue'
+    - 'packages/ds-svelte'
+    - 'packages/ds-angular'
+    - 'packages/ds-lit'
+    - 'packages/ds-react-native'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-unity'
+    - 'packages/ds-godot'
+    - 'packages/ds-figma'
+    - 'scripts/migrate-design-bindings.mjs'
+    - 'docs/architecture/design'
+    - 'e2e/component-token-cohesion.spec.ts'
+  out: []
+invariants:
+  - 'Durable component semantics remain in contracts and generic codegen; public override addresses retain independent consumers and unset fallback behavior.'
+  - 'Variant and structural geometry remain distinct from state paint; no compatibility aliases or debt allowance ledger are introduced.'
+acceptance:
+  - id: A1
+    given: 'ordinary focusable disclosure and navigation components'
+    when: 'the shared focus family changes'
+    then: 'generic rings consume its color width style and offset with explicit documented geometry exceptions'
+  - id: A2
+    given: 'all component style sidecars'
+    when: 'common design properties are validated and emitted'
+    then: 'supported override bindings are complete and removed bindings fail the generic validation'
+  - id: A3
+    given: 'code text components'
+    when: 'the shared semantic mono family or a component override changes'
+    then: 'code typography follows the semantic family unless independently overridden and clearing restores it'
+  - id: A4
+    given: 'current naming and all affected artifacts'
+    when: 'source checks browser probes and repository gates run'
+    then: 'state variant and default naming is accurately documented and source artifacts remain generated from their authority'
+non_functional: {}
+contracts:
+  - name: 'component-design'
+    type: behavior
+    path: 'packages/ds-codegen/src/design-properties.ts'
+  - name: 'token-cohesion'
+    type: contract-test
+    path: 'e2e/component-token-cohesion.spec.ts'
