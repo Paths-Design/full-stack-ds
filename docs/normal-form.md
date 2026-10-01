@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-10-01
-verified_at_commit: efa119337
+verified_at_commit: a3ccd648d
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -256,6 +256,12 @@ The subsequent native rotation-control repair uses the same sequence timing
 fact to omit Start/Stop for disabled budgets, while retaining manual navigation.
 Generated-component regressions cover the disabled duration cases and live
 re-enabling; the change does not add a component-specific emitter rule.
+Native icon delivery now lowers the existing `iconGlyph` fact through the
+committed catalog and a native SVG renderer. Generated Icon and nested NavTree
+tests cover bound names, sizes, explicit paint and layout isolation without
+component-name dispatch. This repairs the missing glyph source path; simulator
+pixels, inherited control color and broader native presentation remain separate
+verification obligations.
 
 The Image media probe exercises a further bounded use of the existing normal
 form: finite value maps are accepted in `cssVariableBindings` as well as

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { AccessibilityInfo, Platform, Text, View } from 'react-native';
 import { Carousel } from '../../../packages/ds-react-native/src/components/Carousel/Carousel';
+import { Icon } from '../../../packages/ds-react-native/src/components/Icon/Icon';
 
 const buildIdentity = '__FSDS_NATIVE_BUILD_ID__';
 const labels = ['First', 'Second', 'Third'];
@@ -63,5 +64,9 @@ export default function GeneratedCarouselWitness() {
     </Carousel>
     <Text accessibilityLabel="Current slide">Slide {index + 1}</Text>
     <Text style={{ marginTop: 20 }}>{status}</Text>
+    <View style={{ flexDirection: 'row', gap: 24, marginTop: 24 }}>
+      <Icon name="arrow-left" size="sm" decorative={false} ariaLabel="Small blue previous glyph" style={{ color: '#2463ba' }} />
+      <Icon name="arrow-right" size="xl" decorative={false} ariaLabel="Large green next glyph" style={{ color: '#116b4b' }} />
+    </View>
   </View>;
 }

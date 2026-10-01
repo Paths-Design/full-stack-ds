@@ -11,6 +11,7 @@ const generated = process.argv.includes('--generated');
 const proof = join(root, generated ? 'tmp/native-carousel-generated-proof' : 'tmp/native-carousel-proof');
 const fixture = join(root, `scripts/fixtures/carousel-native/${generated ? 'Generated' : 'App'}.tsx`);
 const runtime = join(root, 'packages/ds-react-native/src');
+const iconography = join(root, 'packages/ds-iconography');
 const ruby = process.env.FSDS_RUBY_BINARY ?? '/opt/homebrew/opt/ruby@3.3/bin/ruby';
 const run = (command, args, cwd = host, env = {}) => execFileSync(command, args, { cwd, stdio: 'inherit', env: { ...process.env, ...env } });
 const shellQuote = value => `'${value.replaceAll("'", "'\\''")}'`;
@@ -18,7 +19,11 @@ const hashFile = path => createHash('sha256').update(readFileSync(path)).digest(
 const appBundle = join(proof, 'build/Build/Products/Release-iphonesimulator/FsdsCarouselWitness.app/main.jsbundle');
 function inputs() {
   const paths = generated ? readdirSync(runtime, { recursive: true }).filter(path => /\.tsx?$/.test(String(path))).map(String).sort() : ['primitives/useSequence.tsx', 'primitives/sequence-budget.ts', 'primitives/sequence-motion.tsx', 'primitives/budget-progress.tsx'];
-  const hashes = Object.fromEntries([...paths.map(path => join(runtime, path)), fixture].map(path => [path, hashFile(path)]));
+  const hashes = Object.fromEntries([...paths.map(path => join(runtime, path)), fixture,
+    fileURLToPath(import.meta.url), join(iconography, 'index.mjs'),
+    join(root, 'packages/ds-react-native/package.json'), join(root, 'pnpm-lock.yaml'),
+    join(host, 'package.json'),
+  ].map(path => [path, hashFile(path)]));
   return { generated, hashes, identity: createHash('sha256').update(JSON.stringify(hashes)).digest('hex') };
 }
 mkdirSync(proof, { recursive: true });
@@ -28,19 +33,23 @@ function prepare() {
   const manifestPath = join(host, 'package.json');
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
   manifest.packageManager = 'pnpm@10.14.0';
+  manifest.dependencies['react-native-svg'] = '15.15.5';
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
   const prepared = inputs();
-  writeFileSync(join(host, 'App.tsx'), readFileSync(fixture, 'utf8').replace('../../../packages/ds-react-native/src/primitives/useSequence', 'fsds-sequence-under-test').replace('../../../packages/ds-react-native/src/primitives/budget-progress', 'fsds-budget-progress-under-test').replace('../../../packages/ds-react-native/src/components/Carousel/Carousel', 'fsds-carousel-under-test').replace('__FSDS_NATIVE_BUILD_ID__', prepared.identity));
+  writeFileSync(join(host, 'App.tsx'), readFileSync(fixture, 'utf8').replace('../../../packages/ds-react-native/src/primitives/useSequence', 'fsds-sequence-under-test').replace('../../../packages/ds-react-native/src/primitives/budget-progress', 'fsds-budget-progress-under-test').replace('../../../packages/ds-react-native/src/components/Carousel/Carousel', 'fsds-carousel-under-test').replace('../../../packages/ds-react-native/src/components/Icon/Icon', 'fsds-icon-under-test').replace('__FSDS_NATIVE_BUILD_ID__', prepared.identity));
   writeFileSync(join(proof, 'prepared-inputs.json'), JSON.stringify(prepared, null, 2));
   writeFileSync(join(host, 'metro.config.js'), `const path = require('node:path');
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 const runtime = ${JSON.stringify(runtime)};
+const iconography = ${JSON.stringify(iconography)};
 module.exports = mergeConfig(getDefaultConfig(__dirname), {
-  watchFolders: [runtime],
+  watchFolders: [runtime, iconography],
   resolver: {
     nodeModulesPaths: [path.join(__dirname, 'node_modules')],
     disableHierarchicalLookup: true,
     resolveRequest(context, name, platform) {
+      if (name === '@full-stack-ds/iconography') return {type: 'sourceFile', filePath: path.join(iconography, 'index.mjs')};
+      if (name === 'fsds-icon-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'components/Icon/Icon.tsx')};
       if (name === 'fsds-carousel-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'components/Carousel/Carousel.tsx')};
       if (name === 'fsds-sequence-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'primitives/useSequence.tsx')};
       if (name === 'fsds-budget-progress-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'primitives/budget-progress.tsx')};

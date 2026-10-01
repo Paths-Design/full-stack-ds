@@ -106,6 +106,11 @@ export const BackHandler = {
 };
 
 export const StyleSheet = {
+  flatten<T>(style: T | readonly unknown[] | undefined): T | undefined {
+    return (Array.isArray(style)
+      ? Object.assign({}, ...style.map(entry => StyleSheet.flatten(entry)).filter(Boolean))
+      : style) as T | undefined;
+  },
   create<T extends Record<string, unknown>>(styles: T): T {
     return styles;
   },
