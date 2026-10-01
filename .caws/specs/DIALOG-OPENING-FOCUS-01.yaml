@@ -2,9 +2,11 @@ id: DIALOG-OPENING-FOCUS-01
 title: 'Preserve surface focus through portal mounting and realize selector focus props'
 risk_tier: 2
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Merged contract-owned focus props and web lifecycle fixes; connected portal focus, projected controls, wrapping, return focus, and non-modal behavior verified with 44 browser cases and required package gates.'
 created_at: '2026-09-30T22:39:11.168Z'
-updated_at: '2026-09-30T23:11:50.005Z'
+updated_at: '2026-10-01T00:08:06.943Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
