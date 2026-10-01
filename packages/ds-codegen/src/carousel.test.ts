@@ -11,6 +11,7 @@ import { generateLitComponentSource } from "./frameworks/lit/component-source.js
 import { generateReactNativeComponentSource } from "./frameworks/react-native/component-source.js";
 import { toFigmaComponentDescriptor } from "./frameworks/figma/factory.js";
 import { createContractValidator } from "./validate.js";
+import { buildSequence } from "./sequence.js";
 
 function loadPagination(): ComponentContract {
   const read = (suffix: string) => JSON.parse(readFileSync(resolve(__dirname, `../../ds-contracts/components/Pagination/Pagination.${suffix}.json`), "utf8"));
@@ -24,10 +25,43 @@ function load(): ComponentContract {
   return { ...read("contract"), tokens: read("tokens"), styles: read("styles") };
 }
 describe("contract-bound sequence composition", () => {
+  it("rejects an existing animation owner in a composed progress target", () => {
+    const contract = load();
+    const pagination = loadPagination();
+    const spinner = JSON.parse(readFileSync(resolve(__dirname, "../../ds-contracts/components/Spinner/Spinner.contract.json"), "utf8")) as ComponentContract;
+    const loop = structuredClone(spinner.motion!.loops![0]);
+    loop.target.part = "fill";
+    pagination.motion = { loops: [loop] };
+    pagination.tokens![loop.timing.duration.token] = JSON.parse(readFileSync(resolve(__dirname, "../../ds-contracts/components/Spinner/Spinner.tokens.json"), "utf8"))[loop.timing.duration.token];
+    expect(buildComponentIR(pagination).motion.loops.map(loop => loop.target.name)).toEqual(["fill"]);
+    expect(() => buildSequence(contract, build(load()).tokenFacts, new Map([[contract.name, contract], [pagination.name, pagination]])))
+      .toThrow(/competing motion owner/);
+  });
+  it("does not confuse a host animation with the same part name inside its child", () => {
+    const contract = load();
+    const pagination = loadPagination();
+    const spinner = JSON.parse(readFileSync(resolve(__dirname, "../../ds-contracts/components/Spinner/Spinner.contract.json"), "utf8")) as ComponentContract;
+    const loop = structuredClone(spinner.motion!.loops![0]);
+    loop.target.part = "fill";
+    loop.timing.duration.token = "carousel.motion.duration";
+    contract.motion!.loops = [loop];
+    if (!contract.anatomy || Array.isArray(contract.anatomy)) throw new Error("Expected explicit anatomy");
+    contract.anatomy.parts!.push("fill");
+    contract.anatomy.dom!.children!.push({ tag: "span", part: "fill", attrs: { "aria-hidden": "true" } });
+    const sequence = buildSequence(contract, build(load()).tokenFacts, new Map([[contract.name, contract], [pagination.name, pagination]]));
+    expect(sequence!.progressHosts).toEqual(["picker", "next"]);
+  });
   it("requires resolved composed parts before emitting sequence behavior", () => {
     const ir = buildComponentIR(load());
     expect(ir.motion.sequence?.composition).toBe("unresolved");
     expect(() => generateReactComponentSource(ir, "../../primitives")).toThrow(/resolved contract corpus/);
+  });
+  it("keeps native local projections off unnamed composed instances", () => {
+    const source = generateReactNativeComponentSource(build(load())).componentFile;
+    expect(source.match(/<MotionPartsProvider /g)).toHaveLength(1);
+    expect(source).toContain('<MotionPartsProvider value={{ "fill":');
+    expect(source).not.toContain('<MotionPartsProvider value={{ "ring":');
+    expect(source).toContain('<MotionPart projection={{ effect: "elapsed-ring"');
   });
   it("rejects composed picker callback channels with incompatible value types", () => {
     const pagination = loadPagination();

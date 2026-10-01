@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { BackHandler, Modal, Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createSheetStyles } from "./Sheet.styles";
 // @generated:end
@@ -66,6 +67,7 @@ export function Sheet({
   }, [modal, openness, setOpennessValue]);
 
   const surfaceTree = (
+<MotionPartScope>{motionParts => (
     <View
       testID={testID}
       style={[styles.root, style]}
@@ -73,11 +75,13 @@ export function Sheet({
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
       {openness && modal ? (
+<MotionPart projection={motionParts["overlay"]} style={styles.overlay}>
       <Pressable
         style={styles.overlay}
         onPress={() => setOpennessValue(false)}
         accessible={false}
       />
+</MotionPart>
       ) : null}
       {openness ? (
       <View
@@ -117,6 +121,7 @@ export function Sheet({
       </View>
       ) : null}
     </View>
+)}</MotionPartScope>
   );
   if (!modal) return openness ? surfaceTree : null;
   return (

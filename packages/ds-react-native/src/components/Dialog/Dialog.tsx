@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { BackHandler, Modal, Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createDialogStyles } from "./Dialog.styles";
 // @generated:end
@@ -73,6 +74,7 @@ export function Dialog({
   }, [modal, openness, setOpennessValue, closeOnEscape]);
 
   const surfaceTree = (
+<MotionPartScope>{motionParts => (
     <View
       testID={testID}
       style={[styles.root, style]}
@@ -80,11 +82,13 @@ export function Dialog({
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
       {openness && modal ? (
+<MotionPart projection={motionParts["backdrop"]} style={styles.backdrop}>
       <Pressable
         style={styles.backdrop}
         onPress={() => { if (closeOnBackdropClick ?? true) setOpennessValue(false); }}
         accessible={false}
       />
+</MotionPart>
       ) : null}
       {openness ? (
       <View
@@ -118,6 +122,7 @@ export function Dialog({
       </View>
       ) : null}
     </View>
+)}</MotionPartScope>
   );
   if (!modal) return openness ? surfaceTree : null;
   return (

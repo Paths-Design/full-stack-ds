@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { nativeMotionImports, nativeMotionInstance, nativeMotionPart, nativeMotionRoot } from "./motion-parts.js";
 import { matchesTokenRole } from "../token-role.js";
 import type {
   BindingExpression,
@@ -104,17 +105,16 @@ export function generateReactNativeComponentSource(
 }
 
 function generateReactNativeComponentFile(ir: ComponentIR): string {
+  const component = isCompoundSelectionContainer(ir)
+    ? emitCompoundSelectionComponent(ir)
+    : nativeHighlightTransform(ir)
+      ? emitHighlightPresentation(ir, nativeHighlightTransform(ir)!)
+      : emitComponent(ir);
   const sections: string[] = [];
-  sections.push(emitImports(ir));
+  sections.push(emitImports(ir, component));
   sections.push(emitTypes(ir));
   sections.push(emitProps(ir));
-  sections.push(
-    isCompoundSelectionContainer(ir)
-      ? emitCompoundSelectionComponent(ir)
-      : nativeHighlightTransform(ir)
-        ? emitHighlightPresentation(ir, nativeHighlightTransform(ir)!)
-        : emitComponent(ir),
-  );
+  sections.push(component);
   return sections.filter(Boolean).join("\n\n") + "\n";
 }
 
@@ -483,7 +483,7 @@ function emitCompoundSelectionComponent(ir: ComponentIR): string {
   return lines.join("\n");
 }
 
-function emitImports(ir: ComponentIR): string {
+function emitImports(ir: ComponentIR, component: string): string {
   const usage = collectRuntimeUsage(ir);
   const rnValueImports = new Set<string>();
   const rnTypeImports = new Set<string>(["StyleProp", rootStyleType(ir)]);
@@ -567,6 +567,7 @@ function emitImports(ir: ComponentIR): string {
       .map((name) => (name === "ReactNode" ? "type ReactNode" : name))
       .join(", ")} } from "react";`,
     ir.pagedSet ? `import { usePagedSet } from "../../primitives/hooks/usePaging";` : "",
+    nativeMotionImports(component),
     `import { useFsdsTheme } from "../../tokens";`,
     `import { create${ir.name}Styles } from "./${ir.name}.styles";`,
     usesNativeToggle(ir) || rnAutoDismiss(ir) || nativeHighlightTransform(ir) || ir.motion.sequence
@@ -768,6 +769,7 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
     usage.channelValues.add(sequence.channel);
     usage.channelSetters.add(sequence.channel);
     for (const prop of [sequence.itemsProp, sequence.timing.autoPlayProp, sequence.timing.durationProp]) addPropIfPresent(ir, usage, prop);
+    for (const binding of sequence.progress) if (binding.when) addPropIfPresent(ir, usage, binding.when.axis);
   }
 
   if (usesNativeToggle(ir)) {
@@ -1091,7 +1093,7 @@ function emitComponent(ir: ComponentIR): string {
     const surfaceModal =
       ir.dom !== undefined ? rnSurfaceModalLowering(ir) : null;
     const modalProp = surfaceModal ? rnModalityGateProp(ir) : undefined;
-    const rendered = emitNode(ir.dom, ir, surfaceModal && !modalProp ? 3 : 2) ?? [
+    const rendered = nativeMotionRoot(ir, emitNode(ir.dom, ir, surfaceModal && !modalProp ? 3 : 2) ?? [
       `${INDENT}${INDENT}<View`,
       `${INDENT}${INDENT}${INDENT}testID={testID}`,
       `${INDENT}${INDENT}${INDENT}style={[styles.root, style]}`,
@@ -1100,7 +1102,7 @@ function emitComponent(ir: ComponentIR): string {
       `${INDENT}${INDENT}>`,
       `${INDENT}${INDENT}${INDENT}{children}`,
       `${INDENT}${INDENT}</View>`,
-    ].join("\n");
+    ].join("\n"));
     if (surfaceModal && modalProp) {
       if (rnInTreeBackDismiss(ir)) lines.push(...emitInTreeBackDismiss(ir, surfaceModal, modalProp));
       lines.push(`${INDENT}const surfaceTree = (`, rendered, `${INDENT});`);
@@ -1767,7 +1769,7 @@ function emitNode(
     rendered = [`${pad}<${component}`, ...attrs, `${pad}>`, ...childLines, `${pad}</${component}>`].join("\n");
   }
   // A non-modal surface renders no overlay (the web backdrop is hidden too).
-  return applyIfGuard(rendered, node, ir, pad, isOverlay ? rnModalityGateProp(ir) : undefined);
+  return applyIfGuard(nativeMotionPart(ir, node, `styles.${styleKeyForPart(node.part)}`, rendered), node, ir, pad, isOverlay ? rnModalityGateProp(ir) : undefined);
 }
 
 /**
@@ -1826,7 +1828,7 @@ function emitComponentRefNode(
       `${pad}</${component}>`,
     ].join("\n");
   }
-  return applyIfGuard(rendered, node, ir, pad);
+  return applyIfGuard(nativeMotionInstance(ir, node, rendered), node, ir, pad);
 }
 
 function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): string[] {

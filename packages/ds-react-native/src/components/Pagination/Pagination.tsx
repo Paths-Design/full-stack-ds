@@ -3,6 +3,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { usePagedSet } from "../../primitives/hooks/usePaging";
+import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createPaginationStyles } from "./Pagination.styles";
 // @generated:end
@@ -55,6 +56,7 @@ export function Pagination({
   const pagedSet = usePagedSet({ index: page, items: pages,
     count: undefined, disabled: disabled, onIndexChange: setPageValue });
   return (
+<MotionPartScope>{motionParts => (
     <View
       testID={testID}
       style={[styles.root, style]}
@@ -75,10 +77,12 @@ export function Pagination({
               style={styles.marker}
               accessible={false}
             >
+<MotionPart projection={motionParts["fill"]} index={index} style={styles.fill}>
               <View
                 style={styles.fill}
                 accessible={false}
               />
+</MotionPart>
             </View>
             <View
               style={styles.label}
@@ -89,6 +93,7 @@ export function Pagination({
           </Pressable>
         ))}
     </View>
+)}</MotionPartScope>
   );
 }
 // @generated:end

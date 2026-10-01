@@ -59,6 +59,7 @@ describe("motion declaration custody", () => {
     const contract = loadContract("Accordion");
     delete contract.motion;
     expect(buildComponentIR(contract).motion).toEqual({
+      ports: [],
       countdown: null,
       sequence: null,
       loops: [],

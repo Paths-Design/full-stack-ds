@@ -2,6 +2,7 @@
 import type { AccessibilityRole, StyleProp, ViewStyle } from "react-native";
 import { View } from "react-native";
 import { type ReactNode, useMemo } from "react";
+import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createSkeletonStyles } from "./Skeleton.styles";
 // @generated:end
@@ -48,6 +49,7 @@ export function Skeleton({
   const variantStyleForVariant = variant !== undefined ? ({ "block": styles.root_variant_block, "text": styles.root_variant_text, "avatar": styles.root_variant_avatar, "media": styles.root_variant_media, "dataviz": styles.root_variant_dataviz, "actions": styles.root_variant_actions } as Record<string, ViewStyle | undefined>)[variant] : undefined;
   const variantStyleForAnimate = animate !== undefined ? ({ "wipe": styles.root_variant_wipe } as Record<string, ViewStyle | undefined>)[animate] : undefined;
   return (
+<MotionPartScope>{motionParts => (
     <View
       testID={testID}
       style={[styles.root, variantStyleForVariant, variantStyleForAnimate, style]}
@@ -66,15 +68,18 @@ export function Skeleton({
               key={index}
               style={styles.row}
             >
+<MotionPart projection={motionParts["shape"]} index={index} style={styles.shape}>
               <View
                 style={styles.shape}
                 accessible={false}
               />
+</MotionPart>
             </View>
           ))}
       </View>
       ) : null}
     </View>
+)}</MotionPartScope>
   );
 }
 // @generated:end

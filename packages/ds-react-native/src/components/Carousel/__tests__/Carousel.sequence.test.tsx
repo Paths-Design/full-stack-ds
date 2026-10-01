@@ -4,6 +4,8 @@ import { createElement, StrictMode, useState } from "react";
 import { Carousel } from "../Carousel";
 import { Card } from "../../Card/Card";
 import { FsdsThemeProvider } from "../../../tokens";
+import { MotionPart } from "../../../primitives/motion-parts";
+import { SequenceViewport } from "../../../primitives/sequence-motion";
 import { AccessibilityInfo, AppState, Animated, nativeAnimationProbe } from "../../../test-react-native";
 
 describe("generated native sequence controls", () => {
@@ -13,14 +15,32 @@ describe("generated native sequence controls", () => {
   const controls = () => tree.root.findAll(node => String(node.type) === "Pressable");
   const control = (label: string) => controls().find(node => node.props.accessibilityLabel === label)!;
   const slide = (label: string) => tree.root.findAll(node => String(node.type) === "View").find(node => node.props.accessibilityLabel === label)!;
+  const viewport = () => tree.root.findByType(SequenceViewport).find(node => String(node.type) === "View" && Boolean(node.props.onLayout));
   const children = ["First", "Second", "Third"].map(label => createElement(Card, { key: label }, label));
   async function mount(props: Parameters<typeof Carousel>[0] = {}) {
     await act(async () => { tree = create(<StrictMode><Carousel slides={["First", "Second", "Third"]} {...props}>{children}</Carousel></StrictMode>); });
   }
   async function press(label: string) { await act(async () => control(label).props.onPress()); }
+  it("binds both decorations to one budget across the composed picker boundary", async () => {
+    await mount({ autoPlay: true, duration: 1000, indicator: "both" });
+    await act(async () => { vi.advanceTimersByTime(400); });
+    const parts = () => tree.root.findAllByType(MotionPart);
+    expect(parts()).toHaveLength(4);
+    const fill = parts().filter(part => part.props.projection.effect === "elapsed-width");
+    const ring = parts().find(part => part.props.projection.effect === "elapsed-ring")!;
+    expect(fill.map(part => part.props.index)).toEqual([0, 1, 2]);
+    expect(fill[0].props.projection).toMatchObject({ activeIndex: 0, visible: true });
+    expect(fill[0].props.projection.elapsed).toBeCloseTo(0.4, 1);
+    expect(ring.props.projection.elapsed).toBe(fill[0].props.projection.elapsed);
+    await act(async () => AccessibilityInfo.emit("reduceMotionChanged", true));
+    expect(parts().every(part => part.props.projection.reducedMotion)).toBe(true);
+    await act(async () => { vi.advanceTimersByTime(600); });
+    expect(parts()[0].props.projection.activeIndex).toBe(1);
+    expect(parts()[0].props.projection.elapsed).toBe(0);
+  });
   it.each([[320, 250], [1280, 500]])("animates generated content at width %i and starts its dwell after settlement", async (width, duration) => {
     await mount({ autoPlay: true, duration: 1000 });
-    await act(async () => tree.root.find(node => String(node.type) === "View" && Boolean(node.props.onLayout)).props.onLayout({ nativeEvent: { layout: { width } } }));
+    await act(async () => viewport().props.onLayout({ nativeEvent: { layout: { width } } }));
     await press("Next slide");
     expect(Animated.motions.map(motion => [motion.config.toValue, motion.config.duration])).toEqual([[-width, duration], [0, duration]]);
     expect(slide("First").props.style.display).toBe("flex");
@@ -34,7 +54,7 @@ describe("generated native sequence controls", () => {
   });
   it("consumes a theme movement token independently of dwell and honors live reduced motion", async () => {
     await act(async () => { tree = create(<FsdsThemeProvider value={{ tokens: { "carousel.motion.duration": "400ms" } }}><Carousel slides={["First", "Second", "Third"]} autoPlay duration={1000}>{children}</Carousel></FsdsThemeProvider>); });
-    await act(async () => tree.root.find(node => String(node.type) === "View" && Boolean(node.props.onLayout)).props.onLayout({ nativeEvent: { layout: { width: 320 } } }));
+    await act(async () => viewport().props.onLayout({ nativeEvent: { layout: { width: 320 } } }));
     await press("Next slide");
     expect(Animated.motions.map(motion => motion.config.duration)).toEqual([400, 400]);
     await act(async () => AccessibilityInfo.emit("reduceMotionChanged", true));

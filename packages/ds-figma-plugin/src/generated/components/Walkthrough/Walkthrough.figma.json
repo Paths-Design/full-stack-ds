@@ -892,6 +892,7 @@
     "realization": "descriptor-only",
     "facts": {
       "reducedMotion": "respect",
+      "ports": [],
       "honorsReducedMotion": true,
       "countdown": null,
       "sequence": null,

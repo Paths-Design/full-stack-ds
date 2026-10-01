@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Modal, Pressable, TextInput, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createCommandStyles } from "./Command.styles";
 import { Icon } from "../Icon/Icon";
@@ -76,6 +77,7 @@ export function Command({
       animationType="fade"
       onRequestClose={() => setOpenValue(false)}
     >
+<MotionPartScope>{motionParts => (
       <View
         testID={testID}
         style={[styles.root, style]}
@@ -83,11 +85,13 @@ export function Command({
         accessibilityLabelledBy={accessibilityLabelledBy}
       >
         {open ? (
+<MotionPart projection={motionParts["overlay"]} style={styles.overlay}>
         <Pressable
           style={styles.overlay}
           onPress={() => setOpenValue(false)}
           accessible={false}
         />
+</MotionPart>
         ) : null}
         {open ? (
         <View
@@ -117,14 +121,17 @@ export function Command({
               style={styles.empty}
             />
             {slots?.items}
+<MotionPart projection={motionParts["separator"]} style={styles.separator}>
             <View
               style={styles.separator}
               accessible={false}
             />
+</MotionPart>
           </View>
         </View>
         ) : null}
       </View>
+)}</MotionPartScope>
     </Modal>
   );
 }
