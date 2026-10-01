@@ -16,7 +16,7 @@ governs:
 The lane carries source-grain meaning through composition, selection, structured
 readback and a browser realization. Its authority is the qualified relation and
 the judged composition, rather than a chart name or a consumer's reconstruction
-of rows. Stage-2 ratification remains open. This does not establish the charter's
+of rows. Stage-2 ratification remains open. This does not establish the [capability contract's](analytical-capability-contract.md)
 M5 text/navigation peers or M6 hostile non-DOM transfer.
 
 ## Boundary repair (`REL-COMPOSITE-OUTPUT-01`)
