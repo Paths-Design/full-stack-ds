@@ -107,7 +107,7 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
         !["elapsed-width", "elapsed-ring"].includes(binding.effect) || binding.reducedMotion.kind !== "steps" ||
         !Number.isInteger(binding.reducedMotion.steps) || binding.reducedMotion.steps < 2 || binding.reducedMotion.steps > 20 ||
         contract.motion?.reducedMotion === "ignore") fail("unsupported progress policy");
-    if (contract.motion?.loops?.some(l => l.target.part === binding.target.part) || contract.motion?.countdown?.target.part === binding.target.part) fail("competing motion owner");
+    if (resolved.owner?.motion?.loops?.some(l => l.target.part === binding.target.part) || resolved.owner?.motion?.countdown?.target.part === binding.target.part) fail("competing motion owner");
     if (Object.keys(resolved.owner?.styles?.[binding.target.part] ?? {}).some(p => /^(transform|scale|animation|transition)(-|$)/.test(p) && p !== "transform-origin")) fail("authored motion competes for progress");
   }
   const transition = contract.motion?.sequenceTransition;
