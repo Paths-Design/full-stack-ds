@@ -93,7 +93,7 @@ test("dataset binding swaps fail with identical keys and unchanged totals", asyn
 test("metric limitations retain independently observable lawful readback", async ({ page }) => {
   for (const [name, status] of [["Free scale readback", "unsupported"], ["Conflicting endpoint readback", "unproven"]]) {
     await page.getByRole("button", { name, exact: true }).click();
-    await expect(page.locator("[data-disposition]")).toHaveText("Readback: selected");
+    await expect(page.locator("[data-disposition]")).toHaveText("selected");
     await expect(page.locator("[data-metric-disposition]")).toContainText(`Metric: ${status}:`);
     await expect(page.locator("[data-mark-row] svg")).toHaveCount(0);
     expect((await observe(page, false)).issues).toEqual([]);

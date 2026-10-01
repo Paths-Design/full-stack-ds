@@ -57,7 +57,7 @@ export function AnalyticalCompositePreview() {
     <h2>Selected composite output</h2>
     <p>Bounded consumer witnesses, separate from the corpus below. Bounds and members share a position scale. Host standing is carried; its frame is not drawn. Row order implies no trend.</p>
     <Stack variant="horizontal" role="group" aria-label="Witness" className="stack-gap-04" style={{ flexWrap: "wrap" }}>{witnesses.map((w, i) => <Button size="small" variant="ghost" ariaPressed={index === i} onClick={() => setIndex(i)} key={w.name}>{w.name}</Button>)}</Stack>
-    <p data-disposition>Readback: {witness.status}{witness.reason && `: ${witness.reason}`}</p>
+    <p>Readback: <span data-disposition>{witness.status}{witness.reason && `: ${witness.reason}`}</span></p>
     {witness.metricStatus && <p data-metric-disposition>Metric: {witness.metricStatus}{witness.metricReason && `: ${witness.metricReason}`}</p>}
     {carrier && <>
       <p data-standing>Composition: {carrier.judgment.verdict.kind}; {carrier.datasets.map(d => `${d.id}: ${d.result.judgment.standing}`).join("; ")}</p>
