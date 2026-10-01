@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-10-01
-verified_at_commit: 07d84e811
+verified_at_commit: 429db81cb
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -244,6 +244,14 @@ The claim is broad. It is also narrow enough to be falsified. The clean falsific
 The seven properties are stated at the level of generality where they are meant to compare against other compositional systems. Whether they do is left to the reader to test against systems they know.
 
 ## What this codebase demonstrates, and does not
+
+The motion-port reconciliation at the current stamp adds normalized decorative
+part ownership and repeated ancestry to the shared IR. React Native delivers
+one owner's elapsed sample through an explicit composition edge and clears the
+binding before nested consumers. Generated and host-shim regressions cover
+that boundary and preservation of remaining reading time. This extends the
+existing contract/IR split without proving native control appearance or full
+platform parity; those gaps remain open in the Carousel acceptance criteria.
 
 The Image media probe exercises a further bounded use of the existing normal
 form: finite value maps are accepted in `cssVariableBindings` as well as
