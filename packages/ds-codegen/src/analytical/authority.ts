@@ -12,7 +12,7 @@
  * re-recording becomes a ritual. Here each module is owned by exactly one
  * identity, so a moved digest names its cause: the coordinates changed, or what
  * an erasure does changed, or what admits a witness changed, or a RULE changed.
- * `RULE_SOURCES` in `necessity.ts` is the fourth member of that partition and is
+ * `RULE_SOURCES` in `necessity.ts` is another member of that partition and is
  * deliberately not restated here; a changed rule digest and a changed erasure
  * digest are different causes and must not collapse into one another.
  *
@@ -36,7 +36,7 @@ const CONTRACTS = path.resolve(HERE, "../../../ds-contracts");
 
 const sha = (bytes: string | Buffer) => createHash("sha256").update(bytes).digest("hex");
 
-export type AuthorityName = "coordinateBasis" | "erasureAuthority" | "witnessAuthority" | "graphViewBasis";
+export type AuthorityName = "coordinateBasis" | "erasureAuthority" | "witnessAuthority" | "graphViewBasis" | "compositeOutputBasis";
 
 export interface AuthorityIdentity {
   name: AuthorityName;
@@ -186,7 +186,19 @@ const GRAPH_VIEW_BASIS: AuthorityIdentity = {
   artifacts: ["analytical-fixtures/graph-view.schema.json"],
 };
 
-export const IDENTITIES: readonly AuthorityIdentity[] = [COORDINATE_BASIS, ERASURE_AUTHORITY, WITNESS_AUTHORITY, GRAPH_VIEW_BASIS];
+/** Source identity for selected output, kept outside stage-2 witness stamps. */
+export const COMPOSITE_OUTPUT_BASIS: AuthorityIdentity = {
+  name: "compositeOutputBasis",
+  invalidates: "attribution of composite qualification, selection and recovered output to the source that produced it",
+  entryPoints: ["composite-selection.ts"],
+  owns: ["composite-artifacts.ts", "composite-selection.ts", "projection.ts"],
+  excluded: {
+    "authority.ts": "defines the identity and digest utility; it cannot own itself, and correctness is tested independently",
+  },
+  artifacts: [],
+};
+
+export const IDENTITIES: readonly AuthorityIdentity[] = [COORDINATE_BASIS, ERASURE_AUTHORITY, WITNESS_AUTHORITY, GRAPH_VIEW_BASIS, COMPOSITE_OUTPUT_BASIS];
 
 /**
  * Production modules that belong to NO identity, each with the reason.
@@ -213,7 +225,6 @@ export const UNIDENTIFIED_MODULES: Readonly<Record<string, string>> = {
   "erasure-audit.ts": "computes the footprint report and checks the committed one against a fresh computation; a changed rule cannot leave the recorded report identical",
   "freeze.ts": "records and checks the stage-2 freeze the same way",
   "legacy-comparison.ts": "compares the live ledgers against the legacy record; it reports a difference and adjudicates nothing",
-  "projection.ts": "consumes the relation authority for the bounded stage-3 experiment and records a committed candidate-set ledger it byte-checks against a fresh computation; it feeds no verdict and is not a rule source, and a changed projection rule cannot leave the recorded ledger identical",
 };
 
 /** Local `./x.js` imports of one analytical module, by basename. */
@@ -256,6 +267,9 @@ export function digestOf(identity: AuthorityIdentity, dir = HERE, contracts = CO
   }
   return h.digest("hex");
 }
+
+/** Resolve source bytes for source and compiled callers in this repository. */
+export const compositeOutputDigest = (): string => digestOf(COMPOSITE_OUTPUT_BASIS, path.resolve(CONTRACTS, "../ds-codegen/src/analytical"));
 
 export interface AuthorityIdentities {
   coordinateBasisDigest: string;

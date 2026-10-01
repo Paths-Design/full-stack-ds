@@ -1,3 +1,16 @@
+---
+doc_id: ARCH-ANALYTICAL-COMPOSITE-OUTPUT-01
+authority: architecture
+status: active
+title: Bounded analytical composite output
+owner: "@darianrosebrook"
+updated: 2026-09-30
+governs:
+  - packages/ds-codegen/src/analytical/projection.ts
+  - packages/ds-codegen/src/analytical/composite-selection.ts
+  - packages/ds-codegen/src/analytical/composite-artifacts.ts
+---
+
 # Bounded analytical composite output
 
 The lane carries source-grain meaning through composition, selection, structured
@@ -40,7 +53,41 @@ now place ratio values on luminance rather than nominal-only hue, and ratio
 endpoints on position rather than ordinal-only order. These repairs establish
 boundary behavior; they do not turn a retained judgment into an output carrier.
 
-## Remaining delivery and acceptance
+## Selected carrier and artifacts (`REL-SELECTED-COMPOSITE-CARRIER-01`)
+
+`composite-selection.ts` lifts qualified operands into an immutable versioned
+carrier: datasets retain their full qualified content, and view bindings name
+those datasets by local custody references. The composition tree and every
+judgment origin travel with them. Shared qualification objects have one dataset.
+The carrier records the `compositeOutputBasis` source digest. That identity owns
+projection, selection and recovery without extending stage-2 witness stamps;
+it is attribution, not a correctness certificate or environment attestation.
+`selectCompositeRealization` selects another format from the very same carrier
+object without consulting or re-judging source declarations. Lowering accepts
+only a minted selection and produces detached artifacts.
+
+Structured readback carries the whole object. Metric output encodes numeric
+values as coordinates under a declared finite positive scale, carries strings
+and semantic metadata, and admits only scales that recover every numeric value
+exactly. Its displayed views must belong to a carried bounded-range group;
+their endpoints and members need interval/ratio authority and the same declared
+single unit. This format realizes position views under declared shared layer
+and facet scales; other channels and free scales remain readback-only here.
+Numerical unit conversion is outside this format. Different
+snapshots may co-register by keys yet disagree on endpoint values: metric
+selection leaves endpoint coherence unproven rather than choosing one snapshot.
+Readback can report each distinct dataset without coalescing its values.
+
+`composite-artifacts.ts` is browser-safe and imports analytical types only. Its
+output-only decoders receive neither selection nor source. Tests serialize both
+artifacts, recover equal complete carriers, and independently mutate a coordinate,
+identity, range membership, panel binding and standing. Unknown wire versions
+and malformed arithmetic refuse instead of manufacturing a recovered number.
+This is bounded artifact preservation, not general ingress validation or a
+certificate that a tampered artifact is lawful. Atomic host standing travels;
+host-frame rendering and atomic-leaf output are outside this family.
+
+## Delivery acceptance
 
 | Obligation | Evidence required |
 |---|---|
@@ -51,7 +98,6 @@ boundary behavior; they do not turn a retained judgment into an output carrier.
 | A visual realization is observable | Playwright inspects actual SVG/DOM geometry and labels under a declared scale; a browser screenshot is inspected |
 | Claims stay bounded | Stage-2 specs remain open; no endpoint roles, ordering, aggregation expansion, M5 or M6 acceptance is asserted |
 
-The next slice should introduce a focused carrier/output module instead of
-adding another responsibility to `projection.ts`. A browser-safe consumer must
-receive the selected artifact without importing the Node-only analytical corpus
-loader or independently interpreting source declarations.
+Browser evidence remains owed. The next slice must connect a Node-side producer
+to a browser-safe consumer that receives the selected artifacts without importing
+the analytical corpus loader or independently interpreting source declarations.
