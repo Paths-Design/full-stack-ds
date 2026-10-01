@@ -2,9 +2,11 @@ id: REL-ANALYTICAL-CAPABILITY-CONTRACT-01
 title: 'Separate durable analytical acceptance from status and historical research'
 risk_tier: 2
 mode: doc
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Durable capability acceptance and status routing reconciled; six named acceptance tests executed by CAWS on merged f08571d27. Historical planning remains ignored, Stage-2 dependency is claim-specific, and bounded text-peer probe is precommitted. Original source a2925fe77 passed rail, 4752 root tests and framework suites; generated receipts remain ignored.'
 created_at: '2026-10-01T17:14:47.280Z'
-updated_at: '2026-10-01T17:46:11.210Z'
+updated_at: '2026-10-01T17:56:57.025Z'
 created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
 blast_radius:
   modules:
