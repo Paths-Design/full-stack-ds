@@ -57,10 +57,11 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Unique tracked ## M1 through ## M6 headings in analytical-capability-contract.md; roadmap and charter remain ignored and unchanged. Checked source a2925fe77066785752a16570cef459f967d7fbf6. Retained at tmp/verification/analytical-capability-contract; rail, 4752 root tests and framework suites passed."
-    recorded_at: "2026-10-01T17:44:40.430Z"
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/verification/analytical-capability-contract/verification.json
-    commit_sha: a2925fe77066785752a16570cef459f967d7fbf6
+    evidence_ref: "Unique tracked ## M1 through ## M6 headings in analytical-capability-contract.md; roadmap and charter remain ignored and unchanged. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract."
+    recorded_at: "2026-10-01T17:55:52.622Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A1 durable definitions have one tracked authority without promoting working history"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: e56d608c31156c78fa34da5d45fe304321d0be4c
   - criterion_id: A2
     status: pass
     evidence_ref: "git diff against lane base changes only analytical snapshot row; current implementation citations inspected. Checked source a2925fe77066785752a16570cef459f967d7fbf6. Retained at tmp/verification/analytical-capability-contract; rail, 4752 root tests and framework suites passed."
