@@ -3,6 +3,7 @@ title: 'Repair Carousel lifecycle defects and establish framework and platform p
 risk_tier: 2
 mode: fix
 lifecycle_state: active
+worktree: carousel-slide-box
 created_at: '2026-09-28T09:59:04.162Z'
 updated_at: '2026-09-28T10:09:04.534Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
