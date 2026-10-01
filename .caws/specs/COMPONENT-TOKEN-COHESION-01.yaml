@@ -2,11 +2,9 @@ id: COMPONENT-TOKEN-COHESION-01
 title: 'Cohesive component focus typography and design binding coverage'
 risk_tier: 2
 mode: fix
-lifecycle_state: closed
-resolution: completed
-closure_notes: 'Normalize component token consumers and design coverage; relocate generated audit reports internally with verified merged gates.'
+lifecycle_state: active
 created_at: '2026-10-01T01:14:59.463Z'
-updated_at: '2026-10-01T03:03:28.447Z'
+updated_at: '2026-10-01T03:04:08.994Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
