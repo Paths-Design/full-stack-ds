@@ -93,3 +93,10 @@ evidence:
     test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A5 non-selected dispositions cannot manufacture a textual peer"
     commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
     test_verified_at: "9d3b8248617efb4bca310cff1dfadec397e046eb"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "Executed scoped output assertion plus inspected docs/architecture/analytical-peer-text.md Contribution and dependency boundary and the sole analytical snapshot row: no new carried fact required for this witness; bounded textual M5 contribution with measured loss, unsupported host operation and nonempty residue; full M5/navigation/M6 and Stage-2 ratification remain open. Fresh compiled producer control failed on identity as required."
+    recorded_at: "2026-10-01T18:32:00.131Z"
+    test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A6 the observed peer states its scope without promoting a milestone or task"
+    commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
+    test_verified_at: "26e16e3571145c7ae03fc4fb2012c134cd4ecc98"
