@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-10-01
-verified_at_commit: 429db81cb
+verified_at_commit: efa119337
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -252,6 +252,10 @@ binding before nested consumers. Generated and host-shim regressions cover
 that boundary and preservation of remaining reading time. This extends the
 existing contract/IR split without proving native control appearance or full
 platform parity; those gaps remain open in the Carousel acceptance criteria.
+The subsequent native rotation-control repair uses the same sequence timing
+fact to omit Start/Stop for disabled budgets, while retaining manual navigation.
+Generated-component regressions cover the disabled duration cases and live
+re-enabling; the change does not add a component-specific emitter rule.
 
 The Image media probe exercises a further bounded use of the existing normal
 form: finite value maps are accepted in `cssVariableBindings` as well as
