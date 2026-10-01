@@ -4,7 +4,7 @@ risk_tier: 2
 mode: fix
 lifecycle_state: active
 created_at: '2026-09-28T09:59:04.162Z'
-updated_at: '2026-10-01T15:08:51.682Z'
+updated_at: '2026-10-01T17:02:02.501Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
@@ -34,6 +34,8 @@ scope:
     - 'scripts'
     - 'fsds.targets.json'
     - '.github/workflows'
+    - packages/ds-react-native/package.json
+    - packages/ds-react-native/vitest.config.ts
   out:
     - src/components/analytical
     - packages/ds-codegen/src/analytical
@@ -46,6 +48,7 @@ scope:
   support:
     - package.json
     - CLAUDE.md
+    - pnpm-lock.yaml
 invariants:
   - 'One authoritative time budget controls advancement and all visual projections; movement completion only releases reading time.'
   - 'Consumer content is never mutated after ownership ends; interaction preserves user intent and reduced-motion preference.'
