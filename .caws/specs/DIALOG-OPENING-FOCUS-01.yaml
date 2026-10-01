@@ -76,3 +76,11 @@ evidence:
     exit_code: 0
     artifact_path: e2e/dialog-focus.spec.ts
     commit_sha: "371d5221e"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Final 44-case browser suite verifies launcher restoration and non-modal outside-focus preservation across five web targets; React public-Dialog lifecycle suite (10 passing cases within 4618 root tests) verifies close, conditional unmount, StrictMode portal replacement, explicit return selectors, and changing portal destinations. Merged-main showcase and fresh Lit consumer Escape/unmount restore their launchers. Raw logs retained in docs/internal/input-visual-audit/dialog-focus/."
+    recorded_at: "2026-10-01T00:06:52.732Z"
+    command: FSDS_E2E_PORT=5175 pnpm exec playwright test e2e/dialog-focus.spec.ts e2e/modality-rail.spec.ts --project=chromium --workers=2
+    exit_code: 0
+    artifact_path: e2e/dialog-focus.spec.ts
+    commit_sha: "371d5221e"
