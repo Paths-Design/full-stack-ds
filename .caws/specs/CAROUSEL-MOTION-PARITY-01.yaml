@@ -4,7 +4,7 @@ risk_tier: 2
 mode: fix
 lifecycle_state: active
 created_at: '2026-09-28T09:59:04.162Z'
-updated_at: '2026-10-01T17:15:56.993Z'
+updated_at: '2026-10-01T23:37:25.854Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
@@ -13,17 +13,7 @@ blast_radius:
 operational_rollback_slo: 5m
 scope:
   in:
-    - packages/ds-react-native/package.json
-    - packages/ds-react-native/vitest.config.ts
-    - packages/ds-codegen/src/frameworks/react-native/component-source.ts
-    - packages/ds-react-native/src/primitives/glyph.tsx
-    - packages/ds-react-native/src/test-react-native.tsx
-    - packages/ds-react-native/src/test-react-native-svg.tsx
-    - packages/ds-react-native/src/components/Icon/Icon.tsx
-    - packages/ds-react-native/src/components/Icon/__tests__/Icon.glyph.test.tsx
-    - packages/ds-react-native/src/components/NavTree/NavTree.tsx
     - scripts/react-native-carousel-host.mjs
-    - scripts/fixtures/carousel-native/Generated.tsx
     - docs/testing/native-carousel-probe.md
   out:
     - src/components/analytical
