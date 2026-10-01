@@ -71,3 +71,10 @@ evidence:
     command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
     exit_code: 0
     commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "src/views/views-smoke.test.tsx: Architecture canonical component path and bounded showcase statement; Home coverage/rail labels and absence of full-parity and package-less claims. Inspected both runtime routes. Executed log: tmp/showcase-claims/fsds-showcase-merged-check.log (16 tests passed)."
+    recorded_at: "2026-10-01T08:08:37.752Z"
+    command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
+    exit_code: 0
+    commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"
