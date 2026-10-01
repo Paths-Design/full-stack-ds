@@ -80,9 +80,11 @@ acceptance:
       the missing population remains unproven while the explicitly empty result
       remains distinct as nothing-to-realize
   - id: A11
-    given: 'the bounded implementation and scope'
-    when: 'required checks and evidence are inspected'
-    then: 'source drift and tests pass with stage-2 open conditions and exact output nonclaims recorded'
+    given: 'the bounded boundary repairs'
+    when: 'analytical tests types lint and required repository gates run'
+    then: >-
+      the corrected cases and conservation checks pass and stage-2 unratified
+      subtraction remains explicitly separate
 non_functional: {}
 contracts:
   - name: 'analytical-composite'
