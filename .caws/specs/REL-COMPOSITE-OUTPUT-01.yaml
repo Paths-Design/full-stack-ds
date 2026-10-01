@@ -2,9 +2,11 @@ id: REL-COMPOSITE-OUTPUT-01
 title: 'Lawful stable analytical composites through selected readback and browser output'
 risk_tier: 2
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Boundary repairs and ledger freshness landed with eleven executed acceptance receipts; selected carrier and browser follow-through closed in their own specs; stage2 and broader M4-M6 claims remain open.'
 created_at: '2026-10-01T00:54:44.587Z'
-updated_at: '2026-10-01T00:55:09.390Z'
+updated_at: '2026-10-01T03:06:48.737Z'
 created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
 blast_radius:
   modules:
