@@ -1,0 +1,47 @@
+id: FIX-SHORTCUT-LANG-DOMAIN-TOKENS-01
+title: 'Stop shortcut-language-check flagging placeholder/todo/XXX domain tokens in UI code'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-01T16:26:57.208Z'
+updated_at: '2026-10-01T16:26:57.208Z'
+created_by_session: '6c844fb2-94fa-4a17-bd31-3b8e163b8ac2'
+blast_radius:
+  modules:
+    - '.caws/hooks/shortcut-language-check.sh (PostToolUse Write/Edit advisory)'
+    - '.caws/hooks/hook-policy.json (repo-policy handler routing for claude-code)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - '.caws/hooks/shortcut-language-check.sh'
+    - '.caws/hooks/tests/test_shortcut_language_check.sh'
+    - '.caws/hooks/hook-policy.json'
+    - '.claude/hooks/README.md'
+  out: []
+invariants:
+  - 'Test files, fixtures, markdown, lockfiles and generated/vendored paths stay exempt exactly as before'
+  - 'Strike escalation (warn, ask, block via guard-strikes.sh) is unchanged; only which content counts as a hit changes'
+  - 'Genuine stub language (TODO/FIXME in comments, uppercase TODO/FIXME/HACK/TBD in code, not-implemented throws, placeholder used as a stub in a comment) still produces a strike'
+acceptance:
+  - id: A1
+    given: 'UI source using placeholder as a prop, identifier, attribute, string-union member, CSS pseudo-element, or doc-comment noun (including the ds-react Input.tsx lines that tripped it)'
+    when: 'written via Write or Edit'
+    then: 'the hook emits nothing and records no strike'
+  - id: A2
+    given: 'a comment using placeholder as stub language (bare ''placeholder'', ''just a placeholder'', ''placeholder implementation'', ''placeholder for now/until'', ''temporary placeholder'')'
+    when: 'written via Write or Edit'
+    then: 'the hook emits a strike-1 advisory quoting the matched line'
+  - id: A3
+    given: 'mixed-case todo identifiers and XXX format masks in code versus TODO/FIXME markers in comments, uppercase TODO/FIXME in code, and throw not-implemented stubs'
+    when: 'written'
+    then: 'the former are silent and each of the latter produces an advisory naming its pattern class'
+  - id: A4
+    given: 'claude-code executes the stock machine-runtime copy of this handler'
+    when: 'hook-policy.json declares a handlers override'
+    then: 'caws hooks list resolves shortcut-language-check.sh to the repo copy at the repo-policy tier'
+non_functional: {}
+contracts:
+  - name: 'shortcut-language-check'
+    type: behavior
+    path: '.caws/hooks/shortcut-language-check.sh'
