@@ -76,6 +76,7 @@ export function Carousel({
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
+      {sequence.timed ? (
       <Pressable
         style={styles.rotation}
         disabled={!sequence.valid}
@@ -88,6 +89,7 @@ export function Carousel({
       >
         <RNText>{sequence.playing ? "Stop slide rotation" : "Start slide rotation"}</RNText>
       </Pressable>
+      ) : null}
       <View
         style={styles.viewport}
       >

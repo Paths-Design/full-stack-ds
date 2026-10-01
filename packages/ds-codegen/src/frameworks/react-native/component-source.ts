@@ -1769,7 +1769,11 @@ function emitNode(
     rendered = [`${pad}<${component}`, ...attrs, `${pad}>`, ...childLines, `${pad}</${component}>`].join("\n");
   }
   // A non-modal surface renders no overlay (the web backdrop is hidden too).
-  return applyIfGuard(nativeMotionPart(ir, node, `styles.${styleKeyForPart(node.part)}`, rendered), node, ir, pad, isOverlay ? rnModalityGateProp(ir) : undefined);
+  const realizationGuard = [
+    isOverlay ? rnModalityGateProp(ir) : undefined,
+    ir.motion.sequence && node.part === ir.motion.sequence.rotation ? "sequence.timed" : undefined,
+  ].filter(Boolean).join(" && ");
+  return applyIfGuard(nativeMotionPart(ir, node, `styles.${styleKeyForPart(node.part)}`, rendered), node, ir, pad, realizationGuard);
 }
 
 /**

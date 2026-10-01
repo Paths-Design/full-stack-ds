@@ -192,8 +192,11 @@ Unbound decorations retain their original rendering. The receiving part owns
 geometry and paint; the binding introduces no timer. Generated and host-shim
 tests cover shared elapsed values, active-item selection, composition isolation
 and preserving remaining reading time when reduced-motion preferences change.
-Native styling and icons, rotation-control visibility
-for disabled timers, and broader generated-component simulator/device witnesses remain unfinished. Accordingly
+The generated rotation control is omitted when the timer is disabled, while
+manual navigation remains available for valid content. Re-enabling a duration
+restores Start/Stop; invalid content keeps the controls disabled. These behaviors
+have generated-component host-shim coverage. Native styling and icons, and
+broader generated-component simulator/device witnesses remain unfinished. Accordingly
 the IR's native sequence capability remains unrealized and the parity criterion
 remains open. SwiftUI, Compose, Unity and Godot still need their sequence realizations.
 

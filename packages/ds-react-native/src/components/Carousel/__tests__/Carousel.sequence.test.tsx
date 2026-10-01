@@ -21,6 +21,26 @@ describe("generated native sequence controls", () => {
     await act(async () => { tree = create(<StrictMode><Carousel slides={["First", "Second", "Third"]} {...props}>{children}</Carousel></StrictMode>); });
   }
   async function press(label: string) { await act(async () => control(label).props.onPress()); }
+  it.each([null, 0, -1, NaN, Infinity])("omits rotation for disabled duration %s while retaining manual navigation", async duration => {
+    await mount({ autoPlay: true, duration });
+    expect(controls().map(node => node.props.accessibilityLabel)).not.toContain("Stop slide rotation");
+    expect(controls().map(node => node.props.accessibilityLabel)).not.toContain("Start slide rotation");
+    await press("Next slide");
+    expect(slide("Second").props.importantForAccessibility).toBe("auto");
+    await act(async () => { vi.advanceTimersByTime(20000); });
+    expect(slide("Second").props.importantForAccessibility).toBe("auto");
+  });
+  it("restores rotation when a disabled timer becomes enabled and keeps invalid content disabled", async () => {
+    await mount({ duration: null });
+    await act(async () => tree.update(<StrictMode><Carousel slides={["First", "Second", "Third"]} duration={1000}>{children}</Carousel></StrictMode>));
+    expect(control("Start slide rotation").props.disabled).toBe(false);
+    await press("Start slide rotation");
+    await act(async () => { vi.advanceTimersByTime(1000); });
+    expect(slide("Second").props.importantForAccessibility).toBe("auto");
+    await act(async () => tree.update(<StrictMode><Carousel slides={["First"]} duration={1000}>{children}</Carousel></StrictMode>));
+    expect(control("Stop slide rotation").props.disabled).toBe(true);
+    expect(control("Next slide").props.disabled).toBe(true);
+  });
   it("binds both decorations to one budget across the composed picker boundary", async () => {
     await mount({ autoPlay: true, duration: 1000, indicator: "both" });
     await act(async () => { vi.advanceTimersByTime(400); });
