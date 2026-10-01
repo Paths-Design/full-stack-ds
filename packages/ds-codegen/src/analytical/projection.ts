@@ -36,7 +36,7 @@ import type { AggregateOp, FieldDecl, RelationDecl, RelationalStructure, Tempora
 import type { GraphResult } from "./graph-projection.js";
 import { judge } from "./engines.js";
 import { codesOf, termsOf } from "./judgment.js";
-import { COMPOSITION_DIAG, OBLIGATION, QUALIFIED_DIAG } from "./codes.js";
+import { COMPOSITION_DIAG, DIAG, OBLIGATION, QUALIFIED_DIAG } from "./codes.js";
 import { CONTRACTS_DIR, loadOracle } from "./necessity.js";
 
 /* ------------------------------------------------------------------ types */
@@ -2126,7 +2126,8 @@ export interface DerivedBoundedRange {
 }
 
 /** The canonical comparable form of one structured grain binding. */
-const normalizedKey = (key: QualifiedRelationResult["observations"][number]["key"]): string => JSON.stringify(key);
+const normalizedKey = (key: QualifiedRelationResult["observations"][number]["key"]): string =>
+  JSON.stringify([...key].sort((a, b) => a.field.localeCompare(b.field)));
 
 /**
  * The SHARED source-grain population a composite's operands carry: the sorted
@@ -2138,7 +2139,7 @@ const normalizedKey = (key: QualifiedRelationResult["observations"][number]["key
  */
 export type QualifiedOperandPopulation = {
   keys: readonly string[];
-  bindings: ReadonlyArray<ReadonlyArray<{ field: string; value: string }>>;
+  bindings: ReadonlyArray<ReadonlyArray<{ field: string; value: string | number }>>;
 };
 
 /**
@@ -2149,7 +2150,7 @@ export type QualifiedOperandPopulation = {
  * composite's derived structure, carried UNRECONSTRUCTED into the panel.
  */
 export interface DerivedFacetPanel {
-  value: string;
+  value: string | number;
   keys: readonly string[];
   ranges: readonly DerivedBoundedRange[];
 }
@@ -2201,6 +2202,8 @@ export type PartReading = {
   units: Partial<Record<Channel, UnitDecl>>;
   /** What each channel carries for this part, so a shared scale knows whether it is a quantity. */
   transformations: Partial<Record<Channel, Transformation>>;
+  transformationRequirements: Partial<Record<Channel, Transformation[]>>;
+  taskRequirements: Array<{ task: Task; transformation: Transformation }>;
   /**
    * Channels where two or more of the part's OWN sub-projections declare units
    * that are ESTABLISHED to be incompatible. This is the fact a summary may not
@@ -2263,7 +2266,7 @@ export type CompositeObligation = { kind: "unproven"; obligation: string; from: 
 export type CompositeUnsupported = {
   kind: "unsupported";
   resultKind: ResultKind;
-  task: Task;
+  task?: Task;
   obligation: string;
   detail: string;
   from: OperandRole;
@@ -2389,6 +2392,11 @@ function readPart(part: Extract<CompositePart, { kind: "program" }>, input: Comp
   if (facts.measure.unit) units[program.measure] = facts.measure.unit;
   transformations[program.dimension] = facts.dimension.transformation;
   transformations[program.measure] = facts.measure.transformation;
+  const transformationRequirements: PartReading["transformationRequirements"] = {};
+  for (const [ch, transformation] of [[program.dimension, facts.dimension.transformation], [program.measure, facts.measure.transformation]] as const) {
+    transformationRequirements[ch] = [...new Set([...(transformationRequirements[ch] ?? []), transformation])].sort();
+  }
+  for (const ch of channels) if (transformationRequirements[ch]!.length > 1) delete transformations[ch];
   // An atomic projection IS one coordinate space, so each of its channels
   // presents exactly one scale. That is what a parent layer reads.
   const profile: Partial<Record<Channel, ScalePolicy>> = {};
@@ -2398,6 +2406,8 @@ function readPart(part: Extract<CompositePart, { kind: "program" }>, input: Comp
     channels,
     units,
     transformations,
+    transformationRequirements,
+    taskRequirements: [{ task: program.task, transformation: facts.measure.transformation }],
     unitConflict: [],
     unitUnestablished: [],
     profile,
@@ -2415,37 +2425,42 @@ function readPart(part: Extract<CompositePart, { kind: "program" }>, input: Comp
  * obligation. Composition cannot erase or summarize an operand's standing —
  * it can only inherit it. A qualified result reads to a retained channel view
  * whose identity is the SORTED SET of normalized structured keys, and whose
- * unit and transformation come from the structure's DECLARATION of the
+ * unit and transformation come from the qualification's SNAPSHOT of the
  * presented field — never from the rows, which are not part of a qualified
  * result and would make correspondence re-derivable rather than carried.
  */
 function readQualifiedPart(part: QualifiedPart, input: CompositeInput): PartVerdict {
   const { result, field, channel } = part;
-  const rel = input.structure.relations[result.relation];
-  if (!rel) {
-    throw new Error(`readQualifiedPart: the operand presents relation ${result.relation}, which the structure does not declare — an inapplicable request, not a judgment`);
-  }
-  const fields = (rel.fields ?? {}) as Record<string, Record<string, unknown>>;
+  const fields = result.fields;
   if (!(field in fields) || result.grain.includes(field)) {
     throw new Error(`readQualifiedPart: the operand presents ${result.relation}.${field}, which the relation does not declare as a non-grain field — an inapplicable request, not a judgment`);
   }
   if (result.judgment.standing === "contradicted") {
     const where = result.judgment.boundsViolations.map((v) => JSON.stringify(v.key)).join("; ");
     return refusedComposition(
-      [QUALIFIED_DIAG.BOUNDS_ROW_VIOLATED],
+      [...(result.judgment.boundsViolations.length ? [QUALIFIED_DIAG.BOUNDS_ROW_VIOLATED] : []), ...(result.identity.duplicates.length ? [DIAG.GRAIN_FANOUT] : [])],
       "part",
-      `the qualified operand ${result.relation} carries a readable bounds contradiction at ${where}; the layer cannot present it as an uncomplicated operand`,
+      `the qualified operand ${result.relation} carries bounds contradictions at ${where || "none"} and duplicated complete grain bindings at observations [${result.identity.duplicates.join(", ")}]; composition cannot erase them`,
     );
   }
   if (result.judgment.standing === "unproven") {
     const where = result.judgment.evidenceGaps.map((g) => `${JSON.stringify(g.key)} (${g.participant} unreadable)`).join("; ");
     return unprovenComposition(
-      OBLIGATION.BOUNDS_ROW_CONSISTENT,
+      result.identity.population === "missing" || result.identity.gaps.length ? OBLIGATION.GRAIN_DECLARED : OBLIGATION.BOUNDS_ROW_CONSISTENT,
       "part",
-      `the qualified operand ${result.relation} leaves its declared bounds relationship unevaluated at ${where}; the composite cannot be more decided than its operand`,
+      `the qualified operand ${result.relation} has ${result.identity.population} population evidence, grain gaps ${JSON.stringify(result.identity.gaps)}, and bounds gaps ${where || "none"}; the composite cannot be more decided than its operand`,
     );
   }
   const decl = fields[field] ?? {};
+  if (!input.inventory.channels.includes(channel)) {
+    return { kind: "unsupported", resultKind: "relation", obligation: "target:channel-available", from: "part", detail: `the target ${input.inventory.id} does not supply ${channel}` };
+  }
+  if (!decl.transformation || !CAPACITY[channel].carries.includes(decl.transformation)) {
+    return refusedComposition(["REL_CHANNEL_TRANSFORMATION_UNSUPPORTED"], "part", `${channel} cannot carry the declared ${decl.transformation ?? "unknown"} transformation of ${field}`);
+  }
+  if (CAPACITY[channel].requiresCyclicOrWhole && !decl.cyclic) {
+    return unprovenComposition("channel:cyclic-or-whole", "part", `${channel} needs a carried cyclic-or-whole licence for ${field}`);
+  }
   const channels = [channel];
   const units: Partial<Record<Channel, UnitDecl>> = {};
   const transformations: Partial<Record<Channel, Transformation>> = {};
@@ -2460,6 +2475,8 @@ function readQualifiedPart(part: QualifiedPart, input: CompositeInput): PartVerd
     channels,
     units,
     transformations,
+    transformationRequirements: { [channel]: [decl.transformation] },
+    taskRequirements: [],
     unitConflict: [],
     unitUnestablished: [],
     profile,
@@ -2488,6 +2505,7 @@ function mergeReadings(parts: PartReading[]): PartReading {
   const channels = [...new Set(parts.flatMap((p) => p.channels))].sort();
   const units: Partial<Record<Channel, UnitDecl>> = {};
   const transformations: Partial<Record<Channel, Transformation>> = {};
+  const transformationRequirements: Partial<Record<Channel, Transformation[]>> = {};
   const profile: Partial<Record<Channel, ScalePolicy>> = {};
   const claims = new Set<Claim>();
   const tasks = new Set<Task>();
@@ -2499,8 +2517,8 @@ function mergeReadings(parts: PartReading[]): PartReading {
       // decide on is whether the operands AGREE, and that is decided over every
       // declaration rather than over whichever one was met first.
       if (p.units[ch] && !units[ch]) units[ch] = p.units[ch];
-      if (p.transformations[ch] && !transformations[ch]) transformations[ch] = p.transformations[ch];
-      profile[ch] = p.profile[ch] ?? "shared";
+      transformationRequirements[ch] = [...new Set([...(transformationRequirements[ch] ?? []), ...(p.transformationRequirements[ch] ?? [])])].sort();
+      profile[ch] = profile[ch] === "free" || p.profile[ch] === "free" ? "free" : "shared";
       // A part that is itself conflicted infects the summary.
       if (p.unitConflict.includes(ch)) unitConflict.add(ch);
       if (p.unitUnestablished.includes(ch)) unitUnestablished.add(ch);
@@ -2509,13 +2527,13 @@ function mergeReadings(parts: PartReading[]): PartReading {
     p.tasks.forEach((t) => tasks.add(t));
   }
   for (const ch of channels) {
+    if (transformationRequirements[ch]?.length === 1) transformations[ch] = transformationRequirements[ch]![0];
     const users = parts.filter((p) => p.channels.includes(ch));
     if (users.length < 2) continue;
     // Only a shared QUANTITATIVE scale has a unit to commensurate.
     const declared = users.map((p) => p.units[ch]);
     const metric = users.filter((p) => {
-      const tr = p.transformations[ch];
-      return tr === "interval" || tr === "ratio";
+      return p.transformationRequirements[ch]?.some(tr => tr === "interval" || tr === "ratio");
     });
     if (metric.length < 2) continue;
     void declared;
@@ -2557,6 +2575,8 @@ function mergeReadings(parts: PartReading[]): PartReading {
     channels,
     units,
     transformations,
+    transformationRequirements,
+    taskRequirements: parts.flatMap(p => p.taskRequirements),
     unitConflict: [...unitConflict].sort(),
     unitUnestablished: [...unitUnestablished].sort(),
     profile,
@@ -2760,7 +2780,7 @@ function judgeFacet(c: FacetComposite, parts: PartReading[]): CompositeVerdict {
         `the facet partitions by ${c.partition}, which the carried source-grain bindings do not bind on ${unresolved.length} of ${bindings.length} observations; a partition coordinate must be CARRIED, and a supplied-or-absent row value cannot authorize it`,
       );
     }
-    const byValue = new Map<string, string[]>();
+    const byValue = new Map<string | number, string[]>();
     for (const b of bindings) {
       const value = b.find((pair) => pair.field === c.partition)!.value;
       const keys = byValue.get(value) ?? [];
@@ -2772,7 +2792,7 @@ function judgeFacet(c: FacetComposite, parts: PartReading[]): CompositeVerdict {
     const inner = parts.flatMap((p) => p.ranges ?? []);
     const ranges = inner.filter((r, i) => inner.findIndex((x) => JSON.stringify(x) === JSON.stringify(r)) === i);
     panels = [...byValue.entries()]
-      .sort(([a], [b]) => a.localeCompare(b))
+      .sort(([a], [b]) => JSON.stringify(a).localeCompare(JSON.stringify(b)))
       .map(([value, keys]) => ({ value, keys: [...keys].sort(), ranges }));
   }
   const profile: Partial<Record<Channel, ScalePolicy>> = {};
@@ -2834,12 +2854,11 @@ function judgeEmbed(c: EmbedComposite, part: PartReading, host: PartReading | un
     // budget rule the atomic path uses. Nothing is re-read: the reading's own
     // channels, transformations, claims, ranges, panels and population travel
     // through the verdict untouched.
-    const presented = part.channels.filter((ch) => part.transformations[ch] !== undefined);
+    const presented = part.channels.flatMap(ch => (part.transformationRequirements[ch] ?? []).map(transformation => ({ ch, transformation })));
     const unhostable: string[] = [];
     const unlicensed: string[] = [];
     const inCell = new Set<Claim>();
-    for (const ch of presented) {
-      const transformation = part.transformations[ch]!;
+    for (const { ch, transformation } of presented) {
       const hosts = c.budget.filter((b) => CAPACITY[b].carries.includes(transformation));
       if (hosts.length === 0) {
         unhostable.push(`${ch}:${transformation}`);
@@ -2865,6 +2884,14 @@ function judgeEmbed(c: EmbedComposite, part: PartReading, host: PartReading | un
         "combinator",
         `the cell budget [${[...c.budget].join(", ")}] offers only cyclic-or-whole channels for the composite's presented ${unlicensed.join(", ")}, and the reading carries no cyclicity, so the licence is not established`,
       );
+    }
+    for (const requirement of part.taskRequirements) {
+      const spec = TASK_INVARIANTS[requirement.task];
+      if ("notEnumerated" in spec) return unprovenComposition(spec.notEnumerated, "part", `the ${requirement.task} task is not enumerated`);
+      const claims = c.budget.filter(ch => CAPACITY[ch].carries.includes(requirement.transformation) && !CAPACITY[ch].requiresCyclicOrWhole)
+        .flatMap(ch => channelClaimsForTransformation(ch, c.cellBaseline, requirement.transformation));
+      const missing = spec.requires.filter(claim => !claims.includes(claim));
+      if (missing.length) return refusedComposition(["REL_EMBED_TASK_EXCEEDS_CHANNEL_BUDGET"], "combinator", `the cell cannot discharge ${requirement.task}: ${missing.join(", ")}`);
     }
     if (!host) {
       return unprovenComposition("host:standing", "host", "the embed reached its rule with no retained host reading, which is a defect in this checker rather than in the declaration");
@@ -2960,16 +2987,18 @@ function judgeCompositeAt(input: CompositeInput, path: Array<number | "host">): 
       continue;
     }
     // EVERY PART IS READ, even after one has faulted, so a composite holding
-    // several faults reports all of them. Only the FIRST becomes the composite's
+    // several faults reports all of them. The most severe becomes the composite's
     // own verdict, and the rest stay visible in `parts` rather than vanishing.
-    if (!fault) {
+    const severity = { retained: 0, unsupported: 1, unproven: 2, refused: 3 };
+    const candidate = { ...verdict, from: "part" as const };
+    if (!fault || severity[verdict.kind] > severity[fault.kind] || (severity[verdict.kind] === severity[fault.kind] && JSON.stringify(candidate) < JSON.stringify(fault))) {
       // ATTRIBUTION IS RE-STATED AT EACH LEVEL, deliberately. `from` answers "was
       // this composite refused by its own combinator rule, or did a part arrive
       // already faulted?" — the question the compositional invariant turns on.
       // Propagating a nested verdict's own `from` unchanged would make an outer
       // composite appear to have refused by a rule it does not have, while
       // propagating its cause unchanged keeps the fault named where it occurred.
-      fault = { ...verdict, from: "part" };
+      fault = candidate;
     }
   }
 
@@ -3023,7 +3052,7 @@ export type CatalogueUnsatisfied = {
    */
   reason: "unsupported" | "not-in-space" | "no-retained-match";
   detail: string;
-  /** The enumeration's support decision, when the REQUEST itself is not implemented. */
+  /** The enumeration's support decision for a request outside its supported family. */
   support?: SupportDecision;
   /** Refused candidates whose point satisfies the region, each with the cause it carried. */
   refused: Array<{ program: string; cause: string }>;
@@ -3201,7 +3230,7 @@ export const OHLC_PROBE_NON_CLAIMS: readonly string[] = [
 
 export interface QualifiedObservation {
   /** The structured grain binding: one field + value pair per declared grain column. */
-  key: ReadonlyArray<{ field: string; value: string }>;
+  key: ReadonlyArray<{ field: string; value: string | number }>;
   /** The values of the fields this request admits, keyed by field name. */
   values: Readonly<Record<string, number | string>>;
 }
@@ -3244,7 +3273,7 @@ export interface QualifiedBoundsViolation {
   /** The index into `observations` of the falsifying entry. */
   observation: number;
   /** The structured grain binding of the falsifying observation. */
-  key: ReadonlyArray<{ field: string; value: string }>;
+  key: ReadonlyArray<{ field: string; value: string | number }>;
 }
 
 /**
@@ -3261,12 +3290,14 @@ export interface QualifiedEvidenceGap {
   /** The index into `observations` of the observation carrying the gap. */
   observation: number;
   /** The structured grain binding of that observation. */
-  key: ReadonlyArray<{ field: string; value: string }>;
+  key: ReadonlyArray<{ field: string; value: string | number }>;
 }
 
 export interface QualifiedRelationResult {
   relation: string;
   grain: readonly string[];
+  fields: Readonly<Record<string, FieldDecl>>;
+  identity: { population: "supplied" | "missing"; gaps: Array<{ observation: number; field: string }>; duplicates: number[] };
   observations: readonly QualifiedObservation[];
   fieldFacts: Readonly<Record<string, QualifiedFieldFacts>>;
   judgment: {
@@ -3277,6 +3308,15 @@ export interface QualifiedRelationResult {
     /** The unproven facts, each attached to its own observation. */
     evidenceGaps: readonly QualifiedEvidenceGap[];
   };
+}
+
+/** Qualification owns its snapshot; no source or output alias can revise it. */
+function freezeQualified<T>(value: T): T {
+  if (value && typeof value === "object") {
+    Object.values(value).forEach(freezeQualified);
+    Object.freeze(value);
+  }
+  return value;
 }
 
 /**
@@ -3297,7 +3337,7 @@ export function qualifyRelation(
   const rel = structure.relations[relationName];
   if (!rel) throw new Error(`qualify: relation ${relationName} is not declared by the structure`);
   if (!Array.isArray(rel.grain) || rel.grain.length === 0) throw new Error(`qualify: relation ${relationName} declares no grain, so no source-grain observation can be keyed`);
-  const grain = rel.grain as readonly string[];
+  const grain = [...rel.grain];
   const fields = (rel.fields ?? {}) as Record<string, Record<string, unknown>>;
   // RESOLUTION PRECEDES OBSERVATION, grain edition: a grain member naming no
   // declared field would silently build keys from `row[g] ?? ""` — a binding
@@ -3311,14 +3351,26 @@ export function qualifyRelation(
   }
   const admitted = Object.keys(fields).filter((f) => !grain.includes(f));
 
-  const observations: { key: { field: string; value: string }[]; values: Record<string, number | string> }[] = [];
+  const identity: QualifiedRelationResult["identity"] = { population: population === undefined ? "missing" : "supplied", gaps: [], duplicates: [] };
+  const seen = new Set<string>();
+  const observations: QualifiedObservation[] = [];
   if (population) {
     for (const row of population) {
-      const key = grain.map((g) => ({ field: g, value: String(row[g] ?? "") }));
+      const key: Array<{ field: string; value: string | number }> = [];
+      for (const field of grain) {
+        const value = row[field];
+        if (typeof value === "string" || (typeof value === "number" && Number.isFinite(value))) key.push({ field, value });
+        else identity.gaps.push({ observation: observations.length, field });
+      }
+      if (key.length === grain.length) {
+        const normalized = normalizedKey(key);
+        if (seen.has(normalized)) identity.duplicates.push(observations.length);
+        seen.add(normalized);
+      }
       const values: Record<string, number | string> = {};
       for (const f of admitted) {
         const raw = row[f];
-        if (raw !== undefined) values[f] = raw as number | string;
+        if (typeof raw === "string" || (typeof raw === "number" && Number.isFinite(raw))) values[f] = raw;
       }
       observations.push({ key, values });
     }
@@ -3366,7 +3418,7 @@ export function qualifyRelation(
       ];
       let unreadable = false;
       for (const [participant, raw] of participants) {
-        if (typeof raw !== "number") {
+        if (typeof raw !== "number" || !Number.isFinite(raw)) {
           unreadable = true;
           evidenceGaps.push({ subject, participant, observation: idx, key: obs.key });
         }
@@ -3388,15 +3440,18 @@ export function qualifyRelation(
   }
 
   const standing: QualifiedStanding =
-    boundsViolations.length > 0 ? "contradicted" : evidenceGaps.length > 0 ? "unproven" : "qualified";
+    boundsViolations.length > 0 || identity.duplicates.length > 0 ? "contradicted" :
+      evidenceGaps.length > 0 || identity.gaps.length > 0 || identity.population === "missing" ? "unproven" : "qualified";
 
-  return {
+  return freezeQualified({
     relation: relationName,
     grain,
+    fields: structuredClone(rel.fields ?? {}) as Record<string, FieldDecl>,
+    identity,
     observations,
     fieldFacts,
     judgment: { standing, boundsViolations, evidenceGaps },
-  };
+  });
 }
 
 /**
@@ -3427,14 +3482,19 @@ const DECLARED_QUALIFIED_LOWERINGS: readonly string[] = ["readback"];
  * the lowering never reconstructs the result or re-reads source rows. It
  * cannot: the rows are not part of a qualified result.
  */
+const qualifiedSelection = Symbol("qualified-selection");
 export interface QualifiedProgram {
+  readonly [qualifiedSelection]: true;
   readonly result: QualifiedRelationResult;
   readonly intent: QualifiedIntent;
 }
 
+const selectedQualifiedPrograms = new WeakSet<QualifiedProgram>();
+
 export type QualifiedProgramSelection =
   | { kind: "selected"; program: QualifiedProgram }
   | { kind: "unsupported"; reason: string }
+  | { kind: "unproven"; reason: string }
   | { kind: "nothing-to-realize"; reason: string };
 
 /**
@@ -3450,10 +3510,13 @@ export function selectQualifiedProgram(q: QualifiedRelationResult, intent: Quali
   if (!DECLARED_QUALIFIED_LOWERINGS.includes(intent.kind)) {
     return { kind: "unsupported", reason: `the qualified-result family declares no lowering for the requested ${intent.kind} intent; the qualified relation ${q.relation} is lawful but unsupported for it` };
   }
+  if (q.identity.population === "missing") return { kind: "unproven", reason: `the relation ${q.relation} has no supplied population` };
   if (q.observations.length === 0) {
     return { kind: "nothing-to-realize", reason: `the qualified relation ${q.relation} carries no observations, so there is no instance to realize` };
   }
-  return { kind: "selected", program: { result: q, intent } };
+  const program = Object.freeze({ [qualifiedSelection]: true as const, result: q, intent: Object.freeze({ ...intent }) });
+  selectedQualifiedPrograms.add(program);
+  return { kind: "selected", program };
 }
 
 /** The produced readback artifact: the qualified result's content, carried. */
@@ -3461,22 +3524,24 @@ export interface QualifiedReadbackArtifact {
   kind: "readback";
   relation: string;
   grain: readonly string[];
+  fields: QualifiedRelationResult["fields"];
+  identity: QualifiedRelationResult["identity"];
   observations: QualifiedRelationResult["observations"];
   fieldFacts: QualifiedRelationResult["fieldFacts"];
   judgment: QualifiedRelationResult["judgment"];
 }
 
 /**
- * Lower a SELECTED program into the readback artifact. The parameter type
- * makes an unselected request unrepresentable: a program exists only on the
- * `selected` branch, so no artifact can be produced off the selection path.
+ * Lower a SELECTED program into a detached readback artifact. The opaque type
+ * and mint registry require selection, including for callers that cast types.
  * The artifact carries the judgment — a truthful readback of problematic data
  * is not a certification that the bounds hold; the consumer sees the standing
  * and the scoped diagnostics alongside the data.
  */
 export function lowerSelectedProgram(program: QualifiedProgram): QualifiedReadbackArtifact {
+  if (!selectedQualifiedPrograms.has(program)) throw new Error("lowerSelectedProgram requires a program minted by selected qualification");
   const q = program.result;
-  return { kind: "readback", relation: q.relation, grain: q.grain, observations: q.observations, fieldFacts: q.fieldFacts, judgment: q.judgment };
+  return structuredClone({ kind: "readback", relation: q.relation, grain: q.grain, fields: q.fields, identity: q.identity, observations: q.observations, fieldFacts: q.fieldFacts, judgment: q.judgment });
 }
 
 /**
@@ -3493,7 +3558,7 @@ export function projectQualifiedRelation(q: QualifiedRelationResult, intent: Qua
 export interface DecodedQualifiedReadback {
   relation: string;
   grain: readonly string[];
-  observations: ReadonlyArray<{ key: ReadonlyArray<{ field: string; value: string }>; values: Readonly<Record<string, number | string>> }>;
+  observations: ReadonlyArray<{ key: ReadonlyArray<{ field: string; value: string | number }>; values: Readonly<Record<string, number | string>> }>;
   /** The declared bounds relationships, by field: what a contradiction would violate. */
   boundsFacts: Readonly<Record<string, { lower: string; upper: string }>>;
   /** The declared temporalities, by field: carried, not interpreted. */
@@ -3527,7 +3592,7 @@ export function decodeQualifiedReadback(artifact: QualifiedReadbackArtifact): De
     boundsFacts,
     temporalityFacts,
     standing: artifact.judgment.standing,
-    contradicted: artifact.judgment.boundsViolations.map((v) => v.observation),
-    unproven: artifact.judgment.evidenceGaps.map((g) => g.observation),
+    contradicted: [...new Set([...artifact.judgment.boundsViolations.map(v => v.observation), ...artifact.identity.duplicates])].sort((a, b) => a - b),
+    unproven: [...new Set([...artifact.judgment.evidenceGaps.map(g => g.observation), ...artifact.identity.gaps.map(g => g.observation)])].sort((a, b) => a - b),
   };
 }
