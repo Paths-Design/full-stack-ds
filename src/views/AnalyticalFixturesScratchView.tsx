@@ -11,13 +11,11 @@
 //      stimulus, never an expected answer: the binding ledger and holdout
 //      stay engine-side. The shape is the stage-1.5 kernel (types.ts mirrors
 //      the emitted schemas): only witnessed coordinates exist to display.
-//   3. Realization — deliberately empty. No projection engine exists yet
-//      (view algebra, projection space, and realization are later stages of
-//      ARCH-ANALYTICAL-RELATION-001). This panel draws no chart, because a
-//      hand-drawn chart here would be exactly the pre-made-chart posture the
-//      doctrine forbids. When a real engine lands, its output feeds this panel.
+//   3. A bounded selected composite witness above the corpus inspector consumes
+//      produced artifacts. It does not claim projection of the selected fixture.
 
 import { useMemo, useState } from "react";
+import { AnalyticalCompositePreview } from "../components/analytical/AnalyticalCompositePreview";
 import {
   Badge,
   Button,
@@ -232,6 +230,7 @@ export function AnalyticalFixturesScratchView() {
         dump after the corpus changes.
       </p>
 
+      <AnalyticalCompositePreview />
       <div className="afx-grid">
         <nav className="afx-index" aria-label="Fixture index">
           <Input
@@ -354,14 +353,12 @@ export function AnalyticalFixturesScratchView() {
           </section>
         )}
 
-        <aside className="afx-realization" aria-label="Realization placeholder">
+        <aside className="afx-realization" aria-label="Corpus projection boundary">
           <h3 className="afx-section-title">Realization</h3>
           <p className="afx-realization__placeholder">
-            Intentionally empty — no projection engine exists yet. View algebra,
-            projection space, and realization are later stages of{" "}
-            <code>ARCH-ANALYTICAL-RELATION-001</code>. This panel draws nothing
-            until a real engine feeds it: a hand-drawn chart here would be
-            exactly the pre-made-chart posture the analytical doctrine forbids.
+            The selected output above exercises one bounded qualified range
+            composition. This corpus inspector does not select a projection
+            for each fixture; its assertions remain questions for the engine.
           </p>
           {selected && (
             <div className="afx-realization__pending">

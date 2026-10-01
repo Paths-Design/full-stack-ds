@@ -98,6 +98,30 @@ host-frame rendering and atomic-leaf output are outside this family.
 | A visual realization is observable | Playwright inspects actual SVG/DOM geometry and labels under a declared scale; a browser screenshot is inspected |
 | Claims stay bounded | Stage-2 specs remain open; no endpoint roles, ordering, aggregation expansion, M5 or M6 acceptance is asserted |
 
-Browser evidence remains owed. The next slice must connect a Node-side producer
-to a browser-safe consumer that receives the selected artifacts without importing
-the analytical corpus loader or independently interpreting source declarations.
+## Browser consumer (`REL-COMPOSITE-BROWSER-01`)
+
+The scratch route `#/scratch/analytical-fixtures` shows selected output separately
+from its answer-free corpus inspector. A Node-side Vite provider calls the real
+selector and emits both artifacts from one carrier. Its repo-owned witnesses
+are not additions to the frozen analytical corpus. The browser imports only the
+artifact module: it neither qualifies rows nor imports the evaluator at runtime.
+The production build rejects emitted analytical evaluator modules. A temporary
+runtime import of `CAPACITY` triggered that guard; restoring the consumer rebuilt
+successfully. The development browser also checks its analytical module requests.
+
+The recursive consumer follows carried embed/layer/facet paths, range membership
+and typed panel keys. SVG endpoints and member marks use the metric artifact's
+coordinates directly. Readback displays carried values and grain bindings, with
+declarations and judgment origins available for inspection. An atomic host's
+standing remains visible in the carried record; its frame is not drawn.
+
+`e2e/analytical-composite.spec.ts` independently reads visible table cells and
+measures CSS-pixel bounding boxes through the SVG screen transform. It checks
+values, bounds, member association, population and typed panel membership;
+numeric `1` and string `"1"` occupy distinct panels. Geometry, association, range,
+panel and standing mutations each invalidate that observation. A renamed and
+reordered witness uses the same consumer; refused, unproven, unsupported and
+empty selections display disposition without geometry. These are Chromium
+witnesses of this bounded format, not universal visual adequacy, general corpus
+projection or whole-system M4 completion. Stage-2 ratification and M5/M6 remain
+open.

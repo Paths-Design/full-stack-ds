@@ -1,4 +1,8 @@
 declare module "*.css" {}
+declare module "virtual:fsds/analytical-composite" {
+  const witnesses: import("../scripts/analytical-composite-preview").CompositeWitness[];
+  export default witnesses;
+}
 declare module "*.svg" {
   const src: string;
   export default src;
