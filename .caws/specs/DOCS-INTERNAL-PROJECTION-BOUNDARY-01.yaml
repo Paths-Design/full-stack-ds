@@ -1,0 +1,35 @@
+id: DOCS-INTERNAL-PROJECTION-BOUNDARY-01
+title: 'Exclude internal documents from showcase projection even when tracked'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-01T03:26:35.488Z'
+updated_at: '2026-10-01T03:26:35.488Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Showcase documentation corpus projection'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/docs/projection.ts'
+    - 'src/docs/projection.test.ts'
+  out: []
+invariants:
+  - 'Internal documents never enter public index page or graph payloads'
+  - 'Public tracked markdown remains projected with stable routes'
+acceptance:
+  - id: A1
+    given: 'an injected source containing internal and public markdown'
+    when: 'documentation is projected'
+    then: 'internal bodies identities and edges are absent while public pages remain'
+  - id: A2
+    given: 'the real tracked corpus with authored internal audit notes'
+    when: 'projection tests and repository gates execute'
+    then: 'the internal exclusion and public corpus consistency checks pass'
+non_functional: {}
+contracts:
+  - name: 'docs-corpus-boundary'
+    type: contract-test
+    path: 'src/docs/projection.corpus.test.ts'
