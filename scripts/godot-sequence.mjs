@@ -16,11 +16,17 @@ fs.copyFileSync(path.join(root, 'packages/ds-godot/verification/sequence_render.
 fs.copyFileSync(path.join(root, 'packages/ds-godot/verification/sequence_accessibility.gd'), path.join(project, 'sequence_accessibility.gd'));
 const { buildComponentIR } = await import('../packages/ds-codegen/dist/ir.js');
 const { createGodotEmitter } = await import('../packages/ds-codegen/dist/frameworks/godot/factory.js');
-const base = path.join(root, 'packages/ds-contracts/components/Carousel/Carousel');
-const contract = JSON.parse(fs.readFileSync(base + '.contract.json', 'utf8'));
-contract.tokens = JSON.parse(fs.readFileSync(base + '.tokens.json', 'utf8'));
-contract.styles = JSON.parse(fs.readFileSync(base + '.styles.json', 'utf8'));
-for (const file of createGodotEmitter().emitComponent(buildComponentIR(contract), { componentsRoot: '', contractsRoot: '' })) {
+const { listComponentContracts } = await import('../packages/ds-codegen/dist/contracts-fs.js');
+const corpus = new Map(listComponentContracts(path.join(root, 'packages/ds-contracts')).map(entry => {
+  const contract = JSON.parse(fs.readFileSync(entry.absPath, 'utf8'));
+  for (const kind of ['tokens', 'styles']) {
+    const sidecar = entry.absPath.replace('.contract.json', `.${kind}.json`);
+    if (fs.existsSync(sidecar)) contract[kind] = JSON.parse(fs.readFileSync(sidecar, 'utf8'));
+  }
+  return [contract.name, contract];
+}));
+const contract = corpus.get('Carousel');
+for (const file of createGodotEmitter().emitComponent(buildComponentIR(contract, { allContracts: corpus }), { componentsRoot: '', contractsRoot: '' })) {
   const target = path.join(project, 'addons/full_stack_ds/components', file.relativePath);
   fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.writeFileSync(target, file.contents);

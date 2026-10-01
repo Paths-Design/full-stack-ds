@@ -499,6 +499,10 @@
             }
           }
         ],
+        "progressHosts": [
+          "picker",
+          "next"
+        ],
         "transition": {
           "referenceWidth": 320,
           "minMultiplier": 0.5,

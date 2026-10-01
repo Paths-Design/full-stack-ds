@@ -4,6 +4,7 @@ import { getCssPrefix, type ComponentContract, type ContractDomNode, type Contra
 export interface SequenceIR extends ContractSequence {
   timing: ContractSequence["timing"] & { defaultMs: number };
   progress: ContractMotionProgress[];
+  progressHosts: Array<"picker" | "next" | "other" | "unresolved">;
   selectors: { picker: string; progress: string[] };
   composition: "resolved" | "unresolved";
   transition?: { durationToken: string; easingToken: string; durationMs: number; easing: string; referenceWidth: number; minMultiplier: number; maxMultiplier: number };
@@ -80,11 +81,19 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
     if (!channel || channel.valueType !== "number") fail("composed picker must share the numeric sequence channel and callback");
   } else if (picker && picker.iterate!.source !== `prop:${sequence.itemsProp}`) fail("picker must iterate sequence items");
   const progressSelectors: string[] = [];
+  const progressHosts: SequenceIR["progressHosts"] = [];
+  const contains = (parent: ContractDomNode, child: ContractDomNode): boolean =>
+    parent === child || (!parent.componentRef && Boolean(parent.children?.some(node => contains(node, child))));
   const targets = new Set<string>();
   for (const binding of progress) {
     const resolved = address(binding.target);
     const node = resolved.node;
     progressSelectors.push(resolved.selector);
+    // Resolve ancestry in the owning contract, including a composed child.
+    // Native backends must not reconstruct it from web selectors or part names.
+    progressHosts.push(!node ? "unresolved" :
+      picker && resolved.owner === resolvedPicker.owner && resolved.instance === resolvedPicker.instance && contains(picker, node) ? "picker" :
+      resolved.owner === contract && contains(owned(sequence.next), node) ? "next" : "other");
     if (targets.has(resolved.selector) || (!binding.target.componentPart && names.includes(binding.target.part))) fail("progress targets must be distinct decorations");
     targets.add(resolved.selector);
     if (node && (node.attrs?.["aria-hidden"] !== "true" || node.content || node.children?.length)) fail("progress must be empty and decorative");
@@ -112,7 +121,7 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
     normalizedTransition = { ...size, durationToken: transition.durationToken, easingToken: transition.easingToken,
       durationMs: Number(value[1]) * (value[2] === "s" ? 1000 : 1), easing: easing! };
   }
-  return { ...sequence, composition: allContracts || (!resolvedPicker.instance && progress.every(p => !p.target.componentPart)) ? "resolved" : "unresolved", selectors: { picker: resolvedPicker.selector, progress: progressSelectors }, timing: { ...sequence.timing, defaultMs }, progress, ...(normalizedTransition ? { transition: normalizedTransition } : {}), realization: { web: "sequence-budget", nonWeb: "unrealized" } };
+  return { ...sequence, composition: allContracts || (!resolvedPicker.instance && progress.every(p => !p.target.componentPart)) ? "resolved" : "unresolved", selectors: { picker: resolvedPicker.selector, progress: progressSelectors }, timing: { ...sequence.timing, defaultMs }, progress, progressHosts, ...(normalizedTransition ? { transition: normalizedTransition } : {}), realization: { web: "sequence-budget", nonWeb: "unrealized" } };
 }
 
 /** CSS-part addressing is derived here rather than reconstructed by each emitter. */

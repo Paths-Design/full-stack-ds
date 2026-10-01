@@ -36,10 +36,10 @@ export function godotSequencePlan(ir: ComponentIR) {
   const nodes: DomNodeIR[] = [];
   const walk = (node: DomNodeIR) => { nodes.push(node); if (!node.componentRef) node.children.forEach(walk); };
   if (ir.dom) walk(ir.dom);
-  const owns = (node: DomNodeIR | undefined, part: string): boolean => !!node && (node.part === part || (!node.componentRef && node.children.some(child => owns(child, part))));
-  for (const progress of sequence.progress) {
-    const host = progress.effect === "elapsed-width" ? sequence.picker : sequence.next;
-    if (!owns(nodes.find(node => node.part === host), progress.target.part)) throw new Error(`GODOT_UNSUPPORTED_PROGRESS_HOST: ${ir.name}.${progress.target.part}`);
+  if (sequence.composition !== "resolved") throw new Error(`GODOT_UNRESOLVED_SEQUENCE: ${ir.name}`);
+  for (const [index, progress] of sequence.progress.entries()) {
+    const host = progress.effect === "elapsed-width" ? "picker" : "next";
+    if (sequence.progressHosts[index] !== host) throw new Error(`GODOT_UNSUPPORTED_PROGRESS_HOST: ${ir.name}.${progress.target.part}`);
   }
   const names = Object.fromEntries((["previous", "next"] as const).map(key => {
     const node = nodes.find(n => n.part === sequence[key]);

@@ -30,8 +30,10 @@ node scripts/godot-sequence.mjs --export --mutations
 
 `GODOT` can select another engine executable. The runner copies the authored
 runtime into a unique ignored project under `tmp/godot-sequence/`, emits the
-component from its current contract and sidecars, and records copied input
-hashes. These projects, logs and images are regenerable evidence, not source.
+component from its current contract and sidecars against the resolved contract
+corpus, and records copied input hashes. Progress placement is an IR fact resolved
+through the referenced Pagination anatomy; the native adapter does not infer
+ownership from CSS selectors or assume that the picker is locally owned. These projects, logs and images are regenerable evidence, not source.
 The codegen build must precede the runner so its emission uses current source.
 
 The headless budget fixture supplies finite timestamps to check composed pause
