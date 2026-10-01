@@ -1,0 +1,23 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const out = path.join(root, 'tmp/godot-sequence', crypto.randomUUID());
+const project = path.join(out, 'project');
+fs.mkdirSync(project, { recursive: true });
+fs.cpSync(path.join(root, 'packages/ds-godot/addons'), path.join(project, 'addons'), { recursive: true });
+fs.copyFileSync(path.join(root, 'packages/ds-godot/verification/sequence_budget.gd'), path.join(project, 'sequence_budget.gd'));
+fs.writeFileSync(path.join(project, 'project.godot'), 'config_version=5\n[application]\nconfig/name="Sequence verification"\n[rendering]\nrenderer/rendering_method="gl_compatibility"\n');
+const godot = process.env.GODOT ?? '/Applications/Godot.app/Contents/MacOS/Godot';
+console.log('Evidence:', out);
+const result = spawnSync(godot, ['--headless', '--path', project, '--script', 'res://sequence_budget.gd'], { encoding: 'utf8', timeout: 60000 });
+const log = (result.stdout ?? '') + (result.stderr ?? '');
+fs.writeFileSync(path.join(out, 'budget.log'), log);
+process.stdout.write(log);
+if (result.error || result.status !== 0 || /SCRIPT ERROR|Parse Error|Assertion failed/.test(log)) throw new Error('Godot sequence verification failed');
+const receipt = log.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line)).find(value => value.kind === 'godot-sequence-budget');
+if (!receipt?.passed) throw new Error('Missing passing sequence receipt');
+fs.writeFileSync(path.join(out, 'receipt.json'), JSON.stringify({ ...receipt, inputs: Object.fromEntries(['runtime/sequence_budget.gd'].map(file => [file, crypto.createHash('sha256').update(fs.readFileSync(path.join(project, 'addons/full_stack_ds', file))).digest('hex')])) }, null, 2) + '\n');
