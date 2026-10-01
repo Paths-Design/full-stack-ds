@@ -1,0 +1,82 @@
+id: SHOWCASE-CLAIM-CENSUS-01
+title: 'Correct showcase claim boundaries and target census'
+risk_tier: 2
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Merged registry-backed showcase census and bounded architecture claims; all four acceptance criteria passed inspected regressions and runtime checks, with local rail, tests, typecheck, lint, doc and scope gates passing.'
+created_at: '2026-10-01T07:25:49.053Z'
+updated_at: '2026-10-01T08:09:24.465Z'
+created_by_session: '01a0f64e-1a73-7d10-8acd-5f8e93924b47'
+blast_radius:
+  modules:
+    - 'Showcase census and orientation pages'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'vite-plugin-fsds-data.ts'
+    - 'src/types/data.ts'
+    - 'src/views/Home.tsx'
+    - 'src/views/ArchitectureView.tsx'
+    - 'src/views/views-smoke.test.tsx'
+    - 'src/consumption/showcase-census.test.ts'
+    - 'src/consumption/showcase-census.ts'
+    - 'docs/current-implementation-snapshot.md'
+    - scripts/showcase-census.ts
+    - tsconfig.json
+  out: []
+invariants:
+  - 'Target registration and output roots remain owned by the codegen registry; census coverage does not confer admission or behavioral parity.'
+  - 'Stack is the rendered primitive; BoxModel remains a defaults table.'
+acceptance:
+  - id: A1
+    given: 'configured targets and their declared outputs'
+    when: 'the showcase census is built'
+    then: 'all registered builtin targets appear with their actual corpus coverage, descriptors remain distinguished, and SwiftUI is never inferred as an emitter without a package.'
+  - id: A2
+    given: 'a missing corpus component replaced by an unrelated directory'
+    when: 'coverage is computed'
+    then: 'the target remains partial rather than claiming full source coverage.'
+  - id: A3
+    given: 'Stack and BoxModel primitive files'
+    when: 'the overview renders'
+    then: 'it reports one rendered primitive and identifies the geometry defaults separately.'
+  - id: A4
+    given: 'the Overview and Architecture pages'
+    when: 'their claims are inspected'
+    then: 'source coverage is distinguished from admission and runtime parity, showcase self-attestation is removed, and the canonical component path is correct.'
+non_functional: {}
+contracts:
+  - name: 'showcase-census'
+    type: behavior
+    path: 'src/consumption/showcase-census.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "src/views/views-smoke.test.tsx: Home integration against registry-backed bundle confirms all builtin targets, six admission badges, descriptor family, and Compose/Unity/Godot. Observed runtime confirmed SwiftUI source presence. Executed log: tmp/showcase-claims/fsds-showcase-merged-check.log (16 tests passed)."
+    recorded_at: "2026-10-01T08:07:49.002Z"
+    command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
+    exit_code: 0
+    commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "src/consumption/showcase-census.test.ts: foreign-directory substitution remains partial; empty and test-only directories do not count; descriptors are separate from source. Executed log: tmp/showcase-claims/fsds-showcase-merged-check.log (16 tests passed)."
+    recorded_at: "2026-10-01T08:08:04.090Z"
+    command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
+    exit_code: 0
+    commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "src/views/views-smoke.test.tsx: Home renders one primitive and BoxModel geometry defaults separately; inspected runtime showed the same. Executed log: tmp/showcase-claims/fsds-showcase-merged-check.log (16 tests passed)."
+    recorded_at: "2026-10-01T08:08:25.315Z"
+    command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
+    exit_code: 0
+    commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "src/views/views-smoke.test.tsx: Architecture canonical component path and bounded showcase statement; Home coverage/rail labels and absence of full-parity and package-less claims. Inspected both runtime routes. Executed log: tmp/showcase-claims/fsds-showcase-merged-check.log (16 tests passed)."
+    recorded_at: "2026-10-01T08:08:37.752Z"
+    command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
+    exit_code: 0
+    commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"

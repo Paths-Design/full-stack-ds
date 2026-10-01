@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "prototype.study",
+  "projectId": "project.paper",
+  "projectRevision": "example-v1",
+  "pageId": "page.scratch",
+  "documentRevision": 1,
+  "dependencyRevisions": [
+    {
+      "sourceId": "project.motion",
+      "revision": "example-v1"
+    },
+    {
+      "sourceId": "project.defaults",
+      "revision": "example-v1"
+    },
+    {
+      "sourceId": "project.components",
+      "revision": "example-v1"
+    }
+  ],
+  "selection": {
+    "kind": "sequence",
+    "sequenceId": "sequence.study"
+  },
+  "adapterId": "example.web-dom",
+  "targetId": "web-dom",
+  "requiredCapabilities": [
+    "compose-instances",
+    "evaluate-translation",
+    "resolve-project-tokens"
+  ],
+  "unsupportedPolicy": "fail-on-unsupported",
+  "output": {
+    "root": "prototype/notice-study",
+    "conflictPolicy": "fail-if-exists"
+  }
+}

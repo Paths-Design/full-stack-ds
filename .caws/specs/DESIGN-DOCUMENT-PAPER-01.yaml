@@ -1,0 +1,78 @@
+id: DESIGN-DOCUMENT-PAPER-01
+title: 'Define shared Designer and Animator paper model, schemas and design coverage ledger'
+risk_tier: 2
+mode: feature
+lifecycle_state: active
+created_at: '2026-10-01T07:12:19.497Z'
+updated_at: '2026-10-01T07:56:03.345Z'
+created_by_session: '01a0f5b0-8c29-7670-82de-50f7c08d07da'
+blast_radius:
+  modules:
+    - 'Draft shared document specification and schema examples'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/design/shared-document-model/'
+    - 'packages/ds-contracts/document-model/'
+    - 'docs/README.md'
+  out: []
+invariants:
+  - 'Canvas authoring never implicitly materializes code'
+  - 'Component contracts and current emitters remain unchanged'
+  - 'Design coverage, schema coverage and runtime evidence remain distinct'
+  - 'Only newly authored examples are committed; prior app code and supplied Figma content are excluded'
+acceptance:
+  - id: A1
+    given: 'the clean-room handoff and confirmed shared document direction'
+    when: 'the paper specification is reviewed'
+    then: 'entity relationships, ownership, defaults, tokens, scene timing, persistence and prototype boundaries are documented with explicit unresolved decisions'
+  - id: A2
+    given: 'draft schemas and original worked examples'
+    when: 'node packages/ds-contracts/document-model/verify.mjs runs'
+    then: 'schemas compile, worked examples validate and declared malformed neighbors are rejected without applying defaults or mutating input'
+  - id: A3
+    given: 'the design coverage ledger'
+    when: 'its records are inspected against the specification and schemas'
+    then: 'each requirement carries design coverage, schema coverage, runtime status and the next missing design decision without treating partial machinery as implementation'
+  - id: A4
+    given: 'the tracked documentation and isolated schema directory'
+    when: 'scoped checks and repository gates run'
+    then: 'documentation checks pass and no component contract or emitter behavior is changed'
+non_functional: {}
+contracts:
+  - name: 'shared-document-draft'
+    type: schema
+    path: 'packages/ds-contracts/document-model/document.schema.json'
+  - name: 'paper-design-coverage'
+    type: schema
+    path: 'packages/ds-contracts/document-model/design-ledger.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Source inspection: shared-document-model/README.md and relationships.md define ownership, defaults, shared tokens, temporal composition, JSONL and explicit prototypes with unresolved decisions. Brand audit of merge aca4a9dcf: Figma only names excluded supplied input at README.md:65; no Adobe or After Effects; requirements describe capabilities."
+    recorded_at: "2026-10-01T07:55:20.694Z"
+    artifact_path: docs/architecture/design/shared-document-model/relationships.md
+    commit_sha: e1eb31f99
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Observed run: node packages/ds-contracts/document-model/verify.mjs passed on landed main; log /tmp/fsds-design-document-paper-qualification-landed.log. Eight schemas, nine primary records, 22 rejected neighbors, two sensitivity controls. CLI verification rechecks source artifact and reachable commit, not command execution."
+    recorded_at: "2026-10-01T07:56:04.709Z"
+    command: node packages/ds-contracts/document-model/verify.mjs
+    exit_code: 0
+    artifact_path: packages/ds-contracts/document-model/verify.mjs
+    commit_sha: aca4a9dcf
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected design-ledger.json against paper docs and schema; verifier checks 28 stable requirements, coverage fields, missing design work, history continuity and decision references. Every runtime status is not-implemented."
+    recorded_at: "2026-10-01T07:55:22.180Z"
+    artifact_path: packages/ds-contracts/document-model/design-ledger.json
+    commit_sha: e1eb31f99
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Observed landed docs claim and link checks and diff whitespace check passed; logs /tmp/fsds-design-document-paper-docs-landed.log. Own diff contains only paper docs and isolated document-model source. Governed rail and framework suites passed; broad root run had one unchanged erasure-plan 5000ms timeout; focused file passed 64/64. CLI verification rechecks cited source and commit, not command execution."
+    recorded_at: "2026-10-01T07:56:24.972Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/design/shared-document-model/README.md
+    commit_sha: aca4a9dcf

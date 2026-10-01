@@ -2,9 +2,10 @@ id: PAGINATION-COMPOSITION-01
 title: 'Extract reusable Pagination and compose it in Carousel'
 risk_tier: 2
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: pagination-composition
 created_at: '2026-10-01T06:49:33.205Z'
-updated_at: '2026-10-01T06:49:33.205Z'
+updated_at: '2026-10-01T08:50:13.495Z'
 created_by_session: '01a0f635-ffbf-7650-8cce-94e2d7657aeb'
 blast_radius:
   modules:
@@ -29,7 +30,17 @@ scope:
     - 'e2e'
     - 'docs'
     - 'AGENTS.md'
-  out: []
+    - README.md
+    - packages/ds-contracts/components/PageNavigator
+    - packages/ds-contracts/components/Card/Card.usage.jsonl
+  out:
+    - src/components/analytical
+    - packages/ds-codegen/src/analytical
+    - e2e/analytical-composite.spec.ts
+    - e2e/analytical-observer.ts
+    - docs/architecture/analytical-composite-output.md
+  support:
+    - packages/ds-swiftui/README.md
 invariants:
   - 'Pagination selects an ordered position independently of content, surface presence, timing and movement.'
   - 'Carousel remains the sole owner of slide validity, autoplay budget and transition policy; composition introduces no second timer.'
@@ -47,6 +58,22 @@ acceptance:
     given: 'the reusable paging architecture'
     when: 'consumers inspect standalone and composition examples'
     then: 'Pagination is discoverable independently and paging presence selection and content ownership are documented with implementation boundaries'
+  - id: A4
+    given: >-
+      A known finite collection using PageNavigator composed from Input Button Icon
+      and optional Pagination choices
+    when: 'The user steps backward or forward or commits a one-based page field'
+    then: >-
+      Only in-range integer requests are emitted, accepted state remains controlled
+      by the owner, unavailable and empty collections disable navigation, and the
+      compact form is demonstrated and verified across the five web frameworks
+  - id: A5
+    given: 'Shared ordered-set state and independently supplied item completion and progress'
+    when: 'A display-only projection or an interactive location selector is generated'
+    then: >-
+      Values do not introduce interactive hosts or navigation actions and selecting
+      a location does not infer or mutate activity completion; the representation
+      and examples preserve that boundary
 rollback:
   - 'Revert the extraction commit and regenerate contract-owned sources.'
 non_functional: {}

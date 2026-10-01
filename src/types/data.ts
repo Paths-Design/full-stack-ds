@@ -364,14 +364,17 @@ export interface BrandTokenSet {
   tokens: FoundationToken[];
 }
 
-/** One admitted (or descriptor) codegen target, censused at build time from the
- * `packages/` tree plus `fsds.targets.json`, so landing numbers never go stale. */
+/** One registered target observed at build time; presence is separate from admission. */
 export interface TargetCensus {
   id: string;
+  label: string;
   family: "web" | "native" | "descriptor";
   /** Component realizations actually present on disk for this target. */
   componentsShipped: number;
-  parity: "full" | "partial" | "none";
+  sourceCoverage: "full" | "partial" | "none";
+  executable: boolean;
+  /** Registry membership in the rail, not a claim that a run passed. */
+  railAdmitted: boolean;
   /** Target carries a component allowlist in fsds.targets.json (e.g. swiftui). */
   allowlisted: boolean;
 }
@@ -381,20 +384,20 @@ export interface TargetCensus {
  * vite-plugin-fsds-data.ts; never hand-edited. */
 export interface Census {
   components: number;
-  /** Primitive contract names from ds-contracts/primitives (Stack, BoxModel, …). */
+  /** Rendered primitives consumed by the codegen primitive emitter. */
   primitives: string[];
+  /** BoxModel supplies geometry defaults separately from rendered primitives. */
+  geometryDefaults: boolean;
   /** Governed icons from ds-iconography/icons. */
   icons: number;
   foundationTokens: number;
   /** Sum of component-contract token declarations. */
   componentTokenDeclarations: number;
-  /** Real source-file count across generated component packages. */
+  /** All files in declared target output trees, including descriptors and metadata. */
   generatedFiles: number;
   targets: TargetCensus[];
-  /** Codegen emitter dirs with no generated component package (experimental). */
-  emitterOnly: string[];
   /** Per-target list of component names actually shipped on disk. Drives the
-   * landing page's targets × components parity matrix. */
+   * landing page's targets × components source coverage matrix. */
   presence: Record<string, string[]>;
 }
 

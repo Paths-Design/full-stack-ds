@@ -1,0 +1,138 @@
+id: REL-COMPOSITE-BROWSER-BOUNDARY-02
+title: 'Preserve shared scale and dataset identity at the analytical browser boundary'
+risk_tier: 2
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Shared viewport and dataset/view custody repair landed with 24 production browser checks, renderer/import controls, full local gates and nine recorded acceptance verdicts; CI workflow is wired but unpublished, and stage-2, broader M4 and M5/M6 remain outside this closure.'
+created_at: '2026-10-01T07:31:50.486Z'
+updated_at: '2026-10-01T08:40:25.718Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Selected composite metric artifact, pure browser consumer, independent observer and production CI proof'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical/composite-selection.ts'
+    - 'packages/ds-codegen/src/analytical/composite-artifacts.ts'
+    - 'packages/ds-codegen/src/analytical/composite-output.test.ts'
+    - 'src/components/analytical/'
+    - 'scripts/analytical-composite-preview.ts'
+    - 'scripts/analytical-browser-proof.mjs'
+    - 'scripts/analytical-composite-preview.test.ts'
+    - 'e2e/analytical-composite.spec.ts'
+    - 'e2e/analytical-observer.ts'
+    - 'playwright.analytical.config.ts'
+    - 'package.json'
+    - '.github/workflows/analytical-browser.yml'
+    - 'docs/architecture/analytical-composite-output.md'
+  out: []
+invariants:
+  - 'Analytical legality remains upstream of format support; lawful readback survives metric refusal'
+  - 'A selected shared position scale has one finite visible affine mapping for every participating range'
+  - 'Dataset, view, typed grain and standing custody survive rendering and observation'
+  - 'L0-L2 ratification and M4/M5/M6 nonclaims remain unchanged'
+acceptance:
+  - id: A1
+    given: 'publication records and live refs'
+    when: 'release context is reconciled'
+    then: 'prior authorization payload manifest remote state and CI failure attribution are preserved with their proof limits'
+  - id: A2
+    given: 'single and multiple ranges, distinct snapshots and nested composites'
+    when: 'real qualification judgment selection lowering and browser rendering run'
+    then: 'each has finite faithful output or an explicit format disposition'
+  - id: A3
+    given: 'shared position surfaces at two viewport sizes'
+    when: 'equal coordinates and distances are measured'
+    then: 'a common visible affine mapping holds and per-range auto-fitting is detected'
+  - id: A4
+    given: 'datasets with different endpoint names and identical typed keys'
+    when: 'ranges and marks render'
+    then: 'only participants set bounds and dataset plus view identity determines each mark, with swapped bindings detected'
+  - id: A5
+    given: 'missing standing scale marks or usable transforms and non-finite recovery'
+    when: 'independent observation runs'
+    then: 'every unavailable observation produces a diagnostic and ordinary geometry mutation remains detected'
+  - id: A6
+    given: 'lawful readback with unsupported or unproven metric realization'
+    when: 'preview renders'
+    then: 'readback persists with separate metric disposition while analytically failed inputs acquire no lawful output'
+  - id: A7
+    given: 'corrective source and representative old custody defects'
+    when: 'focused custody and sensitivity checks run'
+    then: 'source and output mutations cannot alter authority, unminted lowering fails and common carrier identity holds'
+  - id: A8
+    given: 'a fresh production build'
+    when: 'the named analytical browser CI invocation runs'
+    then: 'reports screenshots revision and built-byte identities are retained, renderer mutation fails its oracle, and forbidden source import fails the build guard'
+  - id: A9
+    given: 'completed verification'
+    when: 'corrective documentation and closure are recorded'
+    then: 'exact supported shapes format refusals evidence locations and remaining program milestones are stated without broader completion claims'
+non_functional: {}
+contracts:
+  - name: 'browser-custody'
+    type: contract-test
+    path: 'e2e/analytical-composite.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Publication reconciled from the 146-commit original manifest, session authorization, 13 subsequent commits and successful push log. Refreshed origin/main 4fb82530 and CI 36825724269: coverage passes; Swift Carousel parity remains failed. Authorization is not per-commit review. Retained publication/ and verification.json under tmp/verification/analytical-browser-boundary. No corrective push performed."
+    recorded_at: "2026-10-01T08:39:29.129Z"
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Real qualification/judgment/selection/lowering tests plus seven production-browser witnesses at 920 and 1280 pixels cover single/two ranges, differing endpoint names, distinct coherent snapshots, bare layer and extra nested facet. browser/baseline-report.json records 24 passing checks; browser/receipt.json binds clean source and built hashes; all retained under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:29.945Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: Production observer compares the local screen mapping at values zero and one across all surfaces and equal value 8 across 0-10 and 0-100 ranges at two widths. DOM auto-fit and separately rebuilt per-range renderer fail shared scale distance while numeric recovery remains possible. See browser/renderer-control.log and browser/baseline-report.json under tmp/verification/analytical-browser-boundary.
+    recorded_at: "2026-10-01T08:39:30.888Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Different-endpoint and distinct-snapshot browser cases recover each member by dataset, view path and typed grain; swapping dataset bindings at unchanged keys/totals fails view identity. Unit extent check excludes unused field values. Retained browser/baseline-report.json, inspected Different-endpoints and Distinct-snapshots screenshots, gates/root.log under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:31.800Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Thirteen production DOM mutation arms report specific diagnostics for geometry, association, range, panel, standing, absent/unreadable calibration, nonfinite recovery, missing bounds/marks/population and unusable transforms. Each has a clean baseline and expected diagnostic assertion. See browser/baseline-report.json and e2e/analytical-observer.ts; retained evidence root tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:32.789Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "Free-scale unsupported metric and contradictory-endpoint unproven metric retain selected visible readback with separate reasons and zero metric marks. Analytically refused, unproven, unsupported-request and empty paths render no lawful readback. Production tests and public-path tests pass; browser/baseline-report.json and gates/root.log under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:33.735Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "Final full root suite passes 4668 tests, including immutable source/output custody and same-carrier format selection. Isolated transform-only controls at clean 30ca989ac remove output detachment and lowerer minting: the corresponding custody assertions fail, including independently tested forged readback. See custody/receipt.json, alias.log, seal.log and gates/root.log under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:34.743Z"
+    command: pnpm test --maxWorkers=4
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "Executed pnpm run e2e:analytical at clean 30ca989ac: fresh production build, 24 passing browser checks, rebuilt renderer rejected for shared scale distance, forbidden evaluator import rejected by bundle guard. Dedicated analytical-browser.yml invokes this exact command and uploads outputs. Retained browser/receipt.json and verified copied hashes under tmp/verification/analytical-browser-boundary. New workflow not yet published or executed remotely."
+    recorded_at: "2026-10-01T08:39:35.830Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A9
+    status: pass
+    evidence_ref: "Updated analytical-composite-output.md states the selected viewport, supported witness topologies, view/dataset identities, format refusals, independent observer tolerance, reproducible proof and retained evidence. Docs link/claim gates pass. Stage-2, whole-system M4, M5/M6, corpus-wide output and hostile-input admission remain nonclaims. See verification.json and gates/docs.log under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:36.956Z"
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
