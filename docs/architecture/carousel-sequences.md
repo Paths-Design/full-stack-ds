@@ -124,12 +124,16 @@ pair of inputs; replacing/reordering their sequence resets the budget rather
 than transferring elapsed time to a different slide.
 
 `packages/ds-codegen/src/carousel.test.ts` exercises normalization, rejected
-bindings and renamed-contract generation. `sequence-budget.test.ts` exercises
-the mirrored web controllers with a finite clock. `e2e/carousel.spec.ts` tests
-generated web mounts with consumer DOM children, plus actual Card composition
-in the React showcase. A generated Lit Card witness measures painted child
-positions during forward and interrupted reverse motion through its normally
-transparent host. Those witnesses do not establish arbitrary framework
-child-component lifecycle parity or native behavior.
+bindings and renamed-contract generation. The reusable
+`sequence-budget.contract.ts` suite exercises the mirrored web controllers
+with a finite clock in both the root parity run and each web package's own
+test/coverage run. `e2e/carousel.spec.ts` covers timer and control behavior.
+`e2e/carousel-composition.spec.ts` mounts generated Carousel and Card components
+through React, Vue, Svelte, Angular and Lit. It measures painted child positions
+through forward motion, interrupted reversal and wrapping, verifies consumer state
+and event bindings survive navigation, checks size-dependent timing, and exercises reduced motion.
+Angular's consumer template uses its local JIT compiler with the generated AOT
+components. These are bounded Card-composition witnesses, not a claim about all
+possible child-component lifecycles or native behavior.
 CI executes these browser regressions through `pnpm run e2e:carousel` alongside
 the runtime fact and render-binding rails.
