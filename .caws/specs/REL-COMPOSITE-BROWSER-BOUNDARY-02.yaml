@@ -122,3 +122,10 @@ evidence:
     command: pnpm test --maxWorkers=4
     exit_code: 0
     commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "Executed pnpm run e2e:analytical at clean 30ca989ac: fresh production build, 24 passing browser checks, rebuilt renderer rejected for shared scale distance, forbidden evaluator import rejected by bundle guard. Dedicated analytical-browser.yml invokes this exact command and uploads outputs. Retained browser/receipt.json and verified copied hashes under tmp/verification/analytical-browser-boundary. New workflow not yet published or executed remotely."
+    recorded_at: "2026-10-01T08:39:35.830Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
