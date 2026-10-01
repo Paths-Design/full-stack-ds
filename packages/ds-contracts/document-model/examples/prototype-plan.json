@@ -1,22 +1,22 @@
 {
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "0.2.0",
   "id": "prototype.study",
   "projectId": "project.paper",
-  "projectRevision": "example-v1",
+  "projectRevision": "example-v2",
   "pageId": "page.scratch",
   "documentRevision": 1,
   "dependencyRevisions": [
     {
       "sourceId": "project.motion",
-      "revision": "example-v1"
+      "revision": "example-v2"
     },
     {
       "sourceId": "project.defaults",
-      "revision": "example-v1"
+      "revision": "example-v2"
     },
     {
       "sourceId": "project.components",
-      "revision": "example-v1"
+      "revision": "example-v2"
     }
   ],
   "selection": {
@@ -28,11 +28,12 @@
   "requiredCapabilities": [
     "compose-instances",
     "evaluate-translation",
-    "resolve-project-tokens"
+    "resolve-project-tokens",
+    "evaluate-discrete-visibility"
   ],
   "unsupportedPolicy": "fail-on-unsupported",
   "output": {
-    "root": "prototype/notice-study",
+    "root": "prototype/button-study",
     "conflictPolicy": "fail-if-exists"
   }
 }
