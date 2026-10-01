@@ -111,8 +111,9 @@ evidence:
     commit_sha: ed11396a
   - criterion_id: A6
     status: fail
-    evidence_ref: "At 5156566dc, CI now invokes the dedicated e2e:carousel script, and its 22 browser tests passed locally with CI=true. The Lit painted-content regression and five-controller box tests fail on the pre-repair implementation. Remaining obligations: real composed child fixtures for Vue Svelte Angular, native execution lanes and backend-binding mutation checks. Previously observed Swift emission parity and Vue coverage failures remain open until reverified/repaired. This partial CI improvement does not satisfy A6."
-    recorded_at: "2026-10-01T04:23:04.199Z"
-    command: "CI=true FSDS_E2E_PORT=5201 pnpm run e2e:carousel"
+    evidence_ref: "At 6ae348621, the CI Carousel command now includes real Card compositions for all five web frameworks. Healthy browser suite 27 passed; intentional root-binding loss failed all five composition tests (/tmp/carousel-composition-binding-mutant.log), then restored healthy code passed again. Shared lifecycle assertions run in each web package; root 4657 and all framework suites passed. Vue coverage is 88.14 percent with the unchanged 87 percent floor, repairing the observed coverage gap. Governed rail and lint pass. Native execution lanes, remaining timer/ownership mutation obligations, Swift Carousel emission and Figma descriptor review remain open, so these bounded improvements do not satisfy A6."
+    recorded_at: "2026-10-01T04:56:31.522Z"
+    command: "CI=true FSDS_E2E_PORT=5202 pnpm run e2e:carousel"
     exit_code: 0
-    commit_sha: "5156566dc"
+    artifact_path: /tmp/carousel-composition-final-browser.log
+    commit_sha: "6ae348621"
