@@ -64,7 +64,7 @@ describe("componentTokenPathToCSSVar", () => {
 });
 
 describe("detached component parts and the unbranded default", () => {
-  it("publishes component addresses at the brand boundary and on local roots", () => {
+  it("keeps public design addresses at the brand boundary so nearer consumer scopes can inherit", () => {
     const css = generateBrandLayerCSS(new Map([["default", {
       metadata: { name: "default", description: "Fixture", accent: "red" },
       lightVars: {}, darkVars: {},
@@ -74,11 +74,35 @@ describe("detached component parts and the unbranded default", () => {
       }]]),
     }]]));
     expect(css).toContain(':where(:root) {\n    --fsds-code-block-design-root-background-fill: #ffffff;');
-    expect(css).toContain(':where(:root:not([data-brand])) .code-block {');
-    expect(css).toContain('[data-brand="default"] .code-block {');
-    expect(css).toContain(':root:not([data-brand]):is(.light, [data-theme="light"])');
-    expect(css).toContain(':root:not([data-brand]):is(.dark, [data-theme="dark"])');
+    expect(css).toContain('[data-brand="default"] {');
+    expect(css).not.toContain('.code-block {');
+    expect(css).toContain(':where(.light, [data-theme="light"])');
+    expect(css).toContain(':where(.dark, [data-theme="dark"])');
     expect(css).toContain('--fsds-code-block-design-root-background-fill: #111111;');
+  });
+
+  it("retains local token defaults without redeclaring inherited design addresses in any theme", () => {
+    const css = generateBrandLayerCSS(new Map([["default", {
+      metadata: { name: "default", description: "Fixture", accent: "red" },
+      lightVars: {}, darkVars: {},
+      componentVars: new Map([["card", {
+        light: {
+          "--fsds-card-design-root-shape-radius": "12px",
+          "--fsds-card-size-padding-inset": "10px",
+        },
+        dark: {
+          "--fsds-card-design-root-shape-radius": "18px",
+          "--fsds-card-size-padding-inset": "14px",
+        },
+      }]]),
+    }]]));
+    expect(css).toContain('[data-brand="default"] {\n    --fsds-card-design-root-shape-radius: 12px;');
+    const localBlocks = [...css.matchAll(/[^{}]+\.card\s*\{([^}]+)\}/g)];
+    expect(localBlocks).toHaveLength(8);
+    for (const [, declarations] of localBlocks) {
+      expect(declarations).not.toContain("--fsds-card-design-");
+      expect(declarations).toMatch(/--fsds-card-size-padding-inset: (10|14)px;/);
+    }
   });
 });
 
