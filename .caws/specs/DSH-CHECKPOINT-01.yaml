@@ -2,9 +2,10 @@ id: DSH-CHECKPOINT-01
 title: 'Checkpoint DSH adapter documentation and ignore runtime logs'
 risk_tier: 3
 mode: chore
-lifecycle_state: draft
+lifecycle_state: active
+worktree: dsh-checkpoint
 created_at: '2026-10-01T17:14:04.467Z'
-updated_at: '2026-10-01T17:14:04.467Z'
+updated_at: '2026-10-01T17:14:13.896Z'
 created_by_session: '01a0f873-f330-7d61-9f72-872170795c56'
 blast_radius:
   modules:
