@@ -48,7 +48,6 @@ evidence:
     commit_sha: "480b40817"
   - criterion_id: A2
     status: pass
-    evidence_ref: "At tested branch HEAD 56c33b3ef, governed:rail passed after regenerating registered targets; pnpm test passed 4659 tests and pnpm run test:frameworks completed successfully, with existing skips retained. Figma plugin typecheck and 87 plugin tests passed, scoped source lint and doc claims/links passed, and the final tree was clean. Logs /tmp/carousel-figma-landing-{rail,root,frameworks,types,plugin,lint,doc-claims,doc-links}.log. Source merged through CAWS at 99f0741c8; this establishes bounded descriptor compatibility and admitted-target generation integrity, not Figma admission or native motion parity."
-    recorded_at: "2026-10-01T06:31:09.246Z"
-    artifact_path: /tmp/carousel-figma-landing-rail.log
+    evidence_ref: "Verified landed source citation for additive descriptor compatibility. At this tested source, governed:rail passed, root tests passed 4659, all framework suites completed with existing skips, Figma plugin tests passed 87, and plugin typecheck, scoped lint and doc gates passed. Agent-executed outputs are in /tmp/carousel-figma-landing-*.log and copied to ignored tmp/carousel-figma-evidence; logs are not tracked proof artifacts. CAWS verifies the commit citation, not these Vitest/rail execution results. No Figma execution or native behavioral parity is claimed."
+    recorded_at: "2026-10-01T06:35:05.716Z"
     commit_sha: "56c33b3ef"
