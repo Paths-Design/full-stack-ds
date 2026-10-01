@@ -64,3 +64,10 @@ evidence:
     command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
     exit_code: 0
     commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "src/views/views-smoke.test.tsx: Home renders one primitive and BoxModel geometry defaults separately; inspected runtime showed the same. Executed log: tmp/showcase-claims/fsds-showcase-merged-check.log (16 tests passed)."
+    recorded_at: "2026-10-01T08:08:25.315Z"
+    command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
+    exit_code: 0
+    commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"
