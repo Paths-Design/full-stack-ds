@@ -85,3 +85,9 @@ evidence:
     recorded_at: "2026-10-01T17:44:43.853Z"
     artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/verification/analytical-capability-contract/verification.json
     commit_sha: a2925fe77066785752a16570cef459f967d7fbf6
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "REL-PEER-TEXT-RESIDUE-PROBE-01 created and validated before consumer implementation; independent conditional preservation probe. Checked source a2925fe77066785752a16570cef459f967d7fbf6. Retained at tmp/verification/analytical-capability-contract; rail, 4752 root tests and framework suites passed."
+    recorded_at: "2026-10-01T17:44:45.169Z"
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/verification/analytical-capability-contract/verification.json
+    commit_sha: a2925fe77066785752a16570cef459f967d7fbf6
