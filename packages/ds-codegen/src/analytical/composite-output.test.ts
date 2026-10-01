@@ -106,6 +106,9 @@ describe("selected analytical carrier and output custody", () => {
     expect(projectComposite(request(declaration(), [{ ...rows()[0], a: "unknown" }]), { kind: "readback" }).kind).toBe("unproven");
     expect(projectComposite(request(declaration(), []), { kind: "readback" }).kind).toBe("nothing-to-realize");
     expect(() => lowerSelectedComposite({ carrier: outputs().readback.carrier, intent: { kind: "metric" } } as unknown as SelectedCompositeProgram)).toThrow(/selected/);
+  });
+
+  it("refuses forged readback selection even when its carrier is otherwise valid", () => {
     expect(() => lowerSelectedComposite({ carrier: outputs().readback.carrier, intent: { kind: "readback" } } as unknown as SelectedCompositeProgram)).toThrow(/minted/);
   });
 
