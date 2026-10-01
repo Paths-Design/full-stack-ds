@@ -1,0 +1,54 @@
+id: REL-PEER-TEXT-RESIDUE-PROBE-01
+title: 'Falsify identity preservation in a bounded textual peer of selected analytical custody'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-01T17:28:18.873Z'
+updated_at: '2026-10-01T17:28:18.873Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Experimental textual consumer of selected composite readback and output-only observation'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical/peer-text-probe.ts'
+    - 'packages/ds-codegen/src/analytical/peer-text-probe.test.ts'
+    - 'docs/architecture/analytical-peer-text.md'
+  out: []
+invariants:
+  - 'The probe consumes only the existing selected carrier through its minted readback output; no raw declaration, qualification, analytical re-judgment or source population interpretation in the consumer.'
+  - 'Preservation is conditional on declared carried facts. No Stage-2 necessity, algebra ratification, full M3/M4/M5, navigation accessibility, hostile-target M6 or production-format registration claim is earned.'
+  - 'Do not relabel analytical omissions as presentation residue. Record precise unrecoverable facts, supported task scope and presentation-only mechanics separately.'
+  - 'The closed browser implementation and its dedicated proof stay unchanged. A failed precommitted expectation is reported rather than edited to fit the implementation.'
+acceptance:
+  - id: A1
+    given: 'the existing real qualification and composite selection path'
+    when: 'a textual peer consumes selected readback for an embed-facet-layer witness with two distinct snapshots sharing typed keys'
+    then: 'output alone identifies dataset, view, typed grain, unit, bounded member and endpoints, applicable panel and host task without source reinterpretation'
+  - id: A2
+    given: 'a precommitted carrier with same typed key in different datasets and different bounded member values'
+    when: 'output identity, range or task is removed or swapped while numeric totals remain unchanged'
+    then: 'an independent output observer detects the exact lost association against expectations fixed before the consumer'
+  - id: A3
+    given: 'a summary that intentionally omits non-view fields and geometry'
+    when: 'recoverable facts and loss are compared'
+    then: 'machine-readable loss names actual unrecoverable field values and unsupported task claims, while residue names only presentation mechanics and cannot hide dataset, view, range or task identity'
+  - id: A4
+    given: 'changed declared values or population and changed presentation formatting'
+    when: 'the real path produces the textual peer'
+    then: 'semantic changes alter observed claims and formatting-only changes leave them invariant, with source and output mutation unable to revise selected custody'
+  - id: A5
+    given: 'analytically contradicted, unproven or explicitly empty input'
+    when: 'the same orchestration requests the peer'
+    then: 'no successful textual peer is fabricated and each upstream disposition remains distinguishable'
+  - id: A6
+    given: 'the scoped run and nearest counterexamples'
+    when: 'findings are recorded'
+    then: 'preserved identities plus observed loss and nonempty presentation residue earn only this bounded M5 contribution, a missing carried fact routes a concrete M3/M4 gap, and an incomplete observer or presentation-only result is informative without milestone promotion'
+non_functional: {}
+contracts:
+  - name: 'peer-text-preservation'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/peer-text-probe.ts'
