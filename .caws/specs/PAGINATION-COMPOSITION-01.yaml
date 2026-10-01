@@ -58,7 +58,9 @@ acceptance:
     when: 'consumers inspect standalone and composition examples'
     then: 'Pagination is discoverable independently and paging presence selection and content ownership are documented with implementation boundaries'
   - id: A4
-    given: 'A known finite paged collection using compact Pagination'
+    given: >-
+      A known finite collection using PageNavigator composed from Input Button Icon
+      and optional Pagination choices
     when: 'The user steps backward or forward or commits a one-based page field'
     then: >-
       Only in-range integer requests are emitted, accepted state remains controlled
