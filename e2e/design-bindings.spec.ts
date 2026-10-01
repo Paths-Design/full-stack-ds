@@ -69,6 +69,8 @@ for (const framework of ['react','vue','svelte','angular','lit']) {
     const card = page.locator('.card').first();
     const boundary = page.locator('[data-fsds-component="card"]').first();
     await expect(card).toHaveAttribute('data-fsds-box','');
+    // The preview loads tokens and the default brand, unlike fixtureCss above.
+    await expect(card).toHaveCSS('gap','12px');
     await boundary.evaluate(el => (el as HTMLElement).style.setProperty('--fsds-card-design-root-spacing-gap','37px'));
     await expect(card).toHaveCSS('gap','37px');
     await boundary.evaluate(el => (el as HTMLElement).style.setProperty('--fsds-box-model-gap','23px'));
@@ -76,7 +78,7 @@ for (const framework of ['react','vue','svelte','angular','lit']) {
     await boundary.evaluate(el => (el as HTMLElement).style.removeProperty('--fsds-box-model-gap'));
     await expect(card).toHaveCSS('gap','37px');
     await boundary.evaluate(el => (el as HTMLElement).style.removeProperty('--fsds-card-design-root-spacing-gap'));
-    await expect(card).toHaveCSS('gap','4px');
+    await expect(card).toHaveCSS('gap','12px');
     await boundary.evaluate(el => (el as HTMLElement).style.setProperty('--fsds-box-model-padding','9px 11px'));
     await expect(card).toHaveCSS('padding','9px 11px');
   });
@@ -93,12 +95,17 @@ test('inspector exposes a formerly fixed property and clearing it restores the r
   await input.fill('6px');
   await expect(button).toHaveCSS('border-top-width','6px');
   const scope = page.getByRole('combobox', {name:'Part / condition', exact:true});
-  const rootScope = await scope.inputValue();
-  const alternate = await scope.locator('option').evaluateAll((options, current) =>
-    options.map(option => (option as HTMLOptionElement).value).find(value => value !== current)!, rootScope);
-  await scope.selectOption(alternate);
+  await expect(scope).toContainText('root');
+  await scope.getByRole('button', {name:'Part / condition', exact:true}).click();
+  const alternate = page.getByRole('option').filter({hasNotText:/^root$/}).first();
+  const alternateLabel = (await alternate.textContent())?.trim() ?? '';
+  expect(alternateLabel).toMatch(/\S/);
+  await alternate.click();
+  await expect(scope).toContainText(alternateLabel);
   await expect(input).toHaveCount(0);
-  await scope.selectOption(rootScope);
+  await scope.getByRole('button', {name:'Part / condition', exact:true}).press('ArrowDown');
+  await page.getByRole('option', {name:'root', exact:true}).click();
+  await expect(scope).toContainText('root');
   await expect(input).toHaveValue('6px');
   await input.fill('');
   await expect(button).toHaveCSS('border-top-width',baseline);
@@ -107,6 +114,32 @@ test('inspector exposes a formerly fixed property and clearing it restores the r
 });
 
 for (const framework of ['react','vue','svelte','angular','lit']) {
+  test(`${framework}: nearer consumer scopes override inherited brand design values`, async ({page}) => {
+    await page.goto(`/preview/${framework}/Card`);
+    await page.locator('body[data-fsds-ready]').waitFor();
+    const card = page.locator('.card').first();
+    const boundary = page.locator('[data-fsds-component="card"]').first();
+    for (const brand of [null, 'forest']) {
+      const radius = brand === 'forest' ? '24px' : '12px';
+      for (const theme of ['light', 'dark']) {
+        await page.evaluate(({brand, theme}) => {
+          if (brand) document.documentElement.setAttribute('data-brand', brand);
+          else document.documentElement.removeAttribute('data-brand');
+          document.documentElement.setAttribute('data-theme', theme);
+        }, {brand, theme});
+        await expect(card).toHaveCSS('border-radius', radius);
+        await page.evaluate(() => document.body.style.setProperty('--fsds-card-design-root-shape-radius', '29px'));
+        await expect(card).toHaveCSS('border-radius', '29px');
+        await boundary.evaluate(el => (el as HTMLElement).style.setProperty('--fsds-card-design-root-shape-radius', '35px'));
+        await expect(card).toHaveCSS('border-radius', '35px');
+        await boundary.evaluate(el => (el as HTMLElement).style.removeProperty('--fsds-card-design-root-shape-radius'));
+        await expect(card).toHaveCSS('border-radius', '29px');
+        await page.evaluate(() => document.body.style.removeProperty('--fsds-card-design-root-shape-radius'));
+        await expect(card).toHaveCSS('border-radius', radius);
+      }
+    }
+  });
+
   test(`${framework}: Switch still changes state after design migration`, async ({page}) => {
     await page.goto(`/preview/${framework}/Switch`);
     await page.locator('body[data-fsds-ready]').waitFor();

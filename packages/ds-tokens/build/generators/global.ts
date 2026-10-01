@@ -1022,8 +1022,19 @@ export function generateBrandLayerCSS(
       }
     }
 
-    // Component-scoped overrides (brand `components.<Name>.*` block).
-    for (const [componentKebab, compOverrides] of overrides.componentVars) {
+    // Design addresses are unset public overrides, already published at the
+    // brand boundary above. Repeating them on a component would defeat nearer
+    // consumer scopes through inheritance. Only token defaults need local
+    // declarations to win over the component's own default token sheet.
+    for (const [componentKebab, componentOverrides] of overrides.componentVars) {
+      const localDefaults = (vars: Record<string, string>) => Object.fromEntries(
+        Object.entries(vars).filter(([name]) => !name.startsWith(`--fsds-${componentKebab}-design-`)),
+      );
+      const compOverrides = {
+        light: localDefaults(componentOverrides.light),
+        dark: localDefaults(componentOverrides.dark),
+      };
+      if (!Object.keys(compOverrides.light).length && !Object.keys(compOverrides.dark).length) continue;
       // The showcase clears data-brand for Default. Its component decisions
       // must have the same unbranded default as its semantic decisions.
       // :where keeps explicit brand scopes and consumer overrides stronger.
