@@ -87,3 +87,10 @@ evidence:
     command: "pnpm run e2e:analytical"
     exit_code: 0
     commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: Production observer compares the local screen mapping at values zero and one across all surfaces and equal value 8 across 0-10 and 0-100 ranges at two widths. DOM auto-fit and separately rebuilt per-range renderer fail shared scale distance while numeric recovery remains possible. See browser/renderer-control.log and browser/baseline-report.json under tmp/verification/analytical-browser-boundary.
+    recorded_at: "2026-10-01T08:39:30.888Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
