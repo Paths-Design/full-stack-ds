@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useState } from "react";
 import { Text } from "react-native";
 import { useSequence, SequenceChildren } from "../../../primitives/useSequence";
-import { Animated, AccessibilityInfo, I18nManager } from "../../../test-react-native";
+import { Animated, AccessibilityInfo, I18nManager, nativeAnimationProbe } from "../../../test-react-native";
 
 // Boundary witness: executes the sequence adapter, records requests to RN's
 // animation API. It does not observe pixels or execute the native driver.
@@ -16,8 +16,8 @@ describe("native sequence movement ownership", () => {
     sequence = useSequence({ index, labels: ["First", "Second", "Third"], autoPlay: true, durationMs: 1000, onIndexChange: setIndex }, [<Text key="a">First</Text>, <Text key="b">Second</Text>, <Text key="c">Third</Text>], profile);
     return <SequenceChildren sequence={sequence} labels={["First", "Second", "Third"]} />;
   }
-  beforeEach(() => { vi.useFakeTimers(); Animated.motions.length = 0; I18nManager.isRTL = false; });
-  afterEach(async () => { if (tree) await act(async () => tree.unmount()); vi.useRealTimers(); });
+  beforeEach(() => { vi.useFakeTimers(); Animated.motions.length = 0; I18nManager.isRTL = false; nativeAnimationProbe.reset(); });
+  afterEach(async () => { if (tree) await act(async () => tree.unmount()); nativeAnimationProbe.reset(); vi.useRealTimers(); });
   async function mount(width: number) {
     await act(async () => { tree = create(<Consumer />); });
     await act(async () => tree.root.find(node => String(node.type) === "View" && Boolean(node.props.onLayout)).props.onLayout({ nativeEvent: { layout: { width } } }));
@@ -53,6 +53,55 @@ describe("native sequence movement ownership", () => {
     await act(async () => sequence.next());
     expect(Animated.motions[0].config.toValue).toBe(320);
     await act(async () => tree.unmount());
+    expect(vi.getTimerCount()).toBe(0);
+  });
+  it("rejects a delayed native position readback after a newer transition owns the layers", async () => {
+    await mount(320);
+    nativeAnimationProbe.deferStops = true;
+    await act(async () => sequence.next());
+    expect(nativeAnimationProbe.stopped).toHaveLength(1);
+    const oldReadback = nativeAnimationProbe.stopped.shift()!;
+    await act(async () => sequence.next());
+    expect(nativeAnimationProbe.stopped).toHaveLength(1);
+    const currentReadback = nativeAnimationProbe.stopped.shift()!;
+    await act(async () => oldReadback());
+    expect(nativeAnimationProbe.stopped).toHaveLength(0);
+    expect(Animated.motions).toHaveLength(0);
+    await act(async () => currentReadback());
+    expect(nativeAnimationProbe.stopped).toHaveLength(1);
+    await act(async () => nativeAnimationProbe.stopped.shift()!());
+    expect(Animated.motions.map(motion => motion.config.toValue)).toEqual([-320, 0]);
+    expect(sequence.index).toBe(2);
+    expect(sequence.paused).toBe(true);
+  });
+  it("ignores an old completion while the replacement movement still owns the reading pause", async () => {
+    await mount(320);
+    await act(async () => sequence.next());
+    const oldCompletion = nativeAnimationProbe.completions[0];
+    await act(async () => sequence.previous());
+    expect(nativeAnimationProbe.completions).toHaveLength(2);
+    const outgoingLayer = () => tree.root.find(node => String(node.type) === "View" && node.props.accessibilityLabel === "Second");
+    expect(outgoingLayer().props.style.display).toBe("flex");
+    await act(async () => oldCompletion());
+    expect(outgoingLayer().props.style.display).toBe("flex");
+    expect(sequence.paused).toBe(true);
+    expect(sequence.elapsed).toBe(0);
+    await act(async () => { vi.advanceTimersByTime(250); });
+    expect(sequence.paused).toBe(false);
+    await act(async () => { vi.advanceTimersByTime(999); });
+    expect(sequence.index).toBe(0);
+    await act(async () => { vi.advanceTimersByTime(1); });
+    expect(sequence.index).toBe(1);
+  });
+  it("cannot start native animations from a readback delivered after teardown", async () => {
+    await mount(320);
+    nativeAnimationProbe.deferStops = true;
+    await act(async () => sequence.next());
+    const readback = nativeAnimationProbe.stopped.shift()!;
+    await act(async () => tree.unmount());
+    await act(async () => readback());
+    expect(nativeAnimationProbe.stopped).toHaveLength(0);
+    expect(Animated.motions).toHaveLength(0);
     expect(vi.getTimerCount()).toBe(0);
   });
 });

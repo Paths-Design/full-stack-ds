@@ -20,10 +20,21 @@ export const Modal = host("Modal");
 export const GestureResponderEvent = undefined;
 export const I18nManager = { isRTL: false };
 export const Easing = { linear: (value: number) => value, bezier: () => (value: number) => value };
+export const nativeAnimationProbe = {
+  deferStops: false,
+  stopped: [] as (() => void)[],
+  completions: [] as (() => void)[],
+  reset() { this.deferStops = false; this.stopped.length = 0; this.completions.length = 0; },
+};
 class AnimatedValue {
   constructor(public value: number) {}
   setValue(value: number) { this.value = value; }
-  stopAnimation(callback?: (value: number) => void) { callback?.(this.value); }
+  stopAnimation(callback?: (value: number) => void) {
+    if (!callback) return;
+    const presentation = this.value;
+    if (nativeAnimationProbe.deferStops) nativeAnimationProbe.stopped.push(() => callback(presentation));
+    else callback(presentation);
+  }
 }
 const nativeMotions: { value: AnimatedValue; config: { toValue: number; duration: number } }[] = [];
 export const Animated = {
@@ -43,6 +54,7 @@ export const Animated = {
   parallel(animations: { start(done: () => void): void; stop(): void }[]) {
     return {
       start(done: () => void) {
+        nativeAnimationProbe.completions.push(done);
         let left = animations.length;
         animations.forEach(animation => animation.start(() => { if (--left === 0) done(); }));
       },
