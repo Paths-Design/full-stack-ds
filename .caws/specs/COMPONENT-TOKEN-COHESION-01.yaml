@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: component-token-cohesion
 created_at: '2026-10-01T01:14:59.463Z'
-updated_at: '2026-10-01T01:20:11.615Z'
+updated_at: '2026-10-01T01:21:12.345Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
@@ -34,12 +34,18 @@ scope:
     - 'e2e/component-token-cohesion.spec.ts'
     - packages/ds-figma-plugin/generated
     - src/generated
-    - packages/ds-codegen/src
     - packages/ds-tokens
     - src/consumption
     - e2e
     - docs/reference
     - scripts/compose-parity-diff.test.mjs
+    - packages/ds-codegen/src/frameworks
+    - packages/ds-codegen/src/css.test.ts
+    - packages/ds-codegen/src/box-model.test.ts
+    - packages/ds-codegen/src/token-path.test.ts
+    - packages/ds-codegen/src/ir.test.ts
+    - packages/ds-codegen/src/component-token-naming.ts
+    - packages/ds-codegen/src/component-token-naming.test.ts
   out: []
 invariants:
   - 'Durable component semantics remain in contracts and generic codegen; public override addresses retain independent consumers and unset fallback behavior.'
