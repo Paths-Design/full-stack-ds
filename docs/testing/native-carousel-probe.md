@@ -82,6 +82,11 @@ Requirements: Xcode with an available iOS simulator runtime, Node, Corepack,
 pnpm 10.14.0, Ruby 3.3 with Bundler, and FFmpeg. Set `FSDS_RUBY_BINARY` if Ruby
 is not installed at `/opt/homebrew/opt/ruby@3.3/bin/ruby`.
 
+The bootstrap passes `--` after `pnpm dlx` so the initializer receives its own
+`--version` option. Without that separator, pnpm can print its version and exit
+successfully without creating the host. Preparation checks for the resulting
+host manifest before reading or configuring it.
+
 ```sh
 node scripts/react-native-carousel-host.mjs prepare
 node scripts/react-native-carousel-host.mjs build

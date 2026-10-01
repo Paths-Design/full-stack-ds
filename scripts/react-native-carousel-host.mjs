@@ -29,8 +29,10 @@ function inputs() {
 mkdirSync(proof, { recursive: true });
 
 function prepare() {
-  if (!existsSync(join(host, 'package.json'))) run('corepack', ['pnpm', 'dlx', '@react-native-community/cli@20.2.0', 'init', 'FsdsCarouselWitness', '--version', '0.85.3', '--directory', host, '--skip-install', '--install-pods', 'false', '--skip-git-init'], root);
   const manifestPath = join(host, 'package.json');
+  // End pnpm option parsing before the CLI's own --version option.
+  if (!existsSync(manifestPath)) run('corepack', ['pnpm', 'dlx', '--', '@react-native-community/cli@20.2.0', 'init', 'FsdsCarouselWitness', '--version', '0.85.3', '--directory', host, '--skip-install', '--install-pods', 'false', '--skip-git-init'], root);
+  if (!existsSync(manifestPath)) throw new Error(`React Native CLI exited without creating ${manifestPath}; host initialization did not complete`);
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
   manifest.packageManager = 'pnpm@10.14.0';
   manifest.dependencies['react-native-svg'] = '15.15.5';
