@@ -64,9 +64,9 @@ acceptance:
       transformation units and relationship facts are taken from the immutable
       carried result rather than reinterpreted from the changed declaration
   - id: A8
-    given: 'one selected composite and independently specified expected content'
-    when: 'readback and metric outputs are produced and decoded separately'
-    then: 'both recover the promised associations and structure and detect extent binding membership or standing mutations'
+    given: 'set-valued source-grain declarations and structured keys'
+    when: 'grain fields are permuted or numeric and string key values are compared'
+    then: 'co-registration ignores grain declaration order while distinct scalar key types remain distinct'
   - id: A9
     given: 'the canonical declaration and row loader through the scratch browser consumer'
     when: 'the selected output renders'
