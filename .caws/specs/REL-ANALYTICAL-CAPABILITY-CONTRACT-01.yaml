@@ -92,7 +92,8 @@ evidence:
     test_verified_at: "87e8b91fde8dedeaff64714638e78346b3f246ed"
   - criterion_id: A6
     status: pass
-    evidence_ref: "REL-PEER-TEXT-RESIDUE-PROBE-01 created and validated before consumer implementation; independent conditional preservation probe. Checked source a2925fe77066785752a16570cef459f967d7fbf6. Retained at tmp/verification/analytical-capability-contract; rail, 4752 root tests and framework suites passed."
-    recorded_at: "2026-10-01T17:44:45.169Z"
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/verification/analytical-capability-contract/verification.json
-    commit_sha: a2925fe77066785752a16570cef459f967d7fbf6
+    evidence_ref: REL-PEER-TEXT-RESIDUE-PROBE-01 created and validated before consumer implementation; independent conditional preservation probe. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract.
+    recorded_at: "2026-10-01T17:56:13.673Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A6 next probe precommits discriminating outcomes without milestone promotion"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: "3ecba4dd5d2ea884b188417b5e81338cd63bc613"
