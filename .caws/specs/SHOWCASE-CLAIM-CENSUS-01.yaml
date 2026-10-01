@@ -49,3 +49,11 @@ contracts:
   - name: 'showcase-census'
     type: behavior
     path: 'src/consumption/showcase-census.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "src/views/views-smoke.test.tsx: Home integration against registry-backed bundle confirms all builtin targets, six admission badges, descriptor family, and Compose/Unity/Godot. Observed runtime confirmed SwiftUI source presence. Executed log: tmp/showcase-claims/fsds-showcase-merged-check.log (16 tests passed)."
+    recorded_at: "2026-10-01T08:07:49.002Z"
+    command: pnpm exec vitest run src/consumption/showcase-census.test.ts src/views/views-smoke.test.tsx
+    exit_code: 0
+    commit_sha: "7b4fdc72a08e60053791bae2f7b25f48413cde34"
