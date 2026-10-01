@@ -50,3 +50,10 @@ contracts:
   - name: 'edit-draft'
     type: schema
     path: 'packages/ds-contracts/document-model/page-record.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected authoring.md and worked-expectations.md at c6906ce83: explicit definition/consumer inheritance, local slots and nested instances, composition membership, addressed controls, implicit/explicit starts, selected-key edit destinations, terminal hold, visibility and per-operation inverse requirements. Runtime and unqualified interfaces are explicitly bounded."
+    recorded_at: "2026-10-01T16:41:04.728Z"
+    artifact_path: docs/architecture/design/shared-document-model/authoring.md
+    commit_sha: c6906ce83
