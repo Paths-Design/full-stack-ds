@@ -1,0 +1,9 @@
+{
+  "name": "analytical-capability-audit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test audit.test.mjs",
+    "verify:reconciliation": "node --test reconciliation.test.mjs"
+  }
+}
