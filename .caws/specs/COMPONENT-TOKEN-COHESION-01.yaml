@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: component-token-cohesion
 created_at: '2026-10-01T01:14:59.463Z'
-updated_at: '2026-10-01T01:43:43.549Z'
+updated_at: '2026-10-01T01:46:00.749Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
@@ -58,6 +58,7 @@ scope:
     - scripts/compose-parity-diff.mjs
     - scripts/design-contract-recon.mjs
     - scripts/migrate-variants-to-styles.mjs
+    - packages/ds-codegen/src/carousel.test.ts
   out: []
 invariants:
   - 'Durable component semantics remain in contracts and generic codegen; public override addresses retain independent consumers and unset fallback behavior.'
