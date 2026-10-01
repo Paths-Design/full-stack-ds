@@ -300,7 +300,7 @@ func _move(from: int) -> void:
 			targets.append({"node":wrapper, "start":wrapper.position.x, "end":0.0})
 		elif wrapper.visible and (i == from or not is_zero_approx(wrapper.position.x)):
 			targets.append({"node":wrapper, "start":wrapper.position.x, "end":-distance})
-	var duration := float(profile.durationMs) / 1000.0 * clampf(viewport.size.x / float(profile.referenceWidth), float(profile.minMultiplier), float(profile.maxMultiplier))
+	var duration := float(profile.durationMs) / 1000.0 * clampf(sqrt(viewport.size.x / float(profile.referenceWidth)), float(profile.minMultiplier), float(profile.maxMultiplier))
 	var bezier := str(profile.easing).trim_prefix("cubic-bezier(").trim_suffix(")").split(",")
 	_tween = create_tween()
 	_tween.tween_method(func(fraction: float):

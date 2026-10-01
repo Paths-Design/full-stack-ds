@@ -33,7 +33,12 @@ preferences remain observable as `-1`. The spatial fixtures inject a known
 non-reduced preference so their geometry is independent of the test machine.
 The
 geometry probe also compares equal elapsed time at increasing viewport widths,
-checks the duration cap, and reverses movement with native RTL layout. The
+checks the duration cap, and reverses movement with native RTL layout. It checks
+the shared square-root policy at a completion boundary: with a 250ms base and
+320px reference, a 640px viewport remains unsettled at 353ms and settles by
+354ms. The capped movement at 1280px must match 2560px. A monotonic larger-is-slower
+check alone missed an earlier linear-scaling defect and is insufficient evidence.
+The
 intermediate geometry assertion seeks the actual native Tween deterministically;
 it does not measure wall-clock rendering speed. Pointer events include viewport
 entry and an explicit viewport size, as required for this injected-input setup.
@@ -54,7 +59,7 @@ paint sample, separate from naturally sampled movement and timed behavior.
 `--mutations` alters only copies in scratch projects. It requires behavioral
 failures for removed acknowledgement, stale-completion protection, reduced-motion
 steps, system preference coupling, pointer intent, spatial interpolation, the size
-cap, composed content sizing and the generated index binding.
+cap, square-root scaling, composed content sizing and the generated index binding.
 A parser error, crash or timeout is inconclusive and fails the mutation run.
 
 The native adapter consumes normalized sequence/channel facts and accessible
@@ -69,6 +74,16 @@ unknown status. Screen-reader traversal during outgoing movement, announcements,
 editor serialization, native export, arbitrary child lifecycle behavior and
 other operating systems remain unverified. The existing Godot pilot's export
 evidence does not cover this new sequence runtime.
+
+The indicator variant currently chooses progress visibility through web CSS.
+There is no equivalent selection fact in `SequenceIR.progress`. Completing this
+axis requires a contract-declared presentation condition normalized into the IR,
+with each adapter composing that condition with timer validity and active-item
+visibility. Its changes must not reset the shared budget. Parsing web selectors
+or hard-coding `indicator` in the Godot emitter would conceal the missing fact.
+An ordinary `hidden` binding is insufficient today: the web sequence controller
+already writes that attribute during progress updates. The contract and runtime
+must establish one final visibility owner before this exclusion can be removed.
 
 See [Carousel semantics](../architecture/carousel-sequences.md), the
 [Godot target boundary](../architecture/godot-target.md), and the separate

@@ -52,6 +52,7 @@ if (process.argv.includes('--render')) {
 }
 if (process.argv.includes('--mutations')) {
   const controls = [
+    { name: 'linear-size-scaling', file: 'runtime/sequence.gd', from: 'sqrt(viewport.size.x / float(profile.referenceWidth))', to: 'viewport.size.x / float(profile.referenceWidth)', test: 'sequence' },
     { name: 'content-minimum', file: 'runtime/sequence.gd', from: 'minimum = minimum.max(slide.body.get_combined_minimum_size())', to: 'minimum = Vector2(0, 160)', test: 'sequence' },
     { name: 'system-motion-preference', file: 'runtime/sequence.gd', from: 'reduced_motion or system_motion_preference == 1', to: 'reduced_motion', test: 'sequence' },
     { name: 'acknowledgement', file: 'runtime/sequence_budget.gd', from: 'valid() and playing and not pending and pauses', to: 'valid() and playing and pauses', test: 'sequence_budget' },

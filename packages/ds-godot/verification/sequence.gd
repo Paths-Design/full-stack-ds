@@ -154,7 +154,12 @@ func _run() -> void:
 	var slow_fraction: float = absf(initial_selection.slides[0].wrapper.position.x) / initial_selection.viewport.size.x
 	widths.append(initial_selection.viewport.size.x)
 	check(fast_fraction > slow_fraction + 0.1, "larger viewport moves more slowly at the same elapsed time")
-	initial_selection._tween.custom_step(1.0)
+	# Shared profile: 250ms at 320px, about 353.553ms at 640px. Check
+	# completion boundaries, not merely the weaker larger-is-slower property.
+	initial_selection._tween.custom_step(0.228)
+	check(initial_selection.budget.pauses.has("transition"), "640px movement is unsettled at 353ms")
+	initial_selection._tween.custom_step(0.001)
+	check(not initial_selection.budget.pauses.has("transition"), "640px movement completes by 354ms under the shared square-root policy")
 	initial_selection.size.x = 1280
 	await process_frame
 	await process_frame
@@ -163,8 +168,18 @@ func _run() -> void:
 	initial_selection._tween.custom_step(0.125)
 	var capped_fraction: float = absf(initial_selection.slides[1].wrapper.position.x) / initial_selection.viewport.size.x
 	widths.append(initial_selection.viewport.size.x)
-	check(widths == [320.0, 640.0, 1280.0], "fixture realizes the requested native viewport widths")
-	check(is_equal_approx(slow_fraction, capped_fraction), "viewport multiplier honors the declared duration cap")
+	check(slow_fraction > capped_fraction + 0.1, "640px movement has not reached the duration cap")
+	initial_selection._tween.custom_step(1.0)
+	initial_selection.size.x = 2560
+	await process_frame
+	await process_frame
+	initial_selection.previous.pressed.emit()
+	initial_selection._tween.pause()
+	initial_selection._tween.custom_step(0.125)
+	var wide_fraction: float = absf(initial_selection.slides[0].wrapper.position.x) / initial_selection.viewport.size.x
+	widths.append(initial_selection.viewport.size.x)
+	check(widths == [320.0, 640.0, 1280.0, 2560.0], "fixture realizes the requested native viewport widths")
+	check(is_equal_approx(capped_fraction, wide_fraction), "viewport multiplier honors the declared duration cap")
 	initial_selection.free()
 	# Exercise preference changes through the platform query boundary while the
 	# same generated component owns an active native tween and reading budget.
