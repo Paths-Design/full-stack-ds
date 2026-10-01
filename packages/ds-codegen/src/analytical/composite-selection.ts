@@ -46,6 +46,7 @@ function metricPremise(carrier: CompositeCarrier, scale: MetricScale): NoSelecti
   if (carriedViews(carrier.composition).some(v => v.channel !== "position")) return fail("unsupported", "this metric format realizes position views only");
   const covered = new Set<CarriedPart>();
   let fault: NoSelection | undefined;
+  let unit: string | undefined;
   const visit = (c: CarriedComposite, path: number[]) => {
     if ((c.combinator === "facet" && c.policy.position !== "shared") || (c.combinator === "layer" && c.sharing.position !== "shared")) {
       fault = fail("unsupported", "this metric format requires one declared shared position scale"); return;
@@ -60,7 +61,6 @@ function metricPremise(carrier: CompositeCarrier, scale: MetricScale): NoSelecti
         });
         let endpoints: Map<string, string> | undefined;
         let relation: string | undefined;
-        let unit: string | undefined;
         for (const view of views) {
           if (view.kind !== "qualified") continue;
           const q = carrier.datasets.find(d => d.id === view.dataset)!.result;
@@ -91,7 +91,26 @@ function metricPremise(carrier: CompositeCarrier, scale: MetricScale): NoSelecti
     const x = scale.origin + value * scale.unitsPerValue;
     if (!Number.isFinite(x) || (x - scale.origin) / scale.unitsPerValue !== value) return fail("unsupported", "metric scale cannot preserve these numeric values losslessly");
   }
+  try { metricViewport(carrier, scale); } catch { return fail("unsupported", "metric viewport cannot preserve a finite shared extent"); }
   return undefined;
+}
+
+/** Extent belongs to the selected shared scope, never a browser-local range fit. */
+function metricViewport(carrier: CompositeCarrier, scale: MetricScale): CompositeMetricArtifact["viewport"] {
+  const endpoints = carriedViews(carrier.composition).flatMap(view => {
+    const q = carrier.datasets.find(d => d.id === view.dataset)!.result;
+    const bounds = q.fieldFacts[view.field]!.bounds!;
+    return q.observations.flatMap(o => [bounds.lower, bounds.upper].map(f => {
+      const value = o.values[f];
+      if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("required endpoint unavailable");
+      return scale.origin + value * scale.unitsPerValue;
+    }));
+  });
+  const minimum = Math.min(...endpoints), maximum = Math.max(...endpoints);
+  const span = Math.max(maximum - minimum, 1), pad = span / 8;
+  const viewport = { x: minimum - pad, width: span + 2 * pad };
+  if (![viewport.x, viewport.width, maximum].every(value => Number.isFinite(value) && Number.isFinite(Math.fround(value))) || Math.fround(viewport.width) <= 0) throw new Error("invalid SVG viewport");
+  return viewport;
 }
 
 export function selectCompositeProgram(input: CompositeInput, requested: CompositeIntent): CompositeSelection {
@@ -141,7 +160,7 @@ export function lowerSelectedComposite(program: SelectedCompositeProgram): Compo
       return { key, text, positions };
     }),
   } })) };
-  return { kind: "composite-metric", carrier: encoded, scale };
+  return { kind: "composite-metric", carrier: encoded, scale, viewport: metricViewport(carrier, scale) };
 }
 export function projectComposite(input: CompositeInput, intent: CompositeIntent): CompositeSelection | CompositeArtifact {
   const selection = selectCompositeProgram(input, intent);

@@ -45,6 +45,23 @@ function outputs(input = request()) {
 const wire = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
 describe("selected analytical carrier and output custody", () => {
+  it("derives finite shared extent from participating endpoints alone", () => {
+    expect(outputs().metric.viewport).toEqual({ x: 3.75, width: 42.5 });
+    const structure = declaration();
+    structure.relations.samples!.fields!.unused = quantity();
+    const input = request(structure, rows().map(row => ({ ...row, unused: 10000 })));
+    expect(outputs(input).metric.viewport).toEqual({ x: 3.75, width: 42.5 });
+    const overflow = request(declaration(), [{ ...rows()[0], lo: -4e307, hi: 4e307, a: 0, b: 1 }]);
+    const selected = selectCompositeProgram(overflow, { kind: "metric", scale: { origin: 0, unitsPerValue: 2 } });
+    expect(selected.kind).toBe("unsupported");
+    if (selected.kind !== "unsupported") throw new Error("overflow must not render");
+    expect(selected.reason).toContain("finite shared extent");
+    expect(selectCompositeProgram(overflow, { kind: "readback" }).kind).toBe("selected");
+    const svgOverflow = request(declaration(), [{ ...rows()[0], lo: 1e40, hi: 2e40, a: 1.5e40, b: 1.8e40 }]);
+    expect(selectCompositeProgram(svgOverflow, { kind: "metric" }).kind).toBe("unsupported");
+    expect(selectCompositeProgram(svgOverflow, { kind: "readback" }).kind).toBe("selected");
+  });
+
   it("snapshots meaning, deduplicates shared authority and detaches produced output", () => {
     const input = request();
     const selected = selectCompositeProgram(input, { kind: "readback" });
@@ -89,6 +106,7 @@ describe("selected analytical carrier and output custody", () => {
     expect(projectComposite(request(declaration(), [{ ...rows()[0], a: "unknown" }]), { kind: "readback" }).kind).toBe("unproven");
     expect(projectComposite(request(declaration(), []), { kind: "readback" }).kind).toBe("nothing-to-realize");
     expect(() => lowerSelectedComposite({ carrier: outputs().readback.carrier, intent: { kind: "metric" } } as unknown as SelectedCompositeProgram)).toThrow(/selected/);
+    expect(() => lowerSelectedComposite({ carrier: outputs().readback.carrier, intent: { kind: "readback" } } as unknown as SelectedCompositeProgram)).toThrow(/minted/);
   });
 
   it("does not coalesce contradictory endpoint snapshots into one metric range", () => {
