@@ -1866,7 +1866,8 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     if (sequencePresentationProp || controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name || (ir.motion.sequence && [ir.motion.sequence.itemsProp, ir.motion.sequence.timing.durationProp, ir.motion.sequence.timing.autoPlayProp].includes(p.name)) || (ir.pagedSet && [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp].includes(p.name))) {
       const type = lowerAngularPropType(p.propType);
       lines.push(`  private readonly input${capitalizeAngular(p.safeName)} = signal<${type} | undefined>(undefined);`);
-      lines.push(`  @Input() get ${p.safeName}(): ${type} | undefined { return this.input${capitalizeAngular(p.safeName)}(); }`);
+      const presentationDefault = sequencePresentationProp && p.defaultExpr !== undefined ? ` ?? ${p.defaultExpr}` : "";
+      lines.push(`  @Input() get ${p.safeName}(): ${type} | undefined { return this.input${capitalizeAngular(p.safeName)}()${presentationDefault}; }`);
       lines.push(`  set ${p.safeName}(value: ${type} | undefined) { this.input${capitalizeAngular(p.safeName)}.set(value); }`);
       declaredProps.add(p.name);
     } else if (propLine) {

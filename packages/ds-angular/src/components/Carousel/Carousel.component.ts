@@ -61,7 +61,7 @@ export class CarouselComponent {
   @Input() get duration(): number | null | undefined { return this.inputDuration(); }
   set duration(value: number | null | undefined) { this.inputDuration.set(value); }
   private readonly inputIndicator = signal<CarouselIndicator | undefined>(undefined);
-  @Input() get indicator(): CarouselIndicator | undefined { return this.inputIndicator(); }
+  @Input() get indicator(): CarouselIndicator | undefined { return this.inputIndicator() ?? "pagination"; }
   set indicator(value: CarouselIndicator | undefined) { this.inputIndicator.set(value); }
   @Input() label?: string = "Featured content";
   @Input() class?: string;

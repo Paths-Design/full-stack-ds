@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-10-01
-verified_at_commit: 395ecdbff
+verified_at_commit: 07d84e811
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -70,7 +70,7 @@ The Toast countdown additionally binds a decorative part to the existing surface
 budget: web animation frames project remaining active time, while the budget alone
 requests dismissal. Pause reasons compose and reduced motion substitutes discrete
 steps without changing time. Native countdown carriers are not executable.
-This extends the executable contract vocabulary without establishing native motion,
+These loading and dismissal pilots extend the executable contract vocabulary without establishing native motion,
 shared clocks, geometry-sensitive timing or a universal animation runtime.
 
 ## The discipline this is an instance of
@@ -221,7 +221,7 @@ Hooks vs. controllers, virtual DOM vs. shadow DOM, immutable props vs. mutable r
 
 The contract currently drives all five idiomatically, with hundreds of passing tests per framework. One leak mechanism is concrete: target code wanting component-specific interpretation rather than a shared IR fact. `no-component-name-lore.test.ts` rejects that form in the enforced emitter scope. It is not the only leak mechanism. A contract field can also be accepted and carried without affecting any realization. The expanded full contract-oracle profile detects nine of eleven curated one-leaf mutants and lets two survive end to end: the exact Badge mutations `rtl.flipIcon` true→false and `ssr.hydrateOn` none→interaction. Dialog's first state-machine event `open`→`reveal` survived the 2026-09-05 measurement and was killed at `generate-check` by the trigger-binding semantic rule (`FEAT-STATEMACHINE-TRIGGER-BINDING-01`, targeted full-profile run at `0641cf9f`): a transition event must now resolve to a declared trigger referent, so a name that references nothing fails the structural gate. Card's `actions` slot `required` false→true was killed at `root-tests` by the usage-audit obligation (`FEAT-SLOT-REQUIRED-USAGE-BINDING-01`, targeted full-profile run at `e6303029`): consumer-supplied required regions must be supplied by every curated frame. In contrast, a wrong `textOverflow.line` binding reaches the IR but is contradicted by a hand-authored IR-authority test, while a motion-property change is caught by the contract-derived motion ledger. The IR is centralized and shared, but neither its size nor emitter agreement proves every declared fact is consumed or correct.
 
-The earlier non-web extensions have graded proof strength: React Native (rail-admitted with package runtime tests), SwiftUI (full-corpus emission, CI compile/test and sampled paint facts, plus a separately invoked macOS interaction harness), and Jetpack Compose (partial-corpus compile and resolver-test evidence). The question this section used to close on — whether a sixth or seventh framework would expose a leak — has been partially answered: three further targets landed without contract escape hatches or per-component emitter-name lore in the enforced scope. Whether the same line holds under broad native device behavior, accessibility, and visual pressure remains open.
+The earlier non-web extensions have graded proof strength: React Native (rail-admitted with package runtime tests), SwiftUI (allowlisted emission, CI compile/test and sampled paint facts, plus a separately invoked macOS interaction harness), and Jetpack Compose (partial-corpus compile and resolver-test evidence). The question this section used to close on — whether a sixth or seventh framework would expose a leak — has been partially answered: three further targets landed without contract escape hatches or per-component emitter-name lore in the enforced scope. Whether the same line holds under broad native device behavior, accessibility, and visual pressure remains open.
 
 ## What this is not
 
@@ -254,7 +254,7 @@ that a native backend supports arbitrary CSS-variable bindings. React Native's
 runtime-use collection now follows only the CSS bindings its existing native
 lowerings actually consume. See [the page attempts](architecture/design/retoken-page-attempts.md).
 
-It demonstrates that, for the <!-- component-count -->55 components built so far, a single typed contract corpus drives idiomatic source across React, Vue, Svelte, Angular, and Lit through one shared IR and one primitive — with React Native admitted to the same rail, the full-corpus SwiftUI emitter carrying bounded compile/test/paint/host-interaction facts outside it, and the partial-corpus Jetpack Compose emitter carrying compile and resolver-test facts outside it — with fail-closed boundary checks and preserved custom regions across regenerations. The IR centralizes semantic interpretation in the codegen layer, with focused builders beside its main assembly module; that relocation is an observable complexity cost, not evidence that the IR is small. A reader can clone the repo, regenerate, and inspect the IR and representative contracts directly.
+It demonstrates that, for the <!-- component-count -->55 components built so far, a single typed contract corpus drives idiomatic source across React, Vue, Svelte, Angular, and Lit through one shared IR and one primitive — with React Native admitted to the same rail, the allowlisted SwiftUI emitter carrying bounded compile/test/paint/host-interaction facts outside it, and the partial-corpus Jetpack Compose emitter carrying compile and resolver-test facts outside it — with fail-closed boundary checks and preserved custom regions across regenerations. The IR centralizes semantic interpretation in the codegen layer, with focused builders beside its main assembly module; that relocation is an observable complexity cost, not evidence that the IR is small. A reader can clone the repo, regenerate, and inspect the IR and representative contracts directly.
 
 It does not demonstrate that every compositional system must take this shape, that the contract will continue to hold past 100 components, that native behavior is broadly runtime-correct, that macOS host facts transfer to iOS/Android devices, or that the architecture transfers to substrates outside UI engineering. The Unity pilot adds a further bounded import/interaction witness. The Godot comparative pilot adds shared state traces across a Unity Editor panel and a Godot exported application, plus a narrow foreground-token projection. Neither establishes a broader native guarantee. Those are open questions, named here so the reader does not have to infer them.
 
@@ -266,11 +266,14 @@ establish rendered layout on Android devices.
 
 ## Carousel motion reconciliation
 
-Carousel adds normalized sequence and motion facts without another rendered primitive contract. Renamed-contract tests exercise each web emitter to guard against component-name dispatch. React Native now derives navigation, controlled index and reading-budget bindings from that sequence IR. Its movement primitive remains separate from the generated component's incomplete presentation wiring; the IR's complete native sequence capability therefore remains unrealized. The SwiftUI and Compose allowlists do not yet include Carousel. See [native implementation boundaries](architecture/carousel-sequences.md#native-implementation-work-in-progress).
+Carousel adds normalized sequence and motion facts without another rendered primitive contract. Renamed-contract tests exercise each web emitter to guard against component-name dispatch. React Native derives navigation, controlled index, reading-budget and token-resolved movement bindings from that sequence IR. A generated consumer's own autoplay clock drives a recorded iOS Simulator slide transition, with intermediate pixels observed; its controls, icons and progress presentation remain incomplete. The SwiftUI and Compose allowlists do not yet include Carousel. See [native implementation boundaries](architecture/carousel-sequences.md#native-implementation-work-in-progress) and the [bounded iOS witness](testing/native-carousel-probe.md).
 
-Each Carousel indicator mode explicitly selects its visible decorations in the
-style contract, including the combined mode; the variant audit checks those
-carriers and browser tests check the resulting visibility.
+Each progress binding declares its presentation condition in the motion contract.
+The IR validates the variant axis and choices; web runtimes project visibility
+without restarting the shared budget. Browser tests cover the default and explicit
+indicator modes. The bounded Godot probe consumes the same conditions and composed
+part ownership, with mutation controls for presentation and timer validity; it is
+outside the registered component allowlist and does not establish native styling parity.
 
 Figma descriptors carry normalized motion facts with a `descriptor-only`
 realization label. Their serialized sequence metadata preserves the control

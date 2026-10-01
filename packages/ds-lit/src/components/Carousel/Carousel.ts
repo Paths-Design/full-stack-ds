@@ -205,7 +205,7 @@ export class CarouselElement extends LitElement {
   }
   private sequence = new SequenceController(this, {"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10,"when":{"axis":"indicator","values":["pagination","both"]}},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10,"when":{"axis":"indicator","values":["next","both"]}}]}, () => ({
     index: this.behavior.slide, labels: this.slides ?? [], autoPlay: this.autoPlay ?? false,
-    presentation: { "indicator": this.indicator },
+    presentation: { "indicator": (this.indicator ?? "pagination") },
     durationMs: this.duration === undefined ? 6000 : this.duration,
     onIndexChange: (value) => this.behavior.setSlide(value),
   }));

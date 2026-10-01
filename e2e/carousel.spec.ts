@@ -5,7 +5,8 @@ async function configure(page: Page, extra: Record<string, unknown> = {}) {
   await page.evaluate(extra => window.postMessage({ type: "fsds:config", props: {
     slides: ["First", "Second", "Third"], duration: 1000, autoPlay: true, indicator: "both", ...extra,
   }, tokenCss: "" }, "*"), extra);
-  await expect(page.locator(".carousel")).toHaveClass(new RegExp(`carousel--${extra.indicator ?? "both"}`));
+  const indicator = Object.hasOwn(extra, "indicator") ? extra.indicator ?? "pagination" : "both";
+  await expect(page.locator(".carousel")).toHaveClass(new RegExp(`carousel--${indicator}`));
   // Config previews may replace their text slot on every update. Reattach
   // this test's consumer-owned DOM fixture after that framework render.
   await page.locator(".carousel__viewport").evaluate(viewport => {
@@ -15,11 +16,11 @@ async function configure(page: Page, extra: Record<string, unknown> = {}) {
     if (fixture.some(el => el.parentElement !== host)) host.replaceChildren(...fixture);
   });
 }
-async function mount(page: Page, framework: string) {
+async function mount(page: Page, framework: string, extra: Record<string, unknown> = {}) {
   await page.goto(`/preview/${framework}/Carousel`);
   await page.locator("body[data-fsds-ready]").waitFor({ state: "attached" });
   await page.clock.install(); await page.clock.pauseAt(new Date());
-  await configure(page);
+  await configure(page, extra);
   await expect(page.locator(".pagination__item")).toHaveCount(3);
   // The generic preview accepts a text child, not component trees. Supply
   // owned consumer elements at the DOM boundary; the React showcase test
@@ -42,6 +43,14 @@ async function mount(page: Page, framework: string) {
 const progress = (page: Page, selector: string) => page.locator(selector).evaluate(el => Number((el as HTMLElement).style.getPropertyValue("--sequence-progress")));
 
 for (const framework of frameworks) {
+  test(`${framework}: undefined indicator uses the declared pagination progress default`, async ({ page }) => {
+    await mount(page, framework, { indicator: undefined });
+    await page.clock.runFor(400);
+    await expect(page.locator('.pagination__item[data-sequence-active="true"] .pagination__fill')).toBeVisible();
+    await expect(page.locator(".carousel__ring")).toBeHidden();
+    expect(await progress(page, '.pagination__item[data-sequence-active="true"] .pagination__fill')).toBeCloseTo(0.4, 1);
+  });
+
   test(`${framework}: composed Pagination picks a slide through the owning sequence`, async ({ page }) => {
     await mount(page, framework);
     await page.locator(".pagination__item").nth(2).click();
