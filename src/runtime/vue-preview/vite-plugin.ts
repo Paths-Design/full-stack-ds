@@ -1,3 +1,4 @@
+import { compositionCss } from "../composition-css";
 // Vite plugin: Vue preview pipeline.
 //
 // Mirrors src/runtime/react-preview/vite-plugin.ts. Serves an HTML shell at
@@ -126,7 +127,7 @@ export function vuePreviewPlugin(): Plugin {
           const html = buildCommonPreviewShellHtml({
             componentName: parsed.componentName,
             framework: "vue",
-            componentCss: component.sources.vue?.css?.code,
+            componentCss: compositionCss(bundle.components, parsed.componentName, "vue"),
             tokensCss: bundle.tokensCss,
             entryId,
           });

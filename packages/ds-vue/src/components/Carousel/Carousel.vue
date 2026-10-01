@@ -3,6 +3,7 @@
 import { computed } from "vue";
 import { useCarousel } from "./useCarousel.js";
 import Icon from "../Icon/Icon.vue";
+import Pagination from "../Pagination/Pagination.vue";
 import { useSequence } from "../../primitives/hooks/useSequence.js";
 // @generated:end
 
@@ -49,7 +50,7 @@ const behavior = useCarousel({
   defaultIndex: props.defaultIndex,
   onIndexChange: props.onIndexChange,
 });
-const sequence = useSequence({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__picker"},"progress":[{"selector":".carousel__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]}, () => ({
+const sequence = useSequence({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]}, () => ({
   index: behavior.slide.value, labels: props.slides, autoPlay: props.autoPlay,
   durationMs: props.duration === undefined ? 6000 : props.duration,
   onIndexChange: behavior.setSlide,
@@ -81,13 +82,7 @@ const classNames = computed(() => [
       <button :class="'carousel__previous'" type="button" aria-label="Previous slide">
         <Icon name="arrow-left" size="sm" />
       </button>
-      <div :class="'carousel__pagination'" role="group" aria-label="Choose slide">
-        <button v-for="(item, index) in (props.slides ?? [])" :key="index" :class="'carousel__picker'" type="button" :aria-label="item">
-          <span :class="'carousel__marker'" aria-hidden="true">
-            <span :class="'carousel__fill'" aria-hidden="true"></span>
-          </span>
-        </button>
-      </div>
+      <Pagination :class="'carousel__pagination'" label="Choose slide" presentation="indicators" :onIndexChange="sequence.requestIndex" :pages="props.slides" :index="behavior.slide.value" :progress="(props.indicator === 'pagination' ? 'elapsed' : (props.indicator === 'next' ? 'none' : 'elapsed'))" />
       <button :class="'carousel__next'" type="button" aria-label="Next slide">
         <span :class="'carousel__ring'" aria-hidden="true"></span>
         <Icon name="arrow-right" size="sm" />

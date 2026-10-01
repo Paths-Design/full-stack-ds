@@ -1,3 +1,4 @@
+import { pagedBindingExpression } from "../../paging.js";
 import { sequenceConfig } from "../../sequence.js";
 /**
  * React-specific component source emission.
@@ -294,6 +295,7 @@ export function generateReactComponentSource(
       `import { ${fieldAssocImports.join(", ")} } from "../../primitives/hooks";`,
     );
   }
+  if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   if (resolveSurfaceAutoDismiss(ir) && ir.behavior.normalizedChannels.some((c) => c.valueType === "boolean")) {
     importLines.push(`import { useAutoDismiss } from "../../primitives/hooks";`);
@@ -2085,6 +2087,11 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
       ``,
     );
   }
+  if (ir.pagedSet) {
+    const page = ir.pagedSet;
+    lines.push(`  const pagedSet = usePagedSet({ index: ${page.channel}, items: ${page.itemsProp},`,
+      `    count: ${page.countProp ?? "undefined"}, disabled: ${page.disabledProp ?? "false"}, onIndexChange: set${capitalize(page.channel)} });`);
+  }
   // Ephemeral-surface auto-dismiss: the presence budget flows from the
   // *.timing.auto-dismiss token (generation-resolved default) with the
   // contract's duration prop as the consumer override; pause props land on
@@ -2696,8 +2703,8 @@ function renderReactDomNode(
       ctx.formControlCommit === "input"
         ? "change"
         : eventName;
-    const jsxEventProp =
-      "on" + reactEventName.charAt(0).toUpperCase() + reactEventName.slice(1);
+    const jsxEventProp = ({ keydown: "onKeyDown", keyup: "onKeyUp", focusin: "onFocus", focusout: "onBlur" } as Record<string, string>)[reactEventName]
+      ?? "on" + reactEventName.charAt(0).toUpperCase() + reactEventName.slice(1);
     const valueExpr = renderReactBinding(jsxEventProp, expr, ctx);
     if (valueExpr === null) continue;
     attrs.push(`${jsxEventProp}={${valueExpr}}`);
@@ -3231,6 +3238,7 @@ function renderReactBinding(
   ctx: ReactRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
     case "prop": {
       const base = expr.prop.includes("-") ? toCamelCase(expr.prop) : expr.prop;
       return appendPath(base, expr.path);
@@ -3263,6 +3271,7 @@ function renderReactBinding(
     case "channel": {
       const ch = ctx.channelByName.get(expr.channel);
       if (!ch) return null;
+      if (expr.forwardValue) return expr.forwardValue === "sequence" ? "sequence.requestIndex" : expr.forwardValue === "pagedSet" ? "pagedSet.request" : `set${capitalize(ch.name)}`;
       if (expr.field === "value") return appendPath(ch.name, expr.path);
       if (expr.field === "defaultValue") {
         if (!ch.defaultValueProp) return null;

@@ -1,4 +1,5 @@
-import { Calendar, Postcard, Stack } from "@full-stack-ds/react";
+import { Calendar, PageNavigator, Pagination, Postcard, Stack } from "@full-stack-ds/react";
+import { useState } from "react";
 import type { Bundle } from "../types/data";
 
 /**
@@ -8,6 +9,11 @@ import type { Bundle } from "../types/data";
  */
 export function ActivityView({ bundle }: { bundle: Bundle }) {
   const events = bundle.activity ?? [];
+  const [requestedPage, setPage] = useState(0);
+  const pageSize = 12;
+  const pageCount = Math.ceil(events.length / pageSize);
+  const page = Math.min(requestedPage, Math.max(0, pageCount - 1));
+  const visibleEvents = events.slice(page * pageSize, (page + 1) * pageSize);
   const dayStamps = Array.from(
     new Set(events.map((e) => e.timestamp.slice(0, 10))),
   )
@@ -40,7 +46,7 @@ export function ActivityView({ bundle }: { bundle: Bundle }) {
           {events.length === 0 && (
             <p className="muted">No activity recorded at build time.</p>
           )}
-          {events.map((e) => (
+          {visibleEvents.map((e) => (
             <Postcard
               key={e.id}
               postId={e.id}
@@ -53,6 +59,11 @@ export function ActivityView({ bundle }: { bundle: Bundle }) {
             </Postcard>
           ))}
         </Stack>
+        {pageCount > 1 && <PageNavigator pageCount={pageCount} label="Activity page navigation" index={page} onIndexChange={setPage} />}
+        {pageCount > 1 && <Pagination
+          pages={Array.from({ length: pageCount }, (_, index) => String(index + 1))}
+          presentation="pages" label="Activity pages" index={page} onIndexChange={setPage}
+        />}
       </section>
     </div>
   );

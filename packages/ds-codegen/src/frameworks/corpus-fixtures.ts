@@ -36,8 +36,10 @@ export function loadCorpusContract(name: string): ComponentContract {
   return contract;
 }
 
+let corpus: Map<string, ComponentContract> | undefined;
 export function corpusIR(name: string): ComponentIR {
-  return buildComponentIR(loadCorpusContract(name));
+  corpus ??= new Map(allCorpusComponentNames().map(name => [name, loadCorpusContract(name)]));
+  return buildComponentIR(structuredClone(corpus.get(name)!), { allContracts: corpus });
 }
 
 /**

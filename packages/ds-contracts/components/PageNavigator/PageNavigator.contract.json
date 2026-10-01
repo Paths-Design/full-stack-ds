@@ -1,0 +1,378 @@
+{
+  "$schema": "../../component.contract.schema.json",
+  "name": "PageNavigator",
+  "description": "Composes position choices, bounded navigation and a one-based page field over one accepted position. Data, completion and workflow validation belong to the content owner.",
+  "layer": "composer",
+  "category": "structure",
+  "pagedSet": {
+    "channel": "page",
+    "itemsProp": "pages",
+    "countProp": "pageCount",
+    "disabledProp": "disabled"
+  },
+  "anatomy": {
+    "parts": [
+      "root",
+      "previous",
+      "previousIcon",
+      "field",
+      "input",
+      "context",
+      "total",
+      "next",
+      "nextIcon",
+      "commit",
+      "choices"
+    ],
+    "details": {
+      "root": {
+        "role": "root",
+        "subcomponent": false,
+        "tag": "div"
+      },
+      "previous": {
+        "role": "trigger",
+        "subcomponent": false,
+        "componentRef": "fsds.Button",
+        "interactive": true,
+        "focusable": true
+      },
+      "previousIcon": {
+        "role": "decoration",
+        "subcomponent": false,
+        "componentRef": "fsds.Icon"
+      },
+      "field": {
+        "role": "content",
+        "subcomponent": false,
+        "tag": "div"
+      },
+      "input": {
+        "role": "trigger",
+        "subcomponent": false,
+        "componentRef": "fsds.Input",
+        "interactive": true,
+        "focusable": true
+      },
+      "context": {
+        "role": "label",
+        "subcomponent": false,
+        "tag": "span"
+      },
+      "total": {
+        "role": "label",
+        "subcomponent": false,
+        "tag": "span"
+      },
+      "next": {
+        "role": "trigger",
+        "subcomponent": false,
+        "componentRef": "fsds.Button",
+        "interactive": true,
+        "focusable": true
+      },
+      "nextIcon": {
+        "role": "decoration",
+        "subcomponent": false,
+        "componentRef": "fsds.Icon"
+      },
+      "commit": {
+        "role": "trigger",
+        "subcomponent": false,
+        "componentRef": "fsds.Button",
+        "interactive": true,
+        "focusable": true
+      },
+      "choices": {
+        "role": "content",
+        "subcomponent": false,
+        "componentRef": "fsds.Pagination"
+      }
+    },
+    "dom": {
+      "tag": "div",
+      "part": "root",
+      "attrs": {
+        "role": "group"
+      },
+      "bindings": {
+        "aria-label": "prop:label"
+      },
+      "children": [
+        {
+          "componentRef": "fsds.Button",
+          "part": "previous",
+          "attrs": {
+            "type": "button"
+          },
+          "bindings": {
+            "disabled": "paged:previousDisabled",
+            "ariaLabel": "prop:previousLabel"
+          },
+          "events": {
+            "click": "paged:previous"
+          },
+          "children": [
+            {
+              "componentRef": "fsds.Icon",
+              "part": "previousIcon",
+              "attrs": {
+                "name": "arrow-left",
+                "size": "sm"
+              }
+            }
+          ]
+        },
+        {
+          "tag": "div",
+          "part": "field",
+          "events": {
+            "keydown": "paged:commitOnEnter",
+            "focusout": "paged:commit"
+          },
+          "children": [
+            {
+              "componentRef": "fsds.Input",
+              "part": "input",
+              "attrs": {
+                "type": "number"
+              },
+              "bindings": {
+                "value": "paged:draft",
+                "disabled": "paged:disabled",
+                "ariaLabel": "prop:pageLabel"
+              },
+              "events": {
+                "change": "paged:edit"
+              }
+            }
+          ]
+        },
+        {
+          "tag": "span",
+          "part": "context",
+          "content": "prop:ofLabel"
+        },
+        {
+          "tag": "span",
+          "part": "total",
+          "content": "paged:count"
+        },
+        {
+          "componentRef": "fsds.Button",
+          "part": "commit",
+          "attrs": {
+            "type": "button"
+          },
+          "bindings": {
+            "disabled": "paged:disabled",
+            "ariaLabel": "prop:commitLabel"
+          },
+          "events": {
+            "click": "paged:commit"
+          },
+          "children": [
+            {
+              "tag": "span",
+              "content": "prop:commitLabel"
+            }
+          ]
+        },
+        {
+          "componentRef": "fsds.Button",
+          "part": "next",
+          "attrs": {
+            "type": "button"
+          },
+          "bindings": {
+            "disabled": "paged:nextDisabled",
+            "ariaLabel": "prop:nextLabel"
+          },
+          "events": {
+            "click": "paged:next"
+          },
+          "children": [
+            {
+              "componentRef": "fsds.Icon",
+              "part": "nextIcon",
+              "attrs": {
+                "name": "arrow-right",
+                "size": "sm"
+              }
+            }
+          ]
+        },
+        {
+          "componentRef": "fsds.Pagination",
+          "part": "choices",
+          "bindings": {
+            "pages": "prop:pages",
+            "index": "channel:page.value",
+            "presentation": "prop:presentation",
+            "label": "prop:label",
+            "disabled": "paged:disabled"
+          },
+          "events": {
+            "indexChange": "channel:page.onChange"
+          },
+          "if": "showChoices"
+        }
+      ]
+    }
+  },
+  "props": {
+    "styled": {
+      "members": [
+        {
+          "name": "pages",
+          "propType": {
+            "kind": "array",
+            "items": {
+              "kind": "string"
+            }
+          },
+          "default": [],
+          "description": "Accessible labels in position order. For numbered pagination supply page-number labels; index remains zero-based."
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "description": "Accepted current position for controlled use."
+        },
+        {
+          "name": "defaultIndex",
+          "type": "number",
+          "default": 0,
+          "description": "Initial position for uncontrolled selection."
+        },
+        {
+          "name": "onIndexChange",
+          "propType": {
+            "kind": "callback",
+            "params": [
+              {
+                "name": "index",
+                "type": {
+                  "kind": "number"
+                }
+              }
+            ],
+            "returns": {
+              "kind": "void"
+            }
+          },
+          "description": "Requests a position; content fetching, visibility and acceptance belong to the consumer."
+        },
+        {
+          "name": "presentation",
+          "default": "indicators",
+          "description": "Indicators for a small set, or visible numbered/labeled pages.",
+          "propType": {
+            "kind": "ref",
+            "to": "PageNavigatorPresentation"
+          }
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "Page navigation",
+          "description": "Accessible name for this set of choices."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": false,
+          "description": "Prevent selection while the owning flow is unavailable."
+        },
+        {
+          "name": "pageCount",
+          "type": "number",
+          "description": "Known finite total. Omit to use the pages length; count-only navigation can leave pages empty."
+        },
+        {
+          "name": "pageLabel",
+          "type": "string",
+          "default": "Current page",
+          "description": "Consumer-authored pageLabel text for the composed navigator."
+        },
+        {
+          "name": "previousLabel",
+          "type": "string",
+          "default": "Previous page",
+          "description": "Consumer-authored previousLabel text for the composed navigator."
+        },
+        {
+          "name": "nextLabel",
+          "type": "string",
+          "default": "Next page",
+          "description": "Consumer-authored nextLabel text for the composed navigator."
+        },
+        {
+          "name": "ofLabel",
+          "type": "string",
+          "default": "of",
+          "description": "Consumer-authored ofLabel text for the composed navigator."
+        },
+        {
+          "name": "commitLabel",
+          "type": "string",
+          "default": "Go",
+          "description": "Consumer-authored commitLabel text for the composed navigator."
+        },
+        {
+          "name": "showChoices",
+          "type": "boolean",
+          "default": false,
+          "description": "Compose clickable position choices alongside the field and bounded controls."
+        }
+      ]
+    }
+  },
+  "channels": {
+    "page": {
+      "value": "index",
+      "defaultValue": "defaultIndex",
+      "onChange": "onIndexChange",
+      "valueType": "number"
+    }
+  },
+  "types": {
+    "PageNavigatorPresentation": {
+      "kind": "union",
+      "values": [
+        "indicators",
+        "pages"
+      ]
+    }
+  },
+  "variants": {},
+  "focus": {
+    "strategy": "none"
+  },
+  "a11y": {
+    "role": "group",
+    "labeling": [
+      "aria-label"
+    ],
+    "keyboard": [
+      {
+        "key": "Enter",
+        "action": "Commit the one-based page field as a bounded position request.",
+        "when": "focused"
+      },
+      {
+        "key": "Escape",
+        "action": "Restore the accepted position in the page field.",
+        "when": "focused"
+      }
+    ]
+  },
+  "a2ui": {
+    "category": "navigation",
+    "usageHints": [
+      "Share one accepted index with the content owner.",
+      "Completion and per-item progress are independently supplied activity data.",
+      "A page field is a composition of existing controls, not a Pagination visual variant."
+    ]
+  }
+}

@@ -14,11 +14,11 @@ import { createSwiftUIEmitter } from "../frameworks/swift/swiftui/factory.js";
 
 import { loadTargetRegistryConfigV1 } from "../target-packs/config.js";
 
-export function inspectComponentTokenConsumption(contract: ComponentContract, workspaceRoot = process.cwd()) {
+export function inspectComponentTokenConsumption(contract: ComponentContract, workspaceRoot = process.cwd(), allContracts?: ReadonlyMap<string, ComponentContract>) {
   const { config } = loadTargetRegistryConfigV1(workspaceRoot);
   const admitted = (id: string) => config.targets.some(target => target.id === id &&
     target.source.kind === "builtin" && (!target.components || target.components.includes(contract.name)));
-  const ir = buildComponentIR(contract);
+  const ir = buildComponentIR(contract, { allContracts });
   const web = webTokenConsumption(ir);
   const nativeFiles = generateReactNativeComponentSource(ir);
   const native = new Set([
@@ -69,8 +69,8 @@ export function inspectComponentTokenConsumption(contract: ComponentContract, wo
 }
 
 /** No debt allowance: an unused component declaration is a contract error. */
-export function validateComponentTokenConsumption(contract: ComponentContract, workspaceRoot = process.cwd()): ValidationIssue[] {
-  const { slots, web } = inspectComponentTokenConsumption(contract, workspaceRoot);
+export function validateComponentTokenConsumption(contract: ComponentContract, workspaceRoot = process.cwd(), allContracts?: ReadonlyMap<string, ComponentContract>): ValidationIssue[] {
+  const { slots, web } = inspectComponentTokenConsumption(contract, workspaceRoot, allContracts);
   const declaredVars = new Set(slots.map(slot => slot.cssVar));
   return [
     ...slots.filter(slot => !slot.web && !slot.native && !slot.behavior).map(slot => ({

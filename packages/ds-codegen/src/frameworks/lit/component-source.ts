@@ -1,3 +1,4 @@
+import { pagedBindingExpression } from "../../paging.js";
 import { sequenceConfig } from "../../sequence.js";
 /**
  * Lit LitElement emission, IR-driven.
@@ -1649,7 +1650,8 @@ function generateDomTreeImports(ir: ComponentIR): string {
     litImports.push("type PropertyValues");
   }
   const lines: string[] = [`import { ${litImports.join(", ")} } from 'lit';`];
-  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown || ir.motion.sequence) lines.push(`import { ref } from 'lit/directives/ref.js';`);
+  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown || ir.motion.sequence || ir.pagedSet) lines.push(`import { ref } from 'lit/directives/ref.js';`);
+  if (ir.pagedSet) lines.push(`import { PagedSetController } from "../../primitives/controllers/PagingController.js";`);
   if (ir.motion.sequence) lines.push(`import { SequenceController } from "../../primitives/controllers/SequenceController.js";`);
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   // Always include `property`; add `state` when the dom tree has a children
@@ -1941,6 +1943,11 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
         `    index: this.behavior.${seq.channel}, labels: this.${seq.itemsProp} ?? [], autoPlay: this.${seq.timing.autoPlayProp} ?? false,`,
         `    durationMs: this.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : this.${seq.timing.durationProp},`,
         `    onIndexChange: (value) => this.behavior.set${capitalizeLit(seq.channel)}(value),`, `  }));`);
+    }
+    if (ir.pagedSet) {
+      const page = ir.pagedSet;
+      lines.push(`  private pagedSet = new PagedSetController(this, () => ({ index: this.behavior.${page.channel}, items: this.${page.itemsProp} ?? [],`,
+        `    count: ${page.countProp ? `this.${page.countProp}` : "undefined"}, disabled: ${page.disabledProp ? `this.${page.disabledProp}` : "false"}, onIndexChange: (value) => this.behavior.set${capitalizeLit(page.channel)}(value) }));`);
     }
     const autoDismissPolicy = resolveSurfaceAutoDismiss(ir);
     const autoDismissChannel = autoDismissPolicy
@@ -2673,7 +2680,9 @@ function renderLitDomNode(
       attrs.push(`@click=\${(e: MouseEvent) => { if (canActivateInteraction(e, ${activation!.cancelNativeDefault})) this.behavior.set${capitalizeLit(disclosure.name)}(${next}); }}`);
       continue;
     }
-    const rendered = renderLitEvent(eventName, expr, ctx, node.tag);
+    const rendered = (expr.kind === "channel" && expr.forwardValue || expr.kind === "paged" && expr.action && node.componentRef)
+      ? renderLitBinding("on" + eventName.charAt(0).toUpperCase() + eventName.slice(1), expr, ctx, node.tag)
+      : renderLitEvent(eventName, expr, ctx, node.tag);
     if (rendered === null) continue;
     attrs.push(rendered);
   }
@@ -3115,6 +3124,7 @@ function renderLitBinding(
 ): string | null {
   const attr = litDomAttrName(rawAttr);
   switch (expr.kind) {
+    case "paged": return `.${attr}=\${${pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "valueMap": {
       const lowered = renderLitBindingValue(expr, ctx);
       if (lowered === null) return null;
@@ -3264,6 +3274,7 @@ function renderLitBinding(
     case "channel": {
       const ch = ctx.channelByName.get(expr.channel);
       if (!ch) return null;
+      if (expr.forwardValue) return `.${attr}=\${${expr.forwardValue === "sequence" ? "this.sequence.requestIndex" : expr.forwardValue === "pagedSet" ? "this.pagedSet.request" : `this.behavior.set${capitalizeLit(ch.name)}`}}`;
       if (expr.field === "value") {
         // BINDING-EXPRESSION-V2-PATH-01: ch.valueType describes the
         // channel's value at the root; a path-projected field's type
@@ -3379,6 +3390,7 @@ function renderLitContent(
   ctx: LitRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `\${${pagedBindingExpression(expr, "this.pagedSet")}}`;
     case "prop":
       return `\${${appendPath(litPropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -3464,6 +3476,7 @@ function renderLitBindingValue(
   ctx: LitRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(litPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3547,6 +3560,7 @@ function renderLitEvent(
   tag?: string,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `@${eventName}=\${${pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `@${eventName}=\${${litPropAccessor(expr.prop, ctx)}}`;
     case "literal":

@@ -28,6 +28,8 @@ export * from "./Markdown/Markdown";
 export * from "./NavList/NavList";
 export * from "./NavTree/NavTree";
 export * from "./OTP/OTP";
+export * from "./PageNavigator/PageNavigator";
+export * from "./Pagination/Pagination";
 export * from "./Popover/Popover";
 export * from "./Postcard/Postcard";
 export * from "./ProfileFlag/ProfileFlag";

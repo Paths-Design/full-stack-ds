@@ -1,15 +1,17 @@
 import type { TokenFactIR } from "./ir.js";
-import type { ComponentContract, ContractDomNode, ContractMotionProgress, ContractSequence } from "./contract.js";
+import { getCssPrefix, type ComponentContract, type ContractDomNode, type ContractMotionProgress, type ContractSequence, type ContractPartAddress } from "./contract.js";
 
 export interface SequenceIR extends ContractSequence {
   timing: ContractSequence["timing"] & { defaultMs: number };
   progress: ContractMotionProgress[];
+  selectors: { picker: string; progress: string[] };
+  composition: "resolved" | "unresolved";
   transition?: { durationToken: string; easingToken: string; durationMs: number; easing: string; referenceWidth: number; minMultiplier: number; maxMultiplier: number };
   realization: { web: "sequence-budget"; nonWeb: "unrealized" };
 }
 
 /** Normalize owned sequence parts once; backends only lower these facts. */
-export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]): SequenceIR | null {
+export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[], allContracts?: ReadonlyMap<string, ComponentContract>): SequenceIR | null {
   const sequence = contract.sequence;
   const progress = contract.motion?.progress ?? [];
   const fail = (message: string): never => { throw new Error(`[SEQUENCE_INVALID] ${contract.name}: ${message}`); };
@@ -37,24 +39,61 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
     if (matches.length !== 1 || matches[0] === dom) return fail(`part ${part} must be one owned non-root node`);
     return matches[0];
   };
-  const names = [sequence.viewport, sequence.previous, sequence.next, sequence.rotation, sequence.picker];
-  if (new Set(names).size !== names.length) fail("control and viewport parts must be distinct");
+  const prefix = getCssPrefix(contract);
+  const instances: ContractDomNode[] = [];
+  const collectInstances = (node: ContractDomNode) => {
+    if (node.componentRef) { instances.push(node); return; }
+    node.children?.forEach(collectInstances);
+  };
+  collectInstances(dom);
+  const address = (input: string | ContractPartAddress) => {
+    const value = typeof input === "string" ? { part: input } : input;
+    if (!value.componentPart) return { node: owned(value.part), owner: contract, selector: `.${prefix}__${value.part}` };
+    const matches = instances.filter(node => node.part === value.componentPart);
+    const instance = matches[0];
+    if (matches.length !== 1 || !instance?.componentRef) return fail(`component part ${value.componentPart} must be one local component instance`);
+    const target = allContracts?.get(instance.componentRef.replace(/^fsds\./, ""));
+    const tree = target && !Array.isArray(target.anatomy) ? target.anatomy?.dom : undefined;
+    if (!allContracts) return { node: undefined, owner: undefined, instance,
+      selector: `.${prefix}__${value.componentPart} .${getCssPrefix({ name: instance.componentRef.replace(/^fsds\./, "") } as ComponentContract)}__${value.part}` };
+    if (!target || !tree) return fail(`component part ${value.componentPart} requires a resolved contract corpus`);
+    const leaves: ContractDomNode[] = [];
+    const walkTarget = (node: ContractDomNode) => { if (node.componentRef) return; leaves.push(node); node.children?.forEach(walkTarget); };
+    walkTarget(tree);
+    const selected = leaves.filter(node => node.part === value.part);
+    if (selected.length !== 1 || selected[0] === tree) return fail(`composed part ${value.part} must be one target-owned non-root node`);
+    return { node: selected[0], owner: target, instance, selector: `.${prefix}__${value.componentPart} .${getCssPrefix(target)}__${value.part}` };
+  };
+  const names = [sequence.viewport, sequence.previous, sequence.next, sequence.rotation];
+  if (new Set([...names, JSON.stringify(sequence.picker)]).size !== names.length + 1) fail("control and viewport parts must be distinct");
   for (const part of names.slice(1)) if (owned(part).tag !== "button") fail(`${part} must be a native button`);
   if (!owned(sequence.viewport).children?.some(n => n.tag === "children")) fail("viewport must project consumer children");
-  const picker = owned(sequence.picker);
-  if (picker.iterate?.source !== `prop:${sequence.itemsProp}` || picker.iterate.kind !== "array") fail("picker must iterate sequence items");
+  const resolvedPicker = address(sequence.picker);
+  const picker = resolvedPicker.node;
+  if (picker && (picker.tag !== "button" || picker.iterate?.kind !== "array")) fail("picker must iterate items on a native button");
+  if (picker && resolvedPicker.instance && resolvedPicker.owner) {
+    const source = picker.iterate!.source.replace(/^prop:/, "");
+    if (resolvedPicker.instance.bindings?.[source] !== `prop:${sequence.itemsProp}`) fail("composed picker must receive sequence items");
+    const channel = Object.values(resolvedPicker.owner.channels ?? {}).find(channel =>
+      resolvedPicker.instance!.bindings?.[channel.value] === `channel:${sequence.channel}.value` &&
+      resolvedPicker.instance!.events?.[channel.onChange.replace(/^on./, value => value.slice(2).toLowerCase())] === `channel:${sequence.channel}.onChange`);
+    if (!channel || channel.valueType !== "number") fail("composed picker must share the numeric sequence channel and callback");
+  } else if (picker && picker.iterate!.source !== `prop:${sequence.itemsProp}`) fail("picker must iterate sequence items");
+  const progressSelectors: string[] = [];
   const targets = new Set<string>();
   for (const binding of progress) {
-    const node = owned(binding.target.part);
-    if (targets.has(binding.target.part) || names.includes(binding.target.part)) fail("progress targets must be distinct decorations");
-    targets.add(binding.target.part);
-    if (node.attrs?.["aria-hidden"] !== "true" || node.content || node.children?.length) fail("progress must be empty and decorative");
+    const resolved = address(binding.target);
+    const node = resolved.node;
+    progressSelectors.push(resolved.selector);
+    if (targets.has(resolved.selector) || (!binding.target.componentPart && names.includes(binding.target.part))) fail("progress targets must be distinct decorations");
+    targets.add(resolved.selector);
+    if (node && (node.attrs?.["aria-hidden"] !== "true" || node.content || node.children?.length)) fail("progress must be empty and decorative");
     if (binding.driver.kind !== "budget" || binding.driver.source !== "sequence.advance" ||
         !["elapsed-width", "elapsed-ring"].includes(binding.effect) || binding.reducedMotion.kind !== "steps" ||
         !Number.isInteger(binding.reducedMotion.steps) || binding.reducedMotion.steps < 2 || binding.reducedMotion.steps > 20 ||
         contract.motion?.reducedMotion === "ignore") fail("unsupported progress policy");
     if (contract.motion?.loops?.some(l => l.target.part === binding.target.part) || contract.motion?.countdown?.target.part === binding.target.part) fail("competing motion owner");
-    if (Object.keys(contract.styles?.[binding.target.part] ?? {}).some(p => /^(transform|scale|animation|transition)(-|$)/.test(p) && p !== "transform-origin")) fail("authored motion competes for progress");
+    if (Object.keys(resolved.owner?.styles?.[binding.target.part] ?? {}).some(p => /^(transform|scale|animation|transition)(-|$)/.test(p) && p !== "transform-origin")) fail("authored motion competes for progress");
   }
   const transition = contract.motion?.sequenceTransition;
   let normalizedTransition: SequenceIR["transition"];
@@ -73,19 +112,21 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
     normalizedTransition = { ...size, durationToken: transition.durationToken, easingToken: transition.easingToken,
       durationMs: Number(value[1]) * (value[2] === "s" ? 1000 : 1), easing: easing! };
   }
-  return { ...sequence, timing: { ...sequence.timing, defaultMs }, progress, ...(normalizedTransition ? { transition: normalizedTransition } : {}), realization: { web: "sequence-budget", nonWeb: "unrealized" } };
+  return { ...sequence, composition: allContracts || (!resolvedPicker.instance && progress.every(p => !p.target.componentPart)) ? "resolved" : "unresolved", selectors: { picker: resolvedPicker.selector, progress: progressSelectors }, timing: { ...sequence.timing, defaultMs }, progress, ...(normalizedTransition ? { transition: normalizedTransition } : {}), realization: { web: "sequence-budget", nonWeb: "unrealized" } };
 }
 
 /** CSS-part addressing is derived here rather than reconstructed by each emitter. */
 export function sequenceConfig(sequence: SequenceIR, prefix: string): string {
+  if (sequence.composition === "unresolved") throw new Error("[SEQUENCE_INVALID] Emitting composed sequence behavior requires the resolved contract corpus");
   return JSON.stringify({
     labels: sequence.labels,
+    delegatedPicker: typeof sequence.picker === "string" || !sequence.picker.componentPart,
     transition: sequence.transition && {
       durationMs: sequence.transition.durationMs, easing: sequence.transition.easing,
       referenceWidth: sequence.transition.referenceWidth,
       minMultiplier: sequence.transition.minMultiplier, maxMultiplier: sequence.transition.maxMultiplier,
     },
-    parts: Object.fromEntries((["viewport", "previous", "next", "rotation", "picker"] as const).map(key => [key, `.${prefix}__${sequence[key]}`])),
-    progress: sequence.progress.map(p => ({ selector: `.${prefix}__${p.target.part}`, effect: p.effect, steps: p.reducedMotion.steps })),
+    parts: Object.fromEntries((["viewport", "previous", "next", "rotation", "picker"] as const).map(key => [key, key === "picker" ? sequence.selectors.picker : `.${prefix}__${sequence[key]}`])),
+    progress: sequence.progress.map((p, index) => ({ selector: sequence.selectors.progress[index], effect: p.effect, steps: p.reducedMotion.steps })),
   });
 }
