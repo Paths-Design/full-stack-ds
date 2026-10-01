@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/project.schema.json",
+  "title": "Shared document candidate project",
+  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "$ref": "common.schema.json#/$defs/revision"
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "path": {
+            "$ref": "common.schema.json#/$defs/path"
+          }
+        },
+        "required": [
+          "id",
+          "path"
+        ]
+      },
+      "minItems": 0
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "kind": {
+            "enum": [
+              "tokens",
+              "components",
+              "defaults",
+              "asset"
+            ]
+          },
+          "path": {
+            "$ref": "common.schema.json#/$defs/path"
+          },
+          "revision": {
+            "$ref": "common.schema.json#/$defs/revision"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "path",
+          "revision"
+        ]
+      },
+      "minItems": 0
+    },
+    "tokenContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "name",
+        "sourceIds"
+      ]
+    },
+    "timebase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ticksPerSecond": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "ticksPerSecond"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "revision",
+    "pages",
+    "sources",
+    "tokenContext",
+    "timebase"
+  ]
+}

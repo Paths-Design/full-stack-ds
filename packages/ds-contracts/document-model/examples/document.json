@@ -1,0 +1,237 @@
+{
+  "schemaVersion": "0.1.0",
+  "projectId": "project.paper",
+  "pageId": "page.scratch",
+  "revision": 1,
+  "roots": [
+    "node.frame"
+  ],
+  "nodes": [
+    {
+      "id": "node.frame",
+      "label": "Notice study",
+      "defaultProfileRef": {
+        "sourceId": "project.defaults",
+        "profileId": "defaults.frame"
+      },
+      "properties": {
+        "sizing.width": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 480,
+            "unit": "px"
+          }
+        },
+        "sizing.height": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 240,
+            "unit": "px"
+          }
+        }
+      },
+      "children": [
+        {
+          "nodeId": "node.notice"
+        }
+      ],
+      "kind": "frame",
+      "layout": {
+        "kind": "freeform"
+      },
+      "clipContent": true
+    },
+    {
+      "id": "node.notice",
+      "label": "Primary notice",
+      "defaultProfileRef": {
+        "sourceId": "project.defaults",
+        "profileId": "defaults.component-instance"
+      },
+      "properties": {},
+      "children": [],
+      "kind": "component-instance",
+      "definitionRef": {
+        "sourceId": "project.components",
+        "definitionId": "definition.notice",
+        "version": "example-v1"
+      },
+      "parameterBindings": {
+        "label": {
+          "kind": "literal",
+          "valueType": "string",
+          "value": "Saved"
+        }
+      }
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene.entry",
+      "label": "Enter",
+      "rootNodeId": "node.frame",
+      "durationTicks": 1000,
+      "overrides": []
+    },
+    {
+      "id": "scene.exit",
+      "label": "Exit",
+      "rootNodeId": "node.frame",
+      "durationTicks": 1000,
+      "overrides": [
+        {
+          "nodeId": "node.notice",
+          "properties": {
+            "appearance.opacity": {
+              "kind": "literal",
+              "valueType": "number",
+              "value": 0.6
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "tracks": [
+    {
+      "id": "track.entry",
+      "sceneId": "scene.entry",
+      "target": {
+        "nodeId": "node.notice",
+        "property": "transform.translation.x"
+      },
+      "startTicks": 0,
+      "duration": {
+        "kind": "token",
+        "valueType": "duration",
+        "sourceId": "project.motion",
+        "path": "motion.slideDuration"
+      },
+      "keyframes": [
+        {
+          "offset": 0,
+          "value": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": -100,
+              "unit": "px"
+            }
+          }
+        },
+        {
+          "offset": 1,
+          "value": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 0,
+              "unit": "px"
+            }
+          }
+        }
+      ],
+      "easing": {
+        "kind": "token",
+        "valueType": "cubicBezier",
+        "sourceId": "project.motion",
+        "path": "motion.linear"
+      },
+      "composition": "replace",
+      "fill": "both",
+      "coordinateSpace": "parent",
+      "reducedMotion": "jump-to-end"
+    },
+    {
+      "id": "track.exit",
+      "sceneId": "scene.exit",
+      "target": {
+        "nodeId": "node.notice",
+        "property": "transform.translation.x"
+      },
+      "startTicks": 0,
+      "duration": {
+        "kind": "token",
+        "valueType": "duration",
+        "sourceId": "project.motion",
+        "path": "motion.slideDuration"
+      },
+      "keyframes": [
+        {
+          "offset": 0,
+          "value": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 0,
+              "unit": "px"
+            }
+          }
+        },
+        {
+          "offset": 1,
+          "value": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 100,
+              "unit": "px"
+            }
+          }
+        }
+      ],
+      "easing": {
+        "kind": "token",
+        "valueType": "cubicBezier",
+        "sourceId": "project.motion",
+        "path": "motion.linear"
+      },
+      "composition": "replace",
+      "fill": "both",
+      "coordinateSpace": "parent",
+      "reducedMotion": "jump-to-end"
+    }
+  ],
+  "sequences": [
+    {
+      "id": "sequence.study",
+      "label": "Notice entry and exit",
+      "occurrences": [
+        {
+          "id": "occurrence.entry",
+          "sceneId": "scene.entry",
+          "atTicks": 0,
+          "sourceInTicks": 0,
+          "sourceOutTicks": 1000
+        },
+        {
+          "id": "occurrence.exit",
+          "sceneId": "scene.exit",
+          "atTicks": 1000,
+          "sourceInTicks": 0,
+          "sourceOutTicks": 1000
+        }
+      ],
+      "transitions": [
+        {
+          "id": "transition.cut",
+          "kind": "cut",
+          "fromOccurrenceId": "occurrence.entry",
+          "toOccurrenceId": "occurrence.exit"
+        }
+      ]
+    }
+  ],
+  "annotations": [
+    {
+      "id": "annotation.intent",
+      "target": {
+        "kind": "page",
+        "id": "page.scratch"
+      },
+      "text": "Study one instance in two temporal scenes without generating component code."
+    }
+  ]
+}

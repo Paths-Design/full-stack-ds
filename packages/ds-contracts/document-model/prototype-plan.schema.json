@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/prototype-plan.schema.json",
+  "title": "Shared document candidate prototype-plan",
+  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "projectId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "projectRevision": {
+      "$ref": "common.schema.json#/$defs/revision"
+    },
+    "pageId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "documentRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "dependencyRevisions": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/dependencyRef"
+      },
+      "minItems": 0
+    },
+    "selection": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "roots"
+            },
+            "nodeIds": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "kind",
+            "nodeIds"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "sequence"
+            },
+            "sequenceId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "sequenceId"
+          ]
+        }
+      ]
+    },
+    "adapterId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "targetId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "requiredCapabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/id"
+      },
+      "minItems": 1
+    },
+    "unsupportedPolicy": {
+      "const": "fail-on-unsupported"
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "root": {
+          "$ref": "common.schema.json#/$defs/path"
+        },
+        "conflictPolicy": {
+          "enum": [
+            "fail-if-exists",
+            "review-replacement"
+          ]
+        }
+      },
+      "required": [
+        "root",
+        "conflictPolicy"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "projectId",
+    "projectRevision",
+    "pageId",
+    "documentRevision",
+    "dependencyRevisions",
+    "selection",
+    "adapterId",
+    "targetId",
+    "requiredCapabilities",
+    "unsupportedPolicy",
+    "output"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "project.paper",
+  "revision": "example-v1",
+  "pages": [
+    {
+      "id": "page.scratch",
+      "path": "packages/ds-contracts/document-model/examples/page.jsonl"
+    }
+  ],
+  "sources": [
+    {
+      "id": "project.motion",
+      "kind": "tokens",
+      "path": "packages/ds-contracts/document-model/examples/motion.tokens.json",
+      "revision": "example-v1"
+    },
+    {
+      "id": "project.defaults",
+      "kind": "defaults",
+      "path": "packages/ds-contracts/document-model/examples/defaults.json",
+      "revision": "example-v1"
+    },
+    {
+      "id": "project.components",
+      "kind": "components",
+      "path": "packages/ds-contracts/document-model/examples/notice.definition.json",
+      "revision": "example-v1"
+    }
+  ],
+  "tokenContext": {
+    "name": "default",
+    "sourceIds": [
+      "project.motion"
+    ]
+  },
+  "timebase": {
+    "ticksPerSecond": 1000
+  }
+}
