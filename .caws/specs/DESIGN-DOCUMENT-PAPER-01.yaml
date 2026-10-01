@@ -56,12 +56,12 @@ evidence:
     commit_sha: e1eb31f99
   - criterion_id: A2
     status: pass
-    evidence_ref: "Paper verifier passed on source e1eb31f99 and landed main: 8 schemas, 9 primary records, 22 rejected neighbors, 2 weakened-schema controls; input nonmutation checked. Scope excludes runtime semantics and token conformance."
-    recorded_at: "2026-10-01T07:55:21.397Z"
+    evidence_ref: "Observed run: node packages/ds-contracts/document-model/verify.mjs passed on landed main; log /tmp/fsds-design-document-paper-qualification-landed.log. Eight schemas, nine primary records, 22 rejected neighbors, two sensitivity controls. CLI verification rechecks source artifact and reachable commit, not command execution."
+    recorded_at: "2026-10-01T07:56:04.709Z"
     command: node packages/ds-contracts/document-model/verify.mjs
     exit_code: 0
-    artifact_path: /tmp/fsds-design-document-paper-qualification-landed.log
-    commit_sha: e1eb31f99
+    artifact_path: packages/ds-contracts/document-model/verify.mjs
+    commit_sha: aca4a9dcf
   - criterion_id: A3
     status: pass
     evidence_ref: "Inspected design-ledger.json against paper docs and schema; verifier checks 28 stable requirements, coverage fields, missing design work, history continuity and decision references. Every runtime status is not-implemented."
