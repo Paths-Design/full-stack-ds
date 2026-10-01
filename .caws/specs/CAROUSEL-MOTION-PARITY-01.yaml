@@ -116,6 +116,6 @@ evidence:
     commit_sha: a3ccd648d
   - criterion_id: A6
     status: fail
-    evidence_ref: "At efa119337 the required local admission rail, 4752 root tests, all framework suites, lint and docs checks passed; native suite now has 231 passing host-shim tests. The timer-disabled regression demonstrably failed five inputs before the emitter repair, preserving manual navigation and live timer restoration after repair. Logs: /tmp/carousel-controls-red.log, /tmp/carousel-controls-green.log, /tmp/carousel-controls-rail.log, /tmp/carousel-controls-root.log, /tmp/carousel-controls-frameworks.log, /tmp/carousel-controls-lint.log. Published prior binding slice 35e1415d2 has CI run 36894442486: last inspection found Kotlin success, Swift failure at swift-react emission parity fixture, and overall workflow still running. The known Swift Carousel/PageNavigator/Pagination emission gaps and platform runtime evidence remain unresolved. A6 stays failed; no CI-success or complete platform-parity claim is made."
-    recorded_at: "2026-10-01T16:53:03.353Z"
-    commit_sha: efa119337
+    evidence_ref: "At a3ccd648d the final required admission rail, 4752 root tests, all framework suites including 235 native tests, lint and documentation checks passed. Four native glyph regressions were observed failing before their respective repairs. Logs /tmp/carousel-icons-rail-final.log, /tmp/carousel-icons-root-final.log, /tmp/carousel-icons-frameworks.log, /tmp/carousel-icons-lint.log, /tmp/carousel-icons-claims-final.log. Published c30015eca CI run 36895859535 completed: main validation, coverage, runtime visual rail and Kotlin succeeded; Swift emission-parity failed. The glyph change does not resolve the known Swift Carousel/PageNavigator/Pagination gaps. Native runtime witness remains blocked by the current guard classification; no complete CI or platform-parity claim. A6 remains unsatisfied."
+    recorded_at: "2026-10-01T17:35:27.561Z"
+    commit_sha: a3ccd648d
