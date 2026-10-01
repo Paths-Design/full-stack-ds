@@ -1,0 +1,86 @@
+id: REL-COMPOSITE-OUTPUT-01
+title: 'Lawful stable analytical composites through selected readback and browser output'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-01T00:54:44.587Z'
+updated_at: '2026-10-01T00:54:44.587Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Analytical qualification, composition, immutable selected carrier and bounded output realizations'
+    - 'Analytical scratch consumer and browser conformance witnesses'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/analytical'
+    - 'packages/ds-contracts/analytical-fixtures'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/architecture/analytical-composite-output.md'
+    - 'src/views/AnalyticalFixturesScratchView.tsx'
+    - 'src/components/analytical'
+    - 'src/data/analytical-fixtures'
+    - 'e2e/analytical-composite.spec.ts'
+    - 'README.md'
+  out: []
+invariants:
+  - 'Meaning precedes realization; no form name or fixture identity selects an analysis or output.'
+  - 'Composition preserves every operand-relevant transformation, task requirement and unresolved standing; reordering set-valued inputs cannot change analytical admission.'
+  - 'Qualification owns complete unique typed source-grain identity and immutable carried field facts; output mutation cannot mutate analytical authority.'
+  - 'Only selected supported lawful composites produce outputs, and lowerers consume the carried composite rather than source rows or mutable declarations.'
+  - 'Stage-2 ratification remains open; the bounded output witness does not establish M5 or M6 completeness, endpoint roles, temporal traversal or broader aggregation.'
+acceptance:
+  - id: A1
+    given: 'a magnitude comparison and a truncated cell'
+    when: 'direct and nested compositions are judged'
+    then: 'each refuses the same unmet ratio-comparability obligation'
+  - id: A2
+    given: 'mixed transformations sharing a channel and set-valued grain declarations'
+    when: 'operands and grain fields are permuted'
+    then: 'complete normalized semantics and admission remain equivalent'
+  - id: A3
+    given: 'missing, empty, duplicate and incomplete source populations'
+    when: 'qualification runs'
+    then: 'missing evidence stays distinct and unresolved while duplicate grain is contradicted and no missing value is manufactured as identity'
+  - id: A4
+    given: 'qualified field views and declared target capacities'
+    when: 'composition runs with invalid channels or absent capabilities'
+    then: 'invalid assignments refuse and unavailable target support cannot retain'
+  - id: A5
+    given: 'qualified authority and produced artifacts'
+    when: 'source declarations or artifact values are mutated'
+    then: 'established authority stays unchanged and downstream interpretation uses carried facts'
+  - id: A6
+    given: 'multiple faulted operands and constructed unselected lowering requests'
+    when: 'composition and lowering run'
+    then: 'contradictions dominate unresolved summary standing with all origins retained and unselected requests cannot produce output'
+  - id: A7
+    given: 'a nested qualified layer facet embed object'
+    when: 'a lawful program is selected'
+    then: 'its immutable carrier retains values identities bounds panels and standing without source access'
+  - id: A8
+    given: 'one selected composite and independently specified expected content'
+    when: 'readback and metric outputs are produced and decoded separately'
+    then: 'both recover the promised associations and structure and detect extent binding membership or standing mutations'
+  - id: A9
+    given: 'the canonical declaration and row loader through the scratch browser consumer'
+    when: 'the selected output renders'
+    then: 'DOM values metric geometry panel bindings and accessible structure agree with the carried analysis'
+  - id: A10
+    given: 'unsupported empty unproven or contradicted requests'
+    when: 'the same selection and production orchestration runs'
+    then: 'it produces no lawful visual output and preserves the correct disposition'
+  - id: A11
+    given: 'the bounded implementation and scope'
+    when: 'required checks and evidence are inspected'
+    then: 'source drift and tests pass with stage-2 open conditions and exact output nonclaims recorded'
+non_functional: {}
+contracts:
+  - name: 'analytical-composite'
+    type: behavior
+    path: 'packages/ds-codegen/src/analytical/projection.ts'
+  - name: 'analytical-output'
+    type: contract-test
+    path: 'e2e/analytical-composite.spec.ts'
