@@ -116,11 +116,8 @@ evidence:
     commit_sha: "38c798cb0eb2"
   - criterion_id: A2
     status: pass
-    evidence_ref: "Common Web property rule is shared by migration and semantic validation. Source comparison proves 59 added bindings and 1084 total; corpus checks reject missing coverage, independent-address violations and stale fallbacks. Severed binding fixture fails the generic policy; emitted token consumption audit has zero failures."
-    recorded_at: "2026-10-01T02:28:04.518Z"
-    command: pnpm exec vitest run --maxWorkers=2
-    exit_code: 0
-    artifact_path: docs/internal/input-visual-audit/component-token-cohesion/fsds-cohesion-root-final.log
+    evidence_ref: "Common Web property rule is shared by migration and semantic validation. Inspected source comparison proves 59 added bindings and 1084 total; severed binding fixture rejects missing coverage and emitted token consumption has zero failures. Executed root suite: 316 files and 4627 tests passed. Raw execution log remains ignored at docs/internal/input-visual-audit/component-token-cohesion/fsds-cohesion-root-final.log."
+    recorded_at: "2026-10-01T03:05:00.656Z"
     commit_sha: "38c798cb0eb2"
   - criterion_id: A3
     status: pass
