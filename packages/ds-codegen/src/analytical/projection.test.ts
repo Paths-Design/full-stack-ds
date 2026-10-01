@@ -1810,8 +1810,8 @@ describe("M3 composition: the parts decide first, and the combinator rule decide
       },
     });
 
-    // The composite's own verdict is ONE thing: the first fault.
-    expect(j.verdict.kind).toBe("unsupported");
+    // A readable contradiction dominates absent support; all origins remain.
+    expect(j.verdict.kind).toBe("refused");
     // ...and every part's disposition is still on the record, including the two
     // the aggregate verdict does not name.
     expect(j.parts.map((x) => [x.path.join("."), x.verdict.kind])).toEqual([
@@ -2584,7 +2584,7 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
   const oneViolated = rows.map((r, i) => (i === 3 ? { ...r, temp: (r.hi as number) + 3 } : r));
 
   const qualifiedOver = (rs: Array<Record<string, unknown>>) => qualifyRelation(neutral, "readings", rs);
-  const view = (result: ReturnType<typeof qualifiedOver>, field: string, channel: "length" | "hue"): CompositePart => ({ kind: "qualified", result, field, channel });
+  const view = (result: ReturnType<typeof qualifiedOver>, field: string, channel: "length" | "luminance"): CompositePart => ({ kind: "qualified", result, field, channel });
   const compose = (a: CompositePart, b: CompositePart) =>
     judgeComposite({ structure: neutral, inventory: EXPERIMENT_TARGET, composite: { combinator: "layer", parts: [a, b], sharing: {} } });
   const norm = (v: CompositeVerdict): string => {
@@ -2595,7 +2595,7 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
   };
 
   it("A1: two views of one population compose lawfully, and reordering one operand's rows changes nothing", () => {
-    const base = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(rows), "humidity", "hue"));
+    const base = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(rows), "humidity", "luminance"));
     expect(base.verdict.kind).toBe("retained");
     if (base.verdict.kind !== "retained") return;
     expect(base.verdict.combinator).toBe("layer");
@@ -2603,7 +2603,7 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
     // The same population, one operand's rows reordered BEFORE qualification:
     // alignment is the key SET, so the composition stays lawful with an equal
     // normalized verdict.
-    const shuffled = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(reordered), "humidity", "hue"));
+    const shuffled = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(reordered), "humidity", "luminance"));
     expect(shuffled.verdict.kind).toBe("retained");
     expect(norm(shuffled.verdict)).toEqual(norm(base.verdict));
   });
@@ -2615,7 +2615,7 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
     // to the key mismatch alone.
     expect(a.observations.length).toBe(b.observations.length);
 
-    const j = compose(view(a, "temp", "length"), view(b, "humidity", "hue"));
+    const j = compose(view(a, "temp", "length"), view(b, "humidity", "luminance"));
     expect(j.verdict.kind).toBe("refused");
     if (j.verdict.kind !== "refused") return;
     expect(j.verdict.causes).toEqual([COMPOSITION_DIAG.LAYER_OPERANDS_UNCOREGISTERED]);
@@ -2626,7 +2626,7 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
   });
 
   it("A3: a missing observation leaves the population premise explicitly unresolved — no silent intersection", () => {
-    const j = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(shortPopulation), "humidity", "hue"));
+    const j = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(shortPopulation), "humidity", "luminance"));
     expect(j.verdict.kind).toBe("unproven");
     if (j.verdict.kind !== "unproven") return;
     expect(j.verdict.obligation).toBe("grain:coregistered");
@@ -2637,7 +2637,7 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
   });
 
   it("A4: an unproven operand keeps the composite unproven, attributed to the part at its recorded path", () => {
-    const j = compose(view(qualifiedOver(unreadableTemp), "temp", "length"), view(qualifiedOver(rows), "humidity", "hue"));
+    const j = compose(view(qualifiedOver(unreadableTemp), "temp", "length"), view(qualifiedOver(rows), "humidity", "luminance"));
     expect(j.verdict.kind).toBe("unproven");
     if (j.verdict.kind !== "unproven") return;
     expect(j.verdict.obligation).toBe(OBLIGATION.BOUNDS_ROW_CONSISTENT);
@@ -2648,7 +2648,7 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
   });
 
   it("A5: a scoped contradiction refuses the composite with the operand's own cause, naming the violated observation's key", () => {
-    const j = compose(view(qualifiedOver(oneViolated), "temp", "length"), view(qualifiedOver(rows), "humidity", "hue"));
+    const j = compose(view(qualifiedOver(oneViolated), "temp", "length"), view(qualifiedOver(rows), "humidity", "luminance"));
     expect(j.verdict.kind).toBe("refused");
     if (j.verdict.kind !== "refused") return;
     expect(j.verdict.causes).toEqual([QUALIFIED_DIAG.BOUNDS_ROW_VIOLATED]);
@@ -2677,20 +2677,20 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
     const renamedRows = rows.map((r) => ({ sensor: r.station, date: r.day, floor: r.lo, ceiling: r.hi, measure: r.temp, dampness: r.humidity }));
     const renamedKeyChanged = renamedRows.map((r) => (r.sensor === "KSFO" && r.date === "tue" ? { ...r, date: "wed" } : r));
     const renamedOver = (rs: Array<Record<string, unknown>>) => qualifyRelation(renamed, "telemetry", rs);
-    const renamedView = (result: ReturnType<typeof renamedOver>, field: string, channel: "length" | "hue"): CompositePart => ({ kind: "qualified", result, field, channel });
+    const renamedView = (result: ReturnType<typeof renamedOver>, field: string, channel: "length" | "luminance"): CompositePart => ({ kind: "qualified", result, field, channel });
     const composeRenamed = (a: CompositePart, b: CompositePart) =>
       judgeComposite({ structure: renamed, inventory: EXPERIMENT_TARGET, composite: { combinator: "layer", parts: [a, b], sharing: {} } });
 
     // Lawful path: equivalent modulo the rename.
-    const base = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(rows), "humidity", "hue"));
-    const renamedJ = composeRenamed(renamedView(renamedOver(renamedRows), "measure", "length"), renamedView(renamedOver(renamedRows), "dampness", "hue"));
+    const base = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(rows), "humidity", "luminance"));
+    const renamedJ = composeRenamed(renamedView(renamedOver(renamedRows), "measure", "length"), renamedView(renamedOver(renamedRows), "dampness", "luminance"));
     expect(renamedJ.verdict.kind).toBe("retained");
     expect(norm(renamedJ.verdict)).toEqual(norm(base.verdict));
 
     // Refusal path: the cause vocabulary and attribution are rename-invariant;
     // only the detail prose spells differently.
-    const refusedBase = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(keyChanged), "humidity", "hue"));
-    const refusedRenamed = composeRenamed(renamedView(renamedOver(renamedRows), "measure", "length"), renamedView(renamedOver(renamedKeyChanged), "dampness", "hue"));
+    const refusedBase = compose(view(qualifiedOver(rows), "temp", "length"), view(qualifiedOver(keyChanged), "humidity", "luminance"));
+    const refusedRenamed = composeRenamed(renamedView(renamedOver(renamedRows), "measure", "length"), renamedView(renamedOver(renamedKeyChanged), "dampness", "luminance"));
     expect(norm(refusedRenamed.verdict)).toEqual(norm(refusedBase.verdict));
   });
 
@@ -2706,8 +2706,8 @@ describe("RESTART piece 6: layer co-registration by source-grain identity", () =
     const cardinalityOnly = (x: typeof a, y: typeof bShuffled) => x.observations.length === y.observations.length;
 
     // The real rule: lawful on the reordered pair, refused on the key-changed pair.
-    expect(compose(view(a, "temp", "length"), view(bShuffled, "humidity", "hue")).verdict.kind).toBe("retained");
-    expect(compose(view(a, "temp", "length"), view(bKeyChanged, "humidity", "hue")).verdict.kind).toBe("refused");
+    expect(compose(view(a, "temp", "length"), view(bShuffled, "humidity", "luminance")).verdict.kind).toBe("retained");
+    expect(compose(view(a, "temp", "length"), view(bKeyChanged, "humidity", "luminance")).verdict.kind).toBe("refused");
 
     // Mutant 1 refuses the LAWFUL reordered pair — killed by false refusal.
     expect(keyPositional(a, bShuffled)).toBe(false);
@@ -2794,20 +2794,20 @@ describe("RESTART piece 7: bounded-range composition from existing bounds author
   const violated = rows.map((r, i) => (i === 3 ? { ...r, value_a: (r.ceiling as number) + 1 } : r));
 
   const qualifiedOver = (structure: RelationalStructure, rs: Array<Record<string, unknown>>) => qualifyRelation(structure, "readings", rs);
-  const view = (result: ReturnType<typeof qualifiedOver>, field: string, channel: "length" | "hue" | "text" | "order"): CompositePart => ({ kind: "qualified", result, field, channel });
+  const view = (result: ReturnType<typeof qualifiedOver>, field: string, channel: "length" | "luminance" | "text" | "position"): CompositePart => ({ kind: "qualified", result, field, channel });
   const composeViews = (structure: RelationalStructure, parts: CompositePart[]) =>
     judgeComposite({ structure, inventory: EXPERIMENT_TARGET, composite: { combinator: "layer", parts, sharing: {} } });
   const rangesOf = (v: CompositeVerdict) => (v.kind === "retained" ? v.ranges ?? [] : undefined);
 
   it("A1: two co-registered bounded views derive exactly one normalized range group, from the carried declarations alone", () => {
-    const j = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "hue")]);
+    const j = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "luminance")]);
     expect(j.verdict.kind).toBe("retained");
     expect(rangesOf(j.verdict)).toEqual([{ lower: "floor", upper: "ceiling", members: ["value_a", "value_b"] }]);
   });
 
   it("A1: endpoint views ride along without contributing groups, and the group survives them", () => {
     const q = qualifiedOver(neutral, rows);
-    const j = composeViews(neutral, [view(q, "floor", "text"), view(q, "ceiling", "order"), view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "hue")]);
+    const j = composeViews(neutral, [view(q, "floor", "text"), view(q, "ceiling", "position"), view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "luminance")]);
     expect(j.verdict.kind).toBe("retained");
     // The endpoint fields declare no bounds of their own, so they group
     // nothing; the members' shared pair still composes exactly one group.
@@ -2815,7 +2815,7 @@ describe("RESTART piece 7: bounded-range composition from existing bounds author
   });
 
   it("A2: co-registration remains the prerequisite — mismatched populations compose no range from shared endpoint names", () => {
-    const j = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, shortRows), "value_b", "hue")]);
+    const j = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, shortRows), "value_b", "luminance")]);
     expect(j.verdict.kind).toBe("unproven");
     if (j.verdict.kind !== "unproven") return;
     expect(j.verdict.obligation).toBe("grain:coregistered");
@@ -2829,7 +2829,7 @@ describe("RESTART piece 7: bounded-range composition from existing bounds author
     // declare {floor, ceiling}.
     const j = composeViews(
       topoVariant,
-      [view(qualifiedOver(topoVariant, rows), "value_a", "length"), view(qualifiedOver(topoVariant, rows), "value_b", "hue"), view(qualifiedOver(topoVariant, rows), "value_c", "text")],
+      [view(qualifiedOver(topoVariant, rows), "value_a", "length"), view(qualifiedOver(topoVariant, rows), "value_b", "luminance"), view(qualifiedOver(topoVariant, rows), "value_c", "text")],
     );
     expect(j.verdict.kind).toBe("retained");
     // ONLY value_b left the group: the surviving pair composes the group, and
@@ -2857,7 +2857,7 @@ describe("RESTART piece 7: bounded-range composition from existing bounds author
     } as unknown as RelationalStructure;
     const renamedRows = rows.map((r) => ({ site: r.station, date: r.day, base: r.floor, cap: r.ceiling, cap2: r.ceiling2, first_value: r.value_a, second_value: r.value_b, third_value: r.value_c }));
     const q = qualifyRelation(renamed, "samples", renamedRows);
-    const j = composeViews(renamed, [view(q, "first_value", "length"), view(q, "second_value", "hue"), view(q, "third_value", "text")]);
+    const j = composeViews(renamed, [view(q, "first_value", "length"), view(q, "second_value", "luminance"), view(q, "third_value", "text")]);
     expect(j.verdict.kind).toBe("retained");
     expect(rangesOf(j.verdict)).toEqual([{ lower: "base", upper: "cap", members: ["first_value", "second_value", "third_value"] }]);
   });
@@ -2866,18 +2866,18 @@ describe("RESTART piece 7: bounded-range composition from existing bounds author
     // value_b's operand lacks one observation the others carry: even though
     // every SURVIVING row would line up, the premise stays unresolved and no
     // range is composed.
-    const j = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, shortRows), "value_b", "hue"), view(qualifiedOver(neutral, rows), "value_c", "text")]);
+    const j = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, shortRows), "value_b", "luminance"), view(qualifiedOver(neutral, rows), "value_c", "text")]);
     expect(j.verdict.kind).toBe("unproven");
     expect(rangesOf(j.verdict)).toBeUndefined();
   });
 
   it("A6: standing is conserved — a contradicted or unproven member never becomes a clean retained range", () => {
-    const unprovenJ = composeViews(neutral, [view(qualifiedOver(neutral, unreadable), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "hue")]);
+    const unprovenJ = composeViews(neutral, [view(qualifiedOver(neutral, unreadable), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "luminance")]);
     expect(unprovenJ.verdict.kind).toBe("unproven");
     if (unprovenJ.verdict.kind === "unproven") expect(unprovenJ.verdict.from).toBe("part");
     expect(rangesOf(unprovenJ.verdict)).toBeUndefined();
 
-    const refusedJ = composeViews(neutral, [view(qualifiedOver(neutral, violated), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "hue")]);
+    const refusedJ = composeViews(neutral, [view(qualifiedOver(neutral, violated), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "luminance")]);
     expect(refusedJ.verdict.kind).toBe("refused");
     if (refusedJ.verdict.kind === "refused") {
       expect(refusedJ.verdict.causes).toEqual([QUALIFIED_DIAG.BOUNDS_ROW_VIOLATED]);
@@ -2887,7 +2887,7 @@ describe("RESTART piece 7: bounded-range composition from existing bounds author
   });
 
   it("A7: the derived group says what the declaration says — lower, upper, members, nothing stronger", () => {
-    const j = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "hue"), view(qualifiedOver(neutral, rows), "value_c", "text")]);
+    const j = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "luminance"), view(qualifiedOver(neutral, rows), "value_c", "text")]);
     expect(j.verdict.kind).toBe("retained");
     const ranges = rangesOf(j.verdict)!;
     expect(ranges).toHaveLength(1);
@@ -2905,8 +2905,8 @@ describe("RESTART piece 7: bounded-range composition from existing bounds author
   it("A8: the derivation lives in judgeComposite, flips only for the generic reason, and conserves the existing rules — with the corpus fixture as second witness", () => {
     // Minimally changed neighbor: the SAME spellings and populations, one
     // member's upper reference moved — the range differs for exactly that.
-    const lawful = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "hue")]);
-    const changed = composeViews(topoVariant, [view(qualifiedOver(topoVariant, rows), "value_a", "length"), view(qualifiedOver(topoVariant, rows), "value_b", "hue")]);
+    const lawful = composeViews(neutral, [view(qualifiedOver(neutral, rows), "value_a", "length"), view(qualifiedOver(neutral, rows), "value_b", "luminance")]);
+    const changed = composeViews(topoVariant, [view(qualifiedOver(topoVariant, rows), "value_a", "length"), view(qualifiedOver(topoVariant, rows), "value_b", "luminance")]);
     expect(rangesOf(lawful.verdict)).toHaveLength(1);
     expect(rangesOf(changed.verdict)).toHaveLength(0);
 
@@ -2925,7 +2925,7 @@ describe("RESTART piece 7: bounded-range composition from existing bounds author
     const ohlcJ = judgeComposite({
       structure: ohlcStructure,
       inventory: EXPERIMENT_TARGET,
-      composite: { combinator: "layer", parts: [view(ohlcQ, "open", "length"), view(ohlcQ, "close", "hue")], sharing: {} },
+      composite: { combinator: "layer", parts: [view(ohlcQ, "open", "length"), view(ohlcQ, "close", "luminance")], sharing: {} },
     });
     expect(ohlcJ.verdict.kind).toBe("retained");
     expect(rangesOf(ohlcJ.verdict)).toEqual([{ lower: "low", upper: "high", members: ["close", "open"] }]);
@@ -2975,26 +2975,26 @@ describe("RESTART piece 8: facet partition binding from carried source-grain ide
   const violated = rows.map((r, i) => (i === 3 ? { ...r, value_a: (r.ceiling as number) + 1 } : r));
   const unreadable = rows.map((r, i) => (i === 0 ? { ...r, value_a: "N/A" } : r));
 
-  const keyOf = (b: ReadonlyArray<{ field: string; value: string }>) => JSON.stringify(b);
-  const view = (result: ReturnType<typeof qualifyRelation>, field: string, channel: "length" | "hue"): CompositePart => ({ kind: "qualified", result, field, channel });
+  const keyOf = (b: ReadonlyArray<{ field: string; value: string | number }>) => JSON.stringify([...b].sort((a, z) => a.field.localeCompare(z.field)));
+  const view = (result: ReturnType<typeof qualifyRelation>, field: string, channel: "length" | "luminance"): CompositePart => ({ kind: "qualified", result, field, channel });
   // The nested positive: a LAYER over the two views, then a FACET over that layer.
   const rangeViews = (structure: RelationalStructure, rs: Array<Record<string, unknown>>) => {
     const q = qualifyRelation(structure, "readings", rs);
-    return [view(q, "value_a", "length"), view(q, "value_b", "hue")] as CompositePart[];
+    return [view(q, "value_a", "length"), view(q, "value_b", "luminance")] as CompositePart[];
   };
   const layerPart = (structure: RelationalStructure, rs: Array<Record<string, unknown>>): CompositePart => ({
     kind: "composite",
     composite: { combinator: "layer", parts: rangeViews(structure, rs), sharing: {} },
   });
-  const facetBy = (structure: RelationalStructure, partition: string, part: CompositePart, policy: Partial<Record<"length" | "hue", "shared" | "free">>) =>
+  const facetBy = (structure: RelationalStructure, partition: string, part: CompositePart, policy: Partial<Record<"length" | "luminance", "shared" | "free">>) =>
     judgeComposite({
       structure,
       inventory: EXPERIMENT_TARGET,
       composite: { combinator: "facet", parts: [part], partition, policy: policy as never },
     });
-  const freePolicy = { length: "free", hue: "free" } as const;
+  const freePolicy = { length: "free", luminance: "free" } as const;
   const panelsOf = (v: CompositeVerdict) => (v.kind === "retained" ? v.panels : undefined);
-  const normPanels = (panels: ReadonlyArray<{ value: string; keys: readonly string[]; ranges: readonly unknown[] }> | undefined) =>
+  const normPanels = (panels: ReadonlyArray<{ value: string | number; keys: readonly string[]; ranges: readonly unknown[] }> | undefined) =>
     JSON.stringify((panels ?? []).map((p) => ({ value: p.value, keys: [...p.keys].sort(), ranges: p.ranges })));
 
   it("A1: the facet derives panel membership from the carried bindings, and each panel binds the inner layer's range unreconstructed", () => {
@@ -3033,7 +3033,7 @@ describe("RESTART piece 8: facet partition binding from carried source-grain ide
     expect(normPanels(panelsOf(shuffled.verdict))).toEqual(normPanels(panelsOf(inOrder.verdict)));
 
     // PRECOMMITTED MUTANT 1 — panel assignment by input position (alternating).
-    const positional = (bindings: ReadonlyArray<ReadonlyArray<{ field: string; value: string }>>) =>
+    const positional = (bindings: ReadonlyArray<ReadonlyArray<{ field: string; value: string | number }>>) =>
       bindings.map((b, i) => ({ value: `panel-${i % 2}`, keys: [keyOf(b)] }));
     const mutantInOrder = positional(rows.map((r) => [{ field: "station", value: String(r.station) }, { field: "day", value: String(r.day) }]));
     const mutantShuffled = positional(reordered.map((r) => [{ field: "station", value: String(r.station) }, { field: "day", value: String(r.day) }]));
@@ -3093,7 +3093,7 @@ describe("RESTART piece 8: facet partition binding from carried source-grain ide
   });
 
   it("A8: scale policy is orthogonal — shared vs free changes only the comparability claim, never membership", () => {
-    const sharedJ = facetBy(neutral, "station", layerPart(neutral, rows), { length: "shared", hue: "shared" });
+    const sharedJ = facetBy(neutral, "station", layerPart(neutral, rows), { length: "shared", luminance: "shared" });
     const freeJ = facetBy(neutral, "station", layerPart(neutral, rows), freePolicy);
     expect(sharedJ.verdict.kind).toBe("retained");
     expect(freeJ.verdict.kind).toBe("retained");
@@ -3102,8 +3102,8 @@ describe("RESTART piece 8: facet partition binding from carried source-grain ide
       expect(sharedJ.verdict.claims).toContain("cross-panel-comparability");
       expect(freeJ.verdict.claims).not.toContain("cross-panel-comparability");
       // ...and the profile is where the policy difference is recorded.
-      expect(sharedJ.verdict.profile).toEqual({ length: "shared", hue: "shared" });
-      expect(freeJ.verdict.profile).toEqual({ length: "free", hue: "free" });
+      expect(sharedJ.verdict.profile).toEqual({ length: "shared", luminance: "shared" });
+      expect(freeJ.verdict.profile).toEqual({ length: "free", luminance: "free" });
     }
   });
 
@@ -3130,7 +3130,7 @@ describe("RESTART piece 8: facet partition binding from carried source-grain ide
         combinator: "layer",
         parts: [
           { kind: "qualified", result: qualifyRelation(renamed, "samples", renamedRows), field: "first_value", channel: "length" },
-          { kind: "qualified", result: qualifyRelation(renamed, "samples", renamedRows), field: "second_value", channel: "hue" },
+          { kind: "qualified", result: qualifyRelation(renamed, "samples", renamedRows), field: "second_value", channel: "luminance" },
         ],
         sharing: {},
       },
@@ -3155,7 +3155,7 @@ describe("RESTART piece 8: facet partition binding from carried source-grain ide
       kind: "composite",
       composite: {
         combinator: "layer",
-        parts: [{ kind: "qualified", result: ohlcQ, field: "open", channel: "length" }, { kind: "qualified", result: ohlcQ, field: "close", channel: "hue" }],
+        parts: [{ kind: "qualified", result: ohlcQ, field: "open", channel: "length" }, { kind: "qualified", result: ohlcQ, field: "close", channel: "luminance" }],
         sharing: {},
       },
     };
@@ -3209,11 +3209,11 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
   const violated = rows.map((r, i) => (i === 3 ? { ...r, value_a: (r.ceiling as number) + 1 } : r));
   const unreadable = rows.map((r, i) => (i === 0 ? { ...r, value_a: "N/A" } : r));
 
-  type Ch = "length" | "hue" | "angle" | "position";
+  type Ch = "length" | "hue" | "luminance" | "angle" | "position";
   const view = (result: ReturnType<typeof qualifyRelation>, field: string, channel: Ch): CompositePart => ({ kind: "qualified", result, field, channel });
   const layerComposite = (rs: Array<Record<string, unknown>> = rows): Composite => {
     const q = qualifyRelation(neutral, "readings", rs);
-    return { combinator: "layer", parts: [view(q, "value_a", "length"), view(q, "value_b", "hue")], sharing: {} };
+    return { combinator: "layer", parts: [view(q, "value_a", "length"), view(q, "value_b", "luminance")], sharing: {} };
   };
   const singleViewLayer = (rs: Array<Record<string, unknown>> = rows): Composite => {
     const q = qualifyRelation(neutral, "readings", rs);
@@ -3223,7 +3223,7 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
     combinator: "facet",
     parts: [{ kind: "composite", composite: layerComposite(rs) }],
     partition: "station",
-    policy: { length: "free", hue: "free" } as never,
+    policy: { length: "free", luminance: "free" } as never,
   });
   // A host that RETAINS against the neutral structure (magnitude comparison over
   // the ratio measure `humidity`, grouped by `station`).
@@ -3245,7 +3245,7 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
     });
 
   it("A1: a composed object reaches the embed rule and is typed from the complete reading", () => {
-    const j = embedIt(["length", "hue"], layerComposite());
+    const j = embedIt(["length", "luminance"], layerComposite());
     expect(j.verdict.kind).toBe("retained");
     if (j.verdict.kind !== "retained") return;
     expect(j.verdict.combinator).toBe("embed");
@@ -3253,12 +3253,12 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
     // channelClaims authority the atomic path uses.
     expect(j.verdict.claims).toEqual(expect.arrayContaining(["aggregate-magnitude", "ratio-comparability"]));
     // The nested facet composite reaches the same branch.
-    expect(embedIt(["length", "hue"], facetComposite()).verdict.kind).toBe("retained");
+    expect(embedIt(["length", "luminance"], facetComposite()).verdict.kind).toBe("retained");
   });
 
   it("A2: the retained verdict preserves the inner composite's structure unreconstructed", () => {
     const inner = judgeIt(facetComposite());
-    const outer = embedIt(["length", "hue"], facetComposite());
+    const outer = embedIt(["length", "luminance"], facetComposite());
     expect(inner.verdict.kind).toBe("retained");
     expect(outer.verdict.kind).toBe("retained");
     if (inner.verdict.kind !== "retained" || outer.verdict.kind !== "retained") return;
@@ -3269,7 +3269,7 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
   });
 
   it("A3: a minimally changed budget that cannot host a presented channel refuses, naming it", () => {
-    const full = embedIt(["length", "hue"], layerComposite());
+    const full = embedIt(["length", "luminance"], layerComposite());
     expect(full.verdict.kind).toBe("retained");
     const j = embedIt(["hue"], layerComposite());
     expect(j.verdict.kind).toBe("refused");
@@ -3310,7 +3310,7 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
   });
 
   it("A5: a faulted inner composite keeps its own cause; the budget never replaces it", () => {
-    const refusedJ = embedIt(["length", "hue"], layerComposite(violated));
+    const refusedJ = embedIt(["length", "luminance"], layerComposite(violated));
     expect(refusedJ.verdict.kind).toBe("refused");
     if (refusedJ.verdict.kind === "refused") {
       expect(refusedJ.verdict.causes).toEqual([QUALIFIED_DIAG.BOUNDS_ROW_VIOLATED]);
@@ -3324,11 +3324,11 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
 
   it("A6: host, part and combinator stay distinct repair loci", () => {
     const badHost = { ...host, task: "trend" } as Program;
-    const hostJ = embedIt(["length", "hue"], layerComposite(), badHost);
+    const hostJ = embedIt(["length", "luminance"], layerComposite(), badHost);
     expect(hostJ.verdict.kind).toBe("unsupported");
     if (hostJ.verdict.kind === "unsupported") expect(hostJ.verdict.from).toBe("host");
 
-    const partJ = embedIt(["length", "hue"], layerComposite(violated));
+    const partJ = embedIt(["length", "luminance"], layerComposite(violated));
     if (partJ.verdict.kind === "refused") expect(partJ.verdict.from).toBe("part");
 
     const budgetJ = embedIt(["hue"], layerComposite());
@@ -3337,7 +3337,7 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
 
   it("A7: the embed rule reads the normalized reading only — no operand identity, no reopened rows", () => {
     const inner = judgeIt(layerComposite());
-    const outer = embedIt(["length", "hue"], layerComposite());
+    const outer = embedIt(["length", "luminance"], layerComposite());
     if (inner.verdict.kind !== "retained" || outer.verdict.kind !== "retained") throw new Error("expected retained");
     expect(outer.verdict.population).toEqual(inner.verdict.population);
     // The embed consumed the MERGED reading (population travels), not an
@@ -3347,8 +3347,8 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
   });
 
   it("A8: reordering source observations leaves the embed judgment equivalent", () => {
-    const a = embedIt(["length", "hue"], facetComposite(rows));
-    const b = embedIt(["length", "hue"], facetComposite(reordered));
+    const a = embedIt(["length", "luminance"], facetComposite(rows));
+    const b = embedIt(["length", "luminance"], facetComposite(reordered));
     expect(a.verdict.kind).toBe("retained");
     expect(b.verdict.kind).toBe("retained");
     if (a.verdict.kind !== "retained" || b.verdict.kind !== "retained") return;
@@ -3379,15 +3379,15 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
       combinator: "layer",
       parts: [
         { kind: "qualified", result: q, field: "first_value", channel: "length" },
-        { kind: "qualified", result: q, field: "second_value", channel: "hue" },
+        { kind: "qualified", result: q, field: "second_value", channel: "luminance" },
       ],
       sharing: {},
     };
-    const facet: Composite = { combinator: "facet", parts: [{ kind: "composite", composite: layer }], partition: "site", policy: { length: "free", hue: "free" } as never };
+    const facet: Composite = { combinator: "facet", parts: [{ kind: "composite", composite: layer }], partition: "site", policy: { length: "free", luminance: "free" } as never };
     const j = judgeComposite({
       structure: renamed,
       inventory: EXPERIMENT_TARGET,
-      composite: { combinator: "embed", host: renamedHost, budget: ["length", "hue"] as never, cellBaseline: "zero", part: { kind: "composite", composite: facet } },
+      composite: { combinator: "embed", host: renamedHost, budget: ["length", "luminance"] as never, cellBaseline: "zero", part: { kind: "composite", composite: facet } },
     });
     expect(j.verdict.kind).toBe("retained");
     if (j.verdict.kind !== "retained") return;
@@ -3405,16 +3405,16 @@ describe("RESTART piece 9: embed types a composed object from its complete readi
       combinator: "layer",
       parts: [
         { kind: "qualified", result: q, field: "open", channel: "length" },
-        { kind: "qualified", result: q, field: "close", channel: "hue" },
+        { kind: "qualified", result: q, field: "close", channel: "luminance" },
       ],
       sharing: {},
     };
-    const facet: Composite = { combinator: "facet", parts: [{ kind: "composite", composite: layer }], partition: "symbol", policy: { length: "free", hue: "free" } as never };
+    const facet: Composite = { combinator: "facet", parts: [{ kind: "composite", composite: layer }], partition: "symbol", policy: { length: "free", luminance: "free" } as never };
     const ohlcHost: Program = { ...host, operation: bindOperation(ohlcStructure, { relation: "candles", field: "volume", op: "sum", along: ["period"] }) };
     const j = judgeComposite({
       structure: ohlcStructure,
       inventory: EXPERIMENT_TARGET,
-      composite: { combinator: "embed", host: ohlcHost, budget: ["length", "hue"] as never, cellBaseline: "zero", part: { kind: "composite", composite: facet } },
+      composite: { combinator: "embed", host: ohlcHost, budget: ["length", "luminance"] as never, cellBaseline: "zero", part: { kind: "composite", composite: facet } },
     });
     expect(j.verdict.kind).toBe("retained");
     if (j.verdict.kind !== "retained") return;
