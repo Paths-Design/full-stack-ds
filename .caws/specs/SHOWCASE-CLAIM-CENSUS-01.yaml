@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: showcase-claims
 created_at: '2026-10-01T07:25:49.053Z'
-updated_at: '2026-10-01T07:35:38.085Z'
+updated_at: '2026-10-01T07:44:10.938Z'
 created_by_session: '01a0f64e-1a73-7d10-8acd-5f8e93924b47'
 blast_radius:
   modules:
@@ -23,6 +23,7 @@ scope:
     - 'src/consumption/showcase-census.ts'
     - 'docs/current-implementation-snapshot.md'
     - scripts/showcase-census.ts
+    - tsconfig.json
   out: []
 invariants:
   - 'Target registration and output roots remain owned by the codegen registry; census coverage does not confer admission or behavioral parity.'
