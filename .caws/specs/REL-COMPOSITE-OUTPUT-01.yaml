@@ -58,9 +58,11 @@ acceptance:
     when: 'composition and lowering run'
     then: 'contradictions dominate unresolved summary standing with all origins retained and unselected requests cannot produce output'
   - id: A7
-    given: 'a nested qualified layer facet embed object'
-    when: 'a lawful program is selected'
-    then: 'its immutable carrier retains values identities bounds panels and standing without source access'
+    given: 'a qualified result consumed with changed declarations'
+    when: 'composition reads its fields'
+    then: >-
+      transformation units and relationship facts are taken from the immutable
+      carried result rather than reinterpreted from the changed declaration
   - id: A8
     given: 'one selected composite and independently specified expected content'
     when: 'readback and metric outputs are produced and decoded separately'
