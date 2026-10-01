@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component token consumption
 owner: "@darianrosebrook"
-updated: 2026-09-28
-verified_at_commit: 3fd6f2eb23aaf8bc4dfa7c24cb42b1b64e2f7850
+updated: 2026-09-30
+verified_at_commit: 38c798cb0eb2
 governs:
   - packages/ds-codegen/src/css-token-consumption.ts
   - packages/ds-codegen/src/validation/component-token-consumption.ts

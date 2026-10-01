@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-09-30
-verified_at_commit: d2f56f5fba630df20f7cee53c20a37cbaa59d6e9
+verified_at_commit: 38c798cb0eb2
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -16,6 +16,8 @@ governs:
   - packages/ds-codegen/src/interaction.ts
   - packages/ds-codegen/src/interaction-runtime.ts
   - packages/ds-codegen/src/preserve.ts
+  - packages/ds-codegen/src/component-token-naming.ts
+  - packages/ds-codegen/src/validation/component-design-policy.ts
   - packages/ds-codegen/src/frameworks/**
 ---
 
@@ -72,6 +74,15 @@ This extends the executable contract vocabulary without establishing native moti
 shared clocks, geometry-sensitive timing or a universal animation runtime.
 
 ## The discipline this is an instance of
+
+The [component token cohesion migration](architecture/design/component-token-naming.md)
+adds generic naming and common design-binding checks at the semantic boundary.
+Contracts own state siblings, variant choices and property defaults; backends
+read the actual declared token addresses. The emitted-artifact audit also
+rejects unknown native reads instead of losing them during projection. Focus
+and code typography consume shared semantic families while independent Web
+design overrides retain clearing behavior. These are bounded source and browser
+facts; public address migration still requires consumers to update their overrides.
 
 The operative concern is governance, not composition. "Compositional" describes the result; governance describes the work. A system has the normal form when the rules about what can be composed with what, by whom, and under what guarantees are encoded structurally — in contracts, IRs, fail-loud boundaries, mutable/immutable site discipline, and consumer-facing descriptors — rather than encoded socially in convention, review culture, or institutional memory.
 

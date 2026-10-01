@@ -5,9 +5,10 @@ status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
 updated: 2026-09-30
-verified_at_commit: a579a43d
+verified_at_commit: 38c798cb0eb2
 governs:
   - packages/ds-codegen/src/design-properties.ts
+  - packages/ds-codegen/src/validation/component-design-policy.ts
   - packages/ds-contracts/component.styles.schema.json
   - packages/ds-contracts/components/**/*.styles.json
   - src/components/properties-panel/**
@@ -89,6 +90,13 @@ The override remains independently settable when the prop is absent or present.
 `node scripts/migrate-design-bindings.mjs --write` adds bindings without changing existing values or selectors. Run it after building codegen; without `--write` it reports any remaining mechanical adoption. Existing bindings keep their addresses. Conditional selector addresses are explicitly stored in the sidecar, so subsequent selector edits need not rename public slots.
 
 The mechanical pass exposes common visual properties, existing token-backed sizing, and spacing. Literal intrinsic sizing, layout algorithms, arbitrary transforms, animation triggers, images, and content remain component/composition decisions. Layout registry entries require explicit adoption. Component tokens follow the [consumption contract](component-token-consumption.md): unused declarations are rejected, with no compatibility aliases. Native-only slots remain outside the Web inspector's editable controls.
+
+`generate:check` enforces that common-property coverage through the same
+`requiresDesignBinding` rule used by the migration script. Removing a binding
+from an eligible Web property fails validation. The [component token naming
+rule](component-token-naming.md) separately reserves terminal `default` for
+declared state sibling families. Existing design addresses keep their identities
+when their underlying component default address changes.
 
 The inspector has a Design properties section grouped by source part/condition and property family. It edits the dedicated slot through the generated Input without repointing the shared semantic default. Empty input clears the override. Part selection uses the generated Select with selected-label projection and keyboard navigation; moving between parts retains each override. The existing box editor now targets the selected component's boundary, and its read proof includes the imported shared box controls.
 
