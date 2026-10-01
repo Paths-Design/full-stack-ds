@@ -57,3 +57,11 @@ evidence:
     recorded_at: "2026-10-01T16:41:04.728Z"
     artifact_path: docs/architecture/design/shared-document-model/authoring.md
     commit_sha: c6906ce83
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Observed node packages/ds-contracts/document-model/verify.mjs exit 0 at c6906ce83: 12 schemas, 23 primary records, 43 invalid neighbors, 4 weakened-schema controls, input nonmutation, original fixture/reference custody and Markdown/JSON oracle agreement. No evaluator, inheritance engine or transaction reducer executes. Log /tmp/fsds-composition-paper-qualification.log."
+    recorded_at: "2026-10-01T16:41:05.677Z"
+    command: node packages/ds-contracts/document-model/verify.mjs
+    exit_code: 0
+    artifact_path: packages/ds-contracts/document-model/verify.mjs
+    commit_sha: c6906ce83
