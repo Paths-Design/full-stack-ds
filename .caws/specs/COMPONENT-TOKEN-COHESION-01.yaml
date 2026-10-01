@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: component-token-cohesion
 created_at: '2026-10-01T01:14:59.463Z'
-updated_at: '2026-10-01T02:22:01.573Z'
+updated_at: '2026-10-01T02:49:51.609Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
@@ -61,6 +61,21 @@ scope:
     - packages/ds-figma-plugin/src/generated
     - e2e/slot-binding-rail.spec.ts
     - docs/normal-form.md
+    - docs/current-implementation-snapshot.md
+    - docs/pseudo-state-audit
+    - docs/state-suppression-audit
+    - docs/token-resolvability-audit
+    - docs/carrier-reachability-audit
+    - docs/dead-slot-audit
+    - docs/internal/pseudo-state-audit
+    - docs/internal/state-suppression-audit
+    - docs/internal/token-resolvability-audit
+    - docs/internal/carrier-reachability-audit
+    - docs/internal/dead-slot-audit
+    - scripts/pseudo-state-audit/audit.mjs
+    - scripts/state-suppression-audit/audit.mjs
+    - scripts/token-resolvability-audit/audit.mjs
+    - scripts/carrier-reachability-audit/audit.mjs
   out: []
   support:
     - docs/internal/input-visual-audit/component-token-cohesion
