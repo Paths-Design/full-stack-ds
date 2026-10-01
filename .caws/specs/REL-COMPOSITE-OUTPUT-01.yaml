@@ -108,3 +108,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
     exit_code: 0
     commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: omitted population is unproven, explicit empty is qualified/nothing-to-realize, incomplete keys contain no manufactured site binding, and duplicated complete keys are contradicted/refused."
+    recorded_at: "2026-10-01T01:31:03.359Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
