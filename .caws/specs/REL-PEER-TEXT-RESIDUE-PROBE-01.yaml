@@ -86,3 +86,10 @@ evidence:
     test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A4 semantic changes affect claims while formatting and detached mutation preserve custody"
     commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
     test_verified_at: cd8779f77bef156baba6c6235eae86ca3797f71b
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Real path returns refused, unproven and nothing-to-realize for contradicted, missing and empty populations; forged selected program cannot lower."
+    recorded_at: "2026-10-01T18:31:33.098Z"
+    test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A5 non-selected dispositions cannot manufacture a textual peer"
+    commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
+    test_verified_at: "9d3b8248617efb4bca310cff1dfadec397e046eb"
