@@ -2,9 +2,11 @@ id: FIGMA-MOTION-DESCRIPTOR-01
 title: 'Preserve normalized motion facts in Figma descriptors'
 risk_tier: 2
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Preserved normalized motion metadata with descriptor-only realization; isolated generation, tests and compatibility gates pass.'
 created_at: '2026-10-01T06:21:11.002Z'
-updated_at: '2026-10-01T06:21:24.718Z'
+updated_at: '2026-10-01T06:31:47.842Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
