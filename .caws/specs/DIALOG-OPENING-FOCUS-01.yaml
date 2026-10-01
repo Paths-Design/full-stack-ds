@@ -68,3 +68,11 @@ evidence:
     exit_code: 0
     artifact_path: e2e/dialog-focus.spec.ts
     commit_sha: d774a76e36acbeb71e4cef9bac122c32cef8deb7
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "44 Chromium cases passed on final source (slots-final-browser.log): all five targets honor selector focus and missing-target fallback; React lifecycle tests cover selector/bare ID and malformed targets. Identical helper SHA256 f1d1b5d3b905325dc2968302a2d693c1632e5cd01660d5f277d88379b502b006 in five packages. Lit native projected input selector/ID and fresh nested package Input pass; three cases rechecked on merged main (main-final-slots.log). New projected-input regression failed at initial focus against pre-fix main (slots-baseline-browser.log)."
+    recorded_at: "2026-10-01T00:06:43.048Z"
+    command: FSDS_E2E_PORT=5175 pnpm exec playwright test e2e/dialog-focus.spec.ts e2e/modality-rail.spec.ts --project=chromium --workers=2
+    exit_code: 0
+    artifact_path: e2e/dialog-focus.spec.ts
+    commit_sha: "371d5221e"
