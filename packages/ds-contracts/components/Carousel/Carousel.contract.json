@@ -309,6 +309,7 @@
           "source": "sequence.advance"
         },
         "effect": "elapsed-width",
+        "when": { "axis": "indicator", "values": ["pagination", "both"] },
         "reducedMotion": {
           "kind": "steps",
           "steps": 10
@@ -323,6 +324,7 @@
           "source": "sequence.advance"
         },
         "effect": "elapsed-ring",
+        "when": { "axis": "indicator", "values": ["next", "both"] },
         "reducedMotion": {
           "kind": "steps",
           "steps": 10

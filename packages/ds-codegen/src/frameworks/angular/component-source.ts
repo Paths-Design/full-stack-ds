@@ -1,5 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig } from "../../sequence.js";
+import { sequenceConfig, sequencePresentation } from "../../sequence.js";
 /**
  * Angular standalone component emission, IR-driven.
  *
@@ -1862,7 +1862,8 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   for (const p of ir.styledProps) {
     if (ANGULAR_RESERVED.has(p.name)) continue;
     const propLine = generateInputProp(p);
-    if (controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name || (ir.motion.sequence && [ir.motion.sequence.itemsProp, ir.motion.sequence.timing.durationProp, ir.motion.sequence.timing.autoPlayProp].includes(p.name)) || (ir.pagedSet && [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp].includes(p.name))) {
+    const sequencePresentationProp = ir.motion.sequence?.progress.some(binding => binding.when?.axis === p.name);
+    if (sequencePresentationProp || controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name || (ir.motion.sequence && [ir.motion.sequence.itemsProp, ir.motion.sequence.timing.durationProp, ir.motion.sequence.timing.autoPlayProp].includes(p.name)) || (ir.pagedSet && [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp].includes(p.name))) {
       const type = lowerAngularPropType(p.propType);
       lines.push(`  private readonly input${capitalizeAngular(p.safeName)} = signal<${type} | undefined>(undefined);`);
       lines.push(`  @Input() get ${p.safeName}(): ${type} | undefined { return this.input${capitalizeAngular(p.safeName)}(); }`);
@@ -2020,6 +2021,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       `  private sequenceCleanup = this.destroyRef.onDestroy(() => this.sequence.destroy());`,
       `  private sequenceEffect = effect(() => this.sequence.sync({`,
       `    index: this.behavior.${seq.channel}(), labels: this.${seq.itemsProp} ?? [], autoPlay: this.${seq.timing.autoPlayProp} ?? false,`,
+      `    presentation: ${sequencePresentation(seq, prop => `this.${prop}`)},`,
       `    durationMs: this.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : this.${seq.timing.durationProp},`,
       `    onIndexChange: (value) => this.behavior.set${capitalizeAngular(seq.channel)}(value),`, `  }));`,
       `  @ViewChild("sequenceRoot") set sequenceRoot(el: ElementRef<HTMLElement> | undefined) {`,

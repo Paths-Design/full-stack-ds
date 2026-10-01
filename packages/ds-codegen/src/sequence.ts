@@ -4,6 +4,7 @@ import { getCssPrefix, type ComponentContract, type ContractDomNode, type Contra
 export interface SequenceIR extends ContractSequence {
   timing: ContractSequence["timing"] & { defaultMs: number };
   progress: ContractMotionProgress[];
+  progressHosts: Array<"picker" | "next" | "other" | "unresolved">;
   selectors: { picker: string; progress: string[] };
   composition: "resolved" | "unresolved";
   transition?: { durationToken: string; easingToken: string; durationMs: number; easing: string; referenceWidth: number; minMultiplier: number; maxMultiplier: number };
@@ -80,11 +81,25 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
     if (!channel || channel.valueType !== "number") fail("composed picker must share the numeric sequence channel and callback");
   } else if (picker && picker.iterate!.source !== `prop:${sequence.itemsProp}`) fail("picker must iterate sequence items");
   const progressSelectors: string[] = [];
+  const progressHosts: SequenceIR["progressHosts"] = [];
+  const contains = (parent: ContractDomNode, child: ContractDomNode): boolean =>
+    parent === child || (!parent.componentRef && Boolean(parent.children?.some(node => contains(node, child))));
   const targets = new Set<string>();
   for (const binding of progress) {
+    if (binding.when) {
+      const allowed = contract.variants?.[binding.when.axis];
+      if (!props.some(prop => prop.name === binding.when!.axis) || !Array.isArray(allowed) ||
+          !binding.when.values.length || new Set(binding.when.values).size !== binding.when.values.length ||
+          binding.when.values.some(value => !allowed.includes(value))) fail("progress presentation must select values of a declared variant axis");
+    }
     const resolved = address(binding.target);
     const node = resolved.node;
     progressSelectors.push(resolved.selector);
+    // Resolve ancestry in the owning contract, including a composed child.
+    // Native backends must not reconstruct it from web selectors or part names.
+    progressHosts.push(!node ? "unresolved" :
+      picker && resolved.owner === resolvedPicker.owner && resolved.instance === resolvedPicker.instance && contains(picker, node) ? "picker" :
+      resolved.owner === contract && contains(owned(sequence.next), node) ? "next" : "other");
     if (targets.has(resolved.selector) || (!binding.target.componentPart && names.includes(binding.target.part))) fail("progress targets must be distinct decorations");
     targets.add(resolved.selector);
     if (node && (node.attrs?.["aria-hidden"] !== "true" || node.content || node.children?.length)) fail("progress must be empty and decorative");
@@ -112,7 +127,7 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
     normalizedTransition = { ...size, durationToken: transition.durationToken, easingToken: transition.easingToken,
       durationMs: Number(value[1]) * (value[2] === "s" ? 1000 : 1), easing: easing! };
   }
-  return { ...sequence, composition: allContracts || (!resolvedPicker.instance && progress.every(p => !p.target.componentPart)) ? "resolved" : "unresolved", selectors: { picker: resolvedPicker.selector, progress: progressSelectors }, timing: { ...sequence.timing, defaultMs }, progress, ...(normalizedTransition ? { transition: normalizedTransition } : {}), realization: { web: "sequence-budget", nonWeb: "unrealized" } };
+  return { ...sequence, composition: allContracts || (!resolvedPicker.instance && progress.every(p => !p.target.componentPart)) ? "resolved" : "unresolved", selectors: { picker: resolvedPicker.selector, progress: progressSelectors }, timing: { ...sequence.timing, defaultMs }, progress, progressHosts, ...(normalizedTransition ? { transition: normalizedTransition } : {}), realization: { web: "sequence-budget", nonWeb: "unrealized" } };
 }
 
 /** CSS-part addressing is derived here rather than reconstructed by each emitter. */
@@ -127,6 +142,12 @@ export function sequenceConfig(sequence: SequenceIR, prefix: string): string {
       minMultiplier: sequence.transition.minMultiplier, maxMultiplier: sequence.transition.maxMultiplier,
     },
     parts: Object.fromEntries((["viewport", "previous", "next", "rotation", "picker"] as const).map(key => [key, key === "picker" ? sequence.selectors.picker : `.${prefix}__${sequence[key]}`])),
-    progress: sequence.progress.map((p, index) => ({ selector: sequence.selectors.progress[index], effect: p.effect, steps: p.reducedMotion.steps })),
+    progress: sequence.progress.map((p, index) => ({ selector: sequence.selectors.progress[index], effect: p.effect, steps: p.reducedMotion.steps, ...(p.when ? { when: p.when } : {}) })),
   });
+}
+
+/** Runtime values are supplied by each framework's reactive prop accessors. */
+export function sequencePresentation(sequence: SequenceIR, access: (prop: string) => string): string {
+  const axes = [...new Set(sequence.progress.flatMap(binding => binding.when ? [binding.when.axis] : []))];
+  return `{ ${axes.map(axis => `${JSON.stringify(axis)}: ${access(axis)}`).join(", ")} }`;
 }

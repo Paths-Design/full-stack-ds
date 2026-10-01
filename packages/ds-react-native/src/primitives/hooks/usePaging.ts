@@ -1,5 +1,5 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
-import { createPagedSet, type PagedSetOptions } from "../paging.js";
+import { createPagedSet, type PagedSetOptions } from "../paging";
 export function usePagedSet(options: PagedSetOptions) {
   const controller = useRef<ReturnType<typeof createPagedSet> | null>(null);
   if (!controller.current) controller.current = createPagedSet();

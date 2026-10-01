@@ -151,6 +151,53 @@ omit the motion field. It does not attach Figma prototype timers or transitions,
 and source capability facts inside the metadata are not a claim that Figma
 executes them.
 
+### Native implementation work in progress
+
+React Native now has a sequence clock and generated control bindings. The clock
+keeps one advancement deadline, waits for controlled index acknowledgement, and
+composes app background, Android window blur, touch and transition pauses.
+The adapter waits for initial accessibility preferences, stops rotation when a
+screen reader becomes active, and releases subscriptions and timers on teardown.
+Native wrappers retain consumer children while suppressing inactive interaction
+and accessibility descendants.
+
+The native movement primitive requests directional `Animated` transforms with
+capped width-dependent durations, cancels superseded ownership, and releases a
+full reading budget after settlement. Its unit tests observe the animation API
+boundary, including delayed callbacks after interruption and teardown. Removing
+the ownership guards makes those regressions fail; these tests do not execute
+the native animation driver.
+`BudgetProgress` renders elapsed-width and elapsed-ring projections from that
+same clock value, with contract-selected discrete steps under reduced motion.
+It owns no timer or advancement callback and is decorative for accessibility.
+Native border arcs and clipping render the ring without another drawing dependency.
+The package tests exercise pause, resume, reset and preference changes through
+the actual sequence adapter; removing step quantization fails the reduced-motion
+regression. These remain host-shim behavior tests. An iOS Release fixture also
+renders the five quarter-step samples for both shapes, inspected as actual pixels.
+
+The generated component passes its normalized movement profile, reads duration and
+easing through native token resolution, and routes composed picker requests through
+the sequence controller. Generated-component tests reproduce missing movement and
+a second autoplay request while a controlled picker selection awaits acknowledgement.
+These tests observe the native API boundary. A separate Release iOS recording
+of generated Carousel autoplay observes intermediate painted slide positions;
+its narrow scope and remaining visual gaps are recorded in the native probe doc.
+The component does not yet bind `BudgetProgress` to its anatomy parts. Generated progress bindings,
+native styling and icons, rotation-control visibility
+for disabled timers, and broader generated-component simulator/device witnesses remain unfinished. Accordingly
+the IR's native sequence capability remains unrealized and the parity criterion
+remains open. SwiftUI, Compose, Unity and Godot still need their sequence realizations.
+
+The local iOS primitive probe is documented in
+[native Carousel probe](../testing/native-carousel-probe.md). A Release
+iOS simulator recording shows the production primitive's outgoing blue slide
+moving left while its incoming green slide enters from the right. This is a
+bounded primitive observation, not generated Carousel parity. Native
+`measureInWindow` returned unchanged intermediate coordinates during that visible
+movement; its readings are therefore retained as layout diagnostics rather than
+used as a presentation-motion oracle.
+
 ## Reusable position selection
 
 Carousel consumes [Pagination](paged-collections.md) as a component instance.
@@ -159,3 +206,17 @@ Carousel retains the content viewport, previous/next actions and advance
 budget. Composed part addresses are resolved against the contract corpus,
 while the child callback requests a position through the sequence controller.
 Indicator presentation does not make Pagination a carousel-specific surface.
+
+## Progress presentation is a motion fact
+
+Each progress binding may declare `when: { axis, values }`. This selects a
+nonempty subset of a declared variant axis. Carousel uses it to select the
+pagination fill, the Next ring, or both. The condition travels with the binding
+through the semantic IR; backends do not infer it from CSS selectors.
+
+The runtime combines three requirements at the point of projection: selected
+presentation, a valid enabled budget, and ownership by the active item when the
+target is repeated. A presentation change redraws from the existing budget and
+never restarts time. Static selection cues remain available without a timer.
+The web mirrors and the bounded Godot runtime implement this rule. It does not
+by itself complete the other native progress realizations.

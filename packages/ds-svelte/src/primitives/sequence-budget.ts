@@ -5,9 +5,10 @@ export interface SequenceConfig {
   labels: { start: string; stop: string; item: string };
   transition?: { durationMs: number; easing: string; referenceWidth: number; minMultiplier: number; maxMultiplier: number };
   parts: Record<"viewport" | "previous" | "next" | "rotation" | "picker", string>;
-  progress: Array<{ selector: string; effect: "elapsed-width" | "elapsed-ring"; steps: number }>;
+  progress: Array<{ selector: string; effect: "elapsed-width" | "elapsed-ring"; steps: number; when?: { axis: string; values: string[] } }>;
 }
 export interface SequenceOptions {
+  presentation?: Record<string, string | undefined>;
   index: number;
   labels: readonly string[];
   durationMs: number | null | undefined;
@@ -77,9 +78,7 @@ export function createSequenceBudget(config: SequenceConfig) {
   const part = (key: keyof SequenceConfig["parts"]) => all(config.parts[key])[0];
   const index = () => Math.max(0, Math.min(slides.length - 1, Math.trunc(options?.index ?? 0) || 0));
   const valid = () => Boolean(options && slides.length === options.labels.length && slides.length > 1);
-  const budget = createPresenceBudget(() => {
-    if (!pending && playing && valid()) request(index() + 1);
-  }, 10, (remaining, enabled, reduced) => {
+  const paintProgress = (remaining: number, enabled: boolean, reduced: boolean) => {
     reducedMotion = reduced;
     if (reduced) finishMotion();
     for (const binding of config.progress) {
@@ -88,12 +87,16 @@ export function createSequenceBudget(config: SequenceConfig) {
       for (const el of all(binding.selector)) {
         const picker = all(config.parts.picker).find(picker => picker.contains(el));
         const active = !picker || picker.getAttribute("data-sequence-active") === "true";
-        el.hidden = !enabled || !active;
+        const presented = !binding.when || binding.when.values.includes(options?.presentation?.[binding.when.axis] ?? "");
+        el.hidden = !enabled || !active || !presented;
         el.style.setProperty("--sequence-progress", String(value));
         if (binding.effect === "elapsed-width") el.style.transform = `scaleX(${value})`;
       }
     }
-  });
+  };
+  const budget = createPresenceBudget(() => {
+    if (!pending && playing && valid()) request(index() + 1);
+  }, 10, paintProgress);
   const finishMotion = () => {
     const current = motion;
     if (!current) return;
@@ -309,6 +312,8 @@ export function createSequenceBudget(config: SequenceConfig) {
     previousLabels = labels;
     render();
     syncBudget(changed);
+    const snapshot = budget.snapshot();
+    paintProgress(snapshot.durationMs > 0 ? snapshot.remainingMs / snapshot.durationMs : 1, snapshot.enabled, reducedMotion);
   };
   const bindRoot = (element: unknown) => {
     const next = element instanceof HTMLElement ? element : undefined;

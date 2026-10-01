@@ -1,13 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { FrameworkEmitter } from "../../emitter.js";
-import type { ComponentIR } from "../../ir.js";
+import type { ComponentIR, DomNodeIR } from "../../ir.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 const q = JSON.stringify;
 const handled = new Set(["checked","defaultChecked","onChange","open","defaultOpen","onOpenChange","value","defaultValue","onValueChange","disabled","collapsible","type","orientation","activationMode","loop","unmountInactive","appearance","placement","closeOnEscape","closeOnOutsideClick","closeOnBlur"]);
 // Explicit pilot exclusions are visible in the emitted capability receipt.
 const excluded = new Set(["size", "name", "idBase"]);
 export function godotPlan(ir: ComponentIR) {
+  if (ir.motion.sequence) return godotSequencePlan(ir);
   for (const p of ir.styledProps) if (!handled.has(p.name) && !excluded.has(p.name)) throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${p.name}`);
   let operation: string;
   if (ir.surface) {
@@ -18,6 +19,37 @@ export function godotPlan(ir: ComponentIR) {
   else throw new Error(`GODOT_UNSUPPORTED_SHAPE: ${ir.name}`);
   const realized = new Set(["checked", "open", "value", "disabled", "collapsible", "onChange", "onValueChange", "onOpenChange"]);
   return { operation, excluded: ir.styledProps.filter(p => !realized.has(p.name) || (ir.formControl && p.name === "value")).map(p=>p.name) };
+}
+/** Source fact: normalized sequence, channel and label bindings.
+ * Applies by: numeric sequence capability. Removable when: its IR is retired.
+ * Native presentation is intentionally bounded while the target remains unadmitted.
+ */
+export function godotSequencePlan(ir: ComponentIR) {
+  const sequence = ir.motion.sequence!;
+  const channel = ir.behavior.normalizedChannels.find(c => c.name === sequence.channel)!;
+  const label = ir.dom?.bindings["aria-label"];
+  if (label && (label.kind !== "prop" || label.path?.length)) throw new Error(`GODOT_UNSUPPORTED_SEQUENCE_LABEL: ${ir.name}`);
+  const nameProp = label?.kind === "prop" ? label.prop : undefined;
+  const realized = new Set([channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp, sequence.itemsProp, sequence.timing.durationProp, sequence.timing.autoPlayProp, nameProp]);
+  const presentationProps = new Set(sequence.progress.flatMap(binding => binding.when ? [binding.when.axis] : []));
+  const variantProps = Object.keys(ir.variants).filter(prop => !presentationProps.has(prop));
+  presentationProps.forEach(prop => realized.add(prop));
+  for (const p of ir.styledProps) if (!realized.has(p.name) && !variantProps.includes(p.name)) throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${p.name}`);
+  const nodes: DomNodeIR[] = [];
+  const walk = (node: DomNodeIR) => { nodes.push(node); if (!node.componentRef) node.children.forEach(walk); };
+  if (ir.dom) walk(ir.dom);
+  if (sequence.composition !== "resolved") throw new Error(`GODOT_UNRESOLVED_SEQUENCE: ${ir.name}`);
+  for (const [index, progress] of sequence.progress.entries()) {
+    const host = progress.effect === "elapsed-width" ? "picker" : "next";
+    if (sequence.progressHosts[index] !== host) throw new Error(`GODOT_UNSUPPORTED_PROGRESS_HOST: ${ir.name}.${progress.target.part}`);
+  }
+  const names = Object.fromEntries((["previous", "next"] as const).map(key => {
+    const node = nodes.find(n => n.part === sequence[key]);
+    const name = node?.attrs["aria-label"];
+    if (!name || node?.bindings["aria-label"]) throw new Error(`GODOT_UNSUPPORTED_SEQUENCE_LABEL: ${ir.name}.${sequence[key]}`);
+    return [key, name];
+  }));
+  return { operation: "sequence", excluded: variantProps, sequence, channel, nameProp, names };
 }
 export function themeColor(ir: ComponentIR): string {
   // Project an authored foreground fallback through normalized CSS/token facts.
@@ -38,8 +70,9 @@ export function createGodotEmitter(): FrameworkEmitter {
     emitComponent(ir) {
       const plan = godotPlan(ir);
       const defaults = Object.fromEntries(ir.styledProps.filter(p=>p.defaultExpr !== undefined).map(p=>[p.name,p.defaultExpr]));
-      const config = { operation: plan.operation, defaults, theme_color: themeColor(ir) };
-      const script = `@tool\nclass_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/control.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n\tlabel = ${q(ir.name)}\n`;
+      const isSequence = plan.operation === "sequence";
+      const config = { ...(isSequence ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
+      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isSequence ? "" : `\tlabel = ${q(ir.name)}\n`}`;
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");
       return [

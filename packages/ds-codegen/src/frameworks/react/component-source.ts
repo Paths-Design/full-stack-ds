@@ -1,5 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig } from "../../sequence.js";
+import { sequenceConfig, sequencePresentation } from "../../sequence.js";
 /**
  * React-specific component source emission.
  *
@@ -2100,6 +2100,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     const seq = ir.motion.sequence;
     lines.push(`  const sequence = useSequence(${sequenceConfig(seq, ir.cssPrefix)}, {`,
       `    index: ${seq.channel}, labels: ${seq.itemsProp}, autoPlay: ${seq.timing.autoPlayProp},`,
+      `    presentation: ${sequencePresentation(seq, prop => prop)},`,
       `    durationMs: ${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : ${seq.timing.durationProp},`,
       `    onIndexChange: set${capitalize(seq.channel)},`, `  });`);
   }

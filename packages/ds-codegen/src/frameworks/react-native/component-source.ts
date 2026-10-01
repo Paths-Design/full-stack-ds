@@ -569,7 +569,7 @@ function emitImports(ir: ComponentIR): string {
     ir.pagedSet ? `import { usePagedSet } from "../../primitives/hooks/usePaging";` : "",
     `import { useFsdsTheme } from "../../tokens";`,
     `import { create${ir.name}Styles } from "./${ir.name}.styles";`,
-    usesNativeToggle(ir) || rnAutoDismiss(ir) || nativeHighlightTransform(ir)
+    usesNativeToggle(ir) || rnAutoDismiss(ir) || nativeHighlightTransform(ir) || ir.motion.sequence
       ? `import { resolve${ir.name}Tokens } from "./${ir.name}.tokens";`
       : "",
     nativeHighlightTransform(ir)
@@ -577,6 +577,9 @@ function emitImports(ir: ComponentIR): string {
       : "",
     isCompoundSelectionContainer(ir)
       ? `import { createCompoundContext } from "../../primitives/hooks";`
+      : "",
+    ir.motion.sequence
+      ? `import { useSequence, SequenceChildren } from "../../primitives/useSequence";`
       : "",
     // componentRef: import each referenced DS-RN sibling component
     // (CODEGEN-RECURSIVE-COMPOSITION-01). Named imports, relative sibling path.
@@ -759,6 +762,13 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
     for (const name of [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp]) if (name) usage.props.add(safePropName(ir, name));
   }
   if (rootPressableAcceptsOnPress(ir)) usage.props.add("onPress");
+  if (ir.motion.sequence) {
+    const sequence = ir.motion.sequence;
+    usage.channels.add(sequence.channel);
+    usage.channelValues.add(sequence.channel);
+    usage.channelSetters.add(sequence.channel);
+    for (const prop of [sequence.itemsProp, sequence.timing.autoPlayProp, sequence.timing.durationProp]) addPropIfPresent(ir, usage, prop);
+  }
 
   if (usesNativeToggle(ir)) {
     const channel = ir.behavior.normalizedChannels[0];
@@ -1021,7 +1031,7 @@ function emitComponent(ir: ComponentIR): string {
   lines.push(`}: ${ir.name}Props) {`);
   lines.push(`${INDENT}const fsdsTheme = useFsdsTheme();`);
   lines.push(`${INDENT}const styles = useMemo(() => create${ir.name}Styles(fsdsTheme), [fsdsTheme]);`);
-  if (usesNativeToggle(ir) || rnAutoDismiss(ir)) {
+  if (usesNativeToggle(ir) || rnAutoDismiss(ir) || ir.motion.sequence) {
     lines.push(`${INDENT}const tokens = useMemo(() => resolve${ir.name}Tokens(fsdsTheme), [fsdsTheme]);`);
   }
   for (const channel of ir.behavior.normalizedChannels.filter((candidate) =>
@@ -1035,6 +1045,25 @@ function emitComponent(ir: ComponentIR): string {
       `    count: ${page.countProp ? safePropName(ir, page.countProp) : "undefined"}, disabled: ${page.disabledProp ? safePropName(ir, page.disabledProp) : "false"}, onIndexChange: set${capitalize(page.channel)}Value });`);
   }
   const autoDismiss = rnAutoDismiss(ir);
+  // Source: normalized sequence IR. Applies by capability, never component
+  // identity. Remove only if the native sequence runtime contract changes.
+  if (ir.motion.sequence) {
+    const sequence = ir.motion.sequence;
+    const duration = safePropName(ir, sequence.timing.durationProp);
+    const transition = sequence.transition;
+    const tokenRead = (name: string, fallback: string | number) => {
+      const scope = ir.tokenScopes.find(scope => scope.values.some(value => value.name === name))?.scope;
+      if (!scope) throw new Error(`NATIVE_SEQUENCE_TOKEN_MISSING: ${ir.name}.${name}`);
+      return `tokens.${scope}?.[${JSON.stringify(name)}] ?? ${JSON.stringify(fallback)}`;
+    };
+    const movement = transition ? `, { durationMs: Number(${tokenRead(transition.durationToken, transition.durationMs)}), easing: String(${tokenRead(transition.easingToken, transition.easing)}), referenceWidth: ${transition.referenceWidth}, minMultiplier: ${transition.minMultiplier}, maxMultiplier: ${transition.maxMultiplier} }` : "";
+    lines.push(`${INDENT}const sequence = useSequence({`,
+      `${INDENT}${INDENT}index: ${sequence.channel}, labels: ${safePropName(ir, sequence.itemsProp)},`,
+      `${INDENT}${INDENT}autoPlay: ${safePropName(ir, sequence.timing.autoPlayProp)},`,
+      `${INDENT}${INDENT}durationMs: ${duration} === undefined ? Number(tokens.root?.[${JSON.stringify(sequence.timing.durationToken)}] ?? ${sequence.timing.defaultMs}) : ${duration},`,
+      `${INDENT}${INDENT}onIndexChange: set${capitalize(sequence.channel)}Value,`,
+      `${INDENT}}, children${movement});`);
+  }
   if (autoDismiss) {
     const setter = `set${capitalize(autoDismiss.channel.name)}Value`;
     const tokenExpr = autoDismiss.tokenSlot
@@ -1801,6 +1830,9 @@ function emitComponentRefNode(
 }
 
 function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): string[] {
+  const sequence = ir.motion.sequence;
+  if (sequence && node.part === sequence.viewport) return [`${INDENT.repeat(depth)}<SequenceChildren sequence={sequence} labels={${safePropName(ir, sequence.itemsProp)}} />`];
+  if (sequence && node.part === sequence.rotation) return [`${INDENT.repeat(depth)}<RNText>{sequence.playing ? ${JSON.stringify(sequence.labels.stop)} : ${JSON.stringify(sequence.labels.start)}}</RNText>`];
   const textStyleExpr = node === ir.dom ? rootTextStyleExpression(ir) : null;
   const textStyleProp = textStyleExpr ? ` style={${textStyleExpr}}` : "";
   if (node.content) {
@@ -1919,6 +1951,25 @@ function emitNodeProps(
   }
 
   const accessibilityState: string[] = [];
+  const sequence = ir.motion.sequence;
+  if (sequence) {
+    if (isRootNode) props.push(`${pad}onTouchStart={sequence.touchStart}`, `${pad}onTouchEnd={sequence.touchEnd}`, `${pad}onTouchCancel={sequence.touchEnd}`);
+    const action = node.part === sequence.next ? "next" : node.part === sequence.previous ? "previous" : undefined;
+    const isRotation = node.part === sequence.rotation;
+    const isPicker = node.part === sequence.picker;
+    if (action || isRotation || isPicker) {
+      props.push(`${pad}disabled={!sequence.valid}`, `${pad}onFocus={sequence.stop}`);
+      accessibilityState.push("disabled: !sequence.valid");
+      if (action) props.push(`${pad}onPress={sequence.${action}}`);
+      if (isRotation) props.push(`${pad}onPressIn={sequence.rotatePressIn}`, `${pad}onPress={sequence.rotate}`,
+        `${pad}accessibilityLabel={sequence.playing ? ${JSON.stringify(sequence.labels.stop)} : ${JSON.stringify(sequence.labels.start)}}`);
+      if (isPicker) {
+        props.push(`${pad}onPress={() => sequence.select(index)}`);
+        accessibilityState.push("selected: index === sequence.index");
+      }
+      if (!isRotation && node.attrs["aria-label"]) props.push(`${pad}accessibilityLabel=${JSON.stringify(node.attrs["aria-label"])}`);
+    }
+  }
   let hasAccessibilityLabel = false;
   let hasAccessibilityLabelledBy = false;
   for (const [name, value] of Object.entries(node.attrs)) {
@@ -2359,6 +2410,7 @@ function bindingExpr(binding: BindingExpression, ir: ComponentIR): string {
     return pathExpr(propName, binding.path);
   }
   if (binding.kind === "channel") {
+    if (binding.forwardValue === "sequence") return "sequence.select";
     if (binding.forwardValue === "pagedSet") return "pagedSet.request";
     if (binding.forwardValue) return `set${capitalize(binding.channel)}Value`;
     if (binding.field === "value") return pathExpr(binding.channel, binding.path);

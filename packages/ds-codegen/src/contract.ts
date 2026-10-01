@@ -579,6 +579,7 @@ export interface ContractSequence {
   timing: { durationProp: string; autoPlayProp: string; durationToken: string };
 }
 export interface ContractMotionProgress {
+  when?: { axis: string; values: string[] };
   target: ContractPartAddress;
   driver: { kind: "budget"; source: "sequence.advance" };
   effect: "elapsed-width" | "elapsed-ring";

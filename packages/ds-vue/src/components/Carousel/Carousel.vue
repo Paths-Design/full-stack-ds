@@ -50,8 +50,9 @@ const behavior = useCarousel({
   defaultIndex: props.defaultIndex,
   onIndexChange: props.onIndexChange,
 });
-const sequence = useSequence({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]}, () => ({
+const sequence = useSequence({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10,"when":{"axis":"indicator","values":["pagination","both"]}},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10,"when":{"axis":"indicator","values":["next","both"]}}]}, () => ({
   index: behavior.slide.value, labels: props.slides, autoPlay: props.autoPlay,
+  presentation: { "indicator": props.indicator },
   durationMs: props.duration === undefined ? 6000 : props.duration,
   onIndexChange: behavior.setSlide,
 }));

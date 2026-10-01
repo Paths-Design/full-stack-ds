@@ -8,6 +8,7 @@ import { generateVueComponentSource } from "./frameworks/vue/component-source.js
 import { generateSvelteComponentSource } from "./frameworks/svelte/component-source.js";
 import { generateAngularComponentSource } from "./frameworks/angular/component-source.js";
 import { generateLitComponentSource } from "./frameworks/lit/component-source.js";
+import { generateReactNativeComponentSource } from "./frameworks/react-native/component-source.js";
 import { toFigmaComponentDescriptor } from "./frameworks/figma/factory.js";
 import { createContractValidator } from "./validate.js";
 
@@ -79,6 +80,25 @@ describe("contract-bound sequence composition", () => {
       expect(source).not.toContain("setSlide");
     }
   });
+  it("binds native sequence controls through the declared channel and timing props", () => {
+    const contract = load();
+    contract.channels!.position = contract.channels!.slide;
+    delete contract.channels!.slide;
+    contract.sequence!.channel = "position";
+    contract.anatomy = JSON.parse(JSON.stringify(contract.anatomy).replaceAll("channel:slide.", "channel:position."));
+    const ir = build(contract);
+    const source = generateReactNativeComponentSource(ir).componentFile;
+    expect(source).toContain("onIndexChange: setPositionValue");
+    expect(source).toContain("index: position, labels: slides");
+    expect(source).toContain('tokens.root?.["carousel.timing.advance"]');
+    expect(source).toContain("onIndexChange={sequence.select}");
+    expect(source).toContain('durationMs: Number(tokens.root?.["carousel.motion.duration"] ?? 250)');
+    expect(source).toContain("onPress={sequence.next}");
+    expect(source).toContain("onPress={sequence.previous}");
+    expect(source).toContain("onPress={sequence.rotate}");
+    expect(source).toContain("<SequenceChildren sequence={sequence}");
+    expect(source).not.toContain("setSlideValue");
+  });
   it("retains sequence semantics in serialized Figma metadata without claiming execution", () => {
     const contract = load();
     contract.channels!.position = contract.channels!.slide;
@@ -105,6 +125,9 @@ describe("contract-bound sequence composition", () => {
     expect(descriptor.motion.facts).toEqual(ir.motion);
   });
   it.each([
+    ["unknown presentation axis", (c: ComponentContract) => { c.motion!.progress![0].when = { axis: "missing", values: ["pagination"] }; }],
+    ["unknown presentation value", (c: ComponentContract) => { c.motion!.progress![0].when = { axis: "indicator", values: ["unknown"] }; }],
+    ["empty presentation choice", (c: ComponentContract) => { c.motion!.progress![0].when = { axis: "indicator", values: [] }; }],
     ["missing movement token", (c: ComponentContract) => { c.motion!.sequenceTransition!.durationToken = "missing"; }],
     ["invalid size profile", (c: ComponentContract) => { c.motion!.sequenceTransition!.size.minMultiplier = 3; }],
     ["wrong transition owner", (c: ComponentContract) => { c.motion!.sequenceTransition!.target.part = "root"; }],
