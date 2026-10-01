@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: component-token-cohesion
 created_at: '2026-10-01T01:14:59.463Z'
-updated_at: '2026-10-01T02:09:24.528Z'
+updated_at: '2026-10-01T02:12:45.296Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
@@ -32,11 +32,9 @@ scope:
     - 'scripts/migrate-design-bindings.mjs'
     - 'docs/architecture/design'
     - 'e2e/component-token-cohesion.spec.ts'
-    - packages/ds-figma-plugin/generated
     - src/generated
     - packages/ds-tokens
     - src/consumption
-    - e2e
     - docs/reference
     - scripts/compose-parity-diff.test.mjs
     - packages/ds-codegen/src/frameworks
@@ -60,6 +58,8 @@ scope:
     - scripts/migrate-variants-to-styles.mjs
     - packages/ds-codegen/src/carousel.test.ts
     - scripts/dead-slot-audit
+    - packages/ds-figma-plugin/src/generated
+    - e2e/slot-binding-rail.spec.ts
   out: []
   support:
     - docs/internal/input-visual-audit/component-token-cohesion
