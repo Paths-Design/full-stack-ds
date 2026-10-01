@@ -1,8 +1,23 @@
-# Native Carousel primitive probe
+---
+doc_id: REF-NATIVE-CAROUSEL-PROBE-001
+authority: reference
+status: active
+title: Native Carousel probes
+owner: "@darianrosebrook"
+updated: 2026-10-01
+governs:
+  - scripts/react-native-carousel-host.mjs
+  - scripts/fixtures/carousel-native
+  - scripts/native-carousel-pixels.mjs
+---
 
-This local lane runs the production React Native sequence primitive in a Release
-iOS simulator application. It does not mount the generated Carousel. Its purpose
-is to distinguish native presentation movement from a passing mock-boundary test.
+# Native Carousel probes
+
+This local lane runs either the production React Native sequence primitive or
+the generated Carousel in a Release iOS simulator application. Its purpose is
+to distinguish native presentation movement from a passing mock-boundary test.
+The default mode isolates the primitive; `--generated` mounts the generated
+Carousel, its composed Pagination, and its own autoplay clock.
 
 The authored fixture is `scripts/fixtures/carousel-native/App.tsx`. The host
 script resolves its sequence import to the repository's actual runtime. It
@@ -16,6 +31,36 @@ the quarter arcs and fill lengths. These samples establish bounded native
 geometry, not a running countdown. Shared-clock pause/reset and reduced-motion
 substitution are tested separately in the React Native package; generated
 Carousel progress integration remains unfinished.
+
+## Generated component witness
+
+```sh
+node scripts/react-native-carousel-host.mjs prepare --generated
+node scripts/react-native-carousel-host.mjs build --generated
+node scripts/react-native-carousel-host.mjs receive --generated
+```
+
+This mode uses `Generated.tsx` and writes to
+`tmp/native-carousel-generated-proof`. Install that directory's Release app and
+capture it using the same procedure below. Every native package source file and
+the fixture participate in the build identity, including composed dependencies.
+The actor accepts the index requested by the generated component's clock; it
+never calls the sequence primitive directly. The receiver requires the generated
+producer kind and matching source/bundle identity.
+
+The 2026-10-01 local iOS run produced eleven intermediate painted positions and
+a correctly aligned incoming slide. The moving and settled screenshots were
+inspected. This is one forward autoplay transition at 320 points, not arbitrary
+native compositions or full parity. The initial Release build failed because
+the source-only paging hook imported `../paging.js`; the native import now omits
+the extension so Metro resolves its TypeScript source. Unit tests and TypeScript
+checking had not detected that packaging failure.
+
+The same rendered witness exposes unfinished native presentation: Pagination
+still appears as a vertical text list, arrows are missing, and the elapsed
+projections are not yet connected to their generated parts. These are open
+findings, not evidence of parity. Device measurements again remained stationary
+during visible native-driver motion; the video pixels are the movement witness.
 
 ## Running locally
 
@@ -63,8 +108,9 @@ receipt is retained separately; replacing its interpretation does not erase it.
 The pixel receipt hashes the supplied recording and geometry receipt. It does
 not independently attest that they came from the same launch; the operator
 owns that capture association. Frame sampling also does not prove exact motion
-duration. The current actor exercises one forward transition at a fixed width,
-without autoplay. Generated control bindings, countdown fill/ring, interruption,
+duration. The primitive actor exercises one forward transition at a fixed width without
+autoplay; the generated actor exercises one forward autoplay transition.
+Native control presentation, countdown fill/ring, interruption,
 reverse navigation, reduced motion, accessibility, Android and other platform
 targets require separate runtime witnesses. This lane is local and is not CI
 or cross-platform parity evidence.

@@ -180,10 +180,12 @@ The generated component passes its normalized movement profile, reads duration a
 easing through native token resolution, and routes composed picker requests through
 the sequence controller. Generated-component tests reproduce missing movement and
 a second autoplay request while a controlled picker selection awaits acknowledgement.
-These tests observe the native API boundary, not rendered device motion.
+These tests observe the native API boundary. A separate Release iOS recording
+of generated Carousel autoplay observes intermediate painted slide positions;
+its narrow scope and remaining visual gaps are recorded in the native probe doc.
 The component does not yet bind `BudgetProgress` to its anatomy parts. Generated progress bindings,
 native styling and icons, rotation-control visibility
-for disabled timers, and generated-component simulator/device witnesses remain unfinished. Accordingly
+for disabled timers, and broader generated-component simulator/device witnesses remain unfinished. Accordingly
 the IR's native sequence capability remains unrealized and the parity criterion
 remains open. SwiftUI, Compose, Unity and Godot still need their sequence realizations.
 

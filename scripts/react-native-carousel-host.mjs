@@ -1,14 +1,15 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const host = join(root, 'tmp/native-carousel-host');
-const proof = join(root, 'tmp/native-carousel-proof');
-const fixture = join(root, 'scripts/fixtures/carousel-native/App.tsx');
+const generated = process.argv.includes('--generated');
+const proof = join(root, generated ? 'tmp/native-carousel-generated-proof' : 'tmp/native-carousel-proof');
+const fixture = join(root, `scripts/fixtures/carousel-native/${generated ? 'Generated' : 'App'}.tsx`);
 const runtime = join(root, 'packages/ds-react-native/src');
 const ruby = process.env.FSDS_RUBY_BINARY ?? '/opt/homebrew/opt/ruby@3.3/bin/ruby';
 const run = (command, args, cwd = host, env = {}) => execFileSync(command, args, { cwd, stdio: 'inherit', env: { ...process.env, ...env } });
@@ -16,9 +17,9 @@ const shellQuote = value => `'${value.replaceAll("'", "'\\''")}'`;
 const hashFile = path => createHash('sha256').update(readFileSync(path)).digest('hex');
 const appBundle = join(proof, 'build/Build/Products/Release-iphonesimulator/FsdsCarouselWitness.app/main.jsbundle');
 function inputs() {
-  const paths = ['primitives/useSequence.tsx', 'primitives/sequence-budget.ts', 'primitives/sequence-motion.tsx', 'primitives/budget-progress.tsx'];
+  const paths = generated ? readdirSync(runtime, { recursive: true }).filter(path => /\.tsx?$/.test(String(path))).map(String).sort() : ['primitives/useSequence.tsx', 'primitives/sequence-budget.ts', 'primitives/sequence-motion.tsx', 'primitives/budget-progress.tsx'];
   const hashes = Object.fromEntries([...paths.map(path => join(runtime, path)), fixture].map(path => [path, hashFile(path)]));
-  return { hashes, identity: createHash('sha256').update(JSON.stringify(hashes)).digest('hex') };
+  return { generated, hashes, identity: createHash('sha256').update(JSON.stringify(hashes)).digest('hex') };
 }
 mkdirSync(proof, { recursive: true });
 
@@ -29,7 +30,7 @@ function prepare() {
   manifest.packageManager = 'pnpm@10.14.0';
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
   const prepared = inputs();
-  writeFileSync(join(host, 'App.tsx'), readFileSync(fixture, 'utf8').replace('../../../packages/ds-react-native/src/primitives/useSequence', 'fsds-sequence-under-test').replace('../../../packages/ds-react-native/src/primitives/budget-progress', 'fsds-budget-progress-under-test').replace('__FSDS_NATIVE_BUILD_ID__', prepared.identity));
+  writeFileSync(join(host, 'App.tsx'), readFileSync(fixture, 'utf8').replace('../../../packages/ds-react-native/src/primitives/useSequence', 'fsds-sequence-under-test').replace('../../../packages/ds-react-native/src/primitives/budget-progress', 'fsds-budget-progress-under-test').replace('../../../packages/ds-react-native/src/components/Carousel/Carousel', 'fsds-carousel-under-test').replace('__FSDS_NATIVE_BUILD_ID__', prepared.identity));
   writeFileSync(join(proof, 'prepared-inputs.json'), JSON.stringify(prepared, null, 2));
   writeFileSync(join(host, 'metro.config.js'), `const path = require('node:path');
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
@@ -40,6 +41,7 @@ module.exports = mergeConfig(getDefaultConfig(__dirname), {
     nodeModulesPaths: [path.join(__dirname, 'node_modules')],
     disableHierarchicalLookup: true,
     resolveRequest(context, name, platform) {
+      if (name === 'fsds-carousel-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'components/Carousel/Carousel.tsx')};
       if (name === 'fsds-sequence-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'primitives/useSequence.tsx')};
       if (name === 'fsds-budget-progress-under-test') return {type: 'sourceFile', filePath: path.join(runtime, 'primitives/budget-progress.tsx')};
       return context.resolveRequest(context, name, platform);
@@ -71,7 +73,7 @@ function receive() {
         if (result.error) throw new Error(result.error);
         if (result.buildIdentity !== built.identity) throw new Error('Native receipt is from a different source build');
         const { baseline, early, middle, settled } = result;
-        if (result.platform !== 'ios' || result.kind !== 'native-sequence-movement') throw new Error('Unexpected native producer');
+        if (result.platform !== 'ios' || result.kind !== (generated ? 'generated-carousel-movement' : 'native-sequence-movement')) throw new Error('Unexpected native producer');
         if (result.reducedMotion) throw new Error('Spatial probe inconclusive: OS reduced motion is enabled');
         if (!(middle.at < result.profile.durationMs)) throw new Error('Spatial probe inconclusive: native measurement arrived after the movement budget');
         for (const frame of [baseline, early.first, early.second, middle.first, middle.second, settled]) {
@@ -80,7 +82,7 @@ function receive() {
         if (Math.abs(settled.x - baseline.x) > 1 || result.index !== 1) throw new Error('Incoming native content did not settle at the active origin');
       } catch (error) { failure = String(error); }
       const receipt = { observedAt: new Date().toISOString(), built, result, verdict: failure ? 'fail' : 'pass', failure,
-        boundary: 'Native layout and final index only. measureInWindow does not establish native-driver presentation movement; inspect a recording with native-carousel-pixels.mjs. Does not prove generated Carousel, other platforms or accessibility parity.' };
+        boundary: `Native layout and final index in the ${generated ? 'generated Carousel with composed Pagination' : 'sequence primitive'} fixture. measureInWindow does not establish native-driver presentation movement; inspect a recording with native-carousel-pixels.mjs. No other-platform, countdown presentation or accessibility parity claim.` };
       writeFileSync(join(proof, 'native-geometry.json'), JSON.stringify(receipt, null, 2) + '\n');
       response.writeHead(200, { Connection: 'close' }).end('recorded');
       console.log(JSON.stringify(receipt, null, 2));
@@ -104,5 +106,5 @@ switch (process.argv[2]) {
     break;
   }
   case 'receive': receive(); break;
-  default: throw new Error('Usage: node scripts/react-native-carousel-host.mjs prepare|build|receive');
+  default: throw new Error('Usage: node scripts/react-native-carousel-host.mjs prepare|build|receive [--generated]');
 }

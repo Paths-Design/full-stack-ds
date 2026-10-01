@@ -59,7 +59,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   catch (error) { failure = String(error); }
   const hash = path => createHash('sha256').update(readFileSync(path)).digest('hex');
   const result = { verdict: failure ? 'fail' : 'pass', failure, observations, videoHash: hash(video), geometryHash: hash(geometry), built: receipt.built,
-    boundary: 'Painted directional motion in a supplied recording of the authored iOS primitive fixture. Caller must associate recording and build; this analyzer does not attest capture provenance, exact timing, generated Carousel, other platforms, or accessibility.' };
+    boundary: 'Painted directional motion in the supplied recording at the viewport identified by its native receipt. Caller must associate recording and source build; this analyzer does not attest capture provenance, exact timing, countdown presentation, other platforms, or accessibility.' };
   writeFileSync(output, JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify(result, null, 2));
   if (failure) process.exitCode = 1;
