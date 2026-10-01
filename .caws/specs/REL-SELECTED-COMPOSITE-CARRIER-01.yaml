@@ -79,3 +79,7 @@ evidence:
     status: pass
     evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); does not coalesce contradictory endpoint snapshots into one metric range; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
     recorded_at: "2026-10-01T02:26:47.621Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "5a8978214; pnpm exec vitest run packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts (32 tests passed); requires metric quantity/unit authority and a genuinely lossless scale; full root 315 files/4633 tests passed with --maxWorkers=2; governed:rail and test:frameworks passed"
+    recorded_at: "2026-10-01T02:26:55.204Z"
