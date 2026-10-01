@@ -22,6 +22,12 @@ This document is an **architecture doc whose ratification is bounded**: what `st
 
 It extends `normal-form.md`. Read that first.
 
+The [analytical capability contract](analytical-capability-contract.md) owns the
+normative M1–M6 acceptance definitions and their non-waterfall relationship.
+Current implementation claims route through the
+[implementation snapshot](../current-implementation-snapshot.md); historical
+experimental narrative below is not a second current-status ledger.
+
 ## The claim
 
 > A chart type is not a primitive. It is a **theorem**: a name for a bundle of preconditions on a typed analytical relation, plus a projection that discharges them. Realization — bars, candles, cells, a nested table, a spoken summary — is a byproduct of the relation's type and a declared perceptual task, not the target the author aims at.
