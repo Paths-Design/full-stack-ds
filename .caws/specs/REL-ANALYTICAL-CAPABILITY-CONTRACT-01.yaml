@@ -3,7 +3,6 @@ title: 'Separate durable analytical acceptance from status and historical resear
 risk_tier: 2
 mode: doc
 lifecycle_state: active
-worktree: analytical-capability-evidence
 created_at: '2026-10-01T17:14:47.280Z'
 updated_at: '2026-10-01T17:46:11.210Z'
 created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
