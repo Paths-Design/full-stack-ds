@@ -121,11 +121,8 @@ evidence:
     commit_sha: "38c798cb0eb2"
   - criterion_id: A3
     status: pass
-    evidence_ref: "CodeBlock, CodeSnippet and Text code styles resolve semantic.typography.semanticFamily.mono. Browser assertions on all five Web targets verify computed shared family, independent local family, clearing to shared and restoration of original defaults; native font or glyph rendering is not claimed."
-    recorded_at: "2026-10-01T02:28:05.193Z"
-    command: "FSDS_E2E_BASE=http://127.0.0.1:5175 pnpm exec playwright test e2e/component-token-cohesion.spec.ts e2e/design-bindings.spec.ts e2e/editor-binding-rail.spec.ts e2e/brand-expression.spec.ts --workers=2"
-    exit_code: 0
-    artifact_path: docs/internal/input-visual-audit/component-token-cohesion/fsds-cohesion-browser-final.log
+    evidence_ref: "CodeBlock, CodeSnippet and Text code styles resolve semantic.typography.semanticFamily.mono. Executed browser assertions on all five Web targets verify computed shared family, independent local family, clearing and restoration; native font rendering is not claimed. Raw execution log remains ignored at docs/internal/input-visual-audit/component-token-cohesion/fsds-cohesion-browser-final.log."
+    recorded_at: "2026-10-01T03:05:08.919Z"
     commit_sha: "38c798cb0eb2"
   - criterion_id: A4
     status: pass
