@@ -58,3 +58,11 @@ contracts:
   - name: 'browser-output-observation'
     type: contract-test
     path: 'e2e/analytical-composite.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Node provider asserts literal common carrier identity; production build passes; temporary CAPACITY runtime import failed with Node analytical module entered the browser bundle; import removed and rebuild passed; /private/tmp/fsds-browser-production-receipt.log: 8 passed; full root 315 files/4633 tests passed; required admission rail/framework suites and production lint/doc gates passed. Root typecheck has only three pre-existing focus-trap.ts Array.at errors; codegen and target typing pass. Commit rederived by CAWS; Playwright execution observed locally, not rerun by the CAWS verifier."
+    recorded_at: "2026-10-01T02:57:32.383Z"
+    command: "FSDS_E2E_BASE=http://localhost:5203 FSDS_E2E_PORT=5203 pnpm exec playwright test e2e/analytical-composite.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: "7b94b4e26"
