@@ -84,3 +84,16 @@ evidence:
     exit_code: 0
     artifact_path: e2e/dialog-focus.spec.ts
     commit_sha: "371d5221e"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Final fail-fast run on exact committed source: required six-target admission rail PASS; root 4618 tests/313 files PASS; Vue 773, Lit 544 (2 existing Table skips), Svelte 676, Angular 508, React Native 187 PASS; lint and doc claims PASS. slots-final-* raw logs retained in docs/internal/input-visual-audit/dialog-focus/. Generated projections originate from contracts/IR/emitters; final slot lane changes only mirrored primitives and browser test. Seven separate pre-existing broader design-binding browser failures remain documented; this is not a full-e2e claim."
+    recorded_at: "2026-10-01T00:07:02.957Z"
+    command: "set -e
+pnpm run governed:rail
+pnpm test
+pnpm run test:frameworks
+pnpm run lint
+pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: e2e/dialog-focus.spec.ts
+    commit_sha: "371d5221e"
