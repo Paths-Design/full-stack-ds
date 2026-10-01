@@ -1,3 +1,4 @@
+import { compositionCss } from "../composition-css";
 // Vite plugin: Lit preview pipeline.
 //
 // Lit components self-register as custom elements (via @customElement /
@@ -104,7 +105,7 @@ export function litPreviewPlugin(): Plugin {
           const html = buildCommonPreviewShellHtml({
             componentName: parsed.componentName,
             framework: "lit",
-            componentCss: component.sources.lit?.css?.code,
+            componentCss: compositionCss(bundle.components, parsed.componentName, "lit"),
             tokensCss: bundle.tokensCss,
             entryId,
           });

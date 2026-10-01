@@ -1,0 +1,64 @@
+{
+  "root": {
+    "display": {
+      "literal": "flex",
+      "platforms": [
+        "web"
+      ]
+    },
+    "align-items": {
+      "literal": "center",
+      "platforms": [
+        "web"
+      ]
+    },
+    "gap": {
+      "literal": "8px",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "spacing.gap",
+        "slot": "page-navigator.design.root.spacing.gap"
+      }
+    },
+    "flex-wrap": {
+      "literal": "wrap",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  "field": {
+    "width": {
+      "literal": "64px",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "sizing.width",
+        "slot": "page-navigator.design.field.sizing.width"
+      }
+    }
+  },
+  "input": {
+    "width": {
+      "literal": "100%",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "sizing.width",
+        "slot": "page-navigator.design.input.sizing.width"
+      }
+    }
+  },
+  "total": {
+    "font-variant-numeric": {
+      "literal": "tabular-nums",
+      "platforms": [
+        "web"
+      ]
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { pagedBindingExpression } from "../../paging.js";
 import { sequenceConfig } from "../../sequence.js";
 /**
  * Svelte 5 SFC emission, IR-driven.
@@ -1464,6 +1465,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
       `import { parseMarkdown, type MarkdownBlock, type MarkdownMark } from "../../primitives/markdown/markdown.js";`,
     );
   }
+  if (ir.pagedSet) importLines.push(`import { createReactivePagedSet } from "../../primitives/paging.svelte.js";`);
   if (ir.motion.sequence) importLines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
   const importsBody = importLines.join("\n");
 
@@ -1573,6 +1575,13 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
       `  durationMs: ${jsAccessorFor(seq.timing.durationProp)} === undefined ? ${seq.timing.defaultMs} : ${jsAccessorFor(seq.timing.durationProp)},`,
       `  onIndexChange: ${hookVar}.set${capitalizeSvelte(seq.channel)},`, `}); });`,
       `$effect(() => () => sequence.destroy());`);
+  }
+  if (ir.pagedSet) {
+    const page = ir.pagedSet;
+    hookLines.push(`const pagedSet = createReactivePagedSet();`,
+      `$effect(() => { pagedSet.sync({ index: ${hookVar}.${page.channel}, items: ${jsAccessorFor(page.itemsProp)},`,
+      `  count: ${page.countProp ? jsAccessorFor(page.countProp) : "undefined"}, disabled: ${page.disabledProp ? jsAccessorFor(page.disabledProp) : "false"}, onIndexChange: ${hookVar}.set${capitalizeSvelte(page.channel)} }); });`,
+      `$effect(() => () => pagedSet.destroy());`);
   }
   const hookBody = hookLines.join("\n");
 
@@ -2487,6 +2496,7 @@ function renderSvelteTextChildExpression(
   ctx: SvelteRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `{${pagedBindingExpression(expr, "pagedSet")}}`;
     case "prop":
       return `{${appendPath(sveltePropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -2546,6 +2556,7 @@ function renderSvelteBindingValue(
   ctx: SvelteRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(sveltePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -2631,6 +2642,7 @@ function renderSvelteBinding(
   hostTag?: string,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `${attr}={${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `${attr}={${appendPath(sveltePropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -2650,6 +2662,7 @@ function renderSvelteBinding(
     case "channel": {
       const ch = ctx.channelByName.get(expr.channel);
       if (!ch) return null;
+      if (expr.forwardValue) return `${attr}={${expr.forwardValue === "sequence" ? "sequence.requestIndex" : expr.forwardValue === "pagedSet" ? "pagedSet.request" : `${ctx.hookVar}.set${capitalizeSvelte(ch.name)}`}}`;
       if (expr.field === "value") {
         // ARIA-Booleanish coercion: aria-expanded / aria-pressed /
         // aria-selected / aria-checked / aria-busy / aria-current /
@@ -2797,7 +2810,13 @@ function renderSvelteEventHandlerExpr(
   expr: BindingExpression,
   ctx: SvelteRenderContext,
 ): string | null {
+  if (expr.kind === "paged") return pagedBindingExpression(expr, "pagedSet");
   if (expr.kind === "prop") return sveltePropAccessor(expr.prop, ctx);
+  if (expr.kind === "channel" && expr.forwardValue) {
+    const channel = ctx.channelByName.get(expr.channel);
+    if (!channel) return null;
+    return expr.forwardValue === "sequence" ? "sequence.requestIndex" : expr.forwardValue === "pagedSet" ? "pagedSet.request" : `${ctx.hookVar}.set${capitalizeSvelte(channel.name)}`;
+  }
   return null;
 }
 
@@ -2811,6 +2830,7 @@ function renderSvelteEvent(
   // the `on:` directive prefix used by Svelte 4.
   const svelteEventAttr = `on${eventName}`;
   switch (expr.kind) {
+    case "paged": return `${svelteEventAttr}={${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `${svelteEventAttr}={${sveltePropAccessor(expr.prop, ctx)}}`;
     case "literal":

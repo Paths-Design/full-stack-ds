@@ -1,8 +1,9 @@
 // @generated:start imports
 import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, effect, signal, ViewChild, ElementRef, Injector, runInInjectionContext, untracked } from "@angular/core";
-import { NgClass, NgFor } from "@angular/common";
+import { NgClass } from "@angular/common";
 import { createSequenceBudget } from "../../primitives/sequence-budget.js";
 import { IconComponent } from "../Icon/Icon.component.js";
+import { PaginationComponent } from "../Pagination/Pagination.component.js";
 import { useCarousel } from "./useCarousel.js";
 // @generated:end
 
@@ -22,7 +23,7 @@ export type CarouselIndicator = "pagination" | "next" | "both";
 @Component({
   selector: "fsds-carousel",
   standalone: true,
-  imports: [NgClass, NgFor, IconComponent],
+  imports: [NgClass, IconComponent, PaginationComponent],
   host: { "data-fsds-component": "carousel" },
   template: `<section [ngClass]="classes()" role="region" aria-roledescription="carousel" [attr.aria-label]="(label ?? 'Featured content')" data-fsds-box="" #sequenceRoot>
   <button [ngClass]="'carousel__rotation'" type="button" aria-label="Start slide rotation">
@@ -35,15 +36,7 @@ export type CarouselIndicator = "pagination" | "next" | "both";
     <button [ngClass]="'carousel__previous'" type="button" aria-label="Previous slide">
       <fsds-icon name="arrow-left" size="sm"></fsds-icon>
     </button>
-    <div [ngClass]="'carousel__pagination'" role="group" aria-label="Choose slide">
-      <ng-container *ngFor="let item of ((slides ?? [])); let index = index">
-        <button [ngClass]="'carousel__picker'" type="button" [attr.aria-label]="item">
-          <span [ngClass]="'carousel__marker'" aria-hidden="true">
-            <span [ngClass]="'carousel__fill'" aria-hidden="true"></span>
-          </span>
-        </button>
-      </ng-container>
-    </div>
+    <fsds-pagination [ngClass]="'carousel__pagination'" label="Choose slide" presentation="indicators" [onIndexChange]="sequence.requestIndex" [pages]="(slides ?? [])" [index]="behavior.slide()" [progress]="((indicator ?? 'pagination') === 'pagination' ? 'elapsed' : ((indicator ?? 'pagination') === 'next' ? 'none' : 'elapsed'))"></fsds-pagination>
     <button [ngClass]="'carousel__next'" type="button" aria-label="Next slide">
       <span [ngClass]="'carousel__ring'" aria-hidden="true"></span>
       <fsds-icon name="arrow-right" size="sm"></fsds-icon>
@@ -82,7 +75,7 @@ export class CarouselComponent {
     destroyRef: this.destroyRef,
   })));
   }
-  protected sequence = createSequenceBudget({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__picker"},"progress":[{"selector":".carousel__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]});
+  protected sequence = createSequenceBudget({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]});
   private sequenceCleanup = this.destroyRef.onDestroy(() => this.sequence.destroy());
   private sequenceEffect = effect(() => this.sequence.sync({
     index: this.behavior.slide(), labels: this.slides ?? [], autoPlay: this.autoPlay ?? false,

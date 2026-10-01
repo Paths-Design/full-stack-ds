@@ -12,7 +12,7 @@ generated output and must not be hand-edited.
 From the repository root:
 
 ```bash
-pnpm run generate -- --target=all   # emits the allowlisted set (<!-- target-component-count:swiftui -->52 of the <!-- component-count -->53 corpus contracts)
+pnpm run generate -- --target=all   # emits the allowlisted set (<!-- target-component-count:swiftui -->52 of the <!-- component-count -->55 corpus contracts)
 ```
 
 `swiftui` is registered in `fsds.targets.json` with a **declared-admission
@@ -119,7 +119,7 @@ a `LIMITATION:` artifact by the harness):
 `node scripts/swift-parity-diff.mjs` generates every corpus contract
 through both the react and swiftui emitters and exits nonzero if any
 component emits for react but not swiftui. The admitted SwiftUI allowlist
-covers <!-- target-component-count:swiftui -->52 of the <!-- component-count -->53
+covers <!-- target-component-count:swiftui -->52 of the <!-- component-count -->55
 corpus contracts. RadioGroup lowers to a native radio-style Picker with
 controlled or uncontrolled selection. Its generated source compiles and its
 body evaluates in the component smoke suite; this does not establish native

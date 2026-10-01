@@ -1,4 +1,5 @@
 import { buildDesignBindings, type DesignBindingIR } from './design-properties.js';
+import { buildPagedSetIR, PAGED_VALUES, PAGED_ACTIONS, type PagedSetIR, type PagedValue, type PagedAction } from "./paging.js";
 import { buildInteractionIR, type InteractionIR, type ActivationIR } from "./interaction.js";
 /**
  * Component IR: the framework-neutral derivation of a validated contract.
@@ -329,8 +330,9 @@ export function nativeTableAttrsFor(tag: string | undefined): NativeTableAttr[] 
  * synthesis in all five emitters — the grammar is the contract.
  */
 export type BindingExpression =
+  | { kind: "paged"; field?: PagedValue; action?: PagedAction; arg?: BindingExpression }
   | { kind: "prop"; prop: string; path?: string[] }
-  | { kind: "channel"; channel: string; field: "value" | "onChange" | "defaultValue"; path?: string[] }
+  | { kind: "channel"; channel: string; field: "value" | "onChange" | "defaultValue"; path?: string[]; forwardValue?: "channel" | "sequence" | "pagedSet" }
   | { kind: "literal"; value: string }
   | { kind: "iterationLocal"; local: "index" | "item"; path?: string[] }
   | {
@@ -1773,6 +1775,7 @@ export interface ComponentIR {
    * "declared nothing" from "declared respect"; both honour by default.
    */
   motion: MotionIR;
+  pagedSet?: PagedSetIR;
 
   /**
    * Typed token facts (FEAT-MOBILE-IR-001). Substrate-neutral projection of
@@ -2013,7 +2016,7 @@ export function buildComponentIR(
 
   const cssBlocks = buildCssBlocks(contract, cssPrefix);
   const keyframes = buildKeyframes(contract);
-  const motion = buildMotion(contract);
+  const motion = buildMotion(contract, options?.allContracts);
   const tokenFacts = buildTokenFacts(contract.tokens ?? {});
   const designBindings = buildDesignBindings(contract).map(binding => ({
     ...binding,
@@ -2028,6 +2031,7 @@ export function buildComponentIR(
   const surface = buildSurfaceIR(contract, parts);
   const textOverflow = buildTextOverflowIR(contract);
   const dom = buildDomTree(contract);
+  const pagedSet = buildPagedSetIR(contract, behavior.normalizedChannels, dom);
   const formControl = buildFormControlIR(
     contract,
     parts,
@@ -2178,6 +2182,7 @@ export function buildComponentIR(
     rootClipping: buildRootClipping(contract),
     keyframes,
     motion,
+    pagedSet,
     tokenFacts,
     designBindings,
     tokenScopes,
@@ -2963,6 +2968,11 @@ function validateBindingAgainstScope(
    */
   channelValueTypes: Map<string, string> = new Map(),
 ): void {
+  if (binding.kind === "paged") {
+    if (!!binding.action !== allowChannelCall) throw new Error(`PAGED_BINDING_INVALID: ${siteLabel} requires ${allowChannelCall ? "an action" : "a value"}`);
+    if (binding.arg) validateBindingAgainstScope(binding.arg, siteLabel, knownChannels, knownProps, enclosingIteration, componentName);
+    return;
+  }
   if (binding.kind === "projection") {
     if (binding.op === "selectionLabel") {
       for (const operand of [binding.selection, binding.fallback]) {
@@ -3414,7 +3424,16 @@ function resolveComponentInstances(
     };
 
     const bindings: ResolvedRefBinding[] = Object.entries(node.bindings).map(
-      ([sourceAttr, expr]) => ({ ...classify(sourceAttr), sourceAttr, expr }),
+      ([sourceAttr, expr]) => {
+        const classified = classify(sourceAttr);
+        if (expr.kind === "paged" && expr.field && classified.kind === "prop") {
+          const prop = getPropMembers(target).find(prop => prop.name === sourceAttr)!;
+          const expected = prop.type ?? prop.propType?.kind;
+          const actual = ["index", "count"].includes(expr.field) ? "number" : ["ordinal", "draft"].includes(expr.field) ? "string" : "boolean";
+          if (["number", "string", "boolean"].includes(expected ?? "") && expected !== actual) throw new Error(`[PAGED_VALUE_INVALID] ${host.name}: ${ref}.${sourceAttr} requires ${expected}, paged:${expr.field} supplies ${actual}`);
+        }
+        return { ...classified, sourceAttr, expr };
+      },
     );
     const attrs: ResolvedRefAttr[] = Object.entries(node.attrs).map(
       ([sourceAttr, value]) => ({ ...classify(sourceAttr), sourceAttr, value }),
@@ -3425,6 +3444,19 @@ function resolveComponentInstances(
         // (`click` → `onClick`), so component-event-as-prop emitters (Svelte 5)
         // target the right name. `change` → `onChange`, etc.
         const handlerProp = `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+        if (targetProps.has(handlerProp) && expr.kind === "channel" && expr.field === "onChange") {
+          const targetChannel = Object.values(target.channels ?? {}).find(channel => channel.onChange === handlerProp);
+          const sourceChannel = host.channels?.[expr.channel];
+          if (!targetChannel || !sourceChannel || targetChannel.valueType !== sourceChannel.valueType) {
+            throw new Error(`[COMPONENT_CALLBACK_INVALID] ${host.name}: ${ref}.${handlerProp} must accept the source channel value type`);
+          }
+          expr.forwardValue = host.sequence?.channel === expr.channel ? "sequence" : host.pagedSet?.channel === expr.channel ? "pagedSet" : "channel";
+        }
+        if (expr.kind === "paged" && ["edit", "request"].includes(expr.action ?? "") && !expr.arg) {
+          const targetChannel = Object.values(target.channels ?? {}).find(channel => channel.onChange === handlerProp);
+          const expectedType = expr.action === "edit" ? "string" : "number";
+          if (!targetChannel || targetChannel.valueType !== expectedType) throw new Error(`[COMPONENT_CALLBACK_INVALID] ${host.name}: ${ref}.${handlerProp} must accept ${expectedType} for paged:${expr.action}`);
+        }
         return {
           name,
           targetHandlerProp: targetProps.has(handlerProp) ? handlerProp : undefined,
@@ -4102,6 +4134,17 @@ function subtreeHasNamedSlot(node: DomNodeIR, name: string): boolean {
  * in `validateDomNode`, not here, because this function is context-free.
  */
 export function parseBindingExpression(expr: string): BindingExpression {
+  if (expr.startsWith("paged:")) {
+    const value = expr.slice(6);
+    if ((PAGED_VALUES as readonly string[]).includes(value)) return { kind: "paged", field: value as PagedValue };
+    if ((PAGED_ACTIONS as readonly string[]).includes(value)) return { kind: "paged", action: value as PagedAction };
+    const call = value.match(/^request\((.+)\)$/);
+    if (call) {
+      const arg = parseBindingExpression(call[1]);
+      if (arg.kind === "iterationLocal" && arg.local === "index" && !arg.path) return { kind: "paged", action: "request", arg };
+    }
+    throw new Error(`PAGED_BINDING_INVALID: ${expr}`);
+  }
   const conditionalMatch = expr.match(/^conditional:(.*)$/);
   if (conditionalMatch) {
     const parsed = tryParseConditional(conditionalMatch[1]);
@@ -6008,14 +6051,14 @@ function buildClassRecipe(inputs: ClassRecipeInputs): ClassRecipeIR {
  * opt-out-vs-opt-in decision into css.ts, which is exactly the emitter lore
  * this layer exists to prevent.
  */
-export function buildMotion(contract: ComponentContract): MotionIR {
+export function buildMotion(contract: ComponentContract, allContracts?: ReadonlyMap<string, ComponentContract>): MotionIR {
   const motion = contract.motion;
   const reducedMotion = motion?.reducedMotion ?? null;
   return {
     reducedMotion,
     honorsReducedMotion: reducedMotion !== 'ignore',
     countdown: buildMotionCountdown(contract, buildParts(contract)),
-    sequence: buildSequence(contract, buildTokenFacts(contract.tokens ?? {})),
+    sequence: buildSequence(contract, buildTokenFacts(contract.tokens ?? {}), allContracts),
     loops: buildMotionLoops(contract, buildParts(contract), buildTokenFacts(contract.tokens ?? {})),
     transitions: (motion?.transitions ?? []).map((t) => ({
       name: t.name,

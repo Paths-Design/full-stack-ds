@@ -520,8 +520,29 @@
           "minLength": 1
         },
         "picker": {
-          "type": "string",
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "part"
+              ],
+              "properties": {
+                "part": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "componentPart": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
         },
         "timing": {
           "type": "object",
@@ -570,6 +591,33 @@
           }
         }
       }
+    },
+    "pagedSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel",
+        "itemsProp"
+      ],
+      "properties": {
+        "channel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "itemsProp": {
+          "type": "string",
+          "minLength": 1
+        },
+        "countProp": {
+          "type": "string",
+          "minLength": 1
+        },
+        "disabledProp": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "description": "Finite ordered-set position and navigation policy. Does not define content, completion or interactive hosts."
     }
   },
   "$defs": {
@@ -2145,6 +2193,10 @@
                 ],
                 "properties": {
                   "part": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "componentPart": {
                     "type": "string",
                     "minLength": 1
                   }

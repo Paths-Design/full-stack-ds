@@ -1,0 +1,19 @@
+@layer components {
+/* @generated:start tokens */
+.pagination {
+  --fsds-pagination-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+  --fsds-pagination-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+  --fsds-pagination-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+  --fsds-pagination-size-dot-size: var(--fsds-core-spacing-size-04, 8px);
+  --fsds-pagination-size-active-size: var(--fsds-core-spacing-size-08, 32px);
+  --fsds-pagination-size-radius: var(--fsds-core-shape-radius-full, 9999px);
+  --fsds-pagination-color-on-current: var(--fsds-semantic-color-foreground-inverse, #fafafa);
+  --fsds-pagination-color-current: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+}
+/* @generated:end */
+
+/* @custom:start overrides */
+
+/* @custom:end */
+
+}

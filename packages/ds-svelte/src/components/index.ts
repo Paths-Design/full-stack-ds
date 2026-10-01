@@ -70,6 +70,8 @@ export { default as NavTreeItem } from "./NavTree/NavTreeItem.svelte";
 export { default as NavTreeList } from "./NavTree/NavTreeList.svelte";
 export { default as OTP } from "./OTP/OTP.svelte";
 export { default as OTPGroup } from "./OTP/OTPGroup.svelte";
+export { default as PageNavigator } from "./PageNavigator/PageNavigator.svelte";
+export { default as Pagination } from "./Pagination/Pagination.svelte";
 export { default as Popover } from "./Popover/Popover.svelte";
 export { default as PopoverContent } from "./Popover/PopoverContent.svelte";
 export { default as PopoverTrigger } from "./Popover/PopoverTrigger.svelte";

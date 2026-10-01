@@ -1,0 +1,250 @@
+{
+  "$schema": "../../component.contract.schema.json",
+  "name": "Pagination",
+  "description": "Selects a position in an ordered paged collection. Compose with slides, table results, walkthrough steps or dialog stages; the content owner decides what a page means.",
+  "layer": "composer",
+  "category": "structure",
+  "anatomy": {
+    "parts": [
+      "root",
+      "item",
+      "marker",
+      "fill",
+      "label"
+    ],
+    "details": {
+      "root": {
+        "tag": "div",
+        "role": "root",
+        "description": "Named group of position choices.",
+        "subcomponent": false
+      },
+      "item": {
+        "tag": "button",
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true,
+        "multiple": true,
+        "description": "Requests the zero-based index of one page; the current position stays focusable.",
+        "subcomponent": false
+      },
+      "marker": {
+        "tag": "span",
+        "role": "decoration",
+        "description": "Dot or active pill for indicator presentation.",
+        "subcomponent": false
+      },
+      "fill": {
+        "tag": "span",
+        "role": "decoration",
+        "description": "Optional decorative elapsed projection supplied by an enclosing sequence; owns no timer.",
+        "subcomponent": false
+      },
+      "label": {
+        "tag": "span",
+        "role": "label",
+        "description": "Consumer-authored visible page number or short label.",
+        "subcomponent": false
+      }
+    },
+    "dom": {
+      "tag": "div",
+      "part": "root",
+      "attrs": {
+        "role": "group"
+      },
+      "bindings": {
+        "aria-label": "prop:label"
+      },
+      "children": [
+        {
+          "tag": "button",
+          "part": "item",
+          "iterate": {
+            "source": "prop:pages",
+            "kind": "array",
+            "itemType": "string"
+          },
+          "attrs": {
+            "type": "button"
+          },
+          "bindings": {
+            "aria-label": "iter:item",
+            "aria-current": "predicate:eq(iter:index, channel:page.value)",
+            "disabled": "prop:disabled",
+            "data-current": "predicate:eq(iter:index, channel:page.value)"
+          },
+          "events": {
+            "click": "paged:request(iter:index)"
+          },
+          "children": [
+            {
+              "tag": "span",
+              "part": "marker",
+              "attrs": {
+                "aria-hidden": "true"
+              },
+              "children": [
+                {
+                  "tag": "span",
+                  "part": "fill",
+                  "attrs": {
+                    "aria-hidden": "true"
+                  }
+                }
+              ]
+            },
+            {
+              "tag": "span",
+              "part": "label",
+              "attrs": {
+                "aria-hidden": "true"
+              },
+              "content": "iter:item"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "props": {
+    "styled": {
+      "members": [
+        {
+          "name": "pages",
+          "propType": {
+            "kind": "array",
+            "items": {
+              "kind": "string"
+            }
+          },
+          "default": [],
+          "description": "Accessible labels in position order. For numbered pagination supply page-number labels; index remains zero-based."
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "description": "Accepted current position for controlled use."
+        },
+        {
+          "name": "defaultIndex",
+          "type": "number",
+          "default": 0,
+          "description": "Initial position for uncontrolled selection."
+        },
+        {
+          "name": "onIndexChange",
+          "propType": {
+            "kind": "callback",
+            "params": [
+              {
+                "name": "index",
+                "type": {
+                  "kind": "number"
+                }
+              }
+            ],
+            "returns": {
+              "kind": "void"
+            }
+          },
+          "description": "Requests a position; content fetching, visibility and acceptance belong to the consumer."
+        },
+        {
+          "name": "presentation",
+          "default": "indicators",
+          "description": "Indicators for a small set, or visible numbered/labeled pages.",
+          "propType": {
+            "kind": "ref",
+            "to": "PaginationPresentation"
+          }
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "default": "Choose page",
+          "description": "Accessible name for this set of choices."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": false,
+          "description": "Prevent selection while the owning flow is unavailable."
+        },
+        {
+          "name": "progress",
+          "default": "none",
+          "description": "Enable a decorative elapsed projection supplied by an enclosing owner. This component never starts a timer.",
+          "propType": {
+            "kind": "ref",
+            "to": "PaginationProgress"
+          }
+        }
+      ]
+    }
+  },
+  "channels": {
+    "page": {
+      "value": "index",
+      "defaultValue": "defaultIndex",
+      "onChange": "onIndexChange",
+      "valueType": "number"
+    }
+  },
+  "types": {
+    "PaginationPresentation": {
+      "kind": "union",
+      "values": [
+        "indicators",
+        "pages"
+      ]
+    },
+    "PaginationProgress": {
+      "kind": "union",
+      "values": [
+        "none",
+        "elapsed"
+      ]
+    }
+  },
+  "variants": {
+    "presentation": [
+      "indicators",
+      "pages"
+    ],
+    "progress": [
+      "none",
+      "elapsed"
+    ]
+  },
+  "focus": {
+    "strategy": "none",
+    "description": "Normal native button tab order; selection does not move focus into consumer content."
+  },
+  "a11y": {
+    "role": "group",
+    "labeling": [
+      "aria-label"
+    ],
+    "keyboard": [
+      {
+        "key": "Enter|Space",
+        "action": "Request the focused position.",
+        "when": "focused"
+      }
+    ]
+  },
+  "a2ui": {
+    "category": "navigation",
+    "usageHints": [
+      "Share the accepted index with the content owner.",
+      "Numbered page labels are presentation; callback indices are zero-based.",
+      "Pagination owns neither content, timing, wrapping nor modal focus."
+    ]
+  },
+  "pagedSet": {
+    "channel": "page",
+    "itemsProp": "pages",
+    "disabledProp": "disabled"
+  }
+}

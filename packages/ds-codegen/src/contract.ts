@@ -211,7 +211,7 @@ export interface ContractPartDetails {
  * of a rendered HTML element with optional attribute and event bindings.
  *
  * Special tag values:
- * - `"slot"` — placeholder where consumer-provided children render. In
+ * - `"slot"` — insertion point where consumer-provided children render. In
  *   React/Vue/Angular this becomes `{children}` / `<slot />` / `<ng-content>`;
  *   in Svelte it becomes `{@render children?.()}`. Lit emits `<slot></slot>`.
  * - `"children"` — alias for `"slot"`. Either may be used.
@@ -566,6 +566,7 @@ export interface ContractMotionCountdown {
 }
 
 /** A finite, circular content sequence. Children of viewport are the slides. */
+export interface ContractPartAddress { part: string; componentPart?: string; }
 export interface ContractSequence {
   labels: { start: string; stop: string; item: string };
   channel: string;
@@ -574,11 +575,11 @@ export interface ContractSequence {
   previous: string;
   next: string;
   rotation: string;
-  picker: string;
+  picker: string | ContractPartAddress;
   timing: { durationProp: string; autoPlayProp: string; durationToken: string };
 }
 export interface ContractMotionProgress {
-  target: { part: string };
+  target: ContractPartAddress;
   driver: { kind: "budget"; source: "sequence.advance" };
   effect: "elapsed-width" | "elapsed-ring";
   reducedMotion: { kind: "steps"; steps: number };
@@ -1004,6 +1005,13 @@ export interface ComponentContract {
   interaction?: ContractInteraction;
   formControl?: ContractFormControl;
   compositeControl?: ContractCompositeControl;
+  /** Finite ordered-set selection; controls compose its values and requests. */
+  pagedSet?: {
+    channel: string;
+    itemsProp: string;
+    countProp?: string;
+    disabledProp?: string;
+  };
   motion?: ContractMotion;
   sequence?: ContractSequence;
   focus?: ContractFocus;

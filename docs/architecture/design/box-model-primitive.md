@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
-updated: 2026-09-30
-verified_at_commit: 38c798cb0eb2
+updated: 2026-10-01
+verified_at_commit: 395ecdbff
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -88,3 +88,7 @@ addresses and common design-binding coverage. The canonical `box-model.*` pool,
 default merge and boundary reset remain the same. The box-model unit checks and
 design-binding browser witnesses still establish shorthand/side precedence,
 clearing and nested isolation after regeneration.
+
+## Paging composition reconciliation
+
+Pagination extraction and PageNavigator reuse the existing component boundary and box markers. The added paged-set IR and composed-part resolution do not change primitive defaults, morphology precedence, public box slots, or shared reset emission. Corpus box-boundary checks include the new compositions; the admission rail validates their generated sources. This reconciliation adds no new geometry or cross-platform visual claim.

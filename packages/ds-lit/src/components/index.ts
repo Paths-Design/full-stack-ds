@@ -28,6 +28,8 @@ export { MarkdownElement } from "./Markdown/Markdown.js";
 export { NavListElement, NavListItemElement, NavListListElement } from "./NavList/NavList.js";
 export { NavTreeElement, NavTreeItemElement, NavTreeListElement } from "./NavTree/NavTree.js";
 export { OTPElement, OTPGroupElement } from "./OTP/OTP.js";
+export { PageNavigatorElement } from "./PageNavigator/PageNavigator.js";
+export { PaginationElement } from "./Pagination/Pagination.js";
 export { PopoverElement, PopoverContentElement, PopoverTriggerElement } from "./Popover/Popover.js";
 export { PostcardElement, PostcardContentElement, PostcardFooterElement, PostcardHeaderElement } from "./Postcard/Postcard.js";
 export { ProfileFlagElement } from "./ProfileFlag/ProfileFlag.js";

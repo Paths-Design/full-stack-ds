@@ -1,3 +1,4 @@
+import { pagedBindingExpression } from "../../paging.js";
 import { matchesTokenRole } from "../token-role.js";
 import type {
   BindingExpression,
@@ -565,6 +566,7 @@ function emitImports(ir: ComponentIR): string {
       .sort()
       .map((name) => (name === "ReactNode" ? "type ReactNode" : name))
       .join(", ")} } from "react";`,
+    ir.pagedSet ? `import { usePagedSet } from "../../primitives/hooks/usePaging";` : "",
     `import { useFsdsTheme } from "../../tokens";`,
     `import { create${ir.name}Styles } from "./${ir.name}.styles";`,
     usesNativeToggle(ir) || rnAutoDismiss(ir) || nativeHighlightTransform(ir) || ir.motion.sequence
@@ -753,6 +755,12 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
     channelSetters: new Set(),
     channelValues: new Set(),
   };
+  if (ir.pagedSet) {
+    usage.channels.add(ir.pagedSet.channel);
+    usage.channelValues.add(ir.pagedSet.channel);
+    usage.channelSetters.add(ir.pagedSet.channel);
+    for (const name of [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp]) if (name) usage.props.add(safePropName(ir, name));
+  }
   if (rootPressableAcceptsOnPress(ir)) usage.props.add("onPress");
   if (ir.motion.sequence) {
     const sequence = ir.motion.sequence;
@@ -771,7 +779,7 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
     }
     addPropIfPresent(ir, usage, "disabled");
     addPropIfPresent(ir, usage, "size");
-    return usage;
+  return usage;
   }
 
   if (isCheckboxControl(ir)) {
@@ -925,6 +933,7 @@ function collectBindingRuntimeUsage(
   usage: RuntimeUsage,
   channelPurpose: "value" | "setter" = "value",
 ): void {
+  if (binding.kind === "paged") { if (binding.arg) collectBindingRuntimeUsage(binding.arg, ir, usage); return; }
   if (binding.kind === "prop") {
     const safeName = safePropName(ir, binding.prop);
     usage.props.add(safeName);
@@ -1029,6 +1038,11 @@ function emitComponent(ir: ComponentIR): string {
     usage.channels.has(candidate.name),
   )) {
     lines.push(...emitChannelState(ir, channel, usage.channelSetters.has(channel.name), usage.channelValues.has(channel.name)));
+  }
+  if (ir.pagedSet) {
+    const page = ir.pagedSet;
+    lines.push(`  const pagedSet = usePagedSet({ index: ${page.channel}, items: ${safePropName(ir, page.itemsProp)},`,
+      `    count: ${page.countProp ? safePropName(ir, page.countProp) : "undefined"}, disabled: ${page.disabledProp ? safePropName(ir, page.disabledProp) : "false"}, onIndexChange: set${capitalize(page.channel)}Value });`);
   }
   const autoDismiss = rnAutoDismiss(ir);
   // Source: normalized sequence IR. Applies by capability, never component
@@ -2008,6 +2022,12 @@ function emitNodeProps(
       accessibilityState.push(`selected: ${rnBooleanishExpr(expr)}`);
       continue;
     }
+    if (name === "aria-current") {
+      // Native accessibility has a selected state rather than ARIA's current
+      // token vocabulary. Preserve boolean and named-current bindings.
+      accessibilityState.push(`selected: Boolean(${expr}) && String(${expr}) !== "false"`);
+      continue;
+    }
     if (name === "aria-selected") {
       accessibilityState.push(`selected: ${rnBooleanishExpr(expr)}`);
       continue;
@@ -2319,6 +2339,7 @@ function eventHandlerExpr(
     const next = operation === "toggle" ? `!${channel.name}` : String(operation === "open");
     return `() => set${capitalize(channel.name)}Value(${next})`;
   }
+  if (binding.kind === "paged") return pagedBindingExpression(binding, "pagedSet", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
   if (binding.kind === "prop") {
     const propName = safePropName(ir, binding.prop);
     return `() => ${propName}?.()`;
@@ -2376,11 +2397,14 @@ function eventHandlerExpr(
 }
 
 function bindingExpr(binding: BindingExpression, ir: ComponentIR): string {
+  if (binding.kind === "paged") return pagedBindingExpression(binding, "pagedSet", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
   if (binding.kind === "prop") {
     const propName = safePropName(ir, binding.prop);
     return pathExpr(propName, binding.path);
   }
   if (binding.kind === "channel") {
+    if (binding.forwardValue === "pagedSet") return "pagedSet.request";
+    if (binding.forwardValue) return `set${capitalize(binding.channel)}Value`;
     if (binding.field === "value") return pathExpr(binding.channel, binding.path);
     if (binding.field === "defaultValue") return pathExpr(binding.channel, binding.path);
     return binding.channel;

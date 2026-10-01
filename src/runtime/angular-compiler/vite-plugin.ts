@@ -1,3 +1,4 @@
+import { compositionCss } from "../composition-css";
 // Vite plugin: Angular preview compiler.
 //
 // Responsibilities at a glance:
@@ -274,8 +275,7 @@ export function angularPreviewPlugin(): Plugin {
             const { loadBundleFromDisk } = await import("./bundle-loader");
             const bundle = await loadBundleFromDisk();
             tokensCss = bundle.tokensCss;
-            css = bundle.components.find((c) => c.name === componentName)
-              ?.sources.angular?.css?.code;
+            css = compositionCss(bundle.components, componentName, "angular");
           } catch { /* css is optional — proceed without it */ }
           // componentSource + demo are accepted by buildAngularShell for API
           // symmetry but unused (the compiled host on disk is the source of

@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { componentTokenRenames } from './component-token-naming.js';
@@ -22,7 +22,9 @@ describe('component token state and variant naming', () => {
     expect(corpus.length).toBeGreaterThan(0);
     const pending = corpus.flatMap(entry => {
       const contract = JSON.parse(readFileSync(entry.absPath, 'utf8'));
-      contract.tokens = JSON.parse(readFileSync(entry.absPath.replace('.contract.json', '.tokens.json'), 'utf8'));
+      const sidecar = entry.absPath.replace('.contract.json', '.tokens.json');
+      // Token sidecars are optional; contracts without declarations still participate.
+      contract.tokens = existsSync(sidecar) ? JSON.parse(readFileSync(sidecar, 'utf8')) : contract.tokens;
       return Object.keys(componentTokenRenames(contract));
     });
     expect(pending).toEqual([]);

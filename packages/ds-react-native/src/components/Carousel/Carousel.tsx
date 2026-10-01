@@ -7,6 +7,7 @@ import { createCarouselStyles } from "./Carousel.styles";
 import { resolveCarouselTokens } from "./Carousel.tokens";
 import { useSequence, SequenceChildren } from "../../primitives/useSequence";
 import { Icon } from "../Icon/Icon";
+import { Pagination } from "../Pagination/Pagination";
 // @generated:end
 
 // @generated:start types
@@ -37,6 +38,7 @@ export function Carousel({
   index: controlledSlide,
   autoPlay = false,
   duration,
+  indicator = "pagination",
   label = "Featured content",
   defaultIndex = 0,
   onIndexChange,
@@ -106,32 +108,14 @@ export function Carousel({
             size="sm"
           />
         </Pressable>
-        <View
-          style={styles.pagination}
-        >
-          {(slides ?? []).map((item, index) => (
-              <Pressable
-                key={index}
-                style={styles.picker}
-                disabled={!sequence.valid}
-                onFocus={sequence.stop}
-                onPress={() => sequence.select(index)}
-                accessibilityLabel={item}
-                accessibilityRole="button"
-                accessibilityState={{ disabled: !sequence.valid, selected: index === sequence.index }}
-              >
-                <View
-                  style={styles.marker}
-                  accessible={false}
-                >
-                  <View
-                    style={styles.fill}
-                    accessible={false}
-                  />
-                </View>
-              </Pressable>
-            ))}
-        </View>
+        <Pagination
+          pages={slides}
+          index={slide}
+          progress={(indicator === "pagination" ? "elapsed" : (indicator === "next" ? "none" : "elapsed"))}
+          label="Choose slide"
+          presentation="indicators"
+          onIndexChange={setSlideValue}
+        />
         <Pressable
           style={styles.next}
           disabled={!sequence.valid}

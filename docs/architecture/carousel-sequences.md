@@ -191,3 +191,12 @@ bounded primitive observation, not generated Carousel parity. Native
 `measureInWindow` returned unchanged intermediate coordinates during that visible
 movement; its readings are therefore retained as layout diagnostics rather than
 used as a presentation-motion oracle.
+
+## Reusable position selection
+
+Carousel consumes [Pagination](paged-collections.md) as a component instance.
+Pagination owns the choice buttons, markers, labels and decorative fill;
+Carousel retains the content viewport, previous/next actions and advance
+budget. Composed part addresses are resolved against the contract corpus,
+while the child callback requests a position through the sequence controller.
+Indicator presentation does not make Pagination a carousel-specific surface.

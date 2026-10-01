@@ -1,3 +1,4 @@
+import { pagedBindingExpression } from "../../paging.js";
 import { sequenceConfig } from "../../sequence.js";
 /**
  * Angular standalone component emission, IR-driven.
@@ -1436,6 +1437,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
   ) {
     coreNames.push("effect");
   }
+  if (ir.pagedSet && !coreNames.includes("effect")) coreNames.push("effect");
   if (ir.motion.sequence) coreNames.push("effect", "signal", "ViewChild", "ElementRef");
   if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown) coreNames.push("ViewChild", "ElementRef");
   if (channelInputs(ir).size > 0) coreNames.push("signal", "Injector", "runInInjectionContext", "untracked");
@@ -1486,6 +1488,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
     `import { ${[...new Set(coreNames)].join(", ")} } from "@angular/core";`,
     `import { ${commonImports} } from "@angular/common";`,
   ];
+  if (ir.pagedSet) lines.push(`import { createReactivePagedSet } from "../../primitives/paging-signal.js";`);
   if (ir.motion.sequence) lines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.compoundParts.length > 0) {
@@ -1859,7 +1862,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   for (const p of ir.styledProps) {
     if (ANGULAR_RESERVED.has(p.name)) continue;
     const propLine = generateInputProp(p);
-    if (controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name || (ir.motion.sequence && [ir.motion.sequence.itemsProp, ir.motion.sequence.timing.durationProp, ir.motion.sequence.timing.autoPlayProp].includes(p.name))) {
+    if (controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name || (ir.motion.sequence && [ir.motion.sequence.itemsProp, ir.motion.sequence.timing.durationProp, ir.motion.sequence.timing.autoPlayProp].includes(p.name)) || (ir.pagedSet && [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp].includes(p.name))) {
       const type = lowerAngularPropType(p.propType);
       lines.push(`  private readonly input${capitalizeAngular(p.safeName)} = signal<${type} | undefined>(undefined);`);
       lines.push(`  @Input() get ${p.safeName}(): ${type} | undefined { return this.input${capitalizeAngular(p.safeName)}(); }`);
@@ -2021,6 +2024,13 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       `    onIndexChange: (value) => this.behavior.set${capitalizeAngular(seq.channel)}(value),`, `  }));`,
       `  @ViewChild("sequenceRoot") set sequenceRoot(el: ElementRef<HTMLElement> | undefined) {`,
       `    this.sequence.bindRoot(el?.nativeElement);`, `  }`);
+  }
+  if (ir.pagedSet) {
+    const page = ir.pagedSet;
+    lines.push(`  protected pagedSet = createReactivePagedSet();`,
+      `  private pagedCleanup = this.destroyRef.onDestroy(() => this.pagedSet.destroy());`,
+      `  private pagedEffect = effect(() => this.pagedSet.sync({ index: this.behavior.${page.channel}(), items: this.${page.itemsProp} ?? [],`,
+      `    count: ${page.countProp ? `this.${page.countProp}` : "undefined"}, disabled: ${page.disabledProp ? `this.${page.disabledProp}` : "false"}, onIndexChange: (value) => this.behavior.set${capitalizeAngular(page.channel)}(value) }));`);
   }
   // classes computed
   lines.push(``);
@@ -2703,7 +2713,9 @@ function renderAngularDomNode(
       attrs.push(`(click)="canActivateInteraction($event, ${activation!.cancelNativeDefault}) && behavior.set${capitalizeAngular(disclosure.name)}(${next})"`);
       continue;
     }
-    const rendered = renderAngularEvent(eventName, expr, ctx, node.tag);
+    const rendered = (expr.kind === "channel" && expr.forwardValue || expr.kind === "paged" && expr.action && node.componentRef)
+      ? renderAngularBinding("on" + eventName.charAt(0).toUpperCase() + eventName.slice(1), expr, ctx, node.tag)
+      : renderAngularEvent(eventName, expr, ctx, node.tag);
     if (rendered === null) continue;
     attrs.push(rendered);
   }
@@ -3420,6 +3432,7 @@ function renderAngularBinding(
   refBinding?: { kind: "prop" | "attribute"; targetProp?: string },
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `[${attr}]="${pagedBindingExpression(expr, "pagedSet")}"`;
     case "prop":
       return `${angularAttrBinding(attr, tag, refBinding)}="${appendPath(angularPropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
@@ -3443,6 +3456,7 @@ function renderAngularBinding(
     case "channel": {
       const ch = ctx.channelByName.get(expr.channel);
       if (!ch) return null;
+      if (expr.forwardValue) return `[${attr}]="${expr.forwardValue === "sequence" ? "sequence.requestIndex" : expr.forwardValue === "pagedSet" ? "pagedSet.request" : `behavior.set${capitalizeAngular(ch.name)}`}"`;
       if (expr.field === "value") {
         return `${angularAttrBinding(attr, tag, refBinding)}="${appendPath(`behavior.${ch.name}()`, expr.path)}"`;
       }
@@ -3532,6 +3546,7 @@ function renderAngularBindingValue(
   ctx: AngularRenderContext,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return pagedBindingExpression(expr, "pagedSet");
     case "prop":
       return appendPath(angularPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3649,6 +3664,7 @@ function renderAngularEvent(
   tag?: string,
 ): string | null {
   switch (expr.kind) {
+    case "paged": return `(${eventName})="pagedSet.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : expr.action === "commitOnEnter" ? "$event" : ""})"`;
     case "prop":
       return `(${eventName})="${angularPropAccessor(expr.prop, ctx)} && ${angularPropAccessor(expr.prop, ctx)}()"`;
     case "literal":

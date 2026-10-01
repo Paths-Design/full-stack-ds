@@ -438,6 +438,13 @@ function main(): void {
           fs.readFileSync(entry.absPath, "utf-8"),
         ) as ComponentContract;
         if (parsed && typeof parsed.name === "string") {
+          // Composition validation needs target-owned style and token facts,
+          // including competing motion on a referenced decorative part.
+          for (const sidecar of [findComponentTokens(entry), findComponentStyles(entry)]) {
+            if (!sidecar) continue;
+            const kind = sidecar.filename.endsWith(".tokens.json") ? "tokens" : "styles";
+            parsed[kind] = JSON.parse(fs.readFileSync(sidecar.absPath, "utf-8"));
+          }
           allContractsByName.set(parsed.name, parsed);
         }
       } catch {
@@ -581,7 +588,7 @@ function main(): void {
           allContracts: allContractsByName,
         }),
         ...validateContractTokens(result.value),
-        ...validateComponentTokenConsumption(result.value),
+        ...validateComponentTokenConsumption(result.value, process.cwd(), allContractsByName),
         ...validateComponentDesignPolicy(result.value),
         ...brandComponents.flatMap(brand => brand.components[result.value.name] === undefined ? [] :
           validateBrandComponentOverrides(result.value.name, brand.components[result.value.name], result.value)

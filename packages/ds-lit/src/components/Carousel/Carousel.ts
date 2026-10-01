@@ -4,6 +4,7 @@ import { ref } from 'lit/directives/ref.js';
 import { SequenceController } from "../../primitives/controllers/SequenceController.js";
 import { property } from 'lit/decorators.js';
 import '../Icon/Icon.js';
+import '../Pagination/Pagination.js';
 import { CarouselBehavior } from './CarouselBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
@@ -74,11 +75,8 @@ export class CarouselElement extends LitElement {
 
     .carousel {
       --fsds-carousel-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-carousel-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-carousel-color-progress: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-carousel-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-carousel-size-dot-size: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-carousel-size-active-size: var(--fsds-core-spacing-size-08, 32px);
       --fsds-carousel-size-control-size: var(--fsds-core-spacing-size-08, 32px);
       --fsds-carousel-size-radius: var(--fsds-core-shape-radius-full, 9999px);
     }
@@ -120,42 +118,6 @@ export class CarouselElement extends LitElement {
       align-items: center;
       justify-content: center;
       gap: var(--fsds-carousel-design-controls-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
-    }
-
-    .carousel__pagination {
-      display: flex;
-      align-items: center;
-      gap: var(--fsds-carousel-design-pagination-spacing-gap, var(--fsds-carousel-spacing-gap, 8px));
-    }
-
-    .carousel__picker {
-      position: relative;
-      padding: var(--fsds-carousel-design-picker-spacing-padding, 0);
-      border: 0;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 24px;
-      height: 24px;
-      background: transparent;
-    }
-
-    .carousel__picker[data-sequence-active="true"] {
-      width: 48px;
-    }
-
-    .carousel__fill {
-      position: absolute;
-      inset: 0;
-      background-color: var(--fsds-carousel-design-fill-background-fill, var(--fsds-carousel-color-progress, #141414));
-      transform-origin: left center;
-      pointer-events: none;
-      display: none;
-    }
-
-    .carousel__fill:dir(rtl) {
-      transform-origin: right center;
     }
 
     .carousel__ring {
@@ -218,24 +180,6 @@ export class CarouselElement extends LitElement {
       font: inherit;
     }
 
-    .carousel__marker {
-      width: var(--fsds-carousel-design-marker-sizing-width, var(--fsds-carousel-size-dot-size, 8px));
-      height: var(--fsds-carousel-design-marker-sizing-height, var(--fsds-carousel-size-dot-size, 8px));
-      border-radius: var(--fsds-carousel-design-marker-shape-radius, var(--fsds-carousel-size-radius, 9999px));
-      overflow: hidden;
-      background-color: var(--fsds-carousel-design-marker-background-fill, var(--fsds-carousel-color-track, #d0d0d0));
-      display: block;
-      position: relative;
-    }
-
-    .carousel__picker[data-sequence-active="true"] .carousel__marker {
-      width: var(--fsds-carousel-design-condition-2d8237d36499-sizing-width, var(--fsds-carousel-size-active-size, 32px));
-    }
-
-    .carousel--pagination .carousel__fill, .carousel--both .carousel__fill {
-      display: block;
-    }
-
     .carousel--next .carousel__ring, .carousel--both .carousel__ring {
       display: block;
     }
@@ -259,7 +203,7 @@ export class CarouselElement extends LitElement {
     onIndexChange: (v) => this.onIndexChange?.(v),
   });
   }
-  private sequence = new SequenceController(this, {"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__picker"},"progress":[{"selector":".carousel__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]}, () => ({
+  private sequence = new SequenceController(this, {"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]}, () => ({
     index: this.behavior.slide, labels: this.slides ?? [], autoPlay: this.autoPlay ?? false,
     durationMs: this.duration === undefined ? 6000 : this.duration,
     onIndexChange: (value) => this.behavior.setSlide(value),
@@ -287,15 +231,7 @@ export class CarouselElement extends LitElement {
     <button class=${'carousel__previous'} type="button" aria-label="Previous slide">
       <fsds-icon name="arrow-left" size="sm"></fsds-icon>
     </button>
-    <div class=${'carousel__pagination'} role="group" aria-label="Choose slide">
-      ${((this.slides ?? [])).map((item, index) => html`
-      <button class=${'carousel__picker'} type="button" aria-label=${item}>
-        <span class=${'carousel__marker'} aria-hidden="true">
-          <span class=${'carousel__fill'} aria-hidden="true"></span>
-        </span>
-      </button>
-      `)}
-    </div>
+    <fsds-pagination class=${'carousel__pagination'} label="Choose slide" presentation="indicators" .onIndexChange=${this.sequence.requestIndex} .pages=${(this.slides ?? [])} .index=${this.behavior.slide} .progress=${((this.indicator ?? "pagination") === "pagination" ? "elapsed" : ((this.indicator ?? "pagination") === "next" ? "none" : "elapsed"))}></fsds-pagination>
     <button class=${'carousel__next'} type="button" aria-label="Next slide">
       <span class=${'carousel__ring'} aria-hidden="true"></span>
       <fsds-icon name="arrow-right" size="sm"></fsds-icon>

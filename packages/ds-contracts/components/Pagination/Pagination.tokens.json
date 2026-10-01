@@ -1,0 +1,42 @@
+{
+  "pagination.color.foreground": {
+    "resolvesTo": "semantic.color.foreground.primary",
+    "fallback": "#141414",
+    "layer": "semantic"
+  },
+  "pagination.color.track": {
+    "resolvesTo": "semantic.color.border.subtle",
+    "fallback": "#d0d0d0",
+    "layer": "semantic"
+  },
+  "pagination.spacing.gap": {
+    "resolvesTo": "core.spacing.size.04",
+    "fallback": "8px",
+    "layer": "core"
+  },
+  "pagination.size.dot-size": {
+    "resolvesTo": "core.spacing.size.04",
+    "fallback": "8px",
+    "layer": "core"
+  },
+  "pagination.size.active-size": {
+    "resolvesTo": "core.spacing.size.08",
+    "fallback": "32px",
+    "layer": "core"
+  },
+  "pagination.size.radius": {
+    "resolvesTo": "core.shape.radius.full",
+    "fallback": "9999px",
+    "layer": "core"
+  },
+  "pagination.color.on-current": {
+    "resolvesTo": "semantic.color.foreground.inverse",
+    "fallback": "#fafafa",
+    "layer": "semantic"
+  },
+  "pagination.color.current": {
+    "resolvesTo": "semantic.color.action.background.primary.default",
+    "fallback": "#0566fe",
+    "layer": "semantic"
+  }
+}
