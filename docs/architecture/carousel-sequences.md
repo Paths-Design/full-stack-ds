@@ -150,10 +150,21 @@ and accessibility descendants.
 
 The native movement primitive requests directional `Animated` transforms with
 capped width-dependent durations, cancels superseded ownership, and releases a
-full reading budget after settlement. Its tests observe the animation API boundary;
-they do not execute the native animation driver or measure screen geometry.
+full reading budget after settlement. Its unit tests observe the animation API
+boundary, including delayed callbacks after interruption and teardown. Removing
+the ownership guards makes those regressions fail; these tests do not execute
+the native animation driver.
 The generated component does not yet pass the movement profile into that primitive.
 Progress fill/ring rendering, native styling and icons, rotation-control visibility
-for disabled timers, and simulator/device witnesses remain unfinished. Accordingly
+for disabled timers, and generated-component simulator/device witnesses remain unfinished. Accordingly
 the IR's native sequence capability remains unrealized and the parity criterion
 remains open. SwiftUI, Compose, Unity and Godot still need their sequence realizations.
+
+The local iOS primitive probe is documented in
+[native Carousel probe](../testing/native-carousel-probe.md). A Release
+iOS simulator recording shows the production primitive's outgoing blue slide
+moving left while its incoming green slide enters from the right. This is a
+bounded primitive observation, not generated Carousel parity. Native
+`measureInWindow` returned unchanged intermediate coordinates during that visible
+movement; its readings are therefore retained as layout diagnostics rather than
+used as a presentation-motion oracle.

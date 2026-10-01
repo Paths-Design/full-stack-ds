@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-09-30
-verified_at_commit: 38c798cb0eb2
+verified_at_commit: db803d5714f5f083c285dddd1e0400be8eb09abb
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -264,7 +264,7 @@ establish rendered layout on Android devices.
 
 ## Carousel motion reconciliation
 
-Carousel adds normalized sequence and motion facts without another rendered primitive contract. Renamed-contract tests exercise each web emitter to guard against component-name dispatch. Native sequence execution remains explicitly unrealized; the SwiftUI and Compose allowlists do not yet include Carousel.
+Carousel adds normalized sequence and motion facts without another rendered primitive contract. Renamed-contract tests exercise each web emitter to guard against component-name dispatch. React Native now derives navigation, controlled index and reading-budget bindings from that sequence IR. Its movement primitive remains separate from the generated component's incomplete presentation wiring; the IR's complete native sequence capability therefore remains unrealized. The SwiftUI and Compose allowlists do not yet include Carousel. See [native implementation boundaries](architecture/carousel-sequences.md#native-implementation-work-in-progress).
 
 Each Carousel indicator mode explicitly selects its visible decorations in the
 style contract, including the combined mode; the variant audit checks those
