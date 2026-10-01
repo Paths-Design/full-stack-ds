@@ -108,3 +108,10 @@ evidence:
     command: "pnpm run e2e:analytical"
     exit_code: 0
     commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "Free-scale unsupported metric and contradictory-endpoint unproven metric retain selected visible readback with separate reasons and zero metric marks. Analytically refused, unproven, unsupported-request and empty paths render no lawful readback. Production tests and public-path tests pass; browser/baseline-report.json and gates/root.log under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:33.735Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
