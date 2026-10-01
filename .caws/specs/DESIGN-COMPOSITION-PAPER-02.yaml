@@ -65,3 +65,9 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-contracts/document-model/verify.mjs
     commit_sha: c6906ce83
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected draft change note and ledger at c6906ce83; schema version 0.2.0 rejects 0.1.0 without runtime migration. Existing requirements retain history and named open work; new property-key requirement has lineage. Verifier checks continuity, decision paths and all 29 runtime statuses not-implemented with empty runtime refs."
+    recorded_at: "2026-10-01T16:41:06.696Z"
+    artifact_path: packages/ds-contracts/document-model/design-ledger.json
+    commit_sha: c6906ce83
