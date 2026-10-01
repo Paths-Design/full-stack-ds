@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/default-profile.schema.json",
+  "title": "Shared document candidate default-profile",
+  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "revision": {
+      "$ref": "common.schema.json#/$defs/revision"
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "nodeKind": {
+            "enum": [
+              "frame",
+              "group",
+              "shape",
+              "text",
+              "component-instance"
+            ]
+          },
+          "properties": {
+            "$ref": "common.schema.json#/$defs/properties"
+          }
+        },
+        "required": [
+          "id",
+          "nodeKind",
+          "properties"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "revision",
+    "profiles"
+  ]
+}
