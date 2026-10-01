@@ -101,3 +101,10 @@ evidence:
     command: "pnpm run e2e:analytical"
     exit_code: 0
     commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Thirteen production DOM mutation arms report specific diagnostics for geometry, association, range, panel, standing, absent/unreadable calibration, nonfinite recovery, missing bounds/marks/population and unusable transforms. Each has a clean baseline and expected diagnostic assertion. See browser/baseline-report.json and e2e/analytical-observer.ts; retained evidence root tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:32.789Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
