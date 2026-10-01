@@ -5,7 +5,7 @@ status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
 updated: 2026-09-30
-verified_at_commit: d2f56f5fba630df20f7cee53c20a37cbaa59d6e9
+verified_at_commit: a579a43d
 governs:
   - packages/ds-codegen/src/design-properties.ts
   - packages/ds-contracts/component.styles.schema.json
@@ -60,6 +60,14 @@ Web override syntax is added in the CSS realization. It does not enter the defau
 
 Component-specific design slots inherit deliberately, including into nested components of the same type. Shared `box-model.*` overrides reset at each component boundary to avoid leaking a Card's padding into an embedded Button. The separate `data-fsds-box` marker identifies the element that consumes geometry, including the inner rendered root of Angular and Lit components. Targeting all Cards is therefore explicit. A consumer can use unlayered CSS or a later declared layer; custom authored override regions remain outside generated component layers.
 
+Brand design addresses are declared at the brand scope, including the unbranded
+default scope. A nearer consumer ancestor can override them through inheritance;
+an override on the component itself takes precedence over that ancestor. Clearing
+both restores the brand value. Component token defaults that a component's own
+token sheet redeclares still require local brand rules. Repeating public design
+addresses in those local rules would defeat inherited consumer overrides,
+regardless of the consumer rule's cascade layer.
+
 The [showcase adoption](showcase-component-adoption.md) is a concrete nested
 scope example: a Card frames a Card demonstration. The usage-preview container
 resets the showcase's Card appearance overrides so the demonstrated component
@@ -95,7 +103,21 @@ The inspector has a Design properties section grouped by source part/condition a
 
 These witnesses do not prove every conditional selector is reachable, arbitrary retokening is accessible, full cross-framework visual parity, native runtime overrides, or complete coverage of design-tool paint/effect features. Broader binding coverage and visual fidelity remain separate claims.
 
-The 2026-09-30 recheck at `d2f56f5f` passed the component-token-consumption cases on all five Web targets and the isolated box/part override, Button override, and Switch interaction cases. The broader `design-bindings.spec.ts` suite remains red: Card clears to a 12px gap while its test expects 4px; Lit's Card gap override remains at 12px instead of 37px; the inspector test still calls native-select APIs on the custom Select; and the composed-gallery border-radius assertion expects 24px but observes 12px. Those test, Card, preview, and inspector sources are unchanged from `48a16b63`, before the Dialog focus repair. These are unresolved design-binding verification gaps, not evidence of universal override coverage.
+The 2026-09-30 recheck reproduced seven failures before
+`DESIGN-BINDING-CASCADE-01`. All five Card cases reached their override values
+but expected the isolated 4px fallback after clearing; the loaded preview's
+default is 12px. The inspector witness used native-select APIs against its
+generated custom Select. The gallery exposed a real cascade defect: a local
+brand declaration masked its inherited 24px design radius.
+
+The token generator now keeps public design addresses at the brand scope.
+The corrected witnesses verify the loaded defaults and use the Select's
+actual trigger/options. The design-binding, editor-binding, and component-token
+consumption suites pass together. Added cases check inherited and local radius
+overrides, clearing, and default/Forest brands in explicit light/dark themes
+across all five Web targets. The real composition retains independent Card and
+media radii, spacing, pointer-state paint, and usable controls. These are bounded
+runtime observations, not evidence of universal override coverage.
 
 ## Single-line text in composed feeds
 
