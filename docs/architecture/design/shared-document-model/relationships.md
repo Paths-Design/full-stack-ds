@@ -24,7 +24,7 @@ This document proposes meaning for the [paper model](README.md). The [coverage l
 | Component instance | References a library, definition identity, and version; supplies parameter bindings and eligible local properties | Definition source remains outside the instance; an instance edit cannot rewrite it |
 | Composition | Owns a frame root and local consumer graph | Shared definitions do not share instance edits |
 | Scene | References a composition and a local duration | Animation is scene-local; base edits belong to the composition |
-| Track | Belongs to one scene and targets one node/property address | Targets must be reachable in that scene's composition |
+| Track | Belongs to one scene and targets one node/property address | Targets belong to that scene's composition; inactive members retain keys without rendering |
 | Sequence | Contains ordered, individually identified scene occurrences and transitions | Order and explicit placement determine playback; storyboard coordinates do not |
 | Scene occurrence | References one scene and selects a source interval and sequence start | Repeating a scene produces a new occurrence identity, not a new scene or node identity |
 | Transition | Connects two occurrences | The initial schema only admits a cut; overlap and cross-scene correspondence remain undesigned |
@@ -72,7 +72,7 @@ Then apply admitted motion to the resolved base. Playback and scrubbing return e
 
 Absence means inherit. Literal `0`, `false`, and an empty string are present values. `null` is not a reset spelling in this candidate. Removing an override restores the chain; an invalid present binding reports an error instead of falling through. Empty paint lists and disabling a paint will need explicit future representations; they cannot be inferred from absence.
 
-Inspector edits name their destination: instance parameter, node property, scene override, keyframe, definition, token, or composition edge. A measured width or an evaluated translation is observational and read-only until an explicit operation chooses an authored destination. No `computed`, screen bounds, DOM objects, or source framework types are stored in the initial node schema.
+Inspector edits name their destination: instance parameter, node/part property, supplied slot, keyframe, definition, token, or composition edge. A measured width or an evaluated translation is observational and read-only until an explicit operation chooses an authored destination. No `computed`, screen bounds, DOM objects, or source framework types are stored in the initial node schema.
 
 ## Geometry and composition boundaries
 

@@ -43,7 +43,7 @@ A dependency update must report both consumers, local fields protected from prop
 | motion.explicit-start | Add X 4 key at tick 0 | 4 | 12 | 20 | 20 | 0 |
 | motion.explicit-start-base | Above case; edit base X to 5 | 4 | 12 | 20 | 20 | 5 |
 | motion.remove-final | Remove original final key; track disappears | 0 | 0 | 0 | 0 | 0 |
-| motion.time-token | Change arrival to 40 ms | 0 | 5 | 10 | 20 | 20 | 0 |
+| motion.time-token | Change arrival to 40 ms | 0 | 5 | 10 | 20 | 0 |
 
 In the time-token case, X reaches 20 at tick 40 and holds afterward. An arrival of 150 ms exceeds the scene and must diagnose incompatibility; it cannot silently clamp or resize the scene. A no-key edit at playhead 20 or 100 is still a base edit. Selecting the key changes its value even if the playhead is elsewhere. Button B stays static at X 0 throughout every A-only edit.
 
