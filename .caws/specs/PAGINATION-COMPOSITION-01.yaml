@@ -106,3 +106,11 @@ evidence:
     exit_code: 0
     artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/docs/internal/pagination-composition/pagination-reconciled-links.log
     commit_sha: "205a2ca05ecefb00dc1d5dda495e6e6c51e5dc00"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "PageNavigator composes existing Input/Button/Icon and optional Pagination; native host data attributes and channel tests verify composition/controlled acknowledgement. All five web browser cases check bounded previous/next, multi-digit Enter commit, invalid ordinal rejection, blur commit, Escape restoration and empty-set disabled state; pure model tests also cover fractional/unsafe/mismatched inputs and retry semantics."
+    recorded_at: "2026-10-01T09:33:15.886Z"
+    command: FSDS_E2E_PORT=5207 pnpm exec playwright test e2e/carousel.spec.ts e2e/carousel-composition.spec.ts e2e/pagination.spec.ts --workers=1
+    exit_code: 0
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/docs/internal/pagination-composition/pagination-reconciled-browser.log
+    commit_sha: "205a2ca05ecefb00dc1d5dda495e6e6c51e5dc00"
