@@ -107,12 +107,10 @@ evidence:
     commit_sha: "2f746ddd"
   - criterion_id: A5
     status: fail
-    evidence_ref: "Unmerged native checkpoint e783c53e4 in carousel-native-sequence adds generated RN navigation/rotation handlers, controlled acknowledgement, retained child wrappers and composed platform pauses. 208 RN package tests, native typecheck, lint and governed rail pass. 22 focused tests pass; removing pause enforcement caused four failures before exact restoration (/tmp/carousel-native-pause-mutant.log). The movement primitive is tested at the Animated API boundary only and its profile is not yet bound by the emitter. Progress rendering, native styling/icons, disabled-timer control visibility, abandoned press-intent handling, simulator/device evidence and SwiftUI/Compose/Unity/Godot implementations remain incomplete. This is an unmerged checkpoint, not native parity. Further emitter edits await a human-scoped CAWS shortcut-language reprieve for the false positive on its existing HTML placeholder attribute."
-    recorded_at: "2026-10-01T05:19:07.952Z"
-    command: "pnpm run test:react-native"
-    exit_code: 0
-    artifact_path: /tmp/carousel-native-package-tests.log
-    commit_sha: e783c53e4
+    evidence_ref: "Local unmerged checkpoint 59839408e: production React Native sequence primitive compiled in Release and ran on task-owned iOS 26.4 simulator. Recording visibly moves outgoing blue left and incoming green from right; pixel analyzer observed five distinct intermediate edges and stable endpoints. Original measureInWindow failure retained because intermediate layout readings did not follow visible native-driver movement. Receipt and video preserved under /tmp/carousel-native-ios-witness. Generated Carousel profile wiring, styling, icons, progress fill/ring, remaining controls and native targets remain incomplete; emitter edits await human CAWS false-positive reprieve. This bounded primitive witness does not satisfy full native parity."
+    recorded_at: "2026-10-01T05:53:41.710Z"
+    artifact_path: /tmp/carousel-native-ios-witness/native-pixels.json
+    commit_sha: "59839408e4e37add20a5bbe85aded78f274198d5"
   - criterion_id: A6
     status: fail
     evidence_ref: "Web composition commit 6ae348621 is on origin/main at 597d4784d; its remote browser and coverage jobs passed in run 36817791126, while Swift emission parity still failed because Carousel is absent. Unmerged native checkpoint db803d571 adds delayed native readback/completion/teardown tests. Removing movement ownership guards caused exactly three regressions (/tmp/carousel-native-ownership-mutant.log); restoring source returned the full RN package suite to 211 passes. Earlier native pause-enforcement mutation caused four failures. These are real adapter executions against a native API shim, not native-driver or pixel evidence. Native progress/emitter integration, platform runtime lanes and Figma descriptor review still prevent A6 completion."
