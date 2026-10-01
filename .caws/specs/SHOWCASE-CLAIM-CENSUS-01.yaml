@@ -2,9 +2,10 @@ id: SHOWCASE-CLAIM-CENSUS-01
 title: 'Correct showcase claim boundaries and target census'
 risk_tier: 2
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: showcase-claims
 created_at: '2026-10-01T07:25:49.053Z'
-updated_at: '2026-10-01T07:25:49.053Z'
+updated_at: '2026-10-01T07:26:29.575Z'
 created_by_session: '01a0f64e-1a73-7d10-8acd-5f8e93924b47'
 blast_radius:
   modules:
