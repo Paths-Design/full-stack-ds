@@ -5,7 +5,7 @@ status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
 updated: 2026-10-01
-verified_at_commit: 395ecdbff
+verified_at_commit: 429db81cb
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -92,3 +92,10 @@ clearing and nested isolation after regeneration.
 ## Paging composition reconciliation
 
 Pagination extraction and PageNavigator reuse the existing component boundary and box markers. The added paged-set IR and composed-part resolution do not change primitive defaults, morphology precedence, public box slots, or shared reset emission. Corpus box-boundary checks include the new compositions; the admission rail validates their generated sources. This reconciliation adds no new geometry or cross-platform visual claim.
+
+The motion-port addition at the current stamp records decorative part ownership
+and repeated ancestry in the IR. It does not change box-model normalization or
+Web boundary emission. Native projections read the receiving part's geometry;
+the binding supplies elapsed time without defining a new box override API.
+The box-model unit suite passed with this IR addition. Native Carousel styling
+and rendered progress integration remain separate verification obligations.
