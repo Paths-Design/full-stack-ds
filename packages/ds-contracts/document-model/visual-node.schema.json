@@ -217,7 +217,16 @@
                     "additionalProperties": false,
                     "properties": {
                       "partId": {
-                        "$ref": "common.schema.json#/$defs/id"
+                        "allOf": [
+                          {
+                            "$ref": "common.schema.json#/$defs/id"
+                          },
+                          {
+                            "not": {
+                              "const": "root"
+                            }
+                          }
+                        ]
                       },
                       "properties": {
                         "$ref": "common.schema.json#/$defs/properties"

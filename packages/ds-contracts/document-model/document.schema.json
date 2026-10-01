@@ -201,12 +201,21 @@
           },
           "rootNodeId": {
             "$ref": "common.schema.json#/$defs/id"
+          },
+          "nodeIds": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "minItems": 1,
+            "uniqueItems": true
           }
         },
         "required": [
           "id",
           "label",
-          "rootNodeId"
+          "rootNodeId",
+          "nodeIds"
         ]
       },
       "minItems": 0

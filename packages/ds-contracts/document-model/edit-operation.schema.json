@@ -310,7 +310,16 @@
               "$ref": "common.schema.json#/$defs/id"
             },
             "partId": {
-              "$ref": "common.schema.json#/$defs/id"
+              "allOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                {
+                  "not": {
+                    "const": "root"
+                  }
+                }
+              ]
             },
             "property": {
               "$ref": "common.schema.json#/$defs/property"

@@ -7,12 +7,21 @@
     {
       "id": "composition.A",
       "label": "Consumer A",
-      "rootNodeId": "node.frameA"
+      "rootNodeId": "node.frameA",
+      "nodeIds": [
+        "node.frameA",
+        "node.buttonA",
+        "node.arrow"
+      ]
     },
     {
       "id": "composition.B",
       "label": "Consumer B",
-      "rootNodeId": "node.frameB"
+      "rootNodeId": "node.frameB",
+      "nodeIds": [
+        "node.frameB",
+        "node.buttonB"
+      ]
     }
   ],
   "nodes": [
