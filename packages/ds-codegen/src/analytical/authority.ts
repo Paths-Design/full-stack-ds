@@ -36,7 +36,7 @@ const CONTRACTS = path.resolve(HERE, "../../../ds-contracts");
 
 const sha = (bytes: string | Buffer) => createHash("sha256").update(bytes).digest("hex");
 
-export type AuthorityName = "coordinateBasis" | "erasureAuthority" | "witnessAuthority" | "graphViewBasis" | "compositeOutputBasis";
+export type AuthorityName = "coordinateBasis" | "erasureAuthority" | "witnessAuthority" | "graphViewBasis" | "compositeOutputBasis" | "peerTextBasis";
 
 export interface AuthorityIdentity {
   name: AuthorityName;
@@ -198,7 +198,19 @@ export const COMPOSITE_OUTPUT_BASIS: AuthorityIdentity = {
   artifacts: [],
 };
 
-export const IDENTITIES: readonly AuthorityIdentity[] = [COORDINATE_BASIS, ERASURE_AUTHORITY, WITNESS_AUTHORITY, GRAPH_VIEW_BASIS, COMPOSITE_OUTPUT_BASIS];
+/** Consumer wording and loss accounting do not change selected analytical meaning. */
+export const PEER_TEXT_BASIS: AuthorityIdentity = {
+  name: "peerTextBasis",
+  invalidates: "attribution of experimental textual statements and loss reports to the consumer that produced them",
+  entryPoints: ["peer-text-probe.ts"],
+  owns: ["peer-text-probe.ts"],
+  excluded: {
+    "authority.ts": "defines the identities; consumer attribution cannot own the identity definitions themselves",
+  },
+  artifacts: [],
+};
+
+export const IDENTITIES: readonly AuthorityIdentity[] = [COORDINATE_BASIS, ERASURE_AUTHORITY, WITNESS_AUTHORITY, GRAPH_VIEW_BASIS, COMPOSITE_OUTPUT_BASIS, PEER_TEXT_BASIS];
 
 /**
  * Production modules that belong to NO identity, each with the reason.

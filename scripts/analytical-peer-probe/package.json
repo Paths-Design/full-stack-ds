@@ -1,0 +1,6 @@
+{
+  "name": "analytical-peer-probe",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test proof.test.mjs" }
+}
