@@ -113,9 +113,7 @@ evidence:
     commit_sha: "59839408e4e37add20a5bbe85aded78f274198d5"
   - criterion_id: A6
     status: fail
-    evidence_ref: "Web composition commit 6ae348621 is on origin/main at 597d4784d; its remote browser and coverage jobs passed in run 36817791126, while Swift emission parity still failed because Carousel is absent. Unmerged native checkpoint db803d571 adds delayed native readback/completion/teardown tests. Removing movement ownership guards caused exactly three regressions (/tmp/carousel-native-ownership-mutant.log); restoring source returned the full RN package suite to 211 passes. Earlier native pause-enforcement mutation caused four failures. These are real adapter executions against a native API shim, not native-driver or pixel evidence. Native progress/emitter integration, platform runtime lanes and Figma descriptor review still prevent A6 completion."
-    recorded_at: "2026-10-01T05:25:02.244Z"
-    command: "pnpm run test:react-native"
-    exit_code: 0
-    artifact_path: /tmp/carousel-native-async-package.log
-    commit_sha: db803d571
+    evidence_ref: "Checkpoint 59839408e: real iOS primitive recording passes bounded painted-displacement analysis; snap, repeated-position, reverse-direction and missing-strip negative controls pass (node --test scripts/native-carousel-pixels.test.mjs). Focused codegen tests 17 pass, authored probe lint and doc links/claims pass. Prior RN 211 tests, delayed native callback guard mutation (3 failures) and pause guard mutation (4 failures) remain bounded host-shim evidence. Capture is operator-associated with the hashed build and does not prove exact duration, full generated controls, accessibility or other platforms. Latest origin/main CI has web and coverage success but Swift emission parity failure (Carousel not allowlisted); broader native and Figma review remain open."
+    recorded_at: "2026-10-01T05:54:03.113Z"
+    artifact_path: /tmp/carousel-native-ios-witness/native-pixels.json
+    commit_sha: "59839408e4e37add20a5bbe85aded78f274198d5"
