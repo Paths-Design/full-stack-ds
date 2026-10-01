@@ -476,6 +476,9 @@ jobs:
       - name: Run runtime visual proof rail (fact assertions only)
         run: pnpm run e2e:rail
 
+      - name: Run Carousel interaction and motion regressions
+        run: pnpm run e2e:carousel
+
       # Corpus-derived prop→DOM-attribute rail: regenerates its matrix from
       # the live contracts dir on every run (never a committed frozen
       # classification), then asserts every bound obligation across

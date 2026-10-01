@@ -34,7 +34,16 @@ export function createSequenceBudget(config: SequenceConfig) {
   let requestedDirection = 1;
   let motion: { outgoing: HTMLElement; animations: Animation[]; restore: () => void } | undefined;
   let hovered = false;
-  const originalDisplay = new WeakMap<HTMLElement, { value: string; priority: string; inert: boolean; attrs: Record<string, string | null> }>();
+  const originalDisplay = new WeakMap<HTMLElement, { value: string; priority: string; needsBox: boolean; inert: boolean; attrs: Record<string, string | null> }>();
+  const showSlide = (slide: HTMLElement) => {
+    const original = originalDisplay.get(slide)!;
+    // A transparent custom-element host or non-replaced inline element has
+    // no transformable box. Own only its display while it is a slide; never
+    // reparent framework-owned children to manufacture an animation wrapper.
+    if (original.needsBox) slide.style.setProperty("display", "flow-root", "important");
+    else if (original.value) slide.style.setProperty("display", original.value, original.priority);
+    else slide.style.removeProperty("display");
+  };
   const restoreSlide = (slide: HTMLElement) => {
     const original = originalDisplay.get(slide);
     if (!original) return;
@@ -90,10 +99,8 @@ export function createSequenceBudget(config: SequenceConfig) {
     const duration = profile.durationMs * multiplier;
     const sign = direction * (getComputedStyle(viewport).direction === "rtl" ? -1 : 1);
     const originals = ["position", "left", "top", "width"].map(key => [key, from.style.getPropertyValue(key), from.style.getPropertyPriority(key)]);
-    const oldDisplay = originalDisplay.get(from)!;
     from.hidden = false;
-    if (oldDisplay.value) from.style.setProperty("display", oldDisplay.value, oldDisplay.priority);
-    else from.style.removeProperty("display");
+    showSlide(from);
     from.style.position = "absolute";
     from.style.left = "0";
     from.style.top = "0";
@@ -131,14 +138,17 @@ export function createSequenceBudget(config: SequenceConfig) {
     slides.forEach((slide, i) => {
       if (!originalDisplay.has(slide)) originalDisplay.set(slide, {
         value: slide.style.getPropertyValue("display"), priority: slide.style.getPropertyPriority("display"),
+        needsBox: Boolean(config.transition && (
+          getComputedStyle(slide).display === "contents" ||
+          (getComputedStyle(slide).display === "inline" &&
+            !["IMG", "VIDEO", "AUDIO", "CANVAS", "IFRAME", "EMBED", "OBJECT", "INPUT", "TEXTAREA", "SELECT"].includes(slide.tagName))
+        )),
         inert: slide.inert,
         attrs: Object.fromEntries(["hidden", "role", "aria-label", "aria-roledescription", "aria-hidden"].map(key => [key, slide.getAttribute(key)])),
       });
-      const display = originalDisplay.get(slide)!;
       const visible = i === index() || slide === motion?.outgoing;
       if (visible) {
-        if (display.value) slide.style.setProperty("display", display.value, display.priority);
-        else slide.style.removeProperty("display");
+        showSlide(slide);
       } else slide.style.setProperty("display", "none", "important");
       slide.hidden = !visible;
       slide.inert = i !== index();

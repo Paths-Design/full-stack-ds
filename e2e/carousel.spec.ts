@@ -138,6 +138,63 @@ for (const framework of frameworks) {
   });
 }
 
+test("Lit generated Cards move their rendered content through transparent hosts", async ({ page }) => {
+  await mount(page, "lit");
+  await page.evaluate(async () => {
+    const modulePath = "/packages/ds-lit/src/components/Card/Card.ts";
+    await import(modulePath);
+  });
+  await page.locator(".carousel__viewport").evaluate(viewport => {
+    const host = (viewport.getRootNode() as ShadowRoot).host;
+    host.replaceChildren(...["First", "Second", "Third"].map(label => {
+      const card = document.createElement("fsds-card");
+      const content = document.createElement("div");
+      content.dataset.slideContent = label;
+      content.textContent = label;
+      content.style.cssText = "height:80px;width:200px";
+      card.append(content);
+      return card;
+    }));
+    (viewport as HTMLElement).style.width = "320px";
+  });
+  await expect(page.locator('fsds-card').nth(0).locator(".card")).toBeVisible();
+  await page.locator(".carousel__next").click();
+  await page.clock.runFor(20);
+  const geometry = await page.locator("fsds-card").nth(1).evaluate(card => {
+    const animation = card.getAnimations()[0];
+    if (!animation) throw new Error("Expected a slide animation on the generated Card host");
+    const content = card.querySelector<HTMLElement>("[data-slide-content]")!;
+    animation.pause();
+    const duration = Number(animation.effect!.getTiming().duration);
+    const positions = [0, duration / 2, duration].map(time => {
+      animation.currentTime = time;
+      return content.getBoundingClientRect().x;
+    });
+    animation.currentTime = duration / 2;
+    return { positions, width: card.getBoundingClientRect().width, duration };
+  });
+  expect(geometry.width).toBeCloseTo(320);
+  expect(geometry.duration).toBe(250);
+  expect(geometry.positions[0]).toBeGreaterThan(geometry.positions[1]);
+  expect(geometry.positions[1]).toBeGreaterThan(geometry.positions[2]);
+  await page.locator(".carousel__previous").click();
+  await page.clock.runFor(20);
+  const reversed = await page.locator("fsds-card").nth(1).evaluate(card => {
+    const animation = card.getAnimations()[0];
+    if (!animation) throw new Error("Expected interrupted Card to move back out");
+    animation.pause();
+    animation.currentTime = Number(animation.effect!.getTiming().duration);
+    return card.querySelector("[data-slide-content]")!.getBoundingClientRect().x;
+  });
+  expect(reversed).toBeGreaterThan(geometry.positions[1]);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect.poll(() => page.locator("fsds-card").evaluateAll(cards => cards.flatMap(card => card.getAnimations()).length)).toBe(0);
+  await expect(page.locator("fsds-card").nth(1)).toBeHidden();
+  await page.locator(".carousel__previous").click();
+  await page.clock.runFor(20);
+  await expect(page.locator("fsds-card").nth(2)).toBeVisible();
+});
+
 test("React showcase composes actual Cards and both visual treatments", async ({ page }) => {
   await page.goto("/#/component/Carousel/design");
   const example = page.locator('[data-usage-example="timed-both"]');

@@ -34,6 +34,11 @@ bounded Web DOM realization of the [motion substrate](motion-substrate.md).
   element per entry in `slides` (accessible labels in matching order). A child
   can be a Card, image, article or another composition. The sequence owns only
   visibility, inertness, slide semantics and movement on those boundary elements.
+  A transition temporarily gives transparent (`display: contents`) and
+  non-replaced inline boundaries a `flow-root` box. This keeps generated custom
+  element hosts transformable without reparenting framework-owned children.
+  Box-producing display modes are retained, and the original inline display
+  value and priority are restored when the slide leaves the sequence.
   Keep consumer transform animations inside that boundary. Text
   nodes alone are not slides. A count mismatch disables time and navigation.
 - **Focus belongs to the reader.** Autoplay defaults off. Focus entering the
@@ -122,5 +127,9 @@ than transferring elapsed time to a different slide.
 bindings and renamed-contract generation. `sequence-budget.test.ts` exercises
 the mirrored web controllers with a finite clock. `e2e/carousel.spec.ts` tests
 generated web mounts with consumer DOM children, plus actual Card composition
-in the React showcase. Those witnesses do not establish arbitrary framework
+in the React showcase. A generated Lit Card witness measures painted child
+positions during forward and interrupted reverse motion through its normally
+transparent host. Those witnesses do not establish arbitrary framework
 child-component lifecycle parity or native behavior.
+CI executes these browser regressions through `pnpm run e2e:carousel` alongside
+the runtime fact and render-binding rails.
