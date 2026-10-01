@@ -68,9 +68,11 @@ acceptance:
     when: 'grain fields are permuted or numeric and string key values are compared'
     then: 'co-registration ignores grain declaration order while distinct scalar key types remain distinct'
   - id: A9
-    given: 'the canonical declaration and row loader through the scratch browser consumer'
-    when: 'the selected output renders'
-    then: 'DOM values metric geometry panel bindings and accessible structure agree with the carried analysis'
+    given: 'a qualified ratio view and nominal view sharing one text channel'
+    when: 'their operand order changes and a length-only embed budget is judged'
+    then: >-
+      all presented transformations survive normalization and the nominal
+      requirement refuses in either order
   - id: A10
     given: 'unsupported empty unproven or contradicted requests'
     when: 'the same selection and production orchestration runs'
