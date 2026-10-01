@@ -65,3 +65,10 @@ evidence:
     test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A1 actual compiled consumer preserves scoped identities and bounded facts"
     commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
     test_verified_at: d6abdb1ff3994d62f8894fc5cc412f8473bb66cd
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Fixed output-only expectations reject dataset, view, typed key, range and task corruptions at unchanged numeric total; fresh compiled producer misbinding also rejected in retained proof/producer-control.log."
+    recorded_at: "2026-10-01T18:31:03.603Z"
+    test_nodeid: "scripts/analytical-peer-probe/proof.test.mjs::A2 output-only observation detects plausible identity range and task corruption"
+    commit_sha: "8801f8a37cb38778a28d21145b22ce7b83501561"
+    test_verified_at: "34150a3b1427e97b81aff7bec5a54646836277ba"
