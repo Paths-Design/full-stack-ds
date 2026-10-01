@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: component-token-cohesion
 created_at: '2026-10-01T01:14:59.463Z'
-updated_at: '2026-10-01T02:21:00.003Z'
+updated_at: '2026-10-01T02:22:01.573Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
@@ -64,6 +64,8 @@ scope:
   out: []
   support:
     - docs/internal/input-visual-audit/component-token-cohesion
+    - docs/pseudo-state-audit
+    - docs/state-suppression-audit
 invariants:
   - 'Durable component semantics remain in contracts and generic codegen; public override addresses retain independent consumers and unset fallback behavior.'
   - 'Variant and structural geometry remain distinct from state paint; no compatibility aliases or debt allowance ledger are introduced.'
