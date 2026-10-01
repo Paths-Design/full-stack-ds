@@ -129,3 +129,8 @@ evidence:
     command: "pnpm run e2e:analytical"
     exit_code: 0
     commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A9
+    status: pass
+    evidence_ref: "Updated analytical-composite-output.md states the selected viewport, supported witness topologies, view/dataset identities, format refusals, independent observer tolerance, reproducible proof and retained evidence. Docs link/claim gates pass. Stage-2, whole-system M4, M5/M6, corpus-wide output and hostile-input admission remain nonclaims. See verification.json and gates/docs.log under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:36.956Z"
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
