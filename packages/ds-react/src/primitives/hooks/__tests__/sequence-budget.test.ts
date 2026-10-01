@@ -108,6 +108,34 @@ for (const [name, create] of Object.entries({ react, vue, svelte, angular, lit }
       expect(options.onIndexChange).toHaveBeenCalledExactlyOnceWith(2);
     });
 
+    it.each(["contents", "inline"])("owns a transformable %s boundary without reparenting consumer content", display => {
+      sequence.destroy();
+      const slide = select(".viewport").children[0] as HTMLElement;
+      const child = slide.firstElementChild;
+      slide.style.setProperty("display", display, "important");
+      sequence.sync(options);
+      expect(slide.style.display).toBe("flow-root");
+      expect(slide.parentElement).toBe(select(".viewport"));
+      expect(slide.firstElementChild).toBe(child);
+      const animations = holdMotion();
+      sequence.sync({ ...options, index: 1 });
+      expect(animations).toHaveLength(2);
+      expect(slide.style.display).toBe("flow-root");
+      sequence.destroy();
+      expect(slide.style.display).toBe(display);
+      expect(slide.style.getPropertyPriority("display")).toBe("important");
+      expect(slide.parentElement).toBe(select(".viewport"));
+    });
+    it("retains the display of an already transformable inline image", () => {
+      sequence.destroy();
+      const image = document.createElement("img");
+      image.style.display = "inline";
+      select(".viewport").children[0].replaceWith(image);
+      sequence.sync(options);
+      expect(image.style.display).toBe("inline");
+      sequence.destroy();
+      expect(image.style.display).toBe("inline");
+    });
     it("shares the elapsed fraction and makes one request against an unacknowledged index", () => {
       vi.advanceTimersByTime(400);
       expect(progress(".fill")).toBeCloseTo(0.4, 1);

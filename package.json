@@ -103,6 +103,7 @@
     "e2e:ui": "playwright test --ui",
     "e2e:report": "playwright show-report",
     "e2e:rail": "playwright test e2e/runtime-rail.spec.ts",
+    "e2e:carousel": "playwright test e2e/carousel.spec.ts",
     "e2e:render-binding": "node scripts/render-binding-audit/audit.mjs && playwright test e2e/render-binding-rail.spec.ts",
     "audit:behavior-realization": "pnpm exec turbo run build --filter=@full-stack-ds/codegen && node scripts/behavior-realization-audit/realization.test.mjs && node scripts/behavior-realization-audit/audit.mjs",
     "audit:a11y-realization": "pnpm exec turbo run build --filter=@full-stack-ds/codegen && node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs",
