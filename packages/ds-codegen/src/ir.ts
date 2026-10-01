@@ -70,6 +70,7 @@ import { tokenSlug } from "./token-path.js";
 import { buildSequence, type SequenceIR } from "./sequence.js";
 import { buildMotionCountdown, type MotionCountdownIR } from "./motion-countdown.js";
 import { buildMotionLoops, type MotionLoopIR } from "./motion-loops.js";
+import { buildMotionPorts, type MotionPortIR } from "./motion-ports.js";
 
 // ---------------------------------------------------------------------------
 // IR types
@@ -1305,6 +1306,7 @@ export interface KeyframeIR {
  * `ContractMotion` on why a `trigger` cannot be lowered yet.
  */
 export interface MotionIR {
+  ports?: MotionPortIR[];
   sequence: SequenceIR | null;
   countdown: MotionCountdownIR | null;
   loops: MotionLoopIR[];
@@ -6056,6 +6058,7 @@ export function buildMotion(contract: ComponentContract, allContracts?: Readonly
   const reducedMotion = motion?.reducedMotion ?? null;
   return {
     reducedMotion,
+    ports: buildMotionPorts(contract),
     honorsReducedMotion: reducedMotion !== 'ignore',
     countdown: buildMotionCountdown(contract, buildParts(contract)),
     sequence: buildSequence(contract, buildTokenFacts(contract.tokens ?? {}), allContracts),

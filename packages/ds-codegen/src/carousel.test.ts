@@ -56,6 +56,13 @@ describe("contract-bound sequence composition", () => {
     expect(ir.motion.sequence?.composition).toBe("unresolved");
     expect(() => generateReactComponentSource(ir, "../../primitives")).toThrow(/resolved contract corpus/);
   });
+  it("keeps native local projections off unnamed composed instances", () => {
+    const source = generateReactNativeComponentSource(build(load())).componentFile;
+    expect(source.match(/<MotionPartsProvider /g)).toHaveLength(1);
+    expect(source).toContain('<MotionPartsProvider value={{ "fill":');
+    expect(source).not.toContain('<MotionPartsProvider value={{ "ring":');
+    expect(source).toContain('<MotionPart projection={{ effect: "elapsed-ring"');
+  });
   it("rejects composed picker callback channels with incompatible value types", () => {
     const pagination = loadPagination();
     pagination.channels!.page.valueType = "boolean";

@@ -4,7 +4,7 @@ authority: architecture
 status: draft
 title: Carousel composition and advance budgets
 owner: "@darianrosebrook"
-updated: 2026-09-28
+updated: 2026-10-01
 governs:
   - packages/ds-codegen/src/sequence.ts
   - packages/ds-contracts/components/Carousel/
@@ -183,8 +183,16 @@ a second autoplay request while a controlled picker selection awaits acknowledge
 These tests observe the native API boundary. A separate Release iOS recording
 of generated Carousel autoplay observes intermediate painted slide positions;
 its narrow scope and remaining visual gaps are recorded in the native probe doc.
-The component does not yet bind `BudgetProgress` to its anatomy parts. Generated progress bindings,
-native styling and icons, rotation-control visibility
+Generated progress bindings now project the shared budget onto the local ring
+and the active repeated fill of the composed Pagination. `MotionIR.ports`
+records owned empty decorative parts and whether they are repeated. The native
+composition adapter delivers a sample to an explicitly addressed instance and
+consumes that binding once, clearing it before nested or sibling compositions.
+Unbound decorations retain their original rendering. The receiving part owns
+geometry and paint; the binding introduces no timer. Generated and host-shim
+tests cover shared elapsed values, active-item selection, composition isolation
+and preserving remaining reading time when reduced-motion preferences change.
+Native styling and icons, rotation-control visibility
 for disabled timers, and broader generated-component simulator/device witnesses remain unfinished. Accordingly
 the IR's native sequence capability remains unrealized and the parity criterion
 remains open. SwiftUI, Compose, Unity and Godot still need their sequence realizations.

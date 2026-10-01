@@ -122,7 +122,9 @@ export function createSequenceBudget(publish: (state: SequenceSnapshot) => void)
   };
   return { sync, snapshot, request, pause, resume, stop, rotate,
     beginTransition() {
-      cancel(); reasons.add("transition"); remaining = duration(); paint();
+      // Accepted position changes reset the budget in sync. Presentation-only
+      // changes must pause the remaining dwell without starting it over.
+      cancel(); reasons.add("transition"); paint();
       return revision;
     },
     finishTransition(owner: number) { if (owner === revision) resume("transition"); },

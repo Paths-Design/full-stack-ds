@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { MotionPart, MotionPartScope, MotionPartsProvider } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createCarouselStyles } from "./Carousel.styles";
 import { resolveCarouselTokens } from "./Carousel.tokens";
@@ -65,6 +66,7 @@ export function Carousel({
     onIndexChange: setSlideValue,
   }, children, { durationMs: Number(tokens.root?.["carousel.motion.duration"] ?? 250), easing: String(tokens.root?.["carousel.motion.easing"] ?? "cubic-bezier(0.4, 0, 0.2, 1)"), referenceWidth: 320, minMultiplier: 0.5, maxMultiplier: 2 });
   return (
+<MotionPartScope>{_motionParts => (
     <View
       testID={testID}
       style={[styles.root, style]}
@@ -108,6 +110,7 @@ export function Carousel({
             size="sm"
           />
         </Pressable>
+<MotionPartsProvider value={{ "fill": { effect: "elapsed-width", elapsed: sequence.elapsed, reducedMotion: sequence.reducedMotion, steps: 10, visible: sequence.valid && sequence.timed && ["pagination","both"].includes(indicator ?? ""), activeIndex: sequence.index } }}>
         <Pagination
           pages={slides}
           index={slide}
@@ -116,6 +119,7 @@ export function Carousel({
           presentation="indicators"
           onIndexChange={sequence.select}
         />
+</MotionPartsProvider>
         <Pressable
           style={styles.next}
           disabled={!sequence.valid}
@@ -125,10 +129,12 @@ export function Carousel({
           accessibilityRole="button"
           accessibilityState={{ disabled: !sequence.valid }}
         >
+<MotionPart projection={{ effect: "elapsed-ring", elapsed: sequence.elapsed, reducedMotion: sequence.reducedMotion, steps: 10, visible: sequence.valid && sequence.timed && ["next","both"].includes(indicator ?? "") }} style={styles.ring}>
           <View
             style={styles.ring}
             accessible={false}
           />
+</MotionPart>
           <Icon
             name="arrow-right"
             size="sm"
@@ -136,6 +142,7 @@ export function Carousel({
         </Pressable>
       </View>
     </View>
+)}</MotionPartScope>
   );
 }
 // @generated:end

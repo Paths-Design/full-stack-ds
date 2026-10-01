@@ -777,6 +777,12 @@
     "realization": "descriptor-only",
     "facts": {
       "reducedMotion": "respect",
+      "ports": [
+        {
+          "part": "backdrop",
+          "repeated": false
+        }
+      ],
       "honorsReducedMotion": true,
       "countdown": null,
       "sequence": null,

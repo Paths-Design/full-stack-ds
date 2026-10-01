@@ -427,6 +427,12 @@
     "realization": "descriptor-only",
     "facts": {
       "reducedMotion": null,
+      "ports": [
+        {
+          "part": "indicator",
+          "repeated": false
+        }
+      ],
       "honorsReducedMotion": true,
       "countdown": null,
       "sequence": null,

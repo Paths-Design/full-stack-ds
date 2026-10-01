@@ -29,8 +29,12 @@ The fixture also renders the production `BudgetProgress` fill and ring at
 0%, 25%, 50%, 75% and 100%. Take a simulator screenshot after launch to inspect
 the quarter arcs and fill lengths. These samples establish bounded native
 geometry, not a running countdown. Shared-clock pause/reset and reduced-motion
-substitution are tested separately in the React Native package; generated
-Carousel progress integration remains unfinished.
+substitution are tested separately in the React Native package. Generated
+Carousel bindings now deliver the same deadline sample to its local ring and
+the repeated fill in its composed Pagination. Host-shim tests exercise active
+selection, shared elapsed values, reduced motion and composition isolation.
+These tests do not establish native pixel appearance: the receiving styles
+and control icons remain unfinished.
 
 ## Generated component witness
 
@@ -57,9 +61,10 @@ the extension so Metro resolves its TypeScript source. Unit tests and TypeScript
 checking had not detected that packaging failure.
 
 The same rendered witness exposes unfinished native presentation: Pagination
-still appears as a vertical text list, arrows are missing, and the elapsed
-projections are not yet connected to their generated parts. These are open
-findings, not evidence of parity. Device measurements again remained stationary
+appeared as a vertical text list, arrows were missing, and the elapsed
+projections were not connected to their generated parts. The subsequent
+binding repair has host-shim coverage but has not replaced this rendered
+witness. Presentation remains an open finding. Device measurements again remained stationary
 during visible native-driver motion; the video pixels are the movement witness.
 
 ## Running locally

@@ -436,6 +436,12 @@
     "realization": "descriptor-only",
     "facts": {
       "reducedMotion": "respect",
+      "ports": [
+        {
+          "part": "ring",
+          "repeated": false
+        }
+      ],
       "honorsReducedMotion": true,
       "countdown": null,
       "sequence": {

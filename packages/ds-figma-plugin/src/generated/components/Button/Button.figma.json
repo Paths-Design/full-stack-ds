@@ -417,6 +417,7 @@
     "realization": "descriptor-only",
     "facts": {
       "reducedMotion": null,
+      "ports": [],
       "honorsReducedMotion": true,
       "countdown": null,
       "sequence": null,

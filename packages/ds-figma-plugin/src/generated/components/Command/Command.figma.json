@@ -1016,6 +1016,16 @@
     "realization": "descriptor-only",
     "facts": {
       "reducedMotion": "respect",
+      "ports": [
+        {
+          "part": "overlay",
+          "repeated": false
+        },
+        {
+          "part": "separator",
+          "repeated": false
+        }
+      ],
       "honorsReducedMotion": true,
       "countdown": null,
       "sequence": null,
