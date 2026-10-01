@@ -2,21 +2,21 @@
 // React-vs-SwiftUI emission parity fixture (FEAT-SWIFTUI-FINAL-FIVE-01).
 //
 // Generates EVERY corpus contract through both the react and swiftui
-// emitters and compares their public API SURFACES (channel/prop presence
-// derived from the IR, not the emitted bytes) against what each emitter
-// actually emitted. Reports one row per component; exits 1 if any
-// component emits for react but not swiftui.
+// emitters using the resolved contract corpus. Reports whether both emitters
+// accept each contract; channel/prop counts describe the input IR, not a
+// verification of the emitted public API. Any backend rejection fails.
 //
 // NON-CLAIMS: this is emission-level API-surface parity, not visual,
 // behavioral, or token-value parity. A component passing here can still
 // render differently across frameworks. It proves the contract→emission
 // path admits both targets, nothing about runtime equivalence.
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
 const dist = path.join(root, "packages", "ds-codegen", "dist");
 const { buildComponentIR } = await import(path.join(dist, "ir.js"));
+const { listComponentContracts } = await import(path.join(dist, "contracts-fs.js"));
 const { generateSwiftUIComponentSource } = await import(
   path.join(dist, "frameworks", "swift", "swiftui", "component-source.js")
 );
@@ -46,9 +46,9 @@ function reactEmits(ir) {
       componentsRoot: "/dev/null",
       contractsRoot: "/dev/null",
     });
-    return true;
-  } catch {
-    return false;
+    return { emitted: true };
+  } catch (error) {
+    return { emitted: false, error: String(error) };
   }
 }
 
@@ -59,9 +59,9 @@ function swiftEmits(ir) {
     } else {
       generateSwiftUIComponentSource(ir);
     }
-    return true;
-  } catch {
-    return false;
+    return { emitted: true };
+  } catch (error) {
+    return { emitted: false, error: String(error) };
   }
 }
 
@@ -73,18 +73,19 @@ function surfaceOf(ir) {
   return { channels, props };
 }
 
-const dirs = readdirSync(path.join(root, "packages", "ds-contracts", "components"))
-  .filter((n) => !n.startsWith("."))
-  .sort();
+const contracts = new Map(listComponentContracts(path.join(root, "packages", "ds-contracts"))
+  .map(({ name }) => [name, loadContract(name)]));
 const rows = [];
-let divergent = 0;
-for (const name of dirs) {
-  const ir = buildComponentIR(loadContract(name));
+let rejected = 0;
+for (const [name, contract] of contracts) {
+  const ir = buildComponentIR(contract, { allContracts: contracts });
   const r = reactEmits(ir);
   const s = swiftEmits(ir);
-  if (r && !s) divergent += 1;
+  if (!r.emitted || !s.emitted) rejected += 1;
   const { channels, props } = surfaceOf(ir);
-  rows.push({ name, react: r, swift: s, channels: channels.length, props: props.length });
+  rows.push({ name, react: r.emitted, swift: s.emitted, channels: channels.length, props: props.length });
+  if (r.error) console.error(`${name} react: ${r.error}`);
+  if (s.error) console.error(`${name} swift: ${s.error}`);
 }
 console.log("component | react | swift | channels | props");
 for (const row of rows) {
@@ -92,9 +93,9 @@ for (const row of rows) {
     `${row.name} | ${row.react ? "yes" : "NO"} | ${row.swift ? "yes" : "NO"} | ${row.channels} | ${row.props}`,
   );
 }
-console.log(`\ncorpus: ${rows.length} | react-emitting: ${rows.filter((r) => r.react).length} | swift-emitting: ${rows.filter((r) => r.swift).length} | divergent (react&&!swift): ${divergent}`);
-if (divergent > 0) {
-  console.error("PARITY DIVERGENCE: components emit for react but not swiftui.");
+console.log(`\ncorpus: ${rows.length} | react-emitting: ${rows.filter((r) => r.react).length} | swift-emitting: ${rows.filter((r) => r.swift).length} | rejected by either backend: ${rejected}`);
+if (rejected > 0) {
+  console.error("PARITY FAILURE: every corpus component must emit for both react and swiftui.");
   process.exit(1);
 }
 process.exit(0);
