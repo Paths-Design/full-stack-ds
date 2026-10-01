@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const runId = crypto.randomUUID();
 const out = path.join(root, 'tmp/godot-sequence', crypto.randomUUID());
 const project = path.join(out, 'project');
 fs.mkdirSync(project, { recursive: true });
@@ -24,6 +25,7 @@ for (const file of createGodotEmitter().emitComponent(buildComponentIR(contract)
   fs.writeFileSync(target, file.contents);
 }
 fs.writeFileSync(path.join(project, 'project.godot'), 'config_version=5\n[application]\nconfig/name="Sequence verification"\n[rendering]\nrenderer/rendering_method="gl_compatibility"\n');
+fs.writeFileSync(path.join(project, 'sequence_render_cli.gd'), 'extends SceneTree\nfunc _initialize() -> void:\n\troot.add_child.call_deferred(load("res://sequence_render.gd").new())\n');
 const godot = process.env.GODOT ?? '/Applications/Godot.app/Contents/MacOS/Godot';
 console.log('Evidence:', out);
 for (const script of ['sequence_budget', 'sequence']) {
@@ -40,15 +42,49 @@ const receipt = log.split('\n').filter(line => line.startsWith('{')).map(line =>
 if (!receipt?.passed) throw new Error('Missing passing sequence receipt');
 fs.writeFileSync(path.join(out, script + '-receipt.json'), JSON.stringify({ ...receipt, inputs: Object.fromEntries(['runtime/sequence_budget.gd', 'runtime/sequence.gd', 'runtime/budget_progress.gd', 'components/Carousel/Carousel.gd'].map(file => [file, crypto.createHash('sha256').update(fs.readFileSync(path.join(project, 'addons/full_stack_ds', file))).digest('hex')])) }, null, 2) + '\n');
 }
-if (process.argv.includes('--render')) {
-  const result = spawnSync(godot, ['--path', project, '--script', 'res://sequence_render.gd'], { env: { ...process.env, FSDS_ENGINE_OUT: out }, encoding: 'utf8', timeout: 60000 });
+function checkRenderReceipt(directory, exported) {
+  const receipt = JSON.parse(fs.readFileSync(path.join(directory, 'render-receipt.json'), 'utf8'));
+  const observedMotion = receipt.effectiveReducedMotion ? receipt.distinctIntermediateEdges === 0 : receipt.distinctIntermediateEdges >= 3;
+  if (!receipt.passed || !observedMotion || receipt.runId !== runId || receipt.exported !== exported) throw new Error('Rendered receipt did not establish this run and executable kind');
+  return receipt;
+}
+if (process.argv.includes('--render') || process.argv.includes('--export')) {
+  const result = spawnSync(godot, ['--path', project, '--script', 'res://sequence_render_cli.gd'], { env: { ...process.env, FSDS_ENGINE_OUT: out, FSDS_ENGINE_RUN: runId }, encoding: 'utf8', timeout: 60000 });
   const log = (result.stdout ?? '') + (result.stderr ?? '');
   fs.writeFileSync(path.join(out, 'render.log'), log);
   process.stdout.write(log);
   if (result.error || result.status !== 0 || /SCRIPT ERROR|Parse Error/.test(log)) throw new Error('Rendered sequence verification failed');
-  const receipt = JSON.parse(fs.readFileSync(path.join(out, 'render-receipt.json'), 'utf8'));
-  const observedMotion = receipt.effectiveReducedMotion ? receipt.distinctIntermediateEdges === 0 : receipt.distinctIntermediateEdges >= 3;
-  if (!receipt.passed || !observedMotion) throw new Error('Rendered movement did not match the observed native preference');
+  checkRenderReceipt(out, false);
+}
+if (process.argv.includes('--export')) {
+  fs.writeFileSync(path.join(project, 'main.tscn'), '[gd_scene load_steps=2 format=3]\n[ext_resource type="Script" path="res://sequence_render.gd" id="1"]\n[node name="SequenceProbe" type="Node"]\nscript=ExtResource("1")\n');
+  const settings = path.join(project, 'project.godot');
+  fs.writeFileSync(settings, fs.readFileSync(settings, 'utf8').replace('[application]', '[application]\nrun/main_scene="res://main.tscn"').replace('[rendering]', '[rendering]\ntextures/vram_compression/import_etc2_astc=true'));
+  fs.writeFileSync(path.join(project, 'export_presets.cfg'), '[preset.0]\nname="macOS"\nplatform="macOS"\nrunnable=true\nexport_filter="all_resources"\ninclude_filter="*.json"\nexclude_filter=""\nexport_path=""\n[preset.0.options]\napplication/bundle_identifier="org.fullstackds.carousel.probe"\ncodesign/codesign=0\n');
+  const archive = path.join(out, 'Carousel.zip');
+  for (const [tag, args] of [['import', ['--editor', '--import']], ['export', ['--export-debug', 'macOS', archive]]]) {
+    const run = spawnSync(godot, ['--headless', '--path', project, ...args], { encoding: 'utf8', timeout: 180000 });
+    const log = (run.stdout ?? '') + (run.stderr ?? '');
+    fs.writeFileSync(path.join(out, `${tag}.log`), log);
+    if (run.error || run.status !== 0 || /SCRIPT ERROR|Parse Error|Assertion failed/.test(log)) throw new Error(`${tag} failed; inspect ${out}`);
+  }
+  const extracted = path.join(out, 'exported');
+  const unzip = spawnSync('unzip', ['-q', archive, '-d', extracted], { encoding: 'utf8' });
+  if (unzip.error || unzip.status !== 0) throw new Error('Cannot extract exported Carousel app');
+  const apps = fs.readdirSync(extracted).filter(name => name.endsWith('.app'));
+  if (apps.length !== 1) throw new Error('Expected one freshly exported app');
+  const bin = path.join(extracted, apps[0], 'Contents/MacOS');
+  const executable = path.join(bin, fs.readdirSync(bin)[0]);
+  const witness = path.join(out, 'exported-witness');
+  fs.mkdirSync(witness);
+  const player = spawnSync(executable, [], { cwd: extracted, env: { ...process.env, FSDS_ENGINE_OUT: witness, FSDS_ENGINE_RUN: runId }, encoding: 'utf8', timeout: 60000 });
+  const log = (player.stdout ?? '') + (player.stderr ?? '');
+  fs.writeFileSync(path.join(witness, 'player.log'), log);
+  if (player.error || player.status !== 0 || /SCRIPT ERROR|Parse Error|Assertion failed/.test(log)) throw new Error('Exported Carousel failed; inspect its player log');
+  const receipt = checkRenderReceipt(witness, true);
+  if (receipt.executable !== executable) throw new Error('Receipt did not come from the freshly exported executable');
+  fs.writeFileSync(path.join(witness, 'provenance.json'), JSON.stringify({ runId, executable, archiveSha256: crypto.createHash('sha256').update(fs.readFileSync(archive)).digest('hex'), inputs: JSON.parse(fs.readFileSync(path.join(out, 'sequence-receipt.json'), 'utf8')).inputs }, null, 2) + '\n');
+  console.log(JSON.stringify({ exported: true, distinctIntermediateEdges: receipt.distinctIntermediateEdges, executable, witness }));
 }
 if (process.argv.includes('--mutations')) {
   const controls = [

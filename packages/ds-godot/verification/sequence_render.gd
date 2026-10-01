@@ -1,8 +1,10 @@
-extends SceneTree
-const Carousel = preload("res://addons/full_stack_ds/components/Carousel/Carousel.gd")
+extends Node
+const Carousel = preload("res://addons/full_stack_ds/components/Carousel/Carousel.tscn")
 var samples: Array[Dictionary] = []
+var root: Window:
+	get: return get_tree().root
 
-func _initialize() -> void:
+func _ready() -> void:
 	_run.call_deferred()
 
 func _pixels(view: Control) -> Dictionary:
@@ -19,7 +21,7 @@ func _pixels(view: Control) -> Dictionary:
 func _run() -> void:
 	root.size = Vector2i(760, 420)
 	var out := OS.get_environment("FSDS_ENGINE_OUT")
-	var carousel = Carousel.new()
+	var carousel = Carousel.instantiate()
 	carousel.position = Vector2(40, 40)
 	carousel.size = Vector2(640, 260)
 	carousel.props = {"slides":["Blue", "Green"], "autoPlay":false}
@@ -28,7 +30,7 @@ func _run() -> void:
 		var body := ColorRect.new()
 		body.color = color
 		carousel.add_slide(str(color), body)
-	await process_frame
+	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var initial := _pixels(carousel.viewport)
 	root.get_texture().get_image().save_png(out.path_join("initial.png"))
@@ -56,7 +58,7 @@ func _run() -> void:
 	var reduced: bool = carousel.effective_reduced_motion
 	var motion_matches_preference: bool = edges.is_empty() if reduced else edges.size() >= 3
 	var passed: bool = initial.blue == width and initial.green == 0 and final.green == width and final.blue == 0 and motion_matches_preference and monotonic
-	var receipt := {"kind":"godot-sequence-render", "passed":passed, "initial":initial, "final":final, "distinctIntermediateEdges":edges.size(), "systemMotionPreference":carousel.system_motion_preference, "effectiveReducedMotion":reduced, "displayServer":DisplayServer.get_name(), "samples":samples, "version":Engine.get_version_info().string}
+	var receipt := {"kind":"godot-sequence-render", "passed":passed, "initial":initial, "final":final, "distinctIntermediateEdges":edges.size(), "systemMotionPreference":carousel.system_motion_preference, "effectiveReducedMotion":reduced, "displayServer":DisplayServer.get_name(), "samples":samples, "version":Engine.get_version_info().string, "runId":OS.get_environment("FSDS_ENGINE_RUN"), "exported":not OS.has_feature("editor"), "executable":OS.get_executable_path()}
 	FileAccess.open(out.path_join("render-receipt.json"), FileAccess.WRITE).store_string(JSON.stringify(receipt, "  "))
 	var summary := receipt.duplicate()
 	summary.erase("samples")
@@ -68,4 +70,4 @@ func _run() -> void:
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png(out.path_join("progress-half-sample.png"))
 	carousel.free()
-	quit(0 if passed else 1)
+	get_tree().quit(0 if passed else 1)

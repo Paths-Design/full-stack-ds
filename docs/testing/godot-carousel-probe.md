@@ -1,3 +1,16 @@
+---
+doc_id: REF-GODOT-CAROUSEL-PROBE-001
+authority: reference
+status: active
+title: Godot Carousel sequence probe
+owner: "@darianrosebrook"
+updated: 2026-10-01
+governs:
+  - scripts/godot-sequence.mjs
+  - packages/ds-godot/verification/sequence.gd
+  - packages/ds-godot/verification/sequence_render.gd
+---
+
 # Godot Carousel sequence probe
 
 This local lane exercises an explicitly generated Carousel against the Godot
@@ -11,6 +24,8 @@ Run from the bound worktree with Godot installed:
 pnpm --filter @full-stack-ds/codegen build
 pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/factory.test.ts
 node scripts/godot-sequence.mjs --render --mutations
+# Also build and run a fresh local macOS app using installed export templates:
+node scripts/godot-sequence.mjs --export --mutations
 ```
 
 `GODOT` can select another engine executable. The runner copies the authored
@@ -47,7 +62,8 @@ including inactive slides, and fills additional height supplied by its parent.
 The fixture checks tall content, dynamic minimum-size changes, and removal so
 released content no longer affects its previous owner's layout.
 
-`--render` additionally opens a native Godot window. It samples the rendered
+`--render` additionally opens a native Godot window and instantiates the emitted
+PackedScene, including its Theme resource. It samples the rendered
 viewport during an unseeked forward transition, saves PNGs and pixel counts, and
 requires several distinct intermediate edges between a full blue start and a
 full green end when the native preference permits movement. If the system asks
@@ -55,6 +71,15 @@ for reduced motion, it instead requires an immediate switch without intermediate
 edges. The receipt records the real DisplayServer query and effective preference;
 the runner does not change operating-system settings. The additional half-budget progress screenshot is an explicit
 paint sample, separate from naturally sampled movement and timed behavior.
+
+`--export` also runs that probe from a newly exported macOS debug application.
+The exporter imports the unique scratch project, packages its normal main scene,
+and launches the extracted executable without a project-path or script override.
+The same probe records an exported-runtime flag, executable path and unique run
+identity; the runner rejects a receipt from another run or the editor executable.
+Images and observations are separate under `exported-witness/`, with the archive
+hash and generated source hashes in its provenance record. This is an unsigned
+local app, not a distributable release or proof for other operating systems.
 
 `--mutations` alters only copies in scratch projects. It requires behavioral
 failures for removed acknowledgement, stale-completion protection, reduced-motion
@@ -71,9 +96,10 @@ and on each processing frame, with `reduced_motion` as an additional host reques
 Actual OS setting changes have not been driven in the local witness; changes are
 tested through the query boundary. Engines without the query retain an explicit
 unknown status. Screen-reader traversal during outgoing movement, announcements,
-editor serialization, native export, arbitrary child lifecycle behavior and
-other operating systems remain unverified. The existing Godot pilot's export
-evidence does not cover this new sequence runtime.
+editor-authored scene serialization, arbitrary child lifecycle behavior and
+other operating systems remain unverified. The exported-app probe establishes
+the bounded rendered transition and progress-paint scenario; the wider timer,
+input, ownership and mutation fixtures still execute through the editor binary.
 
 The indicator variant currently chooses progress visibility through web CSS.
 There is no equivalent selection fact in `SequenceIR.progress`. Completing this
