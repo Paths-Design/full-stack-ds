@@ -1,0 +1,56 @@
+id: REL-ANALYTICAL-CAPABILITY-CONTRACT-01
+title: 'Separate durable analytical acceptance from status and historical research'
+risk_tier: 2
+mode: doc
+lifecycle_state: draft
+created_at: '2026-10-01T17:14:47.280Z'
+updated_at: '2026-10-01T17:14:47.280Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Analytical contract, status routing and read-only CAWS outcome audit'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/analytical-capability-contract.md'
+    - 'docs/architecture/analytical-relation-doctrine.md'
+    - 'docs/architecture/analytical-composite-output.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/README.md'
+    - 'scripts/analytical-capability-audit/'
+  out: []
+invariants:
+  - 'Historical roadmaps and working notes stay machine-local; the tracked contract defines acceptance without tracking current completion.'
+  - 'Milestones are acceptance bars, not waterfall gates. Stage-2 subtraction remains a frozen experiment closure obligation and gates only dependent claims.'
+  - 'The closed browser repair and its implementation remain unchanged; generated audit and research receipts remain ignored.'
+acceptance:
+  - id: A1
+    given: 'the recovered charter and doctrine'
+    when: 'durable acceptance is extracted'
+    then: 'tracked documentation has one normative M1-M6 definition, explicit non-waterfall semantics and no historical progress narrative'
+  - id: A2
+    given: 'current analytical code and scoped evidence'
+    when: 'the snapshot is reconciled'
+    then: 'only the analytical row changes and routes bounded claims to evidence without the nested-embed contradiction or whole-M4 promotion'
+  - id: A3
+    given: 'completed, abandoned-waived, superseded and active CAWS outcomes plus missing or failed evidence'
+    when: 'the audit runs'
+    then: 'it reports lifecycle, resolution, acceptance dispositions and successor provenance without equating closure or recorded pass with independently verified capability'
+  - id: A4
+    given: 'the frozen Stage-2 experiment and plausible next consumer claims'
+    when: 'dependencies are inspected and existing basis tests run'
+    then: 'concrete required facts are mapped to unresolved coordinates and later-stage growth remains outside ordinary subtraction admission'
+  - id: A5
+    given: 'the closed browser boundary'
+    when: 'current workflow and implementation identity are checked'
+    then: 'successful remote proof and deliberate controls remain attributable within their bounded claims and no browser source is changed'
+  - id: A6
+    given: 'the dependency findings'
+    when: 'the next bounded investigation is selected'
+    then: 'its CAWS acceptance precommits a claim, nearest counterexample, status-changing versus informative outcomes and explicit nonclaims'
+non_functional: {}
+contracts:
+  - name: 'analytical-capability'
+    type: behavior
+    path: 'docs/architecture/analytical-capability-contract.md'
