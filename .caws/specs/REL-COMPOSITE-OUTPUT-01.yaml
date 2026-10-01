@@ -122,3 +122,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
     exit_code: 0
     commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Changing source grain, transformation, units and bound endpoints leaves qualified facts and the retained carried interpretation unchanged; changing detached readback value to 999 leaves authority value 10 frozen."
+    recorded_at: "2026-10-01T01:31:50.951Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
