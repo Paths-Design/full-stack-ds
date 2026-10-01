@@ -1,0 +1,28 @@
+{
+  "$description": "Original small paper example; not a token conformance fixture.",
+  "motion": {
+    "slideDuration": {
+      "$type": "duration",
+      "$value": {
+        "value": 1000,
+        "unit": "ms"
+      }
+    },
+    "slideDistance": {
+      "$type": "dimension",
+      "$value": {
+        "value": 100,
+        "unit": "px"
+      }
+    },
+    "linear": {
+      "$type": "cubicBezier",
+      "$value": [
+        0,
+        0,
+        1,
+        1
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "definition.notice",
+  "version": "example-v1",
+  "description": "Original declarative stub for paper relationships; no component source or runtime adapter.",
+  "parameters": {
+    "label": {
+      "valueType": "string",
+      "default": "Ready"
+    }
+  },
+  "properties": {
+    "appearance.opacity": {
+      "valueType": "number",
+      "default": 0.8
+    }
+  }
+}
