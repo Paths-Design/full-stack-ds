@@ -1,4 +1,5 @@
 import type { DesignBindingIR } from '../../design-properties.js';
+import type { MotionIR } from '../../ir.js';
 export const FIGMA_COMPONENT_DESCRIPTOR_SCHEMA_VERSION = 1 as const;
 export const FIGMA_COMPONENT_DESCRIPTOR_SOURCE = "@full-stack-ds/codegen/frameworks/figma" as const;
 
@@ -30,6 +31,11 @@ export type FigmaComponentDescriptorV1 = {
   }>;
   /** Binding metadata only; live Figma editing is not asserted. */
   designBindings?: DesignBindingIR[];
+  /** Additive v1 metadata. These are source facts, not Figma prototype actions. */
+  motion?: {
+    realization: "descriptor-only";
+    facts: MotionIR;
+  };
   variants: Record<string, string[]>;
   states: unknown;
   classRecipe: unknown;
@@ -111,6 +117,22 @@ export function assertFigmaComponentDescriptorV1(
   }
 
   if (!isRecord(descriptor.css)) throw new Error("css block is required.");
+  if (descriptor.motion !== undefined) {
+    if (!isRecord(descriptor.motion) || descriptor.motion.realization !== "descriptor-only") {
+      throw new Error("motion.realization must be descriptor-only.");
+    }
+    const facts = descriptor.motion.facts;
+    if (!isRecord(facts)) throw new Error("motion.facts must contain normalized MotionIR metadata.");
+    assertBoolean(facts.honorsReducedMotion, "motion.facts.honorsReducedMotion");
+    if (![null, "respect", "disable", "reduce", "ignore"].includes(facts.reducedMotion as string | null)) {
+      throw new Error("motion.facts.reducedMotion must retain the normalized preference policy.");
+    }
+    assertArray(facts.transitions, "motion.facts.transitions");
+    assertArray(facts.loops, "motion.facts.loops");
+    for (const name of ["sequence", "countdown"] as const) {
+      if (facts[name] !== null && !isRecord(facts[name])) throw new Error(`motion.facts.${name} must be an object or null.`);
+    }
+  }
   if (!isRecord(descriptor.behavior)) throw new Error("behavior block is required.");
   if (!isRecord(descriptor.figma)) throw new Error("figma block is required.");
   if (descriptor.figma.intendedUse !== "figma-library-materialization") {

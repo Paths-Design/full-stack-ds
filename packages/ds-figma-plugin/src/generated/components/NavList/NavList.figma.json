@@ -290,6 +290,17 @@
       "selector": ".nav-list__item[aria-current=\"page\"]"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": null,
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": []
+    }
+  },
   "variants": {
     "orientation": [
       "vertical",

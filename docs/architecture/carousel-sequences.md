@@ -138,6 +138,19 @@ possible child-component lifecycles or native behavior.
 CI executes these browser regressions through `pnpm run e2e:carousel` alongside
 the runtime fact and render-binding rails.
 
+### Figma descriptor boundary
+
+The Figma emitter retains normalized Motion IR under `motion.facts`, with
+`motion.realization: "descriptor-only"`. Carousel's declared control parts,
+index channel, dwell token and default, both progress projections, movement
+profile and reduced-motion policy survive JSON serialization. Renamed-channel
+regression coverage prevents the descriptor from silently reverting to a
+conventional channel name. This additive v1 metadata also preserves loading
+loops and surface countdown facts for other components; older descriptors may
+omit the motion field. It does not attach Figma prototype timers or transitions,
+and source capability facts inside the metadata are not a claim that Figma
+executes them.
+
 ### Native implementation work in progress
 
 React Native now has a sequence clock and generated control bindings. The clock

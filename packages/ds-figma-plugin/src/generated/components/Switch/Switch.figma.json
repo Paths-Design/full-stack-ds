@@ -584,6 +584,29 @@
       "selector": ".switch:has(.switch__input:focus-visible) .switch__track"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "toggle",
+          "trigger": "checked=false→true",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "transform"
+          ],
+          "durationRef": "core.motion.duration.short",
+          "easingRef": "core.motion.easing.standard"
+        }
+      ]
+    }
+  },
   "variants": {
     "size": [
       "sm",

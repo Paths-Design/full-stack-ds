@@ -1012,6 +1012,42 @@
       "selector": ".command__separator"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "open",
+          "trigger": "openness=closed→expanded",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "command.motion.duration",
+          "easingRef": "command.motion.easing"
+        },
+        {
+          "name": "close",
+          "trigger": "openness=expanded→closed",
+          "realization": "declaration-only",
+          "phase": "exit",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "command.motion.duration",
+          "easingRef": "command.motion.easing"
+        }
+      ]
+    }
+  },
   "variants": {},
   "states": {
     "flat": [

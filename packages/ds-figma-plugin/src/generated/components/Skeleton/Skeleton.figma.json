@@ -372,6 +372,162 @@
       "selector": ".skeleton--actions"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [
+        {
+          "name": "shimmer",
+          "target": {
+            "name": "root",
+            "isCompound": false,
+            "isRootOnly": true,
+            "nativeTag": "div",
+            "details": {
+              "tag": "div",
+              "description": "Loading placeholder host that carries busy state and optional loading label.",
+              "role": "root",
+              "aria": {
+                "attributes": [
+                  "aria-busy",
+                  "aria-label"
+                ]
+              }
+            }
+          },
+          "driver": "repeat",
+          "when": {
+            "variant": "animate",
+            "equals": "shimmer"
+          },
+          "effect": {
+            "kind": "opacity",
+            "keyframes": [
+              {
+                "offset": 0,
+                "value": 1
+              },
+              {
+                "offset": 0.5,
+                "value": 0.5
+              },
+              {
+                "offset": 1,
+                "value": 1
+              }
+            ]
+          },
+          "timing": {
+            "duration": {
+              "name": "skeleton.anim.duration",
+              "cssVar": "--fsds-skeleton-anim-duration",
+              "category": "anim",
+              "layer": "core",
+              "source": "tokens-sidecar",
+              "isLiteral": false,
+              "resolvesTo": "core.motion.duration.long",
+              "rawValue": "400ms"
+            },
+            "multiplier": 2,
+            "easing": {
+              "token": {
+                "name": "skeleton.anim.easing",
+                "cssVar": "--fsds-skeleton-anim-easing",
+                "category": "anim",
+                "layer": "core",
+                "source": "tokens-sidecar",
+                "isLiteral": false,
+                "resolvesTo": "core.motion.easing.standard",
+                "rawValue": "cubic-bezier(0.4, 0, 0.2, 1)"
+              }
+            }
+          },
+          "reducedMotion": {
+            "value": 1
+          },
+          "realization": {
+            "web": "css-keyframes",
+            "nonWeb": "unrealized"
+          }
+        },
+        {
+          "name": "pulse",
+          "target": {
+            "name": "root",
+            "isCompound": false,
+            "isRootOnly": true,
+            "nativeTag": "div",
+            "details": {
+              "tag": "div",
+              "description": "Loading placeholder host that carries busy state and optional loading label.",
+              "role": "root",
+              "aria": {
+                "attributes": [
+                  "aria-busy",
+                  "aria-label"
+                ]
+              }
+            }
+          },
+          "driver": "repeat",
+          "when": {
+            "variant": "animate",
+            "equals": "pulse"
+          },
+          "effect": {
+            "kind": "opacity",
+            "keyframes": [
+              {
+                "offset": 0,
+                "value": 1
+              },
+              {
+                "offset": 0.5,
+                "value": 0.5
+              },
+              {
+                "offset": 1,
+                "value": 1
+              }
+            ]
+          },
+          "timing": {
+            "duration": {
+              "name": "skeleton.anim.duration",
+              "cssVar": "--fsds-skeleton-anim-duration",
+              "category": "anim",
+              "layer": "core",
+              "source": "tokens-sidecar",
+              "isLiteral": false,
+              "resolvesTo": "core.motion.duration.long",
+              "rawValue": "400ms"
+            },
+            "multiplier": 3,
+            "easing": {
+              "cubicBezier": [
+                0.42,
+                0,
+                0.58,
+                1
+              ]
+            }
+          },
+          "reducedMotion": {
+            "value": 1
+          },
+          "realization": {
+            "web": "css-keyframes",
+            "nonWeb": "unrealized"
+          }
+        }
+      ],
+      "transitions": []
+    }
+  },
   "variants": {
     "variant": [
       "block",

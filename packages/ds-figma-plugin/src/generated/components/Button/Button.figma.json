@@ -413,6 +413,17 @@
       "selector": ".button[aria-busy=\"true\"] .button__loadingText"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": null,
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": []
+    }
+  },
   "variants": {
     "size": [
       "small",

@@ -9,6 +9,7 @@ import { generateSvelteComponentSource } from "./frameworks/svelte/component-sou
 import { generateAngularComponentSource } from "./frameworks/angular/component-source.js";
 import { generateLitComponentSource } from "./frameworks/lit/component-source.js";
 import { generateReactNativeComponentSource } from "./frameworks/react-native/component-source.js";
+import { toFigmaComponentDescriptor } from "./frameworks/figma/factory.js";
 import { createContractValidator } from "./validate.js";
 
 function load(): ComponentContract {
@@ -61,6 +62,30 @@ describe("contract-bound sequence composition", () => {
     expect(source).toContain("onPress={sequence.rotate}");
     expect(source).toContain("<SequenceChildren sequence={sequence}");
     expect(source).not.toContain("setSlideValue");
+  });
+  it("retains sequence semantics in serialized Figma metadata without claiming execution", () => {
+    const contract = load();
+    contract.channels!.position = contract.channels!.slide;
+    delete contract.channels!.slide;
+    contract.sequence!.channel = "position";
+    const ir = buildComponentIR(contract);
+    const descriptor = JSON.parse(JSON.stringify(toFigmaComponentDescriptor(ir)));
+    expect(descriptor.motion).toMatchObject({
+      realization: "descriptor-only",
+      facts: {
+        honorsReducedMotion: true,
+        sequence: {
+          channel: "position", itemsProp: "slides",
+          timing: { durationProp: "duration", autoPlayProp: "autoPlay", defaultMs: 6000 },
+          transition: { durationMs: 250, referenceWidth: 320, minMultiplier: 0.5, maxMultiplier: 2 },
+          progress: [
+            { driver: { source: "sequence.advance" }, effect: "elapsed-width" },
+            { driver: { source: "sequence.advance" }, effect: "elapsed-ring" },
+          ],
+        },
+      },
+    });
+    expect(descriptor.motion.facts).toEqual(ir.motion);
   });
   it.each([
     ["missing movement token", (c: ComponentContract) => { c.motion!.sequenceTransition!.durationToken = "missing"; }],

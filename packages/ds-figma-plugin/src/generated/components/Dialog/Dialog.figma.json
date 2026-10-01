@@ -773,6 +773,42 @@
       "selector": ".dialog--full .dialog__modal"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "open",
+          "trigger": "openness=closed→opening",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "dialog.motion.duration.enter",
+          "easingRef": "dialog.motion.easing.enter"
+        },
+        {
+          "name": "close",
+          "trigger": "openness=open→closing",
+          "realization": "declaration-only",
+          "phase": "exit",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "dialog.motion.duration.exit",
+          "easingRef": "dialog.motion.easing.exit"
+        }
+      ]
+    }
+  },
   "variants": {
     "size": [
       "sm",
