@@ -2,9 +2,11 @@ id: DSH-CHECKPOINT-01
 title: 'Checkpoint DSH adapter documentation and ignore runtime logs'
 risk_tier: 3
 mode: chore
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Checkpointed the preserved DSH adapter guide and explicit runtime log ignore rule; documentation checks, governed rail, root and framework tests passed.'
 created_at: '2026-10-01T17:14:04.467Z'
-updated_at: '2026-10-01T17:14:13.896Z'
+updated_at: '2026-10-01T17:31:52.971Z'
 created_by_session: '01a0f873-f330-7d61-9f72-872170795c56'
 blast_radius:
   modules:
@@ -25,3 +27,10 @@ acceptance:
     then: 'the document is tracked byte-identically and the logs directory is ignored with no runtime files committed'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "e0822fe1f preserves the original DSH adapter document byte-identically; git ls-files .dsh lists only .dsh/AGENTS.md; git check-ignore verifies the explicit logs directory rule for both .log and .json files. Documentation gates, governed rail, root tests and all framework tests passed, and regeneration left no tracked drift."
+    recorded_at: "2026-10-01T17:31:25.867Z"
+    artifact_path: /private/tmp/dsh-checkpoint-verification.txt
+    commit_sha: e0822fe1f4415deb0e0970cfd4bfca5e877113f7
