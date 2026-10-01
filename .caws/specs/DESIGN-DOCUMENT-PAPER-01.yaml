@@ -2,9 +2,10 @@ id: DESIGN-DOCUMENT-PAPER-01
 title: 'Define shared Designer and Animator paper model, schemas and design coverage ledger'
 risk_tier: 2
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: design-document-paper
 created_at: '2026-10-01T07:12:19.497Z'
-updated_at: '2026-10-01T07:12:19.497Z'
+updated_at: '2026-10-01T07:12:40.326Z'
 created_by_session: '01a0f5b0-8c29-7670-82de-50f7c08d07da'
 blast_radius:
   modules:
