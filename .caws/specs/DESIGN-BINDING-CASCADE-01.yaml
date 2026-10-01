@@ -63,3 +63,11 @@ evidence:
     exit_code: 0
     artifact_path: e2e/design-bindings.spec.ts
     commit_sha: "70c443edbf8deaac8228aef101f97148832cad51"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Merged-main real composition PASS: retokened input fill, Switch toggle, Save state, Card radius 24px, media radius 16px, hover/rest fills; sibling defaults stay independent. Browser MCP computed styles on merged main: default Card radius/gap/padding/media radius 12/12/20/8px versus retokened 24/18/24/16px. Full 40-case binding plus brand-expression run PASS, including opposite-OS light/dark brand sweeps, menus, application Cards and narrow viewport. Owned gallery.png and raw logs retained under ignored docs/internal/input-visual-audit/design-bindings/."
+    recorded_at: "2026-10-01T00:42:38.481Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5173 pnpm exec playwright test e2e/design-bindings.spec.ts e2e/editor-binding-rail.spec.ts e2e/component-token-consumption.spec.ts --project=chromium --workers=2"
+    exit_code: 0
+    artifact_path: e2e/design-bindings.spec.ts
+    commit_sha: "70c443edbf8deaac8228aef101f97148832cad51"
