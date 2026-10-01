@@ -93,3 +93,11 @@ contracts:
   - name: 'analytical-output'
     type: contract-test
     path: 'e2e/analytical-composite.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: direct and nested magnitude tasks both refuse REL_EMBED_TASK_EXCEEDS_CHANNEL_BUDGET and name ratio-comparability at a truncated position baseline."
+    recorded_at: "2026-10-01T01:30:49.110Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
