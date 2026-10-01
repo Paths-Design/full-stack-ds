@@ -13,6 +13,7 @@ fs.cpSync(path.join(root, 'packages/ds-godot/addons'), path.join(project, 'addon
 fs.copyFileSync(path.join(root, 'packages/ds-godot/verification/sequence_budget.gd'), path.join(project, 'sequence_budget.gd'));
 fs.copyFileSync(path.join(root, 'packages/ds-godot/verification/sequence.gd'), path.join(project, 'sequence.gd'));
 fs.copyFileSync(path.join(root, 'packages/ds-godot/verification/sequence_render.gd'), path.join(project, 'sequence_render.gd'));
+fs.copyFileSync(path.join(root, 'packages/ds-godot/verification/sequence_accessibility.gd'), path.join(project, 'sequence_accessibility.gd'));
 const { buildComponentIR } = await import('../packages/ds-codegen/dist/ir.js');
 const { createGodotEmitter } = await import('../packages/ds-codegen/dist/frameworks/godot/factory.js');
 const base = path.join(root, 'packages/ds-contracts/components/Carousel/Carousel');
@@ -26,8 +27,27 @@ for (const file of createGodotEmitter().emitComponent(buildComponentIR(contract)
 }
 fs.writeFileSync(path.join(project, 'project.godot'), 'config_version=5\n[application]\nconfig/name="Sequence verification"\n[rendering]\nrenderer/rendering_method="gl_compatibility"\n');
 fs.writeFileSync(path.join(project, 'sequence_render_cli.gd'), 'extends SceneTree\nfunc _initialize() -> void:\n\troot.add_child.call_deferred(load("res://sequence_render.gd").new())\n');
+fs.writeFileSync(path.join(project, 'sequence_accessibility_cli.gd'), 'extends SceneTree\nfunc _initialize() -> void:\n\troot.add_child.call_deferred(load("res://sequence_accessibility.gd").new())\n');
 const godot = process.env.GODOT ?? '/Applications/Godot.app/Contents/MacOS/Godot';
 console.log('Evidence:', out);
+if (process.argv.includes('--inspect-ax')) {
+  const phase = process.env.FSDS_SEQUENCE_PHASE ?? 'moving';
+  if (!['moving', 'transfer'].includes(phase)) throw new Error('Unknown accessibility inspection phase');
+  const control = process.argv.includes('--ax-control');
+  const wrapperPath = path.join(project, 'addons/full_stack_ds/runtime/sequence_slide.gd');
+  if (control) {
+    const source = fs.readFileSync(wrapperPath, 'utf8');
+    if (source.split('not accessibility_current').length !== 2) throw new Error('Accessibility control input is not unique');
+    fs.writeFileSync(wrapperPath, source.replace('not accessibility_current', 'false'));
+  }
+  fs.writeFileSync(path.join(out, 'accessibility-config.json'), JSON.stringify({ runId, phase, control, wrapperSha256: crypto.createHash('sha256').update(fs.readFileSync(wrapperPath)).digest('hex') }, null, 2) + '\n');
+  const inspection = spawnSync(godot, ['--accessibility', 'always', '--path', project, '--script', 'res://sequence_accessibility_cli.gd'], { env: { ...process.env, FSDS_ENGINE_OUT: out, FSDS_ENGINE_RUN: runId, FSDS_SEQUENCE_PHASE: phase }, encoding: 'utf8', timeout: 120000 });
+  const log = (inspection.stdout ?? '') + (inspection.stderr ?? '');
+  fs.writeFileSync(path.join(out, 'accessibility-inspection.log'), log);
+  if (inspection.error || inspection.status !== 0 || /SCRIPT ERROR|Parse Error/.test(log)) throw new Error('Accessibility inspection failed to run');
+  console.log('Inspection ended. Native accessibility-tree assertions require an external inspector; no automatic accessibility pass is claimed.');
+  process.exit(0);
+}
 for (const script of ['sequence_budget', 'sequence']) {
 const parsed = spawnSync(godot, ['--headless', '--path', project, '--check-only', '--script', `res://addons/full_stack_ds/runtime/${script}.gd`], { encoding: 'utf8', timeout: 15000 });
 const parseLog = (parsed.stdout ?? '') + (parsed.stderr ?? '');
@@ -40,7 +60,7 @@ process.stdout.write(log);
 if (result.error || result.status !== 0 || /SCRIPT ERROR|Parse Error|Assertion failed/.test(log)) throw new Error('Godot sequence verification failed');
 const receipt = log.split('\n').filter(line => line.startsWith('{')).map(line => JSON.parse(line)).find(value => value.kind.startsWith('godot-sequence'));
 if (!receipt?.passed) throw new Error('Missing passing sequence receipt');
-fs.writeFileSync(path.join(out, script + '-receipt.json'), JSON.stringify({ ...receipt, inputs: Object.fromEntries(['runtime/sequence_budget.gd', 'runtime/sequence.gd', 'runtime/budget_progress.gd', 'components/Carousel/Carousel.gd'].map(file => [file, crypto.createHash('sha256').update(fs.readFileSync(path.join(project, 'addons/full_stack_ds', file))).digest('hex')])) }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, script + '-receipt.json'), JSON.stringify({ ...receipt, inputs: Object.fromEntries(['runtime/sequence_budget.gd', 'runtime/sequence.gd', 'runtime/sequence_slide.gd', 'runtime/budget_progress.gd', 'components/Carousel/Carousel.gd'].map(file => [file, crypto.createHash('sha256').update(fs.readFileSync(path.join(project, 'addons/full_stack_ds', file))).digest('hex')])) }, null, 2) + '\n');
 }
 function checkRenderReceipt(directory, exported) {
   const receipt = JSON.parse(fs.readFileSync(path.join(directory, 'render-receipt.json'), 'utf8'));
@@ -57,7 +77,8 @@ if (process.argv.includes('--render') || process.argv.includes('--export')) {
   checkRenderReceipt(out, false);
 }
 if (process.argv.includes('--export')) {
-  fs.writeFileSync(path.join(project, 'main.tscn'), '[gd_scene load_steps=2 format=3]\n[ext_resource type="Script" path="res://sequence_render.gd" id="1"]\n[node name="SequenceProbe" type="Node"]\nscript=ExtResource("1")\n');
+  fs.writeFileSync(path.join(project, 'main.gd'), 'extends Node\nfunc _ready() -> void:\n\tvar probe := "sequence_accessibility" if OS.get_environment("FSDS_SEQUENCE_PHASE") in ["moving", "transfer"] else "sequence_render"\n\tadd_child(load("res://" + probe + ".gd").new())\n');
+  fs.writeFileSync(path.join(project, 'main.tscn'), '[gd_scene load_steps=2 format=3]\n[ext_resource type="Script" path="res://main.gd" id="1"]\n[node name="SequenceProbe" type="Node"]\nscript=ExtResource("1")\n');
   const settings = path.join(project, 'project.godot');
   fs.writeFileSync(settings, fs.readFileSync(settings, 'utf8').replace('[application]', '[application]\nrun/main_scene="res://main.tscn"').replace('[rendering]', '[rendering]\ntextures/vram_compression/import_etc2_astc=true'));
   fs.writeFileSync(path.join(project, 'export_presets.cfg'), '[preset.0]\nname="macOS"\nplatform="macOS"\nrunnable=true\nexport_filter="all_resources"\ninclude_filter="*.json"\nexclude_filter=""\nexport_path=""\n[preset.0.options]\napplication/bundle_identifier="org.fullstackds.carousel.probe"\ncodesign/codesign=0\n');
@@ -77,7 +98,7 @@ if (process.argv.includes('--export')) {
   const executable = path.join(bin, fs.readdirSync(bin)[0]);
   const witness = path.join(out, 'exported-witness');
   fs.mkdirSync(witness);
-  const player = spawnSync(executable, [], { cwd: extracted, env: { ...process.env, FSDS_ENGINE_OUT: witness, FSDS_ENGINE_RUN: runId }, encoding: 'utf8', timeout: 60000 });
+  const player = spawnSync(executable, [], { cwd: extracted, env: { ...process.env, FSDS_ENGINE_OUT: witness, FSDS_ENGINE_RUN: runId, FSDS_SEQUENCE_PHASE: '' }, encoding: 'utf8', timeout: 60000 });
   const log = (player.stdout ?? '') + (player.stderr ?? '');
   fs.writeFileSync(path.join(witness, 'player.log'), log);
   if (player.error || player.status !== 0 || /SCRIPT ERROR|Parse Error|Assertion failed/.test(log)) throw new Error('Exported Carousel failed; inspect its player log');
@@ -88,6 +109,7 @@ if (process.argv.includes('--export')) {
 }
 if (process.argv.includes('--mutations')) {
   const controls = [
+    { name: 'current-slide-accessibility', file: 'runtime/sequence.gd', from: 'slides[i].wrapper.accessibility_current = i == budget.index and budget.count > 0', to: 'slides[i].wrapper.accessibility_current = true', test: 'sequence' },
     { name: 'linear-size-scaling', file: 'runtime/sequence.gd', from: 'sqrt(viewport.size.x / float(profile.referenceWidth))', to: 'viewport.size.x / float(profile.referenceWidth)', test: 'sequence' },
     { name: 'content-minimum', file: 'runtime/sequence.gd', from: 'minimum = minimum.max(slide.body.get_combined_minimum_size())', to: 'minimum = Vector2(0, 160)', test: 'sequence' },
     { name: 'system-motion-preference', file: 'runtime/sequence.gd', from: 'reduced_motion or system_motion_preference == 1', to: 'reduced_motion', test: 'sequence' },

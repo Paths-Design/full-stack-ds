@@ -66,6 +66,7 @@ func _run() -> void:
 	var width: float = carousel.viewport.size.x
 	check(outgoing < -1 and outgoing > -width and incoming > 1 and incoming < width, "directional intermediate native tween geometry")
 	check(carousel.budget.pauses.has("transition"), "motion owns reading pause")
+	check(not carousel.slides[0].wrapper.accessibility_current and carousel.slides[1].wrapper.accessibility_current, "only incoming content belongs in assistive traversal during movement")
 	carousel.previous.pressed.emit()
 	check(absf(carousel.slides[0].wrapper.position.x - outgoing) < 0.01, "interruption retains current position")
 	await create_timer(0.32).timeout

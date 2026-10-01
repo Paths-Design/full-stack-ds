@@ -86,6 +86,34 @@ failures for removed acknowledgement, stale-completion protection, reduced-motio
 steps, system preference coupling, pointer intent, spatial interpolation, the size
 cap, square-root scaling, composed content sizing and the generated index binding.
 A parser error, crash or timeout is inconclusive and fails the mutation run.
+The current-slide accessibility binding is checked separately from the native
+accessibility tree: a correct boolean does not prove the platform received it.
+
+## Native accessibility inspection
+
+```bash
+node scripts/godot-sequence.mjs --inspect-ax
+node scripts/godot-sequence.mjs --inspect-ax --ax-control
+FSDS_SEQUENCE_PHASE=transfer node scripts/godot-sequence.mjs --inspect-ax
+```
+
+These commands enable accessibility for the probe process and open a native
+window for external inspection. They do not enable a system screen reader or
+assert an automatic accessibility pass. The moving fixture seeks and pauses the
+native tween: only Green slide action should be exposed, although both slides
+remain painted. Activating Next should expose Blue slide action instead. The
+scratch-only `--ax-control` removes the wrapper's native hidden flag; both actions
+should then be exposed. The transfer fixture expects the moved Blue action under
+Independent content and the retained Green action under Featured content.
+
+On the inspected macOS/Godot 4.7.2 editor-binary run, native accessibility-tree
+inspection reproduced both actions before repair, only the current action after
+repair, and both again with the hidden-flag control. Native Next activation also
+changed the exposed action correctly. This is tree and activation evidence, not
+spoken VoiceOver output. The packaged entry point accepts `FSDS_SEQUENCE_PHASE`
+for the same diagnostic, but the packaged transfer attempt timed out after 110
+seconds without a readable native tree. Exported accessibility and post-transfer
+assistive traversal remain unverified; ordinary exported rendering passed.
 
 The native adapter consumes normalized sequence/channel facts and accessible
 names. It currently presents both progress effects; authored presentation variants
@@ -95,7 +123,7 @@ samples Godot's `accessibility_should_reduce_animation` query before navigation
 and on each processing frame, with `reduced_motion` as an additional host request.
 Actual OS setting changes have not been driven in the local witness; changes are
 tested through the query boundary. Engines without the query retain an explicit
-unknown status. Screen-reader traversal during outgoing movement, announcements,
+unknown status. Screen-reader speech, announcements,
 editor-authored scene serialization, arbitrary child lifecycle behavior and
 other operating systems remain unverified. The exported-app probe establishes
 the bounded rendered transition and progress-paint scenario; the wider timer,

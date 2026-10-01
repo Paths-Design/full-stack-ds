@@ -4,6 +4,7 @@ extends VBoxContainer
 signal index_requested(next: int)
 const Budget = preload("res://addons/full_stack_ds/runtime/sequence_budget.gd")
 const Progress = preload("res://addons/full_stack_ds/runtime/budget_progress.gd")
+const Slide = preload("res://addons/full_stack_ds/runtime/sequence_slide.gd")
 var configuration: Dictionary = {}
 var props: Dictionary = {}
 var budget = Budget.new()
@@ -98,7 +99,7 @@ func add_slide(key: String, body: Control) -> void:
 	assert(is_node_ready(), "Add consumer slides after the sequence enters the scene tree")
 	assert(body.get_parent() == null, "Consumer must release its Control before transferring it")
 	for slide in slides: assert(slide.key != key, "Duplicate slide identity")
-	var wrapper := PanelContainer.new()
+	var wrapper := Slide.new()
 	wrapper.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	viewport.add_child(wrapper)
 	wrapper.add_child(body)
@@ -202,6 +203,7 @@ func _refresh() -> void:
 		slides[i].picker.disabled = not budget.valid()
 		slides[i].picker.set_pressed_no_signal(i == budget.index)
 		slides[i].picker.text = "●" if i != budget.index else ""
+		slides[i].wrapper.accessibility_current = i == budget.index and budget.count > 0
 		slides[i].wrapper.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_INHERITED if i == budget.index else Control.FOCUS_BEHAVIOR_DISABLED
 		slides[i].wrapper.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_INHERITED if i == budget.index else Control.MOUSE_BEHAVIOR_DISABLED
 	for projection in projections:
