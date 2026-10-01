@@ -115,9 +115,9 @@ evidence:
     commit_sha: e783c53e4
   - criterion_id: A6
     status: fail
-    evidence_ref: "At 6ae348621, the CI Carousel command now includes real Card compositions for all five web frameworks. Healthy browser suite 27 passed; intentional root-binding loss failed all five composition tests (/tmp/carousel-composition-binding-mutant.log), then restored healthy code passed again. Shared lifecycle assertions run in each web package; root 4657 and all framework suites passed. Vue coverage is 88.14 percent with the unchanged 87 percent floor, repairing the observed coverage gap. Governed rail and lint pass. Native execution lanes, remaining timer/ownership mutation obligations, Swift Carousel emission and Figma descriptor review remain open, so these bounded improvements do not satisfy A6."
-    recorded_at: "2026-10-01T04:56:31.522Z"
-    command: "CI=true FSDS_E2E_PORT=5202 pnpm run e2e:carousel"
+    evidence_ref: "Web composition commit 6ae348621 is on origin/main at 597d4784d; its remote browser and coverage jobs passed in run 36817791126, while Swift emission parity still failed because Carousel is absent. Unmerged native checkpoint db803d571 adds delayed native readback/completion/teardown tests. Removing movement ownership guards caused exactly three regressions (/tmp/carousel-native-ownership-mutant.log); restoring source returned the full RN package suite to 211 passes. Earlier native pause-enforcement mutation caused four failures. These are real adapter executions against a native API shim, not native-driver or pixel evidence. Native progress/emitter integration, platform runtime lanes and Figma descriptor review still prevent A6 completion."
+    recorded_at: "2026-10-01T05:25:02.244Z"
+    command: "pnpm run test:react-native"
     exit_code: 0
-    artifact_path: /tmp/carousel-composition-final-browser.log
-    commit_sha: "6ae348621"
+    artifact_path: /tmp/carousel-native-async-package.log
+    commit_sha: db803d571
