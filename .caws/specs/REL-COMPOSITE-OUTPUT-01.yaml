@@ -143,3 +143,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
     exit_code: 0
     commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Reversing grain field declarations retains co-registration; numeric site 1 and string site 1 refuse co-registration despite equal cardinality."
+    recorded_at: "2026-10-01T01:33:29.676Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
