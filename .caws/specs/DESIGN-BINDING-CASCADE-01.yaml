@@ -3,7 +3,6 @@ title: 'Preserve scoped design overrides across brand defaults and repair bindin
 risk_tier: 2
 mode: fix
 lifecycle_state: active
-worktree: design-binding-cascade
 created_at: '2026-10-01T00:19:18.493Z'
 updated_at: '2026-10-01T00:19:38.331Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
