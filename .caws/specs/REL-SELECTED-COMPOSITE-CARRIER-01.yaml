@@ -5,7 +5,7 @@ mode: feature
 lifecycle_state: active
 worktree: selected-composite-carrier
 created_at: '2026-10-01T01:44:11.962Z'
-updated_at: '2026-10-01T01:44:53.968Z'
+updated_at: '2026-10-01T02:06:41.991Z'
 created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
 blast_radius:
   modules:
@@ -19,6 +19,7 @@ scope:
     - 'packages/ds-codegen/src/analytical/composite-output.test.ts'
     - 'docs/architecture/analytical-composite-output.md'
     - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen/src/analytical/authority.ts
   out: []
 invariants:
   - 'Output selection consumes retained carried meaning; downstream consumers never reinterpret source rows or mutable declarations'
