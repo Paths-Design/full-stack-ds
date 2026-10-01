@@ -38,3 +38,12 @@ contracts:
   - name: 'figma-motion-transfer'
     type: schema
     path: 'packages/ds-codegen/src/frameworks/figma/descriptor.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Source 480b40817 merged at 99f0741c8: serialized Carousel regression retains renamed channel, dwell default and token references, both shared-budget progress bindings, movement profile and normalized reduced-motion facts. Descriptor schema rejects executable realization labels and accepts older v1 descriptors. The regression failed before the emitter repair (/tmp/carousel-figma-motion-red.log). Root run on the isolated branch passed 4659 tests; generated descriptor inspected after required regeneration. This is metadata preservation, not Figma prototype execution."
+    recorded_at: "2026-10-01T06:31:08.571Z"
+    command: pnpm test
+    exit_code: 0
+    artifact_path: /tmp/carousel-figma-landing-root.log
+    commit_sha: "480b40817"
