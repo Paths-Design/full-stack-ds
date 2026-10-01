@@ -111,11 +111,8 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Reviewed Accordion/Details/Breadcrumbs/NavList/NavTree semantic focus chains and the documented inward NavList offset. Browser cases verify shared colour/width/style/offset, independent override and clearing on Details and Switch across five Web frameworks; DevTools and rendered screenshots inspected."
-    recorded_at: "2026-10-01T02:28:03.919Z"
-    command: "FSDS_E2E_BASE=http://127.0.0.1:5175 pnpm exec playwright test e2e/component-token-cohesion.spec.ts e2e/design-bindings.spec.ts e2e/editor-binding-rail.spec.ts e2e/brand-expression.spec.ts --workers=2"
-    exit_code: 0
-    artifact_path: docs/internal/input-visual-audit/component-token-cohesion/fsds-cohesion-browser-final.log
+    evidence_ref: "Reviewed Accordion/Details/Breadcrumbs/NavList/NavTree semantic focus chains and documented inward NavList offset. Executed 70 browser cases including shared colour/width/style/offset, independent override and clearing across five Web frameworks; DevTools and rendered screenshots inspected. Raw execution log remains ignored at docs/internal/input-visual-audit/component-token-cohesion/fsds-cohesion-browser-final.log."
+    recorded_at: "2026-10-01T03:04:52.631Z"
     commit_sha: "38c798cb0eb2"
   - criterion_id: A2
     status: pass
