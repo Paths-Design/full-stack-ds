@@ -176,8 +176,12 @@ the actual sequence adapter; removing step quantization fails the reduced-motion
 regression. These remain host-shim behavior tests. An iOS Release fixture also
 renders the five quarter-step samples for both shapes, inspected as actual pixels.
 
-The generated component does not yet pass the movement profile into that primitive
-or bind `BudgetProgress` to its anatomy parts. Generated progress bindings,
+The generated component passes its normalized movement profile, reads duration and
+easing through native token resolution, and routes composed picker requests through
+the sequence controller. Generated-component tests reproduce missing movement and
+a second autoplay request while a controlled picker selection awaits acknowledgement.
+These tests observe the native API boundary, not rendered device motion.
+The component does not yet bind `BudgetProgress` to its anatomy parts. Generated progress bindings,
 native styling and icons, rotation-control visibility
 for disabled timers, and generated-component simulator/device witnesses remain unfinished. Accordingly
 the IR's native sequence capability remains unrealized and the parity criterion

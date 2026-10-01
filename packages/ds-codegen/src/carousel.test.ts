@@ -85,11 +85,14 @@ describe("contract-bound sequence composition", () => {
     contract.channels!.position = contract.channels!.slide;
     delete contract.channels!.slide;
     contract.sequence!.channel = "position";
-    const ir = buildComponentIR(contract);
+    contract.anatomy = JSON.parse(JSON.stringify(contract.anatomy).replaceAll("channel:slide.", "channel:position."));
+    const ir = build(contract);
     const source = generateReactNativeComponentSource(ir).componentFile;
     expect(source).toContain("onIndexChange: setPositionValue");
     expect(source).toContain("index: position, labels: slides");
     expect(source).toContain('tokens.root?.["carousel.timing.advance"]');
+    expect(source).toContain("onIndexChange={sequence.select}");
+    expect(source).toContain('durationMs: Number(tokens.root?.["carousel.motion.duration"] ?? 250)');
     expect(source).toContain("onPress={sequence.next}");
     expect(source).toContain("onPress={sequence.previous}");
     expect(source).toContain("onPress={sequence.rotate}");

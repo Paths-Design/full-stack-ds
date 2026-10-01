@@ -1050,12 +1050,19 @@ function emitComponent(ir: ComponentIR): string {
   if (ir.motion.sequence) {
     const sequence = ir.motion.sequence;
     const duration = safePropName(ir, sequence.timing.durationProp);
+    const transition = sequence.transition;
+    const tokenRead = (name: string, fallback: string | number) => {
+      const scope = ir.tokenScopes.find(scope => scope.values.some(value => value.name === name))?.scope;
+      if (!scope) throw new Error(`NATIVE_SEQUENCE_TOKEN_MISSING: ${ir.name}.${name}`);
+      return `tokens.${scope}?.[${JSON.stringify(name)}] ?? ${JSON.stringify(fallback)}`;
+    };
+    const movement = transition ? `, { durationMs: Number(${tokenRead(transition.durationToken, transition.durationMs)}), easing: String(${tokenRead(transition.easingToken, transition.easing)}), referenceWidth: ${transition.referenceWidth}, minMultiplier: ${transition.minMultiplier}, maxMultiplier: ${transition.maxMultiplier} }` : "";
     lines.push(`${INDENT}const sequence = useSequence({`,
       `${INDENT}${INDENT}index: ${sequence.channel}, labels: ${safePropName(ir, sequence.itemsProp)},`,
       `${INDENT}${INDENT}autoPlay: ${safePropName(ir, sequence.timing.autoPlayProp)},`,
       `${INDENT}${INDENT}durationMs: ${duration} === undefined ? Number(tokens.root?.[${JSON.stringify(sequence.timing.durationToken)}] ?? ${sequence.timing.defaultMs}) : ${duration},`,
       `${INDENT}${INDENT}onIndexChange: set${capitalize(sequence.channel)}Value,`,
-      `${INDENT}}, children);`);
+      `${INDENT}}, children${movement});`);
   }
   if (autoDismiss) {
     const setter = `set${capitalize(autoDismiss.channel.name)}Value`;
@@ -2403,6 +2410,7 @@ function bindingExpr(binding: BindingExpression, ir: ComponentIR): string {
     return pathExpr(propName, binding.path);
   }
   if (binding.kind === "channel") {
+    if (binding.forwardValue === "sequence") return "sequence.select";
     if (binding.forwardValue === "pagedSet") return "pagedSet.request";
     if (binding.forwardValue) return `set${capitalize(binding.channel)}Value`;
     if (binding.field === "value") return pathExpr(binding.channel, binding.path);

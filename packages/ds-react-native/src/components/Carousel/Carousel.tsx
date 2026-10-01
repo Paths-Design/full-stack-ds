@@ -63,7 +63,7 @@ export function Carousel({
     autoPlay: autoPlay,
     durationMs: duration === undefined ? Number(tokens.root?.["carousel.timing.advance"] ?? 6000) : duration,
     onIndexChange: setSlideValue,
-  }, children);
+  }, children, { durationMs: Number(tokens.root?.["carousel.motion.duration"] ?? 250), easing: String(tokens.root?.["carousel.motion.easing"] ?? "cubic-bezier(0.4, 0, 0.2, 1)"), referenceWidth: 320, minMultiplier: 0.5, maxMultiplier: 2 });
   return (
     <View
       testID={testID}
@@ -114,7 +114,7 @@ export function Carousel({
           progress={(indicator === "pagination" ? "elapsed" : (indicator === "next" ? "none" : "elapsed"))}
           label="Choose slide"
           presentation="indicators"
-          onIndexChange={setSlideValue}
+          onIndexChange={sequence.select}
         />
         <Pressable
           style={styles.next}

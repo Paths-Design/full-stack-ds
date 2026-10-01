@@ -58,6 +58,18 @@ export const carouselTokenScopes = {
       ref: "core.shape.radius.full",
       fallback: 9999,
     },
+    "carousel.motion.duration": {
+      name: "carousel.motion.duration",
+      cssVar: "--fsds-carousel-motion-duration",
+      ref: "core.motion.duration.medium",
+      fallback: 250,
+    },
+    "carousel.motion.easing": {
+      name: "carousel.motion.easing",
+      cssVar: "--fsds-carousel-motion-easing",
+      ref: "core.motion.easing.standard",
+      fallback: "cubic-bezier(0.4, 0, 0.2, 1)",
+    },
   },
 } satisfies ComponentTokenScopes;
 
