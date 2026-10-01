@@ -129,3 +129,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
     exit_code: 0
     commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "projection-boundaries.test.ts: Both operand orders surface refusal ahead of unproven standing and retain both part origins; a cast unselected lowering request throws before producing output."
+    recorded_at: "2026-10-01T01:32:04.854Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
