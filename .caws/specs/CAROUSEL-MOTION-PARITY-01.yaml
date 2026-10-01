@@ -120,8 +120,6 @@ evidence:
     commit_sha: e11e388c7
   - criterion_id: A6
     status: fail
-    evidence_ref: "At unmerged d33ef6963 the generated Godot component fixture and all eleven behavioral mutation controls pass their expected baseline/negative outcomes; /tmp/carousel-godot-witness/36143b82-84ec-40a2-ace8-7006c0a5959a contains receipts and logs. The current-slide accessibility binding mutation is an engine assertion, while the native hidden-flag control was separately inspected through CUA and is not counted as an automatic AX gate. A fresh exported macOS app passed normal-main-scene rendering, with archive/executable/source provenance preserved at /tmp/carousel-godot-witness/dbacd239-1532-45c5-b680-4744b694f40c/exported-witness. Exported transfer accessibility timed out and remains inconclusive. Scoped lint, doc links and diff checks pass. No new overall CI or all-platform parity success is claimed; remaining native contracts, emitters, presentation and accessibility witnesses keep A6 open. CAWS checks source reachability, not command execution."
-    recorded_at: "2026-10-01T09:06:01.224Z"
-    command: node scripts/godot-sequence.mjs --mutations
-    exit_code: 0
-    commit_sha: d33ef6963353fa1e7d0ffb35747b52e007199b20
+    evidence_ref: "Source e11e388c7 passed the required generated-artifact rail, root suite (4747 tests), framework suites and 32 five-web Carousel browser witnesses. Logs are /tmp/carousel-presentation-rail.log, /tmp/carousel-presentation-root.log, /tmp/carousel-presentation-frameworks.log and /tmp/carousel-presentation-browser.log. The shared presentation test initially used a Vitest-only matcher; portable assertions then passed Angular (537), React Native (222) and the shared web sequence suite (105), recorded in /tmp/carousel-presentation-angular-final.log, /tmp/carousel-presentation-native-final.log and /tmp/carousel-presentation-shared-final.log. Godot baseline and all thirteen behavioral mutation controls passed; /tmp/carousel-godot-witness/6c39a341-b482-4e9a-9e74-3c7fd958836e. The generated iOS consumer verifies a bounded actual autoplay transition, while native presentation and other platform lanes remain incomplete. No overall CI or all-platform parity success is claimed. A6 remains unsatisfied; CAWS verifies source reachability only."
+    recorded_at: "2026-10-01T15:05:35.953Z"
+    commit_sha: e11e388c7
