@@ -66,6 +66,13 @@ acceptance:
       Only in-range integer requests are emitted, accepted state remains controlled
       by the owner, unavailable and empty collections disable navigation, and the
       compact form is demonstrated and verified across the five web frameworks
+  - id: A5
+    given: 'Shared ordered-set state and independently supplied item completion and progress'
+    when: 'A display-only projection or an interactive location selector is generated'
+    then: >-
+      Values do not introduce interactive hosts or navigation actions and selecting
+      a location does not infer or mutate activity completion; the representation
+      and examples preserve that boundary
 rollback:
   - 'Revert the extraction commit and regenerate contract-owned sources.'
 non_functional: {}
