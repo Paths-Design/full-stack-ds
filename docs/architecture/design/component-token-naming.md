@@ -46,14 +46,16 @@ opt-in. The design migration script and semantic validator share the coverage ru
 there is no exception ledger. Property identity, namespace, independent addresses,
 token consumption, fallback freshness and brand destinations remain separate gates.
 
-## Public API migration
+## Component address normalization
 
 `COMPONENT-TOKEN-COHESION-01` removes terminal `default` from base slots throughout
 the corpus and updates sidecars, brand destinations, native consumers and generated
-outputs together. CSS address spelling follows the same rename: for example,
+outputs together. Component realizations consume component-scoped tokens, so
+their readers migrate with their declarations. CSS address spelling follows
+the same rename: for example,
 `--fsds-button-size-gap-default` becomes `--fsds-button-size-gap`, and
-`--fsds-avatar-size-default` becomes `--fsds-avatar-size`. Consumers must update
-their authored overrides. Retired names are not emitted as compatibility aliases.
+`--fsds-avatar-size-default` becomes `--fsds-avatar-size`. No consumer migration
+map is needed. Retired names are not emitted as compatibility aliases.
 Existing design binding addresses and variant props retain their identities.
 
 The rename preserves authored values and semantic references. Separate corrections

@@ -82,7 +82,8 @@ read the actual declared token addresses. The emitted-artifact audit also
 rejects unknown native reads instead of losing them during projection. Focus
 and code typography consume shared semantic families while independent Web
 design overrides retain clearing behavior. These are bounded source and browser
-facts; public address migration still requires consumers to update their overrides.
+facts. Component-scoped declarations and their readers migrate together within
+the packages; consumer design-binding addresses retain their identities.
 
 The operative concern is governance, not composition. "Compositional" describes the result; governance describes the work. A system has the normal form when the rules about what can be composed with what, by whom, and under what guarantees are encoded structurally — in contracts, IRs, fail-loud boundaries, mutable/immutable site discipline, and consumer-facing descriptors — rather than encoded socially in convention, review culture, or institutional memory.
 

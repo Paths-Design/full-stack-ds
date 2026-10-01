@@ -56,7 +56,7 @@ const REPO = resolve(HERE, "../..");
 const REACT = resolve(REPO, "packages/ds-react/src/components");
 const PRIMITIVES = resolve(REPO, "packages/ds-react/src/primitives");
 const GLOBAL_TOKENS = resolve(REPO, "packages/ds-tokens/generated/tokens.css");
-const OUT_DIR = resolve(REPO, "docs/token-resolvability-audit");
+const OUT_DIR = resolve(REPO, "docs/internal/token-resolvability-audit");
 const LEDGER_PATH = resolve(HERE, "known-unresolvable.json");
 
 const readText = (p) => (existsSync(p) ? readFileSync(p, "utf8") : "");

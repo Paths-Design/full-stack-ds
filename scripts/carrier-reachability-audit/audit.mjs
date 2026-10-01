@@ -48,7 +48,7 @@ import { getCssPrefix } from "../../packages/ds-codegen/dist/contract.js";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../..");
 const CONTRACTS = resolve(REPO, "packages/ds-contracts/components");
-const OUT_DIR = resolve(REPO, "docs/carrier-reachability-audit");
+const OUT_DIR = resolve(REPO, "docs/internal/carrier-reachability-audit");
 const LEDGER_PATH = resolve(HERE, "known-unreachable.json");
 
 /**

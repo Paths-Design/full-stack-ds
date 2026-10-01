@@ -50,7 +50,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../..");
 const CONTRACTS = resolve(REPO, "packages/ds-contracts/components");
 const REACT = resolve(REPO, "packages/ds-react/src/components");
-const OUT_DIR = resolve(REPO, "docs/state-suppression-audit");
+const OUT_DIR = resolve(REPO, "docs/internal/state-suppression-audit");
 const LEDGER_PATH = resolve(HERE, "known-leaks.json");
 
 /** Interaction pseudos the codegen can emit, per DERIVABLE_STATE_TO_PSEUDO. */
