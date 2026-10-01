@@ -14,7 +14,7 @@ governs:
 
 This is a proposed paper model, not an implemented editor or a ratified interchange standard. It describes authored meaning before a canvas UI, renderer, host, or code target is selected. The schemas qualify original examples against a deliberately small candidate vocabulary; they do not enter component discovery, code generation, token builds, CI admission, or runtime evaluation.
 
-Read [relationships and semantics](relationships.md), then [design coverage](design-coverage.md). The machine-readable [design ledger](../../../../packages/ds-contracts/document-model/design-ledger.json) records what has and has not received a design. Its statuses describe design coverage, schema coverage, and runtime evidence separately. A schema-shaped record does not settle an open semantic decision.
+Read [relationships and semantics](relationships.md), [composition authoring](authoring.md), [worked expectations](worked-expectations.md), then [design coverage](design-coverage.md). The machine-readable [design ledger](../../../../packages/ds-contracts/document-model/design-ledger.json) records what has and has not received a design. Its statuses describe design coverage, schema coverage, and runtime evidence separately. A schema-shaped record does not settle an open semantic decision.
 
 ## Confirmed product direction
 
@@ -44,11 +44,11 @@ The JSONL is authoritative for page edits. The manifest's dependency selection i
 
 ## Candidate schemas and examples
 
-The [schema directory](../../../../packages/ds-contracts/document-model/) contains `common`, `project`, `default-profile`, `visual-node`, `document`, `page-record`, `prototype-plan`, and `design-ledger` schemas using JSON Schema Draft 2020-12. Version `0.1.0` identifies this candidate, not a supported migration policy. Objects reject unknown core fields; future extensions require a deliberate versioned contract.
+The [schema directory](../../../../packages/ds-contracts/document-model/) contains `common`, `project`, `default-profile`, `definition`, `visual-node`, `motion`, `edit-operation`, `document`, `page-record`, `prototype-plan`, `paper-expectations`, and `design-ledger` schemas using JSON Schema Draft 2020-12. Version `0.2.0` identifies this candidate, not a supported migration policy. Objects reject unknown core fields; future extensions require a deliberate versioned contract.
 
-The [project example](../../../../packages/ds-contracts/document-model/examples/project.json) selects original token and default-profile files. The [document example](../../../../packages/ds-contracts/document-model/examples/document.json) contains one frame, a reusable component instance, two scenes over that frame, two translation tracks, and two occurrences separated by an explicit cut. It has no generated-source address.
+The [project example](../../../../packages/ds-contracts/document-model/examples/project.json) selects original token and default-profile files. The [document example](../../../../packages/ds-contracts/document-model/examples/document.json) contains two composition-owned frames, two independent Button instances sharing one definition, local arrow content, scene-local translation and visibility tracks, and two occurrences separated by an explicit cut. It has no generated-source address.
 
-The [page log](../../../../packages/ds-contracts/document-model/examples/page.jsonl) describes initialization, a local override, and reset as complete accepted transactions. The [prototype plan](../../../../packages/ds-contracts/document-model/examples/prototype-plan.json) selects a prospective adapter and output directory. Neither example performs persistence or starts an adapter. The component dependency is an original declarative stub, not a working component package.
+The [page log](../../../../packages/ds-contracts/document-model/examples/page.jsonl) describes initialization, addressed base/key edits, slot supply/reset, insertion and compensating undo/redo as proposed accepted transactions. The [prototype plan](../../../../packages/ds-contracts/document-model/examples/prototype-plan.json) selects a prospective adapter and output directory. Neither example performs persistence or starts an adapter. The component dependency is an original definition interface, not a working component package. Old 0.1.0 examples remain in Git; the current draft does not migrate or reinterpret them.
 
 Run from the repository root:
 
