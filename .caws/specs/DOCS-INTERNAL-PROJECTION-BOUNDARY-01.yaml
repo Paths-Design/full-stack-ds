@@ -36,11 +36,10 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Injected internal file is never read; index pages and graph match the public-only fixture. Predecessor fails three assertions, repaired projection passes all 16 scoped tests."
-    recorded_at: "2026-10-01T03:38:24.003Z"
+    evidence_ref: "Inspected src/docs/projection.test.ts at 6a6a3ee7f: injected internal file is never read and public index pages and graph unchanged. Executed receipt tmp/verification/docs-internal-projection/after.log has 16 passing scoped tests; predecessor receipt /private/tmp/fsds-docs-internal-before.log has three failures. Runtime receipts are ignored and are not claimed as tracked artifacts."
+    recorded_at: "2026-10-01T03:41:47.638Z"
     command: pnpm exec vitest run src/docs/projection.test.ts src/docs/projection.corpus.test.ts
     exit_code: 0
-    artifact_path: /private/tmp/fsds-docs-internal-after.log
     commit_sha: "6a6a3ee7f8174f88d49d51fab6c2631995345830"
   - criterion_id: A2
     status: pass
