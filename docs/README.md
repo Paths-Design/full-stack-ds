@@ -31,6 +31,8 @@ Some authority/status combinations require extra fields (`governs`, `verified_at
 
 ## Layout
 
+The [shared Designer and Animator paper model](architecture/design/shared-document-model/README.md) proposes document relationships, isolated draft schemas, and a design coverage ledger. It does not claim an implemented editor or change component contract authority.
+
 ```
 docs/
   README.md                              # This file (exempt from frontmatter rules)

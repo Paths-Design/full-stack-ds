@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "project.defaults",
+  "revision": "example-v1",
+  "profiles": [
+    {
+      "id": "defaults.frame",
+      "nodeKind": "frame",
+      "properties": {
+        "transform.translation.x": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "transform.translation.y": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "appearance.opacity": {
+          "kind": "literal",
+          "valueType": "number",
+          "value": 1
+        }
+      }
+    },
+    {
+      "id": "defaults.component-instance",
+      "nodeKind": "component-instance",
+      "properties": {
+        "transform.translation.x": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "transform.translation.y": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "appearance.opacity": {
+          "kind": "literal",
+          "valueType": "number",
+          "value": 1
+        }
+      }
+    }
+  ]
+}

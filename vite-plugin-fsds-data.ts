@@ -1,3 +1,4 @@
+import { buildCensus } from "./scripts/showcase-census";
 import { buildDesignBindings } from './packages/ds-codegen/src/design-properties';
 import type { ComponentContract as CodegenContract } from './packages/ds-codegen/src/contract';
 import { readFile, readdir } from "node:fs/promises";
@@ -8,7 +9,6 @@ import type { Plugin } from "vite";
 import type {
   ActivityEvent,
   BrandTokenSet,
-  Census,
   ComponentBundle,
   ComponentContract,
   ComponentSources,
@@ -16,7 +16,6 @@ import type {
   Framework,
   PrimitiveBundle,
   SourceFile,
-  TargetCensus,
   UsageLine,
 } from "./src/types/data";
 import { buildBoxModelSurface } from "./material-surface";
@@ -59,119 +58,6 @@ const PRIMITIVE_FILES: Record<Framework, string[]> = {
   angular: ["Stack.component.ts", "index.ts"],
   lit: ["Stack.ts", "index.ts"],
 };
-
-/** Where each registry target's generated component realizations live on disk.
- * `dir` is empty for descriptor-only targets (figma). Used by the census to
- * count shipped components and files instead of trusting prose. */
-const TARGET_COMPONENT_DIR: Record<string, { family: TargetCensus["family"]; dir: string }> = {
-  react: { family: "web", dir: "packages/ds-react/src/components" },
-  vue: { family: "web", dir: "packages/ds-vue/src/components" },
-  svelte: { family: "web", dir: "packages/ds-svelte/src/components" },
-  angular: { family: "web", dir: "packages/ds-angular/src/components" },
-  lit: { family: "web", dir: "packages/ds-lit/src/components" },
-  "react-native": { family: "native", dir: "packages/ds-react-native/src/components" },
-  swiftui: { family: "native", dir: "packages/ds-swiftui/Sources/DsSwiftUI/Components" },
-  figma: { family: "descriptor", dir: "" },
-};
-
-async function countDirs(dir: string): Promise<number> {
-  if (!existsSync(dir)) return 0;
-  const entries = await readdir(dir, { withFileTypes: true });
-  return entries.filter((e) => e.isDirectory()).length;
-}
-
-async function countFilesRecursive(dir: string): Promise<number> {
-  if (!existsSync(dir)) return 0;
-  const entries = await readdir(dir, { withFileTypes: true });
-  let n = 0;
-  for (const e of entries) {
-    const p = path.join(dir, e.name);
-    n += e.isDirectory() ? await countFilesRecursive(p) : 1;
-  }
-  return n;
-}
-
-async function listDirNames(dir: string): Promise<string[]> {
-  if (!existsSync(dir)) return [];
-  const entries = await readdir(dir, { withFileTypes: true });
-  return entries.filter((e) => e.isDirectory()).map((e) => e.name);
-}
-
-/** Census the packages/ tree so the landing page renders live numbers. Reads
- * fsds.targets.json for the admitted target list and counts what each target
- * actually ships on disk. Never throws — a missing dir censuses as 0/none. */
-async function buildCensus(rootDir: string, components: ComponentBundle[], foundationTokenCount: number): Promise<Census> {
-  const allowlisted = new Set<string>();
-  let registryIds: string[] = [];
-  try {
-    const reg = JSON.parse(await readFile(path.join(rootDir, "fsds.targets.json"), "utf8")) as {
-      targets?: { id: string; components?: unknown[] }[];
-    };
-    for (const t of reg.targets ?? []) {
-      registryIds.push(t.id);
-      if (Array.isArray(t.components) && t.components.length > 0) allowlisted.add(t.id);
-    }
-  } catch {
-    registryIds = Object.keys(TARGET_COMPONENT_DIR);
-  }
-
-  const corpusTotal = components.length;
-  const targets: TargetCensus[] = [];
-  const presence: Record<string, string[]> = {};
-  let generatedFiles = 0;
-  for (const id of registryIds) {
-    const meta = TARGET_COMPONENT_DIR[id];
-    if (!meta) continue;
-    const abs = meta.dir ? path.join(rootDir, meta.dir) : "";
-    const names = meta.dir ? await listDirNames(abs) : [];
-    presence[id] = names;
-    const shipped = names.length;
-    if (meta.dir) generatedFiles += await countFilesRecursive(abs);
-    targets.push({
-      id,
-      family: meta.family,
-      componentsShipped: shipped,
-      parity: shipped > 0 && shipped >= corpusTotal ? "full" : shipped > 0 ? "partial" : "none",
-      allowlisted: allowlisted.has(id),
-    });
-  }
-
-  const codegenDir = path.join(rootDir, "packages/ds-codegen/src/frameworks");
-  let emitterOnly: string[] = [];
-  if (existsSync(codegenDir)) {
-    emitterOnly = (await readdir(codegenDir, { withFileTypes: true }))
-      .filter((e) => e.isDirectory())
-      .map((e) => e.name)
-      .filter((d) => !registryIds.includes(d))
-      .sort();
-  }
-
-  const primitives = existsSync(path.join(rootDir, "packages/ds-contracts/primitives"))
-    ? (await readdir(path.join(rootDir, "packages/ds-contracts/primitives")))
-        .filter((f) => f.endsWith(".primitive.json"))
-        .map((f) => f.replace(/\.primitive\.json$/, ""))
-        .sort()
-    : [];
-
-  const icons = await countDirs(path.join(rootDir, "packages/ds-iconography/icons"));
-
-  const componentTokenDeclarations = components.reduce((acc, c) => {
-    const t = c.contract.tokens;
-    return acc + (t ? Object.keys(t).length : 0);
-  }, 0);
-
-  return {
-    components: corpusTotal,
-    primitives,
-    icons,
-    foundationTokens: foundationTokenCount,
-    componentTokenDeclarations,
-    generatedFiles,
-    targets,
-    emitterOnly,
-    presence,
-  };
-}
 
 const VIRTUAL_ID = "virtual:fsds/data";
 const RESOLVED_ID = "\0" + VIRTUAL_ID;
