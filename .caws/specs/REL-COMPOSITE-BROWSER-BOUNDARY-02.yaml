@@ -115,3 +115,10 @@ evidence:
     command: "pnpm run e2e:analytical"
     exit_code: 0
     commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "Final full root suite passes 4668 tests, including immutable source/output custody and same-carrier format selection. Isolated transform-only controls at clean 30ca989ac remove output detachment and lowerer minting: the corresponding custody assertions fail, including independently tested forged readback. See custody/receipt.json, alias.log, seal.log and gates/root.log under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:34.743Z"
+    command: pnpm test --maxWorkers=4
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
