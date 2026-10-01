@@ -130,6 +130,39 @@ func _run() -> void:
 	initial_selection.add_slide("B", Label.new())
 	check(initial_selection.budget.index == 1 and initial_selection.slides[1].wrapper.visible and initial_selection._tween == null, "initial index survives incremental native composition without entry movement")
 	check(initial_selection.projections.filter(func(p): return p.item == 1)[0].paint.visible, "manual sequence retains current marker")
+	initial_selection.layout_direction = Control.LAYOUT_DIRECTION_RTL
+	initial_selection.size.x = 320
+	await process_frame
+	await process_frame
+	check(is_zero_approx(initial_selection.slides[1].wrapper.position.x), "RTL resize preserves active frame origin")
+	initial_selection.next.pressed.emit()
+	initial_selection._tween.pause()
+	initial_selection._tween.custom_step(0.125)
+	var fast_fraction: float = absf(initial_selection.slides[1].wrapper.position.x) / initial_selection.viewport.size.x
+	var widths: Array[float] = [initial_selection.viewport.size.x]
+	check(initial_selection.slides[1].wrapper.position.x > 0 and initial_selection.slides[0].wrapper.position.x < 0, "RTL reverses inline movement")
+	initial_selection._tween.custom_step(1.0)
+	initial_selection.size.x = 640
+	await process_frame
+	await process_frame
+	check(is_zero_approx(initial_selection.slides[0].wrapper.position.x), "larger RTL resize preserves active frame origin")
+	initial_selection.previous.pressed.emit()
+	initial_selection._tween.pause()
+	initial_selection._tween.custom_step(0.125)
+	var slow_fraction: float = absf(initial_selection.slides[0].wrapper.position.x) / initial_selection.viewport.size.x
+	widths.append(initial_selection.viewport.size.x)
+	check(fast_fraction > slow_fraction + 0.1, "larger viewport moves more slowly at the same elapsed time")
+	initial_selection._tween.custom_step(1.0)
+	initial_selection.size.x = 1280
+	await process_frame
+	await process_frame
+	initial_selection.next.pressed.emit()
+	initial_selection._tween.pause()
+	initial_selection._tween.custom_step(0.125)
+	var capped_fraction: float = absf(initial_selection.slides[1].wrapper.position.x) / initial_selection.viewport.size.x
+	widths.append(initial_selection.viewport.size.x)
+	check(widths == [320.0, 640.0, 1280.0], "fixture realizes the requested native viewport widths")
+	check(is_equal_approx(slow_fraction, capped_fraction), "viewport multiplier honors the declared duration cap")
 	initial_selection.free()
-	print(JSON.stringify({"kind":"godot-sequence-component", "passed":failures.is_empty(), "failures":failures, "requests":requests, "pointer":pointer_observations, "intermediate":{"outgoing":outgoing,"incoming":incoming}, "version":Engine.get_version_info().string}))
+	print(JSON.stringify({"kind":"godot-sequence-component", "passed":failures.is_empty(), "failures":failures, "requests":requests, "pointer":pointer_observations, "intermediate":{"outgoing":outgoing,"incoming":incoming}, "sizeFractions":[fast_fraction,slow_fraction,capped_fraction], "widths":widths, "version":Engine.get_version_info().string}))
 	quit(0 if failures.is_empty() else 1)

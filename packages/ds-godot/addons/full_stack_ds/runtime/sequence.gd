@@ -241,11 +241,14 @@ func _notification(what: int) -> void:
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN: budget.resume("application-focus", _now())
 	elif what == NOTIFICATION_APPLICATION_PAUSED: budget.pause("application-paused", _now())
 	elif what == NOTIFICATION_APPLICATION_RESUMED: budget.resume("application-paused", _now())
+	elif what == NOTIFICATION_LAYOUT_DIRECTION_CHANGED: _settle.call_deferred()
 
 func _resize() -> void:
 	if not is_instance_valid(viewport): return
 	for slide in slides: slide.wrapper.size = viewport.size
-	if _tween and _tween.is_running(): _settle()
+	# Godot preserves the right edge when sizing inherited RTL Controls. Restore
+	# our physical frame origin after sizing, even when no tween is running.
+	_settle()
 
 func _move(from: int) -> void:
 	if _tween: _tween.kill()

@@ -25,6 +25,8 @@ explicit restart, invalid composition and teardown. The generated component
 fixture uses real Godot Controls and engine event dispatch. It checks timer and
 control bindings, shared progress, background pause, retained consumer identity,
 transfer during movement, initial selection, and reduced-motion behavior. The
+geometry probe also compares equal elapsed time at increasing viewport widths,
+checks the duration cap, and reverses movement with native RTL layout. The
 intermediate geometry assertion seeks the actual native Tween deterministically;
 it does not measure wall-clock rendering speed. Pointer events include viewport
 entry and an explicit viewport size, as required for this injected-input setup.
@@ -37,7 +39,7 @@ paint sample, separate from naturally sampled movement and timed behavior.
 
 `--mutations` alters only copies in scratch projects. It requires behavioral
 failures for removed acknowledgement, stale-completion protection, reduced-motion
-steps, pointer intent, spatial interpolation and the generated index binding.
+steps, pointer intent, spatial interpolation, the size cap and the generated index binding.
 A parser error, crash or timeout is inconclusive and fails the mutation run.
 
 The native adapter consumes normalized sequence/channel facts and accessible

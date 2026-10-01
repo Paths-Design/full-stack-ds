@@ -56,6 +56,7 @@ if (process.argv.includes('--mutations')) {
     { name: 'progress-steps', file: 'runtime/budget_progress.gd', from: 'floorf(bounded * steps) / steps if reduced_motion else bounded', to: 'bounded', test: 'sequence' },
     { name: 'pointer-intent', file: 'runtime/sequence.gd', from: '_rotation_intent = not budget.playing if rotation_button.is_visible_in_tree() and rotation_button.get_global_rect().has_point(event.position) else null', to: '_rotation_intent = null', test: 'sequence' },
     { name: 'spatial-snap', file: 'runtime/sequence.gd', from: 'lerpf(target.start, target.end, eased)', to: 'target.end', test: 'sequence' },
+    { name: 'size-cap', file: 'runtime/sequence.gd', from: 'float(profile.maxMultiplier)', to: '1000.0', test: 'sequence' },
     { name: 'channel-binding', file: 'components/Carousel/Carousel.gd', from: '\\"valueProp\\":\\"index\\"', to: '\\"valueProp\\":\\"wrongIndex\\"', test: 'sequence' },
   ];
   const receipts = [];
