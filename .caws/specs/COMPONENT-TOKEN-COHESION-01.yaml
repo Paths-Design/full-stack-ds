@@ -126,9 +126,6 @@ evidence:
     commit_sha: "38c798cb0eb2"
   - criterion_id: A4
     status: pass
-    evidence_ref: "Merged at f6501fd76. Component contracts and framework package bytes match tested source 38c798cb0eb2. Required admission rail, zero-gap component consumption, documentation gates and all relocated audit gates pass on main; regeneration leaves tracked source clean. Component readers migrate with their slots; no consumer rename map remains. Audit reports are ignored under docs/internal, with authored notes retained. DevTools on merged main confirms shared focus changes and restoration."
-    recorded_at: "2026-10-01T03:00:41.291Z"
-    command: "pnpm run governed:rail"
-    exit_code: 0
-    artifact_path: docs/internal/input-visual-audit/component-token-cohesion/merged-rail.log
+    evidence_ref: "Merged at f6501fd76. Component contracts and framework package bytes match tested source 38c798cb0eb2. Executed required admission rail, zero-gap component consumption, documentation gates and relocated audit gates on main; regenerated tracked source stays clean. Component readers migrate with slots; no rename map remains. Audit reports are ignored under docs/internal and authored notes retained. DevTools on main confirms shared focus changes and restoration. Logs remain local ignored execution evidence under docs/internal/input-visual-audit/component-token-cohesion; commit verification checks source identity, not command replay."
+    recorded_at: "2026-10-01T03:05:17.912Z"
     commit_sha: f6501fd76afc67c06093d090ff9313dd8a6f069f
