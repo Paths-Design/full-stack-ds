@@ -71,3 +71,11 @@ evidence:
     recorded_at: "2026-10-01T16:41:06.696Z"
     artifact_path: packages/ds-contracts/document-model/design-ledger.json
     commit_sha: c6906ce83
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Observed isolated worktree checks at c6906ce83: paper verifier, docs claim/link checks, tokens build, governed rail, full root suite (327 files, 4747 tests) and all framework suites pass; Lit retains 2 baseline skips. Git source diff is confined to paper docs and document-model schemas/examples; no UI renderer emitter or generated-source changes. Logs /tmp/fsds-composition-paper-gates.log and /tmp/fsds-composition-paper-docs.log. No remote publication."
+    recorded_at: "2026-10-01T16:42:25.646Z"
+    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    artifact_path: packages/ds-contracts/document-model/verify.mjs
+    commit_sha: c6906ce83
