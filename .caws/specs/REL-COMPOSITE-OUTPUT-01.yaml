@@ -164,3 +164,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts --reporter=verbose
     exit_code: 0
     commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+  - criterion_id: A11
+    status: pass
+    evidence_ref: "Analytical suite 23 files/1112 tests, root suite 314 files/4625 tests, all framework suites, governed required-mode rail, codegen tsc, production lint, docs claims/links, CAWS budget/scope, freeze 166 erasures/130 verdicts and final quotient 34/34 all passed. Root typecheck fails on the same three pre-existing focus-trap Array.at errors in canonical main; no root-green claim. Stage-2 subtraction ratification remains open and is not discharged by these checks."
+    recorded_at: "2026-10-01T01:34:17.717Z"
+    command: pnpm test -- --reporter=dot
+    exit_code: 0
+    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
