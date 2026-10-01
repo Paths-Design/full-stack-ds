@@ -1,0 +1,56 @@
+id: REL-COMPOSITE-BROWSER-01
+title: 'Realize selected analytical output in the browser with independent geometry observation'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-01T02:28:52.351Z'
+updated_at: '2026-10-01T02:28:52.351Z'
+created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
+blast_radius:
+  modules:
+    - 'Node-side selected witness and browser artifact-only readback and metric realization'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/analytical-composite-preview.ts'
+    - 'vite.config.ts'
+    - 'src/globals.d.ts'
+    - 'src/components/analytical/AnalyticalCompositePreview.tsx'
+    - 'src/views/AnalyticalFixturesScratchView.tsx'
+    - 'e2e/analytical-composite.spec.ts'
+    - 'docs/architecture/analytical-composite-output.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The browser consumes produced artifacts without evaluator imports source rows or requalification'
+  - 'Rendered bounds and members use carried positions relationships and typed grain; atomic host framing ordering endpoint roles and stage2 ratification are not claimed'
+acceptance:
+  - id: A1
+    given: 'one selected nested carrier'
+    when: 'a Node provider emits readback and metric artifacts'
+    then: 'both formats reuse the same selected carrier and browser production build contains no Node evaluator'
+  - id: A2
+    given: 'retained artifacts'
+    when: 'the browser draws nested composition and readback'
+    then: 'actual screen geometry preserves values bounds field associations typed identity and panel membership with visible standing'
+  - id: A3
+    given: 'geometry association range panel or standing mutation'
+    when: 'an independent browser observer measures output'
+    then: 'every mutation changes or invalidates the observed result'
+  - id: A4
+    given: 'renamed fields and reordered source population'
+    when: 'the same browser consumer runs'
+    then: 'preservation holds without chart or fixture branches'
+  - id: A5
+    given: 'refused unproven unsupported and empty selections'
+    when: 'the provider and browser run'
+    then: 'no geometry is produced and disposition is visible'
+non_functional: {}
+contracts:
+  - name: 'browser-artifact-consumer'
+    type: behavior
+    path: 'src/components/analytical/AnalyticalCompositePreview.tsx'
+  - name: 'browser-output-observation'
+    type: contract-test
+    path: 'e2e/analytical-composite.spec.ts'
