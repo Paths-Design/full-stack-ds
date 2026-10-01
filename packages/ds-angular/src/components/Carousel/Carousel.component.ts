@@ -60,7 +60,9 @@ export class CarouselComponent {
   private readonly inputDuration = signal<number | null | undefined>(undefined);
   @Input() get duration(): number | null | undefined { return this.inputDuration(); }
   set duration(value: number | null | undefined) { this.inputDuration.set(value); }
-  @Input() indicator?: CarouselIndicator = "pagination";
+  private readonly inputIndicator = signal<CarouselIndicator | undefined>(undefined);
+  @Input() get indicator(): CarouselIndicator | undefined { return this.inputIndicator(); }
+  set indicator(value: CarouselIndicator | undefined) { this.inputIndicator.set(value); }
   @Input() label?: string = "Featured content";
   @Input() class?: string;
 
@@ -75,10 +77,11 @@ export class CarouselComponent {
     destroyRef: this.destroyRef,
   })));
   }
-  protected sequence = createSequenceBudget({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10}]});
+  protected sequence = createSequenceBudget({"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10,"when":{"axis":"indicator","values":["pagination","both"]}},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10,"when":{"axis":"indicator","values":["next","both"]}}]});
   private sequenceCleanup = this.destroyRef.onDestroy(() => this.sequence.destroy());
   private sequenceEffect = effect(() => this.sequence.sync({
     index: this.behavior.slide(), labels: this.slides ?? [], autoPlay: this.autoPlay ?? false,
+    presentation: { "indicator": this.indicator },
     durationMs: this.duration === undefined ? 6000 : this.duration,
     onIndexChange: (value) => this.behavior.setSlide(value),
   }));

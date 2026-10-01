@@ -2224,6 +2224,16 @@
                   "elapsed-ring"
                 ]
               },
+              "when": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["axis", "values"],
+                "properties": {
+                  "axis": { "type": "string", "minLength": 1 },
+                  "values": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+                },
+                "description": "Show this projection only for these presentation-axis values, in addition to timer validity and active-item ownership."
+              },
               "reducedMotion": {
                 "type": "object",
                 "additionalProperties": false,

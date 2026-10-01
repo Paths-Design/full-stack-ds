@@ -1,5 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig } from "../../sequence.js";
+import { sequenceConfig, sequencePresentation } from "../../sequence.js";
 /**
  * Svelte 5 SFC emission, IR-driven.
  *
@@ -1572,6 +1572,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     hookLines.push(`const sequence = createSequenceBudget(${sequenceConfig(seq, ir.cssPrefix)});`,
       `$effect(() => { sequence.sync({`,
       `  index: ${hookVar}.${seq.channel}, labels: ${jsAccessorFor(seq.itemsProp)}, autoPlay: ${jsAccessorFor(seq.timing.autoPlayProp)},`,
+      `  presentation: ${sequencePresentation(seq, jsAccessorFor)},`,
       `  durationMs: ${jsAccessorFor(seq.timing.durationProp)} === undefined ? ${seq.timing.defaultMs} : ${jsAccessorFor(seq.timing.durationProp)},`,
       `  onIndexChange: ${hookVar}.set${capitalizeSvelte(seq.channel)},`, `}); });`,
       `$effect(() => () => sequence.destroy());`);

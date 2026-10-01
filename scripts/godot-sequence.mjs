@@ -115,6 +115,8 @@ if (process.argv.includes('--export')) {
 }
 if (process.argv.includes('--mutations')) {
   const controls = [
+    { name: 'presentation-visibility', file: 'runtime/sequence.gd', from: 'presented and budget.valid() and budget.duration_ms > 0', to: 'budget.valid() and budget.duration_ms > 0', test: 'sequence' },
+    { name: 'projection-timer-validity', file: 'runtime/sequence.gd', from: 'presented and budget.valid() and budget.duration_ms > 0', to: 'presented', test: 'sequence' },
     { name: 'current-slide-accessibility', file: 'runtime/sequence.gd', from: 'slides[i].wrapper.accessibility_current = i == budget.index and budget.count > 0', to: 'slides[i].wrapper.accessibility_current = true', test: 'sequence' },
     { name: 'linear-size-scaling', file: 'runtime/sequence.gd', from: 'sqrt(viewport.size.x / float(profile.referenceWidth))', to: 'viewport.size.x / float(profile.referenceWidth)', test: 'sequence' },
     { name: 'content-minimum', file: 'runtime/sequence.gd', from: 'minimum = minimum.max(slide.body.get_combined_minimum_size())', to: 'minimum = Vector2(0, 160)', test: 'sequence' },

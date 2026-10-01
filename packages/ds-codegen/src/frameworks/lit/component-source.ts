@@ -1,5 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig } from "../../sequence.js";
+import { sequenceConfig, sequencePresentation } from "../../sequence.js";
 /**
  * Lit LitElement emission, IR-driven.
  *
@@ -1941,6 +1941,7 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
       const seq = ir.motion.sequence;
       lines.push(`  private sequence = new SequenceController(this, ${sequenceConfig(seq, ir.cssPrefix)}, () => ({`,
         `    index: this.behavior.${seq.channel}, labels: this.${seq.itemsProp} ?? [], autoPlay: this.${seq.timing.autoPlayProp} ?? false,`,
+        `    presentation: ${sequencePresentation(seq, prop => `this.${prop}`)},`,
         `    durationMs: this.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : this.${seq.timing.durationProp},`,
         `    onIndexChange: (value) => this.behavior.set${capitalizeLit(seq.channel)}(value),`, `  }));`);
     }

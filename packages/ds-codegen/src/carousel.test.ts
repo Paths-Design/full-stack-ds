@@ -125,6 +125,9 @@ describe("contract-bound sequence composition", () => {
     expect(descriptor.motion.facts).toEqual(ir.motion);
   });
   it.each([
+    ["unknown presentation axis", (c: ComponentContract) => { c.motion!.progress![0].when = { axis: "missing", values: ["pagination"] }; }],
+    ["unknown presentation value", (c: ComponentContract) => { c.motion!.progress![0].when = { axis: "indicator", values: ["unknown"] }; }],
+    ["empty presentation choice", (c: ComponentContract) => { c.motion!.progress![0].when = { axis: "indicator", values: [] }; }],
     ["missing movement token", (c: ComponentContract) => { c.motion!.sequenceTransition!.durationToken = "missing"; }],
     ["invalid size profile", (c: ComponentContract) => { c.motion!.sequenceTransition!.size.minMultiplier = 3; }],
     ["wrong transition owner", (c: ComponentContract) => { c.motion!.sequenceTransition!.target.part = "root"; }],

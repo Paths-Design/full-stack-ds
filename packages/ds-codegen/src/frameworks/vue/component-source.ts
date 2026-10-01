@@ -1,5 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig } from "../../sequence.js";
+import { sequenceConfig, sequencePresentation } from "../../sequence.js";
 /**
  * Vue 3 SFC emission, IR-driven.
  *
@@ -1698,6 +1698,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     const seq = ir.motion.sequence;
     hookLines.push(`const sequence = useSequence(${sequenceConfig(seq, ir.cssPrefix)}, () => ({`,
       `  index: behavior.${seq.channel}.value, labels: props.${seq.itemsProp}, autoPlay: props.${seq.timing.autoPlayProp},`,
+      `  presentation: ${sequencePresentation(seq, prop => `props.${prop}`)},`,
       `  durationMs: props.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : props.${seq.timing.durationProp},`,
       `  onIndexChange: behavior.set${capitalize(seq.channel)},`, `}));`);
   }

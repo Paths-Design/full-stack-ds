@@ -153,7 +153,7 @@ func _add_projection(host: Control, binding: Dictionary, item: int) -> void:
 	paint.track = Color(paint.foreground, 0.25)
 	host.add_child(paint)
 	paint.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	projections.append({"paint":paint, "item":item})
+	projections.append({"paint":paint, "item":item, "when":binding.get("when", {})})
 
 func _sync() -> void:
 	var sequence: Dictionary = configuration.sequence
@@ -202,14 +202,18 @@ func _refresh() -> void:
 	for i in slides.size():
 		slides[i].picker.disabled = not budget.valid()
 		slides[i].picker.set_pressed_no_signal(i == budget.index)
-		slides[i].picker.text = "●" if i != budget.index else ""
+		slides[i].picker.text = "●" if i == budget.index else "○"
 		slides[i].wrapper.accessibility_current = i == budget.index and budget.count > 0
 		slides[i].wrapper.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_INHERITED if i == budget.index else Control.FOCUS_BEHAVIOR_DISABLED
 		slides[i].wrapper.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_INHERITED if i == budget.index else Control.MOUSE_BEHAVIOR_DISABLED
 	for projection in projections:
 		projection.paint.elapsed = budget.elapsed()
 		projection.paint.reduced_motion = effective_reduced_motion
-		projection.paint.visible = budget.count > 0 and (projection.item == budget.index or (projection.item < 0 and budget.valid() and budget.duration_ms > 0))
+		var condition: Dictionary = projection.when
+		var presented: bool = condition.is_empty() or props.get(condition.axis) in condition["values"]
+		projection.paint.visible = presented and budget.valid() and budget.duration_ms > 0 and (projection.item == budget.index or projection.item < 0)
+		if projection.item >= 0 and projection.paint.visible:
+			slides[projection.item].picker.text = ""
 		projection.paint.queue_redraw()
 
 func _process(_delta: float) -> void:

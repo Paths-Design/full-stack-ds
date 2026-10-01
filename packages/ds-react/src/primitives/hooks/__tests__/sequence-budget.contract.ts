@@ -20,12 +20,33 @@ export function sequenceBudgetContract(name: string, create: typeof createSequen
       root = document.createElement("section");
       root.innerHTML = '<button class="rotation"></button><div class="viewport"><article>A<button>Action A</button></article><article style="display:flex">B<button>Action B</button></article><article>C</article></div><button class="previous"></button><button class="picker"><span class="fill"></span></button><button class="picker"><span class="fill"></span></button><button class="picker"><span class="fill"></span></button><button class="next"><span class="ring"></span></button>';
       document.body.append(root);
-      sequence = create({ transition: { durationMs: 250, easing: "ease", referenceWidth: 320, minMultiplier: 0.5, maxMultiplier: 2 }, labels: { start: "Start slide rotation", stop: "Stop slide rotation", item: "slide" }, parts: { viewport: ".viewport", previous: ".previous", next: ".next", rotation: ".rotation", picker: ".picker" }, progress: [{ selector: ".fill", effect: "elapsed-width", steps: 10 }, { selector: ".ring", effect: "elapsed-ring", steps: 10 }] });
-      options = { index: 0, labels: ["A", "B", "C"], autoPlay: true, durationMs: 1000, onIndexChange: vi.fn() };
+      sequence = create({ transition: { durationMs: 250, easing: "ease", referenceWidth: 320, minMultiplier: 0.5, maxMultiplier: 2 }, labels: { start: "Start slide rotation", stop: "Stop slide rotation", item: "slide" }, parts: { viewport: ".viewport", previous: ".previous", next: ".next", rotation: ".rotation", picker: ".picker" }, progress: [{ selector: ".fill", effect: "elapsed-width", steps: 10, when: { axis: "indicator", values: ["pagination", "both"] } }, { selector: ".ring", effect: "elapsed-ring", steps: 10, when: { axis: "indicator", values: ["next", "both"] } }] });
+      options = { presentation: { indicator: "both" }, index: 0, labels: ["A", "B", "C"], autoPlay: true, durationMs: 1000, onIndexChange: vi.fn() };
       sequence.bindRoot(root);
       sequence.sync(options);
     });
     afterEach(() => { sequence.destroy(); root.remove(); vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); });
+
+    it("composes presentation with active ownership and timer validity without resetting dwell", () => {
+      vi.advanceTimersByTime(300);
+      options = { ...options, presentation: { indicator: "next" } };
+      sequence.sync(options);
+      expect(select(".fill").hidden).toBe(true);
+      expect(select(".ring").hidden).toBe(false);
+      options = { ...options, presentation: { indicator: "pagination" } };
+      sequence.sync(options);
+      expect(select(".fill").hidden).toBe(false);
+      expect(select(".ring").hidden).toBe(true);
+      expect(root.querySelectorAll<HTMLElement>(".fill")[1].hidden).toBe(true);
+      vi.advanceTimersByTime(699);
+      expect(options.onIndexChange).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1);
+      expect(options.onIndexChange).toHaveBeenCalledTimes(1);
+      expect(options.onIndexChange).toHaveBeenCalledWith(1);
+      sequence.sync({ ...options, durationMs: null, presentation: { indicator: "both" } });
+      expect(select(".fill").hidden).toBe(true);
+      expect(select(".ring").hidden).toBe(true);
+    });
 
     const holdMotion = () => {
       const animations: { finish: () => void; cancel: ReturnType<typeof vi.fn> }[] = [];

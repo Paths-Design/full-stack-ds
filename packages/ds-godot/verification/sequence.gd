@@ -56,6 +56,20 @@ func _run() -> void:
 	await process_frame
 	check(carousel.budget.index == 0 and carousel.slides[0].wrapper.visible and not carousel.slides[1].wrapper.visible, "initial generated composition")
 	check(carousel.accessibility_name == "Featured content" and carousel.next.accessibility_name == "Next slide", "contract accessible names")
+	var initial_fill = carousel.projections.filter(func(p): return p.item == 0)[0].paint
+	var initial_ring = carousel.projections.filter(func(p): return p.item == -1)[0].paint
+	check(initial_fill.visible and not initial_ring.visible, "default presentation chooses the picker projection")
+	carousel.budget.remaining_ms = 250.0
+	carousel.set_props({"indicator":"next"})
+	check(not initial_fill.visible and initial_ring.visible and carousel.budget.remaining_ms == 250.0, "ring presentation preserves the shared budget")
+	carousel.set_props({"indicator":"both"})
+	check(initial_fill.visible and initial_ring.visible, "both presentation exposes both projections")
+	carousel.set_props({"duration":null})
+	check(not initial_fill.visible and not initial_ring.visible, "disabled budget hides every projection")
+	carousel.set_props({"duration":400})
+	carousel.set_props({"slides":["Blue"]})
+	check(not initial_fill.visible and not initial_ring.visible, "invalid composition hides every projection")
+	carousel.set_props({"slides":["Blue", "Green", "Red"]})
 	carousel.next.pressed.emit()
 	# Seek the real native tween deterministically, as the browser fixture seeks
 	# Web Animations. A separate rendered witness checks naturally sampled frames.
@@ -132,7 +146,7 @@ func _run() -> void:
 	initial_selection.add_slide("A", Label.new())
 	initial_selection.add_slide("B", Label.new())
 	check(initial_selection.budget.index == 1 and initial_selection.slides[1].wrapper.visible and initial_selection._tween == null, "initial index survives incremental native composition without entry movement")
-	check(initial_selection.projections.filter(func(p): return p.item == 1)[0].paint.visible, "manual sequence retains current marker")
+	check(not initial_selection.projections.filter(func(p): return p.item == 1)[0].paint.visible and initial_selection.slides[1].picker.text == "●" and initial_selection.slides[0].picker.text == "○", "manual sequence retains current marker without a timer projection")
 	initial_selection.layout_direction = Control.LAYOUT_DIRECTION_RTL
 	initial_selection.size.x = 320
 	await process_frame

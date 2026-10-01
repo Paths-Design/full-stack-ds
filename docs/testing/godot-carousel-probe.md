@@ -118,8 +118,10 @@ seconds without a readable native tree. Exported accessibility and post-transfer
 assistive traversal remain unverified; ordinary exported rendering passed.
 
 The native adapter consumes normalized sequence/channel facts and accessible
-names. It currently presents both progress effects; authored presentation variants
-are reported in `excludedProps`. Its directional glyphs and native Theme fallbacks
+names. Progress presentation follows the contract-declared `when` condition,
+composed with timer validity and active-item ownership. Switching between picker,
+ring and both preserves the remaining budget. A manual sequence keeps a separate
+selected-item cue while hiding timer projections. Its directional glyphs and native Theme fallbacks
 do not establish shared iconography or component-token styling parity. The adapter
 samples Godot's `accessibility_should_reduce_animation` query before navigation
 and on each processing frame, with `reduced_motion` as an additional host request.
@@ -131,15 +133,14 @@ other operating systems remain unverified. The exported-app probe establishes
 the bounded rendered transition and progress-paint scenario; the wider timer,
 input, ownership and mutation fixtures still execute through the editor binary.
 
-The indicator variant currently chooses progress visibility through web CSS.
-There is no equivalent selection fact in `SequenceIR.progress`. Completing this
-axis requires a contract-declared presentation condition normalized into the IR,
-with each adapter composing that condition with timer validity and active-item
-visibility. Its changes must not reset the shared budget. Parsing web selectors
-or hard-coding `indicator` in the Godot emitter would conceal the missing fact.
-An ordinary `hidden` binding is insufficient today: the web sequence controller
-already writes that attribute during progress updates. The contract and runtime
-must establish one final visibility owner before this exclusion can be removed.
+Progress visibility has one final owner in each adapter. The optional
+`motion.progress[].when` condition names a declared variant axis and a nonempty
+set of its values. The IR rejects unknown axes/values; framework props supply
+the live presentation choice. Web and Godot runtimes combine it with timer
+validity and current-item visibility, including immediate updates while paused.
+The native probe removes the presentation and validity checks independently and
+requires the corresponding behavioral failures. The declared condition does not
+establish generated progress rendering in React Native, SwiftUI, Compose or Unity.
 
 See [Carousel semantics](../architecture/carousel-sequences.md), the
 [Godot target boundary](../architecture/godot-target.md), and the separate

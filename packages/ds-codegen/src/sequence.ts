@@ -86,6 +86,12 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
     parent === child || (!parent.componentRef && Boolean(parent.children?.some(node => contains(node, child))));
   const targets = new Set<string>();
   for (const binding of progress) {
+    if (binding.when) {
+      const allowed = contract.variants?.[binding.when.axis];
+      if (!props.some(prop => prop.name === binding.when!.axis) || !Array.isArray(allowed) ||
+          !binding.when.values.length || new Set(binding.when.values).size !== binding.when.values.length ||
+          binding.when.values.some(value => !allowed.includes(value))) fail("progress presentation must select values of a declared variant axis");
+    }
     const resolved = address(binding.target);
     const node = resolved.node;
     progressSelectors.push(resolved.selector);
@@ -136,6 +142,12 @@ export function sequenceConfig(sequence: SequenceIR, prefix: string): string {
       minMultiplier: sequence.transition.minMultiplier, maxMultiplier: sequence.transition.maxMultiplier,
     },
     parts: Object.fromEntries((["viewport", "previous", "next", "rotation", "picker"] as const).map(key => [key, key === "picker" ? sequence.selectors.picker : `.${prefix}__${sequence[key]}`])),
-    progress: sequence.progress.map((p, index) => ({ selector: sequence.selectors.progress[index], effect: p.effect, steps: p.reducedMotion.steps })),
+    progress: sequence.progress.map((p, index) => ({ selector: sequence.selectors.progress[index], effect: p.effect, steps: p.reducedMotion.steps, ...(p.when ? { when: p.when } : {}) })),
   });
+}
+
+/** Runtime values are supplied by each framework's reactive prop accessors. */
+export function sequencePresentation(sequence: SequenceIR, access: (prop: string) => string): string {
+  const axes = [...new Set(sequence.progress.flatMap(binding => binding.when ? [binding.when.axis] : []))];
+  return `{ ${axes.map(axis => `${JSON.stringify(axis)}: ${access(axis)}`).join(", ")} }`;
 }

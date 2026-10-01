@@ -206,3 +206,17 @@ Carousel retains the content viewport, previous/next actions and advance
 budget. Composed part addresses are resolved against the contract corpus,
 while the child callback requests a position through the sequence controller.
 Indicator presentation does not make Pagination a carousel-specific surface.
+
+## Progress presentation is a motion fact
+
+Each progress binding may declare `when: { axis, values }`. This selects a
+nonempty subset of a declared variant axis. Carousel uses it to select the
+pagination fill, the Next ring, or both. The condition travels with the binding
+through the semantic IR; backends do not infer it from CSS selectors.
+
+The runtime combines three requirements at the point of projection: selected
+presentation, a valid enabled budget, and ownership by the active item when the
+target is repeated. A presentation change redraws from the existing budget and
+never restarts time. Static selection cues remain available without a timer.
+The web mirrors and the bounded Godot runtime implement this rule. It does not
+by itself complete the other native progress realizations.

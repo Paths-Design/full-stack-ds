@@ -31,7 +31,9 @@ export function godotSequencePlan(ir: ComponentIR) {
   if (label && (label.kind !== "prop" || label.path?.length)) throw new Error(`GODOT_UNSUPPORTED_SEQUENCE_LABEL: ${ir.name}`);
   const nameProp = label?.kind === "prop" ? label.prop : undefined;
   const realized = new Set([channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp, sequence.itemsProp, sequence.timing.durationProp, sequence.timing.autoPlayProp, nameProp]);
-  const variantProps = Object.keys(ir.variants);
+  const presentationProps = new Set(sequence.progress.flatMap(binding => binding.when ? [binding.when.axis] : []));
+  const variantProps = Object.keys(ir.variants).filter(prop => !presentationProps.has(prop));
+  presentationProps.forEach(prop => realized.add(prop));
   for (const p of ir.styledProps) if (!realized.has(p.name) && !variantProps.includes(p.name)) throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${p.name}`);
   const nodes: DomNodeIR[] = [];
   const walk = (node: DomNodeIR) => { nodes.push(node); if (!node.componentRef) node.children.forEach(walk); };
