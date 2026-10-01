@@ -1,0 +1,49 @@
+id: DESIGN-DOCUMENT-PAPER-01
+title: 'Define shared Designer and Animator paper model, schemas and design coverage ledger'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-01T07:12:19.497Z'
+updated_at: '2026-10-01T07:12:19.497Z'
+created_by_session: '01a0f5b0-8c29-7670-82de-50f7c08d07da'
+blast_radius:
+  modules:
+    - 'Draft shared document specification and schema examples'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/design/shared-document-model/'
+    - 'packages/ds-contracts/document-model/'
+    - 'docs/README.md'
+  out: []
+invariants:
+  - 'Canvas authoring never implicitly materializes code'
+  - 'Component contracts and current emitters remain unchanged'
+  - 'Design coverage, schema coverage and runtime evidence remain distinct'
+  - 'Only newly authored examples are committed; prior app code and supplied Figma content are excluded'
+acceptance:
+  - id: A1
+    given: 'the clean-room handoff and confirmed shared document direction'
+    when: 'the paper specification is reviewed'
+    then: 'entity relationships, ownership, defaults, tokens, scene timing, persistence and prototype boundaries are documented with explicit unresolved decisions'
+  - id: A2
+    given: 'draft schemas and original worked examples'
+    when: 'node packages/ds-contracts/document-model/verify.mjs runs'
+    then: 'schemas compile, worked examples validate and declared malformed neighbors are rejected without applying defaults or mutating input'
+  - id: A3
+    given: 'the design coverage ledger'
+    when: 'its records are inspected against the specification and schemas'
+    then: 'each requirement carries design coverage, schema coverage, runtime status and the next missing design decision without treating partial machinery as implementation'
+  - id: A4
+    given: 'the tracked documentation and isolated schema directory'
+    when: 'scoped checks and repository gates run'
+    then: 'documentation checks pass and no component contract or emitter behavior is changed'
+non_functional: {}
+contracts:
+  - name: 'shared-document-draft'
+    type: schema
+    path: 'packages/ds-contracts/document-model/document.schema.json'
+  - name: 'paper-design-coverage'
+    type: schema
+    path: 'packages/ds-contracts/document-model/design-ledger.schema.json'
