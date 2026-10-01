@@ -70,9 +70,9 @@ evidence:
     commit_sha: e1eb31f99
   - criterion_id: A4
     status: pass
-    evidence_ref: Landed documentation claim/link gates and diff check passed; merge changes only paper docs and isolated document-model source. Governed rail and framework suites passed in isolated lane. Broad root suite failed one unchanged erasure-plan test at 5000ms; focused file rerun passed 64/64. Full root suite is not green.
-    recorded_at: "2026-10-01T07:55:23.115Z"
+    evidence_ref: "Observed landed docs claim and link checks and diff whitespace check passed; logs /tmp/fsds-design-document-paper-docs-landed.log. Own diff contains only paper docs and isolated document-model source. Governed rail and framework suites passed; broad root run had one unchanged erasure-plan 5000ms timeout; focused file passed 64/64. CLI verification rechecks cited source and commit, not command execution."
+    recorded_at: "2026-10-01T07:56:24.972Z"
     command: "pnpm run docs:check-claims && pnpm run docs:check-links"
     exit_code: 0
-    artifact_path: /tmp/fsds-design-document-paper-docs-landed.log
-    commit_sha: e1eb31f99
+    artifact_path: docs/architecture/design/shared-document-model/README.md
+    commit_sha: aca4a9dcf
