@@ -599,6 +599,42 @@
       "selector": ".accordion--disabled"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "expand",
+          "trigger": "openness=collapsed→expanded",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "height",
+            "opacity"
+          ],
+          "durationRef": "accordion.motion.duration",
+          "easingRef": "accordion.motion.easing"
+        },
+        {
+          "name": "collapse",
+          "trigger": "openness=expanded→collapsed",
+          "realization": "declaration-only",
+          "phase": "exit",
+          "properties": [
+            "height",
+            "opacity"
+          ],
+          "durationRef": "accordion.motion.duration",
+          "easingRef": "accordion.motion.easing"
+        }
+      ]
+    }
+  },
   "variants": {
     "type": [
       "single",

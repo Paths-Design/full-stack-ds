@@ -758,6 +758,40 @@
       "selector": ".sheet--bottom .sheet__content"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "open",
+          "trigger": "openness=closed→opening",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "transform"
+          ],
+          "durationRef": "core.motion.duration.short",
+          "easingRef": "core.motion.easing.emphasized-in"
+        },
+        {
+          "name": "close",
+          "trigger": "openness=open→closing",
+          "realization": "declaration-only",
+          "phase": "exit",
+          "properties": [
+            "transform"
+          ],
+          "durationRef": "core.motion.duration.short",
+          "easingRef": "core.motion.easing.emphasized-out"
+        }
+      ]
+    }
+  },
   "variants": {
     "side": [
       "top",

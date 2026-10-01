@@ -50,6 +50,7 @@ function fixtureIR(): ComponentIR {
       portal: null,
     },
     surface: null,
+    motion: { sequence: null, countdown: null, loops: [], transitions: [], honorsReducedMotion: true, reducedMotion: null },
   } as unknown as ComponentIR;
 }
 
@@ -83,6 +84,12 @@ describe("Figma descriptor schema", () => {
         component: { name: "Button" },
       }),
     ).toThrow(/source is not governed/);
+  });
+  it("accepts older v1 metadata but refuses executable motion claims", () => {
+    const descriptor = toFigmaComponentDescriptor(fixtureIR());
+    expect(() => assertFigmaComponentDescriptorV1({ ...descriptor, motion: undefined })).not.toThrow();
+    expect(() => assertFigmaComponentDescriptorV1({ ...descriptor, motion: { ...descriptor.motion, realization: "sequence-budget" } })).toThrow(/descriptor-only/);
+    expect(() => assertFigmaComponentDescriptorV1({ ...descriptor, motion: { realization: "descriptor-only" } })).toThrow(/MotionIR metadata/);
   });
 });
 

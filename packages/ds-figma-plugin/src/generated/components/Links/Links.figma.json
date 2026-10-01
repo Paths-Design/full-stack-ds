@@ -306,6 +306,17 @@
       "selector": ".links:focus-visible:not([aria-disabled=\"true\"])"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": null,
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": []
+    }
+  },
   "variants": {
     "size": [
       "small",

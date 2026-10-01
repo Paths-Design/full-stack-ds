@@ -624,6 +624,30 @@
       "selector": ".tabs--pills .tabs__tab--active"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "indicator",
+          "trigger": "activeTab=changed",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "transform",
+            "width"
+          ],
+          "durationRef": "tabs.motion.indicator",
+          "easingRef": null
+        }
+      ]
+    }
+  },
   "variants": {
     "orientation": [
       "horizontal",

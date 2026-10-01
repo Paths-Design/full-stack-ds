@@ -289,6 +289,73 @@
       "selector": ".spinner--bold .spinner__visual"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [
+        {
+          "name": "spin",
+          "target": {
+            "name": "visual",
+            "isCompound": false,
+            "isRootOnly": false,
+            "nativeTag": "span",
+            "details": {
+              "tag": "span",
+              "description": "Animated visual spinner mark; hidden from assistive technology.",
+              "role": "decoration"
+            }
+          },
+          "driver": "repeat",
+          "effect": {
+            "kind": "rotation",
+            "keyframes": [
+              {
+                "offset": 0,
+                "value": 0
+              },
+              {
+                "offset": 1,
+                "value": 360
+              }
+            ]
+          },
+          "timing": {
+            "duration": {
+              "name": "spinner.anim.duration",
+              "cssVar": "--fsds-spinner-anim-duration",
+              "category": "anim",
+              "layer": "semantic",
+              "source": "tokens-sidecar",
+              "isLiteral": true,
+              "rawValue": "800ms"
+            },
+            "multiplier": 1,
+            "easing": {
+              "cubicBezier": [
+                0,
+                0,
+                1,
+                1
+              ]
+            }
+          },
+          "reducedMotion": {
+            "value": 0
+          },
+          "realization": {
+            "web": "css-keyframes",
+            "nonWeb": "unrealized"
+          }
+        }
+      ],
+      "transitions": []
+    }
+  },
   "variants": {
     "size": [
       "xs",

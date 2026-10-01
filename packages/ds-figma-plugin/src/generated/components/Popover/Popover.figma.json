@@ -235,6 +235,42 @@
       "selector": "[data-popover-content]"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "open",
+          "trigger": "openness=closed→open",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "core.motion.duration.short",
+          "easingRef": "core.motion.easing.emphasizedOut"
+        },
+        {
+          "name": "close",
+          "trigger": "openness=open→closed",
+          "realization": "declaration-only",
+          "phase": "exit",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "core.motion.duration.short",
+          "easingRef": "core.motion.easing.emphasizedIn"
+        }
+      ]
+    }
+  },
   "variants": {
     "placement": [
       "top",

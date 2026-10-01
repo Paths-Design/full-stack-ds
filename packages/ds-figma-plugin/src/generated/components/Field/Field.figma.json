@@ -364,6 +364,17 @@
       "selector": ".field--disabled .field__header, .field--disabled .field__meta"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": null,
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": []
+    }
+  },
   "variants": {
     "status": [
       "idle",
