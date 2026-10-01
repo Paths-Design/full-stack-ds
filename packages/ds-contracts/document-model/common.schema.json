@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/common.schema.json",
+  "title": "Shared document candidate common",
+  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9._-]*$"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ticks": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))[^\\\\:]+$",
+      "minLength": 1
+    },
+    "property": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9]*(\\.[a-z][a-zA-Z0-9]*)+$"
+    },
+    "binding": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "literal"
+            },
+            "valueType": {
+              "const": "number"
+            },
+            "value": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "kind",
+            "valueType",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "literal"
+            },
+            "valueType": {
+              "const": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "valueType",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "literal"
+            },
+            "valueType": {
+              "const": "boolean"
+            },
+            "value": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "valueType",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "literal"
+            },
+            "valueType": {
+              "const": "dimension"
+            },
+            "value": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "enum": [
+                    "px",
+                    "rem"
+                  ]
+                }
+              },
+              "required": [
+                "value",
+                "unit"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "valueType",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "literal"
+            },
+            "valueType": {
+              "const": "duration"
+            },
+            "value": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "unit": {
+                  "enum": [
+                    "ms",
+                    "s"
+                  ]
+                }
+              },
+              "required": [
+                "value",
+                "unit"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "valueType",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "literal"
+            },
+            "valueType": {
+              "const": "cubicBezier"
+            },
+            "value": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "items": false,
+              "minItems": 4,
+              "maxItems": 4
+            }
+          },
+          "required": [
+            "kind",
+            "valueType",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "token"
+            },
+            "valueType": {
+              "enum": [
+                "number",
+                "string",
+                "boolean",
+                "dimension",
+                "duration",
+                "cubicBezier"
+              ]
+            },
+            "sourceId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "path": {
+              "type": "string",
+              "pattern": "^[^.{}]+(\\.[^.{}]+)*$"
+            }
+          },
+          "required": [
+            "kind",
+            "valueType",
+            "sourceId",
+            "path"
+          ]
+        }
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-zA-Z0-9]*(\\.[a-z][a-zA-Z0-9]*)+$"
+      },
+      "additionalProperties": {
+        "$ref": "common.schema.json#/$defs/binding"
+      }
+    },
+    "version": {
+      "const": "0.1.0"
+    },
+    "dependencyRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "revision": {
+          "$ref": "common.schema.json#/$defs/revision"
+        }
+      },
+      "required": [
+        "sourceId",
+        "revision"
+      ]
+    },
+    "profileRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "profileId": {
+          "$ref": "common.schema.json#/$defs/id"
+        }
+      },
+      "required": [
+        "sourceId",
+        "profileId"
+      ]
+    },
+    "definitionRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "definitionId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "version": {
+          "$ref": "common.schema.json#/$defs/revision"
+        }
+      },
+      "required": [
+        "sourceId",
+        "definitionId",
+        "version"
+      ]
+    }
+  }
+}
