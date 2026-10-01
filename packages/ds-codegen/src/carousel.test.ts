@@ -8,6 +8,7 @@ import { generateVueComponentSource } from "./frameworks/vue/component-source.js
 import { generateSvelteComponentSource } from "./frameworks/svelte/component-source.js";
 import { generateAngularComponentSource } from "./frameworks/angular/component-source.js";
 import { generateLitComponentSource } from "./frameworks/lit/component-source.js";
+import { generateReactNativeComponentSource } from "./frameworks/react-native/component-source.js";
 import { createContractValidator } from "./validate.js";
 
 function load(): ComponentContract {
@@ -44,6 +45,22 @@ describe("contract-bound sequence composition", () => {
       expect(source).toContain("elapsed-ring");
       expect(source).not.toContain("setSlide");
     }
+  });
+  it("binds native sequence controls through the declared channel and timing props", () => {
+    const contract = load();
+    contract.channels!.position = contract.channels!.slide;
+    delete contract.channels!.slide;
+    contract.sequence!.channel = "position";
+    const ir = buildComponentIR(contract);
+    const source = generateReactNativeComponentSource(ir).componentFile;
+    expect(source).toContain("onIndexChange: setPositionValue");
+    expect(source).toContain("index: position, labels: slides");
+    expect(source).toContain('tokens.root?.["carousel.timing.advance"]');
+    expect(source).toContain("onPress={sequence.next}");
+    expect(source).toContain("onPress={sequence.previous}");
+    expect(source).toContain("onPress={sequence.rotate}");
+    expect(source).toContain("<SequenceChildren sequence={sequence}");
+    expect(source).not.toContain("setSlideValue");
   });
   it.each([
     ["missing movement token", (c: ComponentContract) => { c.motion!.sequenceTransition!.durationToken = "missing"; }],

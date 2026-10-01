@@ -46,6 +46,12 @@ export const carouselTokenScopes = {
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
+    "carousel.timing.advance": {
+      name: "carousel.timing.advance",
+      cssVar: "--fsds-carousel-timing-advance",
+      ref: "core.motion.dwell.medium",
+      fallback: 6000,
+    },
     "carousel.size.radius": {
       name: "carousel.size.radius",
       cssVar: "--fsds-carousel-size-radius",

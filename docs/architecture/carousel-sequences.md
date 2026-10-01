@@ -137,3 +137,23 @@ components. These are bounded Card-composition witnesses, not a claim about all
 possible child-component lifecycles or native behavior.
 CI executes these browser regressions through `pnpm run e2e:carousel` alongside
 the runtime fact and render-binding rails.
+
+### Native implementation work in progress
+
+React Native now has a sequence clock and generated control bindings. The clock
+keeps one advancement deadline, waits for controlled index acknowledgement, and
+composes app background, Android window blur, touch and transition pauses.
+The adapter waits for initial accessibility preferences, stops rotation when a
+screen reader becomes active, and releases subscriptions and timers on teardown.
+Native wrappers retain consumer children while suppressing inactive interaction
+and accessibility descendants.
+
+The native movement primitive requests directional `Animated` transforms with
+capped width-dependent durations, cancels superseded ownership, and releases a
+full reading budget after settlement. Its tests observe the animation API boundary;
+they do not execute the native animation driver or measure screen geometry.
+The generated component does not yet pass the movement profile into that primitive.
+Progress fill/ring rendering, native styling and icons, rotation-control visibility
+for disabled timers, and simulator/device witnesses remain unfinished. Accordingly
+the IR's native sequence capability remains unrealized and the parity criterion
+remains open. SwiftUI, Compose, Unity and Godot still need their sequence realizations.
