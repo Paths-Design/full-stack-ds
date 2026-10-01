@@ -8,8 +8,8 @@ interface HomeProps {
 
 /** Presentation-only metadata keyed by census target id. Existence, counts and
  * source coverage come from `bundle.census` (build-time); this map only supplies labels,
- * dots and blurbs for targets that actually exist. Targets with no package
- * (e.g. the old UIKit card) simply never appear because they're not censused. */
+ * dots and blurbs. Registered metadata-only targets remain visible with no
+ * source coverage; unknown target ids use the registry label. */
 const TARGET_PRESENTATION: Record<
   string,
   { label: string; short: string; dot: string; blurb: string }

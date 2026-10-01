@@ -28,4 +28,3 @@ export async function inspectTargetOutputs(
       ? "full" : names.length > 0 ? "partial" : "none",
   };
 }
-
