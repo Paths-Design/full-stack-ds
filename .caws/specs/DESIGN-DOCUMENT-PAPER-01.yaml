@@ -68,3 +68,11 @@ evidence:
     recorded_at: "2026-10-01T07:55:22.180Z"
     artifact_path: packages/ds-contracts/document-model/design-ledger.json
     commit_sha: e1eb31f99
+  - criterion_id: A4
+    status: pass
+    evidence_ref: Landed documentation claim/link gates and diff check passed; merge changes only paper docs and isolated document-model source. Governed rail and framework suites passed in isolated lane. Broad root suite failed one unchanged erasure-plan test at 5000ms; focused file rerun passed 64/64. Full root suite is not green.
+    recorded_at: "2026-10-01T07:55:23.115Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: /tmp/fsds-design-document-paper-docs-landed.log
+    commit_sha: e1eb31f99
