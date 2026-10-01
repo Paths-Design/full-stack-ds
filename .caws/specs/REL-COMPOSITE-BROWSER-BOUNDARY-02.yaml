@@ -80,3 +80,10 @@ evidence:
     evidence_ref: "Publication reconciled from the 146-commit original manifest, session authorization, 13 subsequent commits and successful push log. Refreshed origin/main 4fb82530 and CI 36825724269: coverage passes; Swift Carousel parity remains failed. Authorization is not per-commit review. Retained publication/ and verification.json under tmp/verification/analytical-browser-boundary. No corrective push performed."
     recorded_at: "2026-10-01T08:39:29.129Z"
     commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Real qualification/judgment/selection/lowering tests plus seven production-browser witnesses at 920 and 1280 pixels cover single/two ranges, differing endpoint names, distinct coherent snapshots, bare layer and extra nested facet. browser/baseline-report.json records 24 passing checks; browser/receipt.json binds clean source and built hashes; all retained under tmp/verification/analytical-browser-boundary."
+    recorded_at: "2026-10-01T08:39:29.945Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    commit_sha: "30ca989ac453c5b19ec2a2d465d255e2bd680ca9"
