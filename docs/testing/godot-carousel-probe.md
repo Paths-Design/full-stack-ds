@@ -37,6 +37,10 @@ checks the duration cap, and reverses movement with native RTL layout. The
 intermediate geometry assertion seeks the actual native Tween deterministically;
 it does not measure wall-clock rendering speed. Pointer events include viewport
 entry and an explicit viewport size, as required for this injected-input setup.
+The viewport reserves the largest minimum size among owned consumer Controls,
+including inactive slides, and fills additional height supplied by its parent.
+The fixture checks tall content, dynamic minimum-size changes, and removal so
+released content no longer affects its previous owner's layout.
 
 `--render` additionally opens a native Godot window. It samples the rendered
 viewport during an unseeked forward transition, saves PNGs and pixel counts, and
@@ -50,7 +54,7 @@ paint sample, separate from naturally sampled movement and timed behavior.
 `--mutations` alters only copies in scratch projects. It requires behavioral
 failures for removed acknowledgement, stale-completion protection, reduced-motion
 steps, system preference coupling, pointer intent, spatial interpolation, the size
-cap and the generated index binding.
+cap, composed content sizing and the generated index binding.
 A parser error, crash or timeout is inconclusive and fails the mutation run.
 
 The native adapter consumes normalized sequence/channel facts and accessible

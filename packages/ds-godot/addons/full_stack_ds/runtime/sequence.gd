@@ -53,7 +53,7 @@ func _ready() -> void:
 	rotation_button.pressed.connect(_rotate)
 	viewport = Control.new()
 	viewport.clip_contents = true
-	viewport.custom_minimum_size.y = 160
+	viewport.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_child(viewport)
 	var controls := HBoxContainer.new()
 	controls.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -112,6 +112,7 @@ func add_slide(key: String, body: Control) -> void:
 			if slides[i].key == key: budget.request(i, _now())
 	)
 	slides.append({"key":key, "body":body, "wrapper":wrapper, "picker":picker})
+	_update_content_minimum()
 	for binding in configuration.sequence.progress:
 		if binding.effect == "elapsed-width": _add_projection(picker, binding, position_in_sequence)
 	_sync()
@@ -129,9 +130,19 @@ func remove_slide(key: String) -> Control:
 		var body: Control = slide.body if is_instance_valid(slide.body) else null
 		if body and body.get_parent() == slide.wrapper: slide.wrapper.remove_child(body)
 		slide.wrapper.queue_free()
+		_update_content_minimum()
 		_sync()
 		return body
 	return null
+
+func _update_content_minimum() -> void:
+	# Reserve the largest composed minimum, including inactive content, so a
+	# transition never clips a taller slide or changes the control positions.
+	var minimum := Vector2.ZERO
+	for slide in slides:
+		if is_instance_valid(slide.body) and slide.body.get_parent() == slide.wrapper:
+			minimum = minimum.max(slide.body.get_combined_minimum_size())
+	viewport.custom_minimum_size = minimum
 
 func _add_projection(host: Control, binding: Dictionary, item: int) -> void:
 	var paint = Progress.new()
@@ -207,6 +218,9 @@ func _process(_delta: float) -> void:
 	for i in range(slides.size() - 1, -1, -1):
 		var body = slides[i].body
 		if not is_instance_valid(body) or body.get_parent() != slides[i].wrapper: remove_slide(slides[i].key)
+	# Hidden Controls can change their minimum without emitting the native
+	# minimum_size_changed signal. Sample owned content before reading time.
+	_update_content_minimum()
 	var now := _now()
 	if get_tree().paused: budget.pause("tree", now)
 	else: budget.resume("tree", now)

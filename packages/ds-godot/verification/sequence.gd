@@ -209,5 +209,45 @@ func _run() -> void:
 	await process_frame
 	check(adaptive.system_motion_preference == -1 and adaptive.effective_reduced_motion, "unknown system preference preserves host reduction and remains observable")
 	adaptive.free()
+	var composed = Carousel.new()
+	composed.motion_preference_query = func(): return 0
+	composed.props = {"slides":["Short", "Tall"], "duration":null}
+	composed.size = Vector2(320, 260)
+	root.add_child(composed)
+	var short_body := PanelContainer.new()
+	short_body.custom_minimum_size = Vector2(280, 80)
+	var description := Label.new()
+	description.text = "Short content"
+	short_body.add_child(description)
+	var tall_body := PanelContainer.new()
+	tall_body.custom_minimum_size = Vector2(300, 340)
+	composed.add_slide("short", short_body)
+	composed.add_slide("tall", tall_body)
+	await process_frame
+	await process_frame
+	check(composed.viewport.size.y >= 340.0, "viewport contains composed content minimum height before navigation")
+	var layout_observations: Array[Dictionary] = []
+	tall_body.custom_minimum_size.y = 440.0
+	for frame in 4:
+		await process_frame
+		layout_observations.append({"frame":frame, "viewport":str(composed.viewport.size), "minimum":str(composed.get_combined_minimum_size()), "body":str(tall_body.get_combined_minimum_size())})
+	print(JSON.stringify({"kind":"layout-observations", "frames":layout_observations}))
+	check(composed.viewport.size.y >= 440.0 and composed.get_combined_minimum_size().y >= 440.0, "dynamic content minimum reaches sequence layout")
+	composed.next.pressed.emit()
+	await create_timer(0.32).timeout
+	check(composed.slides[1].wrapper.get_rect().end.y <= composed.viewport.size.y, "active content fits the clipping viewport")
+	var released: Control = composed.remove_slide("tall")
+	await process_frame
+	await process_frame
+	check(composed.viewport.get_combined_minimum_size().y <= 80.0, "released slide no longer reserves layout height")
+	description.text = "A composed line\n".repeat(30)
+	for _frame in 4: await process_frame
+	check(composed.viewport.size.y >= description.get_combined_minimum_size().y and composed.viewport.size.y > 440.0, "nested content minimum propagates through the consumer container")
+	var retained_minimum: Vector2 = composed.viewport.get_combined_minimum_size()
+	released.custom_minimum_size.y = 540.0
+	await process_frame
+	check(composed.viewport.get_combined_minimum_size() == retained_minimum, "released content cannot change previous owner layout")
+	released.free()
+	composed.free()
 	print(JSON.stringify({"kind":"godot-sequence-component", "passed":failures.is_empty(), "failures":failures, "requests":requests, "pointer":pointer_observations, "intermediate":{"outgoing":outgoing,"incoming":incoming}, "sizeFractions":[fast_fraction,slow_fraction,capped_fraction], "widths":widths, "version":Engine.get_version_info().string}))
 	quit(0 if failures.is_empty() else 1)
