@@ -7,7 +7,7 @@ interface HomeProps {
 }
 
 /** Presentation-only metadata keyed by census target id. Existence, counts and
- * parity come from `bundle.census` (build-time); this map only supplies labels,
+ * source coverage come from `bundle.census` (build-time); this map only supplies labels,
  * dots and blurbs for targets that actually exist. Targets with no package
  * (e.g. the old UIKit card) simply never appear because they're not censused. */
 const TARGET_PRESENTATION: Record<
@@ -21,11 +21,14 @@ const TARGET_PRESENTATION: Record<
   lit: { label: "Lit 3", short: "Lit", dot: "lang-lit", blurb: "Lit 3 with reactive controllers." },
   "react-native": { label: "React Native", short: "React Native", dot: "lang-react", blurb: "TSX, hooks, native primitives." },
   swiftui: { label: "SwiftUI", short: "SwiftUI", dot: "lang-swift", blurb: "View structs, @Binding state." },
+  "jetpack-compose": { label: "Jetpack Compose", short: "Jetpack Compose", dot: "", blurb: "Kotlin composables, allowlisted source." },
+  unity: { label: "Unity UI Toolkit", short: "Unity", dot: "", blurb: "C# and UI Toolkit, bounded engine pilot." },
+  godot: { label: "Godot Control", short: "Godot", dot: "", blurb: "GDScript and Control scenes, bounded engine pilot." },
   figma: { label: "Figma", short: "Figma", dot: "lang-figma", blurb: "Descriptor-driven component sets." },
 };
 
-function present(id: string) {
-  return TARGET_PRESENTATION[id] ?? { label: id, short: id, dot: "", blurb: "" };
+function present(target: TargetCensus) {
+  return TARGET_PRESENTATION[target.id] ?? { label: target.label, short: target.label, dot: "", blurb: "" };
 }
 
 /** Canonical display order for the web targets (matches docs/prose), so the
@@ -39,9 +42,9 @@ export function Home({ bundle }: HomeProps) {
     .filter((t) => t.family === "web")
     .sort((a, b) => WEB_ORDER.indexOf(a.id) - WEB_ORDER.indexOf(b.id));
   const beyond = targets.filter((t) => t.family !== "web");
-  const fullParity = targets.filter((t) => t.parity === "full");
+  const fullCoverage = targets.filter((t) => t.family !== "descriptor" && t.sourceCoverage === "full");
 
-  // Parity matrix columns: every target that ships components (web + native).
+  // Source coverage columns: component targets; descriptors remain separate.
   const matrixCols = [...web, ...beyond.filter((t) => t.family === "native")];
   const presenceSets: Record<string, Set<string>> = {};
   for (const t of matrixCols) {
@@ -53,13 +56,12 @@ export function Home({ bundle }: HomeProps) {
   const foundationTokens = census?.foundationTokens ?? bundle.foundationTokens.length;
   const icons = census?.icons ?? 0;
   const primitives = census?.primitives ?? [];
-  const emitterOnly = census?.emitterOnly ?? [];
 
-  const webNames = web.map((t) => present(t.id).short).join(", ");
+  const webNames = web.map((t) => present(t).short).join(", ");
   const samples = bundle.components.slice(0, 6);
 
   const renderCard = (t: TargetCensus) => {
-    const p = present(t.id);
+    const p = present(t);
     return (
       <Card key={t.id} density="inset">
         <Stack
@@ -99,10 +101,13 @@ export function Home({ bundle }: HomeProps) {
               fontSize: "var(--fsds-core-typography-ramp-1)",
             }}
           >
-            {t.componentsShipped}/{componentCount} components
+            {t.componentsShipped}/{componentCount} {t.family === "descriptor" ? "descriptors" : "component sources"}
             {t.allowlisted ? " · allowlisted" : ""}
           </p>
         )}
+        <p className="muted">
+          {t.railAdmitted ? "Admission rail target" : t.executable ? "Outside the admission rail" : "Metadata only · emission unavailable"}
+        </p>
       </Card>
     );
   };
@@ -123,26 +128,26 @@ export function Home({ bundle }: HomeProps) {
       </h1>
       <p className="page-lede">
         Every component on this site is described by a single JSON contract;{" "}
-        {web.length} web framework emitters ({webNames})
-        {beyond.length > 0 &&
-          ` plus ${beyond.map((t) => present(t.id).short).join(", ")}`}{" "}
-        read it and produce idiomatic, native source for each runtime. But the
+        {web.length} web framework emitters ({webNames}) read it and produce
+        framework source. Registered native and engine targets emit their
+        supported component sources; Figma receives descriptors. The
         component corpus is the existence proof, not the project: the same
         discipline — one authority, governed composition, target-specific
         projections, observable drift — is applied to design tokens,
         iconography, analytical relations, this documentation site, and the
-        evidence that attests all of it. Compare targets side-by-side here,
+        evidence for those bounded projections. Compare targets side-by-side here,
         trace every line back to the field that produced it, and read the
         research program in <code>docs/research-program.md</code>.
       </p>
       <p className="muted" style={{ marginTop: "calc(-1 * var(--fsds-core-spacing-size-05))" }}>
-        Why one contract, {web.length} frameworks, {primitives.length === 1 ? "one primitive" : `${primitives.length} primitives`}?
+        Why one contract, {web.length} frameworks, {primitives.length === 1 ? "one rendered primitive" : `${primitives.length} rendered primitives`}?
         Because a family of artifacts should fall out of a generative substrate
         — the constraint exists to test an architectural claim about
         compositional systems generally. Read it on the{" "}
         <a href={buildHref({ kind: "architecture" })}>Architecture</a> page. The
         numbers below are censused from the <CodeSnippet text="packages/" /> tree at build
-        time, so they always reflect what is actually here.
+        time. Source presence establishes corpus coverage; admission and runtime
+        checks establish separate, bounded facts.
       </p>
 
       <section className="section" aria-label="Explore the system">
@@ -160,12 +165,12 @@ export function Home({ bundle }: HomeProps) {
           <div className="home-stat-label">Components</div>
         </div>
         <div className="home-stat">
-          <Stat size="lg">{fullParity.length}</Stat>
-          <div className="home-stat-label">Targets at full parity</div>
+          <Stat size="lg">{fullCoverage.length}</Stat>
+          <div className="home-stat-label">Targets with full corpus source coverage</div>
         </div>
         <div className="home-stat">
           <Stat size="lg">{generatedFiles}</Stat>
-          <div className="home-stat-label">Generated files indexed</div>
+          <div className="home-stat-label">Files in target output trees</div>
         </div>
         <div className="home-stat">
           <Stat size="lg">{foundationTokens}</Stat>
@@ -177,9 +182,11 @@ export function Home({ bundle }: HomeProps) {
         </div>
         <div className="home-stat">
           <Stat size="lg">{primitives.length}</Stat>
-          <div className="home-stat-label">Primitives</div>
+          <div className="home-stat-label">Rendered primitives</div>
         </div>
       </div>
+
+      {census?.geometryDefaults && <p className="muted">BoxModel supplies shared geometry defaults separately from the rendered Stack primitive.</p>}
 
       <section className="section">
         <Stack as="header" variant="horizontal" className="section-header stack-gap-06">
@@ -194,24 +201,18 @@ export function Home({ bundle }: HomeProps) {
         </Stack>
         <div style={gridStyle}>{beyond.map(renderCard)}</div>
 
-        {emitterOnly.length > 0 && (
-          <p className="muted" style={{ marginTop: "var(--fsds-core-spacing-size-05)" }}>
-            Experimental emitters (codegen only, no component package yet):{" "}
-            {emitterOnly.join(", ")}.
-          </p>
-        )}
       </section>
 
       <section className="section">
         <Stack as="header" variant="horizontal" className="section-header stack-gap-06">
-          <h2 className="section-title">Parity matrix</h2>
+          <h2 className="section-title">Source coverage matrix</h2>
           <span className="section-meta">which target ships which component</span>
         </Stack>
         <Details
           summary={`Show the ${componentCount} × ${matrixCols.length} targets × components matrix`}
         >
           <div style={{ overflowX: "auto", marginTop: "var(--fsds-core-spacing-size-05)" }}>
-            <Table ariaLabel={`Parity matrix — ${componentCount} components × ${matrixCols.length} targets`}>
+            <Table ariaLabel={`Source coverage matrix — ${componentCount} components × ${matrixCols.length} targets`}>
               <TableHead>
                 <TableRow>
                   <TableHeaderCell scope="col" style={{ textAlign: "left" }}>
@@ -219,7 +220,7 @@ export function Home({ bundle }: HomeProps) {
                   </TableHeaderCell>
                   {matrixCols.map((t) => (
                     <TableHeaderCell key={t.id} scope="col">
-                      {present(t.id).short}
+                      {present(t).short}
                     </TableHeaderCell>
                   ))}
                 </TableRow>

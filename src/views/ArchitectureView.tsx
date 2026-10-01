@@ -107,10 +107,10 @@ export function ArchitectureView({ bundle }: ArchitectureViewProps) {
           </li>
           <li>
             <strong>Documentation and evidence.</strong> This showcase derives
-            its content from the contracts instead of restating them, consumes
-            the generated system it documents, and attests its own artifacts
-            through the admission rail and ratcheted ledgers — explanation and
-            proof are projections, not second authorities.
+            component content from the contracts, consumes the generated system
+            it documents, and projects its bounded evidence. The admission rail
+            binds generated framework artifacts; doc claim and link checks govern
+            parts of the documentation. Neither attests the showcase build itself.
           </li>
         </ul>
         <p className="muted" style={{ marginTop: "var(--fsds-core-spacing-size-05)" }}>
@@ -154,7 +154,7 @@ export function ArchitectureView({ bundle }: ArchitectureViewProps) {
           <li>
             <strong>A typed contract that owns semantic authority.</strong>{" "}
             One place where the meaning of the artifact lives. Here:{" "}
-            <code>packages/ds-contracts/&lt;Name&gt;.contract.json</code>.
+            <code>packages/ds-contracts/components/&lt;Name&gt;/&lt;Name&gt;.contract.json</code>.
           </li>
           <li>
             <strong>A framework-neutral intermediate representation.</strong>{" "}

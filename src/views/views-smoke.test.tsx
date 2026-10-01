@@ -24,9 +24,27 @@ describe("showcase views — render smoke", () => {
     expect(document.body.textContent).toContain("component");
   });
 
+  it("Home separates corpus source coverage, rail membership and rendered primitives", () => {
+    render(<Home bundle={bundle} />);
+    expect(screen.getByText("Targets with full corpus source coverage")).toBeTruthy();
+    expect(screen.getByText("Rendered primitives").previousElementSibling?.textContent).toBe("1");
+    expect(screen.getByText(/BoxModel supplies shared geometry defaults/)).toBeTruthy();
+    for (const label of ["Jetpack Compose", "Unity UI Toolkit", "Godot Control"]) {
+      expect(screen.getByText(label, { selector: "strong" })).toBeTruthy();
+    }
+    expect(screen.getAllByText("Admission rail target")).toHaveLength(6);
+    expect(screen.getAllByText("Outside the admission rail")).toHaveLength(5);
+    expect(document.body.textContent).not.toContain("Targets at full parity");
+    expect(document.body.textContent).not.toContain("no component package yet");
+    expect(bundle.census?.targets.find((t) => t.id === "figma")?.family).toBe("descriptor");
+  });
+
   it("ArchitectureView renders the claim summary", () => {
     render(<ArchitectureView bundle={bundle} />);
     expect(document.querySelector("h1")?.textContent).toContain("compositional");
+    expect(document.body.textContent).toContain("packages/ds-contracts/components/<Name>/<Name>.contract.json");
+    expect(document.body.textContent).toContain("Neither attests the showcase build itself");
+    expect(document.body.textContent).not.toContain("attests its own artifacts");
   });
 
   it("DisplayCaseView renders the component gallery", () => {
