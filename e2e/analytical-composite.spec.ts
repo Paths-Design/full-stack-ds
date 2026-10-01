@@ -1,107 +1,110 @@
 import { expect, test } from "@playwright/test";
-import type { Page } from "@playwright/test";
-
-// Independently recover from visible table cells and actual screen geometry.
-// No producer, decoder, evaluator, fixture rows or selected program imports.
-async function observe(page: Page) {
-  return page.locator("[data-composite-preview]").evaluate(root => {
-    type Key = Array<{ field: string; value: string | number }>;
-    const same = (a: Key, b: Key) => a.length === b.length && a.every(x => b.some(y => x.field === y.field && x.value === y.value));
-    const issues: string[] = [];
-    const tables = [...root.querySelectorAll("[data-readback] table")].map(t => {
-      const fields = [...t.querySelectorAll("thead th")].slice(1).map(c => c.textContent!);
-      return [...t.querySelectorAll("tbody tr")].map(r => {
-        const cells = [...r.querySelectorAll("td")];
-        return { key: JSON.parse(cells[0].textContent!) as Key, values: Object.fromEntries(fields.map((f, i) => [f, JSON.parse(cells[i + 1].textContent!)])) };
-      });
-    }).flat();
-    const scale = root.querySelector("[data-scale]")?.textContent?.match(/origin: (.*); units per value: (.*)/);
-    const origin = Number(scale?.[1]), factor = Number(scale?.[2]);
-    const marks: Array<{ key: Key; field: string; value: number }> = [];
-    const panels = [...root.querySelectorAll("[data-panel]")].map(p => {
-      const label = p.querySelector("[data-panel-label]")!.textContent!;
-      const delimiter = label.indexOf(": "), partition = label.slice(0, delimiter), value = JSON.parse(label.slice(delimiter + 2));
-      const keys: Key[] = [];
-      for (const row of p.querySelectorAll("[data-mark-row]")) {
-        const key = JSON.parse(row.querySelector("[data-key]")!.textContent!) as Key;
-        keys.push(key);
-        if (!key.some(k => k.field === partition && k.value === value)) issues.push("panel membership");
-        const readback = tables.find(r => same(r.key, key));
-        if (!readback) { issues.push("identity"); continue; }
-        const range = JSON.parse(row.closest("[data-range-group]")!.querySelector("[data-range]")!.textContent!);
-        const svg = row.querySelector("svg")!, matrix = svg.getScreenCTM()!;
-        const line = svg.querySelector("line")!, box = line.getBoundingClientRect();
-        // CSS pixels -> SVG coordinates -> values. The table is a separate output.
-        const valueAt = (x: number) => ((x - matrix.e) / matrix.a - origin) / factor;
-        const lower = valueAt(box.left), upper = valueAt(box.right);
-        if (Math.abs(lower - readback.values[range.lower]) > 1e-6 || Math.abs(upper - readback.values[range.upper]) > 1e-6) issues.push("bounds geometry");
-        const fields = [...svg.querySelectorAll("ellipse")].map(mark => {
-          const field = mark.getAttribute("aria-label")!;
-          const b = mark.getBoundingClientRect(), value = valueAt(b.left + b.width / 2);
-          if (typeof readback.values[field] !== "number" || Math.abs(value - readback.values[field]) > 1e-6) issues.push("member geometry or association");
-          marks.push({ key, field, value }); return field;
-        });
-        if (JSON.stringify([...fields].sort()) !== JSON.stringify([...range.members].sort())) issues.push("range membership");
-      }
-      return { partition, value, keys };
-    });
-    if (tables.length !== panels.reduce((n, p) => n + p.keys.length, 0)) issues.push("population cardinality");
-    const standing = root.querySelector("[data-standing]")?.textContent;
-    if (standing && !/^Composition: retained; d0: qualified$/.test(standing)) issues.push("standing");
-    return { issues, tables, panels, marks, standing };
-  });
-}
+import { observe } from "./analytical-observer";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/#/scratch/analytical-fixtures");
-  await expect(page.locator("[data-composite-preview] svg").first()).toBeVisible();
+  await expect(page.locator("[data-mark-row] svg").first()).toBeVisible();
 });
 
-test("actual nested geometry preserves visible values and typed panel identity", async ({ page }) => {
-  const analyticalRequests: string[] = [];
-  page.on("request", r => { if (r.url().includes("/analytical/")) analyticalRequests.push(r.url()); });
-  await page.reload();
-  await expect(page.locator("[data-composite-preview] svg").first()).toBeVisible();
-  expect(analyticalRequests.some(url => /\/(projection|relation-model|relation-engine|authority|composite-selection)\.[jt]s/.test(url))).toBe(false);
-  const result = await observe(page);
-  expect(result.issues).toEqual([]);
-  expect(result.panels.map(p => [p.value, p.keys.length])).toEqual([["1", 1], [1, 2]]);
-  expect(result.marks.filter(m => m.field === "a").map(m => Math.round(m.value))).toEqual([9, 10, 11]);
-  expect(result.tables.map(r => r.values.label)).toEqual(["first", "second", "third"]);
-  await page.setViewportSize({ width: 1280, height: 1800 });
-  expect((await observe(page)).issues).toEqual([]);
-  await page.locator("[data-composite-preview]").screenshot({ path: "/private/tmp/fsds-analytical-composite.png" });
-});
-
-for (const mutation of ["geometry", "association", "range", "panel", "standing"]) {
-  test(`output observation detects ${mutation} mutation`, async ({ page }) => {
-    expect((await observe(page)).issues).toEqual([]);
-    await page.locator("[data-composite-preview]").evaluate((root, kind) => {
-      const ellipse = root.querySelector("ellipse")!;
-      if (kind === "geometry") ellipse.setAttribute("cx", String(Number(ellipse.getAttribute("cx")) + 2));
-      if (kind === "association") ellipse.setAttribute("aria-label", "label");
-      if (kind === "range") root.querySelector("[data-range]")!.textContent = JSON.stringify({ lower: "lo", upper: "hi", members: ["a"] });
-      if (kind === "panel") root.querySelector("[data-panel-label]")!.textContent = 'site: 1';
-      if (kind === "standing") root.querySelector("[data-standing]")!.textContent = "Composition: retained; d0: contradicted";
-    }, mutation);
-    expect((await observe(page)).issues.length).toBeGreaterThan(0);
+for (const name of ["Bounded observations", "Renamed and reordered", "Two ranges", "Different endpoints", "Distinct snapshots", "Nested sharing", "Bare layer"]) {
+  test(`production consumer preserves ${name}`, async ({ page }, info) => {
+    await page.getByRole("button", { name, exact: true }).click();
+    for (const width of [920, 1280]) {
+      await page.setViewportSize({ width, height: 1800 });
+      const result = await observe(page);
+      expect(result.issues).toEqual([]);
+      expect(result.marks.length).toBeGreaterThan(0);
+      expect(result.mappings.every(m => Number.isFinite(m.zero) && m.one > m.zero)).toBe(true);
+      if (name === "Two ranges" || name === "Different endpoints") {
+        // Equal values across different ranges must have equal local screen coordinates.
+        const sameValue = result.marks.filter(m => m.key.some(k => k.field === "site" && k.value === 1) && ["b", "d"].includes(m.field));
+        expect(sameValue).toHaveLength(2);
+        expect(sameValue[0].pixel).toBeCloseTo(sameValue[1].pixel, 6);
+      }
+      if (name === "Distinct snapshots") {
+        expect(result.marks.filter(m => m.field === "a").map(m => [m.dataset, m.key.find(k => k.field === "site")!.value, Math.round(m.value)])).toEqual([
+          ["d0", "1", 3], ["d1", "1", 5], ["d0", 1, 2], ["d1", 1, 4],
+        ]);
+      }
+      if (name === "Bounded observations") {
+        expect(result.panels.map(p => p.value)).toEqual(["1", 1]);
+        expect(result.marks.filter(m => m.field === "a").map(m => Math.round(m.value))).toEqual([9, 10, 11]);
+      }
+      const screenshot = info.outputPath(`${name.replaceAll(" ", "-")}-${width}.png`);
+      await page.locator("[data-composite-preview]").screenshot({ path: screenshot });
+      await info.attach(`render-${width}`, { path: screenshot, contentType: "image/png" });
+      await info.attach(`observation-${width}`, { body: JSON.stringify(result, null, 2), contentType: "application/json" });
+    }
   });
 }
 
-test("renamed fields and reordered populations use the same browser consumer", async ({ page }) => {
-  await page.getByRole("button", { name: "Renamed and reordered", exact: true }).click();
+const mutations = [
+  ["geometry", "member geometry or association"], ["association", "view identity"],
+  ["range", "range membership"], ["panel", "panel membership"], ["standing", "standing"],
+  ["absent standing", "standing"], ["absent scale", "scale"], ["unreadable scale", "scale"],
+  ["non-finite recovery", "member geometry or association"], ["missing mark", "range view population"],
+  ["missing bounds", "missing bounds"], ["no marks", "mark population"], ["unusable transform", "unusable transform"],
+] as const;
+for (const [mutation, diagnostic] of mutations) {
+  test(`observer rejects ${mutation}`, async ({ page }) => {
+    expect((await observe(page)).issues).toEqual([]);
+    await page.locator("[data-composite-preview]").evaluate((root, kind) => {
+      const mark = root.querySelector("ellipse")!;
+      if (kind === "geometry") mark.setAttribute("cx", String(Number(mark.getAttribute("cx")) + 2));
+      if (kind === "association") mark.setAttribute("aria-label", "label");
+      if (kind === "range") root.querySelector("[data-range]")!.textContent = JSON.stringify({ lower: "lo", upper: "hi", members: ["a"] });
+      if (kind === "panel") root.querySelector("[data-panel-label]")!.textContent = "site: 1";
+      if (kind === "standing") root.querySelector("[data-standing]")!.textContent = "Composition: retained; d0: contradicted";
+      if (kind === "absent standing") root.querySelector("[data-standing]")!.remove();
+      if (kind === "absent scale") root.querySelector("[data-scale]")!.remove();
+      if (kind === "unreadable scale") root.querySelector("[data-scale]")!.textContent = "origin: 0; units per value: unreadable";
+      if (kind === "non-finite recovery") root.querySelector("[data-scale]")!.textContent = "origin: 0; units per value: 1e-323";
+      if (kind === "missing mark") mark.remove();
+      if (kind === "missing bounds") root.querySelector("line")!.remove();
+      if (kind === "no marks") root.querySelectorAll("[data-mark-row]").forEach(row => row.remove());
+      if (kind === "unusable transform") root.querySelector("svg")!.getScreenCTM = () => null;
+    }, mutation);
+    expect((await observe(page)).issues).toContain(diagnostic);
+  });
+}
+
+test("numerical recovery alone cannot authorize per-range auto-fitting", async ({ page }) => {
+  await page.getByRole("button", { name: "Two ranges", exact: true }).click();
+  expect((await observe(page)).issues).toEqual([]);
+  await page.locator("[data-mark-row] svg").filter({ has: page.locator('line[aria-label="lo → hi"]') }).first().evaluate(svg => {
+    const line = svg.querySelector("line")!;
+    const lo = Number(line.getAttribute("x1")), hi = Number(line.getAttribute("x2")), width = hi - lo;
+    svg.setAttribute("viewBox", `${lo - width / 8} 0 ${width * 1.25} 40`);
+  });
   const result = await observe(page);
-  expect(result.issues).toEqual([]);
-  expect(result.tables.map(r => r.values.first_value)).toEqual([9, 11, 10]);
-  expect(result.marks.filter(m => m.field === "first_value").map(m => Math.round(m.value))).toEqual([9, 11, 10]);
-  expect(result.panels.map(p => p.partition)).toEqual(["zone", "zone"]);
+  expect(result.issues).toContain("shared scale distance");
+  expect(result.issues).not.toContain("member geometry or association");
 });
 
-test("failed and empty selections show disposition without geometry", async ({ page }) => {
-  for (const [name, status] of [["Contradicted bounds", "refused"], ["Unresolved quantity", "unproven"], ["Unsupported format", "unsupported"], ["Empty population", "nothing-to-realize"]] as const) {
+test("dataset binding swaps fail with identical keys and unchanged totals", async ({ page }) => {
+  await page.getByRole("button", { name: "Distinct snapshots", exact: true }).click();
+  expect((await observe(page)).issues).toEqual([]);
+  await page.locator("[data-composite-preview]").evaluate(root => root.querySelectorAll("ellipse").forEach(mark => {
+    mark.setAttribute("data-dataset", mark.getAttribute("data-dataset") === "d0" ? "d1" : "d0");
+  }));
+  expect((await observe(page)).issues).toContain("view identity");
+});
+
+test("metric limitations retain independently observable lawful readback", async ({ page }) => {
+  for (const [name, status] of [["Free scale readback", "unsupported"], ["Conflicting endpoint readback", "unproven"]]) {
+    await page.getByRole("button", { name, exact: true }).click();
+    await expect(page.locator("[data-disposition]")).toHaveText("Readback: selected");
+    await expect(page.locator("[data-metric-disposition]")).toContainText(`Metric: ${status}:`);
+    await expect(page.locator("[data-mark-row] svg")).toHaveCount(0);
+    expect((await observe(page, false)).issues).toEqual([]);
+  }
+});
+
+test("failed and empty selections show disposition without lawful output", async ({ page }) => {
+  for (const [name, status] of [["Contradicted bounds", "refused"], ["Unresolved quantity", "unproven"], ["Unsupported format", "unsupported"], ["Empty population", "nothing-to-realize"]]) {
     await page.getByRole("button", { name, exact: true }).click();
     await expect(page.locator("[data-disposition]")).toContainText(status);
-    await expect(page.locator("[data-composite-preview] svg")).toHaveCount(0);
+    await expect(page.locator("[data-mark-row] svg")).toHaveCount(0);
     await expect(page.locator("[data-readback]")).toHaveCount(0);
   }
 });
