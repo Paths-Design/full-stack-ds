@@ -113,6 +113,6 @@ evidence:
     commit_sha: "53d7899a4663dfef2f2a125923c3a7c9b76117fb"
   - criterion_id: A6
     status: fail
-    evidence_ref: "Local unmerged Figma repair 9b7b89725 (docs d0f4fbac8): descriptor emitter previously dropped MotionIR; new serialized regression failed on baseline, then passed after preserving motion.facts with descriptor-only realization. Renamed channel, shared advance budget, both progress projections and size-aware profile survive emission. Regenerated tracked descriptors, codegen/Figma typechecks, 28 focused codegen tests, 87 plugin tests, lint, governed rail and docs checks pass; logs /tmp/carousel-figma-*.log. Figma metadata is not prototype execution. Prior iOS primitive pixel witness and RN callback/pause mutations remain bounded as recorded in A5 and earlier events. Full native generated-component runtime lanes and cross-platform mutation evidence remain incomplete, so A6 is not satisfied."
-    recorded_at: "2026-10-01T06:08:03.297Z"
-    commit_sha: "9b7b89725912ab92f130ae935e2ebe7b8492899a"
+    evidence_ref: "Figma descriptor gap is repaired and merged independently under FIGMA-MOTION-DESCRIPTOR-01 at 99f0741c8. That spec records passing serialized semantics, descriptor-only boundary, 4659 root tests, framework suites, 87 plugin tests, typechecks, lint, docs and admission rail. Native work remains unmerged at 53d7899a4 with bounded iOS primitive movement/progress samples and callback/pause/reduced-motion mutation evidence; full generated-native behavior and other platform realizations remain incomplete. Overall parity A6 stays fail."
+    recorded_at: "2026-10-01T06:31:48.409Z"
+    commit_sha: "99f0741c8f29ca4acd5ad0bd1c35127418e7daa4"
