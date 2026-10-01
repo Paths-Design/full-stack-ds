@@ -56,6 +56,13 @@ acceptance:
     given: 'the reusable paging architecture'
     when: 'consumers inspect standalone and composition examples'
     then: 'Pagination is discoverable independently and paging presence selection and content ownership are documented with implementation boundaries'
+  - id: A4
+    given: 'A known finite paged collection using compact Pagination'
+    when: 'The user steps backward or forward or commits a one-based page field'
+    then: >-
+      Only in-range integer requests are emitted, accepted state remains controlled
+      by the owner, unavailable and empty collections disable navigation, and the
+      compact form is demonstrated and verified across the five web frameworks
 rollback:
   - 'Revert the extraction commit and regenerate contract-owned sources.'
 non_functional: {}
