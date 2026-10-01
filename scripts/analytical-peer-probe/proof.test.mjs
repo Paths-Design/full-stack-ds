@@ -53,6 +53,10 @@ test('A3 actual information loss is distinct from presentation residue and unsup
     assert.deepEqual(output(`loss-${d}-${row}-${field}`), artifact);
   }
   assert.equal(artifact.loss.values.length, 8);
+  assert.deepEqual(artifact.loss.values, [
+    ['d0', 1, 'b'], ['d0', 1, 'note'], ['d0', '1', 'b'], ['d0', '1', 'note'],
+    ['d1', 1, 'a'], ['d1', 1, 'note'], ['d1', '1', 'a'], ['d1', '1', 'note'],
+  ].map(([dataset, day, field]) => ({ dataset, key: [['site', 'west'], ['day', day]], field })));
   assert.deepEqual(artifact.loss.values.filter(v => v.dataset === 'd0' && v.key[1][1] === 1).map(v => v.field).sort(), ['b', 'note']);
   assert.deepEqual(artifact.loss.tasks, [{ path: 'root', task: 'magnitude-comparison', reason: 'host operation and comparison task are not realized by this bounded summary' }]);
   assert.deepEqual(artifact.residue, { layout: 'lines', traversal: 'composition and supplied observation order; no analytical ordering claim' });
