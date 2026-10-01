@@ -166,8 +166,8 @@ evidence:
     commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
   - criterion_id: A11
     status: pass
-    evidence_ref: "Analytical suite 23 files/1112 tests, root suite 314 files/4625 tests, all framework suites, governed required-mode rail, codegen tsc, production lint, docs claims/links, CAWS budget/scope, freeze 166 erasures/130 verdicts and final quotient 34/34 all passed. Root typecheck fails on the same three pre-existing focus-trap Array.at errors in canonical main; no root-green claim. Stage-2 subtraction ratification remains open and is not discharged by these checks."
-    recorded_at: "2026-10-01T01:34:17.717Z"
-    command: pnpm test -- --reporter=dot
+    evidence_ref: "Current main source check: 3 files/38 tests pass; root final 315 files/4633 tests pass; required governed:rail/framework suites, production build/lint/docs checks pass; production Chromium 8 tests pass including five mutations and output absence. Current main freeze 166 erasures/130 verdicts and quotient 34/34 held. Codegen and target typing pass; root typecheck retains only three pre-existing focus-trap.ts Array.at errors. Stage-2 subtraction remains unratified. Browser contract landed at 204711aa66ba6fa51e733dc38e2713ca0f5ac6b0. Local execution receipts inspected; CAWS verifies the commit citation without rerunning Vitest or Playwright."
+    recorded_at: "2026-10-01T03:04:33.060Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/analytical/projection-boundaries.test.ts packages/ds-codegen/src/analytical/composite-output.test.ts packages/ds-codegen/src/analytical/authority.test.ts --maxWorkers=2
     exit_code: 0
-    commit_sha: "50bf95ba1b384b6a281696e0f4b561468d025e03"
+    commit_sha: "7b94b4e26"
