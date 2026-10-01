@@ -34,3 +34,12 @@ contracts:
   - name: 'docs-corpus-boundary'
     type: contract-test
     path: 'src/docs/projection.corpus.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Injected internal file is never read; index pages and graph match the public-only fixture. Predecessor fails three assertions, repaired projection passes all 16 scoped tests."
+    recorded_at: "2026-10-01T03:38:24.003Z"
+    command: pnpm exec vitest run src/docs/projection.test.ts src/docs/projection.corpus.test.ts
+    exit_code: 0
+    artifact_path: /private/tmp/fsds-docs-internal-after.log
+    commit_sha: "6a6a3ee7f8174f88d49d51fab6c2631995345830"
