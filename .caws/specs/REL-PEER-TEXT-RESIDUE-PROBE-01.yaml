@@ -5,7 +5,7 @@ mode: feature
 lifecycle_state: active
 worktree: analytical-peer-text
 created_at: '2026-10-01T17:28:18.873Z'
-updated_at: '2026-10-01T17:58:17.412Z'
+updated_at: '2026-10-01T18:16:46.708Z'
 created_by_session: '01a0f4d2-a872-7191-8c07-ef78dc8507c6'
 blast_radius:
   modules:
@@ -17,6 +17,8 @@ scope:
     - 'packages/ds-codegen/src/analytical/peer-text-probe.ts'
     - 'docs/architecture/analytical-peer-text.md'
     - scripts/analytical-peer-probe/
+    - packages/ds-codegen/src/analytical/authority.ts
+    - packages/ds-codegen/src/analytical/authority.test.ts
   out: []
   support:
     - docs/current-implementation-snapshot.md
