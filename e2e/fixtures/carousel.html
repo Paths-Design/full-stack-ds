@@ -1,0 +1,11 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Carousel composition fixture</title>
+<style>body { margin: 24px; } #composition { width: 320px; }</style>
+</head><body><div id="composition"></div>
+<script type="module">
+const framework = new URLSearchParams(location.search).get("framework");
+if (!["react", "vue", "svelte", "lit"].includes(framework)) throw new Error("Unknown fixture");
+const module = await import(/* @vite-ignore */ "/packages/ds-" + framework + "/src/primitives/__tests__/fixtures/carousel-composition." + (framework === "react" ? "tsx" : "ts"));
+await module.mountCarousel(document.getElementById("composition"));
+document.body.dataset.compositionReady = "";
+</script></body></html>
