@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.1.0/page-record.schema.json",
+  "title": "Shared document candidate page-record",
+  "description": "Draft 0.1.0 paper representation; not an editor runtime admission contract.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "header"
+        },
+        "schemaVersion": {
+          "$ref": "common.schema.json#/$defs/version"
+        },
+        "projectId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "pageId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "initialRevision": {
+          "const": 0
+        }
+      },
+      "required": [
+        "kind",
+        "schemaVersion",
+        "projectId",
+        "pageId",
+        "initialRevision"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "transaction"
+        },
+        "transactionId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "actor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "human",
+                "agent"
+              ]
+            },
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ]
+        },
+        "action": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "initialize"
+            },
+            "document": {
+              "$ref": "document.schema.json"
+            }
+          },
+          "required": [
+            "kind",
+            "document"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "transactionId",
+        "expectedRevision",
+        "revision",
+        "actor",
+        "action"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "transaction"
+        },
+        "transactionId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "actor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "human",
+                "agent"
+              ]
+            },
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ]
+        },
+        "action": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "edit"
+            },
+            "operations": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "set-node-property"
+                      },
+                      "nodeId": {
+                        "$ref": "common.schema.json#/$defs/id"
+                      },
+                      "property": {
+                        "$ref": "common.schema.json#/$defs/property"
+                      },
+                      "binding": {
+                        "$ref": "common.schema.json#/$defs/binding"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "nodeId",
+                      "property",
+                      "binding"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "reset-node-property"
+                      },
+                      "nodeId": {
+                        "$ref": "common.schema.json#/$defs/id"
+                      },
+                      "property": {
+                        "$ref": "common.schema.json#/$defs/property"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "nodeId",
+                      "property"
+                    ]
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          },
+          "required": [
+            "kind",
+            "operations"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "transactionId",
+        "expectedRevision",
+        "revision",
+        "actor",
+        "action"
+      ]
+    }
+  ]
+}
