@@ -78,10 +78,11 @@ evidence:
     test_verified_at: cbd75dd41cf535a14287937aff96eafb66ae469b
   - criterion_id: A4
     status: pass
-    evidence_ref: "dependency-and-proof.json plus frozen-basis.log: 8 executed checks pass; preservation consumes declared bounds without claiming primitive necessity. Checked source a2925fe77066785752a16570cef459f967d7fbf6. Retained at tmp/verification/analytical-capability-contract; rail, 4752 root tests and framework suites passed."
-    recorded_at: "2026-10-01T17:44:42.991Z"
-    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/verification/analytical-capability-contract/verification.json
-    commit_sha: a2925fe77066785752a16570cef459f967d7fbf6
+    evidence_ref: "dependency-and-proof.json plus frozen-basis.log: 8 executed checks pass; preservation consumes declared bounds without claiming primitive necessity. Executable verifier runs the named criterion; detailed logs remain ignored under tmp/verification/analytical-capability-contract."
+    recorded_at: "2026-10-01T17:56:01.091Z"
+    test_nodeid: "scripts/analytical-capability-audit/reconciliation.test.mjs::A4 conditional preservation is independent of frozen-basis completion"
+    commit_sha: f08571d273f4072ec0564f2dea36e6a799ddbea5
+    test_verified_at: "62ac805d9700f9b23a56d75b682e005bc318c37c"
   - criterion_id: A5
     status: pass
     evidence_ref: "remote run 36895859647 and artifact 11179293251 successful; unchanged proof source requires rebuilt renderer and import control rejection. Checked source a2925fe77066785752a16570cef459f967d7fbf6. Retained at tmp/verification/analytical-capability-contract; rail, 4752 root tests and framework suites passed."
