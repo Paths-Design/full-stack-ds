@@ -1,0 +1,51 @@
+id: DESIGN-COMPOSITION-PAPER-02
+title: 'Specify composition ownership and animation authoring in draft 0.2.0'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-01T16:11:00.970Z'
+updated_at: '2026-10-01T16:11:00.970Z'
+created_by_session: '01a0f5b0-8c29-7670-82de-50f7c08d07da'
+blast_radius:
+  modules:
+    - 'Isolated paper semantics, draft schemas and original Button qualification examples'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/design/shared-document-model/'
+    - 'packages/ds-contracts/document-model/'
+  out: []
+invariants:
+  - 'Definition edits propagate only through declared consumer relationships; explicit local overrides remain local'
+  - 'Keyframe selection chooses edit destination; playhead movement never authors state'
+  - 'Static compositions and evaluated terminal holds never mutate saved base values'
+  - 'All runtime coverage remains not-implemented; no UI renderer emitter or prototype execution changes'
+acceptance:
+  - id: A1
+    given: 'the confirmed composition and keyframe direction'
+    when: 'paper semantics are reviewed'
+    then: 'definition inheritance local supplied children stable editable addresses scene ownership boundary markers selected-key edits terminal hold and undo effects are explicit with independent expected-state tables'
+  - id: A2
+    given: 'draft 0.2.0 schemas and original two-Button compositions'
+    when: 'the paper verifier runs'
+    then: 'definition document transactions and example state tables qualify without input mutation and malformed neighbors are rejected with schema sensitivity controls'
+  - id: A3
+    given: 'the design coverage ledger and draft migration note'
+    when: 'coverage and examples are inspected'
+    then: 'changes from 0.1.0 are explicit all runtime statuses remain not-implemented and remaining design obligations retain lineage'
+  - id: A4
+    given: 'the isolated source diff'
+    when: 'scoped documentation checks and repository gates run'
+    then: 'paper checks pass and no editor UI renderer emitter generated component or remote publication changes occur'
+non_functional: {}
+contracts:
+  - name: 'composition-draft'
+    type: schema
+    path: 'packages/ds-contracts/document-model/document.schema.json'
+  - name: 'definition-draft'
+    type: schema
+    path: 'packages/ds-contracts/document-model/definition.schema.json'
+  - name: 'edit-draft'
+    type: schema
+    path: 'packages/ds-contracts/document-model/page-record.schema.json'
