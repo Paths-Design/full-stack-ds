@@ -73,3 +73,9 @@ evidence:
     recorded_at: "2026-10-01T17:44:42.156Z"
     artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/verification/analytical-capability-contract/verification.json
     commit_sha: a2925fe77066785752a16570cef459f967d7fbf6
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "dependency-and-proof.json plus frozen-basis.log: 8 executed checks pass; preservation consumes declared bounds without claiming primitive necessity. Checked source a2925fe77066785752a16570cef459f967d7fbf6. Retained at tmp/verification/analytical-capability-contract; rail, 4752 root tests and framework suites passed."
+    recorded_at: "2026-10-01T17:44:42.991Z"
+    artifact_path: /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/verification/analytical-capability-contract/verification.json
+    commit_sha: a2925fe77066785752a16570cef459f967d7fbf6
