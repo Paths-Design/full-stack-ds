@@ -5,6 +5,7 @@ status: implemented
 title: Component token state and variant naming
 owner: "@darianrosebrook"
 updated: 2026-09-30
+verified_at_commit: 38c798cb0eb2
 governs:
   - packages/ds-contracts/components/**/*.tokens.json
   - packages/ds-codegen/src/component-token-naming.ts
