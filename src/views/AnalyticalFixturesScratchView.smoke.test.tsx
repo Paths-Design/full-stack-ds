@@ -4,8 +4,8 @@
 //     exercised through the DS Select's real combobox interaction.
 // A2: the dump itself carries zero answer-key material (mirrors the sync
 //     script's refusal — this asserts the COMMITTED bytes, not the writer).
-// A3: qualifier badges render as DS Badge; the realization area is
-//     placeholder only.
+// A3: qualifier badges render as DS Badge; bounded selected output remains
+//     separate from the corpus inspector's unprojected assertions.
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, renderHook, screen } from "@testing-library/react";
 import { FIXTURES } from "../data/analytical-fixtures/fixtures";
@@ -121,13 +121,15 @@ describe("AnalyticalFixturesScratchView", () => {
     expect(cells.length).toBe(3);
   });
 
-  it("realization area is the explicit no-engine placeholder — nothing fabricated", () => {
+  it("keeps the corpus projection boundary separate from selected output", () => {
     render(<AnalyticalFixturesScratchView />);
     const panel = document.querySelector(".afx-realization");
-    expect(panel?.textContent).toContain("no projection engine exists yet");
+    expect(panel?.textContent).toContain("does not select a projection");
     expect(panel?.querySelectorAll("svg, canvas, img")).toHaveLength(0);
     // It still names what a future projection must answer, from the dump only.
     expect(panel?.textContent).toContain("mean of survey.satisfaction");
+    expect(document.querySelector("[data-composite-preview] [data-disposition]")?.textContent).toBe("selected");
+    expect(document.querySelectorAll('[data-composite-preview] svg[aria-label="Carried bounded range"]')).toHaveLength(3);
   });
 
   it("search via DS Input narrows the index by id substring", () => {

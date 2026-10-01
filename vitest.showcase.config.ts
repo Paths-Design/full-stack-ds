@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import fsdsData from "./vite-plugin-fsds-data";
+import analyticalCompositePreview from "./scripts/analytical-composite-preview";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const floors = JSON.parse(
@@ -16,7 +17,7 @@ const floors = JSON.parse(
 // The fsds-data plugin provides `virtual:fsds/data`, which src/types/bundle
 // imports — the same wiring as vite.config.ts.
 export default defineConfig({
-  plugins: [react(), fsdsData()],
+  plugins: [react(), fsdsData(), analyticalCompositePreview()],
   resolve: {
     alias: {
       "@full-stack-ds/react": path.resolve(

@@ -4,6 +4,7 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import fsdsData from "./vite-plugin-fsds-data";
+import analyticalCompositePreview from "./scripts/analytical-composite-preview";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -28,6 +29,7 @@ export default defineConfig({
     // src/types/bundle.ts imports `virtual:fsds/data`; showcase smoke suites
     // pull it in. Same wiring as vite.config.ts / vitest.showcase.config.ts.
     fsdsData(),
+    analyticalCompositePreview(),
   ],
   resolve: {
     // jsdom is a browser environment; without the browser condition svelte

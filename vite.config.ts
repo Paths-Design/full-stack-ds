@@ -5,6 +5,7 @@ import react from "@vitejs/plugin-react";
 import vue from "@vitejs/plugin-vue";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import fsdsData from "./vite-plugin-fsds-data";
+import analyticalCompositePreview from "./scripts/analytical-composite-preview";
 import { docsDataPlugin } from "./src/docs/vite-plugin";
 import { angularPreviewPlugin } from "./src/runtime/angular-compiler/vite-plugin";
 import { reactPreviewPlugin } from "./src/runtime/react-preview/vite-plugin";
@@ -45,6 +46,7 @@ export default defineConfig({
     vue(),
     svelte({ configFile: false }),
     fsdsData(),
+    analyticalCompositePreview(),
     docsDataPlugin(),
     angularPreviewPlugin(),
     reactPreviewPlugin(),
