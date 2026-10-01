@@ -1,0 +1,49 @@
+id: SHOWCASE-CLAIM-CENSUS-01
+title: 'Correct showcase claim boundaries and target census'
+risk_tier: 2
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-01T07:25:49.053Z'
+updated_at: '2026-10-01T07:25:49.053Z'
+created_by_session: '01a0f64e-1a73-7d10-8acd-5f8e93924b47'
+blast_radius:
+  modules:
+    - 'Showcase census and orientation pages'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'vite-plugin-fsds-data.ts'
+    - 'src/types/data.ts'
+    - 'src/views/Home.tsx'
+    - 'src/views/ArchitectureView.tsx'
+    - 'src/views/views-smoke.test.tsx'
+    - 'src/consumption/showcase-census.test.ts'
+    - 'src/consumption/showcase-census.ts'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Target registration and output roots remain owned by the codegen registry; census coverage does not confer admission or behavioral parity.'
+  - 'Stack is the rendered primitive; BoxModel remains a defaults table.'
+acceptance:
+  - id: A1
+    given: 'configured targets and their declared outputs'
+    when: 'the showcase census is built'
+    then: 'all registered builtin targets appear with their actual corpus coverage, descriptors remain distinguished, and SwiftUI is never inferred as an emitter without a package.'
+  - id: A2
+    given: 'a missing corpus component replaced by an unrelated directory'
+    when: 'coverage is computed'
+    then: 'the target remains partial rather than claiming full source coverage.'
+  - id: A3
+    given: 'Stack and BoxModel primitive files'
+    when: 'the overview renders'
+    then: 'it reports one rendered primitive and identifies the geometry defaults separately.'
+  - id: A4
+    given: 'the Overview and Architecture pages'
+    when: 'their claims are inspected'
+    then: 'source coverage is distinguished from admission and runtime parity, showcase self-attestation is removed, and the canonical component path is correct.'
+non_functional: {}
+contracts:
+  - name: 'showcase-census'
+    type: behavior
+    path: 'src/consumption/showcase-census.ts'
