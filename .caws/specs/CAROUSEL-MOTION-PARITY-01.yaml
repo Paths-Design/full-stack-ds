@@ -111,6 +111,8 @@ evidence:
     commit_sha: ed11396a
   - criterion_id: A6
     status: fail
-    evidence_ref: "Review baseline ed11396a: CI runs e2e:rail (runtime-rail.spec.ts only) and e2e:render-binding, neither includes e2e/carousel.spec.ts; motion audit misses sequence runtime bindings and real child composition fixtures are absent outside React. Remote run 36405744837 at 175e370c (same implementation) also fails swift-parity-diff because Carousel emits for React but not SwiftUI, and Vue coverage is 86.48 percent below the unchanged 87 percent floor. Inspected failed job logs saved at ignored tmp/carousel-review/ci-failed.log; https://github.com/darianrosebrook/full-stack-ds/actions/runs/36405744837 . Repair must retain gate strength."
-    recorded_at: "2026-09-28T10:07:37.302Z"
-    commit_sha: ed11396a
+    evidence_ref: "At 5156566dc, CI now invokes the dedicated e2e:carousel script, and its 22 browser tests passed locally with CI=true. The Lit painted-content regression and five-controller box tests fail on the pre-repair implementation. Remaining obligations: real composed child fixtures for Vue Svelte Angular, native execution lanes and backend-binding mutation checks. Previously observed Swift emission parity and Vue coverage failures remain open until reverified/repaired. This partial CI improvement does not satisfy A6."
+    recorded_at: "2026-10-01T04:23:04.199Z"
+    command: "CI=true FSDS_E2E_PORT=5201 pnpm run e2e:carousel"
+    exit_code: 0
+    commit_sha: "5156566dc"
