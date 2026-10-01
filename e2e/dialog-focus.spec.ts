@@ -88,6 +88,69 @@ test.describe("Dialog opening focus", () => {
     });
   }
 
+  for (const initialFocus of ["#profile-slot", "profile-slot"]) {
+    test(`lit: projected input initialFocus=${initialFocus} participates in the trap`, async ({ page }) => {
+      await prepare(page, "lit");
+      await page.evaluate(target => {
+        const host = document.querySelector("fsds-dialog") as HTMLElement & {
+          open: boolean; initialFocus: string; onOpenChange: (open: boolean) => void;
+        };
+        const input = document.createElement("input");
+        input.id = "profile-slot";
+        input.setAttribute("aria-label", "Slotted profile");
+        host.append(input);
+        host.initialFocus = target;
+        host.onOpenChange = open => { host.open = open; };
+        document.getElementById("focus-launcher")!.onclick = () => { host.open = true; };
+      }, initialFocus);
+      const launcher = page.locator("#focus-launcher");
+      await launcher.click();
+      const input = page.getByRole("textbox", { name: "Slotted profile" });
+      const close = page.getByRole("button", { name: "Close dialog" });
+      await expect(input).toBeFocused();
+      await input.fill("Ada");
+      await expect(input).toBeFocused();
+      await page.keyboard.press("Tab");
+      await expect(close).toBeFocused();
+      await page.keyboard.press("Shift+Tab");
+      await expect(input).toBeFocused();
+      await page.keyboard.press("Escape");
+      await expect(page.locator(panel("lit"))).toHaveCount(0);
+      await expect(launcher).toBeFocused();
+    });
+  }
+
+  test("lit: a projected package Input is focused through its own shadow root", async ({ page }) => {
+    await prepare(page, "lit");
+    await page.evaluate(async () => {
+      const entry = "/packages/ds-lit/src/components/Input/Input.ts";
+      await import(entry);
+      document.getElementById("focus-launcher")!.onclick = () => {
+        const host = document.createElement("fsds-dialog") as HTMLElement & {
+          open: boolean; initialFocus: string; onOpenChange: (open: boolean) => void;
+        };
+        const input = document.createElement("fsds-input") as HTMLElement & { name: string };
+        input.name = "slotted-profile";
+        host.initialFocus = 'input[name="slotted-profile"]';
+        host.open = true;
+        host.onOpenChange = open => { host.open = open; if (!open) host.remove(); };
+        host.append(input);
+        document.body.append(host);
+      };
+    });
+    const launcher = page.locator("#focus-launcher");
+    await launcher.click();
+    const input = page.locator('fsds-input >> input[name="slotted-profile"]');
+    await expect(input).toBeFocused();
+    await input.fill("Ada");
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("button", { name: "Close dialog" })).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(input).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(launcher).toBeFocused();
+  });
+
   test("React showcase: conditional composition opening survives its portal mount", async ({ page }) => {
     await page.goto("/#/component/Dialog/design");
     await page.getByRole("button", { name: "Open dialog", exact: true }).nth(1).click();
