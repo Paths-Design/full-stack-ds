@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
-updated: 2026-09-30
-verified_at_commit: 38c798cb0eb2
+updated: 2026-10-01
+verified_at_commit: 395ecdbff
 governs:
   - packages/ds-codegen/src/design-properties.ts
   - packages/ds-codegen/src/validation/component-design-policy.ts
@@ -178,3 +178,7 @@ Carousel uses token-backed style consumers for its dots, ring and controls. Its 
 Each Carousel indicator mode explicitly selects its visible decorations in the
 style contract, including the combined mode; the variant audit checks those
 carriers and browser tests check the resulting visibility.
+
+## Paging composition reconciliation
+
+Pagination declares its marker and numbered-choice properties in its style sidecar; PageNavigator declares field sizing and control spacing there. Both use the existing closed design-property registry and unset override/fallback chain. The extraction changes component ownership of picker styling without changing the registry, inspector override API, or native default facts. Design-policy and corpus boundary tests continue to enforce these obligations.

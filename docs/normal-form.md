@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
-updated: 2026-09-30
-verified_at_commit: 480b40817
+updated: 2026-10-01
+verified_at_commit: 395ecdbff
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -90,6 +90,8 @@ The operative concern is governance, not composition. "Compositional" describes 
 The point of encoding governance structurally is not control for its own sake. It is to **raise the floor so the quality bar is easier to hit**. Without the normal form, doing the right thing requires heroic effort by every contributor on every change. With it, the right thing is the path of least resistance, and the wrong thing is loud enough to be visible before it ships. A system in normal form does not produce better work by demanding better people; it produces consistent work by removing the choices that lead to drift.
 
 The same discipline calibrates to the reliability of the consumer. When the consumer is a reasonably disciplined human, advisory linting and visual review can carry property 5 (fail-loud boundaries). When the consumer is a stochastic generator that will silently fabricate references it cannot resolve, property 5 has to be enforced harder — hashing, schema validation, fail-closed throws. The shape of the property is the same; the strictness scales with how much the consumer can be trusted to follow rules it has not been forced to follow. Whether this re-scaling generalizes cleanly to other substrates is a question this codebase alone cannot settle.
+
+The [ordered-set composition](architecture/paged-collections.md) adds a bounded example of contract semantics below component presentation. A `pagedSet` descriptor and closed value/action bindings normalize into IR; shared target runtimes validate finite requests and keep a one-based field draft independent of accepted position. Pagination and PageNavigator consume those facts, while Carousel retains sequence timing and content ownership. A renamed contract lowers through every Web emitter, and display-only/selectable projection fixtures retain independently supplied completion and progress. These witnesses establish the represented position policy; they do not establish arbitrary activity workflows, validation-gated progression, stable identity under reordering, or native keyboard/visual parity.
 
 ## The move that produces normal-form systems
 

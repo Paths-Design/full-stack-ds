@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component token state and variant naming
 owner: "@darianrosebrook"
-updated: 2026-09-30
-verified_at_commit: 38c798cb0eb2
+updated: 2026-10-01
+verified_at_commit: 395ecdbff
 governs:
   - packages/ds-contracts/components/**/*.tokens.json
   - packages/ds-codegen/src/component-token-naming.ts
@@ -74,3 +74,7 @@ These do not establish arbitrary theme accessibility or native device rendering.
 A brand can address a neutral base and an explicit variant as sibling component
 keys: `size` and `size.small`. Use the dotted variant key in that case so a token
 leaf does not also become a nested group. Both destinations must have consumers.
+
+## Paging composition reconciliation
+
+The naming rule also applies to Pagination tokens through the same corpus walk. PageNavigator has no authored component token pool, so the test loader now treats its token sidecar as optional while retaining the naming assertion for every loaded declaration. No empty compatibility pool or naming exemption is introduced; neutral base names and declared state siblings retain their existing validation.
