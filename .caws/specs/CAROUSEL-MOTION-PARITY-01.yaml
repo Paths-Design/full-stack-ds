@@ -5,7 +5,7 @@ mode: fix
 lifecycle_state: active
 worktree: carousel-native-presentation
 created_at: '2026-09-28T09:59:04.162Z'
-updated_at: '2026-10-01T07:56:42.685Z'
+updated_at: '2026-10-01T15:08:51.682Z'
 created_by_session: '01a0e634-540a-7a52-9386-45e3c3bcdfe5'
 blast_radius:
   modules:
@@ -46,6 +46,7 @@ scope:
     - .github/workflows/analytical-browser.yml
   support:
     - package.json
+    - CLAUDE.md
 invariants:
   - 'One authoritative time budget controls advancement and all visual projections; movement completion only releases reading time.'
   - 'Consumer content is never mutated after ownership ends; interaction preserves user intent and reduced-motion preference.'
