@@ -14,10 +14,15 @@ var rotation_button: Button
 var pickers: HBoxContainer
 var slides: Array[Dictionary] = []
 var projections: Array[Dictionary] = []
+## Hosts may request less motion, but cannot override a system request.
+## The query boundary also lets an embedding platform supply its preference.
+var motion_preference_query: Callable = _system_motion_preference
+var system_motion_preference := -1
+var effective_reduced_motion := false
 var reduced_motion := false:
 	set(value):
 		reduced_motion = value
-		if value and is_node_ready(): _settle()
+		if is_node_ready(): _sync_motion_preference()
 var _index := 0
 var _initialized := false
 var _tween: Tween
@@ -27,6 +32,16 @@ var _touches: Dictionary = {}
 
 func _now() -> float:
 	return Time.get_ticks_usec() / 1000.0
+
+func _system_motion_preference() -> int:
+	return int(DisplayServer.call("accessibility_should_reduce_animation")) if DisplayServer.has_method("accessibility_should_reduce_animation") else -1
+
+func _sync_motion_preference() -> void:
+	var observed: int = int(motion_preference_query.call()) if motion_preference_query.is_valid() else -1
+	system_motion_preference = observed if observed in [-1, 0, 1] else -1
+	var previous_preference := effective_reduced_motion
+	effective_reduced_motion = reduced_motion or system_motion_preference == 1
+	if effective_reduced_motion and not previous_preference: _settle()
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -64,6 +79,7 @@ func _ready() -> void:
 	get_viewport().gui_focus_changed.connect(_focus_changed)
 	viewport.resized.connect(_resize)
 	visibility_changed.connect(_visibility)
+	_sync_motion_preference()
 	_sync()
 	_visibility()
 
@@ -179,12 +195,13 @@ func _refresh() -> void:
 		slides[i].wrapper.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_INHERITED if i == budget.index else Control.MOUSE_BEHAVIOR_DISABLED
 	for projection in projections:
 		projection.paint.elapsed = budget.elapsed()
-		projection.paint.reduced_motion = reduced_motion
+		projection.paint.reduced_motion = effective_reduced_motion
 		projection.paint.visible = budget.count > 0 and (projection.item == budget.index or (projection.item < 0 and budget.valid() and budget.duration_ms > 0))
 		projection.paint.queue_redraw()
 
 func _process(_delta: float) -> void:
 	if not _initialized: return
+	_sync_motion_preference()
 	# Transfers and deletion release our wrapper only. Never restore or hide a
 	# consumer Control after its parent has changed.
 	for i in range(slides.size() - 1, -1, -1):
@@ -251,9 +268,10 @@ func _resize() -> void:
 	_settle()
 
 func _move(from: int) -> void:
+	_sync_motion_preference()
 	if _tween: _tween.kill()
 	var profile: Dictionary = configuration.sequence.get("transition", {})
-	if reduced_motion or profile.is_empty() or viewport.size.x <= 0:
+	if effective_reduced_motion or profile.is_empty() or viewport.size.x <= 0:
 		_settle()
 		return
 	_motion_owner = budget.begin_transition(_now())

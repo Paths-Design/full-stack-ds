@@ -40,6 +40,7 @@ func pointer_click(button: Button) -> void:
 func _run() -> void:
 	root.size = Vector2i(960, 640)
 	var carousel = Carousel.new()
+	carousel.motion_preference_query = func(): return 0
 	carousel.position = Vector2(40, 40)
 	carousel.size = Vector2(320, 260)
 	carousel.props = {"slides":["Blue", "Green", "Red"], "duration":400, "autoPlay":false}
@@ -123,6 +124,7 @@ func _run() -> void:
 	new_owner.free()
 	await process_frame
 	var initial_selection = Carousel.new()
+	initial_selection.motion_preference_query = func(): return 0
 	initial_selection.position = Vector2(40, 40)
 	initial_selection.props = {"slides":["A", "B"], "defaultIndex":1, "duration":null}
 	root.add_child(initial_selection)
@@ -164,5 +166,48 @@ func _run() -> void:
 	check(widths == [320.0, 640.0, 1280.0], "fixture realizes the requested native viewport widths")
 	check(is_equal_approx(slow_fraction, capped_fraction), "viewport multiplier honors the declared duration cap")
 	initial_selection.free()
+	# Exercise preference changes through the platform query boundary while the
+	# same generated component owns an active native tween and reading budget.
+	var preference := [0]
+	var adaptive = Carousel.new()
+	adaptive.motion_preference_query = func(): return preference[0]
+	adaptive.position = Vector2(40, 40)
+	adaptive.size = Vector2(320, 260)
+	adaptive.props = {"slides":["A", "B"], "duration":1000, "autoPlay":true}
+	root.add_child(adaptive)
+	adaptive.add_slide("A", ColorRect.new())
+	adaptive.add_slide("B", ColorRect.new())
+	await process_frame
+	await process_frame
+	adaptive.next.pressed.emit()
+	adaptive._tween.pause()
+	adaptive._tween.custom_step(0.08)
+	check(adaptive.budget.pauses.has("transition") and not is_zero_approx(adaptive.slides[1].wrapper.position.x), "preference fixture begins during movement")
+	adaptive.budget.pause("host-test", adaptive._now())
+	preference[0] = 1
+	await process_frame
+	await process_frame
+	check(adaptive.system_motion_preference == 1 and adaptive.effective_reduced_motion and not adaptive.reduced_motion, "system preference applies without a host flag")
+	check(is_zero_approx(adaptive.slides[1].wrapper.position.x) and not adaptive.slides[0].wrapper.visible and not adaptive.budget.pauses.has("transition"), "preference change settles active spatial movement")
+	check(adaptive.budget.pauses.has("host-test") and adaptive.budget.remaining_ms == 1000.0, "preference settlement preserves full incoming dwell and other pauses")
+	adaptive.budget.remaining_ms = 471.0
+	await process_frame
+	await process_frame
+	var adaptive_ring = adaptive.projections.filter(func(p): return p.item == -1)[0].paint
+	check(is_equal_approx(adaptive_ring.fraction(), 0.5), "system preference steps the shared countdown projection")
+	adaptive.reduced_motion = false
+	check(adaptive.effective_reduced_motion, "host cannot disable system motion reduction")
+	preference[0] = 0
+	await process_frame
+	await process_frame
+	check(not adaptive.effective_reduced_motion and adaptive.budget.remaining_ms == 471.0 and is_equal_approx(adaptive_ring.fraction(), 0.529), "preference removal resumes continuous paint without resetting time")
+	adaptive.reduced_motion = true
+	await process_frame
+	check(adaptive.effective_reduced_motion, "host may still request reduced motion")
+	preference[0] = -1
+	await process_frame
+	await process_frame
+	check(adaptive.system_motion_preference == -1 and adaptive.effective_reduced_motion, "unknown system preference preserves host reduction and remains observable")
+	adaptive.free()
 	print(JSON.stringify({"kind":"godot-sequence-component", "passed":failures.is_empty(), "failures":failures, "requests":requests, "pointer":pointer_observations, "intermediate":{"outgoing":outgoing,"incoming":incoming}, "sizeFractions":[fast_fraction,slow_fraction,capped_fraction], "widths":widths, "version":Engine.get_version_info().string}))
 	quit(0 if failures.is_empty() else 1)

@@ -53,8 +53,10 @@ func _run() -> void:
 		prior = sample.blue
 		if sample.blue > 1 and sample.green > 1: edges[sample.blue] = true
 	var width: int = int(carousel.viewport.size.x)
-	var passed: bool = initial.blue == width and initial.green == 0 and final.green == width and final.blue == 0 and edges.size() >= 3 and monotonic
-	var receipt := {"kind":"godot-sequence-render", "passed":passed, "initial":initial, "final":final, "distinctIntermediateEdges":edges.size(), "samples":samples, "version":Engine.get_version_info().string}
+	var reduced: bool = carousel.effective_reduced_motion
+	var motion_matches_preference: bool = edges.is_empty() if reduced else edges.size() >= 3
+	var passed: bool = initial.blue == width and initial.green == 0 and final.green == width and final.blue == 0 and motion_matches_preference and monotonic
+	var receipt := {"kind":"godot-sequence-render", "passed":passed, "initial":initial, "final":final, "distinctIntermediateEdges":edges.size(), "systemMotionPreference":carousel.system_motion_preference, "effectiveReducedMotion":reduced, "displayServer":DisplayServer.get_name(), "samples":samples, "version":Engine.get_version_info().string}
 	FileAccess.open(out.path_join("render-receipt.json"), FileAccess.WRITE).store_string(JSON.stringify(receipt, "  "))
 	var summary := receipt.duplicate()
 	summary.erase("samples")

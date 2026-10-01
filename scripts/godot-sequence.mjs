@@ -47,10 +47,12 @@ if (process.argv.includes('--render')) {
   process.stdout.write(log);
   if (result.error || result.status !== 0 || /SCRIPT ERROR|Parse Error/.test(log)) throw new Error('Rendered sequence verification failed');
   const receipt = JSON.parse(fs.readFileSync(path.join(out, 'render-receipt.json'), 'utf8'));
-  if (!receipt.passed || receipt.distinctIntermediateEdges < 3) throw new Error('No passing rendered movement witness');
+  const observedMotion = receipt.effectiveReducedMotion ? receipt.distinctIntermediateEdges === 0 : receipt.distinctIntermediateEdges >= 3;
+  if (!receipt.passed || !observedMotion) throw new Error('Rendered movement did not match the observed native preference');
 }
 if (process.argv.includes('--mutations')) {
   const controls = [
+    { name: 'system-motion-preference', file: 'runtime/sequence.gd', from: 'reduced_motion or system_motion_preference == 1', to: 'reduced_motion', test: 'sequence' },
     { name: 'acknowledgement', file: 'runtime/sequence_budget.gd', from: 'valid() and playing and not pending and pauses', to: 'valid() and playing and pauses', test: 'sequence_budget' },
     { name: 'stale-completion', file: 'runtime/sequence_budget.gd', from: 'if owner == revision: resume', to: 'if true: resume', test: 'sequence_budget' },
     { name: 'progress-steps', file: 'runtime/budget_progress.gd', from: 'floorf(bounded * steps) / steps if reduced_motion else bounded', to: 'bounded', test: 'sequence' },
