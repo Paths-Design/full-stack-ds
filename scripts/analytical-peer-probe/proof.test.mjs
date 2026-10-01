@@ -49,6 +49,9 @@ test('A2 output-only observation detects plausible identity range and task corru
 test('A3 actual information loss is distinct from presentation residue and unsupported tasks', () => {
   const artifact = output();
   assert.deepEqual(artifact, output('changed-loss')); // Different note value is genuinely unrecoverable.
+  for (const d of [0, 1]) for (const row of [0, 1]) for (const field of [d === 0 ? 'b' : 'a', 'note']) {
+    assert.deepEqual(output(`loss-${d}-${row}-${field}`), artifact);
+  }
   assert.equal(artifact.loss.values.length, 8);
   assert.deepEqual(artifact.loss.values.filter(v => v.dataset === 'd0' && v.key[1][1] === 1).map(v => v.field).sort(), ['b', 'note']);
   assert.deepEqual(artifact.loss.tasks, [{ path: 'root', task: 'magnitude-comparison', reason: 'host operation and comparison task are not realized by this bounded summary' }]);
@@ -60,7 +63,10 @@ test('A4 semantic changes affect claims while formatting and detached mutation p
   assert.equal(read(output('changed-value')).records[0].value, 4);
   assert.equal(read(output('changed-population')).records.length, 2);
   assert.deepEqual(read(output('baseline', 'paragraphs')), expected);
+  assert.notEqual(output('baseline', 'paragraphs').text, output().text);
   assert.deepEqual(normalized(read(output('reordered'))), normalized(expected));
+  assert.notEqual(output('reordered').text, output().text);
+  assert.equal(output('baseline', { baseline: 3 }).kind, 'unsupported'); // A semantic change cannot enter through layout.
   const { input, selected, first } = fixture();
   assert.equal(selected.kind, 'selected');
   const original = structuredClone(selected.program.carrier);

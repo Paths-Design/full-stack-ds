@@ -19,10 +19,13 @@ export function fixture(variant = 'baseline') {
   let second = first.map((r, i) => ({ ...r, a: 6 - i, b: 8 - i, note: 'other' }));
   if (variant === 'changed-value') first[0].a = 4;
   if (variant === 'changed-loss') first[0].note = 'a different unrecoverable value';
+  const loss = /^loss-([01])-([01])-(a|b|note)$/.exec(variant);
+  if (loss) (loss[1] === '0' ? first : second)[Number(loss[2])][loss[3]] = loss[3] === 'note' ? 'changed' : 9;
   if (variant === 'changed-population') { first = first.slice(0, 1); second = second.slice(0, 1); }
   if (variant === 'reordered') { first.reverse(); second.reverse(); }
   if (variant === 'contradicted') first[0].a = 11;
   if (variant === 'empty') { first = []; second = []; }
+  if (!loss && !['baseline', 'changed-value', 'changed-loss', 'changed-population', 'reordered', 'contradicted', 'empty', 'missing'].includes(variant)) throw new Error(`unknown fixture variant: ${variant}`);
   const q0 = qualifyRelation(structure, 'samples', variant === 'missing' ? undefined : first);
   const q1 = qualifyRelation(structure, 'samples', second);
   const host = { coordinate: 'cartesian', dimension: 'position', measure: 'length', baseline: 'zero',

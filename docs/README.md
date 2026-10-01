@@ -58,6 +58,7 @@ docs/
     consumer-projection-doctrine.md      # Boring consumer surface + override doctrine
     analytical-relation-doctrine.md      # Typed analytical relations + combinatorial projection (L0–L2 kernel ratified)
     analytical-capability-contract.md   # Durable M1–M6 acceptance and evidence semantics; no progress ledger
+    analytical-peer-text.md             # Bounded textual peer, measured loss, residue and falsifiers
     component-evidence-pages.md          # Component docs as evidence pages
     figma-plugin.md                      # Figma descriptor consumer (historical slice)
     design/

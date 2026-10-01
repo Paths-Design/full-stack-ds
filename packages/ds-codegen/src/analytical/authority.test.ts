@@ -14,12 +14,14 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   COORDINATE_BASIS,
+  COMPOSITE_OUTPUT_BASIS,
   digestOf,
   ERASURE_AUTHORITY,
   footprintBasisDigest,
   IDENTITIES,
   moduleClosure,
   ownerOf,
+  PEER_TEXT_BASIS,
   UNIDENTIFIED_MODULES,
   WITNESS_AUTHORITY,
   authorityIdentities,
@@ -116,6 +118,19 @@ describe("the identities partition the code that can move a verdict", () => {
 });
 
 describe("a digest is an identity, not a checksum of a pile of bytes", () => {
+  it("text consumer changes move their own identity without restamping selected meaning or Stage 2", () => {
+    const dir = fs.mkdtempSync(path.join(process.env.TMPDIR ?? "/tmp", "peer-authority-"));
+    const identities = [PEER_TEXT_BASIS, COMPOSITE_OUTPUT_BASIS, WITNESS_AUTHORITY];
+    try {
+      for (const identity of identities) for (const file of identity.owns) fs.copyFileSync(path.join(HERE, file), path.join(dir, file));
+      const before = identities.map(identity => digestOf(identity, dir));
+      fs.appendFileSync(path.join(dir, "peer-text-probe.ts"), "\n// changed consumer\n");
+      const after = identities.map(identity => digestOf(identity, dir));
+      expect(after[0]).not.toBe(before[0]);
+      expect(after.slice(1)).toEqual(before.slice(1));
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+
   it("distinguishes the same bytes arranged under different names", () => {
     // Two identities over the same file set but different names must differ, or
     // the digest is over a concatenation and a rename is invisible to it.
