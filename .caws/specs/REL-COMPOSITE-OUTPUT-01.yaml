@@ -74,9 +74,11 @@ acceptance:
       all presented transformations survive normalization and the nominal
       requirement refuses in either order
   - id: A10
-    given: 'unsupported empty unproven or contradicted requests'
-    when: 'the same selection and production orchestration runs'
-    then: 'it produces no lawful visual output and preserves the correct disposition'
+    given: 'an absent population and an explicitly empty population'
+    when: 'the qualified-result selection and readback orchestration runs'
+    then: >-
+      the missing population remains unproven while the explicitly empty result
+      remains distinct as nothing-to-realize
   - id: A11
     given: 'the bounded implementation and scope'
     when: 'required checks and evidence are inspected'
