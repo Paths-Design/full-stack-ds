@@ -47,3 +47,10 @@ contracts:
   - name: 'paper-design-coverage'
     type: schema
     path: 'packages/ds-contracts/document-model/design-ledger.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Source inspection: shared-document-model/README.md and relationships.md define ownership, defaults, shared tokens, temporal composition, JSONL and explicit prototypes with unresolved decisions. Brand audit of merge aca4a9dcf: Figma only names excluded supplied input at README.md:65; no Adobe or After Effects; requirements describe capabilities."
+    recorded_at: "2026-10-01T07:55:20.694Z"
+    artifact_path: docs/architecture/design/shared-document-model/relationships.md
+    commit_sha: e1eb31f99
