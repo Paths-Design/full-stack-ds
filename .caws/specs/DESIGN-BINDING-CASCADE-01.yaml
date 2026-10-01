@@ -2,9 +2,11 @@ id: DESIGN-BINDING-CASCADE-01
 title: 'Preserve scoped design overrides across brand defaults and repair binding witnesses'
 risk_tier: 2
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Fixed inherited brand design overrides in ds-tokens and corrected stale binding witnesses; 40 browser regressions, merged-main 31-case check, required rail and package gates pass with all four acceptance records verified.'
 created_at: '2026-10-01T00:19:18.493Z'
-updated_at: '2026-10-01T00:19:38.331Z'
+updated_at: '2026-10-01T00:43:41.296Z'
 created_by_session: '01a0f392-55ab-7143-9d9a-a1ca66b4cd47'
 blast_radius:
   modules:
