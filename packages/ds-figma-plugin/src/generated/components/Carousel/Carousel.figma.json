@@ -583,6 +583,79 @@
       "selector": ".carousel__picker[data-sequence-active=\"true\"] .carousel__marker"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": {
+        "channel": "slide",
+        "itemsProp": "slides",
+        "viewport": "viewport",
+        "previous": "previous",
+        "next": "next",
+        "rotation": "rotation",
+        "picker": "picker",
+        "timing": {
+          "durationProp": "duration",
+          "autoPlayProp": "autoPlay",
+          "durationToken": "carousel.timing.advance",
+          "defaultMs": 6000
+        },
+        "labels": {
+          "start": "Start slide rotation",
+          "stop": "Stop slide rotation",
+          "item": "slide"
+        },
+        "progress": [
+          {
+            "target": {
+              "part": "fill"
+            },
+            "driver": {
+              "kind": "budget",
+              "source": "sequence.advance"
+            },
+            "effect": "elapsed-width",
+            "reducedMotion": {
+              "kind": "steps",
+              "steps": 10
+            }
+          },
+          {
+            "target": {
+              "part": "ring"
+            },
+            "driver": {
+              "kind": "budget",
+              "source": "sequence.advance"
+            },
+            "effect": "elapsed-ring",
+            "reducedMotion": {
+              "kind": "steps",
+              "steps": 10
+            }
+          }
+        ],
+        "transition": {
+          "referenceWidth": 320,
+          "minMultiplier": 0.5,
+          "maxMultiplier": 2,
+          "durationToken": "carousel.motion.duration",
+          "easingToken": "carousel.motion.easing",
+          "durationMs": 250,
+          "easing": "cubic-bezier(0.4, 0, 0.2, 1)"
+        },
+        "realization": {
+          "web": "sequence-budget",
+          "nonWeb": "unrealized"
+        }
+      },
+      "loops": [],
+      "transitions": []
+    }
+  },
   "variants": {
     "indicator": [
       "pagination",

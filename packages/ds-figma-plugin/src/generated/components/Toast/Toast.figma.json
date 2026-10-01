@@ -452,6 +452,67 @@
       "selector": ".toast__progress"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": {
+        "target": {
+          "name": "progress",
+          "isCompound": false,
+          "isRootOnly": false,
+          "nativeTag": "div",
+          "details": {
+            "tag": "div",
+            "description": "Decorative remaining auto-dismiss budget at the bottom of the card.",
+            "role": "decoration"
+          }
+        },
+        "driver": {
+          "kind": "budget",
+          "source": "surface.autoDismiss"
+        },
+        "effect": "remaining-width",
+        "reducedMotion": {
+          "kind": "steps",
+          "steps": 10
+        },
+        "realization": {
+          "web": "presence-budget",
+          "nonWeb": "unrealized"
+        }
+      },
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "open",
+          "trigger": "openness=hidden→visible",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "core.motion.duration.short",
+          "easingRef": "core.motion.easing.emphasized-in"
+        },
+        {
+          "name": "close",
+          "trigger": "openness=visible→hidden",
+          "realization": "declaration-only",
+          "phase": "exit",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "core.motion.duration.short",
+          "easingRef": "core.motion.easing.emphasized-out"
+        }
+      ]
+    }
+  },
   "variants": {
     "variant": [
       "info",

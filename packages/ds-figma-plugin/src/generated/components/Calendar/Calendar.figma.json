@@ -732,6 +732,42 @@
       "selector": ".calendar__cell[aria-current=\"date\"] .calendar__day"
     }
   ],
+  "motion": {
+    "realization": "descriptor-only",
+    "facts": {
+      "reducedMotion": "respect",
+      "honorsReducedMotion": true,
+      "countdown": null,
+      "sequence": null,
+      "loops": [],
+      "transitions": [
+        {
+          "name": "open",
+          "trigger": "openness=collapsed→expanded",
+          "realization": "declaration-only",
+          "phase": "enter",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "calendar.motion.duration",
+          "easingRef": "calendar.motion.easing"
+        },
+        {
+          "name": "close",
+          "trigger": "openness=expanded→collapsed",
+          "realization": "declaration-only",
+          "phase": "exit",
+          "properties": [
+            "opacity",
+            "transform"
+          ],
+          "durationRef": "calendar.motion.duration",
+          "easingRef": "calendar.motion.easing"
+        }
+      ]
+    }
+  },
   "variants": {
     "mode": [
       "single",

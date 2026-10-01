@@ -136,6 +136,7 @@ export function toFigmaComponentDescriptor(ir: ComponentIR): FigmaComponentDescr
       nodeKind: prop.nodeKind ?? null,
     })),
     designBindings: ir.designBindings,
+    motion: ir.motion ? { realization: "descriptor-only", facts: ir.motion } : undefined,
     variants: ir.variants,
     states: ir.states,
     classRecipe: ir.classRecipe,
