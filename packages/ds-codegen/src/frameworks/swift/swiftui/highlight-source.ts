@@ -173,8 +173,8 @@ public struct ${name}: View {
         .font(.system(.body, design: .monospaced))
         .padding(.vertical, pxSlot("box-model.padding-block-start") ?? 0)
         .padding(.horizontal, pxSlot("box-model.padding-inline-start") ?? 0)
-        .background(colorSlot("${prefix}.color.background.default") ?? .clear)
-        .clipShape(RoundedRectangle(cornerRadius: pxSlot("${prefix}.size.radius.default") ?? 0))
+        .background(colorSlot("${prefix}.color.background") ?? .clear)
+        .clipShape(RoundedRectangle(cornerRadius: pxSlot("${prefix}.size.radius") ?? 0))
         .foregroundColor(colorSlot("${prefix}.color.foreground.primary") ?? .primary)
     }
 }

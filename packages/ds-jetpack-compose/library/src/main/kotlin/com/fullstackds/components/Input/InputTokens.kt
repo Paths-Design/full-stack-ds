@@ -74,21 +74,21 @@ val inputTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.border.disabled",
             fallback = "#b8b8b8",
         ),
-        "input.size.radius.default" to ComponentTokenDefinition(
-            name = "input.size.radius.default",
-            cssVar = "--fsds-input-size-radius-default",
+        "input.size.radius" to ComponentTokenDefinition(
+            name = "input.size.radius",
+            cssVar = "--fsds-input-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),
-        "input.size.border.default" to ComponentTokenDefinition(
-            name = "input.size.border.default",
-            cssVar = "--fsds-input-size-border-default",
+        "input.size.border" to ComponentTokenDefinition(
+            name = "input.size.border",
+            cssVar = "--fsds-input-size-border",
             ref = "semantic.shape.control.border.defaultWidth",
             fallback = "1px",
         ),
-        "input.typography.size.default" to ComponentTokenDefinition(
-            name = "input.typography.size.default",
-            cssVar = "--fsds-input-typography-size-default",
+        "input.typography.size" to ComponentTokenDefinition(
+            name = "input.typography.size",
+            cssVar = "--fsds-input-typography-size",
             ref = "semantic.typography.body.02",
             fallback = "1rem",
         ),

@@ -7,14 +7,14 @@
   --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
   --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
   --fsds-nav-tree-color-connector: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-  --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+  --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
   --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
   --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
   --fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
   --fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
   --fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
   --fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
-  --fsds-nav-tree-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+  --fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
   --fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
   --fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
   --fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);

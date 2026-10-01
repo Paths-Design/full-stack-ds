@@ -1,3 +1,4 @@
+import { matchesTokenRole } from "../token-role.js";
 import { composeTokenReads, consumedComposeTokenScopes } from "../native-token-consumption.js";
 /**
  * Jetpack Compose composable emission.
@@ -134,7 +135,7 @@ function findTokenSlot(
 ) {
   return ir.tokenScopes
     .find((scope) => scope.scope === scopeName)
-    ?.values.find((value) => value.name.endsWith(suffix));
+    ?.values.find((value) => matchesTokenRole(value.name, suffix));
 }
 
 function tokenConstName(ir: ComponentIR): string {
@@ -151,7 +152,7 @@ function findLayeredSlot(ir: ComponentIR, layers: string[], suffix: string) {
   for (const layer of [...layers].reverse()) {
     const hit = ir.tokenScopes
       .find((scope) => scope.scope === layer)
-      ?.values.find((value) => value.name.endsWith(suffix));
+      ?.values.find((value) => matchesTokenRole(value.name, suffix));
     if (hit) return { scopeKey: layer, name: hit.name };
   }
   return undefined;
@@ -179,7 +180,7 @@ function findLayeredSlotAny(
     const scope = ir.tokenScopes.find((s) => s.scope === layer);
     if (!scope) continue;
     for (const suffix of suffixes) {
-      const hit = scope.values.find((value) => value.name.endsWith(suffix));
+      const hit = scope.values.find((value) => matchesTokenRole(value.name, suffix));
       if (hit) return { scopeKey: layer, name: hit.name };
     }
   }
@@ -914,7 +915,7 @@ function isPropTextLeaf(ir: ComponentIR): boolean {
 /**
  * Prop-text leaf composable: foundation BasicText rendering the bound prop,
  * with chrome resolved from the token scopes and the font-size role slot
- * (`*.size.fontSize.default` / `*.typography.fontSize.default` — the corpus's
+ * (`*.size.fontSize` / `*.typography.fontSize` — the corpus's
  * text-leaf size vocabulary, distinct from the content-role `text.size.*`).
  */
 function emitPropTextLeaf(ir: ComponentIR): string {
@@ -925,8 +926,8 @@ function emitPropTextLeaf(ir: ComponentIR): string {
   const textProp = ir.styledProps.find((p) => p.safeName === textSource.prop);
   const propHasDefault = textProp?.defaultExpr !== undefined;
   const fontSizeSlot = findLayeredSlotAny(ir, ["root"], [
-    ".size.fontSize.default",
-    ".typography.fontSize.default",
+    ".size.fontSize",
+    ".typography.fontSize",
     "text.size.md",
   ]);
   const usesTheme = ir.tokenScopes.length > 0;
@@ -1753,7 +1754,7 @@ function emitBareRuleLeaf(ir: ComponentIR): string {
     (p) => p.propType.kind === "string" && !handled.has(p.name),
   );
 
-  const colorSlot = findTokenSlot(ir, "root", ".color.default");
+  const colorSlot = findTokenSlot(ir, "root", ".color");
   const thicknessSlot = findTokenSlot(ir, "root", ".size.thickness");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
   const minHeightSlot = findTokenSlot(ir, "root", "box-model.min-height");
@@ -2385,9 +2386,9 @@ function emitTextControl(ir: ComponentIR, channel: NormalizedChannelIR): string 
   const borderSlot = findTokenSlot(ir, "root", ".color.border.default");
   const borderDisabledSlot = findTokenSlot(ir, "root", ".color.border.disabled");
   const textSlot = findTokenSlot(ir, "root", ".color.text.default");
-  const borderWidthSlot = findTokenSlot(ir, "root", ".size.border.default");
-  const radiusSlot = findTokenSlot(ir, "root", ".size.radius.default");
-  const fontSizeSlot = findTokenSlot(ir, "root", ".typography.size.default");
+  const borderWidthSlot = findTokenSlot(ir, "root", ".size.border");
+  const radiusSlot = findTokenSlot(ir, "root", ".size.radius");
+  const fontSizeSlot = findTokenSlot(ir, "root", ".typography.size");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
   const minHeightSlot = findTokenSlot(ir, "root", "box-model.min-height");
   const paddingInlineStartSlot = findTokenSlot(ir, "root", "box-model.padding-inline-start");
@@ -2612,7 +2613,7 @@ function emitDisclosureComponent(ir: ComponentIR): string {
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary"]);
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
   const iconSizeSlot = findLayeredSlotAny(ir, ["root"], [".size.icon"]);
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
   const minHeightSlot = findTokenSlot(ir, "root", "box-model.min-height");
@@ -3050,7 +3051,7 @@ function emitArrayIteratedList(ir: ComponentIR): string {
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary", ".color.text.default"]);
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
   const gapSlot = findTokenSlot(ir, "root", "box-model.gap");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
   const minHeightSlot = findTokenSlot(ir, "root", "box-model.min-height");
@@ -3250,7 +3251,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
 
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default", ".color.background.primary"]);
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default", ".border.color"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".border.radius", ".shape.radius", ".size.radius.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".border.radius", ".shape.radius", ".size.radius"]);
   const borderWidthSlot = findLayeredSlotAny(ir, ["root"], [".border.width"]);
   const gapSlot = findTokenSlot(ir, "root", "box-model.gap");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
@@ -3465,7 +3466,7 @@ function emitCountFieldGroup(ir: ComponentIR): string {
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary", ".color.text.default"]);
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
   const gapSlot = findTokenSlot(ir, "root", "box-model.gap");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
   const minHeightSlot = findTokenSlot(ir, "root", "box-model.min-height");
@@ -3807,8 +3808,8 @@ function emitSelectionControl(ir: ComponentIR): string {
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary", ".color.text.default"]);
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default"]);
-  const borderWidthSlot = findLayeredSlotAny(ir, ["root"], [".size.border.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
+  const borderWidthSlot = findLayeredSlotAny(ir, ["root"], [".size.border"]);
   const gapSlot = findTokenSlot(ir, "root", "box-model.gap");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
   const minHeightSlot = findTokenSlot(ir, "root", "box-model.min-height");
@@ -4065,7 +4066,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
 
   const surfaceBgSlot = findLayeredSlotAny(ir, ["root"], [".surface.bg", ".color.background.default"]);
   const surfaceBorderSlot = findLayeredSlotAny(ir, ["root"], [".surface.border", ".color.border.default"]);
-  const surfaceRadiusSlot = findLayeredSlotAny(ir, ["root"], [".surface.radius", ".size.radius.default"]);
+  const surfaceRadiusSlot = findLayeredSlotAny(ir, ["root"], [".surface.radius", ".size.radius"]);
   const surfacePaddingSlot = findLayeredSlotAny(ir, ["root"], [".surface.padding"]);
   const titleColorSlot = findLayeredSlotAny(ir, ["root"], [".title.color"]);
   const titleSizeSlot = findLayeredSlotAny(ir, ["root"], [".title.fontSize"]);
@@ -4346,7 +4347,7 @@ function domNodesForPart(ir: ComponentIR, part: string) {
  * it (the emitter test flips the order and pins the member).
  *
  * Named divergences (ledgered in docs/architecture/native-target-admission.md):
- *   - `calendar.elevation.default` is a multi-layer shadow string with no
+ *   - `calendar.elevation` is a multi-layer shadow string with no
  *     elevation converter on this target;
  *   - `calendar.focus.ring.offset` has no outward box in a fixed-size grid, so
  *     the ring is drawn inside the cell bounds;
@@ -4445,10 +4446,10 @@ function emitDateGridSurface(ir: ComponentIR): string {
   const todayRingSlot = findLayeredSlotAny(ir, ["root"], [".color.today.ring"]);
   const focusRingSlot = findLayeredSlotAny(ir, ["root"], [".color.focus.ring"]);
   const ringWidthSlot = findLayeredSlotAny(ir, ["root"], [".focus.ring.width"]);
-  const insetSlot = findLayeredSlotAny(ir, ["root"], [".size.padding.default"]);
+  const insetSlot = findLayeredSlotAny(ir, ["root"], [".size.padding"]);
   const cellSlot = findLayeredSlotAny(ir, ["root"], [".size.cell"]);
   const navSizeSlot = findLayeredSlotAny(ir, ["root"], [".size.nav"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
   const dayRadiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.day"]);
   const captionSizeSlot = findLayeredSlotAny(ir, ["root"], [".typography.caption.size"]);
   const daySizeSlot = findLayeredSlotAny(ir, ["root"], [".typography.day.size"]);
@@ -5038,7 +5039,7 @@ function referenceImports(ir: ComponentIR): string[] {
  *     with no elevation converter; `card.color.focus.ring`,
  *     `card.focus.ring.width` / `.offset` need focus interaction state the
  *     root does not keep; `card.color.background.hover` needs hover state;
- *     `card.size.gap.default` / `card.size.padding.default` / `.inset` and
+ *     `card.size.gap` / `card.size.padding` / `.inset` and
  *     `card.typography.lineHeight.*` lose to the merged box-model padding pool
  *     and the content text style, as in every other class.
  */
@@ -5059,7 +5060,7 @@ function emitCompoundPartComposer(ir: ComponentIR): string {
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary"]);
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
   const gapSlot = findTokenSlot(ir, "root", "box-model.gap");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
   const minHeightSlot = findTokenSlot(ir, "root", "box-model.min-height");
@@ -5381,8 +5382,8 @@ function emitReferencedContentComposite(ir: ComponentIR): string {
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary"]);
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default"]);
-  const borderWidthSlot = findLayeredSlotAny(ir, ["root"], [".size.border.default", ".size.border"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default"]);
+  const borderWidthSlot = findLayeredSlotAny(ir, ["root"], [".size.border", ".size.border"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
   const weightSlot = findLayeredSlotAny(ir, ["root"], [".typography.fontWeight.medium"]);
   const gapSlot = findTokenSlot(ir, "root", "box-model.gap");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
@@ -5563,7 +5564,7 @@ function emitPassiveTreeItem(ir: ComponentIR): string {
 
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.default"]);
   const headingFgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.heading"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
   const headingSizeSlot = findLayeredSlotAny(ir, ["root"], [".size.fontSize.heading"]);
   const headingGapSlot = findLayeredSlotAny(ir, ["root"], [".size.gap.heading"]);
   const indentSlot = findLayeredSlotAny(ir, ["root"], [".size.indent"]);
@@ -5767,7 +5768,7 @@ function emitNamedSlotComposer(ir: ComponentIR): string {
   const invalidTextSlot = findLayeredSlotAny(ir, ["root"], [".color.invalid-text", ".color.invalid.text"]);
   const labelColorSlot = findLayeredSlotAny(ir, ["root"], [".label.color"]);
   const labelSizeSlot = findLayeredSlotAny(ir, ["root"], [".label.fontSize"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".radius", ".size.radius.default"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".radius", ".size.radius"]);
   const gapYSlot = findLayeredSlotAny(ir, ["root"], [".gap.y"]);
   const metaGapSlot = findLayeredSlotAny(ir, ["root"], [".gap.meta"]);
   const boxGapSlot = findTokenSlot(ir, "root", "box-model.gap");
@@ -6205,7 +6206,7 @@ function emitCenteredSurface(ir: ComponentIR): string {
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary", ".color.text.default", ".color.text"]);
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default", ".color.border"]);
   const borderWidthSlot = findLayeredSlotAny(ir, ["root"], [".border.width"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default", ".border.radius", ".surface.radius"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius", ".border.radius", ".surface.radius"]);
   const mutedSlot = stringChannel && placeholderProp
     ? findLayeredSlotAny(ir, ["root"], [".color.textMuted", ".color.foreground.muted"])
     : undefined;
@@ -6462,7 +6463,7 @@ function emitViewportEdgeSurface(ir: ComponentIR): string {
   // Edge contracts name their chrome with part-scoped suffixes (`sheet.color.border`,
   // `sheet.border.radius`, `toast.surface.radius`) rather than the default-scope grammar.
   const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default", ".color.border"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius.default", ".border.radius", ".surface.radius"]);
+  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius", ".border.radius", ".surface.radius"]);
   const borderWidthSlot = findLayeredSlotAny(ir, ["root"], [".border.width"]);
   const gapSlot = findTokenSlot(ir, "root", "box-model.gap");
   const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
@@ -6795,37 +6796,37 @@ function emitNativeToggleCollapse(
   const checkedTrackSlot = findTokenSlot(
     ir,
     "checked",
-    ".color.track.background.default",
+    ".color.track.background",
   );
   const checkedThumbSlot = findTokenSlot(
     ir,
     "checked",
-    ".color.thumb.background.default",
+    ".color.thumb.background",
   );
   const rootTrackSlot = findTokenSlot(
     ir,
     "root",
-    ".color.track.background.default",
+    ".color.track.background",
   );
   const rootThumbSlot = findTokenSlot(
     ir,
     "root",
-    ".color.thumb.background.default",
+    ".color.thumb.background",
   );
   const disabledTrackSlot = findTokenSlot(
     ir,
     "disabled",
-    ".color.track.background.default",
+    ".color.track.background",
   );
   const disabledThumbSlot = findTokenSlot(
     ir,
     "disabled",
-    ".color.thumb.background.default",
+    ".color.thumb.background",
   );
   const trackBorderSlot = findTokenSlot(
     ir,
     "root",
-    ".color.track.border.default",
+    ".color.track.border",
   );
   const focusSlot = findTokenSlot(ir, "root", ".color.input-outline-focus");
   const pressDurationSlot = findTokenSlot(

@@ -37,13 +37,13 @@ fun Switch(
     var uncontrolledChecked by remember { mutableStateOf(defaultChecked) }
     val resolvedChecked = checked ?: uncontrolledChecked
     val fsdsTheme = LocalFsdsTheme.current
-    val checkedTrackColor = fsdsTheme.resolve(switchTokenScopes["checked"]?.get("switch.color.track.background.default"))?.toFsdsColor()
-    val checkedThumbColor = fsdsTheme.resolve(switchTokenScopes["checked"]?.get("switch.color.thumb.background.default"))?.toFsdsColor()
-    val uncheckedTrackColor = fsdsTheme.resolve(switchTokenScopes["root"]?.get("switch.color.track.background.default"))?.toFsdsColor()
-    val uncheckedThumbColor = fsdsTheme.resolve(switchTokenScopes["root"]?.get("switch.color.thumb.background.default"))?.toFsdsColor()
-    val disabledTrackColor = fsdsTheme.resolve(switchTokenScopes["disabled"]?.get("switch.color.track.background.default"))?.toFsdsColor()
+    val checkedTrackColor = fsdsTheme.resolve(switchTokenScopes["checked"]?.get("switch.color.track.background"))?.toFsdsColor()
+    val checkedThumbColor = fsdsTheme.resolve(switchTokenScopes["checked"]?.get("switch.color.thumb.background"))?.toFsdsColor()
+    val uncheckedTrackColor = fsdsTheme.resolve(switchTokenScopes["root"]?.get("switch.color.track.background"))?.toFsdsColor()
+    val uncheckedThumbColor = fsdsTheme.resolve(switchTokenScopes["root"]?.get("switch.color.thumb.background"))?.toFsdsColor()
+    val disabledTrackColor = fsdsTheme.resolve(switchTokenScopes["disabled"]?.get("switch.color.track.background"))?.toFsdsColor()
     val disabledThumbColor: Color? = null
-    val trackBorderColor = fsdsTheme.resolve(switchTokenScopes["root"]?.get("switch.color.track.border.default"))?.toFsdsColor()
+    val trackBorderColor = fsdsTheme.resolve(switchTokenScopes["root"]?.get("switch.color.track.border"))?.toFsdsColor()
     val focusRingColor: Color? = null
     val minTouchWidth = fsdsTheme.resolve(switchTokenScopes["root"]?.get("box-model.min-width"))?.toFsdsDp() ?: 32.dp
     val minTouchHeight = fsdsTheme.resolve(switchTokenScopes["root"]?.get("box-model.min-height"))?.toFsdsDp() ?: 32.dp

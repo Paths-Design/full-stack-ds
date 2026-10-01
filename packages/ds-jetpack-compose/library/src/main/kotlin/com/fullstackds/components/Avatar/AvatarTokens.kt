@@ -44,21 +44,21 @@ val avatarTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "avatar.size.radius.default" to ComponentTokenDefinition(
-            name = "avatar.size.radius.default",
-            cssVar = "--fsds-avatar-size-radius-default",
+        "avatar.size.radius" to ComponentTokenDefinition(
+            name = "avatar.size.radius",
+            cssVar = "--fsds-avatar-size-radius",
             ref = "semantic.shape.control.radius.pill",
             fallback = "9999px",
         ),
-        "avatar.size.border.default" to ComponentTokenDefinition(
-            name = "avatar.size.border.default",
-            cssVar = "--fsds-avatar-size-border-default",
+        "avatar.size.border" to ComponentTokenDefinition(
+            name = "avatar.size.border",
+            cssVar = "--fsds-avatar-size-border",
             ref = "semantic.shape.control.border.defaultWidth",
             fallback = "1px",
         ),
-        "avatar.color.background.default" to ComponentTokenDefinition(
-            name = "avatar.color.background.default",
-            cssVar = "--fsds-avatar-color-background-default",
+        "avatar.color.background" to ComponentTokenDefinition(
+            name = "avatar.color.background",
+            cssVar = "--fsds-avatar-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
@@ -68,9 +68,9 @@ val avatarTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "avatar.color.border.default" to ComponentTokenDefinition(
-            name = "avatar.color.border.default",
-            cssVar = "--fsds-avatar-color-border-default",
+        "avatar.color.border" to ComponentTokenDefinition(
+            name = "avatar.color.border",
+            cssVar = "--fsds-avatar-color-border",
             ref = "semantic.color.border.light",
             fallback = "#b8b8b8",
         ),

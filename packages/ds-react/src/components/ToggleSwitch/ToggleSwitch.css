@@ -18,9 +18,9 @@
   display: inline-flex;
   align-items: center;
   background-color: var(--fsds-toggle-switch-design-root-background-fill, var(--fsds-toggle-switch-color-background-default, #f7f7f7));
-  color: var(--fsds-toggle-switch-design-root-foreground-color, var(--fsds-toggle-switch-color-foreground-default, #141414));
-  border-color: var(--fsds-toggle-switch-design-root-border-color, var(--fsds-toggle-switch-color-border-default, #b8b8b8));
-  border-radius: var(--fsds-toggle-switch-design-root-shape-radius, var(--fsds-toggle-switch-border-radius-default, 9999px));
+  color: var(--fsds-toggle-switch-design-root-foreground-color, var(--fsds-toggle-switch-color-foreground, #141414));
+  border-color: var(--fsds-toggle-switch-design-root-border-color, var(--fsds-toggle-switch-color-border, #b8b8b8));
+  border-radius: var(--fsds-toggle-switch-design-root-shape-radius, var(--fsds-toggle-switch-border-radius, 9999px));
   transition-duration: var(--fsds-toggle-switch-design-root-motion-duration, var(--fsds-toggle-switch-motion-duration-fast, 150ms));
   border-style: var(--fsds-toggle-switch-design-root-border-style, solid);
   border-width: var(--fsds-toggle-switch-design-root-border-width, 1px);

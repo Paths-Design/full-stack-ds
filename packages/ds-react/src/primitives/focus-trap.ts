@@ -112,7 +112,7 @@ export function createFocusTrapLifecycle(options: FocusTrapLifecycleOptions): {
     container = null;
   };
   const onKey = (event: KeyboardEvent) => {
-    if (event.key !== 'Tab' || event.defaultPrevented || sessions.at(-1) !== session || !container) return;
+    if (event.key !== 'Tab' || event.defaultPrevented || sessions[sessions.length - 1] !== session || !container) return;
     const elements = candidates();
     const active = focusedElement();
     if (!elements.length) {
@@ -122,8 +122,8 @@ export function createFocusTrapLifecycle(options: FocusTrapLifecycleOptions): {
         (active instanceof HTMLElement && active.tabIndex < 0) ||
         (event.shiftKey && active === elements[0])) {
       event.preventDefault();
-      (event.shiftKey ? elements.at(-1)! : elements[0]).focus({ preventScroll: true });
-    } else if (!event.shiftKey && active === elements.at(-1)) {
+      (event.shiftKey ? elements[elements.length - 1]! : elements[0]).focus({ preventScroll: true });
+    } else if (!event.shiftKey && active === elements[elements.length - 1]) {
       event.preventDefault();
       elements[0].focus({ preventScroll: true });
     }

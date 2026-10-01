@@ -15,9 +15,9 @@
   --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
   --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
   --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
-  --fsds-accordion-focus-width: var(--fsds-semantic-shape-control-border-focus-width, 2px);
-  --fsds-accordion-focus-color: var(--fsds-semantic-color-border-accent, #d92d2e);
-  --fsds-accordion-focus-offset: var(--fsds-core-spacing-size-01, 1px);
+  --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
+  --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+  --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
   --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
   --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
 }

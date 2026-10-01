@@ -35,9 +35,9 @@ val profileFlagTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.glyph.size.medium.extent",
             fallback = "16px",
         ),
-        "profile-flag.color.background.default" to ComponentTokenDefinition(
-            name = "profile-flag.color.background.default",
-            cssVar = "--fsds-profile-flag-color-background-default",
+        "profile-flag.color.background" to ComponentTokenDefinition(
+            name = "profile-flag.color.background",
+            cssVar = "--fsds-profile-flag-color-background",
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
@@ -47,9 +47,9 @@ val profileFlagTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "profile-flag.size.radius.default" to ComponentTokenDefinition(
-            name = "profile-flag.size.radius.default",
-            cssVar = "--fsds-profile-flag-size-radius-default",
+        "profile-flag.size.radius" to ComponentTokenDefinition(
+            name = "profile-flag.size.radius",
+            cssVar = "--fsds-profile-flag-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),

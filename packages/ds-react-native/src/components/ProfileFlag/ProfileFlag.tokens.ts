@@ -41,12 +41,6 @@ export const profileFlagTokenScopes = {
       ref: "semantic.glyph.size.medium.extent",
       fallback: 16,
     },
-    "profile-flag.color.background.default": {
-      name: "profile-flag.color.background.default",
-      cssVar: "--fsds-profile-flag-color-background-default",
-      ref: "semantic.color.background.primary",
-      fallback: "#ffffff",
-    },
     "profile-flag.color.border.default": {
       name: "profile-flag.color.border.default",
       cssVar: "--fsds-profile-flag-color-border-default",
@@ -59,9 +53,9 @@ export const profileFlagTokenScopes = {
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "profile-flag.size.radius.default": {
-      name: "profile-flag.size.radius.default",
-      cssVar: "--fsds-profile-flag-size-radius-default",
+    "profile-flag.size.radius": {
+      name: "profile-flag.size.radius",
+      cssVar: "--fsds-profile-flag-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },

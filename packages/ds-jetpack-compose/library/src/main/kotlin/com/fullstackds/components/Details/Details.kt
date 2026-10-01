@@ -61,7 +61,7 @@ fun Details(
     val containerColor = layeredSlot("details.color.background.default")?.toFsdsColor()
     val contentColor = layeredSlot("details.color.foreground.primary")?.toFsdsColor()
     val borderColor = layeredSlot("details.color.border.default")?.toFsdsColor()
-    val cornerRadius = layeredSlot("details.size.radius.default")?.toFsdsDp() ?: 4.dp
+    val cornerRadius = layeredSlot("details.size.radius")?.toFsdsDp() ?: 4.dp
     val chevronSize = layeredSlot("details.size.icon")?.toFsdsDp() ?: 16.dp
     val chromePadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
     val minWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp

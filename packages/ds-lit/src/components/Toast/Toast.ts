@@ -78,7 +78,7 @@ export class ToastElement extends LitElement {
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-toast-surface-shadow: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-primary, #141414);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-toast-spacing-padding: var(--fsds-core-spacing-size-05, 12px);
       --fsds-toast-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-toast-spacing-stack-gap: var(--fsds-core-spacing-size-04, 8px);
@@ -89,28 +89,28 @@ export class ToastElement extends LitElement {
 
     .toast--info {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-info-subtle, #95dafb);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-info, #034fd6);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
     }
 
     .toast--success {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-success-subtle, #b3dba7);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-success, #3a6614);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
     }
 
     .toast--warning {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-warning-subtle, #fdc67f);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-warning, #8b4b00);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
     }
 
     .toast--error {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-danger, #b31b1b);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
     }
@@ -168,7 +168,7 @@ export class ToastElement extends LitElement {
 
     .toast__description {
       flex: 1 1 auto;
-      color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color, #141414));
       font-size: var(--fsds-toast-design-description-typography-size, inherit);
     }
 
@@ -178,7 +178,7 @@ export class ToastElement extends LitElement {
       background: transparent;
       border: 0;
       cursor: pointer;
-      color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color, #141414));
     }
 
     .toast__close {
@@ -189,7 +189,7 @@ export class ToastElement extends LitElement {
       border: 0;
       border-radius: var(--fsds-toast-design-close-shape-radius, 9999px);
       cursor: pointer;
-      color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color, #141414));
       flex-shrink: 0;
     }
 
@@ -203,10 +203,10 @@ export class ToastElement extends LitElement {
       bottom: 0;
       transform-origin: left center;
       pointer-events: none;
-      border-end-start-radius: inherit;
-      border-end-end-radius: inherit;
-      height: var(--fsds-toast-progress-height, 2px);
-      background-color: var(--fsds-toast-progress-color, #141414);
+      border-end-start-radius: var(--fsds-toast-design-progress-shape-end-start-radius, inherit);
+      border-end-end-radius: var(--fsds-toast-design-progress-shape-end-end-radius, inherit);
+      height: var(--fsds-toast-design-progress-sizing-height, var(--fsds-toast-progress-height, 2px));
+      background-color: var(--fsds-toast-design-progress-background-fill, var(--fsds-toast-progress-color, #141414));
     }
 
     .toast__progress:dir(rtl) {
@@ -360,7 +360,7 @@ export class ToastItemElement extends LitElement {
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-toast-surface-shadow: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-primary, #141414);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-toast-spacing-padding: var(--fsds-core-spacing-size-05, 12px);
       --fsds-toast-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-toast-spacing-stack-gap: var(--fsds-core-spacing-size-04, 8px);
@@ -371,28 +371,28 @@ export class ToastItemElement extends LitElement {
 
     .toast--info {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-info-subtle, #95dafb);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-info, #034fd6);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
     }
 
     .toast--success {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-success-subtle, #b3dba7);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-success, #3a6614);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
     }
 
     .toast--warning {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-warning-subtle, #fdc67f);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-warning, #8b4b00);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
     }
 
     .toast--error {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-danger, #b31b1b);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
     }
@@ -450,7 +450,7 @@ export class ToastItemElement extends LitElement {
 
     .toast__description {
       flex: 1 1 auto;
-      color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color, #141414));
       font-size: var(--fsds-toast-design-description-typography-size, inherit);
     }
 
@@ -460,7 +460,7 @@ export class ToastItemElement extends LitElement {
       background: transparent;
       border: 0;
       cursor: pointer;
-      color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color, #141414));
     }
 
     .toast__close {
@@ -471,7 +471,7 @@ export class ToastItemElement extends LitElement {
       border: 0;
       border-radius: var(--fsds-toast-design-close-shape-radius, 9999px);
       cursor: pointer;
-      color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color, #141414));
       flex-shrink: 0;
     }
 
@@ -485,10 +485,10 @@ export class ToastItemElement extends LitElement {
       bottom: 0;
       transform-origin: left center;
       pointer-events: none;
-      border-end-start-radius: inherit;
-      border-end-end-radius: inherit;
-      height: var(--fsds-toast-progress-height, 2px);
-      background-color: var(--fsds-toast-progress-color, #141414);
+      border-end-start-radius: var(--fsds-toast-design-progress-shape-end-start-radius, inherit);
+      border-end-end-radius: var(--fsds-toast-design-progress-shape-end-end-radius, inherit);
+      height: var(--fsds-toast-design-progress-sizing-height, var(--fsds-toast-progress-height, 2px));
+      background-color: var(--fsds-toast-design-progress-background-fill, var(--fsds-toast-progress-color, #141414));
     }
 
     .toast__progress:dir(rtl) {
@@ -565,7 +565,7 @@ export class ToastTitleElement extends LitElement {
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-toast-surface-shadow: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-primary, #141414);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-toast-spacing-padding: var(--fsds-core-spacing-size-05, 12px);
       --fsds-toast-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-toast-spacing-stack-gap: var(--fsds-core-spacing-size-04, 8px);
@@ -576,28 +576,28 @@ export class ToastTitleElement extends LitElement {
 
     .toast--info {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-info-subtle, #95dafb);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-info, #034fd6);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
     }
 
     .toast--success {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-success-subtle, #b3dba7);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-success, #3a6614);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
     }
 
     .toast--warning {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-warning-subtle, #fdc67f);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-warning, #8b4b00);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
     }
 
     .toast--error {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-danger, #b31b1b);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
     }
@@ -655,7 +655,7 @@ export class ToastTitleElement extends LitElement {
 
     .toast__description {
       flex: 1 1 auto;
-      color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color, #141414));
       font-size: var(--fsds-toast-design-description-typography-size, inherit);
     }
 
@@ -665,7 +665,7 @@ export class ToastTitleElement extends LitElement {
       background: transparent;
       border: 0;
       cursor: pointer;
-      color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color, #141414));
     }
 
     .toast__close {
@@ -676,7 +676,7 @@ export class ToastTitleElement extends LitElement {
       border: 0;
       border-radius: var(--fsds-toast-design-close-shape-radius, 9999px);
       cursor: pointer;
-      color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color, #141414));
       flex-shrink: 0;
     }
 
@@ -690,10 +690,10 @@ export class ToastTitleElement extends LitElement {
       bottom: 0;
       transform-origin: left center;
       pointer-events: none;
-      border-end-start-radius: inherit;
-      border-end-end-radius: inherit;
-      height: var(--fsds-toast-progress-height, 2px);
-      background-color: var(--fsds-toast-progress-color, #141414);
+      border-end-start-radius: var(--fsds-toast-design-progress-shape-end-start-radius, inherit);
+      border-end-end-radius: var(--fsds-toast-design-progress-shape-end-end-radius, inherit);
+      height: var(--fsds-toast-design-progress-sizing-height, var(--fsds-toast-progress-height, 2px));
+      background-color: var(--fsds-toast-design-progress-background-fill, var(--fsds-toast-progress-color, #141414));
     }
 
     .toast__progress:dir(rtl) {
@@ -765,7 +765,7 @@ export class ToastDescriptionElement extends LitElement {
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-toast-surface-shadow: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-primary, #141414);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-toast-spacing-padding: var(--fsds-core-spacing-size-05, 12px);
       --fsds-toast-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-toast-spacing-stack-gap: var(--fsds-core-spacing-size-04, 8px);
@@ -776,28 +776,28 @@ export class ToastDescriptionElement extends LitElement {
 
     .toast--info {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-info-subtle, #95dafb);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-info, #034fd6);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
     }
 
     .toast--success {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-success-subtle, #b3dba7);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-success, #3a6614);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
     }
 
     .toast--warning {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-warning-subtle, #fdc67f);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-warning, #8b4b00);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
     }
 
     .toast--error {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
-      --fsds-toast-color-default: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
+      --fsds-toast-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
       --fsds-toast-surface-border: var(--fsds-semantic-color-border-danger, #b31b1b);
       --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
     }
@@ -855,7 +855,7 @@ export class ToastDescriptionElement extends LitElement {
 
     .toast__description {
       flex: 1 1 auto;
-      color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-description-foreground-color, var(--fsds-toast-color, #141414));
       font-size: var(--fsds-toast-design-description-typography-size, inherit);
     }
 
@@ -865,7 +865,7 @@ export class ToastDescriptionElement extends LitElement {
       background: transparent;
       border: 0;
       cursor: pointer;
-      color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-action-foreground-color, var(--fsds-toast-color, #141414));
     }
 
     .toast__close {
@@ -876,7 +876,7 @@ export class ToastDescriptionElement extends LitElement {
       border: 0;
       border-radius: var(--fsds-toast-design-close-shape-radius, 9999px);
       cursor: pointer;
-      color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color-default, #141414));
+      color: var(--fsds-toast-design-close-foreground-color, var(--fsds-toast-color, #141414));
       flex-shrink: 0;
     }
 
@@ -890,10 +890,10 @@ export class ToastDescriptionElement extends LitElement {
       bottom: 0;
       transform-origin: left center;
       pointer-events: none;
-      border-end-start-radius: inherit;
-      border-end-end-radius: inherit;
-      height: var(--fsds-toast-progress-height, 2px);
-      background-color: var(--fsds-toast-progress-color, #141414);
+      border-end-start-radius: var(--fsds-toast-design-progress-shape-end-start-radius, inherit);
+      border-end-end-radius: var(--fsds-toast-design-progress-shape-end-end-radius, inherit);
+      height: var(--fsds-toast-design-progress-sizing-height, var(--fsds-toast-progress-height, 2px));
+      background-color: var(--fsds-toast-design-progress-background-fill, var(--fsds-toast-progress-color, #141414));
     }
 
     .toast__progress:dir(rtl) {

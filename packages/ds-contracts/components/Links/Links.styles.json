@@ -17,7 +17,7 @@
       }
     },
     "text-decoration-color": {
-      "resolvesTo": "links.color.underline.default",
+      "resolvesTo": "links.color.underline",
       "fallback": "#b8b8b8"
     },
     "text-decoration-line": {
@@ -33,7 +33,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "links.spacing.gap.default",
+      "resolvesTo": "links.spacing.gap",
       "fallback": "2px",
       "design": {
         "property": "spacing.gap",

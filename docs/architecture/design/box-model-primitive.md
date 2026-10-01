@@ -5,7 +5,7 @@ status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
 updated: 2026-09-30
-verified_at_commit: d2f56f5fba630df20f7cee53c20a37cbaa59d6e9
+verified_at_commit: 38c798cb0eb2
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -80,3 +80,11 @@ loops do not introduce a geometry resolver or size-sensitive timing policy.
 ## Carousel motion reconciliation
 
 Carousel keeps the existing box-model normalization and boundary markers. Its viewport width is measured only by the sequence motion controller to scale movement duration; it does not change the shared geometry defaults or override precedence.
+
+## Component token naming reconciliation
+
+The [component naming migration](component-token-naming.md) changes component
+addresses and common design-binding coverage. The canonical `box-model.*` pool,
+default merge and boundary reset remain the same. The box-model unit checks and
+design-binding browser witnesses still establish shorthand/side precedence,
+clearing and nested isolation after regeneration.

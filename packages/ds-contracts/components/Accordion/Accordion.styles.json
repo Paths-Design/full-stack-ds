@@ -238,7 +238,7 @@
     },
     "outline-color": {
       "resolvesTo": "accordion.focus.color",
-      "fallback": "#d92d2e",
+      "fallback": "#0566fe",
       "design": {
         "property": "focus.color",
         "slot": "accordion.design.condition-92aee6ee190f.focus.color"
@@ -246,21 +246,22 @@
     },
     "outline-offset": {
       "resolvesTo": "accordion.focus.offset",
-      "fallback": "1px",
+      "fallback": "2px",
       "design": {
         "property": "focus.offset",
         "slot": "accordion.design.condition-92aee6ee190f.focus.offset"
       }
     },
     "outline-style": {
-      "literal": "solid",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "focus.style",
         "slot": "accordion.design.condition-92aee6ee190f.focus.style"
-      }
+      },
+      "resolvesTo": "semantic.focus.ring.style",
+      "fallback": "solid"
     }
   },
   "chevron": {

@@ -177,7 +177,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#ffffff",
-      "resolvesTo": "calendar.color.background.default",
+      "resolvesTo": "calendar.color.background",
       "editableTargets": [
         "web"
       ],
@@ -209,7 +209,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#d0d0d0",
-      "resolvesTo": "calendar.color.border.default",
+      "resolvesTo": "calendar.color.border",
       "editableTargets": [
         "web"
       ],
@@ -255,7 +255,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "16px",
-      "resolvesTo": "calendar.size.padding.default",
+      "resolvesTo": "calendar.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -271,7 +271,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "6px",
-      "resolvesTo": "calendar.size.radius.default",
+      "resolvesTo": "calendar.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -287,7 +287,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
-      "resolvesTo": "calendar.elevation.default",
+      "resolvesTo": "calendar.elevation",
       "editableTargets": [
         "web"
       ],
@@ -902,25 +902,25 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-calendar-color-background-default": "var(--fsds-semantic-color-background-primary, #ffffff)",
+          "--fsds-calendar-color-background": "var(--fsds-semantic-color-background-primary, #ffffff)",
           "--fsds-calendar-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
           "--fsds-calendar-color-foreground-muted": "var(--fsds-semantic-color-foreground-secondary, #474647)",
-          "--fsds-calendar-color-border-default": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-calendar-color-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
           "--fsds-calendar-color-day-hover": "var(--fsds-semantic-interaction-background-hover, #f7f7f7)",
           "--fsds-calendar-color-day-selected-background": "var(--fsds-semantic-color-background-accent, #d92d2e)",
           "--fsds-calendar-color-day-selected-foreground": "var(--fsds-semantic-color-foreground-inverse, #fafafa)",
           "--fsds-calendar-color-today-ring": "var(--fsds-semantic-color-border-accent, #d92d2e)",
           "--fsds-calendar-color-focus-ring": "var(--fsds-semantic-focus-ring-color, #0566fe)",
-          "--fsds-calendar-size-padding-default": "var(--fsds-core-spacing-size-06, 16px)",
+          "--fsds-calendar-size-padding": "var(--fsds-core-spacing-size-06, 16px)",
           "--fsds-calendar-size-cell": "var(--fsds-core-spacing-size-08, 32px)",
           "--fsds-calendar-size-nav": "var(--fsds-core-spacing-size-07, 24px)",
-          "--fsds-calendar-size-radius-default": "var(--fsds-semantic-shape-control-radius-default, 6px)",
+          "--fsds-calendar-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
           "--fsds-calendar-size-radius-day": "var(--fsds-semantic-shape-radius-small, 4px)",
           "--fsds-calendar-typography-caption-size": "var(--fsds-semantic-typography-body-02, 16px)",
           "--fsds-calendar-typography-day-size": "var(--fsds-semantic-typography-body-03, 14px)",
           "--fsds-calendar-focus-ring-width": "var(--fsds-semantic-focus-ring-width, 2px)",
           "--fsds-calendar-focus-ring-offset": "var(--fsds-semantic-focus-ring-offset, 2px)",
-          "--fsds-calendar-elevation-default": "var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a)",
+          "--fsds-calendar-elevation": "var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
@@ -934,14 +934,14 @@
           "max-height": "var(--fsds-box-model-max-height)",
           "display": "inline-block",
           "box-sizing": "border-box",
-          "background-color": "var(--fsds-calendar-color-background-default, #ffffff)",
+          "background-color": "var(--fsds-calendar-color-background, #ffffff)",
           "color": "var(--fsds-calendar-color-foreground-primary, #141414)",
-          "border-color": "var(--fsds-calendar-color-border-default, #d0d0d0)",
+          "border-color": "var(--fsds-calendar-color-border, #d0d0d0)",
           "border-width": "1px",
           "border-style": "solid",
-          "padding": "var(--fsds-calendar-size-padding-default, 16px)",
-          "border-radius": "var(--fsds-calendar-size-radius-default, 6px)",
-          "box-shadow": "var(--fsds-calendar-elevation-default, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a)"
+          "padding": "var(--fsds-calendar-size-padding, 16px)",
+          "border-radius": "var(--fsds-calendar-size-radius, 6px)",
+          "box-shadow": "var(--fsds-calendar-elevation, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a)"
         }
       },
       {
@@ -950,7 +950,7 @@
           "display": "flex",
           "align-items": "center",
           "justify-content": "space-between",
-          "padding-bottom": "var(--fsds-calendar-size-padding-default, 16px)"
+          "padding-bottom": "var(--fsds-calendar-size-padding, 16px)"
         }
       },
       {

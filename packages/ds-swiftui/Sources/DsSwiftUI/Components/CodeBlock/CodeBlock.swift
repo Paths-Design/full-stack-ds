@@ -37,9 +37,9 @@ enum CodeBlockTokens {
         "root": [
             "box-model.padding-block-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-block-start", name: "box-model.padding-block-start", ref: "semantic.surface.size.padding-block", fallback: .string("16px")),
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
-            "code-block.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-color-background-default", name: "code-block.color.background.default", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
+            "code-block.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-color-background", name: "code-block.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "code-block.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-color-foreground-primary", name: "code-block.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "code-block.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-size-radius-default", name: "code-block.size.radius.default", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
+            "code-block.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-size-radius", name: "code-block.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
             "code-block.token.color.plain": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-plain", name: "code-block.token.color.plain", ref: "semantic.color.foreground.syntax.plain", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
             "code-block.token.color.comment": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-comment", name: "code-block.token.color.comment", ref: "semantic.color.foreground.syntax.comment.color", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
             "code-block.token.color.keyword": FsdsComponentTokenDefinition(cssVar: "--fsds-code-block-token-color-keyword", name: "code-block.token.color.keyword", ref: "semantic.color.foreground.syntax.keyword", fallback: .adaptive(light: "#013ab0", dark: "#00a9fb")),
@@ -217,8 +217,8 @@ public struct CodeBlock: View {
         .font(.system(.body, design: .monospaced))
         .padding(.vertical, pxSlot("box-model.padding-block-start") ?? 0)
         .padding(.horizontal, pxSlot("box-model.padding-inline-start") ?? 0)
-        .background(colorSlot("code-block.color.background.default") ?? .clear)
-        .clipShape(RoundedRectangle(cornerRadius: pxSlot("code-block.size.radius.default") ?? 0))
+        .background(colorSlot("code-block.color.background") ?? .clear)
+        .clipShape(RoundedRectangle(cornerRadius: pxSlot("code-block.size.radius") ?? 0))
         .foregroundColor(colorSlot("code-block.color.foreground.primary") ?? .primary)
     }
 }

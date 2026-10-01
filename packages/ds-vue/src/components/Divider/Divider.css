@@ -19,7 +19,7 @@
   border-right-style: none;
   border-bottom-style: var(--fsds-divider-design-root-border-bottom-style, none);
   border-left-style: none;
-  border-top-color: var(--fsds-divider-design-root-border-top-color, var(--fsds-divider-color-default, #b8b8b8));
+  border-top-color: var(--fsds-divider-design-root-border-top-color, var(--fsds-divider-color, #b8b8b8));
   border-top-style: var(--fsds-divider-design-root-border-top-style, solid);
   border-top-width: var(--fsds-divider-design-root-border-top-width, var(--fsds-divider-size-thickness, 1px));
   margin-top: var(--fsds-divider-spacing-margin, 8px);
@@ -32,7 +32,7 @@
   align-self: stretch;
   min-height: 1em;
   border-top: none;
-  border-left-color: var(--fsds-divider-color-default, #b8b8b8);
+  border-left-color: var(--fsds-divider-color, #b8b8b8);
   border-left-style: solid;
   border-left-width: var(--fsds-divider-size-thickness, 1px);
   margin-top: 0;

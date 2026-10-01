@@ -52,9 +52,9 @@ export const cardTokenScopes = {
       ref: "semantic.color.background.primary",
       fallback: "#ffffff",
     },
-    "card.color.border.default": {
-      name: "card.color.border.default",
-      cssVar: "--fsds-card-color-border-default",
+    "card.color.border": {
+      name: "card.color.border",
+      cssVar: "--fsds-card-color-border",
       ref: "semantic.color.border.light",
       fallback: "#b8b8b8",
     },
@@ -64,9 +64,9 @@ export const cardTokenScopes = {
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "card.size.radius.default": {
-      name: "card.size.radius.default",
-      cssVar: "--fsds-card-size-radius-default",
+    "card.size.radius": {
+      name: "card.size.radius",
+      cssVar: "--fsds-card-size-radius",
       ref: "semantic.shape.radius.medium",
       fallback: 8,
     },

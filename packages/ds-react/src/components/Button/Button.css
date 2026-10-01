@@ -8,7 +8,7 @@
   padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-action-size-medium-padding-block, 4px));
   padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-action-size-medium-padding-inline, 8px));
   padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-action-size-medium-padding-inline, 8px));
-  gap: var(--fsds-button-design-root-spacing-gap, var(--fsds-button-size-gap-default, 8px));
+  gap: var(--fsds-button-design-root-spacing-gap, var(--fsds-button-size-gap, 8px));
   width: var(--fsds-box-model-width, auto);
   min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-action-size-medium-min-width, 32px));
   max-width: var(--fsds-box-model-max-width, none);

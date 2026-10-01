@@ -4,7 +4,7 @@
     "fallback": "16px",
     "layer": "semantic"
   },
-  "calendar.color.background.default": {
+  "calendar.color.background": {
     "resolvesTo": "semantic.color.background.primary",
     "fallback": "#ffffff",
     "layer": "semantic"
@@ -19,7 +19,7 @@
     "fallback": "#474647",
     "layer": "semantic"
   },
-  "calendar.color.border.default": {
+  "calendar.color.border": {
     "resolvesTo": "semantic.color.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
@@ -49,7 +49,7 @@
     "fallback": "#0566fe",
     "layer": "semantic"
   },
-  "calendar.size.padding.default": {
+  "calendar.size.padding": {
     "resolvesTo": "core.spacing.size.06",
     "fallback": "16px",
     "layer": "core"
@@ -64,7 +64,7 @@
     "fallback": "24px",
     "layer": "core"
   },
-  "calendar.size.radius.default": {
+  "calendar.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"
@@ -94,7 +94,7 @@
     "fallback": "2px",
     "layer": "semantic"
   },
-  "calendar.elevation.default": {
+  "calendar.elevation": {
     "resolvesTo": "semantic.elevation.surface.overlay",
     "fallback": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
     "layer": "semantic"

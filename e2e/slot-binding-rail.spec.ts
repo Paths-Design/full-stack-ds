@@ -10,8 +10,8 @@
  * Coverage: NavList hover background (nav-list.color.background.hover +
  * nav-list.stateLayer.hover), NavList focus outline (nav-list.color.outline.
  * focus), Command disabled opacity (command.opacity.disabled), ShowMore
- * trigger border (show-more.color.border.default), Shuttle item separator
- * (shuttle.color.border.default).
+ * trigger border (show-more.color.border), Shuttle item separator
+ * (shuttle.color.border).
  *
  * Non-claims: react preview mounts only (the audit's consumption scan is
  * ds-react, the reference framework — all five web frameworks derive from
@@ -131,7 +131,7 @@ test.describe("slot binding rail (FEAT-COMPONENT-SLOT-BINDING-COMPLETENESS-01)",
     // custom property on an ancestor and watch the computed value move.
     await trigger.evaluate((el) => {
       (el.closest('[data-fsds-component="show-more"]') as HTMLElement | null)?.style.setProperty(
-        "--fsds-show-more-color-border-default",
+        "--fsds-show-more-color-border",
         "#ff0000",
       );
     });
@@ -141,7 +141,7 @@ test.describe("slot binding rail (FEAT-COMPONENT-SLOT-BINDING-COMPLETENESS-01)",
     );
   });
 
-  test("Shuttle item separator consumes shuttle.color.border.default", async ({ page }) => {
+  test("Shuttle item separator consumes shuttle.color.border", async ({ page }) => {
     const root = await gotoPreview(page, "Shuttle", "shuttle");
     const item = root.locator(".shuttle__item").first();
     await expect(item).toBeVisible();

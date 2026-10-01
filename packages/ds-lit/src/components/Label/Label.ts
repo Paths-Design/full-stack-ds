@@ -69,8 +69,8 @@ export class LabelElement extends LitElement {
 
 
     .label {
-      --fsds-label-color-text-default: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-label-typo-line-height-default: var(--fsds-semantic-typography-line-height-tight, 1.2);
+      --fsds-label-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+      --fsds-label-typo-line-height: var(--fsds-semantic-typography-line-height-tight, 1.2);
     }
 
     @layer components.defaults {
@@ -86,8 +86,8 @@ export class LabelElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
-      color: var(--fsds-label-design-root-foreground-color, var(--fsds-label-color-text-default, #141414));
-      line-height: var(--fsds-label-design-root-typography-line-height, var(--fsds-label-typo-line-height-default, 1.2));
+      color: var(--fsds-label-design-root-foreground-color, var(--fsds-label-color-text, #141414));
+      line-height: var(--fsds-label-design-root-typography-line-height, var(--fsds-label-typo-line-height, 1.2));
     }
     }
   `;

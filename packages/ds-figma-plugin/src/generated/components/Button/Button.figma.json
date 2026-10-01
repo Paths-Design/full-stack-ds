@@ -199,7 +199,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "8px",
-      "resolvesTo": "button.size.gap.default",
+      "resolvesTo": "button.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -536,7 +536,7 @@
           "--fsds-button-color-border-default": "var(--fsds-semantic-color-border-light, #b8b8b8)",
           "--fsds-button-color-border-hover": "var(--fsds-semantic-interaction-border-hover, #888889)",
           "--fsds-button-color-border-focus": "var(--fsds-semantic-focus-ring-color, #0566fe)",
-          "--fsds-button-size-gap-default": "var(--fsds-semantic-action-size-medium-gap, 8px)",
+          "--fsds-button-size-gap": "var(--fsds-semantic-action-size-medium-gap, 8px)",
           "--fsds-button-size-radius": "var(--fsds-semantic-shape-control-radius-pill, 9999px)",
           "--fsds-button-size-border": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
           "--fsds-button-text-weight": "var(--fsds-semantic-typography-font-weight-medium, 500)",
@@ -547,7 +547,7 @@
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
           "padding-inline-end": "var(--fsds-box-model-padding-inline-end)",
-          "gap": "var(--fsds-button-size-gap-default, 8px)",
+          "gap": "var(--fsds-button-size-gap, 8px)",
           "width": "var(--fsds-box-model-width)",
           "min-width": "var(--fsds-box-model-min-width)",
           "max-width": "var(--fsds-box-model-max-width)",

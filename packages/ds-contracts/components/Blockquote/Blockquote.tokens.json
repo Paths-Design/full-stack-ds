@@ -34,12 +34,12 @@
     "fallback": "#474647",
     "layer": "semantic"
   },
-  "blockquote.color.background.default": {
+  "blockquote.color.background": {
     "resolvesTo": "semantic.color.background.secondary",
     "fallback": "#f7f7f7",
     "layer": "semantic"
   },
-  "blockquote.color.border.default": {
+  "blockquote.color.border": {
     "resolvesTo": "semantic.color.border.accent",
     "fallback": "#d92d2e",
     "layer": "semantic"
@@ -54,7 +54,7 @@
     "fallback": "500",
     "layer": "semantic"
   },
-  "blockquote.size.padding.default": {
+  "blockquote.size.padding": {
     "resolvesTo": "core.spacing.size.05",
     "fallback": "12px",
     "layer": "core"
@@ -69,7 +69,7 @@
     "fallback": "24px",
     "layer": "core"
   },
-  "blockquote.size.radius.default": {
+  "blockquote.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"

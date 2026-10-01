@@ -51,7 +51,7 @@ fun Progress(
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
     val paddingBlockEnd = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp
     val minHeight = layeredSlot("box-model.min-height")?.toFsdsDp()
-    val textColor = layeredSlot("progress.color.text.default")?.toFsdsColor()
+    val textColor = layeredSlot("progress.color.text")?.toFsdsColor()
     val trackColor = layeredSlot("progress.color.track.background")?.toFsdsColor()
     val fillColor = layeredSlot(
         when (intent) {

@@ -28,18 +28,6 @@ export const checkboxTokenScopes = {
       cssVar: "--fsds-box-model-min-width",
       literal: 0,
     },
-    "checkbox.color.background.default": {
-      name: "checkbox.color.background.default",
-      cssVar: "--fsds-checkbox-color-background-default",
-      ref: "semantic.color.background.primary",
-      fallback: "#ffffff",
-    },
-    "checkbox.color.border.default": {
-      name: "checkbox.color.border.default",
-      cssVar: "--fsds-checkbox-color-border-default",
-      ref: "semantic.color.border.default",
-      fallback: "#a0a0a1",
-    },
     "checkbox.border.width": {
       name: "checkbox.border.width",
       cssVar: "--fsds-checkbox-border-width",

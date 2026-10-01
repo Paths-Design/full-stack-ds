@@ -163,7 +163,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "16px",
-      "resolvesTo": "postcard.size.padding.default",
+      "resolvesTo": "postcard.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -179,7 +179,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "6px",
-      "resolvesTo": "postcard.size.radius.default",
+      "resolvesTo": "postcard.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -195,7 +195,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "12px",
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -242,7 +242,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "1px",
-      "resolvesTo": "postcard.size.border.default",
+      "resolvesTo": "postcard.size.border",
       "editableTargets": [
         "web"
       ],
@@ -338,7 +338,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "12px",
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -386,7 +386,7 @@
       "selectorKey": "header",
       "part": "header",
       "defaultValue": "12px",
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -482,7 +482,7 @@
       "selectorKey": "footer",
       "part": "footer",
       "defaultValue": "12px",
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -529,7 +529,7 @@
       "selectorKey": "footer",
       "part": "footer",
       "defaultValue": "1px",
-      "resolvesTo": "postcard.size.border.default",
+      "resolvesTo": "postcard.size.border",
       "editableTargets": [
         "web"
       ],
@@ -561,7 +561,7 @@
       "selectorKey": "stats",
       "part": "stats",
       "defaultValue": "12px",
-      "resolvesTo": "postcard.size.gap.default",
+      "resolvesTo": "postcard.size.gap",
       "editableTargets": [
         "web"
       ],
@@ -650,10 +650,10 @@
           "--fsds-postcard-color-border-default": "var(--fsds-semantic-color-border-light, #b8b8b8)",
           "--fsds-postcard-color-border-hover": "var(--fsds-semantic-color-border-bold, #888889)",
           "--fsds-postcard-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-postcard-size-padding-default": "var(--fsds-core-spacing-size-06, 16px)",
-          "--fsds-postcard-size-radius-default": "var(--fsds-semantic-shape-control-radius-default, 6px)",
-          "--fsds-postcard-size-gap-default": "var(--fsds-core-spacing-size-05, 12px)",
-          "--fsds-postcard-size-border-default": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
+          "--fsds-postcard-size-padding": "var(--fsds-core-spacing-size-06, 16px)",
+          "--fsds-postcard-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
+          "--fsds-postcard-size-gap": "var(--fsds-core-spacing-size-05, 12px)",
+          "--fsds-postcard-size-border": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
           "--fsds-postcard-typography-display-name-font-size": "var(--fsds-semantic-typography-body-02, 16px)",
           "--fsds-postcard-typography-display-name-font-weight": "var(--fsds-semantic-typography-font-weight-medium, 500)",
           "--fsds-postcard-typography-handle-font-size": "var(--fsds-semantic-typography-body-03, 14px)",
@@ -664,7 +664,7 @@
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
           "padding-inline-end": "var(--fsds-box-model-padding-inline-end)",
-          "gap": "var(--fsds-postcard-size-gap-default, 12px)",
+          "gap": "var(--fsds-postcard-size-gap, 12px)",
           "width": "var(--fsds-box-model-width)",
           "min-width": "var(--fsds-box-model-min-width)",
           "max-width": "var(--fsds-box-model-max-width)",
@@ -672,13 +672,13 @@
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
           "background-color": "var(--fsds-postcard-color-background-default, #ffffff)",
-          "padding": "var(--fsds-postcard-size-padding-default, 16px)",
-          "border-radius": "var(--fsds-postcard-size-radius-default, 6px)",
+          "padding": "var(--fsds-postcard-size-padding, 16px)",
+          "border-radius": "var(--fsds-postcard-size-radius, 6px)",
           "line-height": "var(--fsds-postcard-typography-content-line-height, 1.5)",
           "display": "flex",
           "flex-direction": "column",
           "border-style": "solid",
-          "border-width": "var(--fsds-postcard-size-border-default, 1px)",
+          "border-width": "var(--fsds-postcard-size-border, 1px)",
           "box-sizing": "border-box",
           "border-color": "var(--fsds-postcard-color-border-default, #b8b8b8)",
           "color": "var(--fsds-postcard-color-foreground-primary, #141414)"
@@ -697,7 +697,7 @@
           "line-height": "var(--fsds-postcard-typography-content-line-height, 1.5)",
           "display": "flex",
           "flex-direction": "column",
-          "gap": "var(--fsds-postcard-size-gap-default, 12px)",
+          "gap": "var(--fsds-postcard-size-gap, 12px)",
           "color": "var(--fsds-postcard-color-foreground-primary, #141414)",
           "font-size": "var(--fsds-postcard-typography-content-font-size, 16px)"
         }
@@ -708,7 +708,7 @@
           "display": "flex",
           "align-items": "center",
           "justify-content": "space-between",
-          "gap": "var(--fsds-postcard-size-gap-default, 12px)"
+          "gap": "var(--fsds-postcard-size-gap, 12px)"
         }
       },
       {
@@ -717,7 +717,7 @@
           "display": "flex",
           "align-items": "center",
           "flex": "1 1 auto",
-          "--fsds-postcard-size-gap-default": "var(--fsds-core-spacing-size-03, 4px)"
+          "--fsds-postcard-size-gap": "var(--fsds-core-spacing-size-03, 4px)"
         }
       },
       {
@@ -748,11 +748,11 @@
         "declarations": {
           "display": "flex",
           "align-items": "center",
-          "gap": "var(--fsds-postcard-size-gap-default, 12px)",
-          "padding-top": "var(--fsds-postcard-size-padding-default, 16px)",
+          "gap": "var(--fsds-postcard-size-gap, 12px)",
+          "padding-top": "var(--fsds-postcard-size-padding, 16px)",
           "border-top-color": "var(--fsds-postcard-color-border-default, #b8b8b8)",
           "border-top-style": "solid",
-          "border-top-width": "var(--fsds-postcard-size-border-default, 1px)",
+          "border-top-width": "var(--fsds-postcard-size-border, 1px)",
           "font-size": "var(--fsds-postcard-typography-footer-font-size, 14px)"
         }
       },
@@ -761,7 +761,7 @@
         "declarations": {
           "display": "flex",
           "align-items": "center",
-          "gap": "var(--fsds-postcard-size-gap-default, 12px)"
+          "gap": "var(--fsds-postcard-size-gap, 12px)"
         }
       },
       {
@@ -770,7 +770,7 @@
           "display": "inline-flex",
           "align-items": "center",
           "font-size": "var(--fsds-postcard-typography-footer-font-size, 14px)",
-          "--fsds-postcard-size-gap-default": "var(--fsds-core-spacing-size-03, 4px)",
+          "--fsds-postcard-size-gap": "var(--fsds-core-spacing-size-03, 4px)",
           "--fsds-postcard-color-foreground-primary": "var(--fsds-semantic-color-foreground-secondary, #474647)"
         }
       }

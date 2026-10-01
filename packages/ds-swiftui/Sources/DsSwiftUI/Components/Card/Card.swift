@@ -18,9 +18,9 @@ enum CardTokens {
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "card.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-background-default", name: "card.color.background.default", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
-            "card.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-border-default", name: "card.color.border.default", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "card.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-border", name: "card.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
             "card.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-foreground-primary", name: "card.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "card.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-card-size-radius-default", name: "card.size.radius.default", ref: "semantic.shape.radius.medium", fallback: .string("8px")),
+            "card.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-card-size-radius", name: "card.size.radius", ref: "semantic.shape.radius.medium", fallback: .string("8px")),
         ],
         "part_description": [
             "card.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-foreground-primary", name: "card.color.foreground.primary", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
@@ -94,8 +94,8 @@ public struct Card<Header: View, Media: View, Content: View, Footer: View, Actio
 
     private var background: Color { colorSlot("color.background.default") ?? .accentColor }
     private var foreground: Color { colorSlot("color.foreground.primary") ?? .primary }
-    private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
-    private var radius: CGFloat { pxSlot("size.radius.default", requireRadius: true) ?? 0 }
+    private var borderColor: Color { colorSlot("color.border") ?? .clear }
+    private var radius: CGFloat { pxSlot("size.radius", requireRadius: true) ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

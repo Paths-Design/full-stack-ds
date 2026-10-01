@@ -46,27 +46,21 @@ export const selectTokenScopes = {
       ref: "semantic.input.size.medium.min-height",
       fallback: 32,
     },
-    "select.color.background.default": {
-      name: "select.color.background.default",
-      cssVar: "--fsds-select-color-background-default",
-      ref: "semantic.color.background.primary",
-      fallback: "#ffffff",
-    },
-    "select.color.border.default": {
-      name: "select.color.border.default",
-      cssVar: "--fsds-select-color-border-default",
+    "select.color.border": {
+      name: "select.color.border",
+      cssVar: "--fsds-select-color-border",
       ref: "semantic.color.border.primary",
       fallback: "#a0a0a1",
     },
-    "select.size.radius.default": {
-      name: "select.size.radius.default",
-      cssVar: "--fsds-select-size-radius-default",
+    "select.size.radius": {
+      name: "select.size.radius",
+      cssVar: "--fsds-select-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },
-    "select.size.border.default": {
-      name: "select.size.border.default",
-      cssVar: "--fsds-select-size-border-default",
+    "select.size.border": {
+      name: "select.size.border",
+      cssVar: "--fsds-select-size-border",
       ref: "semantic.shape.control.border.defaultWidth",
       fallback: 1,
     },

@@ -1,11 +1,11 @@
 @layer components {
 /* @generated:start tokens */
 .profile-flag {
-  --fsds-profile-flag-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
+  --fsds-profile-flag-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
   --fsds-profile-flag-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
   --fsds-profile-flag-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-  --fsds-profile-flag-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
-  --fsds-profile-flag-spacing-gap-default: var(--fsds-core-spacing-size-03, 4px);
+  --fsds-profile-flag-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+  --fsds-profile-flag-spacing-gap: var(--fsds-core-spacing-size-03, 4px);
   --fsds-profile-flag-spacing-padding-right: var(--fsds-core-spacing-size-06, 16px);
   --fsds-profile-flag-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
 }

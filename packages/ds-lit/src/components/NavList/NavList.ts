@@ -75,10 +75,10 @@ export class NavListElement extends LitElement {
       --fsds-nav-list-color-background-hover: var(--fsds-semantic-color-background-subtle, #f7f7f7);
       --fsds-nav-list-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
       --fsds-nav-list-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
-      --fsds-nav-list-color-outline-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-nav-list-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-list-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
       --fsds-nav-list-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-list-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-nav-list-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-nav-list-size-gap-list: var(--fsds-core-spacing-size-01, 1px);
     }
 
@@ -112,7 +112,7 @@ export class NavListElement extends LitElement {
       color: var(--fsds-nav-list-design-item-foreground-color, var(--fsds-nav-list-color-foreground-default, #474647));
       padding-block: var(--fsds-nav-list-design-item-spacing-padding-block, var(--fsds-nav-list-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-list-design-item-spacing-padding-inline, var(--fsds-nav-list-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-list-design-item-shape-radius, var(--fsds-nav-list-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-list-design-item-shape-radius, var(--fsds-nav-list-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-list-design-item-motion-duration, 120ms);
     }
@@ -123,9 +123,9 @@ export class NavListElement extends LitElement {
     }
 
     .nav-list__item:focus-visible {
-      outline-style: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-style, solid);
-      outline-width: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-width, 2px);
-      outline-color: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-color, var(--fsds-nav-list-color-outline-focus, #d92d2e));
+      outline-style: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-style, var(--fsds-semantic-focus-ring-style, solid));
+      outline-width: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-color: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-color, var(--fsds-nav-list-color-outline-focus, #0566fe));
       outline-offset: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-offset, -2px);
     }
 
@@ -222,10 +222,10 @@ export class NavListListElement extends LitElement {
       --fsds-nav-list-color-background-hover: var(--fsds-semantic-color-background-subtle, #f7f7f7);
       --fsds-nav-list-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
       --fsds-nav-list-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
-      --fsds-nav-list-color-outline-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-nav-list-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-list-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
       --fsds-nav-list-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-list-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-nav-list-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-nav-list-size-gap-list: var(--fsds-core-spacing-size-01, 1px);
     }
 
@@ -259,7 +259,7 @@ export class NavListListElement extends LitElement {
       color: var(--fsds-nav-list-design-item-foreground-color, var(--fsds-nav-list-color-foreground-default, #474647));
       padding-block: var(--fsds-nav-list-design-item-spacing-padding-block, var(--fsds-nav-list-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-list-design-item-spacing-padding-inline, var(--fsds-nav-list-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-list-design-item-shape-radius, var(--fsds-nav-list-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-list-design-item-shape-radius, var(--fsds-nav-list-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-list-design-item-motion-duration, 120ms);
     }
@@ -270,9 +270,9 @@ export class NavListListElement extends LitElement {
     }
 
     .nav-list__item:focus-visible {
-      outline-style: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-style, solid);
-      outline-width: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-width, 2px);
-      outline-color: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-color, var(--fsds-nav-list-color-outline-focus, #d92d2e));
+      outline-style: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-style, var(--fsds-semantic-focus-ring-style, solid));
+      outline-width: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-color: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-color, var(--fsds-nav-list-color-outline-focus, #0566fe));
       outline-offset: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-offset, -2px);
     }
 
@@ -348,10 +348,10 @@ export class NavListItemElement extends LitElement {
       --fsds-nav-list-color-background-hover: var(--fsds-semantic-color-background-subtle, #f7f7f7);
       --fsds-nav-list-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
       --fsds-nav-list-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
-      --fsds-nav-list-color-outline-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-nav-list-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-list-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
       --fsds-nav-list-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-nav-list-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-nav-list-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-nav-list-size-gap-list: var(--fsds-core-spacing-size-01, 1px);
     }
 
@@ -385,7 +385,7 @@ export class NavListItemElement extends LitElement {
       color: var(--fsds-nav-list-design-item-foreground-color, var(--fsds-nav-list-color-foreground-default, #474647));
       padding-block: var(--fsds-nav-list-design-item-spacing-padding-block, var(--fsds-nav-list-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-list-design-item-spacing-padding-inline, var(--fsds-nav-list-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-list-design-item-shape-radius, var(--fsds-nav-list-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-list-design-item-shape-radius, var(--fsds-nav-list-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-list-design-item-motion-duration, 120ms);
     }
@@ -396,9 +396,9 @@ export class NavListItemElement extends LitElement {
     }
 
     .nav-list__item:focus-visible {
-      outline-style: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-style, solid);
-      outline-width: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-width, 2px);
-      outline-color: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-color, var(--fsds-nav-list-color-outline-focus, #d92d2e));
+      outline-style: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-style, var(--fsds-semantic-focus-ring-style, solid));
+      outline-width: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-color: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-color, var(--fsds-nav-list-color-outline-focus, #0566fe));
       outline-offset: var(--fsds-nav-list-design-condition-d48c60eed8cf-focus-offset, -2px);
     }
 

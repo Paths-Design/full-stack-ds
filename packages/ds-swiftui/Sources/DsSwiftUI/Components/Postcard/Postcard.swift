@@ -18,8 +18,8 @@ enum PostcardTokens {
             "postcard.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-color-background-default", name: "postcard.color.background.default", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
             "postcard.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-color-border-default", name: "postcard.color.border.default", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
             "postcard.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-color-foreground-primary", name: "postcard.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "postcard.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-size-radius-default", name: "postcard.size.radius.default", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
-            "postcard.size.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-size-border-default", name: "postcard.size.border.default", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
+            "postcard.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-size-radius", name: "postcard.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
+            "postcard.size.border": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-size-border", name: "postcard.size.border", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
         ],
         "part_handle": [
             "postcard.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-color-foreground-primary", name: "postcard.color.foreground.primary", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
@@ -66,8 +66,8 @@ public struct Postcard<Content: View>: View {
     private var background: Color { colorSlot("color.background.default") ?? .accentColor }
     private var foreground: Color { colorSlot("color.foreground.primary") ?? .primary }
     private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
-    private var borderWidth: CGFloat { pxSlot("size.border.default") ?? 0 }
-    private var radius: CGFloat { pxSlot("size.radius.default") ?? 0 }
+    private var borderWidth: CGFloat { pxSlot("size.border") ?? 0 }
+    private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

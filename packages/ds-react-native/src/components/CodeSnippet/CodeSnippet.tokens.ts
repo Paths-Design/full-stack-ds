@@ -45,39 +45,33 @@ export const codeSnippetTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "code-snippet.color.background.default": {
-      name: "code-snippet.color.background.default",
-      cssVar: "--fsds-code-snippet-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
-    },
     "code-snippet.color.foreground.primary": {
       name: "code-snippet.color.foreground.primary",
       cssVar: "--fsds-code-snippet-color-foreground-primary",
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "code-snippet.color.border.default": {
-      name: "code-snippet.color.border.default",
-      cssVar: "--fsds-code-snippet-color-border-default",
+    "code-snippet.color.border": {
+      name: "code-snippet.color.border",
+      cssVar: "--fsds-code-snippet-color-border",
       ref: "semantic.color.border.subtle",
       fallback: "#d0d0d0",
     },
-    "code-snippet.size.radius.default": {
-      name: "code-snippet.size.radius.default",
-      cssVar: "--fsds-code-snippet-size-radius-default",
+    "code-snippet.size.radius": {
+      name: "code-snippet.size.radius",
+      cssVar: "--fsds-code-snippet-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },
-    "code-snippet.size.border.default": {
-      name: "code-snippet.size.border.default",
-      cssVar: "--fsds-code-snippet-size-border-default",
+    "code-snippet.size.border": {
+      name: "code-snippet.size.border",
+      cssVar: "--fsds-code-snippet-size-border",
       ref: "semantic.shape.control.border.defaultWidth",
       fallback: 1,
     },
-    "code-snippet.size.fontSize.default": {
-      name: "code-snippet.size.fontSize.default",
-      cssVar: "--fsds-code-snippet-size-font-size-default",
+    "code-snippet.size.fontSize": {
+      name: "code-snippet.size.fontSize",
+      cssVar: "--fsds-code-snippet-size-font-size",
       ref: "core.typography.ramp.3",
       fallback: 14,
     },

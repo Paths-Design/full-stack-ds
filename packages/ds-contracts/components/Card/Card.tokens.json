@@ -39,7 +39,7 @@
     "fallback": "#f7f7f7",
     "layer": "semantic"
   },
-  "card.color.border.default": {
+  "card.color.border": {
     "resolvesTo": "semantic.color.border.light",
     "fallback": "#b8b8b8",
     "layer": "semantic"
@@ -49,7 +49,7 @@
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "card.size.padding.default": {
+  "card.size.padding": {
     "resolvesTo": "core.spacing.size.06",
     "fallback": "16px",
     "layer": "core"
@@ -59,12 +59,12 @@
     "fallback": "8px",
     "layer": "core"
   },
-  "card.size.radius.default": {
+  "card.size.radius": {
     "resolvesTo": "semantic.shape.radius.medium",
     "fallback": "8px",
     "layer": "semantic"
   },
-  "card.size.gap.default": {
+  "card.size.gap": {
     "resolvesTo": "core.spacing.size.03",
     "fallback": "4px",
     "layer": "core"

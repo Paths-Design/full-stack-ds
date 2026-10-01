@@ -167,7 +167,7 @@
       "selectorKey": "indicator",
       "part": "indicator",
       "defaultValue": "#a0a0a1",
-      "resolvesTo": "checkbox.color.border.default",
+      "resolvesTo": "checkbox.color.border",
       "editableTargets": [
         "web"
       ],
@@ -183,7 +183,7 @@
       "selectorKey": "indicator",
       "part": "indicator",
       "defaultValue": "#ffffff",
-      "resolvesTo": "checkbox.color.background.default",
+      "resolvesTo": "checkbox.color.background",
       "editableTargets": [
         "web"
       ],
@@ -299,6 +299,128 @@
         "web"
       ],
       "selector": ".checkbox:has(.checkbox__input:focus-visible) .checkbox__indicator"
+    },
+    {
+      "property": "appearance.opacity",
+      "group": "appearance",
+      "valueType": "number",
+      "slot": "checkbox.design.condition-c8a599f99e6e.appearance.opacity",
+      "cssVar": "--fsds-checkbox-design-condition-c8a599f99e6e-appearance-opacity",
+      "cssProperty": "opacity",
+      "selectorKey": ".checkbox__indicator::after",
+      "part": null,
+      "defaultValue": "0",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".checkbox__indicator::after"
+    },
+    {
+      "property": "border.color",
+      "group": "border",
+      "valueType": "color",
+      "slot": "checkbox.design.condition-c8a599f99e6e.border.color",
+      "cssVar": "--fsds-checkbox-design-condition-c8a599f99e6e-border-color",
+      "cssProperty": "border-color",
+      "selectorKey": ".checkbox__indicator::after",
+      "part": null,
+      "defaultValue": "#ffffff",
+      "resolvesTo": "checkbox.color.mark",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".checkbox__indicator::after"
+    },
+    {
+      "property": "border.style",
+      "group": "border",
+      "valueType": "enum",
+      "slot": "checkbox.design.condition-94add815057f.border.style",
+      "cssVar": "--fsds-checkbox-design-condition-94add815057f-border-style",
+      "cssProperty": "border-style",
+      "selectorKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": null,
+      "defaultValue": "solid",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after"
+    },
+    {
+      "property": "border.width",
+      "group": "border",
+      "valueType": "dimension",
+      "slot": "checkbox.design.condition-94add815057f.border.width",
+      "cssVar": "--fsds-checkbox-design-condition-94add815057f-border-width",
+      "cssProperty": "border-width",
+      "selectorKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": null,
+      "defaultValue": "0 2px 2px 0",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after"
+    },
+    {
+      "property": "appearance.opacity",
+      "group": "appearance",
+      "valueType": "number",
+      "slot": "checkbox.design.condition-94add815057f.appearance.opacity",
+      "cssVar": "--fsds-checkbox-design-condition-94add815057f-appearance-opacity",
+      "cssProperty": "opacity",
+      "selectorKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": null,
+      "defaultValue": "1",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after"
+    },
+    {
+      "property": "border.width",
+      "group": "border",
+      "valueType": "dimension",
+      "slot": "checkbox.design.condition-b54308f8dcd4.border.width",
+      "cssVar": "--fsds-checkbox-design-condition-b54308f8dcd4-border-width",
+      "cssProperty": "border-width",
+      "selectorKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": null,
+      "defaultValue": "0",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after"
+    },
+    {
+      "property": "background.fill",
+      "group": "background",
+      "valueType": "color",
+      "slot": "checkbox.design.condition-b54308f8dcd4.background.fill",
+      "cssVar": "--fsds-checkbox-design-condition-b54308f8dcd4-background-fill",
+      "cssProperty": "background-color",
+      "selectorKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": null,
+      "defaultValue": "#ffffff",
+      "resolvesTo": "checkbox.color.mark",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after"
+    },
+    {
+      "property": "appearance.opacity",
+      "group": "appearance",
+      "valueType": "number",
+      "slot": "checkbox.design.condition-b54308f8dcd4.appearance.opacity",
+      "cssVar": "--fsds-checkbox-design-condition-b54308f8dcd4-appearance-opacity",
+      "cssProperty": "opacity",
+      "selectorKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": null,
+      "defaultValue": "1",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after"
     }
   ],
   "variants": {
@@ -421,8 +543,8 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "var(--fsds-semantic-input-size-medium-min-height, 32px)",
           "--fsds-box-model-max-height": "none",
-          "--fsds-checkbox-color-background-default": "var(--fsds-semantic-color-background-primary, #ffffff)",
-          "--fsds-checkbox-color-border-default": "var(--fsds-semantic-color-border-default, #a0a0a1)",
+          "--fsds-checkbox-color-background": "var(--fsds-semantic-color-background-primary, #ffffff)",
+          "--fsds-checkbox-color-border": "var(--fsds-semantic-color-border-default, #a0a0a1)",
           "--fsds-checkbox-border-width": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
           "--fsds-checkbox-border-radius": "var(--fsds-semantic-shape-radius-small, 4px)",
           "--fsds-checkbox-transition-duration": "var(--fsds-core-motion-duration-short, 150ms)",
@@ -430,7 +552,7 @@
           "--fsds-checkbox-focus-ring-color": "var(--fsds-semantic-focus-ring-color, #0566fe)",
           "--fsds-checkbox-focus-ring-style": "var(--fsds-semantic-focus-ring-style, solid)",
           "--fsds-checkbox-focus-ring-offset": "var(--fsds-semantic-focus-ring-offset, 2px)",
-          "--fsds-checkbox-color-mark-default": "var(--fsds-semantic-color-foreground-on-brand, #ffffff)",
+          "--fsds-checkbox-color-mark": "var(--fsds-semantic-color-foreground-on-brand, #ffffff)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
@@ -450,7 +572,7 @@
       {
         "selector": ".checkbox:hover .checkbox__indicator",
         "declarations": {
-          "--fsds-checkbox-color-border-default": "var(--fsds-semantic-color-border-hover, #888889)"
+          "--fsds-checkbox-color-border": "var(--fsds-semantic-color-border-hover, #888889)"
         }
       },
       {
@@ -475,8 +597,8 @@
           "width": "16px",
           "height": "16px",
           "border-radius": "var(--fsds-checkbox-border-radius, 4px)",
-          "border-color": "var(--fsds-checkbox-color-border-default, #a0a0a1)",
-          "background-color": "var(--fsds-checkbox-color-background-default, #ffffff)",
+          "border-color": "var(--fsds-checkbox-color-border, #a0a0a1)",
+          "background-color": "var(--fsds-checkbox-color-background, #ffffff)",
           "border-style": "solid",
           "border-width": "var(--fsds-checkbox-border-width, 1px)",
           "box-sizing": "border-box",
@@ -486,7 +608,7 @@
       {
         "selector": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator",
         "declarations": {
-          "--fsds-checkbox-color-background-default": "var(--fsds-semantic-color-action-background-primary-default, #0566fe)"
+          "--fsds-checkbox-color-background": "var(--fsds-semantic-color-action-background-primary-default, #0566fe)"
         }
       },
       {
@@ -507,7 +629,7 @@
           "left": "50%",
           "opacity": "0",
           "box-sizing": "border-box",
-          "border-color": "var(--fsds-checkbox-color-mark-default, #ffffff)"
+          "border-color": "var(--fsds-checkbox-color-mark, #ffffff)"
         }
       },
       {
@@ -524,7 +646,7 @@
       {
         "selector": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator",
         "declarations": {
-          "--fsds-checkbox-color-background-default": "var(--fsds-semantic-color-action-background-primary-default, #0566fe)"
+          "--fsds-checkbox-color-background": "var(--fsds-semantic-color-action-background-primary-default, #0566fe)"
         }
       },
       {
@@ -533,7 +655,7 @@
           "width": "8px",
           "height": "2px",
           "border-width": "0",
-          "background-color": "var(--fsds-checkbox-color-mark-default, #ffffff)",
+          "background-color": "var(--fsds-checkbox-color-mark, #ffffff)",
           "transform": "translate(-50%, -50%)",
           "opacity": "1"
         }
@@ -541,8 +663,8 @@
       {
         "selector": ".checkbox:has(.checkbox__input:disabled) .checkbox__indicator",
         "declarations": {
-          "--fsds-checkbox-color-background-default": "var(--fsds-semantic-color-background-disabled, #d0d0d0)",
-          "--fsds-checkbox-color-mark-default": "var(--fsds-semantic-color-foreground-disabled, #727272)"
+          "--fsds-checkbox-color-background": "var(--fsds-semantic-color-background-disabled, #d0d0d0)",
+          "--fsds-checkbox-color-mark": "var(--fsds-semantic-color-foreground-disabled, #727272)"
         }
       }
     ],

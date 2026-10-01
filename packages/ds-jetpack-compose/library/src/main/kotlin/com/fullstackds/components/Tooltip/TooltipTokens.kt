@@ -50,21 +50,21 @@ val tooltipTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "tooltip.color.background.default" to ComponentTokenDefinition(
-            name = "tooltip.color.background.default",
-            cssVar = "--fsds-tooltip-color-background-default",
+        "tooltip.color.background" to ComponentTokenDefinition(
+            name = "tooltip.color.background",
+            cssVar = "--fsds-tooltip-color-background",
             ref = "semantic.color.background.inverse",
             fallback = "#141414",
         ),
-        "tooltip.color.border.default" to ComponentTokenDefinition(
-            name = "tooltip.color.border.default",
-            cssVar = "--fsds-tooltip-color-border-default",
+        "tooltip.color.border" to ComponentTokenDefinition(
+            name = "tooltip.color.border",
+            cssVar = "--fsds-tooltip-color-border",
             ref = "semantic.color.border.subtle",
             fallback = "#d0d0d0",
         ),
-        "tooltip.size.radius.default" to ComponentTokenDefinition(
-            name = "tooltip.size.radius.default",
-            cssVar = "--fsds-tooltip-size-radius-default",
+        "tooltip.size.radius" to ComponentTokenDefinition(
+            name = "tooltip.size.radius",
+            cssVar = "--fsds-tooltip-size-radius",
             ref = "semantic.shape.radius.small",
             fallback = "4px",
         ),

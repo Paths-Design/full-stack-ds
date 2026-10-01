@@ -207,7 +207,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#f7f7f7",
-      "resolvesTo": "image.color.background.default",
+      "resolvesTo": "image.color.background",
       "editableTargets": [
         "web"
       ],
@@ -568,7 +568,7 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-image-color-background-default": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
+          "--fsds-image-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "--fsds-image-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
           "--fsds-image-size-xs": "24px",
           "--fsds-image-size-sm": "32px",
@@ -595,7 +595,7 @@
           "aspect-ratio": "var(--fsds-image-prop-aspect-ratio, auto)",
           "object-fit": "var(--fsds-image-prop-object-fit, fill)",
           "object-position": "var(--fsds-image-prop-object-position, 50% 50%)",
-          "background-color": "var(--fsds-image-color-background-default, #f7f7f7)",
+          "background-color": "var(--fsds-image-color-background, #f7f7f7)",
           "color": "var(--fsds-image-color-foreground-primary, #141414)"
         }
       },

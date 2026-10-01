@@ -1,7 +1,7 @@
 {
   "root": {
     "background-color": {
-      "resolvesTo": "code-block.color.background.default",
+      "resolvesTo": "code-block.color.background",
       "fallback": "#f7f7f7",
       "design": {
         "property": "background.fill",
@@ -9,7 +9,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "code-block.color.border.default",
+      "resolvesTo": "code-block.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
@@ -27,7 +27,7 @@
       }
     },
     "border-width": {
-      "resolvesTo": "code-block.size.border.default",
+      "resolvesTo": "code-block.size.border",
       "fallback": "1px",
       "design": {
         "property": "border.width",
@@ -35,7 +35,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "code-block.size.radius.default",
+      "resolvesTo": "code-block.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -51,17 +51,18 @@
       }
     },
     "font-family": {
-      "literal": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "typography.family",
         "slot": "code-block.design.root.typography.family"
-      }
+      },
+      "fallback": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "resolvesTo": "semantic.typography.semanticFamily.mono"
     },
     "font-size": {
-      "resolvesTo": "code-block.size.fontSize.default",
+      "resolvesTo": "code-block.size.fontSize",
       "fallback": "0.875rem",
       "design": {
         "property": "typography.size",
@@ -69,7 +70,7 @@
       }
     },
     "line-height": {
-      "resolvesTo": "code-block.typography.lineHeight.default",
+      "resolvesTo": "code-block.typography.lineHeight",
       "fallback": "1.5",
       "design": {
         "property": "typography.line-height",
@@ -89,7 +90,7 @@
       ]
     },
     "padding": {
-      "resolvesTo": "code-block.size.padding.default",
+      "resolvesTo": "code-block.size.padding",
       "fallback": "16px",
       "design": {
         "property": "spacing.padding",
@@ -138,27 +139,74 @@
     }
   },
   ".code-block__line": {
-    "white-space": { "literal": "pre", "platforms": ["web"] }
+    "white-space": {
+      "literal": "pre",
+      "platforms": [
+        "web"
+      ]
+    }
   },
   ".code-block__gutter": {
-    "display": { "literal": "none", "platforms": ["web"] }
+    "display": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
+    }
   },
   ".code-block[data-line-numbers=\"true\"] .code-block__gutter": {
-    "display": { "literal": "inline-block", "platforms": ["web"] },
-    "min-width": { "literal": "4ch", "platforms": ["web"] },
+    "display": {
+      "literal": "inline-block",
+      "platforms": [
+        "web"
+      ]
+    },
+    "min-width": {
+      "literal": "4ch",
+      "platforms": [
+        "web"
+      ]
+    },
     "padding-inline-end": {
       "resolvesTo": "code-block.gutter.size.gap",
-      "fallback": "4px"
+      "fallback": "4px",
+      "design": {
+        "property": "spacing.padding-inline-end",
+        "slot": "code-block.design.condition-37b3a6622954.spacing.padding-inline-end"
+      }
     },
     "color": {
       "resolvesTo": "code-block.gutter.color.number",
-      "fallback": "#474647"
+      "fallback": "#474647",
+      "design": {
+        "property": "foreground.color",
+        "slot": "code-block.design.condition-37b3a6622954.foreground.color"
+      }
     },
-    "text-align": { "literal": "right", "platforms": ["web"] },
-    "user-select": { "literal": "none", "platforms": ["web"] }
+    "text-align": {
+      "literal": "right",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "typography.alignment",
+        "slot": "code-block.design.condition-37b3a6622954.typography.alignment"
+      }
+    },
+    "user-select": {
+      "literal": "none",
+      "platforms": [
+        "web"
+      ]
+    }
   },
   ".code-block__gutter::before": {
-    "content": { "literal": "attr(data-line)", "platforms": ["web"] }
+    "content": {
+      "literal": "attr(data-line)",
+      "platforms": [
+        "web"
+      ]
+    }
   },
   ".code-block__token[data-token=\"plain\"]": {
     "color": {

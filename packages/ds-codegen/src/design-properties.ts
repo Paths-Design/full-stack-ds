@@ -42,6 +42,20 @@ define('media', 'position', { 'object-position': 'position' });
 define('layout', 'enum', { 'flex-direction': 'direction', 'align-items': 'alignment', 'justify-content': 'distribution', 'flex-wrap': 'wrap', overflow: 'overflow' });
 export const DESIGN_PROPERTIES: Readonly<Record<string, DesignPropertyDefinition>> = Object.freeze(definitions);
 
+/** Common paint decisions are editable; intrinsic geometry and layout stay opt-in. */
+export function requiresDesignBinding(cssProperty: string, entry: { resolvesTo?: string; platforms?: string[] }): boolean {
+  const definition = DESIGN_PROPERTIES[cssProperty];
+  return !!definition && definition.group !== 'layout'
+    && (definition.group !== 'sizing' || !!entry.resolvesTo)
+    && (!entry.platforms || entry.platforms.includes('web'));
+}
+
+export function missingDesignBindings(contract: Pick<ComponentContract, 'styles'>): string[] {
+  return Object.entries(contract.styles ?? {}).flatMap(([selector, block]) =>
+    Object.entries(block).filter(([property, entry]) => requiresDesignBinding(property, entry) && !entry.design)
+      .map(([property]) => `/styles/${selector}/${property}`));
+}
+
 export interface DesignBindingIR extends DesignPropertyDefinition {
   slot: string;
   cssVar: string;

@@ -2,6 +2,7 @@
 package com.fullstackds.components.sheet
 
 // @generated:start imports
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,6 +51,8 @@ fun Sheet(
         val def = sheetTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
+    val panelBg = layeredSlot("sheet.color.background")?.toFsdsColor()
+    val panelText = layeredSlot("sheet.color.text")?.toFsdsColor()
     val panelBorder = layeredSlot("sheet.color.border")?.toFsdsColor()
     val panelRadius = layeredSlot("sheet.border.radius")?.toFsdsDp() ?: 0.dp
     val panelGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
@@ -81,6 +84,7 @@ fun Sheet(
                 modifier
                     .requiredSizeIn(minWidth = panelMinWidth, minHeight = panelMinHeight)
                     .clip(panelShape)
+                    .then(if (panelBg != null) Modifier.background(panelBg, panelShape) else Modifier)
                     .then(if (panelBorder != null) Modifier.border(layeredSlot("sheet.border.width")?.toFsdsDp() ?: 1.dp, panelBorder, panelShape) else Modifier)
                     .padding(panelPadding)
 ,

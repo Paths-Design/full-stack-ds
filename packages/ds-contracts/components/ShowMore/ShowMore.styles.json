@@ -1,7 +1,7 @@
 {
   "root": {
     "background-color": {
-      "resolvesTo": "show-more.color.background.default",
+      "resolvesTo": "show-more.color.background",
       "fallback": "#f7f7f7",
       "design": {
         "property": "background.fill",
@@ -17,7 +17,7 @@
       }
     },
     "padding": {
-      "resolvesTo": "show-more.size.padding.default",
+      "resolvesTo": "show-more.size.padding",
       "fallback": "24px",
       "design": {
         "property": "spacing.padding",
@@ -25,7 +25,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "show-more.size.radius.default",
+      "resolvesTo": "show-more.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -133,7 +133,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "show-more.color.border.default",
+      "resolvesTo": "show-more.color.border",
       "fallback": "#b8b8b8",
       "design": {
         "property": "border.color",

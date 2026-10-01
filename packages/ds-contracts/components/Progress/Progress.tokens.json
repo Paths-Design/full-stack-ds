@@ -1,5 +1,5 @@
 {
-  "progress.color.text.default": {
+  "progress.color.text": {
     "resolvesTo": "semantic.color.foreground.secondary",
     "fallback": "#474647",
     "layer": "semantic"

@@ -4,7 +4,7 @@
     "fallback": "4px",
     "layer": "semantic"
   },
-  "divider.color.default": {
+  "divider.color": {
     "resolvesTo": "semantic.color.border.light",
     "fallback": "#b8b8b8",
     "layer": "semantic"

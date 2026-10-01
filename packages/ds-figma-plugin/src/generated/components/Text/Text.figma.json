@@ -492,7 +492,8 @@
       "cssProperty": "font-family",
       "selectorKey": "--code",
       "part": null,
-      "defaultValue": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
+      "defaultValue": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "resolvesTo": "semantic.typography.semanticFamily.mono",
       "editableTargets": [
         "web"
       ],
@@ -1001,7 +1002,7 @@
         "declarations": {
           "--fsds-text-size-md": "var(--fsds-core-typography-ramp-3, 0.875rem)",
           "font-size": "var(--fsds-text-size-md, 1rem)",
-          "font-family": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
+          "font-family": "var(--fsds-semantic-typography-semantic-family-mono, \"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace)",
           "line-height": "var(--fsds-text-typography-line-height-body, 1.5)"
         }
       },

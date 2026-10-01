@@ -47,9 +47,9 @@ export const listTokenScopes = {
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "list.color.border.default": {
-      name: "list.color.border.default",
-      cssVar: "--fsds-list-color-border-default",
+    "list.color.border": {
+      name: "list.color.border",
+      cssVar: "--fsds-list-color-border",
       ref: "semantic.color.border.subtle",
       fallback: "#d0d0d0",
     },

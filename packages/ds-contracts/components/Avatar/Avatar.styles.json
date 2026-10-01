@@ -31,7 +31,7 @@
       ]
     },
     "border-radius": {
-      "resolvesTo": "avatar.size.radius.default",
+      "resolvesTo": "avatar.size.radius",
       "fallback": "9999px",
       "design": {
         "property": "shape.radius",
@@ -39,7 +39,7 @@
       }
     },
     "background-color": {
-      "resolvesTo": "avatar.color.background.default",
+      "resolvesTo": "avatar.color.background",
       "fallback": "#f7f7f7",
       "design": {
         "property": "background.fill",
@@ -55,7 +55,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "avatar.color.border.default",
+      "resolvesTo": "avatar.color.border",
       "fallback": "#b8b8b8",
       "design": {
         "property": "border.color",
@@ -73,7 +73,7 @@
       }
     },
     "border-width": {
-      "resolvesTo": "avatar.size.border.default",
+      "resolvesTo": "avatar.size.border",
       "fallback": "1px",
       "design": {
         "property": "border.width",
@@ -81,7 +81,7 @@
       }
     },
     "width": {
-      "resolvesTo": "avatar.size.default",
+      "resolvesTo": "avatar.size",
       "fallback": "16px",
       "design": {
         "property": "sizing.width",
@@ -89,7 +89,7 @@
       }
     },
     "height": {
-      "resolvesTo": "avatar.size.default",
+      "resolvesTo": "avatar.size",
       "fallback": "16px",
       "design": {
         "property": "sizing.height",
@@ -130,7 +130,11 @@
       "literal": "cover",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "media.fit",
+        "slot": "avatar.design.image.media.fit"
+      }
     },
     "display": {
       "literal": "block",

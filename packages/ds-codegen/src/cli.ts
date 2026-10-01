@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { validateComponentTokenConsumption } from "./validation/component-token-consumption.js";
+import { validateComponentDesignPolicy } from "./validation/component-design-policy.js";
 import { validateBrandComponentOverrides } from "./validation/brand-component-overrides.js";
 /**
  * Contract-driven codegen CLI.
@@ -581,6 +582,7 @@ function main(): void {
         }),
         ...validateContractTokens(result.value),
         ...validateComponentTokenConsumption(result.value),
+        ...validateComponentDesignPolicy(result.value),
         ...brandComponents.flatMap(brand => brand.components[result.value.name] === undefined ? [] :
           validateBrandComponentOverrides(result.value.name, brand.components[result.value.name], result.value)
             .map(issue => ({ ...issue, message: `${brand.file}: ${issue.message}` }))),

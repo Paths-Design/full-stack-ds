@@ -40,8 +40,8 @@
     "layer": "semantic"
   },
   "nav-list.color.outline.focus": {
-    "resolvesTo": "semantic.color.border.accent",
-    "fallback": "#d92d2e",
+    "resolvesTo": "semantic.focus.ring.color",
+    "fallback": "#0566fe",
     "layer": "semantic"
   },
   "nav-list.size.padding.block": {
@@ -54,7 +54,7 @@
     "fallback": "8px",
     "layer": "core"
   },
-  "nav-list.size.radius.default": {
+  "nav-list.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"

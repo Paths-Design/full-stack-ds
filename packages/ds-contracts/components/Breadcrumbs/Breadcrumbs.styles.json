@@ -39,7 +39,7 @@
       }
     },
     "padding": {
-      "resolvesTo": "breadcrumbs.spacing.padding.default",
+      "resolvesTo": "breadcrumbs.spacing.padding",
       "fallback": "8px",
       "design": {
         "property": "spacing.padding",
@@ -58,7 +58,7 @@
   "focus": {
     "outline-color": {
       "resolvesTo": "breadcrumbs.color.focus",
-      "fallback": "#d92d2e",
+      "fallback": "#0566fe",
       "design": {
         "property": "focus.color",
         "slot": "breadcrumbs.design.focus.focus.color"
@@ -107,7 +107,7 @@
       ]
     },
     "gap": {
-      "resolvesTo": "breadcrumbs.spacing.gap.default",
+      "resolvesTo": "breadcrumbs.spacing.gap",
       "fallback": "8px",
       "design": {
         "property": "spacing.gap",

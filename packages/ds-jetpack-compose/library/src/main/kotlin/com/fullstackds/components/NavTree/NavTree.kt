@@ -55,7 +55,7 @@ fun NavTree(
     }
     val treeForeground = layeredSlot("nav-tree.color.foreground.default")?.toFsdsColor()
     val treeHeadingColor = layeredSlot("nav-tree.color.foreground.heading")?.toFsdsColor()
-    val treeRadius = layeredSlot("nav-tree.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val treeRadius = layeredSlot("nav-tree.size.radius")?.toFsdsDp() ?: 0.dp
     val treeGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val headingGap = layeredSlot("nav-tree.size.gap.heading")?.toFsdsDp() ?: treeGap
     val treeIndent = layeredSlot("nav-tree.size.indent")?.toFsdsDp() ?: 0.dp

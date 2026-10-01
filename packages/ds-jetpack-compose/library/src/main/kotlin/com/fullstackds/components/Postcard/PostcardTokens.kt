@@ -50,9 +50,9 @@ val postcardTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "postcard.size.radius.default" to ComponentTokenDefinition(
-            name = "postcard.size.radius.default",
-            cssVar = "--fsds-postcard-size-radius-default",
+        "postcard.size.radius" to ComponentTokenDefinition(
+            name = "postcard.size.radius",
+            cssVar = "--fsds-postcard-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),

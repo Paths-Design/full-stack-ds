@@ -40,9 +40,9 @@ export const navTreeTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "nav-tree.size.radius.default": {
-      name: "nav-tree.size.radius.default",
-      cssVar: "--fsds-nav-tree-size-radius-default",
+    "nav-tree.size.radius": {
+      name: "nav-tree.size.radius",
+      cssVar: "--fsds-nav-tree-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },

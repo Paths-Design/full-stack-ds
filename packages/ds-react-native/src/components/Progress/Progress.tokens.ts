@@ -40,9 +40,9 @@ export const progressTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "progress.color.text.default": {
-      name: "progress.color.text.default",
-      cssVar: "--fsds-progress-color-text-default",
+    "progress.color.text": {
+      name: "progress.color.text",
+      cssVar: "--fsds-progress-color-text",
       ref: "semantic.color.foreground.secondary",
       fallback: "#474647",
     },

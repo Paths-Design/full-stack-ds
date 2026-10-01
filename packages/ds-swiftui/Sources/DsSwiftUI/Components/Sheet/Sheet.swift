@@ -20,6 +20,7 @@ enum SheetTokens {
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
+            "sheet.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-sheet-color-background", name: "sheet.color.background", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
             "sheet.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-sheet-color-border", name: "sheet.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
             "sheet.border.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-sheet-border-radius", name: "sheet.border.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
@@ -79,6 +80,7 @@ public struct Sheet<Content: View, Header: View, Title: View, Description: View,
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
+    private var background: Color { colorSlot("color.background") ?? .accentColor }
     private var borderColor: Color { colorSlot("color.border") ?? .clear }
     private var radius: CGFloat { pxSlot("radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
@@ -98,6 +100,7 @@ public struct Sheet<Content: View, Header: View, Title: View, Description: View,
         }
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
+            .background(background)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
     }
 

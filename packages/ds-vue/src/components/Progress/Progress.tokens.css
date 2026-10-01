@@ -1,7 +1,7 @@
 @layer components {
 /* @generated:start tokens */
 .progress {
-  --fsds-progress-color-text-default: var(--fsds-semantic-color-foreground-secondary, #474647);
+  --fsds-progress-color-text: var(--fsds-semantic-color-foreground-secondary, #474647);
   --fsds-progress-spacing-gap: var(--fsds-core-spacing-size-02, 2px);
   --fsds-progress-motion-duration-indeterminate: var(--fsds-core-motion-duration-extra-long1, 1500ms);
   --fsds-progress-color-track-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);

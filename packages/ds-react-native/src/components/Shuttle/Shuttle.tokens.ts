@@ -41,21 +41,15 @@ export const shuttleTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "shuttle.color.background.default": {
-      name: "shuttle.color.background.default",
-      cssVar: "--fsds-shuttle-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
-    },
-    "shuttle.color.border.default": {
-      name: "shuttle.color.border.default",
-      cssVar: "--fsds-shuttle-color-border-default",
+    "shuttle.color.border": {
+      name: "shuttle.color.border",
+      cssVar: "--fsds-shuttle-color-border",
       ref: "semantic.color.border.light",
       fallback: "#b8b8b8",
     },
-    "shuttle.size.radius.default": {
-      name: "shuttle.size.radius.default",
-      cssVar: "--fsds-shuttle-size-radius-default",
+    "shuttle.size.radius": {
+      name: "shuttle.size.radius",
+      cssVar: "--fsds-shuttle-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },

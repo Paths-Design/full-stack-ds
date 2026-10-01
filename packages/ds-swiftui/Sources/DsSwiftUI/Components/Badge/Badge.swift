@@ -33,34 +33,34 @@ enum BadgeTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", ref: "semantic.glyph.size.medium.extent", fallback: .string("16px")),
             "badge.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-background-default", name: "badge.color.background.default", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "badge.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-foreground-primary", name: "badge.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "badge.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border-default", name: "badge.color.border.default", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "badge.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border", name: "badge.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "badge.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-size-radius", name: "badge.size.radius", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
             "badge.size.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-size-border", name: "badge.size.border", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
         ],
         "variant_info": [
             "badge.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-background-default", name: "badge.color.background.default", ref: "semantic.color.background.info.subtle", fallback: .adaptive(light: "#95dafb", dark: "#000a69")),
             "badge.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-foreground-primary", name: "badge.color.foreground.primary", ref: "semantic.color.foreground.on.info.subtle", fallback: .adaptive(light: "#013ab0", dark: "#00a9fb")),
-            "badge.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border-default", name: "badge.color.border.default", ref: "semantic.color.border.info", fallback: .adaptive(light: "#034fd6", dark: "#0566fe")),
+            "badge.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border", name: "badge.color.border", ref: "semantic.color.border.info", fallback: .adaptive(light: "#034fd6", dark: "#0566fe")),
         ],
         "variant_success": [
             "badge.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-background-default", name: "badge.color.background.default", ref: "semantic.color.background.success.subtle", fallback: .adaptive(light: "#b3dba7", dark: "#0b2200")),
             "badge.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-foreground-primary", name: "badge.color.foreground.primary", ref: "semantic.color.foreground.on.success.subtle", fallback: .adaptive(light: "#2c4f09", dark: "#6eb157")),
-            "badge.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border-default", name: "badge.color.border.default", ref: "semantic.color.border.success", fallback: .adaptive(light: "#3a6614", dark: "#497f21")),
+            "badge.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border", name: "badge.color.border", ref: "semantic.color.border.success", fallback: .adaptive(light: "#3a6614", dark: "#497f21")),
         ],
         "variant_warning": [
             "badge.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-background-default", name: "badge.color.background.default", ref: "semantic.color.background.warning.subtle", fallback: .adaptive(light: "#fdc67f", dark: "#341400")),
             "badge.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-foreground-primary", name: "badge.color.foreground.primary", ref: "semantic.color.foreground.on.warning.subtle", fallback: .adaptive(light: "#6c3a00", dark: "#ec8802")),
-            "badge.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border-default", name: "badge.color.border.default", ref: "semantic.color.border.warning", fallback: .adaptive(light: "#8b4b00", dark: "#ae5d00")),
+            "badge.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border", name: "badge.color.border", ref: "semantic.color.border.warning", fallback: .adaptive(light: "#8b4b00", dark: "#ae5d00")),
         ],
         "variant_danger": [
             "badge.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-background-default", name: "badge.color.background.default", ref: "semantic.color.background.danger.subtle", fallback: .adaptive(light: "#fac2c2", dark: "#440000")),
             "badge.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-foreground-primary", name: "badge.color.foreground.primary", ref: "semantic.color.foreground.on.danger.subtle", fallback: .adaptive(light: "#900909", dark: "#ee8181")),
-            "badge.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border-default", name: "badge.color.border.default", ref: "semantic.color.border.danger", fallback: .adaptive(light: "#b31b1b", dark: "#d92d2e")),
+            "badge.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border", name: "badge.color.border", ref: "semantic.color.border.danger", fallback: .adaptive(light: "#b31b1b", dark: "#d92d2e")),
         ],
         "variant_counter": [
             "badge.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-background-default", name: "badge.color.background.default", ref: "semantic.color.background.danger.strong", fallback: .adaptive(light: "#b31b1b", dark: "#d92d2e")),
             "badge.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-foreground-primary", name: "badge.color.foreground.primary", ref: "semantic.color.foreground.inverse", fallback: .adaptive(light: "#fafafa", dark: "#fafafa")),
-            "badge.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border-default", name: "badge.color.border.default", ref: "semantic.color.background.danger.strong", fallback: .adaptive(light: "#b31b1b", dark: "#d92d2e")),
+            "badge.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border", name: "badge.color.border", ref: "semantic.color.background.danger.strong", fallback: .adaptive(light: "#b31b1b", dark: "#d92d2e")),
         ],
         "variant_tag": [
             "badge.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-size-radius", name: "badge.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
@@ -112,7 +112,7 @@ public struct Badge<IconRegion: View, Content: View>: View {
 
     private var background: Color { colorSlot("color.background.default") ?? .accentColor }
     private var foreground: Color { colorSlot("color.foreground.primary") ?? .primary }
-    private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
+    private var borderColor: Color { colorSlot("color.border") ?? .clear }
     private var borderWidth: CGFloat { pxSlot("size.border") ?? 0 }
     private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }

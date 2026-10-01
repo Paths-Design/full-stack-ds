@@ -94,7 +94,7 @@ The loss is localizable: React Native's style projection has no `overflow` mappi
 
 ### Percentage radius is retained as data, then lost in Swift conversion
 
-Using the existing public component-token address `card.size.radius.default`:
+Using the existing public component-token address `card.size.radius`:
 
 | Override | Chromium computed radius | RN style-construction value | Swift parsed radius | Swift consumer radius |
 | --- | --- | --- | --- | --- |

@@ -50,37 +50,37 @@ val dialogTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "dialog.color.background.default" to ComponentTokenDefinition(
-            name = "dialog.color.background.default",
-            cssVar = "--fsds-dialog-color-background-default",
+        "dialog.color.background" to ComponentTokenDefinition(
+            name = "dialog.color.background",
+            cssVar = "--fsds-dialog-color-background",
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
-        "dialog.color.border.default" to ComponentTokenDefinition(
-            name = "dialog.color.border.default",
-            cssVar = "--fsds-dialog-color-border-default",
+        "dialog.color.border" to ComponentTokenDefinition(
+            name = "dialog.color.border",
+            cssVar = "--fsds-dialog-color-border",
             ref = "semantic.color.border.subtle",
             fallback = "#d0d0d0",
         ),
-        "dialog.size.radius.default" to ComponentTokenDefinition(
-            name = "dialog.size.radius.default",
-            cssVar = "--fsds-dialog-size-radius-default",
+        "dialog.size.radius" to ComponentTokenDefinition(
+            name = "dialog.size.radius",
+            cssVar = "--fsds-dialog-size-radius",
             ref = "semantic.shape.radius.large",
             fallback = "16px",
         ),
     ),
     "part_backdrop" to mapOf(
-        "dialog.color.background.default" to ComponentTokenDefinition(
-            name = "dialog.color.background.default",
-            cssVar = "--fsds-dialog-color-background-default",
+        "dialog.color.background" to ComponentTokenDefinition(
+            name = "dialog.color.background",
+            cssVar = "--fsds-dialog-color-background",
             ref = "semantic.color.overlay.scrim",
             fallback = "#00000066",
         ),
     ),
     "hover" to mapOf(
-        "dialog.color.background.default" to ComponentTokenDefinition(
-            name = "dialog.color.background.default",
-            cssVar = "--fsds-dialog-color-background-default",
+        "dialog.color.background" to ComponentTokenDefinition(
+            name = "dialog.color.background",
+            cssVar = "--fsds-dialog-color-background",
             ref = "semantic.color.background.hover",
             fallback = "#f7f7f7",
         ),

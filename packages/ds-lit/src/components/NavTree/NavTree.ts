@@ -78,14 +78,14 @@ export class NavTreeElement extends LitElement {
       --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-nav-tree-color-connector: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
       --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
       --fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
       --fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
       --fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
       --fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-nav-tree-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
       --fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
       --fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
@@ -131,7 +131,7 @@ export class NavTreeElement extends LitElement {
       text-decoration: none;
       padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-heading-link-motion-duration, 120ms);
     }
@@ -139,7 +139,7 @@ export class NavTreeElement extends LitElement {
     .nav-tree__headingLabel {
       padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
     }
 
     .nav-tree__list {
@@ -190,7 +190,7 @@ export class NavTreeElement extends LitElement {
       color: var(--fsds-nav-tree-design-condition-a5ce9422d04f-foreground-color, inherit);
       text-decoration: none;
       padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-condition-a5ce9422d04f-motion-duration, 120ms);
     }
@@ -201,8 +201,10 @@ export class NavTreeElement extends LitElement {
     }
 
     .nav-tree__item > *:focus-visible {
-      outline: 2px solid var(--fsds-nav-tree-color-outline-focus, #d92d2e);
-      outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, 1px);
+      outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
+      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-width: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-style: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .nav-tree__item > *[aria-current="page"] {
@@ -217,8 +219,10 @@ export class NavTreeElement extends LitElement {
     }
 
     .nav-tree__headingLink:focus-visible {
-      outline: 2px solid var(--fsds-nav-tree-color-outline-focus, #d92d2e);
-      outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, 1px);
+      outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
+      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
     }
   `;
@@ -330,14 +334,14 @@ export class NavTreeListElement extends LitElement {
       --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-nav-tree-color-connector: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
       --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
       --fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
       --fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
       --fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
       --fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-nav-tree-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
       --fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
       --fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
@@ -383,7 +387,7 @@ export class NavTreeListElement extends LitElement {
       text-decoration: none;
       padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-heading-link-motion-duration, 120ms);
     }
@@ -391,7 +395,7 @@ export class NavTreeListElement extends LitElement {
     .nav-tree__headingLabel {
       padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
     }
 
     .nav-tree__list {
@@ -442,7 +446,7 @@ export class NavTreeListElement extends LitElement {
       color: var(--fsds-nav-tree-design-condition-a5ce9422d04f-foreground-color, inherit);
       text-decoration: none;
       padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-condition-a5ce9422d04f-motion-duration, 120ms);
     }
@@ -453,8 +457,10 @@ export class NavTreeListElement extends LitElement {
     }
 
     .nav-tree__item > *:focus-visible {
-      outline: 2px solid var(--fsds-nav-tree-color-outline-focus, #d92d2e);
-      outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, 1px);
+      outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
+      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-width: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-style: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .nav-tree__item > *[aria-current="page"] {
@@ -469,8 +475,10 @@ export class NavTreeListElement extends LitElement {
     }
 
     .nav-tree__headingLink:focus-visible {
-      outline: 2px solid var(--fsds-nav-tree-color-outline-focus, #d92d2e);
-      outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, 1px);
+      outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
+      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
     }
   `;
@@ -540,14 +548,14 @@ export class NavTreeItemElement extends LitElement {
       --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-nav-tree-color-connector: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
       --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
       --fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
       --fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
       --fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
       --fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
-      --fsds-nav-tree-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
       --fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
       --fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
@@ -593,7 +601,7 @@ export class NavTreeItemElement extends LitElement {
       text-decoration: none;
       padding-block: var(--fsds-nav-tree-design-heading-link-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-tree-design-heading-link-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-heading-link-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-heading-link-motion-duration, 120ms);
     }
@@ -601,7 +609,7 @@ export class NavTreeItemElement extends LitElement {
     .nav-tree__headingLabel {
       padding-block: var(--fsds-nav-tree-design-heading-label-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
       padding-inline: var(--fsds-nav-tree-design-heading-label-spacing-padding-inline, var(--fsds-nav-tree-size-padding-inline, 8px));
-      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-heading-label-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
     }
 
     .nav-tree__list {
@@ -652,7 +660,7 @@ export class NavTreeItemElement extends LitElement {
       color: var(--fsds-nav-tree-design-condition-a5ce9422d04f-foreground-color, inherit);
       text-decoration: none;
       padding-block: var(--fsds-nav-tree-design-condition-a5ce9422d04f-spacing-padding-block, var(--fsds-nav-tree-size-padding-block, 2px));
-      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius-default, 6px));
+      border-radius: var(--fsds-nav-tree-design-condition-a5ce9422d04f-shape-radius, var(--fsds-nav-tree-size-radius, 6px));
       transition-property: background-color, color;
       transition-duration: var(--fsds-nav-tree-design-condition-a5ce9422d04f-motion-duration, 120ms);
     }
@@ -663,8 +671,10 @@ export class NavTreeItemElement extends LitElement {
     }
 
     .nav-tree__item > *:focus-visible {
-      outline: 2px solid var(--fsds-nav-tree-color-outline-focus, #d92d2e);
-      outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, 1px);
+      outline-offset: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
+      outline-color: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-width: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-style: var(--fsds-nav-tree-design-condition-62c009a6b895-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .nav-tree__item > *[aria-current="page"] {
@@ -679,8 +689,10 @@ export class NavTreeItemElement extends LitElement {
     }
 
     .nav-tree__headingLink:focus-visible {
-      outline: 2px solid var(--fsds-nav-tree-color-outline-focus, #d92d2e);
-      outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, 1px);
+      outline-offset: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-offset, var(--fsds-semantic-focus-ring-offset, 2px));
+      outline-color: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-color, var(--fsds-nav-tree-color-outline-focus, #0566fe));
+      outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
+      outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
     }
   `;

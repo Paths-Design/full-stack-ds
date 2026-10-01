@@ -35,7 +35,7 @@
       ]
     },
     "border-top-color": {
-      "resolvesTo": "divider.color.default",
+      "resolvesTo": "divider.color",
       "fallback": "#b8b8b8",
       "design": {
         "property": "border.top.color",
@@ -101,7 +101,7 @@
       ]
     },
     "border-left-color": {
-      "resolvesTo": "divider.color.default",
+      "resolvesTo": "divider.color",
       "fallback": "#b8b8b8"
     },
     "border-left-style": {

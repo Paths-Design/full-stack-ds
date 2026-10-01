@@ -133,7 +133,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "16px",
-      "resolvesTo": "details.size.padding.default",
+      "resolvesTo": "details.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -149,7 +149,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "6px",
-      "resolvesTo": "details.size.radius.default",
+      "resolvesTo": "details.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -181,7 +181,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "2px",
-      "resolvesTo": "details.spacing.gap.default",
+      "resolvesTo": "details.spacing.gap",
       "editableTargets": [
         "web"
       ],
@@ -307,7 +307,7 @@
       "selectorKey": "summary",
       "part": "summary",
       "defaultValue": "2px",
-      "resolvesTo": "details.spacing.gap.default",
+      "resolvesTo": "details.spacing.gap",
       "editableTargets": [
         "web"
       ],
@@ -323,7 +323,7 @@
       "selectorKey": "summary",
       "part": "summary",
       "defaultValue": "16px",
-      "resolvesTo": "details.size.padding.default",
+      "resolvesTo": "details.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -386,7 +386,7 @@
       "cssProperty": "outline-color",
       "selectorKey": ".details__summary:focus-visible",
       "part": null,
-      "defaultValue": "#d92d2e",
+      "defaultValue": "#0566fe",
       "resolvesTo": "details.focus.ring.color",
       "editableTargets": [
         "web"
@@ -419,6 +419,7 @@
       "selectorKey": ".details__summary:focus-visible",
       "part": null,
       "defaultValue": "solid",
+      "resolvesTo": "semantic.focus.ring.style",
       "editableTargets": [
         "web"
       ],
@@ -434,7 +435,7 @@
       "selectorKey": "summaryContent",
       "part": "summaryContent",
       "defaultValue": "2px",
-      "resolvesTo": "details.spacing.gap.default",
+      "resolvesTo": "details.spacing.gap",
       "editableTargets": [
         "web"
       ],
@@ -498,7 +499,7 @@
       "selectorKey": "content",
       "part": "content",
       "defaultValue": "16px",
-      "resolvesTo": "details.size.padding.default",
+      "resolvesTo": "details.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -673,18 +674,18 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-details-size-padding-default": "var(--fsds-core-spacing-size-06, 16px)",
-          "--fsds-details-size-radius-default": "var(--fsds-semantic-shape-control-radius-default, 6px)",
+          "--fsds-details-size-padding": "var(--fsds-core-spacing-size-06, 16px)",
+          "--fsds-details-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
           "--fsds-details-size-icon": "var(--fsds-core-spacing-size-05, 12px)",
           "--fsds-details-color-background-default": "var(--fsds-semantic-color-background-primary, #ffffff)",
           "--fsds-details-color-background-hover": "var(--fsds-semantic-color-background-hover, #f7f7f7)",
           "--fsds-details-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
           "--fsds-details-color-border-default": "var(--fsds-semantic-color-border-primary, #a0a0a1)",
           "--fsds-details-color-border-hover": "var(--fsds-semantic-color-border-bold, #888889)",
-          "--fsds-details-focus-ring-width": "var(--fsds-semantic-shape-control-border-focus-width, 2px)",
-          "--fsds-details-focus-ring-color": "var(--fsds-semantic-color-border-accent, #d92d2e)",
-          "--fsds-details-focus-ring-offset": "var(--fsds-core-spacing-size-02, 2px)",
-          "--fsds-details-spacing-gap-default": "var(--fsds-core-spacing-size-02, 2px)",
+          "--fsds-details-focus-ring-width": "var(--fsds-semantic-focus-ring-width, 2px)",
+          "--fsds-details-focus-ring-color": "var(--fsds-semantic-focus-ring-color, #0566fe)",
+          "--fsds-details-focus-ring-offset": "var(--fsds-semantic-focus-ring-offset, 2px)",
+          "--fsds-details-spacing-gap": "var(--fsds-core-spacing-size-02, 2px)",
           "--fsds-details-typography-line-height-body": "var(--fsds-semantic-typography-line-height-body, 1.5)",
           "--fsds-details-typography-font-weight-medium": "var(--fsds-semantic-typography-font-weight-medium, 500)",
           "--fsds-details-size-padding-compact": "var(--fsds-core-spacing-size-04, 8px)",
@@ -692,15 +693,15 @@
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
           "padding-inline-end": "var(--fsds-box-model-padding-inline-end)",
-          "gap": "var(--fsds-details-spacing-gap-default, 2px)",
+          "gap": "var(--fsds-details-spacing-gap, 2px)",
           "width": "var(--fsds-box-model-width)",
           "min-width": "var(--fsds-box-model-min-width)",
           "max-width": "var(--fsds-box-model-max-width)",
           "height": "var(--fsds-box-model-height)",
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
-          "padding": "var(--fsds-details-size-padding-default, 16px)",
-          "border-radius": "var(--fsds-details-size-radius-default, 6px)",
+          "padding": "var(--fsds-details-size-padding, 16px)",
+          "border-radius": "var(--fsds-details-size-radius, 6px)",
           "background-color": "var(--fsds-details-color-background-default, #ffffff)",
           "line-height": "var(--fsds-details-typography-line-height-body, 1.5)",
           "display": "block",
@@ -724,9 +725,9 @@
           "cursor": "pointer",
           "display": "flex",
           "align-items": "center",
-          "gap": "var(--fsds-details-spacing-gap-default, 2px)",
+          "gap": "var(--fsds-details-spacing-gap, 2px)",
           "list-style": "none",
-          "padding": "var(--fsds-details-size-padding-default, 16px)",
+          "padding": "var(--fsds-details-size-padding, 16px)",
           "color": "var(--fsds-details-color-foreground-primary, #141414)",
           "font-weight": "var(--fsds-details-typography-font-weight-medium, 500)"
         }
@@ -741,9 +742,9 @@
         "selector": ".details__summary:focus-visible:not([aria-disabled=\"true\"])",
         "declarations": {
           "outline-width": "var(--fsds-details-focus-ring-width, 2px)",
-          "outline-color": "var(--fsds-details-focus-ring-color, #d92d2e)",
+          "outline-color": "var(--fsds-details-focus-ring-color, #0566fe)",
           "outline-offset": "var(--fsds-details-focus-ring-offset, 2px)",
-          "outline-style": "solid"
+          "outline-style": "var(--fsds-semantic-focus-ring-style, solid)"
         }
       },
       {
@@ -751,7 +752,7 @@
         "declarations": {
           "display": "flex",
           "align-items": "center",
-          "gap": "var(--fsds-details-spacing-gap-default, 2px)",
+          "gap": "var(--fsds-details-spacing-gap, 2px)",
           "flex": "1 1 auto"
         }
       },
@@ -784,7 +785,7 @@
         "selector": ".details__content",
         "declarations": {
           "display": "block",
-          "padding": "var(--fsds-details-size-padding-default, 16px)",
+          "padding": "var(--fsds-details-size-padding, 16px)",
           "color": "var(--fsds-details-color-foreground-primary, #141414)",
           "line-height": "var(--fsds-details-typography-line-height-body, 1.5)"
         }
@@ -792,14 +793,14 @@
       {
         "selector": ".details--compact",
         "declarations": {
-          "--fsds-details-size-padding-default": "var(--fsds-details-size-padding-compact, 8px)",
+          "--fsds-details-size-padding": "var(--fsds-details-size-padding-compact, 8px)",
           "--fsds-details-typography-line-height-body": "var(--fsds-core-spacing-size-06, 16px)"
         }
       },
       {
         "selector": ".details--inline",
         "declarations": {
-          "--fsds-details-size-padding-default": "var(--fsds-core-spacing-size-07, 24px)",
+          "--fsds-details-size-padding": "var(--fsds-core-spacing-size-07, 24px)",
           "--fsds-details-color-background-default": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "--fsds-details-color-border-default": "var(--fsds-semantic-color-border-subtle, #d0d0d0)"
         }

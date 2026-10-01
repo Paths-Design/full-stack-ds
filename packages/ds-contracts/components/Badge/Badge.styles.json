@@ -63,7 +63,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "badge.color.border.default",
+      "resolvesTo": "badge.color.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
@@ -280,7 +280,7 @@
       "resolvesTo": "semantic.color.foreground.on.info.subtle",
       "fallback": "#013ab0"
     },
-    "badge.color.border.default": {
+    "badge.color.border": {
       "resolvesTo": "semantic.color.border.info",
       "fallback": "#034fd6"
     }
@@ -298,7 +298,7 @@
       "resolvesTo": "semantic.color.foreground.on.success.subtle",
       "fallback": "#2c4f09"
     },
-    "badge.color.border.default": {
+    "badge.color.border": {
       "resolvesTo": "semantic.color.border.success",
       "fallback": "#3a6614"
     }
@@ -316,7 +316,7 @@
       "resolvesTo": "semantic.color.foreground.on.warning.subtle",
       "fallback": "#6c3a00"
     },
-    "badge.color.border.default": {
+    "badge.color.border": {
       "resolvesTo": "semantic.color.border.warning",
       "fallback": "#8b4b00"
     }
@@ -334,7 +334,7 @@
       "resolvesTo": "semantic.color.foreground.on.danger.subtle",
       "fallback": "#900909"
     },
-    "badge.color.border.default": {
+    "badge.color.border": {
       "resolvesTo": "semantic.color.border.danger",
       "fallback": "#b31b1b"
     }
@@ -348,7 +348,7 @@
       "resolvesTo": "semantic.color.foreground.inverse",
       "fallback": "#fafafa"
     },
-    "badge.color.border.default": {
+    "badge.color.border": {
       "resolvesTo": "semantic.color.background.danger.strong",
       "fallback": "#b31b1b"
     }

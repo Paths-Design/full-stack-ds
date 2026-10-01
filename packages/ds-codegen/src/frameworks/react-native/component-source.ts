@@ -1,3 +1,4 @@
+import { matchesTokenRole } from "../token-role.js";
 import type {
   BindingExpression,
   ComponentInstanceIR,
@@ -1622,14 +1623,14 @@ function emitNativeToggleReturn(ir: ComponentIR): string[] {
   // (`color.background.default` / `.checked`, ToggleSwitch). A component that
   // declares no thumb slot renders the platform thumb color.
   const trackFalseSlot = declaredTokenSlotName(ir, [
-    "color.track.background.default",
+    "color.track.background",
     "color.background.default",
   ]);
   const trackTrueSlot = declaredTokenSlotName(ir, [
-    "color.track.background.default",
+    "color.track.background",
     "color.background.checked",
   ]);
-  const thumbSlot = declaredTokenSlotName(ir, ["color.thumb.background.default"]);
+  const thumbSlot = declaredTokenSlotName(ir, ["color.thumb.background"]);
   const trackFalse = trackFalseSlot
     ? tokenStringAccess(ir, "root", trackFalseSlot)
     : undefined;
@@ -3554,7 +3555,7 @@ function declaredTokenSlotName(
     scope.values.map((value) => value.name),
   );
   for (const suffix of suffixes) {
-    const match = declared.find((name) => name.endsWith(`.${suffix}`));
+    const match = declared.find((name) => matchesTokenRole(name, `.${suffix}`));
     if (match) return match;
   }
   return undefined;

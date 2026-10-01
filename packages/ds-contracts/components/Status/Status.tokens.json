@@ -24,7 +24,7 @@
     "fallback": "4px",
     "layer": "semantic"
   },
-  "status.color.background.default": {
+  "status.color.background": {
     "resolvesTo": "semantic.color.background.secondary",
     "fallback": "#f7f7f7",
     "layer": "semantic"
@@ -34,12 +34,12 @@
     "fallback": "#474647",
     "layer": "semantic"
   },
-  "status.color.border.default": {
+  "status.color.border": {
     "resolvesTo": "semantic.color.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
   },
-  "status.size.radius.default": {
+  "status.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.pill",
     "fallback": "9999px",
     "layer": "semantic"
@@ -54,7 +54,7 @@
     "fallback": "12px",
     "layer": "semantic"
   },
-  "status.size.border.default": {
+  "status.size.border": {
     "resolvesTo": "semantic.shape.control.border.defaultWidth",
     "fallback": "1px",
     "layer": "semantic"

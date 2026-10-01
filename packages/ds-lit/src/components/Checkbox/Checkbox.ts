@@ -70,8 +70,8 @@ export class CheckboxElement extends LitElement {
 
 
     .checkbox {
-      --fsds-checkbox-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-checkbox-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
+      --fsds-checkbox-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --fsds-checkbox-color-border: var(--fsds-semantic-color-border-default, #a0a0a1);
       --fsds-checkbox-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
       --fsds-checkbox-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-checkbox-transition-duration: var(--fsds-core-motion-duration-short, 150ms);
@@ -79,23 +79,23 @@ export class CheckboxElement extends LitElement {
       --fsds-checkbox-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-checkbox-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
       --fsds-checkbox-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
-      --fsds-checkbox-color-mark-default: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
+      --fsds-checkbox-color-mark: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
 
       &:hover .checkbox__indicator {
-        --fsds-checkbox-color-border-default: var(--fsds-semantic-color-border-hover, #888889);
+        --fsds-checkbox-color-border: var(--fsds-semantic-color-border-hover, #888889);
       }
 
       &:has(.checkbox__input:checked) .checkbox__indicator {
-        --fsds-checkbox-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+        --fsds-checkbox-color-background: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
       }
 
       &:has(.checkbox__input:indeterminate) .checkbox__indicator {
-        --fsds-checkbox-color-background-default: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+        --fsds-checkbox-color-background: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
       }
 
       &:has(.checkbox__input:disabled) .checkbox__indicator {
-        --fsds-checkbox-color-background-default: var(--fsds-semantic-color-background-disabled, #d0d0d0);
-        --fsds-checkbox-color-mark-default: var(--fsds-semantic-color-foreground-disabled, #727272);
+        --fsds-checkbox-color-background: var(--fsds-semantic-color-background-disabled, #d0d0d0);
+        --fsds-checkbox-color-mark: var(--fsds-semantic-color-foreground-disabled, #727272);
       }
     }
 
@@ -126,19 +126,19 @@ export class CheckboxElement extends LitElement {
       &:has(.checkbox__input:checked) .checkbox__indicator::after {
         width: 5px;
         height: 9px;
-        border-style: solid;
-        border-width: 0 2px 2px 0;
+        border-style: var(--fsds-checkbox-design-condition-94add815057f-border-style, solid);
+        border-width: var(--fsds-checkbox-design-condition-94add815057f-border-width, 0 2px 2px 0);
         transform: translate(-50%, -65%) rotate(45deg);
-        opacity: 1;
+        opacity: var(--fsds-checkbox-design-condition-94add815057f-appearance-opacity, 1);
       }
 
       &:has(.checkbox__input:indeterminate) .checkbox__indicator::after {
         width: 8px;
         height: 2px;
-        border-width: 0;
-        background-color: var(--fsds-checkbox-color-mark-default, #ffffff);
+        border-width: var(--fsds-checkbox-design-condition-b54308f8dcd4-border-width, 0);
+        background-color: var(--fsds-checkbox-design-condition-b54308f8dcd4-background-fill, var(--fsds-checkbox-color-mark, #ffffff));
         transform: translate(-50%, -50%);
-        opacity: 1;
+        opacity: var(--fsds-checkbox-design-condition-b54308f8dcd4-appearance-opacity, 1);
       }
     }
 
@@ -160,8 +160,8 @@ export class CheckboxElement extends LitElement {
       width: 16px;
       height: 16px;
       border-radius: var(--fsds-checkbox-design-indicator-shape-radius, var(--fsds-checkbox-border-radius, 4px));
-      border-color: var(--fsds-checkbox-design-indicator-border-color, var(--fsds-checkbox-color-border-default, #a0a0a1));
-      background-color: var(--fsds-checkbox-design-indicator-background-fill, var(--fsds-checkbox-color-background-default, #ffffff));
+      border-color: var(--fsds-checkbox-design-indicator-border-color, var(--fsds-checkbox-color-border, #a0a0a1));
+      background-color: var(--fsds-checkbox-design-indicator-background-fill, var(--fsds-checkbox-color-background, #ffffff));
       border-style: var(--fsds-checkbox-design-indicator-border-style, solid);
       border-width: var(--fsds-checkbox-design-indicator-border-width, var(--fsds-checkbox-border-width, 1px));
       box-sizing: border-box;
@@ -173,9 +173,9 @@ export class CheckboxElement extends LitElement {
       position: absolute;
       top: 50%;
       left: 50%;
-      opacity: 0;
+      opacity: var(--fsds-checkbox-design-condition-c8a599f99e6e-appearance-opacity, 0);
       box-sizing: border-box;
-      border-color: var(--fsds-checkbox-color-mark-default, #ffffff);
+      border-color: var(--fsds-checkbox-design-condition-c8a599f99e6e-border-color, var(--fsds-checkbox-color-mark, #ffffff));
     }
     }
   `;

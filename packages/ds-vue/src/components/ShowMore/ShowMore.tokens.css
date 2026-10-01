@@ -1,12 +1,12 @@
 @layer components {
 /* @generated:start tokens */
 .show-more {
-  --fsds-show-more-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+  --fsds-show-more-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
   --fsds-show-more-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
   --fsds-show-more-color-foreground-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
-  --fsds-show-more-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
-  --fsds-show-more-size-padding-default: var(--fsds-core-spacing-size-07, 24px);
-  --fsds-show-more-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
+  --fsds-show-more-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+  --fsds-show-more-size-padding: var(--fsds-core-spacing-size-07, 24px);
+  --fsds-show-more-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
 }
 /* @generated:end */
 

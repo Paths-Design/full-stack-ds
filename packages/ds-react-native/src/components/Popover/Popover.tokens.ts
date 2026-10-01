@@ -46,15 +46,15 @@ export const popoverTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "popover.size.radius.default": {
-      name: "popover.size.radius.default",
-      cssVar: "--fsds-popover-size-radius-default",
+    "popover.size.radius": {
+      name: "popover.size.radius",
+      cssVar: "--fsds-popover-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },
-    "popover.color.border.default": {
-      name: "popover.color.border.default",
-      cssVar: "--fsds-popover-color-border-default",
+    "popover.color.border": {
+      name: "popover.color.border",
+      cssVar: "--fsds-popover-color-border",
       ref: "semantic.color.border.subtle",
       fallback: "#d0d0d0",
     },

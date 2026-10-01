@@ -72,12 +72,12 @@ export class CardElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -105,7 +105,7 @@ export class CardElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -113,10 +113,10 @@ export class CardElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -155,7 +155,7 @@ export class CardElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -164,13 +164,13 @@ export class CardElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -183,10 +183,10 @@ export class CardElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -194,7 +194,7 @@ export class CardElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -295,12 +295,12 @@ export class CardHeaderElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -328,7 +328,7 @@ export class CardHeaderElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -336,10 +336,10 @@ export class CardHeaderElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -378,7 +378,7 @@ export class CardHeaderElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -387,13 +387,13 @@ export class CardHeaderElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -406,10 +406,10 @@ export class CardHeaderElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -417,7 +417,7 @@ export class CardHeaderElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -502,12 +502,12 @@ export class CardMediaElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -535,7 +535,7 @@ export class CardMediaElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -543,10 +543,10 @@ export class CardMediaElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -585,7 +585,7 @@ export class CardMediaElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -594,13 +594,13 @@ export class CardMediaElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -613,10 +613,10 @@ export class CardMediaElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -624,7 +624,7 @@ export class CardMediaElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -709,12 +709,12 @@ export class CardContentElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -742,7 +742,7 @@ export class CardContentElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -750,10 +750,10 @@ export class CardContentElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -792,7 +792,7 @@ export class CardContentElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -801,13 +801,13 @@ export class CardContentElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -820,10 +820,10 @@ export class CardContentElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -831,7 +831,7 @@ export class CardContentElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -916,12 +916,12 @@ export class CardFooterElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -949,7 +949,7 @@ export class CardFooterElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -957,10 +957,10 @@ export class CardFooterElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -999,7 +999,7 @@ export class CardFooterElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1008,13 +1008,13 @@ export class CardFooterElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1027,10 +1027,10 @@ export class CardFooterElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1038,7 +1038,7 @@ export class CardFooterElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -1123,12 +1123,12 @@ export class CardActionsElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -1156,7 +1156,7 @@ export class CardActionsElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -1164,10 +1164,10 @@ export class CardActionsElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -1206,7 +1206,7 @@ export class CardActionsElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1215,13 +1215,13 @@ export class CardActionsElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1234,10 +1234,10 @@ export class CardActionsElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1245,7 +1245,7 @@ export class CardActionsElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -1330,12 +1330,12 @@ export class CardBadgeElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -1363,7 +1363,7 @@ export class CardBadgeElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -1371,10 +1371,10 @@ export class CardBadgeElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -1413,7 +1413,7 @@ export class CardBadgeElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1422,13 +1422,13 @@ export class CardBadgeElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1441,10 +1441,10 @@ export class CardBadgeElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1452,7 +1452,7 @@ export class CardBadgeElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -1537,12 +1537,12 @@ export class CardDescriptionElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -1570,7 +1570,7 @@ export class CardDescriptionElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -1578,10 +1578,10 @@ export class CardDescriptionElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -1620,7 +1620,7 @@ export class CardDescriptionElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1629,13 +1629,13 @@ export class CardDescriptionElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1648,10 +1648,10 @@ export class CardDescriptionElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1659,7 +1659,7 @@ export class CardDescriptionElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -1744,12 +1744,12 @@ export class CardLinkElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -1777,7 +1777,7 @@ export class CardLinkElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -1785,10 +1785,10 @@ export class CardLinkElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -1827,7 +1827,7 @@ export class CardLinkElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1836,13 +1836,13 @@ export class CardLinkElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -1855,10 +1855,10 @@ export class CardLinkElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1866,7 +1866,7 @@ export class CardLinkElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {
@@ -1951,12 +1951,12 @@ export class CardNoteElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-card-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-card-size-radius-default: var(--fsds-semantic-shape-radius-medium, 8px);
-      --fsds-card-size-gap-default: var(--fsds-core-spacing-size-03, 4px);
+      --fsds-card-size-radius: var(--fsds-semantic-shape-radius-medium, 8px);
+      --fsds-card-size-gap: var(--fsds-core-spacing-size-03, 4px);
       --fsds-card-typography-line-height-heading: var(--fsds-semantic-typography-line-height-heading, 1);
       --fsds-card-typography-line-height-normal: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-card-elevation-resting: var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a);
@@ -1984,7 +1984,7 @@ export class CardNoteElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-surface-size-padding-block, 16px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-surface-size-padding-inline, 16px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-surface-size-padding-inline, 16px));
-      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-root-spacing-gap, var(--fsds-card-size-gap, 4px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-surface-size-min-width, 64px));
       max-width: var(--fsds-box-model-max-width, none);
@@ -1992,10 +1992,10 @@ export class CardNoteElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
-      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding-default, 16px));
-      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
+      border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
       line-height: var(--fsds-card-design-root-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
       display: flex;
       flex-direction: column;
@@ -2034,7 +2034,7 @@ export class CardNoteElement extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-header-spacing-gap, var(--fsds-card-size-gap, 4px));
       line-height: var(--fsds-card-design-header-typography-line-height, var(--fsds-card-typography-line-height-heading, 1));
       color: var(--fsds-card-design-header-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -2043,13 +2043,13 @@ export class CardNoteElement extends LitElement {
       display: block;
       width: 100%;
       overflow: hidden;
-      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px));
+      border-radius: var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px));
     }
 
     .card__content {
       display: flex;
       flex-direction: column;
-      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-content-spacing-gap, var(--fsds-card-size-gap, 4px));
       flex: 1 1 auto;
       color: var(--fsds-card-design-content-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
     }
@@ -2062,10 +2062,10 @@ export class CardNoteElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap-default, 4px));
-      padding-top: var(--fsds-card-size-padding-default, 16px);
+      gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
+      padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -2073,7 +2073,7 @@ export class CardNoteElement extends LitElement {
     .card__actions {
       display: flex;
       align-items: center;
-      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap-default, 4px));
+      gap: var(--fsds-card-design-actions-spacing-gap, var(--fsds-card-size-gap, 4px));
     }
 
     .card__badge {

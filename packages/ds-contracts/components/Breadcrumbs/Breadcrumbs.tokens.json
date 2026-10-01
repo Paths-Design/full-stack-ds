@@ -29,19 +29,19 @@
     "fallback": "6px",
     "layer": "semantic"
   },
-  "breadcrumbs.spacing.gap.default": {
+  "breadcrumbs.spacing.gap": {
     "resolvesTo": "core.spacing.size.04",
     "fallback": "8px",
     "layer": "core"
   },
-  "breadcrumbs.spacing.padding.default": {
+  "breadcrumbs.spacing.padding": {
     "resolvesTo": "core.spacing.size.04",
     "fallback": "8px",
     "layer": "core"
   },
   "breadcrumbs.color.focus": {
-    "resolvesTo": "semantic.color.border.accent",
-    "fallback": "#d92d2e",
+    "resolvesTo": "semantic.focus.ring.color",
+    "fallback": "#0566fe",
     "layer": "semantic"
   }
 }

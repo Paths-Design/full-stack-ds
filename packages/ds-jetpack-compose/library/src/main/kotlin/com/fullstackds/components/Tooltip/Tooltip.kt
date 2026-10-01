@@ -80,9 +80,9 @@ fun Tooltip(
         val def = tooltipTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val panelBg = layeredSlot("tooltip.color.background.default")?.toFsdsColor()
-    val panelBorder = layeredSlot("tooltip.color.border.default")?.toFsdsColor()
-    val panelRadius = layeredSlot("tooltip.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val panelBg = layeredSlot("tooltip.color.background")?.toFsdsColor()
+    val panelBorder = layeredSlot("tooltip.color.border")?.toFsdsColor()
+    val panelRadius = layeredSlot("tooltip.size.radius")?.toFsdsDp() ?: 0.dp
     val panelGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
     val panelPadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
     val panelMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp

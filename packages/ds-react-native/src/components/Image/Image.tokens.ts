@@ -41,12 +41,6 @@ export const imageTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "image.color.background.default": {
-      name: "image.color.background.default",
-      cssVar: "--fsds-image-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
-    },
     "image.color.foreground.primary": {
       name: "image.color.foreground.primary",
       cssVar: "--fsds-image-color-foreground-primary",

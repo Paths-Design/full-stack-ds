@@ -1,10 +1,10 @@
 @layer components {
 /* @generated:start tokens */
 :root {
-  --fsds-dialog-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
-  --fsds-dialog-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
-  --fsds-dialog-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-  --fsds-dialog-size-radius-default: var(--fsds-semantic-shape-radius-large, 16px);
+  --fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+  --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+  --fsds-dialog-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+  --fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
   --fsds-dialog-size-sm-width: 400px;
   --fsds-dialog-size-sm-max-width: 90vw;
   --fsds-dialog-size-md-width: 500px;
@@ -16,7 +16,7 @@
   --fsds-dialog-size-full-width: 100vw;
   --fsds-dialog-size-full-height: 100vh;
   --fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
-  --fsds-dialog-elevation-default: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
+  --fsds-dialog-elevation: var(--fsds-semantic-elevation-surface-dialog, 0px 12px 16px #0000000f, 0px 25px 50px #00000026);
   --fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
   --fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
   --fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
@@ -26,19 +26,19 @@
 }
 
 .dialog__backdrop {
-  --fsds-dialog-color-background-default: var(--fsds-semantic-color-overlay-scrim, #00000066);
+  --fsds-dialog-color-background: var(--fsds-semantic-color-overlay-scrim, #00000066);
 }
 
 .dialog__body {
-  --fsds-dialog-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
+  --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-secondary, #474647);
 }
 
 .dialog__closeButton {
-  --fsds-dialog-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
+  --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-secondary, #474647);
 }
 
 .dialog__closeButton:hover {
-  --fsds-dialog-color-background-default: var(--fsds-semantic-color-background-hover, #f7f7f7);
+  --fsds-dialog-color-background: var(--fsds-semantic-color-background-hover, #f7f7f7);
 }
 /* @generated:end */
 

@@ -134,15 +134,15 @@ fun CodeBlock(
 ) {
     val fsdsTheme = LocalFsdsTheme.current
     fun layeredSlot(slotName: String): String? = codeBlockTokenScopes["root"]?.get(slotName)?.let { fsdsTheme.resolve(it) }
-    val containerColor = layeredSlot("code-block.color.background.default")?.toFsdsColor()
+    val containerColor = layeredSlot("code-block.color.background")?.toFsdsColor()
     val contentColor = layeredSlot("code-block.color.foreground.primary")?.toFsdsColor()
     val minHeight = layeredSlot("box-model.min-height")?.toFsdsDp() ?: 0.dp
-    val cornerRadius = layeredSlot("code-block.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val cornerRadius = layeredSlot("code-block.size.radius")?.toFsdsDp() ?: 0.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
     val paddingBlockEnd = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp
-    val fsdsFontSize = layeredSlot("code-block.size.fontSize.default")?.toFsdsSp()
+    val fsdsFontSize = layeredSlot("code-block.size.fontSize")?.toFsdsSp()
     val shape = RoundedCornerShape(cornerRadius)
     val chromeModifier = Modifier.heightIn(min = minHeight).clip(shape)
         .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)

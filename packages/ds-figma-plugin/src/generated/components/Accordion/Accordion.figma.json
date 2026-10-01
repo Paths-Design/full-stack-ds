@@ -431,7 +431,7 @@
       "cssProperty": "outline-color",
       "selectorKey": ".accordion__trigger:focus-visible",
       "part": null,
-      "defaultValue": "#d92d2e",
+      "defaultValue": "#0566fe",
       "resolvesTo": "accordion.focus.color",
       "editableTargets": [
         "web"
@@ -447,7 +447,7 @@
       "cssProperty": "outline-offset",
       "selectorKey": ".accordion__trigger:focus-visible",
       "part": null,
-      "defaultValue": "1px",
+      "defaultValue": "2px",
       "resolvesTo": "accordion.focus.offset",
       "editableTargets": [
         "web"
@@ -464,6 +464,7 @@
       "selectorKey": ".accordion__trigger:focus-visible",
       "part": null,
       "defaultValue": "solid",
+      "resolvesTo": "semantic.focus.ring.style",
       "editableTargets": [
         "web"
       ],
@@ -745,9 +746,9 @@
           "--fsds-accordion-text-size-content": "var(--fsds-semantic-typography-body-03, 14px)",
           "--fsds-accordion-text-line-height-content": "var(--fsds-semantic-typography-line-height-loose, 1.8)",
           "--fsds-accordion-icon-size": "var(--fsds-core-spacing-size-04, 8px)",
-          "--fsds-accordion-focus-width": "var(--fsds-semantic-shape-control-border-focus-width, 2px)",
-          "--fsds-accordion-focus-color": "var(--fsds-semantic-color-border-accent, #d92d2e)",
-          "--fsds-accordion-focus-offset": "var(--fsds-core-spacing-size-01, 1px)",
+          "--fsds-accordion-focus-width": "var(--fsds-semantic-focus-ring-width, 2px)",
+          "--fsds-accordion-focus-color": "var(--fsds-semantic-focus-ring-color, #0566fe)",
+          "--fsds-accordion-focus-offset": "var(--fsds-semantic-focus-ring-offset, 2px)",
           "--fsds-accordion-opacity-disabled": "var(--fsds-semantic-interaction-disabled-opacity, 0.5)",
           "--fsds-accordion-color-text-hover": "var(--fsds-semantic-interaction-text-hover, #474647)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
@@ -815,9 +816,9 @@
         "selector": ".accordion__trigger:focus-visible:not([aria-disabled=\"true\"])",
         "declarations": {
           "outline-width": "var(--fsds-accordion-focus-width, 2px)",
-          "outline-color": "var(--fsds-accordion-focus-color, #d92d2e)",
-          "outline-offset": "var(--fsds-accordion-focus-offset, 1px)",
-          "outline-style": "solid"
+          "outline-color": "var(--fsds-accordion-focus-color, #0566fe)",
+          "outline-offset": "var(--fsds-accordion-focus-offset, 2px)",
+          "outline-style": "var(--fsds-semantic-focus-ring-style, solid)"
         }
       },
       {

@@ -52,15 +52,9 @@ export const blockquoteTokenScopes = {
       ref: "semantic.color.foreground.secondary",
       fallback: "#474647",
     },
-    "blockquote.color.background.default": {
-      name: "blockquote.color.background.default",
-      cssVar: "--fsds-blockquote-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
-    },
-    "blockquote.color.border.default": {
-      name: "blockquote.color.border.default",
-      cssVar: "--fsds-blockquote-color-border-default",
+    "blockquote.color.border": {
+      name: "blockquote.color.border",
+      cssVar: "--fsds-blockquote-color-border",
       ref: "semantic.color.border.accent",
       fallback: "#d92d2e",
     },
@@ -70,15 +64,15 @@ export const blockquoteTokenScopes = {
       ref: "semantic.typography.font.weight.medium",
       fallback: "500",
     },
-    "blockquote.size.padding.default": {
-      name: "blockquote.size.padding.default",
-      cssVar: "--fsds-blockquote-size-padding-default",
+    "blockquote.size.padding": {
+      name: "blockquote.size.padding",
+      cssVar: "--fsds-blockquote-size-padding",
       ref: "core.spacing.size.05",
       fallback: 12,
     },
-    "blockquote.size.radius.default": {
-      name: "blockquote.size.radius.default",
-      cssVar: "--fsds-blockquote-size-radius-default",
+    "blockquote.size.radius": {
+      name: "blockquote.size.radius",
+      cssVar: "--fsds-blockquote-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },
@@ -108,25 +102,25 @@ export const blockquoteTokenScopes = {
     },
   },
   "variant_default": {
-    "blockquote.color.background.default": {
-      name: "blockquote.color.background.default",
-      cssVar: "--fsds-blockquote-color-background-default",
+    "blockquote.color.background": {
+      name: "blockquote.color.background",
+      cssVar: "--fsds-blockquote-color-background",
       ref: "semantic.color.background.secondary",
       fallback: "#f7f7f7",
     },
   },
   "variant_bordered": {
-    "blockquote.color.background.default": {
-      name: "blockquote.color.background.default",
-      cssVar: "--fsds-blockquote-color-background-default",
+    "blockquote.color.background": {
+      name: "blockquote.color.background",
+      cssVar: "--fsds-blockquote-color-background",
       ref: "semantic.color.background.primary",
       fallback: "#ffffff",
     },
   },
   "variant_highlighted": {
-    "blockquote.color.background.default": {
-      name: "blockquote.color.background.default",
-      cssVar: "--fsds-blockquote-color-background-default",
+    "blockquote.color.background": {
+      name: "blockquote.color.background",
+      cssVar: "--fsds-blockquote-color-background",
       ref: "semantic.color.background.accentSubtle",
       fallback: "#95dafb",
     },

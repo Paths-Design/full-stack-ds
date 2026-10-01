@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest';
 import type { ComponentContract } from './contract.js';
 import { buildComponentIR, computeCssBlocks } from './ir.js';
 import { emitCss, emitTokensCss } from './css.js';
-import { buildDesignBindings } from './design-properties.js';
+import { buildDesignBindings, missingDesignBindings } from './design-properties.js';
+import { listComponentContracts } from './contracts-fs.js';
 
 function card(): ComponentContract {
   const dir = resolve(__dirname, '../../ds-contracts/components/Card');
@@ -15,6 +16,26 @@ function card(): ComponentContract {
 }
 
 describe('component design property bindings', () => {
+  it('requires common paint bindings while leaving intrinsic sizing, layout and native-only styling opt-in', () => {
+    const styles: ComponentContract['styles'] = { root: {
+      color: { literal: '#123456' },
+      width: { literal: '100%' },
+      height: { resolvesTo: 'semantic.glyph.size.small.extent', fallback: '12px' },
+      'flex-direction': { literal: 'column' },
+      'font-size': { literal: '14px', platforms: ['ios'] },
+      gap: { literal: '8px', design: { property: 'spacing.gap', slot: 'test.design.root.spacing.gap' } },
+    } };
+    expect(missingDesignBindings({ styles })).toEqual(['/styles/root/color', '/styles/root/height']);
+  });
+  it('keeps common design binding coverage complete throughout the authored corpus', () => {
+    const corpus = listComponentContracts(resolve(__dirname, '../../ds-contracts'));
+    expect(corpus.length).toBeGreaterThan(0);
+    const missing = corpus.flatMap(entry => {
+      const styles = JSON.parse(readFileSync(entry.absPath.replace('.contract.json', '.styles.json'), 'utf8'));
+      return missingDesignBindings({ styles }).map(pointer => `${entry.name}${pointer}`);
+    });
+    expect(missing).toEqual([]);
+  });
   it('keeps an override unset while rendering the authored fallback and publishing its consumer', () => {
     const ir = buildComponentIR(card());
     expect(ir.designBindings[0]).toMatchObject({ property: 'border.width', slot: 'card.design.root.border.width', selectorKey: 'root', valueType: 'dimension', defaultValue: '1px' });
@@ -23,8 +44,8 @@ describe('component design property bindings', () => {
   });
   it('retains semantic and literal fallback when an independent media radius is unset', () => {
     const c = card();
-    c.styles = { media: { 'border-radius': { resolvesTo: 'card.size.radius.default', fallback: '8px', design: { property: 'shape.radius', slot: 'card.design.media.shape.radius' } } } };
-    expect(emitCss(buildComponentIR(c))).toContain('var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius-default, 8px))');
+    c.styles = { media: { 'border-radius': { resolvesTo: 'card.size.radius', fallback: '8px', design: { property: 'shape.radius', slot: 'card.design.media.shape.radius' } } } };
+    expect(emitCss(buildComponentIR(c))).toContain('var(--fsds-card-design-media-shape-radius, var(--fsds-card-size-radius, 8px))');
     expect(buildDesignBindings(c)[0].part).toBe('media');
   });
   it('rejects mismatched property identities and foreign component slots', () => {

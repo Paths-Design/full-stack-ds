@@ -2345,16 +2345,15 @@ function isCompoundPartComposer(ir: ComponentIR): boolean {
  * Token slot-name suffixes the emitters know how to apply, and the chrome
  * they drive. This is the corpus-wide token naming vocabulary — the
  * SwiftUI analog of the primitive emitter's axis table. Alternatives exist
- * because slot naming is not uniform across the corpus (Button authors
- * `*.size.radius`, Card `*.size.radius.default`; foreground is `.default`
- * on Button but `.primary` on Card).
+ * because rest paint can be a neutral slot or a default member of a state
+ * family; foreground may also distinguish primary from secondary emphasis.
  */
 export const SLOT_SUFFIX_ALTERNATIVES = {
-  background: ["color.background.default", "color.bg.default", "color.bg"],
-  foreground: ["color.foreground.default", "color.foreground.primary", "color.text.default", "color.fg"],
+  background: ["color.background", "color.background.default", "color.bg.default", "color.bg"],
+  foreground: ["color.foreground", "color.foreground.default", "color.foreground.primary", "color.text.default", "color.fg"],
   borderColor: ["color.border.default", "color.border"],
-  borderWidth: ["size.border", "size.border.default"],
-  radius: ["size.radius", "size.radius.default", "radius"],
+  borderWidth: ["size.border"],
+  radius: ["size.radius", "radius"],
   blockPadding: ["padding-block-start"],
   inlinePadding: ["padding-inline-start"],
   gap: ["box-model.gap"],

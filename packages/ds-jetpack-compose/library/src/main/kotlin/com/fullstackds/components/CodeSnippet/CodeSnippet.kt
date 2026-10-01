@@ -34,15 +34,15 @@ fun CodeSnippet(
         }
         return null
     }
-    val containerColor = layeredSlot("code-snippet.color.background.default")?.toFsdsColor()
+    val containerColor = layeredSlot("code-snippet.color.background")?.toFsdsColor()
     val contentColor = layeredSlot("code-snippet.color.foreground.primary")?.toFsdsColor()
-    val cornerRadius = layeredSlot("code-snippet.size.radius.default")?.toFsdsDp() ?: 0.dp
+    val cornerRadius = layeredSlot("code-snippet.size.radius")?.toFsdsDp() ?: 0.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
     val paddingBlockEnd = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp
     val minHeight = layeredSlot("box-model.min-height")?.toFsdsDp()
-    val fsdsFontSize = layeredSlot("code-snippet.size.fontSize.default")?.toFsdsSp()
+    val fsdsFontSize = layeredSlot("code-snippet.size.fontSize")?.toFsdsSp()
 
     val shape = RoundedCornerShape(cornerRadius)
     val chromeModifier = Modifier

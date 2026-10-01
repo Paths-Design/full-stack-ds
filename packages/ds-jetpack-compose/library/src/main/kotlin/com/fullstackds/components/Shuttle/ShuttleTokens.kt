@@ -45,9 +45,9 @@ val shuttleTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
-        "shuttle.color.background.default" to ComponentTokenDefinition(
-            name = "shuttle.color.background.default",
-            cssVar = "--fsds-shuttle-color-background-default",
+        "shuttle.color.background" to ComponentTokenDefinition(
+            name = "shuttle.color.background",
+            cssVar = "--fsds-shuttle-color-background",
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
@@ -57,15 +57,15 @@ val shuttleTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
-        "shuttle.color.border.default" to ComponentTokenDefinition(
-            name = "shuttle.color.border.default",
-            cssVar = "--fsds-shuttle-color-border-default",
+        "shuttle.color.border" to ComponentTokenDefinition(
+            name = "shuttle.color.border",
+            cssVar = "--fsds-shuttle-color-border",
             ref = "semantic.color.border.light",
             fallback = "#b8b8b8",
         ),
-        "shuttle.size.radius.default" to ComponentTokenDefinition(
-            name = "shuttle.size.radius.default",
-            cssVar = "--fsds-shuttle-size-radius-default",
+        "shuttle.size.radius" to ComponentTokenDefinition(
+            name = "shuttle.size.radius",
+            cssVar = "--fsds-shuttle-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),

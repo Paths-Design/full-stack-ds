@@ -35,7 +35,7 @@
       ]
     },
     "background-color": {
-      "resolvesTo": "switch.color.track.background.default",
+      "resolvesTo": "switch.color.track.background",
       "fallback": "#d0d0d0",
       "design": {
         "property": "background.fill",
@@ -43,7 +43,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "switch.color.track.border.default",
+      "resolvesTo": "switch.color.track.border",
       "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
@@ -135,7 +135,7 @@
       ]
     },
     "background-color": {
-      "resolvesTo": "switch.color.thumb.background.default",
+      "resolvesTo": "switch.color.thumb.background",
       "fallback": "#ffffff",
       "design": {
         "property": "background.fill",
@@ -143,7 +143,7 @@
       }
     },
     "box-shadow": {
-      "resolvesTo": "switch.color.thumb.shadow.default",
+      "resolvesTo": "switch.color.thumb.shadow",
       "fallback": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
       "design": {
         "property": "elevation.shadow",
@@ -282,7 +282,7 @@
     }
   },
   ".switch:has(.switch__input:checked) .switch__track": {
-    "switch.color.track.background.default": {
+    "switch.color.track.background": {
       "resolvesTo": "semantic.color.foreground.accent",
       "fallback": "#d92d2e"
     }
@@ -292,13 +292,13 @@
       "resolvesTo": "switch.size.md.thumb.translate.on",
       "fallback": "24px"
     },
-    "switch.color.thumb.background.default": {
+    "switch.color.thumb.background": {
       "resolvesTo": "semantic.color.foreground.on.brand",
       "fallback": "#ffffff"
     }
   },
   ".switch:has(.switch__input:disabled) .switch__track": {
-    "switch.color.track.background.default": {
+    "switch.color.track.background": {
       "resolvesTo": "semantic.color.background.disabled",
       "fallback": "#d0d0d0"
     }
@@ -528,19 +528,35 @@
   ".switch:has(.switch__input:focus-visible) .switch__track": {
     "outline-width": {
       "resolvesTo": "switch.focus.ring.width",
-      "fallback": "2px"
+      "fallback": "2px",
+      "design": {
+        "property": "focus.width",
+        "slot": "switch.design.condition-c9aff20d4aa9.focus.width"
+      }
     },
     "outline-color": {
       "resolvesTo": "switch.focus.ring.color",
-      "fallback": "#0566fe"
+      "fallback": "#0566fe",
+      "design": {
+        "property": "focus.color",
+        "slot": "switch.design.condition-c9aff20d4aa9.focus.color"
+      }
     },
     "outline-style": {
       "resolvesTo": "switch.focus.ring.style",
-      "fallback": "solid"
+      "fallback": "solid",
+      "design": {
+        "property": "focus.style",
+        "slot": "switch.design.condition-c9aff20d4aa9.focus.style"
+      }
     },
     "outline-offset": {
       "resolvesTo": "switch.focus.ring.offset",
-      "fallback": "2px"
+      "fallback": "2px",
+      "design": {
+        "property": "focus.offset",
+        "slot": "switch.design.condition-c9aff20d4aa9.focus.offset"
+      }
     }
   }
 }

@@ -73,7 +73,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#f7f7f7",
-      "resolvesTo": "blockquote.color.background.default",
+      "resolvesTo": "blockquote.color.background",
       "editableTargets": [
         "web"
       ],
@@ -89,7 +89,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#d92d2e",
-      "resolvesTo": "blockquote.color.border.default",
+      "resolvesTo": "blockquote.color.border",
       "editableTargets": [
         "web"
       ],
@@ -135,7 +135,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "6px",
-      "resolvesTo": "blockquote.size.radius.default",
+      "resolvesTo": "blockquote.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -151,7 +151,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "12px",
-      "resolvesTo": "blockquote.size.padding.default",
+      "resolvesTo": "blockquote.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -246,7 +246,7 @@
       "selectorKey": "--bordered",
       "part": null,
       "defaultValue": "#d92d2e",
-      "resolvesTo": "blockquote.color.border.default",
+      "resolvesTo": "blockquote.color.border",
       "editableTargets": [
         "web"
       ],
@@ -262,7 +262,7 @@
       "selectorKey": "--bordered",
       "part": null,
       "defaultValue": "12px",
-      "resolvesTo": "blockquote.size.padding.default",
+      "resolvesTo": "blockquote.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -294,7 +294,7 @@
       "selectorKey": "--sm",
       "part": null,
       "defaultValue": "12px",
-      "resolvesTo": "blockquote.size.padding.default",
+      "resolvesTo": "blockquote.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -326,7 +326,7 @@
       "selectorKey": "--md",
       "part": null,
       "defaultValue": "12px",
-      "resolvesTo": "blockquote.size.padding.default",
+      "resolvesTo": "blockquote.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -358,7 +358,7 @@
       "selectorKey": "--lg",
       "part": null,
       "defaultValue": "12px",
-      "resolvesTo": "blockquote.size.padding.default",
+      "resolvesTo": "blockquote.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -429,14 +429,14 @@
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
           "--fsds-blockquote-color-foreground-primary": "var(--fsds-semantic-color-foreground-secondary, #474647)",
-          "--fsds-blockquote-color-background-default": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
-          "--fsds-blockquote-color-border-default": "var(--fsds-semantic-color-border-accent, #d92d2e)",
+          "--fsds-blockquote-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
+          "--fsds-blockquote-color-border": "var(--fsds-semantic-color-border-accent, #d92d2e)",
           "--fsds-blockquote-typography-font-style": "var(--fsds-semantic-typography-font-style-italic, italic)",
           "--fsds-blockquote-typography-font-weight": "var(--fsds-semantic-typography-font-weight-medium, 500)",
-          "--fsds-blockquote-size-padding-default": "var(--fsds-core-spacing-size-05, 12px)",
+          "--fsds-blockquote-size-padding": "var(--fsds-core-spacing-size-05, 12px)",
           "--fsds-blockquote-size-padding-sm": "var(--fsds-core-spacing-size-04, 8px)",
           "--fsds-blockquote-size-padding-lg": "var(--fsds-core-spacing-size-07, 24px)",
-          "--fsds-blockquote-size-radius-default": "var(--fsds-semantic-shape-control-radius-default, 6px)",
+          "--fsds-blockquote-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
           "--fsds-blockquote-size-border-accent": "var(--fsds-core-spacing-size-03, 4px)",
           "--fsds-blockquote-size-font-size-sm": "var(--fsds-core-typography-ramp-3, 0.875rem)",
           "--fsds-blockquote-size-font-size-md": "var(--fsds-core-typography-ramp-4, 1rem)",
@@ -453,12 +453,12 @@
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
           "color": "var(--fsds-blockquote-color-foreground-primary, #474647)",
-          "background-color": "var(--fsds-blockquote-color-background-default, #f7f7f7)",
-          "border-color": "var(--fsds-blockquote-color-border-default, #d92d2e)",
+          "background-color": "var(--fsds-blockquote-color-background, #f7f7f7)",
+          "border-color": "var(--fsds-blockquote-color-border, #d92d2e)",
           "border-style": "solid",
           "border-width": "0",
-          "border-radius": "var(--fsds-blockquote-size-radius-default, 6px)",
-          "padding": "var(--fsds-blockquote-size-padding-default, 12px)",
+          "border-radius": "var(--fsds-blockquote-size-radius, 6px)",
+          "padding": "var(--fsds-blockquote-size-padding, 12px)",
           "font-size": "var(--fsds-blockquote-size-font-size-md, 1rem)",
           "font-style": "var(--fsds-blockquote-typography-font-style, italic)",
           "font-weight": "var(--fsds-blockquote-typography-font-weight, 500)",
@@ -468,53 +468,53 @@
       {
         "selector": ".blockquote--default",
         "declarations": {
-          "--fsds-blockquote-color-background-default": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
+          "--fsds-blockquote-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "border-width": "0"
         }
       },
       {
         "selector": ".blockquote--bordered",
         "declarations": {
-          "--fsds-blockquote-color-background-default": "var(--fsds-semantic-color-background-primary, #ffffff)",
-          "--fsds-blockquote-size-padding-default": "var(--fsds-core-spacing-size-05, 12px)",
+          "--fsds-blockquote-color-background": "var(--fsds-semantic-color-background-primary, #ffffff)",
+          "--fsds-blockquote-size-padding": "var(--fsds-core-spacing-size-05, 12px)",
           "border-inline-start-width": "var(--fsds-blockquote-size-border-accent, 4px)",
           "border-inline-start-style": "solid",
-          "border-inline-start-color": "var(--fsds-blockquote-color-border-default, #d92d2e)",
-          "padding-inline-start": "var(--fsds-blockquote-size-padding-default, 12px)"
+          "border-inline-start-color": "var(--fsds-blockquote-color-border, #d92d2e)",
+          "padding-inline-start": "var(--fsds-blockquote-size-padding, 12px)"
         }
       },
       {
         "selector": ".blockquote--highlighted",
         "declarations": {
-          "--fsds-blockquote-color-background-default": "var(--fsds-semantic-color-background-accent-subtle, #95dafb)",
+          "--fsds-blockquote-color-background": "var(--fsds-semantic-color-background-accent-subtle, #95dafb)",
           "--fsds-blockquote-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)"
         }
       },
       {
         "selector": ".blockquote--sm",
         "declarations": {
-          "--fsds-blockquote-size-padding-default": "var(--fsds-blockquote-size-padding-sm, 8px)",
+          "--fsds-blockquote-size-padding": "var(--fsds-blockquote-size-padding-sm, 8px)",
           "--fsds-blockquote-size-font-size-md": "var(--fsds-blockquote-size-font-size-sm, 0.875rem)",
           "font-size": "var(--fsds-blockquote-size-font-size-md, 1rem)",
-          "padding": "var(--fsds-blockquote-size-padding-default, 12px)"
+          "padding": "var(--fsds-blockquote-size-padding, 12px)"
         }
       },
       {
         "selector": ".blockquote--md",
         "declarations": {
-          "--fsds-blockquote-size-padding-default": "var(--fsds-core-spacing-size-05, 12px)",
+          "--fsds-blockquote-size-padding": "var(--fsds-core-spacing-size-05, 12px)",
           "--fsds-blockquote-size-font-size-md": "var(--fsds-core-typography-ramp-4, 1rem)",
           "font-size": "var(--fsds-blockquote-size-font-size-md, 1rem)",
-          "padding": "var(--fsds-blockquote-size-padding-default, 12px)"
+          "padding": "var(--fsds-blockquote-size-padding, 12px)"
         }
       },
       {
         "selector": ".blockquote--lg",
         "declarations": {
-          "--fsds-blockquote-size-padding-default": "var(--fsds-blockquote-size-padding-lg, 24px)",
+          "--fsds-blockquote-size-padding": "var(--fsds-blockquote-size-padding-lg, 24px)",
           "--fsds-blockquote-size-font-size-md": "var(--fsds-blockquote-size-font-size-lg, 1.125rem)",
           "font-size": "var(--fsds-blockquote-size-font-size-md, 1rem)",
-          "padding": "var(--fsds-blockquote-size-padding-default, 12px)"
+          "padding": "var(--fsds-blockquote-size-padding, 12px)"
         }
       }
     ],

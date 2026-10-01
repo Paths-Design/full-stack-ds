@@ -45,7 +45,7 @@ fun Image(
         val def = imageTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val mediaBackground = layeredSlot("image.color.background.default")?.toFsdsColor()
+    val mediaBackground = layeredSlot("image.color.background")?.toFsdsColor()
     val mediaForeground = layeredSlot("image.color.foreground.primary")?.toFsdsColor()
     val mediaRadius = when (radius) { ImageRadius.None -> layeredSlot("image.radius.none")?.toFsdsDp(); ImageRadius.Sm -> layeredSlot("image.radius.sm")?.toFsdsDp(); ImageRadius.Md -> layeredSlot("image.radius.md")?.toFsdsDp(); ImageRadius.Lg -> layeredSlot("image.radius.lg")?.toFsdsDp(); ImageRadius.Full -> layeredSlot("image.radius.full")?.toFsdsDp(); else -> null } ?: 0.dp
     val mediaGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp

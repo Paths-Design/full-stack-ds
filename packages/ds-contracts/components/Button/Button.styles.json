@@ -77,7 +77,7 @@
       }
     },
     "gap": {
-      "resolvesTo": "button.size.gap.default",
+      "resolvesTo": "button.size.gap",
       "fallback": "8px",
       "design": {
         "property": "spacing.gap",

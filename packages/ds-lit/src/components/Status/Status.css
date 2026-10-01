@@ -21,11 +21,11 @@
   box-sizing: border-box;
   white-space: nowrap;
   border-style: var(--fsds-status-design-root-border-style, solid);
-  background-color: var(--fsds-status-design-root-background-fill, var(--fsds-status-color-background-default, #f7f7f7));
+  background-color: var(--fsds-status-design-root-background-fill, var(--fsds-status-color-background, #f7f7f7));
   color: var(--fsds-status-design-root-foreground-color, var(--fsds-status-color-foreground-primary, #474647));
-  border-color: var(--fsds-status-design-root-border-color, var(--fsds-status-color-border-default, #d0d0d0));
-  border-width: var(--fsds-status-design-root-border-width, var(--fsds-status-size-border-default, 1px));
-  border-radius: var(--fsds-status-design-root-shape-radius, var(--fsds-status-size-radius-default, 9999px));
+  border-color: var(--fsds-status-design-root-border-color, var(--fsds-status-color-border, #d0d0d0));
+  border-width: var(--fsds-status-design-root-border-width, var(--fsds-status-size-border, 1px));
+  border-radius: var(--fsds-status-design-root-shape-radius, var(--fsds-status-size-radius, 9999px));
   font-size: var(--fsds-status-design-root-typography-size, var(--fsds-status-size-font-size, 12px));
   font-weight: var(--fsds-status-design-root-typography-weight, var(--fsds-status-text-weight, 500));
   line-height: var(--fsds-status-design-root-typography-line-height, var(--fsds-status-typography-line-height, 1));

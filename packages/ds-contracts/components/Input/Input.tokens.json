@@ -69,47 +69,47 @@
     "fallback": "#b8b8b8",
     "layer": "semantic"
   },
-  "input.size.height.default": {
+  "input.size.height": {
     "resolvesTo": "semantic.input.size.medium.min-height",
     "fallback": "32px",
     "layer": "semantic"
   },
-  "input.size.padding-block.default": {
+  "input.size.padding-block": {
     "resolvesTo": "semantic.input.size.medium.padding-block",
     "fallback": "4px",
     "layer": "semantic"
   },
-  "input.size.padding-inline.default": {
+  "input.size.padding-inline": {
     "resolvesTo": "semantic.input.size.medium.padding-inline",
     "fallback": "8px",
     "layer": "semantic"
   },
-  "input.size.radius.default": {
+  "input.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"
   },
-  "input.size.border.default": {
+  "input.size.border": {
     "resolvesTo": "semantic.shape.control.border.defaultWidth",
     "fallback": "1px",
     "layer": "semantic"
   },
-  "input.color.focus.default": {
+  "input.color.focus": {
     "resolvesTo": "semantic.color.border.focus",
     "fallback": "#0566fe",
     "layer": "semantic"
   },
-  "input.color.invalid.default": {
+  "input.color.invalid": {
     "resolvesTo": "semantic.color.border.danger",
     "fallback": "#b31b1b",
     "layer": "semantic"
   },
-  "input.typography.size.default": {
+  "input.typography.size": {
     "resolvesTo": "semantic.typography.body.02",
     "fallback": "1rem",
     "layer": "semantic"
   },
-  "input.typography.line-height.default": {
+  "input.typography.line-height": {
     "resolvesTo": "semantic.typography.line.height.body",
     "fallback": "1.5",
     "layer": "semantic"

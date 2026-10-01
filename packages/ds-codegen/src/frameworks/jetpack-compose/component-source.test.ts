@@ -83,7 +83,7 @@ describe("generateJetpackComposeComponentSource — static-content path", () => 
     expect(text).not.toContain(".clip(");
     // Status carries background + foreground: both resolved, no empty keys.
     const status = generateJetpackComposeComponentSource(irFor("Status"));
-    expect(status).toContain('layeredSlot("status.color.background.default")');
+    expect(status).toContain('layeredSlot("status.color.background")');
     expect(status).toContain('layeredSlot("status.color.foreground.primary")');
     expect(status).not.toContain('layeredSlot("")');
   });
@@ -163,7 +163,7 @@ describe("generateJetpackComposeComponentSource — passive-leaf families", () =
     expect(src).toContain("text: String,");
     expect(src).toContain("BasicText(");
     expect(src).toContain("text = text,");
-    expect(src).toContain('layeredSlot("code-snippet.size.fontSize.default")?.toFsdsSp()');
+    expect(src).toContain('layeredSlot("code-snippet.size.fontSize")?.toFsdsSp()');
     expect(src).toContain(
       "val fsdsTextStyle = TextStyle(",
     );
@@ -258,7 +258,7 @@ describe("generateJetpackComposeComponentSource — boolean-control class (FEAT-
     const src = generateJetpackComposeComponentSource(renamed);
     expect(src).toContain("fun RenamedControl(");
     expect(src).toContain("FsdsCheckbox(");
-    expect(src).toContain('["root"]?.get("checkbox.color.background.default")');
+    expect(src).toContain('["root"]?.get("checkbox.color.background")');
   });
 
   it("lowers the string value channel onto a foundation BasicTextField with input-part chrome (Input)", () => {
@@ -269,7 +269,7 @@ describe("generateJetpackComposeComponentSource — boolean-control class (FEAT-
     expect(src).toContain("val resolvedValue = value ?: uncontrolledValue");
     expect(src).toContain("BasicTextField(");
     expect(src).toContain('fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.color.bg.default"))?.toFsdsColor()');
-    expect(src).toContain('fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.typography.size.default"))?.toFsdsSp()');
+    expect(src).toContain('fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.typography.size"))?.toFsdsSp()');
     expect(src).not.toMatch(/import androidx\.compose\.material/);
     expect(src).not.toContain("input.opacity.disabled");
     expect(src.match(/fun Input\(([^)]*)\)/)![1]!.trim().startsWith("modifier: Modifier = Modifier,")).toBe(true);
@@ -292,7 +292,7 @@ describe("generateJetpackComposeComponentSource — bare-rule-leaf class (FEAT-C
     expect(src).toContain("DividerOrientation.Vertical -> FsdsRuleOrientation.Vertical");
     expect(src).toContain("decorative: Boolean = false,");
     expect(src).toContain("FsdsRuleStyle(");
-    expect(src).toContain('["root"]?.get("divider.color.default")');
+    expect(src).toContain('["root"]?.get("divider.color")');
     expect(src).toContain('["root"]?.get("divider.size.thickness")');
     // Named divergences: thickness/title string props are omitted v1.
     expect(src).not.toContain("thickness: String");
@@ -440,7 +440,7 @@ describe("generateJetpackComposeComponentSource — array-iterated list class (F
     expect(src).toContain("val next = resolvedValue.filter { it != item }");
     // The change-handler prop name comes from the contract channel.
     expect(src).toMatch(/\?\.invoke\(next\)/);
-    expect(src).toContain('layeredSlot("shuttle.color.background.default")');
+    expect(src).toContain('layeredSlot("shuttle.color.background")');
     expect(src).not.toMatch(/import androidx\.compose\.material/);
     expect(src.match(/fun Shuttle\(([^)]*)\)/)![1]!.trim().startsWith("modifier: Modifier = Modifier,")).toBe(true);
   });
@@ -484,8 +484,8 @@ describe("generateJetpackComposeComponentSource — count-iterated field group (
     expect(src).toContain("repeat(length) { index ->");
     expect(src).toContain("BasicTextField(");
     expect(src).toContain("resolvedValue.padEnd(length, ' ').toCharArray()");
-    expect(src).toContain('layeredSlot("otp.color.background.default")');
-    expect(src).toContain('layeredSlot("otp.size.radius.default")');
+    expect(src).toContain('layeredSlot("otp.color.background")');
+    expect(src).toContain('layeredSlot("otp.size.radius")');
     expect(src).not.toMatch(/import androidx\.compose\.material/);
     expect(src.match(/fun OTP\(([^)]*)\)/)![1]!.trim().startsWith("modifier: Modifier = Modifier,")).toBe(true);
   });
@@ -518,8 +518,8 @@ describe("generateJetpackComposeComponentSource — selection control (FEAT-COMP
     expect(src).toContain("open: Boolean? = null,");
     expect(src).toContain("Popup(onDismissRequest = {");
     expect(src).toContain("role = Role.RadioButton,");
-    expect(src).toContain('layeredSlot("select.color.background.default")');
-    expect(src).toContain('layeredSlot("select.size.radius.default")');
+    expect(src).toContain('layeredSlot("select.color.background")');
+    expect(src).toContain('layeredSlot("select.size.radius")');
     expect(src).not.toMatch(/import androidx\.compose\.material/);
     expect(src.match(/fun Select\(([^)]*)\)/)![1]!.trim().startsWith("modifier: Modifier = Modifier,")).toBe(true);
   });
@@ -688,20 +688,20 @@ describe("generateJetpackComposeComponentSource — date-grid surface (FEAT-COMP
     const source = generateJetpackComposeComponentSource(irFor("Calendar"));
     const tokens = generateJetpackComposeTokensFile(irFor("Calendar"));
     for (const slot of [
-      "calendar.color.background.default",
+      "calendar.color.background",
       "calendar.color.foreground.primary",
       "calendar.color.foreground.muted",
-      "calendar.color.border.default",
+      "calendar.color.border",
       "calendar.color.day.hover",
       "calendar.color.day.selected.background",
       "calendar.color.day.selected.foreground",
       "calendar.color.today.ring",
       "calendar.color.focus.ring",
       "calendar.focus.ring.width",
-      "calendar.size.padding.default",
+      "calendar.size.padding",
       "calendar.size.cell",
       "calendar.size.nav",
-      "calendar.size.radius.default",
+      "calendar.size.radius",
       "calendar.size.radius.day",
       "calendar.typography.caption.size",
       "calendar.typography.day.size",
@@ -719,7 +719,7 @@ describe("generateJetpackComposeComponentSource — date-grid surface (FEAT-COMP
 
   it("names the calendar slots it does not realize, so each divergence is a decision (Calendar)", () => {
     const tokens = generateJetpackComposeTokensFile(irFor("Calendar"));
-    for (const slot of ["calendar.elevation.default", "calendar.focus.ring.offset"]) {
+    for (const slot of ["calendar.elevation", "calendar.focus.ring.offset"]) {
       expect(tokens).not.toContain(`name = ${JSON.stringify(slot)}`);
     }
   });
@@ -736,8 +736,8 @@ describe("generateJetpackComposeComponentSource — centered surface (FEAT-COMPO
     expect(src).toContain("dismissOnBackPress = closeOnEscape,");
     expect(src).toContain("dismissOnClickOutside = closeOnBackdropClick,");
     expect(src).toContain("if (!resolvedOpen) return");
-    expect(src).toContain('layeredSlot("dialog.color.background.default")');
-    expect(src).toContain('layeredSlot("dialog.size.radius.default")');
+    expect(src).toContain('layeredSlot("dialog.color.background")');
+    expect(src).toContain('layeredSlot("dialog.size.radius")');
     expect(src).not.toMatch(/import androidx\.compose\.material/);
     expect(src.match(/fun Dialog\(([^)]*)\)/)![1]!.trim().startsWith("modifier: Modifier = Modifier,")).toBe(true);
   });
@@ -817,7 +817,7 @@ describe("generateJetpackComposeComponentSource — centered surface with a stri
     expect(src).not.toContain("panelMaxWidth");
     expect(src).not.toContain("CompositionLocalProvider");
     expect(src).not.toContain("import androidx.compose.ui.text.TextStyle");
-    expect(src).toContain('layeredSlot("dialog.color.background.default")');
+    expect(src).toContain('layeredSlot("dialog.color.background")');
   });
 });
 
@@ -855,7 +855,7 @@ describe("anchored surfaces (FEAT-COMPOSE-ANCHORED-SURFACES-01)", () => {
     expect(componentFile).toContain(".clickable { setOpen(!resolvedOpen) }");
     expect(componentFile).toContain("Popup(");
     expect(componentFile).toContain("offset = IntOffset(offsetX(placement, anchorWidth), offsetY(placement, anchorHeight)),");
-    expect(componentFile).toContain('layeredSlot("popover.color.border.default")');
+    expect(componentFile).toContain('layeredSlot("popover.color.border")');
     expect(componentFile).not.toMatch(/import androidx\.compose\.material/);
     // The surface path now emits a tokens file (definitions the parity gate requires).
     expect(tokensFile).toContain("ComponentTokenDefinition(");
@@ -868,6 +868,6 @@ describe("anchored surfaces (FEAT-COMPOSE-ANCHORED-SURFACES-01)", () => {
     expect(componentFile).toContain("val focused by interactionSource.collectIsFocusedAsState()");
     expect(componentFile).toContain("LaunchedEffect(hovered, focused) {");
     expect(componentFile).toContain(".hoverable(interactionSource = interactionSource)");
-    expect(componentFile).toContain('layeredSlot("tooltip.color.background.default")');
+    expect(componentFile).toContain('layeredSlot("tooltip.color.background")');
   });
 });

@@ -41,9 +41,9 @@ export const detailsTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "details.size.radius.default": {
-      name: "details.size.radius.default",
-      cssVar: "--fsds-details-size-radius-default",
+    "details.size.radius": {
+      name: "details.size.radius",
+      cssVar: "--fsds-details-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },

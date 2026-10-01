@@ -4,12 +4,12 @@
     "fallback": "4px",
     "layer": "semantic"
   },
-  "label.color.text.default": {
+  "label.color.text": {
     "resolvesTo": "semantic.color.foreground.primary",
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "label.typo.lineHeight.default": {
+  "label.typo.lineHeight": {
     "resolvesTo": "semantic.typography.line.height.tight",
     "fallback": "1.2",
     "layer": "semantic"

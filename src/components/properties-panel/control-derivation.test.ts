@@ -214,13 +214,13 @@ describe("resolveBoxModel", () => {
     console.log("Button box-model bindings:", JSON.stringify(byRole, null, 2));
   });
 
-  it("resolves Dialog's component-prefixed radius (dialog.size.radius.default)", () => {
+  it("resolves Dialog's component-prefixed radius (dialog.size.radius)", () => {
     const { tokens } = deriveControls(loadContract("Dialog"));
     const byRole = Object.fromEntries(
       resolveBoxModel(tokens).map((b) => [b.role, b.row.slot]),
     );
     expect(byRole["padding-top"]).toBe("box-model.padding-block-start");
-    expect(byRole["radius"]).toBe("dialog.size.radius.default");
+    expect(byRole["radius"]).toBe("dialog.size.radius");
     console.log("Dialog box-model bindings:", JSON.stringify(byRole, null, 2));
   });
 
@@ -569,7 +569,7 @@ describe("material surface projection", () => {
 // ---- Read-proof binding (FIX-EDITOR-CONTROL-BINDING-PROOF-01) -------------
 //
 // The A3 measured defect: Button authors BOTH `box-model.gap` (first in
-// sidecar order) and `button.size.gap.default`, and the committed Button.css
+// sidecar order) and `button.size.gap`, and the committed Button.css
 // reads ONLY the component-prefixed slot. Legacy first-match bound the editor
 // control to the unread slot — a knob that cannot move the rendered button.
 // These tests pin the fix: role binding prefers the slot the generated CSS
@@ -585,12 +585,12 @@ describe("markRowsRead", () => {
     const rows = [
       { slot: "box-model.gap", cssVar: "--fsds-box-model-gap", isColor: false },
       {
-        slot: "button.size.gap.default",
-        cssVar: "--fsds-button-size-gap-default",
+        slot: "button.size.gap",
+        cssVar: "--fsds-button-size-gap",
         isColor: false,
       },
     ];
-    const marked = markRowsRead(rows, ["--fsds-button-size-gap-default"]);
+    const marked = markRowsRead(rows, ["--fsds-button-size-gap"]);
     expect(marked[0].isRead).toBe(false);
     expect(marked[1].isRead).toBe(true);
     // No proof source → rows untouched (legacy callers keep old behavior).
@@ -609,10 +609,10 @@ describe("markRowsRead", () => {
           source: "primitive-default",
         },
       ],
-      readCssVars: ["--fsds-button-size-gap-default"],
+      readCssVars: ["--fsds-button-size-gap"],
     });
     const bySlot = new Map(marked.map((r) => [r.slot, r]));
-    expect(bySlot.get("button.size.gap.default")?.isRead).toBe(true);
+    expect(bySlot.get("button.size.gap")?.isRead).toBe(true);
     expect(bySlot.get("box-model.gap")?.isRead).toBe(false);
     expect(bySlot.get("box-model.margin-top")?.isRead).toBe(false);
   });
@@ -627,7 +627,7 @@ describe("resolveBoxModel — read-proof preference", () => {
   it("A3 pin: Button's gap role binds the slot the generated CSS reads, not the first name match", () => {
     // Ground truth from the committed CSS: the shadow pair is split.
     expect(buttonReads.has("--fsds-box-model-gap")).toBe(false);
-    expect(buttonReads.has("--fsds-button-size-gap-default")).toBe(true);
+    expect(buttonReads.has("--fsds-button-size-gap")).toBe(true);
     // And authored order puts the unread slot first — the trap.
     const gapSlots = buttonRows
       .filter((r) => /(^|\.)gap/.test(r.slot))
@@ -640,7 +640,7 @@ describe("resolveBoxModel — read-proof preference", () => {
     expect(
       gap?.row.slot,
       "Button gap control must bind the provably-read slot: box-model.gap is authored first but no Button.css rule reads it (dead knob)",
-    ).toBe("button.size.gap.default");
+    ).toBe("button.size.gap");
   });
 
   it("A4 mutation kill: legacy first-match (unmarked rows) binds the unread slot — the preference must exclude it", () => {

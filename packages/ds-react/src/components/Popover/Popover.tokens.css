@@ -1,12 +1,12 @@
 @layer components {
 /* @generated:start tokens */
 :root {
-  --fsds-popover-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
-  --fsds-popover-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
-  --fsds-popover-size-gap-default: var(--fsds-core-spacing-size-04, 8px);
+  --fsds-popover-size-padding: var(--fsds-core-spacing-size-06, 16px);
+  --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+  --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
   --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-  --fsds-popover-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-  --fsds-popover-elevation-default: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
+  --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+  --fsds-popover-elevation: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
   --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
 }
 /* @generated:end */

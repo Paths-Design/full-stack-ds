@@ -1,8 +1,8 @@
 @layer components {
 /* @generated:start tokens */
 .label {
-  --fsds-label-color-text-default: var(--fsds-semantic-color-foreground-primary, #141414);
-  --fsds-label-typo-line-height-default: var(--fsds-semantic-typography-line-height-tight, 1.2);
+  --fsds-label-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+  --fsds-label-typo-line-height: var(--fsds-semantic-typography-line-height-tight, 1.2);
 }
 /* @generated:end */
 

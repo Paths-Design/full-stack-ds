@@ -240,7 +240,11 @@
       "literal": "0.5",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "appearance.opacity",
+        "slot": "field.design.condition-65ec9a7bfb9a.appearance.opacity"
+      }
     }
   }
 }

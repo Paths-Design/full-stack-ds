@@ -45,27 +45,21 @@ export const statusTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "status.color.background.default": {
-      name: "status.color.background.default",
-      cssVar: "--fsds-status-color-background-default",
-      ref: "semantic.color.background.secondary",
-      fallback: "#f7f7f7",
-    },
     "status.color.foreground.primary": {
       name: "status.color.foreground.primary",
       cssVar: "--fsds-status-color-foreground-primary",
       ref: "semantic.color.foreground.secondary",
       fallback: "#474647",
     },
-    "status.color.border.default": {
-      name: "status.color.border.default",
-      cssVar: "--fsds-status-color-border-default",
+    "status.color.border": {
+      name: "status.color.border",
+      cssVar: "--fsds-status-color-border",
       ref: "semantic.color.border.subtle",
       fallback: "#d0d0d0",
     },
-    "status.size.radius.default": {
-      name: "status.size.radius.default",
-      cssVar: "--fsds-status-size-radius-default",
+    "status.size.radius": {
+      name: "status.size.radius",
+      cssVar: "--fsds-status-size-radius",
       ref: "semantic.shape.control.radius.pill",
       fallback: 9999,
     },
@@ -75,9 +69,9 @@ export const statusTokenScopes = {
       ref: "semantic.glyph.badge.size.md.fontSize",
       fallback: 12,
     },
-    "status.size.border.default": {
-      name: "status.size.border.default",
-      cssVar: "--fsds-status-size-border-default",
+    "status.size.border": {
+      name: "status.size.border",
+      cssVar: "--fsds-status-size-border",
       ref: "semantic.shape.control.border.defaultWidth",
       fallback: 1,
     },
@@ -89,9 +83,9 @@ export const statusTokenScopes = {
     },
   },
   "variant_info": {
-    "status.color.background.default": {
-      name: "status.color.background.default",
-      cssVar: "--fsds-status-color-background-default",
+    "status.color.background": {
+      name: "status.color.background",
+      cssVar: "--fsds-status-color-background",
       ref: "semantic.color.background.info.subtle",
       fallback: "#95dafb",
     },
@@ -101,17 +95,17 @@ export const statusTokenScopes = {
       ref: "semantic.color.foreground.on.info.subtle",
       fallback: "#013ab0",
     },
-    "status.color.border.default": {
-      name: "status.color.border.default",
-      cssVar: "--fsds-status-color-border-default",
+    "status.color.border": {
+      name: "status.color.border",
+      cssVar: "--fsds-status-color-border",
       ref: "semantic.color.border.info",
       fallback: "#034fd6",
     },
   },
   "variant_success": {
-    "status.color.background.default": {
-      name: "status.color.background.default",
-      cssVar: "--fsds-status-color-background-default",
+    "status.color.background": {
+      name: "status.color.background",
+      cssVar: "--fsds-status-color-background",
       ref: "semantic.color.background.success.subtle",
       fallback: "#b3dba7",
     },
@@ -121,17 +115,17 @@ export const statusTokenScopes = {
       ref: "semantic.color.foreground.on.success.subtle",
       fallback: "#2c4f09",
     },
-    "status.color.border.default": {
-      name: "status.color.border.default",
-      cssVar: "--fsds-status-color-border-default",
+    "status.color.border": {
+      name: "status.color.border",
+      cssVar: "--fsds-status-color-border",
       ref: "semantic.color.border.success",
       fallback: "#3a6614",
     },
   },
   "variant_warning": {
-    "status.color.background.default": {
-      name: "status.color.background.default",
-      cssVar: "--fsds-status-color-background-default",
+    "status.color.background": {
+      name: "status.color.background",
+      cssVar: "--fsds-status-color-background",
       ref: "semantic.color.background.warning.subtle",
       fallback: "#fdc67f",
     },
@@ -141,17 +135,17 @@ export const statusTokenScopes = {
       ref: "semantic.color.foreground.on.warning.subtle",
       fallback: "#6c3a00",
     },
-    "status.color.border.default": {
-      name: "status.color.border.default",
-      cssVar: "--fsds-status-color-border-default",
+    "status.color.border": {
+      name: "status.color.border",
+      cssVar: "--fsds-status-color-border",
       ref: "semantic.color.border.warning",
       fallback: "#8b4b00",
     },
   },
   "variant_danger": {
-    "status.color.background.default": {
-      name: "status.color.background.default",
-      cssVar: "--fsds-status-color-background-default",
+    "status.color.background": {
+      name: "status.color.background",
+      cssVar: "--fsds-status-color-background",
       ref: "semantic.color.background.danger.subtle",
       fallback: "#fac2c2",
     },
@@ -161,17 +155,17 @@ export const statusTokenScopes = {
       ref: "semantic.color.foreground.on.danger.subtle",
       fallback: "#900909",
     },
-    "status.color.border.default": {
-      name: "status.color.border.default",
-      cssVar: "--fsds-status-color-border-default",
+    "status.color.border": {
+      name: "status.color.border",
+      cssVar: "--fsds-status-color-border",
       ref: "semantic.color.border.danger",
       fallback: "#b31b1b",
     },
   },
   "variant_error": {
-    "status.color.background.default": {
-      name: "status.color.background.default",
-      cssVar: "--fsds-status-color-background-default",
+    "status.color.background": {
+      name: "status.color.background",
+      cssVar: "--fsds-status-color-background",
       ref: "semantic.color.background.danger.subtle",
       fallback: "#fac2c2",
     },
@@ -181,9 +175,9 @@ export const statusTokenScopes = {
       ref: "semantic.color.foreground.on.danger.subtle",
       fallback: "#900909",
     },
-    "status.color.border.default": {
-      name: "status.color.border.default",
-      cssVar: "--fsds-status-color-border-default",
+    "status.color.border": {
+      name: "status.color.border",
+      cssVar: "--fsds-status-color-border",
       ref: "semantic.color.border.danger",
       fallback: "#b31b1b",
     },

@@ -83,7 +83,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "nav-list.size.radius.default",
+      "resolvesTo": "nav-list.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -129,28 +129,30 @@
   },
   ".nav-list__item:focus-visible": {
     "outline-style": {
-      "literal": "solid",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "focus.style",
         "slot": "nav-list.design.condition-d48c60eed8cf.focus.style"
-      }
+      },
+      "resolvesTo": "semantic.focus.ring.style",
+      "fallback": "solid"
     },
     "outline-width": {
-      "literal": "2px",
       "platforms": [
         "web"
       ],
       "design": {
         "property": "focus.width",
         "slot": "nav-list.design.condition-d48c60eed8cf.focus.width"
-      }
+      },
+      "resolvesTo": "semantic.focus.ring.width",
+      "fallback": "2px"
     },
     "outline-color": {
       "resolvesTo": "nav-list.color.outline.focus",
-      "fallback": "#d92d2e",
+      "fallback": "#0566fe",
       "design": {
         "property": "focus.color",
         "slot": "nav-list.design.condition-d48c60eed8cf.focus.color"

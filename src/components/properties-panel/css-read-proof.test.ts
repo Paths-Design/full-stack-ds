@@ -8,12 +8,12 @@ describe("extractReadVars", () => {
   });
   it("captures var reads with and without fallbacks", () => {
     const css = `
-      .a { gap: var(--fsds-button-size-gap-default, 8px); }
+      .a { gap: var(--fsds-button-size-gap, 8px); }
       .b { color: var(--fsds-semantic-color-foreground-primary); }
     `;
     expect(extractReadVars(css)).toEqual(
       new Set([
-        "--fsds-button-size-gap-default",
+        "--fsds-button-size-gap",
         "--fsds-semantic-color-foreground-primary",
       ]),
     );
@@ -42,7 +42,7 @@ describe("readCssVarsFor — corpus ground truth", () => {
   it("Button reads its default gap and the shared box override", () => {
     const reads = readCssVarsFor("Button");
     expect(reads).not.toBeNull();
-    expect(reads!.has("--fsds-button-size-gap-default")).toBe(true);
+    expect(reads!.has("--fsds-button-size-gap")).toBe(true);
     expect(reads!.has("--fsds-box-model-gap")).toBe(true);
   });
 

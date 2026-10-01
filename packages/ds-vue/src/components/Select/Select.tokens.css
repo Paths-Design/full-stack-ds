@@ -1,18 +1,18 @@
 @layer components {
 /* @generated:start tokens */
 .select {
-  --fsds-select-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
-  --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
-  --fsds-select-color-border-default: var(--fsds-semantic-color-border-primary, #a0a0a1);
-  --fsds-select-color-placeholder-default: var(--fsds-semantic-color-foreground-secondary, #474647);
-  --fsds-select-size-padding-default: var(--fsds-core-spacing-size-03, 4px);
-  --fsds-select-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
-  --fsds-select-size-border-default: var(--fsds-semantic-shape-control-border-default-width, 1px);
+  --fsds-select-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+  --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+  --fsds-select-color-border: var(--fsds-semantic-color-border-primary, #a0a0a1);
+  --fsds-select-color-placeholder: var(--fsds-semantic-color-foreground-secondary, #474647);
+  --fsds-select-size-padding: var(--fsds-core-spacing-size-03, 4px);
+  --fsds-select-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+  --fsds-select-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
   --fsds-select-size-sm-height: var(--fsds-semantic-control-size-sm-height, 24px);
   --fsds-select-size-md-height: var(--fsds-semantic-control-size-md-height, 32px);
   --fsds-select-size-lg-height: var(--fsds-semantic-control-size-lg-height, 48px);
-  --fsds-select-font-size-default: var(--fsds-semantic-typography-body-02, 16px);
-  --fsds-select-font-line-height-default: var(--fsds-semantic-typography-line-height-body, 1.5);
+  --fsds-select-font-size: var(--fsds-semantic-typography-body-02, 16px);
+  --fsds-select-font-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
   --fsds-select-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
   --fsds-select-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
   --fsds-select-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
@@ -20,33 +20,33 @@
 }
 
 .select__trigger:focus-visible:not([aria-disabled="true"]) {
-  --fsds-select-color-border-default: var(--fsds-semantic-color-border-accent, #d92d2e);
+  --fsds-select-color-border: var(--fsds-semantic-color-border-accent, #d92d2e);
 }
 
 .select__trigger:hover:not([aria-disabled="true"]) {
-  --fsds-select-color-border-default: var(--fsds-semantic-color-border-bold, #888889);
-  --fsds-select-color-background-default: var(--fsds-semantic-color-background-hover, #f7f7f7);
-  --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-hover, #474647);
+  --fsds-select-color-border: var(--fsds-semantic-color-border-bold, #888889);
+  --fsds-select-color-background: var(--fsds-semantic-color-background-hover, #f7f7f7);
+  --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-hover, #474647);
 }
 
 .select--open .select__trigger {
-  --fsds-select-color-border-default: var(--fsds-semantic-color-border-accent, #d92d2e);
+  --fsds-select-color-border: var(--fsds-semantic-color-border-accent, #d92d2e);
 }
 
 .select--disabled .select__trigger {
-  --fsds-select-color-background-default: var(--fsds-semantic-color-background-disabled, #d0d0d0);
-  --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-disabled, #727272);
-  --fsds-select-color-border-default: var(--fsds-semantic-color-border-disabled, #b8b8b8);
+  --fsds-select-color-background: var(--fsds-semantic-color-background-disabled, #d0d0d0);
+  --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-disabled, #727272);
+  --fsds-select-color-border: var(--fsds-semantic-color-border-disabled, #b8b8b8);
 }
 
 .select__option:hover:not([aria-disabled="true"]) {
-  --fsds-select-color-background-default: var(--fsds-semantic-color-background-hover, #f7f7f7);
-  --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-hover, #474647);
+  --fsds-select-color-background: var(--fsds-semantic-color-background-hover, #f7f7f7);
+  --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-hover, #474647);
 }
 
 .select__option[aria-selected="true"] {
-  --fsds-select-color-background-default: var(--fsds-semantic-color-background-highlight, #f5a2a1);
-  --fsds-select-color-foreground-default: var(--fsds-semantic-color-foreground-primary, #141414);
+  --fsds-select-color-background: var(--fsds-semantic-color-background-highlight, #f5a2a1);
+  --fsds-select-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
 }
 /* @generated:end */
 

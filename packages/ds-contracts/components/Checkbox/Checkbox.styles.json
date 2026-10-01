@@ -20,7 +20,7 @@
     }
   },
   ".checkbox:hover .checkbox__indicator": {
-    "checkbox.color.border.default": {
+    "checkbox.color.border": {
       "resolvesTo": "semantic.color.border.hover",
       "fallback": "#888889"
     }
@@ -125,7 +125,7 @@
       }
     },
     "border-color": {
-      "resolvesTo": "checkbox.color.border.default",
+      "resolvesTo": "checkbox.color.border",
       "fallback": "#a0a0a1",
       "design": {
         "property": "border.color",
@@ -133,7 +133,7 @@
       }
     },
     "background-color": {
-      "resolvesTo": "checkbox.color.background.default",
+      "resolvesTo": "checkbox.color.background",
       "fallback": "#ffffff",
       "design": {
         "property": "background.fill",
@@ -174,7 +174,7 @@
     }
   },
   ".checkbox:has(.checkbox__input:checked) .checkbox__indicator": {
-    "checkbox.color.background.default": {
+    "checkbox.color.background": {
       "resolvesTo": "semantic.color.action.background.primary.default",
       "fallback": "#0566fe"
     }
@@ -242,7 +242,11 @@
       "literal": "0",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "appearance.opacity",
+        "slot": "checkbox.design.condition-c8a599f99e6e.appearance.opacity"
+      }
     },
     "box-sizing": {
       "literal": "border-box",
@@ -251,8 +255,12 @@
       ]
     },
     "border-color": {
-      "resolvesTo": "checkbox.color.mark.default",
-      "fallback": "#ffffff"
+      "resolvesTo": "checkbox.color.mark",
+      "fallback": "#ffffff",
+      "design": {
+        "property": "border.color",
+        "slot": "checkbox.design.condition-c8a599f99e6e.border.color"
+      }
     }
   },
   ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after": {
@@ -272,13 +280,21 @@
       "literal": "solid",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "border.style",
+        "slot": "checkbox.design.condition-94add815057f.border.style"
+      }
     },
     "border-width": {
       "literal": "0 2px 2px 0",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "border.width",
+        "slot": "checkbox.design.condition-94add815057f.border.width"
+      }
     },
     "transform": {
       "literal": "translate(-50%, -65%) rotate(45deg)",
@@ -290,11 +306,15 @@
       "literal": "1",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "appearance.opacity",
+        "slot": "checkbox.design.condition-94add815057f.appearance.opacity"
+      }
     }
   },
   ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator": {
-    "checkbox.color.background.default": {
+    "checkbox.color.background": {
       "resolvesTo": "semantic.color.action.background.primary.default",
       "fallback": "#0566fe"
     }
@@ -316,11 +336,19 @@
       "literal": "0",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "border.width",
+        "slot": "checkbox.design.condition-b54308f8dcd4.border.width"
+      }
     },
     "background-color": {
-      "resolvesTo": "checkbox.color.mark.default",
-      "fallback": "#ffffff"
+      "resolvesTo": "checkbox.color.mark",
+      "fallback": "#ffffff",
+      "design": {
+        "property": "background.fill",
+        "slot": "checkbox.design.condition-b54308f8dcd4.background.fill"
+      }
     },
     "transform": {
       "literal": "translate(-50%, -50%)",
@@ -332,15 +360,19 @@
       "literal": "1",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "appearance.opacity",
+        "slot": "checkbox.design.condition-b54308f8dcd4.appearance.opacity"
+      }
     }
   },
   ".checkbox:has(.checkbox__input:disabled) .checkbox__indicator": {
-    "checkbox.color.background.default": {
+    "checkbox.color.background": {
       "resolvesTo": "semantic.color.background.disabled",
       "fallback": "#d0d0d0"
     },
-    "checkbox.color.mark.default": {
+    "checkbox.color.mark": {
       "resolvesTo": "semantic.color.foreground.disabled",
       "fallback": "#727272"
     }

@@ -50,9 +50,9 @@ fun Input(
     val fieldBorder = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.color.border.default"))?.toFsdsColor()
     val fieldBorderDisabled = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.color.border.disabled"))?.toFsdsColor()
     val fieldText = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.color.text.default"))?.toFsdsColor()
-    val fieldBorderWidth = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.size.border.default"))?.toFsdsDp() ?: 1.dp
-    val fieldRadius = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.size.radius.default"))?.toFsdsDp() ?: 4.dp
-    val fieldFontSize = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.typography.size.default"))?.toFsdsSp()
+    val fieldBorderWidth = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.size.border"))?.toFsdsDp() ?: 1.dp
+    val fieldRadius = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.size.radius"))?.toFsdsDp() ?: 4.dp
+    val fieldFontSize = fsdsTheme.resolve(inputTokenScopes["root"]?.get("input.typography.size"))?.toFsdsSp()
     val fieldPadding = PaddingValues(start = fsdsTheme.resolve(inputTokenScopes["root"]?.get("box-model.padding-inline-start"))?.toFsdsDp() ?: 0.dp, end = fsdsTheme.resolve(inputTokenScopes["root"]?.get("box-model.padding-inline-end"))?.toFsdsDp() ?: 0.dp, top = fsdsTheme.resolve(inputTokenScopes["root"]?.get("box-model.padding-block-start"))?.toFsdsDp() ?: 0.dp, bottom = fsdsTheme.resolve(inputTokenScopes["root"]?.get("box-model.padding-block-end"))?.toFsdsDp() ?: 0.dp)
     val fieldMinWidth = fsdsTheme.resolve(inputTokenScopes["root"]?.get("box-model.min-width"))?.toFsdsDp() ?: 0.dp
     val fieldMinHeight = fsdsTheme.resolve(inputTokenScopes["root"]?.get("box-model.min-height"))?.toFsdsDp() ?: 0.dp

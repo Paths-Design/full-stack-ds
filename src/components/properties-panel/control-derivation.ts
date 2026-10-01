@@ -470,7 +470,7 @@ export function tokenOverridesToStyle(
 // The BoxModelEditor edits semantic roles (padding sides, gap, min/max width,
 // radius, border) but token SLOT NAMES vary per component: padding/gap/min-width
 // are conventionally `box-model.*`, while radius/border/width live under a
-// component-prefixed slot (`button.size.radius`, `dialog.size.radius.default`,
+// component-prefixed slot (`button.size.radius`, `dialog.size.radius`,
 // `button.size.border`, `dialog.size.md.width`). Rather than special-case
 // component names (which the repo's core invariant forbids), we DISCOVER the
 // slot for each role from the component's token map by matching slot-name
@@ -669,7 +669,7 @@ export function deriveBoxConstraints(bindings: BoxModelBinding[]): BoxConstraint
 //
 // The Fill section edits the component's primary surface color. As with the
 // box-model roles, the slot name varies per component (`button.color.background
-// .default`, `dialog.color.background.default`, …) so we DISCOVER the default
+// .default`, `dialog.color.background`, …) so we DISCOVER the default
 // background color token by pattern rather than hardcoding. Preference order:
 // an explicit "background.default" slot, then any "background" color slot, then
 // the first color-valued token. Returns null when the component has no color

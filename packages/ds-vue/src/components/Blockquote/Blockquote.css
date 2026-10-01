@@ -16,12 +16,12 @@
   min-height: var(--fsds-box-model-min-height, 0);
   max-height: var(--fsds-box-model-max-height, none);
   color: var(--fsds-blockquote-design-root-foreground-color, var(--fsds-blockquote-color-foreground-primary, #474647));
-  background-color: var(--fsds-blockquote-design-root-background-fill, var(--fsds-blockquote-color-background-default, #f7f7f7));
-  border-color: var(--fsds-blockquote-design-root-border-color, var(--fsds-blockquote-color-border-default, #d92d2e));
+  background-color: var(--fsds-blockquote-design-root-background-fill, var(--fsds-blockquote-color-background, #f7f7f7));
+  border-color: var(--fsds-blockquote-design-root-border-color, var(--fsds-blockquote-color-border, #d92d2e));
   border-style: var(--fsds-blockquote-design-root-border-style, solid);
   border-width: var(--fsds-blockquote-design-root-border-width, 0);
-  border-radius: var(--fsds-blockquote-design-root-shape-radius, var(--fsds-blockquote-size-radius-default, 6px));
-  padding: var(--fsds-blockquote-design-root-spacing-padding, var(--fsds-blockquote-size-padding-default, 12px));
+  border-radius: var(--fsds-blockquote-design-root-shape-radius, var(--fsds-blockquote-size-radius, 6px));
+  padding: var(--fsds-blockquote-design-root-spacing-padding, var(--fsds-blockquote-size-padding, 12px));
   font-size: var(--fsds-blockquote-design-root-typography-size, var(--fsds-blockquote-size-font-size-md, 1rem));
   font-style: var(--fsds-blockquote-design-root-typography-style, var(--fsds-blockquote-typography-font-style, italic));
   font-weight: var(--fsds-blockquote-design-root-typography-weight, var(--fsds-blockquote-typography-font-weight, 500));
@@ -35,23 +35,23 @@
 .blockquote--bordered {
   border-inline-start-width: var(--fsds-blockquote-design-condition-324ffc53428a-border-inline-start-width, var(--fsds-blockquote-size-border-accent, 4px));
   border-inline-start-style: solid;
-  border-inline-start-color: var(--fsds-blockquote-design-condition-324ffc53428a-border-inline-start-color, var(--fsds-blockquote-color-border-default, #d92d2e));
-  padding-inline-start: var(--fsds-blockquote-design-condition-324ffc53428a-spacing-padding-inline-start, var(--fsds-blockquote-size-padding-default, 12px));
+  border-inline-start-color: var(--fsds-blockquote-design-condition-324ffc53428a-border-inline-start-color, var(--fsds-blockquote-color-border, #d92d2e));
+  padding-inline-start: var(--fsds-blockquote-design-condition-324ffc53428a-spacing-padding-inline-start, var(--fsds-blockquote-size-padding, 12px));
 }
 
 .blockquote--sm {
   font-size: var(--fsds-blockquote-design-condition-24964d7ed3a7-typography-size, var(--fsds-blockquote-size-font-size-md, 1rem));
-  padding: var(--fsds-blockquote-design-condition-24964d7ed3a7-spacing-padding, var(--fsds-blockquote-size-padding-default, 12px));
+  padding: var(--fsds-blockquote-design-condition-24964d7ed3a7-spacing-padding, var(--fsds-blockquote-size-padding, 12px));
 }
 
 .blockquote--md {
   font-size: var(--fsds-blockquote-design-condition-dc35d39122c5-typography-size, var(--fsds-blockquote-size-font-size-md, 1rem));
-  padding: var(--fsds-blockquote-design-condition-dc35d39122c5-spacing-padding, var(--fsds-blockquote-size-padding-default, 12px));
+  padding: var(--fsds-blockquote-design-condition-dc35d39122c5-spacing-padding, var(--fsds-blockquote-size-padding, 12px));
 }
 
 .blockquote--lg {
   font-size: var(--fsds-blockquote-design-condition-72800fd5573d-typography-size, var(--fsds-blockquote-size-font-size-md, 1rem));
-  padding: var(--fsds-blockquote-design-condition-72800fd5573d-spacing-padding, var(--fsds-blockquote-size-padding-default, 12px));
+  padding: var(--fsds-blockquote-design-condition-72800fd5573d-spacing-padding, var(--fsds-blockquote-size-padding, 12px));
 }
 /* @generated:end */
 

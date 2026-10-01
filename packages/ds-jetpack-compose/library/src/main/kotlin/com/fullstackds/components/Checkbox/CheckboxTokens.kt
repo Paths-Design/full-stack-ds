@@ -44,15 +44,15 @@ val checkboxTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.input.size.medium.min-height",
             fallback = "32px",
         ),
-        "checkbox.color.background.default" to ComponentTokenDefinition(
-            name = "checkbox.color.background.default",
-            cssVar = "--fsds-checkbox-color-background-default",
+        "checkbox.color.background" to ComponentTokenDefinition(
+            name = "checkbox.color.background",
+            cssVar = "--fsds-checkbox-color-background",
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
-        "checkbox.color.border.default" to ComponentTokenDefinition(
-            name = "checkbox.color.border.default",
-            cssVar = "--fsds-checkbox-color-border-default",
+        "checkbox.color.border" to ComponentTokenDefinition(
+            name = "checkbox.color.border",
+            cssVar = "--fsds-checkbox-color-border",
             ref = "semantic.color.border.default",
             fallback = "#a0a0a1",
         ),

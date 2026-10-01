@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component token consumption
 owner: "@darianrosebrook"
-updated: 2026-09-28
-verified_at_commit: 3fd6f2eb23aaf8bc4dfa7c24cb42b1b64e2f7850
+updated: 2026-09-30
+verified_at_commit: 38c798cb0eb2
 governs:
   - packages/ds-codegen/src/css-token-consumption.ts
   - packages/ds-codegen/src/validation/component-token-consumption.ts
@@ -57,3 +57,11 @@ The static gate establishes dependency reachability, not arbitrary CSS value val
 ## Carousel motion reconciliation
 
 Carousel adds compile-time behavior consumers for its advance dwell and spatial transition duration/easing. The sequence IR validates those references and supplies their resolved values to the web controllers. They are intentionally absent from the CSS declaration closure; changing a CSS variable does not retime these JavaScript behaviors.
+
+## Unresolved native reads
+
+The emission audit also rejects native token reads with no definition. Projection
+onto consumed dictionaries must not hide an unknown lookup. React Native uses full
+slot identities; Swift accepts its emitted full names or role suffixes; Compose
+retains scope identity for direct reads. This closes a gap where a renamed
+CodeBlock background could silently fall back to an unpainted native surface.

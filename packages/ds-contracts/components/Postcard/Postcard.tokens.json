@@ -54,22 +54,22 @@
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "postcard.size.padding.default": {
+  "postcard.size.padding": {
     "resolvesTo": "core.spacing.size.06",
     "fallback": "16px",
     "layer": "core"
   },
-  "postcard.size.radius.default": {
+  "postcard.size.radius": {
     "resolvesTo": "semantic.shape.control.radius.default",
     "fallback": "6px",
     "layer": "semantic"
   },
-  "postcard.size.gap.default": {
+  "postcard.size.gap": {
     "resolvesTo": "core.spacing.size.05",
     "fallback": "12px",
     "layer": "core"
   },
-  "postcard.size.border.default": {
+  "postcard.size.border": {
     "resolvesTo": "semantic.shape.control.border.defaultWidth",
     "fallback": "1px",
     "layer": "semantic"

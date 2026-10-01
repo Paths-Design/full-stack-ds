@@ -1560,13 +1560,11 @@
           }
         },
         "border": {
-          "default": {
-            "$type": "color",
-            "$value": "{color.palette.orange.700}",
-            "$extensions": {
-              "fsds.light": "{color.palette.orange.700}",
-              "fsds.dark": "{color.palette.orange.400}"
-            }
+          "$type": "color",
+          "$value": "{color.palette.orange.700}",
+          "$extensions": {
+            "fsds.light": "{color.palette.orange.700}",
+            "fsds.dark": "{color.palette.orange.400}"
           }
         }
       },

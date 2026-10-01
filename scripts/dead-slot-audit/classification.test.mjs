@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { auditWebArtifact, auditNativeDefinitions, auditComposeDefinitions } from './audit.mjs';
+import { auditWebArtifact, auditNativeDefinitions, auditComposeDefinitions, auditNativeReads, auditComposeReads } from './audit.mjs';
 const slot = { slot: 'test.width', cssVar: '--fsds-test-width', web: true };
 assert.deepEqual(auditWebArtifact([slot], ['.test { width: var(--fsds-test-width, 8px); --fsds-test-width: 9px; }']), []);
 assert.deepEqual(auditWebArtifact([slot], ['.test { --fsds-test-width: 9px; }']), [
@@ -20,3 +20,8 @@ assert.deepEqual(auditComposeDefinitions([{scope:'checked', values:[{name:'color
   'Unconsumed emitted declaration: root/color', 'Missing consumed definition: checked/color',
 ]);
 assert.deepEqual(auditComposeDefinitions([{scope:'checked', values:[{name:'color'}]}], [{scope:'checked', key:'color'}]), []);
+assert.deepEqual(auditNativeReads(new Set(['example.color.background']), new Set(['example.color.foreground'])), ['Missing definition for native read: example.color.background']);
+assert.deepEqual(auditNativeReads(new Set(['color.background']), new Set(['example.color.background']), true), []);
+assert.deepEqual(auditNativeReads(new Set(['color.background.default']), new Set(['example.color.background']), true), ['Missing definition for native read: color.background.default']);
+assert.deepEqual(auditComposeReads([{scope:'checked', name:'color'}], [{scope:'root', key:'color'}]), ['Missing definition for native read: checked/color']);
+assert.deepEqual(auditComposeReads([{name:'color'}], [{scope:'checked', key:'color'}]), []);

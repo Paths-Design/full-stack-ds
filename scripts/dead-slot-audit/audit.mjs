@@ -48,6 +48,19 @@ export function auditComposeDefinitions(scopes, emitted) {
   ];
 }
 
+/** An unresolved read must not disappear when definitions are projected. */
+export function auditNativeReads(reads, definitions, suffixes = false) {
+  return [...reads].filter(read => ![...definitions].some(name =>
+    name === read || (suffixes && name.endsWith(`.${read}`))))
+    .map(read => `Missing definition for native read: ${read}`);
+}
+
+export function auditComposeReads(reads, definitions) {
+  return reads.filter(read => !definitions.some(definition => definition.key === read.name &&
+    (read.scope === undefined || read.scope === definition.scope)))
+    .map(read => `Missing definition for native read: ${read.scope ?? '*'}/${read.name}`);
+}
+
 export function auditCorpus() {
   const entries = listComponentContracts(resolve(REPO, 'packages/ds-contracts'));
   if (!entries.length) throw new Error('Component corpus is missing or empty');
@@ -72,15 +85,18 @@ export function auditCorpus() {
     const read = path => readFileSync(resolve(REPO, path), 'utf8');
     const rn = `packages/ds-react-native/src/components/${entry.name}/${entry.name}`;
     const actualRn = reactNativeTokenReads([read(`${rn}.tsx`), read(`${rn}.styles.ts`)]);
+    issues.push(...auditNativeReads(actualRn.map(read => read.name), reactNativeTokenDefinitionNames(read(`${rn}.tokens.ts`))).map(issue => `react-native: ${issue}`));
     issues.push(...auditNativeDefinitions(consumedNativeTokenScopes(ir, actualRn), reactNativeTokenDefinitionNames(read(`${rn}.tokens.ts`))).map(issue => `react-native: ${issue}`));
     for (const target of loadTargetRegistryConfigV1(REPO).config.targets) {
       if (target.components && !target.components.includes(entry.name)) continue;
       if (target.id === 'swiftui') {
         const source = read(`packages/ds-swiftui/Sources/DsSwiftUI/Components/${entry.name}/${entry.name}.swift`);
+        issues.push(...auditNativeReads(nativeSlotArguments(source, ['colorSlot', 'pxSlot']), nativeTokenDefinitionNames(source), true).map(issue => `swiftui: ${issue}`));
         issues.push(...auditNativeDefinitions(nativeTokenScopes(ir, nativeSlotArguments(source, ['colorSlot', 'pxSlot']), true), nativeTokenDefinitionNames(source)).map(issue => `swiftui: ${issue}`));
       }
       if (target.id === 'jetpack-compose') {
         const base = `packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/${entry.name}/${entry.name}`;
+        issues.push(...auditComposeReads(composeTokenReads(read(`${base}.kt`)), composeTokenDefinitions(read(`${base}Tokens.kt`))).map(issue => `jetpack-compose: ${issue}`));
         issues.push(...auditComposeDefinitions(consumedComposeTokenScopes(ir, composeTokenReads(read(`${base}.kt`))), composeTokenDefinitions(read(`${base}Tokens.kt`))).map(issue => `jetpack-compose: ${issue}`));
       }
     }

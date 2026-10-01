@@ -17,7 +17,7 @@
       }
     },
     "border-width": {
-      "resolvesTo": "input.size.border.default",
+      "resolvesTo": "input.size.border",
       "fallback": "1px",
       "design": {
         "property": "border.width",
@@ -49,7 +49,7 @@
       }
     },
     "min-height": {
-      "resolvesTo": "input.size.height.default",
+      "resolvesTo": "input.size.height",
       "fallback": "32px",
       "design": {
         "property": "sizing.min-height",
@@ -57,7 +57,7 @@
       }
     },
     "border-radius": {
-      "resolvesTo": "input.size.radius.default",
+      "resolvesTo": "input.size.radius",
       "fallback": "6px",
       "design": {
         "property": "shape.radius",
@@ -65,7 +65,7 @@
       }
     },
     "font-size": {
-      "resolvesTo": "input.typography.size.default",
+      "resolvesTo": "input.typography.size",
       "fallback": "1rem",
       "design": {
         "property": "typography.size",
@@ -73,7 +73,7 @@
       }
     },
     "line-height": {
-      "resolvesTo": "input.typography.line-height.default",
+      "resolvesTo": "input.typography.line-height",
       "fallback": "1.5",
       "design": {
         "property": "typography.line-height",
@@ -81,7 +81,7 @@
       }
     },
     "padding-block": {
-      "resolvesTo": "input.size.padding-block.default",
+      "resolvesTo": "input.size.padding-block",
       "fallback": "4px",
       "design": {
         "property": "spacing.padding-block",
@@ -89,7 +89,7 @@
       }
     },
     "padding-inline": {
-      "resolvesTo": "input.size.padding-inline.default",
+      "resolvesTo": "input.size.padding-inline",
       "fallback": "8px",
       "design": {
         "property": "spacing.padding-inline",
@@ -141,7 +141,7 @@
   },
   "focus": {
     "border-color": {
-      "resolvesTo": "input.color.focus.default",
+      "resolvesTo": "input.color.focus",
       "fallback": "#0566fe",
       "design": {
         "property": "border.color",
@@ -183,7 +183,7 @@
   },
   "--invalid": {
     "border-color": {
-      "resolvesTo": "input.color.invalid.default",
+      "resolvesTo": "input.color.invalid",
       "fallback": "#b31b1b",
       "design": {
         "property": "border.color",
@@ -193,7 +193,7 @@
   },
   ".input--invalid:focus-visible": {
     "border-color": {
-      "resolvesTo": "input.color.invalid.default",
+      "resolvesTo": "input.color.invalid",
       "fallback": "#b31b1b",
       "design": {
         "property": "border.color",

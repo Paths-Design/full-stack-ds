@@ -74,9 +74,9 @@ export class BreadcrumbsElement extends LitElement {
       --fsds-breadcrumbs-color-border-subtle: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-breadcrumbs-typography-line-height-collapse: var(--fsds-semantic-typography-line-height-collapse, 1);
       --fsds-breadcrumbs-shape-radius-medium: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-breadcrumbs-spacing-gap-default: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-breadcrumbs-spacing-padding-default: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-breadcrumbs-color-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-breadcrumbs-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-breadcrumbs-spacing-padding: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-breadcrumbs-color-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
     }
 
     @layer components.defaults {
@@ -97,11 +97,11 @@ export class BreadcrumbsElement extends LitElement {
       line-height: var(--fsds-breadcrumbs-design-root-typography-line-height, var(--fsds-breadcrumbs-typography-line-height-collapse, 1));
       display: block;
       border-radius: var(--fsds-breadcrumbs-design-root-shape-radius, var(--fsds-breadcrumbs-shape-radius-medium, 6px));
-      padding: var(--fsds-breadcrumbs-design-root-spacing-padding, var(--fsds-breadcrumbs-spacing-padding-default, 8px));
+      padding: var(--fsds-breadcrumbs-design-root-spacing-padding, var(--fsds-breadcrumbs-spacing-padding, 8px));
       color: var(--fsds-breadcrumbs-design-root-foreground-color, var(--fsds-breadcrumbs-color-foreground-primary, #141414));
 
       &:focus-visible {
-        outline-color: var(--fsds-breadcrumbs-design-focus-focus-color, var(--fsds-breadcrumbs-color-focus, #d92d2e));
+        outline-color: var(--fsds-breadcrumbs-design-focus-focus-color, var(--fsds-breadcrumbs-color-focus, #0566fe));
       }
     }
 
@@ -112,7 +112,7 @@ export class BreadcrumbsElement extends LitElement {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap-default, 8px));
+      gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap, 8px));
     }
     }
   `;
@@ -201,9 +201,9 @@ export class BreadcrumbsListElement extends LitElement {
       --fsds-breadcrumbs-color-border-subtle: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-breadcrumbs-typography-line-height-collapse: var(--fsds-semantic-typography-line-height-collapse, 1);
       --fsds-breadcrumbs-shape-radius-medium: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-breadcrumbs-spacing-gap-default: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-breadcrumbs-spacing-padding-default: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-breadcrumbs-color-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-breadcrumbs-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-breadcrumbs-spacing-padding: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-breadcrumbs-color-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
     }
 
     @layer components.defaults {
@@ -224,11 +224,11 @@ export class BreadcrumbsListElement extends LitElement {
       line-height: var(--fsds-breadcrumbs-design-root-typography-line-height, var(--fsds-breadcrumbs-typography-line-height-collapse, 1));
       display: block;
       border-radius: var(--fsds-breadcrumbs-design-root-shape-radius, var(--fsds-breadcrumbs-shape-radius-medium, 6px));
-      padding: var(--fsds-breadcrumbs-design-root-spacing-padding, var(--fsds-breadcrumbs-spacing-padding-default, 8px));
+      padding: var(--fsds-breadcrumbs-design-root-spacing-padding, var(--fsds-breadcrumbs-spacing-padding, 8px));
       color: var(--fsds-breadcrumbs-design-root-foreground-color, var(--fsds-breadcrumbs-color-foreground-primary, #141414));
 
       &:focus-visible {
-        outline-color: var(--fsds-breadcrumbs-design-focus-focus-color, var(--fsds-breadcrumbs-color-focus, #d92d2e));
+        outline-color: var(--fsds-breadcrumbs-design-focus-focus-color, var(--fsds-breadcrumbs-color-focus, #0566fe));
       }
     }
 
@@ -239,7 +239,7 @@ export class BreadcrumbsListElement extends LitElement {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap-default, 8px));
+      gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap, 8px));
     }
     }
   `;
@@ -308,9 +308,9 @@ export class BreadcrumbsItemElement extends LitElement {
       --fsds-breadcrumbs-color-border-subtle: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-breadcrumbs-typography-line-height-collapse: var(--fsds-semantic-typography-line-height-collapse, 1);
       --fsds-breadcrumbs-shape-radius-medium: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-breadcrumbs-spacing-gap-default: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-breadcrumbs-spacing-padding-default: var(--fsds-core-spacing-size-04, 8px);
-      --fsds-breadcrumbs-color-focus: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-breadcrumbs-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-breadcrumbs-spacing-padding: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-breadcrumbs-color-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
     }
 
     @layer components.defaults {
@@ -331,11 +331,11 @@ export class BreadcrumbsItemElement extends LitElement {
       line-height: var(--fsds-breadcrumbs-design-root-typography-line-height, var(--fsds-breadcrumbs-typography-line-height-collapse, 1));
       display: block;
       border-radius: var(--fsds-breadcrumbs-design-root-shape-radius, var(--fsds-breadcrumbs-shape-radius-medium, 6px));
-      padding: var(--fsds-breadcrumbs-design-root-spacing-padding, var(--fsds-breadcrumbs-spacing-padding-default, 8px));
+      padding: var(--fsds-breadcrumbs-design-root-spacing-padding, var(--fsds-breadcrumbs-spacing-padding, 8px));
       color: var(--fsds-breadcrumbs-design-root-foreground-color, var(--fsds-breadcrumbs-color-foreground-primary, #141414));
 
       &:focus-visible {
-        outline-color: var(--fsds-breadcrumbs-design-focus-focus-color, var(--fsds-breadcrumbs-color-focus, #d92d2e));
+        outline-color: var(--fsds-breadcrumbs-design-focus-focus-color, var(--fsds-breadcrumbs-color-focus, #0566fe));
       }
     }
 
@@ -346,7 +346,7 @@ export class BreadcrumbsItemElement extends LitElement {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap-default, 8px));
+      gap: var(--fsds-breadcrumbs-design-list-spacing-gap, var(--fsds-breadcrumbs-spacing-gap, 8px));
     }
     }
   `;

@@ -14,10 +14,10 @@ enum ShuttleTokens {
             "box-model.padding-block-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-block-start", name: "box-model.padding-block-start", literal: .string("0")),
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", literal: .string("0")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.structure.size.gap", fallback: .string("16px")),
-            "shuttle.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-shuttle-color-background-default", name: "shuttle.color.background.default", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
+            "shuttle.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-shuttle-color-background", name: "shuttle.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "shuttle.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-shuttle-color-foreground-primary", name: "shuttle.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "shuttle.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-shuttle-color-border-default", name: "shuttle.color.border.default", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
-            "shuttle.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-shuttle-size-radius-default", name: "shuttle.size.radius.default", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
+            "shuttle.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-shuttle-color-border", name: "shuttle.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "shuttle.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-shuttle-size-radius", name: "shuttle.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]
 }
@@ -57,10 +57,10 @@ public struct Shuttle: View {
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var background: Color { colorSlot("color.background.default") ?? .accentColor }
+    private var background: Color { colorSlot("color.background") ?? .accentColor }
     private var foreground: Color { colorSlot("color.foreground.primary") ?? .primary }
-    private var borderColor: Color { colorSlot("color.border.default") ?? .clear }
-    private var radius: CGFloat { pxSlot("size.radius.default") ?? 0 }
+    private var borderColor: Color { colorSlot("color.border") ?? .clear }
+    private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

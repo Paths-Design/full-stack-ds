@@ -78,15 +78,15 @@ export class InputElement extends LitElement {
       --fsds-input-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
       --fsds-input-color-border-hover: var(--fsds-semantic-color-border-hover, #888889);
       --fsds-input-color-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
-      --fsds-input-size-height-default: var(--fsds-semantic-input-size-medium-min-height, 32px);
-      --fsds-input-size-padding-block-default: var(--fsds-semantic-input-size-medium-padding-block, 4px);
-      --fsds-input-size-padding-inline-default: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
-      --fsds-input-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-input-size-border-default: var(--fsds-semantic-shape-control-border-default-width, 1px);
-      --fsds-input-color-focus-default: var(--fsds-semantic-color-border-focus, #0566fe);
-      --fsds-input-color-invalid-default: var(--fsds-semantic-color-border-danger, #b31b1b);
-      --fsds-input-typography-size-default: var(--fsds-semantic-typography-body-02, 1rem);
-      --fsds-input-typography-line-height-default: var(--fsds-semantic-typography-line-height-body, 1.5);
+      --fsds-input-size-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
+      --fsds-input-size-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+      --fsds-input-size-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+      --fsds-input-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-input-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+      --fsds-input-color-focus: var(--fsds-semantic-color-border-focus, #0566fe);
+      --fsds-input-color-invalid: var(--fsds-semantic-color-border-danger, #b31b1b);
+      --fsds-input-typography-size: var(--fsds-semantic-typography-body-02, 1rem);
+      --fsds-input-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
       --fsds-input-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
       --fsds-input-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-input-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
@@ -107,19 +107,19 @@ export class InputElement extends LitElement {
       min-width: var(--fsds-box-model-min-width, 0);
       max-width: var(--fsds-box-model-max-width, none);
       height: var(--fsds-box-model-height, auto);
-      min-height: var(--fsds-input-design-root-sizing-min-height, var(--fsds-input-size-height-default, 32px));
+      min-height: var(--fsds-input-design-root-sizing-min-height, var(--fsds-input-size-height, 32px));
       max-height: var(--fsds-box-model-max-height, none);
       box-sizing: border-box;
       border-style: var(--fsds-input-design-root-border-style, solid);
-      border-width: var(--fsds-input-design-root-border-width, var(--fsds-input-size-border-default, 1px));
+      border-width: var(--fsds-input-design-root-border-width, var(--fsds-input-size-border, 1px));
       background-color: var(--fsds-input-design-root-background-fill, var(--fsds-input-color-bg-default, #ffffff));
       color: var(--fsds-input-design-root-foreground-color, var(--fsds-input-color-text-default, #141414));
       border-color: var(--fsds-input-design-root-border-color, var(--fsds-input-color-border-default, #a0a0a1));
-      border-radius: var(--fsds-input-design-root-shape-radius, var(--fsds-input-size-radius-default, 6px));
-      font-size: var(--fsds-input-design-root-typography-size, var(--fsds-input-typography-size-default, 1rem));
-      line-height: var(--fsds-input-design-root-typography-line-height, var(--fsds-input-typography-line-height-default, 1.5));
-      padding-block: var(--fsds-input-design-root-spacing-padding-block, var(--fsds-input-size-padding-block-default, 4px));
-      padding-inline: var(--fsds-input-design-root-spacing-padding-inline, var(--fsds-input-size-padding-inline-default, 8px));
+      border-radius: var(--fsds-input-design-root-shape-radius, var(--fsds-input-size-radius, 6px));
+      font-size: var(--fsds-input-design-root-typography-size, var(--fsds-input-typography-size, 1rem));
+      line-height: var(--fsds-input-design-root-typography-line-height, var(--fsds-input-typography-line-height, 1.5));
+      padding-block: var(--fsds-input-design-root-spacing-padding-block, var(--fsds-input-size-padding-block, 4px));
+      padding-inline: var(--fsds-input-design-root-spacing-padding-inline, var(--fsds-input-size-padding-inline, 8px));
       transition-property: background-color, border-color, color, outline-color;
       transition-duration: var(--fsds-input-design-root-motion-duration, var(--fsds-input-motion-duration-fast, 150ms));
       transition-timing-function: var(--fsds-input-design-root-motion-easing, var(--fsds-input-motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1)));
@@ -133,7 +133,7 @@ export class InputElement extends LitElement {
       }
 
       &:focus-visible:not(:disabled) {
-        border-color: var(--fsds-input-design-focus-border-color, var(--fsds-input-color-focus-default, #0566fe));
+        border-color: var(--fsds-input-design-focus-border-color, var(--fsds-input-color-focus, #0566fe));
         outline-width: var(--fsds-input-design-focus-focus-width, var(--fsds-input-focus-ring-width, 2px));
         outline-color: var(--fsds-input-design-focus-focus-color, var(--fsds-input-focus-ring-color, #0566fe));
         outline-style: var(--fsds-input-design-focus-focus-style, var(--fsds-input-focus-ring-style, solid));
@@ -150,11 +150,11 @@ export class InputElement extends LitElement {
     }
 
     .input--invalid {
-      border-color: var(--fsds-input-design-condition-273725daa81e-border-color, var(--fsds-input-color-invalid-default, #b31b1b));
+      border-color: var(--fsds-input-design-condition-273725daa81e-border-color, var(--fsds-input-color-invalid, #b31b1b));
     }
 
     .input--invalid:focus-visible:not(:disabled) {
-      border-color: var(--fsds-input-design-condition-8805a1996611-border-color, var(--fsds-input-color-invalid-default, #b31b1b));
+      border-color: var(--fsds-input-design-condition-8805a1996611-border-color, var(--fsds-input-color-invalid, #b31b1b));
       outline-color: var(--fsds-input-design-condition-8805a1996611-focus-color, var(--fsds-semantic-focus-ring-intent-danger, #b31b1b));
     }
     }

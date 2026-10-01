@@ -59,9 +59,9 @@
 
 .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
   outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
-  outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #d92d2e));
-  outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 1px));
-  outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, solid);
+  outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
+  outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+  outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
 }
 
 .accordion__chevron {

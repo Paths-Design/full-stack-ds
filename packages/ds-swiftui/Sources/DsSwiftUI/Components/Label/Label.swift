@@ -15,7 +15,6 @@ enum LabelTokens {
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", literal: .string("0")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.display.size.gap", fallback: .string("4px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
-            "label.color.text.default": FsdsComponentTokenDefinition(cssVar: "--fsds-label-color-text-default", name: "label.color.text.default", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
         ],
     ]
 }
@@ -51,7 +50,6 @@ public struct FsdsLabel<Content: View>: View {
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var foreground: Color { colorSlot("color.text.default") ?? .primary }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }
@@ -61,7 +59,6 @@ public struct FsdsLabel<Content: View>: View {
         content
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
-            .foregroundStyle(foreground)
     }
 }
 // @generated:end

@@ -33,7 +33,7 @@
       "properties": {
         "resolvesTo": {
           "type": "string",
-          "description": "Dotted path. Component-local slot (e.g. \"switch.color.track.background.default\") or global token (e.g. \"semantic.color.background.tertiary\")."
+          "description": "Dotted path. Component-local slot (e.g. \"switch.color.track.background\") or global token (e.g. \"semantic.color.background.tertiary\")."
         },
         "fallback": {
           "type": "string",

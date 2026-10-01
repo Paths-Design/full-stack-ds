@@ -46,21 +46,15 @@ export const dialogTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "dialog.color.background.default": {
-      name: "dialog.color.background.default",
-      cssVar: "--fsds-dialog-color-background-default",
-      ref: "semantic.color.background.primary",
-      fallback: "#ffffff",
-    },
-    "dialog.color.border.default": {
-      name: "dialog.color.border.default",
-      cssVar: "--fsds-dialog-color-border-default",
+    "dialog.color.border": {
+      name: "dialog.color.border",
+      cssVar: "--fsds-dialog-color-border",
       ref: "semantic.color.border.subtle",
       fallback: "#d0d0d0",
     },
-    "dialog.size.radius.default": {
-      name: "dialog.size.radius.default",
-      cssVar: "--fsds-dialog-size-radius-default",
+    "dialog.size.radius": {
+      name: "dialog.size.radius",
+      cssVar: "--fsds-dialog-size-radius",
       ref: "semantic.shape.radius.large",
       fallback: 16,
     },

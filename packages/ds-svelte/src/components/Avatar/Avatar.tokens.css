@@ -1,16 +1,16 @@
 @layer components {
 /* @generated:start tokens */
 .avatar {
-  --fsds-avatar-size-default: var(--fsds-core-spacing-size-06, 16px);
+  --fsds-avatar-size: var(--fsds-core-spacing-size-06, 16px);
   --fsds-avatar-size-small: var(--fsds-core-spacing-size-06, 16px);
   --fsds-avatar-size-medium: var(--fsds-core-spacing-size-07, 24px);
   --fsds-avatar-size-large: var(--fsds-core-spacing-size-08, 32px);
   --fsds-avatar-size-extra-large: var(--fsds-core-spacing-size-09, 48px);
-  --fsds-avatar-size-radius-default: var(--fsds-semantic-shape-control-radius-pill, 9999px);
-  --fsds-avatar-size-border-default: var(--fsds-semantic-shape-control-border-default-width, 1px);
-  --fsds-avatar-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+  --fsds-avatar-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+  --fsds-avatar-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+  --fsds-avatar-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
   --fsds-avatar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-  --fsds-avatar-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+  --fsds-avatar-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
   --fsds-avatar-typography-font-weight-medium: var(--fsds-core-typography-weight-medium, 500);
   --fsds-avatar-typography-font-family-sans: var(--fsds-core-typography-font-family-sans, "Inter", sans-serif);
 }

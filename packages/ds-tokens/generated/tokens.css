@@ -8437,7 +8437,7 @@
     --fsds-semantic-opacity-disabled: var(--fsds-core-opacity-300);
     --fsds-badge-color-background-default: var(--fsds-core-color-palette-orange-600);
     --fsds-badge-color-foreground-primary: var(--fsds-core-color-mode-light);
-    --fsds-badge-color-border-default: var(--fsds-core-color-palette-orange-700);
+    --fsds-badge-color-border: var(--fsds-core-color-palette-orange-700);
     --fsds-badge-design-root-shape-radius: 9999px;
     --fsds-badge-design-root-border-width: 0px;
     --fsds-button-design-root-shape-radius: 9999px;
@@ -8694,7 +8694,7 @@
     --fsds-semantic-opacity-disabled: var(--fsds-core-opacity-300);
     --fsds-badge-color-background-default: var(--fsds-core-color-palette-orange-600);
     --fsds-badge-color-foreground-primary: var(--fsds-core-color-mode-light);
-    --fsds-badge-color-border-default: var(--fsds-core-color-palette-orange-700);
+    --fsds-badge-color-border: var(--fsds-core-color-palette-orange-700);
     --fsds-badge-design-root-shape-radius: 9999px;
     --fsds-badge-design-root-border-width: 0px;
     --fsds-button-design-root-shape-radius: 9999px;
@@ -8843,7 +8843,7 @@
       --fsds-semantic-focus-ring-color: var(--fsds-core-color-palette-orange-400);
       --fsds-semantic-focus-ring-intent-danger: var(--fsds-core-color-palette-red-400);
       --fsds-badge-color-background-default: var(--fsds-core-color-palette-orange-500);
-      --fsds-badge-color-border-default: var(--fsds-core-color-palette-orange-400);
+      --fsds-badge-color-border: var(--fsds-core-color-palette-orange-400);
     }
   }
 
@@ -8959,31 +8959,31 @@
     --fsds-semantic-focus-ring-color: var(--fsds-core-color-palette-orange-400);
     --fsds-semantic-focus-ring-intent-danger: var(--fsds-core-color-palette-red-400);
     --fsds-badge-color-background-default: var(--fsds-core-color-palette-orange-500);
-    --fsds-badge-color-border-default: var(--fsds-core-color-palette-orange-400);
+    --fsds-badge-color-border: var(--fsds-core-color-palette-orange-400);
   }
 
   [data-brand="quickserve"] .badge {
     --fsds-badge-color-background-default: var(--fsds-core-color-palette-orange-600);
     --fsds-badge-color-foreground-primary: var(--fsds-core-color-mode-light);
-    --fsds-badge-color-border-default: var(--fsds-core-color-palette-orange-700);
+    --fsds-badge-color-border: var(--fsds-core-color-palette-orange-700);
   }
 
   .light[data-brand="quickserve"] .badge, [data-theme="light"][data-brand="quickserve"] .badge {
     --fsds-badge-color-background-default: var(--fsds-core-color-palette-orange-600);
     --fsds-badge-color-foreground-primary: var(--fsds-core-color-mode-light);
-    --fsds-badge-color-border-default: var(--fsds-core-color-palette-orange-700);
+    --fsds-badge-color-border: var(--fsds-core-color-palette-orange-700);
   }
 
   @media (prefers-color-scheme: dark) {
     [data-brand="quickserve"] .badge {
     --fsds-badge-color-background-default: var(--fsds-core-color-palette-orange-500);
-    --fsds-badge-color-border-default: var(--fsds-core-color-palette-orange-400);
+    --fsds-badge-color-border: var(--fsds-core-color-palette-orange-400);
     }
   }
 
   .dark[data-brand="quickserve"] .badge, [data-theme="dark"][data-brand="quickserve"] .badge {
     --fsds-badge-color-background-default: var(--fsds-core-color-palette-orange-500);
-    --fsds-badge-color-border-default: var(--fsds-core-color-palette-orange-400);
+    --fsds-badge-color-border: var(--fsds-core-color-palette-orange-400);
   }
 
   [data-brand="quickserve"] .card {
@@ -9210,8 +9210,8 @@
     --fsds-semantic-overlay-scrim-strong: #000000cc;
     --fsds-semantic-opacity-overlay: var(--fsds-core-opacity-700);
     --fsds-semantic-opacity-disabled: var(--fsds-core-opacity-300);
-    --fsds-avatar-color-background-default: var(--fsds-core-color-palette-lime-100);
-    --fsds-avatar-color-border-default: var(--fsds-core-color-palette-lime-300);
+    --fsds-avatar-color-background: var(--fsds-core-color-palette-lime-100);
+    --fsds-avatar-color-border: var(--fsds-core-color-palette-lime-300);
     --fsds-button-design-root-shape-radius: 9999px;
     --fsds-button-design-root-typography-weight: 700;
     --fsds-input-design-root-shape-radius: 8px;
@@ -9467,8 +9467,8 @@
     --fsds-semantic-overlay-scrim-strong: #000000cc;
     --fsds-semantic-opacity-overlay: var(--fsds-core-opacity-700);
     --fsds-semantic-opacity-disabled: var(--fsds-core-opacity-300);
-    --fsds-avatar-color-background-default: var(--fsds-core-color-palette-lime-100);
-    --fsds-avatar-color-border-default: var(--fsds-core-color-palette-lime-300);
+    --fsds-avatar-color-background: var(--fsds-core-color-palette-lime-100);
+    --fsds-avatar-color-border: var(--fsds-core-color-palette-lime-300);
     --fsds-button-design-root-shape-radius: 9999px;
     --fsds-button-design-root-typography-weight: 700;
     --fsds-input-design-root-shape-radius: 8px;
@@ -9616,8 +9616,8 @@
       --fsds-semantic-interaction-text-disabled: var(--fsds-core-color-palette-neutral-500);
       --fsds-semantic-focus-ring-color: var(--fsds-core-color-palette-lime-400);
       --fsds-semantic-focus-ring-intent-danger: var(--fsds-core-color-palette-pink-400);
-      --fsds-avatar-color-background-default: var(--fsds-core-color-palette-lime-900);
-      --fsds-avatar-color-border-default: var(--fsds-core-color-palette-lime-700);
+      --fsds-avatar-color-background: var(--fsds-core-color-palette-lime-900);
+      --fsds-avatar-color-border: var(--fsds-core-color-palette-lime-700);
     }
   }
 
@@ -9732,30 +9732,30 @@
     --fsds-semantic-interaction-text-disabled: var(--fsds-core-color-palette-neutral-500);
     --fsds-semantic-focus-ring-color: var(--fsds-core-color-palette-lime-400);
     --fsds-semantic-focus-ring-intent-danger: var(--fsds-core-color-palette-pink-400);
-    --fsds-avatar-color-background-default: var(--fsds-core-color-palette-lime-900);
-    --fsds-avatar-color-border-default: var(--fsds-core-color-palette-lime-700);
+    --fsds-avatar-color-background: var(--fsds-core-color-palette-lime-900);
+    --fsds-avatar-color-border: var(--fsds-core-color-palette-lime-700);
   }
 
   [data-brand="streaming"] .avatar {
-    --fsds-avatar-color-background-default: var(--fsds-core-color-palette-lime-100);
-    --fsds-avatar-color-border-default: var(--fsds-core-color-palette-lime-300);
+    --fsds-avatar-color-background: var(--fsds-core-color-palette-lime-100);
+    --fsds-avatar-color-border: var(--fsds-core-color-palette-lime-300);
   }
 
   .light[data-brand="streaming"] .avatar, [data-theme="light"][data-brand="streaming"] .avatar {
-    --fsds-avatar-color-background-default: var(--fsds-core-color-palette-lime-100);
-    --fsds-avatar-color-border-default: var(--fsds-core-color-palette-lime-300);
+    --fsds-avatar-color-background: var(--fsds-core-color-palette-lime-100);
+    --fsds-avatar-color-border: var(--fsds-core-color-palette-lime-300);
   }
 
   @media (prefers-color-scheme: dark) {
     [data-brand="streaming"] .avatar {
-    --fsds-avatar-color-background-default: var(--fsds-core-color-palette-lime-900);
-    --fsds-avatar-color-border-default: var(--fsds-core-color-palette-lime-700);
+    --fsds-avatar-color-background: var(--fsds-core-color-palette-lime-900);
+    --fsds-avatar-color-border: var(--fsds-core-color-palette-lime-700);
     }
   }
 
   .dark[data-brand="streaming"] .avatar, [data-theme="dark"][data-brand="streaming"] .avatar {
-    --fsds-avatar-color-background-default: var(--fsds-core-color-palette-lime-900);
-    --fsds-avatar-color-border-default: var(--fsds-core-color-palette-lime-700);
+    --fsds-avatar-color-background: var(--fsds-core-color-palette-lime-900);
+    --fsds-avatar-color-border: var(--fsds-core-color-palette-lime-700);
   }
 
   [data-brand="streaming"] .card {

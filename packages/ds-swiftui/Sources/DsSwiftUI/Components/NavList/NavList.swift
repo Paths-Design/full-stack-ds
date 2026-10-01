@@ -20,7 +20,7 @@ enum NavListTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "nav-list.color.foreground.default": FsdsComponentTokenDefinition(cssVar: "--fsds-nav-list-color-foreground-default", name: "nav-list.color.foreground.default", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
             "nav-list.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-nav-list-color-background-default", name: "nav-list.color.background.default", ref: "semantic.color.background.transparent", fallback: .string("transparent")),
-            "nav-list.size.radius.default": FsdsComponentTokenDefinition(cssVar: "--fsds-nav-list-size-radius-default", name: "nav-list.size.radius.default", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
+            "nav-list.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-nav-list-size-radius", name: "nav-list.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]
 }
@@ -60,7 +60,7 @@ public struct NavList<Content: View>: View {
 
     private var background: Color { colorSlot("color.background.default") ?? .accentColor }
     private var foreground: Color { colorSlot("color.foreground.default") ?? .primary }
-    private var radius: CGFloat { pxSlot("size.radius.default") ?? 0 }
+    private var radius: CGFloat { pxSlot("size.radius") ?? 0 }
     private var blockPadding: CGFloat { pxSlot("padding-block-start") ?? 0 }
     private var inlinePadding: CGFloat { pxSlot("padding-inline-start") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }

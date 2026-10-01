@@ -143,7 +143,7 @@
       "selectorKey": "item",
       "part": "item",
       "defaultValue": "6px",
-      "resolvesTo": "nav-list.size.radius.default",
+      "resolvesTo": "nav-list.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -205,6 +205,7 @@
       "selectorKey": ".nav-list__item:focus-visible",
       "part": null,
       "defaultValue": "solid",
+      "resolvesTo": "semantic.focus.ring.style",
       "editableTargets": [
         "web"
       ],
@@ -220,6 +221,7 @@
       "selectorKey": ".nav-list__item:focus-visible",
       "part": null,
       "defaultValue": "2px",
+      "resolvesTo": "semantic.focus.ring.width",
       "editableTargets": [
         "web"
       ],
@@ -234,7 +236,7 @@
       "cssProperty": "outline-color",
       "selectorKey": ".nav-list__item:focus-visible",
       "part": null,
-      "defaultValue": "#d92d2e",
+      "defaultValue": "#0566fe",
       "resolvesTo": "nav-list.color.outline.focus",
       "editableTargets": [
         "web"
@@ -365,10 +367,10 @@
           "--fsds-nav-list-color-background-hover": "var(--fsds-semantic-color-background-subtle, #f7f7f7)",
           "--fsds-nav-list-state-layer-hover": "var(--fsds-semantic-interaction-state-layer-hover, 0.04)",
           "--fsds-nav-list-state-layer-selected": "var(--fsds-semantic-interaction-state-layer-selected, 0.08)",
-          "--fsds-nav-list-color-outline-focus": "var(--fsds-semantic-color-border-accent, #d92d2e)",
+          "--fsds-nav-list-color-outline-focus": "var(--fsds-semantic-focus-ring-color, #0566fe)",
           "--fsds-nav-list-size-padding-block": "var(--fsds-core-spacing-size-02, 2px)",
           "--fsds-nav-list-size-padding-inline": "var(--fsds-core-spacing-size-04, 8px)",
-          "--fsds-nav-list-size-radius-default": "var(--fsds-semantic-shape-control-radius-default, 6px)",
+          "--fsds-nav-list-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
           "--fsds-nav-list-size-gap-list": "var(--fsds-core-spacing-size-01, 1px)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
@@ -402,7 +404,7 @@
           "color": "var(--fsds-nav-list-color-foreground-default, #474647)",
           "padding-block": "var(--fsds-nav-list-size-padding-block, 2px)",
           "padding-inline": "var(--fsds-nav-list-size-padding-inline, 8px)",
-          "border-radius": "var(--fsds-nav-list-size-radius-default, 6px)",
+          "border-radius": "var(--fsds-nav-list-size-radius, 6px)",
           "transition-property": "background-color, color",
           "transition-duration": "120ms"
         }
@@ -417,9 +419,9 @@
       {
         "selector": ".nav-list__item:focus-visible",
         "declarations": {
-          "outline-style": "solid",
-          "outline-width": "2px",
-          "outline-color": "var(--fsds-nav-list-color-outline-focus, #d92d2e)",
+          "outline-style": "var(--fsds-semantic-focus-ring-style, solid)",
+          "outline-width": "var(--fsds-semantic-focus-ring-width, 2px)",
+          "outline-color": "var(--fsds-nav-list-color-outline-focus, #0566fe)",
           "outline-offset": "-2px"
         }
       },

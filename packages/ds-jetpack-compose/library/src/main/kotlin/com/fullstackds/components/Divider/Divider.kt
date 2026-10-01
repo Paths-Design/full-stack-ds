@@ -26,7 +26,7 @@ fun Divider(
     decorative: Boolean = false,
 ) {
     val fsdsTheme = LocalFsdsTheme.current
-    val ruleColor = fsdsTheme.resolve(dividerTokenScopes["root"]?.get("divider.color.default"))?.toFsdsColor() ?: Color(0xFFB8B8B8)
+    val ruleColor = fsdsTheme.resolve(dividerTokenScopes["root"]?.get("divider.color"))?.toFsdsColor() ?: Color(0xFFB8B8B8)
     val ruleThickness = fsdsTheme.resolve(dividerTokenScopes["root"]?.get("divider.size.thickness"))?.toFsdsDp() ?: 1.dp
     val ruleMinWidth = fsdsTheme.resolve(dividerTokenScopes["root"]?.get("box-model.min-width"))?.toFsdsDp() ?: 0.dp
     val ruleMinHeight = fsdsTheme.resolve(dividerTokenScopes["root"]?.get("box-model.min-height"))?.toFsdsDp() ?: 0.dp

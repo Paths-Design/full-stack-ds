@@ -68,7 +68,7 @@ export class DividerElement extends LitElement {
 
 
     .divider {
-      --fsds-divider-color-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-divider-color: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-divider-size-thickness: var(--fsds-semantic-shape-control-border-default-width, 1px);
       --fsds-divider-spacing-margin: var(--fsds-core-spacing-size-04, 8px);
     }
@@ -90,7 +90,7 @@ export class DividerElement extends LitElement {
       border-right-style: none;
       border-bottom-style: var(--fsds-divider-design-root-border-bottom-style, none);
       border-left-style: none;
-      border-top-color: var(--fsds-divider-design-root-border-top-color, var(--fsds-divider-color-default, #b8b8b8));
+      border-top-color: var(--fsds-divider-design-root-border-top-color, var(--fsds-divider-color, #b8b8b8));
       border-top-style: var(--fsds-divider-design-root-border-top-style, solid);
       border-top-width: var(--fsds-divider-design-root-border-top-width, var(--fsds-divider-size-thickness, 1px));
       margin-top: var(--fsds-divider-spacing-margin, 8px);
@@ -103,7 +103,7 @@ export class DividerElement extends LitElement {
       align-self: stretch;
       min-height: 1em;
       border-top: none;
-      border-left-color: var(--fsds-divider-color-default, #b8b8b8);
+      border-left-color: var(--fsds-divider-color, #b8b8b8);
       border-left-style: solid;
       border-left-width: var(--fsds-divider-size-thickness, 1px);
       margin-top: 0;

@@ -81,7 +81,7 @@ export class ButtonElement extends LitElement {
       --fsds-button-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-button-color-border-hover: var(--fsds-semantic-interaction-border-hover, #888889);
       --fsds-button-color-border-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-button-size-gap-default: var(--fsds-semantic-action-size-medium-gap, 8px);
+      --fsds-button-size-gap: var(--fsds-semantic-action-size-medium-gap, 8px);
       --fsds-button-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
       --fsds-button-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
       --fsds-button-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
@@ -156,7 +156,7 @@ export class ButtonElement extends LitElement {
       padding-block-end: var(--fsds-box-model-padding-block-end, var(--fsds-semantic-action-size-medium-padding-block, 4px));
       padding-inline-start: var(--fsds-box-model-padding-inline-start, var(--fsds-semantic-action-size-medium-padding-inline, 8px));
       padding-inline-end: var(--fsds-box-model-padding-inline-end, var(--fsds-semantic-action-size-medium-padding-inline, 8px));
-      gap: var(--fsds-button-design-root-spacing-gap, var(--fsds-button-size-gap-default, 8px));
+      gap: var(--fsds-button-design-root-spacing-gap, var(--fsds-button-size-gap, 8px));
       width: var(--fsds-box-model-width, auto);
       min-width: var(--fsds-box-model-min-width, var(--fsds-semantic-action-size-medium-min-width, 32px));
       max-width: var(--fsds-box-model-max-width, none);

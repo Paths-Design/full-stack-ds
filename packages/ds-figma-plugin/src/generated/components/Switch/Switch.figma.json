@@ -117,7 +117,7 @@
       "selectorKey": "track",
       "part": "track",
       "defaultValue": "#d0d0d0",
-      "resolvesTo": "switch.color.track.background.default",
+      "resolvesTo": "switch.color.track.background",
       "editableTargets": [
         "web"
       ],
@@ -133,7 +133,7 @@
       "selectorKey": "track",
       "part": "track",
       "defaultValue": "#d0d0d0",
-      "resolvesTo": "switch.color.track.border.default",
+      "resolvesTo": "switch.color.track.border",
       "editableTargets": [
         "web"
       ],
@@ -243,7 +243,7 @@
       "selectorKey": "thumb",
       "part": "thumb",
       "defaultValue": "#ffffff",
-      "resolvesTo": "switch.color.thumb.background.default",
+      "resolvesTo": "switch.color.thumb.background",
       "editableTargets": [
         "web"
       ],
@@ -259,7 +259,7 @@
       "selectorKey": "thumb",
       "part": "thumb",
       "defaultValue": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
-      "resolvesTo": "switch.color.thumb.shadow.default",
+      "resolvesTo": "switch.color.thumb.shadow",
       "editableTargets": [
         "web"
       ],
@@ -518,6 +518,70 @@
         "web"
       ],
       "selector": ".switch--lg .switch__thumb"
+    },
+    {
+      "property": "focus.width",
+      "group": "focus",
+      "valueType": "dimension",
+      "slot": "switch.design.condition-c9aff20d4aa9.focus.width",
+      "cssVar": "--fsds-switch-design-condition-c9aff20d4aa9-focus-width",
+      "cssProperty": "outline-width",
+      "selectorKey": ".switch:has(.switch__input:focus-visible) .switch__track",
+      "part": null,
+      "defaultValue": "2px",
+      "resolvesTo": "switch.focus.ring.width",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".switch:has(.switch__input:focus-visible) .switch__track"
+    },
+    {
+      "property": "focus.color",
+      "group": "focus",
+      "valueType": "color",
+      "slot": "switch.design.condition-c9aff20d4aa9.focus.color",
+      "cssVar": "--fsds-switch-design-condition-c9aff20d4aa9-focus-color",
+      "cssProperty": "outline-color",
+      "selectorKey": ".switch:has(.switch__input:focus-visible) .switch__track",
+      "part": null,
+      "defaultValue": "#0566fe",
+      "resolvesTo": "switch.focus.ring.color",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".switch:has(.switch__input:focus-visible) .switch__track"
+    },
+    {
+      "property": "focus.style",
+      "group": "focus",
+      "valueType": "enum",
+      "slot": "switch.design.condition-c9aff20d4aa9.focus.style",
+      "cssVar": "--fsds-switch-design-condition-c9aff20d4aa9-focus-style",
+      "cssProperty": "outline-style",
+      "selectorKey": ".switch:has(.switch__input:focus-visible) .switch__track",
+      "part": null,
+      "defaultValue": "solid",
+      "resolvesTo": "switch.focus.ring.style",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".switch:has(.switch__input:focus-visible) .switch__track"
+    },
+    {
+      "property": "focus.offset",
+      "group": "focus",
+      "valueType": "dimension",
+      "slot": "switch.design.condition-c9aff20d4aa9.focus.offset",
+      "cssVar": "--fsds-switch-design-condition-c9aff20d4aa9-focus-offset",
+      "cssProperty": "outline-offset",
+      "selectorKey": ".switch:has(.switch__input:focus-visible) .switch__track",
+      "part": null,
+      "defaultValue": "2px",
+      "resolvesTo": "switch.focus.ring.offset",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".switch:has(.switch__input:focus-visible) .switch__track"
     }
   ],
   "variants": {
@@ -642,10 +706,10 @@
           "--fsds-box-model-max-height": "none",
           "--fsds-switch-motion-duration": "var(--fsds-semantic-motion-interaction-press-duration, 100ms)",
           "--fsds-switch-motion-easing": "var(--fsds-semantic-motion-interaction-press-easing, cubic-bezier(0.4, 0, 0.2, 1))",
-          "--fsds-switch-color-track-background-default": "var(--fsds-semantic-color-background-tertiary, #d0d0d0)",
-          "--fsds-switch-color-track-border-default": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
-          "--fsds-switch-color-thumb-background-default": "var(--fsds-semantic-color-background-primary, #ffffff)",
-          "--fsds-switch-color-thumb-shadow-default": "var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a)",
+          "--fsds-switch-color-track-background": "var(--fsds-semantic-color-background-tertiary, #d0d0d0)",
+          "--fsds-switch-color-track-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-switch-color-thumb-background": "var(--fsds-semantic-color-background-primary, #ffffff)",
+          "--fsds-switch-color-thumb-shadow": "var(--fsds-semantic-elevation-surface-raised, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a)",
           "--fsds-switch-size-md-track-width": "var(--fsds-core-spacing-size-09, 48px)",
           "--fsds-switch-size-md-track-height": "var(--fsds-core-spacing-size-07, 24px)",
           "--fsds-switch-size-md-track-radius": "var(--fsds-semantic-shape-control-radius-pill, 9999px)",
@@ -695,8 +759,8 @@
         "selector": ".switch__track",
         "declarations": {
           "transition": "background-color var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing)",
-          "background-color": "var(--fsds-switch-color-track-background-default, #d0d0d0)",
-          "border-color": "var(--fsds-switch-color-track-border-default, #d0d0d0)",
+          "background-color": "var(--fsds-switch-color-track-background, #d0d0d0)",
+          "border-color": "var(--fsds-switch-color-track-border, #d0d0d0)",
           "width": "var(--fsds-switch-size-md-track-width, 48px)",
           "height": "var(--fsds-switch-size-md-track-height, 24px)",
           "border-radius": "var(--fsds-switch-size-md-track-radius, 9999px)",
@@ -712,8 +776,8 @@
         "selector": ".switch__thumb",
         "declarations": {
           "transition": "translate var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing), background-color var(--fsds-switch-motion-duration) var(--fsds-switch-motion-easing)",
-          "background-color": "var(--fsds-switch-color-thumb-background-default, #ffffff)",
-          "box-shadow": "var(--fsds-switch-color-thumb-shadow-default, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a)",
+          "background-color": "var(--fsds-switch-color-thumb-background, #ffffff)",
+          "box-shadow": "var(--fsds-switch-color-thumb-shadow, 0px 1px 2px #0000000f, 0px 1px 3px #0000001a)",
           "width": "var(--fsds-switch-size-md-thumb-size, 16px)",
           "height": "var(--fsds-switch-size-md-thumb-height, 16px)",
           "top": "50%",
@@ -743,20 +807,20 @@
       {
         "selector": ".switch:has(.switch__input:checked) .switch__track",
         "declarations": {
-          "--fsds-switch-color-track-background-default": "var(--fsds-semantic-color-foreground-accent, #d92d2e)"
+          "--fsds-switch-color-track-background": "var(--fsds-semantic-color-foreground-accent, #d92d2e)"
         }
       },
       {
         "selector": ".switch:has(.switch__input:checked) .switch__thumb",
         "declarations": {
           "translate": "var(--fsds-switch-size-md-thumb-translate-on, 24px)",
-          "--fsds-switch-color-thumb-background-default": "var(--fsds-semantic-color-foreground-on-brand, #ffffff)"
+          "--fsds-switch-color-thumb-background": "var(--fsds-semantic-color-foreground-on-brand, #ffffff)"
         }
       },
       {
         "selector": ".switch:has(.switch__input:disabled) .switch__track",
         "declarations": {
-          "--fsds-switch-color-track-background-default": "var(--fsds-semantic-color-background-disabled, #d0d0d0)"
+          "--fsds-switch-color-track-background": "var(--fsds-semantic-color-background-disabled, #d0d0d0)"
         }
       },
       {

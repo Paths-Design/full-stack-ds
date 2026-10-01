@@ -115,7 +115,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#f7f7f7",
-      "resolvesTo": "code-block.color.background.default",
+      "resolvesTo": "code-block.color.background",
       "editableTargets": [
         "web"
       ],
@@ -131,7 +131,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "#d0d0d0",
-      "resolvesTo": "code-block.color.border.default",
+      "resolvesTo": "code-block.color.border",
       "editableTargets": [
         "web"
       ],
@@ -162,7 +162,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "1px",
-      "resolvesTo": "code-block.size.border.default",
+      "resolvesTo": "code-block.size.border",
       "editableTargets": [
         "web"
       ],
@@ -178,7 +178,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "6px",
-      "resolvesTo": "code-block.size.radius.default",
+      "resolvesTo": "code-block.size.radius",
       "editableTargets": [
         "web"
       ],
@@ -209,7 +209,8 @@
       "cssProperty": "font-family",
       "selectorKey": "root",
       "part": "root",
-      "defaultValue": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
+      "defaultValue": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "resolvesTo": "semantic.typography.semanticFamily.mono",
       "editableTargets": [
         "web"
       ],
@@ -225,7 +226,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "0.875rem",
-      "resolvesTo": "code-block.size.fontSize.default",
+      "resolvesTo": "code-block.size.fontSize",
       "editableTargets": [
         "web"
       ],
@@ -241,7 +242,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "1.5",
-      "resolvesTo": "code-block.typography.lineHeight.default",
+      "resolvesTo": "code-block.typography.lineHeight",
       "editableTargets": [
         "web"
       ],
@@ -257,7 +258,7 @@
       "selectorKey": "root",
       "part": "root",
       "defaultValue": "16px",
-      "resolvesTo": "code-block.size.padding.default",
+      "resolvesTo": "code-block.size.padding",
       "editableTargets": [
         "web"
       ],
@@ -292,6 +293,53 @@
         "web"
       ],
       "selector": ".code-block__code"
+    },
+    {
+      "property": "spacing.padding-inline-end",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "code-block.design.condition-37b3a6622954.spacing.padding-inline-end",
+      "cssVar": "--fsds-code-block-design-condition-37b3a6622954-spacing-padding-inline-end",
+      "cssProperty": "padding-inline-end",
+      "selectorKey": ".code-block[data-line-numbers=\"true\"] .code-block__gutter",
+      "part": null,
+      "defaultValue": "4px",
+      "resolvesTo": "code-block.gutter.size.gap",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".code-block[data-line-numbers=\"true\"] .code-block__gutter"
+    },
+    {
+      "property": "foreground.color",
+      "group": "foreground",
+      "valueType": "color",
+      "slot": "code-block.design.condition-37b3a6622954.foreground.color",
+      "cssVar": "--fsds-code-block-design-condition-37b3a6622954-foreground-color",
+      "cssProperty": "color",
+      "selectorKey": ".code-block[data-line-numbers=\"true\"] .code-block__gutter",
+      "part": null,
+      "defaultValue": "#474647",
+      "resolvesTo": "code-block.gutter.color.number",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".code-block[data-line-numbers=\"true\"] .code-block__gutter"
+    },
+    {
+      "property": "typography.alignment",
+      "group": "typography",
+      "valueType": "enum",
+      "slot": "code-block.design.condition-37b3a6622954.typography.alignment",
+      "cssVar": "--fsds-code-block-design-condition-37b3a6622954-typography-alignment",
+      "cssProperty": "text-align",
+      "selectorKey": ".code-block[data-line-numbers=\"true\"] .code-block__gutter",
+      "part": null,
+      "defaultValue": "right",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".code-block[data-line-numbers=\"true\"] .code-block__gutter"
     },
     {
       "property": "foreground.color",
@@ -481,14 +529,14 @@
           "--fsds-box-model-height": "auto",
           "--fsds-box-model-min-height": "0",
           "--fsds-box-model-max-height": "none",
-          "--fsds-code-block-color-background-default": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
+          "--fsds-code-block-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "--fsds-code-block-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-code-block-color-border-default": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
-          "--fsds-code-block-size-padding-default": "var(--fsds-core-spacing-size-06, 16px)",
-          "--fsds-code-block-size-radius-default": "var(--fsds-semantic-shape-control-radius-default, 6px)",
-          "--fsds-code-block-size-border-default": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
-          "--fsds-code-block-size-font-size-default": "var(--fsds-core-typography-ramp-3, 0.875rem)",
-          "--fsds-code-block-typography-line-height-default": "var(--fsds-semantic-typography-line-height-body, 1.5)",
+          "--fsds-code-block-color-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-code-block-size-padding": "var(--fsds-core-spacing-size-06, 16px)",
+          "--fsds-code-block-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
+          "--fsds-code-block-size-border": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
+          "--fsds-code-block-size-font-size": "var(--fsds-core-typography-ramp-3, 0.875rem)",
+          "--fsds-code-block-typography-line-height": "var(--fsds-semantic-typography-line-height-body, 1.5)",
           "--fsds-code-block-token-color-plain": "var(--fsds-semantic-color-foreground-syntax-plain, #141414)",
           "--fsds-code-block-token-color-comment": "var(--fsds-semantic-color-foreground-syntax-comment-color, #474647)",
           "--fsds-code-block-token-color-keyword": "var(--fsds-semantic-color-foreground-syntax-keyword, #013ab0)",
@@ -511,18 +559,18 @@
           "height": "var(--fsds-box-model-height)",
           "min-height": "var(--fsds-box-model-min-height)",
           "max-height": "var(--fsds-box-model-max-height)",
-          "background-color": "var(--fsds-code-block-color-background-default, #f7f7f7)",
-          "border-color": "var(--fsds-code-block-color-border-default, #d0d0d0)",
+          "background-color": "var(--fsds-code-block-color-background, #f7f7f7)",
+          "border-color": "var(--fsds-code-block-color-border, #d0d0d0)",
           "border-style": "solid",
-          "border-width": "var(--fsds-code-block-size-border-default, 1px)",
-          "border-radius": "var(--fsds-code-block-size-radius-default, 6px)",
+          "border-width": "var(--fsds-code-block-size-border, 1px)",
+          "border-radius": "var(--fsds-code-block-size-radius, 6px)",
           "color": "var(--fsds-code-block-color-foreground-primary, #141414)",
-          "font-family": "ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace",
-          "font-size": "var(--fsds-code-block-size-font-size-default, 0.875rem)",
-          "line-height": "var(--fsds-code-block-typography-line-height-default, 1.5)",
+          "font-family": "var(--fsds-semantic-typography-semantic-family-mono, \"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace)",
+          "font-size": "var(--fsds-code-block-size-font-size, 0.875rem)",
+          "line-height": "var(--fsds-code-block-typography-line-height, 1.5)",
           "margin": "0",
           "overflow-x": "auto",
-          "padding": "var(--fsds-code-block-size-padding-default, 16px)",
+          "padding": "var(--fsds-code-block-size-padding, 16px)",
           "tab-size": "2",
           "white-space": "pre"
         }

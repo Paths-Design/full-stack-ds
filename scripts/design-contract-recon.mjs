@@ -143,8 +143,8 @@ export async function runRecon(out) {
   try {
     const page = await browser.newPage();
     web = { defaults: await webFacts(page, card), erased: await webFacts(page, withoutDesign(card)),
-      absolute: await webFacts(page, card, { '--fsds-card-size-radius-default': '20px' }),
-      percentage: await webFacts(page, card, { '--fsds-card-size-radius-default': '50%' }),
+      absolute: await webFacts(page, card, { '--fsds-card-size-radius': '20px' }),
+      percentage: await webFacts(page, card, { '--fsds-card-size-radius': '50%' }),
       independentMedia: await webFacts(page, card, { '--fsds-card-design-media-shape-radius': '23px' }) };
     // Both inputs explicitly request all declared platforms. Changing only this
     // property must change clipping, or be rejected as unsupported.
@@ -179,7 +179,7 @@ export async function runRecon(out) {
     await page.screenshot({ path: resolve(out, 'clipping-hidden.png') });
   } finally { await browser.close(); }
   const rn = Object.fromEntries(['8px', '20px', '50%'].map(value => [value,
-    nativeStyles(files['react-native'], { tokens: { 'card.size.radius.default': value } }).root.borderRadius]));
+    nativeStyles(files['react-native'], { tokens: { 'card.size.radius': value } }).root.borderRadius]));
   rn.independentMedia = nativeStyles(files['react-native'], { tokens: { 'card.design.media.shape.radius': '23px' } });
   write('web.json', web);
   write('react-native.json', rn);
@@ -191,7 +191,7 @@ import SwiftUI
 import AppKit
 let value = CommandLine.arguments[1]
 let theme = FsdsTheme(tokens: [
- "card.size.radius.default": .string(value),
+ "card.size.radius": .string(value),
  "card.color.background.default": .string("#00ff00"),
  "card.size.statusAccent.width": .number(0),
  "box-model.padding-block-start": .number(0),
@@ -231,7 +231,7 @@ print(String(data: data, encoding: .utf8)!)
     mkdirSync(dirname(mainPath), { recursive: true });
     writeFileSync(mainPath, mode === 'field' ? mainTemplate
       .replace('Card(content:', 'FsdsField(control:')
-      .replaceAll('card.size.radius.default', 'field.radius')
+      .replaceAll('card.size.radius', 'field.radius')
       .replaceAll('card.color.background.default', 'field.color.bg')
       .replace('x: 42, y: 2', 'x: 42, y: 22') : mainTemplate);
     write(`${mode === 'field' ? 'Field' : 'Card'}-${mode}.swift`, source);

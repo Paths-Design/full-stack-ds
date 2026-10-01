@@ -34,9 +34,9 @@
   box-sizing: border-box;
   border-style: var(--fsds-otp-design-field-border-style, solid);
   border-width: var(--fsds-otp-design-field-border-width, 1px);
-  border-radius: var(--fsds-otp-design-field-shape-radius, var(--fsds-otp-size-radius-default, 6px));
-  border-color: var(--fsds-otp-design-field-border-color, var(--fsds-otp-color-border-default, #b8b8b8));
-  background-color: var(--fsds-otp-design-field-background-fill, var(--fsds-otp-color-background-default, #f7f7f7));
+  border-radius: var(--fsds-otp-design-field-shape-radius, var(--fsds-otp-size-radius, 6px));
+  border-color: var(--fsds-otp-design-field-border-color, var(--fsds-otp-color-border, #b8b8b8));
+  background-color: var(--fsds-otp-design-field-background-fill, var(--fsds-otp-color-background, #f7f7f7));
   color: var(--fsds-otp-design-field-foreground-color, var(--fsds-otp-color-foreground-primary, #141414));
 }
 

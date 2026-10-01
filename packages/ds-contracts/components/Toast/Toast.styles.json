@@ -211,7 +211,7 @@
       ]
     },
     "color": {
-      "resolvesTo": "toast.color.default",
+      "resolvesTo": "toast.color",
       "fallback": "#141414",
       "design": {
         "property": "foreground.color",
@@ -261,7 +261,7 @@
       ]
     },
     "color": {
-      "resolvesTo": "toast.color.default",
+      "resolvesTo": "toast.color",
       "fallback": "#141414",
       "design": {
         "property": "foreground.color",
@@ -317,7 +317,7 @@
       ]
     },
     "color": {
-      "resolvesTo": "toast.color.default",
+      "resolvesTo": "toast.color",
       "fallback": "#141414",
       "design": {
         "property": "foreground.color",
@@ -336,7 +336,7 @@
       "resolvesTo": "semantic.color.background.info.subtle",
       "fallback": "#95dafb"
     },
-    "toast.color.default": {
+    "toast.color": {
       "resolvesTo": "semantic.color.foreground.on.info.subtle",
       "fallback": "#013ab0"
     },
@@ -354,7 +354,7 @@
       "resolvesTo": "semantic.color.background.success.subtle",
       "fallback": "#b3dba7"
     },
-    "toast.color.default": {
+    "toast.color": {
       "resolvesTo": "semantic.color.foreground.on.success.subtle",
       "fallback": "#2c4f09"
     },
@@ -372,7 +372,7 @@
       "resolvesTo": "semantic.color.background.warning.subtle",
       "fallback": "#fdc67f"
     },
-    "toast.color.default": {
+    "toast.color": {
       "resolvesTo": "semantic.color.foreground.on.warning.subtle",
       "fallback": "#6c3a00"
     },
@@ -390,7 +390,7 @@
       "resolvesTo": "semantic.color.background.danger.subtle",
       "fallback": "#fac2c2"
     },
-    "toast.color.default": {
+    "toast.color": {
       "resolvesTo": "semantic.color.foreground.on.danger.subtle",
       "fallback": "#900909"
     },
@@ -446,27 +446,43 @@
       "literal": "inherit",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "shape.end-start.radius",
+        "slot": "toast.design.progress.shape.end-start.radius"
+      }
     },
     "border-end-end-radius": {
       "literal": "inherit",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "shape.end-end.radius",
+        "slot": "toast.design.progress.shape.end-end.radius"
+      }
     },
     "height": {
       "resolvesTo": "toast.progress.height",
       "fallback": "2px",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "sizing.height",
+        "slot": "toast.design.progress.sizing.height"
+      }
     },
     "background-color": {
       "resolvesTo": "toast.progress.color",
       "fallback": "#141414",
       "platforms": [
         "web"
-      ]
+      ],
+      "design": {
+        "property": "background.fill",
+        "slot": "toast.design.progress.background.fill"
+      }
     }
   },
   ".toast__progress:dir(rtl)": {

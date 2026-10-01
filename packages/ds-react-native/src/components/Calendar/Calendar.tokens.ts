@@ -41,21 +41,15 @@ export const calendarTokenScopes = {
       cssVar: "--fsds-box-model-min-height",
       literal: 0,
     },
-    "calendar.color.background.default": {
-      name: "calendar.color.background.default",
-      cssVar: "--fsds-calendar-color-background-default",
-      ref: "semantic.color.background.primary",
-      fallback: "#ffffff",
-    },
     "calendar.color.foreground.primary": {
       name: "calendar.color.foreground.primary",
       cssVar: "--fsds-calendar-color-foreground-primary",
       ref: "semantic.color.foreground.primary",
       fallback: "#141414",
     },
-    "calendar.color.border.default": {
-      name: "calendar.color.border.default",
-      cssVar: "--fsds-calendar-color-border-default",
+    "calendar.color.border": {
+      name: "calendar.color.border",
+      cssVar: "--fsds-calendar-color-border",
       ref: "semantic.color.border.subtle",
       fallback: "#d0d0d0",
     },
@@ -65,9 +59,9 @@ export const calendarTokenScopes = {
       ref: "semantic.color.background.accent",
       fallback: "#d92d2e",
     },
-    "calendar.size.radius.default": {
-      name: "calendar.size.radius.default",
-      cssVar: "--fsds-calendar-size-radius-default",
+    "calendar.size.radius": {
+      name: "calendar.size.radius",
+      cssVar: "--fsds-calendar-size-radius",
       ref: "semantic.shape.control.radius.default",
       fallback: 6,
     },

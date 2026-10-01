@@ -14,7 +14,7 @@
     "fallback": "#141414",
     "layer": "semantic"
   },
-  "badge.color.border.default": {
+  "badge.color.border": {
     "resolvesTo": "semantic.color.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"

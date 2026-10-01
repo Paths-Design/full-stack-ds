@@ -85,12 +85,12 @@ export class PopoverElement extends LitElement {
       }
     }
     .popover {
-      --fsds-popover-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-popover-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-popover-size-gap-default: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-popover-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-      --fsds-popover-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-popover-elevation-default: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
+      --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-popover-elevation: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
       --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
     }
     @layer components.defaults {
@@ -120,11 +120,11 @@ export class PopoverElement extends LitElement {
       contain: layout paint style;
       animation: popover-enter var(--fsds-core-motion-duration-short, 150ms) var(--fsds-core-motion-easing-emphasized-out, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
       background-color: var(--fsds-popover-design-content-background-fill, var(--fsds-popover-color-background-content, #ffffff));
-      border-color: var(--fsds-popover-design-content-border-color, var(--fsds-popover-color-border-default, #d0d0d0));
-      border-radius: var(--fsds-popover-design-content-shape-radius, var(--fsds-popover-size-radius-default, 6px));
-      padding: var(--fsds-popover-design-content-spacing-padding, var(--fsds-popover-size-padding-default, 16px));
-      gap: var(--fsds-popover-design-content-spacing-gap, var(--fsds-popover-size-gap-default, 8px));
-      box-shadow: var(--fsds-popover-design-content-elevation-shadow, var(--fsds-popover-elevation-default, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a));
+      border-color: var(--fsds-popover-design-content-border-color, var(--fsds-popover-color-border, #d0d0d0));
+      border-radius: var(--fsds-popover-design-content-shape-radius, var(--fsds-popover-size-radius, 6px));
+      padding: var(--fsds-popover-design-content-spacing-padding, var(--fsds-popover-size-padding, 16px));
+      gap: var(--fsds-popover-design-content-spacing-gap, var(--fsds-popover-size-gap, 8px));
+      box-shadow: var(--fsds-popover-design-content-elevation-shadow, var(--fsds-popover-elevation, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a));
       z-index: var(--fsds-popover-layer-content, 1000);
       display: inline-block;
       border-style: var(--fsds-popover-design-content-border-style, solid);
@@ -298,12 +298,12 @@ export class PopoverTriggerElement extends LitElement {
       }
     }
     .popover {
-      --fsds-popover-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-popover-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-popover-size-gap-default: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-popover-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-      --fsds-popover-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-popover-elevation-default: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
+      --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-popover-elevation: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
       --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
     }
     @layer components.defaults {
@@ -333,11 +333,11 @@ export class PopoverTriggerElement extends LitElement {
       contain: layout paint style;
       animation: popover-enter var(--fsds-core-motion-duration-short, 150ms) var(--fsds-core-motion-easing-emphasized-out, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
       background-color: var(--fsds-popover-design-content-background-fill, var(--fsds-popover-color-background-content, #ffffff));
-      border-color: var(--fsds-popover-design-content-border-color, var(--fsds-popover-color-border-default, #d0d0d0));
-      border-radius: var(--fsds-popover-design-content-shape-radius, var(--fsds-popover-size-radius-default, 6px));
-      padding: var(--fsds-popover-design-content-spacing-padding, var(--fsds-popover-size-padding-default, 16px));
-      gap: var(--fsds-popover-design-content-spacing-gap, var(--fsds-popover-size-gap-default, 8px));
-      box-shadow: var(--fsds-popover-design-content-elevation-shadow, var(--fsds-popover-elevation-default, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a));
+      border-color: var(--fsds-popover-design-content-border-color, var(--fsds-popover-color-border, #d0d0d0));
+      border-radius: var(--fsds-popover-design-content-shape-radius, var(--fsds-popover-size-radius, 6px));
+      padding: var(--fsds-popover-design-content-spacing-padding, var(--fsds-popover-size-padding, 16px));
+      gap: var(--fsds-popover-design-content-spacing-gap, var(--fsds-popover-size-gap, 8px));
+      box-shadow: var(--fsds-popover-design-content-elevation-shadow, var(--fsds-popover-elevation, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a));
       z-index: var(--fsds-popover-layer-content, 1000);
       display: inline-block;
       border-style: var(--fsds-popover-design-content-border-style, solid);
@@ -488,12 +488,12 @@ export class PopoverContentElement extends LitElement {
 
 
     .popover {
-      --fsds-popover-size-padding-default: var(--fsds-core-spacing-size-06, 16px);
-      --fsds-popover-size-radius-default: var(--fsds-semantic-shape-control-radius-default, 6px);
-      --fsds-popover-size-gap-default: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-popover-size-padding: var(--fsds-core-spacing-size-06, 16px);
+      --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+      --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-      --fsds-popover-color-border-default: var(--fsds-semantic-color-border-subtle, #d0d0d0);
-      --fsds-popover-elevation-default: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
+      --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-popover-elevation: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
       --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
     }
 
@@ -526,11 +526,11 @@ export class PopoverContentElement extends LitElement {
       contain: layout paint style;
       animation: popover-enter var(--fsds-core-motion-duration-short, 150ms) var(--fsds-core-motion-easing-emphasized-out, cubic-bezier(0.4, 0, 0.2, 1)) forwards;
       background-color: var(--fsds-popover-design-content-background-fill, var(--fsds-popover-color-background-content, #ffffff));
-      border-color: var(--fsds-popover-design-content-border-color, var(--fsds-popover-color-border-default, #d0d0d0));
-      border-radius: var(--fsds-popover-design-content-shape-radius, var(--fsds-popover-size-radius-default, 6px));
-      padding: var(--fsds-popover-design-content-spacing-padding, var(--fsds-popover-size-padding-default, 16px));
-      gap: var(--fsds-popover-design-content-spacing-gap, var(--fsds-popover-size-gap-default, 8px));
-      box-shadow: var(--fsds-popover-design-content-elevation-shadow, var(--fsds-popover-elevation-default, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a));
+      border-color: var(--fsds-popover-design-content-border-color, var(--fsds-popover-color-border, #d0d0d0));
+      border-radius: var(--fsds-popover-design-content-shape-radius, var(--fsds-popover-size-radius, 6px));
+      padding: var(--fsds-popover-design-content-spacing-padding, var(--fsds-popover-size-padding, 16px));
+      gap: var(--fsds-popover-design-content-spacing-gap, var(--fsds-popover-size-gap, 8px));
+      box-shadow: var(--fsds-popover-design-content-elevation-shadow, var(--fsds-popover-elevation, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a));
       z-index: var(--fsds-popover-layer-content, 1000);
       display: inline-block;
       border-style: var(--fsds-popover-design-content-border-style, solid);

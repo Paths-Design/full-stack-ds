@@ -37,7 +37,7 @@ import { getCssPrefix } from "../../packages/ds-codegen/dist/contract.js";
  *     obligation on the root).
  *
  * Usage:  node scripts/pseudo-state-audit/audit.mjs
- * Output: docs/pseudo-state-audit/pseudo-state-matrix.{json,md}
+ * Output: docs/internal/pseudo-state-audit/pseudo-state-matrix.{json,md}
  */
 import { readFileSync, readdirSync, existsSync, statSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
@@ -49,7 +49,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../..");
 const CONTRACTS = resolve(REPO, "packages/ds-contracts/components");
 const REACT = resolve(REPO, "packages/ds-react/src/components");
-const OUT_DIR = resolve(REPO, "docs/pseudo-state-audit");
+const OUT_DIR = resolve(REPO, "docs/internal/pseudo-state-audit");
 const LEDGER_PATH = resolve(HERE, "known-gaps.json");
 
 /** Ledger identity for a state obligation gap. */

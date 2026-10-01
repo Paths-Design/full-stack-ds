@@ -50,79 +50,79 @@ val selectTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.input.size.medium.min-height",
             fallback = "32px",
         ),
-        "select.color.background.default" to ComponentTokenDefinition(
-            name = "select.color.background.default",
-            cssVar = "--fsds-select-color-background-default",
+        "select.color.background" to ComponentTokenDefinition(
+            name = "select.color.background",
+            cssVar = "--fsds-select-color-background",
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
-        "select.color.border.default" to ComponentTokenDefinition(
-            name = "select.color.border.default",
-            cssVar = "--fsds-select-color-border-default",
+        "select.color.border" to ComponentTokenDefinition(
+            name = "select.color.border",
+            cssVar = "--fsds-select-color-border",
             ref = "semantic.color.border.primary",
             fallback = "#a0a0a1",
         ),
-        "select.size.radius.default" to ComponentTokenDefinition(
-            name = "select.size.radius.default",
-            cssVar = "--fsds-select-size-radius-default",
+        "select.size.radius" to ComponentTokenDefinition(
+            name = "select.size.radius",
+            cssVar = "--fsds-select-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
         ),
-        "select.size.border.default" to ComponentTokenDefinition(
-            name = "select.size.border.default",
-            cssVar = "--fsds-select-size-border-default",
+        "select.size.border" to ComponentTokenDefinition(
+            name = "select.size.border",
+            cssVar = "--fsds-select-size-border",
             ref = "semantic.shape.control.border.defaultWidth",
             fallback = "1px",
         ),
     ),
     "focus" to mapOf(
-        "select.color.border.default" to ComponentTokenDefinition(
-            name = "select.color.border.default",
-            cssVar = "--fsds-select-color-border-default",
+        "select.color.border" to ComponentTokenDefinition(
+            name = "select.color.border",
+            cssVar = "--fsds-select-color-border",
             ref = "semantic.color.border.accent",
             fallback = "#d92d2e",
         ),
     ),
     "hover" to mapOf(
-        "select.color.border.default" to ComponentTokenDefinition(
-            name = "select.color.border.default",
-            cssVar = "--fsds-select-color-border-default",
+        "select.color.border" to ComponentTokenDefinition(
+            name = "select.color.border",
+            cssVar = "--fsds-select-color-border",
             ref = "semantic.color.border.bold",
             fallback = "#888889",
         ),
-        "select.color.background.default" to ComponentTokenDefinition(
-            name = "select.color.background.default",
-            cssVar = "--fsds-select-color-background-default",
+        "select.color.background" to ComponentTokenDefinition(
+            name = "select.color.background",
+            cssVar = "--fsds-select-color-background",
             ref = "semantic.color.background.hover",
             fallback = "#f7f7f7",
         ),
     ),
     "variant_open" to mapOf(
-        "select.color.border.default" to ComponentTokenDefinition(
-            name = "select.color.border.default",
-            cssVar = "--fsds-select-color-border-default",
+        "select.color.border" to ComponentTokenDefinition(
+            name = "select.color.border",
+            cssVar = "--fsds-select-color-border",
             ref = "semantic.color.border.accent",
             fallback = "#d92d2e",
         ),
     ),
     "variant_disabled" to mapOf(
-        "select.color.background.default" to ComponentTokenDefinition(
-            name = "select.color.background.default",
-            cssVar = "--fsds-select-color-background-default",
+        "select.color.background" to ComponentTokenDefinition(
+            name = "select.color.background",
+            cssVar = "--fsds-select-color-background",
             ref = "semantic.color.background.disabled",
             fallback = "#d0d0d0",
         ),
-        "select.color.border.default" to ComponentTokenDefinition(
-            name = "select.color.border.default",
-            cssVar = "--fsds-select-color-border-default",
+        "select.color.border" to ComponentTokenDefinition(
+            name = "select.color.border",
+            cssVar = "--fsds-select-color-border",
             ref = "semantic.color.border.disabled",
             fallback = "#b8b8b8",
         ),
     ),
     "part_option" to mapOf(
-        "select.color.background.default" to ComponentTokenDefinition(
-            name = "select.color.background.default",
-            cssVar = "--fsds-select-color-background-default",
+        "select.color.background" to ComponentTokenDefinition(
+            name = "select.color.background",
+            cssVar = "--fsds-select-color-background",
             ref = "semantic.color.background.highlight",
             fallback = "#f5a2a1",
         ),

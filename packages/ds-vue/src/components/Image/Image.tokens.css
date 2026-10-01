@@ -1,7 +1,7 @@
 @layer components {
 /* @generated:start tokens */
 .image {
-  --fsds-image-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+  --fsds-image-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
   --fsds-image-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
   --fsds-image-size-xs: 24px;
   --fsds-image-size-sm: 32px;
