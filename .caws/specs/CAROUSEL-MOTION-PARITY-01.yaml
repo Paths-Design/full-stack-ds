@@ -113,7 +113,6 @@ evidence:
     commit_sha: "59839408e4e37add20a5bbe85aded78f274198d5"
   - criterion_id: A6
     status: fail
-    evidence_ref: "Checkpoint 59839408e: real iOS primitive recording passes bounded painted-displacement analysis; snap, repeated-position, reverse-direction and missing-strip negative controls pass (node --test scripts/native-carousel-pixels.test.mjs). Focused codegen tests 17 pass, authored probe lint and doc links/claims pass. Prior RN 211 tests, delayed native callback guard mutation (3 failures) and pause guard mutation (4 failures) remain bounded host-shim evidence. Capture is operator-associated with the hashed build and does not prove exact duration, full generated controls, accessibility or other platforms. Latest origin/main CI has web and coverage success but Swift emission parity failure (Carousel not allowlisted); broader native and Figma review remain open."
-    recorded_at: "2026-10-01T05:54:03.113Z"
-    artifact_path: /tmp/carousel-native-ios-witness/native-pixels.json
-    commit_sha: "59839408e4e37add20a5bbe85aded78f274198d5"
+    evidence_ref: "Local unmerged Figma repair 9b7b89725 (docs d0f4fbac8): descriptor emitter previously dropped MotionIR; new serialized regression failed on baseline, then passed after preserving motion.facts with descriptor-only realization. Renamed channel, shared advance budget, both progress projections and size-aware profile survive emission. Regenerated tracked descriptors, codegen/Figma typechecks, 28 focused codegen tests, 87 plugin tests, lint, governed rail and docs checks pass; logs /tmp/carousel-figma-*.log. Figma metadata is not prototype execution. Prior iOS primitive pixel witness and RN callback/pause mutations remain bounded as recorded in A5 and earlier events. Full native generated-component runtime lanes and cross-platform mutation evidence remain incomplete, so A6 is not satisfied."
+    recorded_at: "2026-10-01T06:08:03.297Z"
+    commit_sha: "9b7b89725912ab92f130ae935e2ebe7b8492899a"
