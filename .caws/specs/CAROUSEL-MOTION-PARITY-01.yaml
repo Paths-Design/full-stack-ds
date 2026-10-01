@@ -83,12 +83,13 @@ evidence:
     exit_code: 0
     commit_sha: "2f746ddd"
   - criterion_id: A2
-    status: unchecked
-    evidence_ref: "At 5156566dc, all five controllers normalize transparent/non-replaced inline slide hosts without reparenting and restore original display/priority on release; 100 controller tests pass. The new actual generated Lit Card browser test failed on baseline zero-width geometry, then passed with painted-child forward movement, interrupted reversal, 320px/250ms sizing and reduced-motion wrap. CI-mode Carousel suite: 22 passed. Actual generated Card composition witnesses remain incomplete for Vue Svelte and Angular, so full A2 is unchecked rather than passed. Logs: /tmp/carousel-box-browser-red.log, /tmp/carousel-box-ci-browser.log, /tmp/carousel-box-root-recheck.log."
-    recorded_at: "2026-10-01T04:23:03.091Z"
-    command: "CI=true FSDS_E2E_PORT=5201 pnpm run e2e:carousel"
+    status: pass
+    evidence_ref: "At 6ae348621, actual generated Carousel and Card compositions execute in React Vue Svelte Angular and Lit. Browser assertions seek native animations and measure painted child geometry during next, interrupted previous and bidirectional wrap; 320px uses 250ms and 1280px reaches the 500ms cap. Transparent hosts move, consumer state and event bindings survive navigation, and reduced motion removes spatial animations. Final CI-mode suite: 27 passed. The deliberate root-binding-loss probe failed all five composition tests; runtime files were restored byte-for-byte before the final green run. This establishes bounded Card compositions, not arbitrary child lifecycles or native parity."
+    recorded_at: "2026-10-01T04:56:10.882Z"
+    command: "CI=true FSDS_E2E_PORT=5202 pnpm run e2e:carousel"
     exit_code: 0
-    commit_sha: "5156566dc"
+    artifact_path: /tmp/carousel-composition-final-browser.log
+    commit_sha: "6ae348621"
   - criterion_id: A3
     status: pass
     evidence_ref: "At 2f746ddd, releases outgoing content before a new owner takes control executes for every web mirror: real DOM removal triggers the observer, cancels the owned animation pair, restores visibility/styles/semantics, and settled old promises and later synchronization preserve new owner state. Baseline failed in all five mirrors. Repaired suite 85 passed; /tmp/carousel-lifecycle-red.log and /tmp/carousel-lifecycle-green.log."
