@@ -194,7 +194,11 @@
       },
       "components": [
         "Switch",
-        "ToggleSwitch"
+        "ToggleSwitch",
+        "Checkbox",
+        "Text",
+        "Badge",
+        "Divider"
       ]
     }
   ]

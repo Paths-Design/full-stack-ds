@@ -122,7 +122,8 @@
     "generate:unity": "pnpm run generate -- --target=unity",
     "test:unity": "node scripts/unity-tests.mjs",
     "generate:gpui": "pnpm run generate -- --target=gpui",
-    "test:gpui": "node scripts/gpui-pilot.mjs"
+    "test:gpui": "node scripts/gpui-pilot.mjs",
+    "dev:gpui": "cargo run --locked --manifest-path packages/ds-gpui/Cargo.toml --example gallery"
   },
   "dependencies": {
     "@full-stack-ds/angular": "workspace:*",
