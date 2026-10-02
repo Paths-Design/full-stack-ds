@@ -11,7 +11,7 @@ governs:
 
 # Relationships and candidate semantics
 
-This document proposes meaning for the [paper model](README.md). The [coverage ledger](design-coverage.md) names unresolved decisions. Only the stated candidate subset is represented by schemas; broader product requirements stay visible rather than being silently removed. Draft 0.2.0 follows the confirmed rules in [composition authoring](authoring.md), which supersede the earlier shared-root/normalized-key proposal.
+This document proposes meaning for the [paper model](README.md). The [coverage ledger](design-coverage.md) names unresolved decisions. Only the stated candidate subset is represented by schemas; broader product requirements stay visible rather than being silently removed. Draft 0.3.0 adds [visual authoring](visual-authoring.md), including optional owned definition bodies, source placements and project changes. The retained 0.2.0 motion subset follows the confirmed rules in [composition authoring](authoring.md), which supersede the earlier shared-root/normalized-key proposal.
 
 ## Entities and cardinality
 
@@ -20,7 +20,7 @@ This document proposes meaning for the [paper model](README.md). The [coverage l
 | Project | Discovers workspace pages and dependency sources | Repo-relative paths and selected dependency revisions live in the manifest |
 | Workspace page | Owns one authored document graph and its JSONL | This is a scratch editing space, not automatically an application route |
 | Visual node | Has one identity and one structural owner; children are ordered edges | Roots and child edges are the authored structure; parent pointers are derived |
-| Frame | A bounded visual node with sizing and clipping | A frame is not inherently a scene, route, component, or emitted code element |
+| Frame | A bounded visual node with sizing and clipping | A frame is not inherently a scene, route, component, or emitted code element; extraction produces a referenced definition placement |
 | Component instance | References a library, definition identity, and version; supplies parameter bindings and eligible local properties | Definition source remains outside the instance; an instance edit cannot rewrite it |
 | Composition | Owns a frame root and local consumer graph | Shared definitions do not share instance edits |
 | Scene | References a composition and a local duration | Animation is scene-local; base edits belong to the composition |
@@ -76,9 +76,9 @@ Inspector edits name their destination: instance parameter, node/part property, 
 
 ## Geometry and composition boundaries
 
-The first schema admits frames, groups, rectangle shapes, text, and component instances with ordered children and optional slot identities. It describes freeform versus flow layout but does not yet define a full layout solver. Semantic property addresses are qualified names such as `sizing.width` and `transform.translation.x`; schema syntax does not authorize arbitrary addresses or prove consumer reachability.
+The current schema admits frames, groups, rectangle shapes, text, component instances and definition placements with ordered children and optional slot identities. It describes freeform versus flow layout but does not yet define a full layout solver. Semantic property addresses are qualified names such as `sizing.width` and `transform.translation.x`; schema syntax does not authorize arbitrary addresses or prove consumer reachability.
 
-Transforms are presentation offsets relative to resting layout. They do not rewrite layout constraints. Translation tracks in the first example explicitly use parent coordinates. Units supported by the candidate dimension carrier are `px` and `rem`; conversion requires a declared environment, and portable layout meaning remains partial. Vectors, masks, paints, typography runs, procedural effects, media, and accessibility semantics need further design and dedicated schemas.
+Transforms are presentation offsets relative to resting layout. They do not rewrite layout constraints. Translation tracks in the first example explicitly use parent coordinates. Units supported by the candidate dimension carrier are `px` and `rem`; conversion requires a declared environment, and portable layout meaning remains partial. Solid fills, linked corners and a bounded horizontal layout now have a paper representation; richer vectors, masks, paints, typography runs, procedural effects, media and accessibility semantics need further design.
 
 Reparenting must select preserve-world or preserve-local placement. An unrepresentable coordinate conversion refuses before mutation. Reuse of a definition does not establish animation continuity across different instances. A scene identifies a composition; local insertion edits that composition, while timed appearance uses a scene-local visibility track. Deliberate composition sharing shares base edits, not scene evaluation state. Simultaneous evaluation isolation, overlap and the storyboard representative sample time remain open. See [authoring ownership](authoring.md).
 
@@ -96,7 +96,7 @@ Slide-in/slide-out/custom are authoring recipes, not primitive track types. A fu
 
 ## JSONL and history
 
-A page begins with a versioned header at revision 0. Each later line is one complete accepted transaction with a transaction identity, actor identity, expected revision, resulting revision and operations. Initialization contains the original complete document. The 0.2.0 vocabulary addresses compositions, instance bindings/slots, and scene property tracks/keys, with explicit undo/redo links. [Authoring](authoring.md) names each effect and its required inverse data. Further mutation vocabulary requires corresponding ownership and inverse design.
+A page begins with a versioned header at revision 0. Each later line is one complete accepted transaction with a transaction identity, actor identity, expected revision, resulting revision and operations. 0.3.0 permits the first transaction to initialize an original document or create a composition from the header-established empty page; the earlier initialization convention is superseded explicitly. The composition vocabulary addresses compositions, instance bindings/slots, and scene property tracks/keys, with explicit undo/redo links. [Authoring](authoring.md) names each effect and its required inverse data. Further mutation vocabulary requires corresponding ownership and inverse design.
 
 Acceptance requires `expectedRevision = currentRevision` and `revision = currentRevision + 1`, uniqueness of transaction identities, and atomic validation of all operations. A stale or invalid operation changes nothing. Rejected requests are not successful page transactions; their audit disposition needs separate design. Revision numbers are local ordering, not globally unique Git revisions.
 

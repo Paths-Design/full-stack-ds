@@ -4,7 +4,7 @@ authority: architecture
 status: draft
 title: Shared document design coverage and unresolved obligations
 owner: "@darianrosebrook"
-updated: 2026-10-01
+updated: 2026-10-02
 governs:
   - packages/ds-contracts/document-model/design-ledger.json
 ---
@@ -13,7 +13,7 @@ governs:
 
 The [machine ledger](../../../../packages/ds-contracts/document-model/design-ledger.json) is the maintained record. This document defines its interpretation and update rules, rather than duplicating its individual statuses.
 
-Every record has a stable requirement ID, requirement text, design coverage, schema coverage, runtime status, relationships, decision references, remaining design work, and proof obligations. `specified` means this paper draft gives the requirement's semantics; it does not mean the user has ratified them. `partial` means the stated subset has a design and the missing portion is named. `open` means no sufficient design exists. `deferred` is an explicit sequencing choice, not fulfillment or removal of the requirement.
+Named successor records additionally carry a concept name and blocking requirement IDs. The machine crosswalk maps retained handoff scenarios and the original sixteen-step workflow to owned decisions, schemas and partial examples; [traceability](handoff-crosswalk.md) states their limits. Every record has a stable requirement ID, requirement text, design coverage, schema coverage, runtime status, relationships, decision references, remaining design work, and proof obligations. `specified` means this paper draft gives the requirement's semantics; it does not mean the user has ratified them. `partial` means the stated subset has a design and the missing portion is named. `open` means no sufficient design exists. `deferred` is an explicit sequencing choice, not fulfillment or removal of the requirement.
 
 Schema coverage is `represented`, `partial`, or `absent`. Runtime status starts at `not-implemented`; future entries may use `implemented-unverified` or `bounded-evidence`, but must name implementation/evidence references. Evidence is scoped: a supported web translation track cannot close native motion, media compositing or arbitrary components.
 
