@@ -58,3 +58,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/tests/style.rs
     commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Executed seven mounted GPUI engine witnesses independently assert pointer and keyboard requests, owner acceptance/refusal, disabled suppression, Tab order and persistent focus. All expected test IDs present and passing in tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/native/report.json and test.log; engine input evidence is separate from OS keyboard and physical input."
+    recorded_at: "2026-10-02T17:39:42.738Z"
+    command: "CARGO_TARGET_DIR=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/gpui-fidelity-cargo/runtime pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
