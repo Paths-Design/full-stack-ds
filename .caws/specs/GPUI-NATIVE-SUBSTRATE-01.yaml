@@ -49,3 +49,12 @@ contracts:
   - name: 'gpui-native-runtime'
     type: behavior
     path: 'packages/ds-gpui/src/style.rs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Executed native resolved-style and actual GPUI style/bounds/paint assertions cover size/state/token override, inherited units, shorthand precedence, border-none, asymmetric thin edges and fail-closed unsupported values. Stable receipt tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/native/report.json records 20 passing Rust tests; mounted consumer assertions additionally verify geometry and colors."
+    recorded_at: "2026-10-02T17:39:32.473Z"
+    command: "CARGO_TARGET_DIR=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/gpui-fidelity-cargo/runtime pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/style.rs
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
