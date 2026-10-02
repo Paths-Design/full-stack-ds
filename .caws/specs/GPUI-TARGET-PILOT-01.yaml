@@ -79,9 +79,9 @@ evidence:
     commit_sha: db531801386b2e3d6ad163067512144d6b4166b8
   - criterion_id: A3
     status: pass
-    evidence_ref: "Manually adjudicated executed evidence at source db5318013: governed rail pass, root 4764/4764 pass, five non-root framework suites pass, typecheck/lint/docs/build pass. Preserved root-tests.log, framework-tests.log, types.log, lint.log, claims-final.log, links-final.log and build.log accompany rail-final.log. Inspected docs bound the pilot. Logs remain ignored; no CI or remote push claim."
-    recorded_at: "2026-10-02T00:11:23.916Z"
+    evidence_ref: "Tracked target doctrine inspected at db5318013; capability boundaries match source. Manually adjudicated executed checks at that source: governed rail pass, root 4764/4764 pass, all framework suites pass, typecheck/lint/docs/build pass. Supporting ignored logs in tmp/gpui-pilot/GPUI-TARGET-PILOT-01 include rail-final.log, root-tests.log, framework-tests.log, types.log, lint.log, claims-final.log, links-final.log and build.log. Source citation verification does not reexecute commands; CI and remote push unclaimed."
+    recorded_at: "2026-10-02T00:13:53.420Z"
     command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
     exit_code: 0
-    artifact_path: tmp/gpui-pilot/GPUI-TARGET-PILOT-01/rail-final.log
+    artifact_path: docs/architecture/gpui-target.md
     commit_sha: db531801386b2e3d6ad163067512144d6b4166b8
