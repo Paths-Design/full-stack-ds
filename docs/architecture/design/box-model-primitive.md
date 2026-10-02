@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
-updated: 2026-10-01
-verified_at_commit: 429db81cb
+updated: 2026-10-02
+verified_at_commit: bdeef3a2a
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -99,3 +99,13 @@ Web boundary emission. Native projections read the receiving part's geometry;
 the binding supplies elapsed time without defining a new box override API.
 The box-model unit suite passed with this IR addition. Native Carousel styling
 and rendered progress integration remain separate verification obligations.
+
+## GPUI style reconciliation
+
+The additive `NativeStyleRulesIR` projection reads the existing primitive,
+morphology and authored-sidecar defaults in their established order. It does
+not change the box schema, public slot pool, Web reset or CSS consumer rules.
+GPUI resolves supported lengths and explicit instance overrides in its native
+runtime; mounted geometry tests and the inspected gallery cover the admitted
+components. This does not establish arbitrary geometry, writing-mode parity
+or a shared native box override API. See [the GPUI target](../gpui-target.md).

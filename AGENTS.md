@@ -252,7 +252,7 @@ packages/
   ds-react-native/      # Generated RN package — rail-admitted, in the CI drift diff
   ds-swiftui/  ds-jetpack-compose/  # Generated native packages, outside the admission rail
   ds-swift-smoke/  ds-compose-smoke/  # Fixtures for the two native compile lanes
-  ds-gpui/             # Rust Boolean-control pilot, excluded from pnpm workspace
+  ds-gpui/             # Bounded Rust native target, excluded from pnpm workspace
   ds-unity/  ds-godot/  # Local engine pilots (UPM / Godot addon), excluded from the pnpm workspace
   ds-tokens/            # DTCG token source, build, validation, contrast, usage gates
   ds-iconography/       # Icon authoring source + emission ledger
@@ -365,13 +365,20 @@ When reasoning or writing docs/comments, do not over-claim:
 - Tests that produce visual evidence (screenshots) write under `test-results/` (gitignored) and `tmp/` (gitignored, project scratch).
 - When a script touches `composed.tokens.json` or anything under `packages/ds-codegen/.emission-manifest.json`, it is touching gitignored regenerable state — never commit those files.
 
-### GPUI Rust pilot
+### GPUI native target
 
 `packages/ds-gpui` is a Cargo package excluded from pnpm workspace discovery.
-`pnpm run generate:gpui` emits its registry Boolean-control allowlist.
-`pnpm run test:gpui` runs real GPUI 0.2.2 compilation and state-policy tests.
-The native consumer example is included in the compile check. GPUI is outside
-the TypeScript admission rail, CI and pre-push native validation. Compilation
-and policy tests do not establish physical input, rendered frames, keyboard,
-accessibility, token styling, upstream-main compatibility or cross-platform
-behavior. See [GPUI target](docs/architecture/gpui-target.md).
+`pnpm run generate:gpui` emits its registry <!-- target-component-count:gpui -->6-component
+allowlist: Switch, ToggleSwitch, Checkbox, Text, Badge and Divider.
+`pnpm run test:gpui` runs GPUI 0.2.2 compilation and mounted engine input/layout/style
+tests; the native lane pins Rust 1.90.0 on macOS with Xcode/Metal.
+`pnpm run dev:gpui` builds and opens a fresh native gallery app. Normalized IR
+owns anatomy, token references, variants and state; never dispatch on component
+identity or hand-edit generated views. Theme overrides are explicit; automatic
+dark/brand graph loading and unsupported props/styles remain unimplemented.
+GPUI is outside the TypeScript admission rail. Native macOS CI and Rust drift
+checks are configured; remote native CI execution remains unverified. Pre-push
+does not automatically compile GPUI. Mounted test-engine input is distinct from
+OS input, and gallery inspection proves only the inspected states. The pinned
+renderer sharpness gap remains; no accessibility, full-corpus, cross-platform or
+upstream-main parity claim follows. See [GPUI target](docs/architecture/gpui-target.md).

@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
-updated: 2026-10-01
-verified_at_commit: a3ccd648d
+updated: 2026-10-02
+verified_at_commit: bdeef3a2a
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -29,7 +29,7 @@ The claim, stated plainly:
 
 > Compositional systems — systems where higher-order artifacts are assembled from lower-order ones under shared constraints — converge on a single architectural shape. That shape can be written down. Systems that conform to it compose cleanly across heterogeneous targets, regenerate safely, and survive transfer to new substrates. Systems that resist it accumulate a predictable family of symptoms — shadow files, stubbed-out implementations, force-pushes around quality gates, runtime drift between layers, irreproducible builds — that no amount of after-the-fact tooling fully fixes.
 
-The constraint of "<!-- component-count -->55 components, 1 rendered primitive, <!-- web-framework-count -->5 Web DOM frameworks" exists to test this claim — a constraint now carried by <!-- registered-target-count -->12 registered codegen targets: the five web frameworks plus React Native (rail-admitted, a different substrate) and, outside the rail, Figma descriptors, SwiftUI, Jetpack Compose, and the bounded Unity UI Toolkit and Godot Control pilots. The five web frameworks remain the falsification surface with teeth — the only family proven end-to-end, from emission through admission to runtime — while the native targets are the adversarial extension of the same test at graded proof strength. If the same contract can drive React (function components with hooks), Vue (reactive composables), Svelte (compiler-driven runes), Angular (signals with dependency injection), and Lit (web components with reactive controllers) without leaking implementation detail into any of them — and without the contract growing per-framework escape hatches — then the contract is at the right level of abstraction for those realized facts. If it cannot, the abstraction leak should appear as target friction. Agreement across targets still does not establish that a contract fact is correct—or even influential—which is measured separately through authored review and contract mutation.
+The constraint of "<!-- component-count -->55 components, 1 rendered primitive, <!-- web-framework-count -->5 Web DOM frameworks" exists to test this claim — a constraint now carried by <!-- registered-target-count -->12 registered codegen targets: the five web frameworks plus React Native (rail-admitted, a different substrate) and, outside the rail, Figma descriptors, SwiftUI, Jetpack Compose, GPUI, and the bounded Unity UI Toolkit and Godot Control pilots. The five web frameworks remain the falsification surface with teeth — the only family proven end-to-end, from emission through admission to runtime — while the native targets are the adversarial extension of the same test at graded proof strength. If the same contract can drive React (function components with hooks), Vue (reactive composables), Svelte (compiler-driven runes), Angular (signals with dependency injection), and Lit (web components with reactive controllers) without leaking implementation detail into any of them — and without the contract growing per-framework escape hatches — then the contract is at the right level of abstraction for those realized facts. If it cannot, the abstraction leak should appear as target friction. Agreement across targets still does not establish that a contract fact is correct—or even influential—which is measured separately through authored review and contract mutation.
 
 This document names the architectural shape, identifies the load-bearing pieces of this codebase that encode it, and states the falsification conditions. It is intended for readers who want to evaluate the architecture as a claim, not just use the codegen.
 
@@ -39,7 +39,8 @@ This document argues from one concrete codebase. The current evidence is:
 
 - <!-- component-count -->55 component contracts generated through one primitive. (Count is loader-derived — `contracts-fs.ts` walks `components/*/<Name>.contract.json`; do not hand-maintain this number, re-derive it.)
 - Five Web DOM framework emitters consuming a shared IR, plus React Native on a different substrate consuming the same IR and admitted by the same rail.
-- Two registered native targets outside the admission rail consuming the same IR: SwiftUI, allowlisted for <!-- target-component-count:swiftui -->52 contracts from the corpus, and Jetpack Compose, allowlisted for <!-- target-component-count:jetpack-compose -->52. Both generated roots are byte-drift-gated and compile through dedicated native CI lanes over hand-authored example consumers. SwiftUI additionally has CI-run body/state/resolver and sampled token-paint tests plus a separately invoked macOS press-proof harness for named interactions; Compose has resolver conformance tests but no UI-runtime lane. These are bounded facts, not broad native behavioral parity or device correctness.
+- SwiftUI and Jetpack Compose are registered native targets outside the admission rail, consuming the same IR and allowlisted for <!-- target-component-count:swiftui -->52 and <!-- target-component-count:jetpack-compose -->52 contracts respectively. Both generated roots are byte-drift-gated and compile through dedicated native CI lanes over hand-authored example consumers. SwiftUI additionally has CI-run body/state/resolver and sampled token-paint tests plus a separately invoked macOS press-proof harness for named interactions; Compose has resolver conformance tests but no UI-runtime lane. These are bounded facts, not broad native behavioral parity or device correctness.
+- [GPUI](architecture/gpui-target.md) realizes its <!-- target-component-count:gpui -->6-component allowlist through normalized anatomy, native activation keys and additive style-rule IR. Mounted GPUI tests exercise owner requests, focus, variants and token geometry; separate macOS gallery inspection covers bounded pixels and pointer requests. Its dedicated native CI lane is configured but remote execution remains unverified. It is outside the TypeScript rail, retains explicit semantic omissions, and has an unresolved renderer sharpness gap.
 - A bounded Unity UI Toolkit target with generated Switch, Accordion, Popover and Tabs controls, compound items, and a local UPM package. Real Unity EditMode tests verify UXML import and named interactions; this target is outside the TypeScript admission rail and has no full visual, accessibility or player-build parity claim. See [Unity pilot evidence](architecture/unity-target.md).
 - Boundary checks in the IR that fail on unresolved contract references.
 - Regeneration semantics that preserve custom regions while rewriting generated regions.
@@ -157,7 +158,7 @@ The cleanest example in this codebase is `validateDomBindings` in `ir.ts`. When 
 
 This is fail-closed governance at codegen time. The principle: when the system has more information than the author (it knows what channels exist; the author might have mistyped), it rejects ambiguity loudly rather than guessing. The alternative — silent fallthrough to a literal string in the generated output — is common enough in codegen tools that we treat it as a default to be refused, not a discovery. The fail-closed choice keeps the contract authoritative; silent fallthrough lets the generated output become a second, accidental source of truth.
 
-A system in normal form has fail-loud linters at *every* boundary where the system can detect ambiguity the author could not. The DOM-binding check is one; schema validation against `component.contract.schema.json` is another; the unresolved-type-ref pass in the IR is a third.
+A system in normal form has fail-loud linters at *every* boundary where the system can detect ambiguity the author could not. The DOM-binding check and schema validation against `component.contract.schema.json` are fail-closed. Unresolved type references are reported, but generation continues with `unknown` unless `--strict-types` is supplied; that diagnostic is not a default fail-closed type boundary.
 
 ### 6. Stable mutable/immutable site discipline that allows human edits to survive regeneration without violating invariants
 
@@ -244,6 +245,17 @@ The claim is broad. It is also narrow enough to be falsified. The clean falsific
 The seven properties are stated at the level of generality where they are meant to compare against other compositional systems. Whether they do is left to the reader to test against systems they know.
 
 ## What this codebase demonstrates, and does not
+
+The GPUI extension adds source-bearing style rules and normalized host activation
+keys to the IR without changing existing Web behavior or adding a rendered
+primitive contract. The normalizer retains selector/property residue and source
+platform restrictions; the emitter consumes those facts instead of reparsing raw
+style sidecars. The Rust substrate owns event delivery and supported paint.
+This is a bounded projection of authored Web style vocabulary, not proof of a
+substrate-neutral style language. Actual gallery inspection exposed a thin-border
+paint failure that resolved-style tests missed, motivating an independent native
+paint witness and a generic edge repair. Renderer sharpness, accessibility and
+complete component semantics remain separate obligations.
 
 The motion-port reconciliation at the current stamp adds normalized decorative
 part ownership and repeated ancestry to the shared IR. React Native delivers
