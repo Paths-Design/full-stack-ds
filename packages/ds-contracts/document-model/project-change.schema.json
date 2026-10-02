@@ -68,7 +68,7 @@
           "revision"
         ]
       },
-      "minItems": 1
+      "minItems": 0
     },
     "sourceChanges": {
       "type": "array",
@@ -386,6 +386,55 @@
                 "const": "undo"
               }
             }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "sourceChanges": {
+            "type": "array",
+            "contains": {
+              "type": "object",
+              "properties": {
+                "operations": {
+                  "type": "array",
+                  "contains": {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "create-token",
+                          "remove-created-token",
+                          "create-definition",
+                          "remove-created-definition",
+                          "rename-definition"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "operations"
+              ]
+            }
+          }
+        },
+        "required": [
+          "sourceChanges"
+        ]
+      },
+      "then": {
+        "properties": {
+          "pageTransactions": {
+            "type": "array",
+            "minItems": 1
           }
         }
       }

@@ -1,0 +1,450 @@
+{
+  "schemaVersion": "0.3.0",
+  "basis": "authored-future-runtime-oracle",
+  "steps": [
+    {
+      "step": 1,
+      "beforeRevision": 0,
+      "afterRevision": 1,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "empty page"
+      ],
+      "after": [
+        "node.banner owns empty frame; dimensions inherited 100x100"
+      ],
+      "transactionIds": [
+        "tx.frame"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.banner"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 2,
+      "beforeRevision": 1,
+      "afterRevision": 2,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "node.banner owns empty frame; dimensions inherited 100x100"
+      ],
+      "after": [
+        "node.banner explicit 800x150"
+      ],
+      "transactionIds": [
+        "tx.size"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.banner"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 3,
+      "beforeRevision": 2,
+      "afterRevision": 2,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "node.banner explicit 800x150"
+      ],
+      "after": [
+        "session tool=text; page unchanged"
+      ],
+      "transactionIds": [],
+      "owners": [
+        "session"
+      ],
+      "inverse": "No authored operation"
+    },
+    {
+      "step": 4,
+      "beforeRevision": 2,
+      "afterRevision": 2,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "session tool=text; page unchanged"
+      ],
+      "after": [
+        "provisional node.title; page unchanged"
+      ],
+      "transactionIds": [],
+      "owners": [
+        "session"
+      ],
+      "inverse": "No authored operation"
+    },
+    {
+      "step": 5,
+      "beforeRevision": 2,
+      "afterRevision": 3,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "provisional node.title; page unchanged"
+      ],
+      "after": [
+        "node.title content=Banner Title; parent=node.banner"
+      ],
+      "transactionIds": [
+        "tx.title"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.banner"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 6,
+      "beforeRevision": 3,
+      "afterRevision": 4,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "node.title content=Banner Title; parent=node.banner"
+      ],
+      "after": [
+        "node.button explicit 128x36; canvas x=900"
+      ],
+      "transactionIds": [
+        "tx.buttonFrame"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 7,
+      "beforeRevision": 4,
+      "afterRevision": 5,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "node.button explicit 128x36; canvas x=900"
+      ],
+      "after": [
+        "node.buttonText content=Button; parent=node.button"
+      ],
+      "transactionIds": [
+        "tx.buttonText"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 8,
+      "beforeRevision": 5,
+      "afterRevision": 6,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "node.buttonText content=Button; parent=node.button"
+      ],
+      "after": [
+        "node.button label=Button; identity retained"
+      ],
+      "transactionIds": [
+        "tx.buttonName"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 9,
+      "beforeRevision": 6,
+      "afterRevision": 7,
+      "projectRevision": "p0",
+      "tokenRevision": "t0",
+      "definitionRevision": "d0",
+      "before": [
+        "node.button label=Button; identity retained"
+      ],
+      "after": [
+        "node.button linked radius=12px literal"
+      ],
+      "transactionIds": [
+        "tx.radius"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 10,
+      "beforeRevision": 7,
+      "afterRevision": 8,
+      "projectRevision": "p1",
+      "tokenRevision": "t1",
+      "definitionRevision": "d0",
+      "before": [
+        "node.button linked radius=12px literal"
+      ],
+      "after": [
+        "node.button radius=source.tokens/border-radius-md"
+      ],
+      "transactionIds": [
+        "tx.radiusToken"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button",
+        "source.tokens"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 11,
+      "beforeRevision": 8,
+      "afterRevision": 9,
+      "projectRevision": "p1",
+      "tokenRevision": "t1",
+      "definitionRevision": "d0",
+      "before": [
+        "node.button radius=source.tokens/border-radius-md"
+      ],
+      "after": [
+        "node.button paint.fill=#111111 literal"
+      ],
+      "transactionIds": [
+        "tx.background"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 12,
+      "beforeRevision": 9,
+      "afterRevision": 10,
+      "projectRevision": "p2",
+      "tokenRevision": "t2",
+      "definitionRevision": "d0",
+      "before": [
+        "node.button paint.fill=#111111 literal"
+      ],
+      "after": [
+        "node.button paint.fill=source.tokens/action-bg-primary; eligibility=fill/frame"
+      ],
+      "transactionIds": [
+        "tx.backgroundToken"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button",
+        "source.tokens"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 13,
+      "beforeRevision": 10,
+      "afterRevision": 12,
+      "projectRevision": "p3",
+      "tokenRevision": "t3",
+      "definitionRevision": "d0",
+      "before": [
+        "node.button paint.fill=source.tokens/action-bg-primary; eligibility=fill/frame"
+      ],
+      "after": [
+        "node.buttonText paint.foreground=source.tokens/fg-primary-inverse"
+      ],
+      "transactionIds": [
+        "tx.whiteText",
+        "tx.foregroundToken"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button",
+        "source.tokens"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 14,
+      "beforeRevision": 12,
+      "afterRevision": 14,
+      "projectRevision": "p4",
+      "tokenRevision": "t3",
+      "definitionRevision": "d1",
+      "before": [
+        "node.buttonText paint.foreground=source.tokens/fg-primary-inverse"
+      ],
+      "after": [
+        "node.button placement=definition.button; node.buttonInstance fresh reference inside node.banner"
+      ],
+      "transactionIds": [
+        "tx.extractButton",
+        "tx.instance"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.button",
+        "composition.banner",
+        "source.definitions"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 15,
+      "beforeRevision": 14,
+      "afterRevision": 15,
+      "projectRevision": "p4",
+      "tokenRevision": "t3",
+      "definitionRevision": "d1",
+      "before": [
+        "node.button placement=definition.button; node.buttonInstance fresh reference inside node.banner"
+      ],
+      "after": [
+        "node.banner layout=horizontal/space-between/start; ordered title then instance"
+      ],
+      "transactionIds": [
+        "tx.flow"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.banner"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    },
+    {
+      "step": 16,
+      "beforeRevision": 15,
+      "afterRevision": 17,
+      "projectRevision": "p6",
+      "tokenRevision": "t3",
+      "definitionRevision": "d3",
+      "before": [
+        "node.banner layout=horizontal/space-between/start; ordered title then instance"
+      ],
+      "after": [
+        "node.banner placement=definition.banner label=Banner; body.bannerButton references definition.button"
+      ],
+      "transactionIds": [
+        "tx.extractBanner",
+        "tx.bannerName"
+      ],
+      "owners": [
+        "page.visual",
+        "composition.banner",
+        "source.definitions"
+      ],
+      "inverse": "Restore exact prior authored fields absence identities and references; source inverses refuse later dependent uses"
+    }
+  ],
+  "metrics": {
+    "advancePx": 8,
+    "lineHeightPx": 20
+  },
+  "layout": {
+    "title": [
+      0,
+      0,
+      96,
+      20
+    ],
+    "button": [
+      672,
+      0,
+      128,
+      36
+    ],
+    "spaceBetweenPx": 576
+  },
+  "observations": [
+    {
+      "id": "visual.defaults",
+      "expected": "100x100 white radius0; absent width/height"
+    },
+    {
+      "id": "visual.radius-token",
+      "expected": "12px unchanged; reference retained"
+    },
+    {
+      "id": "visual.fill-token",
+      "expected": "#111111 unchanged; paint.fill retained; frame default white"
+    },
+    {
+      "id": "visual.foreground-token",
+      "expected": "white unchanged; paint.foreground retained"
+    },
+    {
+      "id": "visual.button-extract",
+      "expected": "128x36 and references unchanged; placement identity retained"
+    },
+    {
+      "id": "visual.banner-extract",
+      "expected": "800x150 children and nested definition reference unchanged"
+    },
+    {
+      "id": "visual.inherited-update",
+      "expected": "definition radius16 reaches source and inherited nested consumer"
+    },
+    {
+      "id": "visual.local-override",
+      "expected": "nested radius4 remains while definition becomes16"
+    },
+    {
+      "id": "visual.reset",
+      "expected": "override absent; inherits16 without literal copy"
+    },
+    {
+      "id": "visual.scope-root",
+      "expected": "effective frame/fill remains eligible through instance"
+    },
+    {
+      "id": "visual.scope-reject",
+      "expected": "border text foreground vector fill refuse atomically"
+    },
+    {
+      "id": "visual.layout",
+      "expected": "title0,0,96,20; button672,0,128,36; space576"
+    },
+    {
+      "id": "visual.undo-token",
+      "expected": "exact prior literal and paint identity; unused created token removed"
+    },
+    {
+      "id": "visual.undo-token-dependent",
+      "expected": "later token consumer refuses entire inverse"
+    },
+    {
+      "id": "visual.undo-extract",
+      "expected": "original IDs order membership bindings restored"
+    },
+    {
+      "id": "visual.redo-extract",
+      "expected": "same extraction identities and correspondence restored"
+    },
+    {
+      "id": "visual.undo-button-dependent",
+      "expected": "Banner consumer refuses Button extraction inverse"
+    }
+  ]
+}

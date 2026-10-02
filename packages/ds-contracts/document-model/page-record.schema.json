@@ -239,6 +239,9 @@
               }
             }
           ]
+        },
+        "projectChangeId": {
+          "$ref": "common.schema.json#/$defs/id"
         }
       },
       "required": [

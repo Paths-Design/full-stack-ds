@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "0.3.0",
+  "projectId": "project.visual",
+  "pageId": "page.visual",
+  "revision": 17,
+  "compositions": [
+    {
+      "id": "composition.banner",
+      "label": "Composition",
+      "rootNodeId": "node.banner",
+      "nodeIds": [
+        "node.banner"
+      ]
+    },
+    {
+      "id": "composition.button",
+      "label": "Composition",
+      "rootNodeId": "node.button",
+      "nodeIds": [
+        "node.button"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "node.banner",
+      "kind": "definition-placement",
+      "label": "Banner",
+      "defaultProfileRef": {
+        "sourceId": "source.defaults",
+        "profileId": "defaults.frame"
+      },
+      "properties": {},
+      "children": [],
+      "definitionRef": {
+        "sourceId": "source.definitions",
+        "definitionId": "definition.banner",
+        "version": "banner.v1"
+      }
+    },
+    {
+      "id": "node.button",
+      "kind": "definition-placement",
+      "label": "Button",
+      "defaultProfileRef": {
+        "sourceId": "source.defaults",
+        "profileId": "defaults.frame"
+      },
+      "properties": {
+        "transform.translation.x": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 900,
+            "unit": "px"
+          }
+        }
+      },
+      "children": [],
+      "definitionRef": {
+        "sourceId": "source.definitions",
+        "definitionId": "definition.button",
+        "version": "button.v1"
+      }
+    }
+  ],
+  "scenes": [],
+  "tracks": [],
+  "sequences": [],
+  "annotations": []
+}

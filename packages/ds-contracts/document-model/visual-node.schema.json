@@ -26,9 +26,7 @@
                 }
               },
               "required": [
-                "kind",
-                "layout",
-                "clipContent"
+                "kind"
               ]
             },
             {
@@ -182,7 +180,23 @@
                 "children": {
                   "type": "array",
                   "maxItems": 0
-                }
+                },
+                "properties": {
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "transform.translation.x",
+                      "transform.translation.y"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "$ref": "common.schema.json#/$defs/binding"
+                  }
+                },
+                "fills": false,
+                "corners": false,
+                "textStyle": false,
+                "layoutItem": false
               },
               "required": [
                 "kind",
