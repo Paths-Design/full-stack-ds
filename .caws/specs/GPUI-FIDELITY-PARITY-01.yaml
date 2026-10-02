@@ -85,3 +85,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/tests/native_runtime.rs
     commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Fresh all-target generation and six admitted-target rail, 33 projection tests, full root/framework regression, typecheck, lint, showcase build, doc claims/links and 20 native tests passed. Preserved raw logs tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/logs and native receipt. Final compiled probe 5afd5272 inspected via CUA: six component gallery, visible horizontal/vertical separators and controlled pointer acceptance/refusal. Metrics match 1x backing; plain GPUI edge comparison remains soft. Exact omissions, macOS pinned-version boundary, renderer sharpness, OS keyboard and unexecuted remote native CI documented."
+    recorded_at: "2026-10-02T17:38:13.148Z"
+    command: "pnpm run governed:rail"
+    exit_code: 0
+    artifact_path: docs/architecture/gpui-target.md
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
