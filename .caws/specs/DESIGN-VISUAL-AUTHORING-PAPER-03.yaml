@@ -1,0 +1,51 @@
+id: DESIGN-VISUAL-AUTHORING-PAPER-03
+title: 'Specify visual authoring token scope and component extraction in draft 0.3.0'
+risk_tier: 2
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-02T16:43:26.051Z'
+updated_at: '2026-10-02T16:43:26.051Z'
+created_by_session: '01a0f5b0-8c29-7670-82de-50f7c08d07da'
+blast_radius:
+  modules:
+    - 'Isolated visual-authoring paper schemas original fixtures and coverage lineage'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/architecture/design/shared-document-model/'
+    - 'packages/ds-contracts/document-model/'
+  out: []
+invariants:
+  - 'Token eligibility constrains property consumers independently of token value type for both human and agent edits'
+  - 'Definition bodies have one owner; editable placements and instances retain references without flattening nested definitions'
+  - 'Project changes describe atomic page and source ownership without claiming persistence or execution'
+  - 'All runtime statuses remain not-implemented and no UI renderer evaluator adapter or generated component changes occur'
+acceptance:
+  - id: A1
+    given: 'the approved sixteen-step Button-to-Banner workflow'
+    when: 'paper semantics and independent tables are inspected'
+    then: 'named objects ownership creation defaults token scope extraction correspondence layout and inverse boundaries describe every step without implicit decisions'
+  - id: A2
+    given: 'draft 0.3.0 schemas and original authoring examples'
+    when: 'qualification runs'
+    then: 'examples and malformed neighbors qualify with nonmutation and weakened-schema controls while general evaluation and persistence remain explicitly unverified'
+  - id: A3
+    given: 'the prior ledger and retained handoff'
+    when: 'coverage is reconciled'
+    then: 'history and recovery preserve lineage every named unresolved obligation remains visible and the workflow plus handoff scenarios have a decision and evidence crosswalk'
+  - id: A4
+    given: 'the scoped source commits'
+    when: 'paper documentation and required local gates run'
+    then: 'checks pass and the source diff remains confined to paper contracts with no remote publication'
+non_functional: {}
+contracts:
+  - name: 'visual-authoring'
+    type: schema
+    path: 'packages/ds-contracts/document-model/visual-node.schema.json'
+  - name: 'definition-body'
+    type: schema
+    path: 'packages/ds-contracts/document-model/definition.schema.json'
+  - name: 'project-change'
+    type: schema
+    path: 'packages/ds-contracts/document-model/project-change.schema.json'
