@@ -64,3 +64,9 @@ evidence:
     exit_code: 0
     artifact_path: .caws/state/visual-authoring-paper/fsds-visual-authoring-paper.log
     commit_sha: "6f8a71b2eb8f59530693f88c037336163f876d3a"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected retained history/recovery lineage and handoff-crosswalk.md at 6f8a71b2e. Qualification checks 28 crosswalk entries, nine named obligations with blocking edges, valid owned decision/schema/example paths, and all runtime statuses not-implemented."
+    recorded_at: "2026-10-02T17:20:27.080Z"
+    artifact_path: packages/ds-contracts/document-model/design-ledger.json
+    commit_sha: "6f8a71b2eb8f59530693f88c037336163f876d3a"
