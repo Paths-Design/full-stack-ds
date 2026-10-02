@@ -1822,7 +1822,10 @@ dependencies = [
 name = "full-stack-ds-gpui"
 version = "0.1.0"
 dependencies = [
+ "cocoa 0.26.0",
  "gpui",
+ "objc",
+ "raw-window-handle",
 ]
 
 [[package]]

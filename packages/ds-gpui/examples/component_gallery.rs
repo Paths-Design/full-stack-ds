@@ -17,6 +17,7 @@ struct Gallery {
     vertical: Entity<Divider>,
     accepted: usize,
     last_request: String,
+    last_render_metrics: String,
     _subscriptions: Vec<Subscription>,
 }
 
@@ -99,12 +100,23 @@ impl Gallery {
         })).collect();
         let divider = cx.new(|_| Divider::default());
         let vertical = cx.new(|_| Divider::default().orientation("vertical"));
-        Self { focus, switches, toggles, checkboxes, text, badges, divider, vertical, accepted: 0, last_request: "No owner request yet".into(), _subscriptions: vec![accept, refuse] }
+        Self { focus, switches, toggles, checkboxes, text, badges, divider, vertical, accepted: 0, last_request: "No owner request yet".into(), last_render_metrics: String::new(), _subscriptions: vec![accept, refuse] }
     }
 }
 
 impl Render for Gallery {
-    fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let metrics = render_metrics(window);
+        if metrics != self.last_render_metrics {
+            self.last_render_metrics = metrics.clone();
+            if let Ok(executable) = std::env::current_exe() {
+                if let Some(contents) = executable.parent().and_then(|directory| directory.parent()) {
+                    if let Err(error) = std::fs::write(contents.join("render-metrics.json"), &metrics) {
+                        eprintln!("Could not save gallery render metrics: {error}");
+                    }
+                }
+            }
+        }
         div().id("gallery").track_focus(&self.focus).size_full().overflow_y_scroll()
             .bg(gpui::rgb(0xfafafa)).text_color(gpui::rgb(0x141414))
             .on_action(cx.listener(|_, _: &Tab, window, _| window.focus_next()))
@@ -118,15 +130,52 @@ impl Render for Gallery {
                 .child(div().flex().flex_col().gap_2().child("Checkbox / mixed and disabled").children(self.checkboxes.iter().cloned()))
                 .child(div().flex().flex_col().gap_2().child("ToggleSwitch / selected pills").children(self.toggles.iter().cloned())))
             .child(div().flex().items_start().gap_2().children(self.badges.iter().cloned()))
-            .child(format!("{} accepted request(s). {}", self.accepted, self.last_request)))
+            .child(format!("{} accepted request(s). {}", self.accepted, self.last_request))
+            .child(div().text_sm().child(format!("Renderer comparison: GPUI 0.2.2 at {} device pixel(s) per logical pixel", window.scale_factor())))
+            .child(div().relative().w_full().h(px(74.)).children([0., 0.25, 0.5, 0.75].into_iter().enumerate().map(|(index, fraction)| {
+                div().absolute().left(px(index as f32 * 226. + fraction)).top(px(fraction)).w(px(210.)).h(px(72.))
+                    .border_1().border_color(gpui::rgb(0xb8b8b8)).rounded(px(12.))
+                    .p_3().text_size(px(16.)).child(format!("Plain GPUI / +{fraction}px"))
+            }))))
     }
+}
+
+// Read the actual macOS surface instead of inferring backing resolution from a screenshot.
+#[cfg(target_os = "macos")]
+fn render_metrics(window: &Window) -> String {
+    use cocoa::{base::id, foundation::{NSRect, NSSize}};
+    use objc::{msg_send, sel, sel_impl};
+    use raw_window_handle::{HasWindowHandle, RawWindowHandle};
+    let scale = window.scale_factor();
+    let viewport = window.viewport_size();
+    if let Ok(handle) = HasWindowHandle::window_handle(window) {
+        if let RawWindowHandle::AppKit(handle) = handle.as_raw() {
+            // GPUI owns this live NSView for the lifetime of Window. All messages are reads.
+            unsafe {
+                let view = handle.ns_view.as_ptr() as id;
+                let native_window: id = msg_send![view, window];
+                let native_scale: f64 = msg_send![native_window, backingScaleFactor];
+                let view_bounds: NSRect = msg_send![view, bounds];
+                let layer: id = msg_send![view, layer];
+                let layer_scale: f64 = msg_send![layer, contentsScale];
+                let drawable: NSSize = msg_send![layer, drawableSize];
+                return format!("{{\"gpui_scale\":{scale},\"window_backing_scale\":{native_scale},\"layer_contents_scale\":{layer_scale},\"viewport_width\":{},\"viewport_height\":{},\"view_width\":{},\"view_height\":{},\"drawable_width\":{},\"drawable_height\":{}}}\n", f32::from(viewport.width), f32::from(viewport.height), view_bounds.size.width, view_bounds.size.height, drawable.width, drawable.height);
+            }
+        }
+    }
+    format!("{{\"gpui_scale\":{scale},\"native_surface_unavailable\":true}}\n")
+}
+
+#[cfg(not(target_os = "macos"))]
+fn render_metrics(window: &Window) -> String {
+    format!("{{\"gpui_scale\":{},\"native_surface_unavailable\":true}}\n", window.scale_factor())
 }
 
 fn main() {
     Application::new().run(|cx: &mut App| {
         cx.bind_keys([KeyBinding::new("tab", Tab, None), KeyBinding::new("shift-tab", BackTab, None)]);
         let bounds = Bounds::centered(None, size(px(1120.), px(760.)), cx);
-        cx.open_window(WindowOptions { window_bounds: Some(WindowBounds::Windowed(bounds)), ..Default::default() }, |window, cx| cx.new(|cx| Gallery::new(window, cx))).expect("GPUI gallery window creation");
+        cx.open_window(WindowOptions { window_bounds: Some(WindowBounds::Windowed(bounds)), titlebar: Some(gpui::TitlebarOptions { title: Some("Full Stack DS GPUI".into()), ..Default::default() }), ..Default::default() }, |window, cx| cx.new(|cx| Gallery::new(window, cx))).expect("GPUI gallery window creation");
         cx.activate(true);
     });
 }

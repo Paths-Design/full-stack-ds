@@ -9,3 +9,12 @@ gpui = { version = "=0.2.2", default-features = false }
 
 [dev-dependencies]
 gpui = { version = "=0.2.2", default-features = false, features = ["test-support"] }
+
+[target.'cfg(target_os = "macos")'.dev-dependencies]
+cocoa = "=0.26.0"
+objc = "=0.2.7"
+raw-window-handle = "=0.6.2"
+
+[lints.rust]
+# objc 0.2.7's selector macro checks this legacy cfg in its consumer crate.
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(feature, values("cargo-clippy"))'] }
