@@ -56,3 +56,11 @@ evidence:
     recorded_at: "2026-10-02T17:19:58.677Z"
     artifact_path: docs/architecture/design/shared-document-model/visual-authoring.md
     commit_sha: "6f8a71b2eb8f59530693f88c037336163f876d3a"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Observed qualifier exit 0 at clean source 6f8a71b2e, and reran after merge: 18 schemas, 59 original records, 60 schema neighbors, 17 original-fixture neighbors, 10 sensitivity controls. Raw logs are retained under .caws/state/visual-authoring-paper; graph/evaluation/persistence are not established."
+    recorded_at: "2026-10-02T17:20:12.107Z"
+    command: node packages/ds-contracts/document-model/verify.mjs
+    exit_code: 0
+    artifact_path: .caws/state/visual-authoring-paper/fsds-visual-authoring-paper.log
+    commit_sha: "6f8a71b2eb8f59530693f88c037336163f876d3a"
