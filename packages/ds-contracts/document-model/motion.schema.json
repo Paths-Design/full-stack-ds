@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/motion.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/motion.schema.json",
   "title": "Candidate property keys and scene-local tracks",
   "description": "Absolute scene-local keys; implicit composition start and terminal hold require a future evaluator.",
   "$defs": {

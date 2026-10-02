@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/definition.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/definition.schema.json",
   "title": "Reusable definition candidate interface",
-  "description": "Draft interface only; no implementation, complete definition tree or adapter proof.",
+  "description": "Draft interface with optional owned visual body; no runtime or adapter proof.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -171,6 +171,49 @@
         ]
       },
       "minItems": 0
+    },
+    "body": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rootNodeId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "nodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "visual-node.schema.json"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "not": {
+                      "const": "definition-placement"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "rootNodeId",
+        "nodeIds",
+        "nodes"
+      ]
     }
   },
   "required": [

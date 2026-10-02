@@ -1,24 +1,374 @@
 {
-  "schemaVersion": "0.2.0",
+  "schemaVersion": "0.3.0",
   "basis": "authored-future-runtime-oracle",
   "cases": [
-    {"kind": "animation","id": "motion.static","setup": "No X track","sceneId": "scene.A","nodeId": "node.buttonA","samples": [{"atTicks": 0,"x": 0},{"atTicks": 10,"x": 0},{"atTicks": 20,"x": 0},{"atTicks": 100,"x": 0}],"baseX": 0},
-    {"kind": "animation","id": "motion.linear","setup": "Original single key","sceneId": "scene.A","nodeId": "node.buttonA","samples": [{"atTicks": 0,"x": 0},{"atTicks": 10,"x": 10},{"atTicks": 20,"x": 20},{"atTicks": 100,"x": 20}],"baseX": 0},
-    {"kind": "animation","id": "motion.base-edit","setup": "Set base X 5 without selecting a key","sceneId": "scene.A","nodeId": "node.buttonA","samples": [{"atTicks": 0,"x": 5},{"atTicks": 10,"x": 12.5},{"atTicks": 20,"x": 20},{"atTicks": 100,"x": 20}],"baseX": 5},
-    {"kind": "animation","id": "motion.key-edit","setup": "Select key.arrival and set X 30","sceneId": "scene.A","nodeId": "node.buttonA","samples": [{"atTicks": 0,"x": 0},{"atTicks": 10,"x": 15},{"atTicks": 20,"x": 30},{"atTicks": 100,"x": 30}],"baseX": 0},
-    {"kind": "animation","id": "motion.explicit-start","setup": "Add X 4 key at tick 0","sceneId": "scene.A","nodeId": "node.buttonA","samples": [{"atTicks": 0,"x": 4},{"atTicks": 10,"x": 12},{"atTicks": 20,"x": 20},{"atTicks": 100,"x": 20}],"baseX": 0},
-    {"kind": "animation","id": "motion.explicit-start-base","setup": "Explicit X 4 start and base X 5","sceneId": "scene.A","nodeId": "node.buttonA","samples": [{"atTicks": 0,"x": 4},{"atTicks": 10,"x": 12},{"atTicks": 20,"x": 20},{"atTicks": 100,"x": 20}],"baseX": 5},
-    {"kind": "animation","id": "motion.remove-final","setup": "Remove final key and empty track","sceneId": "scene.A","nodeId": "node.buttonA","samples": [{"atTicks": 0,"x": 0},{"atTicks": 10,"x": 0},{"atTicks": 20,"x": 0},{"atTicks": 100,"x": 0}],"baseX": 0},
-    {"kind": "animation","id": "motion.time-token","setup": "Change arrival token to 40 ms","sceneId": "scene.A","nodeId": "node.buttonA","samples": [{"atTicks": 0,"x": 0},{"atTicks": 10,"x": 5},{"atTicks": 20,"x": 10},{"atTicks": 100,"x": 20}],"baseX": 0},
-    {"kind": "ownership","id": "ownership.initial","setup": "Original consumers","consumers": [{"nodeId": "node.buttonA","label": "Next","opacity": 0.4,"leadingNodeIds": ["node.arrow"]},{"nodeId": "node.buttonB","label": "Continue","opacity": 0.8,"leadingNodeIds": []}]},
-    {"kind": "ownership","id": "ownership.definition","setup": "Select definition default label Proceed","consumers": [{"nodeId": "node.buttonA","label": "Next","opacity": 0.4,"leadingNodeIds": ["node.arrow"]},{"nodeId": "node.buttonB","label": "Proceed","opacity": 0.8,"leadingNodeIds": []}]},
-    {"kind": "ownership","id": "ownership.reset","setup": "Remove A label override","consumers": [{"nodeId": "node.buttonA","label": "Continue","opacity": 0.4,"leadingNodeIds": ["node.arrow"]},{"nodeId": "node.buttonB","label": "Continue","opacity": 0.8,"leadingNodeIds": []}]},
-    {"kind": "ownership","id": "ownership.slot-reset","setup": "Reset A leading slot","consumers": [{"nodeId": "node.buttonA","label": "Next","opacity": 0.4,"leadingNodeIds": []},{"nodeId": "node.buttonB","label": "Continue","opacity": 0.8,"leadingNodeIds": []}]},
-    {"kind": "ownership","id": "ownership.token","setup": "Change shared opacity token to 0.6","consumers": [{"nodeId": "node.buttonA","label": "Next","opacity": 0.4,"leadingNodeIds": ["node.arrow"]},{"nodeId": "node.buttonB","label": "Continue","opacity": 0.6,"leadingNodeIds": []}]},
-    {"kind": "history","id": "history.base","setup": "Undo restores preceding authored ownership and references","transactionId": "tx.base","undoTransactionId": "tx.undoBase","restoredIds": ["node.buttonA"],"baseOverridePresent": false},
-    {"kind": "history","id": "history.key","setup": "Undo restores preceding authored ownership and references","transactionId": "tx.key","undoTransactionId": "tx.undoKey","restoredIds": ["track.buttonX","key.arrival"],"baseOverridePresent": false},
-    {"kind": "history","id": "history.remove","setup": "Undo restores preceding authored ownership and references","transactionId": "tx.remove","undoTransactionId": "tx.undoRemove","restoredIds": ["track.buttonX","key.arrival"],"baseOverridePresent": false},
-    {"kind": "history","id": "history.slot","setup": "Undo restores preceding authored ownership and references","transactionId": "tx.slot","undoTransactionId": "tx.undoSlot","restoredIds": ["node.arrow"],"baseOverridePresent": false},
-    {"kind": "history","id": "history.insert","setup": "Undo restores preceding authored ownership and references","transactionId": "tx.insert","undoTransactionId": "tx.undoInsert","restoredIds": ["node.frameA"],"baseOverridePresent": false}
+    {
+      "kind": "animation",
+      "id": "motion.static",
+      "setup": "No X track",
+      "sceneId": "scene.A",
+      "nodeId": "node.buttonA",
+      "samples": [
+        {
+          "atTicks": 0,
+          "x": 0
+        },
+        {
+          "atTicks": 10,
+          "x": 0
+        },
+        {
+          "atTicks": 20,
+          "x": 0
+        },
+        {
+          "atTicks": 100,
+          "x": 0
+        }
+      ],
+      "baseX": 0
+    },
+    {
+      "kind": "animation",
+      "id": "motion.linear",
+      "setup": "Original single key",
+      "sceneId": "scene.A",
+      "nodeId": "node.buttonA",
+      "samples": [
+        {
+          "atTicks": 0,
+          "x": 0
+        },
+        {
+          "atTicks": 10,
+          "x": 10
+        },
+        {
+          "atTicks": 20,
+          "x": 20
+        },
+        {
+          "atTicks": 100,
+          "x": 20
+        }
+      ],
+      "baseX": 0
+    },
+    {
+      "kind": "animation",
+      "id": "motion.base-edit",
+      "setup": "Set base X 5 without selecting a key",
+      "sceneId": "scene.A",
+      "nodeId": "node.buttonA",
+      "samples": [
+        {
+          "atTicks": 0,
+          "x": 5
+        },
+        {
+          "atTicks": 10,
+          "x": 12.5
+        },
+        {
+          "atTicks": 20,
+          "x": 20
+        },
+        {
+          "atTicks": 100,
+          "x": 20
+        }
+      ],
+      "baseX": 5
+    },
+    {
+      "kind": "animation",
+      "id": "motion.key-edit",
+      "setup": "Select key.arrival and set X 30",
+      "sceneId": "scene.A",
+      "nodeId": "node.buttonA",
+      "samples": [
+        {
+          "atTicks": 0,
+          "x": 0
+        },
+        {
+          "atTicks": 10,
+          "x": 15
+        },
+        {
+          "atTicks": 20,
+          "x": 30
+        },
+        {
+          "atTicks": 100,
+          "x": 30
+        }
+      ],
+      "baseX": 0
+    },
+    {
+      "kind": "animation",
+      "id": "motion.explicit-start",
+      "setup": "Add X 4 key at tick 0",
+      "sceneId": "scene.A",
+      "nodeId": "node.buttonA",
+      "samples": [
+        {
+          "atTicks": 0,
+          "x": 4
+        },
+        {
+          "atTicks": 10,
+          "x": 12
+        },
+        {
+          "atTicks": 20,
+          "x": 20
+        },
+        {
+          "atTicks": 100,
+          "x": 20
+        }
+      ],
+      "baseX": 0
+    },
+    {
+      "kind": "animation",
+      "id": "motion.explicit-start-base",
+      "setup": "Explicit X 4 start and base X 5",
+      "sceneId": "scene.A",
+      "nodeId": "node.buttonA",
+      "samples": [
+        {
+          "atTicks": 0,
+          "x": 4
+        },
+        {
+          "atTicks": 10,
+          "x": 12
+        },
+        {
+          "atTicks": 20,
+          "x": 20
+        },
+        {
+          "atTicks": 100,
+          "x": 20
+        }
+      ],
+      "baseX": 5
+    },
+    {
+      "kind": "animation",
+      "id": "motion.remove-final",
+      "setup": "Remove final key and empty track",
+      "sceneId": "scene.A",
+      "nodeId": "node.buttonA",
+      "samples": [
+        {
+          "atTicks": 0,
+          "x": 0
+        },
+        {
+          "atTicks": 10,
+          "x": 0
+        },
+        {
+          "atTicks": 20,
+          "x": 0
+        },
+        {
+          "atTicks": 100,
+          "x": 0
+        }
+      ],
+      "baseX": 0
+    },
+    {
+      "kind": "animation",
+      "id": "motion.time-token",
+      "setup": "Change arrival token to 40 ms",
+      "sceneId": "scene.A",
+      "nodeId": "node.buttonA",
+      "samples": [
+        {
+          "atTicks": 0,
+          "x": 0
+        },
+        {
+          "atTicks": 10,
+          "x": 5
+        },
+        {
+          "atTicks": 20,
+          "x": 10
+        },
+        {
+          "atTicks": 100,
+          "x": 20
+        }
+      ],
+      "baseX": 0
+    },
+    {
+      "kind": "ownership",
+      "id": "ownership.initial",
+      "setup": "Original consumers",
+      "consumers": [
+        {
+          "nodeId": "node.buttonA",
+          "label": "Next",
+          "opacity": 0.4,
+          "leadingNodeIds": [
+            "node.arrow"
+          ]
+        },
+        {
+          "nodeId": "node.buttonB",
+          "label": "Continue",
+          "opacity": 0.8,
+          "leadingNodeIds": []
+        }
+      ]
+    },
+    {
+      "kind": "ownership",
+      "id": "ownership.definition",
+      "setup": "Select definition default label Proceed",
+      "consumers": [
+        {
+          "nodeId": "node.buttonA",
+          "label": "Next",
+          "opacity": 0.4,
+          "leadingNodeIds": [
+            "node.arrow"
+          ]
+        },
+        {
+          "nodeId": "node.buttonB",
+          "label": "Proceed",
+          "opacity": 0.8,
+          "leadingNodeIds": []
+        }
+      ]
+    },
+    {
+      "kind": "ownership",
+      "id": "ownership.reset",
+      "setup": "Remove A label override",
+      "consumers": [
+        {
+          "nodeId": "node.buttonA",
+          "label": "Continue",
+          "opacity": 0.4,
+          "leadingNodeIds": [
+            "node.arrow"
+          ]
+        },
+        {
+          "nodeId": "node.buttonB",
+          "label": "Continue",
+          "opacity": 0.8,
+          "leadingNodeIds": []
+        }
+      ]
+    },
+    {
+      "kind": "ownership",
+      "id": "ownership.slot-reset",
+      "setup": "Reset A leading slot",
+      "consumers": [
+        {
+          "nodeId": "node.buttonA",
+          "label": "Next",
+          "opacity": 0.4,
+          "leadingNodeIds": []
+        },
+        {
+          "nodeId": "node.buttonB",
+          "label": "Continue",
+          "opacity": 0.8,
+          "leadingNodeIds": []
+        }
+      ]
+    },
+    {
+      "kind": "ownership",
+      "id": "ownership.token",
+      "setup": "Change shared opacity token to 0.6",
+      "consumers": [
+        {
+          "nodeId": "node.buttonA",
+          "label": "Next",
+          "opacity": 0.4,
+          "leadingNodeIds": [
+            "node.arrow"
+          ]
+        },
+        {
+          "nodeId": "node.buttonB",
+          "label": "Continue",
+          "opacity": 0.6,
+          "leadingNodeIds": []
+        }
+      ]
+    },
+    {
+      "kind": "history",
+      "id": "history.base",
+      "setup": "Undo restores preceding authored ownership and references",
+      "transactionId": "tx.base",
+      "undoTransactionId": "tx.undoBase",
+      "restoredIds": [
+        "node.buttonA"
+      ],
+      "baseOverridePresent": false
+    },
+    {
+      "kind": "history",
+      "id": "history.key",
+      "setup": "Undo restores preceding authored ownership and references",
+      "transactionId": "tx.key",
+      "undoTransactionId": "tx.undoKey",
+      "restoredIds": [
+        "track.buttonX",
+        "key.arrival"
+      ],
+      "baseOverridePresent": false
+    },
+    {
+      "kind": "history",
+      "id": "history.remove",
+      "setup": "Undo restores preceding authored ownership and references",
+      "transactionId": "tx.remove",
+      "undoTransactionId": "tx.undoRemove",
+      "restoredIds": [
+        "track.buttonX",
+        "key.arrival"
+      ],
+      "baseOverridePresent": false
+    },
+    {
+      "kind": "history",
+      "id": "history.slot",
+      "setup": "Undo restores preceding authored ownership and references",
+      "transactionId": "tx.slot",
+      "undoTransactionId": "tx.undoSlot",
+      "restoredIds": [
+        "node.arrow"
+      ],
+      "baseOverridePresent": false
+    },
+    {
+      "kind": "history",
+      "id": "history.insert",
+      "setup": "Undo restores preceding authored ownership and references",
+      "transactionId": "tx.insert",
+      "undoTransactionId": "tx.undoInsert",
+      "restoredIds": [
+        "node.frameA"
+      ],
+      "baseOverridePresent": false
+    }
   ]
 }

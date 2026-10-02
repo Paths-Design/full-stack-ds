@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/edit-operation.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/edit-operation.schema.json",
   "title": "Candidate composition-owned edit operation",
   "description": "Paper operation shape only; admission, atomic effects and inverse execution remain unimplemented.",
   "type": "object",
@@ -272,6 +272,174 @@
             "nodeId",
             "insertTransactionId"
           ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "rename-node"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "label"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "replace-text"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "content"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "set-layout"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "layout": {
+              "$ref": "appearance.schema.json#/$defs/layout"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "layout"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "set-paint"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "paint": {
+              "$ref": "appearance.schema.json#/$defs/paint"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "paint"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "set-corners"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "corners": {
+              "$ref": "appearance.schema.json#/$defs/corners"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "corners"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "create-composition"
+            },
+            "composition": {
+              "$ref": "document.schema.json#/properties/compositions/items"
+            },
+            "root": {
+              "$ref": "visual-node.schema.json"
+            }
+          },
+          "required": [
+            "kind",
+            "composition",
+            "root"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "insert-instance"
+            },
+            "node": {
+              "allOf": [
+                {
+                  "$ref": "visual-node.schema.json"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "const": "component-instance"
+                    }
+                  }
+                }
+              ]
+            },
+            "destination": {
+              "$ref": "edit-operation.schema.json#/$defs/destination"
+            }
+          },
+          "required": [
+            "kind",
+            "node",
+            "destination"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "extract-definition"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "definitionRef": {
+              "$ref": "common.schema.json#/$defs/definitionRef"
+            },
+            "correspondenceId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "definitionRef",
+            "correspondenceId"
+          ]
         }
       ]
     }
@@ -330,7 +498,70 @@
             "nodeId",
             "property"
           ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "paint"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "paintId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "property": {
+              "const": "color"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "paintId",
+            "property"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "corner"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "property": {
+              "const": "radius"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "property"
+          ]
         }
+      ]
+    },
+    "destination": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "parentNodeId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "slotId": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "index": {
+          "$ref": "common.schema.json#/$defs/ticks"
+        }
+      },
+      "required": [
+        "parentNodeId",
+        "index"
       ]
     }
   }

@@ -1,0 +1,394 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/project-change.schema.json",
+  "title": "Proposed atomic page and source change",
+  "description": "Draft paper shape; not an executor, persistence or conformance result.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "projectId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "human",
+            "agent"
+          ]
+        },
+        "id": {
+          "$ref": "common.schema.json#/$defs/id"
+        }
+      },
+      "required": [
+        "kind",
+        "id"
+      ]
+    },
+    "expectedProjectRevision": {
+      "$ref": "common.schema.json#/$defs/revision"
+    },
+    "projectRevision": {
+      "$ref": "common.schema.json#/$defs/revision"
+    },
+    "pageTransactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "pageId": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "transactionId": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "expectedRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "pageId",
+          "transactionId",
+          "expectedRevision",
+          "revision"
+        ]
+      },
+      "minItems": 1
+    },
+    "sourceChanges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sourceId": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "kind": {
+            "enum": [
+              "tokens",
+              "definitions"
+            ]
+          },
+          "expectedRevision": {
+            "$ref": "common.schema.json#/$defs/revision"
+          },
+          "revision": {
+            "$ref": "common.schema.json#/$defs/revision"
+          },
+          "operations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/sourceOperation"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "sourceId",
+          "kind",
+          "expectedRevision",
+          "revision",
+          "operations"
+        ]
+      },
+      "minItems": 1
+    },
+    "dependencyUpdates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sourceId": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "fromRevision": {
+            "$ref": "common.schema.json#/$defs/revision"
+          },
+          "toRevision": {
+            "$ref": "common.schema.json#/$defs/revision"
+          }
+        },
+        "required": [
+          "sourceId",
+          "fromRevision",
+          "toRevision"
+        ]
+      },
+      "minItems": 1
+    },
+    "correspondence": {
+      "type": "array",
+      "items": {
+        "$ref": "extraction-correspondence.schema.json"
+      },
+      "minItems": 0
+    },
+    "history": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "edit"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "undo",
+                "redo"
+              ]
+            },
+            "ofProjectChangeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "ofProjectChangeId"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "projectId",
+    "actor",
+    "expectedProjectRevision",
+    "projectRevision",
+    "pageTransactions",
+    "sourceChanges",
+    "dependencyUpdates",
+    "correspondence",
+    "history"
+  ],
+  "$defs": {
+    "sourceOperation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "kind": {
+              "const": "create-token"
+            },
+            "name": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "token": {
+              "$ref": "authoring-token.schema.json#/$defs/token"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "name",
+            "token"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "kind": {
+              "const": "remove-created-token"
+            },
+            "name": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "createdByProjectChangeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "name",
+            "createdByProjectChangeId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "kind": {
+              "const": "create-definition"
+            },
+            "definition": {
+              "$ref": "definition.schema.json"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "definition"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "kind": {
+              "const": "remove-created-definition"
+            },
+            "definitionId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "createdByProjectChangeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "definitionId",
+            "createdByProjectChangeId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "kind": {
+              "const": "rename-definition"
+            },
+            "definitionId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "definitionId",
+            "label"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "kind": {
+              "const": "set-definition-binding"
+            },
+            "definitionId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "address": {
+              "$ref": "edit-operation.schema.json#/$defs/address"
+            },
+            "binding": {
+              "$ref": "common.schema.json#/$defs/binding"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "definitionId",
+            "address",
+            "binding"
+          ]
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "sourceChanges": {
+            "type": "array",
+            "contains": {
+              "type": "object",
+              "properties": {
+                "operations": {
+                  "type": "array",
+                  "contains": {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "remove-created-token",
+                          "remove-created-definition"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "operations"
+              ]
+            }
+          }
+        },
+        "required": [
+          "sourceChanges"
+        ]
+      },
+      "then": {
+        "properties": {
+          "history": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "const": "undo"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

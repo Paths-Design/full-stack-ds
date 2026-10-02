@@ -1,0 +1,321 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/appearance.schema.json",
+  "title": "Candidate visual appearance and layout",
+  "description": "Draft 0.3.0 paper shape only; no runtime admission or evaluation.",
+  "$defs": {
+    "paint": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "common.schema.json#/$defs/id"
+        },
+        "enabled": {
+          "const": true
+        },
+        "kind": {
+          "const": "solid"
+        },
+        "color": {
+          "allOf": [
+            {
+              "$ref": "common.schema.json#/$defs/binding"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "valueType": {
+                  "const": "color"
+                }
+              },
+              "required": [
+                "valueType"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "enabled",
+        "kind",
+        "color"
+      ]
+    },
+    "fills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "enabled": {
+            "const": true
+          },
+          "kind": {
+            "const": "solid"
+          },
+          "color": {
+            "allOf": [
+              {
+                "$ref": "common.schema.json#/$defs/binding"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "valueType": {
+                    "const": "color"
+                  }
+                },
+                "required": [
+                  "valueType"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "enabled",
+          "kind",
+          "color"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 1
+    },
+    "corners": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "linked": {
+          "const": true
+        },
+        "radius": {
+          "allOf": [
+            {
+              "$ref": "common.schema.json#/$defs/binding"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "valueType": {
+                  "const": "dimension"
+                }
+              },
+              "required": [
+                "valueType"
+              ]
+            },
+            {
+              "type": "object",
+              "if": {
+                "properties": {
+                  "kind": {
+                    "const": "literal"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "value": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "linked",
+        "radius"
+      ]
+    },
+    "layout": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "freeform"
+            }
+          },
+          "required": [
+            "kind"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "flow"
+            },
+            "axis": {
+              "enum": [
+                "horizontal",
+                "vertical"
+              ]
+            },
+            "gap": {
+              "allOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/binding"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "valueType": {
+                      "const": "dimension"
+                    }
+                  },
+                  "required": [
+                    "valueType"
+                  ]
+                }
+              ]
+            },
+            "mainAxisAlignment": {
+              "enum": [
+                "start",
+                "space-between"
+              ]
+            },
+            "crossAxisAlignment": {
+              "const": "start"
+            },
+            "padding": {
+              "allOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/binding"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "valueType": {
+                      "const": "dimension"
+                    }
+                  },
+                  "required": [
+                    "valueType"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "axis",
+            "gap",
+            "mainAxisAlignment",
+            "crossAxisAlignment",
+            "padding"
+          ]
+        }
+      ]
+    },
+    "layoutItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "widthMode": {
+          "enum": [
+            "fixed",
+            "intrinsic"
+          ]
+        },
+        "heightMode": {
+          "enum": [
+            "fixed",
+            "intrinsic"
+          ]
+        },
+        "shrink": {
+          "const": 0
+        }
+      },
+      "required": [
+        "widthMode",
+        "heightMode",
+        "shrink"
+      ]
+    },
+    "textStyle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fontRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sourceId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "faceId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "sourceId",
+            "faceId"
+          ]
+        },
+        "fontSize": {
+          "allOf": [
+            {
+              "$ref": "common.schema.json#/$defs/binding"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "valueType": {
+                  "const": "dimension"
+                }
+              },
+              "required": [
+                "valueType"
+              ]
+            }
+          ]
+        },
+        "lineHeight": {
+          "allOf": [
+            {
+              "$ref": "common.schema.json#/$defs/binding"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "valueType": {
+                  "const": "dimension"
+                }
+              },
+              "required": [
+                "valueType"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "fontRef",
+        "fontSize",
+        "lineHeight"
+      ]
+    }
+  }
+}

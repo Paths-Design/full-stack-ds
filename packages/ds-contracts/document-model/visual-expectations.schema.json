@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/visual-expectations.schema.json",
+  "title": "Independent visual-authoring paper oracle",
+  "description": "Draft paper shape; not an executor, persistence or conformance result.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "basis": {
+      "const": "authored-future-runtime-oracle"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "step": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "beforeRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "afterRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "projectRevision": {
+            "$ref": "common.schema.json#/$defs/revision"
+          },
+          "tokenRevision": {
+            "$ref": "common.schema.json#/$defs/revision"
+          },
+          "definitionRevision": {
+            "$ref": "common.schema.json#/$defs/revision"
+          },
+          "before": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "after": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "transactionIds": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "minItems": 0
+          },
+          "owners": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "inverse": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "step",
+          "beforeRevision",
+          "afterRevision",
+          "projectRevision",
+          "tokenRevision",
+          "definitionRevision",
+          "before",
+          "after",
+          "transactionIds",
+          "owners",
+          "inverse"
+        ]
+      },
+      "minItems": 16,
+      "maxItems": 16
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "advancePx": {
+          "const": 8
+        },
+        "lineHeightPx": {
+          "const": 20
+        }
+      },
+      "required": [
+        "advancePx",
+        "lineHeightPx"
+      ]
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "button": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "spaceBetweenPx": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "title",
+        "button",
+        "spaceBetweenPx"
+      ]
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "expected": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "expected"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "basis",
+    "steps",
+    "metrics",
+    "layout",
+    "observations"
+  ]
+}
