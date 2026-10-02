@@ -49,3 +49,10 @@ contracts:
   - name: 'project-change'
     type: schema
     path: 'packages/ds-contracts/document-model/project-change.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected visual-authoring.md and independent sixteen-step states at 6f8a71b2e: explicit owners, creation defaults, consumer eligibility, extraction correspondence, synthetic layout, and inverse refusal boundaries. Paper only; no runtime behavior claimed."
+    recorded_at: "2026-10-02T17:19:58.677Z"
+    artifact_path: docs/architecture/design/shared-document-model/visual-authoring.md
+    commit_sha: "6f8a71b2eb8f59530693f88c037336163f876d3a"
