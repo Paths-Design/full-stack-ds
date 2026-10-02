@@ -53,6 +53,12 @@ test("showcase src (.tsx): lint + typecheck + tests, no rail/generate/token-gate
   assert.ok(off(r, "RUN_RAIL", "RUN_GENERATE_CHECK", "RUN_TOKEN_GATES"));
 });
 
+test("GPUI Rust source changes reach generation and committed-byte drift gates", () => {
+  const flags = classify(["packages/ds-gpui/src/components/Switch/Switch.rs"]);
+  assert.equal(flags.RUN_RAIL, true);
+  assert.equal(flags.RUN_GENERATE_CHECK, true);
+});
+
 test("generated framework change (.tsx): rail + generate:check + tests + typecheck + lint", () => {
   const r = classify(["packages/ds-react/src/components/Table/Table.tsx"]);
   assert.ok(on(r, "RUN_RAIL", "RUN_GENERATE_CHECK", "RUN_TESTS", "RUN_TYPECHECK", "RUN_LINT"));
