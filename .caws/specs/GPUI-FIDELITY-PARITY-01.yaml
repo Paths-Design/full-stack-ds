@@ -77,3 +77,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/tests/native_runtime.rs
     commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Seven named mounted GPUI engine tests executed with no ignored or filtered witnesses: pointer/Space controlled Switch acceptance and disabled suppression; button Enter/Space exactly-once requests; checkbox mixed mark/hover; Tab order skipping disabled and stable focus. tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/native/{report.json,test.log}. Native CUA pointer acceptance/refusal separately observed; actual OS keyboard behavior remains unverified."
+    recorded_at: "2026-10-02T17:38:03.161Z"
+    command: "CARGO_TARGET_DIR=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/gpui-fidelity-cargo/runtime pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
