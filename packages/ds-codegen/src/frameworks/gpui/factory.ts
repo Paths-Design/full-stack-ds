@@ -201,7 +201,7 @@ impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel
 export function createGpuiEmitter(): FrameworkEmitter {
  return { id:'gpui', discoverComponentIds:root=>fs.existsSync(root)?fs.readdirSync(root).filter(name=>fs.existsSync(path.join(root,name,`${name}.rs`))).sort():[],
   emitComponent(ir) { const plan=gpuiPlan(ir),styles=gpuiStylePlan(ir); return [
-   {relativePath:`${ir.name}/${ir.name}.rs`,contents:source(ir,plan,styles)},
+   {relativePath:`${ir.name}/${ir.name}.rs`,contents:source(ir,plan,styles).replace(/[\t ]+$/gm,'')},
    {relativePath:`${ir.name}/capabilities.json`,contents:JSON.stringify({operation:plan.channel?'boolean-control':'static-anatomy',channel:plan.channel,controlPart:plan.part,activationKeys:plan.keys,excludedProps:plan.excludedProps,narrowedTextProps:plan.textProps,styleOmissions:styles.omissions,styleSource:'shared authored Web vocabulary projected into GPUI; source platform restrictions retained',realized:['part-tree','scoped-token-cascade','variant-builders','mounted-variant-setters','design-slot-overrides',...(plan.channel?['controlled-uncontrolled-request-policy','native-host-key-activation','persistent-focus','disabled-suppression']:[])],omissions:['accessibility','form-submission','field-association','motion','compound-composition','arbitrary-native-children','complete-cross-platform-parity'],proof:'requires-real-gpui-engine-tests-and-render-witness; outside-admission-rail'},null,2)+'\n'},
   ]; }, emitTests:()=>[], emitBarrel:names=>names.slice().sort().map(name=>`#[path = "${name}/${name}.rs"]\nmod ${snake(name)};\npub use ${snake(name)}::${name};`).join('\n')+'\n' };
 }

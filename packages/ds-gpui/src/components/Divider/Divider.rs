@@ -26,13 +26,13 @@ pub fn set_orientation(&mut self,value:impl Into<SharedString>,cx:&mut Context<S
 }
 
 impl Render for Divider{fn render(&mut self,window:&mut Window,_cx:&mut Context<Self>)->impl IntoElement{
- 
+
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
  let style_state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"divider-root".to_string()).id("divider");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
- 
+
  root
 }}

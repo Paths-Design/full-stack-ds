@@ -37,7 +37,7 @@ pub fn set_size(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){l
 pub fn set_disabled(&mut self,value:bool,cx:&mut Context<Self>){self.state.disabled=value;cx.notify();}
  pub fn request_change(&mut self)->Option<ChangeRequest>{self.state.request_toggle().map(|value|ChangeRequest{channel:Self::CHANNEL,handler:Self::CHANGE_HANDLER,value})}
  pub fn request_key(&mut self,key:&str)->Option<ChangeRequest>{if Self::ACTIVATION_KEYS.contains(&key){self.request_change()}else{None}}
- 
+
 }
 impl EventEmitter<ChangeRequest> for ToggleSwitch{}
 impl Render for ToggleSwitch{fn render(&mut self,window:&mut Window,cx:&mut Context<Self>)->impl IntoElement{
