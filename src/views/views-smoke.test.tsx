@@ -2,6 +2,8 @@
 // and asserts its headline surface. Presentation views were the largest
 // 0%-coverage block in the showcase package.
 import { describe, expect, it } from "vitest";
+import targetRegistry from "../../fsds.targets.json";
+import { ADMITTED_FRAMEWORKS } from "../../packages/ds-codegen/src/validation/admission-descriptor";
 import { render, screen, cleanup } from "@testing-library/react";
 import { afterEach } from "vitest";
 import { bundle } from "../types/bundle";
@@ -29,13 +31,17 @@ describe("showcase views — render smoke", () => {
     expect(screen.getByText("Targets with full corpus source coverage")).toBeTruthy();
     expect(screen.getByText("Rendered primitives").previousElementSibling?.textContent).toBe("1");
     expect(screen.getByText(/BoxModel supplies shared geometry defaults/)).toBeTruthy();
-    for (const label of ["Jetpack Compose", "Unity UI Toolkit", "Godot Control"]) {
+    for (const label of ["Jetpack Compose", "Unity UI Toolkit", "Godot Control", "GPUI"]) {
       expect(screen.getByText(label, { selector: "strong" })).toBeTruthy();
     }
-    expect(screen.getAllByText("Admission rail target")).toHaveLength(6);
-    expect(screen.getAllByText("Outside the admission rail")).toHaveLength(5);
+    expect(screen.getAllByText("Admission rail target")).toHaveLength(ADMITTED_FRAMEWORKS.length);
+    expect(screen.getAllByText("Outside the admission rail")).toHaveLength(targetRegistry.targets.filter(target => target.source.kind === "builtin" && !ADMITTED_FRAMEWORKS.includes(target.id as typeof ADMITTED_FRAMEWORKS[number])).length);
     expect(document.body.textContent).not.toContain("Targets at full parity");
     expect(document.body.textContent).not.toContain("no component package yet");
+    const gpui = bundle.census?.targets.find(t => t.id === "gpui");
+    expect(gpui?.componentsShipped).toBe(targetRegistry.targets.find(t => t.id === "gpui")?.components?.length);
+    expect(gpui?.sourceCoverage).toBe("partial");
+    expect(gpui?.railAdmitted).toBe(false);
     expect(bundle.census?.targets.find((t) => t.id === "figma")?.family).toBe("descriptor");
   });
 

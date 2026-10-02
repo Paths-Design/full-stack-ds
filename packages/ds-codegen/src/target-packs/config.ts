@@ -40,7 +40,7 @@ export const DEFAULT_TARGET_REGISTRY_CONFIG: TargetRegistryConfigV1 = {
   // excluding React Native and SwiftUI. In this repository the committed
   // registry is authoritative and includes both; do not infer current target
   // selection from this missing-config fallback.
-  targets: KNOWN_TARGETS.filter((id) => id !== "react-native" && id !== "swiftui" && id !== "unity" && id !== "godot").map((id) => ({
+  targets: KNOWN_TARGETS.filter((id) => id !== "react-native" && id !== "swiftui" && id !== "unity" && id !== "godot" && id !== "gpui").map((id) => ({
     id,
     source: { kind: "builtin" },
   })),

@@ -18,7 +18,7 @@ export async function inspectTargetOutputs(
       const found = files.some((file) => file.isFile() && (descriptor
         ? file.name === `${name}.figma.json`
         : file.name.startsWith(`${name}.`) &&
-          /^(?:component\.)?(?:tsx|ts|vue|svelte|swift|kt|cs|gd)$/.test(file.name.slice(name.length + 1))));
+          /^(?:component\.)?(?:tsx|ts|vue|svelte|swift|kt|cs|gd|rs)$/.test(file.name.slice(name.length + 1))));
       if (found) names.push(name);
     }
   }

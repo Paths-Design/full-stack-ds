@@ -14,7 +14,7 @@ This repository is not, primarily, a design system. It is a falsifiable claim ab
 
 That claim boundary has expanded. The current system also includes generated-artifact admission, token governance, target-pack registry scaffolding, Figma descriptor projection, runtime fact assertions, and partially derived component evidence pages. Those surfaces strengthen the architecture, but they do not turn the project into a proof of production adoption, complete accessibility adequacy, visual quality, live Figma publication, executable external target packs, or substrate-neutral UI semantics.
 
-The claim is domain-shaped, not component-shaped. React, Vue, Svelte, Angular, Lit, React Native, SwiftUI, Jetpack Compose, Unity, Godot, and Figma live inside one cell of the research program — the components row — and target count is pressure on the claim, not its scorecard. The domain table is in [`docs/research-program.md`](docs/research-program.md).
+The claim is domain-shaped, not component-shaped. React, Vue, Svelte, Angular, Lit, React Native, SwiftUI, Jetpack Compose, Unity, Godot, GPUI, and Figma live inside one cell of the research program — the components row — and target count is pressure on the claim, not its scorecard. The domain table is in [`docs/research-program.md`](docs/research-program.md).
 
 The full normal-form claim, evidence status, and falsification conditions are written down in [`docs/normal-form.md`](docs/normal-form.md). The consumer-facing stance — strict internal invariants, boring external affordances, and admitted override surfaces — is named in [`docs/architecture/consumer-projection-doctrine.md`](docs/architecture/consumer-projection-doctrine.md).
 
@@ -112,6 +112,7 @@ packages/
   ds-react-native/               # Generated RN package — rail-admitted, in the CI drift diff
   ds-swiftui/  ds-jetpack-compose/ # Generated native packages, outside the admission rail
   ds-swift-smoke/  ds-compose-smoke/ # Fixtures for the two native compile lanes
+  ds-gpui/                      # Rust Boolean-control pilot, outside the admission rail
   ds-unity/  ds-godot/           # Local engine pilots (UPM / Godot addon), excluded from the pnpm workspace
   ds-tokens/                     # Token source, build, validation, and usage gates
   ds-iconography/                # Icon authoring source + emission ledger
@@ -215,6 +216,8 @@ Codegen is **`@full-stack-ds/codegen`** ([`packages/ds-codegen`](packages/ds-cod
 
 Default target is React. Pass `--target=<framework>` or `--target=all` to emit other targets.
 
+The [GPUI Rust pilot](docs/architecture/gpui-target.md) emits its registry Boolean-control allowlist with `pnpm run generate:gpui`. Its explicit local compile/policy lane is `pnpm run test:gpui`; it remains outside the admission rail.
+
 ```bash
 pnpm run generate                                  # React only (default)
 pnpm run generate -- --target=all                  # Every registered target, honoring allowlists
@@ -232,7 +235,7 @@ CLI flags after `--`:
 
 | Flag | Purpose |
 |---|---|
-| `--target=<list>` | Comma-separated target ids: `react`, `vue`, `svelte`, `angular`, `lit`, `react-native`, `figma`, `swiftui`, `jetpack-compose`, `unity`, `godot`, or `all`. `all` resolves from `fsds.targets.json` and honors each target's component allowlist. |
+| `--target=<list>` | Comma-separated target ids: `react`, `vue`, `svelte`, `angular`, `lit`, `react-native`, `figma`, `swiftui`, `jetpack-compose`, `unity`, `godot`, `gpui`, or `all`. `all` resolves from `fsds.targets.json` and honors each target's component allowlist. |
 | `--validate` | Schema-validate contracts and exit |
 | `--check-semantics` | Run cross-contract/codegen semantic checks during validation |
 | `--check-usage` | Validate usage JSONL refs, props, and slots |

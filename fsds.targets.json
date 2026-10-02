@@ -186,6 +186,16 @@
         "Popover",
         "Tabs"
       ]
+    },
+    {
+      "id": "gpui",
+      "source": {
+        "kind": "builtin"
+      },
+      "components": [
+        "Switch",
+        "ToggleSwitch"
+      ]
     }
   ]
 }

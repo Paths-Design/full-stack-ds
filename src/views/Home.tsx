@@ -23,6 +23,7 @@ const TARGET_PRESENTATION: Record<
   swiftui: { label: "SwiftUI", short: "SwiftUI", dot: "lang-swift", blurb: "View structs, @Binding state." },
   "jetpack-compose": { label: "Jetpack Compose", short: "Jetpack Compose", dot: "", blurb: "Kotlin composables, allowlisted source." },
   unity: { label: "Unity UI Toolkit", short: "Unity", dot: "", blurb: "C# and UI Toolkit, bounded engine pilot." },
+  gpui: { label: "GPUI", short: "GPUI", dot: "", blurb: "Rust entities, Boolean-control pilot; published GPUI 0.2.2." },
   godot: { label: "Godot Control", short: "Godot", dot: "", blurb: "GDScript and Control scenes, bounded engine pilot." },
   figma: { label: "Figma", short: "Figma", dot: "lang-figma", blurb: "Descriptor-driven component sets." },
 };

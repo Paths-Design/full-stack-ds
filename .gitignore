@@ -118,3 +118,7 @@ tmp/guard-strikes-*.json
 # <<< caws gitignore <<<
 
 .caws/messages.jsonl
+
+# GPUI local Rust build products (source and dependency lock remain tracked)
+packages/ds-gpui/target/
+packages/ds-gpui/src/components/*/capabilities.json

@@ -3,3 +3,4 @@ packages:
   - "examples/*/*"
   - "!packages/ds-unity"
   - "!packages/ds-godot"
+  - "!packages/ds-gpui"

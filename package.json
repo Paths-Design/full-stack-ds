@@ -120,7 +120,9 @@
     "audit:contract-oracle-mutations": "pnpm run audit:contract-oracle-mutations:selfcheck && node scripts/contract-oracle-mutation/run.mjs",
     "parity:compose-tokens": "pnpm --filter @full-stack-ds/codegen build && node --test scripts/compose-parity-diff.test.mjs && node scripts/compose-parity-diff.mjs",
     "generate:unity": "pnpm run generate -- --target=unity",
-    "test:unity": "node scripts/unity-tests.mjs"
+    "test:unity": "node scripts/unity-tests.mjs",
+    "generate:gpui": "pnpm run generate -- --target=gpui",
+    "test:gpui": "node scripts/gpui-pilot.mjs"
   },
   "dependencies": {
     "@full-stack-ds/angular": "workspace:*",
