@@ -17,6 +17,7 @@ const requiredEngineTests = [
   "mounted_switch_variant_geometry_and_component_token_override",
   "mounted_tab_order_skips_disabled_and_focus_is_stable",
   "mounted_static_typography_badge_and_divider_are_styled",
+  "mounted_divider_orientations_and_tokens_reach_explicit_nonempty_native_paint",
 ];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
 for (const name of target.components) {
