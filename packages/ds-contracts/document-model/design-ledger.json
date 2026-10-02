@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "0.2.0",
-  "updated": "2026-10-01",
+  "schemaVersion": "0.3.0",
+  "updated": "2026-10-02",
   "records": [
     {
       "id": "design.identity",
@@ -8,10 +8,24 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["page owns visual graph", "track targets node identity"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["General deletion repair, duplicate-with-motion remapping, cross-page references, inactive-node cleanup and reparent conversion policy"],
-      "proofObligations": ["Rename/reparent preserve addressed references; duplicate remaps without collisions"],
+      "relationships": [
+        "page owns visual graph",
+        "track targets node identity"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "General deletion repair, duplicate-with-motion remapping, cross-page references, inactive-node cleanup and reparent conversion policy"
+      ],
+      "proofObligations": [
+        "Rename/reparent preserve addressed references; duplicate remaps without collisions"
+      ],
       "runtimeRefs": []
     },
     {
@@ -20,10 +34,24 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["instance references source/definition/version", "parameters belong to instance or definition"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Definition discovery and implementation/visual-tree representation, conditional edit points, content fallback expansion, parameter migrations and version update admission"],
-      "proofObligations": ["One instance edit preserves other instances and definition source"],
+      "relationships": [
+        "instance references source/definition/version",
+        "parameters belong to instance or definition"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Definition discovery, adapter-owned external bodies, conditional edit points, public interface exposure, general extraction repair and version migration admission"
+      ],
+      "proofObligations": [
+        "One instance edit preserves other instances and definition source"
+      ],
       "runtimeRefs": []
     },
     {
@@ -32,10 +60,23 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["kind profile -> definition -> node -> scene -> evaluated motion"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Defaults for sequence/scene/media records and conditional/layout-dependent consumers; profile support for non-root parts"],
-      "proofObligations": ["Literal zero survives; reset removes binding and restores default/reference; invalid present value refuses"],
+      "relationships": [
+        "kind CreationProfile -> definition body -> eligible instance override -> scene evaluated motion"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Defaults for sequence/scene/media records and conditional/layout-dependent consumers; profile support for non-root parts"
+      ],
+      "proofObligations": [
+        "Literal zero survives; reset removes binding and restores default/reference; invalid present value refuses"
+      ],
       "runtimeRefs": []
     },
     {
@@ -44,10 +85,24 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["manifest selects sources/revisions/context", "bindings address source and token path"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["DTCG import/export coverage, alias and composite validation, Resolver contexts, watching, collisions and unsaved-source custody"],
-      "proofObligations": ["Source round trip preserves references/metadata; token update reaches both views; cycle/missing ref rejects atomically"],
+      "relationships": [
+        "manifest selects sources/revisions/context",
+        "bindings address source and token path"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "DTCG import/export coverage, alias and composite validation, Resolver contexts, watching, collisions and unsaved-source custody"
+      ],
+      "proofObligations": [
+        "Source round trip preserves references/metadata; token update reaches both views; cycle/missing ref rejects atomically"
+      ],
       "runtimeRefs": []
     },
     {
@@ -56,10 +111,19 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["workspace page owns JSONL", "frame owns spatial container"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Application route/doc object representation and adapter-owned source mappings"],
-      "proofObligations": ["Creating frame/page changes no application route or component source"],
+      "relationships": [
+        "workspace page owns JSONL",
+        "frame owns spatial container"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Application route/doc object representation and adapter-owned source mappings"
+      ],
+      "proofObligations": [
+        "Creating frame/page changes no application route or component source"
+      ],
       "runtimeRefs": []
     },
     {
@@ -68,10 +132,22 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["scene -> composition identity", "composition -> explicit local members and root", "instance -> shared definition; local bindings and supplied slots"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Scene creation/duplication and reusable composition instances; simultaneous evaluation isolation and storyboard representative sampling"],
-      "proofObligations": ["Editing one independent composition does not mutate another consumer; deliberate composition sharing shares base edits while scene tracks remain isolated"],
+      "relationships": [
+        "scene -> composition identity",
+        "composition -> explicit local members and root",
+        "instance -> shared definition; local bindings and supplied slots"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md"
+      ],
+      "remainingDesign": [
+        "Scene creation/duplication and reusable composition instances; simultaneous evaluation isolation and storyboard representative sampling"
+      ],
+      "proofObligations": [
+        "Editing one independent composition does not mutate another consumer; deliberate composition sharing shares base edits while scene tracks remain isolated"
+      ],
       "runtimeRefs": []
     },
     {
@@ -80,10 +156,17 @@
       "designCoverage": "specified",
       "schemaCoverage": "represented",
       "runtimeStatus": "not-implemented",
-      "relationships": ["sequence owns occurrence ordering/placement", "occurrence references scene and trim interval"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
+      "relationships": [
+        "sequence owns occurrence ordering/placement",
+        "occurrence references scene and trim interval"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
       "remainingDesign": [],
-      "proofObligations": ["Repeated scene uses distinct occurrence identities; trims map to declared scene-local time"],
+      "proofObligations": [
+        "Repeated scene uses distinct occurrence identities; trims map to declared scene-local time"
+      ],
       "runtimeRefs": []
     },
     {
@@ -92,10 +175,18 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["transition references neighboring occurrences"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Overlap, blend, correspondence, shared-root isolation, lifecycle and retained state across transitions"],
-      "proofObligations": ["Cut obeys intervals; future continuity never inferred from labels or definition reuse"],
+      "relationships": [
+        "transition references neighboring occurrences"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Overlap, blend, correspondence, shared-root isolation, lifecycle and retained state across transitions"
+      ],
+      "proofObligations": [
+        "Cut obeys intervals; future continuity never inferred from labels or definition reuse"
+      ],
       "runtimeRefs": []
     },
     {
@@ -104,10 +195,20 @@
       "designCoverage": "specified",
       "schemaCoverage": "represented",
       "runtimeStatus": "not-implemented",
-      "relationships": ["composition base -> implicit start", "selected property key owns its authored value", "last key -> derived terminal hold; no saved base mutation"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "relationships": [
+        "composition base -> implicit start",
+        "selected property key owns its authored value",
+        "last key -> derived terminal hold; no saved base mutation"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md"
+      ],
       "remainingDesign": [],
-      "proofObligations": ["Static scenes and implicit/explicit starts match independent samples; selected-key edits preserve base; terminal hold and scrubbing never author values"],
+      "proofObligations": [
+        "Static scenes and implicit/explicit starts match independent samples; selected-key edits preserve base; terminal hold and scrubbing never author values"
+      ],
       "runtimeRefs": []
     },
     {
@@ -116,10 +217,21 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["duration binding -> exact ticks", "scene local time -> sequence occurrence time"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Frame/rational sampling, rounding, interpolation precision, token time bounds reconciliation and recipe retiming"],
-      "proofObligations": ["Independent linear samples match the worked expectations; time-token changes move addressed keys and report order/bounds incompatibility without resizing the scene"],
+      "relationships": [
+        "duration binding -> exact ticks",
+        "scene local time -> sequence occurrence time"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md"
+      ],
+      "remainingDesign": [
+        "Frame/rational sampling, rounding, interpolation precision, token time bounds reconciliation and recipe retiming"
+      ],
+      "proofObligations": [
+        "Independent linear samples match the worked expectations; time-token changes move addressed keys and report order/bounds incompatibility without resizing the scene"
+      ],
       "runtimeRefs": []
     },
     {
@@ -128,10 +240,20 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["track addresses scene/node/property"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Semantic writer/order/bounds validation, additive/blended motion and interval composition"],
-      "proofObligations": ["Initial subset rejects simultaneous writers before evaluation rather than using array order"],
+      "relationships": [
+        "track addresses scene/node/property"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md"
+      ],
+      "remainingDesign": [
+        "Semantic writer/order/bounds validation, additive/blended motion and interval composition"
+      ],
+      "proofObligations": [
+        "Initial subset rejects simultaneous writers before evaluation rather than using array order"
+      ],
       "runtimeRefs": []
     },
     {
@@ -140,10 +262,18 @@
       "designCoverage": "open",
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
-      "relationships": ["preset recipe -> application -> derived tracks"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Recipe schema/versioning, default directions and offsets, regeneration, manual edits and parameter binding"],
-      "proofObligations": ["Changing recipe application does not overwrite unrelated hand-authored keys"],
+      "relationships": [
+        "preset recipe -> application -> derived tracks"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Recipe schema/versioning, default directions and offsets, regeneration, manual edits and parameter binding"
+      ],
+      "proofObligations": [
+        "Changing recipe application does not overwrite unrelated hand-authored keys"
+      ],
       "runtimeRefs": []
     },
     {
@@ -152,10 +282,19 @@
       "designCoverage": "open",
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
-      "relationships": ["interaction trigger starts motion", "current evaluation informs interruption"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Trigger ownership, policy vocabulary, active-time pauses, loops, fill and interruption across mounts"],
-      "proofObligations": ["Reverse-from-current and cancellation probes use independent time/position observations"],
+      "relationships": [
+        "interaction trigger starts motion",
+        "current evaluation informs interruption"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Trigger ownership, policy vocabulary, active-time pauses, loops, fill and interruption across mounts"
+      ],
+      "proofObligations": [
+        "Reverse-from-current and cancellation probes use independent time/position observations"
+      ],
       "runtimeRefs": []
     },
     {
@@ -164,10 +303,24 @@
       "designCoverage": "partial",
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
-      "relationships": ["both views submit same operations", "session state owns viewport/playhead/panel"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Storyboard sampling/navigation/selection retention, auto-key and multi-key editing"],
-      "proofObligations": ["Equivalent edits yield equal semantic state; collapsing timeline changes no authored object"],
+      "relationships": [
+        "both views submit same operations",
+        "session state owns viewport/playhead/panel"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Storyboard sampling/navigation/selection retention, auto-key and multi-key editing"
+      ],
+      "proofObligations": [
+        "Equivalent edits yield equal semantic state; collapsing timeline changes no authored object"
+      ],
       "runtimeRefs": []
     },
     {
@@ -176,22 +329,49 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["header identifies page/version", "transaction owns atomic operations"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Operation admission, complete graph mutation algebra, schema migrations, stale/deduplicated writes and rejected-request audit"],
-      "proofObligations": ["Reject stale/duplicate/malformed request without partial mutation; replay restores semantic state"],
+      "relationships": [
+        "header identifies page/version",
+        "transaction owns atomic operations"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Operation admission, complete graph mutation algebra, schema migrations, stale/deduplicated writes and rejected-request audit"
+      ],
+      "proofObligations": [
+        "Reject stale/duplicate/malformed request without partial mutation; replay restores semantic state"
+      ],
       "runtimeRefs": []
     },
     {
       "id": "design.history-recovery",
-      "requirement": "Meaningful undo/redo and interruption recovery preserve identities and bindings",
+      "requirement": "Interruption recovery and durable history storage preserve identities and bindings",
       "designCoverage": "open",
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
-      "relationships": ["undo references accepted edit", "checkpoint derives from log"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Inverse execution and before-image custody, branch history, compaction, torn append/fsync, pending edits and cross-file saves"],
-      "proofObligations": ["Crash fault injection yields prior or complete next revision; redo preserves references"],
+      "relationships": [
+        "undo references accepted edit",
+        "checkpoint derives from log"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Recovery, branch history, compaction, torn append/fsync, pending edits and cross-file saves"
+      ],
+      "proofObligations": [
+        "Crash fault injection yields prior or complete next revision; redo preserves references"
+      ],
       "runtimeRefs": []
     },
     {
@@ -200,10 +380,16 @@
       "designCoverage": "specified",
       "schemaCoverage": "represented",
       "runtimeStatus": "not-implemented",
-      "relationships": ["explicit plan selects page/revision/target/dependencies"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
+      "relationships": [
+        "explicit plan selects page/revision/target/dependencies"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
       "remainingDesign": [],
-      "proofObligations": ["New nodes generate no files; executing reviewed plan targets only selected roots/revision"],
+      "proofObligations": [
+        "New nodes generate no files; executing reviewed plan targets only selected roots/revision"
+      ],
       "runtimeRefs": []
     },
     {
@@ -212,10 +398,18 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["adapter maps document addresses to supported component consumers"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Capability manifest, entrypoints/provider context, instance isolation, command authorization and server ownership"],
-      "proofObligations": ["Fresh user project preserves distinct instances; attached server survives editor close"],
+      "relationships": [
+        "adapter maps document addresses to supported component consumers"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Capability manifest, entrypoints/provider context, instance isolation, command authorization and server ownership"
+      ],
+      "proofObligations": [
+        "Fresh user project preserves distinct instances; attached server survives editor close"
+      ],
       "runtimeRefs": []
     },
     {
@@ -224,10 +418,19 @@
       "designCoverage": "open",
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
-      "relationships": ["adapter maps edits to upstream source", "runtime reports rendered revision"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Source maps, generated-source policy, stale-source conflicts, external reflection and failed rebuild states"],
-      "proofObligations": ["Contract edit survives two regenerations and fresh reopen; stale write refuses; saved source can coexist with failed preview"],
+      "relationships": [
+        "adapter maps edits to upstream source",
+        "runtime reports rendered revision"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Source maps, generated-source policy, stale-source conflicts, external reflection and failed rebuild states"
+      ],
+      "proofObligations": [
+        "Contract edit survives two regenerations and fresh reopen; stale write refuses; saved source can coexist with failed preview"
+      ],
       "runtimeRefs": []
     },
     {
@@ -236,10 +439,22 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["parent layout constrains child", "transform offsets resting geometry"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Solver semantics, flex/grid/constraints, intrinsic sizing, percentage/relative units, reparent and world/local transforms"],
-      "proofObligations": ["Resize preserves chosen constraints and per-instance edits; measurements never become saved defaults"],
+      "relationships": [
+        "parent layout constrains child",
+        "transform offsets resting geometry"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Solver semantics, flex/grid/constraints, intrinsic sizing, percentage/relative units, reparent and world/local transforms"
+      ],
+      "proofObligations": [
+        "Resize preserves chosen constraints and per-instance edits; measurements never become saved defaults"
+      ],
       "runtimeRefs": []
     },
     {
@@ -248,22 +463,45 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["shape/text belong to visual graph"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Paths/control points, winding, strokes, rich text/runs, typography, font resolution, shaping and fallback"],
-      "proofObligations": ["Point/text edit, grouping, undo/redo and reopen preserve editable content"],
+      "relationships": [
+        "shape/text belong to visual graph"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Paths/control points, winding, strokes, rich text/runs, typography, font resolution, shaping and fallback"
+      ],
+      "proofObligations": [
+        "Point/text edit, grouping, undo/redo and reopen preserve editable content"
+      ],
       "runtimeRefs": []
     },
     {
       "id": "design.paint-effects",
       "requirement": "Paints, masks, clipping and procedural effects retain identities, order and parameters",
-      "designCoverage": "open",
-      "schemaCoverage": "absent",
+      "designCoverage": "partial",
+      "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["ordered paint/effect stack belongs to node", "effect parameters can bind tokens/motion"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Paint identities/enabled state, colors, gradients, blend spaces, masks, effect composition and unsupported render policy"],
-      "proofObligations": ["Disabled paint remains authored; unsupported effect preserves definition and reports unavailable"],
+      "relationships": [
+        "ordered paint/effect stack belongs to node",
+        "effect parameters can bind tokens/motion"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Multiple/disabled paints, independently linked corners, color spaces, gradients, blends, masks and effect order"
+      ],
+      "proofObligations": [
+        "Disabled paint remains authored; unsupported effect preserves definition and reports unavailable"
+      ],
       "runtimeRefs": []
     },
     {
@@ -272,10 +510,19 @@
       "designCoverage": "open",
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
-      "relationships": ["media asset source time maps into scene/sequence", "output specifies sample settings"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Media assets, rational frame/sample time, trim, masks/effect order, audio mixing, alpha and codec/output profiles"],
-      "proofObligations": ["Fresh media trim samples expected source time; missing asset blocks complete output"],
+      "relationships": [
+        "media asset source time maps into scene/sequence",
+        "output specifies sample settings"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Media assets, rational frame/sample time, trim, masks/effect order, audio mixing, alpha and codec/output profiles"
+      ],
+      "proofObligations": [
+        "Fresh media trim samples expected source time; missing asset blocks complete output"
+      ],
       "runtimeRefs": []
     },
     {
@@ -284,10 +531,19 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["component contract owns reusable semantics", "document owns composition intent"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Document roles/reading order, labels, interaction/data bindings, focus/navigation and motion preference context"],
-      "proofObligations": ["Output preserves declared semantics; property animation respects independently selected reduced-motion policy"],
+      "relationships": [
+        "component contract owns reusable semantics",
+        "document owns composition intent"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Document roles/reading order, labels, interaction/data bindings, focus/navigation and motion preference context"
+      ],
+      "proofObligations": [
+        "Output preserves declared semantics; property animation respects independently selected reduced-motion policy"
+      ],
       "runtimeRefs": []
     },
     {
@@ -296,10 +552,24 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["project pins source revisions", "definition update affects eligible instances"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md", "docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
-      "remainingDesign": ["Content-addressed custody, relocation, pin/update admission and atomic dependency/source/page edits"],
-      "proofObligations": ["Incompatible update identifies affected instances/tracks and does not delete bindings"],
+      "relationships": [
+        "project pins source revisions",
+        "definition update affects eligible instances"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md",
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md",
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Content-addressed custody, relocation, pin/update admission and atomic dependency/source/page edits"
+      ],
+      "proofObligations": [
+        "Incompatible update identifies affected instances/tracks and does not delete bindings"
+      ],
       "runtimeRefs": []
     },
     {
@@ -308,10 +578,19 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["actor attributes transaction", "shared mutation boundary validates all routes"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Transport/authentication, permission/session model, locks, operation admission and audit of rejected requests"],
-      "proofObligations": ["UI/agent equivalent operation has equivalent ownership/history; locked or stale edit rejects"],
+      "relationships": [
+        "actor attributes transaction",
+        "shared mutation boundary validates all routes"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Transport/authentication, permission/session model, locks, operation admission and audit of rejected requests"
+      ],
+      "proofObligations": [
+        "UI/agent equivalent operation has equivalent ownership/history; locked or stale edit rejects"
+      ],
       "runtimeRefs": []
     },
     {
@@ -320,10 +599,19 @@
       "designCoverage": "partial",
       "schemaCoverage": "partial",
       "runtimeStatus": "not-implemented",
-      "relationships": ["target adapters lower authored meaning", "source representation retains bindings"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Version/migration policy, extension registry, packaging, supported external format mappings and round-trip fidelity"],
-      "proofObligations": ["Exchange recovers authored fields and references; renderer framework objects never enter persisted core"],
+      "relationships": [
+        "target adapters lower authored meaning",
+        "source representation retains bindings"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Version/migration policy, extension registry, packaging, supported external format mappings and round-trip fidelity"
+      ],
+      "proofObligations": [
+        "Exchange recovers authored fields and references; renderer framework objects never enter persisted core"
+      ],
       "runtimeRefs": []
     },
     {
@@ -332,10 +620,19 @@
       "designCoverage": "open",
       "schemaCoverage": "absent",
       "runtimeStatus": "not-implemented",
-      "relationships": ["import source relates to authored candidates", "measurements remain observations"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/relationships.md"],
-      "remainingDesign": ["Source provenance, import confidence, stable source correspondence and authored-versus-resolved classification"],
-      "proofObligations": ["Import of values equal to defaults does not silently claim explicit override intent"],
+      "relationships": [
+        "import source relates to authored candidates",
+        "measurements remain observations"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/relationships.md"
+      ],
+      "remainingDesign": [
+        "Source provenance, import confidence, stable source correspondence and authored-versus-resolved classification"
+      ],
+      "proofObligations": [
+        "Import of values equal to defaults does not silently claim explicit override intent"
+      ],
       "runtimeRefs": []
     },
     {
@@ -344,54 +641,1408 @@
       "designCoverage": "specified",
       "schemaCoverage": "represented",
       "runtimeStatus": "not-implemented",
-      "relationships": ["scene -> composition start", "property track -> stable addressed keys", "end marker -> terminal evaluated state"],
-      "decisionRefs": ["docs/architecture/design/shared-document-model/authoring.md", "docs/architecture/design/shared-document-model/worked-expectations.md"],
+      "relationships": [
+        "scene -> composition start",
+        "property track -> stable addressed keys",
+        "end marker -> terminal evaluated state"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/authoring.md",
+        "docs/architecture/design/shared-document-model/worked-expectations.md"
+      ],
       "remainingDesign": [],
-      "proofObligations": ["Independent static/base-edit/selected-key/explicit-start/last-key-removal and visibility observations match authored tables; scrubbing changes no base state"],
+      "proofObligations": [
+        "Independent static/base-edit/selected-key/explicit-start/last-key-removal and visibility observations match authored tables; scrubbing changes no base state"
+      ],
       "runtimeRefs": []
+    },
+    {
+      "id": "design.history",
+      "requirement": "Bounded accepted edits and compensating undo/redo preserve authored identities references and absence",
+      "designCoverage": "partial",
+      "schemaCoverage": "partial",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "history references accepted page/project changes",
+        "inverse uses authored before-state"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Inverse execution and before-image custody, dependency-conflicting undo, cross-page history and branch semantics"
+      ],
+      "proofObligations": [
+        "Undo/redo preserves exact identifiers and references; stale or dependent inverse changes nothing"
+      ],
+      "runtimeRefs": []
+    },
+    {
+      "id": "design.creation",
+      "requirement": "CreationProfile CreationGesture and TextEditSession separate provisional gestures from authored nodes",
+      "designCoverage": "specified",
+      "schemaCoverage": "represented",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "session draft -> one committed operation",
+        "created node -> selected default profile"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [],
+      "proofObligations": [
+        "Point frame inherits100x100; drag authors128x36; canceled text or drag inserts nothing"
+      ],
+      "runtimeRefs": []
+    },
+    {
+      "id": "design.property-consumers",
+      "requirement": "PropertyConsumer supplies typed role and effective-kind addresses independently of rendered internals",
+      "designCoverage": "partial",
+      "schemaCoverage": "partial",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "consumer -> instance/node/part/paint/corner address"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Conditional consumers, external adapter mapping and complete public exposure"
+      ],
+      "proofObligations": [
+        "Frame-root instance token eligibility follows declared frame/fill consumer, never wrapper name"
+      ],
+      "runtimeRefs": []
+    },
+    {
+      "id": "design.component-extraction",
+      "requirement": "DefinitionBody DefinitionPlacement and ExtractionCorrespondence preserve reusable visual ownership",
+      "designCoverage": "partial",
+      "schemaCoverage": "represented",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "composition -> source placement -> definition body",
+        "nested instance -> original definition"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "General extraction reference repair and external/adapted definitions"
+      ],
+      "proofObligations": [
+        "Button/Banner extraction preserves appearance refs and selected placement identity; nested Button never flattens"
+      ],
+      "runtimeRefs": []
+    },
+    {
+      "id": "design.project-change",
+      "requirement": "ProjectChange coordinates page and shared-source expected revisions and declared effects",
+      "designCoverage": "partial",
+      "schemaCoverage": "represented",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "project envelope -> page/source participants and dependency selection"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Durable publication protocol, execution/admission and cross-file reconciliation"
+      ],
+      "proofObligations": [
+        "Tokenize-and-bind and extraction accept all participants or none against expected revisions"
+      ],
+      "runtimeRefs": []
+    },
+    {
+      "id": "design.font-resolution-and-shaping",
+      "requirement": "FontResolutionAndShaping: Real fonts, missing-font handling, shaping, wrapping and measured geometry",
+      "designCoverage": "open",
+      "schemaCoverage": "absent",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "FontResolutionAndShaping blocks design.vector-text, design.layout"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Real fonts, missing-font handling, shaping, wrapping and measured geometry"
+      ],
+      "proofObligations": [
+        "Fresh font/fallback probes preserve authored font refs and independently observed layout"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "FontResolutionAndShaping",
+      "blocks": [
+        "design.vector-text",
+        "design.layout"
+      ]
+    },
+    {
+      "id": "design.canvas-hit-testing-and-snapping",
+      "requirement": "CanvasHitTestingAndSnapping: Ambiguous hit destinations, snapping, rotated/overlapping/locked objects and coordinate conversion beyond fixture",
+      "designCoverage": "partial",
+      "schemaCoverage": "absent",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "CanvasHitTestingAndSnapping blocks design.creation, design.views"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Ambiguous hit destinations, snapping, rotated/overlapping/locked objects and coordinate conversion beyond fixture"
+      ],
+      "proofObligations": [
+        "Zoom-independent creation and ambiguous/locked hit refusal use actual gestures"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "CanvasHitTestingAndSnapping",
+      "blocks": [
+        "design.creation",
+        "design.views"
+      ]
+    },
+    {
+      "id": "design.definition-interface-exposure",
+      "requirement": "DefinitionInterfaceExposure: Deliberate promotion of body text properties and children into stable public parameters/slots",
+      "designCoverage": "open",
+      "schemaCoverage": "absent",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "DefinitionInterfaceExposure blocks design.definitions, design.property-consumers"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Deliberate promotion of body text properties and children into stable public parameters/slots"
+      ],
+      "proofObligations": [
+        "Public exposure preserves source ownership and supported instance edit limits"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "DefinitionInterfaceExposure",
+      "blocks": [
+        "design.definitions",
+        "design.property-consumers"
+      ]
+    },
+    {
+      "id": "design.general-extraction-reference-repair",
+      "requirement": "GeneralExtractionReferenceRepair: Animations, external/cross-page references and extraction of arbitrary graphs",
+      "designCoverage": "open",
+      "schemaCoverage": "absent",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "GeneralExtractionReferenceRepair blocks design.component-extraction, design.identity"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Animations, external/cross-page references and extraction of arbitrary graphs"
+      ],
+      "proofObligations": [
+        "Extract/revert retargets supported refs; unsupported animated/external refs refuse atomically"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "GeneralExtractionReferenceRepair",
+      "blocks": [
+        "design.component-extraction",
+        "design.identity"
+      ]
+    },
+    {
+      "id": "design.advanced-layout-resolution",
+      "requirement": "AdvancedLayoutResolution: Wrapping, intrinsic constraints, overflow, responsive sizing and broader unit conversion",
+      "designCoverage": "open",
+      "schemaCoverage": "absent",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "AdvancedLayoutResolution blocks design.layout"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Wrapping, intrinsic constraints, overflow, responsive sizing and broader unit conversion"
+      ],
+      "proofObligations": [
+        "Independent resize/overflow/world-local probes preserve authored constraints"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "AdvancedLayoutResolution",
+      "blocks": [
+        "design.layout"
+      ]
+    },
+    {
+      "id": "design.token-scope-evolution",
+      "requirement": "TokenScopeEvolution: Scope migrations after changes, unknown metadata versions and foreign-tool editing",
+      "designCoverage": "partial",
+      "schemaCoverage": "partial",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "TokenScopeEvolution blocks design.tokens"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Scope migrations after changes, unknown metadata versions and foreign-tool editing"
+      ],
+      "proofObligations": [
+        "Scope round trip preserves eligibility; incompatible later uses are reviewed without deletion"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "TokenScopeEvolution",
+      "blocks": [
+        "design.tokens"
+      ]
+    },
+    {
+      "id": "design.project-change-durability",
+      "requirement": "ProjectChangeDurability: Coordinated logs, crash recovery, durable commit, external edits and multi-file reconciliation",
+      "designCoverage": "open",
+      "schemaCoverage": "absent",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "ProjectChangeDurability blocks design.project-change, design.history-recovery"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Coordinated logs, crash recovery, durable commit, external edits and multi-file reconciliation"
+      ],
+      "proofObligations": [
+        "Crash fault injection yields complete prior/next state with pending work preserved"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "ProjectChangeDurability",
+      "blocks": [
+        "design.project-change",
+        "design.history-recovery"
+      ]
+    },
+    {
+      "id": "design.definition-source-adapter",
+      "requirement": "DefinitionSourceAdapter: Visual-definition mapping to actual FSDS or external project authoring sources",
+      "designCoverage": "open",
+      "schemaCoverage": "absent",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "DefinitionSourceAdapter blocks design.adapters, design.source-persistence"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Visual-definition mapping to actual FSDS or external project authoring sources"
+      ],
+      "proofObligations": [
+        "Source edit survives generation twice and fresh reopen with revision agreement"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "DefinitionSourceAdapter",
+      "blocks": [
+        "design.adapters",
+        "design.source-persistence"
+      ]
+    },
+    {
+      "id": "design.preview-output-agreement",
+      "requirement": "PreviewAndOutputAgreement: Independent rendering, adapter fidelity and source/prototype/output agreement",
+      "designCoverage": "open",
+      "schemaCoverage": "absent",
+      "runtimeStatus": "not-implemented",
+      "relationships": [
+        "PreviewAndOutputAgreement blocks design.prototype, design.media, design.interruption"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "remainingDesign": [
+        "Independent rendering, adapter fidelity and source/prototype/output agreement"
+      ],
+      "proofObligations": [
+        "Preview and output independently agree on supported visual/motion/source facts"
+      ],
+      "runtimeRefs": [],
+      "conceptName": "PreviewAndOutputAgreement",
+      "blocks": [
+        "design.prototype",
+        "design.media",
+        "design.interruption"
+      ]
     }
   ],
   "changes": [
-    {"date": "2026-10-01", "requirementId": "design.identity", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.definitions", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.defaults", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.tokens", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.pages", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.scenes", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.sequences", "from": null, "to": "specified", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.transitions", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.base-motion", "from": null, "to": "specified", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.timing", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.track-conflicts", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.presets", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.interruption", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.views", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.jsonl", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.history-recovery", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.prototype", "from": null, "to": "specified", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.adapters", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.source-persistence", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.layout", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.vector-text", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.paint-effects", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.media", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.accessibility", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.dependencies", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.agent-parity", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.interchange", "from": null, "to": "partial", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.provenance", "from": null, "to": "open", "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."},
-    {"date": "2026-10-01", "requirementId": "design.identity", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.definitions", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.defaults", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.tokens", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.scenes", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.base-motion", "from": "specified", "to": "specified", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.timing", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.track-conflicts", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.views", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.jsonl", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.history-recovery", "from": "open", "to": "open", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.dependencies", "from": "partial", "to": "partial", "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."},
-    {"date": "2026-10-01", "requirementId": "design.property-keys", "from": null, "to": "specified", "rationale": "Split concrete property-key semantics from broader timing and base/evaluated-value families; runtime evaluator remains absent."}
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.identity",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.definitions",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.defaults",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.tokens",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.pages",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.scenes",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.sequences",
+      "from": null,
+      "to": "specified",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.transitions",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.base-motion",
+      "from": null,
+      "to": "specified",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.timing",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.track-conflicts",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.presets",
+      "from": null,
+      "to": "open",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.interruption",
+      "from": null,
+      "to": "open",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.views",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.jsonl",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.history-recovery",
+      "from": null,
+      "to": "open",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.prototype",
+      "from": null,
+      "to": "specified",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.adapters",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.source-persistence",
+      "from": null,
+      "to": "open",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.layout",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.vector-text",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.paint-effects",
+      "from": null,
+      "to": "open",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.media",
+      "from": null,
+      "to": "open",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.accessibility",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.dependencies",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.agent-parity",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.interchange",
+      "from": null,
+      "to": "partial",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.provenance",
+      "from": null,
+      "to": "open",
+      "rationale": "Initial paper inventory; coverage describes the stated candidate subset and names outstanding design."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.identity",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.definitions",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.defaults",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.tokens",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.scenes",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.base-motion",
+      "from": "specified",
+      "to": "specified",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.timing",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.track-conflicts",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.views",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.jsonl",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.history-recovery",
+      "from": "open",
+      "to": "open",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.dependencies",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.2.0 incorporates confirmed definition/consumer ownership, selected-key editing and composition-backed start/terminal hold; named remaining work stays open."
+    },
+    {
+      "date": "2026-10-01",
+      "requirementId": "design.property-keys",
+      "from": null,
+      "to": "specified",
+      "rationale": "Split concrete property-key semantics from broader timing and base/evaluated-value families; runtime evaluator remains absent."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.identity",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.definitions",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.defaults",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.tokens",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.layout",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.vector-text",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.dependencies",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.jsonl",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.views",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.paint-effects",
+      "from": "open",
+      "to": "open",
+      "rationale": "Draft 0.3.0 specifies bounded creation token eligibility visual extraction and project-change meaning; general obligations remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.paint-effects",
+      "from": "open",
+      "to": "partial",
+      "rationale": "One enabled solid fill and linked corners have a bounded design; general paints masks effects and visual realization remain open."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.history-recovery",
+      "from": "open",
+      "to": "open",
+      "rationale": "Split bounded edit/inverse design into design.history; this stable predecessor retains recovery and durable storage obligations without dropping lineage."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.history",
+      "from": null,
+      "to": "partial",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.creation",
+      "from": null,
+      "to": "specified",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.property-consumers",
+      "from": null,
+      "to": "partial",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.component-extraction",
+      "from": null,
+      "to": "partial",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.project-change",
+      "from": null,
+      "to": "partial",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.font-resolution-and-shaping",
+      "from": null,
+      "to": "open",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.canvas-hit-testing-and-snapping",
+      "from": null,
+      "to": "partial",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.definition-interface-exposure",
+      "from": null,
+      "to": "open",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.general-extraction-reference-repair",
+      "from": null,
+      "to": "open",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.advanced-layout-resolution",
+      "from": null,
+      "to": "open",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.token-scope-evolution",
+      "from": null,
+      "to": "partial",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.project-change-durability",
+      "from": null,
+      "to": "open",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.definition-source-adapter",
+      "from": null,
+      "to": "open",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "date": "2026-10-02",
+      "requirementId": "design.preview-output-agreement",
+      "from": null,
+      "to": "open",
+      "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    }
+  ],
+  "crosswalk": [
+    {
+      "id": "handoff.1",
+      "requirementIds": [
+        "design.creation",
+        "design.vector-text",
+        "design.identity",
+        "design.font-resolution-and-shaping"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/appearance.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Vectors/grouping/reopen and real fonts remain open"
+    },
+    {
+      "id": "handoff.2",
+      "requirementIds": [
+        "design.definitions",
+        "design.layout",
+        "design.property-consumers"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/definition.schema.json",
+        "packages/ds-contracts/document-model/visual-node.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Responsive layout and runtime isolation remain open"
+    },
+    {
+      "id": "handoff.3",
+      "requirementIds": [
+        "design.tokens",
+        "design.token-scope-evolution",
+        "design.project-change"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/authoring-token.schema.json",
+        "packages/ds-contracts/document-model/project-change.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Full Format/Resolver exchange and collision review remain open"
+    },
+    {
+      "id": "handoff.4",
+      "requirementIds": [
+        "design.base-motion",
+        "design.property-keys",
+        "design.interruption"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/motion.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Interruption and preview/output agreement remain open"
+    },
+    {
+      "id": "handoff.5",
+      "requirementIds": [
+        "design.identity",
+        "design.general-extraction-reference-repair"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/extraction-correspondence.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "General rename/duplication/reparent and coordinate conversion remain open"
+    },
+    {
+      "id": "handoff.6",
+      "requirementIds": [
+        "design.paint-effects",
+        "design.property-consumers"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/appearance.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Procedural effects and parameter motion remain open"
+    },
+    {
+      "id": "handoff.7",
+      "requirementIds": [
+        "design.media",
+        "design.preview-output-agreement"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/document.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Media sampling masks effects audio and render settings remain open"
+    },
+    {
+      "id": "handoff.8",
+      "requirementIds": [
+        "design.dependencies",
+        "design.component-extraction",
+        "design.history"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/definition.schema.json",
+        "packages/ds-contracts/document-model/project-change.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Reusable clips update migration and inverse execution remain open"
+    },
+    {
+      "id": "handoff.9",
+      "requirementIds": [
+        "design.adapters",
+        "design.source-persistence",
+        "design.definition-source-adapter"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/prototype-plan.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Actual project save/discard/rebuild/reopen remains open"
+    },
+    {
+      "id": "handoff.10",
+      "requirementIds": [
+        "design.source-persistence",
+        "design.definition-source-adapter"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/definition.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Upstream mapping and repeated generation proof remain open"
+    },
+    {
+      "id": "handoff.11",
+      "requirementIds": [
+        "design.history",
+        "design.history-recovery",
+        "design.project-change-durability"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/page-record.schema.json",
+        "packages/ds-contracts/document-model/project-change.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Meaningful gestures recovery and durable storage remain open"
+    },
+    {
+      "id": "handoff.12",
+      "requirementIds": [
+        "design.agent-parity",
+        "design.property-consumers",
+        "design.project-change"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md",
+        "docs/architecture/design/shared-document-model/handoff-crosswalk.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/edit-operation.schema.json",
+        "packages/ds-contracts/document-model/project-change.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json"
+      ],
+      "remaining": "Shared runtime admission permissions locks and transport remain open"
+    },
+    {
+      "id": "workflow.1",
+      "requirementIds": [
+        "design.creation",
+        "design.defaults"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.2",
+      "requirementIds": [
+        "design.defaults",
+        "design.property-consumers"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.3",
+      "requirementIds": [
+        "design.views"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.4",
+      "requirementIds": [
+        "design.creation",
+        "design.canvas-hit-testing-and-snapping"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.5",
+      "requirementIds": [
+        "design.creation",
+        "design.vector-text"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.6",
+      "requirementIds": [
+        "design.creation",
+        "design.identity"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.7",
+      "requirementIds": [
+        "design.creation",
+        "design.vector-text"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.8",
+      "requirementIds": [
+        "design.identity"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.9",
+      "requirementIds": [
+        "design.paint-effects",
+        "design.property-consumers"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.10",
+      "requirementIds": [
+        "design.tokens",
+        "design.project-change"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/project-change.schema.json",
+        "packages/ds-contracts/document-model/definition.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.11",
+      "requirementIds": [
+        "design.paint-effects"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.12",
+      "requirementIds": [
+        "design.tokens",
+        "design.token-scope-evolution",
+        "design.project-change"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/project-change.schema.json",
+        "packages/ds-contracts/document-model/definition.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.13",
+      "requirementIds": [
+        "design.tokens",
+        "design.vector-text",
+        "design.project-change"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/project-change.schema.json",
+        "packages/ds-contracts/document-model/definition.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.14",
+      "requirementIds": [
+        "design.component-extraction",
+        "design.definitions"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/project-change.schema.json",
+        "packages/ds-contracts/document-model/definition.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.15",
+      "requirementIds": [
+        "design.layout",
+        "design.advanced-layout-resolution"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/visual-node.schema.json",
+        "packages/ds-contracts/document-model/edit-operation.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    },
+    {
+      "id": "workflow.16",
+      "requirementIds": [
+        "design.component-extraction",
+        "design.definitions"
+      ],
+      "decisionRefs": [
+        "docs/architecture/design/shared-document-model/visual-authoring.md",
+        "docs/architecture/design/shared-document-model/visual-authoring-expectations.md"
+      ],
+      "schemaRefs": [
+        "packages/ds-contracts/document-model/project-change.schema.json",
+        "packages/ds-contracts/document-model/definition.schema.json"
+      ],
+      "exampleRefs": [
+        "packages/ds-contracts/document-model/examples/visual-authoring/expectations.json",
+        "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+      ],
+      "remaining": "Paper-only; renderer operation admission evaluation and persistence remain unimplemented."
+    }
   ]
 }

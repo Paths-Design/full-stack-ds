@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/design-ledger.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/design-ledger.schema.json",
   "title": "Shared document candidate design-ledger",
-  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.3.0 paper representation; not an editor runtime admission contract.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -81,6 +81,17 @@
               "$ref": "common.schema.json#/$defs/text"
             },
             "minItems": 0
+          },
+          "conceptName": {
+            "$ref": "common.schema.json#/$defs/text"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "minItems": 1,
+            "uniqueItems": true
           }
         },
         "required": [
@@ -142,6 +153,30 @@
                 }
               }
             }
+          },
+          {
+            "if": {
+              "required": [
+                "conceptName"
+              ],
+              "type": "object",
+              "properties": {
+                "conceptName": {
+                  "type": "string"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "blocks"
+              ],
+              "type": "object",
+              "properties": {
+                "blocks": {
+                  "type": "array"
+                }
+              }
+            }
           }
         ]
       },
@@ -193,6 +228,59 @@
           "from",
           "to",
           "rationale"
+        ]
+      },
+      "minItems": 1
+    },
+    "crosswalk": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "requirementIds": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "decisionRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/path"
+            },
+            "minItems": 1
+          },
+          "schemaRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/path"
+            },
+            "minItems": 1
+          },
+          "exampleRefs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/path"
+            },
+            "minItems": 1
+          },
+          "remaining": {
+            "$ref": "common.schema.json#/$defs/text"
+          }
+        },
+        "required": [
+          "id",
+          "requirementIds",
+          "decisionRefs",
+          "schemaRefs",
+          "exampleRefs",
+          "remaining"
         ]
       },
       "minItems": 1

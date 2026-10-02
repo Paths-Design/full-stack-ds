@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/common.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/common.schema.json",
   "title": "Shared document candidate common",
-  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.3.0 paper representation; not an editor runtime admission contract.",
   "$defs": {
     "id": {
       "type": "string",
@@ -210,6 +210,52 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
+              "const": "literal"
+            },
+            "valueType": {
+              "const": "color"
+            },
+            "value": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "colorSpace": {
+                  "const": "srgb"
+                },
+                "components": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "alpha": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "required": [
+                "colorSpace",
+                "components",
+                "alpha"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "valueType",
+            "value"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
               "const": "token"
             },
             "valueType": {
@@ -219,7 +265,8 @@
                 "boolean",
                 "dimension",
                 "duration",
-                "cubicBezier"
+                "cubicBezier",
+                "color"
               ]
             },
             "sourceId": {
@@ -250,7 +297,7 @@
       }
     },
     "version": {
-      "const": "0.2.0"
+      "const": "0.3.0"
     },
     "dependencyRef": {
       "type": "object",
@@ -311,7 +358,37 @@
         "boolean",
         "dimension",
         "duration",
-        "cubicBezier"
+        "cubicBezier",
+        "color"
+      ]
+    },
+    "color": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "colorSpace": {
+          "const": "srgb"
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "alpha": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "colorSpace",
+        "components",
+        "alpha"
       ]
     }
   }

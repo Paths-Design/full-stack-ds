@@ -11,7 +11,7 @@ governs:
 
 # Composition ownership and animation authoring
 
-Draft 0.2.0 records the user's confirmed ownership and keyframe rules. It is a paper contract: schemas qualify authored shapes, not inheritance, animation, replay, durable saves, or source edits. Read [relationships](relationships.md) for the surrounding project boundaries and [worked expectations](worked-expectations.md) for independent future runtime oracles.
+The retained 0.2.0 composition rules below record the user's confirmed ownership and keyframe rules. It is a paper contract: schemas qualify authored shapes, not inheritance, animation, replay, durable saves, or source edits. Current draft 0.3.0 adds visual bodies, source placements and project changes in [visual authoring](visual-authoring.md), without changing the keyframe rules. Read [relationships](relationships.md) for the surrounding project boundaries and [worked expectations](worked-expectations.md) for independent future runtime oracles.
 
 ## Definitions, compositions and consumers
 

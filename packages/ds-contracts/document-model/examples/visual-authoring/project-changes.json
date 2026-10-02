@@ -1,0 +1,603 @@
+[
+  {
+    "schemaVersion": "0.3.0",
+    "id": "change.radius",
+    "projectId": "project.visual",
+    "actor": {
+      "kind": "human",
+      "id": "author.original"
+    },
+    "expectedProjectRevision": "p0",
+    "projectRevision": "p1",
+    "pageTransactions": [
+      {
+        "pageId": "page.visual",
+        "transactionId": "tx.radiusToken",
+        "expectedRevision": 7,
+        "revision": 8
+      }
+    ],
+    "sourceChanges": [
+      {
+        "sourceId": "source.tokens",
+        "kind": "tokens",
+        "expectedRevision": "t0",
+        "revision": "t1",
+        "operations": [
+          {
+            "id": "sourceOp.radius",
+            "kind": "create-token",
+            "name": "border-radius-md",
+            "token": {
+              "$type": "dimension",
+              "$value": {
+                "value": 12,
+                "unit": "px"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "dependencyUpdates": [
+      {
+        "sourceId": "source.tokens",
+        "fromRevision": "t0",
+        "toRevision": "t1"
+      }
+    ],
+    "correspondence": [],
+    "history": {
+      "kind": "edit"
+    }
+  },
+  {
+    "schemaVersion": "0.3.0",
+    "id": "change.background",
+    "projectId": "project.visual",
+    "actor": {
+      "kind": "human",
+      "id": "author.original"
+    },
+    "expectedProjectRevision": "p1",
+    "projectRevision": "p2",
+    "pageTransactions": [
+      {
+        "pageId": "page.visual",
+        "transactionId": "tx.backgroundToken",
+        "expectedRevision": 9,
+        "revision": 10
+      }
+    ],
+    "sourceChanges": [
+      {
+        "sourceId": "source.tokens",
+        "kind": "tokens",
+        "expectedRevision": "t1",
+        "revision": "t2",
+        "operations": [
+          {
+            "id": "sourceOp.background",
+            "kind": "create-token",
+            "name": "action-bg-primary",
+            "token": {
+              "$type": "color",
+              "$value": {
+                "colorSpace": "srgb",
+                "components": [
+                  0.06666666666666667,
+                  0.06666666666666667,
+                  0.06666666666666667
+                ],
+                "alpha": 1
+              },
+              "$extensions": {
+                "org.full-stack-ds.editor": {
+                  "eligibility": {
+                    "roles": [
+                      "fill"
+                    ],
+                    "nodeKinds": [
+                      "frame"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "dependencyUpdates": [
+      {
+        "sourceId": "source.tokens",
+        "fromRevision": "t1",
+        "toRevision": "t2"
+      }
+    ],
+    "correspondence": [],
+    "history": {
+      "kind": "edit"
+    }
+  },
+  {
+    "schemaVersion": "0.3.0",
+    "id": "change.foreground",
+    "projectId": "project.visual",
+    "actor": {
+      "kind": "human",
+      "id": "author.original"
+    },
+    "expectedProjectRevision": "p2",
+    "projectRevision": "p3",
+    "pageTransactions": [
+      {
+        "pageId": "page.visual",
+        "transactionId": "tx.foregroundToken",
+        "expectedRevision": 11,
+        "revision": 12
+      }
+    ],
+    "sourceChanges": [
+      {
+        "sourceId": "source.tokens",
+        "kind": "tokens",
+        "expectedRevision": "t2",
+        "revision": "t3",
+        "operations": [
+          {
+            "id": "sourceOp.foreground",
+            "kind": "create-token",
+            "name": "fg-primary-inverse",
+            "token": {
+              "$type": "color",
+              "$value": {
+                "colorSpace": "srgb",
+                "components": [
+                  1,
+                  1,
+                  1
+                ],
+                "alpha": 1
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "dependencyUpdates": [
+      {
+        "sourceId": "source.tokens",
+        "fromRevision": "t2",
+        "toRevision": "t3"
+      }
+    ],
+    "correspondence": [],
+    "history": {
+      "kind": "edit"
+    }
+  },
+  {
+    "schemaVersion": "0.3.0",
+    "id": "change.button",
+    "projectId": "project.visual",
+    "actor": {
+      "kind": "human",
+      "id": "author.original"
+    },
+    "expectedProjectRevision": "p3",
+    "projectRevision": "p4",
+    "pageTransactions": [
+      {
+        "pageId": "page.visual",
+        "transactionId": "tx.extractButton",
+        "expectedRevision": 12,
+        "revision": 13
+      }
+    ],
+    "sourceChanges": [
+      {
+        "sourceId": "source.definitions",
+        "kind": "definitions",
+        "expectedRevision": "d0",
+        "revision": "d1",
+        "operations": [
+          {
+            "id": "sourceOp.button",
+            "kind": "create-definition",
+            "definition": {
+              "schemaVersion": "0.3.0",
+              "id": "definition.button",
+              "version": "button.v1",
+              "label": "Button",
+              "parameters": [],
+              "parts": [],
+              "slots": [],
+              "body": {
+                "rootNodeId": "body.buttonRoot",
+                "nodeIds": [
+                  "body.buttonRoot",
+                  "body.buttonText"
+                ],
+                "nodes": [
+                  {
+                    "id": "body.buttonRoot",
+                    "kind": "frame",
+                    "label": "Button",
+                    "defaultProfileRef": {
+                      "sourceId": "source.defaults",
+                      "profileId": "defaults.frame"
+                    },
+                    "properties": {
+                      "sizing.width": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 128,
+                          "unit": "px"
+                        }
+                      },
+                      "sizing.height": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 36,
+                          "unit": "px"
+                        }
+                      },
+                      "transform.translation.x": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 0,
+                          "unit": "px"
+                        }
+                      },
+                      "transform.translation.y": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 0,
+                          "unit": "px"
+                        }
+                      }
+                    },
+                    "children": [
+                      {
+                        "nodeId": "body.buttonText"
+                      }
+                    ],
+                    "corners": {
+                      "linked": true,
+                      "radius": {
+                        "kind": "token",
+                        "valueType": "dimension",
+                        "sourceId": "source.tokens",
+                        "path": "border-radius-md"
+                      }
+                    },
+                    "fills": [
+                      {
+                        "id": "paint.fill",
+                        "enabled": true,
+                        "kind": "solid",
+                        "color": {
+                          "kind": "token",
+                          "valueType": "color",
+                          "sourceId": "source.tokens",
+                          "path": "action-bg-primary"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "body.buttonText",
+                    "kind": "text",
+                    "label": "Text",
+                    "defaultProfileRef": {
+                      "sourceId": "source.defaults",
+                      "profileId": "defaults.text"
+                    },
+                    "properties": {},
+                    "children": [],
+                    "content": "Button",
+                    "fills": [
+                      {
+                        "id": "paint.foreground",
+                        "enabled": true,
+                        "kind": "solid",
+                        "color": {
+                          "kind": "token",
+                          "valueType": "color",
+                          "sourceId": "source.tokens",
+                          "path": "fg-primary-inverse"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "dependencyUpdates": [
+      {
+        "sourceId": "source.definitions",
+        "fromRevision": "d0",
+        "toRevision": "d1"
+      }
+    ],
+    "correspondence": [
+      {
+        "id": "receipt.button",
+        "compositionId": "composition.button",
+        "definitionRef": {
+          "sourceId": "source.definitions",
+          "definitionId": "definition.button",
+          "version": "button.v1"
+        },
+        "oldRootNodeId": "node.button",
+        "retainedPlacementId": "node.button",
+        "entries": [
+          {
+            "oldNodeId": "node.button",
+            "bodyNodeId": "body.buttonRoot"
+          },
+          {
+            "oldNodeId": "node.buttonText",
+            "bodyNodeId": "body.buttonText"
+          }
+        ]
+      }
+    ],
+    "history": {
+      "kind": "edit"
+    }
+  },
+  {
+    "schemaVersion": "0.3.0",
+    "id": "change.banner",
+    "projectId": "project.visual",
+    "actor": {
+      "kind": "human",
+      "id": "author.original"
+    },
+    "expectedProjectRevision": "p4",
+    "projectRevision": "p5",
+    "pageTransactions": [
+      {
+        "pageId": "page.visual",
+        "transactionId": "tx.extractBanner",
+        "expectedRevision": 15,
+        "revision": 16
+      }
+    ],
+    "sourceChanges": [
+      {
+        "sourceId": "source.definitions",
+        "kind": "definitions",
+        "expectedRevision": "d1",
+        "revision": "d2",
+        "operations": [
+          {
+            "id": "sourceOp.banner",
+            "kind": "create-definition",
+            "definition": {
+              "schemaVersion": "0.3.0",
+              "id": "definition.banner",
+              "version": "banner.v1",
+              "label": "Frame",
+              "parameters": [],
+              "parts": [],
+              "slots": [],
+              "body": {
+                "rootNodeId": "body.bannerRoot",
+                "nodeIds": [
+                  "body.bannerRoot",
+                  "body.bannerTitle",
+                  "body.bannerButton"
+                ],
+                "nodes": [
+                  {
+                    "id": "body.bannerRoot",
+                    "kind": "frame",
+                    "label": "Frame",
+                    "defaultProfileRef": {
+                      "sourceId": "source.defaults",
+                      "profileId": "defaults.frame"
+                    },
+                    "properties": {
+                      "sizing.width": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 800,
+                          "unit": "px"
+                        }
+                      },
+                      "sizing.height": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 150,
+                          "unit": "px"
+                        }
+                      },
+                      "transform.translation.x": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 0,
+                          "unit": "px"
+                        }
+                      },
+                      "transform.translation.y": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 0,
+                          "unit": "px"
+                        }
+                      }
+                    },
+                    "children": [
+                      {
+                        "nodeId": "body.bannerTitle"
+                      },
+                      {
+                        "nodeId": "body.bannerButton"
+                      }
+                    ],
+                    "layout": {
+                      "kind": "flow",
+                      "axis": "horizontal",
+                      "gap": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 0,
+                          "unit": "px"
+                        }
+                      },
+                      "mainAxisAlignment": "space-between",
+                      "crossAxisAlignment": "start",
+                      "padding": {
+                        "kind": "literal",
+                        "valueType": "dimension",
+                        "value": {
+                          "value": 0,
+                          "unit": "px"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "body.bannerTitle",
+                    "kind": "text",
+                    "label": "Text",
+                    "defaultProfileRef": {
+                      "sourceId": "source.defaults",
+                      "profileId": "defaults.text"
+                    },
+                    "properties": {},
+                    "children": [],
+                    "content": "Banner Title"
+                  },
+                  {
+                    "id": "body.bannerButton",
+                    "kind": "component-instance",
+                    "label": "Button",
+                    "defaultProfileRef": {
+                      "sourceId": "source.defaults",
+                      "profileId": "defaults.frame"
+                    },
+                    "properties": {},
+                    "children": [],
+                    "definitionRef": {
+                      "sourceId": "source.definitions",
+                      "definitionId": "definition.button",
+                      "version": "button.v1"
+                    },
+                    "parameterBindings": {},
+                    "partOverrides": [],
+                    "slotBindings": [],
+                    "layoutItem": {
+                      "widthMode": "fixed",
+                      "heightMode": "fixed",
+                      "shrink": 0
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "dependencyUpdates": [
+      {
+        "sourceId": "source.definitions",
+        "fromRevision": "d1",
+        "toRevision": "d2"
+      }
+    ],
+    "correspondence": [
+      {
+        "id": "receipt.banner",
+        "compositionId": "composition.banner",
+        "definitionRef": {
+          "sourceId": "source.definitions",
+          "definitionId": "definition.banner",
+          "version": "banner.v1"
+        },
+        "oldRootNodeId": "node.banner",
+        "retainedPlacementId": "node.banner",
+        "entries": [
+          {
+            "oldNodeId": "node.banner",
+            "bodyNodeId": "body.bannerRoot"
+          },
+          {
+            "oldNodeId": "node.title",
+            "bodyNodeId": "body.bannerTitle"
+          },
+          {
+            "oldNodeId": "node.buttonInstance",
+            "bodyNodeId": "body.bannerButton"
+          }
+        ]
+      }
+    ],
+    "history": {
+      "kind": "edit"
+    }
+  },
+  {
+    "schemaVersion": "0.3.0",
+    "id": "change.bannerName",
+    "projectId": "project.visual",
+    "actor": {
+      "kind": "human",
+      "id": "author.original"
+    },
+    "expectedProjectRevision": "p5",
+    "projectRevision": "p6",
+    "pageTransactions": [
+      {
+        "pageId": "page.visual",
+        "transactionId": "tx.bannerName",
+        "expectedRevision": 16,
+        "revision": 17
+      }
+    ],
+    "sourceChanges": [
+      {
+        "sourceId": "source.definitions",
+        "kind": "definitions",
+        "expectedRevision": "d2",
+        "revision": "d3",
+        "operations": [
+          {
+            "id": "sourceOp.bannerName",
+            "kind": "rename-definition",
+            "definitionId": "definition.banner",
+            "label": "Banner"
+          }
+        ]
+      }
+    ],
+    "dependencyUpdates": [
+      {
+        "sourceId": "source.definitions",
+        "fromRevision": "d2",
+        "toRevision": "d3"
+      }
+    ],
+    "correspondence": [],
+    "history": {
+      "kind": "edit"
+    }
+  }
+]

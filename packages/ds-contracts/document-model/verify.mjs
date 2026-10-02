@@ -4,6 +4,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, resolve, relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { qualifyVisual } from './verify-visual.mjs';
 
 // Reuse the repository's existing validator dependency; no new package/install.
 const require = createRequire(new URL('../../ds-codegen/package.json', import.meta.url));
@@ -209,7 +210,20 @@ for (const record of ledger.records) {
     const fromRoot = relative(repo, path);
     assert.ok(!isAbsolute(fromRoot) && fromRoot !== '..' && !fromRoot.startsWith('../') && existsSync(path), `missing/outside decision ${decision}`);
   }
+  for (const target of record.blocks ?? []) assert.ok(byId.has(target), `unknown blocking requirement ${record.id}: ${target}`);
 }
 
-console.log(`Paper qualification passed: ${schemas.length} schemas, ${primary.length + lines.length} primary example records, ${invalid.length} rejected neighbors, 4 schema sensitivity controls, ${ledger.records.length} ledger requirements.`);
+const expectedConcepts = ['FontResolutionAndShaping', 'CanvasHitTestingAndSnapping', 'DefinitionInterfaceExposure', 'GeneralExtractionReferenceRepair', 'AdvancedLayoutResolution', 'TokenScopeEvolution', 'ProjectChangeDurability', 'DefinitionSourceAdapter', 'PreviewAndOutputAgreement'];
+assert.deepEqual(ledger.records.filter(r => r.conceptName).map(r => r.conceptName).sort(), expectedConcepts.sort());
+assert.deepEqual(ledger.crosswalk.map(r => r.id).sort(), [...Array.from({ length: 12 }, (_, i) => `handoff.${i + 1}`), ...Array.from({ length: 16 }, (_, i) => `workflow.${i + 1}`)].sort());
+for (const entry of ledger.crosswalk) {
+  for (const id of entry.requirementIds) assert.ok(byId.has(id), `unknown crosswalk requirement ${entry.id}: ${id}`);
+  for (const path of [...entry.decisionRefs, ...entry.schemaRefs, ...entry.exampleRefs]) {
+    const fromRoot = relative(repo, resolve(repo, path));
+    assert.ok(!isAbsolute(fromRoot) && fromRoot !== '..' && !fromRoot.startsWith('../') && existsSync(resolve(repo, path)), `missing/outside crosswalk source ${entry.id}: ${path}`);
+  }
+}
+
+const visual = qualifyVisual({ accepted, rejected, compiler, schemas, read, here, repo });
+console.log(`Paper qualification passed: ${schemas.length} schemas, ${primary.length + lines.length + visual.primary} primary example records, ${invalid.length + visual.invalid} schema-rejected neighbors, ${visual.probes} original-fixture rejected neighbors, ${4 + visual.controls} sensitivity controls, ${ledger.records.length} ledger requirements.`);
 console.log('Not verified: general graph/definition compatibility, operation admission/inverses, JSONL reduction/durability, token conformance/resolution, inheritance/layout/motion evaluation, adapters, source persistence, or prototype output.');

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/visual-node.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/visual-node.schema.json",
   "title": "Shared document candidate visual node",
-  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.3.0 paper representation; not an editor runtime admission contract.",
   "$ref": "#/$defs/node",
   "$defs": {
     "node": {
@@ -19,67 +19,14 @@
                   "const": "frame"
                 },
                 "layout": {
-                  "oneOf": [
-                    {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "kind": {
-                          "const": "freeform"
-                        }
-                      },
-                      "required": [
-                        "kind"
-                      ]
-                    },
-                    {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "kind": {
-                          "const": "flow"
-                        },
-                        "axis": {
-                          "enum": [
-                            "horizontal",
-                            "vertical"
-                          ]
-                        },
-                        "gap": {
-                          "allOf": [
-                            {
-                              "$ref": "common.schema.json#/$defs/binding"
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "valueType": {
-                                  "const": "dimension"
-                                }
-                              },
-                              "required": [
-                                "valueType"
-                              ]
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "kind",
-                        "axis",
-                        "gap"
-                      ]
-                    }
-                  ]
+                  "$ref": "appearance.schema.json#/$defs/layout"
                 },
                 "clipContent": {
                   "type": "boolean"
                 }
               },
               "required": [
-                "kind",
-                "layout",
-                "clipContent"
+                "kind"
               ]
             },
             {
@@ -89,58 +36,7 @@
                   "const": "group"
                 },
                 "layout": {
-                  "oneOf": [
-                    {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "kind": {
-                          "const": "freeform"
-                        }
-                      },
-                      "required": [
-                        "kind"
-                      ]
-                    },
-                    {
-                      "type": "object",
-                      "additionalProperties": false,
-                      "properties": {
-                        "kind": {
-                          "const": "flow"
-                        },
-                        "axis": {
-                          "enum": [
-                            "horizontal",
-                            "vertical"
-                          ]
-                        },
-                        "gap": {
-                          "allOf": [
-                            {
-                              "$ref": "common.schema.json#/$defs/binding"
-                            },
-                            {
-                              "type": "object",
-                              "properties": {
-                                "valueType": {
-                                  "const": "dimension"
-                                }
-                              },
-                              "required": [
-                                "valueType"
-                              ]
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "kind",
-                        "axis",
-                        "gap"
-                      ]
-                    }
-                  ]
+                  "$ref": "appearance.schema.json#/$defs/layout"
                 }
               },
               "required": [
@@ -271,6 +167,42 @@
                 "partOverrides",
                 "slotBindings"
               ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "definition-placement"
+                },
+                "definitionRef": {
+                  "$ref": "common.schema.json#/$defs/definitionRef"
+                },
+                "children": {
+                  "type": "array",
+                  "maxItems": 0
+                },
+                "properties": {
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "transform.translation.x",
+                      "transform.translation.y"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "$ref": "common.schema.json#/$defs/binding"
+                  }
+                },
+                "fills": false,
+                "corners": false,
+                "textStyle": false,
+                "layoutItem": false
+              },
+              "required": [
+                "kind",
+                "definitionRef",
+                "children"
+              ]
             }
           ]
         }
@@ -291,7 +223,176 @@
           "$ref": "common.schema.json#/$defs/profileRef"
         },
         "properties": {
-          "$ref": "common.schema.json#/$defs/properties"
+          "allOf": [
+            {
+              "$ref": "common.schema.json#/$defs/properties"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "sizing.width": {
+                  "allOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/binding"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "valueType": {
+                          "const": "dimension"
+                        }
+                      },
+                      "required": [
+                        "valueType"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "if": {
+                        "properties": {
+                          "kind": {
+                            "const": "literal"
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ]
+                      },
+                      "then": {
+                        "properties": {
+                          "value": {
+                            "type": "object",
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "exclusiveMinimum": 0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "sizing.height": {
+                  "allOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/binding"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "valueType": {
+                          "const": "dimension"
+                        }
+                      },
+                      "required": [
+                        "valueType"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "if": {
+                        "properties": {
+                          "kind": {
+                            "const": "literal"
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ]
+                      },
+                      "then": {
+                        "properties": {
+                          "value": {
+                            "type": "object",
+                            "properties": {
+                              "value": {
+                                "type": "number",
+                                "exclusiveMinimum": 0
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "transform.translation.x": {
+                  "allOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/binding"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "valueType": {
+                          "const": "dimension"
+                        }
+                      },
+                      "required": [
+                        "valueType"
+                      ]
+                    }
+                  ]
+                },
+                "transform.translation.y": {
+                  "allOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/binding"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "valueType": {
+                          "const": "dimension"
+                        }
+                      },
+                      "required": [
+                        "valueType"
+                      ]
+                    }
+                  ]
+                },
+                "typography.fontSize": {
+                  "allOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/binding"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "valueType": {
+                          "const": "dimension"
+                        }
+                      },
+                      "required": [
+                        "valueType"
+                      ]
+                    }
+                  ]
+                },
+                "typography.lineHeight": {
+                  "allOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/binding"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "valueType": {
+                          "const": "dimension"
+                        }
+                      },
+                      "required": [
+                        "valueType"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ]
         },
         "children": {
           "type": "array",
@@ -311,6 +412,18 @@
             ]
           },
           "minItems": 0
+        },
+        "fills": {
+          "$ref": "appearance.schema.json#/$defs/fills"
+        },
+        "corners": {
+          "$ref": "appearance.schema.json#/$defs/corners"
+        },
+        "layoutItem": {
+          "$ref": "appearance.schema.json#/$defs/layoutItem"
+        },
+        "textStyle": {
+          "$ref": "appearance.schema.json#/$defs/textStyle"
         }
       },
       "required": [

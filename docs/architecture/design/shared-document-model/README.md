@@ -4,7 +4,7 @@ authority: architecture
 status: draft
 title: Shared Designer and Animator document model
 owner: "@darianrosebrook"
-updated: 2026-10-01
+updated: 2026-10-02
 governs:
   - packages/ds-contracts/document-model/
   - docs/architecture/design/shared-document-model/
@@ -14,7 +14,7 @@ governs:
 
 This is a proposed paper model, not an implemented editor or a ratified interchange standard. It describes authored meaning before a canvas UI, renderer, host, or code target is selected. The schemas qualify original examples against a deliberately small candidate vocabulary; they do not enter component discovery, code generation, token builds, CI admission, or runtime evaluation.
 
-Read [relationships and semantics](relationships.md), [composition authoring](authoring.md), [worked expectations](worked-expectations.md), then [design coverage](design-coverage.md). The machine-readable [design ledger](../../../../packages/ds-contracts/document-model/design-ledger.json) records what has and has not received a design. Its statuses describe design coverage, schema coverage, and runtime evidence separately. A schema-shaped record does not settle an open semantic decision.
+Read [visual authoring](visual-authoring.md), [Button-to-Banner expected states](visual-authoring-expectations.md), [handoff crosswalk and named obligations](handoff-crosswalk.md), then [relationships and semantics](relationships.md), [composition authoring](authoring.md), [worked expectations](worked-expectations.md), then [design coverage](design-coverage.md). The machine-readable [design ledger](../../../../packages/ds-contracts/document-model/design-ledger.json) records what has and has not received a design. Its statuses describe design coverage, schema coverage, and runtime evidence separately. A schema-shaped record does not settle an open semantic decision.
 
 ## Confirmed product direction
 
@@ -44,11 +44,11 @@ The JSONL is authoritative for page edits. The manifest's dependency selection i
 
 ## Candidate schemas and examples
 
-The [schema directory](../../../../packages/ds-contracts/document-model/) contains `common`, `project`, `default-profile`, `definition`, `visual-node`, `motion`, `edit-operation`, `document`, `page-record`, `prototype-plan`, `paper-expectations`, and `design-ledger` schemas using JSON Schema Draft 2020-12. Version `0.2.0` identifies this candidate, not a supported migration policy. Objects reject unknown core fields; future extensions require a deliberate versioned contract.
+The [schema directory](../../../../packages/ds-contracts/document-model/) contains `common`, `project`, `default-profile`, `definition`, `visual-node`, `motion`, `edit-operation`, `document`, `page-record`, `prototype-plan`, `paper-expectations`, `appearance`, `authoring-token`, `definition-source`, `extraction-correspondence`, `project-change`, `visual-expectations`, and `design-ledger` schemas using JSON Schema Draft 2020-12. Version `0.3.0` identifies this candidate, not a supported migration policy. Objects reject unknown core fields; future extensions require a deliberate versioned contract.
 
 The [project example](../../../../packages/ds-contracts/document-model/examples/project.json) selects original token and default-profile files. The [document example](../../../../packages/ds-contracts/document-model/examples/document.json) contains two composition-owned frames, two independent Button instances sharing one definition, local arrow content, scene-local translation and visibility tracks, and two occurrences separated by an explicit cut. It has no generated-source address.
 
-The [page log](../../../../packages/ds-contracts/document-model/examples/page.jsonl) describes initialization, addressed base/key edits, slot supply/reset, insertion and compensating undo/redo as proposed accepted transactions. The [prototype plan](../../../../packages/ds-contracts/document-model/examples/prototype-plan.json) selects a prospective adapter and output directory. Neither example performs persistence or starts an adapter. The component dependency is an original definition interface, not a working component package. Old 0.1.0 examples remain in Git; the current draft does not migrate or reinterpret them.
+The [page log](../../../../packages/ds-contracts/document-model/examples/page.jsonl) describes initialization, addressed base/key edits, slot supply/reset, insertion and compensating undo/redo as proposed accepted transactions. The [prototype plan](../../../../packages/ds-contracts/document-model/examples/prototype-plan.json) selects a prospective adapter and output directory. Neither example performs persistence or starts an adapter. The component dependency is an original definition interface, not a working component package. The [visual-authoring examples](../../../../packages/ds-contracts/document-model/examples/visual-authoring/) add original Button/Banner bodies, source placements, scoped tokens, proposed project changes and independent state tables. Old 0.1.0 and 0.2.0 examples remain in Git; the current draft does not migrate or reinterpret them.
 
 Run from the repository root:
 
@@ -58,7 +58,7 @@ pnpm run docs:check-claims
 pnpm run docs:check-links
 ```
 
-The verifier compiles schemas, validates original examples, and checks declared invalid neighbors. It does not replay transactions, resolve tokens, validate reference graphs, evaluate motion, or execute prototype plans. Those omissions have explicit ledger entries and independent worked expectations in the semantics document.
+The verifier compiles schemas, validates original examples, and checks declared invalid neighbors. It also checks bounded original-fixture graph/revision/eligibility custody separately from schema validation. It does not replay transactions, resolve tokens, provide general graph admission, evaluate motion/layout, or execute prototype plans. Those omissions have explicit ledger entries and independent worked expectations in the semantics document.
 
 ## Foundation and prior art
 

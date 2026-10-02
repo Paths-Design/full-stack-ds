@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/default-profile.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/default-profile.schema.json",
   "title": "Shared document candidate default-profile",
-  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.3.0 paper representation; not an editor runtime admission contract.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -35,6 +35,24 @@
           },
           "properties": {
             "$ref": "common.schema.json#/$defs/properties"
+          },
+          "fills": {
+            "$ref": "appearance.schema.json#/$defs/fills"
+          },
+          "corners": {
+            "$ref": "appearance.schema.json#/$defs/corners"
+          },
+          "layout": {
+            "$ref": "appearance.schema.json#/$defs/layout"
+          },
+          "layoutItem": {
+            "$ref": "appearance.schema.json#/$defs/layoutItem"
+          },
+          "textStyle": {
+            "$ref": "appearance.schema.json#/$defs/textStyle"
+          },
+          "clipContent": {
+            "type": "boolean"
           }
         },
         "required": [

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/extraction-correspondence.schema.json",
+  "title": "Candidate extraction identity correspondence",
+  "description": "Draft paper shape; not an executor, persistence or conformance result.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "compositionId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "definitionRef": {
+      "$ref": "common.schema.json#/$defs/definitionRef"
+    },
+    "oldRootNodeId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "retainedPlacementId": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "oldNodeId": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "bodyNodeId": {
+            "$ref": "common.schema.json#/$defs/id"
+          }
+        },
+        "required": [
+          "oldNodeId",
+          "bodyNodeId"
+        ]
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "id",
+    "compositionId",
+    "definitionRef",
+    "oldRootNodeId",
+    "retainedPlacementId",
+    "entries"
+  ]
+}

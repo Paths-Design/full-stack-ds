@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "0.3.0",
+  "id": "definition.button",
+  "version": "button.v1",
+  "label": "Button",
+  "parameters": [],
+  "parts": [],
+  "slots": [],
+  "body": {
+    "rootNodeId": "body.buttonRoot",
+    "nodeIds": [
+      "body.buttonRoot",
+      "body.buttonText"
+    ],
+    "nodes": [
+      {
+        "id": "body.buttonRoot",
+        "kind": "frame",
+        "label": "Button",
+        "defaultProfileRef": {
+          "sourceId": "source.defaults",
+          "profileId": "defaults.frame"
+        },
+        "properties": {
+          "sizing.width": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 128,
+              "unit": "px"
+            }
+          },
+          "sizing.height": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 36,
+              "unit": "px"
+            }
+          },
+          "transform.translation.x": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 0,
+              "unit": "px"
+            }
+          },
+          "transform.translation.y": {
+            "kind": "literal",
+            "valueType": "dimension",
+            "value": {
+              "value": 0,
+              "unit": "px"
+            }
+          }
+        },
+        "children": [
+          {
+            "nodeId": "body.buttonText"
+          }
+        ],
+        "corners": {
+          "linked": true,
+          "radius": {
+            "kind": "token",
+            "valueType": "dimension",
+            "sourceId": "source.tokens",
+            "path": "border-radius-md"
+          }
+        },
+        "fills": [
+          {
+            "id": "paint.fill",
+            "enabled": true,
+            "kind": "solid",
+            "color": {
+              "kind": "token",
+              "valueType": "color",
+              "sourceId": "source.tokens",
+              "path": "action-bg-primary"
+            }
+          }
+        ]
+      },
+      {
+        "id": "body.buttonText",
+        "kind": "text",
+        "label": "Text",
+        "defaultProfileRef": {
+          "sourceId": "source.defaults",
+          "profileId": "defaults.text"
+        },
+        "properties": {},
+        "children": [],
+        "content": "Button",
+        "fills": [
+          {
+            "id": "paint.foreground",
+            "enabled": true,
+            "kind": "solid",
+            "color": {
+              "kind": "token",
+              "valueType": "color",
+              "sourceId": "source.tokens",
+              "path": "fg-primary-inverse"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

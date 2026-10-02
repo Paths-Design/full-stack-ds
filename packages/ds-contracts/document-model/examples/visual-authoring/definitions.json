@@ -1,0 +1,248 @@
+{
+  "schemaVersion": "0.3.0",
+  "id": "source.definitions",
+  "revision": "d3",
+  "definitions": [
+    {
+      "schemaVersion": "0.3.0",
+      "id": "definition.button",
+      "version": "button.v1",
+      "label": "Button",
+      "parameters": [],
+      "parts": [],
+      "slots": [],
+      "body": {
+        "rootNodeId": "body.buttonRoot",
+        "nodeIds": [
+          "body.buttonRoot",
+          "body.buttonText"
+        ],
+        "nodes": [
+          {
+            "id": "body.buttonRoot",
+            "kind": "frame",
+            "label": "Button",
+            "defaultProfileRef": {
+              "sourceId": "source.defaults",
+              "profileId": "defaults.frame"
+            },
+            "properties": {
+              "sizing.width": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 128,
+                  "unit": "px"
+                }
+              },
+              "sizing.height": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 36,
+                  "unit": "px"
+                }
+              },
+              "transform.translation.x": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              },
+              "transform.translation.y": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              }
+            },
+            "children": [
+              {
+                "nodeId": "body.buttonText"
+              }
+            ],
+            "corners": {
+              "linked": true,
+              "radius": {
+                "kind": "token",
+                "valueType": "dimension",
+                "sourceId": "source.tokens",
+                "path": "border-radius-md"
+              }
+            },
+            "fills": [
+              {
+                "id": "paint.fill",
+                "enabled": true,
+                "kind": "solid",
+                "color": {
+                  "kind": "token",
+                  "valueType": "color",
+                  "sourceId": "source.tokens",
+                  "path": "action-bg-primary"
+                }
+              }
+            ]
+          },
+          {
+            "id": "body.buttonText",
+            "kind": "text",
+            "label": "Text",
+            "defaultProfileRef": {
+              "sourceId": "source.defaults",
+              "profileId": "defaults.text"
+            },
+            "properties": {},
+            "children": [],
+            "content": "Button",
+            "fills": [
+              {
+                "id": "paint.foreground",
+                "enabled": true,
+                "kind": "solid",
+                "color": {
+                  "kind": "token",
+                  "valueType": "color",
+                  "sourceId": "source.tokens",
+                  "path": "fg-primary-inverse"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": "0.3.0",
+      "id": "definition.banner",
+      "version": "banner.v1",
+      "label": "Banner",
+      "parameters": [],
+      "parts": [],
+      "slots": [],
+      "body": {
+        "rootNodeId": "body.bannerRoot",
+        "nodeIds": [
+          "body.bannerRoot",
+          "body.bannerTitle",
+          "body.bannerButton"
+        ],
+        "nodes": [
+          {
+            "id": "body.bannerRoot",
+            "kind": "frame",
+            "label": "Frame",
+            "defaultProfileRef": {
+              "sourceId": "source.defaults",
+              "profileId": "defaults.frame"
+            },
+            "properties": {
+              "sizing.width": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 800,
+                  "unit": "px"
+                }
+              },
+              "sizing.height": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 150,
+                  "unit": "px"
+                }
+              },
+              "transform.translation.x": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              },
+              "transform.translation.y": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              }
+            },
+            "children": [
+              {
+                "nodeId": "body.bannerTitle"
+              },
+              {
+                "nodeId": "body.bannerButton"
+              }
+            ],
+            "layout": {
+              "kind": "flow",
+              "axis": "horizontal",
+              "gap": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              },
+              "mainAxisAlignment": "space-between",
+              "crossAxisAlignment": "start",
+              "padding": {
+                "kind": "literal",
+                "valueType": "dimension",
+                "value": {
+                  "value": 0,
+                  "unit": "px"
+                }
+              }
+            }
+          },
+          {
+            "id": "body.bannerTitle",
+            "kind": "text",
+            "label": "Text",
+            "defaultProfileRef": {
+              "sourceId": "source.defaults",
+              "profileId": "defaults.text"
+            },
+            "properties": {},
+            "children": [],
+            "content": "Banner Title"
+          },
+          {
+            "id": "body.bannerButton",
+            "kind": "component-instance",
+            "label": "Button",
+            "defaultProfileRef": {
+              "sourceId": "source.defaults",
+              "profileId": "defaults.frame"
+            },
+            "properties": {},
+            "children": [],
+            "definitionRef": {
+              "sourceId": "source.definitions",
+              "definitionId": "definition.button",
+              "version": "button.v1"
+            },
+            "parameterBindings": {},
+            "partOverrides": [],
+            "slotBindings": [],
+            "layoutItem": {
+              "widthMode": "fixed",
+              "heightMode": "fixed",
+              "shrink": 0
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "0.3.0",
+  "id": "visual.defaults",
+  "revision": "defaults.v1",
+  "profiles": [
+    {
+      "id": "defaults.frame",
+      "nodeKind": "frame",
+      "properties": {
+        "sizing.width": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 100,
+            "unit": "px"
+          }
+        },
+        "sizing.height": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 100,
+            "unit": "px"
+          }
+        },
+        "transform.translation.x": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "transform.translation.y": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "appearance.opacity": {
+          "kind": "literal",
+          "valueType": "number",
+          "value": 1
+        },
+        "appearance.visible": {
+          "kind": "literal",
+          "valueType": "boolean",
+          "value": true
+        }
+      },
+      "fills": [
+        {
+          "id": "paint.fill",
+          "enabled": true,
+          "kind": "solid",
+          "color": {
+            "kind": "literal",
+            "valueType": "color",
+            "value": {
+              "colorSpace": "srgb",
+              "components": [
+                1,
+                1,
+                1
+              ],
+              "alpha": 1
+            }
+          }
+        }
+      ],
+      "corners": {
+        "linked": true,
+        "radius": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "layout": {
+        "kind": "freeform"
+      },
+      "layoutItem": {
+        "widthMode": "fixed",
+        "heightMode": "fixed",
+        "shrink": 0
+      },
+      "clipContent": false
+    },
+    {
+      "id": "defaults.text",
+      "nodeKind": "text",
+      "properties": {
+        "transform.translation.x": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        },
+        "transform.translation.y": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 0,
+            "unit": "px"
+          }
+        }
+      },
+      "fills": [
+        {
+          "id": "paint.foreground",
+          "enabled": true,
+          "kind": "solid",
+          "color": {
+            "kind": "literal",
+            "valueType": "color",
+            "value": {
+              "colorSpace": "srgb",
+              "components": [
+                0,
+                0,
+                0
+              ],
+              "alpha": 1
+            }
+          }
+        }
+      ],
+      "layoutItem": {
+        "widthMode": "intrinsic",
+        "heightMode": "intrinsic",
+        "shrink": 0
+      },
+      "textStyle": {
+        "fontRef": {
+          "sourceId": "source.font",
+          "faceId": "font.synthetic"
+        },
+        "fontSize": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 16,
+            "unit": "px"
+          }
+        },
+        "lineHeight": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 20,
+            "unit": "px"
+          }
+        }
+      }
+    }
+  ]
+}

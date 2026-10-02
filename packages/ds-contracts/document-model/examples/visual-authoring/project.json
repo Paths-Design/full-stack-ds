@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "0.3.0",
+  "id": "project.visual",
+  "revision": "p6",
+  "pages": [
+    {
+      "id": "page.visual",
+      "path": "packages/ds-contracts/document-model/examples/visual-authoring/page.jsonl"
+    }
+  ],
+  "sources": [
+    {
+      "id": "source.tokens",
+      "kind": "tokens",
+      "path": "packages/ds-contracts/document-model/examples/visual-authoring/tokens.json",
+      "revision": "t3"
+    },
+    {
+      "id": "source.definitions",
+      "kind": "components",
+      "path": "packages/ds-contracts/document-model/examples/visual-authoring/definitions.json",
+      "revision": "d3"
+    },
+    {
+      "id": "source.defaults",
+      "kind": "defaults",
+      "path": "packages/ds-contracts/document-model/examples/visual-authoring/defaults.json",
+      "revision": "defaults.v1"
+    },
+    {
+      "id": "source.font",
+      "kind": "asset",
+      "path": "packages/ds-contracts/document-model/examples/visual-authoring/font-metrics.json",
+      "revision": "font.v1"
+    }
+  ],
+  "tokenContext": {
+    "name": "example.default",
+    "sourceIds": [
+      "source.tokens"
+    ]
+  },
+  "timebase": {
+    "ticksPerSecond": 1000
+  }
+}

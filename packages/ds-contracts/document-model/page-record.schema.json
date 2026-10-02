@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/page-record.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/page-record.schema.json",
   "title": "Shared document candidate page-record",
-  "description": "Draft 0.2.0 paper representation; not an editor runtime admission contract.",
+  "description": "Draft 0.3.0 paper representation; not an editor runtime admission contract.",
   "oneOf": [
     {
       "type": "object",
@@ -84,6 +84,9 @@
             "kind",
             "document"
           ]
+        },
+        "projectChangeId": {
+          "$ref": "common.schema.json#/$defs/id"
         }
       },
       "required": [
@@ -236,6 +239,9 @@
               }
             }
           ]
+        },
+        "projectChangeId": {
+          "$ref": "common.schema.json#/$defs/id"
         }
       },
       "required": [

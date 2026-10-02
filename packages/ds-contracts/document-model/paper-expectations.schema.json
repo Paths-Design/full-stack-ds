@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.full-stack-ds.local/document-model/0.2.0/paper-expectations.schema.json",
+  "$id": "https://schemas.full-stack-ds.local/document-model/0.3.0/paper-expectations.schema.json",
   "title": "Independent future-runtime oracle records",
   "description": "Source-authored expectations; validation never calculates animation, inheritance or history.",
   "type": "object",
