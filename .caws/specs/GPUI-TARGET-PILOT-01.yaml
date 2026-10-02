@@ -69,3 +69,11 @@ evidence:
     exit_code: 0
     artifact_path: tmp/gpui-pilot/GPUI-TARGET-PILOT-01/focused-final.log
     commit_sha: db531801386b2e3d6ad163067512144d6b4166b8
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Manually adjudicated executed evidence: real GPUI 0.2.2 compilation including the owner-subscription example and five Rust policy tests pass. Four copied policy mutations fail at intended assertions. Landed source hashes match committed Cargo receipt; generated receipts remain ignored. Input/render behavior unverified."
+    recorded_at: "2026-10-02T00:11:12.743Z"
+    command: "pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: tmp/gpui-pilot/GPUI-TARGET-PILOT-01/cargo/2026-10-02T00-06-54-760Z/report.json
+    commit_sha: db531801386b2e3d6ad163067512144d6b4166b8
