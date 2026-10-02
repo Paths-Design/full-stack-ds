@@ -58,6 +58,9 @@ pub fn resolve_part_style(part:&str,rules:&[StyleRule],state:&StyleState<'_>,the
    "gap" => {let values=edges("gap",&value)?;result.properties.insert("row-gap".into(),values[0].into());result.properties.insert("column-gap".into(),values[1].into());}
    "padding-block"=>{let values=edges("padding-block",&value)?;result.properties.insert("padding-top".into(),values[0].into());result.properties.insert("padding-bottom".into(),values[1].into());}
    "padding-inline"=>{let values=edges("padding-inline",&value)?;result.properties.insert("padding-left".into(),values[0].into());result.properties.insert("padding-right".into(),values[1].into());}
+   "border-top"|"border-right"|"border-bottom"|"border-left" if value=="none"||value=="0"=>{
+    result.properties.insert(format!("{}-style",d.property),"none".into());result.properties.insert(format!("{}-width",d.property),"0".into());
+   }
    "padding-block-start"=>{result.properties.insert("padding-top".into(),value);}
    "padding-block-end"=>{result.properties.insert("padding-bottom".into(),value);}
    "padding-inline-start"=>{result.properties.insert("padding-left".into(),value);}
