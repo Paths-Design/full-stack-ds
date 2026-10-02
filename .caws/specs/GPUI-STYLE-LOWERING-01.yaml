@@ -45,3 +45,12 @@ contracts:
   - name: 'gpui-style-rules'
     type: behavior
     path: 'packages/ds-codegen/src/native-style-rules.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected source-preservation assertions for anatomy part address, token references, variant/state predicates, merged authored rule sources and unsupported platform/selector diagnostics. Five native-style projection tests and 28 GPUI emitter tests executed, tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/logs/gpui-fidelity-final-projection.log; clean codegen source 9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f."
+    recorded_at: "2026-10-02T17:38:54.874Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/native-style-rules.test.ts packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/native-style-rules.test.ts
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
