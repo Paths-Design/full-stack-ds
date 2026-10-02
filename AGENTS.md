@@ -4,9 +4,9 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## What this repo is
 
-This is **not** primarily a design system — it is a falsifiable architectural claim about contract-governed compositional systems, with a Web DOM design system as the existence proof. One polymorphic primitive (`Stack`) plus JSON contracts drive code generation for the **Web DOM** framework targets (<!-- web-framework-list -->React, Vue, Svelte, Angular, Lit), plus React Native, a Figma descriptor target, the native targets (SwiftUI, Jetpack Compose), and bounded Unity UI Toolkit and Godot Control targets. If the same contract can drive all of them idiomatically without leaking framework details, the contract is at the right level of abstraction.
+This is **not** primarily a design system — it is a falsifiable architectural claim about contract-governed compositional systems, with a Web DOM design system as the existence proof. One polymorphic primitive (`Stack`) plus JSON contracts drive code generation for the **Web DOM** framework targets (<!-- web-framework-list -->React, Vue, Svelte, Angular, Lit), plus React Native, a Figma descriptor target, the native targets (SwiftUI, Jetpack Compose), and bounded Unity UI Toolkit, Godot Control and GPUI targets. If the same contract can drive all of them idiomatically without leaking framework details, the contract is at the right level of abstraction.
 
-The registered target set is authoritative in `fsds.targets.json` (<!-- registered-target-count -->11 builtin targets today); the **rail-admitted** subset is authoritative in `packages/ds-codegen/src/validation/admission-descriptor.ts` (<!-- rail-admitted-target-count -->6 — the <!-- web-framework-count -->5 web frameworks plus react-native). Never hand-count either from prose; both numbers here are gated by `pnpm run docs:check-claims`.
+The registered target set is authoritative in `fsds.targets.json` (<!-- registered-target-count -->12 builtin targets today); the **rail-admitted** subset is authoritative in `packages/ds-codegen/src/validation/admission-descriptor.ts` (<!-- rail-admitted-target-count -->6 — the <!-- web-framework-count -->5 web frameworks plus react-native). Never hand-count either from prose; both numbers here are gated by `pnpm run docs:check-claims`.
 
 Read `docs/current-implementation-snapshot.md` first to know what is currently proven vs. only foundation. That document overrides older architecture docs when they disagree.
 
@@ -252,6 +252,7 @@ packages/
   ds-react-native/      # Generated RN package — rail-admitted, in the CI drift diff
   ds-swiftui/  ds-jetpack-compose/  # Generated native packages, outside the admission rail
   ds-swift-smoke/  ds-compose-smoke/  # Fixtures for the two native compile lanes
+  ds-gpui/             # Rust Boolean-control pilot, excluded from pnpm workspace
   ds-unity/  ds-godot/  # Local engine pilots (UPM / Godot addon), excluded from the pnpm workspace
   ds-tokens/            # DTCG token source, build, validation, contrast, usage gates
   ds-iconography/       # Icon authoring source + emission ledger
@@ -349,7 +350,7 @@ When reasoning or writing docs/comments, do not over-claim:
 - React Native is a **rail-admitted default target**: it is in `admission-descriptor.ts`, `--target=all` and `governed:rail` emit and verify it, and CI's generated-tree diff covers `packages/ds-react-native/src`. It is not recon. SwiftUI and Jetpack Compose *are* explicit-only builtin targets outside rail verification — their generated roots are still covered by CI's committed-byte drift diff, and drift coverage is not admission — SwiftUI emits its allowlisted <!-- target-component-count:swiftui -->52 of the <!-- component-count -->55 corpus contracts and Compose emits its allowlisted <!-- target-component-count:jetpack-compose -->52, both compiled by dedicated CI native lanes over hand-authored example consumers, which proves compilation, not component correctness.
 - Web DOM is the only family proven end-to-end (emit → rail → runtime). It is **not** the only admitted executable family.
 - `@full-stack-ds/*` packages are **workspace-only**; not published to npm.
-- Local target packs are metadata-only (`LOCAL_TARGET_PACK_EXECUTION_STATUS` in `target-packs/local.ts`) until an executable local-loader slice lands. Note `fsds.targets.json` currently declares **no** local packs — all <!-- registered-target-count -->11 registered targets are `kind: "builtin"`.
+- Local target packs are metadata-only (`LOCAL_TARGET_PACK_EXECUTION_STATUS` in `target-packs/local.ts`) until an executable local-loader slice lands. Note `fsds.targets.json` currently declares **no** local packs — all <!-- registered-target-count -->12 registered targets are `kind: "builtin"`.
 - The two native compile lanes (Kotlin/`kotlinc`, Swift/`swiftc`) compile hand-authored example consumers, not the generated component trees. They prove the rail can drive a non-pnpm toolchain; they do not drift-gate emitted native bytes.
 - Figma descriptor emission ≠ live Figma library publication.
 
@@ -363,3 +364,14 @@ When reasoning or writing docs/comments, do not over-claim:
 - **Conventional commits** with scopes that name the area: `feat(figma-plugin): …`, `fix(e2e): …`, `docs(architecture): …`, `wip(<scope>): checkpoint …`.
 - Tests that produce visual evidence (screenshots) write under `test-results/` (gitignored) and `tmp/` (gitignored, project scratch).
 - When a script touches `composed.tokens.json` or anything under `packages/ds-codegen/.emission-manifest.json`, it is touching gitignored regenerable state — never commit those files.
+
+### GPUI Rust pilot
+
+`packages/ds-gpui` is a Cargo package excluded from pnpm workspace discovery.
+`pnpm run generate:gpui` emits its registry Boolean-control allowlist.
+`pnpm run test:gpui` runs real GPUI 0.2.2 compilation and state-policy tests.
+The native consumer example is included in the compile check. GPUI is outside
+the TypeScript admission rail, CI and pre-push native validation. Compilation
+and policy tests do not establish physical input, rendered frames, keyboard,
+accessibility, token styling, upstream-main compatibility or cross-platform
+behavior. See [GPUI target](docs/architecture/gpui-target.md).

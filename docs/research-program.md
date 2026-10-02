@@ -70,7 +70,7 @@ domain.
 - **Components.** `<!-- component-count -->55` contracts, one rendered
   primitive (`Stack`), `<!-- web-framework-count -->5` Web DOM emitters plus
   React Native admitted on the same rail, and registered native/design-tool
-  targets outside it (`<!-- registered-target-count -->11` registered targets,
+  targets outside it (`<!-- registered-target-count -->12` registered targets,
   `<!-- rail-admitted-target-count -->6` rail-admitted). Doctrine:
   [`normal-form.md`](normal-form.md); evidence: the snapshot's rail, runtime
   rail, and non-web generation rows.

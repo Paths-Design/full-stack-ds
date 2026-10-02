@@ -24,7 +24,8 @@ export type BuiltinTargetId =
   | "swiftui"
   | "jetpack-compose"
   | "unity"
-  | "godot";
+  | "godot"
+  | "gpui";
 export type TargetId = string;
 
 /**
@@ -130,6 +131,7 @@ export const KNOWN_TARGETS: readonly BuiltinTargetId[] = [
   "jetpack-compose",
   "unity",
   "godot",
+  "gpui",
 ];
 
 export function isBuiltinTargetId(value: string): value is BuiltinTargetId {

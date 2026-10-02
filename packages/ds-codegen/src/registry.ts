@@ -11,6 +11,7 @@
  * later executable adapter slice admits them.
  */
 import fs from "node:fs";
+import { createGpuiEmitter } from "./frameworks/gpui/factory.js";
 import { createGodotEmitter } from "./frameworks/godot/factory.js";
 import { createUnityEmitter } from "./frameworks/unity/factory.js";
 import path from "node:path";
@@ -348,6 +349,16 @@ export function createDefaultRegistry(opts: RegistryOptions): TargetRegistry {
     });
   }
 
+  if (configuredTargets.has("gpui") && workspaceExists(path.join(opts.workspaceRoot, "packages/ds-gpui"))) {
+    registerBuiltinTarget(bindings, declarations, {
+      id: "gpui",
+      emitter: createGpuiEmitter(),
+      componentsRoot: path.join(opts.workspaceRoot, "packages/ds-gpui/src/components"),
+      barrelFile: "mod.rs",
+      admittedComponents: declaredComponents("gpui"),
+    });
+  }
+
   for (const target of configuredLocalTargets(loadedConfig.config)) {
     registerLocalTargetDeclaration(declarations, opts.workspaceRoot, target);
   }
@@ -433,6 +444,7 @@ function workspaceExists(packageRoot: string): boolean {
   return (
     fs.existsSync(path.join(packageRoot, "package.json")) ||
     fs.existsSync(path.join(packageRoot, "Package.swift")) ||
-    fs.existsSync(path.join(packageRoot, "settings.gradle.kts"))
+    fs.existsSync(path.join(packageRoot, "settings.gradle.kts")) ||
+    fs.existsSync(path.join(packageRoot, "Cargo.toml"))
   );
 }

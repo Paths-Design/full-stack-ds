@@ -39,6 +39,12 @@ describe("showcase source coverage", () => {
       names: ["Dialog", "Button"], sourceCoverage: "full",
     });
   });
+  it("counts Rust component sources but not metadata or a module barrel", async () => {
+    const dir = fixture({ Switch: ["Switch.rs", "capabilities.json"], ToggleSwitch: ["mod.rs", "capabilities.json"] });
+    expect(await inspectTargetOutputs(dir, ["Switch", "ToggleSwitch"])).toEqual({
+      names: ["Switch"], sourceCoverage: "partial",
+    });
+  });
   it("counts Figma descriptors separately from component sources", async () => {
     const dir = fixture({ Button: ["Button.figma.json"] });
     expect(await inspectTargetOutputs(dir, ["Button"], true)).toEqual({
