@@ -105,10 +105,11 @@ impl Gallery {
 
 impl Render for Gallery {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        div().id("gallery").track_focus(&self.focus).size_full().p_6().flex().flex_col().gap_3()
+        div().id("gallery").track_focus(&self.focus).size_full().overflow_y_scroll()
             .bg(gpui::rgb(0xfafafa)).text_color(gpui::rgb(0x141414))
             .on_action(cx.listener(|_, _: &Tab, window, _| window.focus_next()))
             .on_action(cx.listener(|_, _: &BackTab, window, _| window.focus_prev()))
+            .child(div().w_full().p_6().flex().flex_col().gap_3()
             .children(self.text.iter().cloned())
             .child(self.divider.clone())
             .child(div().flex().items_start().gap_4()
@@ -117,7 +118,7 @@ impl Render for Gallery {
                 .child(div().flex().flex_col().gap_2().child("Checkbox / mixed and disabled").children(self.checkboxes.iter().cloned()))
                 .child(div().flex().flex_col().gap_2().child("ToggleSwitch / selected pills").children(self.toggles.iter().cloned())))
             .child(div().flex().items_start().gap_2().children(self.badges.iter().cloned()))
-            .child(format!("{} accepted request(s). {}", self.accepted, self.last_request))
+            .child(format!("{} accepted request(s). {}", self.accepted, self.last_request)))
     }
 }
 

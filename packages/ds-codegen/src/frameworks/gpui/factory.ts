@@ -78,7 +78,7 @@ function validScalar(decl: NativeStyleDeclarationIR, pseudo: boolean): boolean {
  if (p === 'transform') {
   const functions=Array.from(value.matchAll(/([A-Za-z]+)\(([^)]+)\)/g));
   if (!functions.length || functions.map(match=>match[0]).join('').replace(/\s/g,'') !== value.replace(/\s/g,'')) return false;
-  return functions.every(match=>match[1]==='rotate' ? pseudo && /^-?\d+(?:\.\d+)?deg$/.test(match[2]!) : ['translate','translateX','translateY'].includes(match[1]!) && match[2]!.split(',').length === (match[1]==='translate'?2:1) && match[2]!.split(',').every(part=>dimension.test(part.trim())));
+  return functions.every(match=>match[1]==='rotate' ? pseudo && /^-?\d+(?:\.\d+)?deg$/.test(match[2]!) : ['translate','translateX','translateY'].includes(match[1]!) && match[2]!.split(',').length === (match[1]==='translate'?2:1) && match[2]!.split(',').every(part=>dimension.test(part.trim()) && !/\dem$/.test(part.trim())));
  }
  if (p === 'font-weight') return ['normal','bold'].includes(value) || /^\d+(?:\.\d+)?$/.test(value) && Number(value) >= 1 && Number(value) <= 1000;
  if (['flex-grow','flex-shrink','opacity'].includes(p)) return /^\d+(?:\.\d+)?$/.test(value) && (p !== 'opacity' || Number(value) <= 1);
@@ -168,7 +168,7 @@ function source(ir: ComponentIR, plan: Plan, styles: Styles): string {
 use std::collections::BTreeMap;
 use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle${plan.channel?',EventEmitter,MouseButton,Subscription':''}};
 ${plan.channel?'use crate::control::{BooleanState,ChangeRequest};':''}
-use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style,render_pseudo};
+use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style${styles.rules.some(rule=>rule.pseudo)?',render_pseudo':''}};
 pub struct ${ir.name}{${plan.channel?'pub state:BooleanState,pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,':''}pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,${fields.join('')}}
 impl Default for ${ir.name}{fn default()->Self {let mut variants=BTreeMap::new();${axisDefaults}${plan.channel?`let mut state=BooleanState::new(${plan.defaultValue});state.disabled=${plan.disabledDefault};`:''}Self{${plan.channel?'state,hovered:false,active:false,_focus_subscriptions:Vec::new(),':''}label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,${initial.join('')}}}}
 impl ${ir.name}{
@@ -185,8 +185,8 @@ impl ${ir.name}{
  ${axisMethods}\n${fieldMethods}\n${controls}
 }
 ${plan.channel?`impl EventEmitter<ChangeRequest> for ${ir.name}{}`:''}
-impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,cx:&mut Context<Self>)->impl IntoElement{
- ${plan.channel?'if self.focus_handle.is_none(){let handle=cx.focus_handle();self._focus_subscriptions.push(cx.on_focus(&handle,window,|_,_,cx|cx.notify()));self._focus_subscriptions.push(cx.on_blur(&handle,window,|_,_,cx|cx.notify()));self.focus_handle=Some(handle);}':''}
+impl Render for ${ir.name}{fn render(&mut self,window:&mut Window,${plan.channel?'cx':'_cx'}:&mut Context<Self>)->impl IntoElement{
+ ${plan.channel?'if self.focus_handle.is_none(){let handle=cx.focus_handle();self._focus_subscriptions.push(cx.on_focus(&handle,window,|_,_,cx|cx.notify()));self._focus_subscriptions.push(cx.on_blur(&handle,window,|_,_,cx|cx.notify()));self.focus_handle=Some(handle);}self.focus_handle=self.focus_handle.take().map(|handle|handle.tab_index(0).tab_stop(!self.state.disabled));':''}
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);

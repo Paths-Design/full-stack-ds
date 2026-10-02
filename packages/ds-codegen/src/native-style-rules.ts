@@ -46,7 +46,7 @@ function selectorPlan(key: string, prefix: string, parts: string[], recipe: Clas
  if (invalid || /[:[>,]/.test(selector)) return undefined;
  const nodes = selector.trim().split(/\s+/);
  if (nodes.length > 2 || nodes.some((node, i) => i < nodes.length - 1 && node !== `.${prefix}`)) return undefined;
- const target = nodes.at(-1);
+ const target = nodes[nodes.length - 1];
  let part: string;
  if (target === `.${prefix}`) part = 'root';
  else if (target?.startsWith(`.${prefix}__`) && parts.includes(target.slice(prefix.length + 3))) part = target.slice(prefix.length + 3);

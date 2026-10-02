@@ -107,7 +107,7 @@ describe("GPUI native style and control lowering", () => {
     expect(source).toContain('pub fn set_theme(');
     expect(source).toContain('pub fn set_label(');
     expect(source).toContain('apply_part_style');
-    if(ir.formControl) { expect(source).toContain('crate::view::is_activation_key'); expect(source).toContain('cx.on_blur'); expect(source).toContain('tab_stop(!self.state.disabled)'); }
+    if(ir.formControl) { expect(source).toContain('crate::view::is_activation_key'); expect(source).toContain('cx.on_blur'); expect(source).toContain('self.focus_handle.take().map(|handle|handle.tab_index(0).tab_stop(!self.state.disabled))'); }
   });
   it('keeps pseudo rotation, typed token indirection and separate design overrides',()=>{
     const ir=buildComponentIR(fixture('Checkbox'));
@@ -134,7 +134,7 @@ describe("GPUI native style and control lowering", () => {
     const source=emitter.emitComponent(ir,options)[0]!.contents;
     expect(source).toContain('.child("\\\\b\\\\u0000\\u{8}\\u{c}\\u{0}")');
   });
-  it.each([['width','12'],['border-width','2%'],['border-top-width','bad'],['font-weight','400px'],['background-color','rgba(300,0,0,1)'],['transform','translateX(wrongpx)']])('refuses bad %s scalar syntax', (property,value)=>{
+  it.each([['width','12'],['border-width','2%'],['border-top-width','bad'],['font-weight','400px'],['background-color','rgba(300,0,0,1)'],['transform','translateX(wrongpx)'],['transform','translateX(1em)']])('refuses bad %s scalar syntax', (property,value)=>{
     const ir=buildComponentIR(fixture('Switch'));
     ir.nativeStyleRules!.rules.push({sourceKey:'mutant',part:'track',predicates:[],declarations:[{property,value}]});
     expect(()=>gpuiStylePlan(ir)).toThrow('GPUI_UNSUPPORTED_STYLE_VALUE');

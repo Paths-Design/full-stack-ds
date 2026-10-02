@@ -71,7 +71,7 @@ pub fn resolve_part_style(part:&str,rules:&[StyleRule],state:&StyleState<'_>,the
 }
 fn error(p:&str,v:&str)->StyleError{StyleError(format!("GPUI_STYLE_VALUE_UNSUPPORTED: {p}={v}"))}
 fn number(p:&str,v:&str)->Result<f32,StyleError>{v.trim().parse::<f32>().ok().filter(|n|n.is_finite()).ok_or_else(||error(p,v))}
-fn absolute(p:&str,v:&str)->Result<AbsoluteLength,StyleError>{let v=v.trim();if let Some(n)=v.strip_suffix("px"){Ok(px(number(p,n)?).into())}else if let Some(n)=v.strip_suffix("rem"){Ok(rems(number(p,n)?).into())}else if v=="0"{Ok(px(0.).into())}else{Err(error(p,v))}}
+fn absolute(p:&str,v:&str)->Result<AbsoluteLength,StyleError>{let v=v.trim();if let Some(n)=v.strip_suffix("px"){Ok(px(number(p,n)?).into())}else if let Some(n)=v.strip_suffix("rem"){Ok(rems(number(p,n)?).into())}else if v.parse::<f32>().is_ok_and(|n|n==0.){Ok(px(0.).into())}else{Err(error(p,v))}}
 fn definite(p:&str,v:&str)->Result<DefiniteLength,StyleError>{if let Some(n)=v.trim().strip_suffix('%'){Ok(DefiniteLength::Fraction(number(p,n)?/100.))}else{absolute(p,v).map(Into::into)}}
 fn length(p:&str,v:&str)->Result<Length,StyleError>{if v.trim()=="auto"||v.trim()=="fit-content"{Ok(Length::Auto)}else{definite(p,v).map(Into::into)}}
 fn color(p:&str,v:&str)->Result<Hsla,StyleError>{match v.trim(){
