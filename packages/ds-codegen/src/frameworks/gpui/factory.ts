@@ -78,7 +78,7 @@ function validScalar(decl: NativeStyleDeclarationIR, pseudo: boolean): boolean {
  if (p === 'transform') {
   const functions=Array.from(value.matchAll(/([A-Za-z]+)\(([^)]+)\)/g));
   if (!functions.length || functions.map(match=>match[0]).join('').replace(/\s/g,'') !== value.replace(/\s/g,'')) return false;
-  return functions.every(match=>match[1]==='rotate' ? pseudo && /^-?\d+(?:\.\d+)?deg$/.test(match[2]!) : ['translate','translateX','translateY'].includes(match[1]!) && match[2]!.split(',').length === (match[1]==='translate'?2:1) && match[2]!.split(',').every(part=>dimension.test(part.trim())));
+  return functions.every(match=>match[1]==='rotate' ? pseudo && /^-?\d+(?:\.\d+)?deg$/.test(match[2]!) : ['translate','translateX','translateY'].includes(match[1]!) && match[2]!.split(',').length === (match[1]==='translate'?2:1) && match[2]!.split(',').every(part=>dimension.test(part.trim()) && !/\dem$/.test(part.trim())));
  }
  if (p === 'font-weight') return ['normal','bold'].includes(value) || /^\d+(?:\.\d+)?$/.test(value) && Number(value) >= 1 && Number(value) <= 1000;
  if (['flex-grow','flex-shrink','opacity'].includes(p)) return /^\d+(?:\.\d+)?$/.test(value) && (p !== 'opacity' || Number(value) <= 1);
