@@ -6,3 +6,6 @@ publish = false
 
 [dependencies]
 gpui = { version = "=0.2.2", default-features = false }
+
+[dev-dependencies]
+gpui = { version = "=0.2.2", default-features = false, features = ["test-support"] }
