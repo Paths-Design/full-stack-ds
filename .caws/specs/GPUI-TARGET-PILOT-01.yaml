@@ -63,11 +63,11 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Manually adjudicated executed evidence: registry allowlist generates Switch and ToggleSwitch; inspected identity/channel substitution and explicit rejection assertions pass in the preserved focused 26-test run. Generated logs intentionally remain ignored."
-    recorded_at: "2026-10-02T00:11:00.056Z"
+    evidence_ref: "Tracked emitter assertions and registry source at db5318013 inspected and executed: Boolean allowlist, identity/channel substitution and explicit shape rejection pass. Supporting generated execution log tmp/gpui-pilot/GPUI-TARGET-PILOT-01/focused-final.log records the 26-test run and stays ignored. Runtime result manually adjudicated; citation verifier checks source identity only."
+    recorded_at: "2026-10-02T00:13:37.439Z"
     command: pnpm exec vitest run packages/ds-codegen/src/frameworks/gpui/factory.test.ts src/views/views-smoke.test.tsx src/consumption/showcase-census.test.ts
     exit_code: 0
-    artifact_path: tmp/gpui-pilot/GPUI-TARGET-PILOT-01/focused-final.log
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
     commit_sha: db531801386b2e3d6ad163067512144d6b4166b8
   - criterion_id: A2
     status: pass
