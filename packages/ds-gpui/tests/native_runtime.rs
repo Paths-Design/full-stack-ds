@@ -2,7 +2,7 @@
 //! The TestWindow does not establish physical OS input or GPU-rendered pixels.
 use full_stack_ds_gpui::components::{Badge, Checkbox, Divider, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
-use full_stack_ds_gpui::style::{apply_resolved_style, Theme};
+use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
 use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
 use std::{cell::{Cell, RefCell}, rc::Rc};
 
@@ -234,4 +234,57 @@ fn mounted_static_typography_badge_and_divider_are_styled(cx: &mut TestAppContex
         assert_eq!(actual.text.font_weight.unwrap(), gpui::FontWeight(600.));
         element
     });
+}
+
+#[gpui::test]
+fn mounted_divider_orientations_and_tokens_reach_explicit_nonempty_native_paint(cx: &mut TestAppContext) {
+    let (divider, cx) = cx.add_window_view(|_, _| Divider::default());
+    for (orientation, thickness, color) in [
+        ("horizontal", 1., 0xb8b8b8),
+        ("vertical", 1., 0xb8b8b8),
+        ("horizontal", 3., 0x108850),
+        ("vertical", 3., 0x108850),
+    ] {
+        divider.update(cx, |control, cx| {
+            control.set_orientation(orientation, cx);
+            control.set_theme(Theme::default()
+                .with_token("divider.size.thickness", format!("{thickness}px"))
+                .with_token("divider.color", format!("#{color:06x}")), cx);
+        });
+        cx.run_until_parked();
+        let root = cx.debug_bounds("divider-root").expect("actual generated Divider must mount");
+        let source = divider.read_with(cx, |control, _| control.resolved_style("root").unwrap());
+        let horizontal = orientation == "horizontal";
+        let top = if horizontal { px(thickness) } else { px(0.) };
+        let left = if horizontal { px(0.) } else { px(thickness) };
+        if horizontal {
+            assert_eq!(root.size.height, px(thickness));
+            assert!(root.size.width >= px(100.));
+        } else {
+            assert_eq!(root.size.width, px(thickness), "border thickness remains the lower bound when authored width is thinner");
+            assert!(root.size.height >= px(16.));
+        }
+        cx.draw(point(px(0.), px(0.)), size(px(100.), px(100.)), |window, app| {
+            let mut actual_div = apply_resolved_style(div(), &source).unwrap();
+            let style = actual_div.interactivity().compute_style(None, None, window, app);
+            assert_eq!(style.border_widths.top, top.into());
+            assert_eq!(style.border_widths.left, left.into());
+            assert_eq!(style.border_widths.right, px(0.).into());
+            assert_eq!(style.border_widths.bottom, px(0.).into());
+            assert!(style.border_color.unwrap().is_transparent(), "the real Div must not double paint native shader borders");
+            actual_div
+        });
+        // Execute the production edge element with the actual mounted host's
+        // padding-box geometry. The retained paint state must cover that host.
+        let padding = root.size - size(left, top);
+        let (_, painted) = cx.draw(root.origin + point(left, top), size(px(1000.), px(1000.)), |_, _| {
+            native_border_paint(&source).unwrap().expect("generated asymmetric border must attach explicit paint")
+                .w(padding.width).h(padding.height)
+        });
+        assert_eq!(painted.len(), 1);
+        assert_eq!(painted[0].bounds, root, "{orientation} edge paint must cover the actual generated Divider rectangle");
+        assert!(!painted[0].bounds.is_empty());
+        assert_eq!(painted[0].background, gpui::Background::from(gpui::rgb(color)));
+        assert_eq!(painted[0].border_widths, gpui::Edges::all(px(0.)));
+    }
 }

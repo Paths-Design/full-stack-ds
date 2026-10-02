@@ -79,7 +79,7 @@ fn color(p:&str,v:&str)->Result<Hsla,StyleError>{match v.trim(){
  v if v.starts_with("rgb(")||v.starts_with("rgba(")=>{let b=v.split_once('(').unwrap().1.strip_suffix(')').ok_or_else(||error(p,v))?;let ns=b.split(',').map(|n|number(p,n)).collect::<Result<Vec<_>,_>>()?;if ns.len()!=3&&ns.len()!=4{return Err(error(p,v))}let a=ns.get(3).copied().unwrap_or(1.);if ns[..3].iter().any(|n|!(0. ..=255.).contains(n))||!(0. ..=1.).contains(&a){return Err(error(p,v))}Ok(Rgba{r:ns[0]/255.,g:ns[1]/255.,b:ns[2]/255.,a}.into())},_=>Err(error(p,v))}}
 fn edges<'a>(p:&str,v:&'a str)->Result<[&'a str;4],StyleError>{let ns=v.split_whitespace().collect::<Vec<_>>();match ns.as_slice(){[a]=>Ok([a,a,a,a]),[a,b]=>Ok([a,b,a,b]),[a,b,c]=>Ok([a,b,c,b]),[a,b,c,d]=>Ok([a,b,c,d]),_=>Err(error(p,v))}}
 /// Apply supported declarations to actual GPUI style fields; unsupported input fails visibly.
-pub fn apply_resolved_style(mut e:Div,s:&ResolvedPartStyle)->Result<Div,StyleError>{
+fn apply_style_properties(mut e:Div,s:&ResolvedPartStyle)->Result<Div,StyleError>{
  for (property,value) in &s.properties{let p=property.as_str();let v=value.as_str();match p{
   "background-color"=>e=e.bg(color(p,v)?),"color"=>e=e.text_color(color(p,v)?),"border-color"|"border-top-color"|"border-right-color"|"border-bottom-color"|"border-left-color"=>e=e.border_color(color(p,v)?),
   "width"=>e.style().size.width=Some(length(p,v)?),"height"=>e.style().size.height=Some(length(p,v)?),
@@ -123,6 +123,95 @@ pub fn apply_resolved_style(mut e:Div,s:&ResolvedPartStyle)->Result<Div,StyleErr
  if s.get("border-left-style")==Some("none"){e.style().border_widths.left=Some(px(0.).into());}
  Ok(e)
 }
+
+#[derive(Clone)]
+struct NativeBorderStyle {
+ widths: [AbsoluteLength; 4],
+ color: Hsla,
+ rectangular: bool,
+}
+impl NativeBorderStyle {
+ fn from_div(e:&mut Div)->Self {
+  let style=e.style();
+  Self {
+   widths:[style.border_widths.top,style.border_widths.right,style.border_widths.bottom,style.border_widths.left].map(|v|v.unwrap_or_else(||px(0.).into())),
+   color:style.border_color.unwrap_or_else(gpui::transparent_black),
+   rectangular:[style.corner_radii.top_left,style.corner_radii.top_right,style.corner_radii.bottom_right,style.corner_radii.bottom_left].iter().all(|v|v.is_none_or(|v|v.is_zero())),
+  }
+ }
+ fn asymmetric(&self)->bool {self.widths[0]!=self.widths[2]||self.widths[1]!=self.widths[3]}
+ fn pixels(&self,rem:gpui::Pixels)->[gpui::Pixels;4] {self.widths.map(|v|v.to_pixels(rem).max(px(0.)))}
+ fn outer_bounds(&self,padding_bounds:gpui::Bounds<gpui::Pixels>,rem:gpui::Pixels)->gpui::Bounds<gpui::Pixels> {
+  let[t,r,b,l]=self.pixels(rem);
+  gpui::Bounds::new(padding_bounds.origin-gpui::point(l,t),padding_bounds.size+gpui::size(l+r,t+b))
+ }
+ fn quads(&self,padding_bounds:gpui::Bounds<gpui::Pixels>,rem:gpui::Pixels)->Vec<gpui::PaintQuad> {
+  let bounds=self.outer_bounds(padding_bounds,rem);
+  let w=bounds.size.width;let h=bounds.size.height;
+  let[t,r,b,l]=self.pixels(rem);
+  let t=t.min(h);let b=b.min((h-t).max(px(0.)));let l=l.min(w);let r=r.min((w-l).max(px(0.)));
+  // Top/bottom own their corners, so translucent border colors never double paint.
+  let rects=[
+   gpui::Bounds::new(bounds.origin,gpui::size(w,t)),
+   gpui::Bounds::new(bounds.origin+gpui::point(w-r,t),gpui::size(r,h-t-b)),
+   gpui::Bounds::new(bounds.origin+gpui::point(px(0.),h-b),gpui::size(w,b)),
+   gpui::Bounds::new(bounds.origin+gpui::point(px(0.),t),gpui::size(l,h-t-b)),
+  ];
+  rects.into_iter().filter(|rect|!rect.is_empty()&&!self.color.is_transparent()).map(|rect|gpui::fill(rect,self.color)).collect()
+ }
+}
+
+/// Explicit rectangular edge paint. GPUI 0.2.2's nearest-quadrant border shader
+/// can select the zero-width opposite edge of a one-pixel asymmetric rectangle.
+/// Layout still belongs to the host's authored borders; this absolute element
+/// fills the padding box, including a zero-sized padding box, and reconstructs
+/// the host border box before painting solid, border-free quads.
+/// Its retained prepaint state is available to native geometry diagnostics.
+pub struct NativeBorderPaint {
+ style:gpui::StyleRefinement,
+ base:NativeBorderStyle,
+ hover:Option<NativeBorderStyle>,
+}
+impl NativeBorderPaint {
+ fn new(base:NativeBorderStyle,hover:Option<NativeBorderStyle>)->Self {
+  Self{style:gpui::StyleRefinement::default(),base,hover}.absolute().top(px(0.)).right(px(0.)).bottom(px(0.)).left(px(0.))
+ }
+}
+impl gpui::Styled for NativeBorderPaint {fn style(&mut self)->&mut gpui::StyleRefinement {&mut self.style}}
+impl gpui::IntoElement for NativeBorderPaint {type Element=Self;fn into_element(self)->Self {self}}
+impl gpui::Element for NativeBorderPaint {
+ type RequestLayoutState=gpui::Style;
+ type PrepaintState=Vec<gpui::PaintQuad>;
+ fn id(&self)->Option<gpui::ElementId>{None}
+ fn source_location(&self)->Option<&'static std::panic::Location<'static>>{None}
+ fn request_layout(&mut self,_:Option<&gpui::GlobalElementId>,_:Option<&gpui::InspectorElementId>,window:&mut gpui::Window,cx:&mut gpui::App)->(gpui::LayoutId,gpui::Style){
+  use gpui::Refineable;
+  let mut style=gpui::Style::default();style.refine(&self.style);
+  (window.request_layout(style.clone(),[],cx),style)
+ }
+ fn prepaint(&mut self,_:Option<&gpui::GlobalElementId>,_:Option<&gpui::InspectorElementId>,bounds:gpui::Bounds<gpui::Pixels>,_:&mut gpui::Style,window:&mut gpui::Window,_:&mut gpui::App)->Vec<gpui::PaintQuad>{
+  let border=if self.base.outer_bounds(bounds,window.rem_size()).contains(&window.mouse_position()){self.hover.as_ref().unwrap_or(&self.base)}else{&self.base};
+  border.quads(bounds,window.rem_size())
+ }
+ fn paint(&mut self,_:Option<&gpui::GlobalElementId>,_:Option<&gpui::InspectorElementId>,bounds:gpui::Bounds<gpui::Pixels>,style:&mut gpui::Style,quads:&mut Vec<gpui::PaintQuad>,window:&mut gpui::Window,cx:&mut gpui::App){
+  style.paint(bounds,window,cx,|window,_|{for quad in quads.iter(){window.paint_quad(quad.clone());}});
+ }
+}
+
+/// Construct the same paint element attached by the native style adapter, for
+/// diagnostics that execute its real layout/prepaint/paint path in TestWindow.
+/// Returned quad geometry establishes paint intent, not GPU-rendered pixels.
+pub fn native_border_paint(s:&ResolvedPartStyle)->Result<Option<NativeBorderPaint>,StyleError>{
+ let mut e=apply_style_properties(gpui::div(),s)?;
+ let border=NativeBorderStyle::from_div(&mut e);
+ Ok((border.rectangular&&border.asymmetric()).then(||NativeBorderPaint::new(border,None)))
+}
+pub fn apply_resolved_style(e:Div,s:&ResolvedPartStyle)->Result<Div,StyleError>{
+ let mut e=apply_style_properties(e,s)?;
+ let border=NativeBorderStyle::from_div(&mut e);
+ if border.rectangular&&border.asymmetric(){e=e.border_color(gpui::transparent_black()).child(NativeBorderPaint::new(border,None));}
+ Ok(e)
+}
 fn margin_pixels(v:Option<&str>,rem:f32)->Result<f32,StyleError>{v.map(|v|absolute("margin",v).map(|n|f32::from(n.to_pixels(px(rem))))).unwrap_or(Ok(0.))}
 fn translation(p:&str,v:&str,basis:Option<&str>,rem:f32)->Result<f32,StyleError>{if let Some(n)=v.strip_suffix('%'){let basis=basis.ok_or_else(||error(p,v))?;Ok(number(p,n)?*f32::from(absolute(p,basis)?.to_pixels(px(rem)))/100.)}else{Ok(f32::from(absolute(p,v)?.to_pixels(px(rem))))}}
 fn native_font_family(value:&str)->String{
@@ -136,10 +225,20 @@ fn native_font_family(value:&str)->String{
 pub fn apply_part_style(e:Div,part:&str,rules:&[StyleRule],state:&StyleState<'_>,theme:&Theme)->Div{
  use gpui::Refineable;
  let resolved=resolve_part_style(part,rules,state,theme).expect("generated GPUI token cascade must be valid");
- let e=apply_resolved_style(e,&resolved).expect("generated GPUI style declarations must be supported");
+ let mut e=apply_style_properties(e,&resolved).expect("generated GPUI style declarations must be supported");
  let mut hovered=state.clone();hovered.hovered=true;
  let hover=resolve_part_style(part,rules,&hovered,theme).expect("generated GPUI hover cascade");
- let mut hover_div=apply_resolved_style(gpui::div(),&hover).expect("generated GPUI hover declarations");let refinement=hover_div.style().clone();
+ let mut hover_div=apply_style_properties(gpui::div(),&hover).expect("generated GPUI hover declarations");
+ let base_border=NativeBorderStyle::from_div(&mut e);let hover_border=NativeBorderStyle::from_div(&mut hover_div);
+ if base_border.rectangular&&hover_border.rectangular&&(base_border.asymmetric()||hover_border.asymmetric()) {
+  // The admitted authored borders only change color under implicit hover.
+  // A changing border width would change the padding-box reconstruction and
+  // requires its own layout-state adapter; reject it rather than guess bounds.
+  assert_eq!(base_border.widths,hover_border.widths,"GPUI_BORDER_HOVER_GEOMETRY_UNSUPPORTED: asymmetric hover border widths must remain stable");
+  e=e.border_color(gpui::transparent_black()).child(NativeBorderPaint::new(base_border,Some(hover_border)));
+  hover_div=hover_div.border_color(gpui::transparent_black());
+ }
+ let refinement=hover_div.style().clone();
  let e=e.hover(move|mut style|{style.refine(&refinement);style});
  apply_outline(e,&resolved).expect("generated GPUI outline")
 }
