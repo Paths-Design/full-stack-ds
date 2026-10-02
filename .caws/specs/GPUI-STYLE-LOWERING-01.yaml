@@ -62,3 +62,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
     commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "33 executed projection tests include identity changes, token/style and state predicate mutations that alter output and generic transform rejection. Final pnpm run typecheck passed root and codegen; tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/logs/gpui-fidelity-final-projection.log and gpui-fidelity-final-typecheck.log."
+    recorded_at: "2026-10-02T17:39:22.660Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/native-style-rules.test.ts packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/gpui/factory.test.ts
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
