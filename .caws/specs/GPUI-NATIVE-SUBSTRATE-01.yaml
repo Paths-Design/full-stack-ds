@@ -66,3 +66,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-gpui/tests/native_runtime.rs
     commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real locked GPUI 0.2.2 compile/check and all-target Cargo tests executed on darwin-arm64 Rust 1.90.0, 20 tests passing and stable clean source hashes. Fresh packaged consumer 5afd5272 was opened and inspected using native CUA; owner pointer acceptance/refusal and separators visible. tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/gallery/{build-receipt.json,render-metrics.json,observations.json}; no framework mock. Native accessibility and renderer sharpness remain outside the established boundary."
+    recorded_at: "2026-10-02T17:39:52.546Z"
+    command: "CARGO_TARGET_DIR=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/gpui-fidelity-cargo/runtime pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/examples/component_gallery.rs
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
