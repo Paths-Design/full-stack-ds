@@ -1,64 +1,53 @@
-// Generated from ToggleSwitch contract IR. Do not hand-edit.
-use gpui::{prelude::*, div, Context, EventEmitter, SharedString, Window};
-use crate::control::{BooleanState, ChangeRequest};
+// Generated from ToggleSwitch normalized contract IR. Do not hand-edit.
+use std::collections::BTreeMap;
+use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle,EventEmitter,MouseButton,Subscription};
+use crate::control::{BooleanState,ChangeRequest};
+use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style};
+pub struct ToggleSwitch{pub state:BooleanState,pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,}
+impl Default for ToggleSwitch{fn default()->Self {let mut variants=BTreeMap::new();variants.insert("size","medium".into());let mut state=BooleanState::new(false);state.disabled=false;Self{state,hovered:false,active:false,_focus_subscriptions:Vec::new(),label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,}}}
+impl ToggleSwitch{
+ pub const STYLE_RULES:&'static [StyleRule]=&[StyleRule {part:"root",conditions:&[],declarations:&[StyleDeclaration {property:"box-model.padding",value:"0",token:None},StyleDeclaration {property:"box-model.padding-block",value:"0",token:None},StyleDeclaration {property:"box-model.padding-block-start",value:"4px",token:Some("semantic.action.size.medium.padding-block")},StyleDeclaration {property:"box-model.padding-block-end",value:"4px",token:Some("semantic.action.size.medium.padding-block")},StyleDeclaration {property:"box-model.padding-inline",value:"0",token:None},StyleDeclaration {property:"box-model.padding-inline-start",value:"8px",token:Some("semantic.action.size.medium.padding-inline")},StyleDeclaration {property:"box-model.padding-inline-end",value:"8px",token:Some("semantic.action.size.medium.padding-inline")},StyleDeclaration {property:"box-model.gap",value:"8px",token:Some("semantic.action.size.medium.gap")},StyleDeclaration {property:"box-model.width",value:"auto",token:None},StyleDeclaration {property:"box-model.min-width",value:"32px",token:Some("semantic.action.size.medium.min-width")},StyleDeclaration {property:"box-model.max-width",value:"none",token:None},StyleDeclaration {property:"box-model.height",value:"auto",token:None},StyleDeclaration {property:"box-model.min-height",value:"32px",token:Some("semantic.action.size.medium.min-height")},StyleDeclaration {property:"box-model.max-height",value:"none",token:None},StyleDeclaration {property:"toggle-switch.color.background.default",value:"#f7f7f7",token:Some("semantic.color.background.secondary")},StyleDeclaration {property:"toggle-switch.color.foreground",value:"#141414",token:Some("semantic.color.foreground.primary")},StyleDeclaration {property:"toggle-switch.color.border",value:"#b8b8b8",token:Some("semantic.color.border.light")},StyleDeclaration {property:"toggle-switch.border.radius",value:"9999px",token:Some("semantic.shape.control.radius.pill")},StyleDeclaration {property:"toggle-switch.motion.duration.fast",value:"150ms",token:Some("core.motion.duration.short")},StyleDeclaration {property:"toggle-switch.color.background.hover",value:"#f7f7f7",token:Some("semantic.interaction.background.hover")},StyleDeclaration {property:"toggle-switch.color.background.checked",value:"#0566fe",token:Some("semantic.color.action.background.primary.default")},StyleDeclaration {property:"toggle-switch.color.background.disabled",value:"#d0d0d0",token:Some("semantic.color.background.disabled")},StyleDeclaration {property:"toggle-switch.focus.ring.width",value:"2px",token:Some("semantic.focus.ring.width")},StyleDeclaration {property:"toggle-switch.focus.ring.color",value:"#0566fe",token:Some("semantic.focus.ring.color")},StyleDeclaration {property:"toggle-switch.focus.ring.style",value:"solid",token:Some("semantic.focus.ring.style")},StyleDeclaration {property:"toggle-switch.focus.ring.offset",value:"2px",token:Some("semantic.focus.ring.offset")}]},
+StyleRule {part:"root",conditions:&[],declarations:&[StyleDeclaration {property:"padding",value:"0",token:Some("box-model.padding")},StyleDeclaration {property:"padding-block",value:"0",token:Some("box-model.padding-block")},StyleDeclaration {property:"padding-block-start",value:"4px",token:Some("box-model.padding-block-start")},StyleDeclaration {property:"padding-block-end",value:"4px",token:Some("box-model.padding-block-end")},StyleDeclaration {property:"padding-inline",value:"0",token:Some("box-model.padding-inline")},StyleDeclaration {property:"padding-inline-start",value:"8px",token:Some("box-model.padding-inline-start")},StyleDeclaration {property:"padding-inline-end",value:"8px",token:Some("box-model.padding-inline-end")},StyleDeclaration {property:"gap",value:"8px",token:Some("box-model.gap")},StyleDeclaration {property:"min-width",value:"32px",token:Some("box-model.min-width")},StyleDeclaration {property:"min-height",value:"32px",token:Some("box-model.min-height")}]},
+StyleRule {part:"root",conditions:&[],declarations:&[StyleDeclaration {property:"display",value:"inline-flex",token:None},StyleDeclaration {property:"align-items",value:"center",token:None},StyleDeclaration {property:"toggle-switch.design.root.background.fill",value:"#f7f7f7",token:Some("toggle-switch.color.background.default")},StyleDeclaration {property:"background-color",value:"#f7f7f7",token:Some("toggle-switch.design.root.background.fill")},StyleDeclaration {property:"toggle-switch.design.root.foreground.color",value:"#141414",token:Some("toggle-switch.color.foreground")},StyleDeclaration {property:"color",value:"#141414",token:Some("toggle-switch.design.root.foreground.color")},StyleDeclaration {property:"toggle-switch.design.root.border.color",value:"#b8b8b8",token:Some("toggle-switch.color.border")},StyleDeclaration {property:"border-color",value:"#b8b8b8",token:Some("toggle-switch.design.root.border.color")},StyleDeclaration {property:"toggle-switch.design.root.shape.radius",value:"9999px",token:Some("toggle-switch.border.radius")},StyleDeclaration {property:"border-radius",value:"9999px",token:Some("toggle-switch.design.root.shape.radius")},StyleDeclaration {property:"toggle-switch.design.root.border.style",value:"solid",token:None},StyleDeclaration {property:"border-style",value:"solid",token:Some("toggle-switch.design.root.border.style")},StyleDeclaration {property:"toggle-switch.design.root.border.width",value:"1px",token:None},StyleDeclaration {property:"border-width",value:"1px",token:Some("toggle-switch.design.root.border.width")},StyleDeclaration {property:"box-sizing",value:"border-box",token:None}]},
+StyleRule {part:"root",conditions:&[StyleCondition::Hover],declarations:&[StyleDeclaration {property:"toggle-switch.design.hover.background.fill",value:"#f7f7f7",token:Some("toggle-switch.color.background.hover")},StyleDeclaration {property:"background-color",value:"#f7f7f7",token:Some("toggle-switch.design.hover.background.fill")}]},
+StyleRule {part:"root",conditions:&[StyleCondition::Checked(true)],declarations:&[StyleDeclaration {property:"toggle-switch.design.condition-0530483abaa8.background.fill",value:"#0566fe",token:Some("toggle-switch.color.background.checked")},StyleDeclaration {property:"background-color",value:"#0566fe",token:Some("toggle-switch.design.condition-0530483abaa8.background.fill")}]},
+StyleRule {part:"root",conditions:&[StyleCondition::Disabled(true)],declarations:&[StyleDeclaration {property:"toggle-switch.design.disabled.background.fill",value:"#d0d0d0",token:Some("toggle-switch.color.background.disabled")},StyleDeclaration {property:"background-color",value:"#d0d0d0",token:Some("toggle-switch.design.disabled.background.fill")}]},
+StyleRule {part:"root",conditions:&[StyleCondition::Focus],declarations:&[StyleDeclaration {property:"toggle-switch.design.focus.focus.width",value:"2px",token:Some("toggle-switch.focus.ring.width")},StyleDeclaration {property:"outline-width",value:"2px",token:Some("toggle-switch.design.focus.focus.width")},StyleDeclaration {property:"toggle-switch.design.focus.focus.color",value:"#0566fe",token:Some("toggle-switch.focus.ring.color")},StyleDeclaration {property:"outline-color",value:"#0566fe",token:Some("toggle-switch.design.focus.focus.color")},StyleDeclaration {property:"toggle-switch.design.focus.focus.style",value:"solid",token:Some("toggle-switch.focus.ring.style")},StyleDeclaration {property:"outline-style",value:"solid",token:Some("toggle-switch.design.focus.focus.style")},StyleDeclaration {property:"toggle-switch.design.focus.focus.offset",value:"2px",token:Some("toggle-switch.focus.ring.offset")},StyleDeclaration {property:"outline-offset",value:"2px",token:Some("toggle-switch.design.focus.focus.offset")}]}];
+ pub fn label(mut self,value:impl Into<SharedString>)->Self{self.label=value.into();self}
+ pub fn set_label(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.label=value.into();cx.notify();}
+ pub fn theme(mut self,value:Theme)->Self{self.theme=value;self}
+ pub fn set_theme(&mut self,value:Theme,cx:&mut Context<Self>){self.theme=value;cx.notify();}
+ pub fn resolved_style(&self,part:&str)->Result<ResolvedPartStyle,StyleError>{
+  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
+  let state=StyleState{variants:&variants,checked:self.state.value(),disabled:self.state.disabled,indeterminate:false,hovered:self.hovered,active:self.active,focused:self.focused};
+  resolve_part_style(part,Self::STYLE_RULES,&state,&self.theme)
+ }
+ pub fn size(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["small","medium","large"].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);self}
+pub fn set_size(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["small","medium","large"].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);cx.notify();}
 
-pub struct ToggleSwitch {
-    pub state: BooleanState,
-    pub label: SharedString,
+
+ pub const CHANNEL:&'static str="checked";
+ pub const CHANGE_HANDLER:&'static str="onChange";
+ pub const CONTROL_PART:&'static str="root";
+ pub const ACTIVATION_KEYS:&'static [&'static str]=&["space","enter"];
+ pub fn checked(mut self,value:Option<bool>)->Self {self.state.controlled=value;self}
+ pub fn set_checked(&mut self,value:Option<bool>,cx:&mut Context<Self>){self.state.controlled=value;cx.notify();}
+ pub fn default_checked(mut self,value:bool)->Self {let controlled=self.state.controlled;let disabled=self.state.disabled;self.state=BooleanState::new(value);self.state.controlled=controlled;self.state.disabled=disabled;self}
+ pub fn disabled(mut self,value:bool)->Self {self.state.disabled=value;self}
+pub fn set_disabled(&mut self,value:bool,cx:&mut Context<Self>){self.state.disabled=value;cx.notify();}
+ pub fn request_change(&mut self)->Option<ChangeRequest>{self.state.request_toggle().map(|value|ChangeRequest{channel:Self::CHANNEL,handler:Self::CHANGE_HANDLER,value})}
+ pub fn request_key(&mut self,key:&str)->Option<ChangeRequest>{if Self::ACTIVATION_KEYS.contains(&key){self.request_change()}else{None}}
+
 }
-
-impl Default for ToggleSwitch {
-    fn default() -> Self {
-        let mut state = BooleanState::new(false);
-        state.disabled = false;
-        Self { state, label: SharedString::default() }
-    }
-}
-
-impl ToggleSwitch {
-    pub const CHANNEL: &'static str = "checked";
-    pub const CHANGE_HANDLER: &'static str = "onChange";
-    pub const CONTROL_PART: &'static str = "root";
-
-    pub fn checked(mut self, value: Option<bool>) -> Self {
-        self.state.controlled = value;
-        self
-    }
-
-    /// Initialize before attaching the view to an Entity.
-    pub fn default_checked(mut self, value: bool) -> Self {
-        let controlled = self.state.controlled;
-        let disabled = self.state.disabled;
-        self.state = BooleanState::new(value);
-        self.state.controlled = controlled;
-        self.state.disabled = disabled;
-        self
-    }
-
-    pub fn disabled(mut self, value: bool) -> Self {
-        self.state.disabled = value;
-        self
-    }
-
-    pub fn request_change(&mut self) -> Option<ChangeRequest> {
-        self.state.request_toggle().map(|value| ChangeRequest {
-            channel: Self::CHANNEL, handler: Self::CHANGE_HANDLER, value,
-        })
-    }
-}
-
-impl EventEmitter<ChangeRequest> for ToggleSwitch {}
-
-impl Render for ToggleSwitch {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        div().id("toggle-switch").flex().gap_2()
-            .child(self.label.clone())
-            .child(if self.state.value() { "●" } else { "○" })
-            .on_click(cx.listener(|this, _, _, cx| {
-                if let Some(request) = this.request_change() {
-                    cx.emit(request);
-                    cx.notify();
-                }
-            }))
-    }
-}
+impl EventEmitter<ChangeRequest> for ToggleSwitch{}
+impl Render for ToggleSwitch{fn render(&mut self,window:&mut Window,cx:&mut Context<Self>)->impl IntoElement{
+ if self.focus_handle.is_none(){let handle=cx.focus_handle();self._focus_subscriptions.push(cx.on_focus(&handle,window,|_,_,cx|cx.notify()));self._focus_subscriptions.push(cx.on_blur(&handle,window,|_,_,cx|cx.notify()));self.focus_handle=Some(handle);}self.focus_handle=self.focus_handle.take().map(|handle|handle.tab_index(0).tab_stop(!self.state.disabled));
+ let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
+ self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
+ self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
+ let style_state=StyleState{variants:&variants,checked:self.state.value(),disabled:self.state.disabled,indeterminate:false,hovered:self.hovered,active:self.active,focused:self.focused};
+ let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"toggle-switch-root".to_string()).when(!self.label.is_empty(),|node|node.child(div().debug_selector(||"toggle-switch-label".to_string()).child(self.label.clone()))).id("toggle-switch");
+ let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
+ let root=root.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap());cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,_,_,cx|{if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}})).on_key_down(cx.listener(|this,event,_,cx|{if crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){if let Some(request)=this.request_change(){cx.emit(request);cx.notify();cx.stop_propagation();}}}));
+ root
+}}

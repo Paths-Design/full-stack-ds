@@ -248,7 +248,8 @@ if [ "${RUN_RAIL:-false}" = true ]; then
       packages/ds-react-native/src \
       packages/ds-swiftui/Sources/DsSwiftUI/Components \
       packages/ds-swiftui/Sources/DsSwiftUI/primitives \
-      packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components; then
+      packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components \
+      packages/ds-gpui/src/components; then
     echo ""
     say "generated framework src trees differ from the pushed tip after running"
     say "the rail. Commit the regen output before pushing. CI will reject otherwise."

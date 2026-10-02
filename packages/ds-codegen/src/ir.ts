@@ -65,6 +65,7 @@ import {
   isCompoundPart,
 } from "./semantics.js";
 import { resolveStyleProfile } from "./box-model.js";
+import { buildNativeStyleRules, type NativeStyleRulesIR } from "./native-style-rules.js";
 import { resolveIdRelationships } from "./id-relationships.js";
 import { tokenSlug } from "./token-path.js";
 import { buildSequence, type SequenceIR } from "./sequence.js";
@@ -834,6 +835,8 @@ export interface FormControlIR {
   commit: "input" | "change" | "activation";
   /** Web DOM event derived from commit semantics and injected on `part`. */
   event: "input" | "change" | "click";
+  /** Native host activation law, normalized once for non-DOM backends. */
+  activationKeys?: readonly ("Space" | "Enter")[];
 }
 
 export interface CompositeControlIR {
@@ -1793,6 +1796,8 @@ export interface ComponentIR {
    * inspect CSS text or selector syntax.
    */
   tokenScopes: TokenScopeIR[];
+  /** Source-bearing property, part and predicate facts for non-CSS backends. */
+  nativeStyleRules?: NativeStyleRulesIR;
 
   /** Higher-level behavior metadata. Emitters can ignore for now. */
   behavior: BehaviorIR;
@@ -2188,6 +2193,7 @@ export function buildComponentIR(
     tokenFacts,
     designBindings,
     tokenScopes,
+    nativeStyleRules: buildNativeStyleRules(contract, cssPrefix, classRecipe),
     behavior,
     surface,
     interaction,
@@ -4948,6 +4954,7 @@ export function buildFormControlIR(
     valueModel: control.valueModel,
     commit: control.commit,
     event,
+    activationKeys: target.tag === "button" ? ["Space", "Enter"] : target.tag === "input" && target.attrs.type === "checkbox" ? ["Space"] : [],
   };
 }
 

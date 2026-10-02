@@ -24,7 +24,7 @@ const PATTERNS = {
   // swiftui/jetpack-compose generated trees joined the CI+pre-push drift
   // diff under FEAT-SWIFTUI-COMPOUND-INTERACTIVITY-01, so changes under
   // them must trigger the rail exactly like the TS trees.
-  generated: /^packages\/ds-(react|vue|svelte|angular|lit|react-native|swiftui|jetpack-compose)\//,
+  generated: /^packages\/ds-(react|vue|svelte|angular|lit|react-native|swiftui|jetpack-compose|gpui)\//,
   // iconography has its own emission ledger gate (ledger-icons.mjs --check),
   // separate from the codegen rail's generated-tree drift diff.
   iconography: /^packages\/ds-iconography\//,

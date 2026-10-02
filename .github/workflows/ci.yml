@@ -265,7 +265,8 @@ jobs:
             packages/ds-react-native/src \
             packages/ds-swiftui/Sources/DsSwiftUI/Components \
             packages/ds-swiftui/Sources/DsSwiftUI/primitives \
-            packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components
+            packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components \
+            packages/ds-gpui/src/components
 
       # Compose↔RN token-usage parity: every compose-admitted component's
       # emitted scopes follow its own consumers, shared addresses agree, and
@@ -559,6 +560,50 @@ jobs:
       # compile-only admission cannot detect a valid-but-wrong arm order.
       - name: ds-jetpack-compose token runtime tests
         run: ./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon
+
+  gpui-native:
+    name: GPUI generated views and engine tests (macOS)
+    runs-on: macos-latest
+    timeout-minutes: 30
+    env:
+      RUSTUP_TOOLCHAIN: 1.90.0
+      CARGO_BUILD_JOBS: "4"
+      CARGO_PROFILE_DEV_DEBUG: "0"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Provision pinned Rust and Metal compiler
+        run: |
+          rustup toolchain install 1.90.0 --profile minimal
+          if ! xcrun --sdk macosx --find metal; then
+            xcodebuild -downloadComponent MetalToolchain
+          fi
+          rustc --version
+      - name: Generate GPUI from the contract and token graph
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run tokens:build
+          pnpm run generate:check
+          pnpm run generate:gpui
+          git diff --exit-code -- packages/ds-gpui/src/components
+      - name: Compile gallery and run real GPUI engine tests
+        run: pnpm run test:gpui
+      - name: Upload native check receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpui-native-checks
+          path: tmp/gpui-pilot/
+          if-no-files-found: ignore
 
   native-compile-rail-swift:
     name: Native compile rail (Swift compile-admission smoke)

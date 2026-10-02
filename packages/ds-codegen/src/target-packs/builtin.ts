@@ -22,14 +22,14 @@ export const BUILTIN_TARGET_PACKS: Readonly<Record<BuiltinTargetId, TargetPackMa
   gpui: {
     schemaVersion: TARGET_PACK_MANIFEST_SCHEMA_VERSION,
     target: { id: "gpui", family: "native-view", label: "GPUI", maturity: "experimental" },
-    compatibility: { codegenProtocol: "builtin-framework-emitter-v1", componentIR: "ComponentIR@v1", targetFamilyIR: "gpui-boolean-control@pilot" },
+    compatibility: { codegenProtocol: "builtin-framework-emitter-v1", componentIR: "ComponentIR@v1", targetFamilyIR: "gpui-styled-anatomy@v1" },
     entrypoints: { emitter: "packages/ds-codegen/src/frameworks/gpui/factory.ts" },
     outputs: { componentsRoot: "src/components", barrelFile: "mod.rs", fileKinds: ["component-source", "barrel"] },
-    capabilities: { components: true, tests: false, behavior: true, compoundParts: false, surface: false, tokens: "none", customRegions: false },
+    capabilities: { components: true, tests: false, behavior: true, compoundParts: false, surface: false, tokens: "native-theme-module", customRegions: false },
     permissions: SAFE_BUILTIN_PERMISSIONS,
     admission: {
-      commands: [{ check: "gpui-compile-policy", command: ["node", "scripts/gpui-pilot.mjs"], scope: { packageRoot: "packages/ds-gpui/", extensions: [".rs"], coverage: "covered_by_package_check" } }],
-      knownGaps: ["Boolean-control pilot only, pinned to published GPUI 0.2.2; outside the TypeScript admission rail and CI.", "Compilation and state-policy tests do not prove physical input, rendered token consumption, accessibility, keyboard behavior or cross-platform parity. Other props are listed in generated capability receipts."],
+      commands: [{ check: "gpui-native-checks", command: ["node", "scripts/gpui-pilot.mjs"], scope: { packageRoot: "packages/ds-gpui/", extensions: [".rs"], coverage: "covered_by_package_check" } }],
+      knownGaps: ["Registry allowlist only, pinned to published GPUI 0.2.2; outside the TypeScript admission rail and CI.", "Native checks record source inputs and named tests. A separate gallery witness is required for rendered pixels; full accessibility, form integration, arbitrary compound composition, upstream-main compatibility and cross-platform parity remain unverified. Excluded props and unsupported styles are listed in generated capability receipts."],
     },
   },
   godot: {
