@@ -8,6 +8,16 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const manifest = path.join(root, "packages/ds-gpui/Cargo.toml");
 const registry = JSON.parse(fs.readFileSync(path.join(root, "fsds.targets.json"), "utf8"));
 const target = registry.targets.find(entry => entry.id === "gpui");
+// Required engine dispatch/layout witnesses: legacy policy tests cannot stand
+// in for a deleted, filtered or skipped native runtime suite.
+const requiredEngineTests = [
+  "mounted_switch_pointer_space_owner_acceptance_and_disabled_suppression",
+  "mounted_toggle_button_enter_and_space_request_once",
+  "mounted_checkbox_mixed_mark_and_hover_owner",
+  "mounted_switch_variant_geometry_and_component_token_override",
+  "mounted_tab_order_skips_disabled_and_focus_is_stable",
+  "mounted_static_typography_badge_and_divider_are_styled",
+];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
 for (const name of target.components) {
   if (!fs.existsSync(path.join(root, `packages/ds-gpui/src/components/${name}/${name}.rs`))) throw new Error(`GPUI_PILOT_GENERATION_REQUIRED: ${name}`);
@@ -39,6 +49,7 @@ const report = {
   platform: `${process.platform}-${process.arch}`,
   sourceStatus: spawnSync("git", ["status", "--porcelain", "--untracked-files=no"], { cwd: root, encoding: "utf8" }).stdout.trim(),
   components: target.components,
+  requiredEngineTests,
   sourceHashes: snapshot(),
   sourceIntegrity: "unchecked",
   checks: [],
@@ -56,12 +67,13 @@ for (const command of [
   const log = `${command[0]}.log`;
   fs.writeFileSync(path.join(evidenceRoot, log), `${result.stdout ?? ""}\n${result.stderr ?? ""}`);
   const passedTests = [...(result.stdout ?? "").matchAll(/^test (.+?) \.\.\. ok$/gm)].map(match => match[1]);
-  report.checks.push({ command: ["cargo", ...args], exitCode: result.status, log, passedTests, error: result.error?.message });
+  const missingEngineTests = command[0] === "test" ? requiredEngineTests.filter(name => !passedTests.includes(name)) : [];
+  report.checks.push({ command: ["cargo", ...args], exitCode: result.status, log, passedTests, missingEngineTests, error: result.error?.message });
   report.overall = result.error || result.status !== 0 ? "fail" : "incomplete";
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
   process.stdout.write(result.stdout ?? "");
   process.stderr.write(result.stderr ?? "");
-  if (result.error || result.status !== 0 || (command[0] === "test" && passedTests.length === 0)) {
+  if (result.error || result.status !== 0 || missingEngineTests.length > 0) {
     report.overall = "fail";
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
     console.error(`GPUI_PILOT_FAIL: ${reportPath}`);
