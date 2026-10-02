@@ -68,3 +68,12 @@ contracts:
   - name: 'gpui-components'
     type: behavior
     path: 'docs/architecture/gpui-target.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Inspected executed mounted variant geometry, checkbox marks, typography/Badge style, Divider actual nonempty paint and token override assertions; tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/native/report.json records 20 passing real Rust tests, seven required mounted witnesses, stable source hashes and clean revision 9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f. Six component capability receipts enumerate unsupported residue. Gallery observations in tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/gallery/observations.json corroborate visible parts, not full pixel parity."
+    recorded_at: "2026-10-02T17:37:53.443Z"
+    command: "CARGO_TARGET_DIR=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/gpui-fidelity-cargo/runtime pnpm run test:gpui"
+    exit_code: 0
+    artifact_path: packages/ds-gpui/tests/native_runtime.rs
+    commit_sha: "9e3856ea8d4b7d1e8097008a4f27ba9a41dfff4f"
