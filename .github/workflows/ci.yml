@@ -566,7 +566,7 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 30
     env:
-      RUSTUP_TOOLCHAIN: 1.90.0
+      RUSTUP_TOOLCHAIN: 1.94.1
       CARGO_BUILD_JOBS: "4"
       CARGO_PROFILE_DEV_DEBUG: "0"
     steps:
@@ -583,7 +583,7 @@ jobs:
           cache: pnpm
       - name: Provision pinned Rust and Metal compiler
         run: |
-          rustup toolchain install 1.90.0 --profile minimal
+          rustup toolchain install 1.94.1 --profile minimal
           if ! xcrun --sdk macosx --find metal; then
             xcodebuild -downloadComponent MetalToolchain
           fi

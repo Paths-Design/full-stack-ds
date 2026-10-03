@@ -2,7 +2,10 @@
 use full_stack_ds_gpui::components::{Badge, Checkbox, Divider, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::Theme;
-use gpui::{prelude::*, actions, div, px, size, App, Application, Bounds, Context, Entity, FocusHandle, KeyBinding, Subscription, Window, WindowBounds, WindowOptions};
+use gpui::{prelude::*, actions, div, px, size, App, Bounds, Context, Entity, FocusHandle, KeyBinding, Subscription, Window, WindowBounds, WindowOptions};
+
+struct RendererDiagnostics { font_count: usize, dilation: [u8; 3], text: std::sync::Arc<dyn gpui::PlatformTextSystem> }
+impl gpui::Global for RendererDiagnostics {}
 
 actions!(fsds_gallery, [Tab, BackTab]);
 
@@ -24,7 +27,7 @@ struct Gallery {
 impl Gallery {
     fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let focus = cx.focus_handle();
-        window.focus(&focus);
+        window.focus(&focus, cx);
         let mut switches = Vec::new();
         for size in ["sm", "md", "lg"] {
             for checked in [false, true] {
@@ -106,7 +109,9 @@ impl Gallery {
 
 impl Render for Gallery {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let metrics = render_metrics(window);
+        let surface = render_metrics(window);
+        let diagnostics = cx.global::<RendererDiagnostics>();
+        let metrics = format!("{},\"font_count\":{},\"glyph_dilation_black_gray_white\":{:?},\"native_glyph_samples\":{}}}\n", surface.trim_end().trim_end_matches('}'), diagnostics.font_count, diagnostics.dilation, glyph_samples(diagnostics.text.as_ref(), window.scale_factor(), diagnostics.dilation[2]));
         if metrics != self.last_render_metrics {
             self.last_render_metrics = metrics.clone();
             if let Ok(executable) = std::env::current_exe() {
@@ -119,8 +124,8 @@ impl Render for Gallery {
         }
         div().id("gallery").track_focus(&self.focus).size_full().overflow_y_scroll()
             .bg(gpui::rgb(0xfafafa)).text_color(gpui::rgb(0x141414))
-            .on_action(cx.listener(|_, _: &Tab, window, _| window.focus_next()))
-            .on_action(cx.listener(|_, _: &BackTab, window, _| window.focus_prev()))
+            .on_action(cx.listener(|_, _: &Tab, window, cx| window.focus_next(cx)))
+            .on_action(cx.listener(|_, _: &BackTab, window, cx| window.focus_prev(cx)))
             .child(div().w_full().p_6().flex().flex_col().gap_3()
             .children(self.text.iter().cloned())
             .child(self.divider.clone())
@@ -131,11 +136,15 @@ impl Render for Gallery {
                 .child(div().flex().flex_col().gap_2().child("ToggleSwitch / selected pills").children(self.toggles.iter().cloned())))
             .child(div().flex().items_start().gap_2().children(self.badges.iter().cloned()))
             .child(format!("{} accepted request(s). {}", self.accepted, self.last_request))
-            .child(div().text_sm().child(format!("Renderer comparison: GPUI 0.2.2 at {} device pixel(s) per logical pixel", window.scale_factor())))
-            .child(div().relative().w_full().h(px(74.)).children([0., 0.25, 0.5, 0.75].into_iter().enumerate().map(|(index, fraction)| {
-                div().absolute().left(px(index as f32 * 226. + fraction)).top(px(fraction)).w(px(210.)).h(px(72.))
-                    .border_1().border_color(gpui::rgb(0xb8b8b8)).rounded(px(12.))
-                    .p_3().text_size(px(16.)).child(format!("Plain GPUI / +{fraction}px"))
+            .child(div().text_sm().child(format!("Renderer comparison: GPUI a38fc8c at {} device pixel(s) per logical pixel", window.scale_factor())))
+            .child(div().flex().flex_col().gap_2().children([false, true].into_iter().map(|dark| {
+                div().relative().w_full().h(px(74.)).children([0., 0.125, 0.25, 0.375].into_iter().enumerate().map(move |(index, fraction)| {
+                    div().absolute().left(px(index as f32 * 226. + fraction)).top(px(fraction)).w(px(210.)).h(px(72.))
+                        .border_1().border_color(gpui::rgb(0xb8b8b8)).rounded(px(12.))
+                        .bg(gpui::rgb(if dark { 0x202124 } else { 0xfafafa }))
+                        .text_color(gpui::rgb(if dark { 0xffffff } else { 0x161616 }))
+                        .p_3().text_size(px(16.)).child(format!("Plain GPUI / +{fraction}px")).child("Ágj / crisp baselines")
+                }))
             }))))
     }
 }
@@ -171,8 +180,38 @@ fn render_metrics(window: &Window) -> String {
     format!("{{\"gpui_scale\":{},\"native_surface_unavailable\":true}}\n", window.scale_factor())
 }
 
+fn glyph_samples(text: &dyn gpui::PlatformTextSystem, scale: f32, white_dilation: u8) -> String {
+    let font_id = text.font_id(&gpui::Font::default()).expect("native system font");
+    let mut samples = Vec::new();
+    for font_size in [16., 32.] {
+        for ch in ['Á', 'g', 'M'] {
+            for dilation in [0, white_dilation] {
+                for x in [0, 3] {
+                    let params = gpui::RenderGlyphParams { font_id, glyph_id: text.glyph_for_char(font_id, ch).expect("native specimen glyph"), font_size: px(font_size), subpixel_variant: gpui::point(x, 0), scale_factor: scale, is_emoji: false, subpixel_rendering: false, dilation };
+                    let bounds = text.glyph_raster_bounds(&params).expect("native raster bounds");
+                    let (size, bitmap) = text.rasterize_glyph(&params, bounds).expect("native raster bitmap");
+                    let ink = bitmap.iter().filter(|byte| **byte > 0).count();
+                    assert!(size.width.0 > 0 && size.height.0 > 0 && ink > 0, "native glyph must have coverage");
+                    assert_eq!(bitmap.len(), (size.width.0 * size.height.0) as usize, "grayscale raster buffer must match its returned dimensions");
+                    samples.push(format!("{{\"char\":\"{ch}\",\"font_size\":{font_size},\"dilation\":{dilation},\"x_variant\":{x},\"width\":{},\"height\":{},\"ink_pixels\":{ink}}}", size.width.0, size.height.0));
+                }
+            }
+        }
+    }
+    format!("[{}]", samples.join(","))
+}
+
 fn main() {
-    Application::new().run(|cx: &mut App| {
+    let platform = gpui_platform::current_platform(false);
+    let native_text = platform.text_system();
+    let diagnostics = RendererDiagnostics {
+        font_count: native_text.all_font_names().len(),
+        dilation: [0x000000, 0x808080, 0xffffff].map(|color| native_text.glyph_dilation_for_color(gpui::rgb(color).into())),
+        text: native_text,
+    };
+    assert!(diagnostics.font_count > 0, "The native gallery requires a real font backend");
+    gpui::Application::with_platform(platform).run(move |cx: &mut App| {
+        cx.set_global(diagnostics);
         cx.bind_keys([KeyBinding::new("tab", Tab, None), KeyBinding::new("shift-tab", BackTab, None)]);
         let bounds = Bounds::centered(None, size(px(1120.), px(760.)), cx);
         cx.open_window(WindowOptions { window_bounds: Some(WindowBounds::Windowed(bounds)), titlebar: Some(gpui::TitlebarOptions { title: Some("Full Stack DS GPUI".into()), ..Default::default() }), ..Default::default() }, |window, cx| cx.new(|cx| Gallery::new(window, cx))).expect("GPUI gallery window creation");

@@ -2,13 +2,16 @@
 name = "full-stack-ds-gpui"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.94.1"
 publish = false
 
 [dependencies]
-gpui = { version = "=0.2.2", default-features = false }
+# Includes upstream device-pixel snapping (#54728) and macOS glyph dilation (#54886).
+gpui = { git = "https://github.com/zed-industries/zed", rev = "a38fc8c8de6e4010fadcfde7dd111d90dfd66845", default-features = false }
+gpui_platform = { git = "https://github.com/zed-industries/zed", rev = "a38fc8c8de6e4010fadcfde7dd111d90dfd66845", default-features = false, features = ["font-kit"] }
 
 [dev-dependencies]
-gpui = { version = "=0.2.2", default-features = false, features = ["test-support"] }
+gpui = { git = "https://github.com/zed-industries/zed", rev = "a38fc8c8de6e4010fadcfde7dd111d90dfd66845", default-features = false, features = ["test-support"] }
 
 [target.'cfg(target_os = "macos")'.dev-dependencies]
 cocoa = "=0.26.0"

@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { chmodSync, copyFileSync, createReadStream, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gpuiRuntime } from './gpui-runtime.mjs';
 
 // Package our compiled consumer as a macOS app so normal app tools can open it.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -10,10 +11,11 @@ if (process.platform !== 'darwin') {
   console.error('The GPUI gallery launcher currently supports macOS only.');
   process.exit(1);
 }
-const build = spawnSync('cargo', [
+const runtime = gpuiRuntime(root);
+const build = spawnSync('cargo', [...runtime.cargo,
   'build', '--locked', '--manifest-path', 'packages/ds-gpui/Cargo.toml',
   '--example', 'component_gallery', '--message-format=json-render-diagnostics',
-], { cwd: root, stdio: ['inherit', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+], { cwd: root, env: runtime.env, stdio: ['inherit', 'pipe', 'inherit'], encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
 if (build.error) throw build.error;
 if (build.status !== 0) process.exit(build.status ?? 1);
 
@@ -50,7 +52,7 @@ writeFileSync(join(contents, 'Info.plist'), `<?xml version="1.0" encoding="UTF-8
 <key>NSHighResolutionCapable</key><true/>
 </dict></plist>
 `);
-writeFileSync(join(contents, 'build-receipt.json'), JSON.stringify({ executableSha256: executableHash, sourceExecutable: executable }, null, 2));
+writeFileSync(join(contents, 'build-receipt.json'), JSON.stringify({ executableSha256: executableHash, sourceExecutable: executable, toolchain: runtime.toolchain, renderer: runtime.renderer }, null, 2));
 console.log(app);
 if (!process.argv.includes('--prepare-only')) {
   const launch = spawnSync('open', ['-n', '-a', app], { stdio: 'inherit' });

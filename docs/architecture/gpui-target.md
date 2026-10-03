@@ -10,6 +10,7 @@ governs:
   - packages/ds-gpui/**
   - scripts/gpui-pilot.mjs
   - scripts/gpui-gallery.mjs
+  - scripts/gpui-runtime.mjs
 ---
 
 # GPUI native target
@@ -72,11 +73,18 @@ Use the mounted `set_indeterminate` setter when the owner accepts that change.
 
 ## Commands and dependency
 
-The package pins the published `gpui = "=0.2.2"` crate and commits its Cargo.lock;
-third-party source remains in Cargo's external cache. The explicit native lane
-uses Rust 1.90.0. macOS builds require Xcode and the Metal compiler; when missing,
+The package pins Zed commit `a38fc8c8de6e4010fadcfde7dd111d90dfd66845` for
+`gpui` and `gpui_platform`, and commits its Cargo.lock. Upstream still names its
+GPUI package `0.2.2`; the exact Git revision distinguishes this renderer from
+the older published crate. Third-party source remains in Cargo's external cache.
+The explicit native lane uses Rust 1.94.1, selected from Cargo.toml by both
+native scripts. macOS builds require Xcode and the Metal compiler; when missing,
 `xcodebuild -downloadComponent MetalToolchain` provisions that component.
-GPUI default features are disabled. Linux, Windows and upstream `main`
+GPUI default features are disabled; `gpui_platform/font-kit` explicitly enables
+the real macOS text backend. The scripts reject a resolved graph with mismatched
+renderer revisions or a missing native font backend. Metal's Clang module cache
+defaults to ignored `tmp/gpui-metal-cache/`; `CLANG_MODULE_CACHE_PATH` can select
+another writable cache. Linux, Windows and moving upstream `main`
 compatibility remain unverified. The package is excluded from pnpm workspace
 discovery and Cargo build products remain ignored.
 
@@ -93,16 +101,22 @@ instance. `node scripts/gpui-gallery.mjs --prepare-only` builds the app without
 launching it; `--probe` gives the app an executable-hash-specific identity for
 side-by-side inspection. `FSDS_GPUI_GALLERY_DIR` selects a different output root.
 The default ignored output root is `tmp/gpui-gallery/`. The app's `Contents/`
-contains `build-receipt.json` with the compiled executable SHA-256 and a
+contains `build-receipt.json` with the compiled executable SHA-256, resolved
+renderer sources/features and toolchain, and a
 read-only `render-metrics.json` written by the running gallery. These diagnostics
 help identify the inspected process and its actual native backing surface.
+Live metrics also record real font count, native foreground-color dilation
+buckets and grayscale raster coverage for accented, descending and ordinary
+glyphs at multiple sizes and horizontal subpixel variants. Those direct backend
+samples do not establish atlas correctness or presented pixels.
 
 ## Evidence and gate boundaries
 
 The [native check script](../../scripts/gpui-pilot.mjs) runs
 `cargo check --all-targets --locked` and `cargo test --all-targets --locked`.
 Its `fsds.gpui-native-checks.v2` receipt records command logs, toolchain/platform,
-revision, required named engine tests and source hashes before/after execution.
+revision, resolved renderer sources/features, required named engine tests and
+source hashes before/after execution.
 Changed inputs or missing required engine witnesses fail the lane. Receipts live
 under ignored `tmp/gpui-pilot/<timestamp>/`; their hashes do not confer the
 admission rail's four-rung binding.
@@ -118,18 +132,30 @@ hardware input or GPU pixels.
 
 The real macOS gallery has separately been inspected in bounded visible states.
 Actual app pointer activation observed an accepted checked value and a refused
-request retaining the owner's value. OS keyboard activation is not established
-by that inspection; keyboard evidence comes from the mounted engine tests.
+request retaining the owner's value. The migrated gallery additionally observed
+one accepted request for a pointer click, one for a physical Space press/release,
+and no Switch activation for Enter. GPUI's synthesized key-release clicks are
+excluded from the pointer path; contract-selected keyboard activation remains on
+key-down. Mounted tests cover full down/redraw/up cycles, held-key suppression,
+and Checkbox/ToggleSwitch key policy. These are bounded OS and engine witnesses.
 The gallery's generic explicit edge-quad paint makes horizontal and vertical
 thin asymmetric borders visible despite the pinned renderer's border-shader
 limitation. It preserves authored layout and uses no component-name dispatch.
 
-The inspected gallery reported a 1120-by-760 logical viewport and Metal drawable
+The pre-upgrade gallery reported a 1120-by-760 logical viewport and Metal drawable
 at scale 1, with matching GPUI, native-window and layer scales. That rules out a
 backing-resolution mismatch for this inspected window. Plain GPUI samples share
-the observed softened edges. GPUI 0.2.2's unhinted grayscale glyph rendering,
-fractional placement and signed-distance edge antialiasing remain a sharpness
-limit; the native paint repair does not fix that quality gap or prove pixel parity.
+the observed softened edges. The pinned source upgrade incorporates upstream
+[device-pixel layout and baseline snapping](https://github.com/zed-industries/zed/pull/54728)
+and [macOS foreground-luminance glyph dilation](https://github.com/zed-industries/zed/pull/54886).
+Mounted fractional-layout checks use eighth-pixel offsets at the test platform's
+2x scale and repeat owner/theme redraws. Their fake text backend does not prove
+native glyph quality. Device alignment, native raster coverage and inspected
+gallery pixels are separate evidence; none establishes complete pixel parity.
+The migrated 1x gallery recorded 1,023 available fonts, black/gray/white dilation
+buckets of 0/2/4 and nonempty native grayscale rasters. Its dark/light fractional
+text samples were visibly consistent; rounded edges still display antialiasing
+at this scale. This inspection does not establish a screenshot gold standard.
 The [gallery source](../../packages/ds-gpui/examples/component_gallery.rs)
 contains the native surface metrics and plain-renderer comparison samples.
 Preserve ignored evidence under `tmp/gpui-fidelity/GPUI-FIDELITY-PARITY-01/`
@@ -143,7 +169,8 @@ GPUI generated-source drift also participates in the general CI/pre-push diff
 and change scoping. Pre-push does not automatically compile the native package.
 Neither configuration admits GPUI to the TypeScript rail.
 
-`GPUI-FIDELITY-PARITY-01` and its emitter/native child slices govern this
+`GPUI-RENDERER-CLARITY-01` governs the pinned renderer migration.
+`GPUI-FIDELITY-PARITY-01` and its emitter/native child slices govern the component
 implementation; merge, acceptance evidence and closure are separate lifecycle
 claims. The earlier `GPUI-TARGET-PILOT-01` records the initial Boolean pilot.
 

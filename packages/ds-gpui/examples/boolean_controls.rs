@@ -1,6 +1,6 @@
 use full_stack_ds_gpui::components::{Switch, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
-use gpui::{prelude::*, App, Application, Context, Entity, Subscription, Window, WindowOptions, div};
+use gpui::{prelude::*, App, Context, Entity, Subscription, Window, WindowOptions, div};
 
 struct Controls {
     switch: Entity<Switch>,
@@ -18,7 +18,7 @@ impl Render for Controls {
 }
 
 fn main() {
-    Application::new().run(|cx: &mut App| {
+    gpui_platform::application().run(|cx: &mut App| {
         cx.open_window(WindowOptions::default(), |_, cx| {
             cx.new(|cx| {
                 let switch = cx.new(|_| {
