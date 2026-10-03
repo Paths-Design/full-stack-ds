@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-10-03
-verified_at_commit: c3e3ad40737760db171c5a24f6548f402b7a4cac
+verified_at_commit: cff2ffc27a2173dc3db9ff23f38797e920f18e7c
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -256,6 +256,13 @@ substrate-neutral style language. Actual gallery inspection exposed a thin-borde
 paint failure that resolved-style tests missed, motivating an independent native
 paint witness and a generic edge repair. Renderer sharpness, accessibility and
 complete component semantics remain separate obligations.
+
+Retained GPUI content consumes the existing default/named insertion sites and
+positive/inverted presence guards. Entity handles retain child state while each
+frame recreates elements from content recipes. Mounted owner redraws and nested
+control input test those lifecycle edges. This realizes a bounded composition
+path without adding component-name dispatch; compound parts, referenced-component
+lowering and general view-placement ownership remain separate obligations.
 
 The motion-port reconciliation at the current stamp adds normalized decorative
 part ownership and repeated ancestry to the shared IR. React Native delivers
