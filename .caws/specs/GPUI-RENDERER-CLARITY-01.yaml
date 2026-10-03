@@ -48,9 +48,8 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Inspected locked Rust 1.94.1 check/test receipt at c3e3ad407: 22 tests, zero ignored; exact renderer revision and font-kit backend. Generated receipt intentionally untracked; CAWS artifact verifier is inapplicable."
-    recorded_at: "2026-10-03T07:38:35.560Z"
-    artifact_path: tmp/gpui-renderer-clarity/native/report.json
+    evidence_ref: "Inspected untracked tmp/gpui-renderer-clarity/native/report.json: locked 22 Rust tests, zero ignored, stable inputs. Automatic verification below establishes source reachability only, not execution."
+    recorded_at: "2026-10-03T07:45:37.672Z"
     commit_sha: c3e3ad40737760db171c5a24f6548f402b7a4cac
   - criterion_id: A2
     status: pass
