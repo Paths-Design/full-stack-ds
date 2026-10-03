@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
-updated: 2026-10-02
-verified_at_commit: f3a902629
+updated: 2026-10-03
+verified_at_commit: c3e3ad40737760db171c5a24f6548f402b7a4cac
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -40,7 +40,7 @@ This document argues from one concrete codebase. The current evidence is:
 - <!-- component-count -->55 component contracts generated through one primitive. (Count is loader-derived — `contracts-fs.ts` walks `components/*/<Name>.contract.json`; do not hand-maintain this number, re-derive it.)
 - Five Web DOM framework emitters consuming a shared IR, plus React Native on a different substrate consuming the same IR and admitted by the same rail.
 - SwiftUI and Jetpack Compose are registered native targets outside the admission rail, consuming the same IR and allowlisted for <!-- target-component-count:swiftui -->52 and <!-- target-component-count:jetpack-compose -->52 contracts respectively. Both generated roots are byte-drift-gated and compile through dedicated native CI lanes over hand-authored example consumers. SwiftUI additionally has CI-run body/state/resolver and sampled token-paint tests plus a separately invoked macOS press-proof harness for named interactions; Compose has resolver conformance tests but no UI-runtime lane. These are bounded facts, not broad native behavioral parity or device correctness.
-- [GPUI](architecture/gpui-target.md) realizes its <!-- target-component-count:gpui -->6-component allowlist through normalized anatomy, native activation keys and additive style-rule IR. Mounted GPUI tests exercise owner requests, focus, variants and token geometry; separate macOS gallery inspection covers bounded pixels and pointer requests. Its dedicated native CI lane is configured but remote execution remains unverified. It is outside the TypeScript rail, retains explicit semantic omissions, and has an unresolved renderer sharpness gap.
+- [GPUI](architecture/gpui-target.md) realizes its <!-- target-component-count:gpui -->6-component allowlist through normalized anatomy, native activation keys and additive style-rule IR. Mounted GPUI tests exercise owner requests, complete keyboard cycles, focus, variants, fractional device alignment and token geometry. Separate macOS gallery inspection covers bounded pixels and pointer/keyboard requests. The exact upstream renderer pin incorporates baseline snapping and native glyph dilation; its live font/raster metrics and image inspection remain distinct from complete pixel parity. Its dedicated native CI lane is configured but remote execution remains unverified. It is outside the TypeScript rail and retains explicit semantic omissions.
 - A bounded Unity UI Toolkit target with generated Switch, Accordion, Popover and Tabs controls, compound items, and a local UPM package. Real Unity EditMode tests verify UXML import and named interactions; this target is outside the TypeScript admission rail and has no full visual, accessibility or player-build parity claim. See [Unity pilot evidence](architecture/unity-target.md).
 - Boundary checks in the IR that fail on unresolved contract references.
 - Regeneration semantics that preserve custom regions while rewriting generated regions.
