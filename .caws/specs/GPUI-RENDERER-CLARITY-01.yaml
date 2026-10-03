@@ -53,9 +53,8 @@ evidence:
     commit_sha: c3e3ad40737760db171c5a24f6548f402b7a4cac
   - criterion_id: A2
     status: pass
-    evidence_ref: "Fresh cd693348 native app inspected via CUA: measured 1x, fractional light/dark rows, native glyph ink and single pointer/Space requests with Enter suppressed; manual limits recorded; generated receipt intentionally untracked."
-    recorded_at: "2026-10-03T07:39:41.224Z"
-    artifact_path: tmp/gpui-renderer-clarity/gallery/observations.json
+    evidence_ref: "CUA inspected fresh cd693348 app and untracked tmp/gpui-renderer-clarity/gallery/observations.json: measured 1x fractional rows and single pointer/Space request with Enter suppressed. Automatic verification establishes source reachability only; visual proof is manual."
+    recorded_at: "2026-10-03T07:45:38.682Z"
     commit_sha: c3e3ad40737760db171c5a24f6548f402b7a4cac
   - criterion_id: A3
     status: pass
