@@ -62,3 +62,8 @@ evidence:
     evidence_ref: "Clean ebb5ddb43 locked native receipt passed 29 tests with stable input hashes and no ignored required witnesses. Mounted child state/focus/subscriptions, empty fallback, ordered factories, slots/hidden guards and nested input passed; preserved tmp/gpui-composition-parity/native/report.json. Automatic verification establishes source reachability only, not execution."
     recorded_at: "2026-10-03T14:17:27.092Z"
     commit_sha: ebb5ddb431b3ccb379cd4016375b0060f5193d03
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Merged b11dc3798 on local main; tracked receipt-input hashes match. Rail, 4796 root tests with two workers, frameworks, types/lint/docs pass. Fresh f1f6fe38 app inspected through CUA: retained value after style action, single refocused Space, Enter suppressed, Stat variants; manual limits in tmp/gpui-composition-parity/gallery/observations.json. Automatic verification establishes merge reachability only."
+    recorded_at: "2026-10-03T14:17:27.905Z"
+    commit_sha: b11dc379816127d868f0246b3b34c7af1c273398
