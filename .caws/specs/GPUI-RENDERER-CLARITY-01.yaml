@@ -58,7 +58,6 @@ evidence:
     commit_sha: c3e3ad40737760db171c5a24f6548f402b7a4cac
   - criterion_id: A3
     status: pass
-    evidence_ref: "Merged bee8df0ad with tested source c3e3ad407 ancestry and scoped bytes verified; rail, 4788 root tests, framework/projection tests, lint/typecheck/docs passed; logs intentionally untracked."
-    recorded_at: "2026-10-03T07:39:42.985Z"
-    artifact_path: tmp/gpui-renderer-clarity/logs/gpui-renderer-final-rail.log
-    commit_sha: c3e3ad40737760db171c5a24f6548f402b7a4cac
+    evidence_ref: "Inspected untracked tmp/gpui-renderer-clarity/logs: rail, 4788 root tests, framework/projection tests, lint/typecheck/docs pass; scoped source bytes and local merge ancestry verified. Automatic verification establishes merge reachability only."
+    recorded_at: "2026-10-03T07:45:39.728Z"
+    commit_sha: bee8df0ad391e657356fe21aadca27a75537e8bf
