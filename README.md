@@ -216,7 +216,7 @@ Codegen is **`@full-stack-ds/codegen`** ([`packages/ds-codegen`](packages/ds-cod
 
 Default target is React. Pass `--target=<framework>` or `--target=all` to emit other targets.
 
-The [GPUI native target](docs/architecture/gpui-target.md) emits the registry's <!-- target-component-count:gpui -->6-component allowlist with `pnpm run generate:gpui`. `pnpm run test:gpui` runs pinned macOS compilation and mounted engine input/style tests; `pnpm run dev:gpui` builds and opens the native gallery. Supported token/variant styling and controlled input are implemented, with explicit omitted capabilities and a remaining renderer sharpness gap. The dedicated native CI lane is configured; remote execution is unverified. GPUI remains outside the TypeScript admission rail.
+The [GPUI native target](docs/architecture/gpui-target.md) emits the registry's <!-- target-component-count:gpui -->7-component allowlist with `pnpm run generate:gpui`. `pnpm run test:gpui` runs pinned macOS compilation and mounted engine input/style tests; `pnpm run dev:gpui` builds and opens the native gallery. Supported token/variant styling, controlled input, retained children and typed named slots are implemented. The pinned renderer includes upstream device-pixel snapping and native glyph fixes; complete pixel parity and omitted capabilities remain unqualified. The dedicated native CI lane is configured; remote execution is unverified. GPUI remains outside the TypeScript admission rail.
 
 ```bash
 pnpm run generate                                  # React only (default)
