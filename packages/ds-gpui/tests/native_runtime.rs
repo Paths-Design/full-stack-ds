@@ -3,8 +3,18 @@
 use full_stack_ds_gpui::components::{Badge, Checkbox, Divider, Switch, Text, ToggleSwitch};
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::{apply_resolved_style, native_border_paint, Theme};
-use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
+use gpui::{prelude::*, div, point, px, size, AppContext, Context, Entity, KeyDownEvent, KeyUpEvent, Keystroke, Modifiers, Render, TestAppContext, Window};
 use std::{cell::{Cell, RefCell}, rc::Rc};
+
+// Unlike simulate_keystrokes, this includes the release which GPUI can turn
+// into a synthetic ClickEvent. Settle owner redraws between the two phases.
+fn tap_key(cx: &mut gpui::VisualTestContext, key: &str) {
+    let keystroke = Keystroke::parse(key).unwrap();
+    cx.simulate_event(KeyDownEvent { keystroke: keystroke.clone(), is_held: false, prefer_character_input: false });
+    cx.run_until_parked();
+    cx.simulate_event(KeyUpEvent { keystroke });
+    cx.run_until_parked();
+}
 
 #[gpui::test]
 fn mounted_switch_pointer_space_owner_acceptance_and_disabled_suppression(cx: &mut TestAppContext) {
@@ -20,13 +30,14 @@ fn mounted_switch_pointer_space_owner_acceptance_and_disabled_suppression(cx: &m
     assert!(!view.read_with(cx, |control, _| control.state.value()), "controlled refusal preserves owner value");
     let focused = view.read_with(cx, |control, _| control.focus_handle.clone().unwrap());
     assert!(cx.update(|window, _| focused.is_focused(window)));
-    cx.simulate_keystrokes("space enter");
+    tap_key(cx, "space");
+    tap_key(cx, "enter");
     assert_eq!(requests.borrow().len(), 2, "checkbox-host Enter must not activate");
     let notified = Rc::new(Cell::new(0)); let notified_copy = notified.clone();
     let _notifications = cx.update(|_, app| app.observe(&view, move |_, _| notified_copy.set(notified_copy.get() + 1)));
     let _accept = cx.update(|_, app| app.subscribe(&view, |entity, event: &ChangeRequest, app| entity.update(app, |control, cx| control.set_checked(Some(event.value), cx))));
     let before = cx.debug_bounds("switch-thumb").unwrap();
-    cx.simulate_keystrokes("space");
+    tap_key(cx, "space");
     assert!(view.read_with(cx, |control, _| control.state.value()));
     assert_eq!(requests.borrow().len(), 3);
     assert!(notified.get() > 0, "mounted owner setter must notify rendering observers");
@@ -48,9 +59,11 @@ fn mounted_toggle_button_enter_and_space_request_once(cx: &mut TestAppContext) {
     let _events = cx.update(|_, app| app.subscribe(&view, move |_, event: &ChangeRequest, _| recorded.borrow_mut().push(event.value)));
     let root = cx.debug_bounds("toggle-switch-root").expect("generated ToggleSwitch root");
     cx.simulate_click(root.center(), Modifiers::default());
-    cx.simulate_keystrokes("enter space");
+    tap_key(cx, "enter");
+    tap_key(cx, "space");
     assert_eq!(*requests.borrow(), vec![true, false, true]);
-    cx.simulate_event(KeyDownEvent { keystroke: Keystroke::parse("space").unwrap(), is_held: true });
+    cx.simulate_event(KeyDownEvent { keystroke: Keystroke::parse("space").unwrap(), is_held: true, prefer_character_input: false });
+    cx.simulate_event(KeyUpEvent { keystroke: Keystroke::parse("space").unwrap() });
     cx.simulate_keystrokes("ctrl-space cmd-space alt-space");
     assert_eq!(*requests.borrow(), vec![true, false, true]);
     view.update(cx, |control, cx| control.set_disabled(true, cx));
@@ -58,6 +71,32 @@ fn mounted_toggle_button_enter_and_space_request_once(cx: &mut TestAppContext) {
     cx.simulate_click(root.center(), Modifiers::default());
     cx.simulate_keystrokes("enter space");
     assert_eq!(*requests.borrow(), vec![true, false, true]);
+}
+
+#[gpui::test]
+fn mounted_checkbox_keyboard_cycles_request_once_and_enter_is_suppressed(cx: &mut TestAppContext) {
+    let (view, cx) = cx.add_window_view(|_, _| Checkbox::default().checked(Some(false)));
+    let requests = Rc::new(Cell::new(0)); let recorded = requests.clone();
+    let _events = cx.update(|_, app| app.subscribe(&view, move |entity, event: &ChangeRequest, app| {
+        recorded.set(recorded.get() + 1);
+        entity.update(app, |control, cx| control.set_checked(Some(event.value), cx));
+    }));
+    let indicator = cx.debug_bounds("checkbox-indicator").unwrap();
+    cx.simulate_click(indicator.center(), Modifiers::default());
+    assert_eq!(requests.get(), 1);
+    tap_key(cx, "space");
+    assert_eq!(requests.get(), 2);
+    assert!(!view.read_with(cx, |control, _| control.state.value()));
+    tap_key(cx, "enter");
+    assert_eq!(requests.get(), 2, "Enter release cannot become an unauthorized checkbox click");
+    cx.simulate_event(KeyDownEvent { keystroke: Keystroke::parse("space").unwrap(), is_held: true, prefer_character_input: false });
+    cx.simulate_event(KeyUpEvent { keystroke: Keystroke::parse("space").unwrap() });
+    assert_eq!(requests.get(), 2, "held key release cannot synthesize an activation");
+    view.update(cx, |control, cx| control.set_disabled(true, cx));
+    cx.run_until_parked();
+    tap_key(cx, "space");
+    tap_key(cx, "enter");
+    assert_eq!(requests.get(), 2);
 }
 
 #[gpui::test]
@@ -139,7 +178,7 @@ struct FocusHost { controls: [Entity<Switch>; 3] }
 impl Render for FocusHost {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
         div().flex().flex_col().items_start().children(self.controls.iter().cloned()).on_key_down(|event, window, cx| {
-            if event.keystroke.key == "tab" { if event.keystroke.modifiers.shift { window.focus_prev(); } else { window.focus_next(); } cx.stop_propagation(); }
+            if event.keystroke.key == "tab" { if event.keystroke.modifiers.shift { window.focus_prev(cx); } else { window.focus_next(cx); } cx.stop_propagation(); }
         })
     }
 }
@@ -151,7 +190,7 @@ fn mounted_tab_order_skips_disabled_and_focus_is_stable(cx: &mut TestAppContext)
     let first = controls[0].read_with(cx, |control, _| control.focus_handle.clone().unwrap());
     let disabled = controls[1].read_with(cx, |control, _| control.focus_handle.clone().unwrap());
     let last = controls[2].read_with(cx, |control, _| control.focus_handle.clone().unwrap());
-    cx.update(|window, _| window.focus(&first));
+    cx.update(|window, app| window.focus(&first, app));
     cx.run_until_parked();
     cx.simulate_keystrokes("tab");
     assert!(cx.update(|window, _| last.is_focused(window)));
@@ -163,7 +202,7 @@ fn mounted_tab_order_skips_disabled_and_focus_is_stable(cx: &mut TestAppContext)
     cx.simulate_keystrokes("tab");
     assert!(cx.update(|window, _| disabled.is_focused(window)), "enabling a mounted control adds its existing handle to tab order");
     controls[1].update(cx, |control, cx| control.set_disabled(true, cx));
-    cx.update(|window, _| window.focus(&first));
+    cx.update(|window, app| window.focus(&first, app));
     cx.run_until_parked();
     cx.simulate_keystrokes("tab");
     assert!(cx.update(|window, _| last.is_focused(window)), "disabling a mounted control removes its handle from tab order");
@@ -174,6 +213,47 @@ fn mounted_tab_order_skips_disabled_and_focus_is_stable(cx: &mut TestAppContext)
 }
 
 struct StaticHost { text: Entity<Text>, badge: Entity<Badge>, divider: Entity<Divider> }
+struct FractionalHost { control: Entity<Switch>, offset: f32 }
+impl Render for FractionalHost {
+    fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
+        div().relative().size_full().child(
+            div().absolute().left(px(self.offset)).top(px(self.offset))
+                .w(px(95.25)).h(px(59.125)).flex().items_center().justify_center()
+                .debug_selector(|| "snap-frame".to_string()).child(self.control.clone())
+        )
+    }
+}
+
+#[gpui::test]
+fn mounted_fractional_layout_edges_snap_and_survive_owner_redraw(cx: &mut TestAppContext) {
+    let (host, cx) = cx.add_window_view(|_, cx| FractionalHost {
+        control: cx.new(|_| Switch::default().checked(Some(false))), offset: 0.,
+    });
+    let control = host.read_with(cx, |host, _| host.control.clone());
+    let scale = cx.update(|window, _| window.scale_factor());
+    assert_eq!(scale, 2., "test platform uses 2x; eighth-pixel offsets exercise fractional device positions");
+    for offset in [0., 0.125, 0.25, 0.375, 0.625, 0.875] {
+        host.update(cx, |host, cx| { host.offset = offset; cx.notify(); });
+        cx.run_until_parked();
+        for checked in [false, true] {
+            control.update(cx, |control, cx| {
+                control.set_checked(Some(checked), cx);
+                control.set_theme(Theme::default().with_token("switch.design.track.background.fill", "#108850"), cx);
+            });
+            cx.run_until_parked();
+            for selector in ["snap-frame", "switch-track", "switch-thumb"] {
+                let rect = cx.debug_bounds(selector).expect("fractional specimen must remain mounted");
+                for edge in [rect.left(), rect.top(), rect.right(), rect.bottom()] {
+                    let device = f32::from(edge) * scale;
+                    assert!((device - device.round()).abs() < 0.0001, "{selector} edge {device} at offset {offset} must land on a device pixel");
+                }
+            }
+            assert_eq!(cx.debug_bounds("switch-track").unwrap().size, size(px(48.), px(24.)));
+            assert_eq!(control.read_with(cx, |control, _| control.state.value()), checked);
+        }
+    }
+}
+
 impl Render for StaticHost {
     fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
         div().flex().flex_col().items_start().gap_2().child(self.text.clone()).child(self.badge.clone()).child(self.divider.clone())

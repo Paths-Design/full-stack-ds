@@ -3,9 +3,11 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { gpuiRuntime } from './gpui-runtime.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const manifest = path.join(root, "packages/ds-gpui/Cargo.toml");
+const runtime = gpuiRuntime(root);
 const registry = JSON.parse(fs.readFileSync(path.join(root, "fsds.targets.json"), "utf8"));
 const target = registry.targets.find(entry => entry.id === "gpui");
 // Required engine dispatch/layout witnesses: legacy policy tests cannot stand
@@ -14,10 +16,12 @@ const requiredEngineTests = [
   "mounted_switch_pointer_space_owner_acceptance_and_disabled_suppression",
   "mounted_toggle_button_enter_and_space_request_once",
   "mounted_checkbox_mixed_mark_and_hover_owner",
+  "mounted_checkbox_keyboard_cycles_request_once_and_enter_is_suppressed",
   "mounted_switch_variant_geometry_and_component_token_override",
   "mounted_tab_order_skips_disabled_and_focus_is_stable",
   "mounted_static_typography_badge_and_divider_are_styled",
   "mounted_divider_orientations_and_tokens_reach_explicit_nonempty_native_paint",
+  "mounted_fractional_layout_edges_snap_and_survive_owner_redraw",
 ];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
 for (const name of target.components) {
@@ -38,7 +42,7 @@ function snapshot() {
  for (const name of target.components) hashTree(path.join(root, "packages/ds-contracts/components", name));
  hashTree(path.join(root, "packages/ds-codegen/src"));
  hashTree(path.join(root, "packages/ds-contracts/primitives"));
- for (const filename of [manifest, path.join(path.dirname(manifest), "Cargo.lock"), ...["fsds.targets.json", "scripts/gpui-pilot.mjs", "pnpm-lock.yaml", "packages/ds-tokens/generated/composed.tokens.json", "packages/ds-tokens/generated/resolved.tokens.json"].map(file => path.join(root, file))]) {
+ for (const filename of [manifest, path.join(path.dirname(manifest), "Cargo.lock"), ...["fsds.targets.json", "scripts/gpui-pilot.mjs", "scripts/gpui-runtime.mjs", "pnpm-lock.yaml", "packages/ds-tokens/generated/composed.tokens.json", "packages/ds-tokens/generated/resolved.tokens.json"].map(file => path.join(root, file))]) {
   hashes[path.relative(root, filename)] = createHash("sha256").update(fs.readFileSync(filename)).digest("hex");
  }
  return Object.fromEntries(Object.entries(hashes).sort(([a], [b]) => a.localeCompare(b)));
@@ -46,7 +50,8 @@ function snapshot() {
 const report = {
   schema: "fsds.gpui-native-checks.v2",
   revision: spawnSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).stdout.trim(),
-  rustc: spawnSync("rustc", ["--version"], { encoding: "utf8" }).stdout.trim(),
+  rustc: spawnSync("rustc", [`+${runtime.toolchain}`, "--version"], { encoding: "utf8" }).stdout.trim(),
+  renderer: runtime.renderer,
   platform: `${process.platform}-${process.arch}`,
   sourceStatus: spawnSync("git", ["status", "--porcelain", "--untracked-files=no"], { cwd: root, encoding: "utf8" }).stdout.trim(),
   components: target.components,
@@ -62,9 +67,9 @@ for (const command of [
   ["check", "--all-targets", "--locked"],
   ["test", "--all-targets", "--locked"],
 ]) {
-  const args = [...command, "--manifest-path", manifest];
+  const args = [...runtime.cargo, ...command, "--manifest-path", manifest];
   console.log(`GPUI native checks: cargo ${command.join(" ")}`);
-  const result = spawnSync("cargo", args, { cwd: root, encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
+  const result = spawnSync("cargo", args, { cwd: root, env: runtime.env, encoding: "utf8", maxBuffer: 32 * 1024 * 1024 });
   const log = `${command[0]}.log`;
   fs.writeFileSync(path.join(evidenceRoot, log), `${result.stdout ?? ""}\n${result.stderr ?? ""}`);
   const passedTests = [...(result.stdout ?? "").matchAll(/^test (.+?) \.\.\. ok$/gm)].map(match => match[1]);
