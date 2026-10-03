@@ -121,7 +121,7 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
       const node = op.kind === 'create-composition' ? op.root : ['insert-node', 'insert-instance'].includes(op.kind) ? op.node : undefined;
       if (node) {
         assert.ok(!origins.has(node.id), 'PAPER_ORIGIN_DUPLICATE');
-        origins.set(node.id, { compositionId: op.owner.compositionId, revision: t.revision });
+        origins.set(node.id, { compositionId: op.owner.compositionId, revision: t.revision, node });
       }
     }
     const seen = new Set();
@@ -181,6 +181,16 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
         assert.ok(receipt.entries.every(e => !origins.has(e.bodyNodeId)), 'PAPER_BODY_IDS_FRESH');
         assert.deepEqual(receipt.entries.map(e => e.bodyNodeId).sort(), [...target.body.nodeIds].sort(), 'PAPER_CORRESPONDENCE_MEMBERS');
         assert.equal(receipt.entries.find(e => e.oldNodeId === op.nodeId)?.bodyNodeId, target.body.rootNodeId, 'PAPER_CORRESPONDENCE_ROOT');
+        // In this original subset extraction preserves kinds, profiles and nested
+        // references; root-origin normalization and labels are separate edits.
+        if (!controls.ignoreCorrespondenceAddress) for (const entry of receipt.entries) {
+          const original = origins.get(entry.oldNodeId)?.node;
+          const body = target.body.nodes.find(n => n.id === entry.bodyNodeId);
+          assert.ok(original && body, 'PAPER_CORRESPONDENCE_ADDRESS');
+          assert.deepEqual([original.kind, original.defaultProfileRef, original.definitionRef],
+            [body.kind, body.defaultProfileRef, body.definitionRef], 'PAPER_CORRESPONDENCE_ADDRESS');
+        }
+
       }
     }
     for (const t of txMap.values()) if (t.projectChangeId) assert.ok(seen.has(t.transactionId), 'PAPER_UNPUBLISHED_PARTICIPANT');
@@ -262,6 +272,7 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
     const redoOp = h.pageTransactions[2].action.operations[0];
     const { id: originalId, ...originalFields } = originalOp;
     const { id: redoId, ...redoFields } = redoOp;
+    assert.notEqual(redoId, originalId, 'PAPER_HISTORY_OPERATION_ID');
     assert.deepEqual(redoFields, originalFields, 'PAPER_HISTORY_REDO_IDENTITY');
     assert.deepEqual(h.projectChanges[2].sourceChanges[0].operations, extraction.sourceChanges[0].operations, 'PAPER_HISTORY_REDO_BODY');
     assert.deepEqual(h.projectChanges[2].correspondence, extraction.correspondence, 'PAPER_HISTORY_CORRESPONDENCE');
@@ -341,13 +352,20 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
   probe('token creation without binding participant', 'PAPER_TOKEN_BIND_PARTICIPANT', v => { v.lines[8].action.operations[0].binding.path = 'different'; });
   probe('nonexistent original extraction node', 'PAPER_CORRESPONDENCE_ORIGINAL_MEMBERS', v => { v.changes[3].correspondence[0].entries[1].oldNodeId = 'node.neverExisted'; });
   probe('wrong extraction composition', 'PAPER_CORRESPONDENCE_OWNER', v => { v.changes[3].correspondence[0].compositionId = 'composition.banner'; });
+  const swapOriginalAddresses = v => {
+    const entries = v.changes[4].correspondence[0].entries;
+    [entries[1].oldNodeId, entries[2].oldNodeId] = [entries[2].oldNodeId, entries[1].oldNodeId];
+  };
+  probe('swapped valid extraction addresses', 'PAPER_CORRESPONDENCE_ADDRESS', swapOriginalAddresses);
   for (const [flag, alter] of [
     ['ignoreCorrespondenceMembers', v => { v.changes[3].correspondence[0].entries[1].oldNodeId = 'node.neverExisted'; }],
     ['ignoreCorrespondenceOwner', v => { v.changes[3].correspondence[0].compositionId = 'composition.banner'; }],
   ]) {
     const weakened = structuredClone(fixture); alter(weakened);
-    untouched(v => custody(v, { [flag]: true }), weakened); controls++;
+    untouched(v => custody(v, { [flag]: true, ignoreCorrespondenceAddress: true }), weakened); controls++;
   }
+  const swappedAddresses = structuredClone(fixture); swapOriginalAddresses(swappedAddresses);
+  untouched(v => custody(v, { ignoreCorrespondenceAddress: true }), swappedAddresses); controls++;
   // Replacing effective kind with the wrapper reproduces the reported false rejection.
   assert.throws(() => eligibility(tokens.tokens['action-bg-primary'], 'fill', 'component-instance', 'color'), { message: /PAPER_TOKEN_KIND/ });
   const historyProbes = [

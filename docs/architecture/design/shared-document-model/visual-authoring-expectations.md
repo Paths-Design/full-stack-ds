@@ -84,7 +84,7 @@ These independent states extend the final workflow without running a reducer. Th
 | Undo Banner extraction | 18 → 19 | p7 → p8 | d4 → d5 | node.banner is the original frame; children [node.title,node.buttonInstance]; definition.banner removed; Button retained |
 | Redo Banner extraction | 19 → 20 | p8 → p9 | d5 → d6 | Same placement, definition and body IDs; same nested Button reference and correspondence; labels remain Frame until rename is redone |
 
-The restored root has explicit 800×150 and its flow policy, but no authored fills, corners, clipping or translation properties. Title and instance keep their original IDs, profiles and absence of overrides. Historical body-root [0,0] normalization is not copied into the restored root. The frame-scoped token positive case uses a real component instance and the referenced frame root. Receipt old IDs and composition must match original insertion/creation evidence, not merely any unique strings.
+The restored root has explicit 800×150 and its flow policy, but no authored fills, corners, clipping or translation properties. Title and instance keep their original IDs, profiles and absence of overrides. Historical body-root [0,0] normalization is not copied into the restored root. The frame-scoped token positive case uses a real component instance and the referenced frame root. Receipt old IDs and composition must match original insertion/creation evidence, not merely any unique strings. Each original/body address pair also retains its kind, profile and nested definition reference; exchanging valid original addresses must refuse. This is bounded to the original extraction subset, not general reference repair.
 
 ## Qualification boundary
 
