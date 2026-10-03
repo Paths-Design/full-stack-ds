@@ -60,11 +60,11 @@ evidence:
     commit_sha: "3aae40f19"
   - criterion_id: A2
     status: pass
-    evidence_ref: "Observed qualifier exit 0 before and after local merge: 18 schemas, 65 original records, 65 schema-rejected neighbors, 26 fixture-rejected neighbors and 16 sensitivity controls. Inspected nonmutation, effective-instance positive case, original receipt provenance/address pairing, canonical typography and complete authored compensation participants. Not an evaluator or inverse executor."
-    recorded_at: "2026-10-03T01:21:07.801Z"
+    evidence_ref: "Directly observed qualification at source 3aae40f19 and after merge: 18 schemas, 65 original records, 65 schema neighbors, 26 fixture neighbors and 16 sensitivity controls. The tracked qualifier is cited as the producer; ignored execution receipt .caws/state/visual-authoring-review-fixes/postmerge-paper.log was inspected separately. CAWS --verify confirms source citation only and does not rerun the declared command. Nonmutation, effective-instance scope, receipt provenance/pairing, canonical typography and complete compensation records qualify; no evaluator/inverse executor is claimed."
+    recorded_at: "2026-10-03T01:29:06.417Z"
     command: node packages/ds-contracts/document-model/verify.mjs
     exit_code: 0
-    artifact_path: .caws/state/visual-authoring-review-fixes/postmerge-paper.log
+    artifact_path: packages/ds-contracts/document-model/verify-visual.mjs
     commit_sha: "3aae40f19"
   - criterion_id: A3
     status: pass
