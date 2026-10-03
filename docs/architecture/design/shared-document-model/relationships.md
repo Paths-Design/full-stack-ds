@@ -100,7 +100,7 @@ A page begins with a versioned header at revision 0. Each later line is one comp
 
 Acceptance requires `expectedRevision = currentRevision` and `revision = currentRevision + 1`, uniqueness of transaction identities, and atomic validation of all operations. A stale or invalid operation changes nothing. Rejected requests are not successful page transactions; their audit disposition needs separate design. Revision numbers are local ordering, not globally unique Git revisions.
 
-Undo/redo appends new accepted transactions referencing the operation being reversed; it does not erase history. Drag previews can be transient overlays, followed by one accepted meaningful edit. The full inverse vocabulary, branching, cross-page undo, compaction, durable append/fsync, torn-write recovery and external-change reconciliation are not implemented or fully designed. A newline does not prove durable persistence. Checkpoints are derived and must identify their source revision and integrity binding.
+Undo/redo appends new accepted transactions referencing the operation being reversed; it does not erase history. Drag previews can be transient overlays, followed by one accepted meaningful edit. Bounded extraction restoration, composition-creation removal and structured-field reset now have paper forms in [visual authoring](visual-authoring.md). The broader inverse vocabulary, branching, cross-page undo, compaction, durable append/fsync, torn-write recovery and external-change reconciliation are not implemented or fully designed. A newline does not prove durable persistence. Checkpoints are derived and must identify their source revision and integrity binding.
 
 ## Tokens and dependencies
 

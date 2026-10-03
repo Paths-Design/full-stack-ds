@@ -273,49 +273,12 @@
             "sourceId",
             "faceId"
           ]
-        },
-        "fontSize": {
-          "allOf": [
-            {
-              "$ref": "common.schema.json#/$defs/binding"
-            },
-            {
-              "type": "object",
-              "properties": {
-                "valueType": {
-                  "const": "dimension"
-                }
-              },
-              "required": [
-                "valueType"
-              ]
-            }
-          ]
-        },
-        "lineHeight": {
-          "allOf": [
-            {
-              "$ref": "common.schema.json#/$defs/binding"
-            },
-            {
-              "type": "object",
-              "properties": {
-                "valueType": {
-                  "const": "dimension"
-                }
-              },
-              "required": [
-                "valueType"
-              ]
-            }
-          ]
         }
       },
       "required": [
-        "fontRef",
-        "fontSize",
-        "lineHeight"
-      ]
+        "fontRef"
+      ],
+      "description": "Font selection only. Size and line-height bindings have one authority in properties[typography.fontSize/lineHeight]."
     }
   }
 }

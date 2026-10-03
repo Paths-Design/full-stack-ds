@@ -13,6 +13,7 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
   const defaults = readVisual('defaults.json');
   const expectations = readVisual('expectations.json');
   const changes = readVisual('project-changes.json');
+  const extractionHistory = readVisual('extraction-history.json');
   const lines = readFileSync(resolve(here, 'examples/visual-authoring/page.jsonl'), 'utf8').trimEnd().split('\n').map(JSON.parse);
   const examples = [
     ['project', project], ['project', initialProject], ['document', document],
@@ -22,6 +23,8 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
     ['definition', readVisual('button.definition.json')], ['definition', readVisual('banner.definition.json')],
     ['visual-expectations', expectations], ...changes.map(v => ['project-change', v]),
     ...lines.map(v => ['page-record', v]),
+    ...extractionHistory.pageTransactions.map(v => ['page-record', v]),
+    ...extractionHistory.projectChanges.map(v => ['project-change', v]),
   ];
   for (const [kind, value] of examples) accepted(kind, value, `visual example ${kind}`);
   for (const entry of [...project.pages, ...project.sources]) assert.ok(existsSync(resolve(repo, entry.path)), entry.path);
@@ -57,7 +60,13 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
       const parents = new Map();
       for (const n of nodes) {
         assert.ok(profiles.has(n.defaultProfileRef.profileId), 'PAPER_PROFILE_MISSING');
-        if (n.definitionRef) reference(n.definitionRef);
+        let effectiveKind = n.kind;
+        if (n.definitionRef) {
+          const definition = reference(n.definitionRef);
+          const root = definition.body?.nodes.find(node => node.id === definition.body.rootNodeId);
+          assert.ok(root, 'PAPER_CONSUMER_ROOT_MISSING');
+          effectiveKind = root.kind;
+        }
         for (const edge of n.children) {
           assert.ok(byNode.has(edge.nodeId), 'PAPER_CHILD_MISSING');
           assert.ok(!parents.has(edge.nodeId), 'PAPER_TWO_PARENTS');
@@ -67,12 +76,12 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
           if (p.color.kind !== 'token') continue;
           assert.equal(p.color.sourceId, 'source.tokens', 'PAPER_TOKEN_SOURCE');
           const token = f.tokens.tokens[p.color.path]; assert.ok(token, 'PAPER_TOKEN_MISSING');
-          eligibility(token, n.kind === 'text' ? 'foreground' : 'fill', n.kind, 'color', controls);
+          eligibility(token, effectiveKind === 'text' ? 'foreground' : 'fill', effectiveKind, 'color', controls);
         }
         if (n.corners?.radius.kind === 'token') {
           const b = n.corners.radius; assert.equal(b.sourceId, 'source.tokens', 'PAPER_TOKEN_SOURCE');
           assert.ok(f.tokens.tokens[b.path], 'PAPER_TOKEN_MISSING');
-          eligibility(f.tokens.tokens[b.path], 'corner-radius', n.kind, 'dimension', controls);
+          eligibility(f.tokens.tokens[b.path], 'corner-radius', effectiveKind, 'dimension', controls);
         }
       }
       assert.ok(!parents.has(root), 'PAPER_ROOT_PARENT');
@@ -104,6 +113,16 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
     for (const [index, t] of f.lines.slice(1).entries()) {
       assert.equal(t.expectedRevision, index, 'PAPER_PAGE_STALE');
       assert.equal(t.revision, index + 1, 'PAPER_PAGE_SEQUENCE');
+    }
+    // Original fixture extracts whole composition roots. Identify original addresses
+    // from explicit creation/insertion provenance, without replaying field edits.
+    const origins = new Map();
+    for (const t of f.lines.slice(1)) for (const op of t.action.operations) {
+      const node = op.kind === 'create-composition' ? op.root : ['insert-node', 'insert-instance'].includes(op.kind) ? op.node : undefined;
+      if (node) {
+        assert.ok(!origins.has(node.id), 'PAPER_ORIGIN_DUPLICATE');
+        origins.set(node.id, { compositionId: op.owner.compositionId, revision: t.revision });
+      }
     }
     const seen = new Set();
     const createdTokens = new Set();
@@ -145,12 +164,21 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
       for (const op of extractionOps) {
         const receipt = change.correspondence.find(r => r.id === op.correspondenceId);
         assert.ok(receipt, 'PAPER_CORRESPONDENCE_MISSING');
+        if (!controls.ignoreCorrespondenceOwner) {
+          assert.equal(receipt.compositionId, op.owner.compositionId, 'PAPER_CORRESPONDENCE_OWNER');
+          assert.equal(origins.get(op.nodeId)?.compositionId, receipt.compositionId, 'PAPER_CORRESPONDENCE_OWNER');
+        }
+        if (!controls.ignoreCorrespondenceMembers) {
+          const participant = change.pageTransactions.map(p => txMap.get(p.transactionId)).find(t => t.action.operations.includes(op));
+          const originalIds = [...origins].filter(([, origin]) => origin.compositionId === op.owner.compositionId && origin.revision <= participant.expectedRevision).map(([id]) => id).sort();
+          assert.deepEqual(receipt.entries.map(e => e.oldNodeId).sort(), originalIds, 'PAPER_CORRESPONDENCE_ORIGINAL_MEMBERS');
+        }
         assert.equal(receipt.oldRootNodeId, op.nodeId, 'PAPER_CORRESPONDENCE_ROOT');
         assert.equal(receipt.retainedPlacementId, op.nodeId, 'PAPER_PLACEMENT_IDENTITY');
         assert.deepEqual(receipt.definitionRef, op.definitionRef, 'PAPER_CORRESPONDENCE_REFERENCE');
         const target = reference(op.definitionRef);
         assert.equal(new Set(receipt.entries.map(e => e.oldNodeId)).size, receipt.entries.length, 'PAPER_CORRESPONDENCE_DUPLICATE');
-        assert.ok(receipt.entries.every(e => !receipt.entries.some(old => old.oldNodeId === e.bodyNodeId)), 'PAPER_BODY_IDS_FRESH');
+        assert.ok(receipt.entries.every(e => !origins.has(e.bodyNodeId)), 'PAPER_BODY_IDS_FRESH');
         assert.deepEqual(receipt.entries.map(e => e.bodyNodeId).sort(), [...target.body.nodeIds].sort(), 'PAPER_CORRESPONDENCE_MEMBERS');
         assert.equal(receipt.entries.find(e => e.oldNodeId === op.nodeId)?.bodyNodeId, target.body.rootNodeId, 'PAPER_CORRESPONDENCE_ROOT');
       }
@@ -165,6 +193,86 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
     const before = JSON.stringify(input); fn(input); assert.equal(JSON.stringify(input), before, 'paper probe mutated input');
   }
   untouched(v => custody(v), fixture);
+  // Local fill on a real instance is eligible through its definition's frame root.
+  const instanceFill = structuredClone(fixture);
+  const fill = instanceFill.definitions.definitions[0].body.nodes[0].fills;
+  instanceFill.definitions.definitions[1].body.nodes[2].fills = structuredClone(fill);
+  instanceFill.changes[4].sourceChanges[0].operations[0].definition.body.nodes[2].fills = structuredClone(fill);
+  instanceFill.lines.find(t => t.transactionId === 'tx.instance').action.operations[0].node.fills = structuredClone(fill);
+  accepted('definition', instanceFill.definitions.definitions[1], 'frame-root instance fill shape');
+  untouched(v => custody(v), instanceFill);
+  // Independent bounded history table: inspect authored proposals, never execute them.
+  const historyRows = [
+    ['tx.undoBannerName', 'change.undoBannerName', 'undo', 'tx.bannerName', 'change.bannerName', 17, 18, 'p6', 'p7', 'd3', 'd4'],
+    ['tx.undoBannerExtraction', 'change.undoBannerExtraction', 'undo', 'tx.extractBanner', 'change.banner', 18, 19, 'p7', 'p8', 'd4', 'd5'],
+    ['tx.redoBannerExtraction', 'change.redoBannerExtraction', 'redo', 'tx.undoBannerExtraction', 'change.undoBannerExtraction', 19, 20, 'p8', 'p9', 'd5', 'd6'],
+  ];
+  function compensation(h, controls = {}) {
+    assert.equal(h.basis, 'authored-future-runtime-oracle');
+    assert.equal(h.pageTransactions.length, historyRows.length, 'PAPER_HISTORY_PARTICIPANTS');
+    assert.equal(h.projectChanges.length, historyRows.length, 'PAPER_HISTORY_PARTICIPANTS');
+    for (const [i, row] of historyRows.entries()) {
+      const [txId, changeId, kind, priorTx, priorChange, before, after, pBefore, pAfter, dBefore, dAfter] = row;
+      const tx = h.pageTransactions[i], change = h.projectChanges[i];
+      assert.deepEqual([tx.transactionId, tx.projectChangeId, tx.expectedRevision, tx.revision], [txId, changeId, before, after], 'PAPER_HISTORY_PAGE_REVISION');
+      assert.deepEqual([change.id, change.projectId, change.expectedProjectRevision, change.projectRevision], [changeId, 'project.visual', pBefore, pAfter], 'PAPER_HISTORY_PROJECT_REVISION');
+      assert.deepEqual(change.pageTransactions, [{ pageId: 'page.visual', transactionId: txId, expectedRevision: before, revision: after }], 'PAPER_HISTORY_PARTICIPANTS');
+      assert.deepEqual(tx.action.history, { kind, ofTransactionId: priorTx }, 'PAPER_HISTORY_REFERENCE');
+      assert.deepEqual(change.history, { kind, ofProjectChangeId: priorChange }, 'PAPER_HISTORY_REFERENCE');
+      assert.equal(tx.action.operations.length, 1, 'PAPER_HISTORY_OPERATION');
+      assert.equal(change.sourceChanges.length, 1, 'PAPER_HISTORY_PARTICIPANTS');
+      const source = change.sourceChanges[0];
+      assert.deepEqual([source.sourceId, source.kind, source.expectedRevision, source.revision], ['source.definitions', 'definitions', dBefore, dAfter], 'PAPER_HISTORY_SOURCE_REVISION');
+      assert.equal(source.operations.length, 1, 'PAPER_HISTORY_OPERATION');
+      assert.deepEqual(change.dependencyUpdates, [{ sourceId: 'source.definitions', fromRevision: dBefore, toRevision: dAfter }], 'PAPER_HISTORY_DEPENDENCY');
+      assert.deepEqual(tx.action.operations[0].owner, { kind: 'composition', compositionId: 'composition.banner' }, 'PAPER_HISTORY_OWNER');
+    }
+    assert.deepEqual(h.pageTransactions[0].action.operations[0], {
+      id: 'op.undoBannerName', owner: { kind: 'composition', compositionId: 'composition.banner' }, kind: 'rename-node', nodeId: 'node.banner', label: 'Frame',
+    }, 'PAPER_HISTORY_RENAME');
+    assert.deepEqual(h.projectChanges[0].sourceChanges[0].operations[0], {
+      id: 'op.undoDefinitionName', kind: 'rename-definition', definitionId: 'definition.banner', label: 'Frame',
+    }, 'PAPER_HISTORY_RENAME');
+    const extraction = changes.find(c => c.id === 'change.banner');
+    const originalTx = lines.find(t => t.transactionId === 'tx.extractBanner');
+    const originalOp = originalTx.action.operations[0];
+    const restore = h.pageTransactions[1].action.operations[0];
+    assert.deepEqual([restore.kind, restore.nodeId, restore.extractionProjectChangeId, restore.correspondenceId, restore.beforeRevision],
+      ['restore-extracted-subtree', originalOp.nodeId, extraction.id, originalOp.correspondenceId, originalTx.expectedRevision], 'PAPER_HISTORY_RESTORE_PROVENANCE');
+    assert.deepEqual(restore.definitionRef, originalOp.definitionRef, 'PAPER_HISTORY_RESTORE_PROVENANCE');
+    assert.deepEqual(h.projectChanges[1].correspondence, extraction.correspondence, 'PAPER_HISTORY_CORRESPONDENCE');
+    assert.deepEqual(h.projectChanges[1].sourceChanges[0].operations[0], {
+      id: 'op.removeBannerDefinition', kind: 'remove-created-definition', definitionId: 'definition.banner', createdByProjectChangeId: 'change.banner',
+    }, 'PAPER_HISTORY_SOURCE_REMOVAL');
+    if (!controls.ignoreBeforeImage) {
+      const dimension = value => ({ kind: 'literal', valueType: 'dimension', value: { value, unit: 'px' } });
+      // Separate explicit expected state; not a projection of the extraction body.
+      const expectedRoot = {
+        id: 'node.banner', kind: 'frame', label: 'Frame', defaultProfileRef: { sourceId: 'source.defaults', profileId: 'defaults.frame' },
+        properties: { 'sizing.width': dimension(800), 'sizing.height': dimension(150) },
+        children: [{ nodeId: 'node.title' }, { nodeId: 'node.buttonInstance' }],
+        layout: { kind: 'flow', axis: 'horizontal', gap: dimension(0), mainAxisAlignment: 'space-between', crossAxisAlignment: 'start', padding: dimension(0) },
+      };
+      const title = { id: 'node.title', kind: 'text', label: 'Text', defaultProfileRef: { sourceId: 'source.defaults', profileId: 'defaults.text' }, properties: {}, children: [], content: 'Banner Title' };
+      const instance = { id: 'node.buttonInstance', kind: 'component-instance', label: 'Button', defaultProfileRef: { sourceId: 'source.defaults', profileId: 'defaults.frame' }, properties: {}, children: [], definitionRef: { sourceId: 'source.definitions', definitionId: 'definition.button', version: 'button.v1' }, parameterBindings: {}, partOverrides: [], slotBindings: [], layoutItem: { widthMode: 'fixed', heightMode: 'fixed', shrink: 0 } };
+      assert.deepEqual(restore.subtree, { rootNodeId: 'node.banner', nodeIds: ['node.banner', 'node.title', 'node.buttonInstance'], nodes: [expectedRoot, title, instance] }, 'PAPER_HISTORY_BEFORE_IMAGE');
+      assert.deepEqual(title, lines.find(t => t.transactionId === 'tx.title').action.operations[0].node, 'PAPER_HISTORY_ORIGINAL_CUSTODY');
+      assert.deepEqual(instance, lines.find(t => t.transactionId === 'tx.instance').action.operations[0].node, 'PAPER_HISTORY_ORIGINAL_CUSTODY');
+    }
+    const redoOp = h.pageTransactions[2].action.operations[0];
+    const { id: originalId, ...originalFields } = originalOp;
+    const { id: redoId, ...redoFields } = redoOp;
+    assert.deepEqual(redoFields, originalFields, 'PAPER_HISTORY_REDO_IDENTITY');
+    assert.deepEqual(h.projectChanges[2].sourceChanges[0].operations, extraction.sourceChanges[0].operations, 'PAPER_HISTORY_REDO_BODY');
+    assert.deepEqual(h.projectChanges[2].correspondence, extraction.correspondence, 'PAPER_HISTORY_CORRESPONDENCE');
+    assert.deepEqual(h.expected, {
+      restoredNodeIds: ['node.banner', 'node.title', 'node.buttonInstance'], restoredChildren: ['node.title', 'node.buttonInstance'],
+      restoredRootAbsentFields: ['fills', 'corners', 'clipContent'], restoredRootAbsentProperties: ['transform.translation.x', 'transform.translation.y'],
+      nestedDefinitionId: 'definition.button', redoBodyNodeIds: ['body.bannerRoot', 'body.bannerTitle', 'body.bannerButton'],
+      terminalPageRevision: 20, terminalProjectRevision: 'p9', terminalDefinitionRevision: 'd6',
+    }, 'PAPER_HISTORY_EXPECTED_TABLE');
+  }
+  untouched(h => compensation(h), extractionHistory);
   const invalid = [];
   function bad(name, value, label, keyword, alter) {
     const v = structuredClone(value); alter(v); invalid.push({ name, value: v, label, keyword });
@@ -186,6 +294,18 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
   bad('project-change', changes[0], 'source changes are not file patches', 'additionalProperties', v => { v.sourceChanges[0].operations[0].filePatch = 'arbitrary'; });
   bad('project-change', changes[0], 'created-token removal is inverse only', 'const', v => { v.sourceChanges[0].operations = [{ id: 'op.remove', kind: 'remove-created-token', name: 'border-radius-md', createdByProjectChangeId: 'change.radius' }]; });
   bad('visual-expectations', expectations, 'expected tables are not runtime evidence', 'const', v => { v.basis = 'observed-runtime'; });
+  const text = structuredClone(definitions.definitions[0].body.nodes[1]);
+  text.textStyle = structuredClone(defaults.profiles[1].textStyle);
+  text.properties['typography.fontSize'] = { kind: 'literal', valueType: 'dimension', value: { value: 32, unit: 'px' } };
+  accepted('visual-node', text, 'one canonical text-size carrier');
+  const dualText = structuredClone(text);
+  dualText.textStyle.fontSize = { kind: 'literal', valueType: 'dimension', value: { value: 16, unit: 'px' } };
+  invalid.push({ name: 'visual-node', value: dualText, label: 'duplicate typography authority refuses', keyword: 'additionalProperties' });
+  const restoreTx = extractionHistory.pageTransactions[1];
+  bad('page-record', restoreTx, 'extraction restore is inverse only', 'const', v => { v.action.history = { kind: 'edit' }; });
+  bad('page-record', restoreTx, 'restore retains historical before revision', 'required', v => { delete v.action.operations[0].beforeRevision; });
+  bad('page-record', restoreTx, 'restore requires exact authored subtree', 'required', v => { delete v.action.operations[0].subtree; });
+  bad('page-record', restoreTx, 'restore requires original extraction provenance', 'required', v => { delete v.action.operations[0].extractionProjectChangeId; });
   for (const t of invalid) rejected(t.name, t.value, t.label, t.keyword);
   let controls = 0;
   function sensitivity(label, change) {
@@ -197,6 +317,8 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
   sensitivity('definition placement cannot own visual overrides', defs => { delete defs.find(s => s.$id.endsWith('/visual-node.schema.json')).$defs.node.allOf[1].oneOf.at(-1).properties.fills; });
   sensitivity('source write needs expected revision', defs => { const s = defs.find(s => s.$id.endsWith('/project-change.schema.json')).properties.sourceChanges.items; s.required = s.required.filter(k => k !== 'expectedRevision'); });
   sensitivity('extraction receipt needs mapping', defs => { const s = defs.find(s => s.$id.endsWith('/extraction-correspondence.schema.json')); s.required = s.required.filter(k => k !== 'entries'); });
+  sensitivity('duplicate typography authority refuses', defs => { defs.find(s => s.$id.endsWith('/appearance.schema.json')).$defs.textStyle.properties.fontSize = { $ref: 'common.schema.json#/$defs/binding' }; });
+  sensitivity('restore requires exact authored subtree', defs => { const b = defs.find(s => s.$id.endsWith('/edit-operation.schema.json')).allOf[1].oneOf.find(b => b.properties.kind.const === 'restore-extracted-subtree'); b.required = b.required.filter(k => k !== 'subtree'); });
   const probes = [];
   function probe(label, code, change) {
     const v = structuredClone(fixture); change(v); const before = JSON.stringify(v);
@@ -211,12 +333,39 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
   probe('stale project revision', 'PAPER_PROJECT_STALE', v => { v.changes[0].expectedProjectRevision = 'foreign'; });
   probe('missing dependency update', 'PAPER_DEPENDENCY_UPDATE_MISSING', v => { v.changes[0].dependencyUpdates = []; });
   probe('unpublished shared page operation', 'PAPER_PARTICIPANT_LINK', v => { delete v.lines[8].projectChangeId; });
-  probe('incomplete extraction mapping', 'PAPER_CORRESPONDENCE_MEMBERS', v => { v.changes[3].correspondence[0].entries.pop(); });
+  probe('incomplete extraction mapping', 'PAPER_CORRESPONDENCE_ORIGINAL_MEMBERS', v => { v.changes[3].correspondence[0].entries.pop(); });
   probe('wrong effective kind eligibility', 'PAPER_TOKEN_KIND', v => { v.tokens.tokens['action-bg-primary'].$extensions['org.full-stack-ds.editor'].eligibility.nodeKinds = ['text']; });
   probe('wrong role eligibility', 'PAPER_TOKEN_ROLE', v => { v.tokens.tokens['action-bg-primary'].$extensions['org.full-stack-ds.editor'].eligibility.roles = ['border']; });
   probe('two structural parents', 'PAPER_TWO_PARENTS', v => { v.definitions.definitions[1].body.nodes[0].children.push({ nodeId: 'body.bannerTitle' }); });
   probe('colliding token source name', 'PAPER_TOKEN_COLLISION', v => { v.changes[1].sourceChanges[0].operations[0].name = 'border-radius-md'; });
   probe('token creation without binding participant', 'PAPER_TOKEN_BIND_PARTICIPANT', v => { v.lines[8].action.operations[0].binding.path = 'different'; });
+  probe('nonexistent original extraction node', 'PAPER_CORRESPONDENCE_ORIGINAL_MEMBERS', v => { v.changes[3].correspondence[0].entries[1].oldNodeId = 'node.neverExisted'; });
+  probe('wrong extraction composition', 'PAPER_CORRESPONDENCE_OWNER', v => { v.changes[3].correspondence[0].compositionId = 'composition.banner'; });
+  for (const [flag, alter] of [
+    ['ignoreCorrespondenceMembers', v => { v.changes[3].correspondence[0].entries[1].oldNodeId = 'node.neverExisted'; }],
+    ['ignoreCorrespondenceOwner', v => { v.changes[3].correspondence[0].compositionId = 'composition.banner'; }],
+  ]) {
+    const weakened = structuredClone(fixture); alter(weakened);
+    untouched(v => custody(v, { [flag]: true }), weakened); controls++;
+  }
+  // Replacing effective kind with the wrapper reproduces the reported false rejection.
+  assert.throws(() => eligibility(tokens.tokens['action-bg-primary'], 'fill', 'component-instance', 'color'), { message: /PAPER_TOKEN_KIND/ });
+  const historyProbes = [
+    ['wrong compensation history', 'PAPER_HISTORY_REFERENCE', h => { h.projectChanges[1].history.ofProjectChangeId = 'change.button'; }],
+    ['stale compensation source', 'PAPER_HISTORY_SOURCE_REVISION', h => { h.projectChanges[1].sourceChanges[0].expectedRevision = 'd3'; }],
+    ['unpaired restoration participant', 'PAPER_HISTORY_PARTICIPANTS', h => { h.projectChanges[1].pageTransactions = []; }],
+    ['forged restoration before revision', 'PAPER_HISTORY_RESTORE_PROVENANCE', h => { h.pageTransactions[1].action.operations[0].beforeRevision = 14; }],
+    ['baked inherited fill in before image', 'PAPER_HISTORY_BEFORE_IMAGE', h => { h.pageTransactions[1].action.operations[0].subtree.nodes[0].fills = structuredClone(defaults.profiles[0].fills); }],
+    ['lost nested reference on redo', 'PAPER_HISTORY_REDO_BODY', h => { h.projectChanges[2].sourceChanges[0].operations[0].definition.body.nodes[2].definitionRef.definitionId = 'definition.banner'; }],
+  ];
+  for (const [label, code, alter] of historyProbes) {
+    const h = structuredClone(extractionHistory); alter(h);
+    untouched(v => assert.throws(() => compensation(v), { message: new RegExp(code) }, label), h);
+    probes.push(label);
+  }
+  const weakenedHistory = structuredClone(extractionHistory);
+  historyProbes[4][2](weakenedHistory);
+  untouched(h => compensation(h, { ignoreBeforeImage: true }), weakenedHistory); controls++;
   const restricted = tokens.tokens['action-bg-primary'];
   untouched(t => eligibility(t, 'fill', 'frame', 'color'), restricted);
   for (const [role, kind, code] of [['border', 'frame', 'ROLE'], ['foreground', 'text', 'ROLE'], ['fill', 'shape', 'KIND']]) {
@@ -247,6 +396,11 @@ export function qualifyVisual({ accepted, rejected, compiler, schemas, read, her
   const local = structuredClone(definitions.definitions[1]); local.body.nodes[2].corners = { linked: true, radius: { kind: 'literal', valueType: 'dimension', value: { value: 4, unit: 'px' } } };
   accepted('definition', local, 'local nested root override remains authored');
   delete local.body.nodes[2].corners; accepted('definition', local, 'reset is exact absence, not resolved literal');
+  accepted('edit-operation', { id: 'op.undoFrame', owner: { kind: 'composition', compositionId: 'composition.banner' }, kind: 'remove-created-composition', compositionId: 'composition.banner', createTransactionId: 'tx.frame' }, 'creation compensation shape');
+  accepted('edit-operation', { id: 'op.resetLayout', owner: textReplace.owner, kind: 'reset-node-field', nodeId: 'node.banner', field: 'layout' }, 'structured reset restores absence');
+  assert.equal(defaults.profiles[1].properties['typography.fontSize'].value.value, 16);
+  assert.equal(defaults.profiles[1].properties['typography.lineHeight'].value.value, 20);
+  assert.deepEqual(Object.keys(defaults.profiles[1].textStyle), ['fontRef']);
   // Exact original custody, no interpolation/layout/inheritance/reducer calculations.
   assert.deepEqual(document.nodes.map(n => [n.id, n.kind]), [['node.banner', 'definition-placement'], ['node.button', 'definition-placement']]);
   assert.deepEqual(definitions.definitions[1].body.nodes[2].definitionRef, document.nodes[1].definitionRef);

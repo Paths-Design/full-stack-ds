@@ -440,6 +440,84 @@
             "definitionRef",
             "correspondenceId"
           ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "restore-extracted-subtree"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "extractionProjectChangeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "correspondenceId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "definitionRef": {
+              "$ref": "common.schema.json#/$defs/definitionRef"
+            },
+            "beforeRevision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "subtree": {
+              "$ref": "definition.schema.json#/properties/body"
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "extractionProjectChangeId",
+            "correspondenceId",
+            "definitionRef",
+            "beforeRevision",
+            "subtree"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "remove-created-composition"
+            },
+            "compositionId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "createTransactionId": {
+              "$ref": "common.schema.json#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "compositionId",
+            "createTransactionId"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "reset-node-field"
+            },
+            "nodeId": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "field": {
+              "enum": [
+                "fills",
+                "corners",
+                "layout"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "nodeId",
+            "field"
+          ]
         }
       ]
     }
