@@ -51,3 +51,9 @@ contracts:
   - name: 'native-content-projection'
     type: behavior
     path: 'packages/ds-codegen/src/frameworks/gpui/factory.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "36 GPUI emitter tests passed; generated SlotLayout fixture drift-bound and compiled. Default/named insertion APIs and guards derive from IR; root/duplicate placements and invalid identifiers reject. Preserved logs at tmp/gpui-composition-parity; automatic verification establishes source reachability only."
+    recorded_at: "2026-10-03T14:17:26.073Z"
+    commit_sha: cff2ffc27a2173dc3db9ff23f38797e920f18e7c
