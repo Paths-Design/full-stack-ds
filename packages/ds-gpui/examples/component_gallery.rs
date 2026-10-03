@@ -1,5 +1,6 @@
 //! A real owner-controlled GPUI consumer. It exercises generated views, not a parallel UI.
-use full_stack_ds_gpui::components::{Badge, Checkbox, Divider, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::components::{Badge, Checkbox, Divider, Stat, Switch, Text, ToggleSwitch};
+use full_stack_ds_gpui::content::NativeContent;
 use full_stack_ds_gpui::control::ChangeRequest;
 use full_stack_ds_gpui::style::Theme;
 use gpui::{prelude::*, actions, div, px, size, App, Bounds, Context, Entity, FocusHandle, KeyBinding, Subscription, Window, WindowBounds, WindowOptions};
@@ -18,6 +19,11 @@ struct Gallery {
     badges: Vec<Entity<Badge>>,
     divider: Entity<Divider>,
     vertical: Entity<Divider>,
+    composed: Entity<Text>,
+    nested_switch: Entity<Switch>,
+    stats: Vec<Entity<Stat>>,
+    composition_updates: usize,
+    composed_requests: usize,
     accepted: usize,
     last_request: String,
     last_render_metrics: String,
@@ -103,7 +109,18 @@ impl Gallery {
         })).collect();
         let divider = cx.new(|_| Divider::default());
         let vertical = cx.new(|_| Divider::default().orientation("vertical"));
-        Self { focus, switches, toggles, checkboxes, text, badges, divider, vertical, accepted: 0, last_request: "No owner request yet".into(), last_render_metrics: String::new(), _subscriptions: vec![accept, refuse] }
+        let nested_switch=cx.new(|_|Switch::default().checked(Some(false)).label("Retained nested Switch"));
+        let composed=cx.new(|_|Text::default().content(NativeContent::group([
+            NativeContent::text("Generated Text contains a working child: "),
+            NativeContent::view(nested_switch.clone()),
+        ])));
+        let nested_owner=cx.subscribe(&nested_switch,|this,entity,request:&ChangeRequest,cx|{
+            this.composed_requests+=1;
+            entity.update(cx,|control,cx|control.set_checked(Some(request.value),cx));
+            cx.notify();
+        });
+        let stats=[("sm","neutral","104"),("md","up","+12%"),("lg","down","−3%")].into_iter().map(|(size,trend,value)|cx.new(|_|Stat::default().size(size).trend(trend).content(NativeContent::text(value)))).collect();
+        Self { focus, switches, toggles, checkboxes, text, badges, divider, vertical, composed, nested_switch, stats, composition_updates:0, composed_requests:0, accepted: 0, last_request: "No owner request yet".into(), last_render_metrics: String::new(), _subscriptions: vec![accept, refuse, nested_owner] }
     }
 }
 
@@ -136,6 +153,20 @@ impl Render for Gallery {
                 .child(div().flex().flex_col().gap_2().child("ToggleSwitch / selected pills").children(self.toggles.iter().cloned())))
             .child(div().flex().items_start().gap_2().children(self.badges.iter().cloned()))
             .child(format!("{} accepted request(s). {}", self.accepted, self.last_request))
+            .child(div().flex().flex_col().gap_2().border_1().border_color(gpui::rgb(0xb8b8b8)).p_3()
+                .child("Retained composition / generated Text and Stat")
+                .child(self.composed.clone())
+                .child(div().id("composition-redraw").cursor_pointer().p_2().rounded_md().bg(gpui::rgb(0xe0e6ff)).child("Change parent style; keep the nested control")
+                    .on_click(cx.listener(|this,_,_,cx|{
+                        this.composition_updates+=1;
+                        let updates=this.composition_updates;
+                        this.composed.update(cx,|text,cx|{
+                            text.set_variant(if updates%2==0 {"body"}else{"caption"},cx);
+                            text.set_theme(Theme::default().with_token("text.design.root.foreground.color",if updates%2==0 {"#141414"}else{"#108850"}),cx);
+                        });cx.notify();
+                    })))
+                .child(format!("{} parent style changes; {} nested request(s); checked = {}",self.composition_updates,self.composed_requests,self.nested_switch.read(cx).state.value()))
+                .child(div().flex().items_start().gap_4().children(self.stats.iter().cloned())))
             .child(div().text_sm().child(format!("Renderer comparison: GPUI a38fc8c at {} device pixel(s) per logical pixel", window.scale_factor())))
             .child(div().flex().flex_col().gap_2().children([false, true].into_iter().map(|dark| {
                 div().relative().w_full().h(px(74.)).children([0., 0.125, 0.25, 0.375].into_iter().enumerate().map(move |(index, fraction)| {

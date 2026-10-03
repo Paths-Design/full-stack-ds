@@ -22,6 +22,13 @@ const requiredEngineTests = [
   "mounted_static_typography_badge_and_divider_are_styled",
   "mounted_divider_orientations_and_tokens_reach_explicit_nonempty_native_paint",
   "mounted_fractional_layout_edges_snap_and_survive_owner_redraw",
+  "retained_content_presence_group_order_and_fresh_factories",
+  "retained_content_duplicate_entities_are_rejected_without_running_factories",
+  "mounted_generated_children_preserve_control_state_focus_and_subscription",
+  "mounted_explicit_empty_content_suppresses_label_and_clear_restores_it",
+  "mounted_named_slots_preserve_locations_and_do_not_invoke_hidden_factories",
+  "mounted_stat_variants_and_retained_content_reach_layout",
+  "mounted_nested_controls_own_pointer_focus_and_keyboard_requests",
 ];
 if (!target?.components?.length) throw new Error("GPUI_PILOT_ALLOWLIST_REQUIRED");
 for (const name of target.components) {

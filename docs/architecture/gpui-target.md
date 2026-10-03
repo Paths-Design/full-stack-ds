@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: GPUI native target
 owner: "@darianrosebrook"
-updated: 2026-10-02
+updated: 2026-10-03
 governs:
   - packages/ds-codegen/src/frameworks/gpui/**
   - packages/ds-gpui/**
@@ -17,8 +17,8 @@ governs:
 
 GPUI is a registered Rust target with a bounded macOS realization. The allowlist
 in [`fsds.targets.json`](../../fsds.targets.json) admits
-<!-- target-component-count:gpui -->6 components: Switch, ToggleSwitch, Checkbox,
-Text, Badge and Divider. Full-corpus generation selects that allowlist; explicit
+<!-- target-component-count:gpui -->7 components: Switch, ToggleSwitch, Checkbox,
+Text, Badge, Divider and Stat. Full-corpus generation selects that allowlist; explicit
 requests for unsupported shapes fail with `GPUI_UNSUPPORTED_*` diagnostics.
 GPUI has no admission descriptor and remains outside the TypeScript admission rail.
 
@@ -70,6 +70,46 @@ the gallery and mounted tests.
 Checkbox's mixed mark takes precedence over its checked mark. `indeterminate`
 remains an explicit owner property: a checked-value request does not clear it.
 Use the mounted `set_indeterminate` setter when the owner accepts that change.
+
+## Retained content and composition
+
+Anatomy insertion facts give Text, Badge, Switch and Stat a `NativeContent`
+API. `content` and mounted `set_content` explicitly replace the legacy label
+fallback; even `NativeContent::Empty` suppresses it. `clear_content` restores
+that fallback. Checkbox and ToggleSwitch keep their bounded label API because
+neither declares a default-content insertion site.
+
+The [content runtime](../../packages/ds-gpui/src/content.rs) retains text,
+`AnyView` entity handles, ordered groups and repeatable frame factories. Groups
+flatten without adding a layout wrapper. Each redraw creates fresh elements;
+retained views keep their entity identity. Factories must create fresh frame
+elements; creating new stateful entities inside a factory does not retain them.
+Recipe presence does not invoke factories or guarantee visible pixels.
+
+Named anatomy slots generate a component-specific typed slot enum and
+`slot` / `set_slot` / `clear_slot` methods. Positive and inverted guards are
+checked before rendering selected content. Repeated default or named insertion
+sites fail generation. Supplied retained view handles cannot occur twice across
+a component's content recipes, including hidden slots; factories and content
+owned by other nested components remain the consumer's placement responsibility.
+The compiled SlotLayout fixture in the [composition tests](../../packages/ds-gpui/tests/composition.rs)
+exercises this generic path; SlotLayout is not a corpus component or registry
+admission. Compound subcomponents and by-reference component lowering remain
+separate capabilities.
+
+Mounted witnesses cover ordered groups, repeated fresh factories, empty-label
+fallback ownership, slot locations, hidden-factory suppression, parent style
+redraws, child state/focus/subscriptions, removal and reinsertion. Removal releases
+only the parent's handle; external handles can retain the entity and its tasks.
+Reinsertion preserves the focus handle, while active focus restoration remains
+an explicit consumer action. Nested generated controls own their pointer requests
+and exact focused keyboard dispatch so a child interaction cannot activate its
+ancestor. These tests use GPUI's test dispatcher, not physical input or GPU pixels.
+
+Stat realizes authored size and trend styles with retained content. Unsupported
+tracking and other style declarations remain itemized in its capability receipt.
+The gallery additionally mounts a generated Text containing an owner-controlled
+Switch and a parent-style action, alongside Stat variants.
 
 ## Commands and dependency
 
@@ -169,6 +209,7 @@ GPUI generated-source drift also participates in the general CI/pre-push diff
 and change scoping. Pre-push does not automatically compile the native package.
 Neither configuration admits GPUI to the TypeScript rail.
 
+`GPUI-COMPOSITION-PARITY-01` governs retained content and the Stat admission.
 `GPUI-RENDERER-CLARITY-01` governs the pinned renderer migration.
 `GPUI-FIDELITY-PARITY-01` and its emitter/native child slices govern the component
 implementation; merge, acceptance evidence and closure are separate lifecycle

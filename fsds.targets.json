@@ -198,7 +198,8 @@
         "Checkbox",
         "Text",
         "Badge",
-        "Divider"
+        "Divider",
+        "Stat"
       ]
     }
   ]

@@ -2,7 +2,9 @@
 use std::collections::BTreeMap;
 use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle};
 
+
 use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style};
+
 pub struct Divider{pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,}
 impl Default for Divider{fn default()->Self {let mut variants=BTreeMap::new();variants.insert("orientation","".into());Self{label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,}}}
 impl Divider{
@@ -19,13 +21,17 @@ StyleRule {part:"root",conditions:&[StyleCondition::Variant {axis:"orientation",
   let state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
   resolve_part_style(part,Self::STYLE_RULES,&state,&self.theme)
  }
- pub fn orientation(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["horizontal","vertical"].contains(&value.as_ref()),"unsupported orientation variant");self.variant_values.insert("orientation",value);self}
-pub fn set_orientation(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["horizontal","vertical"].contains(&value.as_ref()),"unsupported orientation variant");self.variant_values.insert("orientation",value);cx.notify();}
+ pub fn orientation(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["horizontal","vertical",""].contains(&value.as_ref()),"unsupported orientation variant");self.variant_values.insert("orientation",value);self}
+pub fn set_orientation(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["horizontal","vertical",""].contains(&value.as_ref()),"unsupported orientation variant");self.variant_values.insert("orientation",value);cx.notify();}
+
+
 
 
 }
 
 impl Render for Divider{fn render(&mut self,window:&mut Window,_cx:&mut Context<Self>)->impl IntoElement{
+
+
 
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
@@ -34,5 +40,5 @@ impl Render for Divider{fn render(&mut self,window:&mut Window,_cx:&mut Context<
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"divider-root".to_string()).id("divider");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
 
- root
+ root.into_any_element()
 }}

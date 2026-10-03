@@ -1,14 +1,16 @@
 // Generated from Text normalized contract IR. Do not hand-edit.
 use std::collections::BTreeMap;
 use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle};
+use crate::content::NativeContent;
 
 use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style};
-pub struct Text{pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,}
+
+pub struct Text{content:Option<NativeContent>,pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,}
 impl Default for Text{fn default()->Self {let mut variants=BTreeMap::new();variants.insert("variant","".into());
 variants.insert("size","".into());
 variants.insert("weight","".into());
 variants.insert("align","".into());
-variants.insert("transform","".into());Self{label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,}}}
+variants.insert("transform","".into());Self{content:None,label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,}}}
 impl Text{
  pub const STYLE_RULES:&'static [StyleRule]=&[StyleRule {part:"root",conditions:&[],declarations:&[StyleDeclaration {property:"box-model.padding",value:"0",token:None},StyleDeclaration {property:"box-model.padding-block",value:"0",token:None},StyleDeclaration {property:"box-model.padding-block-start",value:"0",token:None},StyleDeclaration {property:"box-model.padding-block-end",value:"0",token:None},StyleDeclaration {property:"box-model.padding-inline",value:"0",token:None},StyleDeclaration {property:"box-model.padding-inline-start",value:"0",token:None},StyleDeclaration {property:"box-model.padding-inline-end",value:"0",token:None},StyleDeclaration {property:"box-model.gap",value:"4px",token:Some("semantic.display.size.gap")},StyleDeclaration {property:"box-model.width",value:"auto",token:None},StyleDeclaration {property:"box-model.min-width",value:"0",token:None},StyleDeclaration {property:"box-model.max-width",value:"none",token:None},StyleDeclaration {property:"box-model.height",value:"auto",token:None},StyleDeclaration {property:"box-model.min-height",value:"0",token:None},StyleDeclaration {property:"box-model.max-height",value:"none",token:None},StyleDeclaration {property:"text.color.foreground.primary",value:"#141414",token:Some("semantic.color.foreground.primary")},StyleDeclaration {property:"text.typography.fontWeight.light",value:"300",token:Some("semantic.typography.font.weight.light")},StyleDeclaration {property:"text.typography.fontWeight.regular",value:"400",token:Some("semantic.typography.font.weight.regular")},StyleDeclaration {property:"text.typography.fontWeight.medium",value:"500",token:Some("semantic.typography.font.weight.medium")},StyleDeclaration {property:"text.typography.fontWeight.bold",value:"700",token:Some("semantic.typography.font.weight.bold")},StyleDeclaration {property:"text.typography.lineHeight.heading",value:"1",token:Some("semantic.typography.line.height.heading")},StyleDeclaration {property:"text.typography.lineHeight.body",value:"1.5",token:Some("semantic.typography.line.height.body")},StyleDeclaration {property:"text.typography.lineHeight.tight",value:"1.2",token:Some("semantic.typography.line.height.tight")},StyleDeclaration {property:"text.typography.letterSpacing.wide",value:"0.018rem",token:Some("semantic.typography.letter.spacing.wide")},StyleDeclaration {property:"text.typography.letterSpacing.tight",value:"-0.018rem",token:Some("semantic.typography.letter.spacing.tight")},StyleDeclaration {property:"text.size.xs",value:"0.75rem",token:Some("core.typography.ramp.2")},StyleDeclaration {property:"text.size.sm",value:"0.875rem",token:Some("core.typography.ramp.3")},StyleDeclaration {property:"text.size.md",value:"1rem",token:Some("core.typography.ramp.4")},StyleDeclaration {property:"text.size.lg",value:"1.125rem",token:Some("core.typography.ramp.5")},StyleDeclaration {property:"text.size.xl",value:"1.25rem",token:Some("core.typography.ramp.6")},StyleDeclaration {property:"text.size.2xl",value:"1.5rem",token:Some("core.typography.ramp.7")},StyleDeclaration {property:"text.size.3xl",value:"2rem",token:Some("core.typography.ramp.8")}]},
 StyleRule {part:"root",conditions:&[],declarations:&[StyleDeclaration {property:"padding",value:"0",token:Some("box-model.padding")},StyleDeclaration {property:"padding-block",value:"0",token:Some("box-model.padding-block")},StyleDeclaration {property:"padding-block-start",value:"0",token:Some("box-model.padding-block-start")},StyleDeclaration {property:"padding-block-end",value:"0",token:Some("box-model.padding-block-end")},StyleDeclaration {property:"padding-inline",value:"0",token:Some("box-model.padding-inline")},StyleDeclaration {property:"padding-inline-start",value:"0",token:Some("box-model.padding-inline-start")},StyleDeclaration {property:"padding-inline-end",value:"0",token:Some("box-model.padding-inline-end")},StyleDeclaration {property:"gap",value:"4px",token:Some("box-model.gap")},StyleDeclaration {property:"min-width",value:"0",token:Some("box-model.min-width")},StyleDeclaration {property:"min-height",value:"0",token:Some("box-model.min-height")}]},
@@ -49,28 +51,40 @@ StyleRule {part:"root",conditions:&[StyleCondition::Variant {axis:"transform",va
   let state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
   resolve_part_style(part,Self::STYLE_RULES,&state,&self.theme)
  }
- pub fn variant(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["display","headline","title","body","caption","overline","code"].contains(&value.as_ref()),"unsupported variant variant");self.variant_values.insert("variant",value);self}
-pub fn set_variant(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["display","headline","title","body","caption","overline","code"].contains(&value.as_ref()),"unsupported variant variant");self.variant_values.insert("variant",value);cx.notify();}
-pub fn size(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["xs","sm","md","lg","xl","2xl","3xl"].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);self}
-pub fn set_size(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["xs","sm","md","lg","xl","2xl","3xl"].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);cx.notify();}
-pub fn weight(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["light","normal","medium","semibold","bold"].contains(&value.as_ref()),"unsupported weight variant");self.variant_values.insert("weight",value);self}
-pub fn set_weight(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["light","normal","medium","semibold","bold"].contains(&value.as_ref()),"unsupported weight variant");self.variant_values.insert("weight",value);cx.notify();}
-pub fn align(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["left","center","right","justify"].contains(&value.as_ref()),"unsupported align variant");self.variant_values.insert("align",value);self}
-pub fn set_align(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["left","center","right","justify"].contains(&value.as_ref()),"unsupported align variant");self.variant_values.insert("align",value);cx.notify();}
-pub fn transform(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["none","uppercase","lowercase","capitalize"].contains(&value.as_ref()),"unsupported transform variant");self.variant_values.insert("transform",value);self}
-pub fn set_transform(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["none","uppercase","lowercase","capitalize"].contains(&value.as_ref()),"unsupported transform variant");self.variant_values.insert("transform",value);cx.notify();}
+ pub fn variant(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["display","headline","title","body","caption","overline","code",""].contains(&value.as_ref()),"unsupported variant variant");self.variant_values.insert("variant",value);self}
+pub fn set_variant(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["display","headline","title","body","caption","overline","code",""].contains(&value.as_ref()),"unsupported variant variant");self.variant_values.insert("variant",value);cx.notify();}
+pub fn size(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["xs","sm","md","lg","xl","2xl","3xl",""].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);self}
+pub fn set_size(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["xs","sm","md","lg","xl","2xl","3xl",""].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);cx.notify();}
+pub fn weight(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["light","normal","medium","semibold","bold",""].contains(&value.as_ref()),"unsupported weight variant");self.variant_values.insert("weight",value);self}
+pub fn set_weight(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["light","normal","medium","semibold","bold",""].contains(&value.as_ref()),"unsupported weight variant");self.variant_values.insert("weight",value);cx.notify();}
+pub fn align(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["left","center","right","justify",""].contains(&value.as_ref()),"unsupported align variant");self.variant_values.insert("align",value);self}
+pub fn set_align(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["left","center","right","justify",""].contains(&value.as_ref()),"unsupported align variant");self.variant_values.insert("align",value);cx.notify();}
+pub fn transform(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["none","uppercase","lowercase","capitalize",""].contains(&value.as_ref()),"unsupported transform variant");self.variant_values.insert("transform",value);self}
+pub fn set_transform(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["none","uppercase","lowercase","capitalize",""].contains(&value.as_ref()),"unsupported transform variant");self.variant_values.insert("transform",value);cx.notify();}
+
+
+
+ pub fn content(mut self,value:NativeContent)->Self{self.content=Some(value);self}
+ pub fn set_content(&mut self,value:NativeContent,cx:&mut Context<Self>){self.content=Some(value);cx.notify();}
+ pub fn clear_content(&mut self,cx:&mut Context<Self>){self.content=None;cx.notify();}
+ pub fn has_content(&self)->bool{self.content.as_ref().map(NativeContent::is_present).unwrap_or(!self.label.is_empty())}
+ fn render_content(&self,window:&mut Window,cx:&mut gpui::App)->Vec<gpui::AnyElement>{
+  match &self.content {Some(content)=>content.render(window,cx),None=>if self.label.is_empty(){Vec::new()}else{vec![div().debug_selector(||"text-label".to_string()).child(self.label.clone()).into_any_element()]}}
+ }
 
 
 }
 
-impl Render for Text{fn render(&mut self,window:&mut Window,_cx:&mut Context<Self>)->impl IntoElement{
+impl Render for Text{fn render(&mut self,window:&mut Window,cx:&mut Context<Self>)->impl IntoElement{
+ NativeContent::assert_unique_views(self.content.iter());
+
 
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
  let style_state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
- let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"text-root".to_string()).when(!self.label.is_empty(),|node|node.child(div().debug_selector(||"text-label".to_string()).child(self.label.clone()))).id("text");
+ let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"text-root".to_string()).children(self.render_content(window,cx)).id("text");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
 
- root
+ root.into_any_element()
 }}
