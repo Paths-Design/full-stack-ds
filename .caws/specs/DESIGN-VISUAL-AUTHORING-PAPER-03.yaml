@@ -74,9 +74,9 @@ evidence:
     commit_sha: "3aae40f19"
   - criterion_id: A4
     status: pass
-    evidence_ref: "Required isolated-worktree token build, governed rail, root tests and all framework suites exited 0; final paper and documentation checks passed. Canonical documentation checks also passed after repairing exactly two derived count markers in ignored CLAUDE.md under admitted supporting-file scope. Source diff has only paper schemas, examples, verifier, docs and ledger; generated output unchanged; no remote publication. CAWS local gate evaluation used the clean staged context and is not evidence for committed source scope."
-    recorded_at: "2026-10-03T01:21:10.149Z"
+    evidence_ref: "Directly observed token build, governed rail, 4788 root tests and all framework suites exit 0; final paper and documentation checks and canonical documentation checks pass. Producers are declared in the cited package.json; inspected raw receipts remain ignored under .caws/state/visual-authoring-review-fixes/. CAWS source-citation verification does not rerun these commands. The final two-file paper refinement leaves broad runtime inputs unchanged; scoped source diff was reviewed independently. Local CLAUDE.md markers corrected under supporting-file admission; no generated output change, remote publication or empty-diff scope claim."
+    recorded_at: "2026-10-03T01:29:07.631Z"
     command: "pnpm run tokens:build && pnpm run governed:rail && pnpm test && pnpm run test:frameworks"
     exit_code: 0
-    artifact_path: .caws/state/visual-authoring-review-fixes/fsds-paper-fixes-frameworks.log
+    artifact_path: package.json
     commit_sha: "3aae40f19"
