@@ -2,9 +2,11 @@ id: GPUI-COMPOSITION-PARITY-01
 title: 'Realize retained children and named slot composition in GPUI'
 risk_tier: 2
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Landed retained children, typed slot lowering, nested input ownership and Stat with inspected native and repository evidence.'
 created_at: '2026-10-03T07:42:50.634Z'
-updated_at: '2026-10-03T14:09:26.622Z'
+updated_at: '2026-10-03T14:19:29.492Z'
 created_by_session: '01a0f9d8-a8a2-7953-8341-c49d3974e2c9'
 blast_radius:
   modules:
