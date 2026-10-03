@@ -4,7 +4,7 @@ risk_tier: 2
 mode: feature
 lifecycle_state: active
 created_at: '2026-10-02T16:43:26.051Z'
-updated_at: '2026-10-02T16:43:38.659Z'
+updated_at: '2026-10-03T01:18:48.027Z'
 created_by_session: '01a0f5b0-8c29-7670-82de-50f7c08d07da'
 blast_radius:
   modules:
@@ -16,6 +16,8 @@ scope:
     - 'docs/architecture/design/shared-document-model/'
     - 'packages/ds-contracts/document-model/'
   out: []
+  support:
+    - CLAUDE.md
 invariants:
   - 'Token eligibility constrains property consumers independently of token value type for both human and agent edits'
   - 'Definition bodies have one owner; editable placements and instances retain references without flattening nested definitions'
