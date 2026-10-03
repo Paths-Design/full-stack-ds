@@ -58,3 +58,9 @@ evidence:
     recorded_at: "2026-10-03T07:39:41.224Z"
     artifact_path: tmp/gpui-renderer-clarity/gallery/observations.json
     commit_sha: c3e3ad40737760db171c5a24f6548f402b7a4cac
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Merged bee8df0ad with tested source c3e3ad407 ancestry and scoped bytes verified; rail, 4788 root tests, framework/projection tests, lint/typecheck/docs passed; logs intentionally untracked."
+    recorded_at: "2026-10-03T07:39:42.985Z"
+    artifact_path: tmp/gpui-renderer-clarity/logs/gpui-renderer-final-rail.log
+    commit_sha: c3e3ad40737760db171c5a24f6548f402b7a4cac
