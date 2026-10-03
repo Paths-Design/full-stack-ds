@@ -74,6 +74,18 @@ Definitions are selected through one source and revision. The nested Button refe
 
 Synthetic metrics are authored inputs: every character advance is 8 and line height is 20; no font asset is bundled. Banner Title has 12 characters; Button has 6. These expected boxes and spacing are authored independently, not calculated by the paper verifier. Negative free space diagnoses unsupported layout rather than silently shrinking Button. Zoom changes neither dimensions nor these document-space observations.
 
+## Extraction compensation tables
+
+These independent states extend the final workflow without running a reducer. The [extraction-history fixture](../../../../packages/ds-contracts/document-model/examples/visual-authoring/extraction-history.json) includes each page transaction and source change.
+
+| Action | Page | Project | Definition source | Required authored result |
+|---|---|---|---|---|
+| Undo Banner rename | 17 → 18 | p6 → p7 | d3 → d4 | Definition and retained placement labels return to Frame |
+| Undo Banner extraction | 18 → 19 | p7 → p8 | d4 → d5 | node.banner is the original frame; children [node.title,node.buttonInstance]; definition.banner removed; Button retained |
+| Redo Banner extraction | 19 → 20 | p8 → p9 | d5 → d6 | Same placement, definition and body IDs; same nested Button reference and correspondence; labels remain Frame until rename is redone |
+
+The restored root has explicit 800×150 and its flow policy, but no authored fills, corners, clipping or translation properties. Title and instance keep their original IDs, profiles and absence of overrides. Historical body-root [0,0] normalization is not copied into the restored root. The frame-scoped token positive case uses a real component instance and the referenced frame root. Receipt old IDs and composition must match original insertion/creation evidence, not merely any unique strings. Each original/body address pair also retains its kind, profile and nested definition reference; exchanging valid original addresses must refuse. This is bounded to the original extraction subset, not general reference repair.
+
 ## Qualification boundary
 
 Schema checks reject wrong types, missing metadata, flattened children and malformed correspondence. A separate original-fixture probe checks explicit reference/ownership/revision/eligibility neighbors and nonmutation; it is not a general graph validator or product admission route. Expected observations above remain future evaluator, inheritance, history, layout and persistence obligations. A fixture agreeing with this document does not prove it renders, saves or replays.

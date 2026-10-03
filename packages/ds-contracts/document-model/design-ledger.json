@@ -101,7 +101,8 @@
         "DTCG import/export coverage, alias and composite validation, Resolver contexts, watching, collisions and unsaved-source custody"
       ],
       "proofObligations": [
-        "Source round trip preserves references/metadata; token update reaches both views; cycle/missing ref rejects atomically"
+        "Source round trip preserves references/metadata; token update reaches both views; cycle/missing ref rejects atomically",
+        "Original-fixture scope checks resolve component consumer kinds through referenced roots, including frame-scoped local fills"
       ],
       "runtimeRefs": []
     },
@@ -675,7 +676,9 @@
         "Inverse execution and before-image custody, dependency-conflicting undo, cross-page history and branch semantics"
       ],
       "proofObligations": [
-        "Undo/redo preserves exact identifiers and references; stale or dependent inverse changes nothing"
+        "Undo/redo preserves exact identifiers and references; stale or dependent inverse changes nothing",
+        "Review refinement adds exact extraction before-image/provenance, composition removal and structured-field reset shapes; inverse execution and durable custody remain open",
+        "Original extraction-history.json qualifies paired compensation proposals, exact before-image absence, nested references and fresh page/project/source revisions without executing inverses"
       ],
       "runtimeRefs": []
     },
@@ -718,7 +721,8 @@
         "Conditional consumers, external adapter mapping and complete public exposure"
       ],
       "proofObligations": [
-        "Frame-root instance token eligibility follows declared frame/fill consumer, never wrapper name"
+        "Frame-root instance token eligibility follows declared frame/fill consumer, never wrapper name",
+        "Typography fontSize/lineHeight use properties keys only; textStyle owns fontRef only; duplicate carriers refuse"
       ],
       "runtimeRefs": []
     },
@@ -741,7 +745,9 @@
         "General extraction reference repair and external/adapted definitions"
       ],
       "proofObligations": [
-        "Button/Banner extraction preserves appearance refs and selected placement identity; nested Button never flattens"
+        "Button/Banner extraction preserves appearance refs and selected placement identity; nested Button never flattens",
+        "Original receipt addresses and composition are independently qualified; complete Banner rename/extraction undo and redo participants retain identities",
+        "Original extraction-history.json qualifies paired compensation proposals, exact before-image absence, nested references and fresh page/project/source revisions without executing inverses"
       ],
       "runtimeRefs": []
     },
@@ -1479,6 +1485,34 @@
       "from": null,
       "to": "open",
       "rationale": "Named successor obligation / visual-authoring coverage; lineage retained in decision crosswalk."
+    },
+    {
+      "requirementId": "design.tokens",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Original-fixture scope checks resolve component consumer kinds through referenced roots, including frame-scoped local fills",
+      "date": "2026-10-02"
+    },
+    {
+      "requirementId": "design.history",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Review refinement adds exact extraction before-image/provenance, composition removal and structured-field reset shapes; inverse execution and durable custody remain open",
+      "date": "2026-10-02"
+    },
+    {
+      "requirementId": "design.property-consumers",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Typography fontSize/lineHeight use properties keys only; textStyle owns fontRef only; duplicate carriers refuse",
+      "date": "2026-10-02"
+    },
+    {
+      "requirementId": "design.component-extraction",
+      "from": "partial",
+      "to": "partial",
+      "rationale": "Original receipt addresses and composition are independently qualified; complete Banner rename/extraction undo and redo participants retain identities",
+      "date": "2026-10-02"
     }
   ],
   "crosswalk": [

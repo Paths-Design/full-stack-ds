@@ -214,7 +214,11 @@
                       "type": "object",
                       "properties": {
                         "kind": {
-                          "const": "remove-inserted-node"
+                          "enum": [
+                            "remove-inserted-node",
+                            "remove-created-composition",
+                            "restore-extracted-subtree"
+                          ]
                         }
                       },
                       "required": [

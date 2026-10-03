@@ -1,0 +1,560 @@
+{
+  "basis": "authored-future-runtime-oracle",
+  "pageTransactions": [
+    {
+      "kind": "transaction",
+      "transactionId": "tx.undoBannerName",
+      "expectedRevision": 17,
+      "revision": 18,
+      "actor": {
+        "kind": "human",
+        "id": "author.original"
+      },
+      "action": {
+        "kind": "edit",
+        "operations": [
+          {
+            "id": "op.undoBannerName",
+            "owner": {
+              "kind": "composition",
+              "compositionId": "composition.banner"
+            },
+            "kind": "rename-node",
+            "nodeId": "node.banner",
+            "label": "Frame"
+          }
+        ],
+        "history": {
+          "kind": "undo",
+          "ofTransactionId": "tx.bannerName"
+        }
+      },
+      "projectChangeId": "change.undoBannerName"
+    },
+    {
+      "kind": "transaction",
+      "transactionId": "tx.undoBannerExtraction",
+      "expectedRevision": 18,
+      "revision": 19,
+      "actor": {
+        "kind": "human",
+        "id": "author.original"
+      },
+      "action": {
+        "kind": "edit",
+        "operations": [
+          {
+            "id": "op.restoreBanner",
+            "owner": {
+              "kind": "composition",
+              "compositionId": "composition.banner"
+            },
+            "kind": "restore-extracted-subtree",
+            "nodeId": "node.banner",
+            "extractionProjectChangeId": "change.banner",
+            "correspondenceId": "receipt.banner",
+            "definitionRef": {
+              "sourceId": "source.definitions",
+              "definitionId": "definition.banner",
+              "version": "banner.v1"
+            },
+            "beforeRevision": 15,
+            "subtree": {
+              "rootNodeId": "node.banner",
+              "nodeIds": [
+                "node.banner",
+                "node.title",
+                "node.buttonInstance"
+              ],
+              "nodes": [
+                {
+                  "id": "node.banner",
+                  "kind": "frame",
+                  "label": "Frame",
+                  "defaultProfileRef": {
+                    "sourceId": "source.defaults",
+                    "profileId": "defaults.frame"
+                  },
+                  "properties": {
+                    "sizing.width": {
+                      "kind": "literal",
+                      "valueType": "dimension",
+                      "value": {
+                        "value": 800,
+                        "unit": "px"
+                      }
+                    },
+                    "sizing.height": {
+                      "kind": "literal",
+                      "valueType": "dimension",
+                      "value": {
+                        "value": 150,
+                        "unit": "px"
+                      }
+                    }
+                  },
+                  "children": [
+                    {
+                      "nodeId": "node.title"
+                    },
+                    {
+                      "nodeId": "node.buttonInstance"
+                    }
+                  ],
+                  "layout": {
+                    "kind": "flow",
+                    "axis": "horizontal",
+                    "gap": {
+                      "kind": "literal",
+                      "valueType": "dimension",
+                      "value": {
+                        "value": 0,
+                        "unit": "px"
+                      }
+                    },
+                    "mainAxisAlignment": "space-between",
+                    "crossAxisAlignment": "start",
+                    "padding": {
+                      "kind": "literal",
+                      "valueType": "dimension",
+                      "value": {
+                        "value": 0,
+                        "unit": "px"
+                      }
+                    }
+                  }
+                },
+                {
+                  "id": "node.title",
+                  "kind": "text",
+                  "label": "Text",
+                  "defaultProfileRef": {
+                    "sourceId": "source.defaults",
+                    "profileId": "defaults.text"
+                  },
+                  "properties": {},
+                  "children": [],
+                  "content": "Banner Title"
+                },
+                {
+                  "id": "node.buttonInstance",
+                  "kind": "component-instance",
+                  "label": "Button",
+                  "defaultProfileRef": {
+                    "sourceId": "source.defaults",
+                    "profileId": "defaults.frame"
+                  },
+                  "properties": {},
+                  "children": [],
+                  "definitionRef": {
+                    "sourceId": "source.definitions",
+                    "definitionId": "definition.button",
+                    "version": "button.v1"
+                  },
+                  "parameterBindings": {},
+                  "partOverrides": [],
+                  "slotBindings": [],
+                  "layoutItem": {
+                    "widthMode": "fixed",
+                    "heightMode": "fixed",
+                    "shrink": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "history": {
+          "kind": "undo",
+          "ofTransactionId": "tx.extractBanner"
+        }
+      },
+      "projectChangeId": "change.undoBannerExtraction"
+    },
+    {
+      "kind": "transaction",
+      "transactionId": "tx.redoBannerExtraction",
+      "expectedRevision": 19,
+      "revision": 20,
+      "actor": {
+        "kind": "human",
+        "id": "author.original"
+      },
+      "action": {
+        "kind": "edit",
+        "operations": [
+          {
+            "id": "op.redoBanner",
+            "owner": {
+              "kind": "composition",
+              "compositionId": "composition.banner"
+            },
+            "kind": "extract-definition",
+            "nodeId": "node.banner",
+            "definitionRef": {
+              "sourceId": "source.definitions",
+              "definitionId": "definition.banner",
+              "version": "banner.v1"
+            },
+            "correspondenceId": "receipt.banner"
+          }
+        ],
+        "history": {
+          "kind": "redo",
+          "ofTransactionId": "tx.undoBannerExtraction"
+        }
+      },
+      "projectChangeId": "change.redoBannerExtraction"
+    }
+  ],
+  "projectChanges": [
+    {
+      "schemaVersion": "0.3.0",
+      "id": "change.undoBannerName",
+      "projectId": "project.visual",
+      "actor": {
+        "kind": "human",
+        "id": "author.original"
+      },
+      "expectedProjectRevision": "p6",
+      "projectRevision": "p7",
+      "pageTransactions": [
+        {
+          "pageId": "page.visual",
+          "transactionId": "tx.undoBannerName",
+          "expectedRevision": 17,
+          "revision": 18
+        }
+      ],
+      "sourceChanges": [
+        {
+          "sourceId": "source.definitions",
+          "kind": "definitions",
+          "expectedRevision": "d3",
+          "revision": "d4",
+          "operations": [
+            {
+              "id": "op.undoDefinitionName",
+              "kind": "rename-definition",
+              "definitionId": "definition.banner",
+              "label": "Frame"
+            }
+          ]
+        }
+      ],
+      "dependencyUpdates": [
+        {
+          "sourceId": "source.definitions",
+          "fromRevision": "d3",
+          "toRevision": "d4"
+        }
+      ],
+      "correspondence": [],
+      "history": {
+        "kind": "undo",
+        "ofProjectChangeId": "change.bannerName"
+      }
+    },
+    {
+      "schemaVersion": "0.3.0",
+      "id": "change.undoBannerExtraction",
+      "projectId": "project.visual",
+      "actor": {
+        "kind": "human",
+        "id": "author.original"
+      },
+      "expectedProjectRevision": "p7",
+      "projectRevision": "p8",
+      "pageTransactions": [
+        {
+          "pageId": "page.visual",
+          "transactionId": "tx.undoBannerExtraction",
+          "expectedRevision": 18,
+          "revision": 19
+        }
+      ],
+      "sourceChanges": [
+        {
+          "sourceId": "source.definitions",
+          "kind": "definitions",
+          "expectedRevision": "d4",
+          "revision": "d5",
+          "operations": [
+            {
+              "id": "op.removeBannerDefinition",
+              "kind": "remove-created-definition",
+              "definitionId": "definition.banner",
+              "createdByProjectChangeId": "change.banner"
+            }
+          ]
+        }
+      ],
+      "dependencyUpdates": [
+        {
+          "sourceId": "source.definitions",
+          "fromRevision": "d4",
+          "toRevision": "d5"
+        }
+      ],
+      "correspondence": [
+        {
+          "id": "receipt.banner",
+          "compositionId": "composition.banner",
+          "definitionRef": {
+            "sourceId": "source.definitions",
+            "definitionId": "definition.banner",
+            "version": "banner.v1"
+          },
+          "oldRootNodeId": "node.banner",
+          "retainedPlacementId": "node.banner",
+          "entries": [
+            {
+              "oldNodeId": "node.banner",
+              "bodyNodeId": "body.bannerRoot"
+            },
+            {
+              "oldNodeId": "node.title",
+              "bodyNodeId": "body.bannerTitle"
+            },
+            {
+              "oldNodeId": "node.buttonInstance",
+              "bodyNodeId": "body.bannerButton"
+            }
+          ]
+        }
+      ],
+      "history": {
+        "kind": "undo",
+        "ofProjectChangeId": "change.banner"
+      }
+    },
+    {
+      "schemaVersion": "0.3.0",
+      "id": "change.redoBannerExtraction",
+      "projectId": "project.visual",
+      "actor": {
+        "kind": "human",
+        "id": "author.original"
+      },
+      "expectedProjectRevision": "p8",
+      "projectRevision": "p9",
+      "pageTransactions": [
+        {
+          "pageId": "page.visual",
+          "transactionId": "tx.redoBannerExtraction",
+          "expectedRevision": 19,
+          "revision": 20
+        }
+      ],
+      "sourceChanges": [
+        {
+          "sourceId": "source.definitions",
+          "kind": "definitions",
+          "expectedRevision": "d5",
+          "revision": "d6",
+          "operations": [
+            {
+              "id": "sourceOp.banner",
+              "kind": "create-definition",
+              "definition": {
+                "schemaVersion": "0.3.0",
+                "id": "definition.banner",
+                "version": "banner.v1",
+                "label": "Frame",
+                "parameters": [],
+                "parts": [],
+                "slots": [],
+                "body": {
+                  "rootNodeId": "body.bannerRoot",
+                  "nodeIds": [
+                    "body.bannerRoot",
+                    "body.bannerTitle",
+                    "body.bannerButton"
+                  ],
+                  "nodes": [
+                    {
+                      "id": "body.bannerRoot",
+                      "kind": "frame",
+                      "label": "Frame",
+                      "defaultProfileRef": {
+                        "sourceId": "source.defaults",
+                        "profileId": "defaults.frame"
+                      },
+                      "properties": {
+                        "sizing.width": {
+                          "kind": "literal",
+                          "valueType": "dimension",
+                          "value": {
+                            "value": 800,
+                            "unit": "px"
+                          }
+                        },
+                        "sizing.height": {
+                          "kind": "literal",
+                          "valueType": "dimension",
+                          "value": {
+                            "value": 150,
+                            "unit": "px"
+                          }
+                        },
+                        "transform.translation.x": {
+                          "kind": "literal",
+                          "valueType": "dimension",
+                          "value": {
+                            "value": 0,
+                            "unit": "px"
+                          }
+                        },
+                        "transform.translation.y": {
+                          "kind": "literal",
+                          "valueType": "dimension",
+                          "value": {
+                            "value": 0,
+                            "unit": "px"
+                          }
+                        }
+                      },
+                      "children": [
+                        {
+                          "nodeId": "body.bannerTitle"
+                        },
+                        {
+                          "nodeId": "body.bannerButton"
+                        }
+                      ],
+                      "layout": {
+                        "kind": "flow",
+                        "axis": "horizontal",
+                        "gap": {
+                          "kind": "literal",
+                          "valueType": "dimension",
+                          "value": {
+                            "value": 0,
+                            "unit": "px"
+                          }
+                        },
+                        "mainAxisAlignment": "space-between",
+                        "crossAxisAlignment": "start",
+                        "padding": {
+                          "kind": "literal",
+                          "valueType": "dimension",
+                          "value": {
+                            "value": 0,
+                            "unit": "px"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "id": "body.bannerTitle",
+                      "kind": "text",
+                      "label": "Text",
+                      "defaultProfileRef": {
+                        "sourceId": "source.defaults",
+                        "profileId": "defaults.text"
+                      },
+                      "properties": {},
+                      "children": [],
+                      "content": "Banner Title"
+                    },
+                    {
+                      "id": "body.bannerButton",
+                      "kind": "component-instance",
+                      "label": "Button",
+                      "defaultProfileRef": {
+                        "sourceId": "source.defaults",
+                        "profileId": "defaults.frame"
+                      },
+                      "properties": {},
+                      "children": [],
+                      "definitionRef": {
+                        "sourceId": "source.definitions",
+                        "definitionId": "definition.button",
+                        "version": "button.v1"
+                      },
+                      "parameterBindings": {},
+                      "partOverrides": [],
+                      "slotBindings": [],
+                      "layoutItem": {
+                        "widthMode": "fixed",
+                        "heightMode": "fixed",
+                        "shrink": 0
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "dependencyUpdates": [
+        {
+          "sourceId": "source.definitions",
+          "fromRevision": "d5",
+          "toRevision": "d6"
+        }
+      ],
+      "correspondence": [
+        {
+          "id": "receipt.banner",
+          "compositionId": "composition.banner",
+          "definitionRef": {
+            "sourceId": "source.definitions",
+            "definitionId": "definition.banner",
+            "version": "banner.v1"
+          },
+          "oldRootNodeId": "node.banner",
+          "retainedPlacementId": "node.banner",
+          "entries": [
+            {
+              "oldNodeId": "node.banner",
+              "bodyNodeId": "body.bannerRoot"
+            },
+            {
+              "oldNodeId": "node.title",
+              "bodyNodeId": "body.bannerTitle"
+            },
+            {
+              "oldNodeId": "node.buttonInstance",
+              "bodyNodeId": "body.bannerButton"
+            }
+          ]
+        }
+      ],
+      "history": {
+        "kind": "redo",
+        "ofProjectChangeId": "change.undoBannerExtraction"
+      }
+    }
+  ],
+  "expected": {
+    "restoredNodeIds": [
+      "node.banner",
+      "node.title",
+      "node.buttonInstance"
+    ],
+    "restoredChildren": [
+      "node.title",
+      "node.buttonInstance"
+    ],
+    "restoredRootAbsentFields": [
+      "fills",
+      "corners",
+      "clipContent"
+    ],
+    "restoredRootAbsentProperties": [
+      "transform.translation.x",
+      "transform.translation.y"
+    ],
+    "nestedDefinitionId": "definition.button",
+    "redoBodyNodeIds": [
+      "body.bannerRoot",
+      "body.bannerTitle",
+      "body.bannerButton"
+    ],
+    "terminalPageRevision": 20,
+    "terminalProjectRevision": "p9",
+    "terminalDefinitionRevision": "d6"
+  }
+}

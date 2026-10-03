@@ -110,6 +110,22 @@
             "value": 0,
             "unit": "px"
           }
+        },
+        "typography.fontSize": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 16,
+            "unit": "px"
+          }
+        },
+        "typography.lineHeight": {
+          "kind": "literal",
+          "valueType": "dimension",
+          "value": {
+            "value": 20,
+            "unit": "px"
+          }
         }
       },
       "fills": [
@@ -141,22 +157,6 @@
         "fontRef": {
           "sourceId": "source.font",
           "faceId": "font.synthetic"
-        },
-        "fontSize": {
-          "kind": "literal",
-          "valueType": "dimension",
-          "value": {
-            "value": 16,
-            "unit": "px"
-          }
-        },
-        "lineHeight": {
-          "kind": "literal",
-          "valueType": "dimension",
-          "value": {
-            "value": 20,
-            "unit": "px"
-          }
         }
       }
     }
