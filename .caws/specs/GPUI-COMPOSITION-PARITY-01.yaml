@@ -57,3 +57,8 @@ evidence:
     evidence_ref: "36 GPUI emitter tests passed; generated SlotLayout fixture drift-bound and compiled. Default/named insertion APIs and guards derive from IR; root/duplicate placements and invalid identifiers reject. Preserved logs at tmp/gpui-composition-parity; automatic verification establishes source reachability only."
     recorded_at: "2026-10-03T14:17:26.073Z"
     commit_sha: cff2ffc27a2173dc3db9ff23f38797e920f18e7c
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Clean ebb5ddb43 locked native receipt passed 29 tests with stable input hashes and no ignored required witnesses. Mounted child state/focus/subscriptions, empty fallback, ordered factories, slots/hidden guards and nested input passed; preserved tmp/gpui-composition-parity/native/report.json. Automatic verification establishes source reachability only, not execution."
+    recorded_at: "2026-10-03T14:17:27.092Z"
+    commit_sha: ebb5ddb431b3ccb379cd4016375b0060f5193d03
