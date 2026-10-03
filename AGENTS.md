@@ -368,10 +368,10 @@ When reasoning or writing docs/comments, do not over-claim:
 ### GPUI native target
 
 `packages/ds-gpui` is a Cargo package excluded from pnpm workspace discovery.
-`pnpm run generate:gpui` emits its registry <!-- target-component-count:gpui -->6-component
-allowlist: Switch, ToggleSwitch, Checkbox, Text, Badge and Divider.
+`pnpm run generate:gpui` emits its registry <!-- target-component-count:gpui -->7-component
+allowlist: Switch, ToggleSwitch, Checkbox, Text, Badge, Divider and Stat.
 `pnpm run test:gpui` runs GPUI 0.2.2 compilation and mounted engine input/layout/style
-tests; the native lane pins Rust 1.90.0 on macOS with Xcode/Metal.
+tests; the native lane pins Zed revision `a38fc8c` and Rust 1.94.1 on macOS with Xcode/Metal.
 `pnpm run dev:gpui` builds and opens a fresh native gallery app. Normalized IR
 owns anatomy, token references, variants and state; never dispatch on component
 identity or hand-edit generated views. Theme overrides are explicit; automatic
@@ -380,5 +380,6 @@ GPUI is outside the TypeScript admission rail. Native macOS CI and Rust drift
 checks are configured; remote native CI execution remains unverified. Pre-push
 does not automatically compile GPUI. Mounted test-engine input is distinct from
 OS input, and gallery inspection proves only the inspected states. The pinned
-renderer sharpness gap remains; no accessibility, full-corpus, cross-platform or
+renderer includes upstream snapping/dilation fixes; complete pixel parity remains
+unqualified. Retained children and typed named-slot projection are bounded; no accessibility, full-corpus, cross-platform or
 upstream-main parity claim follows. See [GPUI target](docs/architecture/gpui-target.md).

@@ -1,8 +1,10 @@
 // Generated from Checkbox normalized contract IR. Do not hand-edit.
 use std::collections::BTreeMap;
 use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle,EventEmitter,MouseButton,Subscription};
+
 use crate::control::{BooleanState,ChangeRequest};
 use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style,render_pseudo};
+
 pub struct Checkbox{pub state:BooleanState,pub hovered:bool,pub active:bool,_focus_subscriptions:Vec<Subscription>,pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,pub indeterminate:bool,}
 impl Default for Checkbox{fn default()->Self {let mut variants=BTreeMap::new();variants.insert("size","md".into());let mut state=BooleanState::new(false);state.disabled=false;Self{state,hovered:false,active:false,_focus_subscriptions:Vec::new(),label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,indeterminate:false,}}}
 impl Checkbox{
@@ -45,9 +47,13 @@ pub fn set_disabled(&mut self,value:bool,cx:&mut Context<Self>){self.state.disab
  pub fn request_change(&mut self)->Option<ChangeRequest>{self.state.request_toggle().map(|value|ChangeRequest{channel:Self::CHANNEL,handler:Self::CHANGE_HANDLER,value})}
  pub fn request_key(&mut self,key:&str)->Option<ChangeRequest>{if Self::ACTIVATION_KEYS.contains(&key){self.request_change()}else{None}}
 
+
+
 }
 impl EventEmitter<ChangeRequest> for Checkbox{}
 impl Render for Checkbox{fn render(&mut self,window:&mut Window,cx:&mut Context<Self>)->impl IntoElement{
+
+
  if self.focus_handle.is_none(){let handle=cx.focus_handle();self._focus_subscriptions.push(cx.on_focus(&handle,window,|_,_,cx|cx.notify()));self._focus_subscriptions.push(cx.on_blur(&handle,window,|_,_,cx|cx.notify()));self.focus_handle=Some(handle);}self.focus_handle=self.focus_handle.take().map(|handle|handle.tab_index(0).tab_stop(!self.state.disabled));
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
@@ -55,6 +61,6 @@ impl Render for Checkbox{fn render(&mut self,window:&mut Window,cx:&mut Context<
  let style_state=StyleState{variants:&variants,checked:self.state.value(),disabled:self.state.disabled,indeterminate:self.indeterminate,hovered:self.hovered,active:self.active,focused:self.focused};
  let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"checkbox-root".to_string()).child(apply_part_style(div(),"indicator",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"checkbox-indicator".to_string()).child(render_pseudo("indicator::after",Self::STYLE_RULES,&style_state,&theme))).when(!self.label.is_empty(),|node|node.child(div().debug_selector(||"checkbox-label".to_string()).child(self.label.clone()))).id("checkbox");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
- let root=root.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap(),cx);cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,_,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}})).on_key_down(cx.listener(|this,event,_,cx|{if crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){if let Some(request)=this.request_change(){cx.emit(request);cx.notify();cx.stop_propagation();}}}));
- root
+ let root=root.track_focus(self.focus_handle.as_ref().unwrap()).tab_index(0).tab_stop(!self.state.disabled).on_hover(cx.listener(|this,hovered,_,cx|{this.hovered=*hovered;cx.notify();})).on_mouse_down(MouseButton::Left,cx.listener(|this,_,window,cx|{cx.stop_propagation();if !this.state.disabled {this.active=true;window.focus(this.focus_handle.as_ref().unwrap(),cx);cx.notify();}})).on_mouse_up(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_mouse_up_out(MouseButton::Left,cx.listener(|this,_,_,cx|{this.active=false;cx.notify();})).on_click(cx.listener(|this,event,_,cx|{if matches!(event,gpui::ClickEvent::Mouse(_)){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}})).on_key_down(cx.listener(|this,event,window,cx|{if this.focus_handle.as_ref().is_some_and(|handle|handle.is_focused(window)) && crate::view::is_activation_key(event,Self::ACTIVATION_KEYS.contains(&"enter")){cx.stop_propagation();if let Some(request)=this.request_change(){cx.emit(request);cx.notify();}}}));
+ root.into_any_element()
 }}

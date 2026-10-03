@@ -1,12 +1,14 @@
 // Generated from Badge normalized contract IR. Do not hand-edit.
 use std::collections::BTreeMap;
 use gpui::{prelude::*,div,Context,SharedString,Window,FocusHandle};
+use crate::content::NativeContent;
 
 use crate::style::{StyleRule,StyleCondition,StyleDeclaration,StyleState,Theme,ResolvedPartStyle,StyleError,resolve_part_style,apply_part_style,apply_interaction_style};
-pub struct Badge{pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,pub icon:SharedString,}
+
+pub struct Badge{content:Option<NativeContent>,pub label:SharedString,pub theme:Theme,pub focused:bool,pub variant_values:BTreeMap<&'static str,SharedString>,pub focus_handle:Option<FocusHandle>,pub icon:SharedString,}
 impl Default for Badge{fn default()->Self {let mut variants=BTreeMap::new();variants.insert("variant","".into());
 variants.insert("intent","".into());
-variants.insert("size","".into());Self{label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,icon:SharedString::default(),}}}
+variants.insert("size","".into());Self{content:None,label:SharedString::default(),theme:Theme::default(),focused:false,variant_values:variants,focus_handle:None,icon:SharedString::default(),}}}
 impl Badge{
  pub const STYLE_RULES:&'static [StyleRule]=&[StyleRule {part:"root",conditions:&[],declarations:&[StyleDeclaration {property:"box-model.padding-block-start",value:"2px",token:None},StyleDeclaration {property:"box-model.padding-block-end",value:"2px",token:None},StyleDeclaration {property:"box-model.padding-inline-start",value:"8px",token:None},StyleDeclaration {property:"box-model.padding-inline-end",value:"8px",token:None},StyleDeclaration {property:"box-model.min-height",value:"16px",token:Some("semantic.glyph.size.medium.extent")},StyleDeclaration {property:"box-model.padding",value:"0",token:None},StyleDeclaration {property:"box-model.padding-block",value:"0",token:None},StyleDeclaration {property:"box-model.padding-inline",value:"0",token:None},StyleDeclaration {property:"box-model.gap",value:"0",token:None},StyleDeclaration {property:"box-model.width",value:"auto",token:None},StyleDeclaration {property:"box-model.min-width",value:"0",token:None},StyleDeclaration {property:"box-model.max-width",value:"none",token:None},StyleDeclaration {property:"box-model.height",value:"auto",token:None},StyleDeclaration {property:"box-model.max-height",value:"none",token:None},StyleDeclaration {property:"badge.color.background.default",value:"#f7f7f7",token:Some("semantic.color.background.secondary")},StyleDeclaration {property:"badge.color.background.hover",value:"#f7f7f7",token:Some("semantic.interaction.background.hover")},StyleDeclaration {property:"badge.color.foreground.primary",value:"#141414",token:Some("semantic.color.foreground.primary")},StyleDeclaration {property:"badge.color.border",value:"#d0d0d0",token:Some("semantic.color.border.subtle")},StyleDeclaration {property:"badge.spacing.gap",value:"4px",token:Some("semantic.glyph.badge.size.md.gap")},StyleDeclaration {property:"badge.size.radius",value:"9999px",token:Some("semantic.shape.control.radius.pill")},StyleDeclaration {property:"badge.size.border",value:"1px",token:Some("semantic.shape.control.border.defaultWidth")},StyleDeclaration {property:"badge.size.paddingX",value:"8px",token:Some("semantic.glyph.badge.size.md.paddingX")},StyleDeclaration {property:"badge.size.paddingY",value:"2px",token:Some("semantic.glyph.badge.size.md.paddingY")},StyleDeclaration {property:"badge.size.fontSize",value:"12px",token:Some("semantic.glyph.badge.size.md.fontSize")},StyleDeclaration {property:"badge.size.minHeight",value:"24px",token:Some("semantic.glyph.badge.size.md.minHeight")},StyleDeclaration {property:"badge.text.weight",value:"500",token:Some("semantic.typography.font.weight.medium")}]},
 StyleRule {part:"root",conditions:&[],declarations:&[StyleDeclaration {property:"padding-block-start",value:"2px",token:Some("box-model.padding-block-start")},StyleDeclaration {property:"padding-block-end",value:"2px",token:Some("box-model.padding-block-end")},StyleDeclaration {property:"padding-inline-start",value:"8px",token:Some("box-model.padding-inline-start")},StyleDeclaration {property:"padding-inline-end",value:"8px",token:Some("box-model.padding-inline-end")},StyleDeclaration {property:"min-height",value:"16px",token:Some("box-model.min-height")},StyleDeclaration {property:"padding",value:"0",token:Some("box-model.padding")},StyleDeclaration {property:"padding-block",value:"0",token:Some("box-model.padding-block")},StyleDeclaration {property:"padding-inline",value:"0",token:Some("box-model.padding-inline")},StyleDeclaration {property:"gap",value:"0",token:Some("box-model.gap")},StyleDeclaration {property:"min-width",value:"0",token:Some("box-model.min-width")},StyleDeclaration {property:"display",value:"inline-flex",token:None},StyleDeclaration {property:"align-items",value:"center",token:None},StyleDeclaration {property:"box-sizing",value:"border-box",token:None}]},
@@ -32,25 +34,37 @@ StyleRule {part:"root",conditions:&[StyleCondition::Variant {axis:"variant",valu
   let state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
   resolve_part_style(part,Self::STYLE_RULES,&state,&self.theme)
  }
- pub fn variant(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["default","status","counter","tag"].contains(&value.as_ref()),"unsupported variant variant");self.variant_values.insert("variant",value);self}
-pub fn set_variant(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["default","status","counter","tag"].contains(&value.as_ref()),"unsupported variant variant");self.variant_values.insert("variant",value);cx.notify();}
-pub fn intent(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["info","success","warning","danger"].contains(&value.as_ref()),"unsupported intent variant");self.variant_values.insert("intent",value);self}
-pub fn set_intent(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["info","success","warning","danger"].contains(&value.as_ref()),"unsupported intent variant");self.variant_values.insert("intent",value);cx.notify();}
-pub fn size(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["sm","md","lg"].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);self}
-pub fn set_size(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["sm","md","lg"].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);cx.notify();}
+ pub fn variant(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["default","status","counter","tag",""].contains(&value.as_ref()),"unsupported variant variant");self.variant_values.insert("variant",value);self}
+pub fn set_variant(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["default","status","counter","tag",""].contains(&value.as_ref()),"unsupported variant variant");self.variant_values.insert("variant",value);cx.notify();}
+pub fn intent(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["info","success","warning","danger",""].contains(&value.as_ref()),"unsupported intent variant");self.variant_values.insert("intent",value);self}
+pub fn set_intent(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["info","success","warning","danger",""].contains(&value.as_ref()),"unsupported intent variant");self.variant_values.insert("intent",value);cx.notify();}
+pub fn size(mut self,value:impl Into<SharedString>)->Self {let value=value.into();assert!(["sm","md","lg",""].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);self}
+pub fn set_size(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){let value=value.into();assert!(["sm","md","lg",""].contains(&value.as_ref()),"unsupported size variant");self.variant_values.insert("size",value);cx.notify();}
 pub fn icon(mut self,value:impl Into<SharedString>)->Self {self.icon=value.into();self}
 pub fn set_icon(&mut self,value:impl Into<SharedString>,cx:&mut Context<Self>){self.icon=value.into();cx.notify();}
 
+
+ pub fn content(mut self,value:NativeContent)->Self{self.content=Some(value);self}
+ pub fn set_content(&mut self,value:NativeContent,cx:&mut Context<Self>){self.content=Some(value);cx.notify();}
+ pub fn clear_content(&mut self,cx:&mut Context<Self>){self.content=None;cx.notify();}
+ pub fn has_content(&self)->bool{self.content.as_ref().map(NativeContent::is_present).unwrap_or(!self.label.is_empty())}
+ fn render_content(&self,window:&mut Window,cx:&mut gpui::App)->Vec<gpui::AnyElement>{
+  match &self.content {Some(content)=>content.render(window,cx),None=>if self.label.is_empty(){Vec::new()}else{vec![div().debug_selector(||"badge-label".to_string()).child(self.label.clone()).into_any_element()]}}
+ }
+
+
 }
 
-impl Render for Badge{fn render(&mut self,window:&mut Window,_cx:&mut Context<Self>)->impl IntoElement{
+impl Render for Badge{fn render(&mut self,window:&mut Window,cx:&mut Context<Self>)->impl IntoElement{
+ NativeContent::assert_unique_views(self.content.iter());
+
 
  let variants:Vec<(&str,&str)>=self.variant_values.iter().map(|(axis,value)|(*axis,value.as_ref())).collect();
  self.theme.rem_size_px=f32::from(window.rem_size());self.theme.inherited_font_size_px=f32::from(window.text_style().font_size.to_pixels(window.rem_size()));let theme=self.theme.clone();
  self.focused=self.focus_handle.as_ref().map(|handle|handle.is_focused(window)).unwrap_or(false);
  let style_state=StyleState{variants:&variants,checked:false,disabled:false,indeterminate:false,hovered:false,active:false,focused:self.focused};
- let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"badge-root".to_string()).when(!self.icon.is_empty(),|node|node.child(apply_part_style(div(),"icon",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"badge-icon".to_string()).child(self.icon.clone()))).child(apply_part_style(div(),"content",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"badge-content".to_string()).when(!self.label.is_empty(),|node|node.child(div().debug_selector(||"badge-label".to_string()).child(self.label.clone())))).id("badge");
+ let root=apply_part_style(div(),"root",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"badge-root".to_string()).when(!self.icon.is_empty(),|node|node.child(apply_part_style(div(),"icon",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"badge-icon".to_string()).child(self.icon.clone()))).child(apply_part_style(div(),"content",Self::STYLE_RULES,&style_state,&theme).debug_selector(||"badge-content".to_string()).children(self.render_content(window,cx))).id("badge");
  let root=apply_interaction_style(root,"root",Self::STYLE_RULES,&style_state,&theme);
 
- root
+ root.into_any_element()
 }}

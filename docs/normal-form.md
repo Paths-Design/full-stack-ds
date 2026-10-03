@@ -5,7 +5,7 @@ status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
 updated: 2026-10-03
-verified_at_commit: c3e3ad40737760db171c5a24f6548f402b7a4cac
+verified_at_commit: cff2ffc27a2173dc3db9ff23f38797e920f18e7c
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -40,7 +40,7 @@ This document argues from one concrete codebase. The current evidence is:
 - <!-- component-count -->55 component contracts generated through one primitive. (Count is loader-derived — `contracts-fs.ts` walks `components/*/<Name>.contract.json`; do not hand-maintain this number, re-derive it.)
 - Five Web DOM framework emitters consuming a shared IR, plus React Native on a different substrate consuming the same IR and admitted by the same rail.
 - SwiftUI and Jetpack Compose are registered native targets outside the admission rail, consuming the same IR and allowlisted for <!-- target-component-count:swiftui -->52 and <!-- target-component-count:jetpack-compose -->52 contracts respectively. Both generated roots are byte-drift-gated and compile through dedicated native CI lanes over hand-authored example consumers. SwiftUI additionally has CI-run body/state/resolver and sampled token-paint tests plus a separately invoked macOS press-proof harness for named interactions; Compose has resolver conformance tests but no UI-runtime lane. These are bounded facts, not broad native behavioral parity or device correctness.
-- [GPUI](architecture/gpui-target.md) realizes its <!-- target-component-count:gpui -->6-component allowlist through normalized anatomy, native activation keys and additive style-rule IR. Mounted GPUI tests exercise owner requests, complete keyboard cycles, focus, variants, fractional device alignment and token geometry. Separate macOS gallery inspection covers bounded pixels and pointer/keyboard requests. The exact upstream renderer pin incorporates baseline snapping and native glyph dilation; its live font/raster metrics and image inspection remain distinct from complete pixel parity. Its dedicated native CI lane is configured but remote execution remains unverified. It is outside the TypeScript rail and retains explicit semantic omissions.
+- [GPUI](architecture/gpui-target.md) realizes its <!-- target-component-count:gpui -->7-component allowlist through normalized anatomy, native activation keys and additive style-rule IR. Mounted GPUI tests exercise owner requests, complete keyboard cycles, focus, variants, fractional device alignment and token geometry. Retained children and typed named anatomy slots now consume insertion/presence facts; mounted witnesses preserve child identity, state, focus and subscriptions across parent redraws and reject duplicate supplied placement. Separate macOS gallery inspection covers bounded pixels and pointer/keyboard requests. The exact upstream renderer pin incorporates baseline snapping and native glyph dilation; its live font/raster metrics and image inspection remain distinct from complete pixel parity. Its dedicated native CI lane is configured but remote execution remains unverified. It is outside the TypeScript rail and retains explicit semantic omissions.
 - A bounded Unity UI Toolkit target with generated Switch, Accordion, Popover and Tabs controls, compound items, and a local UPM package. Real Unity EditMode tests verify UXML import and named interactions; this target is outside the TypeScript admission rail and has no full visual, accessibility or player-build parity claim. See [Unity pilot evidence](architecture/unity-target.md).
 - Boundary checks in the IR that fail on unresolved contract references.
 - Regeneration semantics that preserve custom regions while rewriting generated regions.
@@ -256,6 +256,13 @@ substrate-neutral style language. Actual gallery inspection exposed a thin-borde
 paint failure that resolved-style tests missed, motivating an independent native
 paint witness and a generic edge repair. Renderer sharpness, accessibility and
 complete component semantics remain separate obligations.
+
+Retained GPUI content consumes the existing default/named insertion sites and
+positive/inverted presence guards. Entity handles retain child state while each
+frame recreates elements from content recipes. Mounted owner redraws and nested
+control input test those lifecycle edges. This realizes a bounded composition
+path without adding component-name dispatch; compound parts, referenced-component
+lowering and general view-placement ownership remain separate obligations.
 
 The motion-port reconciliation at the current stamp adds normalized decorative
 part ownership and repeated ancestry to the shared IR. React Native delivers
