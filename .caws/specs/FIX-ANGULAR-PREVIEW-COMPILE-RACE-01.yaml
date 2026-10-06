@@ -1,0 +1,38 @@
+id: FIX-ANGULAR-PREVIEW-COMPILE-RACE-01
+title: 'Serialize fsds-angular preview compiles and contain rejections'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-06T18:01:31.585Z'
+updated_at: '2026-10-06T18:01:31.585Z'
+created_by_session: 'session-7e52d34d-e6a6-4a24-b5b7-a8af524f4fd5'
+blast_radius:
+  modules:
+    - 'showcase angular preview dev-server plugin'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/runtime/angular-compiler/vite-plugin.ts'
+    - 'src/runtime/angular-compiler/vite-plugin.test.ts'
+  out: []
+invariants:
+  - 'runCompile passes never overlap: a new kickCompile chains after the previous compile promise settles, because clearHosts rm-rf''s the preview-hosts dir each pass and concurrent passes destroy each other''s inputs'
+  - 'a compile rejection is never unhandled: the stored compile promise carries a no-op catch so process-level unhandled-rejection death cannot occur, while middleware awaiters still receive the rejection'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a compile already in flight, when kickCompile is invoked again, then the second runCompile starts only after the first completes and no two passes overlap'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a compile pass that rejects while no middleware awaiter holds the promise, when the rejection surfaces, then the dev-server process survives without an unhandled rejection'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given a full codegen regeneration rewriting ds-angular/src while the dev server runs, when the wave completes, then the server process remains up with queued compiles, zero ENOTEMPTY or ENOENT failures, and the analytical scratch route still renders'
+non_functional: {}
+contracts:
+  - name: 'angular-preview-compile'
+    type: behavior
+    path: 'src/runtime/angular-compiler/vite-plugin.test.ts'
