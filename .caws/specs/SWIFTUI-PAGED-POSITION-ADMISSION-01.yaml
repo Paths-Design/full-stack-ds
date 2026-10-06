@@ -1,9 +1,11 @@
 id: SWIFTUI-PAGED-POSITION-ADMISSION-01
 title: 'Admit Carousel, PageNavigator, Pagination to SwiftUI emission (52→55) and restore full-corpus react↔swift parity'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Admitted Pagination, PageNavigator and Carousel to SwiftUI over three new substrate predicates and the FsdsPagedPosition runtime; swift-parity-diff 55/55 with all local gates green.'
 created_at: '2026-10-06T18:06:38.307Z'
-updated_at: '2026-10-06T19:21:26.026Z'
+updated_at: '2026-10-06T19:22:44.551Z'
 created_by_session: 'session-200e014f-a885-4758-b248-d3edf0a0281d'
 blast_radius:
   modules:
