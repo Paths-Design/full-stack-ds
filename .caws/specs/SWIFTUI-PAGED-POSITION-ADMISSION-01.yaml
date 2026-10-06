@@ -73,3 +73,7 @@ evidence:
     status: pass
     evidence_ref: "swift test --package-path packages/ds-swiftui: 'Test Suite All tests passed, Executed 47 tests, 4 skipped, 0 failures' incl. ComponentSmokeTests.testEveryAdmittedComponentBodyEvaluates with the completeness assertion at 55 (Pagination, PageNavigator, Carousel factories added)"
     recorded_at: "2026-10-06T19:22:28.020Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "node scripts/swift-parity-diff.mjs: 'corpus: 55 | react-emitting: 55 | swift-emitting: 55 | rejected by either backend: 0' exit 0; pnpm run generate:check: 55/55 contracts passed; pnpm test: 4800/4800; pnpm run governed:rail: Overall PASS; pnpm run docs:check-claims: OK (81 markers); pnpm run lint + typecheck clean; no-op-empty generated diff outside swiftui proven by the rail"
+    recorded_at: "2026-10-06T19:22:28.581Z"
