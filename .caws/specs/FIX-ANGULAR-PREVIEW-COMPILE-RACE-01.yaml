@@ -41,3 +41,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm exec vitest run src/runtime/angular-compiler/vite-plugin.test.ts ('kicks serialize' passes: second runCompile starts only after first settles); in-vivo: worktree dev-server log shows 'compiling (change: Badge)' -> 'done in 3514ms' -> 'compiling (change: Dialog)' with the Dialog event delivered mid-flight and its kick deferred until Badge settled"
     recorded_at: "2026-10-06T18:12:08.695Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "vite-plugin.test.ts 'a rejected kick reaches its awaiter, is contained, and does not wedge the queue' and 'a rejection with no awaiter never surfaces as an unhandled rejection'; suite green 10/10 in the slice worktree"
+    recorded_at: "2026-10-06T18:12:09.398Z"
