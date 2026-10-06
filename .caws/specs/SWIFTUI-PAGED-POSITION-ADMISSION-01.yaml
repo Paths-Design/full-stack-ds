@@ -69,3 +69,7 @@ evidence:
     status: pass
     evidence_ref: "component-source.test.ts > 'Carousel steps the sequence channel and composes the picker' (vitest pass); generated Carousel.swift: ControllableValue<Int> slide channel, rotation toggle on sequence labels + token-resolved 6000ms dwell timer, prev/next stepping, picker composition with dom-attr label; per-child projected slide presentation, next-button ring dot and aria-roledescription omitted-and-documented in the emitted doc comment; swift build: Build complete"
     recorded_at: "2026-10-06T19:22:18.056Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "swift test --package-path packages/ds-swiftui: 'Test Suite All tests passed, Executed 47 tests, 4 skipped, 0 failures' incl. ComponentSmokeTests.testEveryAdmittedComponentBodyEvaluates with the completeness assertion at 55 (Pagination, PageNavigator, Carousel factories added)"
+    recorded_at: "2026-10-06T19:22:28.020Z"
