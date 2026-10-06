@@ -52,8 +52,11 @@ import {
   isInteractiveComposite,
   isLabeledTextControl,
   isNamedSlotComposer,
+  isPagedNavigatorComposite,
+  isPagedPositionSet,
   isProjectedChildrenAction,
   isSelectionControl,
+  isSequencePager,
   isStaticContent,
   isValueChannelControl,
   isVisualOnlyLeaf,
@@ -178,6 +181,33 @@ function emitSwiftUIComponentSource(ir: ComponentIR): string {
     sections.push(emitImports());
     sections.push(emitTypes(ir));
     sections.push(emitInteractiveComposite(ir));
+    return sections.join("\n\n") + "\n";
+  }
+
+  // The paged/sequence position composites (SWIFTUI-PAGED-POSITION-ADMISSION-01):
+  // declared paging/sequence policies lower onto the shared FsdsPagedPosition
+  // policy beside the ControllableValue channel substrate.
+  if (isPagedPositionSet(ir)) {
+    const sections: string[] = [];
+    sections.push(emitImports());
+    sections.push(emitTypes(ir));
+    sections.push(emitPagedPositionSet(ir));
+    return sections.join("\n\n") + "\n";
+  }
+
+  if (isPagedNavigatorComposite(ir)) {
+    const sections: string[] = [];
+    sections.push(emitImports());
+    sections.push(emitTypes(ir));
+    sections.push(emitPagedNavigatorComposite(ir));
+    return sections.join("\n\n") + "\n";
+  }
+
+  if (isSequencePager(ir)) {
+    const sections: string[] = [];
+    sections.push(emitImports());
+    sections.push(emitTypes(ir));
+    sections.push(emitSequencePager(ir));
     return sections.join("\n\n") + "\n";
   }
 
@@ -1257,6 +1287,570 @@ function emitInteractiveComposite(ir: ComponentIR): string {
   }
   lines.push("// @generated:end");
   void hasDisabled;
+  return lines.join("\n");
+}
+
+/**
+ * The paged-position set class: a declared `pagedSet` policy whose sole
+ * numeric channel owns an array-iterated request item (Pagination is the
+ * corpus consumer). The channel rides ControllableValue<Int>; the shared
+ * FsdsPagedPosition policy derives the step guards and the 1-based ordinal;
+ * each item button requests its zero-based index.
+ *
+ * Omitted-and-documented: the animated elapsed budget is a composing
+ * sequence's driver (the sequence pager lowers it); a standalone
+ * `progress: .elapsed` paints the current marker's fill statically.
+ */
+function emitPagedPositionSet(ir: ComponentIR): string {
+  const exportName = swiftExportName(ir.name);
+  const chrome = resolveChrome(ir);
+  const page = ir.pagedSet!;
+  const channel = ir.behavior.normalizedChannels[0]!;
+  // Init labels follow the contract's channel prop projection (index /
+  // defaultIndex / onIndexChange) — the public API surface the corpus
+  // declares, which compositions bind by name.
+  const valueParam = channel.valueProp;
+  const defaultParam = channel.defaultValueProp ?? `default${swiftCase(capitalize(channel.name))}`;
+  const changeParam = channel.changeHandlerProp;
+  const hasDisabled = hasConventionalProp(ir, page.disabledProp ?? "disabled");
+  const hasLabel = hasConventionalProp(ir, "label");
+  const axes = collectVariantAxes(ir);
+  const layerInfo = emitLayerExpressions(axes);
+  const layerArray = ['"root"', ...layerInfo.expressions];
+  const layersExpr = layerInfo.needsCompactMap
+    ? `[${layerArray.join(", ")}].compactMap { $0 }`
+    : `[${layerArray.join(", ")}]`;
+  const presentationAxis = axes.find((axis) => axis.prop === "presentation");
+  const progressAxis = axes.find((axis) => axis.prop === "progress");
+
+  const lines: string[] = [];
+  lines.push("// @generated:start component");
+  if (ir.tokenScopes.length > 0) lines.push(...emitTokenScopesSection(ir));
+  lines.push("");
+  lines.push(
+    `/// Emitted through the paged-position set path: the ${page.channel} ` +
+      `channel rides ControllableValue<Int>, each item button requests its ` +
+      `zero-based index, and the shared FsdsPagedPosition policy derives ` +
+      `validity, the ordinal and the step guards (createPagedSet rules). ` +
+      `The current position stays focusable.`,
+  );
+  if (exportName !== ir.name) {
+    lines.push(`/// SwiftUI reserves \`${ir.name}\`; exported as \`${exportName}\`.`);
+  }
+  lines.push(`public struct ${exportName}: View {`);
+  if (ir.tokenScopes.length > 0) {
+    lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
+    lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
+    lines.push(`${INDENT}}`);
+  }
+  lines.push(`${INDENT}@StateObject private var ${page.channel}: ControllableValue<Int>`);
+  lines.push(`${INDENT}private let ${page.itemsProp}: [String]`);
+  for (const axis of axes) {
+    lines.push(
+      `${INDENT}private let ${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}${axis.defaultMember === null ? "?" : ""}`,
+    );
+  }
+  if (hasLabel) lines.push(`${INDENT}private let label: String?`);
+  if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
+  if (ir.tokenScopes.length > 0) {
+    lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
+  }
+  lines.push("");
+  lines.push(`${INDENT}public init(`);
+  const params = [
+    `${valueParam}: Binding<Int>? = nil,`,
+    `${defaultParam}: Int = 0,`,
+    `${changeParam}: ((Int) -> Void)? = nil,`,
+    `${page.itemsProp}: [String] = [],`,
+  ];
+  for (const axis of axes) {
+    params.push(
+      axis.defaultMember !== null
+        ? `${escapeSwiftKeyword(axis.prop)}: ${axis.typeName} = .${swiftCaseRef(axis.defaultMember)},`
+        : `${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}? = nil,`,
+    );
+  }
+  if (hasLabel) params.push(`label: String? = ${swiftLiteral(propStringDefault(ir, "label") ?? "Choose page")},`);
+  if (hasDisabled) params.push("disabled: Bool = false");
+  params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
+  for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
+  lines.push(`${INDENT}) {`);
+  lines.push(
+    `${INDENT}${INDENT}self._${page.channel} = StateObject(wrappedValue: ControllableValue(controlled: ${valueParam}, defaultValue: ${defaultParam}, onChange: ${changeParam}))`,
+  );
+  lines.push(`${INDENT}${INDENT}self.${page.itemsProp} = ${page.itemsProp}`);
+  for (const axis of axes) {
+    lines.push(
+      `${INDENT}${INDENT}self.${escapeSwiftKeyword(axis.prop)} = ${escapeSwiftKeyword(axis.prop)}`,
+    );
+  }
+  if (hasLabel) lines.push(`${INDENT}${INDENT}self.label = label`);
+  if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}private var position: FsdsPagedPosition {`);
+  lines.push(
+    `${INDENT}${INDENT}FsdsPagedPosition(index: ${page.channel}.value, count: ${page.itemsProp}.count${hasDisabled ? ", disabled: disabled" : ""})`,
+  );
+  lines.push(`${INDENT}}`);
+  if (ir.tokenScopes.length > 0) {
+    lines.push("");
+    lines.push(`${INDENT}private var layered: [String: FsdsTokenValue?] {`);
+    lines.push(`${INDENT}${INDENT}resolveFsdsLayeredTokens(`);
+    lines.push(`${INDENT}${INDENT}${INDENT}fsdsScopes,`);
+    lines.push(`${INDENT}${INDENT}${INDENT}fsdsTheme,`);
+    lines.push(`${INDENT}${INDENT}${INDENT}layers: ${layersExpr}`);
+    lines.push(`${INDENT}${INDENT})`);
+    lines.push(`${INDENT}}`);
+    lines.push("");
+    lines.push(`${INDENT}private func colorSlot(_ suffix: String) -> Color? {`);
+    lines.push(`${INDENT}${INDENT}layered.first { $0.key.hasSuffix(suffix) }?.value?.color`);
+    lines.push(`${INDENT}}`);
+    lines.push("");
+    lines.push(`${INDENT}private func pxSlot(_ suffix: String) -> CGFloat? {`);
+    lines.push(`${INDENT}${INDENT}layered.first { $0.key.hasSuffix(suffix) }?.value?.px`);
+    lines.push(`${INDENT}}`);
+    lines.push("");
+    lines.push(...emitChromeAccessorLines(chrome, ["gap", "background", "foreground"]));
+    lines.push("");
+  }
+  lines.push(`${INDENT}public var body: some View {`);
+  lines.push(`${INDENT}${INDENT}HStack(spacing: ${chrome.gap ? "gap" : "4"}) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}ForEach(${page.itemsProp}.indices, id: \\.self) { itemIndex in`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}if position.canRequest(itemIndex) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${page.channel}.set(itemIndex)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}} label: {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}HStack(spacing: 4) {`);
+  if (presentationAxis) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}if presentation == .indicators {`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}marker(for: itemIndex)`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}}`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}if presentation == .pages {`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Text(${page.itemsProp}[itemIndex])`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}}`);
+  } else {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}marker(for: itemIndex)`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Text(${page.itemsProp}[itemIndex])`);
+  }
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
+  if (hasDisabled) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.disabled(disabled)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityLabel(${page.itemsProp}[itemIndex])`);
+  lines.push(
+    `${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityAddTraits(itemIndex == ${page.channel}.value ? [.isSelected] : [])`,
+  );
+  lines.push(`${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}}`);
+  if (hasLabel) lines.push(`${INDENT}${INDENT}.fsdsAccessibilityLabel(label)`);
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}@ViewBuilder private func marker(for itemIndex: Int) -> some View {`);
+  lines.push(`${INDENT}${INDENT}let current = itemIndex == ${page.channel}.value`);
+  lines.push(
+    `${INDENT}${INDENT}Capsule()`,
+  );
+  lines.push(
+    `${INDENT}${INDENT}${INDENT}.fill(current && ${progressAxis ? "progress == .elapsed" : "false"} ? accentFill : trackFill)`,
+  );
+  lines.push(`${INDENT}${INDENT}${INDENT}.frame(width: current && ${progressAxis ? "progress == .elapsed" : "false"} ? dotSize * 2 : dotSize, height: dotSize)`);
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  if (ir.tokenScopes.length > 0) {
+    lines.push(`${INDENT}private var accentFill: Color { colorSlot("${ir.cssPrefix}.color.progress") ?? .accentColor }`);
+    lines.push(`${INDENT}private var trackFill: Color { colorSlot("${ir.cssPrefix}.color.track") ?? Color.secondary.opacity(0.35) }`);
+    lines.push(`${INDENT}private var dotSize: CGFloat { pxSlot("${ir.cssPrefix}.size.dot-size") ?? 6 }`);
+  } else {
+    lines.push(`${INDENT}private var accentFill: Color { .accentColor }`);
+    lines.push(`${INDENT}private var trackFill: Color { Color.secondary.opacity(0.35) }`);
+    lines.push(`${INDENT}private var dotSize: CGFloat { 6 }`);
+  }
+  lines.push(`}`);
+  lines.push("// @generated:end");
+  return lines.join("\n");
+}
+
+/**
+ * The paged navigator composite class: a declared `pagedSet` policy whose
+ * dom both steps positions and edits a draft that commits to the request
+ * channel (PageNavigator is the corpus consumer). Component references in
+ * the anatomy (action triggers, draft field, a composed position set) lower
+ * to their sibling generated views — the component-instance lowering this
+ * emitter previously lacked.
+ *
+ * Omitted-and-documented: the web field commits on focus-out; SwiftUI has
+ * no focus-out analog for a custom control without FocusState plumbing, so
+ * v1 commits on submit (Return) and on the commit trigger only.
+ */
+function emitPagedNavigatorComposite(ir: ComponentIR): string {
+  const exportName = swiftExportName(ir.name);
+  const page = ir.pagedSet!;
+  const channel = ir.behavior.normalizedChannels[0]!;
+  // Init labels follow the contract's channel prop projection — the public
+  // API surface compositions bind by name.
+  const navValueParam = channel.valueProp;
+  const navDefaultParam = channel.defaultValueProp ?? `default${swiftCase(capitalize(channel.name))}`;
+  const navChangeParam = channel.changeHandlerProp;
+  const hasLabel = hasConventionalProp(ir, "label");
+  const hasDisabled = hasConventionalProp(ir, page.disabledProp ?? "disabled");
+  const presentationProp = ir.styledProps.find((p) => p.safeName === "presentation");
+  const presentationType = presentationProp?.typeRefs.find((ref) => ir.definedTypes[ref]);
+  const labelProps = ["pageLabel", "previousLabel", "nextLabel", "ofLabel", "commitLabel"]
+    .filter((name) => hasConventionalProp(ir, name));
+
+  const lines: string[] = [];
+  lines.push("// @generated:start component");
+  lines.push("");
+  lines.push(
+    `/// Emitted through the paged navigator composite path: previous/next ` +
+      `triggers, a draft page field committed on Return or via the commit ` +
+      `trigger, and an optional composed position set — component ` +
+      `references lower to their sibling generated views, and the shared ` +
+      `FsdsPagedPosition policy owns the step/draft guards.`,
+  );
+  if (exportName !== ir.name) {
+    lines.push(`/// SwiftUI reserves \`${ir.name}\`; exported as \`${exportName}\`.`);
+  }
+  lines.push(`public struct ${exportName}: View {`);
+  lines.push(`${INDENT}@StateObject private var ${page.channel}: ControllableValue<Int>`);
+  lines.push(`${INDENT}private let ${page.itemsProp}: [String]`);
+  if (page.countProp) lines.push(`${INDENT}private let ${page.countProp}: Int?`);
+  if (presentationType) lines.push(`${INDENT}private let presentation: ${presentationType}`);
+  for (const name of labelProps) {
+    lines.push(`${INDENT}private let ${name}: String?`);
+  }
+  if (hasConventionalProp(ir, "showChoices")) lines.push(`${INDENT}private let showChoices: Bool`);
+  if (hasLabel) lines.push(`${INDENT}private let label: String?`);
+  if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
+  lines.push(`${INDENT}@State private var draft = ""`);
+  lines.push("");
+  lines.push(`${INDENT}public init(`);
+  const params = [
+    `${navValueParam}: Binding<Int>? = nil,`,
+    `${navDefaultParam}: Int = 0,`,
+    `${navChangeParam}: ((Int) -> Void)? = nil,`,
+    `${page.itemsProp}: [String] = [],`,
+  ];
+  if (page.countProp) params.push(`${page.countProp}: Int? = nil,`);
+  if (presentationType) {
+    const presentationDefault = propStringDefault(ir, "presentation") ?? "indicators";
+    params.push(`presentation: ${presentationType} = .${swiftCaseRef(presentationDefault)},`);
+  }
+  for (const name of labelProps) {
+    const authored = propStringDefault(ir, name);
+    params.push(`${name}: String? = ${authored !== null ? swiftLiteral(authored) : "nil"},`);
+  }
+  if (hasConventionalProp(ir, "showChoices")) params.push("showChoices: Bool = false,");
+  if (hasLabel) params.push(`label: String? = ${swiftLiteral(propStringDefault(ir, "label") ?? "Page navigation")},`);
+  if (hasDisabled) params.push("disabled: Bool = false");
+  params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
+  for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
+  lines.push(`${INDENT}) {`);
+  lines.push(
+    `${INDENT}${INDENT}self._${page.channel} = StateObject(wrappedValue: ControllableValue(controlled: ${navValueParam}, defaultValue: ${navDefaultParam}, onChange: ${navChangeParam}))`,
+  );
+  lines.push(`${INDENT}${INDENT}self.${page.itemsProp} = ${page.itemsProp}`);
+  if (page.countProp) lines.push(`${INDENT}${INDENT}self.${page.countProp} = ${page.countProp}`);
+  if (presentationType) lines.push(`${INDENT}${INDENT}self.presentation = presentation`);
+  for (const name of labelProps) lines.push(`${INDENT}${INDENT}self.${name} = ${name}`);
+  if (hasConventionalProp(ir, "showChoices")) lines.push(`${INDENT}${INDENT}self.showChoices = showChoices`);
+  if (hasLabel) lines.push(`${INDENT}${INDENT}self.label = label`);
+  if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}private var position: FsdsPagedPosition {`);
+  lines.push(
+    `${INDENT}${INDENT}FsdsPagedPosition(index: ${page.channel}.value, count: ${page.countProp ? `${page.countProp} ?? ${page.itemsProp}.count` : `${page.itemsProp}.count`}${hasDisabled ? ", disabled: disabled" : ""})`,
+  );
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}public var body: some View {`);
+  lines.push(`${INDENT}${INDENT}HStack(spacing: 4) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}FsdsButton(`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}disabled: position.previousDisabled,`);
+  if (hasConventionalProp(ir, "previousLabel")) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}accessibilityLabel: previousLabel,`);
+  }
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}onTap: { request(page.value - 1) }`);
+  lines.push(`${INDENT}${INDENT}${INDENT}) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Icon(name: "arrow-left", size: .sm)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}Input(`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}value: $draft,`);
+  if (hasConventionalProp(ir, "pageLabel")) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}placeholder: pageLabel,`);
+  }
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}disabled: position.stateDisabled`);
+  lines.push(`${INDENT}${INDENT}${INDENT})`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.frame(maxWidth: 48)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.onSubmit(commit)`);
+  if (hasConventionalProp(ir, "ofLabel")) {
+    lines.push(`${INDENT}${INDENT}${INDENT}SwiftUI.Text(ofLabel ?? "")`);
+  }
+  lines.push(`${INDENT}${INDENT}${INDENT}SwiftUI.Text(String(position.count))`);
+  lines.push(`${INDENT}${INDENT}${INDENT}FsdsButton(`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}disabled: position.stateDisabled,`);
+  if (hasConventionalProp(ir, "commitLabel")) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}accessibilityLabel: commitLabel,`);
+  }
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}onTap: commit`);
+  lines.push(`${INDENT}${INDENT}${INDENT}) {`);
+  if (hasConventionalProp(ir, "commitLabel")) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Text(commitLabel ?? "")`);
+  } else {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Text("Go")`);
+  }
+  lines.push(`${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}FsdsButton(`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}disabled: position.nextDisabled,`);
+  if (hasConventionalProp(ir, "nextLabel")) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}accessibilityLabel: nextLabel,`);
+  }
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}onTap: { request(page.value + 1) }`);
+  lines.push(`${INDENT}${INDENT}${INDENT}) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Icon(name: "arrow-right", size: .sm)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}}`);
+  if (hasConventionalProp(ir, "showChoices")) {
+    lines.push(`${INDENT}${INDENT}${INDENT}if showChoices {`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Pagination(`);
+    // Argument order mirrors the emitted paged-position set init (its
+    // channel prop projection `index` leads); the binding keys on this
+    // componentRef node name those same callee props.
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}index: ${page.channel}.binding(),`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}pages: ${page.itemsProp},`);
+    if (presentationType) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}presentation: presentation == .pages ? .pages : .indicators,`);
+    if (hasLabel) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}label: label,`);
+    if (hasDisabled) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}disabled: disabled`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT})`);
+    lines.push(`${INDENT}${INDENT}${INDENT}}`);
+  }
+  lines.push(`${INDENT}${INDENT}}`);
+  if (hasLabel) lines.push(`${INDENT}${INDENT}.fsdsAccessibilityLabel(label)`);
+  lines.push(`${INDENT}${INDENT}.onAppear { draft = position.ordinal }`);
+  lines.push(`${INDENT}${INDENT}.onChange(of: position.ordinal) { draft = $0 }`);
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}private func request(_ target: Int) {`);
+  lines.push(`${INDENT}${INDENT}if position.canRequest(target) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${page.channel}.set(target)`);
+  lines.push(`${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}private func commit() {`);
+  lines.push(`${INDENT}${INDENT}if let target = position.commitTarget(for: draft) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${page.channel}.set(target)`);
+  lines.push(`${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}draft = position.ordinal`);
+  lines.push(`${INDENT}}`);
+  lines.push(`}`);
+  lines.push("// @generated:end");
+  return lines.join("\n");
+}
+
+/**
+ * The sequence pager class: a declared `sequence` policy (numeric index
+ * channel over an items prop with owned previous/next/rotation parts) over
+ * a passive root whose viewport projects the consumer's children (Carousel
+ * is the corpus consumer). The channel rides ControllableValue<Int>; the
+ * rotation affordance toggles a dwell timer from `sequence.timing`;
+ * previous/next step the channel; the picker composition composes the
+ * paged-position set with the sequence progress axis.
+ *
+ * Omitted-and-documented: per-slide presentation of individual projected
+ * children is not introspectable on SwiftUI v1 (the viewport shows the
+ * consumer's projected surface; selection/stepping/picker still ride the
+ * channel), the `next` indicator's decorative ring dot is not painted, and
+ * aria-roledescription has no SwiftUI equivalent — accessibilityLabel
+ * carries the region label.
+ */
+function emitSequencePager(ir: ComponentIR): string {
+  const exportName = swiftExportName(ir.name);
+  const chrome = resolveChrome(ir);
+  const sequence = ir.motion.sequence!;
+  const channel = sequence.channel;
+  // Init labels follow the contract's channel prop projection (Carousel:
+  // index / defaultIndex / onIndexChange) — the public API surface the
+  // corpus declares, which the picker composition binds by name.
+  const channelIR = ir.behavior.normalizedChannels[0]!;
+  const valueParam = channelIR.valueProp;
+  const defaultParam = channelIR.defaultValueProp ?? `default${swiftCase(capitalize(channel))}`;
+  const changeParam = channelIR.changeHandlerProp;
+  const hasLabel = hasConventionalProp(ir, "label");
+  const axes = collectVariantAxes(ir);
+  const indicatorAxis = axes.find((axis) => axis.prop === "indicator");
+  // The picker composition's label comes from the composed componentRef
+  // node's declared attrs, addressed by the sequence policy's picker part —
+  // a structural part address, not a component-name match.
+  let pickerLabel = "Choose slide";
+  const pickerHostPart =
+    typeof sequence.picker === "string"
+      ? sequence.picker
+      : sequence.picker.componentPart;
+  const findPicker = (node: DomNodeIR): void => {
+    if (pickerHostPart && node.part === pickerHostPart && node.attrs.label) {
+      pickerLabel = node.attrs.label;
+    }
+    (node.children ?? []).forEach(findPicker);
+  };
+  if (ir.dom) findPicker(ir.dom);
+
+  const lines: string[] = [];
+  lines.push("// @generated:start component");
+  if (ir.tokenScopes.length > 0) lines.push(...emitTokenScopesSection(ir));
+  lines.push("");
+  lines.push(
+    `/// Emitted through the sequence pager path: the ${channel} channel ` +
+      `rides ControllableValue<Int>; the rotation affordance toggles a ` +
+      `dwell timer (${sequence.timing.defaultMs}ms from the token graph), ` +
+      `previous/next step the channel, and the picker composition requests ` +
+      `positions. The viewport shows the consumer's projected surface.`,
+  );
+  if (exportName !== ir.name) {
+    lines.push(`/// SwiftUI reserves \`${ir.name}\`; exported as \`${exportName}\`.`);
+  }
+  lines.push(`public struct ${exportName}<Content: View>: View {`);
+  if (ir.tokenScopes.length > 0) {
+    lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
+    lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
+    lines.push(`${INDENT}}`);
+  }
+  lines.push(`${INDENT}@StateObject private var ${channel}: ControllableValue<Int>`);
+  lines.push(`${INDENT}private let ${sequence.itemsProp}: [String]`);
+  lines.push(`${INDENT}private let autoPlay: Bool`);
+  lines.push(`${INDENT}private let duration: Double?`);
+  for (const axis of axes) {
+    lines.push(
+      `${INDENT}private let ${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}${axis.defaultMember === null ? "?" : ""}`,
+    );
+  }
+  if (hasLabel) lines.push(`${INDENT}private let label: String?`);
+  lines.push(`${INDENT}private let content: Content`);
+  lines.push(`${INDENT}@State private var playing: Bool`);
+  if (ir.tokenScopes.length > 0) {
+    lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
+  }
+  lines.push("");
+  lines.push(`${INDENT}public init(`);
+  const params = [
+    `${valueParam}: Binding<Int>? = nil,`,
+    `${defaultParam}: Int = 0,`,
+    `${changeParam}: ((Int) -> Void)? = nil,`,
+    `${sequence.itemsProp}: [String] = [],`,
+    "autoPlay: Bool = false,",
+    "duration: Double? = nil,",
+  ];
+  for (const axis of axes) {
+    params.push(
+      axis.defaultMember !== null
+        ? `${escapeSwiftKeyword(axis.prop)}: ${axis.typeName} = .${swiftCaseRef(axis.defaultMember)},`
+        : `${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}? = nil,`,
+    );
+  }
+  if (hasLabel) params.push(`label: String? = ${swiftLiteral(propStringDefault(ir, "label") ?? "Featured content")},`);
+  params.push("@ViewBuilder content: () -> Content");
+  params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
+  for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
+  lines.push(`${INDENT}) {`);
+  lines.push(
+    `${INDENT}${INDENT}self._${channel} = StateObject(wrappedValue: ControllableValue(controlled: ${valueParam}, defaultValue: ${defaultParam}, onChange: ${changeParam}))`,
+  );
+  lines.push(`${INDENT}${INDENT}self.${sequence.itemsProp} = ${sequence.itemsProp}`);
+  lines.push(`${INDENT}${INDENT}self.autoPlay = autoPlay`);
+  lines.push(`${INDENT}${INDENT}self.duration = duration`);
+  for (const axis of axes) {
+    lines.push(
+      `${INDENT}${INDENT}self.${escapeSwiftKeyword(axis.prop)} = ${escapeSwiftKeyword(axis.prop)}`,
+    );
+  }
+  if (hasLabel) lines.push(`${INDENT}${INDENT}self.label = label`);
+  lines.push(`${INDENT}${INDENT}self.content = content()`);
+  lines.push(`${INDENT}${INDENT}self._playing = State(initialValue: autoPlay)`);
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}private var valid: Bool {`);
+  lines.push(
+    `${INDENT}${INDENT}!${sequence.itemsProp}.isEmpty && ${channel}.value >= 0 && ${channel}.value < ${sequence.itemsProp}.count`,
+  );
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}/// The dwell seconds: the duration prop wins; nil falls to the`);
+  lines.push(`${INDENT}/// sequence's token-resolved dwell.`);
+  lines.push(`${INDENT}private var dwellSeconds: Double {`);
+  lines.push(`${INDENT}${INDENT}max(duration ?? ${sequence.timing.defaultMs / 1000}, 0.05)`);
+  lines.push(`${INDENT}}`);
+  lines.push("");
+  lines.push(`${INDENT}private func step(_ delta: Int) {`);
+  lines.push(`${INDENT}${INDENT}let target = ${channel}.value + delta`);
+  lines.push(`${INDENT}${INDENT}if target >= 0 && target < ${sequence.itemsProp}.count {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${channel}.set(target)`);
+  lines.push(`${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}}`);
+  if (ir.tokenScopes.length > 0) {
+    lines.push("");
+    lines.push(`${INDENT}private var layered: [String: FsdsTokenValue?] {`);
+    lines.push(`${INDENT}${INDENT}resolveFsdsLayeredTokens(`);
+    lines.push(`${INDENT}${INDENT}${INDENT}fsdsScopes,`);
+    lines.push(`${INDENT}${INDENT}${INDENT}fsdsTheme,`);
+    lines.push(`${INDENT}${INDENT}${INDENT}layers: ["root"]`);
+    lines.push(`${INDENT}${INDENT})`);
+    lines.push(`${INDENT}}`);
+    lines.push("");
+    lines.push(`${INDENT}private func pxSlot(_ suffix: String) -> CGFloat? {`);
+    lines.push(`${INDENT}${INDENT}layered.first { $0.key.hasSuffix(suffix) }?.value?.px`);
+    lines.push(`${INDENT}}`);
+    lines.push("");
+    lines.push(...emitChromeAccessorLines(chrome, ["gap"]));
+  }
+  lines.push("");
+  lines.push(`${INDENT}public var body: some View {`);
+  lines.push(`${INDENT}${INDENT}VStack(spacing: ${chrome.gap ? "gap" : "4"}) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}Button(playing ? ${swiftLiteral(sequence.labels.stop)} : ${swiftLiteral(sequence.labels.start)}) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}playing.toggle()`);
+  lines.push(`${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}.disabled(!valid)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}content`);
+  lines.push(`${INDENT}${INDENT}${INDENT}HStack(spacing: 4) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}step(-1)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}} label: {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}Icon(name: "arrow-left", size: .sm)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.disabled(!valid)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityLabel("Previous slide")`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Pagination(`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}index: ${channel}.binding(),`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}pages: ${sequence.itemsProp},`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}presentation: .indicators,`);
+  lines.push(
+    `${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}progress: ${indicatorAxis ? "(indicator == .pagination || indicator == .both) ? .elapsed : .none" : ".none"},`,
+  );
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}label: ${swiftLiteral(pickerLabel)}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT})`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}step(1)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}} label: {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}Icon(name: "arrow-right", size: .sm)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.disabled(!valid)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityLabel("Next slide")`);
+  lines.push(`${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}}`);
+  if (hasLabel) lines.push(`${INDENT}${INDENT}.fsdsAccessibilityLabel(label)`);
+  lines.push(
+    `${INDENT}${INDENT}.onReceive(Timer.publish(every: dwellSeconds, on: .main, in: .common).autoconnect()) { _ in`,
+  );
+  lines.push(`${INDENT}${INDENT}${INDENT}if playing && valid {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}step(1)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}}`);
+  lines.push(`}`);
+  lines.push("// @generated:end");
   return lines.join("\n");
 }
 
@@ -2699,6 +3293,13 @@ function findPropDefaultOrNull(ir: ComponentIR, name: string): string | null {
   const values = ir.variants[name];
   if (authored && values?.includes(authored)) return authored;
   return null;
+}
+
+/** The authored string default of a styled prop, unquoted; null when the
+ *  prop declares no default. */
+function propStringDefault(ir: ComponentIR, name: string): string | null {
+  const prop = ir.styledProps.find((p) => p.safeName === name);
+  return prop?.defaultExpr?.replace(/^["']|["']$/g, "") ?? null;
 }
 
 /**

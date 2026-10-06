@@ -703,3 +703,64 @@ describe("generateSwiftUIComponentSource — emission-class assignment", () => {
     );
   });
 });
+
+describe("generateSwiftUIComponentSource — paged/sequence position composites", () => {
+  function emit(name: string): string {
+    const contract = loadContract(name) as Parameters<
+      typeof buildComponentIR
+    >[0];
+    return generateSwiftUIComponentSource(buildComponentIR(contract));
+  }
+
+  it("Pagination lowers onto the shared paged-position policy (paged-position set)", () => {
+    const source = emit("Pagination");
+    expect(source).toContain(
+      "@StateObject private var page: ControllableValue<Int>",
+    );
+    expect(source).toContain(
+      "FsdsPagedPosition(index: page.value, count: pages.count",
+    );
+    expect(source).toContain("position.canRequest(itemIndex)");
+    expect(source).toContain(
+      ".accessibilityAddTraits(itemIndex == page.value ? [.isSelected] : [])",
+    );
+    expect(source).toContain(
+      "presentation: PaginationPresentation = .indicators",
+    );
+    expect(source).toContain("progress: PaginationProgress = .none");
+  });
+
+  it("Pagination's init rides the contract's channel prop projection", () => {
+    const source = emit("Pagination");
+    expect(source).toContain("index: Binding<Int>? = nil");
+    expect(source).toContain("defaultIndex: Int = 0");
+    expect(source).toContain("onIndexChange: ((Int) -> Void)? = nil");
+  });
+
+  it("PageNavigator composes sibling views over the paged policy (navigator composite)", () => {
+    const source = emit("PageNavigator");
+    expect(source).toContain(
+      "FsdsPagedPosition(index: page.value, count: pageCount ?? pages.count",
+    );
+    expect(source).toContain("FsdsButton(");
+    expect(source).toContain('Icon(name: "arrow-left", size: .sm)');
+    expect(source).toContain("position.commitTarget(for: draft)");
+    expect(source).toContain(".onSubmit(commit)");
+    expect(source).toContain("if showChoices {");
+    expect(source).toContain("Pagination(");
+  });
+
+  it("Carousel steps the sequence channel and composes the picker (sequence pager)", () => {
+    const source = emit("Carousel");
+    expect(source).toContain("public struct Carousel<Content: View>: View {");
+    expect(source).toContain(
+      "@StateObject private var slide: ControllableValue<Int>",
+    );
+    expect(source).toContain(
+      'Button(playing ? "Stop slide rotation" : "Start slide rotation")',
+    );
+    expect(source).toContain("Timer.publish(every: dwellSeconds");
+    expect(source).toContain("index: slide.binding()");
+    expect(source).toContain('label: "Choose slide"');
+  });
+});
