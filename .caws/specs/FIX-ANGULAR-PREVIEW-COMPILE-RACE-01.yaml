@@ -36,3 +36,8 @@ contracts:
   - name: 'angular-preview-compile'
     type: behavior
     path: 'src/runtime/angular-compiler/vite-plugin.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm exec vitest run src/runtime/angular-compiler/vite-plugin.test.ts ('kicks serialize' passes: second runCompile starts only after first settles); in-vivo: worktree dev-server log shows 'compiling (change: Badge)' -> 'done in 3514ms' -> 'compiling (change: Dialog)' with the Dialog event delivered mid-flight and its kick deferred until Badge settled"
+    recorded_at: "2026-10-06T18:12:08.695Z"
