@@ -77,7 +77,7 @@ hold. Each rung is mechanically checked; none is a judgment call.
 
 ## Current per-target state
 
-SwiftUI admits its explicit allowlist: `<!-- target-component-count:swiftui -->52`
+SwiftUI admits its explicit allowlist: `<!-- target-component-count:swiftui -->55`
 of `<!-- component-count -->55` contracts. Jetpack Compose admits
 `<!-- target-component-count:jetpack-compose -->52`, realized through the
 emitter paths below (each dispatches on the substrate or its documented

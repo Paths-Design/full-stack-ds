@@ -72,7 +72,10 @@ final class ComponentSmokeTests: XCTestCase {
         cases.append(("RadioGroup", { AnyView(RadioGroup(options: [RadioGroupOption(value: "a", label: "A"), RadioGroupOption(value: "b", label: "B", disabled: true)], defaultValue: "a", ariaLabel: "Choices", orientation: .horizontal)) }))
         cases.append(("Markdown", { AnyView(Markdown(content: "# Heading")) }))
         cases.append(("NavTree", { AnyView(NavTree(icon: "alarm")) }))
-        XCTAssertEqual(cases.count, 52, "factory table drifted from the allowlist")
+        cases.append(("Pagination", { AnyView(Pagination(pages: ["One", "Two", "Three"])) }))
+        cases.append(("PageNavigator", { AnyView(PageNavigator(pages: ["One", "Two", "Three"], pageCount: 3)) }))
+        cases.append(("Carousel", { AnyView(Carousel(slides: ["One", "Two"]) { SwiftUI.Text("slide") }) }))
+        XCTAssertEqual(cases.count, 55, "factory table drifted from the allowlist")
         for (name, factory) in cases {
             evaluate(name, factory)
         }

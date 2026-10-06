@@ -501,6 +501,95 @@ export function isInteractiveComposite(ir: ComponentIR): boolean {
 }
 
 /**
+ * The paged-position set class: a declared `pagedSet` policy whose sole
+ * numeric channel owns an array-iterated action item that requests a paged
+ * position — the position-selection surface itself, with no component
+ * instances and no stepping triggers. Pagination is the corpus consumer.
+ *
+ * Pure structural facts — target-neutral (SWIFTUI-PAGED-POSITION-ADMISSION-01).
+ */
+export function isPagedPositionSet(ir: ComponentIR): boolean {
+  if (!ir.dom || ir.surface != null || !ir.pagedSet) return false;
+  const channels = ir.behavior.normalizedChannels;
+  if (channels.length !== 1) return false;
+  if (channels[0]!.name !== ir.pagedSet.channel) return false;
+  let hasRequestedItem = false;
+  const walk = (node: DomNodeIR): void => {
+    const iteration = (node as { iteration?: { kind?: string } }).iteration;
+    if (node.tag === "button" && iteration?.kind === "array") {
+      const requested = Object.values(node.events).some(
+        (binding) => binding.kind === "paged" && binding.action === "request",
+      );
+      if (requested) hasRequestedItem = true;
+    }
+    (node.children ?? []).forEach(walk);
+  };
+  walk(ir.dom);
+  return hasRequestedItem;
+}
+
+/**
+ * The paged navigator composite class: a declared `pagedSet` policy whose
+ * dom both steps positions (a `paged:previous`/`paged:next` trigger) and
+ * edits a draft position that commits to the request channel — the
+ * first-class navigation chrome over a paged set. Its component references
+ * (action triggers, a draft field, a composed position set) lower to sibling
+ * native views. PageNavigator is the corpus consumer.
+ *
+ * Pure structural facts — target-neutral (SWIFTUI-PAGED-POSITION-ADMISSION-01).
+ */
+export function isPagedNavigatorComposite(ir: ComponentIR): boolean {
+  if (!ir.dom || ir.surface != null || !ir.pagedSet) return false;
+  let hasStepTrigger = false;
+  let hasDraftCommit = false;
+  const walk = (node: DomNodeIR): void => {
+    for (const binding of Object.values(node.events)) {
+      if (binding.kind !== "paged") continue;
+      if (binding.action === "previous" || binding.action === "next") {
+        hasStepTrigger = true;
+      }
+      if (binding.action === "commit" || binding.action === "edit") {
+        hasDraftCommit = true;
+      }
+    }
+    (node.children ?? []).forEach(walk);
+  };
+  walk(ir.dom);
+  return hasStepTrigger && hasDraftCommit;
+}
+
+/**
+ * The sequence pager class: a declared `sequence` policy (numeric index
+ * channel over an items prop with owned previous/next parts) over a passive
+ * root whose viewport projects the consumer's children — a slide sequence
+ * with a picker composition, not a bare paged set. Carousel is the corpus
+ * consumer.
+ *
+ * Pure structural facts — target-neutral (SWIFTUI-PAGED-POSITION-ADMISSION-01).
+ */
+export function isSequencePager(ir: ComponentIR): boolean {
+  const sequence = ir.motion.sequence;
+  if (!ir.dom || ir.surface != null || !sequence) return false;
+  const channels = ir.behavior.normalizedChannels;
+  if (channels.length !== 1) return false;
+  if (channels[0]!.name !== sequence.channel) return false;
+  let hasProjectedViewport = false;
+  let hasStepTrigger = false;
+  const walk = (node: DomNodeIR): void => {
+    if (node.tag === "children") hasProjectedViewport = true;
+    if (
+      node.tag === "button" &&
+      (node.part === sequence.previous || node.part === sequence.next)
+    ) {
+      hasStepTrigger = true;
+    }
+    (node.children ?? []).forEach(walk);
+  };
+  walk(ir.dom);
+  return hasProjectedViewport && hasStepTrigger;
+}
+
+/**
  * The count-iterated field-group class: a div root whose sole channel is a
  * string over a dom tree containing a count-iterated `input` — a fixed
  * number of per-slot controls writing one character each. OTP is the
