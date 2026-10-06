@@ -1455,17 +1455,22 @@ function emitPagedPositionSet(ir: ComponentIR): string {
   lines.push(
     `${INDENT}${INDENT}${INDENT}.fill(current && ${progressAxis ? "progress == .elapsed" : "false"} ? accentFill : trackFill)`,
   );
-  lines.push(`${INDENT}${INDENT}${INDENT}.frame(width: current && ${progressAxis ? "progress == .elapsed" : "false"} ? dotSize * 2 : dotSize, height: dotSize)`);
+  lines.push(`${INDENT}${INDENT}${INDENT}.frame(width: current && ${progressAxis ? "progress == .elapsed" : "false"} ? activeSize : dotSize, height: dotSize)`);
   lines.push(`${INDENT}}`);
   lines.push("");
   if (ir.tokenScopes.length > 0) {
-    lines.push(`${INDENT}private var accentFill: Color { colorSlot("${ir.cssPrefix}.color.progress") ?? .accentColor }`);
+    // Marker paints read only the component's declared token slots (the
+    // current-position color, its track, and the two size slots) — a read
+    // outside the declared vocabulary is rejected by the consumption audit.
+    lines.push(`${INDENT}private var accentFill: Color { colorSlot("${ir.cssPrefix}.color.current") ?? .accentColor }`);
     lines.push(`${INDENT}private var trackFill: Color { colorSlot("${ir.cssPrefix}.color.track") ?? Color.secondary.opacity(0.35) }`);
     lines.push(`${INDENT}private var dotSize: CGFloat { pxSlot("${ir.cssPrefix}.size.dot-size") ?? 6 }`);
+    lines.push(`${INDENT}private var activeSize: CGFloat { pxSlot("${ir.cssPrefix}.size.active-size") ?? dotSize * 2 }`);
   } else {
     lines.push(`${INDENT}private var accentFill: Color { .accentColor }`);
     lines.push(`${INDENT}private var trackFill: Color { Color.secondary.opacity(0.35) }`);
     lines.push(`${INDENT}private var dotSize: CGFloat { 6 }`);
+    lines.push(`${INDENT}private var activeSize: CGFloat { dotSize * 2 }`);
   }
   lines.push(`}`);
   lines.push("// @generated:end");

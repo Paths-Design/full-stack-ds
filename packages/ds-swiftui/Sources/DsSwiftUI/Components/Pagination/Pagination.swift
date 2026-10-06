@@ -22,6 +22,8 @@ enum PaginationTokens {
             "pagination.color.foreground": FsdsComponentTokenDefinition(cssVar: "--fsds-pagination-color-foreground", name: "pagination.color.foreground", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
             "pagination.color.track": FsdsComponentTokenDefinition(cssVar: "--fsds-pagination-color-track", name: "pagination.color.track", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "pagination.size.dot-size": FsdsComponentTokenDefinition(cssVar: "--fsds-pagination-size-dot-size", name: "pagination.size.dot-size", ref: "core.spacing.size.04", fallback: .string("8px")),
+            "pagination.size.active-size": FsdsComponentTokenDefinition(cssVar: "--fsds-pagination-size-active-size", name: "pagination.size.active-size", ref: "core.spacing.size.08", fallback: .string("32px")),
+            "pagination.color.current": FsdsComponentTokenDefinition(cssVar: "--fsds-pagination-color-current", name: "pagination.color.current", ref: "semantic.color.action.background.primary.default", fallback: .string("#0566fe")),
         ],
     ]
 }
@@ -110,11 +112,12 @@ public struct Pagination: View {
         let current = itemIndex == page.value
         Capsule()
             .fill(current && progress == .elapsed ? accentFill : trackFill)
-            .frame(width: current && progress == .elapsed ? dotSize * 2 : dotSize, height: dotSize)
+            .frame(width: current && progress == .elapsed ? activeSize : dotSize, height: dotSize)
     }
 
-    private var accentFill: Color { colorSlot("pagination.color.progress") ?? .accentColor }
+    private var accentFill: Color { colorSlot("pagination.color.current") ?? .accentColor }
     private var trackFill: Color { colorSlot("pagination.color.track") ?? Color.secondary.opacity(0.35) }
     private var dotSize: CGFloat { pxSlot("pagination.size.dot-size") ?? 6 }
+    private var activeSize: CGFloat { pxSlot("pagination.size.active-size") ?? dotSize * 2 }
 }
 // @generated:end
