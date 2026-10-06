@@ -1,0 +1,55 @@
+id: SWIFTUI-PAGED-POSITION-ADMISSION-01
+title: 'Admit Carousel, PageNavigator, Pagination to SwiftUI emission (52→55) and restore full-corpus react↔swift parity'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-06T18:06:38.307Z'
+updated_at: '2026-10-06T18:06:38.307Z'
+created_by_session: 'session-200e014f-a885-4758-b248-d3edf0a0281d'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/native-emission-class.ts (paged/sequence structural predicates)'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui (emission class arms + realizations)'
+    - 'packages/ds-swiftui (paging runtime primitive + regenerated sources + smoke harness 55)'
+    - 'fsds.targets.json + docs claims (swiftui allowlist 52→55)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-swiftui'
+    - 'fsds.targets.json'
+    - 'docs'
+    - 'CLAUDE.md'
+    - 'scripts'
+    - 'tmp'
+  out: []
+invariants:
+  - 'Every new class gates on target-neutral IR facts (ir.pagedSet / ir.sequence / dom structure) in native-emission-class.ts; no component-name dispatch in the emitter; unrealized facets (e.g. timed auto-advance) are omitted-and-documented, never guessed.'
+  - 'The parity fixture stays emission-level (API-surface presence); its non-claims header is untouched; no gate may be weakened to admit the three components.'
+  - 'Generated SwiftUI bytes are regenerated through the governed rail and committed; the smoke harness completeness assertion tracks the allowlist exactly.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Pagination (pagedSet channel=page, array-iterated item buttons); when generated for swiftui; then a paged-position class emits item buttons over the paging runtime on the numeric channel with current-position state and compiles'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given PageNavigator (pagedSet channel=page, previous/next/commit triggers, draft input, Pagination choices); when generated for swiftui; then the navigator composite emits triggers and the draft/commit flow, composing sibling Fsds views (Button/Icon/Input/Pagination), and compiles'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Carousel (sequence channel=slide, projected slides viewport, rotation/previous/next triggers, Pagination+Icon composition); when generated for swiftui; then the sequence-pager class emits the viewport and navigation triggers with slide state; any unrealized facet (timed auto-advance) is omitted-and-documented; compiles'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the smoke harness; when swift test runs; then the factory table reaches 55 with the completeness assertion at 55 and all bodies evaluate'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given scripts/swift-parity-diff.mjs; when run; then it reports 55/55 for both react and swiftui with exit 0, and generate:check plus the root test suite stay green; docs count claims read 55'
+non_functional: {}
+contracts:
+  - name: 'swiftui-paged-position'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
