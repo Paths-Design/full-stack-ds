@@ -76,6 +76,45 @@ async function runCompile(): Promise<CompileResult> {
   });
 }
 
+/**
+ * Serialize compile passes behind a single queue.
+ *
+ * runCompile() rm-rf's the preview-hosts dir before resynthesizing it, so two
+ * overlapping passes destroy each other's inputs (ENOENT on write / ENOTEMPTY
+ * mid-removal) — observed when a codegen regeneration rewrites ds-angular/src
+ * while a compile from the previous wave is still in flight. Kicking chains
+ * each pass after the previous one settles instead of overlapping them, and
+ * the queued promise carries a no-op catch so a pass that fails with no
+ * middleware awaiter can never surface as an unhandled rejection and kill the
+ * dev server (awaiters still receive the rejection).
+ */
+export function createSerialCompileRunner<R>(opts: {
+  runCompile: (reason: string) => Promise<R>;
+  onResult?: (result: R) => void;
+  onError?: (error: unknown) => void;
+}): { kick: (reason: string) => Promise<R> } {
+  let pending: Promise<R> = Promise.resolve() as Promise<R>;
+  return {
+    kick(reason: string): Promise<R> {
+      const previous = pending;
+      const run = (async () => {
+        await previous.catch(() => {});
+        try {
+          const result = await opts.runCompile(reason);
+          opts.onResult?.(result);
+          return result;
+        } catch (e) {
+          opts.onError?.(e);
+          throw e;
+        }
+      })();
+      run.catch(() => {});
+      pending = run;
+      return run;
+    },
+  };
+}
+
 export function angularPreviewPlugin(): Plugin {
   const state: PluginState = {
     compilePromise: null,
@@ -83,27 +122,38 @@ export function angularPreviewPlugin(): Plugin {
     rebuildTimer: null,
   };
 
-  function kickCompile(reason: string) {
-    state.compilePromise = (async () => {
+  const runner = createSerialCompileRunner<CompileResult>({
+    runCompile: (reason) => {
       const t0 = Date.now();
       console.log(`[fsds-angular] compiling (${reason})…`);
-      try {
-        const result = await runCompile();
-        state.lastResult = result;
-        const errs = result.diagnostics.filter((d) => d.category === "error");
-        const warns = result.diagnostics.filter((d) => d.category === "warning");
-        console.log(
-          `[fsds-angular] done in ${Date.now() - t0}ms — ${result.emitted.length} files, ${errs.length} error(s), ${warns.length} warning(s)`,
-        );
-        for (const d of errs.slice(0, 5)) {
-          console.error(`[fsds-angular:error] ${d.messageText}`);
-        }
-        return result;
-      } catch (e) {
-        console.error(`[fsds-angular] compile failed:`, e);
-        throw e;
-      }
-    })();
+      return runCompile().then(
+        (result) => {
+          const errs = result.diagnostics.filter((d) => d.category === "error");
+          const warns = result.diagnostics.filter((d) => d.category === "warning");
+          console.log(
+            `[fsds-angular] done in ${Date.now() - t0}ms — ${result.emitted.length} files, ${errs.length} error(s), ${warns.length} warning(s)`,
+          );
+          for (const d of errs.slice(0, 5)) {
+            console.error(`[fsds-angular:error] ${d.messageText}`);
+          }
+          return result;
+        },
+        (e) => {
+          console.error(`[fsds-angular] compile failed:`, e);
+          throw e;
+        },
+      );
+    },
+    onResult: (result) => {
+      state.lastResult = result;
+    },
+    onError: () => {
+      // Logged by the runCompile wrapper; the queue only needs containment.
+    },
+  });
+
+  function kickCompile(reason: string) {
+    state.compilePromise = runner.kick(reason);
     return state.compilePromise;
   }
 
