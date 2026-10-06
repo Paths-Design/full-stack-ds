@@ -65,3 +65,7 @@ evidence:
     status: pass
     evidence_ref: "component-source.test.ts > 'PageNavigator composes sibling views over the paged policy' (vitest pass); generated PageNavigator.swift composes FsdsButton/Icon/Input/Pagination over FsdsPagedPosition with draft commitTarget; swift build: Build complete"
     recorded_at: "2026-10-06T19:22:17.413Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "component-source.test.ts > 'Carousel steps the sequence channel and composes the picker' (vitest pass); generated Carousel.swift: ControllableValue<Int> slide channel, rotation toggle on sequence labels + token-resolved 6000ms dwell timer, prev/next stepping, picker composition with dom-attr label; per-child projected slide presentation, next-button ring dot and aria-roledescription omitted-and-documented in the emitted doc comment; swift build: Build complete"
+    recorded_at: "2026-10-06T19:22:18.056Z"
