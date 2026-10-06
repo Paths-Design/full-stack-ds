@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: swiftui-paged-position
 created_at: '2026-10-06T18:06:38.307Z'
-updated_at: '2026-10-06T19:10:12.065Z'
+updated_at: '2026-10-06T19:21:26.026Z'
 created_by_session: 'session-200e014f-a885-4758-b248-d3edf0a0281d'
 blast_radius:
   modules:
@@ -25,6 +25,8 @@ scope:
     - 'tmp'
     - AGENTS.md
   out: []
+  support:
+    - README.md
 invariants:
   - 'Every new class gates on target-neutral IR facts (ir.pagedSet / ir.sequence / dom structure) in native-emission-class.ts; no component-name dispatch in the emitter; unrealized facets (e.g. timed auto-advance) are omitted-and-documented, never guessed.'
   - 'The parity fixture stays emission-level (API-surface presence); its non-claims header is untouched; no gate may be weakened to admit the three components.'
