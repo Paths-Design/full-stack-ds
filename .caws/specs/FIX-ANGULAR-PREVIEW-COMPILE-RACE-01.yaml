@@ -45,3 +45,7 @@ evidence:
     status: pass
     evidence_ref: "vite-plugin.test.ts 'a rejected kick reaches its awaiter, is contained, and does not wedge the queue' and 'a rejection with no awaiter never surfaces as an unhandled rejection'; suite green 10/10 in the slice worktree"
     recorded_at: "2026-10-06T18:12:09.398Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Worktree dev server (port 5174) survived a 190-event ds-angular/src rewrite storm plus a mid-flight burst: HTTP 200 after, compiles completed with 0 error(s), zero ENOTEMPTY/ENOENT in logs, worktree git-clean; #/scratch/analytical-fixtures rendered 'Selected composite output' after the storm"
+    recorded_at: "2026-10-06T18:12:10.012Z"
