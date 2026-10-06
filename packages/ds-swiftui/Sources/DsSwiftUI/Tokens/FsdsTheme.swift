@@ -281,6 +281,7 @@ public enum FsdsSemanticDefaults {
         "core.spacing.size.04": .string("8px"),
         "core.spacing.size.05": .string("12px"),
         "core.spacing.size.06": .string("16px"),
+        "core.spacing.size.08": .string("32px"),
         "semantic.action.size.medium.gap": .string("8px"),
         "semantic.action.size.medium.min-height": .string("32px"),
         "semantic.action.size.medium.padding-block": .string("4px"),
