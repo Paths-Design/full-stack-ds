@@ -56,3 +56,8 @@ contracts:
   - name: 'swiftui-paged-position'
     type: contract-test
     path: 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts > paged/sequence position composites > 'Pagination lowers onto the shared paged-position policy' (vitest pass); generated Components/Pagination/Pagination.swift lowers onto FsdsPagedPosition with canRequest/.isSelected; swift build packages/ds-swiftui: Build complete"
+    recorded_at: "2026-10-06T19:22:03.943Z"
