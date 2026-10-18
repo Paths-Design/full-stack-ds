@@ -2092,11 +2092,18 @@ function emitDateGridSurface(ir: ComponentIR): string {
   // Chrome reads by slot suffix. Colours and spacing fall back to the system
   // appearance or zero; the grid's metrics have no neutral value, so a
   // contract that declares no cell, nav or type size fails emission.
-  const declares = (suffix: string) => ir.tokenScopes.some((scope) => scope.values.some((v) => v.name.endsWith(suffix)));
-  const color = (suffix: string, fallback: string) => (tokens ? `colorSlot(${swiftLiteral(suffix)}) ?? ${fallback}` : fallback);
-  const px = (suffix: string) => (tokens ? `pxSlot(${swiftLiteral(suffix)}) ?? 0` : "0");
+  const declared = (suffix: string) =>
+    ir.tokenScopes.flatMap((scope) => scope.values).find((v) => v.name === suffix || v.name.endsWith(suffix))?.name;
+  const color = (suffix: string, fallback: string) => {
+    const slot = declared(suffix);
+    return slot ? `colorSlot(${swiftLiteral(slot)}) ?? ${fallback}` : fallback;
+  };
+  const px = (suffix: string) => {
+    const slot = declared(suffix);
+    return slot ? `pxSlot(${swiftLiteral(slot)}) ?? 0` : "0";
+  };
   const metric = (suffix: string) => {
-    if (!declares(suffix)) throw new Error(`emitDateGridSurface: ${ir.name} declares no '${suffix}' token`);
+    if (!declared(suffix)) throw new Error(`emitDateGridSurface: ${ir.name} declares no '${suffix}' token`);
     return px(suffix);
   };
   lines.push(`${i1}private var background: Color { ${color(".color.background", ".clear")} }`);

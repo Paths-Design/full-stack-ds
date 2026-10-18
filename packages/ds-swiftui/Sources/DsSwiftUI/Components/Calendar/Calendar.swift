@@ -126,21 +126,21 @@ public struct Calendar: View {
         layered.first { $0.key.hasSuffix(suffix) }?.value?.px
     }
 
-    private var background: Color { colorSlot(".color.background") ?? .clear }
-    private var foreground: Color { colorSlot(".color.foreground.primary") ?? .primary }
-    private var muted: Color { colorSlot(".color.foreground.muted") ?? .secondary }
-    private var border: Color { colorSlot(".color.border") ?? .clear }
-    private var selectedBackground: Color { colorSlot(".color.day.selected.background") ?? .accentColor }
-    private var selectedForeground: Color { colorSlot(".color.day.selected.foreground") ?? .white }
-    private var todayRing: Color { colorSlot(".color.today.ring") ?? .accentColor }
-    private var ringWidth: CGFloat { pxSlot(".focus.ring.width") ?? 0 }
-    private var padding: CGFloat { pxSlot(".size.padding") ?? 0 }
-    private var cellSize: CGFloat { pxSlot(".size.cell") ?? 0 }
-    private var navSize: CGFloat { pxSlot(".size.nav") ?? 0 }
-    private var radius: CGFloat { pxSlot(".size.radius") ?? 0 }
-    private var dayRadius: CGFloat { pxSlot(".size.radius.day") ?? 0 }
-    private var captionSize: CGFloat { pxSlot(".typography.caption.size") ?? 0 }
-    private var daySize: CGFloat { pxSlot(".typography.day.size") ?? 0 }
+    private var background: Color { colorSlot("calendar.color.background") ?? .clear }
+    private var foreground: Color { colorSlot("calendar.color.foreground.primary") ?? .primary }
+    private var muted: Color { colorSlot("calendar.color.foreground.muted") ?? .secondary }
+    private var border: Color { colorSlot("calendar.color.border") ?? .clear }
+    private var selectedBackground: Color { colorSlot("calendar.color.day.selected.background") ?? .accentColor }
+    private var selectedForeground: Color { colorSlot("calendar.color.day.selected.foreground") ?? .white }
+    private var todayRing: Color { colorSlot("calendar.color.today.ring") ?? .accentColor }
+    private var ringWidth: CGFloat { pxSlot("calendar.focus.ring.width") ?? 0 }
+    private var padding: CGFloat { pxSlot("calendar.size.padding") ?? 0 }
+    private var cellSize: CGFloat { pxSlot("calendar.size.cell") ?? 0 }
+    private var navSize: CGFloat { pxSlot("calendar.size.nav") ?? 0 }
+    private var radius: CGFloat { pxSlot("calendar.size.radius") ?? 0 }
+    private var dayRadius: CGFloat { pxSlot("calendar.size.radius.day") ?? 0 }
+    private var captionSize: CGFloat { pxSlot("calendar.typography.caption.size") ?? 0 }
+    private var daySize: CGFloat { pxSlot("calendar.typography.day.size") ?? 0 }
     private var gap: CGFloat { pxSlot("box-model.gap") ?? 0 }
 
     public var body: some View {
