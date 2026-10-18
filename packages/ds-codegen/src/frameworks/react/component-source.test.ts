@@ -38,12 +38,16 @@ describe("CODEGEN-EMIT-LINT-HYGIENE-01: react root destructure + import hygiene"
     expect(src).toContain("const { value: _value, setValue: _setValue } = useField({");
   });
 
-  it("Calendar renames unreferenced props and its unreferenced hook-result value", () => {
+  it("calibration regression: Calendar's date-grid props and hook values are all read and stay plain", () => {
     const src = generateReactComponentSource(corpusIR("Calendar"), STACK_IMPORT);
 
-    expect(src).toContain("minDate: _minDate,");
-    expect(src).toContain('locale: _locale = "en-US",');
-    expect(src).toMatch(/const \{[^}]*value: _value[^}]*\} = useCalendar\(/);
+    // The date grid reads the bounds, locale and caption, and both channels.
+    expect(src).toMatch(/^ {2}minDate,$/m);
+    expect(src).toMatch(/^ {2}maxDate,$/m);
+    expect(src).toMatch(/^ {2}caption,$/m);
+    expect(src).toContain('  locale = "en-US",');
+    expect(src).toContain("const { value, setValue, month, setMonth } = useCalendar({");
+    expect(src).not.toMatch(/: _[A-Za-z]+/);
   });
 
   it("calibration regression: Image's aspectRatio is referenced via === and stays plain", () => {
