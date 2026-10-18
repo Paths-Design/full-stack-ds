@@ -1,9 +1,11 @@
 id: EXAMPLES-MOTION-LAB-01
 title: 'Motion lab example: consumer-side GSAP (Svelte, Lit) and native (SwiftUI, Compose) animation over FSDS motion tokens'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Motion-lab example shipped: GSAP svelte+lit and native swift+compose lanes, all timing token-resolved, Svelte styles.css export promoted, browser-verified web evidence, full gates green.'
 created_at: '2026-10-18T07:18:35.545Z'
-updated_at: '2026-10-18T07:19:07.316Z'
+updated_at: '2026-10-18T18:39:30.101Z'
 created_by_session: 'session-33d6eec5-b0e3-4321-8201-a4c377accd31'
 blast_radius:
   modules:
