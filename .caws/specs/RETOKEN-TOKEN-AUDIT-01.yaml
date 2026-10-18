@@ -91,3 +91,7 @@ evidence:
     status: pass
     evidence_ref: "gate literal census: 13/13 literals ledgered; brand accents #1ed760/#071b0b/#3be477/#e60023/#ad081b/#870a18 defined once as --retoken-accent-* page tokens and consumed via var() in theme.css @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
     recorded_at: "2026-10-18T07:57:12.168Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "gate contrast check: 7 curated pairs all meet AA (ui 3:1, text 4.5:1), including play-ink-on-green and save-white-on-brand-red @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
+    recorded_at: "2026-10-18T07:57:13.600Z"
