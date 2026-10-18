@@ -91,3 +91,7 @@ evidence:
     status: pass
     evidence_ref: "react/component-source.test.ts: Avatar priority/_rename + ReactNode drop, Button title, Field id/name + hook-result renames, Calendar, Image/ShowMore calibration regressions; ds-react suppression block deleted from eslint.config.js (commit f857b5c48)"
     recorded_at: "2026-10-18T19:41:56.475Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "eslint.config.js commit f857b5c48: react/react-hooks rules scoped to src/** + ds-react + ds-react-native files blocks (probe-verified zero rules-of-hooks findings on angular/vue generated output, was 9+2); lit no-this-alias off behind declared policy-boundary comment mirroring validation/frameworks/lit.ts"
+    recorded_at: "2026-10-18T19:42:15.068Z"
