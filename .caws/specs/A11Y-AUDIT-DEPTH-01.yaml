@@ -78,12 +78,12 @@ evidence:
     commit_sha: "24ee2a9f28bb138e43207bbff975d09cf085cee4"
   - criterion_id: A4
     status: pass
-    evidence_ref: "a11y-matrix.json at 33d99922: swiftui/jetpack-compose/react-native state-attribute + interactive-role rows classified (113 realized, 35 unrealized, 4 excluded per-attribute surfaces, 4 not-emitted), e.g. Tabs [swiftui] aria-selected and Tabs [jetpack-compose] interactive-role unrealized, Calendar [swiftui] aria-selected realized via DatePicker; excludedFamilies = figma, unity, godot, gpui with reasons. selfcheck.log pins resolveRegisteredFamilies classifying a surface-table native-view pack and naming gpui/figma/local packs as exclusions."
-    recorded_at: "2026-10-18T07:39:09.626Z"
-    command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
+    evidence_ref: "selfcheck native assertions: RN accessibilityState/accessibilityRole, SwiftUI isSelected/natives, Compose selected/toggleable/role tables classify state-attribute and interactive-role; resolveRegisteredFamilies reports figma/unity/godot/gpui as named exclusions; audit console lists them; local artifacts tmp/l10n-a11y/evidence/A11Y-AUDIT-DEPTH-01-main (selfcheck exit=0; audit PASS 164 obligations/1312 checks/186 ledgered; prepush-scope 57/57)"
+    recorded_at: "2026-10-18T07:53:00.675Z"
+    test_nodeid: scripts/a11y-realization-audit/selfcheck.mjs
+    command: bash tmp/capture-a11y-depth-main.sh
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/l10n-a11y/evidence/A11Y-AUDIT-DEPTH-01/a11y-matrix.json"
-    commit_sha: "33d999228b34f6accf5d37650479bb96d84fe5e0"
+    commit_sha: "24ee2a9f28bb138e43207bbff975d09cf085cee4"
   - criterion_id: A5
     status: pass
     evidence_ref: "selfcheck.log: '[a11y-rail selfcheck] all classifier assertions pass' exit=0; audit.log: 'obligations=164 checks=1312 realized=629 unrealized=186 (ledgered=186) excluded=489' + 'PASS — all unrealized obligations are ledgered; no stale entries.' exit=0; prepush-scope.log 57/57 pass incl. native-tree and fsds.targets.json triggers. Clean tree at 33d99922 (dirty.txt empty)."
