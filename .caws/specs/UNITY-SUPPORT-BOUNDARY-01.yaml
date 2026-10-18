@@ -1,0 +1,64 @@
+id: UNITY-SUPPORT-BOUNDARY-01
+title: 'Unity support boundary: classify every contract and sidecar leaf as lowered, pending or refused; refuse unclassified facts at generation'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-18T22:52:41.128Z'
+updated_at: '2026-10-18T22:52:41.128Z'
+created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
+blast_radius:
+  modules:
+    - 'Unity emitter admission, support boundary and capability inventory'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-codegen/src/emitter.ts'
+    - 'packages/ds-codegen/src/cli.ts'
+    - 'packages/ds-unity/README.md'
+    - 'packages/ds-unity/Runtime/Components'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'package.json'
+  out: []
+invariants:
+  - 'Generated Unity C# for the four admitted components is byte-identical before and after this slice'
+  - 'A lowered rule names a lowering the emitter or shared runtime actually performs today, never an aspiration; pending rules name the phase that will lower them; refused rules state why UI Toolkit cannot lower the fact idiomatically'
+  - 'No emitter branch on component identity is introduced; the boundary classifies pointer families, not components'
+acceptance:
+  - id: A1
+    given: 'the live contract corpus with token and style sidecars'
+    when: 'the Unity capability inventory runs'
+    then: 'every leaf resolves to exactly one boundary rule with disposition lowered, pending or refused and the inventory reports zero unclassified leaves'
+  - id: A2
+    given: 'a contract containing a leaf no boundary rule matches'
+    when: 'the Unity target generates it'
+    then: 'generation fails with UNITY_BOUNDARY_UNCLASSIFIED naming the component and pointer'
+  - id: A3
+    given: 'an allowlisted Unity component with a leaf that resolves only to a catch-all rule'
+    when: 'the Unity target generates it'
+    then: 'generation fails with UNITY_BOUNDARY_UNADJUDICATED naming the pointer'
+  - id: A4
+    given: 'the committed boundary file'
+    when: 'the boundary audit runs'
+    then: 'every rule matches at least one live leaf, every refused rule carries a reason, every pending rule names a phase, and every not-emitted prop of an admitted component resolves to a non-catch-all rule'
+  - id: A5
+    given: 'the boundary in place'
+    when: 'pnpm run generate:unity runs'
+    then: 'git diff over packages/ds-unity is empty and the Unity emitter test suite passes'
+  - id: A6
+    given: 'docs/architecture/unity-target.md and the implementation snapshot'
+    when: 'docs:check-claims runs'
+    then: 'the boundary file, its vocabulary and the audit command are documented and claims pass'
+observability:
+  - 'audit:unity-boundary prints per-disposition leaf counts and lists any unclassified or dead rules'
+rollback:
+  - 'revert the slice commits; generated Unity bytes are unchanged so no regeneration is needed'
+non_functional: {}
+contracts:
+  - name: 'unity-support-boundary'
+    type: schema
+    path: 'packages/ds-codegen/src/frameworks/unity/support-boundary.schema.json'
+  - name: 'unity-boundary-tests'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/unity/boundary.test.ts'
