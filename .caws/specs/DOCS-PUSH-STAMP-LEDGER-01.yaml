@@ -25,3 +25,8 @@ acceptance:
     then: 'pnpm run docs:check-claims passes'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run docs:check-claims passes with both stamps ledgered (normal-form d2ade4e91, admission-rail b1d510f9) at the worktree commit"
+    recorded_at: "2026-10-18T19:40:24.349Z"
