@@ -83,3 +83,7 @@ evidence:
     status: pass
     evidence_ref: "audit --fallbacks trace: every unset design var with a single-hex terminal is ledgered (30 entries); gate check 'unset ... not ledgered' passes @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
     recorded_at: "2026-10-18T07:57:08.547Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "gate parity check: all 3 cross-scope differences (.retoken->.pinterest card chrome) carry recorded decisions; classifier emits no uncovered candidates @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
+    recorded_at: "2026-10-18T07:57:10.089Z"
