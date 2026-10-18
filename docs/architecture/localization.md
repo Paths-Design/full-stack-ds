@@ -5,7 +5,7 @@ status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
 updated: 2026-10-18
-verified_at_commit: 186744bd1
+verified_at_commit: 59b7fa6fa
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
@@ -73,7 +73,7 @@ take:
 |---|---|
 | `L10N_LITERAL_TEXT_ATTRIBUTE` | A static `aria-label`, `aria-roledescription`, `aria-valuetext`, `aria-description`, `aria-placeholder`, `title`, `placeholder` or `alt`; a binding on one that renders a literal; or a DOM `properties` binding that renders one. |
 | `L10N_LITERAL_CONTENT` | Element content whose expression renders a literal. |
-| `L10N_LITERAL_PROP_DEFAULT` | A translatable string prop with a literal default. |
+| `L10N_LITERAL_PROP_DEFAULT` | A translatable string prop, nullable or not, with a literal default. |
 | `L10N_LITERAL_INSTANCE_ATTRIBUTE` | A static attr, or a binding that renders a literal, on a `componentRef` node that feeds the referenced component's translatable string prop. |
 
 The gate reads each binding with the IR's own parser, so a literal counts
