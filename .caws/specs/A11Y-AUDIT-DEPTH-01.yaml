@@ -1,0 +1,50 @@
+id: A11Y-AUDIT-DEPTH-01
+title: 'A11y audit: per-key, roving-reachability, state-attribute, and native-family realization checks'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-18T05:17:53.538Z'
+updated_at: '2026-10-18T05:17:53.538Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'scripts/a11y-realization-audit (obligation derivation, classifier, ledger)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/a11y-realization-audit/audit.mjs'
+    - 'scripts/a11y-realization-audit/selfcheck.mjs'
+    - 'scripts/a11y-realization-audit/known-gaps.json'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The audit stays read-only over source and writes only docs/internal/a11y-realization-audit.'
+  - 'Every obligation derives from a contract fact; the audit carries no component-name lists.'
+  - 'A family with no realization surface for an obligation is reported as an explicit exclusion with a reason, never silently skipped.'
+  - 'The ledger stays two-directional: an unledgered unrealized obligation and a stale ledger entry both fail the run.'
+acceptance:
+  - id: A1
+    given: 'a focus:roving component whose roving items are statically tabIndex -1 and no declared entry action reaches them'
+    when: 'the audit classifies it'
+    then: 'focus:roving is unrealized and natively-provided item keys (Enter/Space) are not counted realized, while a roving component with a dynamic tabindex binding or a realized entry action is realized'
+  - id: A2
+    given: 'a declared keyboard key'
+    when: 'the family source has a keydown handler that never compares that key and no primitive or native carrier owns it'
+    then: 'the key obligation is unrealized'
+  - id: A3
+    given: 'a state a11y attribute declared by states.dimensions.*.a11y or a dom state ARIA attribute'
+    when: 'the family source sets it only as a static literal or not at all (and no native equivalent binding exists)'
+    then: 'the state-attribute obligation is unrealized, and a dynamic binding is realized'
+  - id: A4
+    given: 'registered native-view targets'
+    when: 'the audit runs'
+    then: 'react-native, swiftui and jetpack-compose sources are classified for state-attribute and interactive-role obligations using per-family surface tables, and native-view pilots without a surface table are reported as explicit family exclusions'
+  - id: A5
+    given: 'the extended audit at the slice head'
+    when: 'pnpm run audit:a11y-realization runs'
+    then: 'selfcheck covers every new classifier branch with realized and unrealized fixtures and the audit passes with every unrealized obligation ledgered and no stale entry'
+non_functional: {}
+contracts:
+  - name: 'a11y-realization-audit'
+    type: behavior
+    path: 'scripts/a11y-realization-audit/selfcheck.mjs'
