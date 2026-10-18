@@ -76,7 +76,7 @@ export interface DateGridKeyEvent {
 const WEEKS = 6;
 /** Calendars whose months are the Gregorian months (only era or year numbering differs). */
 const GREGORIAN_MONTH_CALENDARS = new Set(["gregory", "iso8601", "buddhist", "japanese", "roc"]);
-/** CLDR first-day-of-week territories for engines without Intl.Locale week info; every other territory starts on Monday. */
+/** CLDR first-day-of-week territories for engines without Intl.Locale or its week info; every other territory starts on Monday. */
 const SUNDAY_FIRST = new Set("AG AS BD BR BS BT BW BZ CA CO DM DO ET GT GU HK HN ID IL IN JM JP KE KH KR LA MH MM MO MT MX MZ NI NP PA PE PH PK PR PT PY SA SG SV TH TT TW UM US VE VI WS YE ZA ZW".split(" "));
 const SATURDAY_FIRST = new Set("AE AF BH DJ DZ EG IQ IR JO KW LY OM QA SD SY".split(" "));
 const FRIDAY_FIRST = new Set(["MV"]);
@@ -137,20 +137,38 @@ function formatter(locale: string | undefined, options: Intl.DateTimeFormatOptio
 }
 
 interface WeekInfoLocale { getWeekInfo?(): { firstDay: number }; weekInfo?: { firstDay: number } }
+/**
+ * The region subtag a BCP 47 tag names (`de-DE`, `zh-Hant-TW`, `es-419`), or
+ * "" for a language-only tag. Engines without `Intl.Locale` (Hermes) cannot
+ * maximize a tag, so the week falls back on the region the tag spells out.
+ */
+function tagRegion(tag: string): string {
+  const subtags = tag.split(/[-_]/).slice(1);
+  if (/^[A-Za-z]{4}$/.test(subtags[0] ?? "")) subtags.shift();
+  const region = subtags[0] ?? "";
+  return /^(?:[A-Za-z]{2}|\d{3})$/.test(region) ? region.toUpperCase() : "";
+}
+
 /** First day of the week for a locale as a JS weekday (0 = Sunday). */
 export function dateGridWeekStart(locale: string | undefined): number {
+  let region: string;
   try {
-    const resolved = new Intl.Locale(locale ?? new Intl.DateTimeFormat().resolvedOptions().locale);
-    const info = (resolved as Intl.Locale & WeekInfoLocale).getWeekInfo?.() ?? (resolved as Intl.Locale & WeekInfoLocale).weekInfo;
-    if (info && Number.isInteger(info.firstDay)) return info.firstDay % 7;
-    const region = resolved.maximize().region ?? "";
-    if (SUNDAY_FIRST.has(region)) return 0;
-    if (SATURDAY_FIRST.has(region)) return 6;
-    if (FRIDAY_FIRST.has(region)) return 5;
-    return 1;
+    const tag = locale ?? new Intl.DateTimeFormat().resolvedOptions().locale;
+    if (typeof Intl.Locale !== "function") {
+      region = tagRegion(tag);
+    } else {
+      const resolved = new Intl.Locale(tag);
+      const info = (resolved as Intl.Locale & WeekInfoLocale).getWeekInfo?.() ?? (resolved as Intl.Locale & WeekInfoLocale).weekInfo;
+      if (info && Number.isInteger(info.firstDay)) return info.firstDay % 7;
+      region = resolved.maximize().region ?? "";
+    }
   } catch {
     return 0;
   }
+  if (SUNDAY_FIRST.has(region)) return 0;
+  if (SATURDAY_FIRST.has(region)) return 6;
+  if (FRIDAY_FIRST.has(region)) return 5;
+  return 1;
 }
 
 /**

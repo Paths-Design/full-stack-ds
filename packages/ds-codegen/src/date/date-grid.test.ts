@@ -124,6 +124,20 @@ describe("week start", () => {
       if (savedFn) Object.defineProperty(proto, "getWeekInfo", savedFn); else delete proto.getWeekInfo;
     }
   });
+  it("reads the tag's own region when the engine has no Intl.Locale (Hermes)", () => {
+    const saved = Object.getOwnPropertyDescriptor(Intl, "Locale")!;
+    Object.defineProperty(Intl, "Locale", { configurable: true, writable: true, value: undefined });
+    try {
+      expect([
+        dateGridWeekStart("en-US"), dateGridWeekStart("de-DE"), dateGridWeekStart("ar-EG"),
+        dateGridWeekStart("dv-MV"), dateGridWeekStart("zh-Hant-TW"), dateGridWeekStart("pt_BR"),
+      ]).toEqual([0, 1, 6, 5, 0, 0]);
+      // A language-only tag names no region and takes the CLDR world default.
+      expect(dateGridWeekStart("de")).toBe(1);
+    } finally {
+      Object.defineProperty(Intl, "Locale", saved);
+    }
+  });
 });
 
 describe("date grid interaction", () => {
