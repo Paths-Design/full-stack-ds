@@ -5,7 +5,7 @@ status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
 updated: 2026-10-18
-verified_at_commit: da764dee5
+verified_at_commit: 186744bd1
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
@@ -46,7 +46,9 @@ same `{name}` placeholder syntax, so one translation file serves every target.
 
 ## Gates
 
-Two checks run inside `pnpm run generate:check`.
+Two checks run inside `pnpm run generate:check`, which builds each contract's
+IR and reports an IR failure as that contract's DRIFT issue
+(`validation/ir-build.ts`).
 
 `validateMessages` (`packages/ds-codegen/src/messages.ts`) fails the IR build
 with `[MESSAGE_INVALID]` when:
@@ -130,7 +132,8 @@ its runtime reads as rotation text.
 
 - `packages/ds-codegen/src/messages.test.ts`: IR message facts, each
   `MESSAGE_INVALID` refusal by exact diagnostic, and the rotation control's
-  single text writer.
+  single text writer. `validation/ir-build.test.ts` pins that the corpus builds
+  and that an IR failure becomes a reported issue.
 - `packages/ds-codegen/src/validation/localization.test.ts`: the corpus passes;
   each `L10N_*` route fails with its pointer and message, including literals
   nested in conditional arms, `selectionLabel` fallbacks, value maps and DOM
