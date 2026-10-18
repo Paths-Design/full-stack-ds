@@ -25,7 +25,7 @@
       "rotation": {
         "tag": "button",
         "subcomponent": false,
-        "description": "rotation of the composed slide sequence.",
+        "description": "Rotation toggle of the composed slide sequence; the sequence runtime writes its text and name from sequence.labels start/stop as playback changes.",
         "role": "trigger",
         "interactive": true,
         "focusable": true
@@ -86,11 +86,7 @@
           "part": "rotation",
           "attrs": {
             "type": "button"
-          },
-          "bindings": {
-            "aria-label": "message:rotationStart"
-          },
-          "content": "message:rotationStart"
+          }
         },
         {
           "tag": "div",

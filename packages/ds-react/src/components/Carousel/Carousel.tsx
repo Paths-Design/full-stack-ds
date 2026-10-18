@@ -83,9 +83,7 @@ export function Carousel({
 
   return (
   <Stack layout="native" as="section" className={`${classNames}`} role="region" aria-label={label} aria-roledescription={fsdsMessages.roleDescription} data-testid={testId} data-fsds-component="carousel" data-fsds-box="" ref={sequence.bindRoot} {...rest}>
-    <button className="carousel__rotation" type="button" aria-label={fsdsMessages.rotationStart}>
-      {fsdsMessages.rotationStart}
-    </button>
+    <button className="carousel__rotation" type="button" />
     <div className="carousel__viewport" aria-live="off" aria-atomic="false">
       {children}
     </div>

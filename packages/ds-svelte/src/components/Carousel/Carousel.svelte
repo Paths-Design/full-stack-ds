@@ -72,7 +72,7 @@ const classes = $derived(
 </script>
 
 <section class={classes} role="region" aria-label={label} aria-roledescription={fsdsMessages.current.roleDescription} data-fsds-component="carousel" data-fsds-box="" use:sequence.bindRoot>
-  <button class={'carousel__rotation'} type="button" aria-label={fsdsMessages.current.rotationStart}>{fsdsMessages.current.rotationStart}</button>
+  <button class={'carousel__rotation'} type="button"></button>
   <div class={'carousel__viewport'} aria-live="off" aria-atomic="false">
     {@render children?.()}
   </div>

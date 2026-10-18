@@ -77,9 +77,7 @@ const classNames = computed(() => [
 
 <template>
   <section :class="classNames" role="region" :aria-label="props.label" :aria-roledescription="fsdsMessages.roleDescription" :data-testid="props.dataTestid" data-fsds-component="carousel" data-fsds-box="" :ref="sequence.bindRoot">
-    <button :class="'carousel__rotation'" type="button" :aria-label="fsdsMessages.rotationStart">
-      {{ fsdsMessages.rotationStart }}
-    </button>
+    <button :class="'carousel__rotation'" type="button"></button>
     <div :class="'carousel__viewport'" aria-live="off" aria-atomic="false">
       <slot />
     </div>

@@ -230,7 +230,7 @@ export class CarouselElement extends LitElement {
 
   override render() {
     return html`<section class="${this.computeClasses()}" role="region" aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.regionLabel))} aria-roledescription=${this.fsdsMessages.value.roleDescription} data-fsds-box="" ${ref(this.sequence.bindRoot)}>
-  <button class=${'carousel__rotation'} type="button" aria-label=${this.fsdsMessages.value.rotationStart}>${this.fsdsMessages.value.rotationStart}</button>
+  <button class=${'carousel__rotation'} type="button"></button>
   <div class=${'carousel__viewport'} aria-live="off" aria-atomic="false">
     <slot></slot>
   </div>

@@ -68,6 +68,13 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
   const names = [sequence.viewport, sequence.previous, sequence.next, sequence.rotation];
   if (new Set([...names, JSON.stringify(sequence.picker)]).size !== names.length + 1) fail("control and viewport parts must be distinct");
   for (const part of names.slice(1)) if (owned(part).tag !== "button") fail(`${part} must be a native button`);
+  // The runtime toggles the rotation control between labels.start and
+  // labels.stop as playback changes, so it is the control's only text writer;
+  // template-bound text would be a second writer the runtime overwrites.
+  const rotation = owned(sequence.rotation);
+  if (rotation.content !== undefined || rotation.children?.length || rotation.attrs?.["aria-label"] !== undefined || rotation.bindings?.["aria-label"] !== undefined) {
+    fail(`${sequence.rotation} text and name are owned by sequence.labels; the part must not declare content, children or aria-label`);
+  }
   if (!owned(sequence.viewport).children?.some(n => n.tag === "children")) fail("viewport must project consumer children");
   const resolvedPicker = address(sequence.picker);
   const picker = resolvedPicker.node;

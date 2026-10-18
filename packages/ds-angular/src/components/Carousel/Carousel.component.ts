@@ -29,9 +29,7 @@ const CarouselMessages = { regionLabel: "Featured content", roleDescription: "ca
   imports: [NgClass, IconComponent, PaginationComponent],
   host: { "data-fsds-component": "carousel" },
   template: `<section [ngClass]="classes()" role="region" [attr.aria-label]="(label ?? fsdsMessages().regionLabel)" [attr.aria-roledescription]="fsdsMessages().roleDescription" data-fsds-box="" #sequenceRoot>
-  <button [ngClass]="'carousel__rotation'" type="button" [attr.aria-label]="fsdsMessages().rotationStart">
-    {{ fsdsMessages().rotationStart }}
-  </button>
+  <button [ngClass]="'carousel__rotation'" type="button"></button>
   <div [ngClass]="'carousel__viewport'" aria-live="off" aria-atomic="false">
     <ng-content />
   </div>
