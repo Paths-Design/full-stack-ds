@@ -130,3 +130,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/frameworks/native-message-reach.test.ts
     commit_sha: d2ade4e91
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "docs/architecture/localization.md (ARCH-LOCALIZATION-001, verified_at_commit 59b7fa6fa, fresh per docs:check-claims at ec10a8d5a) documents the contract surface, both gates with every L10N_* route, the per-family consumer path in a table (React/RN FsdsMessagesProvider, Vue provider/provideFsdsMessages, Svelte setFsdsMessages, Angular provideFsdsMessages, Lit setFsdsMessages registry, SwiftUI .fsdsMessages over the FsdsComponents table + reference xcstrings, Compose LocalFsdsMessages), evidence, and non-claims incl. no plural/ICU, word order beside inputs, Lit global registry, engine pilots (Godot defaults; Unity/GPUI do not lower), unrendered native messages, Compose stateDescription English, Walkthrough demo steps, locale/RTL out of scope. docs/current-implementation-snapshot.md has the 'Component message catalogs (localization)' ledger row citing the gates and tests. codegen-authority.md accessible-name guidance points at message:. docs:check-claims OK and docs:check-links OK (205 links)."
+    recorded_at: "2026-10-18T14:51:25.354Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/localization.md
+    commit_sha: ec10a8d5a
