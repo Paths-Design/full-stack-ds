@@ -75,3 +75,7 @@ evidence:
     status: pass
     evidence_ref: "node scripts/audit-retoken-tokens.mjs (exit 0): '111 declarations, 13 literals, 3 parity entries, 7 contrast pairs, all adjudicated' — inventory extraction vs committed baseline e2e/fixtures/retoken-pages/token-audit-baseline.json @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
     recorded_at: "2026-10-18T07:57:04.987Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "scripts/retoken-token-probe.mjs three passes (feed/detail/detail+open popover): 99 load-bearing, 12 state-conditioned, 8 dead; all 8 dead deleted from theme.css and recorded in baseline.removedDead @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
+    recorded_at: "2026-10-18T07:57:06.505Z"
