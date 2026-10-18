@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: calendar-date-grid
 created_at: '2026-10-18T15:19:48.751Z'
-updated_at: '2026-10-18T15:20:05.376Z'
+updated_at: '2026-10-18T21:35:23.402Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -34,6 +34,7 @@ scope:
     - 'src'
     - 'scripts'
     - 'docs'
+    - eslint.config.js
   out: []
 invariants:
   - 'The Calendar grid is derived from the visible month channel; no caller-supplied day list.'
