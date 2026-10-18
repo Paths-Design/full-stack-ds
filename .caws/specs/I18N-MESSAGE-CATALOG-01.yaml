@@ -41,9 +41,9 @@ scope:
     - docs/architecture/design/component-design-bindings.md
   out: []
 invariants:
-  - 'A message default is authored once, in the contract messages block; emitters never author user-facing English.'
   - 'Precedence is explicit prop value, then provided catalog entry, then contract default.'
   - 'Emitters lower message facts from the IR with no component-name special-casing.'
+  - 'A message default is authored once, in the contract messages block; emitters never author user-facing English for a message-bearing part. Compose''s expanded/collapsed/selected stateDescription words are the one named residual, owned by the native accessibility semantics slice.'
 acceptance:
   - id: A1
     given: 'a contract declaring a messages block and message:<key> bindings, content or prop defaultMessage'
