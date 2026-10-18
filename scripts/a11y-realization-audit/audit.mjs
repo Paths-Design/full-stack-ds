@@ -163,8 +163,6 @@ const DESIGN_TOOL_EXCLUSION_REASON =
 /** Registered non-descriptor targets, resolved to rail families or explicit
  * exclusions from the compiled builtin target-pack manifests. */
 async function loadRegisteredTargetFamilies(admittedIds) {
-  const families = [];
-  const excludedFamilies = [];
   let packs;
   try {
     packs = (await import(resolve(DIST, "target-packs/builtin.js"))).BUILTIN_TARGET_PACKS;
@@ -174,15 +172,43 @@ async function loadRegisteredTargetFamilies(admittedIds) {
     process.exit(2);
   }
   const registry = JSON.parse(readFileSync(resolve(REPO, "fsds.targets.json"), "utf-8"));
-  for (const { id } of registry.targets ?? []) {
+  return resolveRegisteredFamilies(registry.targets ?? [], packs, admittedIds);
+}
+
+/**
+ * Every registered target that is not an AdmissionDescriptor family becomes
+ * either a classified `native-declarative` family or a named exclusion with a
+ * reason. No registration is dropped.
+ */
+export function resolveRegisteredFamilies(targets, packs, admittedIds) {
+  const families = [];
+  const excludedFamilies = [];
+  for (const { id, source } of targets) {
     if (admittedIds.has(id)) continue;
     const pack = packs[id];
-    if (!pack) continue;
+    if (source?.kind !== "builtin" || !pack) {
+      // A local (metadata-only) or otherwise unresolvable registration has no
+      // emitted tree this rail can read; it is named, never dropped.
+      excludedFamilies.push({
+        id,
+        reason:
+          source?.kind === "local"
+            ? "local target pack: metadata-only, its emitter is not executed so no output tree exists to audit"
+            : `registered target "${id}" has no builtin target-pack manifest`,
+      });
+      continue;
+    }
     if (pack.target.family === "design-tool") {
       excludedFamilies.push({ id, reason: DESIGN_TOOL_EXCLUSION_REASON });
       continue;
     }
-    if (pack.target.family !== "native-view") continue;
+    if (pack.target.family !== "native-view") {
+      excludedFamilies.push({
+        id,
+        reason: `registered ${pack.target.family} target is not rail-admitted (no AdmissionDescriptor)`,
+      });
+      continue;
+    }
     const surface = NATIVE_DECLARATIVE_SURFACE[id];
     const packageRoot = pack.admission?.commands?.[0]?.scope?.packageRoot;
     if (!surface || !packageRoot) {
@@ -300,6 +326,52 @@ export function handlesKey(src, key) {
   return patterns.some((re) => re.test(src));
 }
 
+/** Keydown handler expressions a component binds, in each framework spelling. */
+const KEYDOWN_BINDING_RES = [
+  /\bonKeyDown=\{([^}]+)\}/g, // react
+  /\bon:?keydown=\{([^}]+)\}/g, // svelte 5 / svelte 4
+  /(?:@|v-on:)keydown(?:\.[\w.]+)?="([^"]+)"/g, // vue
+  /\(keydown(?:\.[\w.]+)?\)="([^"]+)"/g, // angular
+  /@keydown=\$\{([^}]+)\}/g, // lit
+  /addEventListener\(\s*["']keydown["']\s*,\s*([^,)]+)/g, // programmatic
+];
+
+/**
+ * True when a keydown expression the component binds names a function that the
+ * primitive source defines, and that function's body compares `key`. The
+ * definition region runs from the definition to the next top-level-looking
+ * definition, bounded so an unrelated later function is not borrowed.
+ */
+export function boundPrimitiveHandlesKey(ownSrc, primitiveSrc, key) {
+  const names = new Set();
+  for (const re of KEYDOWN_BINDING_RES) {
+    for (const m of ownSrc.matchAll(re)) {
+      for (const id of m[1].match(/[A-Za-z_$][\w$]*/g) ?? []) {
+        if (id.length > 2) names.add(id);
+      }
+    }
+  }
+  for (const name of names) {
+    // function N( … | N(params) { (method shorthand; params may nest parens,
+    // so the line is matched greedily) | N = / N: an arrow or function.
+    const n = escapeRegExp(name);
+    const definition = new RegExp(
+      `(?:^|[\\s,{(])(?:function\\s+${n}\\s*\\(|${n}\\s*\\([^\\n]*\\)\\s*(?::[^\\n{]*)?\\{|${n}\\s*[:=]\\s*(?:async\\s+)?(?:function\\b|\\([^\\n]*?\\)\\s*(?::[^\\n=]*)?=>|[A-Za-z_$][\\w$]*\\s*=>))`,
+      "g",
+    );
+    for (const m of primitiveSrc.matchAll(definition)) {
+      const start = m.index ?? 0;
+      const rest = primitiveSrc.slice(start + m[0].length);
+      // The next definition ends the body; control-flow keywords that share
+      // the `name(...) {` shape (`if (…) {`) are not definitions.
+      const next = /\n\s*(?:export\s+)?(?:function\s|const\s|let\s|(?!(?:if|for|while|switch|catch|return|else)\b)[A-Za-z_$][\w$]*\s*\([^\n]*\)\s*\{\s*$)/m.exec(rest);
+      const body = rest.slice(0, next ? Math.min(next.index, 1200) : 1200);
+      if (handlesKey(body, key)) return true;
+    }
+  }
+  return false;
+}
+
 /**
  * A tabindex whose value is computed (one roving item is the tab stop) in each
  * framework's spelling. A literal (`tabIndex={-1}`, `:tabindex="0"`) is not a
@@ -316,10 +388,17 @@ const DYNAMIC_TABINDEX_RES = [
   /\.tabIndex\s*=(?!=)(?!\s*-?\d+\s*[;\n,)])/, // property assignment
 ];
 
-/** Roving items are reachable when one is a computed tab stop or a declared
- * `behavior: "open"` entry action moves focus into them. */
+/** Roving items are reachable when one is a computed tab stop, or when the
+ * contract's `behavior: "open"` entry action is EMITTED: its key is compared
+ * and focus is moved programmatically. A declaration alone is not a way in. */
 export function rovingReachable(src, roving) {
-  return DYNAMIC_TABINDEX_RES.some((re) => re.test(src)) || Boolean(roving?.entryAction);
+  if (DYNAMIC_TABINDEX_RES.some((re) => re.test(src))) return true;
+  const entryKeys = roving?.entryKeys ?? [];
+  return (
+    entryKeys.length > 0 &&
+    entryKeys.every((spec) => atomicKeys(spec).every((k) => handlesKey(src, k))) &&
+    /\.focus\(/.test(src)
+  );
 }
 
 /** ARIA attributes whose value is component state, not configuration. */
@@ -331,14 +410,18 @@ const STATE_ARIA_ATTRIBUTES = new Set([
   "aria-current",
 ]);
 
+/** A constant inside a binding delimiter — `{true}`, `"false"`, `'true'` —
+ * pins the value exactly as a quoted literal does. */
+const CONSTANT_BINDING = String.raw`\s*(?:true|false|mixed|"[^"]*"|'[^']*'|-?\d+)\s*`;
+
 /** Web-dom: the attribute bound to an expression in each framework spelling. */
 function webDynamicStateRes(attr) {
   const a = escapeRegExp(attr);
   return [
-    new RegExp(`(?<![\\w-])${a}=\\{`), // react / svelte
-    new RegExp(`(?:^|[\\s<])(?::|v-bind:)${a}="`), // vue
-    new RegExp(`\\[(?:attr\\.)?${a}\\]="`), // angular
-    new RegExp(`(?<![\\w-])${a}="?\\$\\{`), // lit
+    new RegExp(`(?<![\\w-])${a}=\\{(?!${CONSTANT_BINDING}\\})`), // react / svelte
+    new RegExp(`(?:^|[\\s<])(?::|v-bind:)${a}="(?!${CONSTANT_BINDING}")`), // vue
+    new RegExp(`\\[(?:attr\\.)?${a}\\]="(?!${CONSTANT_BINDING}")`), // angular
+    new RegExp(`(?<![\\w-])${a}="?\\$\\{(?!${CONSTANT_BINDING}\\})`), // lit
     new RegExp(`setAttribute\\(\\s*["']${a}["']\\s*,(?!\\s*["'][^"']*["']\\s*\\))`), // programmatic
     // Prop-getter objects spread onto a trigger: `"aria-expanded": ctx.open`
     // and `ariaProps["aria-expanded"] = isOpen`.
@@ -348,15 +431,35 @@ function webDynamicStateRes(attr) {
   ];
 }
 
-/** Web-dom: the attribute pinned to a constant. A CSS/selector string
- * (`[aria-selected="true"]`) is preceded by `[` and never matches. */
+/** Web-dom: the attribute pinned to a constant, capturing the constant in
+ * group `v`. A CSS/selector string (`[aria-selected="true"]`) is preceded by
+ * `[` and never matches. Constants inside binding delimiters count too. */
 function webStaticStateRes(attr) {
   const a = escapeRegExp(attr);
+  const constant = String.raw`\s*(?:"(?<v1>[^"]*)"|'(?<v2>[^']*)'|(?<v3>true|false|mixed|-?\d+))\s*`;
   return [
-    new RegExp(`(?<![\\w:.\\[-])${a}=(["'])(?!\\$\\{)[^"'{}]*\\1`),
-    new RegExp(`setAttribute\\(\\s*["']${a}["']\\s*,\\s*["'][^"']*["']\\s*\\)`),
-    new RegExp(`["']${a}["']\\s*:\\s*["'](?:true|false|mixed)["']`),
+    new RegExp(`(?<![\\w:.\\[-])${a}=(["'])(?!\\$\\{)(?<v>[^"'{}]*)\\1`),
+    new RegExp(`setAttribute\\(\\s*["']${a}["']\\s*,\\s*["'](?<v>[^"']*)["']\\s*\\)`),
+    new RegExp(`["']${a}["']\\s*:\\s*["'](?<v>true|false|mixed)["']`),
+    new RegExp(`(?<![\\w-])${a}=\\{${constant}\\}`), // react / svelte {true}
+    new RegExp(`(?:^|[\\s<])(?::|v-bind:)${a}="${constant}"`), // vue :a="true"
+    new RegExp(`\\[(?:attr\\.)?${a}\\]="${constant}"`), // angular [attr.a]="true"
+    new RegExp(`(?<![\\w-])${a}="?\\$\\{${constant}\\}`), // lit ${true}
   ];
+}
+
+/** The constant values a source pins `attr` to (empty when none). */
+export function staticStateValues(src, attr) {
+  const values = [];
+  for (const re of webStaticStateRes(attr)) {
+    const global = new RegExp(re.source, "g");
+    let m;
+    while ((m = global.exec(src)) !== null) {
+      const g = m.groups ?? {};
+      values.push(g.v ?? g.v1 ?? g.v2 ?? g.v3 ?? "");
+    }
+  }
+  return values;
 }
 
 /** Web-dom native elements that carry the state themselves. */
@@ -534,7 +637,11 @@ export function deriveObligations(contracts) {
     // stop (checked in the emitted source) or a declared entry action.
     const roving =
       strategy === "roving"
-        ? { entryAction: kb.some((entry) => typeof entry === "object" && entry.behavior === "open") }
+        ? {
+            entryKeys: kb
+              .filter((entry) => typeof entry === "object" && entry.behavior === "open")
+              .map((entry) => entry.key ?? entry.keys),
+          }
         : undefined;
     for (const entry of kb) {
       const keySpec =
@@ -555,12 +662,12 @@ export function deriveObligations(contracts) {
     if (strategy === "roving") {
       obligations.push({ component: name, class: "focus", key: strategy, roving });
     }
-    for (const { attribute, declaredStatic, suppressed } of declaredStateAttributes(contract)) {
+    for (const { attribute, declaredStatic, declaredValue, suppressed } of declaredStateAttributes(contract)) {
       obligations.push({
         component: name,
         class: "state-attribute",
         key: attribute,
-        ...(declaredStatic ? { declaredStatic } : {}),
+        ...(declaredStatic ? { declaredStatic, declaredValue } : {}),
         ...(suppressed ? { suppressed } : {}),
       });
     }
@@ -582,7 +689,7 @@ export function deriveObligations(contracts) {
  * `states.dimensions.<d>.a11y.attribute`, then dom `attrs`/`bindings` keys. */
 export function declaredStateAttributes(contract) {
   const dynamic = new Set();
-  const staticOnly = new Set();
+  const staticValues = new Map();
   for (const dimension of Object.values(contract.states?.dimensions ?? {})) {
     const attribute = dimension?.a11y?.attribute;
     if (typeof attribute === "string") dynamic.add(attribute);
@@ -592,23 +699,25 @@ export function declaredStateAttributes(contract) {
     for (const key of Object.keys(node.bindings ?? {})) {
       if (STATE_ARIA_ATTRIBUTES.has(key)) dynamic.add(key);
     }
-    for (const key of Object.keys(node.attrs ?? {})) {
-      if (STATE_ARIA_ATTRIBUTES.has(key)) staticOnly.add(key);
+    for (const [key, value] of Object.entries(node.attrs ?? {})) {
+      if (STATE_ARIA_ATTRIBUTES.has(key) && !staticValues.has(key)) staticValues.set(key, String(value));
     }
     for (const child of node.children ?? []) walk(child);
   };
   walk(contract.anatomy?.dom);
   const suppressions = contract.a11y?.obligations?.suppress ?? [];
   const out = [];
-  for (const attribute of [...dynamic, ...staticOnly]) {
+  for (const attribute of [...dynamic, ...staticValues.keys()]) {
     if (out.some((entry) => entry.attribute === attribute)) continue;
     const suppressed = suppressions.find((entry) => entry.attr === attribute);
     out.push({
       attribute,
       // A contract that pins the attribute to a constant on its dom node, and
-      // never declares it as varying state, is realized by emitting that
+      // never declares it as varying state, is realized by emitting that same
       // constant (the IR endorses this for a selected-items-only listbox).
-      ...(!dynamic.has(attribute) ? { declaredStatic: true } : {}),
+      ...(!dynamic.has(attribute)
+        ? { declaredStatic: true, declaredValue: staticValues.get(attribute) }
+        : {}),
       ...(suppressed ? { suppressed: suppressed.reason } : {}),
     });
   }
@@ -1166,11 +1275,12 @@ export function classify(obligation, kind, srcBundle, contractTags, familyId) {
         vias.add("explicit");
         continue;
       }
-      // The component binds the keydown itself and delegates to a directly
-      // imported primitive that compares the key (PageNavigator's
-      // `onKeyDown={pagedSet.commitOnEnter}` -> paging Escape). Without the
-      // component's own handler a primitive's key tokens realize nothing.
-      if (hasHandler && handlesKey(relationshipSrc, k)) {
+      // The component binds the keydown to a function a directly imported
+      // primitive defines, and that function compares the key (PageNavigator's
+      // `onKeyDown={pagedSet.commitOnEnter}` -> paging's commitOnEnter
+      // Escape). An import alone, or a handler bound to anything else,
+      // realizes nothing.
+      if (boundPrimitiveHandlesKey(ownSrc, relationshipSrc, k)) {
         vias.add("primitive handler");
         continue;
       }
@@ -1202,7 +1312,7 @@ export function classify(obligation, kind, srcBundle, contractTags, familyId) {
   if (!rovingReachable(ownSrc, obligation.roving)) {
     return {
       verdict: "unrealized",
-      reason: "roving items are never tabbable: no computed tabindex and no declared entry action",
+      reason: "roving items are never tabbable: no computed tabindex and no emitted entry action",
     };
   }
   return {
@@ -1223,9 +1333,18 @@ function classifyStateAttribute(obligation, kind, srcBundle, contractTags, famil
     return { verdict: "excluded", reason: `contract suppression: ${obligation.suppressed}` };
   }
   if (kind === "web-dom") {
-    const statics = webStaticStateRes(attribute).some((re) => re.test(ownSrc));
+    const staticValues = staticStateValues(ownSrc, attribute);
+    const statics = staticValues.length > 0;
     const dynamic = webDynamicStateRes(attribute).some((re) => re.test(withPrimitives));
     if (obligation.declaredStatic) {
+      // The contract pins a value; an emitted constant must be that value.
+      const wrong = staticValues.filter((v) => v !== obligation.declaredValue);
+      if (wrong.length > 0) {
+        return {
+          verdict: "unrealized",
+          reason: `declared ${attribute}="${obligation.declaredValue}" but emitted "${wrong[0]}"`,
+        };
+      }
       return statics || dynamic
         ? { verdict: "realized", via: "static as declared" }
         : { verdict: "unrealized", reason: `declared ${attribute} is not emitted` };
@@ -1248,8 +1367,15 @@ function classifyStateAttribute(obligation, kind, srcBundle, contractTags, famil
       new RegExp(`(?<![\\w-])${escapeRegExp(attribute)}=\\{`),
     ];
     if (obligation.declaredStatic) {
-      const present = new RegExp(`accessibilityState=\\{\\{[^}]*\\b${stateKey}\\s*:`).test(ownSrc) ||
-        dynamic.some((re) => re.test(ownSrc));
+      // An emitted constant must be the declared one.
+      const constant = new RegExp(`accessibilityState=\\{\\{[^}]*\\b${stateKey}\\s*:\\s*(true|false)\\b`).exec(ownSrc);
+      if (constant && constant[1] !== obligation.declaredValue) {
+        return {
+          verdict: "unrealized",
+          reason: `declared ${attribute}="${obligation.declaredValue}" but emitted accessibilityState.${stateKey}: ${constant[1]}`,
+        };
+      }
+      const present = Boolean(constant) || dynamic.some((re) => re.test(ownSrc));
       return present
         ? { verdict: "realized", via: "static as declared" }
         : { verdict: "unrealized", reason: `declared ${attribute} is not emitted as accessibilityState.${stateKey}` };
@@ -1320,7 +1446,10 @@ function classifyInteractiveRole(kind, srcBundle, familyId) {
       : { verdict: "unrealized", reason: `${unroled.length} pressable(s) without accessibilityRole` };
   }
   if (familyId === "jetpack-compose") {
-    const unroled = unroledComposeActivations(ownSrc);
+    // Activation sites in a delegated hand-authored control (Checkbox ->
+    // controls/FsdsCheckbox) are the component's own activation sites.
+    const delegated = typeof srcBundle === "string" ? srcBundle : srcBundle.delegated ?? ownSrc;
+    const unroled = unroledComposeActivations(delegated);
     return unroled.length === 0
       ? { verdict: "realized", via: "semantics role" }
       : { verdict: "unrealized", reason: `${unroled.length} ${[...new Set(unroled)].join("/")} site(s) without role` };
