@@ -967,7 +967,7 @@
             "source": {
               "type": "string",
               "pattern": "^(prop:[A-Za-z_$][\\w$-]*|channel:[A-Za-z_$][\\w$-]*\\.value|dateGrid:(weeks|weekdays)|iter:item(\\.[A-Za-z_$][\\w$]*)*)$",
-              "description": "Iteration source as a binding expression: 'prop:X' (a contract prop), 'channel:X.value' (a declared channel's resolved value), 'dateGrid:weeks' / 'dateGrid:weekdays' (the date-grid runtime's collections), or 'iter:item' / 'iter:item.<path>' (an array on the enclosing iteration's item, for nested iteration; nested iterations declare distinct indexVar and itemVar names)."
+              "description": "Iteration source as a binding expression: 'prop:X' (a contract prop), 'channel:X.value' (a declared channel's resolved value), 'dateGrid:weeks' / 'dateGrid:weekdays' (the date-grid runtime's collections), or 'iter:item' / 'iter:item.<path>' (an array on the enclosing iteration's item, for nested iteration, where an inner iteration's locals shadow the enclosing one's)."
             },
             "kind": {
               "type": "string",
