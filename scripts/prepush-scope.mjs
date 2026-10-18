@@ -57,12 +57,15 @@ const PATTERNS = {
     /^(packages\/ds-(contracts|codegen|react|vue|svelte|angular|lit)\/|scripts\/behavior-realization-audit\/)/,
   // a11y-realization rail (RAIL-A11Y-REALIZATION-01). Same shape, but the
   // family surface is iterated from the AdmissionDescriptor registry — all SIX
-  // admitted families INCLUDING react-native — and the known-gaps ledger lives
-  // in the audit's own directory, so an entry added or removed there moves a
-  // verdict too. Tokens move neither interactivity nor ARIA bytes, so
-  // ds-tokens is deliberately NOT an input (styling-audit precedent).
+  // admitted families INCLUDING react-native — plus the registered SwiftUI and
+  // Jetpack Compose target packs (A11Y-AUDIT-DEPTH-01), whose emitted trees it
+  // also reads; fsds.targets.json decides which of those are registered. The
+  // known-gaps ledger lives in the audit's own directory, so an entry added or
+  // removed there moves a verdict too. Tokens move neither interactivity nor
+  // ARIA bytes, so ds-tokens is deliberately NOT an input (styling-audit
+  // precedent).
   a11yAudit:
-    /^(packages\/ds-(contracts|codegen|react|vue|svelte|angular|lit|react-native)\/|scripts\/a11y-realization-audit\/)/,
+    /^(packages\/ds-(contracts|codegen|react|vue|svelte|angular|lit|react-native|swiftui|jetpack-compose)\/|scripts\/a11y-realization-audit\/|fsds\.targets\.json$)/,
   // custom-region occupancy (RAIL-CUSTOM-REGION-GATE-01). Inputs are the six
   // EMITTED trees it scans and the audit itself. `ds-contracts` is deliberately
   // NOT an input: a contract edit alone cannot occupy a region — only a write
