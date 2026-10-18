@@ -74,7 +74,10 @@ function emitPopoverScaffoldTests(ir: ComponentIR, portalContent: boolean): stri
     ``,
     `declare module "vitest" {`,
     `  interface Assertion<T> {`,
-    `    toHaveNoViolations(): void;`,
+    `    // The positional T keeps this augmentation mergeable with vitest's`,
+    `    // own Assertion<T = any> declaration (TS2428 fires on any rename);`,
+    `    // the expected param references it so it is never an unused type param.`,
+    `    toHaveNoViolations(expected?: T): void;`,
     `  }`,
     `}`,
   ].join("\n");
@@ -305,7 +308,10 @@ function emitTooltipTests(ir: ComponentIR, portalContent: boolean): string {
     ``,
     `declare module "vitest" {`,
     `  interface Assertion<T> {`,
-    `    toHaveNoViolations(): void;`,
+    `    // The positional T keeps this augmentation mergeable with vitest's`,
+    `    // own Assertion<T = any> declaration (TS2428 fires on any rename);`,
+    `    // the expected param references it so it is never an unused type param.`,
+    `    toHaveNoViolations(expected?: T): void;`,
     `  }`,
     `}`,
   ].join("\n");

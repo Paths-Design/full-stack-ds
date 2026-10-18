@@ -117,3 +117,26 @@ describe("generateVueTest — real corpus contracts", () => {
     expect(source).toContain(`afterEach`);
   });
 });
+
+describe("CODEGEN-EMIT-LINT-HYGIENE-01: vue test vitest import hygiene", () => {
+  it("Truncate's generated body uses no vi API → no vi specifier", () => {
+    const source = generateVueTest(corpusIR("Truncate"));
+
+    expect(source).toContain(
+      `import { describe, it, expect } from "vitest";`,
+    );
+    expect(source).not.toMatch(/import \{[^}]*\bvi\b[^}]*\} from "vitest";/);
+  });
+
+  it("Dialog's generated body emits spies → vi is imported", () => {
+    const source = generateVueTest(corpusIR("Dialog"));
+
+    expect(source).toMatch(/import \{[^}]*\bvi\b[^}]*\} from "vitest";/);
+  });
+
+  it("Accordion's generated body uses no vi → no vi specifier (custom blocks self-import)", () => {
+    const source = generateVueTest(corpusIR("Accordion"));
+
+    expect(source).not.toMatch(/import \{[^}]*\bvi\b[^}]*\} from "vitest";/);
+  });
+});

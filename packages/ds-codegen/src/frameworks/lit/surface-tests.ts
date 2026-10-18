@@ -132,13 +132,18 @@ function emitTooltipTests(ir: ComponentIR): string {
   const contentTag = `${rootTag}-content`;
 
   const importsBody = [
-    `import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";`,
+    // CODEGEN-EMIT-LINT-HYGIENE-01: no `beforeEach` — this scaffold's
+    // emitted body never uses it (unused-import finding).
+    `import { describe, it, expect, vi, afterEach } from "vitest";`,
     `import { axe } from "vitest-axe";`,
     `import "../${name}.js";`,
     ``,
     `declare module "vitest" {`,
     `  interface Assertion<T> {`,
-    `    toHaveNoViolations(): void;`,
+    `    // The positional T keeps this augmentation mergeable with vitest's`,
+    `    // own Assertion<T = any> declaration (TS2428 fires on any rename);`,
+    `    // the expected param references it so it is never an unused type param.`,
+    `    toHaveNoViolations(expected?: T): void;`,
     `  }`,
     `}`,
     ``,
@@ -488,7 +493,10 @@ function emitPopoverTests(ir: ComponentIR): string {
     ``,
     `declare module "vitest" {`,
     `  interface Assertion<T> {`,
-    `    toHaveNoViolations(): void;`,
+    `    // The positional T keeps this augmentation mergeable with vitest's`,
+    `    // own Assertion<T = any> declaration (TS2428 fires on any rename);`,
+    `    // the expected param references it so it is never an unused type param.`,
+    `    toHaveNoViolations(expected?: T): void;`,
     `  }`,
     `}`,
     ``,

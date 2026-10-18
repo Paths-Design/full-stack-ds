@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Blockquote } from "../Blockquote";
+import type { Blockquote } from "../Blockquote";
 // @generated:end
 
 // @generated:start tests

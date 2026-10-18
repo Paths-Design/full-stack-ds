@@ -1,5 +1,5 @@
 // @generated:start imports
-import { DestroyRef, type Signal } from "@angular/core";
+import { type DestroyRef, type Signal } from "@angular/core";
 import { createControllableState, createDismissal } from "../../primitives/index.js";
 // @generated:end
 

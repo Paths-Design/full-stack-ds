@@ -61,14 +61,28 @@ export const litValidationPlan: FrameworkValidationPlan = {
       },
       knownRuleNarrowings: ["no-incompatible-type-binding"],
     },
+    {
+      check: "lint",
+      command: ["pnpm", "exec", "eslint", "packages/ds-lit/src", "--max-warnings=0"],
+      // Root flat config lints the generated .ts sources including
+      // __tests__ (re-included via negated ignores). Zero findings
+      // required; findings are emitter bugs.
+      scope: {
+        packageRoot: "packages/ds-lit/",
+        extensions: [".ts"],
+        coverage: "covered_by_package_check",
+      },
+    },
   ],
   checks: {
     typecheck: "direct",
+    lint: "direct",
     parse: "covered_by_typecheck",
     templateTypecheck: "direct",
   },
   knownGaps: [
     "Declared analyzer-policy boundary (NOT a generated-output defect, NOT a binding-site type escape): the lit-analyzer rule `no-incompatible-type-binding` is disabled in the `typecheck:templates` script. lit-analyzer's literal-union strictness for several DOM attribute slots is narrower than the design-system contract type policy (e.g. `<input type=${this.type}>` against contract `type?: string`). Whether contract props should gain stricter per-attribute literal-union typing is a separate contract-policy slice because it affects all framework emitters and public APIs.",
+    "Declared lint-policy boundary: `@typescript-eslint/no-this-alias` is off for packages/ds-lit/src in the root eslint config. The emitter's behavior-wiring closes over the host via `const host = this;` because object-literal option getters cannot use arrow `this` — the alias is the idiomatic Lit pattern, not a defect. Same boundary class as the lit-analyzer narrowing above.",
   ],
 };
 

@@ -50,7 +50,7 @@ export function Progress({
   value,
   label,
   showValue,
-  formatValue,
+  formatValue: _formatValue,
   ...rest
 }: ProgressProps) {
   const classNames = [

@@ -1,0 +1,54 @@
+id: DOCS-EXAMPLES-MOTION-LAB-TAX-01
+title: 'Pay motion-lab documentation tax: snapshot row, build:all note, portfolio run block'
+mode: doc
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Doc tax paid: snapshot Examples row records motion-lab + svelte styles.css export, AGENTS.md build:all note corrected and verified green, portfolio run block and stale snapshot-updated stamp fixed; both doc gates pass.'
+created_at: '2026-10-18T18:42:51.889Z'
+updated_at: '2026-10-18T18:57:52.036Z'
+created_by_session: 'session-33d6eec5-b0e3-4321-8201-a4c377accd31'
+blast_radius:
+  modules:
+    - 'docs/current-implementation-snapshot.md: Examples consumer-app portfolio row + updated frontmatter'
+    - 'AGENTS.md: build:all skip-list note'
+    - 'examples/README.md: How to Run block'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'docs/current-implementation-snapshot.md'
+    - 'AGENTS.md'
+    - 'examples/README.md'
+    - README.md
+  out: []
+invariants:
+  - 'Only documentation files change; no code, package, or generated artifacts'
+  - 'Claims match the merged evidence: browser-verified svelte/lit, compile-verified swift/compose, 70/70 examples lane at 66cb7a051'
+acceptance:
+  - id: A1
+    given: 'main at merge 66cb7a051'
+    when: 'reading the snapshot Examples portfolio row'
+    then: 'it records the motion-lab app shape (GSAP svelte/lit lanes browser-verified at sampled states; swift/compose compile-only), the promoted @full-stack-ds/svelte ./styles.css consumer export, and the refreshed examples vitest lane count, with the snapshot updated date bumped'
+  - id: A2
+    given: 'the merged workspace'
+    when: 'pnpm run build:all runs'
+    then: 'it completes green including the example lanes that carry build scripts, and the AGENTS.md build:all note states that inclusion accurately'
+  - id: A3
+    given: 'the edited docs'
+    when: 'pnpm run docs:check-claims and pnpm run docs:check-links run'
+    then: 'both pass'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "commit 637bd4476: snapshot Examples portfolio row records motion-lab (four lanes, token-graph timing, promoted svelte styles.css export, 70/70 at 66cb7a051) with non-claims and next-steps updated; snapshot frontmatter updated to 2026-10-18"
+    recorded_at: "2026-10-18T18:56:52.133Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run build:all exit 0 on canonical after pnpm install sync: examples/motion-lab/{svelte,lit} build Done inside the dependency-sorted run, after ds-svelte build-styles wrote dist/svelte.css; AGENTS.md note corrected in commit d05f41eca"
+    recorded_at: "2026-10-18T18:56:53.380Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "at commit d988b06a9: docs:check-claims OK (81 marked claims match; 13 stamps fresh or ledgered) and docs:check-links OK (210 relative links resolve)"
+    recorded_at: "2026-10-18T18:56:54.712Z"

@@ -1,0 +1,44 @@
+{
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Toast/Toast.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Toast.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Toast.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Toast.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Toast.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Toast.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/ToggleSwitch/ToggleSwitch.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/ToggleSwitch.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/ToggleSwitch.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/ToggleSwitch.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/ToggleSwitch.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/ToggleSwitch.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Tooltip/Tooltip.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Tooltip.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Tooltip.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Tooltip.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Tooltip.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Tooltip.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Truncate/Truncate.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Truncate.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Truncate.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Truncate.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Truncate.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Truncate.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Walkthrough/Walkthrough.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Walkthrough.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Walkthrough.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Walkthrough.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Walkthrough.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Walkthrough.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Glyphs/GlyphCatalog.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/GlyphCatalog.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/GlyphCatalog.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/GlyphCatalog.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/GlyphCatalog.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/GlyphCatalog.swiftdeps"
+  }
+}

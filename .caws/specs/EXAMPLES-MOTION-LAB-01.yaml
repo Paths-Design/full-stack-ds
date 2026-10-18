@@ -1,10 +1,11 @@
 id: EXAMPLES-MOTION-LAB-01
 title: 'Motion lab example: consumer-side GSAP (Svelte, Lit) and native (SwiftUI, Compose) animation over FSDS motion tokens'
 mode: feature
-lifecycle_state: active
-worktree: motion-lab
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Motion-lab example shipped: GSAP svelte+lit and native swift+compose lanes, all timing token-resolved, Svelte styles.css export promoted, browser-verified web evidence, full gates green.'
 created_at: '2026-10-18T07:18:35.545Z'
-updated_at: '2026-10-18T07:19:07.316Z'
+updated_at: '2026-10-18T18:39:30.101Z'
 created_by_session: 'session-33d6eec5-b0e3-4321-8201-a4c377accd31'
 blast_radius:
   modules:
@@ -69,3 +70,36 @@ rollback:
   - 'Delete examples/motion-lab and revert examples/README.md, vitest.examples.config.ts, package.json, pnpm-lock.yaml; revert packages/ds-svelte/package.json and remove packages/ds-svelte/scripts (export removal restores prior consumer surface)'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm --filter @full-stack-ds/example-motion-lab-svelte build exit 0 at merge 66cb7a051a3a09a44ffbe25c269afd055dd936e0; lane imports only @full-stack-ds/svelte, @full-stack-ds/svelte/styles.css, @full-stack-ds/tokens/tokens.css, gsap, and app-level ../src/motion"
+    recorded_at: "2026-10-18T18:38:40.273Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm --filter @full-stack-ds/example-motion-lab-lit build exit 0 (tsc --noEmit + vite build) at merge 66cb7a051; imports only @full-stack-ds/lit, @full-stack-ds/tokens/tokens.css, gsap, and app-level ../src/motion"
+    recorded_at: "2026-10-18T18:38:41.843Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "artifact tmp/motion-lab/svelte-evidence.json and tmp/motion-lab/lit-evidence.json: all five token readouts resolve runtime values; entrance/stagger inline tweens observed; skeleton mid-pulse opacities (0.9823); icon rotation matrices mid-loop; scramble mid-swap pool symbols with identity-preserving settles; per-path SVG reveal opacities 0-to-1; full reduced-motion substitution (no inline styles, static opacities, settled text). Screenshots tmp/motion-lab/{svelte,lit}-{default,reduced}.png"
+    recorded_at: "2026-10-18T18:38:43.263Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "swift build --package-path examples/motion-lab/swift --disable-sandbox → Build complete (Swift 6.4) at merge 66cb7a051; lane imports only DsSwiftUI plus lane-local Generated/FsdsMotionTokens.swift"
+    recorded_at: "2026-10-18T18:38:45.014Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "GRADLE_USER_HOME=<workspace tmp> ./examples/motion-lab/compose/gradlew -p examples/motion-lab/compose compileKotlin --no-daemon → BUILD SUCCESSFUL at merge 66cb7a051 (sandboxed env note in README; unsandboxed rerun path committed as root script typecheck:example:motion-compose); imports only ds-jetpack-compose:library public API plus lane-local Generated/FsdsMotionTokens.kt"
+    recorded_at: "2026-10-18T18:39:01.963Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "test-nodeid examples/motion-lab/src/motion/tokens.test.ts via pnpm run test:examples:data-api: 70/70 passed incl. duration/bezier parsing, quick-exit diagonal check, bounce overshoot preservation, unset-token fail-loud probes, node reduced-motion default"
+    recorded_at: "2026-10-18T18:39:03.870Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "commit eaef2487f: @full-stack-ds/svelte exports ./styles.css → dist/svelte.css built by scripts/build-styles.mjs (111 stylesheets, import-resolved); consumed by the A1 svelte lane build and rendered in the A3 browser evidence"
+    recorded_at: "2026-10-18T18:39:05.727Z"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "examples/motion-lab/spec.md findings ledger (5 findings incl. the promoted Svelte CSS export gap, Lit shadow-DOM part targeting, icon per-path identity boundary, Compose reduced-motion signal) + README non-claims + examples/README.md portfolio row, at merge 66cb7a051"
+    recorded_at: "2026-10-18T18:39:07.771Z"

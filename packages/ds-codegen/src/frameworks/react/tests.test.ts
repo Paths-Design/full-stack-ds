@@ -64,7 +64,12 @@ describe("generateReactTest — real corpus contracts", () => {
   it("emits compound-subcomponent imports and a render-only channel test for Tabs", () => {
     const source = generateReactTest(corpusIR("Tabs"));
 
-    expect(source).toContain(
+    // CODEGEN-EMIT-LINT-HYGIENE-01: the generated body renders only the
+    // root, so only the root is imported — parts nothing renders were
+    // unused-import findings. The @custom test region self-imports the
+    // parts it uses (companion convention, same as vue/svelte).
+    expect(source).toContain(`import { Tabs } from "../Tabs";`);
+    expect(source).not.toContain(
       `import { Tabs, TabsList, TabsTab, TabsPanel } from "../Tabs";`,
     );
     expect(source).toContain(
@@ -88,8 +93,61 @@ describe("generateReactTest — real corpus contracts", () => {
   it("emits disclosure subcomponent imports for Accordion", () => {
     const source = generateReactTest(corpusIR("Accordion"));
 
+    // CODEGEN-EMIT-LINT-HYGIENE-01: generated body renders only the root;
+    // the disclosure parts live in the @custom region's own import.
+    expect(source).toContain(`import { Accordion } from "../Accordion";`);
+    expect(source).not.toContain(
+      `import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../Accordion";`,
+    );
+  });
+
+  it("CODEGEN-EMIT-LINT-HYGIENE-01: preserved @custom usage keeps the part imports it renders", () => {
+    // Direct call without preserved content narrows to the root (previous
+    // test); a preserved region that renders the parts keeps them, because
+    // import assembly scans the preserved text too.
+    const preserved = `<AccordionItem><AccordionTrigger value="a">A</AccordionTrigger><AccordionContent value="a">PA</AccordionContent></AccordionItem>`;
+    const source = generateReactTest(corpusIR("Accordion"), {
+      preservedCustomTests: preserved,
+    });
+
     expect(source).toContain(
       `import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "../Accordion";`,
+    );
+  });
+
+  it("CODEGEN-EMIT-LINT-HYGIENE-01: Alert imports only the parts something renders", () => {
+    const source = generateReactTest(corpusIR("Alert"));
+
+    expect(source).toContain(`import { Alert } from "../Alert";`);
+    expect(source).not.toContain("AlertBody");
+    expect(source).not.toContain("AlertTitle");
+  });
+
+  it("CODEGEN-EMIT-LINT-HYGIENE-01: augments vitest's Assertion with a referenced T, no disables", () => {
+    const source = generateReactTest(corpusIR("Tabs"));
+
+    expect(source).toContain(`interface Assertion<T> {`);
+    expect(source).toContain(`toHaveNoViolations(expected?: T): void;`);
+    expect(source).not.toContain(`Assertion<_T>`);
+    expect(source).not.toContain("eslint-disable");
+  });
+
+  it("CODEGEN-EMIT-LINT-HYGIENE-01: the factory threads the on-disk @custom region into import assembly", async () => {
+    // Exactly what regeneration does: readPreservedCustomTests pulls the
+    // committed custom region, and the Tabs suite's parts survive.
+    const { createReactEmitter } = await import("./factory.js");
+    const { fileURLToPath } = await import("node:url");
+    const { dirname, resolve } = await import("node:path");
+    const here = dirname(fileURLToPath(import.meta.url));
+    const repoRoot = resolve(here, "../../../../..");
+    const emitter = createReactEmitter({ stackImportRelative: "../../primitives" });
+    const files = emitter.emitTests(corpusIR("Tabs"), {
+      componentsRoot: resolve(repoRoot, "packages/ds-react/src/components"),
+      contractsRoot: resolve(repoRoot, "packages/ds-contracts/components"),
+    });
+
+    expect(files[0]?.contents).toContain(
+      `import { Tabs, TabsList, TabsTab, TabsPanel } from "../Tabs";`,
     );
   });
 

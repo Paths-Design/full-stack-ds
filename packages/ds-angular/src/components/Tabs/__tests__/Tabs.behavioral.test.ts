@@ -19,7 +19,7 @@
  */
 import { describe, expect, it, beforeEach, jest } from "@jest/globals";
 import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
-import { TestBed, ComponentFixture } from "@angular/core/testing";
+import { TestBed, type ComponentFixture } from "@angular/core/testing";
 import { TabsComponent } from "../Tabs.component";
 import { TabsListComponent } from "../TabsList.component";
 import { TabsTabComponent } from "../TabsTab.component";

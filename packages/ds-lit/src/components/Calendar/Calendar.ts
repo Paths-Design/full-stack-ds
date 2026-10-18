@@ -1,5 +1,5 @@
 // @generated:start imports
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { DateGridController } from "../../primitives/controllers/DateGridController.js";
 import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
@@ -276,7 +276,7 @@ export class CalendarElement extends LitElement {
   <table class=${'calendar__grid'} role="grid" @keydown=${this.dateGrid.keydown} aria-label=${this.dateGrid.state.caption}>
     <thead>
       <tr role="row">
-        ${(this.dateGrid.state.weekdays ?? []).map((item, index) => html`
+        ${(this.dateGrid.state.weekdays ?? []).map((item) => html`
         <th class=${'calendar__weekday'} role="columnheader" scope="col" aria-label=${ifDefined(item.long)}>
           <span>${item.short}</span>
         </th>
@@ -286,7 +286,7 @@ export class CalendarElement extends LitElement {
     <tbody>
       ${(this.dateGrid.state.weeks ?? []).map((week, row) => html`
       <tr role="row">
-        ${(week.days ?? []).map((day, column) => html`
+        ${(week.days ?? []).map((day) => html`
         <td class=${'calendar__cell'} role="gridcell" aria-selected=${ifDefined(day.selected)} aria-current=${ifDefined(day.current)} data-outside-month=${ifDefined(day.outsideMonth)}>
           <button class=${'calendar__day'} type="button" @click=${() => this.dateGrid.select(day)} tabindex=${ifDefined(day.tabIndex)} aria-label=${ifDefined(day.fullLabel)} aria-disabled=${ifDefined(day.disabled)} data-date=${ifDefined(day.key)}>${day.label}</button>
         </td>

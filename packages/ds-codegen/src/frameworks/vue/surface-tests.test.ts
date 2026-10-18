@@ -36,4 +36,12 @@ describe("vue surface-tests — anchored surfaces", () => {
     const source = generateVueSurfaceTest(irFor("Popover"));
     expect(source).toContain("@generated:start");
   });
+
+  it("CODEGEN-EMIT-LINT-HYGIENE-01: augments vitest's Assertion with a referenced T", () => {
+    const source = generateVueSurfaceTest(irFor("Tooltip"));
+
+    expect(source).toContain(`interface Assertion<T> {`);
+    expect(source).toContain(`toHaveNoViolations(expected?: T): void;`);
+    expect(source).not.toContain(`toHaveNoViolations(): void;`);
+  });
 });

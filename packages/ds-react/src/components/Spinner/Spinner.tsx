@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type HTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import "./Spinner.css";
 // @generated:end
@@ -43,8 +43,8 @@ export function Spinner({
   "data-testid": testId,
   ariaHidden,
   label,
-  inline,
-  showAfterMs,
+  inline: _inline,
+  showAfterMs: _showAfterMs,
   ...rest
 }: SpinnerProps) {
   const classNames = [

@@ -1,6 +1,6 @@
 // @generated:start imports
 import { type ReactNode, type RefObject, useRef } from "react";
-import { useControllableState, useDismissal, usePortal } from "../../primitives/hooks";
+import { useControllableState, usePortal } from "../../primitives/hooks";
 // @generated:end
 
 // @custom:start imports

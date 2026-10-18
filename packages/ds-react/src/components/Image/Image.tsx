@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type CSSProperties, type ImgHTMLAttributes, type ReactNode } from "react";
+import { type CSSProperties, type ImgHTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import "./Image.css";
 // @generated:end
@@ -61,8 +61,8 @@ export function Image({
   objectPosition,
   loading,
   sizes,
-  showPlaceholder,
-  fallbackSrc,
+  showPlaceholder: _showPlaceholder,
+  fallbackSrc: _fallbackSrc,
   ...rest
 }: ImageProps) {
   const classNames = [

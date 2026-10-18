@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { CodeSnippet } from "../CodeSnippet";
+import type { CodeSnippet } from "../CodeSnippet";
 // @generated:end
 
 // @generated:start tests

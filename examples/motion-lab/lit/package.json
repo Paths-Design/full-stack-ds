@@ -1,0 +1,21 @@
+{
+  "name": "@full-stack-ds/example-motion-lab-lit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@full-stack-ds/lit": "workspace:*",
+    "@full-stack-ds/tokens": "workspace:*",
+    "gsap": "^3.13.0",
+    "lit": "^3.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8"
+  }
+}

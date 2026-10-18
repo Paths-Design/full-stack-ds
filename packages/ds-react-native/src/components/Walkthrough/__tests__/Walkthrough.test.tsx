@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Walkthrough } from "../Walkthrough";
+import type { Walkthrough } from "../Walkthrough";
 // @generated:end
 
 // @generated:start tests

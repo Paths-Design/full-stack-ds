@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type InputHTMLAttributes, type ReactNode } from "react";
+import { type InputHTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import { useInput } from "./useInput";
 import { useFieldAssociation } from "../../primitives/hooks";

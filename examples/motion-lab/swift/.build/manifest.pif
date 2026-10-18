@@ -1,0 +1,3769 @@
+[
+  {
+    "contents" : {
+      "guid" : "Workspace:/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift",
+      "name" : "motion-lab-swift-example",
+      "path" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift",
+      "projects" : [
+        "031558b154f38a44ca76ac104b6ecee6fa786fc52e7d1d5804a9e6ab952e716e",
+        "be417b0284fbc4b77166f5cc163e0d34d8d515b78141c6295e4d38bea8512a4c",
+        "f361f4fb6f4ab0ad984f3aef0e8565deb3556190ed9cbcf19bdda0c4e6f63d38"
+      ]
+    },
+    "signature" : "e86d790d0038ceadf62ba9018c22a38eea600320c9f551b82d618adc18615dba",
+    "type" : "workspace"
+  },
+  {
+    "contents" : {
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+            "BUILD_SERVER_PROTOCOL_TARGET_TAGS" : [
+              "$(inherited)",
+              "dependency"
+            ],
+            "CLANG_ENABLE_MODULES[__platform_filter=driverkit]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=ios-maccatalyst]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=ios;ios-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=macos]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=tvos;tvos-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=watchos;watchos-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=xros;xros-simulator]" : "YES",
+            "CODE_SIGNING_REQUIRED" : "NO",
+            "CODE_SIGN_IDENTITY" : "",
+            "COMPILER_WORKING_DIRECTORY" : "$(WORKSPACE_DIR)",
+            "COPY_PHASE_STRIP" : "NO",
+            "DEBUG_INFORMATION_FORMAT" : "dwarf",
+            "DRIVERKIT_DEPLOYMENT_TARGET" : "21.0",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=driverkit]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=ios-maccatalyst]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=ios;ios-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=macos]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=tvos;tvos-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=watchos;watchos-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=xros;xros-simulator]" : "@rpath",
+            "ENABLE_NS_ASSERTIONS" : "YES",
+            "ENABLE_TESTABILITY" : "YES",
+            "ENABLE_TESTING_SEARCH_PATHS" : "YES",
+            "ENTITLEMENTS_REQUIRED" : "NO",
+            "GCC_OPTIMIZATION_LEVEL" : "0",
+            "GCC_PREPROCESSOR_DEFINITIONS" : [
+              "$(inherited)",
+              "SWIFT_PACKAGE",
+              "DEBUG=1"
+            ],
+            "INDEX_ENABLE_DATA_STORE" : "YES",
+            "IPHONEOS_DEPLOYMENT_TARGET" : "15.0",
+            "IPHONEOS_DEPLOYMENT_TARGET[__platform_filter=ios-maccatalyst]" : "15.0",
+            "KEEP_PRIVATE_EXTERNS" : "NO",
+            "LIBTOOL_NO_WARNING_FOR_NO_SYMBOLS" : "YES",
+            "LINKER_DRIVER" : "auto",
+            "MACOSX_DEPLOYMENT_TARGET" : "14.0",
+            "ONLY_ACTIVE_ARCH" : "YES",
+            "OTHER_CFLAGS" : [
+              "$(inherited)",
+              "-DXcode"
+            ],
+            "OTHER_LDRFLAGS" : [
+
+            ],
+            "OTHER_SWIFT_FLAGS" : [
+              "$(inherited)",
+              "-DXcode"
+            ],
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SKIP_INSTALL" : "YES",
+            "SPECIALIZATION_SDK_OPTIONS[__platform_filter=macos]" : [
+
+            ],
+            "SUPPORTED_PLATFORMS" : [
+              "$(AVAILABLE_PLATFORMS)"
+            ],
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS" : [
+              "$(inherited)",
+              "SWIFT_PACKAGE",
+              "DEBUG"
+            ],
+            "SWIFT_INSTALL_OBJC_HEADER" : "NO",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "",
+            "SWIFT_OPTIMIZATION_LEVEL" : "-Onone",
+            "TARGETED_DEVICE_FAMILY" : "",
+            "TVOS_DEPLOYMENT_TARGET" : "15.0",
+            "USE_HEADERMAP" : "NO",
+            "WATCHOS_DEPLOYMENT_TARGET" : "9.0",
+            "XROS_DEPLOYMENT_TARGET" : "1.0"
+          },
+          "guid" : "PACKAGE:ds-swiftui::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+            "BUILD_SERVER_PROTOCOL_TARGET_TAGS" : [
+              "$(inherited)",
+              "dependency"
+            ],
+            "CLANG_ENABLE_MODULES[__platform_filter=driverkit]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=ios-maccatalyst]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=ios;ios-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=macos]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=tvos;tvos-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=watchos;watchos-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=xros;xros-simulator]" : "YES",
+            "CODE_SIGNING_REQUIRED" : "NO",
+            "CODE_SIGN_IDENTITY" : "",
+            "COMPILER_WORKING_DIRECTORY" : "$(WORKSPACE_DIR)",
+            "COPY_PHASE_STRIP" : "YES",
+            "DEBUG_INFORMATION_FORMAT" : "dwarf-with-dsym",
+            "DEPLOYMENT_POSTPROCESSING" : "YES",
+            "DRIVERKIT_DEPLOYMENT_TARGET" : "21.0",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=driverkit]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=ios-maccatalyst]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=ios;ios-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=macos]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=tvos;tvos-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=watchos;watchos-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=xros;xros-simulator]" : "@rpath",
+            "ENABLE_TESTING_SEARCH_PATHS" : "YES",
+            "ENTITLEMENTS_REQUIRED" : "NO",
+            "GCC_OPTIMIZATION_LEVEL" : "s",
+            "GCC_PREPROCESSOR_DEFINITIONS" : [
+              "$(inherited)",
+              "SWIFT_PACKAGE"
+            ],
+            "IPHONEOS_DEPLOYMENT_TARGET" : "15.0",
+            "IPHONEOS_DEPLOYMENT_TARGET[__platform_filter=ios-maccatalyst]" : "15.0",
+            "KEEP_PRIVATE_EXTERNS" : "NO",
+            "LIBTOOL_NO_WARNING_FOR_NO_SYMBOLS" : "YES",
+            "LINKER_DRIVER" : "auto",
+            "MACOSX_DEPLOYMENT_TARGET" : "14.0",
+            "OTHER_CFLAGS" : [
+              "$(inherited)",
+              "-DXcode"
+            ],
+            "OTHER_LDRFLAGS" : [
+
+            ],
+            "OTHER_SWIFT_FLAGS" : [
+              "$(inherited)",
+              "-DXcode"
+            ],
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SKIP_INSTALL" : "YES",
+            "SPECIALIZATION_SDK_OPTIONS[__platform_filter=macos]" : [
+
+            ],
+            "SUPPORTED_PLATFORMS" : [
+              "$(AVAILABLE_PLATFORMS)"
+            ],
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS" : [
+              "$(inherited)",
+              "SWIFT_PACKAGE"
+            ],
+            "SWIFT_INSTALL_OBJC_HEADER" : "NO",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "",
+            "SWIFT_OPTIMIZATION_LEVEL" : "-Owholemodule",
+            "TARGETED_DEVICE_FAMILY" : "",
+            "TVOS_DEPLOYMENT_TARGET" : "15.0",
+            "USE_HEADERMAP" : "NO",
+            "WATCHOS_DEPLOYMENT_TARGET" : "9.0",
+            "XROS_DEPLOYMENT_TARGET" : "1.0"
+          },
+          "guid" : "PACKAGE:ds-swiftui::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "defaultConfigurationName" : "Release",
+      "groupTree" : {
+        "children" : [
+          {
+            "children" : [
+
+            ],
+            "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_0",
+            "name" : "AdditionalFiles",
+            "path" : "/",
+            "sourceTree" : "<absolute>",
+            "type" : "group"
+          },
+          {
+            "children" : [
+
+            ],
+            "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_1",
+            "name" : "Binaries",
+            "path" : "/",
+            "sourceTree" : "<absolute>",
+            "type" : "group"
+          },
+          {
+            "children" : [
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_0",
+                "name" : "Components/Accordion/Accordion.swift",
+                "path" : "Components/Accordion/Accordion.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_1",
+                "name" : "Components/Alert/Alert.swift",
+                "path" : "Components/Alert/Alert.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_2",
+                "name" : "Components/AlertNotice/AlertNotice.swift",
+                "path" : "Components/AlertNotice/AlertNotice.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_3",
+                "name" : "Components/Avatar/Avatar.swift",
+                "path" : "Components/Avatar/Avatar.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_4",
+                "name" : "Components/Badge/Badge.swift",
+                "path" : "Components/Badge/Badge.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_5",
+                "name" : "Components/Blockquote/Blockquote.swift",
+                "path" : "Components/Blockquote/Blockquote.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_6",
+                "name" : "Components/Breadcrumbs/Breadcrumbs.swift",
+                "path" : "Components/Breadcrumbs/Breadcrumbs.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_7",
+                "name" : "Components/Button/Button.swift",
+                "path" : "Components/Button/Button.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_8",
+                "name" : "Components/Calendar/Calendar.swift",
+                "path" : "Components/Calendar/Calendar.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_9",
+                "name" : "Components/Card/Card.swift",
+                "path" : "Components/Card/Card.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_10",
+                "name" : "Components/Carousel/Carousel.swift",
+                "path" : "Components/Carousel/Carousel.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_11",
+                "name" : "Components/Checkbox/Checkbox.swift",
+                "path" : "Components/Checkbox/Checkbox.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_12",
+                "name" : "Components/Chip/Chip.swift",
+                "path" : "Components/Chip/Chip.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_13",
+                "name" : "Components/CodeBlock/CodeBlock.swift",
+                "path" : "Components/CodeBlock/CodeBlock.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_14",
+                "name" : "Components/CodeSnippet/CodeSnippet.swift",
+                "path" : "Components/CodeSnippet/CodeSnippet.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_15",
+                "name" : "Components/Command/Command.swift",
+                "path" : "Components/Command/Command.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_16",
+                "name" : "Components/Components.generated.swift",
+                "path" : "Components/Components.generated.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_17",
+                "name" : "Components/Details/Details.swift",
+                "path" : "Components/Details/Details.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_18",
+                "name" : "Components/Dialog/Dialog.swift",
+                "path" : "Components/Dialog/Dialog.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_19",
+                "name" : "Components/Divider/Divider.swift",
+                "path" : "Components/Divider/Divider.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_20",
+                "name" : "Components/Field/Field.swift",
+                "path" : "Components/Field/Field.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_21",
+                "name" : "Components/Icon/Icon.swift",
+                "path" : "Components/Icon/Icon.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_22",
+                "name" : "Components/Image/Image.swift",
+                "path" : "Components/Image/Image.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_23",
+                "name" : "Components/Input/Input.swift",
+                "path" : "Components/Input/Input.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_24",
+                "name" : "Components/Label/Label.swift",
+                "path" : "Components/Label/Label.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_25",
+                "name" : "Components/Links/Links.swift",
+                "path" : "Components/Links/Links.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_26",
+                "name" : "Components/List/List.swift",
+                "path" : "Components/List/List.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_27",
+                "name" : "Components/Markdown/Markdown.swift",
+                "path" : "Components/Markdown/Markdown.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_28",
+                "name" : "Components/NavList/NavList.swift",
+                "path" : "Components/NavList/NavList.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_29",
+                "name" : "Components/NavTree/NavTree.swift",
+                "path" : "Components/NavTree/NavTree.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_30",
+                "name" : "Components/OTP/OTP.swift",
+                "path" : "Components/OTP/OTP.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_31",
+                "name" : "Components/PageNavigator/PageNavigator.swift",
+                "path" : "Components/PageNavigator/PageNavigator.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_32",
+                "name" : "Components/Pagination/Pagination.swift",
+                "path" : "Components/Pagination/Pagination.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_33",
+                "name" : "Components/Popover/Popover.swift",
+                "path" : "Components/Popover/Popover.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_34",
+                "name" : "Components/Postcard/Postcard.swift",
+                "path" : "Components/Postcard/Postcard.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_35",
+                "name" : "Components/ProfileFlag/ProfileFlag.swift",
+                "path" : "Components/ProfileFlag/ProfileFlag.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_36",
+                "name" : "Components/Progress/Progress.swift",
+                "path" : "Components/Progress/Progress.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_37",
+                "name" : "Components/RadioGroup/RadioGroup.swift",
+                "path" : "Components/RadioGroup/RadioGroup.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_38",
+                "name" : "Components/Select/Select.swift",
+                "path" : "Components/Select/Select.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_39",
+                "name" : "Components/Sheet/Sheet.swift",
+                "path" : "Components/Sheet/Sheet.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_40",
+                "name" : "Components/ShowMore/ShowMore.swift",
+                "path" : "Components/ShowMore/ShowMore.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_41",
+                "name" : "Components/Shuttle/Shuttle.swift",
+                "path" : "Components/Shuttle/Shuttle.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_42",
+                "name" : "Components/Skeleton/Skeleton.swift",
+                "path" : "Components/Skeleton/Skeleton.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_43",
+                "name" : "Components/Spinner/Spinner.swift",
+                "path" : "Components/Spinner/Spinner.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_44",
+                "name" : "Components/Stat/Stat.swift",
+                "path" : "Components/Stat/Stat.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_45",
+                "name" : "Components/Status/Status.swift",
+                "path" : "Components/Status/Status.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_46",
+                "name" : "Components/Switch/Switch.swift",
+                "path" : "Components/Switch/Switch.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_47",
+                "name" : "Components/Table/Table.swift",
+                "path" : "Components/Table/Table.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_48",
+                "name" : "Components/Tabs/Tabs.swift",
+                "path" : "Components/Tabs/Tabs.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_49",
+                "name" : "Components/Text/Text.swift",
+                "path" : "Components/Text/Text.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_50",
+                "name" : "Components/TextField/TextField.swift",
+                "path" : "Components/TextField/TextField.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_51",
+                "name" : "Components/Toast/Toast.swift",
+                "path" : "Components/Toast/Toast.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_52",
+                "name" : "Components/ToggleSwitch/ToggleSwitch.swift",
+                "path" : "Components/ToggleSwitch/ToggleSwitch.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_53",
+                "name" : "Components/Tooltip/Tooltip.swift",
+                "path" : "Components/Tooltip/Tooltip.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_54",
+                "name" : "Components/Truncate/Truncate.swift",
+                "path" : "Components/Truncate/Truncate.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_55",
+                "name" : "Components/Walkthrough/Walkthrough.swift",
+                "path" : "Components/Walkthrough/Walkthrough.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_56",
+                "name" : "Glyphs/GlyphCatalog.swift",
+                "path" : "Glyphs/GlyphCatalog.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_57",
+                "name" : "Glyphs/SVGPath.swift",
+                "path" : "Glyphs/SVGPath.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_58",
+                "name" : "Presence/ControllableValue.swift",
+                "path" : "Presence/ControllableValue.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_59",
+                "name" : "Presence/Paging.swift",
+                "path" : "Presence/Paging.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_60",
+                "name" : "Presence/SelectionState.swift",
+                "path" : "Presence/SelectionState.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_61",
+                "name" : "Tokens/FsdsTheme.swift",
+                "path" : "Tokens/FsdsTheme.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_62",
+                "name" : "primitives/Stack.swift",
+                "path" : "primitives/Stack.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              }
+            ],
+            "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2",
+            "name" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI",
+            "path" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI",
+            "sourceTree" : "<absolute>",
+            "type" : "group"
+          },
+          {
+            "children" : [
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_0",
+                "name" : "Components/Accordion/Accordion.swift",
+                "path" : "Components/Accordion/Accordion.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_1",
+                "name" : "Components/Alert/Alert.swift",
+                "path" : "Components/Alert/Alert.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_2",
+                "name" : "Components/AlertNotice/AlertNotice.swift",
+                "path" : "Components/AlertNotice/AlertNotice.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_3",
+                "name" : "Components/Avatar/Avatar.swift",
+                "path" : "Components/Avatar/Avatar.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_4",
+                "name" : "Components/Badge/Badge.swift",
+                "path" : "Components/Badge/Badge.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_5",
+                "name" : "Components/Blockquote/Blockquote.swift",
+                "path" : "Components/Blockquote/Blockquote.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_6",
+                "name" : "Components/Breadcrumbs/Breadcrumbs.swift",
+                "path" : "Components/Breadcrumbs/Breadcrumbs.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_7",
+                "name" : "Components/Button/Button.swift",
+                "path" : "Components/Button/Button.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_8",
+                "name" : "Components/Calendar/Calendar.swift",
+                "path" : "Components/Calendar/Calendar.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_9",
+                "name" : "Components/Card/Card.swift",
+                "path" : "Components/Card/Card.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_10",
+                "name" : "Components/Carousel/Carousel.swift",
+                "path" : "Components/Carousel/Carousel.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_11",
+                "name" : "Components/Checkbox/Checkbox.swift",
+                "path" : "Components/Checkbox/Checkbox.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_12",
+                "name" : "Components/Chip/Chip.swift",
+                "path" : "Components/Chip/Chip.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_13",
+                "name" : "Components/CodeBlock/CodeBlock.swift",
+                "path" : "Components/CodeBlock/CodeBlock.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_14",
+                "name" : "Components/CodeSnippet/CodeSnippet.swift",
+                "path" : "Components/CodeSnippet/CodeSnippet.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_15",
+                "name" : "Components/Command/Command.swift",
+                "path" : "Components/Command/Command.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_16",
+                "name" : "Components/Components.generated.swift",
+                "path" : "Components/Components.generated.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_17",
+                "name" : "Components/Details/Details.swift",
+                "path" : "Components/Details/Details.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_18",
+                "name" : "Components/Dialog/Dialog.swift",
+                "path" : "Components/Dialog/Dialog.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_19",
+                "name" : "Components/Divider/Divider.swift",
+                "path" : "Components/Divider/Divider.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_20",
+                "name" : "Components/Field/Field.swift",
+                "path" : "Components/Field/Field.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_21",
+                "name" : "Components/Icon/Icon.swift",
+                "path" : "Components/Icon/Icon.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_22",
+                "name" : "Components/Image/Image.swift",
+                "path" : "Components/Image/Image.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_23",
+                "name" : "Components/Input/Input.swift",
+                "path" : "Components/Input/Input.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_24",
+                "name" : "Components/Label/Label.swift",
+                "path" : "Components/Label/Label.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_25",
+                "name" : "Components/Links/Links.swift",
+                "path" : "Components/Links/Links.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_26",
+                "name" : "Components/List/List.swift",
+                "path" : "Components/List/List.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_27",
+                "name" : "Components/Markdown/Markdown.swift",
+                "path" : "Components/Markdown/Markdown.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_28",
+                "name" : "Components/NavList/NavList.swift",
+                "path" : "Components/NavList/NavList.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_29",
+                "name" : "Components/NavTree/NavTree.swift",
+                "path" : "Components/NavTree/NavTree.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_30",
+                "name" : "Components/OTP/OTP.swift",
+                "path" : "Components/OTP/OTP.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_31",
+                "name" : "Components/PageNavigator/PageNavigator.swift",
+                "path" : "Components/PageNavigator/PageNavigator.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_32",
+                "name" : "Components/Pagination/Pagination.swift",
+                "path" : "Components/Pagination/Pagination.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_33",
+                "name" : "Components/Popover/Popover.swift",
+                "path" : "Components/Popover/Popover.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_34",
+                "name" : "Components/Postcard/Postcard.swift",
+                "path" : "Components/Postcard/Postcard.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_35",
+                "name" : "Components/ProfileFlag/ProfileFlag.swift",
+                "path" : "Components/ProfileFlag/ProfileFlag.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_36",
+                "name" : "Components/Progress/Progress.swift",
+                "path" : "Components/Progress/Progress.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_37",
+                "name" : "Components/RadioGroup/RadioGroup.swift",
+                "path" : "Components/RadioGroup/RadioGroup.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_38",
+                "name" : "Components/Select/Select.swift",
+                "path" : "Components/Select/Select.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_39",
+                "name" : "Components/Sheet/Sheet.swift",
+                "path" : "Components/Sheet/Sheet.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_40",
+                "name" : "Components/ShowMore/ShowMore.swift",
+                "path" : "Components/ShowMore/ShowMore.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_41",
+                "name" : "Components/Shuttle/Shuttle.swift",
+                "path" : "Components/Shuttle/Shuttle.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_42",
+                "name" : "Components/Skeleton/Skeleton.swift",
+                "path" : "Components/Skeleton/Skeleton.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_43",
+                "name" : "Components/Spinner/Spinner.swift",
+                "path" : "Components/Spinner/Spinner.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_44",
+                "name" : "Components/Stat/Stat.swift",
+                "path" : "Components/Stat/Stat.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_45",
+                "name" : "Components/Status/Status.swift",
+                "path" : "Components/Status/Status.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_46",
+                "name" : "Components/Switch/Switch.swift",
+                "path" : "Components/Switch/Switch.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_47",
+                "name" : "Components/Table/Table.swift",
+                "path" : "Components/Table/Table.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_48",
+                "name" : "Components/Tabs/Tabs.swift",
+                "path" : "Components/Tabs/Tabs.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_49",
+                "name" : "Components/Text/Text.swift",
+                "path" : "Components/Text/Text.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_50",
+                "name" : "Components/TextField/TextField.swift",
+                "path" : "Components/TextField/TextField.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_51",
+                "name" : "Components/Toast/Toast.swift",
+                "path" : "Components/Toast/Toast.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_52",
+                "name" : "Components/ToggleSwitch/ToggleSwitch.swift",
+                "path" : "Components/ToggleSwitch/ToggleSwitch.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_53",
+                "name" : "Components/Tooltip/Tooltip.swift",
+                "path" : "Components/Tooltip/Tooltip.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_54",
+                "name" : "Components/Truncate/Truncate.swift",
+                "path" : "Components/Truncate/Truncate.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_55",
+                "name" : "Components/Walkthrough/Walkthrough.swift",
+                "path" : "Components/Walkthrough/Walkthrough.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_56",
+                "name" : "Glyphs/GlyphCatalog.swift",
+                "path" : "Glyphs/GlyphCatalog.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_57",
+                "name" : "Glyphs/SVGPath.swift",
+                "path" : "Glyphs/SVGPath.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_58",
+                "name" : "Presence/ControllableValue.swift",
+                "path" : "Presence/ControllableValue.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_59",
+                "name" : "Presence/Paging.swift",
+                "path" : "Presence/Paging.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_60",
+                "name" : "Presence/SelectionState.swift",
+                "path" : "Presence/SelectionState.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_61",
+                "name" : "Tokens/FsdsTheme.swift",
+                "path" : "Tokens/FsdsTheme.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_62",
+                "name" : "primitives/Stack.swift",
+                "path" : "primitives/Stack.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              }
+            ],
+            "guid" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3",
+            "name" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI",
+            "path" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI",
+            "sourceTree" : "<absolute>",
+            "type" : "group"
+          }
+        ],
+        "guid" : "PACKAGE:ds-swiftui::MAINGROUP",
+        "name" : "",
+        "path" : "",
+        "sourceTree" : "<group>",
+        "type" : "group"
+      },
+      "guid" : "PACKAGE:ds-swiftui",
+      "path" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Package.swift",
+      "projectDirectory" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui",
+      "projectIsPackage" : "true",
+      "projectName" : "ds-swiftui",
+      "targets" : [
+        "b72b6731dd81f40267e5ec46b5d80f72b1d55fa26e1c2c0cf3dd8d474b91f102",
+        "9f900440126394bf09d8e7a69dbe653929ea5c60e5ff5eb24f49f7ff1cc318fb",
+        "a31af30f51bc77ebc8a7f4de680f206f8b100944ec3ac24107d48647ddef30e2",
+        "1d23959532a16de26d942cecc80f628ca484a02154f79a0eb9c16cf3c865fb57"
+      ]
+    },
+    "signature" : "031558b154f38a44ca76ac104b6ecee6fa786fc52e7d1d5804a9e6ab952e716e",
+    "type" : "project"
+  },
+  {
+    "contents" : {
+      "approvedByUser" : "true",
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "USES_SWIFTPM_UNSAFE_FLAGS" : "NO"
+          },
+          "guid" : "PACKAGE-PRODUCT:ds-swiftui_DsSwiftUI.DsSwiftUI::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "USES_SWIFTPM_UNSAFE_FLAGS" : "NO"
+          },
+          "guid" : "PACKAGE-PRODUCT:ds-swiftui_DsSwiftUI.DsSwiftUI::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+        {
+          "guid" : "PACKAGE-TARGET:DsSwiftUI",
+          "platformFilters" : [
+
+          ]
+        }
+      ],
+      "frameworksBuildPhase" : {
+        "buildFiles" : [
+          {
+            "guid" : "PACKAGE-PRODUCT:ds-swiftui_DsSwiftUI.DsSwiftUI::BUILDPHASE_0::0",
+            "platformFilters" : [
+
+            ],
+            "targetReference" : "PACKAGE-TARGET:DsSwiftUI"
+          }
+        ],
+        "guid" : "PACKAGE-PRODUCT:ds-swiftui_DsSwiftUI.DsSwiftUI::BUILDPHASE_0",
+        "type" : "com.apple.buildphase.frameworks"
+      },
+      "guid" : "PACKAGE-PRODUCT:ds-swiftui_DsSwiftUI.DsSwiftUI",
+      "name" : "DsSwiftUI-product",
+      "type" : "packageProduct"
+    },
+    "signature" : "b72b6731dd81f40267e5ec46b5d80f72b1d55fa26e1c2c0cf3dd8d474b91f102",
+    "type" : "target"
+  },
+  {
+    "contents" : {
+      "approvedByUser" : "true",
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+            "DEFINES_MODULE" : "YES",
+            "DOCC_EXTRACT_PROJECT_HEADERS_DOCUMENTATION" : "YES",
+            "GENERATE_PRELINK_OBJECT_FILE" : "NO",
+            "MODULEMAP_FILE_CONTENTS" : "module DsSwiftUI {\nheader \"DsSwiftUI-Swift.h\"\nexport *\n}",
+            "MODULEMAP_PATH" : "$(GENERATED_MODULEMAP_DIR)/DsSwiftUI.modulemap",
+            "PACKAGE_RESOURCE_TARGET_KIND" : "regular",
+            "PRODUCT_BUNDLE_IDENTIFIER" : "ds-swiftui.DsSwiftUI",
+            "PRODUCT_MODULE_NAME" : "DsSwiftUI",
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "STRIP_INSTALLED_PRODUCT" : "NO",
+            "SUPPORTS_TEXT_BASED_API" : "NO",
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS" : [
+              "$(inherited)",
+              "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE"
+            ],
+            "SWIFT_DISABLE_PARSE_AS_LIBRARY" : "NO",
+            "SWIFT_ENABLE_BARE_SLASH_REGEX" : "NO",
+            "SWIFT_LIBRARIES_ONLY" : "YES",
+            "SWIFT_OBJC_INTERFACE_HEADER_DIR" : "$(GENERATED_MODULEMAP_DIR)",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "DsSwiftUI-Swift.h",
+            "SWIFT_PACKAGE_NAME" : "ds_swiftui",
+            "SWIFT_VERSION" : "6",
+            "SYMBOL_GRAPH_EXTRACTOR_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/DsSwiftUI.symbolgraphs",
+            "TAPI_DYLIB_INSTALL_NAME" : "DsSwiftUI",
+            "TAPI_EXTRACT_API_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/DsSwiftUI.symbolgraphs",
+            "TARGET_NAME" : "DsSwiftUI",
+            "TARGET_TEMP_DIR_SUFFIX" : "-t"
+          },
+          "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+              "FRAMEWORK_SEARCH_PATHS" : [
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_RUNPATH_SEARCH_PATHS" : [
+                "$(RPATH_ORIGIN)",
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_WARN_DUPLICATE_LIBRARIES" : "NO",
+              "OTHER_CFLAGS" : [
+                "-fmodule-map-file=$(GENERATED_MODULEMAP_DIR)/DsSwiftUI.modulemap",
+                "$(inherited)"
+              ]
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+            "DEFINES_MODULE" : "YES",
+            "DOCC_EXTRACT_PROJECT_HEADERS_DOCUMENTATION" : "YES",
+            "GENERATE_PRELINK_OBJECT_FILE" : "NO",
+            "MODULEMAP_FILE_CONTENTS" : "module DsSwiftUI {\nheader \"DsSwiftUI-Swift.h\"\nexport *\n}",
+            "MODULEMAP_PATH" : "$(GENERATED_MODULEMAP_DIR)/DsSwiftUI.modulemap",
+            "PACKAGE_RESOURCE_TARGET_KIND" : "regular",
+            "PRODUCT_BUNDLE_IDENTIFIER" : "ds-swiftui.DsSwiftUI",
+            "PRODUCT_MODULE_NAME" : "DsSwiftUI",
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "STRIP_INSTALLED_PRODUCT" : "NO",
+            "SUPPORTS_TEXT_BASED_API" : "NO",
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS" : [
+              "$(inherited)",
+              "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE"
+            ],
+            "SWIFT_DISABLE_PARSE_AS_LIBRARY" : "NO",
+            "SWIFT_ENABLE_BARE_SLASH_REGEX" : "NO",
+            "SWIFT_LIBRARIES_ONLY" : "YES",
+            "SWIFT_OBJC_INTERFACE_HEADER_DIR" : "$(GENERATED_MODULEMAP_DIR)",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "DsSwiftUI-Swift.h",
+            "SWIFT_PACKAGE_NAME" : "ds_swiftui",
+            "SWIFT_VERSION" : "6",
+            "SYMBOL_GRAPH_EXTRACTOR_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/DsSwiftUI.symbolgraphs",
+            "TAPI_DYLIB_INSTALL_NAME" : "DsSwiftUI",
+            "TAPI_EXTRACT_API_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/DsSwiftUI.symbolgraphs",
+            "TARGET_NAME" : "DsSwiftUI",
+            "TARGET_TEMP_DIR_SUFFIX" : "-t"
+          },
+          "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+              "FRAMEWORK_SEARCH_PATHS" : [
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_RUNPATH_SEARCH_PATHS" : [
+                "$(RPATH_ORIGIN)",
+                "$(inherited)"
+              ],
+              "LD_WARN_DUPLICATE_LIBRARIES" : "NO",
+              "OTHER_CFLAGS" : [
+                "-fmodule-map-file=$(GENERATED_MODULEMAP_DIR)/DsSwiftUI.modulemap",
+                "$(inherited)"
+              ]
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "buildPhases" : [
+        {
+          "buildFiles" : [
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_0",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::0",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_1",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::1",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_2",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::2",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_3",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::3",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_4",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::4",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_5",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::5",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_6",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::6",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_7",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::7",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_8",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::8",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_9",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::9",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_10",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::10",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_11",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::11",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_12",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::12",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_13",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::13",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_14",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::14",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_15",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::15",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_16",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::16",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_17",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::17",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_18",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::18",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_19",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::19",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_20",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::20",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_21",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::21",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_22",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::22",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_23",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::23",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_24",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::24",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_25",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::25",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_26",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::26",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_27",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::27",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_28",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::28",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_29",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::29",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_30",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::30",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_31",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::31",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_32",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::32",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_33",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::33",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_34",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::34",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_35",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::35",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_36",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::36",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_37",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::37",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_38",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::38",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_39",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::39",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_40",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::40",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_41",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::41",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_42",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::42",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_43",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::43",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_44",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::44",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_45",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::45",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_46",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::46",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_47",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::47",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_48",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::48",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_49",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::49",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_50",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::50",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_51",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::51",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_52",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::52",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_53",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::53",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_54",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::54",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_55",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::55",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_56",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::56",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_57",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::57",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_58",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::58",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_59",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::59",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_60",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::60",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_61",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::61",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_2::REF_62",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0::62",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            }
+          ],
+          "guid" : "PACKAGE-TARGET:DsSwiftUI::BUILDPHASE_0",
+          "type" : "com.apple.buildphase.sources"
+        }
+      ],
+      "buildRules" : [
+
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+
+      ],
+      "dynamicTargetVariantGuid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic",
+      "guid" : "PACKAGE-TARGET:DsSwiftUI",
+      "name" : "DsSwiftUI",
+      "productReference" : {
+        "guid" : "PRODUCTREF-PACKAGE-TARGET:DsSwiftUI",
+        "name" : "$(EXECUTABLE_NAME)",
+        "type" : "file"
+      },
+      "productTypeIdentifier" : "org.swift.product-type.library.static",
+      "type" : "standard"
+    },
+    "signature" : "9f900440126394bf09d8e7a69dbe653929ea5c60e5ff5eb24f49f7ff1cc318fb",
+    "type" : "target"
+  },
+  {
+    "contents" : {
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+
+          },
+          "guid" : "PACKAGE-PRODUCT:ds-swiftui-ds-swiftuiPackageTests.ds-swiftuiPackageTests::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+
+          },
+          "guid" : "PACKAGE-PRODUCT:ds-swiftui-ds-swiftuiPackageTests.ds-swiftuiPackageTests::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "buildPhases" : [
+
+      ],
+      "buildRules" : [
+
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+
+      ],
+      "guid" : "PACKAGE-PRODUCT:ds-swiftui-ds-swiftuiPackageTests.ds-swiftuiPackageTests",
+      "name" : "ds-swiftuiPackageTests-product",
+      "type" : "aggregate"
+    },
+    "signature" : "1d23959532a16de26d942cecc80f628ca484a02154f79a0eb9c16cf3c865fb57",
+    "type" : "target"
+  },
+  {
+    "contents" : {
+      "approvedByUser" : "true",
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+            "DEFINES_MODULE" : "YES",
+            "DOCC_EXTRACT_PROJECT_HEADERS_DOCUMENTATION" : "YES",
+            "EXECUTABLE_PREFIX" : "lib",
+            "EXECUTABLE_PREFIX[__platform_filter=windows-msvc]" : "",
+            "MODULEMAP_FILE_CONTENTS" : "module DsSwiftUI {\nheader \"DsSwiftUI-Swift.h\"\nexport *\n}",
+            "MODULEMAP_PATH" : "$(GENERATED_MODULEMAP_DIR)/DsSwiftUI.modulemap",
+            "PACKAGE_RESOURCE_TARGET_KIND" : "regular",
+            "PRODUCT_BUNDLE_IDENTIFIER" : "ds-swiftui.DsSwiftUI",
+            "PRODUCT_MODULE_NAME" : "DsSwiftUI",
+            "PRODUCT_NAME" : "DsSwiftUI",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "SUPPORTS_TEXT_BASED_API" : "NO",
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS" : [
+              "$(inherited)",
+              "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE"
+            ],
+            "SWIFT_DISABLE_PARSE_AS_LIBRARY" : "NO",
+            "SWIFT_ENABLE_BARE_SLASH_REGEX" : "NO",
+            "SWIFT_LIBRARIES_ONLY" : "YES",
+            "SWIFT_OBJC_INTERFACE_HEADER_DIR" : "$(GENERATED_MODULEMAP_DIR)",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "DsSwiftUI-Swift.h",
+            "SWIFT_PACKAGE_NAME" : "ds_swiftui",
+            "SWIFT_VERSION" : "6",
+            "SYMBOL_GRAPH_EXTRACTOR_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/DsSwiftUI.symbolgraphs",
+            "TAPI_EXTRACT_API_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/DsSwiftUI.symbolgraphs",
+            "TARGET_NAME" : "DsSwiftUI",
+            "TARGET_TEMP_DIR_SUFFIX" : "-t"
+          },
+          "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+              "FRAMEWORK_SEARCH_PATHS" : [
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_RUNPATH_SEARCH_PATHS" : [
+                "$(RPATH_ORIGIN)",
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_WARN_DUPLICATE_LIBRARIES" : "NO",
+              "OTHER_CFLAGS" : [
+                "-fmodule-map-file=$(GENERATED_MODULEMAP_DIR)/DsSwiftUI.modulemap",
+                "$(inherited)"
+              ]
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+            "DEFINES_MODULE" : "YES",
+            "DOCC_EXTRACT_PROJECT_HEADERS_DOCUMENTATION" : "YES",
+            "EXECUTABLE_PREFIX" : "lib",
+            "EXECUTABLE_PREFIX[__platform_filter=windows-msvc]" : "",
+            "MODULEMAP_FILE_CONTENTS" : "module DsSwiftUI {\nheader \"DsSwiftUI-Swift.h\"\nexport *\n}",
+            "MODULEMAP_PATH" : "$(GENERATED_MODULEMAP_DIR)/DsSwiftUI.modulemap",
+            "PACKAGE_RESOURCE_TARGET_KIND" : "regular",
+            "PRODUCT_BUNDLE_IDENTIFIER" : "ds-swiftui.DsSwiftUI",
+            "PRODUCT_MODULE_NAME" : "DsSwiftUI",
+            "PRODUCT_NAME" : "DsSwiftUI",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "SUPPORTS_TEXT_BASED_API" : "NO",
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS" : [
+              "$(inherited)",
+              "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE"
+            ],
+            "SWIFT_DISABLE_PARSE_AS_LIBRARY" : "NO",
+            "SWIFT_ENABLE_BARE_SLASH_REGEX" : "NO",
+            "SWIFT_LIBRARIES_ONLY" : "YES",
+            "SWIFT_OBJC_INTERFACE_HEADER_DIR" : "$(GENERATED_MODULEMAP_DIR)",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "DsSwiftUI-Swift.h",
+            "SWIFT_PACKAGE_NAME" : "ds_swiftui",
+            "SWIFT_VERSION" : "6",
+            "SYMBOL_GRAPH_EXTRACTOR_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/DsSwiftUI.symbolgraphs",
+            "TAPI_EXTRACT_API_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/DsSwiftUI.symbolgraphs",
+            "TARGET_NAME" : "DsSwiftUI",
+            "TARGET_TEMP_DIR_SUFFIX" : "-t"
+          },
+          "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+              "FRAMEWORK_SEARCH_PATHS" : [
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_RUNPATH_SEARCH_PATHS" : [
+                "$(RPATH_ORIGIN)",
+                "$(inherited)"
+              ],
+              "LD_WARN_DUPLICATE_LIBRARIES" : "NO",
+              "OTHER_CFLAGS" : [
+                "-fmodule-map-file=$(GENERATED_MODULEMAP_DIR)/DsSwiftUI.modulemap",
+                "$(inherited)"
+              ]
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "buildPhases" : [
+        {
+          "buildFiles" : [
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_0",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::0",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_1",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::1",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_2",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::2",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_3",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::3",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_4",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::4",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_5",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::5",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_6",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::6",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_7",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::7",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_8",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::8",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_9",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::9",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_10",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::10",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_11",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::11",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_12",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::12",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_13",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::13",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_14",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::14",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_15",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::15",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_16",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::16",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_17",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::17",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_18",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::18",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_19",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::19",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_20",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::20",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_21",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::21",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_22",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::22",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_23",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::23",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_24",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::24",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_25",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::25",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_26",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::26",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_27",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::27",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_28",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::28",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_29",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::29",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_30",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::30",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_31",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::31",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_32",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::32",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_33",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::33",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_34",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::34",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_35",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::35",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_36",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::36",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_37",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::37",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_38",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::38",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_39",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::39",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_40",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::40",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_41",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::41",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_42",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::42",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_43",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::43",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_44",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::44",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_45",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::45",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_46",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::46",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_47",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::47",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_48",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::48",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_49",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::49",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_50",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::50",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_51",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::51",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_52",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::52",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_53",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::53",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_54",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::54",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_55",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::55",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_56",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::56",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_57",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::57",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_58",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::58",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_59",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::59",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_60",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::60",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_61",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::61",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:ds-swiftui::MAINGROUP::REF_3::REF_62",
+              "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0::62",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            }
+          ],
+          "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic::BUILDPHASE_0",
+          "type" : "com.apple.buildphase.sources"
+        }
+      ],
+      "buildRules" : [
+
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+
+      ],
+      "guid" : "PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic",
+      "name" : "DsSwiftUI",
+      "productReference" : {
+        "guid" : "PRODUCTREF-PACKAGE-TARGET:DsSwiftUI--571AA55A874D3895-dynamic",
+        "name" : "$(EXECUTABLE_NAME)",
+        "type" : "file"
+      },
+      "productTypeIdentifier" : "com.apple.product-type.library.dynamic",
+      "type" : "standard"
+    },
+    "signature" : "a31af30f51bc77ebc8a7f4de680f206f8b100944ec3ac24107d48647ddef30e2",
+    "type" : "target"
+  },
+  {
+    "contents" : {
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+            "CLANG_ENABLE_MODULES[__platform_filter=driverkit]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=ios-maccatalyst]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=ios;ios-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=macos]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=tvos;tvos-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=watchos;watchos-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=xros;xros-simulator]" : "YES",
+            "CODE_SIGNING_REQUIRED" : "NO",
+            "CODE_SIGN_IDENTITY" : "",
+            "COMPILER_WORKING_DIRECTORY" : "$(WORKSPACE_DIR)",
+            "COPY_PHASE_STRIP" : "NO",
+            "DEBUG_INFORMATION_FORMAT" : "dwarf",
+            "DRIVERKIT_DEPLOYMENT_TARGET" : "21.0",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=driverkit]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=ios-maccatalyst]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=ios;ios-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=macos]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=tvos;tvos-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=watchos;watchos-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=xros;xros-simulator]" : "@rpath",
+            "ENABLE_NS_ASSERTIONS" : "YES",
+            "ENABLE_TESTABILITY" : "YES",
+            "ENABLE_TESTING_SEARCH_PATHS" : "YES",
+            "ENTITLEMENTS_REQUIRED" : "NO",
+            "GCC_OPTIMIZATION_LEVEL" : "0",
+            "GCC_PREPROCESSOR_DEFINITIONS" : [
+              "$(inherited)",
+              "SWIFT_PACKAGE",
+              "DEBUG=1"
+            ],
+            "INDEX_ENABLE_DATA_STORE" : "YES",
+            "IPHONEOS_DEPLOYMENT_TARGET" : "15.0",
+            "IPHONEOS_DEPLOYMENT_TARGET[__platform_filter=ios-maccatalyst]" : "15.0",
+            "KEEP_PRIVATE_EXTERNS" : "NO",
+            "LIBTOOL_NO_WARNING_FOR_NO_SYMBOLS" : "YES",
+            "LINKER_DRIVER" : "auto",
+            "MACOSX_DEPLOYMENT_TARGET" : "14.0",
+            "ONLY_ACTIVE_ARCH" : "YES",
+            "OTHER_CFLAGS" : [
+              "$(inherited)",
+              "-DXcode"
+            ],
+            "OTHER_LDRFLAGS" : [
+
+            ],
+            "OTHER_SWIFT_FLAGS" : [
+              "$(inherited)",
+              "-DXcode"
+            ],
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SKIP_INSTALL" : "YES",
+            "SPECIALIZATION_SDK_OPTIONS[__platform_filter=macos]" : [
+
+            ],
+            "SUPPORTED_PLATFORMS" : [
+              "$(AVAILABLE_PLATFORMS)"
+            ],
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS" : [
+              "$(inherited)",
+              "SWIFT_PACKAGE",
+              "DEBUG"
+            ],
+            "SWIFT_INSTALL_OBJC_HEADER" : "NO",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "",
+            "SWIFT_OPTIMIZATION_LEVEL" : "-Onone",
+            "TARGETED_DEVICE_FAMILY" : "",
+            "TVOS_DEPLOYMENT_TARGET" : "15.0",
+            "USE_HEADERMAP" : "NO",
+            "WATCHOS_DEPLOYMENT_TARGET" : "9.0",
+            "XROS_DEPLOYMENT_TARGET" : "1.0"
+          },
+          "guid" : "PACKAGE:swift::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+            "CLANG_ENABLE_MODULES[__platform_filter=driverkit]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=ios-maccatalyst]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=ios;ios-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=macos]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=tvos;tvos-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=watchos;watchos-simulator]" : "YES",
+            "CLANG_ENABLE_MODULES[__platform_filter=xros;xros-simulator]" : "YES",
+            "CODE_SIGNING_REQUIRED" : "NO",
+            "CODE_SIGN_IDENTITY" : "",
+            "COMPILER_WORKING_DIRECTORY" : "$(WORKSPACE_DIR)",
+            "COPY_PHASE_STRIP" : "YES",
+            "DEBUG_INFORMATION_FORMAT" : "dwarf-with-dsym",
+            "DEPLOYMENT_POSTPROCESSING" : "YES",
+            "DRIVERKIT_DEPLOYMENT_TARGET" : "21.0",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=driverkit]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=ios-maccatalyst]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=ios;ios-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=macos]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=tvos;tvos-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=watchos;watchos-simulator]" : "@rpath",
+            "DYLIB_INSTALL_NAME_BASE[__platform_filter=xros;xros-simulator]" : "@rpath",
+            "ENABLE_TESTING_SEARCH_PATHS" : "YES",
+            "ENTITLEMENTS_REQUIRED" : "NO",
+            "GCC_OPTIMIZATION_LEVEL" : "s",
+            "GCC_PREPROCESSOR_DEFINITIONS" : [
+              "$(inherited)",
+              "SWIFT_PACKAGE"
+            ],
+            "IPHONEOS_DEPLOYMENT_TARGET" : "15.0",
+            "IPHONEOS_DEPLOYMENT_TARGET[__platform_filter=ios-maccatalyst]" : "15.0",
+            "KEEP_PRIVATE_EXTERNS" : "NO",
+            "LIBTOOL_NO_WARNING_FOR_NO_SYMBOLS" : "YES",
+            "LINKER_DRIVER" : "auto",
+            "MACOSX_DEPLOYMENT_TARGET" : "14.0",
+            "OTHER_CFLAGS" : [
+              "$(inherited)",
+              "-DXcode"
+            ],
+            "OTHER_LDRFLAGS" : [
+
+            ],
+            "OTHER_SWIFT_FLAGS" : [
+              "$(inherited)",
+              "-DXcode"
+            ],
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SKIP_INSTALL" : "YES",
+            "SPECIALIZATION_SDK_OPTIONS[__platform_filter=macos]" : [
+
+            ],
+            "SUPPORTED_PLATFORMS" : [
+              "$(AVAILABLE_PLATFORMS)"
+            ],
+            "SWIFT_ACTIVE_COMPILATION_CONDITIONS" : [
+              "$(inherited)",
+              "SWIFT_PACKAGE"
+            ],
+            "SWIFT_INSTALL_OBJC_HEADER" : "NO",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "",
+            "SWIFT_OPTIMIZATION_LEVEL" : "-Owholemodule",
+            "TARGETED_DEVICE_FAMILY" : "",
+            "TVOS_DEPLOYMENT_TARGET" : "15.0",
+            "USE_HEADERMAP" : "NO",
+            "WATCHOS_DEPLOYMENT_TARGET" : "9.0",
+            "XROS_DEPLOYMENT_TARGET" : "1.0"
+          },
+          "guid" : "PACKAGE:swift::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "defaultConfigurationName" : "Release",
+      "groupTree" : {
+        "children" : [
+          {
+            "children" : [
+
+            ],
+            "guid" : "PACKAGE:swift::MAINGROUP::REF_0",
+            "name" : "AdditionalFiles",
+            "path" : "/",
+            "sourceTree" : "<absolute>",
+            "type" : "group"
+          },
+          {
+            "children" : [
+
+            ],
+            "guid" : "PACKAGE:swift::MAINGROUP::REF_1",
+            "name" : "Binaries",
+            "path" : "/",
+            "sourceTree" : "<absolute>",
+            "type" : "group"
+          },
+          {
+            "children" : [
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_2::REF_0",
+                "name" : "EntranceStation.swift",
+                "path" : "EntranceStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_2::REF_1",
+                "name" : "Generated/FsdsMotionTokens.swift",
+                "path" : "Generated/FsdsMotionTokens.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_2::REF_2",
+                "name" : "GlyphLoopStation.swift",
+                "path" : "GlyphLoopStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_2::REF_3",
+                "name" : "MotionLabApp.swift",
+                "path" : "MotionLabApp.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_2::REF_4",
+                "name" : "PartTakeoverStation.swift",
+                "path" : "PartTakeoverStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_2::REF_5",
+                "name" : "ScrambleStation.swift",
+                "path" : "ScrambleStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_2::REF_6",
+                "name" : "StaggerStation.swift",
+                "path" : "StaggerStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              }
+            ],
+            "guid" : "PACKAGE:swift::MAINGROUP::REF_2",
+            "name" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/Sources/MotionLab",
+            "path" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/Sources/MotionLab",
+            "sourceTree" : "<absolute>",
+            "type" : "group"
+          },
+          {
+            "children" : [
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_3::REF_0",
+                "name" : "EntranceStation.swift",
+                "path" : "EntranceStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_3::REF_1",
+                "name" : "Generated/FsdsMotionTokens.swift",
+                "path" : "Generated/FsdsMotionTokens.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_3::REF_2",
+                "name" : "GlyphLoopStation.swift",
+                "path" : "GlyphLoopStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_3::REF_3",
+                "name" : "MotionLabApp.swift",
+                "path" : "MotionLabApp.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_3::REF_4",
+                "name" : "PartTakeoverStation.swift",
+                "path" : "PartTakeoverStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_3::REF_5",
+                "name" : "ScrambleStation.swift",
+                "path" : "ScrambleStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              },
+              {
+                "fileType" : "sourcecode.swift",
+                "guid" : "PACKAGE:swift::MAINGROUP::REF_3::REF_6",
+                "name" : "StaggerStation.swift",
+                "path" : "StaggerStation.swift",
+                "sourceTree" : "<group>",
+                "type" : "file"
+              }
+            ],
+            "guid" : "PACKAGE:swift::MAINGROUP::REF_3",
+            "name" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/Sources/MotionLab",
+            "path" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/Sources/MotionLab",
+            "sourceTree" : "<absolute>",
+            "type" : "group"
+          }
+        ],
+        "guid" : "PACKAGE:swift::MAINGROUP",
+        "name" : "",
+        "path" : "",
+        "sourceTree" : "<group>",
+        "type" : "group"
+      },
+      "guid" : "PACKAGE:swift",
+      "path" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/Package.swift",
+      "projectDirectory" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift",
+      "projectIsPackage" : "true",
+      "projectName" : "motion-lab-swift-example",
+      "targets" : [
+        "9f5b1ca4c425b8158fb76b66a586ece8fa81850573123518ff54e9c2ee3e3d63",
+        "6b18f65ff866e89db261b3e2fc7dbeb6c2c126eb2e435e4141c757e2fab48cf0",
+        "93993340fced276aefa3091a78c4e756f474f4ae70229d3f9755e71c89606710"
+      ]
+    },
+    "signature" : "be417b0284fbc4b77166f5cc163e0d34d8d515b78141c6295e4d38bea8512a4c",
+    "type" : "project"
+  },
+  {
+    "contents" : {
+      "approvedByUser" : "true",
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+            "DOCC_EXTRACT_PROJECT_HEADERS_DOCUMENTATION" : "YES",
+            "DRIVERKIT_DEPLOYMENT_TARGET" : "21.0",
+            "GENERATE_EMBED_IN_CODE_ACCESSORS" : "NO",
+            "GENERATE_RESOURCE_ACCESSORS" : "YES",
+            "IPHONEOS_DEPLOYMENT_TARGET" : "15.0",
+            "IPHONEOS_DEPLOYMENT_TARGET[__platform_filter=ios-maccatalyst]" : "15.0",
+            "MACOSX_DEPLOYMENT_TARGET" : "14.0",
+            "OTHER_SWIFT_FLAGS" : [
+              "$(inherited)",
+              "$(OTHER_SWIFT_FLAGS_ENABLE_LIBFUZZER_$(ENABLE_LIBFUZZER))"
+            ],
+            "OTHER_SWIFT_FLAGS_ENABLE_LIBFUZZER_YES" : [
+              "-Xfrontend",
+              "-entry-point-function-name",
+              "-Xfrontend",
+              "MotionLab_main"
+            ],
+            "PACKAGE_RESOURCE_TARGET_KIND" : "regular",
+            "PRODUCT_BUNDLE_IDENTIFIER" : "swift.MotionLabExample",
+            "PRODUCT_MODULE_NAME" : "MotionLab",
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "SWIFT_DISABLE_PARSE_AS_LIBRARY" : "NO",
+            "SWIFT_ENABLE_BARE_SLASH_REGEX" : "NO",
+            "SWIFT_INSTALL_MODULE" : "NO",
+            "SWIFT_LIBRARIES_ONLY" : "YES",
+            "SWIFT_PACKAGE_NAME" : "swift",
+            "SWIFT_VERSION" : "6",
+            "SYMBOL_GRAPH_EXTRACTOR_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/MotionLab.symbolgraphs",
+            "TAPI_EXTRACT_API_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/MotionLab.symbolgraphs",
+            "TARGET_NAME" : "MotionLabExample",
+            "TARGET_TEMP_DIR_SUFFIX" : "-p",
+            "TVOS_DEPLOYMENT_TARGET" : "15.0",
+            "WATCHOS_DEPLOYMENT_TARGET" : "9.0",
+            "XROS_DEPLOYMENT_TARGET" : "1.0"
+          },
+          "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+            "DOCC_EXTRACT_PROJECT_HEADERS_DOCUMENTATION" : "YES",
+            "DRIVERKIT_DEPLOYMENT_TARGET" : "21.0",
+            "GENERATE_EMBED_IN_CODE_ACCESSORS" : "NO",
+            "GENERATE_RESOURCE_ACCESSORS" : "YES",
+            "IPHONEOS_DEPLOYMENT_TARGET" : "15.0",
+            "IPHONEOS_DEPLOYMENT_TARGET[__platform_filter=ios-maccatalyst]" : "15.0",
+            "MACOSX_DEPLOYMENT_TARGET" : "14.0",
+            "OTHER_SWIFT_FLAGS" : [
+              "$(inherited)",
+              "$(OTHER_SWIFT_FLAGS_ENABLE_LIBFUZZER_$(ENABLE_LIBFUZZER))"
+            ],
+            "OTHER_SWIFT_FLAGS_ENABLE_LIBFUZZER_YES" : [
+              "-Xfrontend",
+              "-entry-point-function-name",
+              "-Xfrontend",
+              "MotionLab_main"
+            ],
+            "PACKAGE_RESOURCE_TARGET_KIND" : "regular",
+            "PRODUCT_BUNDLE_IDENTIFIER" : "swift.MotionLabExample",
+            "PRODUCT_MODULE_NAME" : "MotionLab",
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "SWIFT_DISABLE_PARSE_AS_LIBRARY" : "NO",
+            "SWIFT_ENABLE_BARE_SLASH_REGEX" : "NO",
+            "SWIFT_INSTALL_MODULE" : "NO",
+            "SWIFT_LIBRARIES_ONLY" : "YES",
+            "SWIFT_PACKAGE_NAME" : "swift",
+            "SWIFT_VERSION" : "6",
+            "SYMBOL_GRAPH_EXTRACTOR_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/MotionLab.symbolgraphs",
+            "TAPI_EXTRACT_API_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/MotionLab.symbolgraphs",
+            "TARGET_NAME" : "MotionLabExample",
+            "TARGET_TEMP_DIR_SUFFIX" : "-p",
+            "TVOS_DEPLOYMENT_TARGET" : "15.0",
+            "WATCHOS_DEPLOYMENT_TARGET" : "9.0",
+            "XROS_DEPLOYMENT_TARGET" : "1.0"
+          },
+          "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "buildPhases" : [
+        {
+          "buildFiles" : [
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_2::REF_0",
+              "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_0::0",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_2::REF_1",
+              "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_0::1",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_2::REF_2",
+              "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_0::2",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_2::REF_3",
+              "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_0::3",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_2::REF_4",
+              "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_0::4",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_2::REF_5",
+              "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_0::5",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_2::REF_6",
+              "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_0::6",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            }
+          ],
+          "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_0",
+          "type" : "com.apple.buildphase.sources"
+        },
+        {
+          "buildFiles" : [
+            {
+              "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_1::0",
+              "platformFilters" : [
+
+              ],
+              "targetReference" : "PACKAGE-PRODUCT:ds-swiftui_DsSwiftUI.DsSwiftUI"
+            }
+          ],
+          "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample::BUILDPHASE_1",
+          "type" : "com.apple.buildphase.frameworks"
+        }
+      ],
+      "buildRules" : [
+
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+        {
+          "guid" : "PACKAGE-PRODUCT:ds-swiftui_DsSwiftUI.DsSwiftUI",
+          "platformFilters" : [
+
+          ]
+        }
+      ],
+      "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample",
+      "name" : "MotionLabExample-product",
+      "productReference" : {
+        "guid" : "PRODUCTREF-PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample",
+        "name" : "$(EXECUTABLE_NAME)",
+        "type" : "file"
+      },
+      "productTypeIdentifier" : "com.apple.product-type.tool",
+      "type" : "standard"
+    },
+    "signature" : "9f5b1ca4c425b8158fb76b66a586ece8fa81850573123518ff54e9c2ee3e3d63",
+    "type" : "target"
+  },
+  {
+    "contents" : {
+      "approvedByUser" : "true",
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+            "DEFINES_MODULE" : "YES",
+            "DOCC_EXTRACT_PROJECT_HEADERS_DOCUMENTATION" : "YES",
+            "GENERATE_EMBED_IN_CODE_ACCESSORS" : "YES",
+            "GENERATE_PRELINK_OBJECT_FILE" : "NO",
+            "GENERATE_RESOURCE_ACCESSORS" : "YES",
+            "MODULEMAP_FILE_CONTENTS" : "module MotionLab {\nheader \"MotionLab-Swift.h\"\nexport *\n}",
+            "MODULEMAP_PATH" : "$(GENERATED_MODULEMAP_DIR)/MotionLab.modulemap",
+            "OTHER_SWIFT_FLAGS" : [
+              "$(inherited)",
+              "-Xfrontend",
+              "-entry-point-function-name",
+              "-Xfrontend",
+              "MotionLab_main"
+            ],
+            "PACKAGE_RESOURCE_TARGET_KIND" : "regular",
+            "PRODUCT_BUNDLE_IDENTIFIER" : "swift.MotionLab",
+            "PRODUCT_MODULE_NAME" : "MotionLab",
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "STRIP_INSTALLED_PRODUCT" : "NO",
+            "SUPPORTS_TEXT_BASED_API" : "NO",
+            "SWIFT_DISABLE_PARSE_AS_LIBRARY" : "NO",
+            "SWIFT_ENABLE_BARE_SLASH_REGEX" : "NO",
+            "SWIFT_LIBRARIES_ONLY" : "YES",
+            "SWIFT_OBJC_INTERFACE_HEADER_DIR" : "$(GENERATED_MODULEMAP_DIR)",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "MotionLab-Swift.h",
+            "SWIFT_PACKAGE_NAME" : "swift",
+            "SWIFT_VERSION" : "6",
+            "SYMBOL_GRAPH_EXTRACTOR_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/MotionLab.symbolgraphs",
+            "TAPI_DYLIB_INSTALL_NAME" : "MotionLab",
+            "TAPI_EXTRACT_API_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/MotionLab.symbolgraphs",
+            "TARGET_BUILD_DIR" : "$(TARGET_BUILD_DIR)/ExecutableModules",
+            "TARGET_NAME" : "MotionLab-3DC477564E02A58E-testable",
+            "TARGET_TEMP_DIR_SUFFIX" : "-t"
+          },
+          "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+              "FRAMEWORK_SEARCH_PATHS" : [
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_RUNPATH_SEARCH_PATHS" : [
+                "$(RPATH_ORIGIN)",
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_WARN_DUPLICATE_LIBRARIES" : "NO",
+              "LIBRARY_SEARCH_PATHS[__platform_filter=windows-msvc]" : [
+                "$(inherited)",
+                "$(TARGET_BUILD_DIR)/ExecutableModules"
+              ],
+              "OTHER_CFLAGS" : [
+                "-fmodule-map-file=$(GENERATED_MODULEMAP_DIR)/MotionLab.modulemap",
+                "$(inherited)"
+              ]
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+            "DEFINES_MODULE" : "YES",
+            "DOCC_EXTRACT_PROJECT_HEADERS_DOCUMENTATION" : "YES",
+            "GENERATE_EMBED_IN_CODE_ACCESSORS" : "YES",
+            "GENERATE_PRELINK_OBJECT_FILE" : "NO",
+            "GENERATE_RESOURCE_ACCESSORS" : "YES",
+            "MODULEMAP_FILE_CONTENTS" : "module MotionLab {\nheader \"MotionLab-Swift.h\"\nexport *\n}",
+            "MODULEMAP_PATH" : "$(GENERATED_MODULEMAP_DIR)/MotionLab.modulemap",
+            "OTHER_SWIFT_FLAGS" : [
+              "$(inherited)",
+              "-Xfrontend",
+              "-entry-point-function-name",
+              "-Xfrontend",
+              "MotionLab_main"
+            ],
+            "PACKAGE_RESOURCE_TARGET_KIND" : "regular",
+            "PRODUCT_BUNDLE_IDENTIFIER" : "swift.MotionLab",
+            "PRODUCT_MODULE_NAME" : "MotionLab",
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "STRIP_INSTALLED_PRODUCT" : "NO",
+            "SUPPORTS_TEXT_BASED_API" : "NO",
+            "SWIFT_DISABLE_PARSE_AS_LIBRARY" : "NO",
+            "SWIFT_ENABLE_BARE_SLASH_REGEX" : "NO",
+            "SWIFT_LIBRARIES_ONLY" : "YES",
+            "SWIFT_OBJC_INTERFACE_HEADER_DIR" : "$(GENERATED_MODULEMAP_DIR)",
+            "SWIFT_OBJC_INTERFACE_HEADER_NAME" : "MotionLab-Swift.h",
+            "SWIFT_PACKAGE_NAME" : "swift",
+            "SWIFT_VERSION" : "6",
+            "SYMBOL_GRAPH_EXTRACTOR_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/MotionLab.symbolgraphs",
+            "TAPI_DYLIB_INSTALL_NAME" : "MotionLab",
+            "TAPI_EXTRACT_API_OUTPUT_DIR" : "$(TARGET_BUILD_DIR)/$(CURRENT_ARCH)/MotionLab.symbolgraphs",
+            "TARGET_BUILD_DIR" : "$(TARGET_BUILD_DIR)/ExecutableModules",
+            "TARGET_NAME" : "MotionLab-3DC477564E02A58E-testable",
+            "TARGET_TEMP_DIR_SUFFIX" : "-t"
+          },
+          "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+              "FRAMEWORK_SEARCH_PATHS" : [
+                "$(BUILT_PRODUCTS_DIR)/PackageFrameworks",
+                "$(inherited)"
+              ],
+              "LD_RUNPATH_SEARCH_PATHS" : [
+                "$(RPATH_ORIGIN)",
+                "$(inherited)"
+              ],
+              "LD_WARN_DUPLICATE_LIBRARIES" : "NO",
+              "LIBRARY_SEARCH_PATHS[__platform_filter=windows-msvc]" : [
+                "$(inherited)",
+                "$(TARGET_BUILD_DIR)/ExecutableModules"
+              ],
+              "OTHER_CFLAGS" : [
+                "-fmodule-map-file=$(GENERATED_MODULEMAP_DIR)/MotionLab.modulemap",
+                "$(inherited)"
+              ]
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "buildPhases" : [
+        {
+          "buildFiles" : [
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_3::REF_0",
+              "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDPHASE_0::0",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_3::REF_1",
+              "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDPHASE_0::1",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_3::REF_2",
+              "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDPHASE_0::2",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_3::REF_3",
+              "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDPHASE_0::3",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_3::REF_4",
+              "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDPHASE_0::4",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_3::REF_5",
+              "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDPHASE_0::5",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            },
+            {
+              "codeSignOnCopy" : "false",
+              "fileReference" : "PACKAGE:swift::MAINGROUP::REF_3::REF_6",
+              "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDPHASE_0::6",
+              "platformFilters" : [
+
+              ],
+              "removeHeadersOnCopy" : "false"
+            }
+          ],
+          "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable::BUILDPHASE_0",
+          "type" : "com.apple.buildphase.sources"
+        }
+      ],
+      "buildRules" : [
+
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+        {
+          "guid" : "PACKAGE-PRODUCT:ds-swiftui_DsSwiftUI.DsSwiftUI",
+          "platformFilters" : [
+
+          ]
+        }
+      ],
+      "guid" : "PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable",
+      "name" : "MotionLab",
+      "productReference" : {
+        "guid" : "PRODUCTREF-PACKAGE-TARGET:MotionLab-3DC477564E02A58E-testable",
+        "name" : "$(EXECUTABLE_NAME)",
+        "type" : "file"
+      },
+      "productTypeIdentifier" : "org.swift.product-type.common.object",
+      "type" : "standard"
+    },
+    "signature" : "6b18f65ff866e89db261b3e2fc7dbeb6c2c126eb2e435e4141c757e2fab48cf0",
+    "type" : "target"
+  },
+  {
+    "contents" : {
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+
+          },
+          "guid" : "PACKAGE-PRODUCT:swift-motion-lab-swift-examplePackageTests.motion-lab-swift-examplePackageTests::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+
+          },
+          "guid" : "PACKAGE-PRODUCT:swift-motion-lab-swift-examplePackageTests.motion-lab-swift-examplePackageTests::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "buildPhases" : [
+
+      ],
+      "buildRules" : [
+
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+
+      ],
+      "guid" : "PACKAGE-PRODUCT:swift-motion-lab-swift-examplePackageTests.motion-lab-swift-examplePackageTests",
+      "name" : "motion-lab-swift-examplePackageTests-product",
+      "type" : "aggregate"
+    },
+    "signature" : "93993340fced276aefa3091a78c4e756f474f4ae70229d3f9755e71c89606710",
+    "type" : "target"
+  },
+  {
+    "contents" : {
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "SKIP_INSTALL" : "YES",
+            "SUPPORTED_PLATFORMS" : [
+              "$(AVAILABLE_PLATFORMS)"
+            ]
+          },
+          "guid" : "AGGREGATE::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+            "PRODUCT_NAME" : "$(TARGET_NAME)",
+            "SDKROOT" : "auto",
+            "SDK_VARIANT" : "auto",
+            "SKIP_INSTALL" : "YES",
+            "SUPPORTED_PLATFORMS" : [
+              "$(AVAILABLE_PLATFORMS)"
+            ]
+          },
+          "guid" : "AGGREGATE::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "defaultConfigurationName" : "Release",
+      "developmentRegion" : "en",
+      "groupTree" : {
+        "children" : [
+
+        ],
+        "guid" : "AGGREGATE::MAINGROUP",
+        "name" : "",
+        "path" : "",
+        "sourceTree" : "<group>",
+        "type" : "group"
+      },
+      "guid" : "AGGREGATE",
+      "path" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Package.swift",
+      "projectDirectory" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui",
+      "projectIsPackage" : "true",
+      "projectName" : "Aggregate",
+      "targets" : [
+        "ce307fd9046276c552050ab11bbc6fb1e74c96dd5c0ed597388a7011a9265a95",
+        "c39c7f641c8c0472db0013ca8863e18d92dffd20a72c13019a4bc18806f67318"
+      ]
+    },
+    "signature" : "f361f4fb6f4ab0ad984f3aef0e8565deb3556190ed9cbcf19bdda0c4e6f63d38",
+    "type" : "project"
+  },
+  {
+    "contents" : {
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+
+          },
+          "guid" : "ALL-INCLUDING-TESTS::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+
+          },
+          "guid" : "ALL-INCLUDING-TESTS::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "buildPhases" : [
+
+      ],
+      "buildRules" : [
+
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+        {
+          "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample",
+          "platformFilters" : [
+
+          ]
+        }
+      ],
+      "guid" : "ALL-INCLUDING-TESTS",
+      "name" : "AllIncludingTests",
+      "type" : "aggregate"
+    },
+    "signature" : "ce307fd9046276c552050ab11bbc6fb1e74c96dd5c0ed597388a7011a9265a95",
+    "type" : "target"
+  },
+  {
+    "contents" : {
+      "buildConfigurations" : [
+        {
+          "buildSettings" : {
+
+          },
+          "guid" : "ALL-EXCLUDING-TESTS::BUILDCONFIG_0",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Debug"
+        },
+        {
+          "buildSettings" : {
+
+          },
+          "guid" : "ALL-EXCLUDING-TESTS::BUILDCONFIG_1",
+          "impartedBuildProperties" : {
+            "buildSettings" : {
+
+            }
+          },
+          "name" : "Release"
+        }
+      ],
+      "buildPhases" : [
+
+      ],
+      "buildRules" : [
+
+      ],
+      "customTasks" : [
+
+      ],
+      "dependencies" : [
+        {
+          "guid" : "PACKAGE-PRODUCT:swift_MotionLabExample.MotionLabExample",
+          "platformFilters" : [
+
+          ]
+        }
+      ],
+      "guid" : "ALL-EXCLUDING-TESTS",
+      "name" : "AllExcludingTests",
+      "type" : "aggregate"
+    },
+    "signature" : "c39c7f641c8c0472db0013ca8863e18d92dffd20a72c13019a4bc18806f67318",
+    "type" : "target"
+  }
+]

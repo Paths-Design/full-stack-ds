@@ -2,11 +2,14 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, act, fireEvent } from "@testing-library/react";
 import { axe } from "vitest-axe";
-import { Dialog, DialogHeader, DialogTitle, DialogBody, DialogFooter } from "../Dialog";
+import { Dialog } from "../Dialog";
 
 declare module "vitest" {
   interface Assertion<T> {
-    toHaveNoViolations(): void;
+    // The positional T keeps this augmentation mergeable with vitest's
+    // own Assertion<T = any> declaration (TS2428 fires on any rename);
+    // the expected param references it so it is never an unused type param.
+    toHaveNoViolations(expected?: T): void;
   }
 }
 // @generated:end

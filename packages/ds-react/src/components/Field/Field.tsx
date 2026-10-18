@@ -73,16 +73,16 @@ export function Field({
   disabled,
   className,
   "data-testid": testId,
-  name,
-  id,
-  required,
-  readOnly,
-  validate,
+  name: _name,
+  id: _id,
+  required: _required,
+  readOnly: _readOnly,
+  validate: _validate,
   validating,
   slots,
   ...rest
 }: FieldProps) {
-  const { value, setValue } = useField({
+  const { value: _value, setValue: _setValue } = useField({
     value: controlledValue,
     defaultValue,
     onChange,

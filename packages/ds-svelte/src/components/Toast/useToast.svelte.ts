@@ -1,5 +1,5 @@
 // @generated:start imports
-import { createAnchorToggle, createControllableState } from "../../primitives/index.js";
+import { createAnchorToggle } from "../../primitives/index.js";
 // @generated:end
 
 // @custom:start imports

@@ -1,9 +1,10 @@
 id: CALENDAR-DATE-GRID-01
 title: 'Calendar date grid: month channel, roving day focus, selection state and locale on every target'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: calendar-date-grid
 created_at: '2026-10-18T15:19:48.751Z'
-updated_at: '2026-10-18T15:19:48.751Z'
+updated_at: '2026-10-18T15:20:05.376Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -43,7 +44,14 @@ acceptance:
   - id: A1
     given: 'a contract declaring a dateGrid block'
     when: 'the IR builds'
-    then: 'it yields a DateGridIR naming the value and month channels and mode, locale, min, max and disabled props, nested iteration over iter:item paths builds with distinct locals, and a missing or mistyped channel or prop, a dateGrid binding without the block, a compositeControl on the value channel, colliding nested locals, or a cell that does not bind the selection dimension a11y attribute fails generate:check'
+    then: >-
+      it yields a DateGridIR naming the value and month channels and the mode,
+      locale, min, max, disabled and caption props; nested iteration over iter:item
+      paths builds, an inner iteration's locals shadowing the enclosing ones as
+      dom-tree.test.ts pins; and a missing or mistyped channel or prop, a dateGrid
+      binding without the block, a compositeControl on the value channel, a cell
+      that does not bind the selection dimension a11y attribute, or a day node
+      missing its tabindex, data-date or select binding fails generate:check
   - id: A2
     given: 'a generated Calendar in React, Vue, Svelte, Angular and Lit'
     when: 'a user tabs, presses arrow keys, Home, End, PageUp, PageDown (Shift for year), Enter or Space, or activates the previous and next buttons'

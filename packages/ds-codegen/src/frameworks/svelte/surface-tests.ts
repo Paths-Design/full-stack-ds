@@ -35,7 +35,34 @@ const PORTAL_CONTENT_QUERY = `document.body.querySelector("[data-testid='content
  */
 function rewriteContentQueries(testsBody: string, portalsContent: boolean): string {
   if (!portalsContent) return testsBody;
-  return testsBody.split(CONTENT_QUERY).join(PORTAL_CONTENT_QUERY);
+  return dropOrphanedContainerBindings(
+    testsBody.split(CONTENT_QUERY).join(PORTAL_CONTENT_QUERY),
+  );
+}
+
+/**
+ * The portal rewrite swaps content queries from `container.querySelector`
+ * to `document.body.querySelector`, which orphans the
+ * `const { container } = mountDefault(...)` destructure in any test whose
+ * only container reads were content queries. Drop the destructuring in
+ * exactly those it-blocks — render() still appends the fixture to
+ * document.body, and tests that keep reading `container` (trigger
+ * queries, axe scans) are left untouched. The it-block boundary is the
+ * next two-space-indented `});` closer; mountDefault argument objects
+ * never contain one (deeper-indented closers only).
+ */
+function dropOrphanedContainerBindings(body: string): string {
+  return body.replace(
+    /const \{ container \} = mountDefault\(/g,
+    (destructure: string, offset: number) => {
+      const blockEnd = body.indexOf("\n  });", offset);
+      const rest = body.slice(
+        offset + destructure.length,
+        blockEnd === -1 ? body.length : blockEnd,
+      );
+      return /\bcontainer\b/.test(rest) ? destructure : "mountDefault(";
+    },
+  );
 }
 
 export interface SvelteSurfaceTestFiles {
@@ -178,7 +205,10 @@ function emitTestFile(ir: ComponentIR): string {
     ``,
     `declare module "vitest" {`,
     `  interface Assertion<T> {`,
-    `    toHaveNoViolations(): void;`,
+    `    // The positional T keeps this augmentation mergeable with vitest's`,
+    `    // own Assertion<T = any> declaration (TS2428 fires on any rename);`,
+    `    // the expected param references it so it is never an unused type param.`,
+    `    toHaveNoViolations(expected?: T): void;`,
     `  }`,
     `}`,
   ].join("\n");
@@ -594,7 +624,10 @@ function emitPopoverTestFile(ir: ComponentIR): string {
     ``,
     `declare module "vitest" {`,
     `  interface Assertion<T> {`,
-    `    toHaveNoViolations(): void;`,
+    `    // The positional T keeps this augmentation mergeable with vitest's`,
+    `    // own Assertion<T = any> declaration (TS2428 fires on any rename);`,
+    `    // the expected param references it so it is never an unused type param.`,
+    `    toHaveNoViolations(expected?: T): void;`,
     `  }`,
     `}`,
   ].join("\n");

@@ -108,20 +108,22 @@ function resolveBindings(ir: ComponentIR): PrimitiveBindings | null {
   };
 }
 
-function generateImports(
-  bindings: PrimitiveBindings,
-  isDisclosure: boolean,
-): string {
-  const primitives: string[] = [];
-  if (bindings.useControllableState.length > 0)
-    primitives.push("createControllableState");
-  if (bindings.useFocusTrap) primitives.push("createFocusTrap");
-  if (bindings.useScrollLock) primitives.push("createScrollLock");
-  if (bindings.usePortal) primitives.push("createPortal");
-  if (bindings.useAnchorToggle) primitives.push("createAnchorToggle");
-  if (bindings.useDismissal) primitives.push("createDismissal");
-  if (bindings.isCompoundStateContainer) primitives.push("createCompoundContext");
-  if (isDisclosure) primitives.push("createCompoundContext");
+/**
+ * Import assembly derives from emitted-body usage: every specifier must be
+ * referenced by the generated types+hook text (same discipline as the vue
+ * hook emitter) — e.g. Toast delegates its state to createAnchorToggle and
+ * never mentions `createControllableState(`, so it must not import it.
+ */
+function generateImports(emitted: string): string {
+  const primitives = [
+    "createControllableState",
+    "createFocusTrap",
+    "createScrollLock",
+    "createPortal",
+    "createAnchorToggle",
+    "createDismissal",
+    "createCompoundContext",
+  ].filter((name) => new RegExp(`\\b${name}[(<]`).test(emitted));
 
   if (primitives.length === 0) return "";
   return `import { ${primitives.sort().join(", ")} } from "../../primitives/index.js";`;
@@ -734,7 +736,6 @@ export function generateSvelteHookSource(ir: ComponentIR): string | null {
   if (!bindings) return null;
 
   const isDisclosure = isDisclosureContainer(ir);
-  const importsBody = generateImports(bindings, isDisclosure);
   const inlineTypesBody = generateInlineTypes(ir, bindings);
   const optionsBody = generateOptionsInterface(ir, bindings);
   const resultBody = generateResultInterface(ir, bindings);
@@ -758,6 +759,8 @@ export function generateSvelteHookSource(ir: ComponentIR): string | null {
   const typesBodyParts = [inlineTypesBody, optionsBody, resultBody, compoundContextBody]
     .filter((s) => s.length > 0);
   const typesBody = typesBodyParts.join("\n\n");
+
+  const importsBody = generateImports(`${typesBody}\n${fullHookBody}`);
 
   const blank = (): Section => ({ kind: "between", body: "" });
   const sections: Section[] = [

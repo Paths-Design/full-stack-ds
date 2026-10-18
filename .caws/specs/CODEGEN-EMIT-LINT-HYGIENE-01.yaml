@@ -1,10 +1,11 @@
 id: CODEGEN-EMIT-LINT-HYGIENE-01
 title: 'Emitter lint hygiene: conditional imports, dead-guard fix, test-import correctness, lint admission for generated output'
 mode: feature
-lifecycle_state: active
-worktree: emit-lint-hygiene
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Emitter lint hygiene landed: body-derived import sets in all web/RN emitters, dead-guard fixes, lint admission checks in the rail, generated packages + tests un-ignored at zero findings'
 created_at: '2026-10-18T05:45:45.561Z'
-updated_at: '2026-10-18T07:26:42.941Z'
+updated_at: '2026-10-18T19:42:37.062Z'
 created_by_session: 'session-56f657a0-b59d-4872-93a8-7d5eb2fe452f'
 blast_radius:
   modules:
@@ -27,7 +28,10 @@ scope:
     - 'eslint.config.js'
     - 'docs/specifications/admission-rail.md'
     - docs/current-implementation-snapshot.md
+    - vitest.config.ts
   out: []
+  support:
+    - packages/ds-svelte/scripts/build-styles.mjs
 invariants:
   - 'No hand-edits to generated component files: every byte change comes from emitter changes plus regeneration; @custom regions are preserved untouched'
   - 'Runtime behavior is unchanged: import-set narrowing and _-prefixed destructure renames are behavior-preserving; the dead-guard removal is semantically identical because the contract default already absorbs undefined'
@@ -68,3 +72,32 @@ contracts:
   - name: 'admission-rail'
     type: api
     path: 'docs/specifications/admission-rail.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run lint exit 0, zero findings over all six generated packages incl. __tests__ (worktree commit ae218c5ed, re-verified post-merge on canonical with regenerated trees); .vue/.svelte SFC gap declared in vue/svelte plan knownGaps"
+    recorded_at: "2026-10-18T19:41:32.642Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "packages/ds-codegen/src/frameworks/lit/binding-defaults.test.ts CODEGEN-EMIT-LINT-HYGIENE-01 describes (6 tests: guard-free defaulted + guard-kept no-default for aria-boolean AND css-var, with falsification cases) — vitest lit filter 57/57 at commit ae218c5ed"
+    recorded_at: "2026-10-18T19:41:34.325Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "angular/import-hygiene.test.ts (14 tests incl. two-directional meta-oracle), lit icon-glyph-lowering nothing-present/absent pins, vue+svelte hook-source.test.ts hygiene describes, react component-source.test.ts corpus pins — all green in the 740-test frameworks run at commit ae218c5ed; angular corpus sweep 148 files 0 unused/0 missing"
+    recorded_at: "2026-10-18T19:41:52.525Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "react/tests.test.ts narrowing + preservedCustomTests retention + factory-threading test (reads real on-disk custom region); vue+svelte tests.test.ts vi hygiene describes; react-native/tests.test.ts import-type + renderer-unmount pins; lit/tests.test.ts typed-cast pin with as-any ban"
+    recorded_at: "2026-10-18T19:41:54.569Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "react/component-source.test.ts: Avatar priority/_rename + ReactNode drop, Button title, Field id/name + hook-result renames, Calendar, Image/ShowMore calibration regressions; ds-react suppression block deleted from eslint.config.js (commit f857b5c48)"
+    recorded_at: "2026-10-18T19:41:56.475Z"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "eslint.config.js commit f857b5c48: react/react-hooks rules scoped to src/** + ds-react + ds-react-native files blocks (probe-verified zero rules-of-hooks findings on angular/vue generated output, was 9+2); lit no-this-alias off behind declared policy-boundary comment mirroring validation/frameworks/lit.ts"
+    recorded_at: "2026-10-18T19:42:15.068Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "pnpm run governed:rail Overall: PASS at merged tree (post ae218c5ed + merge 54a5c38dc reconciliation): react/vue/svelte/lit/angular/react-native all typecheck=pass lint=pass (+templateTypecheck/runtime as declared); SFC gaps in vue/svelte plan knownGaps"
+    recorded_at: "2026-10-18T19:42:17.776Z"

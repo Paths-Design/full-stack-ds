@@ -1,5 +1,5 @@
 // @generated:start imports
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { ref } from 'lit/directives/ref.js';
 import { SequenceController } from "../../primitives/controllers/SequenceController.js";
 import { FsdsMessagesController } from "../../primitives/messages.js";

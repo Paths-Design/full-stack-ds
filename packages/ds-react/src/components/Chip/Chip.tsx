@@ -59,7 +59,7 @@ export function Chip({
   children,
   type,
   icon,
-  title,
+  title: _title,
   ariaLabel,
   ariaExpanded,
   ariaPressed,

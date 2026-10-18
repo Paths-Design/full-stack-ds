@@ -1,5 +1,5 @@
 // @generated:start imports
-import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked, OnInit, OnDestroy, ElementRef } from "@angular/core";
+import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, ElementRef, Injector, runInInjectionContext, untracked, type OnInit, type OnDestroy } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
 import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";

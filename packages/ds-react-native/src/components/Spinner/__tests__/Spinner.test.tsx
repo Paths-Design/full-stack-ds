@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Spinner } from "../Spinner";
+import type { Spinner } from "../Spinner";
 // @generated:end
 
 // @generated:start tests

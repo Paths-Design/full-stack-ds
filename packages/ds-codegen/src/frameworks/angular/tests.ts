@@ -5,6 +5,7 @@ import {
   findIndeterminateAriaCheckedFact,
   runtimeRequiredPropExpression,
 } from "../../test-plan.js";
+import { jestGlobalsImportLine } from "./emitted-imports.js";
 
 export function generateAngularTest(ir: ComponentIR): string {
   const plan = buildComponentTestPlan(ir);
@@ -20,18 +21,10 @@ export function generateAngularTest(ir: ComponentIR): string {
   // have comprehensive channel tests written in the @custom block. No generated channel
   // prop tests are emitted for Angular.
 
-  const needsJest = isDomTree || emitEscape || emitOverlayClick;
   const fixtureExpression =
     plan.requiredProps.length > 0
       ? "createFixture()"
       : `TestBed.createComponent(${className})`;
-
-  const importsLines: string[] = [
-    `import { describe, expect, it${needsJest ? ", beforeEach, jest" : ""} } from "@jest/globals";`,
-    ...(isDomTree ? [`import { TestBed } from "@angular/core/testing";`] : []),
-    `import { ${className} } from "../${plan.name}.component";`,
-  ];
-  const importsBody = importsLines.join("\n");
 
   const lines: string[] = [];
   if (isDomTree && plan.requiredProps.length > 0) {
@@ -258,6 +251,17 @@ export function generateAngularTest(ir: ComponentIR): string {
   lines.push(`function classTokens(component: { classes: () => string }): string[] {`);
   lines.push(`  return component.classes().split(/\\s+/).filter(Boolean);`);
   lines.push(`}`);
+
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the @jest/globals specifier set derives
+  // from the emitted test body — `jest` is referenced only by the
+  // dismissal describes' `jest.fn()` spies, so a dom-tree suite without
+  // dismissal tests imports `beforeEach` (its TestBed setup) but not
+  // `jest`.
+  const importsBody = [
+    jestGlobalsImportLine(lines.join("\n")),
+    ...(isDomTree ? [`import { TestBed } from "@angular/core/testing";`] : []),
+    `import { ${className} } from "../${plan.name}.component";`,
+  ].join("\n");
 
   const sections: Section[] = [
     { kind: "generated", id: "imports", body: importsBody },

@@ -3,11 +3,11 @@ import {
   Directive,
   ElementRef,
   HostBinding,
-  OnInit,
-  OnDestroy,
+  type OnInit,
+  type OnDestroy,
   inject,
 } from "@angular/core";
-import { PopoverContextToken, type PopoverContextValue } from "./usePopover.js";
+import { PopoverContextToken } from "./usePopover.js";
 // @generated:end
 
 // @custom:start imports

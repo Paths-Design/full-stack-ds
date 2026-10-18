@@ -27,13 +27,15 @@ describe("Tabs — unit", () => {
     document.body.append(container);
     await customElements.whenDefined("fsds-tabs");
     const el = container.querySelector("fsds-tabs")!;
-    await (el as any).updateComplete;
+    await (el as HTMLElement & { updateComplete?: Promise<unknown> }).updateComplete;
     expect(el).toBeInstanceOf(HTMLElement);
     container.remove();
   });
 
   it("applies orientation=horizontal variant class", async () => {
-    const el = document.createElement("fsds-tabs") as any;
+    const el = document.createElement("fsds-tabs") as HTMLElement & {
+      updateComplete?: Promise<unknown>;
+    };
     el.setAttribute("orientation", "horizontal");
     const container = document.createElement("div");
     container.append(el);
@@ -47,7 +49,9 @@ describe("Tabs — unit", () => {
   });
 
   it("applies orientation=vertical variant class", async () => {
-    const el = document.createElement("fsds-tabs") as any;
+    const el = document.createElement("fsds-tabs") as HTMLElement & {
+      updateComplete?: Promise<unknown>;
+    };
     el.setAttribute("orientation", "vertical");
     const container = document.createElement("div");
     container.append(el);
@@ -61,7 +65,9 @@ describe("Tabs — unit", () => {
   });
 
   it("applies appearance=underline variant class", async () => {
-    const el = document.createElement("fsds-tabs") as any;
+    const el = document.createElement("fsds-tabs") as HTMLElement & {
+      updateComplete?: Promise<unknown>;
+    };
     el.setAttribute("appearance", "underline");
     const container = document.createElement("div");
     container.append(el);
@@ -75,7 +81,9 @@ describe("Tabs — unit", () => {
   });
 
   it("applies appearance=pills variant class", async () => {
-    const el = document.createElement("fsds-tabs") as any;
+    const el = document.createElement("fsds-tabs") as HTMLElement & {
+      updateComplete?: Promise<unknown>;
+    };
     el.setAttribute("appearance", "pills");
     const container = document.createElement("div");
     container.append(el);
@@ -89,7 +97,9 @@ describe("Tabs — unit", () => {
   });
 
   it("applies activationMode=automatic variant class", async () => {
-    const el = document.createElement("fsds-tabs") as any;
+    const el = document.createElement("fsds-tabs") as HTMLElement & {
+      updateComplete?: Promise<unknown>;
+    };
     el.setAttribute("activationMode", "automatic");
     const container = document.createElement("div");
     container.append(el);
@@ -103,7 +113,9 @@ describe("Tabs — unit", () => {
   });
 
   it("applies activationMode=manual variant class", async () => {
-    const el = document.createElement("fsds-tabs") as any;
+    const el = document.createElement("fsds-tabs") as HTMLElement & {
+      updateComplete?: Promise<unknown>;
+    };
     el.setAttribute("activationMode", "manual");
     const container = document.createElement("div");
     container.append(el);
@@ -125,18 +137,34 @@ describe("Tabs — accessibility", () => {
     await customElements.whenDefined("fsds-tabs-list");
     await customElements.whenDefined("fsds-tabs-tab");
     await customElements.whenDefined("fsds-tabs-panel");
-    const tabsEl = document.createElement("fsds-tabs") as any;
+    const tabsEl = document.createElement("fsds-tabs") as HTMLElement & {
+      value: string;
+      idBase?: string;
+      updateComplete?: Promise<unknown>;
+    };
     tabsEl.value = "a";
     tabsEl.idBase = "axe-test";
     const listEl = document.createElement("fsds-tabs-list");
-    const tabA = document.createElement("fsds-tabs-tab") as any;
+    const tabA = document.createElement("fsds-tabs-tab") as HTMLElement & {
+      value: string;
+      updateComplete?: Promise<unknown>;
+    };
     tabA.value = "a"; tabA.textContent = "Tab A";
-    const tabB = document.createElement("fsds-tabs-tab") as any;
+    const tabB = document.createElement("fsds-tabs-tab") as HTMLElement & {
+      value: string;
+      updateComplete?: Promise<unknown>;
+    };
     tabB.value = "b"; tabB.textContent = "Tab B";
     listEl.append(tabA, tabB);
-    const panelA = document.createElement("fsds-tabs-panel") as any;
+    const panelA = document.createElement("fsds-tabs-panel") as HTMLElement & {
+      value: string;
+      updateComplete?: Promise<unknown>;
+    };
     panelA.value = "a"; panelA.textContent = "Panel A";
-    const panelB = document.createElement("fsds-tabs-panel") as any;
+    const panelB = document.createElement("fsds-tabs-panel") as HTMLElement & {
+      value: string;
+      updateComplete?: Promise<unknown>;
+    };
     panelB.value = "b"; panelB.textContent = "Panel B";
     tabsEl.append(listEl, panelA, panelB);
     container.append(tabsEl);
@@ -157,6 +185,10 @@ describe("Tabs — accessibility", () => {
 // @generated:end
 
 // @custom:start tests
+
+// CODEGEN-EMIT-LINT-HYGIENE-01: typed element shape replaces `as any`
+// casts throughout this hand-authored region.
+type TabsElement = HTMLElement & Record<string, unknown>;
 
 // ---------------------------------------------------------------------------
 // Behavioral test helpers
@@ -186,12 +218,12 @@ async function renderTabs(opts: {
   await customElements.whenDefined("fsds-tabs-tab");
   await customElements.whenDefined("fsds-tabs-panel");
 
-  const tabsEl = document.createElement("fsds-tabs") as any;
+  const tabsEl = document.createElement("fsds-tabs") as TabsElement;
   // Use defaultValue (uncontrolled) so internal state mutations
   // (from clicks/keyboard) are reflected in behavior.activeTab.
   // Pass `controlled: true` explicitly for controlled-mode tests.
   tabsEl.defaultValue = opts.defaultValue ?? opts.value ?? "a";
-  if (opts.value !== undefined && (opts as any).controlled === true) {
+  if (opts.value !== undefined && (opts as typeof opts & { controlled?: boolean }).controlled === true) {
     tabsEl.value = opts.value;
   }
   tabsEl.idBase = opts.idBase ?? "test-tabs";
@@ -201,15 +233,15 @@ async function renderTabs(opts: {
   if (opts.loop !== undefined) tabsEl.loop = opts.loop;
 
   const listEl = document.createElement("fsds-tabs-list");
-  const tabA = document.createElement("fsds-tabs-tab") as any;
+  const tabA = document.createElement("fsds-tabs-tab") as TabsElement;
   tabA.value = "a"; tabA.textContent = "Tab A";
-  const tabB = document.createElement("fsds-tabs-tab") as any;
+  const tabB = document.createElement("fsds-tabs-tab") as TabsElement;
   tabB.value = "b"; tabB.textContent = "Tab B";
   listEl.append(tabA, tabB);
 
-  const panelA = document.createElement("fsds-tabs-panel") as any;
+  const panelA = document.createElement("fsds-tabs-panel") as TabsElement;
   panelA.value = "a"; panelA.textContent = "Panel A";
-  const panelB = document.createElement("fsds-tabs-panel") as any;
+  const panelB = document.createElement("fsds-tabs-panel") as TabsElement;
   panelB.value = "b"; panelB.textContent = "Panel B";
 
   // Build the tree before connecting to DOM so defaultValue is captured
@@ -227,10 +259,10 @@ async function renderTabs(opts: {
   await new Promise((r) => setTimeout(r, 0)); // microtask: tab registration
   // Tab registration triggers tabsEl.requestUpdate() which re-provides context.
   await tabsEl.updateComplete;
-  await (tabA as any).updateComplete;
-  await (tabB as any).updateComplete;
-  await (panelA as any).updateComplete;
-  await (panelB as any).updateComplete;
+  await (tabA as TabsElement).updateComplete;
+  await (tabB as TabsElement).updateComplete;
+  await (panelA as TabsElement).updateComplete;
+  await (panelB as TabsElement).updateComplete;
   // Final tick to let all reactive updates settle.
   await new Promise((r) => setTimeout(r, 0));
 
@@ -240,10 +272,10 @@ async function renderTabs(opts: {
 async function settleUpdates(...els: HTMLElement[]): Promise<void> {
   // Run multiple settle cycles to propagate context updates through the tree.
   // Cycle 1: root update + context dispatch
-  for (const el of els) await (el as any).updateComplete;
+  for (const el of els) await (el as TabsElement).updateComplete;
   await new Promise((r) => setTimeout(r, 0));
   // Cycle 2: children re-render after context event
-  for (const el of els) await (el as any).updateComplete;
+  for (const el of els) await (el as TabsElement).updateComplete;
   await new Promise((r) => setTimeout(r, 0));
 }
 
@@ -277,7 +309,7 @@ describe("Tabs — behavioral", () => {
   it("clicking tab B activates it and deactivates tab A", async () => {
     const { container, tabsEl, tabA, tabB, panelA, panelB } = await renderTabs({ value: "a" });
     tabB.click();
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any, panelA as any, panelB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement, panelA as TabsElement, panelB as TabsElement);
 
     expect(tabB.getAttribute("aria-selected")).toBe("true");
     expect(tabA.getAttribute("aria-selected")).toBe("false");
@@ -292,9 +324,9 @@ describe("Tabs — behavioral", () => {
     void _; void _i;
     const { container, tabsEl, tabB } = await renderTabs({ value: "a" });
     const spy = vi.fn();
-    (tabsEl as any).onValueChange = spy;
+    (tabsEl as TabsElement).onValueChange = spy;
     tabB.click();
-    await settleUpdates(tabsEl as any);
+    await settleUpdates(tabsEl as TabsElement);
     expect(spy).toHaveBeenCalledWith("b");
     container.remove();
   });
@@ -309,7 +341,7 @@ describe("Tabs — behavioral", () => {
   it("flips aria-selected after click", async () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "a" });
     tabB.click();
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     expect(tabA.getAttribute("aria-selected")).toBe("false");
     expect(tabB.getAttribute("aria-selected")).toBe("true");
     container.remove();
@@ -325,7 +357,7 @@ describe("Tabs — behavioral", () => {
   it("roving tabindex updates after activation", async () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "a" });
     tabB.click();
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     expect(tabA.getAttribute("tabindex")).toBe("-1");
     expect(tabB.getAttribute("tabindex")).toBe("0");
     container.remove();
@@ -380,7 +412,7 @@ describe("Tabs — behavioral", () => {
     // Focus the list to receive keydown.
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;
     listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, composed: true }));
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     // In automatic mode, ArrowRight should activate tab B.
     expect(tabB.getAttribute("aria-selected")).toBe("true");
     container.remove();
@@ -390,7 +422,7 @@ describe("Tabs — behavioral", () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "b", activationMode: "automatic" });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;
     listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true, composed: true }));
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     expect(tabA.getAttribute("aria-selected")).toBe("true");
     container.remove();
   });
@@ -399,7 +431,7 @@ describe("Tabs — behavioral", () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "b", activationMode: "automatic" });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;
     listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "Home", bubbles: true, composed: true }));
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     expect(tabA.getAttribute("aria-selected")).toBe("true");
     container.remove();
   });
@@ -408,7 +440,7 @@ describe("Tabs — behavioral", () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "a", activationMode: "automatic" });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;
     listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true, composed: true }));
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     expect(tabB.getAttribute("aria-selected")).toBe("true");
     container.remove();
   });
@@ -417,7 +449,7 @@ describe("Tabs — behavioral", () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "b", activationMode: "automatic", loop: true });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;
     listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, composed: true }));
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     expect(tabA.getAttribute("aria-selected")).toBe("true");
     container.remove();
   });
@@ -426,7 +458,7 @@ describe("Tabs — behavioral", () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "b", activationMode: "automatic", loop: false });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;
     listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, composed: true }));
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     // Should stay on tab B (last tab, no wrap).
     expect(tabB.getAttribute("aria-selected")).toBe("true");
     container.remove();
@@ -436,7 +468,7 @@ describe("Tabs — behavioral", () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "a", activationMode: "manual" });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;
     listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, composed: true }));
-    await settleUpdates(tabsEl as any, tabA as any, tabB as any);
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
     // Tab A should still be active (manual mode: focus moves but no activation).
     expect(tabA.getAttribute("aria-selected")).toBe("true");
     expect(tabB.getAttribute("aria-selected")).toBe("false");

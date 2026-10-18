@@ -10,7 +10,10 @@ describe("generateReactNativeTest", () => {
 
     expect(source).toContain(`import { describe, it } from "vitest";`);
     expect(source).toContain(`import type { ComponentProps } from "react";`);
-    expect(source).toContain(`import { Switch } from "../Switch";`);
+    // CODEGEN-EMIT-LINT-HYGIENE-01: the component is referenced only in
+    // `ComponentProps<typeof Switch>` type position → type-only import.
+    expect(source).toContain(`import type { Switch } from "../Switch";`);
+    expect(source).not.toContain(`import { Switch } from "../Switch";`);
     expect(source).toContain(`type SwitchSmokeProps = ComponentProps<typeof Switch>;`);
     expect(source).toContain(`const smokeProps = {} as SwitchSmokeProps;`);
   });
@@ -128,5 +131,23 @@ describe("generateReactNativeTest — real corpus contracts", () => {
     expect(source).toContain(
       `it("renders native switch state and change handler"`,
     );
+    // Runtime plans render the component → the value import stays a value
+    // import (only the type-surface fallback uses `import type`).
+    expect(source).toContain(`import { Switch } from "../Switch";`);
+    expect(source).not.toContain(`import type { Switch }`);
+  });
+
+  it("CODEGEN-EMIT-LINT-HYGIENE-01: Toast timer tests read and unmount their renderer", () => {
+    const source = generateReactNativeTest(corpusIR("Toast"));
+
+    const unmounts = source.match(/renderer\?\.unmount\(\);/g) ?? [];
+    expect(unmounts.length).toBe(2);
+    // Each timer test sets fake timers, unmounts, then restores.
+    const firstTimer = source.indexOf("vi.useFakeTimers();");
+    const firstUnmount = source.indexOf("renderer?.unmount();");
+    const firstReal = source.indexOf("vi.useRealTimers();");
+    expect(firstTimer).toBeGreaterThan(-1);
+    expect(firstUnmount).toBeGreaterThan(firstTimer);
+    expect(firstReal).toBeGreaterThan(firstUnmount);
   });
 });

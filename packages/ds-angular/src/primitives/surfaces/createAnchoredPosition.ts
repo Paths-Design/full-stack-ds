@@ -1,4 +1,4 @@
-import { DestroyRef, type Signal, computed, signal } from "@angular/core";
+import { type DestroyRef, type Signal, computed, signal } from "@angular/core";
 
 export type AnchoredPlacement = "top" | "bottom" | "left" | "right";
 

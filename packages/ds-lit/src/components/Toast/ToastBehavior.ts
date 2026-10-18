@@ -1,6 +1,6 @@
 // @generated:start imports
 import type { ReactiveControllerHost } from 'lit';
-import { AnchorToggleController, ControllableStateController } from '../../primitives/index.js';
+import { AnchorToggleController } from '../../primitives/index.js';
 // @generated:end
 
 // @custom:start imports

@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Breadcrumbs } from "../Breadcrumbs";
+import type { Breadcrumbs } from "../Breadcrumbs";
 // @generated:end
 
 // @generated:start tests

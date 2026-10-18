@@ -40,7 +40,7 @@ export function Blockquote({
   className,
   "data-testid": testId,
   children,
-  cite,
+  cite: _cite,
   ...rest
 }: BlockquoteProps) {
   const classNames = [

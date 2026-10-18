@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Alert } from "../Alert";
+import type { Alert } from "../Alert";
 // @generated:end
 
 // @generated:start tests

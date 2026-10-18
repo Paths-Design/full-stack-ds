@@ -8,7 +8,10 @@ import PopoverFixture from "./PopoverFixture.svelte";
 
 declare module "vitest" {
   interface Assertion<T> {
-    toHaveNoViolations(): void;
+    // The positional T keeps this augmentation mergeable with vitest's
+    // own Assertion<T = any> declaration (TS2428 fires on any rename);
+    // the expected param references it so it is never an unused type param.
+    toHaveNoViolations(expected?: T): void;
   }
 }
 // @generated:end
@@ -34,7 +37,7 @@ describe("Popover — compound API surface", () => {
   });
 
   it("renders the content when defaultOpen={true}", async () => {
-    const { container } = mountDefault({ defaultOpen: true });
+    mountDefault({ defaultOpen: true });
     await tick();
     expect(document.body.querySelector("[data-testid='content']")).toBeTruthy();
   });
@@ -58,7 +61,7 @@ describe("Popover — compound API surface", () => {
   });
 
   it("closes on Escape", async () => {
-    const { container } = mountDefault({ defaultOpen: true });
+    mountDefault({ defaultOpen: true });
     await tick();
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     await tick();
@@ -66,7 +69,7 @@ describe("Popover — compound API surface", () => {
   });
 
   it("closes on outside-click", async () => {
-    const { container } = mountDefault({ defaultOpen: true });
+    mountDefault({ defaultOpen: true });
     await tick();
     document.body.dispatchEvent(
       new MouseEvent("mousedown", { bubbles: true }),
@@ -76,7 +79,7 @@ describe("Popover — compound API surface", () => {
   });
 
   it("click on content does not count as outside-click", async () => {
-    const { container } = mountDefault({ defaultOpen: true });
+    mountDefault({ defaultOpen: true });
     await tick();
     const content = document.body.querySelector("[data-testid='content']")!;
     content.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
@@ -122,7 +125,7 @@ describe("Popover — compound API surface", () => {
   });
 
   it("closeOnEscape={false} prevents Escape dismissal", async () => {
-    const { container } = mountDefault({ defaultOpen: true, closeOnEscape: false });
+    mountDefault({ defaultOpen: true, closeOnEscape: false });
     await tick();
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     await tick();
@@ -130,7 +133,7 @@ describe("Popover — compound API surface", () => {
   });
 
   it("closeOnOutsideClick={false} prevents outside-click dismissal", async () => {
-    const { container } = mountDefault({ defaultOpen: true, closeOnOutsideClick: false });
+    mountDefault({ defaultOpen: true, closeOnOutsideClick: false });
     await tick();
     document.body.dispatchEvent(
       new MouseEvent("mousedown", { bubbles: true }),

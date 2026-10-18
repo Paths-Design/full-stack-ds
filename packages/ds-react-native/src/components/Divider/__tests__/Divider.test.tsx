@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Divider } from "../Divider";
+import type { Divider } from "../Divider";
 // @generated:end
 
 // @generated:start tests

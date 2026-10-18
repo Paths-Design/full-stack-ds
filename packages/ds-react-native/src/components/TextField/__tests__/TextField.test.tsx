@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { TextField } from "../TextField";
+import type { TextField } from "../TextField";
 // @generated:end
 
 // @generated:start tests

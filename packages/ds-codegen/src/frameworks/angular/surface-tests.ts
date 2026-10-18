@@ -11,6 +11,7 @@
  */
 import type { ComponentIR } from "../../ir.js";
 import { anchoredPortalsContentToBody, isPartAnchoredSurface } from "../../semantics.js";
+import { jestGlobalsImportLine } from "./emitted-imports.js";
 
 export function generateAngularSurfaceTest(ir: ComponentIR): string {
   const surface = ir.surface;
@@ -51,25 +52,6 @@ function emitTooltipTests(ir: ComponentIR): string {
     behavior: { portal: ir.behavior.portal },
     surface: { positioning: surface.positioning },
   });
-
-  const importsBody = [
-    `import { describe, expect, it, beforeEach, afterEach, jest } from "@jest/globals";`,
-    `import { Component } from "@angular/core";`,
-    `import { TestBed } from "@angular/core/testing";`,
-    `import { ${name}Component } from "../${name}.component";`,
-    `import { ${name}TriggerComponent } from "../${name}Trigger.component";`,
-    `import { ${name}TriggerDirective } from "../${name}Trigger.directive";`,
-    `import { ${name}ContentComponent } from "../${name}Content.component";`,
-    ``,
-    `// jsdom doesn't ship PointerEvent. Polyfill via MouseEvent so the`,
-    `// substrate's pointerenter/pointerleave listeners receive an event`,
-    `// object with the right \`type\`, \`relatedTarget\`, \`cancelable\`, and`,
-    `// \`defaultPrevented\` semantics. We only need the relatedTarget +`,
-    `// defaultPrevented surface, so MouseEvent suffices.`,
-    `if (typeof globalThis.PointerEvent === "undefined") {`,
-    `  (globalThis as unknown as { PointerEvent: typeof MouseEvent }).PointerEvent = MouseEvent as unknown as typeof PointerEvent;`,
-    `}`,
-  ].join("\n");
 
   const testsBody = `function mount(setup: (host: TooltipFixture) => void = () => {}) {
   const fixture = TestBed.createComponent(TooltipFixture);
@@ -353,6 +335,29 @@ describe("${name} — directive-based host adoption", () => {
       'getAnchor(fixture.nativeElement as HTMLElement, false).dispatchEvent(new PointerEvent("pointerenter", { bubbles: true }))',
   })}`;
 
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the @jest/globals specifier set derives
+  // from the emitted test body — both surface suites reference every API
+  // today, so the bytes do not change, but a future body edit cannot
+  // strand an unused specifier.
+  const importsBody = [
+    jestGlobalsImportLine(testsBody),
+    `import { Component } from "@angular/core";`,
+    `import { TestBed } from "@angular/core/testing";`,
+    `import { ${name}Component } from "../${name}.component";`,
+    `import { ${name}TriggerComponent } from "../${name}Trigger.component";`,
+    `import { ${name}TriggerDirective } from "../${name}Trigger.directive";`,
+    `import { ${name}ContentComponent } from "../${name}Content.component";`,
+    ``,
+    `// jsdom doesn't ship PointerEvent. Polyfill via MouseEvent so the`,
+    `// substrate's pointerenter/pointerleave listeners receive an event`,
+    `// object with the right \`type\`, \`relatedTarget\`, \`cancelable\`, and`,
+    `// \`defaultPrevented\` semantics. We only need the relatedTarget +`,
+    `// defaultPrevented surface, so MouseEvent suffices.`,
+    `if (typeof globalThis.PointerEvent === "undefined") {`,
+    `  (globalThis as unknown as { PointerEvent: typeof MouseEvent }).PointerEvent = MouseEvent as unknown as typeof PointerEvent;`,
+    `}`,
+  ].join("\n");
+
   return [
     `// @generated:start imports`,
     importsBody,
@@ -425,16 +430,6 @@ function emitPopoverTests(ir: ComponentIR): string {
     behavior: { portal: ir.behavior.portal },
     surface: { positioning: surface.positioning },
   });
-
-  const importsBody = [
-    `import { describe, expect, it, beforeEach, afterEach, jest } from "@jest/globals";`,
-    `import { Component } from "@angular/core";`,
-    `import { TestBed } from "@angular/core/testing";`,
-    `import { ${name}Component } from "../${name}.component";`,
-    `import { ${name}TriggerComponent } from "../${name}Trigger.component";`,
-    `import { ${name}TriggerDirective } from "../${name}Trigger.directive";`,
-    `import { ${name}ContentComponent } from "../${name}Content.component";`,
-  ].join("\n");
 
   const testsBody = `function mount(setup: (host: PopoverFixture) => void = () => {}) {
   const fixture = TestBed.createComponent(PopoverFixture);
@@ -727,6 +722,18 @@ describe("${name} — directive-based host adoption", () => {
     openExpr:
       'getAnchor(fixture.nativeElement as HTMLElement, false).dispatchEvent(new MouseEvent("click", { bubbles: true }))',
   })}`;
+
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the @jest/globals specifier set derives
+  // from the emitted test body (see the Tooltip emitter's note).
+  const importsBody = [
+    jestGlobalsImportLine(testsBody),
+    `import { Component } from "@angular/core";`,
+    `import { TestBed } from "@angular/core/testing";`,
+    `import { ${name}Component } from "../${name}.component";`,
+    `import { ${name}TriggerComponent } from "../${name}Trigger.component";`,
+    `import { ${name}TriggerDirective } from "../${name}Trigger.directive";`,
+    `import { ${name}ContentComponent } from "../${name}Content.component";`,
+  ].join("\n");
 
   return [
     `// @generated:start imports`,

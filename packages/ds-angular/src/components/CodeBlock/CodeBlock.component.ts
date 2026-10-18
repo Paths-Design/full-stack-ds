@@ -1,5 +1,5 @@
 // @generated:start imports
-import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, AfterContentInit, ElementRef } from "@angular/core";
+import { Component, Input, inject, ChangeDetectionStrategy, ElementRef } from "@angular/core";
 import { NgClass, NgIf, NgFor } from "@angular/common";
 import { prepareHighlightSource } from "../../primitives/highlight/tokenize.js";
 // @generated:end

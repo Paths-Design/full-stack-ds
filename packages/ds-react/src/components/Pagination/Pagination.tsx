@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type HTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import { usePagination } from "./usePagination";
 import { usePagedSet } from "../../primitives/hooks/usePaging.js";

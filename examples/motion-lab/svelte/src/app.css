@@ -1,0 +1,163 @@
+/* Motion-lab lane chrome. Component look comes from the packages; this
+ * file only lays out the lab page itself (stations, readouts, stages). */
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  background: #f6f6f8;
+  color: #1c1c22;
+}
+
+.app {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.app-header {
+  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.app-intro {
+  margin: 8px 0 28px;
+  color: #44444e;
+  max-width: 68ch;
+  line-height: 1.55;
+}
+
+.pref-chip {
+  margin-left: auto;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #c9c9d4;
+  background: #fff;
+  white-space: nowrap;
+}
+
+.pref-chip[data-on="true"] {
+  border-color: #8a3f3f;
+  color: #8a3f3f;
+  font-weight: 600;
+}
+
+.station {
+  background: #fff;
+  border: 1px solid #e2e2ea;
+  border-radius: 14px;
+  padding: 20px 22px 24px;
+  margin-bottom: 22px;
+}
+
+.station-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.station-header h2 {
+  font-size: 1.02rem;
+  margin: 0;
+}
+
+.station-header button {
+  margin-left: auto;
+}
+
+.station p {
+  margin: 4px 0 10px;
+  color: #55555f;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  max-width: 72ch;
+}
+
+.token-readout {
+  display: block;
+  font-size: 0.74rem;
+  background: #f1f1f6;
+  border: 1px solid #e2e2ea;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin: 0 0 14px;
+  color: #3d3d47;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.stage {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+}
+
+.stage-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.stage-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.glyph-stage {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.glyph-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.glyph-figure figcaption {
+  font-size: 0.72rem;
+  color: #66666f;
+}
+
+.scramble {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1.6rem;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.scramble-char {
+  display: inline-block;
+  min-width: 0.62em;
+  text-align: center;
+}
+
+.footnote {
+  font-size: 0.72rem;
+  color: #77777f;
+  margin-top: 10px;
+  line-height: 1.5;
+  max-width: 74ch;
+}

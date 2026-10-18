@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import type { Component } from "vue";
 import { mount } from "@vue/test-utils";
 import { axe } from "vitest-axe";

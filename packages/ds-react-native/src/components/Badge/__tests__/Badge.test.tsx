@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Badge } from "../Badge";
+import type { Badge } from "../Badge";
 // @generated:end
 
 // @generated:start tests
