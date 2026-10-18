@@ -54,12 +54,12 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "audit.log/a11y-matrix.json at 33d99922: Calendar [react|vue|svelte|angular|lit] focus:roving unrealized and Calendar keyboard:Enter|Space unrealized ('native Enter/Space unreachable: roving items are never tabbable'); Select focus:roving realized via emitted entry action, Tabs via computed tab stop. selfcheck.log pins literal-tabindex unreachable vs computed/emitted-entry reachable (and declared-but-unemitted entry actions unreachable). In-session mutation probe: Tabs.tsx tabIndex pinned to -1 -> Tabs [react] focus:roving + keyboard:Tab flagged unledgered."
-    recorded_at: "2026-10-18T07:38:04.463Z"
-    command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
+    evidence_ref: "selfcheck roving assertions: static tabIndex -1 items with no emitted entry action are unrealized and native Enter/Space not counted; dynamic tabindex or emitted entry action realized; mutation probe React Tabs tabIndex pinned -1 was flagged; local artifacts tmp/l10n-a11y/evidence/A11Y-AUDIT-DEPTH-01-main (selfcheck exit=0; audit PASS 164 obligations/1312 checks/186 ledgered; prepush-scope 57/57)"
+    recorded_at: "2026-10-18T07:52:51.554Z"
+    test_nodeid: scripts/a11y-realization-audit/selfcheck.mjs
+    command: bash tmp/capture-a11y-depth-main.sh
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/l10n-a11y/evidence/A11Y-AUDIT-DEPTH-01/a11y-matrix.json"
-    commit_sha: "33d999228b34f6accf5d37650479bb96d84fe5e0"
+    commit_sha: "24ee2a9f28bb138e43207bbff975d09cf085cee4"
   - criterion_id: A2
     status: pass
     evidence_ref: "selfcheck.log at 33d99922 pins: a handler comparing only ArrowDown leaves PageUp unrealized; every atomic key of Home|End must be handled; Space matches key===' ' / code==='Space' but not key==='Space' or join(' '); a primitive's comparison counts only inside the bound handler function (unrelated bound handler -> unrealized). Corpus: Accordion keyboard:End realized via the key!=='End' guard. In-session mutation probe: PageNavigator onKeyDown disconnected -> PageNavigator [react] keyboard:Escape flagged unledgered."
