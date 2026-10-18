@@ -28,7 +28,7 @@
  * Message references themselves are validated by the IR (`validateMessages`).
  */
 
-import type { ComponentContract, ContractDomNode, ContractValueMapBinding, StyledPropMember } from "../contract.js";
+import type { AuthoredPropType, ComponentContract, ContractDomNode, ContractValueMapBinding, StyledPropMember } from "../contract.js";
 import { getPropMembers } from "../contract.js";
 import { parseBindingExpression } from "../ir.js";
 import { visitBinding } from "../messages.js";
@@ -75,9 +75,22 @@ function literalTexts(value: string | ContractValueMapBinding): string[] {
   return out;
 }
 
+/**
+ * A string prop, nullable or not: `string`, or a union of `string` with only
+ * `null` / `undefined` in any order. A union with any other member (an array,
+ * a number) is a value, not text.
+ */
 function isStringProp(member: StyledPropMember): boolean {
-  if (member.propType) return member.propType.kind === "string";
-  return typeof member.type === "string" && /^string(\s*\|\s*(undefined|null))*$/.test(member.type.trim());
+  const type = member.propType;
+  if (type) {
+    if (type.kind === "string") return true;
+    if (type.kind !== "union") return false;
+    const nullish = (t: AuthoredPropType) => t.kind === "void" || (t.kind === "literal" && t.value === null);
+    return type.of.some((t) => t.kind === "string") && type.of.every((t) => t.kind === "string" || nullish(t));
+  }
+  if (typeof member.type !== "string") return false;
+  const parts = member.type.split("|").map((part) => part.trim());
+  return parts.includes("string") && parts.every((part) => part === "string" || part === "null" || part === "undefined");
 }
 
 function translatableStringProp(member: StyledPropMember | undefined): boolean {

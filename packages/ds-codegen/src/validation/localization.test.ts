@@ -124,6 +124,21 @@ describe("localization gate refuses each literal route", () => {
     ]);
   });
 
+  it.each([
+    ["a structured string | null union", { propType: { kind: "union", of: [{ kind: "string" }, { kind: "literal", value: null }] } }],
+    ["a structured null-first union", { propType: { kind: "union", of: [{ kind: "literal", value: null }, { kind: "string" }] } }],
+    ["a legacy null | string type", { type: "null | string" }],
+    ["a legacy string | undefined type", { type: "string | undefined" }],
+  ] as const)("a literal default on a nullable string prop: %s", (_label, shape) => {
+    const contract = loadCorpusContract("Carousel");
+    const label = contract.props!.styled!.members![7];
+    delete label.defaultMessage;
+    delete label.type;
+    delete label.propType;
+    Object.assign(label, structuredClone(shape), { default: "Featured content" });
+    expect(validateLocalization(contract, corpus).map((issue) => issue.pointer)).toEqual(["/props/styled/members/7/default"]);
+  });
+
   it("a static attribute on a component instance feeding a translatable prop", () => {
     const contract = loadCorpusContract("Carousel");
     const { node, pointer } = paginationOf(contract);
@@ -247,6 +262,16 @@ describe("localization gate admits what is not translatable text", () => {
     expect(validateLocalization(contract, corpus).map((issue) => issue.pointer)).toEqual([
       "/props/designed/members/8/default",
     ]);
+  });
+
+  it("a string-or-array union default, which is a selection value rather than text", () => {
+    // Select's defaultValue is string | string[] defaulting to an option value.
+    const select = loadCorpusContract("Select");
+    const defaultValue = Object.values(select.props ?? {})
+      .flatMap((group) => group?.members ?? [])
+      .find((m) => m.name === "defaultValue")!;
+    expect(defaultValue.propType).toEqual({ kind: "union", of: [{ kind: "string" }, { kind: "array", items: { kind: "string" } }] });
+    expect(validateLocalization(select, corpus)).toEqual([]);
   });
 
   it("a letter-bearing instance attribute feeding a non-string prop", () => {
