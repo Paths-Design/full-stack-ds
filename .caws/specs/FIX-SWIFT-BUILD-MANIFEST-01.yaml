@@ -2,7 +2,6 @@ id: FIX-SWIFT-BUILD-MANIFEST-01
 title: 'Exclude Swift build products and hash source symlinks without traversal'
 mode: fix
 lifecycle_state: active
-worktree: swift-build-manifest
 created_at: '2026-10-18T21:38:54.036Z'
 updated_at: '2026-10-18T21:39:46.962Z'
 created_by_session: '01a150ef-9a59-7450-81cd-c4fec38649d3'
