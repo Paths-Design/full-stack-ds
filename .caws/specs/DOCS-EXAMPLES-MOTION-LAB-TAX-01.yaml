@@ -2,7 +2,6 @@ id: DOCS-EXAMPLES-MOTION-LAB-TAX-01
 title: 'Pay motion-lab documentation tax: snapshot row, build:all note, portfolio run block'
 mode: doc
 lifecycle_state: active
-worktree: docs-tax
 created_at: '2026-10-18T18:42:51.889Z'
 updated_at: '2026-10-18T18:55:46.255Z'
 created_by_session: 'session-33d6eec5-b0e3-4321-8201-a4c377accd31'
