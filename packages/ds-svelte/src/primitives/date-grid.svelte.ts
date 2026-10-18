@@ -3,7 +3,7 @@ import { createDateGrid, type DateGridOptions } from "./date/date-grid.js";
 /**
  * Svelte binding for the date-grid core: the grid is derived from the
  * options and the core's focus version, and focus follows a keyboard move
- * in an effect, which runs after the DOM reflects the move.
+ * or a selection in an effect, which runs after the DOM reflects it.
  */
 export function createReactiveDateGrid(options: () => DateGridOptions) {
   const dateGrid = createDateGrid();

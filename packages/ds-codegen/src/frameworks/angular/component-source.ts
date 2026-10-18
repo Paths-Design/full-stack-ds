@@ -1369,6 +1369,11 @@ function treeUsesCountIteration(node: DomNodeIR): boolean {
   return node.children.some(treeUsesCountIteration);
 }
 
+/** Whether any node iterates; every iteration tracks by `trackByIndex`. */
+function treeUsesIteration(node: DomNodeIR): boolean {
+  return node.iteration !== undefined || node.children.some(treeUsesIteration);
+}
+
 /** Walk a DomNodeIR tree and return true if any binding uses the
  *  `predicate:memberOf` operator. Angular templates can't reference
  *  the global `Array` object, so memberOf is lowered to a component
@@ -1794,6 +1799,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   const usesNgIf = treeUsesNgIf(ir.dom);
   const usesNgFor = treeUsesNgFor(ir.dom);
   const usesCountIteration = treeUsesCountIteration(ir.dom);
+  const usesIteration = treeUsesIteration(ir.dom);
   const hasMarkdownTransform =
     ir.dom !== undefined &&
     collectContentTransforms(ir.dom).some(isMarkdownTransform);
@@ -2144,6 +2150,15 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     lines.push(`    }`);
     lines.push(`    return arr;`);
     lines.push(`  }`);
+  }
+
+  // *ngFor tracks items by identity unless told otherwise, so a collection
+  // re-derived on every change (the date grid's weeks, a template-literal
+  // default) would rebuild its DOM and drop focus from it. Every iteration
+  // tracks by position, as the other targets key their iterations by index.
+  if (usesIteration) {
+    lines.push(``);
+    lines.push(`  protected readonly trackByIndex = (index: number): number => index;`);
   }
 
   // BINDING-EXPRESSION-V2-PREDICATE-01: predicate:memberOf helper.
@@ -3216,8 +3231,8 @@ function renderAngularDomNode(
       ctx.styledByName.get(source.prop)?.defaultExpr !== undefined;
     const ngForExpr =
       kind === "array"
-        ? `let ${itemVar} of (${sourceHasAccessorDefault ? sourceExpr : `${sourceExpr} ?? []`}); let ${indexVar} = index`
-        : `let _ of arrayFromCount(${sourceExpr}); let ${indexVar} = index`;
+        ? `let ${itemVar} of (${sourceHasAccessorDefault ? sourceExpr : `${sourceExpr} ?? []`}); let ${indexVar} = index; trackBy: trackByIndex`
+        : `let _ of arrayFromCount(${sourceExpr}); let ${indexVar} = index; trackBy: trackByIndex`;
     return [
       `${pad}<ng-container *ngFor="${ngForExpr}">`,
       (compact ? withIfGuard : withIfGuard.replace(/^/gm, "  ")),

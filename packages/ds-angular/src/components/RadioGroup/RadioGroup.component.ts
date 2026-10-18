@@ -24,7 +24,7 @@ export type RadioGroupOrientation = "vertical" | "horizontal";
   imports: [NgClass, NgFor],
   host: { "data-fsds-component": "radio-group" },
   template: `<fieldset [ngClass]="classes()" role="radiogroup" [attr.aria-label]="ariaLabel" data-fsds-box="">
-  <ng-container *ngFor="let item of ((options ?? [{'value':'alpha','label':'Alpha'},{'value':'beta','label':'Beta'}])); let index = index">
+  <ng-container *ngFor="let item of ((options ?? [{'value':'alpha','label':'Alpha'},{'value':'beta','label':'Beta'}])); let index = index; trackBy: trackByIndex">
     <label [ngClass]="'radio-group__item'" [attr.data-checked]="(item.value === behavior.selection())" [attr.data-disabled]="item.disabled" [title]="item.description">
       <input [ngClass]="'radio-group__option'" type="radio" (change)="behavior.setSelection(item.value)" [name]="name" [value]="item.value" [checked]="(item.value === behavior.selection())" [disabled]="item.disabled" [attr.aria-label]="item.label" [attr.aria-checked]="(item.value === behavior.selection())" />
       <span [ngClass]="'radio-group__label'">
@@ -66,6 +66,8 @@ export class RadioGroupComponent {
       this.class,
     ].filter(Boolean).join(" ");
   }
+
+  protected readonly trackByIndex = (index: number): number => index;
 }
 // @generated:end
 

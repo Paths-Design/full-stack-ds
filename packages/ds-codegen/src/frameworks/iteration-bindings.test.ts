@@ -227,7 +227,7 @@ describe("IR-DOM-ITERATE-CAPABILITY-01: count iteration lowering", () => {
       // template variable `$index` (right side) to a local `index`
       // (left side) for cross-framework parity.
       expect(src).toMatch(
-        /<ng-container \*ngFor="let _ of arrayFromCount\(count\); let index = index">/,
+        /<ng-container \*ngFor="let _ of arrayFromCount\(count\); let index = index; trackBy: trackByIndex">/,
       );
     });
 
@@ -364,11 +364,19 @@ describe("IR-DOM-ITERATE-CAPABILITY-01: array iteration lowering", () => {
   describe("Angular", () => {
     const src = generateAngularComponentSource(ir);
 
-    it("wraps in <ng-container *ngFor=\"let item of (items ?? []); let index = index\">", () => {
+    it("wraps in <ng-container *ngFor=\"let item of (items ?? []); let index = index; trackBy: trackByIndex\">", () => {
       // PRODUCTION-ARRAY-ITERATION-CONSUMER-01: source guarded with `?? []`.
       expect(src).toMatch(
-        /<ng-container \*ngFor="let item of \(items \?\? \[\]\); let index = index">/,
+        /<ng-container \*ngFor="let item of \(items \?\? \[\]\); let index = index; trackBy: trackByIndex">/,
       );
+    });
+
+    it("tracks items by position, so a re-derived collection reuses its DOM", () => {
+      // Identity tracking would rebuild every row when the source array is
+      // re-created (a date grid's weeks), dropping focus; React/Vue key by
+      // index and Svelte/Lit reuse by position.
+      expect(src).toContain("protected readonly trackByIndex = (index: number): number => index;");
+      expect(generateAngularComponentSource(buildComponentIR(COUNT_CONTRACT))).toContain("protected readonly trackByIndex");
     });
 
     it("emits content binding as {{ item }} interpolation on inner <span>", () => {
@@ -562,7 +570,7 @@ describe("PRODUCTION-ARRAY-ITERATION-CONSUMER-01: channel-driven iteration sourc
       // through the binding-value renderer to that accessor form, then
       // wrapped with `?? []` for undefined-safety.
       expect(src).toMatch(
-        /\*ngFor="let item of \(behavior\.selection\(\) \?\? \[\]\); let index = index"/,
+        /\*ngFor="let item of \(behavior\.selection\(\) \?\? \[\]\); let index = index; trackBy: trackByIndex"/,
       );
       expect(src).not.toMatch(/\*ngFor="let item of value/);
     });
@@ -601,7 +609,7 @@ describe("PRODUCTION-ARRAY-ITERATION-CONSUMER-01: count iteration still works fo
 
   it("Angular: *ngFor over arrayFromCount(count)", () => {
     const src = generateAngularComponentSource(ir);
-    expect(src).toMatch(/\*ngFor="let _ of arrayFromCount\(count\); let index = index"/);
+    expect(src).toMatch(/\*ngFor="let _ of arrayFromCount\(count\); let index = index; trackBy: trackByIndex"/);
   });
 });
 
@@ -1212,8 +1220,8 @@ describe("FIX-COUNT-ITERATION-DEFAULT-THREADING-01: count-iteration default thre
 
   it("Angular: threads the contract default at the arrayFromCount call site ((count ?? 6), not bare count)", () => {
     const src = generateAngularComponentSource(ir);
-    expect(src).toMatch(/\*ngFor="let _ of arrayFromCount\(\(count \?\? 6\)\); let index = index"/);
-    expect(src).not.toMatch(/\*ngFor="let _ of arrayFromCount\(count\); let index = index"/);
+    expect(src).toMatch(/\*ngFor="let _ of arrayFromCount\(\(count \?\? 6\)\); let index = index; trackBy: trackByIndex"/);
+    expect(src).not.toMatch(/\*ngFor="let _ of arrayFromCount\(count\); let index = index; trackBy: trackByIndex"/);
   });
 
   it("Lit: no-default fixture (COUNT_CONTRACT) still falls back to ?? 0 unchanged", () => {
@@ -1228,6 +1236,6 @@ describe("FIX-COUNT-ITERATION-DEFAULT-THREADING-01: count-iteration default thre
   it("Angular: no-default fixture (COUNT_CONTRACT) still calls arrayFromCount(count) unchanged", () => {
     const noDefaultIr = buildComponentIR(COUNT_CONTRACT);
     const src = generateAngularComponentSource(noDefaultIr);
-    expect(src).toMatch(/\*ngFor="let _ of arrayFromCount\(count\); let index = index"/);
+    expect(src).toMatch(/\*ngFor="let _ of arrayFromCount\(count\); let index = index; trackBy: trackByIndex"/);
   });
 });

@@ -4,7 +4,7 @@ import { createDateGrid, type DateGridDay, type DateGridKeyEvent, type DateGridO
 /**
  * Lit binding for the date-grid core: derives the grid before each render,
  * requests an update when the focused day moves, and lets focus follow a
- * keyboard move once the update has rendered.
+ * keyboard move or a selection once the update has rendered.
  */
 export class DateGridController implements ReactiveController {
   private dateGrid = createDateGrid();

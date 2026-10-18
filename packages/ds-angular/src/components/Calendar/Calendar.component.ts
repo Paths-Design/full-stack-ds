@@ -46,7 +46,7 @@ const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next mon
   <table [ngClass]="'calendar__grid'" role="grid" (keydown)="dateGrid.keydown($event)" [attr.aria-label]="dateGrid.state.caption">
     <thead>
       <tr role="row">
-        <ng-container *ngFor="let item of (dateGrid.state.weekdays ?? []); let index = index">
+        <ng-container *ngFor="let item of (dateGrid.state.weekdays ?? []); let index = index; trackBy: trackByIndex">
           <th [ngClass]="'calendar__weekday'" role="columnheader" scope="col" [attr.aria-label]="item.long">
             <span>
               {{ item.short }}
@@ -56,9 +56,9 @@ const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next mon
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let week of (dateGrid.state.weeks ?? []); let row = index">
+      <ng-container *ngFor="let week of (dateGrid.state.weeks ?? []); let row = index; trackBy: trackByIndex">
         <tr role="row">
-          <ng-container *ngFor="let day of (week.days ?? []); let column = index">
+          <ng-container *ngFor="let day of (week.days ?? []); let column = index; trackBy: trackByIndex">
             <td [ngClass]="'calendar__cell'" role="gridcell" [attr.aria-selected]="day.selected" [attr.aria-current]="day.current" [attr.data-outside-month]="day.outsideMonth">
               <button [ngClass]="'calendar__day'" type="button" (click)="dateGrid.select(day)" [tabindex]="day.tabIndex" [attr.aria-label]="day.fullLabel" [attr.aria-disabled]="day.disabled" [attr.data-date]="day.key">
                 {{ day.label }}
@@ -132,6 +132,8 @@ export class CalendarComponent {
       this.class,
     ].filter(Boolean).join(" ");
   }
+
+  protected readonly trackByIndex = (index: number): number => index;
 }
 
 @Component({

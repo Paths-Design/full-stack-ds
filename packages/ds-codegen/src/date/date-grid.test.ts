@@ -268,6 +268,70 @@ describe("date grid interaction", () => {
     root.remove();
   });
 
+  /** A grid whose buttons are re-rendered by position, as every target renders it. */
+  function positionalGrid(host: ParentNode, keys: string[]) {
+    const root = document.createElement("table");
+    root.setAttribute("role", "grid");
+    const buttons = keys.map((key) => {
+      const button = document.createElement("button");
+      button.setAttribute("data-date", key);
+      root.append(button);
+      return button;
+    });
+    host.append(root);
+    return { root, buttons, rerender: (next: string[]) => next.forEach((key, i) => buttons[i].setAttribute("data-date", key)) };
+  }
+
+  it("focus follows a focused day selected into another month, onto the button that now shows it", () => {
+    const { grid, opts, onMonthChange } = setup();
+    // October's grid ends on 7 November; November's re-render reuses the
+    // buttons by position, so another button comes to show that day.
+    const dom = positionalGrid(document.body, ["2026-10-31", "2026-11-07", "2026-11-01", "2026-11-02"]);
+    dom.buttons[1].focus();
+    grid.select(find(grid.state, "2026-11-07"));
+    expect(onMonthChange).toHaveBeenLastCalledWith(day(2026, 11, 1));
+    grid.sync({ ...opts, month: day(2026, 11, 1) });
+    dom.rerender(["2026-11-03", "2026-11-04", "2026-11-05", "2026-11-07"]);
+    grid.afterRender();
+    expect(document.activeElement).toBe(dom.buttons[3]);
+    dom.root.remove();
+  });
+
+  it("focus follows a selection made inside a shadow root", () => {
+    const { grid, opts } = setup();
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shadow = host.attachShadow({ mode: "open" });
+    const dom = positionalGrid(shadow, ["2026-10-31", "2026-11-07"]);
+    dom.buttons[1].focus();
+    grid.select(find(grid.state, "2026-11-07"));
+    grid.sync({ ...opts, month: day(2026, 11, 1) });
+    dom.rerender(["2026-11-07", "2026-11-08"]);
+    grid.afterRender();
+    expect(shadow.activeElement).toBe(dom.buttons[0]);
+    host.remove();
+  });
+
+  it("a selection never pulls focus into the grid", () => {
+    const { grid, opts } = setup();
+    const dom = positionalGrid(document.body, ["2026-10-31", "2026-11-07"]);
+    const elsewhere = document.createElement("input");
+    document.body.append(elsewhere);
+    elsewhere.focus();
+    grid.select(find(grid.state, "2026-11-07"));
+    grid.sync({ ...opts, month: day(2026, 11, 1) });
+    dom.rerender(["2026-11-07", "2026-11-08"]);
+    grid.afterRender();
+    expect(document.activeElement).toBe(elsewhere);
+    // Nor does a focused day other than the activated one hand focus over.
+    dom.buttons[1].focus();
+    grid.select(find(grid.state, "2026-11-07"));
+    grid.afterRender();
+    expect(document.activeElement).toBe(dom.buttons[1]);
+    dom.root.remove();
+    elsewhere.remove();
+  });
+
   it("keys local calendar days", () => {
     expect(dateGridKey(new Date(2026, 0, 5, 23, 59))).toBe("2026-01-05");
   });

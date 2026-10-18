@@ -5,7 +5,7 @@ import { createDateGrid, type DateGridOptions } from "./date/date-grid.js";
  * Angular binding for the date-grid core: the grid is a computed over the
  * options (read from signal-backed inputs and channel signals) and the
  * core's focus version. The component calls `afterRender` from
- * `ngAfterViewChecked` so focus follows a keyboard move.
+ * `ngAfterViewChecked` so focus follows a keyboard move or a selection.
  */
 export function createReactiveDateGrid(options: () => DateGridOptions) {
   const dateGrid = createDateGrid();

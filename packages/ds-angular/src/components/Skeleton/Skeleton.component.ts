@@ -27,7 +27,7 @@ export type SkeletonRadius = "sm" | "md" | "lg";
   template: `<div [ngClass]="classes()" [attr.role]="((decorative ?? true) ? 'presentation' : 'status')" [attr.aria-busy]="((decorative ?? true) ? 'false' : 'true')" [attr.aria-hidden]="((decorative ?? true) ? 'true' : 'false')" [attr.aria-label]="ariaLabel" data-fsds-box="">
   <ng-container *ngIf="lines">
     <div [ngClass]="'skeleton__stack'">
-      <ng-container *ngFor="let _ of arrayFromCount(lines); let index = index">
+      <ng-container *ngFor="let _ of arrayFromCount(lines); let index = index; trackBy: trackByIndex">
         <div [ngClass]="'skeleton__row'">
           <div [ngClass]="'skeleton__shape'" aria-hidden="true"></div>
         </div>
@@ -70,6 +70,8 @@ export class SkeletonComponent {
     }
     return arr;
   }
+
+  protected readonly trackByIndex = (index: number): number => index;
 }
 // @generated:end
 

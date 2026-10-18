@@ -4,7 +4,7 @@ import { createDateGrid, type DateGridOptions } from "../date/date-grid.js";
 /**
  * Vue binding for the date-grid core: the grid is a computed over the
  * options and the core's focus version, and focus follows a keyboard move
- * once the component has re-rendered.
+ * or a selection once the component has re-rendered.
  */
 export function useDateGrid(options: () => DateGridOptions) {
   const dateGrid = createDateGrid();

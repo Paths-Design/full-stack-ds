@@ -5,7 +5,8 @@
  * The grid is a pure function of the options and of the one piece of state
  * the core owns, the focused day. Framework bindings own reactivity: they
  * call `sync` while rendering, re-render when `subscribe` fires, and call
- * `afterRender` once the DOM reflects a keyboard move so focus can follow it.
+ * `afterRender` once the DOM reflects a keyboard move or a selection so
+ * focus can follow the day.
  *
  * Days are local calendar days (`new Date(y, m, d)`), so arithmetic never
  * crosses a daylight-saving boundary by an hour. Formatting uses the
@@ -168,6 +169,19 @@ function isRtl(target: EventTarget | null): boolean {
   return false;
 }
 
+/**
+ * The day button holding focus, read through open shadow roots, when its
+ * day is `key`. A selection re-renders the grid by position, so a selected
+ * day in another month lands on a different button; focus follows it only
+ * if the activated button had focus, and never moves into a grid otherwise.
+ */
+function focusedDay(key: string): Element | undefined {
+  if (typeof document === "undefined") return undefined;
+  let active = document.activeElement;
+  while (active?.shadowRoot?.activeElement) active = active.shadowRoot.activeElement;
+  return active?.getAttribute?.("data-date") === key ? active : undefined;
+}
+
 /** Pure grid derivation from the options and the focused day. */
 export function computeDateGrid(options: DateGridOptions, focusedKey: string | undefined, today: Date = new Date()): DateGridState {
   const range = options.mode === "range";
@@ -299,6 +313,8 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
     select(day: DateGridDay) {
       if (!options || current().disabled || day.disabled) return;
       focusedKey = day.key;
+      const root = focusedDay(day.key)?.closest('[role="grid"]');
+      if (root) pendingFocus = { key: day.key, root };
       if (options.mode === "range") {
         const selection = selectionOf(options.value);
         options.onValueChange(selection.length === 1
@@ -323,7 +339,7 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
         default: return undefined;
       }
     },
-    /** Move DOM focus to the day a keyboard move targeted, once it is rendered. */
+    /** Move DOM focus to the day a keyboard move or a focused selection targeted, once it is rendered. */
     afterRender() {
       if (!pendingFocus) return;
       const { key, root } = pendingFocus;

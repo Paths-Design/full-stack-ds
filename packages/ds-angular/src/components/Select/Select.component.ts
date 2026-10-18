@@ -43,7 +43,7 @@ const SelectMessages = { triggerLabel: "Select an option", placeholder: "Select 
         </div>
       </ng-container>
       <div [ngClass]="'select__options'">
-        <ng-container *ngFor="let item of ((options ?? [{'value':'alpha','label':'Alpha'},{'value':'beta','label':'Beta'},{'value':'gamma','label':'Gamma'}])); let index = index">
+        <ng-container *ngFor="let item of ((options ?? [{'value':'alpha','label':'Alpha'},{'value':'beta','label':'Beta'},{'value':'gamma','label':'Gamma'}])); let index = index; trackBy: trackByIndex">
           <button [ngClass]="'select__option'" role="option" type="button" (click)="applyToggleMembershipSelection(item.value, multiple)" (keydown)="behavior.handleOptionKeydown($event, item.value)" tabindex="-1" [attr.aria-selected]="memberOf(item.value, behavior.selection())" [attr.data-value]="item.value" [disabled]="item.disabled" [attr.aria-disabled]="item.disabled">
             <span>
               {{ item.label }}
@@ -126,6 +126,8 @@ export class SelectComponent {
   get triggerAriaControls(): string | undefined {
     return [this.behavior.open() ? `${this.instanceId}-content` : null].filter(Boolean).join(" ") || undefined;
   }
+
+  protected readonly trackByIndex = (index: number): number => index;
 
   // BindingExpressionV2 predicate:memberOf helper. Adapts to the runtime
   // shape of `selection`: scalar equality when not an array, set
