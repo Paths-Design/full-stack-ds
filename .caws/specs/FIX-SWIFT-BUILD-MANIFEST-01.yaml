@@ -59,9 +59,8 @@ evidence:
     commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
   - criterion_id: A3
     status: pass
-    evidence_ref: "Clean candidate receipt binds the inspected source-manifest digest; all 24 Chromium cases pass, the renderer control fails for shared scale distance, and the forbidden-import control fails at the browser boundary guard."
-    recorded_at: "2026-10-18T22:34:26.561Z"
+    evidence_ref: "Directly executed full analytical proof and inspected clean-candidate receipt plus matching manifest digest: 24 Chromium cases pass; renderer shared-scale and forbidden-import controls reject their designated defects. Ignored runtime receipt: tmp/swift-build-manifest-b6396573/tmp/analytical-browser-proof/receipt.json. CAWS re-derives the source citation, not browser execution."
+    recorded_at: "2026-10-18T22:45:42.165Z"
     command: "pnpm run e2e:analytical"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/swift-build-manifest-b6396573/tmp/analytical-browser-proof/receipt.json"
     commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
