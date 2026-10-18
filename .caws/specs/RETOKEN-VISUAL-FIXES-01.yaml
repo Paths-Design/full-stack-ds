@@ -1,0 +1,62 @@
+id: RETOKEN-VISUAL-FIXES-01
+title: 'Repair retoken-page visual defects: popover scope escape, clipped quick-pick labels, artwork repetition'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-18T05:50:31.024Z'
+updated_at: '2026-10-18T05:50:31.024Z'
+created_by_session: 'session-a9c94ee7-6f8e-47ee-a9b2-6bc6ca490a8f'
+blast_radius:
+  modules:
+    - 'e2e/fixtures/retoken-pages'
+    - 'e2e/retoken-pages.spec.ts'
+    - 'docs/architecture/design/retoken-page-attempts.md'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'e2e/fixtures/retoken-pages'
+    - 'e2e/retoken-pages.spec.ts'
+    - 'docs/architecture/design/retoken-page-attempts.md'
+  out: []
+invariants:
+  - 'Fixture appearance is declared only through component design/box-model custom properties and the root-class hooks already used in theme.css; no new selectors into generated internals'
+  - 'All fixes stay within e2e/fixtures/retoken-pages, e2e/retoken-pages.spec.ts, and the retoken-page-attempts doc; no contract, IR, emitter, or generated-package changes'
+  - 'Existing passing runtime facts in e2e/retoken-pages.spec.ts stay asserted and passing (no weakened gates)'
+acceptance:
+  - id: A1
+    given: 'the Pinterest page with a pin overflow menu or detail board chooser open'
+    when: 'any Button or Text inside .pin-menu is measured'
+    then: 'computed border-width is 0px and computed font-size is 14px (page scope reaches portaled popover content)'
+  - id: A2
+    given: 'the Spotify page at a 390px viewport'
+    when: 'each .quick-pick .button is measured'
+    then: 'scrollWidth <= clientWidth for every quick-pick label (no clipped glyphs)'
+  - id: A3
+    given: 'any Pin detail view'
+    when: 'the related More-like-this rail renders'
+    then: 'every pin in the rail uses a distinct artwork src (no duplicate data-URIs)'
+  - id: A4
+    given: 'the Spotify page at desktop width'
+    when: 'the library panel renders'
+    then: 'the Home button left edge aligns with the Soundroom heading left edge within 2px'
+  - id: A5
+    given: 'the Pin detail view'
+    when: 'the comments list is empty and the back control renders'
+    then: 'the gap between the comments region and the comment form is <= 24px and the back button paints a non-transparent backdrop'
+  - id: A6
+    given: 'the Pinterest feed at a <=700px viewport'
+    when: 'save overlays render'
+    then: 'each save button is at most 44px tall (reduced footprint over artwork)'
+  - id: A7
+    given: 'the committed retoken-pages Playwright suite'
+    when: 'it runs at 1440px and 390px for both pages'
+    then: 'all existing facts and interactions pass unchanged'
+observability:
+  - 'New retoken-pages.spec.ts assertion node ids appear in Playwright reports for the slice run'
+rollback:
+  - 'Revert the slice commits on main; fixture/e2e/doc-only change with no data or generated-artifact migration'
+non_functional: {}
+contracts:
+  - name: 'retoken-page-visual-facts'
+    type: contract-test
+    path: 'e2e/retoken-pages.spec.ts'
