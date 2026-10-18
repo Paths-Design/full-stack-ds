@@ -99,11 +99,11 @@ export function Postcard({
   className,
   "data-testid": testId,
   children,
-  postId,
+  postId: _postId,
   author,
   timestamp,
   stats,
-  embed,
+  embed: _embed,
   ...rest
 }: PostcardProps) {
   const classNames = [

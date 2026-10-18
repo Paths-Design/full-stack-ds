@@ -1,5 +1,5 @@
 // @generated:start imports
-import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
+import { LitElement, html, css, type PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import { WalkthroughBehavior } from './WalkthroughBehavior.js';
 import { AnchoredPositionController } from '../../primitives/surfaces/AnchoredPositionController.js';

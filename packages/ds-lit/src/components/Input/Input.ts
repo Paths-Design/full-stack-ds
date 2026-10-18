@@ -1,5 +1,5 @@
 // @generated:start imports
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { InputBehavior } from './InputBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';

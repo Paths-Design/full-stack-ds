@@ -1,5 +1,5 @@
 // @generated:start imports
-import { useControllableState, useDismissal } from "../../primitives/hooks";
+import { useControllableState } from "../../primitives/hooks";
 // @generated:end
 
 // @custom:start imports

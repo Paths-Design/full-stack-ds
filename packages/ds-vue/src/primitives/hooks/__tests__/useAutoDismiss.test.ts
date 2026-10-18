@@ -3,7 +3,7 @@
 // timer paths are only reachable directly.
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, ref } from "vue";
+import { defineComponent, h } from "vue";
 import { useAutoDismiss } from "../useAutoDismiss";
 
 function makeHost(

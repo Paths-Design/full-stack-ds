@@ -1,5 +1,5 @@
 // @generated:start imports
-import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, ViewChild, ElementRef, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
+import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, ViewChild, type ElementRef, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass, NgIf, NgFor } from "@angular/common";
 import { StackComponent } from "../../primitives/index.js";
 import { useSelect } from "./useSelect.js";

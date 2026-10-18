@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Pagination } from "../Pagination";
+import type { Pagination } from "../Pagination";
 // @generated:end
 
 // @generated:start tests

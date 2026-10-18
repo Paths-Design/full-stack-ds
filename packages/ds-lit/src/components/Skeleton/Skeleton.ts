@@ -302,7 +302,7 @@ export class SkeletonElement extends LitElement {
     return html`<div class="${this.computeClasses()}" .role=${((this.decorative ?? true) ? "presentation" : "status")} aria-busy=${((this.decorative ?? true) ? "false" : "true")} aria-hidden=${((this.decorative ?? true) ? "true" : "false")} aria-label=${ifDefined(this.ariaLabel ?? undefined)} data-fsds-box="">
   ${this.lines ? html`
   <div class=${'skeleton__stack'}>
-    ${Array.from({ length: this.lines ?? 0 }, (_, index) => html`
+    ${Array.from({ length: this.lines ?? 0 }, () => html`
     <div class=${'skeleton__row'}>
       <div class=${'skeleton__shape'} aria-hidden="true"></div>
     </div>

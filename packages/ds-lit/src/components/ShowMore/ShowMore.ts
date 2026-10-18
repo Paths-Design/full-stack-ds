@@ -1,5 +1,5 @@
 // @generated:start imports
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
 import { ShowMoreBehavior } from './ShowMoreBehavior.js';
@@ -156,7 +156,7 @@ export class ShowMoreElement extends LitElement {
 
   override render() {
     return html`<div class="${this.computeClasses()}" data-fsds-box="">
-  <div class=${'show-more__content'} style=${styleMap({ '--fsds-show-more-content-max-lines': (this.maxLines ?? 3) === undefined ? undefined : String((this.maxLines ?? 3)) })}>
+  <div class=${'show-more__content'} style=${styleMap({ '--fsds-show-more-content-max-lines': String((this.maxLines ?? 3)) })}>
     <slot></slot>
   </div>
   <button class=${'show-more__trigger'} type="button" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setExpanded(!this.behavior.expanded); }} aria-expanded=${this.behavior.expanded ? 'true' : 'false'}>${(this.behavior.expanded ? (this.showLessLabel ?? "Show less") : (this.showMoreLabel ?? "Show more"))}</button>

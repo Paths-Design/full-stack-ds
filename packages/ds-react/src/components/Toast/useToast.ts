@@ -1,6 +1,6 @@
 // @generated:start imports
-import { type ReactNode, type RefObject, useRef } from "react";
-import { useAnchorToggle, useControllableState, usePortal } from "../../primitives/hooks";
+import { type ReactNode, type RefObject } from "react";
+import { useAnchorToggle, usePortal } from "../../primitives/hooks";
 // @generated:end
 
 // @custom:start imports
@@ -30,7 +30,6 @@ export interface UseToastResult {
 
 // @generated:start hook
 export function useToast(options: UseToastOptions = {}): UseToastResult {
-  const panelRef = useRef<HTMLDivElement>(null);
   // anchor + panel refs come from useAnchorToggle below.
   const anchorToggle = useAnchorToggle({
     open: options.open,

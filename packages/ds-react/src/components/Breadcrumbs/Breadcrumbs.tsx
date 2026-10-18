@@ -72,7 +72,7 @@ export function Breadcrumbs({
   "data-testid": testId,
   children,
   ariaLabel = "Breadcrumb",
-  separator,
+  separator: _separator,
   ...rest
 }: BreadcrumbsProps) {
   const classNames = [

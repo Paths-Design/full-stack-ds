@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import type { Component } from "vue";
 import { mount } from "@vue/test-utils";
 import { axe } from "vitest-axe";
@@ -63,6 +63,9 @@ describe("OTP — accessibility", () => {
 // @generated:end
 
 // @custom:start tests
+// CODEGEN-EMIT-LINT-HYGIENE-01: custom suites self-import their own `vi`
+// (the Svelte-side convention) — the generated import set is body-derived.
+import { vi } from "vitest";
 import OTPGroup from "../OTPGroup.vue";
 // FEAT-CHANNEL-UPDATE-OPERATIONS-01 — set-char-at-index on the OTP field's
 // `input` wire. Pins the A2 behavioral claim for Vue (the second framework

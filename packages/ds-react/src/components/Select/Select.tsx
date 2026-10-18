@@ -118,7 +118,7 @@ export function Select({
   options = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}],
   multiple,
   triggerLabel = "Select an option",
-  filterFn,
+  filterFn: _filterFn,
   searchable,
   empty,
   placeholder = "Select an option",

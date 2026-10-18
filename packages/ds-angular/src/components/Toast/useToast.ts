@@ -1,6 +1,6 @@
 // @generated:start imports
-import { DestroyRef, type Signal } from "@angular/core";
-import { createAnchorToggle, createControllableState } from "../../primitives/index.js";
+import { type DestroyRef, type Signal } from "@angular/core";
+import { createAnchorToggle } from "../../primitives/index.js";
 // @generated:end
 
 // @custom:start imports

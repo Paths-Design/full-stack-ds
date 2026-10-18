@@ -1,5 +1,5 @@
 // @generated:start imports
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { ShuttleBehavior } from './ShuttleBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -138,7 +138,7 @@ export class ShuttleElement extends LitElement {
 
   override render() {
     return html`<ul class="${this.computeClasses()}" role="listbox" aria-label=${ifDefined(this.ariaLabel ?? undefined)} data-fsds-box="">
-  ${(this.behavior.selection ?? []).map((item, index) => html`
+  ${(this.behavior.selection ?? []).map((item) => html`
   <li class=${'shuttle__item'} role="option" aria-selected="true">
     <span>${item}</span>
   </li>

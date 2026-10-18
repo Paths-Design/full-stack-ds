@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type ReactNode, type RefObject, useRef } from "react";
+import { type ReactNode, type RefObject } from "react";
 import { useAnchorToggle, useControllableState, usePortal } from "../../primitives/hooks";
 // @generated:end
 
@@ -46,7 +46,6 @@ export function useCommand(options: UseCommandOptions = {}): UseCommandResult {
     onChange: options.onSearchChange,
   });
 
-  const panelRef = useRef<HTMLDivElement>(null);
   // anchor + panel refs come from useAnchorToggle below.
   const anchorToggle = useAnchorToggle({
     open: options.open,

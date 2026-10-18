@@ -329,7 +329,7 @@ export class SelectElement extends LitElement {
     </div>
     ` : nothing}
     <div class=${'select__options'}>
-      ${((this.options ?? [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}])).map((item, index) => html`
+      ${((this.options ?? [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}])).map((item) => html`
       <button class=${'select__option'} role="option" type="button" @click=${() => this.behavior.setSelection(this.multiple ? ((Array.isArray(this.behavior.selection) ? this.behavior.selection : this.behavior.selection == null ? [] : [this.behavior.selection]).includes(item.value) ? (Array.isArray(this.behavior.selection) ? this.behavior.selection : this.behavior.selection == null ? [] : [this.behavior.selection]).filter((v) => v !== item.value) : [...(Array.isArray(this.behavior.selection) ? this.behavior.selection : this.behavior.selection == null ? [] : [this.behavior.selection]), item.value]) : item.value)} @keydown=${(e: KeyboardEvent) => this.behavior.handleOptionKeydown(e, item.value)} tabindex="-1" aria-selected=${((Array.isArray(this.behavior.selection) ? this.behavior.selection.includes(item.value) : item.value === this.behavior.selection)) ? 'true' : 'false'} data-value=${ifDefined(item.value)} .disabled=${item.disabled} aria-disabled=${ifDefined(item.disabled)}>
         <span>${item.label}</span>
       </button>

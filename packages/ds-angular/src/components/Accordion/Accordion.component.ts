@@ -1,5 +1,5 @@
 // @generated:start imports
-import { Component, Input, OnChanges, SimpleChanges, ElementRef, computed, signal, forwardRef, inject, DestroyRef, ChangeDetectionStrategy } from "@angular/core";
+import { Component, Input, type OnChanges, type SimpleChanges, ElementRef, computed, signal, forwardRef, inject, DestroyRef, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
 import { useAccordion, AccordionContextToken } from "./useAccordion.js";
 import { toggleInteractionItem } from "../../primitives/interaction.js";

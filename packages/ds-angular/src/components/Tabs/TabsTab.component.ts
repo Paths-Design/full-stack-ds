@@ -1,5 +1,5 @@
 // @generated:start imports
-import { Component, Input, OnInit, OnDestroy, computed, inject, DestroyRef, ChangeDetectionStrategy } from "@angular/core";
+import { Component, Input, type OnInit, type OnDestroy, computed, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
 import { useTabsContext } from "./useTabs.js";
 // @generated:end

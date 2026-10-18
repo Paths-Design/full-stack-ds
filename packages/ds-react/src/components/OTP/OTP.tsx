@@ -66,7 +66,7 @@ export function OTP({
   className,
   "data-testid": testId,
   length = 6,
-  onComplete,
+  onComplete: _onComplete,
   readOnly,
   label = "One-time password",
   fieldLabel = "One-time password digit",

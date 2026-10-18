@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type HTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import "./Divider.css";
 // @generated:end
@@ -36,9 +36,9 @@ export function Divider({
   orientation,
   className,
   "data-testid": testId,
-  decorative,
-  thickness,
-  title,
+  decorative: _decorative,
+  thickness: _thickness,
+  title: _title,
   ...rest
 }: DividerProps) {
   const classNames = [

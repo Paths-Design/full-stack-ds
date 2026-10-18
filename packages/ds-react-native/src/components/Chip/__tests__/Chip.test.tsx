@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Chip } from "../Chip";
+import type { Chip } from "../Chip";
 // @generated:end
 
 // @generated:start tests

@@ -225,10 +225,10 @@ export function Command({
   "data-testid": testId,
   placeholder = "Search...",
   searchLabel = "Search commands",
-  emptyMessage = "No results found.",
+  emptyMessage: _emptyMessage = "No results found.",
   label = "Command palette",
-  shouldFilter = true,
-  filter,
+  shouldFilter: _shouldFilter = true,
+  filter: _filter,
   slots,
   ...rest
 }: CommandProps) {

@@ -1,5 +1,5 @@
 // @generated:start imports
-import { DestroyRef, signal, type Signal, type WritableSignal } from "@angular/core";
+import { signal, type DestroyRef, type Signal, type WritableSignal } from "@angular/core";
 import { createCompoundContext, createControllableState } from "../../primitives/index.js";
 // @generated:end
 

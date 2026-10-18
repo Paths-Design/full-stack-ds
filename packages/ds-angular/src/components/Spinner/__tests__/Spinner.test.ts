@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, expect, it, beforeEach, jest } from "@jest/globals";
+import { describe, expect, it, beforeEach } from "@jest/globals";
 import { TestBed } from "@angular/core/testing";
 import { SpinnerComponent } from "../Spinner.component";
 // @generated:end

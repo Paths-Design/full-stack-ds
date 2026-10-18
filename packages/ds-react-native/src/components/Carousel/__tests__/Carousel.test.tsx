@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Carousel } from "../Carousel";
+import type { Carousel } from "../Carousel";
 // @generated:end
 
 // @generated:start tests

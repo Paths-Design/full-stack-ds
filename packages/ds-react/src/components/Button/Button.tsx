@@ -56,7 +56,7 @@ export function Button({
   ariaLabel,
   ariaExpanded,
   ariaPressed,
-  title,
+  title: _title,
   onClick,
   ...rest
 }: ButtonProps) {

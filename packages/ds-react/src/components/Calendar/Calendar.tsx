@@ -66,14 +66,14 @@ export function Calendar({
   className,
   "data-testid": testId,
   caption = "Calendar",
-  minDate,
-  maxDate,
-  locale = "en-US",
+  minDate: _minDate,
+  maxDate: _maxDate,
+  locale: _locale = "en-US",
   shouldCloseOnSelect = true,
   days,
   ...rest
 }: CalendarProps) {
-  const { value, setValue } = useCalendar({
+  const { value: _value, setValue } = useCalendar({
     value: controlledValue,
     defaultValue,
     onChange,

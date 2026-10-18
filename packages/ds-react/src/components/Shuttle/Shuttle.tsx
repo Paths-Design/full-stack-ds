@@ -59,7 +59,7 @@ export function Shuttle({
   ariaLabel,
   ...rest
 }: ShuttleProps) {
-  const { selection, setSelection } = useShuttle({
+  const { selection, setSelection: _setSelection } = useShuttle({
     value: controlledValue,
     defaultValue,
     onValueChange,

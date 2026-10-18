@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Field } from "../Field";
+import type { Field } from "../Field";
 // @generated:end
 
 // @generated:start tests

@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Markdown } from "../Markdown";
+import type { Markdown } from "../Markdown";
 // @generated:end
 
 // @generated:start tests

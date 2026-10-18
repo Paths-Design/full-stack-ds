@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Image } from "../Image";
+import type { Image } from "../Image";
 // @generated:end
 
 // @generated:start tests

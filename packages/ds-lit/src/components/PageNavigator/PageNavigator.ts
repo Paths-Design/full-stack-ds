@@ -1,6 +1,5 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
-import { ref } from 'lit/directives/ref.js';
 import { PagedSetController } from "../../primitives/controllers/PagingController.js";
 import { property } from 'lit/decorators.js';
 import '../Button/Button.js';

@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type ButtonHTMLAttributes, type ReactNode } from "react";
+import { type ButtonHTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import { useToggleSwitch } from "./useToggleSwitch";
 import "./ToggleSwitch.css";

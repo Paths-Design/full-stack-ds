@@ -3,11 +3,11 @@ import {
   Directive,
   ElementRef,
   HostBinding,
-  OnInit,
-  OnDestroy,
+  type OnInit,
+  type OnDestroy,
   inject,
 } from "@angular/core";
-import { TooltipContextToken, type TooltipContextValue } from "./useTooltip.js";
+import { TooltipContextToken } from "./useTooltip.js";
 // @generated:end
 
 // @custom:start imports

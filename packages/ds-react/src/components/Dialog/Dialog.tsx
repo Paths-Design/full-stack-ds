@@ -131,7 +131,7 @@ export function Dialog({
   "data-testid": testId,
   children,
   modal = true,
-  dismissible = true,
+  dismissible: _dismissible = true,
   closeOnEscape = true,
   closeOnBackdropClick = true,
   initialFocus,
