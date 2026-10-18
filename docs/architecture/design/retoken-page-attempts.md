@@ -147,3 +147,23 @@ stretched box), and Save overlays at ≤700px use a smaller footprint so they
 cover less artwork. The suite asserts both. The detail view's back chip still
 overlaps text baked into some artwork; as an overlay control that collision is
 inherent and stays a composition decision rather than a defect.
+
+## Token audit (RETOKEN-TOKEN-AUDIT-01)
+
+A five-axis audit of the token scope both pages share (`theme.css`), each with a
+mechanical artifact committed beside the fixture
+(`token-audit-baseline.json`, gate `pnpm run audit:retoken-tokens`,
+probe `scripts/retoken-token-probe.mjs`):
+
+| Axis | Method | Finding |
+|---|---|---|
+| Consumption inventory | Static extraction of every `--fsds-*` declaration with scope, value, and literal/ref kind | 119 declarations before adjudication; 111 after dead removal |
+| Load-bearing | Runtime removal probe: unset each declaration in-page (transitions disabled), watch used properties on the matched subtree at 1440/390 plus detail/popover passes | 99 load-bearing, 12 state-conditioned, 8 dead — all 8 deleted (the base button fill was shadowed by `.quiet`/`.selected`/`.play-button`/`.save-button` on every rendered button; three box-model guards restated package defaults) |
+| Default-chain fallback | Static resolution of every unset design var's fallback chain to its terminal | 30 single-hex terminals ledgered as inherited-by-intent; multi-stop shadow terminals are an explicit non-claim of this ledger |
+| Cross-page parity | Same-slot value comparison across `.retoken`/`.spotify`/`.pinterest` scopes | 3 differences, all Pinterest card-chrome decisions, recorded with their reference rationale |
+| Literal census + contrast | Every hex literal ledgered; brand-shaped accents named once | Playback green and save/brand red promoted to `--retoken-accent-*` page tokens; 13 bounded neutrals ledgered; 7 curated AA contrast pairs pass |
+
+Non-claims: the probe samples resting DOM at the committed pages, so
+interaction-state slots are classified statically rather than exercised; the
+gate is local-only (pre-push family `RETOKEN_TOKEN_AUDIT`), not yet a CI step;
+shadow-composition fallback terminals are outside the color ledger's scope.

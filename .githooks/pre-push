@@ -334,6 +334,14 @@ if [ "${RUN_TOKEN_RESOLVABILITY:-false}" = true ]; then
   pnpm run audit:token-resolvability
 else say "skip token-resolvability ledger"; fi
 
+# Retoken-page token audit (RETOKEN-TOKEN-AUDIT-01). Local-only family: the
+# fixture-scoped inventory/baseline/contrast gate for the two retoken page
+# attempts. Static and cheap — reads the committed fixture CSS and baseline only.
+if [ "${RUN_RETOKEN_TOKEN_AUDIT:-false}" = true ]; then
+  echo ""; say "audit:retoken-tokens"
+  pnpm run audit:retoken-tokens
+else say "skip retoken token audit"; fi
+
 # Custom-region occupancy (RAIL-CUSTOM-REGION-GATE-01). The only gate on the
 # constraint the whole method rests on: generated artifacts are emitted from
 # contracts, and a filled @custom region means one stopped being. It is invisible
