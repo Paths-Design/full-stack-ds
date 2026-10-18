@@ -97,3 +97,7 @@ evidence:
     status: pass
     evidence_ref: "commit eaef2487f: @full-stack-ds/svelte exports ./styles.css → dist/svelte.css built by scripts/build-styles.mjs (111 stylesheets, import-resolved); consumed by the A1 svelte lane build and rendered in the A3 browser evidence"
     recorded_at: "2026-10-18T18:39:05.727Z"
+  - criterion_id: A8
+    status: pass
+    evidence_ref: "examples/motion-lab/spec.md findings ledger (5 findings incl. the promoted Svelte CSS export gap, Lit shadow-DOM part targeting, icon per-path identity boundary, Compose reduced-motion signal) + README non-claims + examples/README.md portfolio row, at merge 66cb7a051"
+    recorded_at: "2026-10-18T18:39:07.771Z"
