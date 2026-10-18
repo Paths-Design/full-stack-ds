@@ -175,7 +175,7 @@ export function generateGlyphCatalogFile(): GeneratedFile | null {
  * control character (a raw line break would end the literal mid-string).
  */
 export function swiftLiteral(value: string): string {
-  const escaped = value.replace(/[\\"\u0000-\u001f\u007f]/g, (ch) => {
+  const escape = (ch: string): string => {
     switch (ch) {
       case "\\": return "\\\\";
       case '"': return '\\"';
@@ -183,8 +183,9 @@ export function swiftLiteral(value: string): string {
       case "\r": return "\\r";
       case "\t": return "\\t";
       case "\0": return "\\0";
-      default: return `\\u{${ch.charCodeAt(0).toString(16)}}`;
     }
-  });
-  return `"${escaped}"`;
+    const code = ch.codePointAt(0)!;
+    return code < 0x20 || code === 0x7f ? `\\u{${code.toString(16)}}` : ch;
+  };
+  return `"${Array.from(value, escape).join("")}"`;
 }

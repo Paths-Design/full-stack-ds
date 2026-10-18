@@ -27,7 +27,7 @@ const KOTLIN_MESSAGES_HOIST = `val ${KOTLIN_MESSAGES_VALUE} = ${KOTLIN_MESSAGES_
  * every control character (a raw line break would end the literal mid-string).
  */
 export function kotlinStringLiteral(value: string): string {
-  const escaped = value.replace(/[\\"$\u0000-\u001f\u007f]/g, (ch) => {
+  const escape = (ch: string): string => {
     switch (ch) {
       case "\\": return "\\\\";
       case '"': return '\\"';
@@ -36,10 +36,11 @@ export function kotlinStringLiteral(value: string): string {
       case "\r": return "\\r";
       case "\t": return "\\t";
       case "\b": return "\\b";
-      default: return `\\u${ch.charCodeAt(0).toString(16).padStart(4, "0")}`;
     }
-  });
-  return `"${escaped}"`;
+    const code = ch.codePointAt(0)!;
+    return code < 0x20 || code === 0x7f ? `\\u${code.toString(16).padStart(4, "0")}` : ch;
+  };
+  return `"${Array.from(value, escape).join("")}"`;
 }
 
 /**
