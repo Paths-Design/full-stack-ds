@@ -35,8 +35,13 @@ acceptance:
     then: 'it emits an inventory of every --fsds-* declaration in theme.css with scope, value, and literal-or-ref kind and exits 0 against the committed baseline'
   - id: A2
     given: 'the probe script against a served fixture page'
-    when: 'each inventoried declaration is removed and affected regions re-measured'
-    then: 'every declaration records a load-bearing or dead verdict, and every dead declaration is deleted or carries an adjudication entry'
+    when: >-
+      each inventoried declaration is removed and affected regions re-measured, with
+      state-conditioned slots (hover/active/focus/disabled/condition) classified
+      statically
+    then: >-
+      every declaration records a load-bearing, dead, or state-conditioned verdict,
+      and every dead declaration is deleted or carries an adjudication entry
   - id: A3
     given: 'each component kind rendered on either page'
     when: 'its unset design vars resolve through the component default chain'
