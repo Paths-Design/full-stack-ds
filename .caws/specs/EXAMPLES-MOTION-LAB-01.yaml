@@ -73,3 +73,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm --filter @full-stack-ds/example-motion-lab-svelte build exit 0 at merge 66cb7a051a3a09a44ffbe25c269afd055dd936e0; lane imports only @full-stack-ds/svelte, @full-stack-ds/svelte/styles.css, @full-stack-ds/tokens/tokens.css, gsap, and app-level ../src/motion"
     recorded_at: "2026-10-18T18:38:40.273Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm --filter @full-stack-ds/example-motion-lab-lit build exit 0 (tsc --noEmit + vite build) at merge 66cb7a051; imports only @full-stack-ds/lit, @full-stack-ds/tokens/tokens.css, gsap, and app-level ../src/motion"
+    recorded_at: "2026-10-18T18:38:41.843Z"
