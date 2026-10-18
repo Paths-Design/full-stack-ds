@@ -284,7 +284,7 @@ export class CalendarElement extends LitElement {
       </tr>
     </thead>
     <tbody>
-      ${(this.dateGrid.state.weeks ?? []).map((week, row) => html`
+      ${(this.dateGrid.state.weeks ?? []).map((week) => html`
       <tr role="row">
         ${(week.days ?? []).map((day) => html`
         <td class=${'calendar__cell'} role="gridcell" aria-selected=${ifDefined(day.selected)} aria-current=${ifDefined(day.current)} data-outside-month=${ifDefined(day.outsideMonth)}>

@@ -86,6 +86,7 @@ import {
   iconGlyphPxExpr,
   iconGlyphSizeHintsLiteral,
 } from "../icon-glyph.js";
+import { templateExpressionCode } from "./template-expressions.js";
 
 /**
  * Build the `static override styles = css\`…\`;` line(s) for a Lit
@@ -3119,7 +3120,7 @@ function renderLitDomNode(
     // from the emitted child body — an `index` param the body never
     // references is a no-unused-vars finding in the generated component.
     const childBody = `${separator}${withIfGuard}${separator}${pad}`;
-    const usesIndex = new RegExp(`\\b${indexVar}\\b`).test(childBody);
+    const usesIndex = new RegExp(`\\b${indexVar}\\b`).test(templateExpressionCode(childBody));
     const params =
       kind === "array"
         ? usesIndex
