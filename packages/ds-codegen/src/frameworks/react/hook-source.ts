@@ -476,8 +476,14 @@ function generateImports(ir: ComponentIR, bindings: PrimitiveBindings): string {
   const reactNamed: string[] = [];
   const reactTypes: string[] = [];
   if (bindings.useFocusTrap || bindings.usePortal || bindings.useAnchorToggle) {
-    reactNamed.push("useRef");
+    // Anchor-owned panels still surface `RefObject` in the hook's result
+    // interface (anchorToggle.panelRef), so the TYPE follows any of the
+    // three bindings. CODEGEN-EMIT-LINT-HYGIENE-01: the `const panelRef =
+    // useRef(...)` local is only declared (and returned) when anchor-toggle
+    // does NOT own the panel ref (see generateBody), so the VALUE import
+    // is narrower than the type import.
     reactTypes.push("type RefObject");
+    if (!bindings.useAnchorToggle) reactNamed.push("useRef");
   }
   if (bindings.usePortal) reactTypes.push("type ReactNode");
   if (bindings.isCompoundStateContainer) {
@@ -496,9 +502,31 @@ function generateImports(ir: ComponentIR, bindings: PrimitiveBindings): string {
   }
 
   const primitives: string[] = [];
-  if (bindings.useControllableState.length > 0)
+  // CODEGEN-EMIT-LINT-HYGIENE-01: import conditions mirror emission
+  // conditions. A `useControllableState` call is only emitted for channels
+  // anchor-toggle does not own (Toast's boolean open channel is owned by
+  // the anchor), and the `useDismissal` call is gated on a boolean channel
+  // existing to host it — importing what is never called is an unused
+  // import in the emitted hook file.
+  const openChannel = pickOpenChannel(bindings.useControllableState);
+  const anchorOwnsChannel =
+    bindings.useAnchorToggle &&
+    !!openChannel &&
+    openChannel.valueType === "boolean";
+  if (
+    bindings.useControllableState.some(
+      (ch) => !(anchorOwnsChannel && ch === openChannel),
+    )
+  ) {
     primitives.push("useControllableState");
-  if (bindings.useDismissal) primitives.push("useDismissal");
+  }
+  if (
+    bindings.useDismissal &&
+    // the useDismissal call is only emitted when a boolean channel gates it
+    bindings.useControllableState.some((ch) => ch.valueType === "boolean")
+  ) {
+    primitives.push("useDismissal");
+  }
   if (bindings.useFocusTrap) primitives.push("useFocusTrap");
   if (bindings.useScrollLock) primitives.push("useScrollLock");
   if (bindings.usePortal) primitives.push("usePortal");
@@ -849,7 +877,10 @@ function generateBody(ir: ComponentIR, bindings: PrimitiveBindings): string {
   }
 
   // Refs (panel/anchor)
-  if (bindings.useFocusTrap || bindings.usePortal) {
+  // CODEGEN-EMIT-LINT-HYGIENE-01: only declared when this hook itself
+  // returns it — when anchor-toggle is active its refs come from
+  // `anchorToggle` and a local here would be dead (Command, Toast).
+  if ((bindings.useFocusTrap || bindings.usePortal) && !bindings.useAnchorToggle) {
     lines.push(`  const panelRef = useRef<HTMLDivElement>(null);`);
   }
   if (bindings.useAnchorToggle) {

@@ -32,6 +32,7 @@ import {
 } from "../../ir.js";
 import { renderSections, type Section } from "../../preserve.js";
 import { isCompoundStateContainer, isDisclosureContainer } from "../react/hook-source.js";
+import { typeAwareSpecifiers } from "./emitted-imports.js";
 
 interface PrimitiveBindings {
   useControllableState: NormalizedChannelIR[];
@@ -117,9 +118,15 @@ function resolveBindings(ir: ComponentIR): PrimitiveBindings | null {
 function generateImports(
   bindings: PrimitiveBindings,
   isDisclosure: boolean,
+  emitted: string,
 ): string {
   const coreNamed = new Set<string>();
-  coreNamed.add("DestroyRef");
+  // CODEGEN-EMIT-LINT-HYGIENE-01: DestroyRef is body-truthful and
+  // type-aware — a hook that only TYPE-references it (e.g. a constructor
+  // parameter annotation) imports it with the inline type marker.
+  for (const spec of typeAwareSpecifiers(["DestroyRef"], emitted)) {
+    coreNamed.add(spec);
+  }
 
   if (bindings.useControllableState.length > 0) {
     coreNamed.add("type Signal");
@@ -138,17 +145,23 @@ function generateImports(
     coreNamed.add("type Signal");
   }
 
-  const primitives: string[] = [];
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the primitives import set derives from
+  // emitted-text usage and carries inline `type` markers for type-only
+  // references (e.g. a disclosure hook that only TYPE-references its
+  // context/state symbols — the runtime provider lives in the component).
+  const primitiveCandidates: string[] = [];
   if (bindings.useControllableState.length > 0) {
-    primitives.push("createControllableState");
+    primitiveCandidates.push("createControllableState");
   }
-  if (bindings.useFocusTrap) primitives.push("createFocusTrap");
-  if (bindings.useScrollLock) primitives.push("createScrollLock");
-  if (bindings.usePortal) primitives.push("createPortal");
-  if (bindings.useAnchorToggle) primitives.push("createAnchorToggle");
-  if (bindings.useDismissal) primitives.push("createDismissal");
-  if (bindings.isCompoundStateContainer) primitives.push("createCompoundContext");
-  if (isDisclosure) primitives.push("createCompoundContext");
+  if (bindings.useFocusTrap) primitiveCandidates.push("createFocusTrap");
+  if (bindings.useScrollLock) primitiveCandidates.push("createScrollLock");
+  if (bindings.usePortal) primitiveCandidates.push("createPortal");
+  if (bindings.useAnchorToggle) primitiveCandidates.push("createAnchorToggle");
+  if (bindings.useDismissal) primitiveCandidates.push("createDismissal");
+  if (bindings.isCompoundStateContainer || isDisclosure) {
+    primitiveCandidates.push("createCompoundContext");
+  }
+  const primitives = typeAwareSpecifiers(primitiveCandidates, emitted).sort();
 
   const lines: string[] = [];
   lines.push(
@@ -156,7 +169,7 @@ function generateImports(
   );
   if (primitives.length > 0) {
     lines.push(
-      `import { ${primitives.sort().join(", ")} } from "../../primitives/index.js";`,
+      `import { ${primitives.join(", ")} } from "../../primitives/index.js";`,
     );
   }
   return lines.join("\n");
@@ -795,7 +808,6 @@ export function generateAngularHookSource(ir: ComponentIR): string | null {
   if (!bindings) return null;
 
   const isDisclosure = isDisclosureContainer(ir);
-  const importsBody = generateImports(bindings, isDisclosure);
   const inlineTypesBody = generateInlineTypes(ir, bindings);
   const optionsBody = generateOptionsInterface(ir, bindings);
   const resultBody = generateResultInterface(ir, bindings);
@@ -809,6 +821,16 @@ export function generateAngularHookSource(ir: ComponentIR): string | null {
   const typesBody = [inlineTypesBody, optionsBody, resultBody, contextTypesBody]
     .filter((s) => s.length > 0)
     .join("\n\n");
+
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the primitives import set derives from
+  // emitted-text usage (a disclosure hook like useAccordion only TYPE-
+  // references its context/state symbols — the provider lives in the
+  // component — so the import is type-marked, not dropped-or-value).
+  const importsBody = generateImports(
+    bindings,
+    isDisclosure,
+    `${typesBody}\n${hookBody}`,
+  );
 
   const blank = (): Section => ({ kind: "between", body: "" });
   const sections: Section[] = [

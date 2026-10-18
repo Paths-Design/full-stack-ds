@@ -87,6 +87,121 @@ import {
  *   `component`       (gen — the root component function)
  *   `trailing`        (cust — for wrappers/overrides; empty default)
  */
+/** One root-signature destructure entry as the emitters write it. */
+interface DestructureEntry {
+  /** Key text when the entry renames (`"data-testid"`, `checked`); null when key === local. */
+  key: string | null;
+  /** Local binding the emitted body would reference. */
+  local: string;
+  /** Default expression text (`"medium"`, `false`) or undefined. */
+  defaultValue: string | undefined;
+}
+
+const DESTRUCTURE_ENTRY_RE =
+  /^(?:"(?<quoted>[^"]+)"|(?<ident>[A-Za-z_$][\w$]*))(?:\s*:\s*(?<local>[A-Za-z_$][\w$]*))?(?:\s*=\s*(?<def>[\s\S]+))?$/;
+
+function parseDestructureEntry(entry: string): DestructureEntry | undefined {
+  const m = entry.match(DESTRUCTURE_ENTRY_RE);
+  if (!m?.groups) return undefined;
+  const { quoted, ident, local, def } = m.groups;
+  const resolvedLocal = local ?? ident;
+  if (!resolvedLocal) return undefined;
+  return {
+    key: quoted ? `"${quoted}"` : local ? ident : null,
+    local: resolvedLocal,
+    defaultValue: def,
+  };
+}
+
+/**
+ * Calibrated "is this local referenced by the emitted body" oracle.
+ * Word-boundary match with two exclusions validated against
+ * `@typescript-eslint/no-unused-vars` over the whole ds-react corpus:
+ *  - `(?![\w-])` — longer identifiers and hyphenated fragments inside
+ *    class/attribute strings (`"profile-flag"` is not a use of `profile`);
+ *  - `(?![ \t]*=[^=])` — JSX attribute names and assignment targets
+ *    (`id={instanceId}` names an attribute; it does not read the `id`
+ *    local). `===`/`!==` comparisons are real reads and stay matches.
+ */
+function bodyReferencesLocal(local: string, body: string): boolean {
+  return new RegExp(`(?<![.\\w])${local}(?![\\w-])(?![ \\t]*=[^=])`).test(body);
+}
+
+function renameUnreferencedEntries(entriesText: string, body: string): string {
+  return entriesText
+    .split("\n")
+    .map((line) => line.replace(/^ {2}/, "").replace(/,$/, ""))
+    .map((entry) => {
+      if (entry.startsWith("...")) return entry;
+      const parsed = parseDestructureEntry(entry);
+      if (!parsed || parsed.local.startsWith("_")) return entry;
+      if (bodyReferencesLocal(parsed.local, body)) return entry;
+      const key = parsed.key ?? parsed.local;
+      return parsed.defaultValue === undefined
+        ? `${key}: _${parsed.local}`
+        : `${key}: _${parsed.local} = ${parsed.defaultValue}`;
+    })
+    .map((entry) => `  ${entry}`)
+    .join(",\n");
+}
+
+/**
+ * CODEGEN-EMIT-LINT-HYGIENE-01 post-pass over a rendered root component.
+ * Renames destructured bindings the emitted body never references to
+ * `_`-prefixed locals (`{ title: _title }`). Destructuring a prop — under
+ * any local name — still excludes it from `...rest`, so the interception
+ * that keeps non-DOM props off the host element is preserved. Applied over
+ * BOTH destructures that open the root scope:
+ *   1. the props signature `export function X({ … }: XProps)`;
+ *   2. the hook-result destructure `const { … } = useX({ … });`
+ * One mechanism keyed on emitted facts; all four root generators share it.
+ */
+function renameUnreferencedDestructuredBindings(
+  source: string,
+  componentName: string,
+): string {
+  const sigStart = `export function ${componentName}({\n`;
+  const sigEnd = `\n}: ${componentName}Props) {`;
+  const start = source.indexOf(sigStart);
+  if (start === -1) return source;
+  const end = source.indexOf(sigEnd, start);
+  if (end === -1) return source;
+  const bodyAfterSignature = source.slice(end + sigEnd.length);
+  let out =
+    source.slice(0, start + sigStart.length) +
+    renameUnreferencedEntries(
+      source.slice(start + sigStart.length, end),
+      bodyAfterSignature,
+    ) +
+    source.slice(end);
+  const declPrefix = `  const { `;
+  const declSuffix = ` } = use${componentName}({`;
+  const decl = out.indexOf(declSuffix);
+  if (decl !== -1) {
+    const partsStart = out.lastIndexOf(declPrefix, decl);
+    const callEnd = out.indexOf(`\n  });`, decl);
+    if (partsStart !== -1 && callEnd !== -1) {
+      const bodyAfterCall = out.slice(callEnd + `\n  });`.length);
+      const parts = out
+        .slice(partsStart + declPrefix.length, decl)
+        .split(",")
+        .map((part) => part.trim())
+        .filter((part) => part.length > 0);
+      const rewritten = parts
+        .map((part) => {
+          const parsed = parseDestructureEntry(part);
+          if (!parsed || parsed.local.startsWith("_")) return part;
+          if (bodyReferencesLocal(parsed.local, bodyAfterCall)) return part;
+          const key = parsed.key ?? parsed.local;
+          return `${key}: _${parsed.local}`;
+        })
+        .join(", ");
+      out = out.slice(0, partsStart + declPrefix.length) + rewritten + out.slice(decl);
+    }
+  }
+  return out;
+}
+
 export function generateReactComponentSource(
   ir: ComponentIR,
   stackImportPath: string,
@@ -138,7 +253,15 @@ export function generateReactComponentSource(
       `  return <span className={["${ir.classRecipe.base}__${highlightPresentation.tokenPart}", className].filter(Boolean).join(" ")} data-token={kind}>{children}</span>;\n}`;
   }
 
-  const componentBody = generateRootComponent(ir);
+  // CODEGEN-EMIT-LINT-HYGIENE-01: unreferenced-but-intercepted bindings are
+  // emitted with a `_`-prefixed destructure rename so they stay excluded
+  // from `...rest` (interception semantics preserved) without tripping
+  // `@typescript-eslint/no-unused-vars` (`varsIgnorePattern: "^_"`).
+  const componentBody = renameUnreferencedDestructuredBindings(
+    generateRootComponent(ir),
+    ir.name,
+  );
+  const markdownHelpersBody = generateReactMarkdownHelpers(ir);
 
   // IR-DOM-CSS-VAR-BINDING-01: cssVarBindings emit `as CSSProperties`.
   // Scan the rendered body for the identifier so we add the type import
@@ -146,12 +269,29 @@ export function generateReactComponentSource(
   // body identifiers — it only scans styled prop types and defined types
   // — so we patch the list here.
   const bodyHaystack = `${subcomponentsBody}\n${componentBody}`;
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the `type X` specifier set for "react"
+  // derives from emitted-text usage. `collectReactImports` unconditionally
+  // seeds `ReactNode` (it predates children-less leaf components like
+  // Avatar whose props interface omits `children?: ReactNode`), so filter
+  // every specifier against the fully generated sections before assembly.
+  const fullBodyHaystack = [
+    typesBody,
+    propsBody,
+    subcomponentsBody,
+    markdownHelpersBody,
+    componentBody,
+  ].join("\n");
+  const bodyReferencedReactTypeImports = reactTypeImports.filter((entry) =>
+    entry.startsWith("type ")
+      ? identifierRegex(entry.slice("type ".length)).test(fullBodyHaystack)
+      : true,
+  );
   const needsCssProperties =
-    /\bCSSProperties\b/.test(bodyHaystack) &&
-    !reactTypeImports.includes("type CSSProperties");
+    /\bCSSProperties\b/.test(fullBodyHaystack) &&
+    !bodyReferencedReactTypeImports.includes("type CSSProperties");
   const finalReactTypeImports = needsCssProperties
-    ? [...reactTypeImports, "type CSSProperties"].sort()
-    : reactTypeImports;
+    ? [...bodyReferencedReactTypeImports, "type CSSProperties"].sort()
+    : bodyReferencedReactTypeImports;
   // DOM-PROPERTY-REFLECTION-IR-CHECKBOX-INDETERMINATE-01: generateDomTreeRootComponent
   // emits `useRef`/`useEffect` calls for propertyBindings nodes, but that
   // decision is data-driven deep inside the tree walk — scanning the
@@ -213,7 +353,11 @@ export function generateReactComponentSource(
       runtimeHooks.add("useState");
     }
     if (runtimeHooks.size === 0) {
-      importLines.push(`import { ${finalReactTypeImports.join(", ")} } from "react";`);
+      // CODEGEN-EMIT-LINT-HYGIENE-01: an empty specifier set emits no
+      // import line at all — `import { } from "react"` is a syntax finding.
+      if (finalReactTypeImports.length > 0) {
+        importLines.push(`import { ${finalReactTypeImports.join(", ")} } from "react";`);
+      }
     } else {
       const allReactImports = [...finalReactTypeImports, ...runtimeHooks].sort();
       importLines.push(`import { ${allReactImports.join(", ")} } from "react";`);
@@ -303,7 +447,6 @@ export function generateReactComponentSource(
   importLines.push(`import "./${ir.name}.css";`);
   const importsBody = importLines.join("\n");
 
-  const markdownHelpersBody = generateReactMarkdownHelpers(ir);
   const blank = (): Section => ({ kind: "between", body: "" });
   const sections: Section[] = [
     { kind: "generated", id: "imports", body: importsBody },
@@ -398,7 +541,7 @@ const REACT_TYPE_IDENTIFIERS = [
 ] as const;
 
 /** Word-boundary regex for "X is referenced in this text" detection. */
-function identifierRegex(name: string): RegExp {
+export function identifierRegex(name: string): RegExp {
   return new RegExp(`(?<![.\\w])${name}(?![\\w])`, "g");
 }
 

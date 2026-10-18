@@ -67,6 +67,32 @@ describe("generateLitTest — real corpus contracts", () => {
     expect(source).toContain(`axe`);
   });
 
+  it("emits typed element casts and never `as any` in the compound plan", () => {
+    // CODEGEN-EMIT-LINT-HYGIENE-01: ~58 @typescript-eslint/no-explicit-any
+    // findings came from these emissions. Typed casts are type-level only;
+    // runtime behavior is identical.
+    const source = generateLitTest(corpusIR("Tabs"));
+
+    expect(source).not.toContain("as any");
+    // smoke test: querySelector'd element gets the typed await cast.
+    expect(source).toContain(
+      "await (el as HTMLElement & { updateComplete?: Promise<unknown> }).updateComplete;",
+    );
+    // variant loop: createElement'd element carries the typed shape.
+    expect(source).toContain(
+      'const el = document.createElement("fsds-tabs") as HTMLElement & {',
+    );
+    // axe block: the compound parts carry value/idBase in their shapes.
+    expect(source).toContain(
+      'const tabsEl = document.createElement("fsds-tabs") as HTMLElement & {',
+    );
+    expect(source).toContain("value: string;");
+    expect(source).toContain("idBase?: string;");
+    expect(source).toMatch(
+      /const tabA = document\.createElement\("fsds-tabs-tab"\) as HTMLElement & \{\s+value: string;\s+updateComplete\?: Promise<unknown>;\s+\};/,
+    );
+  });
+
   it("emits the Select plan with behavior assertions", () => {
     const source = generateLitTest(corpusIR("Select"));
 

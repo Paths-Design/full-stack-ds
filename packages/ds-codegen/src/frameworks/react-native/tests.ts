@@ -24,7 +24,11 @@ export function generateReactNativeTest(ir: ComponentIR): string {
     "// @generated:start imports",
     `import { describe, it } from "vitest";`,
     `import type { ComponentProps } from "react";`,
-    `import { ${ir.name} } from "../${ir.name}";`,
+    // Type-surface smoke test: the component is referenced only in
+    // `ComponentProps<typeof X>` type position, so its import is a type
+    // import — a value import here is an eslint consistent-type-imports
+    // finding on every generated type-surface test.
+    `import type { ${ir.name} } from "../${ir.name}";`,
     "// @generated:end",
     "",
     "// @generated:start tests",
@@ -789,6 +793,7 @@ function surfaceTest(ir: ComponentIR, lowering: RnSurfaceLowering): string {
         `${INDENT}${INDENT}expect(seen).toEqual([]);`,
         `${INDENT}${INDENT}act(() => { vi.advanceTimersByTime(1); });`,
         `${INDENT}${INDENT}expect(seen).toEqual([false]);`,
+        `${INDENT}${INDENT}renderer?.unmount();`,
         `${INDENT}${INDENT}vi.useRealTimers();`,
         `${INDENT}});`,
         `${INDENT}it("never auto-dismisses when ${autoDismiss.durationProp} is null", () => {`,
@@ -799,6 +804,7 @@ function surfaceTest(ir: ComponentIR, lowering: RnSurfaceLowering): string {
         ),
         `${INDENT}${INDENT}act(() => { vi.advanceTimersByTime(600000); });`,
         `${INDENT}${INDENT}expect(seen).toEqual([]);`,
+        `${INDENT}${INDENT}renderer?.unmount();`,
         `${INDENT}${INDENT}vi.useRealTimers();`,
         `${INDENT}});`,
       );

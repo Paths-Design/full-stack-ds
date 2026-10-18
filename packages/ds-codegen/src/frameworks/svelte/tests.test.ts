@@ -116,3 +116,26 @@ describe("generateSvelteTest — real corpus contracts", () => {
     expect(source).toContain(`afterEach`);
   });
 });
+
+describe("CODEGEN-EMIT-LINT-HYGIENE-01: svelte test vitest import hygiene", () => {
+  it("Postcard's generated body uses no vi API → no vi specifier", () => {
+    const source = generateSvelteTest(corpusIR("Postcard"));
+
+    expect(source).toContain(
+      `import { describe, expect, it } from "vitest";`,
+    );
+    expect(source).not.toMatch(/import \{[^}]*\bvi\b[^}]*\} from "vitest";/);
+  });
+
+  it("Dialog's generated body emits spies → vi is imported", () => {
+    const source = generateSvelteTest(corpusIR("Dialog"));
+
+    expect(source).toMatch(/import \{[^}]*\bvi\b[^}]*\} from "vitest";/);
+  });
+
+  it("Accordion's generated body uses no vi → no vi specifier (custom blocks self-import)", () => {
+    const source = generateSvelteTest(corpusIR("Accordion"));
+
+    expect(source).not.toMatch(/import \{[^}]*\bvi\b[^}]*\} from "vitest";/);
+  });
+});

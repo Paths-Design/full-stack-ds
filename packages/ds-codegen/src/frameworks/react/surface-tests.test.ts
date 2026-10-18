@@ -36,4 +36,13 @@ describe("react surface-tests — anchored surfaces", () => {
     const source = generateReactSurfaceTest(irFor("Popover"));
     expect(source).toContain("@generated:start");
   });
+
+  it("CODEGEN-EMIT-LINT-HYGIENE-01: augments vitest's Assertion with a referenced T", () => {
+    const source = generateReactSurfaceTest(irFor("Tooltip"));
+
+    expect(source).toContain(`interface Assertion<T> {`);
+    expect(source).toContain(`toHaveNoViolations(expected?: T): void;`);
+    expect(source).not.toContain(`Assertion<_T>`);
+    expect(source).not.toContain("eslint-disable");
+  });
 });

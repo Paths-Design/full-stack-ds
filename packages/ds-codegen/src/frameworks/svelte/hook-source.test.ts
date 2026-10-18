@@ -56,3 +56,22 @@ describe("generateSvelteHookSource — real corpus contracts", () => {
     );
   });
 });
+
+describe("CODEGEN-EMIT-LINT-HYGIENE-01: svelte hook import hygiene", () => {
+  it("Toast imports only createAnchorToggle — createControllableState is never referenced", () => {
+    const source = generateSvelteHookSource(corpusIR("Toast"));
+
+    expect(source).toContain(
+      `import { createAnchorToggle } from "../../primitives/index.js";`,
+    );
+    expect(source).not.toContain("createControllableState");
+  });
+
+  it("Tabs keeps the full compound import set it actually uses", () => {
+    const source = generateSvelteHookSource(corpusIR("Tabs"));
+
+    expect(source).toContain(
+      `import { createCompoundContext, createControllableState } from "../../primitives/index.js";`,
+    );
+  });
+});

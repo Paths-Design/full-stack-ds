@@ -121,15 +121,22 @@ function resolveBindings(ir: ComponentIR): PrimitiveBindings | null {
   };
 }
 
-function generateImports(bindings: PrimitiveBindings): string {
-  const primitives: string[] = [];
-  if (bindings.useControllableState.length > 0)
-    primitives.push("ControllableStateController");
-  if (bindings.useFocusTrap) primitives.push("FocusTrapController");
-  if (bindings.useScrollLock) primitives.push("ScrollLockController");
-  if (bindings.usePortal) primitives.push("PortalController");
-  if (bindings.useAnchorToggle) primitives.push("AnchorToggleController");
-  if (bindings.useDismissal) primitives.push("DismissalController");
+function generateImports(emitted: string): string {
+  // CODEGEN-EMIT-LINT-HYGIENE-01: filter the candidate controllers by
+  // emitted-body reference; type positions count (a controller used only
+  // as a field type still needs its value class for `new`, so a plain
+  // word-boundary reference is the right membership test here).
+  const candidates = [
+    "ControllableStateController",
+    "FocusTrapController",
+    "ScrollLockController",
+    "PortalController",
+    "AnchorToggleController",
+    "DismissalController",
+  ];
+  const primitives = candidates.filter((name) =>
+    new RegExp(`\\b${name}\\b`).test(emitted),
+  );
 
   const lines: string[] = [
     `import type { ReactiveControllerHost } from 'lit';`,
@@ -626,7 +633,6 @@ export function generateLitHookSource(ir: ComponentIR): string | null {
   const bindings = resolveBindings(ir);
   if (!bindings) return null;
 
-  const importsBody = generateImports(bindings);
   const inlineTypesBody = generateInlineTypes(ir, bindings);
   const optionsBody = generateOptionsInterface(ir, bindings);
   const classBody = generateClassBody(ir, bindings);
@@ -634,6 +640,12 @@ export function generateLitHookSource(ir: ComponentIR): string | null {
   const typesBody = [inlineTypesBody, optionsBody]
     .filter((s) => s.length > 0)
     .join("\n\n");
+
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the controller import set derives from
+  // emitted-text usage — a controller the types+class never reference
+  // (e.g. an anchor-owned channel that suppresses the state controller)
+  // must not be imported.
+  const importsBody = generateImports(`${typesBody}\n${classBody}`);
 
   const blank = (): Section => ({ kind: "between", body: "" });
   const sections: Section[] = [
