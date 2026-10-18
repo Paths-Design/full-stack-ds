@@ -3895,7 +3895,10 @@ function emitSelectionControl(ir: ComponentIR): string {
     lines.push(`    onOpenChange: ((Boolean) -> Unit)? = null,`);
   }
   if (hasDisabled) lines.push(`    enabled: Boolean = true,`);
-  if (hasPlaceholder) lines.push(`    placeholder: String? = null,`);
+  if (hasPlaceholder) {
+    const placeholderDefault = kotlinStringDefault(ir, ir.styledProps.find((p) => p.safeName === "placeholder"));
+    lines.push(placeholderDefault !== null ? `    placeholder: String = ${placeholderDefault},` : `    placeholder: String? = null,`);
+  }
   if (hasAria) lines.push(`    contentDescription: String? = null,`);
   lines.push(`) {`);
   lines.push(`    var uncontrolled${pascalCase(valueProp)} by remember { mutableStateOf(${defaultValueProp}) }`);

@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
@@ -57,7 +58,7 @@ fun Select(
     defaultOpen: Boolean = false,
     onOpenChange: ((Boolean) -> Unit)? = null,
     enabled: Boolean = true,
-    placeholder: String? = null,
+    placeholder: String = LocalFsdsMessages.current.string("Select.placeholder", "Select an option"),
 ) {
     var uncontrolledValue by remember { mutableStateOf(defaultValue) }
     val resolvedValue = value ?: uncontrolledValue

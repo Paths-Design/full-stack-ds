@@ -842,12 +842,18 @@ function emitSelectionControl(ir: ComponentIR): string {
         `exports it as \`${exportName}\`.`,
     );
   }
+  // The trigger shows the placeholder when no option matches the selection.
+  const placeholder = ir.styledProps.some((p) => p.safeName === "placeholder")
+    ? swiftStringProp(ir, "placeholder", INDENT)
+    : null;
+  const emptyLabel = placeholder ? (placeholder.accessor.length > 0 ? "placeholder" : `(placeholder ?? "")`) : null;
   lines.push(`public struct ${exportName}: View {`);
   lines.push(`${INDENT}private let options: [${optionType}]`);
   lines.push(`${INDENT}@StateObject private var selection: SelectionState`);
   lines.push(`${INDENT}@StateObject private var open: ControllableValue<Bool>`);
   if (hasSize) lines.push(`${INDENT}private let size: ${sizeType}`);
   if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
+  if (placeholder) lines.push(placeholder.stored);
   lines.push("");
   lines.push(`${INDENT}public init(`);
   const params = [
@@ -862,6 +868,7 @@ function emitSelectionControl(ir: ComponentIR): string {
   params.push("open: Binding<Bool>? = nil,");
   params.push("defaultOpen: Bool = false,");
   params.push("onOpenChange: ((Bool) -> Void)? = nil,");
+  if (placeholder) params.push(placeholder.param);
   if (hasSize) params.push("size: " + sizeType + " = .md,");
   if (hasDisabled) params.push("disabled: Bool = false");
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
@@ -879,12 +886,19 @@ function emitSelectionControl(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))`);
   if (hasSize) lines.push(`${INDENT}${INDENT}self.size = size`);
   if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
+  if (placeholder) lines.push(placeholder.assign);
   lines.push(`${INDENT}}`);
   lines.push("");
+  if (placeholder) lines.push(...placeholder.accessor);
   lines.push(`${INDENT}private var triggerLabel: String {`);
-  lines.push(`${INDENT}${INDENT}selection.multiple`);
-  lines.push(`${INDENT}${INDENT}${INDENT}? options.filter { selection.isSelected($0.value) }.map(\\.label).joined(separator: ", ")`);
-  lines.push(`${INDENT}${INDENT}${INDENT}: (options.first { selection.isSelected($0.value) }?.label ?? selection.single)`);
+  if (emptyLabel) {
+    lines.push(`${INDENT}${INDENT}let labels = options.filter { selection.isSelected($0.value) }.map(\\.label)`);
+    lines.push(`${INDENT}${INDENT}return labels.isEmpty ? ${emptyLabel} : (selection.multiple ? labels.joined(separator: ", ") : labels[0])`);
+  } else {
+    lines.push(`${INDENT}${INDENT}selection.multiple`);
+    lines.push(`${INDENT}${INDENT}${INDENT}? options.filter { selection.isSelected($0.value) }.map(\\.label).joined(separator: ", ")`);
+    lines.push(`${INDENT}${INDENT}${INDENT}: (options.first { selection.isSelected($0.value) }?.label ?? selection.single)`);
+  }
   lines.push(`${INDENT}}`);
   lines.push("");
   lines.push(`${INDENT}public var body: some View {`);
