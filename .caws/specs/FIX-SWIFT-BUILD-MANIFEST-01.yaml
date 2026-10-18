@@ -1,0 +1,46 @@
+id: FIX-SWIFT-BUILD-MANIFEST-01
+title: 'Exclude Swift build products and hash source symlinks without traversal'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-18T21:38:54.036Z'
+updated_at: '2026-10-18T21:38:54.036Z'
+created_by_session: '01a150ef-9a59-7450-81cd-c4fec38649d3'
+blast_radius:
+  modules:
+    - 'Swift build artifact tracking and analytical proof provenance'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - '.gitignore'
+    - 'examples/motion-lab/swift/.build/'
+    - 'scripts/analytical-browser-proof.mjs'
+    - 'scripts/lib/source-manifest.mjs'
+    - 'scripts/lib/source-manifest.test.mjs'
+    - '.github/workflows/analytical-browser.yml'
+  out: []
+invariants:
+  - 'Source manifest hashes regular file bytes and symlink target text without following links'
+  - 'Swift source and package manifests remain tracked; build products are ignored'
+acceptance:
+  - id: A1
+    given: 'tracked Swift build products'
+    when: 'the cleanup is committed'
+    then: 'no .build entry is tracked and nested .build products are ignored'
+  - id: A2
+    given: 'regular files, missing files and file/directory/dangling symlinks'
+    when: 'the source manifest is constructed'
+    then: 'exact file bytes or link target text are hashed with explicit kinds without following links and unexpected entry kinds fail'
+  - id: A3
+    given: 'the corrected source inventory'
+    when: 'the analytical browser proof runs'
+    then: 'manifest creation succeeds, browser assertions pass and both negative controls reject their designated defects'
+observability:
+  - 'Source manifest records entry kinds and SHA-256; analytical receipt retains commands and controls'
+rollback:
+  - 'Revert the source fix commit without rewriting Git history'
+non_functional: {}
+contracts:
+  - name: 'source-manifest'
+    type: behavior
+    path: 'scripts/lib/source-manifest.mjs'
