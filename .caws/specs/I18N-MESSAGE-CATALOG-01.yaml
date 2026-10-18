@@ -112,3 +112,12 @@ evidence:
     artifact_path: packages/ds-react/src/primitives/hooks/__tests__/messages.contract.ts
     commit_sha: d5eec68c0
     test_verified_at: d5eec68c02e60964f9514ca31029e0cb157bee92
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At d5eec68c0 sequence-budget.contract.ts runs in all five web harnesses: slides take aria-roledescription from messages.item and re-render on change ('slide' -> 'diapositive'), and an unlabeled slide is named by the position template in the translator's order ('{count} 枚中 {index} 枚目'). messages.contract.ts catalog-change tests prove rotation start/stop text and name follow the catalog; the IR refuses template-bound rotation text (sequence runtime is its only writer). All six sequence runtimes (5 web sequence-budget.ts + RN sequence-motion.tsx) build the fallback with formatFsdsMessage(messages.position, {index, count}); grep finds no ' of ${' concatenation in any primitives tree. RN messages test pins '3 枚中 3 枚目'. gates-d5eec68c0 all green. Not covered: SwiftUI does not render slide position/role description (ledgered in native-message-reach.test.ts); Compose does not emit Carousel."
+    recorded_at: "2026-10-18T14:48:06.766Z"
+    test_nodeid: "packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.contract.ts > sequence budget > names an unlabeled slide through the position template, in the translator's word order"
+    command: "pnpm run test:frameworks && pnpm test"
+    exit_code: 0
+    artifact_path: packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.contract.ts
+    commit_sha: d5eec68c0
