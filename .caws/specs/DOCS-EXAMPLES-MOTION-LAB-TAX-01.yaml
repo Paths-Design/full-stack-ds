@@ -47,3 +47,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run build:all exit 0 on canonical after pnpm install sync: examples/motion-lab/{svelte,lit} build Done inside the dependency-sorted run, after ds-svelte build-styles wrote dist/svelte.css; AGENTS.md note corrected in commit d05f41eca"
     recorded_at: "2026-10-18T18:56:53.380Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "at commit d988b06a9: docs:check-claims OK (81 marked claims match; 13 stamps fresh or ledgered) and docs:check-links OK (210 relative links resolve)"
+    recorded_at: "2026-10-18T18:56:54.712Z"
