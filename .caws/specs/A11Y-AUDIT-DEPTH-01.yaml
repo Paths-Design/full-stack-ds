@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: a11y-audit-depth
 created_at: '2026-10-18T05:17:53.538Z'
-updated_at: '2026-10-18T05:18:29.656Z'
+updated_at: '2026-10-18T06:20:31.333Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -17,6 +17,9 @@ scope:
     - 'scripts/a11y-realization-audit/selfcheck.mjs'
     - 'scripts/a11y-realization-audit/known-gaps.json'
     - 'docs/current-implementation-snapshot.md'
+    - scripts/prepush-scope.mjs
+    - scripts/prepush-scope.test.mjs
+    - .github/workflows/ci.yml
   out: []
 invariants:
   - 'The audit stays read-only over source and writes only docs/internal/a11y-realization-audit.'
