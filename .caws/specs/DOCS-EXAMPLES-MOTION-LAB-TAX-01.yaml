@@ -1,9 +1,11 @@
 id: DOCS-EXAMPLES-MOTION-LAB-TAX-01
 title: 'Pay motion-lab documentation tax: snapshot row, build:all note, portfolio run block'
 mode: doc
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Doc tax paid: snapshot Examples row records motion-lab + svelte styles.css export, AGENTS.md build:all note corrected and verified green, portfolio run block and stale snapshot-updated stamp fixed; both doc gates pass.'
 created_at: '2026-10-18T18:42:51.889Z'
-updated_at: '2026-10-18T18:55:46.255Z'
+updated_at: '2026-10-18T18:57:52.036Z'
 created_by_session: 'session-33d6eec5-b0e3-4321-8201-a4c377accd31'
 blast_radius:
   modules:
