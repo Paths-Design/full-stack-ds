@@ -93,3 +93,12 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/messages.test.ts
     commit_sha: d5eec68c0
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At d5eec68c0 localization.test.ts (28 tests): the 55-contract corpus yields no L10N issue, and the gate runs inside validateContractSemantics (generate:check). Each reintroduced literal fails with exact pointer and code: static/bound/unprefixed text-bearing attribute, value-map value and fallback, literal and conditional-arm content (incl. unprefixed arm), selectionLabel literal fallback, DOM property, translatable prop default incl. nullable string unions, componentRef static attr, literal binding and value map; translatable:false, letterless text, non-string and string|array instance/default values are admitted. Six parse-route and three nullable pins failed against the previous gate. Sequence labels are message keys validated by A1 (sequence.labels refusals). generate:check exit 0 over 55/55 in gates-d5eec68c0."
+    recorded_at: "2026-10-18T14:45:18.313Z"
+    test_nodeid: "packages/ds-codegen/src/validation/localization.test.ts > localization gate over the corpus > finds no literal user-facing text in any contract"
+    command: "pnpm exec vitest run packages/ds-codegen/src/validation/localization.test.ts && pnpm run generate:check"
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/validation/localization.test.ts
+    commit_sha: d5eec68c0
