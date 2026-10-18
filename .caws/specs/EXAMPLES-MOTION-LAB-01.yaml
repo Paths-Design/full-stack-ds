@@ -93,3 +93,7 @@ evidence:
     status: pass
     evidence_ref: "test-nodeid examples/motion-lab/src/motion/tokens.test.ts via pnpm run test:examples:data-api: 70/70 passed incl. duration/bezier parsing, quick-exit diagonal check, bounce overshoot preservation, unset-token fail-loud probes, node reduced-motion default"
     recorded_at: "2026-10-18T18:39:03.870Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "commit eaef2487f: @full-stack-ds/svelte exports ./styles.css → dist/svelte.css built by scripts/build-styles.mjs (111 stylesheets, import-resolved); consumed by the A1 svelte lane build and rendered in the A3 browser evidence"
+    recorded_at: "2026-10-18T18:39:05.727Z"
