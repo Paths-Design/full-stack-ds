@@ -95,3 +95,7 @@ evidence:
     status: pass
     evidence_ref: "gate contrast check: 7 curated pairs all meet AA (ui 3:1, text 4.5:1), including play-ink-on-green and save-white-on-brand-red @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
     recorded_at: "2026-10-18T07:57:13.600Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "falsifiability probe in-session: literal #222 adjudication corrupted to 'unadjudicated-test' -> gate exit 1 'invalid adjudication'; restored -> exit 0; prepush classifier: fixture path sets RUN_RETOKEN_TOKEN_AUDIT=true, docs path does not; scripts/prepush-scope.test.mjs fail 0 @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
+    recorded_at: "2026-10-18T07:57:14.986Z"
