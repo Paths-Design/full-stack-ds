@@ -27,6 +27,7 @@ import type {
 // must lower token paths through the same authority codegen and the token build
 // use — see packages/ds-codegen/src/token-path.ts.
 import { tokenSlug } from "../../../packages/ds-codegen/src/token-path";
+import { propDefault } from "../../lib/prop-default";
 
 /** A single editable control rendered as a row in the panel. */
 export type ControlDescriptor =
@@ -169,6 +170,7 @@ interface PropMemberLike {
   name: string;
   propType?: { kind?: string; to?: string; values?: unknown[] };
   default?: unknown;
+  defaultMessage?: string;
   description?: string;
 }
 
@@ -184,6 +186,7 @@ function derivePropControl(
   variantAxisNames: Set<string>,
 ): ControlDescriptor | null {
   const kind = member.propType?.kind;
+  const initial = propDefault(member, contract.messages);
   const base = {
     name: member.name,
     label: member.name,
@@ -201,7 +204,7 @@ function derivePropControl(
         ...base,
         options,
         defaultValue:
-          typeof member.default === "string" ? member.default : undefined,
+          typeof initial === "string" ? initial : undefined,
         isVariantAxis: variantAxisNames.has(member.name),
       };
     }
@@ -210,21 +213,21 @@ function derivePropControl(
         kind: "boolean",
         ...base,
         defaultValue:
-          typeof member.default === "boolean" ? member.default : undefined,
+          typeof initial === "boolean" ? initial : undefined,
       };
     case "number":
       return {
         kind: "number",
         ...base,
         defaultValue:
-          typeof member.default === "number" ? member.default : undefined,
+          typeof initial === "number" ? initial : undefined,
       };
     case "string":
       return {
         kind: "text",
         ...base,
         defaultValue:
-          typeof member.default === "string" ? member.default : undefined,
+          typeof initial === "string" ? initial : undefined,
       };
     case "ref": {
       const refName = member.propType?.to;
@@ -235,7 +238,7 @@ function derivePropControl(
           ...base,
           options,
           defaultValue:
-            typeof member.default === "string" ? member.default : undefined,
+            typeof initial === "string" ? initial : undefined,
           // A prop that shares a name with a declared variant axis IS that
           // axis — flag it so the panel can render it once, in the Variants
           // section, instead of duplicating it under Properties.
