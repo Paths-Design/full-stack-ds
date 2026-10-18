@@ -4,6 +4,7 @@ import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createChipStyles } from "./Chip.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 import { Button } from "../Button/Button";
 // @generated:end
 
@@ -37,6 +38,8 @@ export interface ChipProps {
 // @generated:end
 
 // @generated:start component
+const ChipMessages = { dismiss: "Remove" };
+
 export function Chip({
   type,
   variant,
@@ -49,13 +52,15 @@ export function Chip({
   onClick,
   dismissible,
   onDismiss,
-  dismissLabel = "Remove",
+  dismissLabel: dismissLabelProp,
   children,
   style,
   testID,
   accessibilityLabel,
   accessibilityLabelledBy,
 }: ChipProps) {
+  const fsdsMessages = useFsdsMessages("Chip", ChipMessages);
+  const dismissLabel = dismissLabelProp ?? fsdsMessages.dismiss;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createChipStyles(fsdsTheme), [fsdsTheme]);
   const variantStyleForVariant = variant !== undefined ? ({ "selected": styles.root_variant_selected } as Record<string, ViewStyle | undefined>)[variant] : undefined;

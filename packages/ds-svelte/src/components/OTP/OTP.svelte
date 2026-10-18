@@ -1,6 +1,7 @@
 <script lang="ts">
 // @generated:start imports
 import { useOTP } from "./useOTP.svelte.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -31,7 +32,11 @@ interface Props {
   class?: string;
 }
 
-let { length = 6, value, defaultValue, onChange, onComplete, mode = "numeric", disabled, readOnly, label = "One-time password", fieldLabel = "One-time password digit", ariaDescribedby, class: className }: Props = $props();
+let { length = 6, value, defaultValue, onChange, onComplete, mode = "numeric", disabled, readOnly, label: labelProp, fieldLabel: fieldLabelProp, ariaDescribedby, class: className }: Props = $props();
+const OTPMessages = { groupLabel: "One-time password", fieldLabel: "One-time password digit" };
+const fsdsMessages = useFsdsMessages("OTP", OTPMessages);
+const label = $derived(labelProp ?? fsdsMessages.current.groupLabel);
+const fieldLabel = $derived(fieldLabelProp ?? fsdsMessages.current.fieldLabel);
 // @generated:end
 
 // @generated:start hook

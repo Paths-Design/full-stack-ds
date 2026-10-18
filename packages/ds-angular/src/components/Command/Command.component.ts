@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked, OnInit, OnDestroy, ElementRef } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 import { IconComponent } from "../Icon/Icon.component.js";
 import { useCommand } from "./useCommand.js";
@@ -21,6 +22,8 @@ import { useCommand } from "./useCommand.js";
 // @generated:start component
 let nextInstanceId = 0;
 
+const CommandMessages = { searchPlaceholder: "Search...", searchLabel: "Search commands", emptyResults: "No results found.", dialogLabel: "Command palette" };
+
 @Component({
   selector: "fsds-command",
   standalone: true,
@@ -31,10 +34,10 @@ let nextInstanceId = 0;
     <div [ngClass]="'command__overlay'" aria-hidden="true" role="presentation" (click)="behavior.setOpen(false)"></div>
   </ng-container>
   <ng-container *ngIf="behavior.open()">
-    <div [ngClass]="'command__dialog'" role="dialog" aria-modal="true" [attr.aria-label]="(label ?? 'Command palette')">
+    <div [ngClass]="'command__dialog'" role="dialog" aria-modal="true" [attr.aria-label]="(label ?? fsdsMessages().dialogLabel)">
       <div [ngClass]="'command__inputWrapper'">
         <fsds-icon [ngClass]="'command__searchIcon'" name="search" size="sm"></fsds-icon>
-        <input [ngClass]="'command__input'" type="search" role="combobox" aria-autocomplete="list" (input)="handleSearchChange($event)" [attr.aria-expanded]="behavior.open()" [attr.aria-label]="(searchLabel ?? 'Search commands')" [placeholder]="(placeholder ?? 'Search...')" [value]="behavior.search()" [attr.id]="instanceId + '-input'" [attr.aria-controls]="instanceId + '-list'" />
+        <input [ngClass]="'command__input'" type="search" role="combobox" aria-autocomplete="list" (input)="handleSearchChange($event)" [attr.aria-expanded]="behavior.open()" [attr.aria-label]="(searchLabel ?? fsdsMessages().searchLabel)" [placeholder]="(placeholder ?? fsdsMessages().searchPlaceholder)" [value]="behavior.search()" [attr.id]="instanceId + '-input'" [attr.aria-controls]="instanceId + '-list'" />
       </div>
       <div [ngClass]="'command__list'" role="listbox" [attr.id]="instanceId + '-list'" [attr.aria-labelledby]="instanceId + '-input'">
         <div [ngClass]="'command__empty'"></div>
@@ -47,6 +50,7 @@ let nextInstanceId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommandComponent implements OnInit, OnDestroy {
+  protected readonly fsdsMessages = injectFsdsMessages("Command", CommandMessages);
   private readonly inputOpen = signal<boolean | undefined>(undefined);
   @Input() get open(): boolean | undefined { return this.inputOpen(); }
   set open(value: boolean | undefined) { this.inputOpen.set(value); }
@@ -57,10 +61,10 @@ export class CommandComponent implements OnInit, OnDestroy {
   set search(value: string | undefined) { this.inputSearch.set(value); }
   @Input() defaultSearch?: string;
   @Input() onSearchChange?: (value: string) => void;
-  @Input() placeholder?: string = "Search...";
-  @Input() searchLabel?: string = "Search commands";
-  @Input() emptyMessage?: string = "No results found.";
-  @Input() label?: string = "Command palette";
+  @Input() placeholder?: string;
+  @Input() searchLabel?: string;
+  @Input() emptyMessage?: string;
+  @Input() label?: string;
   @Input() shouldFilter?: boolean = true;
   @Input() filter?: ((value: string, search: string) => number) | undefined;
   @Input() class?: string;

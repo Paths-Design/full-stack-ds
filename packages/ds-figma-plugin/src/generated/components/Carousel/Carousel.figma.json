@@ -144,7 +144,76 @@
       "required": false,
       "description": "Accessible name for the carousel region.",
       "defaultExpr": "\"Featured content\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "regionLabel"
+    }
+  ],
+  "messages": [
+    {
+      "key": "regionLabel",
+      "catalogKey": "Carousel.regionLabel",
+      "defaultMessage": "Featured content",
+      "description": "Accessible name of the carousel region when the consumer supplies none.",
+      "params": []
+    },
+    {
+      "key": "roleDescription",
+      "catalogKey": "Carousel.roleDescription",
+      "defaultMessage": "carousel",
+      "description": "Role description announced for the carousel region.",
+      "params": []
+    },
+    {
+      "key": "rotationStart",
+      "catalogKey": "Carousel.rotationStart",
+      "defaultMessage": "Start slide rotation",
+      "description": "Text and accessible name of the control that starts automatic rotation.",
+      "params": []
+    },
+    {
+      "key": "rotationStop",
+      "catalogKey": "Carousel.rotationStop",
+      "defaultMessage": "Stop slide rotation",
+      "description": "Text and accessible name of the control that stops automatic rotation.",
+      "params": []
+    },
+    {
+      "key": "slideRoleDescription",
+      "catalogKey": "Carousel.slideRoleDescription",
+      "defaultMessage": "slide",
+      "description": "Role description announced for each slide.",
+      "params": []
+    },
+    {
+      "key": "slidePosition",
+      "catalogKey": "Carousel.slidePosition",
+      "defaultMessage": "{index} of {count}",
+      "description": "Accessible name of a slide with no consumer label: its 1-based position and the slide count.",
+      "params": [
+        "index",
+        "count"
+      ]
+    },
+    {
+      "key": "previousSlide",
+      "catalogKey": "Carousel.previousSlide",
+      "defaultMessage": "Previous slide",
+      "description": "Accessible name of the button that shows the previous slide.",
+      "params": []
+    },
+    {
+      "key": "nextSlide",
+      "catalogKey": "Carousel.nextSlide",
+      "defaultMessage": "Next slide",
+      "description": "Accessible name of the button that shows the next slide.",
+      "params": []
+    },
+    {
+      "key": "chooseSlide",
+      "catalogKey": "Carousel.chooseSlide",
+      "defaultMessage": "Choose slide",
+      "description": "Accessible name of the slide picker.",
+      "params": []
     }
   ],
   "designBindings": [
@@ -462,9 +531,10 @@
           "defaultMs": 6000
         },
         "labels": {
-          "start": "Start slide rotation",
-          "stop": "Stop slide rotation",
-          "item": "slide"
+          "start": "rotationStart",
+          "stop": "rotationStop",
+          "item": "slideRoleDescription",
+          "position": "slidePosition"
         },
         "composition": "resolved",
         "selectors": {

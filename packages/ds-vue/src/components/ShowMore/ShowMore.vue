@@ -3,6 +3,7 @@
 import { computed } from "vue";
 import { useShowMore } from "./useShowMore.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -31,13 +32,14 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   expanded: undefined,
   defaultExpanded: undefined,
   maxLines: 3,
-  showMoreLabel: "Show more",
-  showLessLabel: "Show less",
 });
+const ShowMoreMessages = { showMore: "Show more", showLess: "Show less" };
+const fsdsMessages = useFsdsMessages("ShowMore", ShowMoreMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { showMoreLabel: "showMore", showLessLabel: "showLess" });
 // @generated:end
 
 // @generated:start hook

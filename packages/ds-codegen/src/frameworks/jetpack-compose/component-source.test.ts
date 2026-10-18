@@ -181,13 +181,14 @@ describe("generateJetpackComposeComponentSource — passive-leaf families", () =
     expect(src).toContain("defaultExpanded: Boolean = false,");
     expect(src).toContain("onExpandedChange: ((Boolean) -> Unit)? = null,");
     expect(src).toContain("expandable: Boolean = false,");
-    expect(src).toContain("collapseText: String? = null,");
-    expect(src).toContain("expandText: String? = null,");
+    // The toggle label params default to their contract messages through the
+    // provided catalog; an explicit argument skips the lookup entirely.
+    expect(src).toContain('collapseText: String = LocalFsdsMessages.current.string("Truncate.collapse", "Show less"),');
+    expect(src).toContain('expandText: String = LocalFsdsMessages.current.string("Truncate.expand", "Show more"),');
+    expect(src).toContain("import com.fullstackds.messages.LocalFsdsMessages");
     // The toggle label comes from the IR conditional content (expanded →
     // collapseText, collapsed → expandText), not hardcoded labels.
-    expect(src).toContain(
-      "text = (if (resolvedExpanded) collapseText else expandText) ?: \"\",",
-    );
+    expect(src).toContain("text = (if (resolvedExpanded) collapseText else expandText),");
     expect(src).toContain("onExpandedChange?.invoke(!resolvedExpanded)");
     expect(src).toContain("stateDescription = if (resolvedExpanded) \"expanded\" else \"collapsed\"");
     // Gated by the contract's expandable prop.
@@ -659,9 +660,13 @@ describe("generateJetpackComposeComponentSource — date-grid surface (FEAT-COMP
     expect(src).toContain("days: List<Date> = emptyList(),");
     // One row per calendar week, and the contract's own accessible labels.
     expect(src).toContain("days.chunked(fsdsWeekLength).forEach { week ->");
-    expect(src).toContain('contentDescription = "Previous month"');
-    expect(src).toContain('contentDescription = "Next month"');
-    expect(src).toContain('contentDescription = "Calendar"');
+    // Nav and grid names are the contract's messages, resolved through the
+    // catalog hoisted out of the non-composable semantics lambdas.
+    expect(src).toContain("    val fsdsMessages = LocalFsdsMessages.current");
+    expect(src).toContain('contentDescription = fsdsMessages.string("Calendar.previousMonth", "Previous month")');
+    expect(src).toContain('contentDescription = fsdsMessages.string("Calendar.nextMonth", "Next month")');
+    expect(src).toContain('contentDescription = fsdsMessages.string("Calendar.gridLabel", "Calendar")');
+    expect(src).not.toContain('contentDescription = "');
     expect(src).not.toMatch(/import androidx\.compose\.material/);
     expect(src.match(/fun Calendar\(([^)]*)\)/)![1]!.trim().startsWith("modifier: Modifier = Modifier,")).toBe(true);
   });
@@ -751,7 +756,7 @@ describe("generateJetpackComposeComponentSource — centered surface with a stri
     expect(src).toContain("search: String? = null,");
     expect(src).toContain('defaultSearch: String = "",');
     expect(src).toContain("onSearchChange: ((String) -> Unit)? = null,");
-    expect(src).toContain('placeholder: String = "Search...",');
+    expect(src).toContain('placeholder: String = LocalFsdsMessages.current.string("Command.searchPlaceholder", "Search..."),');
     expect(src).toContain("if (search == null) { uncontrolledSearch = next }");
     expect(src).toContain("onSearchChange?.invoke(next)");
     expect(src).toContain("val resolvedSearch = search ?: uncontrolledSearch");

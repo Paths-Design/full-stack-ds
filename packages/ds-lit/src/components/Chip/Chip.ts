@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import '../Button/Button.js';
 // @generated:end
@@ -19,6 +20,8 @@ export type ChipSize = "small" | "medium" | "large";
 // @custom:end
 
 // @generated:start component
+const ChipMessages = { dismiss: "Remove" };
+
 export class ChipElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -211,6 +214,8 @@ export class ChipElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Chip", ChipMessages);
+
   @property({ type: String }) type?: ChipType;
   @property({ type: String }) variant?: ChipVariant;
   @property({ type: String }) size?: ChipSize;
@@ -225,7 +230,7 @@ export class ChipElement extends LitElement {
   @property({ attribute: false }) onClick?: () => void;
   @property({ type: Boolean }) dismissible?: boolean;
   @property({ attribute: false }) onDismiss?: () => void;
-  @property({ type: String }) dismissLabel?: string = "Remove";
+  @property({ type: String }) dismissLabel?: string;
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -252,7 +257,7 @@ export class ChipElement extends LitElement {
     </span>
   </fsds-button>
   ${this.dismissible ? html`
-  <fsds-button class=${'chip__dismiss'} type="button" variant="ghost" @click=${this.onDismiss} ?disabled=${this.disabled ?? false} .ariaLabel=${(this.dismissLabel ?? "Remove")}></fsds-button>
+  <fsds-button class=${'chip__dismiss'} type="button" variant="ghost" @click=${this.onDismiss} ?disabled=${this.disabled ?? false} .ariaLabel=${(this.dismissLabel ?? this.fsdsMessages.value.dismiss)}></fsds-button>
   ` : nothing}
 </span>`;
   }

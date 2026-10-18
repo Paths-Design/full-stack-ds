@@ -90,6 +90,16 @@
     "commit": "input",
     "update": "channel:value.onChange:setCharAt(iter:index)"
   },
+  "messages": {
+    "groupLabel": {
+      "defaultMessage": "One-time password",
+      "description": "Accessible name of the group of code fields."
+    },
+    "fieldLabel": {
+      "defaultMessage": "One-time password digit",
+      "description": "Accessible name of each code field."
+    }
+  },
   "props": {
     "designed": {
       "members": [
@@ -147,13 +157,13 @@
           "name": "label",
           "propType": { "kind": "string" },
           "description": "Accessible label for the OTP group.",
-          "default": "One-time password"
+          "defaultMessage": "groupLabel"
         },
         {
           "name": "fieldLabel",
           "propType": { "kind": "string" },
           "description": "Accessible label applied to each one-character OTP field.",
-          "default": "One-time password digit"
+          "defaultMessage": "fieldLabel"
         },
         {
           "name": "ariaDescribedby",

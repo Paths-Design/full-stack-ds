@@ -2,6 +2,7 @@
 // @generated:start imports
 import { usePagination } from "./usePagination.svelte.js";
 import { createReactivePagedSet } from "../../primitives/paging.svelte.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -30,7 +31,10 @@ interface Props {
   class?: string;
 }
 
-let { pages = [], index, defaultIndex = 0, onIndexChange, presentation = "indicators", label = "Choose page", disabled = false, progress = "none", class: className }: Props = $props();
+let { pages = [], index, defaultIndex = 0, onIndexChange, presentation = "indicators", label: labelProp, disabled = false, progress = "none", class: className }: Props = $props();
+const PaginationMessages = { navigationLabel: "Choose page" };
+const fsdsMessages = useFsdsMessages("Pagination", PaginationMessages);
+const label = $derived(labelProp ?? fsdsMessages.current.navigationLabel);
 // @generated:end
 
 // @generated:start hook

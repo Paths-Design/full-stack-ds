@@ -5,6 +5,7 @@ import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { usePagedSet } from "../../primitives/hooks/usePaging";
 import { useFsdsTheme } from "../../tokens";
 import { createPageNavigatorStyles } from "./PageNavigator.styles";
+import { useFsdsMessages, formatFsdsMessage } from "../../primitives/messages";
 import { Button } from "../Button/Button";
 import { Icon } from "../Icon/Icon";
 import { Input } from "../Input/Input";
@@ -28,7 +29,6 @@ export interface PageNavigatorProps {
   pageLabel?: string;
   previousLabel?: string;
   nextLabel?: string;
-  ofLabel?: string;
   commitLabel?: string;
   showChoices?: boolean;
   children?: ReactNode;
@@ -40,18 +40,19 @@ export interface PageNavigatorProps {
 // @generated:end
 
 // @generated:start component
+const PageNavigatorMessages = { groupLabel: "Page navigation", pageLabel: "Current page", previousPage: "Previous page", nextPage: "Next page", commit: "Go", pageCount: "of {count}" };
+
 export function PageNavigator({
   pages = [],
   index: controlledPage,
   presentation = "indicators",
-  label = "Page navigation",
+  label: labelProp,
   disabled = false,
   pageCount,
-  pageLabel = "Current page",
-  previousLabel = "Previous page",
-  nextLabel = "Next page",
-  ofLabel = "of",
-  commitLabel = "Go",
+  pageLabel: pageLabelProp,
+  previousLabel: previousLabelProp,
+  nextLabel: nextLabelProp,
+  commitLabel: commitLabelProp,
   showChoices = false,
   defaultIndex = 0,
   onIndexChange,
@@ -60,6 +61,12 @@ export function PageNavigator({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: PageNavigatorProps) {
+  const fsdsMessages = useFsdsMessages("PageNavigator", PageNavigatorMessages);
+  const label = labelProp ?? fsdsMessages.groupLabel;
+  const pageLabel = pageLabelProp ?? fsdsMessages.pageLabel;
+  const previousLabel = previousLabelProp ?? fsdsMessages.previousPage;
+  const nextLabel = nextLabelProp ?? fsdsMessages.nextPage;
+  const commitLabel = commitLabelProp ?? fsdsMessages.commit;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createPageNavigatorStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledPage, setUncontrolledPage] = useState<number>((defaultIndex ?? 0) as number);
@@ -103,12 +110,7 @@ export function PageNavigator({
       <View
         style={styles.context}
       >
-        <RNText>{ofLabel}</RNText>
-      </View>
-      <View
-        style={styles.total}
-      >
-        <RNText>{pagedSet.state.count}</RNText>
+        <RNText>{formatFsdsMessage(fsdsMessages.pageCount, { count: pagedSet.state.count })}</RNText>
       </View>
       <Button
         disabled={pagedSet.state.disabled}

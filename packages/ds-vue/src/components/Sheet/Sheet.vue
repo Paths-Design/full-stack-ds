@@ -3,6 +3,7 @@
 import { computed, useId } from "vue";
 import { useSheet } from "./useSheet.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -33,12 +34,15 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   open: undefined,
   defaultOpen: undefined,
   side: "right",
   modal: true,
 });
+const SheetMessages = { close: "Close sheet" };
+const fsdsMessages = useFsdsMessages("Sheet", SheetMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 // @generated:end
 
 // @generated:start hook
@@ -81,7 +85,7 @@ const instanceId = useId();
           <p :class="'sheet__description'" :id="`${instanceId}-description`">
             <slot name="description" />
           </p>
-          <button :class="'sheet__close'" type="button" aria-label="Close sheet" @click="(e: MouseEvent) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }"></button>
+          <button :class="'sheet__close'" type="button" @click="(e: MouseEvent) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }" :aria-label="fsdsMessages.close"></button>
         </div>
         <div :class="'sheet__body'">
           <slot />

@@ -1,6 +1,6 @@
 <script lang="ts">
 // @generated:start imports
-
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -15,7 +15,10 @@ interface Props {
   children?: import('svelte').Snippet;
 }
 
-let { ariaLabel = "Breadcrumb", separator, class: className, children }: Props = $props();
+let { ariaLabel: ariaLabelProp, separator, class: className, children }: Props = $props();
+const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
+const fsdsMessages = useFsdsMessages("Breadcrumbs", BreadcrumbsMessages);
+const ariaLabel = $derived(ariaLabelProp ?? fsdsMessages.current.navigationLabel);
 // @generated:end
 
 // @generated:start classes

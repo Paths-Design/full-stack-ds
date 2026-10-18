@@ -2,6 +2,7 @@
 // @generated:start imports
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { useShowMore } from "./useShowMore.svelte.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -20,7 +21,11 @@ interface Props {
   children?: import('svelte').Snippet;
 }
 
-let { expanded, defaultExpanded, onExpandedChange, maxLines = 3, showMoreLabel = "Show more", showLessLabel = "Show less", class: className, children }: Props = $props();
+let { expanded, defaultExpanded, onExpandedChange, maxLines = 3, showMoreLabel: showMoreLabelProp, showLessLabel: showLessLabelProp, class: className, children }: Props = $props();
+const ShowMoreMessages = { showMore: "Show more", showLess: "Show less" };
+const fsdsMessages = useFsdsMessages("ShowMore", ShowMoreMessages);
+const showMoreLabel = $derived(showMoreLabelProp ?? fsdsMessages.current.showMore);
+const showLessLabel = $derived(showLessLabelProp ?? fsdsMessages.current.showLess);
 // @generated:end
 
 // @generated:start hook

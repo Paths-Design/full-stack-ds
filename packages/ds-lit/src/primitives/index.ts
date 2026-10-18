@@ -21,3 +21,12 @@ export type {
   ScrollLockOptions,
   PortalControllerOptions,
 } from './controllers/index.js';
+export {
+  FsdsMessagesController,
+  formatFsdsMessage,
+  getFsdsMessages,
+  mergeFsdsMessageCatalogs,
+  resolveFsdsMessages,
+  setFsdsMessages,
+  type FsdsMessageCatalog,
+} from './messages.js';

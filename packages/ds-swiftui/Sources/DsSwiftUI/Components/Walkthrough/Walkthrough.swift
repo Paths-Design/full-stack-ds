@@ -28,6 +28,7 @@ enum WalkthroughTokens {
 
 /// Emitted through the coachmark surface path: an overlay panel on the step channel with prev/next navigation and the contract's completion/skip callbacks.
 public struct Walkthrough<TitleRegion: View, DescriptionRegion: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         WalkthroughTokens.scopes
     }
@@ -35,6 +36,7 @@ public struct Walkthrough<TitleRegion: View, DescriptionRegion: View>: View {
     private let stepCount: Int
     private let onComplete: (() -> Void)?
     private let onSkip: (() -> Void)?
+    private let nextLabelProp: String?
     private let title: TitleRegion
     private let description: DescriptionRegion
     @Environment(\.fsdsTheme) private var fsdsTheme
@@ -45,6 +47,7 @@ public struct Walkthrough<TitleRegion: View, DescriptionRegion: View>: View {
         onStepChange: ((Double) -> Void)? = nil,
         onComplete: (() -> Void)? = nil,
         onSkip: (() -> Void)? = nil,
+        nextLabel: String? = nil,
         @ViewBuilder title: () -> TitleRegion = { EmptyView() },
         @ViewBuilder description: () -> DescriptionRegion = { EmptyView() }
     ) {
@@ -52,9 +55,12 @@ public struct Walkthrough<TitleRegion: View, DescriptionRegion: View>: View {
         self.stepCount = stepCount
         self.onComplete = onComplete
         self.onSkip = onSkip
+        self.nextLabelProp = nextLabel
         self.title = title()
         self.description = description()
     }
+
+    private var nextLabel: String { nextLabelProp ?? fsdsMessages.string("Walkthrough.next", default: "Next") }
 
     private var layered: [String: FsdsTokenValue?] {
         resolveFsdsLayeredTokens(
@@ -82,12 +88,14 @@ public struct Walkthrough<TitleRegion: View, DescriptionRegion: View>: View {
             title
             description
             HStack {
-                Button("Skip") { onSkip?() }
+                Button(fsdsMessages.string("Walkthrough.skip", default: "Skip")) { onSkip?() }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(fsdsMessages.string("Walkthrough.skipTour", default: "Skip tour"))
                 Spacer()
-                Button("Back") { if step.value > 0 { step.set(step.value - 1) } }
+                Button(fsdsMessages.string("Walkthrough.previous", default: "Previous")) { if step.value > 0 { step.set(step.value - 1) } }
                     .buttonStyle(.plain)
-                Button("Next") {
+                    .accessibilityLabel(fsdsMessages.string("Walkthrough.previousStep", default: "Previous step"))
+                Button(nextLabel) {
                     step.set(step.value + 1)
                     if Int(step.value) >= stepCount - 1 { onComplete?() }
                 }

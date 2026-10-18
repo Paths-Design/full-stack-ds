@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed } from "vue";
 import { useTruncate } from "./useTruncate.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -31,13 +32,14 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   expandable: undefined,
   expanded: undefined,
   defaultExpanded: undefined,
-  expandText: "Show more",
-  collapseText: "Show less",
 });
+const TruncateMessages = { expand: "Show more", collapse: "Show less" };
+const fsdsMessages = useFsdsMessages("Truncate", TruncateMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { expandText: "expand", collapseText: "collapse" });
 // @generated:end
 
 // @generated:start hook

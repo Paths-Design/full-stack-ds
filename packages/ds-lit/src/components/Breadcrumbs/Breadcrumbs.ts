@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
@@ -17,6 +18,8 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 // @custom:end
 
 // @generated:start component
+const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
+
 export class BreadcrumbsElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -117,6 +120,8 @@ export class BreadcrumbsElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Breadcrumbs", BreadcrumbsMessages);
+
   @property({ attribute: 'aria-label', reflect: true })
   override ariaLabel: string | null = null;
   @property({ type: String }) separator?: string;
@@ -133,7 +138,7 @@ export class BreadcrumbsElement extends LitElement {
   }
 
   override render() {
-    return html`<nav class="${this.computeClasses()}" aria-label=${ifDefined((this.ariaLabel ?? "Breadcrumb"))} data-fsds-box="">
+    return html`<nav class="${this.computeClasses()}" aria-label=${ifDefined((this.ariaLabel ?? this.fsdsMessages.value.navigationLabel))} data-fsds-box="">
   <ol class=${'breadcrumbs__list'}>
     <slot></slot>
   </ol>

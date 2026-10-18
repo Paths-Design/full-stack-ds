@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass, NgFor } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useCalendar } from "./useCalendar.js";
 // @generated:end
@@ -18,6 +19,8 @@ export type CalendarMode = "single" | "range";
 // @custom:end
 
 // @generated:start component
+const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+
 @Component({
   selector: "fsds-calendar",
   standalone: true,
@@ -25,13 +28,13 @@ export type CalendarMode = "single" | "range";
   host: { "data-fsds-component": "calendar" },
   template: `<div [ngClass]="classes()" role="application" data-fsds-box="">
   <div [ngClass]="'calendar__header'">
-    <button [ngClass]="'calendar__nav'" aria-label="Previous month"></button>
+    <button [ngClass]="'calendar__nav'" [attr.aria-label]="fsdsMessages().previousMonth"></button>
     <span [ngClass]="'calendar__caption'">
-      {{ (caption ?? 'Calendar') }}
+      {{ (caption ?? fsdsMessages().caption) }}
     </span>
-    <button [ngClass]="'calendar__nav'" aria-label="Next month"></button>
+    <button [ngClass]="'calendar__nav'" [attr.aria-label]="fsdsMessages().nextMonth"></button>
   </div>
-  <table [ngClass]="'calendar__grid'" role="grid" aria-label="Calendar">
+  <table [ngClass]="'calendar__grid'" role="grid" [attr.aria-label]="fsdsMessages().gridLabel">
     <tbody>
       <tr>
         <ng-container *ngFor="let item of (days ?? []); let index = index">
@@ -48,7 +51,8 @@ export type CalendarMode = "single" | "range";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarComponent {
-  @Input() caption?: string = "Calendar";
+  protected readonly fsdsMessages = injectFsdsMessages("Calendar", CalendarMessages);
+  @Input() caption?: string;
   private readonly inputValue = signal<Date | Date[] | null | undefined>(undefined);
   @Input() get value(): Date | Date[] | null | undefined { return this.inputValue(); }
   set value(value: Date | Date[] | null | undefined) { this.inputValue.set(value); }

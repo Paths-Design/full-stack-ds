@@ -20,12 +20,15 @@ enum TruncateTokens {
 
 /// Emitted through the expandable-content path: the expanded channel (ControllableValue substrate) gates the line limit; the disclosure toggle appears when the contract authors one.
 public struct Truncate<Content: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         TruncateTokens.scopes
     }
     @StateObject private var expanded: ControllableValue<Bool>
     private let expandable: Bool
     private let lines: Int
+    private let collapseTextProp: String?
+    private let expandTextProp: String?
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
 
@@ -35,13 +38,20 @@ public struct Truncate<Content: View>: View {
         onExpandedChange: ((Bool) -> Void)? = nil,
         expandable: Bool = true,
         lines: Int = 3,
+        collapseText: String? = nil,
+        expandText: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self._expanded = StateObject(wrappedValue: ControllableValue(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange))
         self.expandable = expandable
         self.lines = lines
+        self.collapseTextProp = collapseText
+        self.expandTextProp = expandText
         self.content = content()
     }
+
+    private var collapseText: String { collapseTextProp ?? fsdsMessages.string("Truncate.collapse", default: "Show less") }
+    private var expandText: String { expandTextProp ?? fsdsMessages.string("Truncate.expand", default: "Show more") }
 
     private var layered: [String: FsdsTokenValue?] {
         resolveFsdsLayeredTokens(
@@ -68,7 +78,7 @@ public struct Truncate<Content: View>: View {
             content
                 .lineLimit(expanded.value ? nil : lines)
             if expandable {
-                Button(expanded.value ? "Show less" : "Show more") {
+                Button(expanded.value ? collapseText : expandText) {
                     expanded.toggle()
                 }
                 .buttonStyle(.plain)

@@ -3,6 +3,7 @@ import { canActivateInteraction } from "../../primitives/interaction.js";
 import { type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { Stack } from "../../primitives";
 import { useShowMore } from "./useShowMore";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./ShowMore.css";
 // @generated:end
 
@@ -73,6 +74,8 @@ export function ShowMoreTrigger({
 // @generated:end
 
 // @generated:start component
+const ShowMoreMessages = { showMore: "Show more", showLess: "Show less" };
+
 export function ShowMore({
   expanded: controlledExpanded,
   defaultExpanded,
@@ -81,10 +84,13 @@ export function ShowMore({
   "data-testid": testId,
   children,
   maxLines = 3,
-  showMoreLabel = "Show more",
-  showLessLabel = "Show less",
+  showMoreLabel: showMoreLabelProp,
+  showLessLabel: showLessLabelProp,
   ...rest
 }: ShowMoreProps) {
+  const fsdsMessages = useFsdsMessages("ShowMore", ShowMoreMessages);
+  const showMoreLabel = showMoreLabelProp ?? fsdsMessages.showMore;
+  const showLessLabel = showLessLabelProp ?? fsdsMessages.showLess;
   const { expanded, setExpanded } = useShowMore({
     expanded: controlledExpanded,
     defaultExpanded,

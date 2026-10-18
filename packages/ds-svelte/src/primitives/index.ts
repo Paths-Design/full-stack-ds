@@ -23,3 +23,12 @@ export type {
   PortalResult,
   PortalActionOptions,
 } from './behaviors/index.js';
+export { default as FsdsMessagesProvider } from './FsdsMessagesProvider.svelte';
+export {
+  formatFsdsMessage,
+  mergeFsdsMessageCatalogs,
+  resolveFsdsMessages,
+  setFsdsMessages,
+  useFsdsMessages,
+  type FsdsMessageCatalog,
+} from './messages.js';

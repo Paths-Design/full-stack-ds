@@ -83,6 +83,12 @@
       ]
     }
   },
+  "messages": {
+    "dismiss": {
+      "defaultMessage": "Dismiss",
+      "description": "Accessible name of the button that dismisses the alert."
+    }
+  },
   "props": {
     "designed": {
       "members": [
@@ -110,7 +116,7 @@
           "name": "dismissLabel",
           "propType": { "kind": "string" },
           "description": "Accessible label for the dismiss control. Defaults to \"Dismiss\".",
-          "default": "Dismiss"
+          "defaultMessage": "dismiss"
         },
         {
           "name": "icon",

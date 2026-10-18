@@ -1,12 +1,13 @@
 import { isValidElement, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { Animated, Easing, I18nManager, View } from "react-native";
+import { formatFsdsMessage } from "./message-format";
 import type { createSequenceBudget, SequenceSnapshot, SequenceTransition } from "./sequence-budget";
 
 /** Stable native wrappers retain child identity. Only the active layer accepts
  * interaction; outgoing layers are presentation owned by this transition.
  */
-export function SequenceViewport({ items, labels, state, driver, transition }: {
-  items: ReactNode[]; labels: readonly string[]; state: SequenceSnapshot;
+export function SequenceViewport({ items, labels, position, state, driver, transition }: {
+  items: ReactNode[]; labels: readonly string[]; position?: string; state: SequenceSnapshot;
   driver: ReturnType<typeof createSequenceBudget> | null; transition?: SequenceTransition;
 }) {
   const [width, setWidth] = useState(0);
@@ -75,7 +76,7 @@ export function SequenceViewport({ items, labels, state, driver, transition }: {
         pointerEvents={selected ? "auto" : "none"}
         accessibilityElementsHidden={!selected}
         importantForAccessibility={selected ? "auto" : "no-hide-descendants"}
-        accessibilityLabel={labels[index]}>{child}</Animated.View>;
+        accessibilityLabel={labels[index] ?? (position === undefined ? undefined : formatFsdsMessage(position, { index: index + 1, count: items.length }))}>{child}</Animated.View>;
     })}
   </View>;
 }

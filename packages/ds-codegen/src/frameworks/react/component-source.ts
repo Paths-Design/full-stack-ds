@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig, sequencePresentation } from "../../sequence.js";
+import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
+import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName } from "../../messages.js";
 /**
  * React-specific component source emission.
  *
@@ -24,6 +25,7 @@ import type {
   NormalizedChannelIR,
   PartIR,
   PropTypeIR,
+  ResolvedPropIR,
 } from "../../ir.js";
 import { componentNeedsInstanceId } from "../../id-relationships.js";
 import {
@@ -297,6 +299,10 @@ export function generateReactComponentSource(
   }
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
+  if (ir.messages.length > 0) {
+    const messageImports = ["useFsdsMessages", ...(bodyHaystack.includes("formatFsdsMessage(") ? ["formatFsdsMessage"] : [])];
+    importLines.push(`import { ${messageImports.join(", ")} } from "../../primitives/messages";`);
+  }
   if (resolveSurfaceAutoDismiss(ir) && ir.behavior.normalizedChannels.some((c) => c.valueType === "boolean")) {
     importLines.push(`import { useAutoDismiss } from "../../primitives/hooks";`);
   }
@@ -1565,6 +1571,9 @@ function generateCompoundStateRootComponent(ir: ComponentIR): string {
 }
 
 function generateRootComponent(ir: ComponentIR): string {
+  if (ir.messages.length > 0 && (isDisclosureContainer(ir) || isCompoundStateContainer(ir))) {
+    throw new Error(`[MESSAGE_UNLOWERED] ${ir.name}: compound-state React components do not resolve contract messages`);
+  }
   if (isDisclosureContainer(ir)) {
     return generateDisclosureStateRootComponent(ir);
   }
@@ -1628,8 +1637,7 @@ function generateRootComponent(ir: ComponentIR): string {
     const aliased = p.name.includes("-")
       ? `"${p.name}": ${p.safeName}`
       : p.safeName;
-    const def = p.defaultExpr;
-    destructured.push(def ? `${aliased} = ${def}` : aliased);
+    destructured.push(reactPropDestructure(p, aliased));
     handled.add(p.name);
   }
 
@@ -1652,10 +1660,11 @@ function generateRootComponent(ir: ComponentIR): string {
   jsxAttrs.push(`      data-fsds-component="${ir.cssPrefix}" data-fsds-box=""`);
   jsxAttrs.push(`      {...rest}`);
 
-  const lines: string[] = [];
+  const lines: string[] = [...reactMessageDefaultsDecl(ir)];
   lines.push(`export function ${name}({`);
   lines.push(`  ${destructured.join(",\n  ")}`);
   lines.push(`}: ${name}Props) {`);
+  lines.push(...reactMessagePrologue(ir));
   lines.push(`  const classNames = [`);
   for (const expr of classExprs) lines.push(`    ${expr},`);
   lines.push(`  ]`);
@@ -1671,6 +1680,33 @@ function generateRootComponent(ir: ComponentIR): string {
   lines.push(`  );`);
   lines.push(`}`);
   return lines.join("\n");
+}
+
+/**
+ * Destructure entry for a styled prop. A message-defaulted prop binds the raw
+ * value as `<name>Prop` (no default); `reactMessagePrologue` then resolves the
+ * public name as `explicit ?? catalog`, so every downstream reference keeps
+ * the plain prop name.
+ */
+function reactPropDestructure(p: ResolvedPropIR, aliased: string): string {
+  if (p.defaultMessage) return `${p.name.includes("-") ? JSON.stringify(p.name) : p.safeName}: ${p.safeName}Prop`;
+  return p.defaultExpr ? `${aliased} = ${p.defaultExpr}` : aliased;
+}
+
+/** Module-level default messages for a message-bearing component. */
+function reactMessageDefaultsDecl(ir: ComponentIR): string[] {
+  if (ir.messages.length === 0) return [];
+  return [`const ${messageDefaultsName(ir.name)} = ${messageDefaultsLiteral(ir.messages)};`, ``];
+}
+
+/** First body statements: resolve the catalog, then each message-defaulted prop. */
+function reactMessagePrologue(ir: ComponentIR): string[] {
+  if (ir.messages.length === 0) return [];
+  const lines = [`  const fsdsMessages = useFsdsMessages(${JSON.stringify(ir.name)}, ${messageDefaultsName(ir.name)});`];
+  for (const p of ir.styledProps) {
+    if (p.defaultMessage) lines.push(`  const ${p.safeName} = ${p.safeName}Prop ?? fsdsMessages.${p.defaultMessage};`);
+  }
+  return lines;
 }
 
 function capitalize(s: string): string {
@@ -1932,8 +1968,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     const aliased = p.name.includes("-")
       ? `"${p.name}": ${p.safeName}`
       : p.safeName;
-    const def = p.defaultExpr;
-    destructured.push(def ? `${aliased} = ${def}` : aliased);
+    destructured.push(reactPropDestructure(p, aliased));
     handled.add(p.name);
   }
 
@@ -2043,9 +2078,11 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
       lines.push(``);
     }
   }
+  lines.push(...reactMessageDefaultsDecl(ir));
   lines.push(`export function ${name}({`);
   lines.push(`  ${destructured.join(",\n  ")}`);
   lines.push(`}: ${name}Props) {`);
+  lines.push(...reactMessagePrologue(ir));
   if (channels.length > 0) {
     lines.push(`  const { ${hookResultParts.join(", ")} } = use${name}({`);
     lines.push(hookOptionsLines.join(",\n") + ",");
@@ -2101,6 +2138,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     lines.push(`  const sequence = useSequence(${sequenceConfig(seq, ir.cssPrefix)}, {`,
       `    index: ${seq.channel}, labels: ${seq.itemsProp}, autoPlay: ${seq.timing.autoPlayProp},`,
       `    presentation: ${sequencePresentation(seq, prop => prop)},`,
+      `    messages: ${sequenceMessages(seq, key => `fsdsMessages.${key}`)},`,
       `    durationMs: ${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : ${seq.timing.durationProp},`,
       `    onIndexChange: set${capitalize(seq.channel)},`, `  });`);
   }
@@ -3246,6 +3284,9 @@ function renderReactBinding(
     }
     case "literal":
       return JSON.stringify(expr.value);
+    case "message":
+      return composeMessageExpression("fsdsMessages", expr, (value) =>
+        renderReactBinding("__message_param__", value, ctx));
     case "iterationLocal": {
       // Resolve the local role to the iteration's declared variable name.
       // The iteration's `.map((item, index) => ...)` callback introduces

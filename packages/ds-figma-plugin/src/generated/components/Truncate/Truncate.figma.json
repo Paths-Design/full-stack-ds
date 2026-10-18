@@ -86,7 +86,8 @@
       "required": false,
       "description": "Custom expand button label.",
       "defaultExpr": "\"Show more\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "expand"
     },
     {
       "name": "collapseText",
@@ -95,7 +96,24 @@
       "required": false,
       "description": "Custom collapse button label.",
       "defaultExpr": "\"Show less\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "collapse"
+    }
+  ],
+  "messages": [
+    {
+      "key": "expand",
+      "catalogKey": "Truncate.expand",
+      "defaultMessage": "Show more",
+      "description": "Text of the toggle while the text is clamped.",
+      "params": []
+    },
+    {
+      "key": "collapse",
+      "catalogKey": "Truncate.collapse",
+      "defaultMessage": "Show less",
+      "description": "Text of the toggle while the full text is shown.",
+      "params": []
     }
   ],
   "designBindings": [

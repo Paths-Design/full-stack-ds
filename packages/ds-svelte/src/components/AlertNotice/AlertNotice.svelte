@@ -1,6 +1,6 @@
 <script lang="ts">
 // @generated:start imports
-
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -28,7 +28,10 @@ interface Props {
   children?: import('svelte').Snippet;
 }
 
-let { status, level, dismissible, onDismiss, dismissLabel = "Dismiss", icon, class: className, children }: Props = $props();
+let { status, level, dismissible, onDismiss, dismissLabel: dismissLabelProp, icon, class: className, children }: Props = $props();
+const AlertNoticeMessages = { dismiss: "Dismiss" };
+const fsdsMessages = useFsdsMessages("AlertNotice", AlertNoticeMessages);
+const dismissLabel = $derived(dismissLabelProp ?? fsdsMessages.current.dismiss);
 // @generated:end
 
 // @generated:start classes

@@ -22,6 +22,7 @@ enum CarouselTokens {
 
 /// Emitted through the sequence pager path: the slide channel rides ControllableValue<Int>; the rotation affordance toggles a dwell timer (6000ms from the token graph), previous/next step the channel, and the picker composition requests positions. The viewport shows the consumer's projected surface.
 public struct Carousel<Content: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         CarouselTokens.scopes
     }
@@ -30,7 +31,7 @@ public struct Carousel<Content: View>: View {
     private let autoPlay: Bool
     private let duration: Double?
     private let indicator: CarouselIndicator
-    private let label: String?
+    private let labelProp: String?
     private let content: Content
     @State private var playing: Bool
     @Environment(\.fsdsTheme) private var fsdsTheme
@@ -43,7 +44,7 @@ public struct Carousel<Content: View>: View {
         autoPlay: Bool = false,
         duration: Double? = nil,
         indicator: CarouselIndicator = .pagination,
-        label: String? = "Featured content",
+        label: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self._slide = StateObject(wrappedValue: ControllableValue(controlled: index, defaultValue: defaultIndex, onChange: onIndexChange))
@@ -51,10 +52,12 @@ public struct Carousel<Content: View>: View {
         self.autoPlay = autoPlay
         self.duration = duration
         self.indicator = indicator
-        self.label = label
+        self.labelProp = label
         self.content = content()
         self._playing = State(initialValue: autoPlay)
     }
+
+    private var label: String { labelProp ?? fsdsMessages.string("Carousel.regionLabel", default: "Featured content") }
 
     private var valid: Bool {
         !slides.isEmpty && slide.value >= 0 && slide.value < slides.count
@@ -89,7 +92,7 @@ public struct Carousel<Content: View>: View {
 
     public var body: some View {
         VStack(spacing: gap) {
-            Button(playing ? "Stop slide rotation" : "Start slide rotation") {
+            Button(playing ? fsdsMessages.string("Carousel.rotationStop", default: "Stop slide rotation") : fsdsMessages.string("Carousel.rotationStart", default: "Start slide rotation")) {
                 playing.toggle()
             }
             .buttonStyle(.plain)
@@ -103,13 +106,13 @@ public struct Carousel<Content: View>: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(!valid)
-                .accessibilityLabel("Previous slide")
+                .accessibilityLabel(fsdsMessages.string("Carousel.previousSlide", default: "Previous slide"))
                 Pagination(
                     index: slide.binding(),
                     pages: slides,
                     presentation: .indicators,
                     progress: (indicator == .pagination || indicator == .both) ? .elapsed : .none,
-                    label: "Choose slide"
+                    label: fsdsMessages.string("Carousel.chooseSlide", default: "Choose slide")
                 )
                 Button {
                     step(1)
@@ -118,7 +121,7 @@ public struct Carousel<Content: View>: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(!valid)
-                .accessibilityLabel("Next slide")
+                .accessibilityLabel(fsdsMessages.string("Carousel.nextSlide", default: "Next slide"))
             }
         }
         .fsdsAccessibilityLabel(label)

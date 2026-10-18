@@ -25,7 +25,7 @@
       "rotation": {
         "tag": "button",
         "subcomponent": false,
-        "description": "rotation of the composed slide sequence.",
+        "description": "Rotation toggle of the composed slide sequence; the sequence runtime writes its text and name from sequence.labels start/stop as playback changes.",
         "role": "trigger",
         "interactive": true,
         "focusable": true
@@ -74,21 +74,19 @@
       "tag": "section",
       "part": "root",
       "attrs": {
-        "role": "region",
-        "aria-roledescription": "carousel"
+        "role": "region"
       },
       "bindings": {
-        "aria-label": "prop:label"
+        "aria-label": "prop:label",
+        "aria-roledescription": "message:roleDescription"
       },
       "children": [
         {
           "tag": "button",
           "part": "rotation",
           "attrs": {
-            "type": "button",
-            "aria-label": "Start slide rotation"
-          },
-          "content": "literal:Start slide rotation"
+            "type": "button"
+          }
         },
         {
           "tag": "div",
@@ -111,8 +109,10 @@
               "tag": "button",
               "part": "previous",
               "attrs": {
-                "type": "button",
-                "aria-label": "Previous slide"
+                "type": "button"
+              },
+              "bindings": {
+                "aria-label": "message:previousSlide"
               },
               "children": [
                 {
@@ -128,10 +128,10 @@
               "componentRef": "fsds.Pagination",
               "part": "pagination",
               "attrs": {
-                "label": "Choose slide",
                 "presentation": "indicators"
               },
               "bindings": {
+                "label": "message:chooseSlide",
                 "pages": "prop:slides",
                 "index": "channel:slide.value",
                 "progress": {
@@ -152,8 +152,10 @@
               "tag": "button",
               "part": "next",
               "attrs": {
-                "type": "button",
-                "aria-label": "Next slide"
+                "type": "button"
+              },
+              "bindings": {
+                "aria-label": "message:nextSlide"
               },
               "children": [
                 {
@@ -175,6 +177,48 @@
           ]
         }
       ]
+    }
+  },
+  "messages": {
+    "regionLabel": {
+      "defaultMessage": "Featured content",
+      "description": "Accessible name of the carousel region when the consumer supplies none."
+    },
+    "roleDescription": {
+      "defaultMessage": "carousel",
+      "description": "Role description announced for the carousel region."
+    },
+    "rotationStart": {
+      "defaultMessage": "Start slide rotation",
+      "description": "Text and accessible name of the control that starts automatic rotation."
+    },
+    "rotationStop": {
+      "defaultMessage": "Stop slide rotation",
+      "description": "Text and accessible name of the control that stops automatic rotation."
+    },
+    "slideRoleDescription": {
+      "defaultMessage": "slide",
+      "description": "Role description announced for each slide."
+    },
+    "slidePosition": {
+      "defaultMessage": "{index} of {count}",
+      "description": "Accessible name of a slide with no consumer label: its 1-based position and the slide count.",
+      "params": [
+        "index",
+        "count"
+      ]
+    },
+    "previousSlide": {
+      "defaultMessage": "Previous slide",
+      "description": "Accessible name of the button that shows the previous slide."
+    },
+    "nextSlide": {
+      "defaultMessage": "Next slide",
+      "description": "Accessible name of the button that shows the next slide."
+    },
+    "chooseSlide": {
+      "defaultMessage": "Choose slide",
+      "description": "Accessible name of the slide picker."
     }
   },
   "props": {
@@ -243,7 +287,7 @@
         {
           "name": "label",
           "type": "string",
-          "default": "Featured content",
+          "defaultMessage": "regionLabel",
           "description": "Accessible name for the carousel region."
         }
       ]
@@ -291,9 +335,10 @@
       "durationToken": "carousel.timing.advance"
     },
     "labels": {
-      "start": "Start slide rotation",
-      "stop": "Stop slide rotation",
-      "item": "slide"
+      "start": "rotationStart",
+      "stop": "rotationStop",
+      "item": "slideRoleDescription",
+      "position": "slidePosition"
     }
   },
   "motion": {

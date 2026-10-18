@@ -27,11 +27,13 @@ public struct SelectOption: Identifiable {
 
 /// Emitted through the selection-control path: the union channel lowers to SelectionState (mode-gated replace/toggle — the channelUpdate grammar); Menu realizes the combobox substrate; the channelCall binding is a Menu item action.
 public struct Select: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private let options: [SelectOption]
     @StateObject private var selection: SelectionState
     @StateObject private var open: ControllableValue<Bool>
     private let size: SelectSize
     private let disabled: Bool
+    private let placeholderProp: String?
 
     public init(
         options: [SelectOption] = [],
@@ -44,6 +46,7 @@ public struct Select: View {
         open: Binding<Bool>? = nil,
         defaultOpen: Bool = false,
         onOpenChange: ((Bool) -> Void)? = nil,
+        placeholder: String? = nil,
         size: SelectSize = .md,
         disabled: Bool = false
     ) {
@@ -59,12 +62,13 @@ public struct Select: View {
         self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))
         self.size = size
         self.disabled = disabled
+        self.placeholderProp = placeholder
     }
 
+    private var placeholder: String { placeholderProp ?? fsdsMessages.string("Select.placeholder", default: "Select an option") }
     private var triggerLabel: String {
-        selection.multiple
-            ? options.filter { selection.isSelected($0.value) }.map(\.label).joined(separator: ", ")
-            : (options.first { selection.isSelected($0.value) }?.label ?? selection.single)
+        let labels = options.filter { selection.isSelected($0.value) }.map(\.label)
+        return labels.isEmpty ? placeholder : (selection.multiple ? labels.joined(separator: ", ") : labels[0])
     }
 
     public var body: some View {

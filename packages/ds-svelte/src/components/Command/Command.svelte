@@ -3,6 +3,7 @@
 import { useCommand } from "./useCommand.svelte.js";
 import { portal } from "../../primitives/index.js";
 import Icon from "../Icon/Icon.svelte";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -27,7 +28,13 @@ interface Props {
   items?: import('svelte').Snippet;
 }
 
-let { open, defaultOpen, onOpenChange, search, defaultSearch, onSearchChange, placeholder = "Search...", searchLabel = "Search commands", emptyMessage = "No results found.", label = "Command palette", shouldFilter = true, filter, class: className, items }: Props = $props();
+let { open, defaultOpen, onOpenChange, search, defaultSearch, onSearchChange, placeholder: placeholderProp, searchLabel: searchLabelProp, emptyMessage: emptyMessageProp, label: labelProp, shouldFilter = true, filter, class: className, items }: Props = $props();
+const CommandMessages = { searchPlaceholder: "Search...", searchLabel: "Search commands", emptyResults: "No results found.", dialogLabel: "Command palette" };
+const fsdsMessages = useFsdsMessages("Command", CommandMessages);
+const placeholder = $derived(placeholderProp ?? fsdsMessages.current.searchPlaceholder);
+const searchLabel = $derived(searchLabelProp ?? fsdsMessages.current.searchLabel);
+const emptyMessage = $derived(emptyMessageProp ?? fsdsMessages.current.emptyResults);
+const label = $derived(labelProp ?? fsdsMessages.current.dialogLabel);
 // @generated:end
 
 // @generated:start hook

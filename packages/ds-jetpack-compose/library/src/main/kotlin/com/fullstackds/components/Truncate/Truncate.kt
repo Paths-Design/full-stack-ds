@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsDp
 // @generated:end
@@ -30,8 +31,8 @@ fun Truncate(
     defaultExpanded: Boolean = false,
     onExpandedChange: ((Boolean) -> Unit)? = null,
     expandable: Boolean = false,
-    collapseText: String? = null,
-    expandText: String? = null,
+    collapseText: String = LocalFsdsMessages.current.string("Truncate.collapse", "Show less"),
+    expandText: String = LocalFsdsMessages.current.string("Truncate.expand", "Show more"),
     content: @Composable () -> Unit,
 ) {
     var uncontrolledExpanded by remember { mutableStateOf(defaultExpanded) }
@@ -62,7 +63,7 @@ fun Truncate(
         content()
         if (expandable) {
             BasicText(
-                text = (if (resolvedExpanded) collapseText else expandText) ?: "",
+                text = (if (resolvedExpanded) collapseText else expandText),
                 modifier = Modifier.clickable(
                     role = Role.Button,
                 ) {

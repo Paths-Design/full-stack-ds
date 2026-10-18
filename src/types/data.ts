@@ -34,7 +34,16 @@ export interface PropMember {
   };
   description?: string;
   default?: unknown;
+  /** Key of the contract message whose text is this string prop's default. */
+  defaultMessage?: string;
   required?: boolean;
+}
+
+/** A translatable string the component owns (contract `messages` block). */
+export interface ContractMessage {
+  defaultMessage: string;
+  description: string;
+  params?: string[];
 }
 
 export interface PropsBlock {
@@ -176,6 +185,7 @@ export interface ComponentContract {
   a11y?: A11y;
   tokens?: Record<string, TokenDefinition>;
   props?: Record<string, PropsBlock>;
+  messages?: Record<string, ContractMessage>;
   types?: Record<string, unknown>;
   behavior?: Record<string, unknown>;
   compoundParts?: unknown;

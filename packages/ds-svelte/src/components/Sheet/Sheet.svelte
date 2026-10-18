@@ -3,6 +3,7 @@
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { useSheet } from "./useSheet.svelte.js";
 import { portal } from "../../primitives/index.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -35,6 +36,8 @@ interface Props {
 }
 
 let { open, defaultOpen, onOpenChange, side = "right", modal = true, ariaLabel, ariaLabelledby, ariaDescribedby, class: className, children, description, footer, title }: Props = $props();
+const SheetMessages = { close: "Close sheet" };
+const fsdsMessages = useFsdsMessages("Sheet", SheetMessages);
 // @generated:end
 
 // @generated:start hook
@@ -79,7 +82,7 @@ const instanceId = $props.id();
       <p class={'sheet__description'} id={`${instanceId}-description`}>
         {@render description?.()}
       </p>
-      <button class={'sheet__close'} type="button" aria-label="Close sheet" onclick={(e) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }}></button>
+      <button class={'sheet__close'} type="button" onclick={(e) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }} aria-label={fsdsMessages.current.close}></button>
     </div>
     <div class={'sheet__body'}>
       {@render children?.()}

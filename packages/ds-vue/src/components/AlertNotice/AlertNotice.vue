@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // @generated:start imports
 import { computed } from "vue";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -30,10 +31,12 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   dismissible: undefined,
-  dismissLabel: "Dismiss",
 });
+const AlertNoticeMessages = { dismiss: "Dismiss" };
+const fsdsMessages = useFsdsMessages("AlertNotice", AlertNoticeMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { dismissLabel: "dismiss" });
 // @generated:end
 
 // @generated:start classes

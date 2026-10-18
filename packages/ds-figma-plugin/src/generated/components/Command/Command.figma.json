@@ -207,7 +207,8 @@
       "required": false,
       "description": "Placeholder text for the search input.",
       "defaultExpr": "\"Search...\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "searchPlaceholder"
     },
     {
       "name": "searchLabel",
@@ -216,7 +217,8 @@
       "required": false,
       "description": "Accessible label for the command search input.",
       "defaultExpr": "\"Search commands\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "searchLabel"
     },
     {
       "name": "emptyMessage",
@@ -225,7 +227,8 @@
       "required": false,
       "description": "Message shown when no items match the current search.",
       "defaultExpr": "\"No results found.\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "emptyResults"
     },
     {
       "name": "label",
@@ -234,7 +237,8 @@
       "required": false,
       "description": "Accessible label for the command palette dialog.",
       "defaultExpr": "\"Command palette\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "dialogLabel"
     },
     {
       "name": "shouldFilter",
@@ -253,6 +257,36 @@
       "description": "Custom filter function. Return a score >= 1 to include the item.",
       "defaultExpr": null,
       "nodeKind": null
+    }
+  ],
+  "messages": [
+    {
+      "key": "searchPlaceholder",
+      "catalogKey": "Command.searchPlaceholder",
+      "defaultMessage": "Search...",
+      "description": "Placeholder text of the command search field.",
+      "params": []
+    },
+    {
+      "key": "searchLabel",
+      "catalogKey": "Command.searchLabel",
+      "defaultMessage": "Search commands",
+      "description": "Accessible name of the command search field.",
+      "params": []
+    },
+    {
+      "key": "emptyResults",
+      "catalogKey": "Command.emptyResults",
+      "defaultMessage": "No results found.",
+      "description": "Text shown when no command matches the search.",
+      "params": []
+    },
+    {
+      "key": "dialogLabel",
+      "catalogKey": "Command.dialogLabel",
+      "defaultMessage": "Command palette",
+      "description": "Accessible name of the command palette.",
+      "params": []
     }
   ],
   "designBindings": [

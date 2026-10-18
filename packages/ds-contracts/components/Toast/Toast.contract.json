@@ -84,10 +84,8 @@
     "dom": {
       "tag": "div",
       "part": "viewport",
-      "attrs": {
-        "aria-label": "Notifications"
-      },
       "bindings": {
+        "aria-label": "message:regionLabel",
         "aria-live": "prop:politeness"
       },
       "children": [
@@ -133,8 +131,10 @@
                   "tag": "button",
                   "part": "close",
                   "attrs": {
-                    "type": "button",
-                    "aria-label": "Dismiss"
+                    "type": "button"
+                  },
+                  "bindings": {
+                    "aria-label": "message:dismiss"
                   },
                   "events": {
                     "click": "channel:open.onChange"
@@ -152,6 +152,16 @@
           ]
         }
       ]
+    }
+  },
+  "messages": {
+    "regionLabel": {
+      "defaultMessage": "Notifications",
+      "description": "Accessible name of the notification region."
+    },
+    "dismiss": {
+      "defaultMessage": "Dismiss",
+      "description": "Accessible name of the button that dismisses a notification."
     }
   },
   "props": {

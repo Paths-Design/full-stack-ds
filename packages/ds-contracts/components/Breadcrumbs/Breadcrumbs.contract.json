@@ -85,6 +85,12 @@
       ]
     }
   },
+  "messages": {
+    "navigationLabel": {
+      "defaultMessage": "Breadcrumb",
+      "description": "Accessible name of the breadcrumb navigation landmark."
+    }
+  },
   "props": {
     "styled": {
       "description": "Props for the <Breadcrumbs> component.",
@@ -93,7 +99,7 @@
           "name": "ariaLabel",
           "type": "string",
           "description": "Accessible label for the nav landmark. Defaults to \"Breadcrumb\".",
-          "default": "Breadcrumb"
+          "defaultMessage": "navigationLabel"
         },
         {
           "name": "separator",

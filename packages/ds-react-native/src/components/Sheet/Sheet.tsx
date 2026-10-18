@@ -5,6 +5,7 @@ import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react
 import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createSheetStyles } from "./Sheet.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -35,6 +36,8 @@ export interface SheetProps {
 // @generated:end
 
 // @generated:start component
+const SheetMessages = { close: "Close sheet" };
+
 export function Sheet({
   open: controlledOpenness,
   modal = true,
@@ -48,6 +51,7 @@ export function Sheet({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: SheetProps) {
+  const fsdsMessages = useFsdsMessages("Sheet", SheetMessages);
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createSheetStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpenness, setUncontrolledOpenness] = useState<boolean>((defaultOpen ?? false) as boolean);
@@ -104,6 +108,7 @@ export function Sheet({
           </RNText>
           <Pressable
             style={styles.close}
+            accessibilityLabel={fsdsMessages.close}
             onPress={() => setOpennessValue(false)}
             accessibilityRole="button"
           />

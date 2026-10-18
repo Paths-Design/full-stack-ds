@@ -7,13 +7,16 @@ import { Card,
   TableHeaderCell,
   TableRow,
  } from "@full-stack-ds/react";
-import type { PropMember } from "../../types/data";
+import { propDefault } from "../../lib/prop-default";
+import type { ComponentContract, PropMember } from "../../types/data";
 
 interface PropsTableProps {
   members: PropMember[];
+  /** The contract's messages, so a message-defaulted prop shows its default text. */
+  messages?: ComponentContract["messages"];
 }
 
-export function PropsTable({ members }: PropsTableProps) {
+export function PropsTable({ members, messages }: PropsTableProps) {
   return (
     <Card className="showcase-card">
       <Table className="props-table" ariaLabel="Component props">
@@ -26,7 +29,9 @@ export function PropsTable({ members }: PropsTableProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {members.map((m) => (
+          {members.map((m) => {
+            const value = propDefault(m, messages);
+            return (
             <TableRow key={m.name}>
               <TableCell>
                 <code>{m.name}</code>
@@ -45,8 +50,13 @@ export function PropsTable({ members }: PropsTableProps) {
                 <code>{m.type}</code>
               </TableCell>
               <TableCell>
-                {m.default !== undefined ? (
-                  <code>{JSON.stringify(m.default)}</code>
+                {value !== undefined ? (
+                  <>
+                    <code>{JSON.stringify(value)}</code>
+                    {m.defaultMessage !== undefined && (
+                      <span className="subtle"> message:{m.defaultMessage}</span>
+                    )}
+                  </>
                 ) : (
                   <span className="subtle">—</span>
                 )}
@@ -59,7 +69,8 @@ export function PropsTable({ members }: PropsTableProps) {
                 )}
               </TableCell>
             </TableRow>
-          ))}
+            );
+          })}
         </TableBody>
       </Table>
     </Card>

@@ -24,12 +24,14 @@ enum CommandTokens {
 
 /// Emitted through the centered-modal surface path: presented as a sheet whose native dismissal (Esc, overlay click) drives the openness channel back through onOpenChange — the contract's escape/overlayClick dismissal triggers realized by the platform.
 public struct Command<List: View, Group: View, GroupHeading: View, GroupItems: View, Item: View, ItemIcon: View, ItemContent: View, ItemLabel: View, ItemDescription: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         CommandTokens.scopes
     }
     @StateObject private var open: ControllableValue<Bool>
     private let openControlled: Binding<Bool>?
     @StateObject private var search: ControllableValue<String>
+    private let placeholderProp: String?
     private let list: List
     private let group: Group
     private let groupHeading: GroupHeading
@@ -48,6 +50,7 @@ public struct Command<List: View, Group: View, GroupHeading: View, GroupItems: V
         search: Binding<String>? = nil,
         defaultSearch: String = "",
         onSearchChange: ((String) -> Void)? = nil,
+        placeholder: String? = nil,
         @ViewBuilder list: () -> List = { EmptyView() },
         @ViewBuilder group: () -> Group = { EmptyView() },
         @ViewBuilder groupHeading: () -> GroupHeading = { EmptyView() },
@@ -61,6 +64,7 @@ public struct Command<List: View, Group: View, GroupHeading: View, GroupItems: V
         self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))
         self.openControlled = open
         self._search = StateObject(wrappedValue: ControllableValue(controlled: search, defaultValue: defaultSearch, onChange: onSearchChange))
+        self.placeholderProp = placeholder
         self.list = list()
         self.group = group()
         self.groupHeading = groupHeading()
@@ -71,6 +75,7 @@ public struct Command<List: View, Group: View, GroupHeading: View, GroupItems: V
         self.itemLabel = itemLabel()
         self.itemDescription = itemDescription()
     }
+    private var placeholder: String { placeholderProp ?? fsdsMessages.string("Command.searchPlaceholder", default: "Search...") }
 
 
 
@@ -107,7 +112,7 @@ public struct Command<List: View, Group: View, GroupHeading: View, GroupItems: V
                     get: { search.value },
                     set: { search.set($0) }
                 ),
-                prompt: SwiftUI.Text("Search...")
+                prompt: SwiftUI.Text(placeholder)
             )
             list
             group

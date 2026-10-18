@@ -113,7 +113,10 @@ export function DesignView({
             <h2 className="section-title">Props</h2>
             <span className="section-meta">contract.props.styled.members</span>
           </Stack>
-          <PropsTable members={component.contract.props.styled.members} />
+          <PropsTable
+            members={component.contract.props.styled.members}
+            messages={component.contract.messages}
+          />
         </section>
       )}
 

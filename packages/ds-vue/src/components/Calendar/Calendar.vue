@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed } from "vue";
 import { useCalendar } from "./useCalendar.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -35,13 +36,15 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
-  caption: "Calendar",
+const fsdsProps = withDefaults(defineProps<Props>(), {
   mode: "single",
   disabled: undefined,
   locale: "en-US",
   shouldCloseOnSelect: true,
 });
+const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+const fsdsMessages = useFsdsMessages("Calendar", CalendarMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { caption: "caption" });
 // @generated:end
 
 // @generated:start hook
@@ -70,13 +73,13 @@ const classNames = computed(() => [
 <template>
   <div :class="classNames" role="application" :data-testid="props.dataTestid" data-fsds-component="calendar" data-fsds-box="">
     <div :class="'calendar__header'">
-      <button :class="'calendar__nav'" aria-label="Previous month"></button>
+      <button :class="'calendar__nav'" :aria-label="fsdsMessages.previousMonth"></button>
       <span :class="'calendar__caption'">
         {{ props.caption }}
       </span>
-      <button :class="'calendar__nav'" aria-label="Next month"></button>
+      <button :class="'calendar__nav'" :aria-label="fsdsMessages.nextMonth"></button>
     </div>
-    <table :class="'calendar__grid'" role="grid" aria-label="Calendar">
+    <table :class="'calendar__grid'" role="grid" :aria-label="fsdsMessages.gridLabel">
       <tbody>
         <tr>
           <td v-for="(item, index) in (props.days ?? [])" :key="index" :class="'calendar__cell'" role="gridcell" :data-calendar-index="index">

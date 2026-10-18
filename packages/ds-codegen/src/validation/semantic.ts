@@ -87,6 +87,7 @@
 import type { ComponentContract, ContractDomNode } from "../contract.js";
 import { REACT_ADMITTED_TYPES } from "../frameworks/react/admitted-types.js";
 import type { ValidationIssue } from "../validate.js";
+import { validateLocalization } from "./localization.js";
 
 /**
  * Layer ladder for by-reference composition. A contract may only reference
@@ -458,6 +459,9 @@ export function validateContractSemantics(
 
   // --- Rule 9: no framework type-name leak on authored surface -------
   issues.push(...validateFrameworkTypeNames(contract));
+
+  // --- Rule 10: user-facing text enters through the messages block ---
+  issues.push(...validateLocalization(contract, ctx?.allContracts));
 
   return issues;
 }

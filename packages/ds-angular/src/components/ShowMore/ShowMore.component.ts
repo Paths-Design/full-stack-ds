@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useShowMore } from "./useShowMore.js";
@@ -19,6 +20,8 @@ import { useShowMore } from "./useShowMore.js";
 // @custom:end
 
 // @generated:start component
+const ShowMoreMessages = { showMore: "Show more", showLess: "Show less" };
+
 @Component({
   selector: "fsds-show-more",
   standalone: true,
@@ -29,20 +32,21 @@ import { useShowMore } from "./useShowMore.js";
     <ng-content />
   </div>
   <button [ngClass]="'show-more__trigger'" type="button" (click)="canActivateInteraction($event, false) && behavior.setExpanded(!behavior.expanded())" [attr.aria-expanded]="behavior.expanded()">
-    {{ (behavior.expanded() ? (showLessLabel ?? 'Show less') : (showMoreLabel ?? 'Show more')) }}
+    {{ (behavior.expanded() ? (showLessLabel ?? fsdsMessages().showLess) : (showMoreLabel ?? fsdsMessages().showMore)) }}
   </button>
 </div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShowMoreComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("ShowMore", ShowMoreMessages);
   private readonly inputExpanded = signal<boolean | undefined>(undefined);
   @Input() get expanded(): boolean | undefined { return this.inputExpanded(); }
   set expanded(value: boolean | undefined) { this.inputExpanded.set(value); }
   @Input() defaultExpanded?: boolean;
   @Input() onExpandedChange?: (expanded: boolean) => void;
   @Input() maxLines?: number = 3;
-  @Input() showMoreLabel?: string = "Show more";
-  @Input() showLessLabel?: string = "Show less";
+  @Input() showMoreLabel?: string;
+  @Input() showLessLabel?: string;
   @Input() class?: string;
 
   private destroyRef = inject(DestroyRef);

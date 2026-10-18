@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.fullstackds.components.button.Button
 import com.fullstackds.components.button.ButtonVariant
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsContentColor
 import com.fullstackds.tokens.LocalFsdsTextStyle
 import com.fullstackds.tokens.LocalFsdsTheme
@@ -57,7 +58,7 @@ fun Chip(
     type: ChipType = ChipType.Button,
     disabled: Boolean = false,
     dismissible: Boolean = false,
-    dismissLabel: String = "Remove",
+    dismissLabel: String = LocalFsdsMessages.current.string("Chip.dismiss", "Remove"),
     ariaLabel: String? = null,
     icon: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,

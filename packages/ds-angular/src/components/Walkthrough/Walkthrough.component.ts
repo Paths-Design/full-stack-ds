@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked, OnInit, OnDestroy, ElementRef, effect } from "@angular/core";
 import { NgClass, NgFor } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useWalkthrough } from "./useWalkthrough.js";
 import {
@@ -25,14 +26,16 @@ export type WalkthroughPlacement = "top" | "bottom" | "left" | "right" | "auto";
 // @generated:start component
 let nextInstanceId = 0;
 
+const WalkthroughMessages = { tourLabel: "Feature tour", skip: "Skip", skipTour: "Skip tour", previous: "Previous", previousStep: "Previous step", next: "Next" };
+
 @Component({
   selector: "fsds-walkthrough",
   standalone: true,
   imports: [NgClass, NgFor],
   host: { "data-fsds-component": "walkthrough" },
-  template: `<div [ngClass]="classes()" role="status" [attr.aria-label]="(label ?? 'Feature tour')" data-fsds-box="" [attr.data-placement]="_position.state().placement" [style.position]="'fixed'" [style.top.px]="_position.state().top" [style.left.px]="_position.state().left" [style.visibility]="_position.state().ready ? 'visible' : 'hidden'">
+  template: `<div [ngClass]="classes()" role="status" [attr.aria-label]="(label ?? fsdsMessages().tourLabel)" data-fsds-box="" [attr.data-placement]="_position.state().placement" [style.position]="'fixed'" [style.top.px]="_position.state().top" [style.left.px]="_position.state().left" [style.visibility]="_position.state().ready ? 'visible' : 'hidden'">
   <div [ngClass]="'walkthrough__content'" role="group" [attr.aria-labelledby]="instanceId + '-title'" [attr.aria-describedby]="instanceId + '-description'">
-    <h3 [ngClass]="'walkthrough__title'" [attr.aria-label]="(label ?? 'Feature tour')" [attr.id]="instanceId + '-title'">
+    <h3 [ngClass]="'walkthrough__title'" [attr.aria-label]="(label ?? fsdsMessages().tourLabel)" [attr.id]="instanceId + '-title'">
       <ng-content select="[slot=title]" />
     </h3>
     <p [ngClass]="'walkthrough__description'" [attr.id]="instanceId + '-description'">
@@ -40,11 +43,11 @@ let nextInstanceId = 0;
     </p>
   </div>
   <div [ngClass]="'walkthrough__controls'">
-    <button [ngClass]="'walkthrough__skip'" type="button" (click)="onSkip && onSkip()" aria-label="Skip tour">
-      {{ 'Skip' }}
+    <button [ngClass]="'walkthrough__skip'" type="button" (click)="onSkip && onSkip()" [attr.aria-label]="fsdsMessages().skipTour">
+      {{ fsdsMessages().skip }}
     </button>
-    <button [ngClass]="'walkthrough__prev'" type="button" (click)="onPrevious && onPrevious()" aria-label="Previous step" [disabled]="(previousDisabled ?? false)">
-      {{ 'Previous' }}
+    <button [ngClass]="'walkthrough__prev'" type="button" (click)="onPrevious && onPrevious()" [attr.aria-label]="fsdsMessages().previousStep" [disabled]="(previousDisabled ?? false)">
+      {{ fsdsMessages().previous }}
     </button>
     <div [ngClass]="'walkthrough__dots'">
       <ng-container *ngFor="let item of ((steps ?? [{'anchor':'#step-1','title':'Welcome to the tour'},{'anchor':'#step-2','title':'Browse your dashboard'},{'anchor':'#step-3','title':'Configure preferences'}])); let index = index">
@@ -54,14 +57,15 @@ let nextInstanceId = 0;
     <span [ngClass]="'walkthrough__counter'">
       {{ progressLabel }}
     </span>
-    <button [ngClass]="'walkthrough__next'" type="button" (click)="onNext && onNext()" [attr.aria-label]="(nextLabel ?? 'Next')">
-      {{ (nextLabel ?? 'Next') }}
+    <button [ngClass]="'walkthrough__next'" type="button" (click)="onNext && onNext()" [attr.aria-label]="(nextLabel ?? fsdsMessages().next)">
+      {{ (nextLabel ?? fsdsMessages().next) }}
     </button>
   </div>
 </div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WalkthroughComponent implements OnInit, OnDestroy {
+  protected readonly fsdsMessages = injectFsdsMessages("Walkthrough", WalkthroughMessages);
   @Input() steps?: WalkthroughStepSpec[] = [{"anchor":"#step-1","title":"Welcome to the tour"},{"anchor":"#step-2","title":"Browse your dashboard"},{"anchor":"#step-3","title":"Configure preferences"}];
   private readonly inputIndex = signal<number | undefined>(undefined);
   @Input() get index(): number | undefined { return this.inputIndex(); }
@@ -70,7 +74,7 @@ export class WalkthroughComponent implements OnInit, OnDestroy {
   @Input() onStepChange?: (index: number) => void;
   @Input() onComplete?: () => void;
   @Input() onSkip?: () => void;
-  @Input() label?: string = "Feature tour";
+  @Input() label?: string;
   @Input() storageKey?: string;
   @Input() autoStart?: boolean = false;
   @Input() closeOnOutsideClick?: boolean = false;
@@ -78,7 +82,7 @@ export class WalkthroughComponent implements OnInit, OnDestroy {
   @Input() onPrevious?: () => void;
   @Input() onNext?: () => void;
   @Input() previousDisabled?: boolean = false;
-  @Input() nextLabel?: string = "Next";
+  @Input() nextLabel?: string;
   @Input() progressLabel?: string;
   @Input() class?: string;
 

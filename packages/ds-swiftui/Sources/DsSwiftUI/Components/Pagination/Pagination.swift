@@ -30,6 +30,7 @@ enum PaginationTokens {
 
 /// Emitted through the paged-position set path: the page channel rides ControllableValue<Int>, each item button requests its zero-based index, and the shared FsdsPagedPosition policy derives validity, the ordinal and the step guards (createPagedSet rules). The current position stays focusable.
 public struct Pagination: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         PaginationTokens.scopes
     }
@@ -37,7 +38,7 @@ public struct Pagination: View {
     private let pages: [String]
     private let presentation: PaginationPresentation
     private let progress: PaginationProgress
-    private let label: String?
+    private let labelProp: String?
     private let disabled: Bool
     @Environment(\.fsdsTheme) private var fsdsTheme
 
@@ -48,16 +49,18 @@ public struct Pagination: View {
         pages: [String] = [],
         presentation: PaginationPresentation = .indicators,
         progress: PaginationProgress = .none,
-        label: String? = "Choose page",
+        label: String? = nil,
         disabled: Bool = false
     ) {
         self._page = StateObject(wrappedValue: ControllableValue(controlled: index, defaultValue: defaultIndex, onChange: onIndexChange))
         self.pages = pages
         self.presentation = presentation
         self.progress = progress
-        self.label = label
+        self.labelProp = label
         self.disabled = disabled
     }
+
+    private var label: String { labelProp ?? fsdsMessages.string("Pagination.navigationLabel", default: "Choose page") }
 
     private var position: FsdsPagedPosition {
         FsdsPagedPosition(index: page.value, count: pages.count, disabled: disabled)

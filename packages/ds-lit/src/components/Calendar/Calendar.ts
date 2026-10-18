@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { CalendarBehavior } from './CalendarBehavior.js';
 // @generated:end
@@ -17,6 +18,8 @@ export type CalendarMode = "single" | "range";
 // @custom:end
 
 // @generated:start component
+const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+
 export class CalendarElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -214,7 +217,9 @@ export class CalendarElement extends LitElement {
     }
   `;
 
-  @property({ type: String }) caption?: string = "Calendar";
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Calendar", CalendarMessages);
+
+  @property({ type: String }) caption?: string;
   @property({ attribute: false }) value?: Date | Date[] | null;
   @property({ attribute: false }) defaultValue?: Date | Date[] | null;
   @property({ attribute: false }) onChange?: (value: Date | Date[] | null) => void;
@@ -252,11 +257,11 @@ export class CalendarElement extends LitElement {
   override render() {
     return html`<div class="${this.computeClasses()}" role="application" data-fsds-box="">
   <div class=${'calendar__header'}>
-    <button class=${'calendar__nav'} aria-label="Previous month"></button>
-    <span class=${'calendar__caption'}>${(this.caption ?? "Calendar")}</span>
-    <button class=${'calendar__nav'} aria-label="Next month"></button>
+    <button class=${'calendar__nav'} aria-label=${this.fsdsMessages.value.previousMonth}></button>
+    <span class=${'calendar__caption'}>${(this.caption ?? this.fsdsMessages.value.caption)}</span>
+    <button class=${'calendar__nav'} aria-label=${this.fsdsMessages.value.nextMonth}></button>
   </div>
-  <table class=${'calendar__grid'} role="grid" aria-label="Calendar">
+  <table class=${'calendar__grid'} role="grid" aria-label=${this.fsdsMessages.value.gridLabel}>
     <tbody>
       <tr>
         ${(this.days ?? []).map((item, index) => html`

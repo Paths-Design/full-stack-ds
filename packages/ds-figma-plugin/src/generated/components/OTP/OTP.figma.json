@@ -113,7 +113,8 @@
       "required": false,
       "description": "Accessible label for the OTP group.",
       "defaultExpr": "\"One-time password\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "groupLabel"
     },
     {
       "name": "fieldLabel",
@@ -122,7 +123,8 @@
       "required": false,
       "description": "Accessible label applied to each one-character OTP field.",
       "defaultExpr": "\"One-time password digit\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "fieldLabel"
     },
     {
       "name": "ariaDescribedby",
@@ -132,6 +134,22 @@
       "description": "External description element id for the OTP group.",
       "defaultExpr": null,
       "nodeKind": null
+    }
+  ],
+  "messages": [
+    {
+      "key": "groupLabel",
+      "catalogKey": "OTP.groupLabel",
+      "defaultMessage": "One-time password",
+      "description": "Accessible name of the group of code fields.",
+      "params": []
+    },
+    {
+      "key": "fieldLabel",
+      "catalogKey": "OTP.fieldLabel",
+      "defaultMessage": "One-time password digit",
+      "description": "Accessible name of each code field.",
+      "params": []
     }
   ],
   "designBindings": [

@@ -3,6 +3,7 @@ import path from "node:path";
 import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR, DomNodeIR } from "../../ir.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
+import { namedMessage, nodeTextSource } from "../native-messages.js";
 const q = JSON.stringify;
 const handled = new Set(["checked","defaultChecked","onChange","open","defaultOpen","onOpenChange","value","defaultValue","onValueChange","disabled","collapsible","type","orientation","activationMode","loop","unmountInactive","appearance","placement","closeOnEscape","closeOnOutsideClick","closeOnBlur"]);
 // Explicit pilot exclusions are visible in the emitted capability receipt.
@@ -43,13 +44,22 @@ export function godotSequencePlan(ir: ComponentIR) {
     const host = progress.effect === "elapsed-width" ? "picker" : "next";
     if (sequence.progressHosts[index] !== host) throw new Error(`GODOT_UNSUPPORTED_PROGRESS_HOST: ${ir.name}.${progress.target.part}`);
   }
+  // The pilot has no message catalog: a message-bound name renders its
+  // contract default (named non-claim in docs/architecture/localization.md).
   const names = Object.fromEntries((["previous", "next"] as const).map(key => {
     const node = nodes.find(n => n.part === sequence[key]);
-    const name = node?.attrs["aria-label"];
-    if (!name || node?.bindings["aria-label"]) throw new Error(`GODOT_UNSUPPORTED_SEQUENCE_LABEL: ${ir.name}.${sequence[key]}`);
+    const source = nodeTextSource(ir, node, "aria-label");
+    const name = source?.kind === "message" && source.ref.params.length === 0
+      ? source.ref.message.defaultMessage
+      : source ? undefined : node?.attrs["aria-label"];
+    if (!name) throw new Error(`GODOT_UNSUPPORTED_SEQUENCE_LABEL: ${ir.name}.${sequence[key]}`);
     return [key, name];
   }));
-  return { operation: "sequence", excluded: variantProps, sequence, channel, nameProp, names };
+  // sequence.labels name messages; the pilot runtime reads them as display
+  // text, so the configuration carries each one's contract default instead.
+  const labels = Object.fromEntries((["start", "stop", "item", "position"] as const).map(slot =>
+    [slot, namedMessage(ir, sequence.labels[slot]).defaultMessage]));
+  return { operation: "sequence", excluded: variantProps, sequence: { ...sequence, labels }, channel, nameProp, names };
 }
 export function themeColor(ir: ComponentIR): string {
   // Project an authored foreground fallback through normalized CSS/token facts.

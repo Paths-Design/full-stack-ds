@@ -44,6 +44,11 @@ describe("Godot bounded lowering", () => {
       node.children?.forEach(restoreTargetProps);
     };
     if (dom) restoreTargetProps(dom);
+    // Message placeholders name template slots, not host props: the blanket
+    // `"index"` rename must not reach the slide-position template's params.
+    for (const [key, message] of Object.entries(c.messages ?? {})) {
+      if (message.params) renamed.messages![key]!.params = message.params;
+    }
     const ir = buildSequenceFixture(renamed);
     const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" });
     const script = files.find(file => file.relativePath === "Gallery/Gallery.gd")!.contents;
@@ -54,6 +59,13 @@ describe("Godot bounded lowering", () => {
     expect(config.sequence.timing).toMatchObject({ durationProp: "dwell", autoPlayProp: "rotateAutomatically", defaultMs: 6000 });
     expect(config.sequence.transition).toMatchObject({ durationMs: 250, referenceWidth: 320, maxMultiplier: 2 });
     expect(config.names).toEqual({ previous: "Previous slide", next: "Next slide" });
+    // The runtime shows labels.start/stop as rotation text: contract defaults, not message keys.
+    expect(config.sequence.labels).toEqual({
+      start: "Start slide rotation",
+      stop: "Stop slide rotation",
+      item: "slide",
+      position: "{index} of {count}",
+    });
     expect(config.sequence.progress.map((p: {effect: string}) => p.effect)).toEqual(["elapsed-width", "elapsed-ring"]);
     expect(JSON.parse(files.find(file => file.relativePath.endsWith("capabilities.json"))!.contents).excludedProps).toEqual([]);
   });

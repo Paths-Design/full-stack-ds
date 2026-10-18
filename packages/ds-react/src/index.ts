@@ -1,3 +1,3 @@
-export { PortalTargetProvider, Stack } from "./primitives";
-export type { PortalTargetProviderProps, StackProps } from "./primitives";
+export { FsdsMessagesProvider, PortalTargetProvider, Stack, formatFsdsMessage, useFsdsMessages } from "./primitives";
+export type { FsdsMessageCatalog, FsdsMessagesProviderProps, PortalTargetProviderProps, StackProps } from "./primitives";
 export * from "./components";

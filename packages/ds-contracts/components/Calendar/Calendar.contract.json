@@ -89,8 +89,8 @@
             {
               "tag": "button",
               "part": "nav",
-              "attrs": {
-                "aria-label": "Previous month"
+              "bindings": {
+                "aria-label": "message:previousMonth"
               }
             },
             {
@@ -101,8 +101,8 @@
             {
               "tag": "button",
               "part": "nav",
-              "attrs": {
-                "aria-label": "Next month"
+              "bindings": {
+                "aria-label": "message:nextMonth"
               }
             }
           ]
@@ -111,8 +111,10 @@
           "tag": "table",
           "part": "grid",
           "attrs": {
-            "role": "grid",
-            "aria-label": "Calendar"
+            "role": "grid"
+          },
+          "bindings": {
+            "aria-label": "message:gridLabel"
           },
           "children": [
             {
@@ -159,6 +161,24 @@
     "commit": "activation",
     "update": "channel:value.onChange(iter:item)"
   },
+  "messages": {
+    "caption": {
+      "defaultMessage": "Calendar",
+      "description": "Caption shown above the month grid when the consumer supplies none."
+    },
+    "previousMonth": {
+      "defaultMessage": "Previous month",
+      "description": "Accessible name of the button that shows the previous month."
+    },
+    "nextMonth": {
+      "defaultMessage": "Next month",
+      "description": "Accessible name of the button that shows the next month."
+    },
+    "gridLabel": {
+      "defaultMessage": "Calendar",
+      "description": "Accessible name of the date grid."
+    }
+  },
   "props": {
     "designed": {
       "members": [
@@ -166,7 +186,7 @@
           "name": "caption",
           "propType": { "kind": "string" },
           "description": "Visible month or range caption rendered above the day grid.",
-          "default": "Calendar"
+          "defaultMessage": "caption"
         },
         {
           "name": "value",
@@ -236,6 +256,7 @@
         },
         {
           "name": "locale",
+          "translatable": false,
           "propType": { "kind": "string" },
           "description": "BCP 47 locale tag for date formatting.",
           "default": "en-US"

@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
 import { ShowMoreBehavior } from './ShowMoreBehavior.js';
@@ -19,6 +20,8 @@ import { styleMap } from 'lit/directives/style-map.js';
 // @custom:end
 
 // @generated:start component
+const ShowMoreMessages = { showMore: "Show more", showLess: "Show less" };
+
 export class ShowMoreElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -126,12 +129,14 @@ export class ShowMoreElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "ShowMore", ShowMoreMessages);
+
   @property({ type: Boolean }) expanded?: boolean;
   @property({ type: Boolean }) defaultExpanded?: boolean;
   @property({ attribute: false }) onExpandedChange?: (expanded: boolean) => void;
   @property({ type: Number }) maxLines?: number = 3;
-  @property({ type: String }) showMoreLabel?: string = "Show more";
-  @property({ type: String }) showLessLabel?: string = "Show less";
+  @property({ type: String }) showMoreLabel?: string;
+  @property({ type: String }) showLessLabel?: string;
 
   private initializedBehavior?: ShowMoreBehavior;
   private get behavior(): ShowMoreBehavior {
@@ -159,7 +164,7 @@ export class ShowMoreElement extends LitElement {
   <div class=${'show-more__content'} style=${styleMap({ '--fsds-show-more-content-max-lines': (this.maxLines ?? 3) === undefined ? undefined : String((this.maxLines ?? 3)) })}>
     <slot></slot>
   </div>
-  <button class=${'show-more__trigger'} type="button" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setExpanded(!this.behavior.expanded); }} aria-expanded=${this.behavior.expanded ? 'true' : 'false'}>${(this.behavior.expanded ? (this.showLessLabel ?? "Show less") : (this.showMoreLabel ?? "Show more"))}</button>
+  <button class=${'show-more__trigger'} type="button" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setExpanded(!this.behavior.expanded); }} aria-expanded=${this.behavior.expanded ? 'true' : 'false'}>${(this.behavior.expanded ? (this.showLessLabel ?? this.fsdsMessages.value.showLess) : (this.showMoreLabel ?? this.fsdsMessages.value.showMore))}</button>
 </div>`;
   }
 }

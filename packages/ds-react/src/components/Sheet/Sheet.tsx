@@ -3,6 +3,7 @@ import { canActivateInteraction } from "../../primitives/interaction.js";
 import { type HTMLAttributes, type ReactNode, useId } from "react";
 import { Stack } from "../../primitives";
 import { useSheet } from "./useSheet";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Sheet.css";
 // @generated:end
 
@@ -156,6 +157,8 @@ export function SheetFooter({
 // @generated:end
 
 // @generated:start component
+const SheetMessages = { close: "Close sheet" };
+
 export function Sheet({
   open: controlledOpen,
   defaultOpen,
@@ -171,6 +174,7 @@ export function Sheet({
   slots,
   ...rest
 }: SheetProps) {
+  const fsdsMessages = useFsdsMessages("Sheet", SheetMessages);
   const { panelRef, openness, setOpenness, renderInPortal } = useSheet({
     open: controlledOpen,
     defaultOpen,
@@ -204,7 +208,7 @@ export function Sheet({
             <p className="sheet__description" id={`${instanceId}-description`}>
               {slots?.description}
             </p>
-            <button className="sheet__close" type="button" aria-label="Close sheet" onClick={(e) => { if (canActivateInteraction(e, false)) setOpenness(false); }} />
+            <button className="sheet__close" type="button" onClick={(e) => { if (canActivateInteraction(e, false)) setOpenness(false); }} aria-label={fsdsMessages.close} />
           </div>
           <div className="sheet__body">
             {children}

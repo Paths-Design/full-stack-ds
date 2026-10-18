@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { ButtonComponent } from "../Button/Button.component.js";
 // @generated:end
 
@@ -19,6 +20,8 @@ export type ChipSize = "small" | "medium" | "large";
 // @custom:end
 
 // @generated:start component
+const ChipMessages = { dismiss: "Remove" };
+
 @Component({
   selector: "fsds-chip",
   standalone: true,
@@ -36,12 +39,13 @@ export type ChipSize = "small" | "medium" | "large";
     </span>
   </fsds-button>
   <ng-container *ngIf="dismissible">
-    <fsds-button [ngClass]="'chip__dismiss'" type="button" variant="ghost" (click)="onDismiss && onDismiss()" [disabled]="disabled" [ariaLabel]="(dismissLabel ?? 'Remove')"></fsds-button>
+    <fsds-button [ngClass]="'chip__dismiss'" type="button" variant="ghost" (click)="onDismiss && onDismiss()" [disabled]="disabled" [ariaLabel]="(dismissLabel ?? fsdsMessages().dismiss)"></fsds-button>
   </ng-container>
 </span>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChipComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("Chip", ChipMessages);
   @Input() type?: ChipType;
   @Input() variant?: ChipVariant;
   @Input() size?: ChipSize;
@@ -54,7 +58,7 @@ export class ChipComponent {
   @Input() onClick?: () => void;
   @Input() dismissible?: boolean;
   @Input() onDismiss?: () => void;
-  @Input() dismissLabel?: string = "Remove";
+  @Input() dismissLabel?: string;
   @Input() class?: string;
 
   classes(): string {

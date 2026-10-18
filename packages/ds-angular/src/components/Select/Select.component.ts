@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, ViewChild, ElementRef, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass, NgIf, NgFor } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useSelect } from "./useSelect.js";
 // @generated:end
@@ -21,22 +22,24 @@ export type SelectSize = "sm" | "md" | "lg";
 // @generated:start component
 let nextInstanceId = 0;
 
+const SelectMessages = { triggerLabel: "Select an option", placeholder: "Select an option", searchLabel: "Search options" };
+
 @Component({
   selector: "fsds-select",
   standalone: true,
   imports: [NgClass, NgIf, NgFor],
   host: { "data-fsds-component": "select" },
-  template: `<div [ngClass]="classes()" role="combobox" aria-haspopup="listbox" [attr.aria-label]="(triggerLabel ?? 'Select an option')" [attr.aria-expanded]="behavior.open()" [attr.aria-disabled]="disabled" [attr.aria-controls]="rootAriaControls" data-fsds-box="">
-  <button [ngClass]="'select__trigger'" #interactionAnchor type="button" (click)="behavior.setOpen(!behavior.open())" (keydown)="behavior.handleTriggerKeydown($event)" [disabled]="disabled" [attr.aria-label]="(triggerLabel ?? 'Select an option')" [attr.aria-expanded]="behavior.open()" [attr.aria-controls]="triggerAriaControls">
+  template: `<div [ngClass]="classes()" role="combobox" aria-haspopup="listbox" [attr.aria-label]="(triggerLabel ?? fsdsMessages().triggerLabel)" [attr.aria-expanded]="behavior.open()" [attr.aria-disabled]="disabled" [attr.aria-controls]="rootAriaControls" data-fsds-box="">
+  <button [ngClass]="'select__trigger'" #interactionAnchor type="button" (click)="behavior.setOpen(!behavior.open())" (keydown)="behavior.handleTriggerKeydown($event)" [disabled]="disabled" [attr.aria-label]="(triggerLabel ?? fsdsMessages().triggerLabel)" [attr.aria-expanded]="behavior.open()" [attr.aria-controls]="triggerAriaControls">
     <span [ngClass]="'select__text'">
-      {{ selectionLabel((options ?? [{'value':'alpha','label':'Alpha'},{'value':'beta','label':'Beta'},{'value':'gamma','label':'Gamma'}]), behavior.selection(), (placeholder ?? 'Select an option')) }}
+      {{ selectionLabel((options ?? [{'value':'alpha','label':'Alpha'},{'value':'beta','label':'Beta'},{'value':'gamma','label':'Gamma'}]), behavior.selection(), (placeholder ?? fsdsMessages().placeholder)) }}
     </span>
   </button>
   <ng-container *ngIf="behavior.open()">
     <div [ngClass]="'select__content'" #interactionPanel role="listbox" (keydown)="behavior.handleContentKeydown($event)" tabindex="-1" [attr.id]="instanceId + '-content'">
       <ng-container *ngIf="searchable">
         <div [ngClass]="'select__search'">
-          <input [ngClass]="'select__searchInput'" type="text" [attr.aria-label]="(searchLabel ?? 'Search options')" [disabled]="disabled" />
+          <input [ngClass]="'select__searchInput'" type="text" [attr.aria-label]="(searchLabel ?? fsdsMessages().searchLabel)" [disabled]="disabled" />
         </div>
       </ng-container>
       <div [ngClass]="'select__options'">
@@ -57,6 +60,7 @@ let nextInstanceId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("Select", SelectMessages);
   @Input() options: SelectOption[] = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}];
   private readonly inputValue = signal<string | string[] | undefined>(undefined);
   @Input() get value(): string | string[] | undefined { return this.inputValue(); }
@@ -70,13 +74,13 @@ export class SelectComponent {
   @Input() onOpenChange?: (open: boolean) => void;
   @Input() multiple?: boolean;
   @Input() disabled?: boolean;
-  @Input() triggerLabel?: string = "Select an option";
+  @Input() triggerLabel?: string;
   @Input() size?: SelectSize = "md";
   @Input() filterFn?: (option: SelectOption, searchTerm: string) => boolean;
   @Input() searchable?: boolean;
   @Input() empty?: boolean;
-  @Input() placeholder?: string = "Select an option";
-  @Input() searchLabel?: string = "Search options";
+  @Input() placeholder?: string;
+  @Input() searchLabel?: string;
   @Input() class?: string;
 
   protected readonly instanceId = `fsds-select-${nextInstanceId++}`;

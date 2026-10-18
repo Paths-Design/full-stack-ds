@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed, useId } from "vue";
 import { useSelect } from "./useSelect.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -42,20 +43,20 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   options: () => ([{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}]),
   defaultValue: () => ("beta"),
   open: undefined,
   defaultOpen: true,
   multiple: undefined,
   disabled: undefined,
-  triggerLabel: "Select an option",
   size: "md",
   searchable: undefined,
   empty: undefined,
-  placeholder: "Select an option",
-  searchLabel: "Search options",
 });
+const SelectMessages = { triggerLabel: "Select an option", placeholder: "Select an option", searchLabel: "Search options" };
+const fsdsMessages = useFsdsMessages("Select", SelectMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { triggerLabel: "triggerLabel", placeholder: "placeholder", searchLabel: "searchLabel" });
 // @generated:end
 
 // @generated:start hook

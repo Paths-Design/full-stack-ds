@@ -2,6 +2,7 @@
 import { type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { Stack } from "../../primitives";
 import { useTruncate } from "./useTruncate";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Truncate.css";
 // @generated:end
 
@@ -54,6 +55,8 @@ export function TruncateContent({
 // @generated:end
 
 // @generated:start component
+const TruncateMessages = { expand: "Show more", collapse: "Show less" };
+
 export function Truncate({
   expanded: controlledExpanded,
   defaultExpanded,
@@ -63,10 +66,13 @@ export function Truncate({
   children,
   lines,
   expandable,
-  expandText = "Show more",
-  collapseText = "Show less",
+  expandText: expandTextProp,
+  collapseText: collapseTextProp,
   ...rest
 }: TruncateProps) {
+  const fsdsMessages = useFsdsMessages("Truncate", TruncateMessages);
+  const expandText = expandTextProp ?? fsdsMessages.expand;
+  const collapseText = collapseTextProp ?? fsdsMessages.collapse;
   const { expanded, setExpanded } = useTruncate({
     expanded: controlledExpanded,
     defaultExpanded,
