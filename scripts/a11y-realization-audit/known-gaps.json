@@ -987,6 +987,13 @@
       "class": "state-attribute",
       "key": "aria-current",
       "spec": "NATIVE-STATE-SEMANTICS-01"
+    },
+    {
+      "component": "Walkthrough",
+      "family": "react",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01"
     }
   ]
 }
