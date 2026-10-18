@@ -70,3 +70,8 @@ contracts:
   - name: 'admission-rail'
     type: api
     path: 'docs/specifications/admission-rail.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run lint exit 0, zero findings over all six generated packages incl. __tests__ (worktree commit ae218c5ed, re-verified post-merge on canonical with regenerated trees); .vue/.svelte SFC gap declared in vue/svelte plan knownGaps"
+    recorded_at: "2026-10-18T19:41:32.642Z"
