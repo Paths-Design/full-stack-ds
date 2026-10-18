@@ -85,3 +85,7 @@ evidence:
     status: pass
     evidence_ref: "swift build --package-path examples/motion-lab/swift --disable-sandbox → Build complete (Swift 6.4) at merge 66cb7a051; lane imports only DsSwiftUI plus lane-local Generated/FsdsMotionTokens.swift"
     recorded_at: "2026-10-18T18:38:45.014Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "GRADLE_USER_HOME=<workspace tmp> ./examples/motion-lab/compose/gradlew -p examples/motion-lab/compose compileKotlin --no-daemon → BUILD SUCCESSFUL at merge 66cb7a051 (sandboxed env note in README; unsandboxed rerun path committed as root script typecheck:example:motion-compose); imports only ds-jetpack-compose:library public API plus lane-local Generated/FsdsMotionTokens.kt"
+    recorded_at: "2026-10-18T18:39:01.963Z"
