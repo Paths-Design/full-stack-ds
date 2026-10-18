@@ -52,3 +52,12 @@ contracts:
   - name: 'a11y-realization-audit'
     type: behavior
     path: 'scripts/a11y-realization-audit/selfcheck.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "audit.log/a11y-matrix.json at 33d99922: Calendar [react|vue|svelte|angular|lit] focus:roving unrealized and Calendar keyboard:Enter|Space unrealized ('native Enter/Space unreachable: roving items are never tabbable'); Select focus:roving realized via emitted entry action, Tabs via computed tab stop. selfcheck.log pins literal-tabindex unreachable vs computed/emitted-entry reachable (and declared-but-unemitted entry actions unreachable). In-session mutation probe: Tabs.tsx tabIndex pinned to -1 -> Tabs [react] focus:roving + keyboard:Tab flagged unledgered."
+    recorded_at: "2026-10-18T07:38:04.463Z"
+    command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/l10n-a11y/evidence/A11Y-AUDIT-DEPTH-01/a11y-matrix.json"
+    commit_sha: "33d999228b34f6accf5d37650479bb96d84fe5e0"
