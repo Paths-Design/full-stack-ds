@@ -1,0 +1,71 @@
+id: I18N-MESSAGE-CATALOG-01
+title: 'Contract message catalog: translatable strings from contract to every runtime family'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-18T08:27:17.320Z'
+updated_at: '2026-10-18T08:27:17.320Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts (schema + corpus messages)'
+    - 'packages/ds-codegen (IR message fact, validation gate, all runtime emitters)'
+    - 'framework runtime primitives (message providers)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui/Sources'
+    - 'packages/ds-swiftui/Tests'
+    - 'packages/ds-jetpack-compose/src'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'docs/architecture/localization.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/codegen-authority.md'
+    - 'e2e'
+    - 'src'
+  out: []
+invariants:
+  - 'A message default is authored once, in the contract messages block; emitters never author user-facing English.'
+  - 'Precedence is explicit prop value, then provided catalog entry, then contract default.'
+  - 'Emitters lower message facts from the IR with no component-name special-casing.'
+acceptance:
+  - id: A1
+    given: 'a contract declaring a messages block and message:<key> bindings, content or prop defaultMessage'
+    when: 'the IR builds'
+    then: 'each reference lowers to a message fact resolved against the block, and an unknown key, a placeholder/param mismatch, or an unused message fails generate:check'
+  - id: A2
+    given: 'the contract corpus'
+    when: 'generate:check runs'
+    then: 'no text-bearing attribute, letter-bearing literal content, translatable string prop default, sequence label or child-component string attribute carries an English literal, and reintroducing one fails the check'
+  - id: A3
+    given: 'a web or React Native app providing a partial message catalog'
+    when: 'a generated component renders'
+    then: 'provided keys replace the default text in attributes, content and message-defaulted props, an explicit prop still wins, and missing keys fall back to the contract default, proven by runtime tests in React, Vue, Svelte, Angular, Lit and React Native'
+  - id: A4
+    given: 'a Carousel'
+    when: 'slides render'
+    then: 'slide role description, rotation start/stop labels and the per-slide position fallback come from the catalog, and the position fallback is one parameterized message rather than string concatenation in every sequence runtime'
+  - id: A5
+    given: 'SwiftUI and Jetpack Compose generated components'
+    when: 'they render a message-bearing label'
+    then: 'SwiftUI resolves String(localized:defaultValue:table:) keyed Component.key against a generated reference FsdsComponents.xcstrings, Compose resolves through LocalFsdsMessages with the contract default, and neither emitter authors an English label'
+  - id: A6
+    given: 'the landed mechanism'
+    when: 'a reader consults docs/architecture/localization.md and the claim ledger'
+    then: 'each family''s consumer path and non-claims (plurals, word order around inputs, engine pilots) are documented and the ledger row cites the gate and tests'
+rollback:
+  - 'Revert the merge commit; contracts, IR and generated trees move together.'
+non_functional: {}
+contracts:
+  - name: 'message-catalog'
+    type: schema
+    path: 'packages/ds-contracts/component.contract.schema.json'
