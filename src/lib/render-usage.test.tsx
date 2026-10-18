@@ -42,11 +42,19 @@ describe("usage sidecar render projection", () => {
   });
 
   it("materializes JSON dates and renders Calendar captions and day labels", () => {
-    render(<UsageExamples component={component("Calendar")} />);
+    const { container } = render(<UsageExamples component={component("Calendar")} />);
 
-    expect(screen.getByText("September 2026")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "1" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "14" })).toBeTruthy();
+    // Each example's JSON defaultMonth materializes to a Date: an unmaterialized
+    // string would fall back to the current month.
+    expect(screen.getAllByText("September 2026")).toHaveLength(3);
+    // Day names are locale-formatted full dates: two en-US examples, one de-DE.
+    expect(screen.getAllByRole("button", { name: "Tuesday, September 1, 2026" })).toHaveLength(2);
+    expect(screen.getByRole("button", { name: "Dienstag, 1. September 2026" })).toBeTruthy();
+    // The range example's [8, 12] span selects five days.
+    const selected = [...container.querySelectorAll('[role="gridcell"][aria-selected="true"] [data-date]')];
+    expect(selected.map((day) => day.getAttribute("data-date"))).toEqual(
+      ["2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-12"],
+    );
   });
 
   it("renders Command item content inside its isolated portal canvas", async () => {

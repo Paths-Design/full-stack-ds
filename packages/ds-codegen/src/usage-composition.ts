@@ -14,7 +14,12 @@ import {
   TABLE_COMPOSITION_TAGS,
   type ComponentIR,
   type PartIR,
+  type PropTypeIR,
 } from "./ir.js";
+
+/** How a JSON sidecar value becomes its typed runtime value: an ISO string to
+ *  a Date, each entry of an array to a Date, or either by the value's shape. */
+export type UsagePropMaterializer = "date" | "date-array" | "date-union";
 
 export interface UsageSubcomponentIR {
   /** Exact contract anatomy part name. */
@@ -33,7 +38,7 @@ export interface UsageCompositionIR {
   namedSlots: string[];
   subcomponents: UsageSubcomponentIR[];
   /** JSON sidecar values that require typed runtime materialization. */
-  propMaterializers: Record<string, "date" | "date-array">;
+  propMaterializers: Record<string, UsagePropMaterializer>;
 }
 
 export interface ParsedUsageRef {
@@ -253,16 +258,22 @@ export function deriveUsageCompositionFromIR(
     };
     visit(ir.dom);
   }
-  const propMaterializers: Record<string, "date" | "date-array"> = {};
+  const propMaterializers: Record<string, UsagePropMaterializer> = {};
+  const isDate = (type: PropTypeIR) => type.kind === "ref" && type.to === "Date";
+  const isDateArray = (type: PropTypeIR) => type.kind === "array" && isDate(type.items);
   for (const prop of ir.styledProps) {
-    if (prop.propType.kind === "ref" && prop.propType.to === "Date") {
+    const type = prop.propType;
+    if (isDate(type)) {
       propMaterializers[prop.name] = "date";
-    } else if (
-      prop.propType.kind === "array" &&
-      prop.propType.items.kind === "ref" &&
-      prop.propType.items.to === "Date"
-    ) {
+    } else if (isDateArray(type)) {
       propMaterializers[prop.name] = "date-array";
+    } else if (
+      // A value channel typed `Date | Date[] | null` (a single day or a span).
+      type.kind === "union" &&
+      type.of.some((arm) => isDate(arm) || isDateArray(arm)) &&
+      type.of.every((arm) => isDate(arm) || isDateArray(arm) || (arm.kind === "literal" && arm.value === null))
+    ) {
+      propMaterializers[prop.name] = "date-union";
     }
   }
 
