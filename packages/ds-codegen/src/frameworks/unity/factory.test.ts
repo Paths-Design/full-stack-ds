@@ -61,6 +61,19 @@ describe("Unity capability lowering", () => {
     const source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
     expect(source).toContain("TrackWidth = 61f;");
   });
+  it("gates generation on the support boundary before lowering", () => {
+    const emitter = createUnityEmitter();
+    for (const name of ["Switch", "Accordion", "Popover", "Tabs"]) {
+      expect(() => emitter.admitContract!(fixture(name), { admitted: true })).not.toThrow();
+    }
+    const unclassified = fixture("Switch") as ComponentContract & { futureBlock?: unknown };
+    unclassified.futureBlock = { enabled: true };
+    expect(() => emitter.admitContract!(unclassified, { admitted: false })).toThrow("UNITY_BOUNDARY_UNCLASSIFIED: Switch: contract:/futureBlock/enabled");
+    const unadjudicated = fixture("Switch");
+    unadjudicated.props!.designed!.members!.push({ name: "futureBehavior", propType: { kind: "boolean" } });
+    expect(() => emitter.admitContract!(unadjudicated, { admitted: true })).toThrow("UNITY_BOUNDARY_UNADJUDICATED");
+    expect(() => emitter.admitContract!(unadjudicated, { admitted: false })).not.toThrow();
+  });
   it("registers the four-component pilot without claiming TypeScript rail admission", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");

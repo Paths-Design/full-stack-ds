@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://full-stack-ds.dev/schemas/unity-support-boundary.v1.json",
+  "title": "Unity support boundary",
+  "description": "Ordered rules that classify every contract and sidecar leaf the Unity target sees. Patterns are `<source>:<keyed pointer glob>`; the first matching rule wins. Leaves are identity-keyed JSON pointers: array elements carrying `name`/`part` are keyed by it, and prop members are keyed `<role>:<name>` where role is channel-value, channel-default, channel-change, form-field or plain, derived from the contract's own channels and form blocks. A leaf no rule matches fails generation (UNITY_BOUNDARY_UNCLASSIFIED); a leaf an allowlisted component can only reach through a catchAll rule fails generation (UNITY_BOUNDARY_UNADJUDICATED).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "rules"],
+  "properties": {
+    "schema": { "const": "unity-support-boundary.v1" },
+    "description": { "type": "string" },
+    "phases": {
+      "type": "object",
+      "description": "Human summary of what each parity phase lowers; the rules reference these ids.",
+      "additionalProperties": { "type": "string" }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "match", "disposition"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "match": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^(contract|tokens|styles):/" }
+          },
+          "disposition": { "enum": ["lowered", "pending", "refused"] },
+          "via": { "type": "string", "minLength": 1, "description": "lowered: the emitter or shared-runtime mechanism that realises the family today." },
+          "phase": { "enum": ["P2", "P3", "P4", "P5"], "description": "pending: the parity phase that lowers the family." },
+          "reason": { "type": "string", "minLength": 1, "description": "pending/refused: why the family is not lowered now (refused: why UI Toolkit cannot realise it idiomatically)." },
+          "valueIn": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": ["string", "number", "boolean", "null"] },
+            "description": "Restrict the rule to scalar leaves whose value is one of these."
+          },
+          "catchAll": { "type": "boolean", "description": "A family-level fallback an allowlisted component may not rely on." }
+        },
+        "allOf": [
+          { "if": { "properties": { "disposition": { "const": "lowered" } } }, "then": { "required": ["via"], "not": { "required": ["catchAll"] } } },
+          { "if": { "properties": { "disposition": { "const": "pending" } } }, "then": { "required": ["phase", "reason"] } },
+          { "if": { "properties": { "disposition": { "const": "refused" } } }, "then": { "required": ["reason"], "not": { "required": ["catchAll"] } } }
+        ]
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ import path from "node:path";
 import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR, NormalizedChannelIR } from "../../ir.js";
 import { isPartAnchoredSurface, resolveAnchoredSurfacePolicy } from "../../semantics.js";
+import { admitContract } from "./boundary.js";
 
 const quote = (s: string): string => JSON.stringify(s);
 const pascal = (s: string): string => s.replace(/(^|[-_])([a-z])/g, (_, _sep: string, c: string) => c.toUpperCase());
@@ -86,6 +87,10 @@ function componentSource(ir: ComponentIR): string {
 export function createUnityEmitter(): FrameworkEmitter {
   return {
     id: "unity",
+    // Support boundary gate (support-boundary.json): every contract and sidecar
+    // leaf must carry a disposition; an allowlisted component may not rest on a
+    // catch-all. Admission only — lowering still reads the IR exclusively.
+    admitContract: (contract, context) => { admitContract(contract, context); },
     emitComponent: ir => [{ relativePath: `${identifier(ir.name)}/${ir.name}.cs`, contents: componentSource(ir) }],
     emitTests: () => [], // Independent Unity EditMode oracles live outside generated source.
     emitBarrel: names => `// Generated component catalog.\nnamespace FullStackDS\n{\n    public static class ComponentCatalog\n    {\n        public static readonly string[] Names = { ${names.sort().map(quote).join(", ")} };\n    }\n}\n`,
