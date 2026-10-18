@@ -58,4 +58,16 @@ describe("CODEGEN-EMIT-LINT-HYGIENE-01: react root destructure + import hygiene"
 
     expect(src).not.toContain("showLessLabel: _showLessLabel");
   });
+
+  it("CODEGEN-EMIT-LINT-HYGIENE-01 (merged i18n): drops message locals the body never references", () => {
+    const src = generateReactComponentSource(corpusIR("Command"), STACK_IMPORT);
+
+    // Command renders no empty-results region, so the resolved local is
+    // dead — dropped, and its prop member intercepted under a _ rename.
+    expect(src).not.toContain("const emptyMessage = emptyMessageProp");
+    expect(src).not.toContain("emptyMessage: emptyMessageProp,");
+    expect(src).toMatch(/emptyMessage: _emptyMessageProp/);
+    // The catalog accessor stays: placeholder/searchLabel/label still use it.
+    expect(src).toContain("const fsdsMessages = useFsdsMessages(");
+  });
 });

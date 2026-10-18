@@ -162,6 +162,30 @@ function renameUnreferencedDestructuredBindings(
   source: string,
   componentName: string,
 ): string {
+  // CODEGEN-EMIT-LINT-HYGIENE-01 (merged i18n lowering): a message-resolved
+  // local the body never references is dropped; the pass below then renames
+  // its `X: XProp` destructure member (interception preserved). If every
+  // message local drops, the fsdsMessages accessor goes with them.
+  {
+    const messageLocal = /^ {2}const (\w+) = \1Prop \?\? fsdsMessages\.\w+;\n/gm;
+    let out = "";
+    let last = 0;
+    let m: RegExpExecArray | null;
+    while ((m = messageLocal.exec(source)) !== null) {
+      const local = m[1]!;
+      const rest = source.slice(m.index + m[0].length);
+      const referenced = new RegExp(
+        `(?<![.\\w])${local}(?![\\w-])(?![ \\t]*=[^=])`,
+      ).test(rest);
+      out += source.slice(last, m.index) + (referenced ? m[0] : "");
+      last = m.index + m[0].length;
+    }
+    out += source.slice(last);
+    if (!/(?<![.\w])fsdsMessages(?![\w-])/.test(out.replace(messageLocal, ""))) {
+      out = out.replace(/^ {2}const fsdsMessages = useFsdsMessages\([^\n]*\);\n/gm, "");
+    }
+    source = out;
+  }
   const sigStart = `export function ${componentName}({\n`;
   const sigEnd = `\n}: ${componentName}Props) {`;
   const start = source.indexOf(sigStart);

@@ -24,7 +24,7 @@
  * - Entry order: every non-token component stylesheet (sorted), then any
  *   primitive stylesheet not already pulled in by an import.
  */
-import { readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 

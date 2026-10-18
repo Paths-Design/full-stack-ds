@@ -121,7 +121,7 @@ export function Select({
   options = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}],
   multiple,
   triggerLabel: triggerLabelProp,
-  filterFn,
+  filterFn: _filterFn,
   searchable,
   empty,
   placeholder: placeholderProp,

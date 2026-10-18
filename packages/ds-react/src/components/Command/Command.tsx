@@ -228,17 +228,16 @@ export function Command({
   "data-testid": testId,
   placeholder: placeholderProp,
   searchLabel: searchLabelProp,
-  emptyMessage: emptyMessageProp,
+  emptyMessage: _emptyMessageProp,
   label: labelProp,
-  shouldFilter = true,
-  filter,
+  shouldFilter: _shouldFilter = true,
+  filter: _filter,
   slots,
   ...rest
 }: CommandProps) {
   const fsdsMessages = useFsdsMessages("Command", CommandMessages);
   const placeholder = placeholderProp ?? fsdsMessages.searchPlaceholder;
   const searchLabel = searchLabelProp ?? fsdsMessages.searchLabel;
-  const emptyMessage = emptyMessageProp ?? fsdsMessages.emptyResults;
   const label = labelProp ?? fsdsMessages.dialogLabel;
   const { open, setOpen, search, setSearch, renderInPortal } = useCommand({
     open: controlledOpen,
