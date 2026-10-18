@@ -1,0 +1,44 @@
+{
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Icon/Icon.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Icon.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Icon.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Icon.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Icon.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Icon.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Image/Image.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Image.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Image.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Image.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Image.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Image.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Input/Input.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Input.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Input.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Input.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Input.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Input.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Label/Label.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Label.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Label.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Label.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Label.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Label.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/Links/Links.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Links.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Links.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Links.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Links.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/Links.swiftdeps"
+  },
+  "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/packages/ds-swiftui/Sources/DsSwiftUI/Components/List/List.swift" : {
+    "const-values" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/List.swiftconstvalues",
+    "dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/List.d",
+    "diagnostics" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/List.dia",
+    "object" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/List.o",
+    "swift-dependencies" : "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/worktrees/motion-lab/examples/motion-lab/swift/.build/out/Intermediates.noindex/ds-swiftui.build/Debug/DsSwiftUI-t.build/Objects-normal/arm64/List.swiftdeps"
+  }
+}

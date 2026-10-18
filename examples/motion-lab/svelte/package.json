@@ -1,0 +1,24 @@
+{
+  "name": "@full-stack-ds/example-motion-lab-svelte",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@full-stack-ds/svelte": "workspace:*",
+    "@full-stack-ds/tokens": "workspace:*",
+    "gsap": "^3.13.0",
+    "svelte": "^5.0.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "svelte-check": "^4.0.0",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8"
+  }
+}
