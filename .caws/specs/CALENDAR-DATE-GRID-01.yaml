@@ -1,0 +1,73 @@
+id: CALENDAR-DATE-GRID-01
+title: 'Calendar date grid: month channel, roving day focus, selection state and locale on every target'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-18T15:19:48.751Z'
+updated_at: '2026-10-18T15:19:48.751Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts (schema + Calendar contract)'
+    - 'packages/ds-codegen (dateGrid IR fact, nested iteration, every emitter)'
+    - 'framework runtime primitives (date-grid core and bindings)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-codegen/__golden__'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui/Sources'
+    - 'packages/ds-swiftui/Tests'
+    - 'packages/ds-swiftui/Localization'
+    - 'packages/ds-jetpack-compose/library'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'e2e'
+    - 'src'
+    - 'scripts'
+    - 'docs'
+  out: []
+invariants:
+  - 'The Calendar grid is derived from the visible month channel; no caller-supplied day list.'
+  - 'Date arithmetic, selection, focus movement and Intl formatting live in one date-grid core per runtime family; emitters lower the dateGrid IR fact with no component-name special-casing.'
+  - 'The selection dimension a11y attribute declared in states is the attribute bound on the day cell; the IR refuses a dateGrid contract that binds a different one.'
+  - 'Exactly one day button is a tab stop at any time.'
+acceptance:
+  - id: A1
+    given: 'a contract declaring a dateGrid block'
+    when: 'the IR builds'
+    then: 'it yields a DateGridIR naming the value and month channels and mode, locale, min, max and disabled props, nested iteration over iter:item paths builds with distinct locals, and a missing or mistyped channel or prop, a dateGrid binding without the block, a compositeControl on the value channel, colliding nested locals, or a cell that does not bind the selection dimension a11y attribute fails generate:check'
+  - id: A2
+    given: 'a generated Calendar in React, Vue, Svelte, Angular and Lit'
+    when: 'a user tabs, presses arrow keys, Home, End, PageUp, PageDown (Shift for year), Enter or Space, or activates the previous and next buttons'
+    then: 'exactly one day button is tabbable (selected day, else today, else first day of the month), focus moves by the declared amount (Left and Right mirrored in RTL), crossing a month edge moves the month channel, activation selects through the value channel in single and range mode, nav buttons have visible content and labels and move the month, cells carry aria-selected from the selection state and aria-current=date on today, and min/max/disabled days are aria-disabled and unselectable, proven by one shared behavioral test run in every web harness'
+  - id: A3
+    given: 'a locale prop such as de-DE, ar-EG or en-US'
+    when: 'the grid renders on any web family or React Native'
+    then: 'day labels, full-date accessible names, weekday column headers, the month caption and the first day of the week follow the locale through Intl, and a locale whose default calendar does not share Gregorian months is formatted in the Gregorian calendar'
+  - id: A4
+    given: 'the a11y realization audit'
+    when: 'it runs after regeneration'
+    then: 'the Calendar web keyboard, roving focus, Enter|Space and aria-selected ledger entries no longer reproduce and are deleted from known-gaps.json, and the rail passes'
+  - id: A5
+    given: 'React Native, Jetpack Compose and SwiftUI'
+    when: 'Calendar renders'
+    then: 'each derives its grid from the month channel, nav buttons move the month, day labels and names follow the locale, and selection state is exposed through accessibilityState selected, Compose selected semantics and SwiftUI isSelected traits, proven by RN behavior tests, Compose JVM tests and Swift tests'
+  - id: A6
+    given: 'the landed mechanism'
+    when: 'a reader consults the docs'
+    then: 'the dateGrid contract surface, per-family realization, locale behavior and non-claims are documented, the localization doc names date formatting, and the snapshot ledger row cites the tests'
+rollback:
+  - 'Revert the merge commit; contract, IR, primitives and generated trees move together.'
+non_functional: {}
+contracts:
+  - name: 'date-grid'
+    type: schema
+    path: 'packages/ds-contracts/component.contract.schema.json'
