@@ -170,7 +170,18 @@ swift build --package-path examples/settings/swift   # CI parity
 swift run --package-path examples/settings/swift     # opens the window (local)
 ```
 
-Run the committed examples data/API test lane (all three seams, one command):
+The motion-lab lanes (GSAP web + native animation; see [`motion-lab/README.md`](./motion-lab/README.md)):
+
+```bash
+pnpm --filter @full-stack-ds/example-motion-lab-svelte build
+pnpm --filter @full-stack-ds/example-motion-lab-svelte dev
+pnpm --filter @full-stack-ds/example-motion-lab-lit build
+pnpm --filter @full-stack-ds/example-motion-lab-lit dev
+swift build --package-path examples/motion-lab/swift   # compile admission
+pnpm run typecheck:example:motion-compose
+```
+
+Run the committed examples data/API test lane (all three data seams plus the motion-lab token-adapter suite, one command):
 
 ```bash
 pnpm run test:examples:data-api
