@@ -75,3 +75,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm run lint exit 0, zero findings over all six generated packages incl. __tests__ (worktree commit ae218c5ed, re-verified post-merge on canonical with regenerated trees); .vue/.svelte SFC gap declared in vue/svelte plan knownGaps"
     recorded_at: "2026-10-18T19:41:32.642Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "packages/ds-codegen/src/frameworks/lit/binding-defaults.test.ts CODEGEN-EMIT-LINT-HYGIENE-01 describes (6 tests: guard-free defaulted + guard-kept no-default for aria-boolean AND css-var, with falsification cases) — vitest lit filter 57/57 at commit ae218c5ed"
+    recorded_at: "2026-10-18T19:41:34.325Z"
