@@ -87,3 +87,7 @@ evidence:
     status: pass
     evidence_ref: "react/tests.test.ts narrowing + preservedCustomTests retention + factory-threading test (reads real on-disk custom region); vue+svelte tests.test.ts vi hygiene describes; react-native/tests.test.ts import-type + renderer-unmount pins; lit/tests.test.ts typed-cast pin with as-any ban"
     recorded_at: "2026-10-18T19:41:54.569Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "react/component-source.test.ts: Avatar priority/_rename + ReactNode drop, Button title, Field id/name + hook-result renames, Calendar, Image/ShowMore calibration regressions; ds-react suppression block deleted from eslint.config.js (commit f857b5c48)"
+    recorded_at: "2026-10-18T19:41:56.475Z"
