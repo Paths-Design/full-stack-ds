@@ -65,9 +65,33 @@ export const angularValidationPlan: FrameworkValidationPlan = {
         coverage: "covered_by_direct_template_check",
       },
     },
+    {
+      check: "lint",
+      command: [
+        "pnpm",
+        "exec",
+        "eslint",
+        "packages/ds-angular/src",
+        "--max-warnings=0",
+      ],
+      // Root flat config lints the generated .ts sources including
+      // __tests__ (re-included via negated ignores) and the
+      // src/preview host pipeline. react/react-hooks rules do NOT
+      // apply here — the config scopes them to the React family,
+      // because Angular components deliberately call the mirrored
+      // `use*` behavior controllers. Zero findings required;
+      // findings are emitter bugs (e.g. unconditional import
+      // specifiers the class body never references).
+      scope: {
+        packageRoot: "packages/ds-angular/",
+        extensions: [".ts"],
+        coverage: "covered_by_package_check",
+      },
+    },
   ],
   checks: {
     typecheck: "direct",
+    lint: "direct",
     parse: "covered_by_typecheck",
     templateTypecheck: "direct",
   },

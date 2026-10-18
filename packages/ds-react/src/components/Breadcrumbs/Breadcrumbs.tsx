@@ -75,7 +75,7 @@ export function Breadcrumbs({
   "data-testid": testId,
   children,
   ariaLabel: ariaLabelProp,
-  separator,
+  separator: _separator,
   ...rest
 }: BreadcrumbsProps) {
   const fsdsMessages = useFsdsMessages("Breadcrumbs", BreadcrumbsMessages);

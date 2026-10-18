@@ -108,46 +108,30 @@ function resolveBindings(ir: ComponentIR): PrimitiveBindings | null {
   };
 }
 
-function generateImports(
-  bindings: PrimitiveBindings,
-  isDisclosure: boolean,
-): string {
+/**
+ * Import assembly derives from emitted-body usage: every specifier must be
+ * referenced by the generated types+hook text. Scanning the final text
+ * (rather than mirroring the binding flags that gate each body section)
+ * keeps the import set pinned to what the file actually references — e.g.
+ * a hook that delegates its refs to useAnchorToggle never mentions `ref(`
+ * itself, so it must not import `ref`.
+ */
+function generateImports(emitted: string): string {
   const vueNamed = new Set<string>();
-  if (
-    bindings.useFocusTrap ||
-    bindings.usePortal ||
-    bindings.useAnchorToggle ||
-    bindings.useDismissal
-  ) {
-    vueNamed.add("ref");
-    vueNamed.add("type Ref");
-  }
-  // Channel state always surfaces in the result interface as Ref<T> (see
-  // line 144), so the `Ref` type must be importable whenever there are
-  // controllable channels — even without focus/portal/anchor primitives.
-  if (bindings.useControllableState.length > 0) {
-    vueNamed.add("type Ref");
-  }
-  if (bindings.modalityGate && (bindings.useFocusTrap || bindings.useScrollLock)) {
-    vueNamed.add("computed");
-  }
-  if (bindings.isCompoundStateContainer) {
-    vueNamed.add("ref");
-    vueNamed.add("type Ref");
-  }
+  if (/\bref[<(]/.test(emitted)) vueNamed.add("ref");
+  // Channel state surfaces in the result/context interfaces as Ref<T>.
+  if (/\bRef</.test(emitted)) vueNamed.add("type Ref");
+  if (/\bcomputed\(/.test(emitted)) vueNamed.add("computed");
 
-  const primitives: string[] = [];
-  if (bindings.useControllableState.length > 0)
-    primitives.push("useControllableState");
-  if (bindings.useFocusTrap) primitives.push("useFocusTrap");
-  if (bindings.useScrollLock) primitives.push("useScrollLock");
-  if (bindings.usePortal) primitives.push("usePortal");
-  if (bindings.useAnchorToggle) primitives.push("useAnchorToggle");
-  if (bindings.useDismissal) primitives.push("useDismissal");
-  if (bindings.isCompoundStateContainer) primitives.push("createCompoundContext");
-  // Disclosure containers (Accordion) share a provide/inject context pair
-  // generated in this module so all sub-component SFCs resolve one symbol.
-  if (isDisclosure) primitives.push("createCompoundContext");
+  const primitives = [
+    "useControllableState",
+    "useFocusTrap",
+    "useScrollLock",
+    "usePortal",
+    "useAnchorToggle",
+    "useDismissal",
+    "createCompoundContext",
+  ].filter((name) => new RegExp(`\\b${name}[(<]`).test(emitted));
 
   const lines: string[] = [];
   if (vueNamed.size > 0) {
@@ -757,7 +741,6 @@ export function generateVueHookSource(ir: ComponentIR): string | null {
   if (!bindings) return null;
 
   const isDisclosure = isDisclosureContainer(ir);
-  const importsBody = generateImports(bindings, isDisclosure);
   const inlineTypesBody = generateInlineTypes(ir, bindings);
   const optionsBody = generateOptionsInterface(ir, bindings);
   const resultBody = generateResultInterface(ir, bindings);
@@ -771,6 +754,8 @@ export function generateVueHookSource(ir: ComponentIR): string | null {
   const typesBody = [inlineTypesBody, optionsBody, resultBody, contextTypesBody]
     .filter((s) => s.length > 0)
     .join("\n\n");
+
+  const importsBody = generateImports(`${typesBody}\n${hookBody}`);
 
   const blank = (): Section => ({ kind: "between", body: "" });
   const sections: Section[] = [

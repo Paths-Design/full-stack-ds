@@ -1,5 +1,5 @@
 // @generated:start imports
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import type { Component } from "vue";
 import { mount } from "@vue/test-utils";
 import { axe } from "vitest-axe";
@@ -58,6 +58,9 @@ describe("Accordion — accessibility", () => {
 // @generated:end
 
 // @custom:start tests
+// CODEGEN-EMIT-LINT-HYGIENE-01: custom suites self-import their own `vi`
+// (the Svelte-side convention) — the generated import set is body-derived.
+import { vi } from "vitest";
 import AccordionContent from "../AccordionContent.vue";
 import AccordionItem from "../AccordionItem.vue";
 import AccordionTrigger from "../AccordionTrigger.vue";

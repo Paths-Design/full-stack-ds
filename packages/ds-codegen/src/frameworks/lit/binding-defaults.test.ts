@@ -291,3 +291,116 @@ it('uses a declared boolean default once at an attribute binding', () => {
   expect(source).toContain('?disabled=${(this.decorative ?? true)}');
   expect(source).not.toContain('(this.decorative ?? true) ?? false');
 });
+
+const ARIA_BOOLEAN_CONTRACT: ComponentContract = {
+  name: "FixtureAriaBooleanDefault",
+  layer: "primitive",
+  cssPrefix: "fixture-aria-boolean-default",
+  anatomy: {
+    parts: ["root"],
+    dom: {
+      tag: "div",
+      part: "root",
+      bindings: {
+        "aria-modal": "prop:modal",
+        "aria-pressed": "prop:pressed",
+      },
+    },
+  },
+  props: {
+    designed: {
+      members: [
+        {
+          name: "modal",
+          propType: { kind: "boolean" },
+          description: "Has a contract default.",
+          default: true,
+        },
+        {
+          name: "pressed",
+          propType: { kind: "boolean" },
+          description: "No contract default on purpose.",
+        },
+      ],
+    },
+  },
+};
+
+describe("CODEGEN-EMIT-LINT-HYGIENE-01: ARIA Booleanish dead-guard removal", () => {
+  it("emits the guard-free single-evaluation form when the prop has a contract default", () => {
+    const src = generateLitComponentSource(buildComponentIR(ARIA_BOOLEAN_CONTRACT));
+    expect(src).toContain(
+      `aria-modal=\${ifDefined((this.modal ?? true) ? 'true' : 'false')}`,
+    );
+  });
+
+  it("falsification: the statically-dead === undefined guard must not appear for the defaulted prop", () => {
+    // (this.modal ?? true) is never undefined — the guard's false branch is
+    // unreachable and eslint flags it as no-constant-binary-expression on
+    // generated Dialog/Sheet.
+    const src = generateLitComponentSource(buildComponentIR(ARIA_BOOLEAN_CONTRACT));
+    expect(src).not.toContain("(this.modal ?? true) === undefined");
+  });
+
+  it("keeps the undefined-preserving guard exactly when the prop has NO contract default", () => {
+    const src = generateLitComponentSource(buildComponentIR(ARIA_BOOLEAN_CONTRACT));
+    expect(src).toContain(
+      `aria-pressed=\${ifDefined(this.pressed === undefined ? undefined : (this.pressed ? 'true' : 'false'))}`,
+    );
+  });
+});
+
+const CSS_VAR_CONTRACT: ComponentContract = {
+  name: "FixtureCssVarDefault",
+  layer: "primitive",
+  cssPrefix: "fixture-css-var-default",
+  anatomy: {
+    parts: ["root"],
+    dom: {
+      tag: "div",
+      part: "root",
+      cssVariableBindings: {
+        "--fsds-fixture-css-var-default-lines": "prop:lines",
+        "--fsds-fixture-css-var-default-gutter": "prop:gutter",
+      },
+    },
+  },
+  props: {
+    designed: {
+      members: [
+        {
+          name: "lines",
+          propType: { kind: "number" },
+          description: "Has a contract default.",
+          default: 3,
+        },
+        {
+          name: "gutter",
+          propType: { kind: "number" },
+          description: "No contract default on purpose.",
+        },
+      ],
+    },
+  },
+};
+
+describe("CODEGEN-EMIT-LINT-HYGIENE-01: css-var styleMap dead-guard removal", () => {
+  it("emits String(...) without the dead guard when the prop has a contract default", () => {
+    const src = generateLitComponentSource(buildComponentIR(CSS_VAR_CONTRACT));
+    expect(src).toContain(`'--fsds-fixture-css-var-default-lines': String((this.lines ?? 3))`);
+  });
+
+  it("falsification: the dead === undefined guard must not appear for the defaulted prop", () => {
+    // Generated ShowMore carried this exact shape on
+    // --fsds-show-more-content-max-lines.
+    const src = generateLitComponentSource(buildComponentIR(CSS_VAR_CONTRACT));
+    expect(src).not.toContain("(this.lines ?? 3) === undefined");
+  });
+
+  it("keeps the undefined-preserving guard exactly when the prop has NO contract default", () => {
+    const src = generateLitComponentSource(buildComponentIR(CSS_VAR_CONTRACT));
+    expect(src).toContain(
+      `'--fsds-fixture-css-var-default-gutter': this.gutter === undefined ? undefined : String(this.gutter)`,
+    );
+  });
+});

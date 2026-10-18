@@ -71,6 +71,10 @@ describe("ICON-CATALOG-RUNTIME-DELIVERY-01: Lit iconGlyph lowering", () => {
 
   it("imports the svg tagged template from lit alongside html/css/nothing", () => {
     expect(src).toMatch(/import \{[^}]*\bsvg\b[^}]*\} from 'lit';/);
+    // CODEGEN-EMIT-LINT-HYGIENE-01: the glyph null-guard renders `nothing`
+    // on its false branch, so the conditional `nothing` import must be
+    // present for this body.
+    expect(src).toMatch(/import \{[^}]*\bnothing\b[^}]*\} from 'lit';/);
   });
 
   it("imports the ifDefined directive for optional path attributes", () => {
@@ -167,6 +171,11 @@ describe("ICON-CATALOG-RUNTIME-DELIVERY-01: Lit opt-in import injection", () => 
     expect(plainSrc).not.toContain("@full-stack-ds/iconography");
     expect(plainSrc).not.toMatch(/import \{[^}]*\bsvg\b[^}]*\} from 'lit';/);
     expect(plainSrc).not.toContain("lit/directives/if-defined.js");
+    // CODEGEN-EMIT-LINT-HYGIENE-01: no conditional hole in this body → the
+    // `nothing` sentinel import must be omitted (unused-import finding).
+    expect(plainSrc).not.toMatch(/import \{[^}]*\bnothing\b[^}]*\} from 'lit';/);
+    // The always-needed lit imports stay.
+    expect(plainSrc).toMatch(/import \{ LitElement, html, css(, svg)?(, type PropertyValues)? \} from 'lit';/);
   });
 
   it("does NOT declare a size-hints const when the glyph has no sizeHints", () => {

@@ -1,5 +1,5 @@
 // @generated:start imports
-import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy, effect, signal, ViewChild, ElementRef, Injector, runInInjectionContext, untracked } from "@angular/core";
+import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, effect, signal, ViewChild, type ElementRef, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass } from "@angular/common";
 import { createSequenceBudget } from "../../primitives/sequence-budget.js";
 import { injectFsdsMessages } from "../../primitives/messages.js";

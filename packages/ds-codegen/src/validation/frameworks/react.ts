@@ -17,9 +17,31 @@ export const reactValidationPlan: FrameworkValidationPlan = {
         coverage: "covered_by_package_check",
       },
     },
+    {
+      check: "lint",
+      command: [
+        "pnpm",
+        "exec",
+        "eslint",
+        "packages/ds-react/src",
+        "--max-warnings=0",
+      ],
+      // Root flat config lints the generated src tree including
+      // __tests__ (re-included via negated ignores). Zero findings
+      // required — an unused import, dead guard, or value-import
+      // used only as a type in emitted bytes is an emitter bug,
+      // not lint noise. react/react-hooks rules apply here (the
+      // root config scopes them to the React family).
+      scope: {
+        packageRoot: "packages/ds-react/",
+        extensions: [".ts", ".tsx"],
+        coverage: "covered_by_package_check",
+      },
+    },
   ],
   checks: {
     typecheck: "direct",
+    lint: "direct",
     parse: "covered_by_typecheck",
   },
 };

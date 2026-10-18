@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type KeyboardEvent as ReactKeyboardEvent, type RefObject, useCallback, useRef } from "react";
+import { type KeyboardEvent as ReactKeyboardEvent, type RefObject, useCallback } from "react";
 import { useAnchorToggle, useControllableState } from "../../primitives/hooks";
 // @generated:end
 

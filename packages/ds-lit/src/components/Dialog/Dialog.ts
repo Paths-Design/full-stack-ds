@@ -340,7 +340,7 @@ export class DialogElement extends LitElement {
   <div class=${'dialog__backdrop'} aria-hidden="true" data-fsds-channel-renders="openness"></div>
   ` : nothing}
   ${this.behavior.openness ? html`
-  <div class=${'dialog__modal'} ${ref(element => { this.interactionPanel = element instanceof HTMLElement ? element : undefined; })} role="dialog" aria-modal=${ifDefined((this.modal ?? true) === undefined ? undefined : ((this.modal ?? true) ? 'true' : 'false'))} aria-label=${ifDefined(this.ariaLabel ?? undefined)} aria-labelledby=${ifDefined([this.querySelector('[slot="title"]') !== null && !this.ariaLabel ? 'dialog-title' : null, this.ariaLabelledby].filter(Boolean).join(' ') || undefined)} aria-describedby=${ifDefined(['dialog-body', this.ariaDescribedby].filter(Boolean).join(' ') || undefined)} data-fsds-channel-renders="openness" @click=${(e: Event) => e.stopPropagation()}>
+  <div class=${'dialog__modal'} ${ref(element => { this.interactionPanel = element instanceof HTMLElement ? element : undefined; })} role="dialog" aria-modal=${ifDefined((this.modal ?? true) ? 'true' : 'false')} aria-label=${ifDefined(this.ariaLabel ?? undefined)} aria-labelledby=${ifDefined([this.querySelector('[slot="title"]') !== null && !this.ariaLabel ? 'dialog-title' : null, this.ariaLabelledby].filter(Boolean).join(' ') || undefined)} aria-describedby=${ifDefined(['dialog-body', this.ariaDescribedby].filter(Boolean).join(' ') || undefined)} data-fsds-channel-renders="openness" @click=${(e: Event) => e.stopPropagation()}>
     <div class=${'dialog__header'}>
       <h2 class=${'dialog__title'} id="dialog-title">
         <slot name="title" @slotchange=${() => this.requestUpdate()}></slot>

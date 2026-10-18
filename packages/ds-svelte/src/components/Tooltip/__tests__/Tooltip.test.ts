@@ -8,7 +8,10 @@ import TooltipFixture from "./TooltipFixture.svelte";
 
 declare module "vitest" {
   interface Assertion<T> {
-    toHaveNoViolations(): void;
+    // The positional T keeps this augmentation mergeable with vitest's
+    // own Assertion<T = any> declaration (TS2428 fires on any rename);
+    // the expected param references it so it is never an unused type param.
+    toHaveNoViolations(expected?: T): void;
   }
 }
 // @generated:end
@@ -34,7 +37,7 @@ describe("Tooltip — compound API surface", () => {
   });
 
   it("renders the content when defaultOpen={true}", async () => {
-    const { container } = mountDefault({ defaultOpen: true });
+    mountDefault({ defaultOpen: true });
     await tick();
     const content = document.body.querySelector("[data-testid='content']");
     expect(content).toBeTruthy();
@@ -69,7 +72,7 @@ describe("Tooltip — compound API surface", () => {
   });
 
   it("closes on Escape", async () => {
-    const { container } = mountDefault({ defaultOpen: true });
+    mountDefault({ defaultOpen: true });
     await tick();
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     await tick();
@@ -163,7 +166,7 @@ describe("Tooltip — compound API surface", () => {
   });
 
   it("closeOnEscape={false} prevents Escape dismissal", async () => {
-    const { container } = mountDefault({ defaultOpen: true, closeOnEscape: false });
+    mountDefault({ defaultOpen: true, closeOnEscape: false });
     await tick();
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     await tick();

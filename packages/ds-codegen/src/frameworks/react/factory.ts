@@ -19,6 +19,7 @@ import type {
 } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
 import type { PrimitiveIR } from "../../primitive-contract.js";
+import { hasMarkers, splitSections } from "../../preserve.js";
 import { generateReactComponentSource } from "./component-source.js";
 import {
   generateReactStackPrimitiveCss,
@@ -70,11 +71,20 @@ export function createReactEmitter(
       ];
     },
 
-    emitTests(ir: ComponentIR, _opts: EmitOptions): GeneratedFile[] {
+    emitTests(ir: ComponentIR, opts: EmitOptions): GeneratedFile[] {
       return [
         {
           relativePath: `${ir.name}/__tests__/${ir.name}.test.tsx`,
-          contents: generateReactTest(ir),
+          contents: generateReactTest(ir, {
+            preservedCustomTests: readPreservedCustomTests(
+              path.join(
+                opts.componentsRoot,
+                ir.name,
+                "__tests__",
+                `${ir.name}.test.tsx`,
+              ),
+            ),
+          }),
           preservable: true,
         },
       ];
@@ -125,4 +135,25 @@ export function createReactEmitter(
       });
     },
   };
+}
+
+/**
+ * Concatenated `@custom` region bodies of an existing generated file, or
+ * "" when absent/legacy. tests.ts scans this text so a preserved
+ * hand-written suite keeps the imports it renders. CODEGEN-EMIT-LINT-HYGIENE-01.
+ */
+function readPreservedCustomTests(absPath: string): string {
+  let existing: string;
+  try {
+    existing = fs.readFileSync(absPath, "utf-8");
+  } catch {
+    return "";
+  }
+  if (!hasMarkers(existing)) return "";
+  return splitSections(existing)
+    .filter(
+      (s) => s.kind === "custom" && s.id !== undefined && s.body.trim().length > 0,
+    )
+    .map((s) => s.body)
+    .join("\n");
 }

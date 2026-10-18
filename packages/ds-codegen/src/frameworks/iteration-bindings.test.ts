@@ -594,8 +594,11 @@ describe("PRODUCTION-ARRAY-ITERATION-CONSUMER-01: channel-driven iteration sourc
       // a property whose getter returns the controller's current state.
       // Routing iteration source through the value renderer ensures the
       // emit uses `this.behavior.selection`, not `this.value` (raw prop).
+      // CODEGEN-EMIT-LINT-HYGIENE-01: the callback params are body-derived —
+      // this fixture's child body never references the index var, so the
+      // map callback carries only the item param.
       expect(src).toMatch(
-        /\$\{\(this\.behavior\.selection \?\? \[\]\)\.map\(\(item, index\)/,
+        /\$\{\(this\.behavior\.selection \?\? \[\]\)\.map\(\(item\) =>/,
       );
       expect(src).not.toMatch(/\$\{this\.value\.map\(/);
     });

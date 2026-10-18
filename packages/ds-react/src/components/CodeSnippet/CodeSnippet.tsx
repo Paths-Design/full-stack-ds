@@ -1,5 +1,4 @@
 // @generated:start imports
-import { type ReactNode } from "react";
 import { Stack } from "../../primitives";
 import "./CodeSnippet.css";
 // @generated:end

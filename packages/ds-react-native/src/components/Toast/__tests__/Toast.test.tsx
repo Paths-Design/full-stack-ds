@@ -34,6 +34,7 @@ describe("Toast React Native", () => {
     expect(seen).toEqual([]);
     act(() => { vi.advanceTimersByTime(1); });
     expect(seen).toEqual([false]);
+    renderer?.unmount();
     vi.useRealTimers();
   });
   it("never auto-dismisses when duration is null", () => {
@@ -45,6 +46,7 @@ describe("Toast React Native", () => {
   });
     act(() => { vi.advanceTimersByTime(600000); });
     expect(seen).toEqual([]);
+    renderer?.unmount();
     vi.useRealTimers();
   });
 });

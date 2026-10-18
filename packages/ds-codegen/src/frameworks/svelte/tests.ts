@@ -38,27 +38,15 @@ export function generateSvelteTest(ir: ComponentIR): string {
   // Stack-only components expose their channel prop on the root via @change,
   // but fireEvent.change with { target: { value } } requires a form element.
   // Use render-only style for non-boolean channels on stack-only paths.
-  // Import vi when the generated section uses it, OR when stack-only
-  // behavioral components' @custom blocks use vi.fn() without their own
-  // import. Dom-tree components (Switch) import vi in their custom blocks
-  // themselves, so we don't emit it in the generated section to avoid
-  // duplicate identifier errors.
-  const needsVi = emitChannelInteraction || emitEscape || emitOverlayClick;
+  // The vitest import set is derived from emitted-body usage (see the
+  // testsBody scan below): `vi` is imported only when the generated tests
+  // section itself references it. @custom test blocks import their own
+  // `vi` (the self-sufficiency convention), so preserved content can never
+  // keep an unused import alive or collide with a duplicate identifier.
   const needsFireEvent =
     (emitChannelInteraction && plan.channels.some((c) => c.interaction === "click")) ||
     emitOverlayClick;
   const needsRawSnippet = plan.accessibility.content.length > 0;
-
-  const importParts = [
-    `import { describe, expect, it${needsVi ? ", vi" : ""}${portalRoot ? ", afterEach" : ""} } from "vitest";`,
-    needsRawSnippet
-      ? `import { createRawSnippet, type Component } from "svelte";`
-      : `import type { Component } from "svelte";`,
-    `import { render${needsFireEvent ? ", fireEvent" : ""} } from "@testing-library/svelte";`,
-    `import { axe } from "vitest-axe";`,
-    `import ${plan.name} from "../${plan.name}.svelte";`,
-  ];
-  const importsBody = importParts.join("\n");
 
   const lines: string[] = [];
   lines.push(`const componentAxeOptions = {`);
@@ -355,10 +343,23 @@ export function generateSvelteTest(ir: ComponentIR): string {
   lines.push(`  });`);
   lines.push(`});`);
 
+  const testsBody = lines.join("\n");
+  const needsVi = /\bvi\s*\./.test(testsBody);
+  const importParts = [
+    `import { describe, expect, it${needsVi ? ", vi" : ""}${portalRoot ? ", afterEach" : ""} } from "vitest";`,
+    needsRawSnippet
+      ? `import { createRawSnippet, type Component } from "svelte";`
+      : `import type { Component } from "svelte";`,
+    `import { render${needsFireEvent ? ", fireEvent" : ""} } from "@testing-library/svelte";`,
+    `import { axe } from "vitest-axe";`,
+    `import ${plan.name} from "../${plan.name}.svelte";`,
+  ];
+  const importsBody = importParts.join("\n");
+
   const sections: Section[] = [
     { kind: "generated", id: "imports", body: importsBody },
     { kind: "between", body: "" },
-    { kind: "generated", id: "tests", body: lines.join("\n") },
+    { kind: "generated", id: "tests", body: testsBody },
     { kind: "between", body: "" },
     { kind: "custom", id: "tests", body: "" },
     { kind: "between", body: "" },

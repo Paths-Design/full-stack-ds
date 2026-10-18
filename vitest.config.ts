@@ -43,6 +43,20 @@ export default defineConfig({
       ),
     },
   },
+  // CODEGEN-EMIT-LINT-HYGIENE-01 (adjacent root-config fix): @testing-library
+  // ships RUNE modules (`props.svelte.js` in svelte-core) that must be
+  // compiled by the svelte plugin, not pre-bundled by esbuild (which leaves
+  // `$state` uncompiled → rune_outside_svelte at render). A warm vite dep
+  // cache can mask this; a cold cache (fresh worktree, clean CI runner)
+  // exposes it. Forcing the dep through the plugin pipeline makes the root
+  // suite deterministic — the figma-plugin package config already avoids
+  // the interaction by not co-loading plugin-react.
+  ssr: {
+    noExternal: [
+      "@testing-library/svelte",
+      "@testing-library/svelte-core",
+    ],
+  },
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test-setup.ts"],

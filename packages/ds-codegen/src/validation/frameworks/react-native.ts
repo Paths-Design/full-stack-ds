@@ -22,9 +22,28 @@ export const reactNativeValidationPlan: FrameworkValidationPlan = {
         coverage: "covered_by_package_check",
       },
     },
+    {
+      check: "lint",
+      command: [
+        "pnpm",
+        "exec",
+        "eslint",
+        "packages/ds-react-native/src",
+        "--max-warnings=0",
+      ],
+      // Root flat config lints the generated src tree including
+      // __tests__. Zero findings required — see the react plan's
+      // lint note; the same emitter-hygiene contract holds here.
+      scope: {
+        packageRoot: "packages/ds-react-native/",
+        extensions: [".ts", ".tsx"],
+        coverage: "covered_by_package_check",
+      },
+    },
   ],
   checks: {
     typecheck: "direct",
+    lint: "direct",
     runtime: "direct",
     parse: "covered_by_typecheck",
   },

@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type HTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import { parseMarkdown, type MarkdownBlock, type MarkdownMark } from "../../primitives/markdown/markdown";
 import { Fragment } from "react";

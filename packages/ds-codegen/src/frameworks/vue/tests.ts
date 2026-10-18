@@ -39,17 +39,11 @@ export function generateVueTest(ir: ComponentIR): string {
   // interaction tests for stack-only components where @click/@change on the
   // root wrapper correctly reaches the prop handler.
   const emitChannelInteraction = plan.channels.length > 0 && !ir.dom;
-  // Import vi whenever channels exist — custom @custom blocks in Vue tests
-  // reference vi.fn() without their own explicit import of vi, relying on
-  // the generated imports section to provide it.
-  const needsVi = plan.channels.length > 0 || plan.escapeDismissals.length > 0 || emitOverlayClick;
-  const importsBody = [
-    `import { describe, it, expect${needsVi ? ", vi" : ""}${portalRoot ? ", afterEach" : ""} } from "vitest";`,
-    `import type { Component } from "vue";`,
-    `import { mount } from "@vue/test-utils";`,
-    `import { axe } from "vitest-axe";`,
-    `import ${plan.name} from "../${plan.name}.vue";`,
-  ].join("\n");
+  // The vitest import set is derived from emitted-body usage: `vi` is
+  // imported only when the generated tests section itself references it
+  // (the vi.fn() spies emitted below). @custom test blocks import their
+  // own `vi` — the Svelte-side convention — so preserved content can
+  // never keep an unused import alive in the generated section.
 
   const lines: string[] = [];
   lines.push(`const componentAxeOptions = {`);
@@ -368,10 +362,20 @@ export function generateVueTest(ir: ComponentIR): string {
   lines.push(`  });`);
   lines.push(`});`);
 
+  const testsBody = lines.join("\n");
+  const needsVi = /\bvi\s*\./.test(testsBody);
+  const importsBody = [
+    `import { describe, it, expect${needsVi ? ", vi" : ""}${portalRoot ? ", afterEach" : ""} } from "vitest";`,
+    `import type { Component } from "vue";`,
+    `import { mount } from "@vue/test-utils";`,
+    `import { axe } from "vitest-axe";`,
+    `import ${plan.name} from "../${plan.name}.vue";`,
+  ].join("\n");
+
   const sections: Section[] = [
     { kind: "generated", id: "imports", body: importsBody },
     { kind: "between", body: "" },
-    { kind: "generated", id: "tests", body: lines.join("\n") },
+    { kind: "generated", id: "tests", body: testsBody },
     { kind: "between", body: "" },
     { kind: "custom", id: "tests", body: "" },
     { kind: "between", body: "" },

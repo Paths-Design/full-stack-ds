@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Calendar } from "../Calendar";
+import type { Calendar } from "../Calendar";
 // @generated:end
 
 // @generated:start tests

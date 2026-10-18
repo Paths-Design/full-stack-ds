@@ -1,5 +1,5 @@
 import {
-  DestroyRef,
+  type DestroyRef,
   type Signal,
   computed,
   signal,

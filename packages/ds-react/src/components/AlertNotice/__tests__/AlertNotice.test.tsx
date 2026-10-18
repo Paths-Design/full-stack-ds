@@ -2,11 +2,14 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { axe } from "vitest-axe";
-import { AlertNotice, AlertNoticeBody, AlertNoticeTitle } from "../AlertNotice";
+import { AlertNotice } from "../AlertNotice";
 
 declare module "vitest" {
   interface Assertion<T> {
-    toHaveNoViolations(): void;
+    // The positional T keeps this augmentation mergeable with vitest's
+    // own Assertion<T = any> declaration (TS2428 fires on any rename);
+    // the expected param references it so it is never an unused type param.
+    toHaveNoViolations(expected?: T): void;
   }
 }
 // @generated:end

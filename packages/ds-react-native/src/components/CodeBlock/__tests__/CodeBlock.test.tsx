@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { CodeBlock } from "../CodeBlock";
+import type { CodeBlock } from "../CodeBlock";
 // @generated:end
 
 // @generated:start tests

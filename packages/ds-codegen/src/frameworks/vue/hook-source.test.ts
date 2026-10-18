@@ -56,3 +56,30 @@ describe("generateVueHookSource — real corpus contracts", () => {
     );
   });
 });
+
+describe("CODEGEN-EMIT-LINT-HYGIENE-01: vue hook import hygiene", () => {
+  it("Toast imports only what its types+hook text references (no ref, no useControllableState)", () => {
+    const source = generateVueHookSource(corpusIR("Toast"));
+
+    expect(source).toContain(`import { type Ref } from "vue";`);
+    expect(source).toContain(
+      `import { useAnchorToggle } from "../../primitives/index.js";`,
+    );
+    expect(source).not.toContain("useControllableState");
+  });
+
+  it("Command's hook never references ref( so it must not import ref", () => {
+    const source = generateVueHookSource(corpusIR("Command"));
+
+    expect(source).toContain(`import { type Ref } from "vue";`);
+    expect(source).not.toMatch(/import \{[^}]*\bref\b[^}]*\} from "vue";/);
+  });
+
+  it("Tabs keeps the full compound import set it actually uses", () => {
+    const source = generateVueHookSource(corpusIR("Tabs"));
+
+    expect(source).toContain(
+      `import { createCompoundContext, useControllableState } from "../../primitives/index.js";`,
+    );
+  });
+});

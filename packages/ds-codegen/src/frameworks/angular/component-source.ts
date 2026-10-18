@@ -90,11 +90,26 @@ import {
   getGroupHostPart,
   getGroupHostOrnamentPart,
 } from "../react/hook-source.js";
+import { typeAwareSpecifiers } from "./emitted-imports.js";
 
 // Props we don't emit as @Input() — either Angular handles them natively
 // (class/style) or they are React idioms with no Angular equivalent
 // (children → ng-content, className → host binding via classRecipe).
 const ANGULAR_RESERVED = new Set(["class", "style", "children", "className"]);
+
+/**
+ * Assemble the `@angular/core` import line from the specifiers the emitted
+ * body actually references (CODEGEN-EMIT-LINT-HYGIENE-01). `candidates`
+ * carries the call site's canonical specifier order — the order the
+ * previous fixed import lists used — so a body that references every
+ * candidate emits byte-identical output; only unreferenced entries drop
+ * out. Scanning the exact bytes about to be written means the set can
+ * neither over-shoot (an unused `no-unused-vars` specifier) nor
+ * under-shoot (a body reference with no import, a compile error).
+ */
+function angularCoreImportLine(candidates: readonly string[], body: string): string {
+  return `import { ${typeAwareSpecifiers(candidates, body).join(", ")} } from "@angular/core";`;
+}
 
 // ---------------------------------------------------------------------------
 // Public entry point
@@ -120,7 +135,9 @@ export function generateAngularComponentSource(ir: ComponentIR): string {
     return generateAngularCompoundStateRootSource(ir);
   }
 
-  const importsBody = ir.dom ? generateDomTreeImports(ir) : generateImports(ir);
+  // Body first: import specifier sets are derived from the assembled body
+  // (CODEGEN-EMIT-LINT-HYGIENE-01), so no specifier is emitted that the
+  // file body never references.
   const typesBody = generateTypes(ir);
   const compoundClasses = ir.compoundParts
     .map((part) => generateCompoundPartComponent(ir, part))
@@ -128,6 +145,9 @@ export function generateAngularComponentSource(ir: ComponentIR): string {
   const componentBody =
     (ir.dom ? generateDomTreeComponent(ir) : generateComponent(ir)) +
     (compoundClasses ? "\n\n" + compoundClasses : "");
+  const importsBody = ir.dom
+    ? generateDomTreeImports(ir, componentBody)
+    : generateImports(componentBody);
 
   const blank = (): Section => ({ kind: "between", body: "" });
   const sections: Section[] = [
@@ -167,12 +187,6 @@ function generateAngularCompoundStateRootSource(ir: ComponentIR): string {
   const channelName = channel?.name ?? "activeTab";
   const capitalize = (s: string) => s[0].toUpperCase() + s.slice(1);
   const setterName = `set${capitalize(channelName)}`;
-
-  const importsBody = [
-    `import { Component, Input, OnChanges, SimpleChanges, computed, signal, forwardRef, inject, DestroyRef, ChangeDetectionStrategy } from "@angular/core";`,
-    `import { NgClass } from "@angular/common";`,
-    `import { use${name}, ${name}ContextToken } from "./use${name}.js";`,
-  ].join("\n");
 
   const typesBody = emitNonReactTypeAliases(ir).join("\n");
 
@@ -342,6 +356,30 @@ function generateAngularCompoundStateRootSource(ir: ComponentIR): string {
     `}`,
   ].join("\n");
 
+  // Import specifiers derive from the assembled body
+  // (CODEGEN-EMIT-LINT-HYGIENE-01). Canonical order matches the previous
+  // fixed list, so the fully-wired root emits identical bytes.
+  const importsBody = [
+    angularCoreImportLine(
+      [
+        "Component",
+        "Input",
+        "OnChanges",
+        "SimpleChanges",
+        "ElementRef",
+        "computed",
+        "signal",
+        "forwardRef",
+        "inject",
+        "DestroyRef",
+        "ChangeDetectionStrategy",
+      ],
+      componentBody,
+    ),
+    `import { NgClass } from "@angular/common";`,
+    `import { use${name}, ${name}ContextToken } from "./use${name}.js";`,
+  ].join("\n");
+
   const blank = (): Section => ({ kind: "between", body: "" });
   const sections: Section[] = [
     { kind: "generated", id: "imports", body: importsBody },
@@ -406,13 +444,6 @@ function generateAngularDisclosureStateRootSource(ir: ComponentIR): string {
   const setterName = `set${cap(channelName)}`;
   const hasCollapsible = ir.styledProps.some((p) => p.name === "collapsible");
   const hasDisabled = ir.styledProps.some((p) => p.name === "disabled");
-
-  const importsBody = [
-    `import { Component, Input, OnChanges, SimpleChanges, ElementRef, computed, signal, forwardRef, inject, DestroyRef, ChangeDetectionStrategy } from "@angular/core";`,
-    `import { NgClass } from "@angular/common";`,
-    `import { use${name}, ${name}ContextToken } from "./use${name}.js";`,
-    `import { toggleInteractionItem } from "../../primitives/interaction.js";`,
-  ].join("\n");
 
   const typesBody = emitNonReactTypeAliases(ir).join("\n");
 
@@ -571,6 +602,31 @@ function generateAngularDisclosureStateRootSource(ir: ComponentIR): string {
 
   const counterPrelude = `let _${name.toLowerCase()}IdCounter = 0;`;
 
+  // Import specifiers derive from the assembled body
+  // (CODEGEN-EMIT-LINT-HYGIENE-01). Canonical order matches the previous
+  // fixed list, so the fully-wired root emits identical bytes.
+  const importsBody = [
+    angularCoreImportLine(
+      [
+        "Component",
+        "Input",
+        "OnChanges",
+        "SimpleChanges",
+        "ElementRef",
+        "computed",
+        "signal",
+        "forwardRef",
+        "inject",
+        "DestroyRef",
+        "ChangeDetectionStrategy",
+      ],
+      componentBody,
+    ),
+    `import { NgClass } from "@angular/common";`,
+    `import { use${name}, ${name}ContextToken } from "./use${name}.js";`,
+    `import { toggleInteractionItem } from "../../primitives/interaction.js";`,
+  ].join("\n");
+
   const blank = (): Section => ({ kind: "between", body: "" });
   const sections: Section[] = [
     { kind: "generated", id: "imports", body: importsBody },
@@ -624,18 +680,9 @@ export function generateAngularDisclosureStateParts(
   const triggerCssClass = `${cssPrefix}__${itemPart.name}`;
   const contentCssClass = `${cssPrefix}__${regionPart.name}`;
 
-  // Item component (passive wrapper)
-  const itemContent = [
-    `// @generated:start imports`,
-    `import { Component, Input, ChangeDetectionStrategy } from "@angular/core";`,
-    `import { NgClass } from "@angular/common";`,
-    `// @generated:end`,
-    ``,
-    `// @custom:start imports`,
-    ``,
-    `// @custom:end`,
-    ``,
-    `// @generated:start component`,
+  // Item component (passive wrapper). Import specifiers derive from the
+  // part body (CODEGEN-EMIT-LINT-HYGIENE-01).
+  const itemBody = [
     `@Component({`,
     `  selector: "fsds-${toKebab(itemName)}",`,
     `  standalone: true,`,
@@ -651,6 +698,19 @@ export function generateAngularDisclosureStateParts(
     `    return ["${itemCssClass}", this.class].filter(Boolean).join(" ");`,
     `  }`,
     `}`,
+  ];
+  const itemContent = [
+    `// @generated:start imports`,
+    angularCoreImportLine(["Component", "Input", "ChangeDetectionStrategy"], itemBody.join("\n")),
+    `import { NgClass } from "@angular/common";`,
+    `// @generated:end`,
+    ``,
+    `// @custom:start imports`,
+    ``,
+    `// @custom:end`,
+    ``,
+    `// @generated:start component`,
+    ...itemBody,
     `// @generated:end`,
     ``,
     `// @custom:start trailing`,
@@ -673,21 +733,9 @@ export function generateAngularDisclosureStateParts(
         0,
       )
     : "";
-  const triggerContent = [
-    `// @generated:start imports`,
-    `import { Component, Input, computed, ChangeDetectionStrategy } from "@angular/core";`,
-    `import { NgClass } from "@angular/common";`,
-    `import { use${name}Context } from "./use${name}.js";`,
-    ...(chevronNode?.componentRef
-      ? [`import { ${chevronNode.componentRef}Component } from "../${chevronNode.componentRef}/${chevronNode.componentRef}.component.js";`]
-      : []),
-    `// @generated:end`,
-    ``,
-    `// @custom:start imports`,
-    ``,
-    `// @custom:end`,
-    ``,
-    `// @generated:start component`,
+  // Trigger component. Import specifiers derive from the part body
+  // (CODEGEN-EMIT-LINT-HYGIENE-01).
+  const triggerBody = [
     `@Component({`,
     `  selector: "fsds-${toKebab(triggerName)}",`,
     `  standalone: true,`,
@@ -722,6 +770,23 @@ export function generateAngularDisclosureStateParts(
     `    ].filter(Boolean).join(" "),`,
     `  );`,
     `}`,
+  ];
+  const triggerContent = [
+    `// @generated:start imports`,
+    angularCoreImportLine(["Component", "Input", "computed", "ChangeDetectionStrategy"], triggerBody.join("\n")),
+    `import { NgClass } from "@angular/common";`,
+    `import { use${name}Context } from "./use${name}.js";`,
+    ...(chevronNode?.componentRef
+      ? [`import { ${chevronNode.componentRef}Component } from "../${chevronNode.componentRef}/${chevronNode.componentRef}.component.js";`]
+      : []),
+    `// @generated:end`,
+    ``,
+    `// @custom:start imports`,
+    ``,
+    `// @custom:end`,
+    ``,
+    `// @generated:start component`,
+    ...triggerBody,
     `// @generated:end`,
     ``,
     `// @custom:start trailing`,
@@ -732,18 +797,9 @@ export function generateAngularDisclosureStateParts(
   // Content component
   const contentInnerOpen = innerPartName ? `<${innerTag} class="${cssPrefix}__${innerPartName}">` : "";
   const contentInnerClose = innerPartName ? `</${innerTag}>` : "";
-  const contentContent = [
-    `// @generated:start imports`,
-    `import { Component, Input, computed, ChangeDetectionStrategy } from "@angular/core";`,
-    `import { NgClass } from "@angular/common";`,
-    `import { use${name}Context } from "./use${name}.js";`,
-    `// @generated:end`,
-    ``,
-    `// @custom:start imports`,
-    ``,
-    `// @custom:end`,
-    ``,
-    `// @generated:start component`,
+  // Content component. Import specifiers derive from the part body
+  // (CODEGEN-EMIT-LINT-HYGIENE-01).
+  const contentBody = [
     `@Component({`,
     `  selector: "fsds-${toKebab(contentName)}",`,
     `  standalone: true,`,
@@ -770,6 +826,20 @@ export function generateAngularDisclosureStateParts(
     `    ["${contentCssClass}", this.class].filter(Boolean).join(" "),`,
     `  );`,
     `}`,
+  ];
+  const contentContent = [
+    `// @generated:start imports`,
+    angularCoreImportLine(["Component", "Input", "computed", "ChangeDetectionStrategy"], contentBody.join("\n")),
+    `import { NgClass } from "@angular/common";`,
+    `import { use${name}Context } from "./use${name}.js";`,
+    `// @generated:end`,
+    ``,
+    `// @custom:start imports`,
+    ``,
+    `// @custom:end`,
+    ``,
+    `// @generated:start component`,
+    ...contentBody,
     `// @generated:end`,
     ``,
     `// @custom:start trailing`,
@@ -819,18 +889,8 @@ export function generateAngularCompoundStateParts(
   // ---------------------------------------------------------------------------
   // TabsList component
   // ---------------------------------------------------------------------------
-  const listContent = [
-    `// @generated:start imports`,
-    `import { Component, Input, ElementRef, inject, ChangeDetectionStrategy } from "@angular/core";`,
-    `import { NgClass } from "@angular/common";`,
-    `import { use${name}Context } from "./use${name}.js";`,
-    `// @generated:end`,
-    ``,
-    `// @custom:start imports`,
-    ``,
-    `// @custom:end`,
-    ``,
-    `// @generated:start component`,
+  // Import specifiers derive from the part body (CODEGEN-EMIT-LINT-HYGIENE-01).
+  const listBody = [
     `@Component({`,
     `  selector: "fsds-${toKebab(listName)}",`,
     `  standalone: true,`,
@@ -911,6 +971,20 @@ export function generateAngularCompoundStateParts(
     `    btn?.focus();`,
     `  }`,
     `}`,
+  ];
+  const listContent = [
+    `// @generated:start imports`,
+    angularCoreImportLine(["Component", "Input", "ElementRef", "inject", "ChangeDetectionStrategy"], listBody.join("\n")),
+    `import { NgClass } from "@angular/common";`,
+    `import { use${name}Context } from "./use${name}.js";`,
+    `// @generated:end`,
+    ``,
+    `// @custom:start imports`,
+    ``,
+    `// @custom:end`,
+    ``,
+    `// @generated:start component`,
+    ...listBody,
     `// @generated:end`,
     ``,
     `// @custom:start trailing`,
@@ -921,18 +995,10 @@ export function generateAngularCompoundStateParts(
   // ---------------------------------------------------------------------------
   // TabsTab component
   // ---------------------------------------------------------------------------
-  const tabContent = [
-    `// @generated:start imports`,
-    `import { Component, Input, OnInit, OnDestroy, computed, inject, DestroyRef, ChangeDetectionStrategy } from "@angular/core";`,
-    `import { NgClass } from "@angular/common";`,
-    `import { use${name}Context } from "./use${name}.js";`,
-    `// @generated:end`,
-    ``,
-    `// @custom:start imports`,
-    ``,
-    `// @custom:end`,
-    ``,
-    `// @generated:start component`,
+  // Import specifiers derive from the part body (CODEGEN-EMIT-LINT-HYGIENE-01):
+  // the tab body registers itself through the context hook and has no
+  // inject()/DestroyRef wiring, so those specifiers must not be emitted.
+  const tabBody = [
     `@Component({`,
     `  selector: "fsds-${toKebab(tabName)}",`,
     `  standalone: true,`,
@@ -977,6 +1043,20 @@ export function generateAngularCompoundStateParts(
     `    this.ctx.unregisterTab(this.value);`,
     `  }`,
     `}`,
+  ];
+  const tabContent = [
+    `// @generated:start imports`,
+    angularCoreImportLine(["Component", "Input", "OnInit", "OnDestroy", "computed", "inject", "DestroyRef", "ChangeDetectionStrategy"], tabBody.join("\n")),
+    `import { NgClass } from "@angular/common";`,
+    `import { use${name}Context } from "./use${name}.js";`,
+    `// @generated:end`,
+    ``,
+    `// @custom:start imports`,
+    ``,
+    `// @custom:end`,
+    ``,
+    `// @generated:start component`,
+    ...tabBody,
     `// @generated:end`,
     ``,
     `// @custom:start trailing`,
@@ -987,18 +1067,10 @@ export function generateAngularCompoundStateParts(
   // ---------------------------------------------------------------------------
   // TabsPanel component
   // ---------------------------------------------------------------------------
-  const panelContent = [
-    `// @generated:start imports`,
-    `import { Component, Input, computed, inject, ChangeDetectionStrategy } from "@angular/core";`,
-    `import { NgClass, NgIf } from "@angular/common";`,
-    `import { use${name}Context } from "./use${name}.js";`,
-    `// @generated:end`,
-    ``,
-    `// @custom:start imports`,
-    ``,
-    `// @custom:end`,
-    ``,
-    `// @generated:start component`,
+  // Import specifiers derive from the part body (CODEGEN-EMIT-LINT-HYGIENE-01):
+  // the panel body reads the context hook directly and never calls
+  // inject(), so the specifier must not be emitted.
+  const panelBody = [
     `@Component({`,
     `  selector: "fsds-${toKebab(panelName)}",`,
     `  standalone: true,`,
@@ -1027,6 +1099,20 @@ export function generateAngularCompoundStateParts(
     `    ["${panelCssClass}", this.class].filter(Boolean).join(" "),`,
     `  );`,
     `}`,
+  ];
+  const panelContent = [
+    `// @generated:start imports`,
+    angularCoreImportLine(["Component", "Input", "computed", "inject", "ChangeDetectionStrategy"], panelBody.join("\n")),
+    `import { NgClass, NgIf } from "@angular/common";`,
+    `import { use${name}Context } from "./use${name}.js";`,
+    `// @generated:end`,
+    ``,
+    `// @custom:start imports`,
+    ``,
+    `// @custom:end`,
+    ``,
+    `// @generated:start component`,
+    ...panelBody,
     `// @generated:end`,
     ``,
     `// @custom:start trailing`,
@@ -1135,25 +1221,24 @@ function generateCompoundPartComponent(
 // Imports
 // ---------------------------------------------------------------------------
 
-function generateImports(ir: ComponentIR): string {
-  const coreNames = ["Component", "Input", "ChangeDetectionStrategy"];
-
-  // `computed` is only used when the component has behavior channels (and
-  // therefore signal-backed reads in the classes computation). Stack-only
-  // and compound-part components emit a plain getter and don't need it.
-  if (ir.behavior.normalizedChannels.length > 0) {
-    coreNames.push("computed");
-  }
-
-  // HostBinding is needed when the root element is not the default host
-  if (ir.root.element !== "div") {
-    coreNames.push("HostBinding");
-  }
-
+function generateImports(componentBody: string): string {
+  // Import specifiers derive from the assembled body
+  // (CODEGEN-EMIT-LINT-HYGIENE-01): `computed` survives only when the
+  // classes computation is signal-backed, `HostBinding` only when a host
+  // binding is actually emitted. Candidate order matches the previous
+  // fixed list's canonical order.
   const lines: string[] = [
-    `import { ${[...new Set(coreNames)].join(", ")} } from "@angular/core";`,
+    angularCoreImportLine(
+      ["Component", "Input", "ChangeDetectionStrategy", "computed", "HostBinding"],
+      componentBody,
+    ),
     `import { NgClass } from "@angular/common";`,
-    `import { StackComponent } from "../../primitives/index.js";`,
+    // CODEGEN-EMIT-LINT-HYGIENE-01: the native-table path renders raw
+    // table elements (no <fsds-stack> host), so StackComponent is
+    // imported only when the body actually references it.
+    ...(componentBody.includes("StackComponent")
+      ? [`import { StackComponent } from "../../primitives/index.js";`]
+      : []),
   ];
 
   return lines.join("\n");
@@ -1428,48 +1513,42 @@ function channelInputs(ir: ComponentIR): Map<string, NormalizedChannelIR> {
   return new Map(ir.behavior.normalizedChannels.map(channel => [channel.valueProp, channel]));
 }
 
-function generateDomTreeImports(ir: ComponentIR): string {
-  const coreNames = [
-    "Component",
-    "Input",
-    "computed",
-    "DestroyRef",
-    "inject",
-    "ChangeDetectionStrategy",
-  ];
-  if (
-    resolveSurfaceAutoDismiss(ir) &&
-    ir.behavior.normalizedChannels.some((c) => c.valueType === "boolean")
-  ) {
-    coreNames.push("effect");
-  }
-  if (ir.pagedSet && !coreNames.includes("effect")) coreNames.push("effect");
-  if (ir.motion.sequence) coreNames.push("effect", "signal", "ViewChild", "ElementRef");
-  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown) coreNames.push("ViewChild", "ElementRef");
-  if (channelInputs(ir).size > 0) coreNames.push("signal", "Injector", "runInInjectionContext", "untracked");
-  // When any dom node uses `if: "children"`, the component needs AfterContentInit
-  // and ElementRef to detect content projection at runtime.
-  if (ir.dom && treeHasChildrenGuard(ir.dom)) {
-    coreNames.push("AfterContentInit", "ElementRef");
-  }
-  // FEAT-PORTAL-MECHANISM-CROSS-FRAMEWORK-01: full-overlay surfaces relocate
-  // their host element into document.body on init and remove it on destroy so
-  // the fixed layer escapes any transform/overflow/filter ancestor. Needs
-  // OnInit/OnDestroy lifecycle and ElementRef for the host node.
-  const rootPortal = portalsRootToBody(ir);
+function generateDomTreeImports(ir: ComponentIR, componentBody: string): string {
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the @angular/core specifier set derives
+  // from the assembled component body, not from a parallel list of IR
+  // booleans. The booleans drifted from the bytes they justified — the
+  // unconditional base set imported `computed`/`DestroyRef`/`inject` for
+  // every dom-tree component even when the body had no behavior wiring —
+  // while a scan of the exact bytes about to be written can neither
+  // over-shoot (an unused `no-unused-vars` specifier) nor under-shoot (a
+  // body reference with no import, a compile error). Candidate order is
+  // the previous fixed list's canonical push order, so a body that
+  // references its full set emits identical bytes.
+  const coreNames = typeAwareSpecifiers(
+    [
+      "Component",
+      "Input",
+      "computed",
+      "DestroyRef",
+      "inject",
+      "ChangeDetectionStrategy",
+      "effect",
+      "signal",
+      "ViewChild",
+      "ElementRef",
+      "Injector",
+      "runInInjectionContext",
+      "untracked",
+      "AfterContentInit",
+      "OnInit",
+      "OnDestroy",
+    ],
+    componentBody,
+  );
+  // Selector-anchored root panel (coachmark tour): the whole panel
+  // portals to body AND tracks a page element resolved from the active
+  // step's selector, driving `createAnchoredPosition`.
   const selectorAnchor = selectorAnchoredRootPortal(ir);
-  if (rootPortal || selectorAnchor) {
-    coreNames.push("OnInit", "OnDestroy");
-    if (!coreNames.includes("ElementRef")) coreNames.push("ElementRef");
-  }
-  // Selector-anchored root panel (coachmark tour): the whole panel portals
-  // to body (same OnInit/OnDestroy relocation above) AND tracks a page
-  // element resolved from the active step's selector via `effect()`,
-  // driving `createAnchoredPosition`.
-  if (selectorAnchor) {
-    if (!coreNames.includes("effect")) coreNames.push("effect");
-    coreNames.push("signal");
-  }
   // Only import NgIf when the rendered template will actually use
   // `*ngIf`. Declaring it otherwise triggers ngc NG8113 (unused
   // directive in standalone imports) and clutters the public API
@@ -1501,7 +1580,10 @@ function generateDomTreeImports(ir: ComponentIR): string {
     lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
-  if (ir.compoundParts.length > 0) {
+  // CODEGEN-EMIT-LINT-HYGIENE-01: compound parts usually host on <fsds-stack>,
+  // but native-table composition (Table) renders raw table elements — import
+  // StackComponent only when the body actually references it.
+  if (ir.compoundParts.length > 0 && componentBody.includes("StackComponent")) {
     lines.push(`import { StackComponent } from "../../primitives/index.js";`);
   }
   // componentRef: import the referenced standalone component class

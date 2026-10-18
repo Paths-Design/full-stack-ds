@@ -1,5 +1,5 @@
 // @generated:start imports
-import { ref, type Ref } from "vue";
+import { type Ref } from "vue";
 import { useAnchorToggle, useControllableState } from "../../primitives/index.js";
 // @generated:end
 

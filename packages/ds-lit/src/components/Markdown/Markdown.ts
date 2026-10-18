@@ -1,5 +1,5 @@
 // @generated:start imports
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { parseMarkdown, type MarkdownBlock, type MarkdownMark } from '../../primitives/markdown/markdown.js';
 import { type TemplateResult } from 'lit';
@@ -120,44 +120,44 @@ export class MarkdownElement extends LitElement {
 customElements.define('fsds-markdown', MarkdownElement);
 
 function renderMarkdownBlocks(source: string): TemplateResult[] {
-  return parseMarkdown(source ?? "").map((block, blockIndex) =>
-    renderMarkdownBlock(block, blockIndex),
+  return parseMarkdown(source ?? "").map((block) =>
+    renderMarkdownBlock(block),
   );
 }
 
-function renderMarkdownBlock(block: MarkdownBlock, key: number): TemplateResult {
+function renderMarkdownBlock(block: MarkdownBlock): TemplateResult {
   switch (block.kind) {
     case "heading":
-      return html`<h2 class="markdown__heading" data-block-kind="heading" data-block-kind-level=${block.level}>${block.children.map((mark, markIndex) => renderMarkdownMark(mark, markIndex))}</h2>`;
+      return html`<h2 class="markdown__heading" data-block-kind="heading" data-block-kind-level=${block.level}>${block.children.map((mark) => renderMarkdownMark(mark))}</h2>`;
     case "paragraph":
-      return html`<p class="markdown__paragraph" data-block-kind="paragraph">${block.children.map((mark, markIndex) => renderMarkdownMark(mark, markIndex))}</p>`;
+      return html`<p class="markdown__paragraph" data-block-kind="paragraph">${block.children.map((mark) => renderMarkdownMark(mark))}</p>`;
     case "list":
       return block.ordered
-        ? html`<ol class="markdown__orderedList" data-block-kind="orderedList">${block.items.map((item, itemIndex) => renderMarkdownBlock(item, itemIndex))}</ol>`
-        : html`<ul class="markdown__unorderedList" data-block-kind="unorderedList">${block.items.map((item, itemIndex) => renderMarkdownBlock(item, itemIndex))}</ul>`;
+        ? html`<ol class="markdown__orderedList" data-block-kind="orderedList">${block.items.map((item) => renderMarkdownBlock(item))}</ol>`
+        : html`<ul class="markdown__unorderedList" data-block-kind="unorderedList">${block.items.map((item) => renderMarkdownBlock(item))}</ul>`;
     case "listItem":
-      return html`<li class="markdown__listItem" data-block-kind="listItem">${block.children.map((mark, markIndex) => renderMarkdownMark(mark, markIndex))}</li>`;
+      return html`<li class="markdown__listItem" data-block-kind="listItem">${block.children.map((mark) => renderMarkdownMark(mark))}</li>`;
     case "codeBlock":
       return html`<pre class="markdown__codeBlock" data-block-kind="codeBlock" data-language=${block.language}>${block.text}</pre>`;
     case "blockquote":
-      return html`<blockquote class="markdown__blockquote" data-block-kind="blockquote">${block.children.map((mark, markIndex) => renderMarkdownMark(mark, markIndex))}</blockquote>`;
+      return html`<blockquote class="markdown__blockquote" data-block-kind="blockquote">${block.children.map((mark) => renderMarkdownMark(mark))}</blockquote>`;
   }
 }
 
-function renderMarkdownMark(mark: MarkdownMark, key: number): TemplateResult {
+function renderMarkdownMark(mark: MarkdownMark): TemplateResult {
   switch (mark.kind) {
     case "text":
       return html`${mark.text}`;
     case "code":
       return html`<code class="markdown__code" data-mark-kind="code">${mark.text}</code>`;
     case "emphasis":
-      return html`<em class="markdown__emphasis" data-mark-kind="emphasis">${mark.children.map((child, childIndex) => renderMarkdownMark(child, childIndex))}</em>`;
+      return html`<em class="markdown__emphasis" data-mark-kind="emphasis">${mark.children.map((child) => renderMarkdownMark(child))}</em>`;
     case "strong":
-      return html`<strong class="markdown__strong" data-mark-kind="strong">${mark.children.map((child, childIndex) => renderMarkdownMark(child, childIndex))}</strong>`;
+      return html`<strong class="markdown__strong" data-mark-kind="strong">${mark.children.map((child) => renderMarkdownMark(child))}</strong>`;
     case "link":
       return mark.href === null
-        ? html`${mark.children.map((child, childIndex) => renderMarkdownMark(child, childIndex))}`
-        : html`<a class="markdown__link" data-mark-kind="link" href=${mark.href}>${mark.children.map((child, childIndex) => renderMarkdownMark(child, childIndex))}</a>`;
+        ? html`${mark.children.map((child) => renderMarkdownMark(child))}`
+        : html`<a class="markdown__link" data-mark-kind="link" href=${mark.href}>${mark.children.map((child) => renderMarkdownMark(child))}</a>`;
   }
 }
 

@@ -203,7 +203,7 @@ export function Table({
   className,
   "data-testid": testId,
   children,
-  responsive,
+  responsive: _responsive,
   ariaLabel,
   ...rest
 }: TableProps) {

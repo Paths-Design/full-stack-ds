@@ -69,16 +69,16 @@ export function Calendar({
   className,
   "data-testid": testId,
   caption: captionProp,
-  minDate,
-  maxDate,
-  locale = "en-US",
+  minDate: _minDate,
+  maxDate: _maxDate,
+  locale: _locale = "en-US",
   shouldCloseOnSelect = true,
   days,
   ...rest
 }: CalendarProps) {
   const fsdsMessages = useFsdsMessages("Calendar", CalendarMessages);
   const caption = captionProp ?? fsdsMessages.caption;
-  const { value, setValue } = useCalendar({
+  const { value: _value, setValue } = useCalendar({
     value: controlledValue,
     defaultValue,
     onChange,

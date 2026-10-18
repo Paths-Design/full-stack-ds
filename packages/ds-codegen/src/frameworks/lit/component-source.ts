@@ -1607,7 +1607,14 @@ export function generateLitComponentSource(ir: ComponentIR): string {
   // `styleMap` directive for `cssVariableBindings` lowering.
   const usesIfDefined = componentBody.includes("ifDefined(");
   const usesStyleMap = componentBody.includes("styleMap(");
-  const baseImports = ir.dom ? generateDomTreeImports(ir) : generateImports(ir);
+  // `nothing` is an identifier-valued sentinel (conditional render holes),
+  // not a directive call — match the bare word so every emission form keeps
+  // its import while longer identifiers (renderNothing) don't pull it in.
+  const usesNothing = /\bnothing\b/.test(componentBody);
+  const usesRef = /\bref\(/.test(componentBody);
+  const baseImports = ir.dom
+    ? generateDomTreeImports(ir, usesNothing, usesRef)
+    : generateImports(ir);
   const directiveImports: string[] = [];
   if (usesIfDefined) {
     directiveImports.push(`import { ifDefined } from 'lit/directives/if-defined.js';`);
@@ -1641,8 +1648,14 @@ export function generateLitComponentSource(ir: ComponentIR): string {
 // DOM-tree-driven component (B.2c)
 // ---------------------------------------------------------------------------
 
-function generateDomTreeImports(ir: ComponentIR): string {
-  const litImports = ["LitElement", "html", "css", "nothing"];
+function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: boolean): string {
+  // Import sets derive from emitted-body facts, never per-component lore:
+  // `nothing` is referenced only by conditional-hole emissions
+  // (`${cond ? html`…` : nothing}`), so the caller — which renders the
+  // class body before assembling imports — passes the body-usage scan down,
+  // mirroring the `usesIfDefined`/`usesStyleMap` directive scans above.
+  const litImports = ["LitElement", "html", "css"];
+  if (usesNothing) litImports.push("nothing");
   // iconGlyph: a glyph node's <path> children render via the `svg` tagged
   // template, not `html` — an html-tagged SVG fragment does not render
   // inside an <svg> element in Lit's template model (ICON-CATALOG-RUNTIME-
@@ -1656,7 +1669,12 @@ function generateDomTreeImports(ir: ComponentIR): string {
     litImports.push("type PropertyValues");
   }
   const lines: string[] = [`import { ${litImports.join(", ")} } from 'lit';`];
-  if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown || ir.motion.sequence || ir.pagedSet) lines.push(`import { ref } from 'lit/directives/ref.js';`);
+  // CODEGEN-EMIT-LINT-HYGIENE-01: the `ref` directive import derives from
+  // emitted-body usage (`${ref(element => ...)}`) — the IR flags below
+  // gate emission paths that don't always produce a `ref(` call (e.g. a
+  // pagedSet whose panel wiring resolves elsewhere), and an unemitted use
+  // leaves an unused import behind.
+  if (usesRef) lines.push(`import { ref } from 'lit/directives/ref.js';`);
   if (ir.pagedSet) lines.push(`import { PagedSetController } from "../../primitives/controllers/PagingController.js";`);
   if (ir.motion.sequence) lines.push(`import { SequenceController } from "../../primitives/controllers/SequenceController.js";`);
   if (ir.messages.length > 0) {
@@ -2307,44 +2325,44 @@ function generateLitMarkdownHelpers(ir: ComponentIR): string {
   const blockClass = (part: string): string => `${prefix}__${part}`;
   return `
 function renderMarkdownBlocks(source: string): TemplateResult[] {
-  return parseMarkdown(source ?? "").map((block, blockIndex) =>
-    renderMarkdownBlock(block, blockIndex),
+  return parseMarkdown(source ?? "").map((block) =>
+    renderMarkdownBlock(block),
   );
 }
 
-function renderMarkdownBlock(block: MarkdownBlock, key: number): TemplateResult {
+function renderMarkdownBlock(block: MarkdownBlock): TemplateResult {
   switch (block.kind) {
     case "heading":
-      return html\`<${bt.heading} class="${blockClass(b.heading)}" data-block-kind="heading" data-block-kind-level=\${block.level}>\${block.children.map((mark, markIndex) => renderMarkdownMark(mark, markIndex))}</${bt.heading}>\`;
+      return html\`<${bt.heading} class="${blockClass(b.heading)}" data-block-kind="heading" data-block-kind-level=\${block.level}>\${block.children.map((mark) => renderMarkdownMark(mark))}</${bt.heading}>\`;
     case "paragraph":
-      return html\`<${bt.paragraph} class="${blockClass(b.paragraph)}" data-block-kind="paragraph">\${block.children.map((mark, markIndex) => renderMarkdownMark(mark, markIndex))}</${bt.paragraph}>\`;
+      return html\`<${bt.paragraph} class="${blockClass(b.paragraph)}" data-block-kind="paragraph">\${block.children.map((mark) => renderMarkdownMark(mark))}</${bt.paragraph}>\`;
     case "list":
       return block.ordered
-        ? html\`<${bt.orderedList} class="${blockClass(b.orderedList)}" data-block-kind="orderedList">\${block.items.map((item, itemIndex) => renderMarkdownBlock(item, itemIndex))}</${bt.orderedList}>\`
-        : html\`<${bt.unorderedList} class="${blockClass(b.unorderedList)}" data-block-kind="unorderedList">\${block.items.map((item, itemIndex) => renderMarkdownBlock(item, itemIndex))}</${bt.unorderedList}>\`;
+        ? html\`<${bt.orderedList} class="${blockClass(b.orderedList)}" data-block-kind="orderedList">\${block.items.map((item) => renderMarkdownBlock(item))}</${bt.orderedList}>\`
+        : html\`<${bt.unorderedList} class="${blockClass(b.unorderedList)}" data-block-kind="unorderedList">\${block.items.map((item) => renderMarkdownBlock(item))}</${bt.unorderedList}>\`;
     case "listItem":
-      return html\`<${bt.listItem} class="${blockClass(b.listItem)}" data-block-kind="listItem">\${block.children.map((mark, markIndex) => renderMarkdownMark(mark, markIndex))}</${bt.listItem}>\`;
+      return html\`<${bt.listItem} class="${blockClass(b.listItem)}" data-block-kind="listItem">\${block.children.map((mark) => renderMarkdownMark(mark))}</${bt.listItem}>\`;
     case "codeBlock":
       return html\`<${bt.codeBlock} class="${blockClass(b.codeBlock)}" data-block-kind="codeBlock" data-language=\${block.language}>\${block.text}</${bt.codeBlock}>\`;
     case "blockquote":
-      return html\`<${bt.blockquote} class="${blockClass(b.blockquote)}" data-block-kind="blockquote">\${block.children.map((mark, markIndex) => renderMarkdownMark(mark, markIndex))}</${bt.blockquote}>\`;
+      return html\`<${bt.blockquote} class="${blockClass(b.blockquote)}" data-block-kind="blockquote">\${block.children.map((mark) => renderMarkdownMark(mark))}</${bt.blockquote}>\`;
   }
 }
 
-function renderMarkdownMark(mark: MarkdownMark, key: number): TemplateResult {
+function renderMarkdownMark(mark: MarkdownMark): TemplateResult {
   switch (mark.kind) {
     case "text":
       return html\`\${mark.text}\`;
     case "code":
       return html\`<${mt.code} class="${prefix}__${m.code}" data-mark-kind="code">\${mark.text}</${mt.code}>\`;
     case "emphasis":
-      return html\`<${mt.emphasis} class="${prefix}__${m.emphasis}" data-mark-kind="emphasis">\${mark.children.map((child, childIndex) => renderMarkdownMark(child, childIndex))}</${mt.emphasis}>\`;
+      return html\`<${mt.emphasis} class="${prefix}__${m.emphasis}" data-mark-kind="emphasis">\${mark.children.map((child) => renderMarkdownMark(child))}</${mt.emphasis}>\`;
     case "strong":
-      return html\`<${mt.strong} class="${prefix}__${m.strong}" data-mark-kind="strong">\${mark.children.map((child, childIndex) => renderMarkdownMark(child, childIndex))}</${mt.strong}>\`;
+      return html\`<${mt.strong} class="${prefix}__${m.strong}" data-mark-kind="strong">\${mark.children.map((child) => renderMarkdownMark(child))}</${mt.strong}>\`;
     case "link":
       return mark.href === null
-        ? html\`\${mark.children.map((child, childIndex) => renderMarkdownMark(child, childIndex))}\`
-        : html\`<${mt.link} class="${prefix}__${m.link}" data-mark-kind="link" href=\${mark.href}>\${mark.children.map((child, childIndex) => renderMarkdownMark(child, childIndex))}</${mt.link}>\`;
+        ? html\`\${mark.children.map((child) => renderMarkdownMark(child))}\`
+        : html\`<${mt.link} class="${prefix}__${m.link}" data-mark-kind="link" href=\${mark.href}>\${mark.children.map((child) => renderMarkdownMark(child))}</${mt.link}>\`;
   }
 }
 `;
@@ -2819,8 +2837,23 @@ function renderLitDomNode(
       // arbitrary custom-property slots. Iteration aliases (loop
       // locals) can't be undefined in the iterated scope, but using
       // a uniform expression keeps the emit branch-free.
+      //
+      // EXCEPT when a contract default already absorbs undefined: a
+      // `prop:`-kind source with a default renders as `(this.x ?? d)` —
+      // never undefined — so the guard's `=== undefined` branch is
+      // statically dead (eslint no-constant-binary-expression on generated
+      // ShowMore) and evaluates the coalesced accessor twice. Emit
+      // `String(...)` directly for that shape; every other source (bare
+      // prop, path'd prop, channel, projection, iteration local) can still
+      // observe undefined and keeps the guard.
+      const defaultAbsorbsUndefined =
+        value.kind === "prop" &&
+        (value.path === undefined || value.path.length === 0) &&
+        ctx.styledByName.get(value.prop)?.defaultExpr !== undefined;
       entries.push(
-        `'${varName}': ${valueExpr} === undefined ? undefined : String(${valueExpr})`,
+        defaultAbsorbsUndefined
+          ? `'${varName}': String(${valueExpr})`
+          : `'${varName}': ${valueExpr} === undefined ? undefined : String(${valueExpr})`,
       );
     }
     if (entries.length > 0) {
@@ -3041,7 +3074,6 @@ function renderLitDomNode(
   //   kind="count": ${Array.from({ length: count }, (_, index) => html`...`)}
   if (node.iteration) {
     const { kind, source, indexVar, itemVar } = node.iteration;
-    const params = kind === "array" ? `${itemVar}, ${indexVar}` : `_, ${indexVar}`;
     // PRODUCTION-ARRAY-ITERATION-CONSUMER-01: route iteration source
     // through the binding-value renderer. The previous bare `this.X`
     // happened to work for `prop:X` because Lit components expose props
@@ -3074,6 +3106,19 @@ function renderLitDomNode(
     const sourceHasAccessorDefault =
       source.kind === "prop" &&
       ctx.styledByName.get(source.prop)?.defaultExpr !== undefined;
+    // CODEGEN-EMIT-LINT-HYGIENE-01: the callback parameter list derives
+    // from the emitted child body — an `index` param the body never
+    // references is a no-unused-vars finding in the generated component.
+    const childBody = `${separator}${withIfGuard}${separator}${pad}`;
+    const usesIndex = new RegExp(`\\b${indexVar}\\b`).test(childBody);
+    const params =
+      kind === "array"
+        ? usesIndex
+          ? `${itemVar}, ${indexVar}`
+          : itemVar
+        : usesIndex
+          ? `_, ${indexVar}`
+          : "";
     const arrowSource =
       kind === "array"
         ? `(${sourceHasAccessorDefault ? sourceExpr : `${sourceExpr} ?? []`}).map((${params}) => html\`${separator}${withIfGuard}${separator}${pad}\`)`
@@ -3205,7 +3250,12 @@ function renderLitBinding(
       // `?? undefined` would be dead code TS rejects as
       // "right operand of ?? is unreachable" (TS2869). No corpus ARIA-mixin
       // prop currently declares a contract default, but the gate keeps the
-      // emitter correct if one is added.
+      // emitter correct if one is added. The same default absorption governs
+      // the ARIA boolean serialization below: with a contract default the
+      // accessor is never undefined, so an `=== undefined` hole guard would
+      // be statically dead (no-constant-binary-expression on generated
+      // Dialog/Sheet) and would evaluate the coalesced accessor twice — the
+      // defaulted path emits the guard-free single-evaluation form instead.
       const hasDefault =
         ctx.styledByName.get(expr.prop)?.defaultExpr !== undefined;
       const acc =
@@ -3231,10 +3281,15 @@ function renderLitBinding(
       // explicit `'true'`/`'false'` string the ARIA spec expects —
       // lit-analyzer's HTML data model types these attribute slots
       // as the strict union `"true" | "false" | undefined` and
-      // refuses `boolean | undefined`. The ternary preserves
-      // undefined so `ifDefined` can omit the attribute when unset.
+      // refuses `boolean | undefined`. Without a contract default the
+      // ternary preserves undefined so `ifDefined` can omit the attribute
+      // when unset; with one, the default already absorbs undefined and the
+      // guard-free form is emitted.
       if (attr.startsWith("aria-")) {
         if (isBoolean) {
+          if (hasDefault) {
+            return `${attr}=\${ifDefined(${acc} ? 'true' : 'false')}`;
+          }
           return `${attr}=\${ifDefined(${rawAcc} === undefined ? undefined : (${rawAcc} ? 'true' : 'false'))}`;
         }
         return `${attr}=\${ifDefined(${acc})}`;

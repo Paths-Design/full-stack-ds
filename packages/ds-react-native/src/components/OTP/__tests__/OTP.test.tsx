@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { OTP } from "../OTP";
+import type { OTP } from "../OTP";
 // @generated:end
 
 // @generated:start tests

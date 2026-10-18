@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { Accordion } from "../Accordion";
+import type { Accordion } from "../Accordion";
 // @generated:end
 
 // @generated:start tests

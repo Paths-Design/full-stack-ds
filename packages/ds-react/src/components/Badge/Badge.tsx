@@ -63,7 +63,7 @@ export function Badge({
   "data-testid": testId,
   children,
   icon,
-  showStatusIcon,
+  showStatusIcon: _showStatusIcon,
   ...rest
 }: BadgeProps) {
   const classNames = [

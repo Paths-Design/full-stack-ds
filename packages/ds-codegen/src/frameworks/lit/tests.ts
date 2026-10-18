@@ -172,7 +172,9 @@ function generateCompoundStateContainerTest(ir: ComponentIR): string {
   lines.push(`    document.body.append(container);`);
   lines.push(`    await customElements.whenDefined("${elementName}");`);
   lines.push(`    const el = container.querySelector("${elementName}")!;`);
-  lines.push(`    await (el as any).updateComplete;`);
+  lines.push(
+    `    await (el as HTMLElement & { updateComplete?: Promise<unknown> }).updateComplete;`,
+  );
   lines.push(`    expect(el).toBeInstanceOf(HTMLElement);`);
   lines.push(`    container.remove();`);
   lines.push(`  });`);
@@ -181,7 +183,9 @@ function generateCompoundStateContainerTest(ir: ComponentIR): string {
   for (const variant of plan.variants) {
     lines.push(``);
     lines.push(`  it("applies ${variant.dimension}=${variant.value} variant class", async () => {`);
-    lines.push(`    const el = document.createElement("${elementName}") as any;`);
+    lines.push(`    const el = document.createElement("${elementName}") as HTMLElement & {`);
+    lines.push(`      updateComplete?: Promise<unknown>;`);
+    lines.push(`    };`);
     lines.push(`    el.setAttribute("${variant.dimension}", "${variant.value}");`);
     lines.push(`    const container = document.createElement("div");`);
     lines.push(`    container.append(el);`);
@@ -206,18 +210,34 @@ function generateCompoundStateContainerTest(ir: ComponentIR): string {
   lines.push(`    await customElements.whenDefined("${subTagList}");`);
   lines.push(`    await customElements.whenDefined("${subTagTab}");`);
   lines.push(`    await customElements.whenDefined("${subTagPanel}");`);
-  lines.push(`    const tabsEl = document.createElement("${elementName}") as any;`);
+  lines.push(`    const tabsEl = document.createElement("${elementName}") as HTMLElement & {`);
+  lines.push(`      value: string;`);
+  lines.push(`      idBase?: string;`);
+  lines.push(`      updateComplete?: Promise<unknown>;`);
+  lines.push(`    };`);
   lines.push(`    tabsEl.value = "a";`);
   lines.push(`    tabsEl.idBase = "axe-test";`);
   lines.push(`    const listEl = document.createElement("${subTagList}");`);
-  lines.push(`    const tabA = document.createElement("${subTagTab}") as any;`);
+  lines.push(`    const tabA = document.createElement("${subTagTab}") as HTMLElement & {`);
+  lines.push(`      value: string;`);
+  lines.push(`      updateComplete?: Promise<unknown>;`);
+  lines.push(`    };`);
   lines.push(`    tabA.value = "a"; tabA.textContent = "Tab A";`);
-  lines.push(`    const tabB = document.createElement("${subTagTab}") as any;`);
+  lines.push(`    const tabB = document.createElement("${subTagTab}") as HTMLElement & {`);
+  lines.push(`      value: string;`);
+  lines.push(`      updateComplete?: Promise<unknown>;`);
+  lines.push(`    };`);
   lines.push(`    tabB.value = "b"; tabB.textContent = "Tab B";`);
   lines.push(`    listEl.append(tabA, tabB);`);
-  lines.push(`    const panelA = document.createElement("${subTagPanel}") as any;`);
+  lines.push(`    const panelA = document.createElement("${subTagPanel}") as HTMLElement & {`);
+  lines.push(`      value: string;`);
+  lines.push(`      updateComplete?: Promise<unknown>;`);
+  lines.push(`    };`);
   lines.push(`    panelA.value = "a"; panelA.textContent = "Panel A";`);
-  lines.push(`    const panelB = document.createElement("${subTagPanel}") as any;`);
+  lines.push(`    const panelB = document.createElement("${subTagPanel}") as HTMLElement & {`);
+  lines.push(`      value: string;`);
+  lines.push(`      updateComplete?: Promise<unknown>;`);
+  lines.push(`    };`);
   lines.push(`    panelB.value = "b"; panelB.textContent = "Panel B";`);
   lines.push(`    tabsEl.append(listEl, panelA, panelB);`);
   lines.push(`    container.append(tabsEl);`);

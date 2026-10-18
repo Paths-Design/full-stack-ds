@@ -2,9 +2,9 @@
 import {
   Component,
   Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
+  type OnChanges,
+  type OnInit,
+  type SimpleChanges,
   computed,
   signal,
   forwardRef,

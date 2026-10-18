@@ -12,6 +12,7 @@ import {
 } from "../../test-plan.js";
 import { isSurfaceComponent } from "./surface-emit.js";
 import { generateReactSurfaceTest } from "./surface-tests.js";
+import { identifierRegex } from "./component-source.js";
 
 /**
  * Map a channel `valueType` to a placeholder JS literal for use in
@@ -73,7 +74,21 @@ function channelValuePlaceholder(valueType: string | undefined): string {
   return "false";
 }
 
-export function generateReactTest(ir: ComponentIR): string {
+export interface ReactTestEmitOptions {
+  /**
+   * Concatenated `@custom` region bodies preserved from the existing
+   * generated test file (read by the factory from componentsRoot).
+   * Preserved suites legally render part components (Tabs' hand-written
+   * region renders TabsList/TabsTab/TabsPanel), so import assembly must
+   * scan their usage too. CODEGEN-EMIT-LINT-HYGIENE-01.
+   */
+  preservedCustomTests?: string;
+}
+
+export function generateReactTest(
+  ir: ComponentIR,
+  options?: ReactTestEmitOptions,
+): string {
   // Presence-surface family: behavioral test plan replaces the legacy
   // class-token-only plan. Kind-aware: non-anchored kinds (dialog, sheet,
   // toast) keep the generic test plan; their surface block is fact-tracking.
@@ -83,13 +98,10 @@ export function generateReactTest(ir: ComponentIR): string {
   const plan = buildComponentTestPlan(ir);
   // Type aliases referenced by the required-prop placeholder bag (e.g.
   // {} as PostcardAuthor) must be imported alongside the component
-  // name so the generated test file type-checks.
+  // name so the generated test file type-checks. The final import LIST
+  // is derived from emitted-body usage after the body is assembled —
+  // see the testsBody scan below (CODEGEN-EMIT-LINT-HYGIENE-01).
   const requiredPropTypeImports = collectRequiredPropTypeImports(plan);
-  const allImports = [
-    plan.name,
-    ...plan.compoundImports,
-    ...requiredPropTypeImports.map((name) => `type ${name}`),
-  ].join(", ");
   const renderProps = plan.renderOpenProp ? ` ${plan.renderOpenProp}={true}` : "";
   // Required non-channel props splatted on every render call so the
   // test JSX satisfies the component's TypeScript contract. The bag
@@ -116,22 +128,6 @@ export function generateReactTest(ir: ComponentIR): string {
   const closer = plan.acceptsChildren
     ? `>${defaultTestContent?.html ?? "content"}</${plan.name}>`
     : ` />`;
-
-  const importsBody = [
-    `import { describe, it, expect${plan.hasBehaviorTests ? ", vi" : ""} } from "vitest";`,
-    `import { render, screen${plan.needsAct ? ", act" : ""}${plan.needsFireEvent ? ", fireEvent" : ""} } from "@testing-library/react";`,
-    ...(plan.needsUserEvent
-      ? [`import userEvent from "@testing-library/user-event";`]
-      : []),
-    `import { axe } from "vitest-axe";`,
-    `import { ${allImports} } from "../${plan.name}";`,
-    ``,
-    `declare module "vitest" {`,
-    `  interface Assertion<T> {`,
-    `    toHaveNoViolations(): void;`,
-    `  }`,
-    `}`,
-  ].join("\n");
 
   const lines: string[] = [];
   lines.push(`const componentAxeOptions = {`);
@@ -403,6 +399,46 @@ export function generateReactTest(ir: ComponentIR): string {
   lines.push(`});`);
 
   const testsBody = lines.join("\n");
+
+  // Import sets derive from usage (CODEGEN-EMIT-LINT-HYGIENE-01): the
+  // generated body renders only the root; a preserved @custom region is
+  // the only place hand-written suites render parts, so both texts are
+  // scanned. A value import nothing renders is an unused-var finding in
+  // the generated test. The root name always passes (every plan renders
+  // it at least once).
+  const usageHaystack = `${testsBody}\n${options?.preservedCustomTests ?? ""}`;
+  const usedCompoundImports = plan.compoundImports.filter((name) =>
+    identifierRegex(name).test(usageHaystack),
+  );
+  const usedRequiredPropTypeImports = requiredPropTypeImports.filter((name) =>
+    identifierRegex(name).test(usageHaystack),
+  );
+  const usesAct = /\bact\(/.test(testsBody);
+  const usesFireEvent = /\bfireEvent\./.test(testsBody);
+  const usesUserEvent = /\buserEvent\./.test(testsBody);
+  const allImports = [
+    plan.name,
+    ...usedCompoundImports,
+    ...usedRequiredPropTypeImports.map((name) => `type ${name}`),
+  ].join(", ");
+  const importsBody = [
+    `import { describe, it, expect${plan.hasBehaviorTests ? ", vi" : ""} } from "vitest";`,
+    `import { render, screen${usesAct ? ", act" : ""}${usesFireEvent ? ", fireEvent" : ""} } from "@testing-library/react";`,
+    ...(usesUserEvent
+      ? [`import userEvent from "@testing-library/user-event";`]
+      : []),
+    `import { axe } from "vitest-axe";`,
+    `import { ${allImports} } from "../${plan.name}";`,
+    ``,
+    `declare module "vitest" {`,
+    `  interface Assertion<T> {`,
+    `    // The positional T keeps this augmentation mergeable with vitest's`,
+    `    // own Assertion<T = any> declaration (TS2428 fires on any rename);`,
+    `    // the expected param references it so it is never an unused type param.`,
+    `    toHaveNoViolations(expected?: T): void;`,
+    `  }`,
+    `}`,
+  ].join("\n");
 
   const sections: Section[] = [
     { kind: "generated", id: "imports", body: importsBody },

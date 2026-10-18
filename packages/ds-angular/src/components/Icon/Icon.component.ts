@@ -1,5 +1,5 @@
 // @generated:start imports
-import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass, NgIf, NgFor } from "@angular/common";
 import { resolveIcon } from "@full-stack-ds/iconography";
 // @generated:end

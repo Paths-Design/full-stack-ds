@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type HTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import { Image } from "../Image/Image";
 import "./Avatar.css";
@@ -41,7 +41,7 @@ export function Avatar({
   src,
   name,
   initials,
-  priority,
+  priority: _priority,
   ...rest
 }: AvatarProps) {
   const classNames = [

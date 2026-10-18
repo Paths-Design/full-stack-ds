@@ -8,24 +8,42 @@ import globals from "globals";
 /**
  * Flat ESLint configuration for the full-stack-ds monorepo.
  *
- * Scope decisions:
+ * Scope decisions (updated by CODEGEN-EMIT-LINT-HYGIENE-01):
  *   - Lint TypeScript, TSX, and the small JS surface (eslint config, scripts).
- *   - Skip `dist/`, build outputs, lockfiles, and Vue/Svelte/Angular/Lit
- *     framework packages (their own toolchains lint their templates).
+ *   - Skip `dist/`, build outputs, lockfiles.
  *   - Skip `packages/ds-contracts/portfolio-original/` (untranslated upstream).
- *   - Skip generated test files (`__tests__/`) so the contract-driven test
- *     output isn't penalized for stylistic choices the generator makes.
+ *   - The six rail-admitted generated packages (ds-react, ds-react-native,
+ *     ds-vue, ds-svelte, ds-angular, ds-lit) ARE linted, including their
+ *     generated `__tests__` (re-included below via negated ignores). The
+ *     emitters are responsible for producing lint-clean output; the root
+ *     gate and the admission-rail `lint` checks hold that line.
+ *   - `.vue` and `.svelte` SFCs are not linted here: this config has no
+ *     parser for them, so directory traversal skips them by extension.
+ *     SFC linting needs per-target toolchains (eslint-plugin-vue /
+ *     eslint-plugin-svelte) — a declared known gap in each framework's
+ *     validation plan, not a silent ignore.
+ *   - Hand-authored test files outside the generated packages stay ignored
+ *     so contract-driven authoring isn't penalized for stylistic choices;
+ *     generated tests have no such excuse and are linted.
  *
  * Rule philosophy: focus on rules that catch real bugs (unused vars,
  * unreachable code, hooks misuse) rather than stylistic preferences. The
- * generated React code uses patterns (closures around setters, `as` casts
- * for Booleanish coercion) that are intentional and would be noisy to flag.
+ * generated React code uses patterns (`as` casts for Booleanish coercion)
+ * that are intentional and would be noisy to flag.
+ *
+ * React-family scoping: react / react-hooks rules apply ONLY to the
+ * showcase app and the two React-family packages. The other targets
+ * deliberately mirror the `use*` behavior-primitive API (Vue composables,
+ * Angular controller calls), which the react-hooks rule misreads as hook
+ * misuse — that is a rule-domain mismatch, not an emitted-code defect.
  */
 export default tseslint.config(
   {
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
+      // svelte-package staging output (build scratch under ds-svelte).
+      "**/.svelte-kit/**",
       "**/.vite/**",
       "**/.vitest-cache/**",
       "**/coverage/**",
@@ -40,14 +58,20 @@ export default tseslint.config(
       // source. Untracked and gitignored; its own toolchain owns it.
       ".codex/**",
       "packages/ds-contracts/portfolio-original/**",
-      "packages/ds-vue/**",
-      "packages/ds-svelte/**",
-      "packages/ds-angular/**",
-      "packages/ds-lit/**",
       "packages/ds-contracts/tokens/**",
       "**/__tests__/**",
       "**/*.test.ts",
       "**/*.test.tsx",
+      // Generated packages re-include their whole src tree — component
+      // sources AND generated tests. Lint findings there are emitter bugs
+      // (unused imports, dead guards, type-only imports) and get fixed in
+      // the emitter, never suppressed here.
+      "!packages/ds-react/src/**",
+      "!packages/ds-react-native/src/**",
+      "!packages/ds-vue/src/**",
+      "!packages/ds-svelte/src/**",
+      "!packages/ds-angular/src/**",
+      "!packages/ds-lit/src/**",
       "e2e/**",
       "playwright-report/**",
       "test-results/**",
@@ -66,6 +90,39 @@ export default tseslint.config(
         ...globals.node,
       },
     },
+    rules: {
+      // TypeScript handles unused-var detection more accurately than the JS
+      // rule; mute the latter and configure the former.
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      // The generator emits `as "true" | "false"` casts and other narrow
+      // assertions on purpose; flag truly any-typed lapses with a warning.
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-empty-object-type": "off",
+      // Prefer `import type` to keep emit clean — the emitters honor this;
+      // a violation is a template bug, not stylistic noise.
+      "@typescript-eslint/consistent-type-imports": [
+        "warn",
+        { prefer: "type-imports", disallowTypeAnnotations: false },
+      ],
+    },
+  },
+  {
+    // React-family only: showcase app + ds-react + ds-react-native. The
+    // remaining targets mirror the `use*` API on purpose (see header), so
+    // react/react-hooks rules must not fire on them.
+    files: [
+      "src/**/*.{ts,tsx}",
+      "packages/ds-react/src/**/*.{ts,tsx}",
+      "packages/ds-react-native/src/**/*.{ts,tsx}",
+    ],
     plugins: {
       react,
       "react-hooks": reactHooks,
@@ -84,39 +141,26 @@ export default tseslint.config(
       // React 19+ no longer requires JSX-in-scope; modern JSX runtime handles it.
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
-      // TypeScript handles unused-var detection more accurately than the JS
-      // rule; mute the latter and configure the former.
-      "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-      // The generator emits `as "true" | "false"` casts and other narrow
-      // assertions on purpose; flag truly any-typed lapses with a warning.
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-empty-object-type": "off",
-      // Prefer `import type` to keep emit clean — warning so the generator
-      // output isn't broken by a strict gate.
-      "@typescript-eslint/consistent-type-imports": [
-        "warn",
-        { prefer: "type-imports", disallowTypeAnnotations: false },
-      ],
     },
   },
   {
-    // Generated component sources rely on patterns ESLint flags as warnings
-    // (deep destructure with rename, unused destructured props for spread).
-    // Suppress the noise — these files are mechanically produced.
-    files: [
-      "packages/ds-react/src/components/**/*.tsx",
-      "packages/ds-react/src/components/**/*.ts",
-    ],
+    // Lit policy boundary (declared, mirroring the lit-analyzer boundary in
+    // packages/ds-codegen/src/validation/frameworks/lit.ts): the Lit emitter
+    // closes over the host via `const host = this;` inside the behavior
+    // getter — object-literal option getters cannot use arrow `this`, so the
+    // alias is the idiomatic Lit pattern, not a defect. The rail's lit plan
+    // carries the same boundary as a known gap.
+    files: ["packages/ds-lit/src/**/*.ts"],
     rules: {
-      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-this-alias": "off",
+    },
+  },
+  {
+    // CommonJS config files (jest configs, setups) — `require()` is the
+    // correct module system there by design; the ESM rule must not fire.
+    files: ["**/*.cjs"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
 );

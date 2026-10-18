@@ -34,7 +34,7 @@ export function ProfileFlag({
   className,
   "data-testid": testId,
   children,
-  profile,
+  profile: _profile,
   ...rest
 }: ProfileFlagProps) {
   const classNames = [

@@ -2,11 +2,14 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import { axe } from "vitest-axe";
-import { Select, SelectTrigger, SelectContent, SelectOption } from "../Select";
+import { Select } from "../Select";
 
 declare module "vitest" {
   interface Assertion<T> {
-    toHaveNoViolations(): void;
+    // The positional T keeps this augmentation mergeable with vitest's
+    // own Assertion<T = any> declaration (TS2428 fires on any rename);
+    // the expected param references it so it is never an unused type param.
+    toHaveNoViolations(expected?: T): void;
   }
 }
 // @generated:end

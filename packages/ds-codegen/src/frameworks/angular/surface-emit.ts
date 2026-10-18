@@ -39,6 +39,7 @@ import {
   type AnchoredSurfacePolicy,
   type PublicDismissalProp,
 } from "../../semantics.js";
+import { TYPE_ONLY_ANGULAR_CORE } from "./emitted-imports.js";
 
 export interface AngularSurfaceFiles {
   rootComponent: string;
@@ -136,9 +137,9 @@ function emitRootComponent(
     `import {`,
     `  Component,`,
     `  Input,`,
-    `  OnChanges,`,
-    `  OnInit,`,
-    `  SimpleChanges,`,
+    `  type OnChanges,`,
+    `  type OnInit,`,
+    `  type SimpleChanges,`,
     `  computed,`,
     `  signal,`,
     `  forwardRef,`,
@@ -321,11 +322,14 @@ function emitTriggerDirective(ir: ComponentIR, surface: SurfaceIR): string {
     `  Directive,`,
     `  ElementRef,`,
     `  HostBinding,`,
-    `  OnInit,`,
-    `  OnDestroy,`,
+    `  type OnInit,`,
+    `  type OnDestroy,`,
     `  inject,`,
     `} from "@angular/core";`,
-    `import { ${name}ContextToken, type ${name}ContextValue } from "./use${name}.js";`,
+    // CODEGEN-EMIT-LINT-HYGIENE-01: the directive body consumes only the
+    // context TOKEN (it registers the host with the root's controller);
+    // the Value type is never referenced — do not import it.
+    `import { ${name}ContextToken } from "./use${name}.js";`,
     `// @generated:end`,
     ``,
     `// @custom:start imports`,
@@ -625,6 +629,9 @@ function emitContentComponent(
     positioningEnabled || portalsToBody ? "DoCheck" : "",
   ].filter((v) => v !== "");
 
+  // CODEGEN-EMIT-LINT-HYGIENE-01: lifecycle interfaces are always
+  // type-only references (implements clauses / signatures) — import them
+  // with inline type markers.
   const coreImportNames = [
     "Component",
     "ElementRef",
@@ -636,7 +643,9 @@ function emitContentComponent(
     "computed",
     positioningEnabled ? "DestroyRef" : "",
     "ChangeDetectionStrategy",
-  ].filter((v) => v !== "");
+  ]
+    .filter((v) => v !== "")
+    .map((n) => (TYPE_ONLY_ANGULAR_CORE.has(n) ? `type ${n}` : n));
 
   return [
     `// @generated:start imports`,

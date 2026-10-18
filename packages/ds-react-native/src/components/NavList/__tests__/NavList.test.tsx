@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { NavList } from "../NavList";
+import type { NavList } from "../NavList";
 // @generated:end
 
 // @generated:start tests

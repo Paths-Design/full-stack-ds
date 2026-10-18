@@ -1,7 +1,7 @@
 // @generated:start imports
 import { describe, it } from "vitest";
 import type { ComponentProps } from "react";
-import { RadioGroup } from "../RadioGroup";
+import type { RadioGroup } from "../RadioGroup";
 // @generated:end
 
 // @generated:start tests

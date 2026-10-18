@@ -1,5 +1,5 @@
 // @generated:start imports
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type HTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import "./Skeleton.css";
 // @generated:end
@@ -48,9 +48,9 @@ export function Skeleton({
   density = "regular",
   className,
   "data-testid": testId,
-  aspectRatio,
+  aspectRatio: _aspectRatio,
   lines,
-  radius,
+  radius: _radius,
   decorative = true,
   ariaLabel,
   ...rest
