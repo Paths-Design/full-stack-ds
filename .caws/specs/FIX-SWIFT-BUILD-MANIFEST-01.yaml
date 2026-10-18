@@ -59,3 +59,11 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/swift-build-manifest-b6396573/tmp/swift-build-manifest-checks/manifest.log"
     commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Clean candidate receipt binds the inspected source-manifest digest; all 24 Chromium cases pass, the renderer control fails for shared scale distance, and the forbidden-import control fails at the browser boundary guard."
+    recorded_at: "2026-10-18T22:34:26.561Z"
+    command: "pnpm run e2e:analytical"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/swift-build-manifest-b6396573/tmp/analytical-browser-proof/receipt.json"
+    commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
