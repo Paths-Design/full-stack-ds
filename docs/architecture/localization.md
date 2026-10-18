@@ -5,7 +5,7 @@ status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
 updated: 2026-10-18
-verified_at_commit: dbcee8133
+verified_at_commit: dd602a390
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
