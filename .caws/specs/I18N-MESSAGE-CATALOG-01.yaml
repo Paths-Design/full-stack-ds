@@ -1,9 +1,11 @@
 id: I18N-MESSAGE-CATALOG-01
 title: 'Contract message catalog: translatable strings from contract to every runtime family'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Contract messages block with catalog runtimes on every web framework, React Native, SwiftUI and Compose; MESSAGE_INVALID and L10N gates enforced in generate:check; native residuals ledgered'
 created_at: '2026-10-18T08:27:17.320Z'
-updated_at: '2026-10-18T12:49:55.082Z'
+updated_at: '2026-10-18T14:55:08.854Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
