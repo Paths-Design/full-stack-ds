@@ -3255,7 +3255,7 @@ function inferBindingValueType(
     // shape against the iteration callback parameter's typed signature.
     return expr.local === "index" ? "number" : undefined;
   }
-  if (expr.kind === "projection") return expr.op === "selectionLabel" ? "string" : "number";
+  if (expr.kind === "projection") return "string";
   if (expr.kind === "predicate") {
     // BINDING-EXPRESSION-V2-PREDICATE-01: every predicate operator
     // (`eq`, `contains`, `memberOf`) evaluates to a boolean.
@@ -3310,9 +3310,7 @@ function renderReactBinding(
       const source = renderReactBinding("__projection_source__", expr.source, ctx);
       return source === null
         ? null
-        : expr.op === "selectionLabel"
-          ? composeBindingProjectionExpression(expr.op, source, renderReactBinding("__projection_operand__", expr.selection, ctx) ?? "undefined", renderReactBinding("__projection_operand__", expr.fallback, ctx) ?? "undefined")
-          : composeBindingProjectionExpression(expr.op, source);
+        : composeBindingProjectionExpression(expr.op, source, renderReactBinding("__projection_operand__", expr.selection, ctx) ?? "undefined", renderReactBinding("__projection_operand__", expr.fallback, ctx) ?? "undefined");
     }
     case "valueMap": {
       const source = renderReactBinding(attr, expr.source, ctx);

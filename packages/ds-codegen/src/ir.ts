@@ -354,12 +354,6 @@ export type BindingExpression =
     }
   | { kind: "iterationLocal"; local: "index" | "item"; path?: string[] }
   | {
-      /** Closed, value-shaped projection over a binding source. */
-      kind: "projection";
-      op: "dateDayOfMonth";
-      source: BindingExpression;
-    }
-  | {
       /** Labels of selected values in option order; unknown values use fallback. */
       kind: "projection";
       op: "selectionLabel";
@@ -463,8 +457,6 @@ export function composeBindingProjectionExpression(
         throw new Error("selectionLabel requires selection and fallback operands");
       }
       return `((${sourceExpression} || []).filter(option => (Array.isArray(${selectionExpression}) ? ${selectionExpression} : [${selectionExpression}]).includes(option.value)).map(option => option.label).join(', ') || ${fallbackExpression})`;
-    case "dateDayOfMonth":
-      return `${sourceExpression}.getDate()`;
   }
 }
 
@@ -3039,10 +3031,8 @@ function validateBindingAgainstScope(
     return;
   }
   if (binding.kind === "projection") {
-    if (binding.op === "selectionLabel") {
-      for (const operand of [binding.selection, binding.fallback]) {
-        validateBindingAgainstScope(operand, `${siteLabel} selection label operand`, knownChannels, knownProps, enclosingIteration, componentName);
-      }
+    for (const operand of [binding.selection, binding.fallback]) {
+      validateBindingAgainstScope(operand, `${siteLabel} selection label operand`, knownChannels, knownProps, enclosingIteration, componentName);
     }
     validateBindingAgainstScope(
       binding.source,
@@ -3054,16 +3044,6 @@ function validateBindingAgainstScope(
       false,
       false,
     );
-    if (
-      binding.op === "dateDayOfMonth" &&
-      binding.source.kind === "iterationLocal" &&
-      binding.source.local === "item" &&
-      enclosingIteration?.itemType !== "Date"
-    ) {
-      throw new Error(
-        `[${componentName}] DOM ${siteLabel} uses project:dateDayOfMonth(iter:item), but the enclosing iteration itemType is '${enclosingIteration?.itemType ?? "(unspecified)"}', not 'Date'.`,
-      );
-    }
     return;
   }
   if (binding.kind === "valueMap") {
@@ -4245,24 +4225,6 @@ export function parseBindingExpression(expr: string): BindingExpression {
     return { kind: "projection", op: "selectionLabel", source, selection, fallback };
   }
 
-  const projectionMatch = expr.match(
-    /^project:(dateDayOfMonth)\((.*)\)$/,
-  );
-  if (projectionMatch) {
-    const source = parseBindingExpression(projectionMatch[2]);
-    if (
-      source.kind === "prop" ||
-      source.kind === "channel" ||
-      source.kind === "iterationLocal"
-    ) {
-      return {
-        kind: "projection",
-        op: projectionMatch[1] as "dateDayOfMonth",
-        source,
-      };
-    }
-  }
-
   // Path: zero or more `.segment` tails. Anchored to consume the rest of
   // the string after the root so an unexpected suffix (operators, brackets,
   // optional chaining) falls through to `literal` instead of being
@@ -4703,9 +4665,7 @@ export function promoteIterationLocals(
 ): BindingExpression {
   if (binding.kind === "projection") {
     const source = promoteIterationLocals(binding.source, iteration);
-    if (binding.op === "selectionLabel") return { ...binding, source, selection: promoteIterationLocals(binding.selection, iteration), fallback: promoteIterationLocals(binding.fallback, iteration) };
-    if (source === binding.source) return binding;
-    return { ...binding, source };
+    return { ...binding, source, selection: promoteIterationLocals(binding.selection, iteration), fallback: promoteIterationLocals(binding.fallback, iteration) };
   }
   if (binding.kind === "valueMap") {
     const source = promoteIterationLocals(binding.source, iteration);

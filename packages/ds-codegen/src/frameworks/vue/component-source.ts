@@ -3029,9 +3029,7 @@ function renderVueBindingValue(
       const source = renderVueBindingValue(expr.source, ctx);
       return source === null
         ? null
-        : expr.op === "selectionLabel"
-          ? composeBindingProjectionExpression(expr.op, source, renderVueBindingValue(expr.selection, ctx) ?? "undefined", renderVueBindingValue(expr.fallback, ctx) ?? "undefined")
-          : composeBindingProjectionExpression(expr.op, source);
+        : composeBindingProjectionExpression(expr.op, source, renderVueBindingValue(expr.selection, ctx) ?? "undefined", renderVueBindingValue(expr.fallback, ctx) ?? "undefined");
     }
     case "valueMap": {
       const source = renderVueBindingValue(expr.source, ctx);

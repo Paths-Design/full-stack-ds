@@ -123,54 +123,6 @@ const ARRAY_CONTRACT: ComponentContract = {
   },
 };
 
-const DATE_PROJECTION_CONTRACT: ComponentContract = {
-  name: "FixtureDateProjection",
-  layer: "primitive",
-  cssPrefix: "fixture-date-projection",
-  anatomy: {
-    parts: ["root", "day", "label"],
-    dom: {
-      tag: "div",
-      part: "root",
-      children: [{
-        tag: "button",
-        part: "day",
-        iterate: { source: "prop:days", kind: "array", itemType: "Date" },
-        children: [{
-          tag: "span",
-          part: "label",
-          content: "project:dateDayOfMonth(iter:item)",
-        }],
-      }],
-    },
-  },
-  props: {
-    styled: {
-      members: [{
-        name: "days",
-        propType: { kind: "array", items: { kind: "ref", to: "Date" } },
-        description: "Dates to render",
-      }],
-    },
-  },
-};
-
-describe("BINDING-DATE-PROJECTION-01: Date labels lower through one closed IR operation", () => {
-  const ir = buildComponentIR(DATE_PROJECTION_CONTRACT);
-
-  it("emits getDate() from the iteration item in every executable target", () => {
-    const sources = [
-      generateReactComponentSource(ir, "../../primitives"),
-      generateVueComponentSource(ir),
-      generateSvelteComponentSource(ir),
-      generateAngularComponentSource(ir),
-      generateLitComponentSource(ir),
-      generateReactNativeComponentSource(ir).componentFile,
-    ];
-    for (const source of sources) expect(source).toContain("item.getDate()");
-  });
-});
-
 describe("IR-DOM-ITERATE-CAPABILITY-01: count iteration lowering", () => {
   const ir = buildComponentIR(COUNT_CONTRACT);
 

@@ -2619,9 +2619,7 @@ function renderSvelteBindingValue(
       const source = renderSvelteBindingValue(expr.source, ctx);
       return source === null
         ? null
-        : expr.op === "selectionLabel"
-          ? composeBindingProjectionExpression(expr.op, source, renderSvelteBindingValue(expr.selection, ctx) ?? "undefined", renderSvelteBindingValue(expr.fallback, ctx) ?? "undefined")
-          : composeBindingProjectionExpression(expr.op, source);
+        : composeBindingProjectionExpression(expr.op, source, renderSvelteBindingValue(expr.selection, ctx) ?? "undefined", renderSvelteBindingValue(expr.fallback, ctx) ?? "undefined");
     }
     case "valueMap": {
       const source = renderSvelteBindingValue(expr.source, ctx);

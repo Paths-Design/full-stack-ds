@@ -3632,9 +3632,7 @@ function renderAngularBindingValue(
       const source = renderAngularBindingValue(expr.source, ctx);
       return source === null
         ? null
-        : expr.op === "selectionLabel"
-          ? `selectionLabel(${source}, ${renderAngularBindingValue(expr.selection, ctx)}, ${renderAngularBindingValue(expr.fallback, ctx)})`
-          : composeBindingProjectionExpression(expr.op, source);
+        : `selectionLabel(${source}, ${renderAngularBindingValue(expr.selection, ctx)}, ${renderAngularBindingValue(expr.fallback, ctx)})`;
     }
     case "valueMap": {
       const source = renderAngularBindingValue(expr.source, ctx);

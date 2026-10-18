@@ -128,6 +128,17 @@ class FsdsDateGridTest {
     }
 
     @Test
+    fun aTimeOfDayInTheSelectionOrBoundsDoesNotShiftTheDay() {
+        val evening = Date.from(LocalDate.of(2031, 3, 10).atTime(23, 30).atZone(zone).toInstant())
+        assertEquals(listOf("2031-03-10"), grid(selection = listOf(evening)).days().filter { it.selected }.map { it.key })
+        // A bound late on the 5th still admits the 5th: bounds are inclusive by day.
+        val lateMin = Date.from(LocalDate.of(2031, 3, 5).atTime(18, 0).atZone(zone).toInstant())
+        val bounded = grid(minDate = lateMin)
+        assertFalse(bounded.find("2031-03-05").disabled)
+        assertTrue(bounded.find("2031-03-04").disabled)
+    }
+
+    @Test
     fun aDisabledGridDisablesEveryDayAndBothNavs() {
         val disabled = grid(disabled = true)
         assertTrue(disabled.days().all { it.disabled })

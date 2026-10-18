@@ -52,10 +52,8 @@ export function visitBinding(expr: BindingExpression | undefined, visit: (expr: 
       break;
     case "projection":
       visitBinding(expr.source, visit);
-      if (expr.op === "selectionLabel") {
-        visitBinding(expr.selection, visit);
-        visitBinding(expr.fallback, visit);
-      }
+      visitBinding(expr.selection, visit);
+      visitBinding(expr.fallback, visit);
       break;
     case "valueMap":
       visitBinding(expr.source, visit);

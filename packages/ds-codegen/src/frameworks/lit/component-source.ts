@@ -3537,9 +3537,7 @@ function renderLitBindingValue(
       const source = renderLitBindingValue(expr.source, ctx);
       return source === null
         ? null
-        : expr.op === "selectionLabel"
-          ? composeBindingProjectionExpression(expr.op, source, renderLitBindingValue(expr.selection, ctx) ?? "undefined", renderLitBindingValue(expr.fallback, ctx) ?? "undefined")
-          : composeBindingProjectionExpression(expr.op, source);
+        : composeBindingProjectionExpression(expr.op, source, renderLitBindingValue(expr.selection, ctx) ?? "undefined", renderLitBindingValue(expr.fallback, ctx) ?? "undefined");
     }
     case "valueMap": {
       const source = renderLitBindingValue(expr.source, ctx);

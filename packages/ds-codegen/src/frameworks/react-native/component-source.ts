@@ -985,10 +985,8 @@ function collectBindingRuntimeUsage(
   }
   if (binding.kind === "projection") {
     collectBindingRuntimeUsage(binding.source, ir, usage, channelPurpose);
-    if (binding.op === "selectionLabel") {
-      collectBindingRuntimeUsage(binding.selection, ir, usage, channelPurpose);
-      collectBindingRuntimeUsage(binding.fallback, ir, usage, channelPurpose);
-    }
+    collectBindingRuntimeUsage(binding.selection, ir, usage, channelPurpose);
+    collectBindingRuntimeUsage(binding.fallback, ir, usage, channelPurpose);
     return;
   }
   if (binding.kind === "conditional") {
@@ -2515,7 +2513,8 @@ function bindingExpr(binding: BindingExpression, ir: ComponentIR): string {
     return composeBindingProjectionExpression(
       binding.op,
       bindingExpr(binding.source, ir),
-      ...(binding.op === "selectionLabel" ? [bindingExpr(binding.selection, ir), bindingExpr(binding.fallback, ir)] : []),
+      bindingExpr(binding.selection, ir),
+      bindingExpr(binding.fallback, ir),
     );
   }
   if (binding.kind === "conditional") {
