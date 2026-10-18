@@ -1,9 +1,10 @@
 id: RETOKEN-VISUAL-FIXES-01
 title: 'Repair retoken-page visual defects: popover scope escape, clipped quick-pick labels, artwork repetition'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: retoken-visual-fixes
 created_at: '2026-10-18T05:50:31.024Z'
-updated_at: '2026-10-18T05:50:31.024Z'
+updated_at: '2026-10-18T05:51:20.347Z'
 created_by_session: 'session-a9c94ee7-6f8e-47ee-a9b2-6bc6ca490a8f'
 blast_radius:
   modules:
