@@ -1,6 +1,13 @@
 ---
+doc_id: ARCH-RETOKEN-PAGE-ATTEMPTS-001
+authority: architecture
+status: active
 title: Retokening page attempts
-updated: 2026-09-06
+owner: "@darianrosebrook"
+updated: 2026-10-18
+governs:
+  - e2e/fixtures/retoken-pages/**
+  - e2e/retoken-pages.spec.ts
 ---
 
 # Spotify and Pinterest as consumer probes
@@ -121,3 +128,22 @@ are a fixed local collection, not personalization. The reference's account
 analytics, advertising tools, photo assets, and complete icon set are not
 reproduced. CSS columns retain their sequential reading order and bounded
 collection; this remains a composition witness, not a virtualized feed.
+
+## Visual audit repairs (October 2026)
+
+A browser-render audit at 1440/900/390 px surfaced four defects the interaction
+suite could not see, all repaired in this slice (`RETOKEN-VISUAL-FIXES-01`):
+
+| Defect | Repair |
+|---|---|
+| Popover content portals to `document.body`, outside the page's `.retoken` scope; menu buttons fell back to the default 1px brand border and 16px text | `.pin-menu` now carries every page-scope variable it relies on (border width, base text size); the suite asserts computed `0px`/`14px` inside an open menu |
+| Quick-pick labels clipped mid-glyph at narrow widths (`white-space: nowrap; text-overflow: clip`) | Label span constrained with ellipsis. **Upstream control gap recorded:** Button exposes no label-truncation control (`Text.truncate` has no Button counterpart); the fixture's `.quick-pick .button > span` selector is a documented structural selector inside a component root, not a pattern to copy |
+| Boards sharing a `kind` rendered identical display text (three "Material futures.", three "Independent minds."), reading as duplicates inside one rail | `pinArtwork` derives each board's display text from a per-pin `headline`, with per-index issue numbers and rotated card labels; the suite asserts every related-rail image has a distinct decoded text content |
+| Comment form floated on `margin-top: auto` with `padding-top: 36px`, leaving a dead band above it whenever a pin has no comments | Fixed 16px offset; the suite bounds the comments-to-form gap at ≤24px |
+
+Polish in the same slice: the library "Home" button left-aligns with the
+"Soundroom" heading (Button's flex centering had centered the label inside its
+stretched box), and Save overlays at ≤700px use a smaller footprint so they
+cover less artwork. The suite asserts both. The detail view's back chip still
+overlaps text baked into some artwork; as an overlay control that collision is
+inherent and stays a composition decision rather than a defect.
