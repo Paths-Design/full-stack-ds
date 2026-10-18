@@ -81,3 +81,7 @@ evidence:
     status: pass
     evidence_ref: "artifact tmp/motion-lab/svelte-evidence.json and tmp/motion-lab/lit-evidence.json: all five token readouts resolve runtime values; entrance/stagger inline tweens observed; skeleton mid-pulse opacities (0.9823); icon rotation matrices mid-loop; scramble mid-swap pool symbols with identity-preserving settles; per-path SVG reveal opacities 0-to-1; full reduced-motion substitution (no inline styles, static opacities, settled text). Screenshots tmp/motion-lab/{svelte,lit}-{default,reduced}.png"
     recorded_at: "2026-10-18T18:38:43.263Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "swift build --package-path examples/motion-lab/swift --disable-sandbox → Build complete (Swift 6.4) at merge 66cb7a051; lane imports only DsSwiftUI plus lane-local Generated/FsdsMotionTokens.swift"
+    recorded_at: "2026-10-18T18:38:45.014Z"
