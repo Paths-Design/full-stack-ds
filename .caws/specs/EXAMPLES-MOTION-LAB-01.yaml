@@ -68,3 +68,8 @@ rollback:
   - 'Delete examples/motion-lab and revert examples/README.md, vitest.examples.config.ts, package.json, pnpm-lock.yaml; revert packages/ds-svelte/package.json and remove packages/ds-svelte/scripts (export removal restores prior consumer surface)'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm --filter @full-stack-ds/example-motion-lab-svelte build exit 0 at merge 66cb7a051a3a09a44ffbe25c269afd055dd936e0; lane imports only @full-stack-ds/svelte, @full-stack-ds/svelte/styles.css, @full-stack-ds/tokens/tokens.css, gsap, and app-level ../src/motion"
+    recorded_at: "2026-10-18T18:38:40.273Z"
