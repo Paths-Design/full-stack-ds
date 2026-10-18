@@ -80,7 +80,7 @@ fun Select(
     val selectMinHeight = layeredSlot("box-model.min-height")?.toFsdsDp() ?: 0.dp
 
     val selectShape = RoundedCornerShape(selectRadius)
-    val selectedLabel = selectedOptionLabel(options, resolvedValues, resolvedValue, placeholder)
+    val selectedLabel = selectedOptionLabel(options, resolvedValues, resolvedValue, multiple, placeholder)
     val chromeModifier = Modifier
         .requiredSizeIn(minWidth = selectMinWidth, minHeight = selectMinHeight)
         .clip(selectShape)
@@ -136,14 +136,16 @@ fun Select(
     }
 }
 
-/** Trigger label: the selected option's label, or the placeholder. */
-private fun selectedOptionLabel(
+/** Trigger label: the selected option's label, or the placeholder. Internal for the library's unit tests. */
+internal fun selectedOptionLabel(
     options: List<SelectOption>,
     values: List<String>,
     value: String,
+    multiple: Boolean,
     placeholder: String?,
 ): String {
-    val labels = values.mapNotNull { v -> options.firstOrNull { it.value == v }?.label }
+    val selected = if (multiple) values else listOf(value)
+    val labels = selected.mapNotNull { v -> options.firstOrNull { it.value == v }?.label }
     return if (labels.isNotEmpty()) labels.joinToString(", ") else placeholder ?: ""
 }
 // @generated:end

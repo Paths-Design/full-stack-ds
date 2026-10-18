@@ -3936,7 +3936,7 @@ function emitSelectionControl(ir: ComponentIR): string {
     lines.push(`    val selectPadding = PaddingValues(0.dp)`);
   }
   lines.push(`    val selectShape = RoundedCornerShape(${radiusSlot ? "selectRadius" : "4.dp"})`);
-  lines.push(`    val selectedLabel = selectedOptionLabel(${optionsName}${hasMultiple ? ", resolvedValues" : ""}, resolved${pascalCase(valueProp)}${hasPlaceholder ? ", placeholder" : ""})`);
+  lines.push(`    val selectedLabel = selectedOptionLabel(${optionsName}${hasMultiple ? ", resolvedValues" : ""}, resolved${pascalCase(valueProp)}${hasMultiple ? ", multiple" : ""}${hasPlaceholder ? ", placeholder" : ""})`);
   lines.push(`    val chromeModifier = Modifier`);
   if (minWidthSlot || minHeightSlot) {
     lines.push(`        .requiredSizeIn(minWidth = ${minWidthSlot ? "selectMinWidth" : "0.dp"}, minHeight = ${minHeightSlot ? "selectMinHeight" : "0.dp"})`);
@@ -4017,15 +4017,18 @@ function emitSelectionControl(ir: ComponentIR): string {
   lines.push(`    }`);
   lines.push(`}`);
   lines.push(``);
-  lines.push(`/** Trigger label: the selected option's label, or the placeholder. */`);
-  lines.push(`private fun selectedOptionLabel(`);
+  lines.push(`/** Trigger label: the selected option's label, or the placeholder. Internal for the library's unit tests. */`);
+  lines.push(`internal fun selectedOptionLabel(`);
   lines.push(`    ${optionsName}: List<${itemType}>,`);
   if (hasMultiple) lines.push(`    values: List<String>,`);
   lines.push(`    value: String,`);
+  if (hasMultiple) lines.push(`    multiple: Boolean,`);
   if (hasPlaceholder) lines.push(`    placeholder: String?,`);
   lines.push(`): String {`);
   if (hasMultiple) {
-    lines.push(`    val labels = values.mapNotNull { v -> ${optionsName}.firstOrNull { it.${valueMember} == v }?.${labelMember} }`);
+    // Single mode selects through value; only multiple mode reads values.
+    lines.push(`    val selected = if (multiple) values else listOf(value)`);
+    lines.push(`    val labels = selected.mapNotNull { v -> ${optionsName}.firstOrNull { it.${valueMember} == v }?.${labelMember} }`);
     lines.push(`    return if (labels.isNotEmpty()) labels.joinToString(", ") else ${hasPlaceholder ? "placeholder ?: \"\"" : "\"\""}`);
   } else {
     lines.push(`    return ${optionsName}.firstOrNull { it.${valueMember} == value }?.${labelMember} ?: ${hasPlaceholder ? "placeholder ?: \"\"" : "\"\""}`);
