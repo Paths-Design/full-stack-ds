@@ -83,3 +83,7 @@ evidence:
     status: pass
     evidence_ref: "angular/import-hygiene.test.ts (14 tests incl. two-directional meta-oracle), lit icon-glyph-lowering nothing-present/absent pins, vue+svelte hook-source.test.ts hygiene describes, react component-source.test.ts corpus pins — all green in the 740-test frameworks run at commit ae218c5ed; angular corpus sweep 148 files 0 unused/0 missing"
     recorded_at: "2026-10-18T19:41:52.525Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "react/tests.test.ts narrowing + preservedCustomTests retention + factory-threading test (reads real on-disk custom region); vue+svelte tests.test.ts vi hygiene describes; react-native/tests.test.ts import-type + renderer-unmount pins; lit/tests.test.ts typed-cast pin with as-any ban"
+    recorded_at: "2026-10-18T19:41:54.569Z"
