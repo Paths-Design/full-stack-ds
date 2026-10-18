@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: i18n-messages
 created_at: '2026-10-18T08:27:17.320Z'
-updated_at: '2026-10-18T08:27:56.842Z'
+updated_at: '2026-10-18T10:23:12.384Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -33,6 +33,7 @@ scope:
     - 'docs/codegen-authority.md'
     - 'e2e'
     - 'src'
+    - packages/ds-jetpack-compose/library
   out: []
 invariants:
   - 'A message default is authored once, in the contract messages block; emitters never author user-facing English.'
