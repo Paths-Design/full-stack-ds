@@ -641,37 +641,69 @@ describe("generateJetpackComposeComponentSource — referenced-action composite 
   });
 });
 
-describe("generateJetpackComposeComponentSource — date-grid surface (FEAT-COMPOSE-CALENDAR-ADMISSION-01)", () => {
-  it("realizes the declared grid over the days prop and the day-of-month projection (Calendar)", () => {
+describe("generateJetpackComposeComponentSource — date-grid surface (CALENDAR-DATE-GRID-01)", () => {
+  it("derives the grid from the month channel through the date-grid core (Calendar)", () => {
     const src = generateJetpackComposeComponentSource(irFor("Calendar"));
-    // The date substrate carries the projection and the day-granular state.
-    expect(src).toContain("import com.fullstackds.date.FsdsDate");
-    expect(src).toContain("text = FsdsDate.dayOfMonth(item).toString(),");
-    expect(src).toContain("val selected = if (mode == CalendarMode.Range)");
-    expect(src).toContain("FsdsDate.toggle(resolvedValues, item)");
-    // The range arm is the union's collection arm; the axis member that
-    // selects it is derived from the declared axis order.
-    expect(src).toContain("if (mode == CalendarMode.Range) {");
-    // Channel arms lowered as the scalar/many pair; no component-name lore.
+    // The committed core derives the grid; no day list prop, no fixed projection.
+    expect(src).toContain("import com.fullstackds.date.FsdsDateGrid");
+    expect(src).toContain("val dateGrid = FsdsDateGrid.compute(");
+    expect(src).toContain("        month = month ?: uncontrolledMonth,");
+    expect(src).toContain("        locale = locale,");
+    expect(src).not.toContain("days: List<Date>");
+    expect(src).not.toContain("FsdsDate.dayOfMonth");
+    // Both channels lowered: the value union as the scalar/many pair, and the month.
     expect(src).toContain("value: Date? = null,");
     expect(src).toContain("values: List<Date>? = null,");
     expect(src).toContain("onValuesChange: ((List<Date>) -> Unit)? = null,");
+    expect(src).toContain("month: Date? = null,");
+    expect(src).toContain("defaultMonth: Date? = null,");
+    expect(src).toContain("onMonthChange: ((Date) -> Unit)? = null,");
     expect(src).toContain("mode: CalendarMode = CalendarMode.Single,");
-    expect(src).toContain("days: List<Date> = emptyList(),");
-    // One row per calendar week, and the contract's own accessible labels.
-    expect(src).toContain("days.chunked(fsdsWeekLength).forEach { week ->");
-    // Nav and grid names are the contract's messages, resolved through the
-    // catalog hoisted out of the non-composable semantics lambdas.
-    expect(src).toContain("    val fsdsMessages = LocalFsdsMessages.current");
-    expect(src).toContain('contentDescription = fsdsMessages.string("Calendar.previousMonth", "Previous month")');
-    expect(src).toContain('contentDescription = fsdsMessages.string("Calendar.nextMonth", "Next month")');
-    expect(src).toContain('contentDescription = fsdsMessages.string("Calendar.gridLabel", "Calendar")');
-    expect(src).not.toContain('contentDescription = "');
-    expect(src).not.toMatch(/import androidx\.compose\.material/);
+    expect(src).toContain('locale: String = "en-US",');
     expect(src.match(/fun Calendar\(([^)]*)\)/)![1]!.trim().startsWith("modifier: Modifier = Modifier,")).toBe(true);
   });
 
-  it("derives the range arm from the declared axis order instead of naming it", () => {
+  it("steps the month from the declared nav actions and names them from the catalog (Calendar)", () => {
+    const src = generateJetpackComposeComponentSource(irFor("Calendar"));
+    expect(src).toContain(".clickable(enabled = !dateGrid.previousDisabled, role = Role.Button) {");
+    expect(src).toContain("showMonth(FsdsDateGrid.addMonths(dateGrid.month, -1))");
+    expect(src).toContain(".clickable(enabled = !dateGrid.nextDisabled, role = Role.Button) {");
+    expect(src).toContain("showMonth(FsdsDateGrid.addMonths(dateGrid.month, 1))");
+    // The previous control precedes the caption, which precedes next: dom order.
+    const previous = src.indexOf("dateGrid.previousDisabled");
+    const caption = src.indexOf("text = dateGrid.caption,");
+    expect(previous).toBeGreaterThan(-1);
+    expect(caption).toBeGreaterThan(previous);
+    expect(src.indexOf("dateGrid.nextDisabled")).toBeGreaterThan(caption);
+    // The aria-hidden glyph renders without semantics; the caption is a polite live region.
+    expect(src).toContain('text = "‹",');
+    expect(src).toContain("modifier = Modifier.clearAndSetSemantics { },");
+    expect(src).toContain("modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },");
+    expect(src).toContain("    val fsdsMessages = LocalFsdsMessages.current");
+    expect(src).toContain('contentDescription = fsdsMessages.string("Calendar.previousMonth", "Previous month")');
+    expect(src).toContain('contentDescription = fsdsMessages.string("Calendar.nextMonth", "Next month")');
+    expect(src).not.toContain('contentDescription = "');
+    expect(src).not.toMatch(/import androidx\.compose\.material/);
+  });
+
+  it("exposes each day's selection, name and grid position as semantics (Calendar)", () => {
+    const src = generateJetpackComposeComponentSource(irFor("Calendar"));
+    expect(src).toContain("selected = day.selected,");
+    expect(src).toContain("enabled = !day.disabled,");
+    expect(src).toContain("onClick = { select(day) },");
+    expect(src).toContain("contentDescription = day.fullLabel");
+    expect(src).toContain("text = day.label,");
+    expect(src).toContain("collectionInfo = CollectionInfo(rowCount = dateGrid.weeks.size, columnCount = dateGrid.weekdays.size)");
+    expect(src).toContain("collectionItemInfo = CollectionItemInfo(rowIndex = row, rowSpan = 1, columnIndex = column, columnSpan = 1)");
+    // The grid is named by the caption it binds, and the weekday headers by their long names.
+    expect(src).toContain("contentDescription = dateGrid.caption");
+    expect(src).toContain("contentDescription = weekday.long");
+    // A range activation pairs through the core; a single one writes the scalar arm.
+    expect(src).toContain("val next = FsdsDateGrid.select(resolvedValues, day.date, range = true)");
+    expect(src).toContain("onChange?.invoke(day.date)");
+  });
+
+  it("takes the range arm from the date-grid mode vocabulary, not the axis order", () => {
     const base = irFor("Calendar");
     const reversed = {
       ...base,
@@ -681,12 +713,9 @@ describe("generateJetpackComposeComponentSource — date-grid surface (FEAT-COMP
       },
     } as Parameters<typeof generateJetpackComposeComponentSource>[0];
     const src = generateJetpackComposeComponentSource(reversed);
-    // The collection arm now pairs with the FIRST declared axis member, so the
-    // emitted comparison moves with the contract rather than staying on the
-    // string "range".
     expect(src).toContain("enum class CalendarMode { Range, Single }");
-    expect(src).toContain("if (mode == CalendarMode.Single)");
-    expect(src).not.toContain("if (mode == CalendarMode.Range)");
+    expect(src).toContain("val range = mode == CalendarMode.Range");
+    expect(src).toContain("mode: CalendarMode = CalendarMode.Single,");
   });
 
   it("reads exactly the calendar chrome it realizes, with a closed token set (Calendar)", () => {

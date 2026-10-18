@@ -37,6 +37,7 @@ import {
   collectDomSlots,
   isCenteredSurface,
   isCoachmarkSurface,
+  dateGridChrome,
   isDateGridSurface,
   surfaceStringChannel,
   isGlyphHost,
@@ -4366,34 +4367,21 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
  *   - the panel region renders only while open (the host is not composed
  *     otherwise), matching the contract's persistent presence.
  */
-/** Find every dom node carrying the given part name. */
-function domNodesForPart(ir: ComponentIR, part: string) {
-  const out: NonNullable<ComponentIR["dom"]>[] = [];
-  const walk = (node: NonNullable<ComponentIR["dom"]>): void => {
-    if (node.part === part) out.push(node);
-    (node.children ?? []).forEach(walk);
-  };
-  if (ir.dom) walk(ir.dom);
-  return out;
-}
-
 /**
- * The date-grid surface class (FEAT-COMPOSE-CALENDAR-ADMISSION-01): a
- * Date-valued channel over a header/grid anatomy whose cells project the
- * closed `dateDayOfMonth` projection. Compose realizes the declared grid
- * itself — one row per calendar week of the contract's own `days` prop, each
- * day a selectable cell — rather than delegating to a platform picker, so the
- * declared calendar chrome is actually consumed. Day-granular comparison and
- * labelling come from the committed `FsdsDate` substrate; the activation,
- * its event and its written channel come from the IR's `compositeControl`
- * fact, and the nav/grid accessible labels are the contract's own dom attrs.
+ * The date-grid surface class: Compose realizes the contract's `dateGrid`
+ * fact itself — the visible month derived from the month channel, six week
+ * rows from the committed `FsdsDateGrid` core, each day a selectable cell —
+ * rather than delegating to a platform picker, so the declared chrome,
+ * labels and selection semantics are actually consumed. The header renders
+ * in the dom's own child order: a node whose click is the `dateGrid`
+ * previous/next action is a nav control that steps the month channel, and a
+ * node whose content is `dateGrid:caption` is the caption, a live region
+ * when the contract declares `aria-live`.
  *
- * The contract declares the union's arms (`Date | Date[] | null`) and the
- * `mode` axis's members (`single | range`) as two ordered lists with no
- * explicit correspondence, so the collection arm pairs positionally with the
- * axis member at the same index. That pairing is derived at emit time and is
- * never named here: a contract that reorders the axis moves the pairing with
- * it (the emitter test flips the order and pins the member).
+ * The value channel's union (`Date | Date[] | null`) lowers to the
+ * scalar/many pair the selection-control class established. The `dateGrid`
+ * fact pins the mode vocabulary to `single | range`; `range` selects the
+ * many arm, whose activation pairs a lone start into a sorted span.
  *
  * Named divergences (ledgered in docs/architecture/native-target-admission.md):
  *   - `calendar.elevation` is a multi-layer shadow string with no
@@ -4402,95 +4390,78 @@ function domNodesForPart(ir: ComponentIR, part: string) {
  *     the ring is drawn inside the cell bounds;
  *   - the today ring reuses the declared focus-ring width — the contract
  *     declares no separate today-ring geometry;
- *   - the declared nav triggers render as labelled, sized affordances with no
- *     month arithmetic: the contract supplies the visible `days`, so there is
- *     no month to step;
- *   - `locale` and `shouldCloseOnSelect` are not lowered (the closed
- *     day-of-month projection is locale-independent, and the grid owns no
- *     close semantics);
- *   - `focus.strategy = "roving"` is not lowered: every day cell is a tab stop.
+ *   - `focus.strategy = "roving"` and the grid's arrow and page keys are not
+ *     lowered: every enabled day is a focus stop, and TalkBack and switch
+ *     access traverse the grid through its collection semantics;
+ *   - today (`aria-current="date"`) is drawn as a ring but not announced: the
+ *     JVM has no system-localized "today" and Compose no current-item state;
+ *   - formatting is ISO-Gregorian with the locale's digits, so a Buddhist- or
+ *     Japanese-era locale shows the Gregorian year, and a language-only tag
+ *     takes the JVM's region-less week (a regional tag such as `de-DE` does not);
+ *   - `shouldCloseOnSelect` is not lowered (the grid owns no close semantics).
  */
 function emitDateGridSurface(ir: ComponentIR): string {
   const name = ir.name;
   const segment = packageSegment(name);
-  const activation = ir.compositeControl;
-  if (activation?.commit !== "activation") {
-    throw new Error(
-      `emitDateGridSurface: ${name} declares no activation-committed composite control`,
-    );
-  }
-  const channel = ir.behavior.normalizedChannels.find((c) =>
-    (c.valueType ?? "").includes("Date"),
-  )!;
+  const grid = ir.dateGrid;
+  if (!grid) throw new Error(`emitDateGridSurface: ${name} declares no dateGrid fact`);
+  const channelNamed = (channelName: string): NormalizedChannelIR => {
+    const found = ir.behavior.normalizedChannels.find((c) => c.name === channelName);
+    if (!found) throw new Error(`emitDateGridSurface: ${name} declares no channel '${channelName}'`);
+    return found;
+  };
+  const propNamed = (propName: string | undefined) =>
+    propName === undefined ? undefined : ir.styledProps.find((p) => p.name === propName);
+
+  const channel = channelNamed(grid.valueChannel);
   const valueProp = channel.valueProp;
   const defaultValueProp = channel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = channel.changeHandlerProp;
-  // The union's second arm is a collection, so the realized API is the
-  // scalar/many pair the selection-control class established; the mode axis
-  // selects which arm an activation writes.
+  // The union's collection arm is realized as the scalar/many pair the
+  // selection-control class established; `range` writes the many arm.
   const manyValueProp = `${valueProp}s`;
   const manyDefaultValueProp = `${defaultValueProp}s`;
   const manyChangeProp = `on${pascalCase(manyValueProp)}Change`;
+  const month = channelNamed(grid.monthChannel);
+  const monthProp = month.valueProp;
+  const defaultMonthProp = month.defaultValueProp ?? `${monthProp}Default`;
+  const monthChangeProp = month.changeHandlerProp;
 
-  const armKinds = (channel.valueType ?? "")
-    .split("|")
-    .map((arm) => arm.trim())
-    .filter((arm) => arm.length > 0 && arm !== "null");
-  const collectionArm = armKinds.findIndex((arm) => arm.endsWith("[]"));
-  const axisProp = ir.styledProps.find((p) =>
-    p.typeRefs?.some((ref) => (ir.definedTypes[ref]?.values?.length ?? 0) > 1),
-  );
-  const axisRef = axisProp?.typeRefs?.find(
-    (ref) => (ir.definedTypes[ref]?.values?.length ?? 0) > 1,
-  );
-  const axisValues = axisRef ? ir.definedTypes[axisRef]!.values! : [];
-  const axisEnumName = axisRef ?? `${name}Mode`;
-  const manyMember =
-    collectionArm >= 0 && collectionArm < axisValues.length
-      ? kotlinEnumName(axisValues[collectionArm]!)
-      : undefined;
-  const axisDefaultValue = (
-    axisProp?.defaultExpr?.replace(/^["']|["']$/g, "") ?? axisValues[0] ?? ""
-  );
-  const axisParam = axisProp?.safeName ?? "mode";
+  const modeProp = propNamed(grid.modeProp)!;
+  const modeRef = modeProp.typeRefs?.find((ref) => (ir.definedTypes[ref]?.values?.length ?? 0) > 0);
+  const modeValues = modeRef ? ir.definedTypes[modeRef]!.values! : ["single", "range"];
+  const modeEnum = modeRef ?? `${name}Mode`;
+  const modeDefault = modeProp.defaultExpr?.replace(/^["']|["']$/g, "") ?? modeValues[0]!;
+  const rangeMember = kotlinEnumName("range");
+  const localeProp = propNamed(grid.localeProp)!;
+  const captionProp = propNamed(grid.captionProp);
+  const disabledProp = propNamed(grid.disabledProp);
+  const minDateProp = propNamed(grid.minProp);
+  const maxDateProp = propNamed(grid.maxProp);
 
-  const daysProp = ir.styledProps.find((p) => p.type === "Date[]");
-  const captionProp = ir.styledProps.find((p) => p.safeName === "caption");
-  const hasDisabled = ir.styledProps.some(
-    (p) => p.name === "disabled" && p.propType.kind === "boolean",
-  );
-  const minDateProp = ir.styledProps.find((p) => p.safeName === "minDate");
-  const maxDateProp = ir.styledProps.find((p) => p.safeName === "maxDate");
-
-  // The header renders in the dom's own child order, so a contract that moves
-  // the caption between the nav controls keeps it there. Nav labels and the
-  // grid label are contract-authored accessible labels, never emitter text:
-  // a message binding lowers to a LocalFsdsMessages lookup.
+  // Header, weekday and grid facts come from the dom the contract authors.
+  // Nav labels are contract-authored accessible names, never emitter text: a
+  // message binding lowers to a LocalFsdsMessages lookup.
   const accessibleLabel = (node: DomNodeIR | undefined): string | undefined => {
     const source = nodeTextSource(ir, node, "aria-label");
     if (source?.kind === "message") return kotlinMessage(ir, source.ref.message);
     const literal = node?.attrs?.["aria-label"];
     return typeof literal === "string" && literal.length > 0 ? kotlinStringLiteral(literal) : undefined;
   };
-  const headerChildren = domNodesForPart(ir, "header")[0]?.children ?? [];
-  const headerItems: Array<{ kind: "nav" | "caption"; label?: string }> = [];
-  for (const child of headerChildren) {
-    const label = accessibleLabel(child);
-    if (child.part === "nav" && label) {
-      headerItems.push({ kind: "nav", label });
-    } else if (captionProp && propNameOf(child.content as { kind?: string; prop?: string } | undefined) === captionProp.safeName) {
-      headerItems.push({ kind: "caption" });
+  const chrome = dateGridChrome(ir);
+  const headerItems = chrome.header.map((item) => {
+    if (item.kind === "caption") {
+      return { ...item, live: item.live === "polite" ? "Polite" : item.live === "assertive" ? "Assertive" : undefined };
     }
-  }
-  if (headerItems.length === 0) {
-    for (const label of domNodesForPart(ir, "nav")
-      .map(accessibleLabel)
-      .filter((value): value is string => value !== undefined)) {
-      headerItems.push({ kind: "nav", label });
-    }
-    if (captionProp) headerItems.push({ kind: "caption" });
-  }
-  const gridLabel = accessibleLabel(domNodesForPart(ir, "grid")[0]);
+    const label = accessibleLabel(item.node);
+    if (!label) throw new Error(`emitDateGridSurface: ${name} declares a ${item.action} control with no accessible name`);
+    return { ...item, label };
+  });
+  const weekdays = chrome.weekdays;
+  const gridLabel = chrome.gridLabel?.kind === "caption"
+    ? "dateGrid.caption"
+    : accessibleLabel(chrome.gridLabel?.node);
+  const live = headerItems.some((item) => item.kind === "caption" && item.live !== undefined);
 
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary"]);
@@ -4517,6 +4488,8 @@ function emitDateGridSurface(ir: ComponentIR): string {
   const paddingBlockStartSlot = findTokenSlot(ir, "root", "box-model.padding-block-start");
   const paddingBlockEndSlot = findTokenSlot(ir, "root", "box-model.padding-block-end");
   const consumesTokens = ir.tokenScopes.some((s) => s.values.length > 0);
+  const foreground = fgSlot ? "gridForeground" : "null";
+  const muted = mutedSlot ? `gridMuted ?: ${foreground}` : foreground;
 
   const lines: string[] = [];
   lines.push(`// @generated by ds-codegen from components/${name}/${name}.contract.json — do not edit by hand.`);
@@ -4524,7 +4497,8 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(``);
   lines.push(`// @generated:start imports`);
   lines.push(`import androidx.compose.foundation.background`);
-  if (borderSlot) lines.push(`import androidx.compose.foundation.border`);
+  lines.push(`import androidx.compose.foundation.border`);
+  lines.push(`import androidx.compose.foundation.clickable`);
   lines.push(`import androidx.compose.foundation.hoverable`);
   lines.push(`import androidx.compose.foundation.interaction.MutableInteractionSource`);
   lines.push(`import androidx.compose.foundation.interaction.collectIsHoveredAsState`);
@@ -4549,13 +4523,21 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(`import androidx.compose.ui.draw.clip`);
   lines.push(`import androidx.compose.ui.focus.onFocusChanged`);
   lines.push(`import androidx.compose.ui.graphics.Color`);
+  lines.push(`import androidx.compose.ui.semantics.CollectionInfo`);
+  lines.push(`import androidx.compose.ui.semantics.CollectionItemInfo`);
+  if (live) lines.push(`import androidx.compose.ui.semantics.LiveRegionMode`);
   lines.push(`import androidx.compose.ui.semantics.Role`);
-  if (gridLabel) lines.push(`import androidx.compose.ui.semantics.contentDescription`);
-  if (gridLabel) lines.push(`import androidx.compose.ui.semantics.semantics`);
+  lines.push(`import androidx.compose.ui.semantics.clearAndSetSemantics`);
+  lines.push(`import androidx.compose.ui.semantics.collectionInfo`);
+  lines.push(`import androidx.compose.ui.semantics.collectionItemInfo`);
+  lines.push(`import androidx.compose.ui.semantics.contentDescription`);
+  if (live) lines.push(`import androidx.compose.ui.semantics.liveRegion`);
+  lines.push(`import androidx.compose.ui.semantics.semantics`);
   lines.push(`import androidx.compose.ui.text.TextStyle`);
   lines.push(`import androidx.compose.ui.unit.TextUnit`);
   lines.push(`import androidx.compose.ui.unit.dp`);
-  lines.push(`import com.fullstackds.date.FsdsDate`);
+  lines.push(`import com.fullstackds.date.FsdsDateGrid`);
+  lines.push(`import com.fullstackds.date.FsdsDateGridDay`);
   lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
   if (bgSlot || fgSlot || mutedSlot || borderSlot || hoverSlot || selectedBgSlot || selectedFgSlot || todayRingSlot || focusRingSlot) {
     lines.push(`import com.fullstackds.tokens.toFsdsColor`);
@@ -4566,14 +4548,8 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(`// @generated:end`);
   lines.push(``);
   lines.push(`// @generated:start types`);
-  if (axisRef) {
-    lines.push(`/** ${axisParam} axis lowered from the contract's ${axisRef} type. */`);
-    lines.push(`enum class ${axisEnumName} { ${axisValues.map(kotlinEnumName).join(", ")} }`);
-    lines.push(``);
-  }
-  lines.push(`/** Days per grid row. The contract declares no week-length axis, so the`);
-  lines.push(` *  conventional calendar week is the emitter's framework-grammar constant. */`);
-  lines.push(`private const val fsdsWeekLength = 7`);
+  lines.push(`/** ${modeProp.safeName} axis lowered from the contract's ${modeEnum} type. */`);
+  lines.push(`enum class ${modeEnum} { ${modeValues.map(kotlinEnumName).join(", ")} }`);
   lines.push(`// @generated:end`);
   lines.push(``);
   lines.push(`// @generated:start component`);
@@ -4586,19 +4562,52 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(`    ${manyValueProp}: List<Date>? = null,`);
   lines.push(`    ${manyDefaultValueProp}: List<Date> = emptyList(),`);
   lines.push(`    ${manyChangeProp}: ((List<Date>) -> Unit)? = null,`);
-  if (axisRef) lines.push(`    ${axisParam}: ${axisEnumName} = ${axisEnumName}.${kotlinEnumName(axisDefaultValue)},`);
-  if (daysProp) lines.push(`    ${daysProp.safeName}: List<Date> = emptyList(),`);
-  if (captionProp) {
-    lines.push(`    ${captionProp.safeName}: String = ${kotlinStringDefault(ir, captionProp) ?? '""'},`);
-  }
-  if (hasDisabled) lines.push(`    disabled: Boolean = false,`);
+  lines.push(`    ${monthProp}: Date? = null,`);
+  lines.push(`    ${defaultMonthProp}: Date? = null,`);
+  lines.push(`    ${monthChangeProp}: ((Date) -> Unit)? = null,`);
+  lines.push(`    ${modeProp.safeName}: ${modeEnum} = ${modeEnum}.${kotlinEnumName(modeDefault)},`);
+  lines.push(`    ${localeProp.safeName}: String = ${kotlinStringDefault(ir, localeProp) ?? '""'},`);
+  if (captionProp) lines.push(`    ${captionProp.safeName}: String? = null,`);
+  if (disabledProp) lines.push(`    ${disabledProp.safeName}: Boolean = false,`);
   if (minDateProp) lines.push(`    ${minDateProp.safeName}: Date? = null,`);
   if (maxDateProp) lines.push(`    ${maxDateProp.safeName}: Date? = null,`);
   lines.push(`) {`);
-  lines.push(`    var uncontrolled${pascalCase(valueProp)} by remember { mutableStateOf(${defaultValueProp}) }`);
-  lines.push(`    val resolved${pascalCase(valueProp)} = ${valueProp} ?: uncontrolled${pascalCase(valueProp)}`);
-  lines.push(`    var uncontrolled${pascalCase(manyValueProp)} by remember { mutableStateOf(${manyDefaultValueProp}) }`);
-  lines.push(`    val resolved${pascalCase(manyValueProp)} = ${manyValueProp} ?: uncontrolled${pascalCase(manyValueProp)}`);
+  const local = (prop: string) => pascalCase(prop);
+  lines.push(`    var uncontrolled${local(valueProp)} by remember { mutableStateOf(${defaultValueProp}) }`);
+  lines.push(`    val resolved${local(valueProp)} = ${valueProp} ?: uncontrolled${local(valueProp)}`);
+  lines.push(`    var uncontrolled${local(manyValueProp)} by remember { mutableStateOf(${manyDefaultValueProp}) }`);
+  lines.push(`    val resolved${local(manyValueProp)} = ${manyValueProp} ?: uncontrolled${local(manyValueProp)}`);
+  lines.push(`    var uncontrolled${local(monthProp)} by remember { mutableStateOf(${defaultMonthProp}) }`);
+  lines.push(`    val range = ${modeProp.safeName} == ${modeEnum}.${rangeMember}`);
+  lines.push(`    val dateGrid = FsdsDateGrid.compute(`);
+  lines.push(`        selection = if (range) resolved${local(manyValueProp)} else listOfNotNull(resolved${local(valueProp)}),`);
+  lines.push(`        month = ${monthProp} ?: uncontrolled${local(monthProp)},`);
+  lines.push(`        range = range,`);
+  lines.push(`        locale = ${localeProp.safeName},`);
+  if (minDateProp) lines.push(`        minDate = ${minDateProp.safeName},`);
+  if (maxDateProp) lines.push(`        maxDate = ${maxDateProp.safeName},`);
+  if (disabledProp) lines.push(`        disabled = ${disabledProp.safeName},`);
+  if (captionProp) lines.push(`        caption = ${captionProp.safeName},`);
+  lines.push(`    )`);
+  lines.push(`    // A day outside the visible month moves the month channel to it.`);
+  lines.push(`    fun showMonth(date: Date) {`);
+  lines.push(`        if (FsdsDateGrid.isSameMonth(date, dateGrid.month)) return`);
+  lines.push(`        val target = FsdsDateGrid.addMonths(date, 0)`);
+  lines.push(`        if (${monthProp} == null) { uncontrolled${local(monthProp)} = target }`);
+  lines.push(`        ${monthChangeProp}?.invoke(target)`);
+  lines.push(`    }`);
+  lines.push(`    fun select(day: FsdsDateGridDay) {`);
+  lines.push(`        if (day.disabled) return`);
+  lines.push(`        if (range) {`);
+  lines.push(`            val next = FsdsDateGrid.select(resolved${local(manyValueProp)}, day.date, range = true)`);
+  lines.push(`            if (${manyValueProp} == null) { uncontrolled${local(manyValueProp)} = next }`);
+  lines.push(`            ${manyChangeProp}?.invoke(next)`);
+  lines.push(`        } else {`);
+  lines.push(`            if (${valueProp} == null) { uncontrolled${local(valueProp)} = day.date }`);
+  lines.push(`            ${changeProp}?.invoke(day.date)`);
+  lines.push(`        }`);
+  lines.push(`        showMonth(day.date)`);
+  lines.push(`    }`);
   if (consumesTokens) {
     lines.push(`    val fsdsTheme = LocalFsdsTheme.current`);
     lines.push(`    fun layeredSlot(slotName: String): String? {`);
@@ -4611,8 +4620,8 @@ function emitDateGridSurface(ir: ComponentIR): string {
       slot ? `layeredSlot(${JSON.stringify(slot.name)})?.toFsdsDp() ?: 0.dp` : "0.dp";
     const sp = (slot: { name: string } | undefined) =>
       slot ? `layeredSlot(${JSON.stringify(slot.name)})?.toFsdsSp() ?: TextUnit.Unspecified` : "TextUnit.Unspecified";
-    const declare = (local: string, expression: string | undefined) => {
-      if (expression) lines.push(`    val ${local} = ${expression}`);
+    const declare = (localName: string, expression: string | undefined) => {
+      if (expression) lines.push(`    val ${localName} = ${expression}`);
     };
     declare("gridBackground", color(bgSlot));
     declare("gridForeground", color(fgSlot));
@@ -4623,8 +4632,8 @@ function emitDateGridSurface(ir: ComponentIR): string {
     declare("daySelectedForeground", color(selectedFgSlot));
     declare("todayRing", color(todayRingSlot));
     declare("focusRing", color(focusRingSlot));
-    lines.push(`    val gridRadius = ${radiusSlot ? `layeredSlot(${JSON.stringify(radiusSlot.name)})?.toFsdsDp() ?: 0.dp` : "0.dp"}`);
-    lines.push(`    val dayRadius = ${dayRadiusSlot ? `layeredSlot(${JSON.stringify(dayRadiusSlot.name)})?.toFsdsDp() ?: 0.dp` : "0.dp"}`);
+    lines.push(`    val gridRadius = ${dp(radiusSlot)}`);
+    lines.push(`    val dayRadius = ${dp(dayRadiusSlot)}`);
     lines.push(`    val cellSize = ${dp(cellSlot)}`);
     lines.push(`    val navSize = ${dp(navSizeSlot)}`);
     lines.push(`    val ringWidth = ${dp(ringWidthSlot)}`);
@@ -4632,10 +4641,8 @@ function emitDateGridSurface(ir: ComponentIR): string {
     lines.push(`    val gridInset = ${dp(insetSlot)}`);
     lines.push(`    val gridMinWidth = ${dp(minWidthSlot)}`);
     lines.push(`    val gridMinHeight = ${dp(minHeightSlot)}`);
-    const side = (slot: { name: string } | undefined) =>
-      slot ? `layeredSlot(${JSON.stringify(slot.name)})?.toFsdsDp() ?: 0.dp` : `0.dp`;
     lines.push(
-      `    val gridPadding = PaddingValues(start = ${side(paddingInlineStartSlot)}, end = ${side(paddingInlineEndSlot)}, top = ${side(paddingBlockStartSlot)}, bottom = ${side(paddingBlockEndSlot)})`,
+      `    val gridPadding = PaddingValues(start = ${dp(paddingInlineStartSlot)}, end = ${dp(paddingInlineEndSlot)}, top = ${dp(paddingBlockStartSlot)}, bottom = ${dp(paddingBlockEndSlot)})`,
     );
     declare("captionSize", sp(captionSizeSlot));
     declare("daySize", sp(daySizeSlot));
@@ -4662,8 +4669,7 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(`            .clip(gridShape)`);
   if (bgSlot) lines.push(`            .then(if (gridBackground != null) Modifier.background(gridBackground, gridShape) else Modifier)`);
   if (borderSlot) lines.push(`            .then(if (gridBorder != null) Modifier.border(1.dp, gridBorder, gridShape) else Modifier)`);
-  lines.push(`            .padding(PaddingValues(gridInset))`);
-  lines.push(`,`);
+  lines.push(`            .padding(PaddingValues(gridInset)),`);
   lines.push(`        verticalArrangement = Arrangement.spacedBy(gridGap),`);
   lines.push(`    ) {`);
   lines.push(`        Row(`);
@@ -4672,74 +4678,102 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(`        ) {`);
   for (const item of headerItems) {
     if (item.kind === "nav") {
+      const disabledField = item.action === "previous" ? "previousDisabled" : "nextDisabled";
+      const delta = item.action === "previous" ? -1 : 1;
       lines.push(`            Box(`);
       lines.push(`                Modifier`);
       lines.push(`                    .size(navSize)`);
+      lines.push(`                    .clickable(enabled = !dateGrid.${disabledField}, role = Role.Button) {`);
+      lines.push(`                        showMonth(FsdsDateGrid.addMonths(dateGrid.month, ${delta}))`);
+      lines.push(`                    }`);
       lines.push(`                    .semantics { contentDescription = ${item.label} },`);
       lines.push(`                contentAlignment = Alignment.Center,`);
-      lines.push(`            ) { }`);
+      lines.push(`            ) {`);
+      if (item.glyph !== undefined) {
+        lines.push(`                BasicText(`);
+        lines.push(`                    text = ${kotlinStringLiteral(item.glyph)},`);
+        lines.push(`                    modifier = Modifier.clearAndSetSemantics { },`);
+        lines.push(`                    style = TextStyle(color = ${foreground} ?: Color.Unspecified, fontSize = captionSize),`);
+        lines.push(`                )`);
+      }
+      lines.push(`            }`);
     } else {
       lines.push(`            BasicText(`);
-      lines.push(`                text = ${captionProp!.safeName},`);
-      lines.push(`                style = TextStyle(color = ${fgSlot ? "gridForeground ?: Color.Unspecified" : "Color.Unspecified"}, fontSize = captionSize),`);
+      lines.push(`                text = dateGrid.caption,`);
+      if (item.live) lines.push(`                modifier = Modifier.semantics { liveRegion = LiveRegionMode.${item.live} },`);
+      lines.push(`                style = TextStyle(color = ${foreground} ?: Color.Unspecified, fontSize = captionSize),`);
       lines.push(`            )`);
     }
   }
   lines.push(`        }`);
   lines.push(`        Column(`);
-  lines.push(`            Modifier${gridLabel ? `.semantics { contentDescription = ${gridLabel} }` : ""}.padding(gridPadding),`);
+  lines.push(`            Modifier`);
+  lines.push(`                .semantics {`);
+  if (gridLabel) lines.push(`                    contentDescription = ${gridLabel}`);
+  lines.push(`                    collectionInfo = CollectionInfo(rowCount = dateGrid.weeks.size, columnCount = dateGrid.weekdays.size)`);
+  lines.push(`                }`);
+  lines.push(`                .padding(gridPadding),`);
+  lines.push(`            verticalArrangement = Arrangement.spacedBy(gridGap),`);
   lines.push(`        ) {`);
-  lines.push(`            ${daysProp ? daysProp.safeName : "days"}.chunked(fsdsWeekLength).forEach { week ->`);
+  if (weekdays) {
+    lines.push(`            Row(horizontalArrangement = Arrangement.spacedBy(gridGap)) {`);
+    lines.push(`                dateGrid.weekdays.forEach { weekday ->`);
+    lines.push(`                    Box(`);
+    lines.push(`                        Modifier.size(cellSize).semantics { contentDescription = weekday.long },`);
+    lines.push(`                        contentAlignment = Alignment.Center,`);
+    lines.push(`                    ) {`);
+    lines.push(`                        BasicText(`);
+    lines.push(`                            text = weekday.short,`);
+    lines.push(`                            style = TextStyle(color = ${muted} ?: Color.Unspecified, fontSize = daySize),`);
+    lines.push(`                        )`);
+    lines.push(`                    }`);
+    lines.push(`                }`);
+    lines.push(`            }`);
+  }
+  lines.push(`            dateGrid.weeks.forEachIndexed { row, week ->`);
   lines.push(`                Row(horizontalArrangement = Arrangement.spacedBy(gridGap)) {`);
-  lines.push(`                    week.forEach { item ->`);
-  lines.push(`                        val selected = ${manyMember ? `if (${axisParam} == ${axisEnumName}.${manyMember}) FsdsDate.isSameDayAsAny(item, resolved${pascalCase(manyValueProp)}) else FsdsDate.isSameDay(item, resolved${pascalCase(valueProp)})` : `FsdsDate.isSameDay(item, resolved${pascalCase(valueProp)})`}`);
-  lines.push(`                        val dayEnabled = ${hasDisabled ? "!disabled" : "true"} && !FsdsDate.isBefore(item, ${minDateProp ? minDateProp.safeName : "null"}) && !FsdsDate.isAfter(item, ${maxDateProp ? maxDateProp.safeName : "null"})`);
+  lines.push(`                    week.days.forEachIndexed { column, day ->`);
   lines.push(`                        val interactionSource = remember { MutableInteractionSource() }`);
   lines.push(`                        val hovered by interactionSource.collectIsHoveredAsState()`);
   lines.push(`                        var focused by remember { mutableStateOf(false) }`);
   lines.push(`                        val dayBackground = when {`);
-  lines.push(`                            selected -> ${selectedBgSlot ? "daySelectedBackground" : "null"}`);
-  lines.push(`                            hovered && dayEnabled -> ${hoverSlot ? "dayHover" : "null"}`);
+  lines.push(`                            day.selected -> ${selectedBgSlot ? "daySelectedBackground" : "null"}`);
+  lines.push(`                            hovered && !day.disabled -> ${hoverSlot ? "dayHover" : "null"}`);
   lines.push(`                            else -> null`);
   lines.push(`                        }`);
   lines.push(`                        val dayRing = when {`);
   lines.push(`                            focused -> ${focusRingSlot ? "focusRing" : "null"}`);
-  lines.push(`                            FsdsDate.isToday(item) && !selected -> ${todayRingSlot ? "todayRing" : "null"}`);
+  lines.push(`                            day.isToday && !day.selected -> ${todayRingSlot ? "todayRing" : "null"}`);
   lines.push(`                            else -> null`);
+  lines.push(`                        }`);
+  lines.push(`                        val dayForeground = when {`);
+  lines.push(`                            day.selected -> ${selectedFgSlot ? `daySelectedForeground ?: ${foreground}` : foreground}`);
+  lines.push(`                            day.outsideMonth -> ${muted}`);
+  lines.push(`                            else -> ${foreground}`);
   lines.push(`                        }`);
   lines.push(`                        Box(`);
   lines.push(`                            Modifier`);
   lines.push(`                                .size(cellSize)`);
   lines.push(`                                .clip(dayShape)`);
   lines.push(`                                .then(if (dayBackground != null) Modifier.background(dayBackground, dayShape) else Modifier)`);
-  lines.push(`                                .hoverable(interactionSource, enabled = dayEnabled)`);
+  lines.push(`                                .hoverable(interactionSource, enabled = !day.disabled)`);
   lines.push(`                                .selectable(`);
-  lines.push(`                                    selected = selected,`);
-  lines.push(`                                    enabled = dayEnabled,`);
+  lines.push(`                                    selected = day.selected,`);
+  lines.push(`                                    enabled = !day.disabled,`);
   lines.push(`                                    role = Role.Button,`);
-  lines.push(`                                    onClick = {`);
-  if (manyMember) {
-    lines.push(`                                        if (${axisParam} == ${axisEnumName}.${manyMember}) {`);
-    lines.push(`                                            val next = FsdsDate.toggle(resolved${pascalCase(manyValueProp)}, item)`);
-    lines.push(`                                            if (${manyValueProp} == null) { uncontrolled${pascalCase(manyValueProp)} = next }`);
-    lines.push(`                                            ${manyChangeProp}?.invoke(next)`);
-    lines.push(`                                        } else {`);
-    lines.push(`                                            if (${valueProp} == null) { uncontrolled${pascalCase(valueProp)} = item }`);
-    lines.push(`                                            ${changeProp}?.invoke(item)`);
-    lines.push(`                                        }`);
-  } else {
-    lines.push(`                                        if (${valueProp} == null) { uncontrolled${pascalCase(valueProp)} = item }`);
-    lines.push(`                                        ${changeProp}?.invoke(item)`);
-  }
-  lines.push(`                                    },`);
+  lines.push(`                                    onClick = { select(day) },`);
   lines.push(`                                )`);
+  lines.push(`                                .semantics {`);
+  lines.push(`                                    contentDescription = day.fullLabel`);
+  lines.push(`                                    collectionItemInfo = CollectionItemInfo(rowIndex = row, rowSpan = 1, columnIndex = column, columnSpan = 1)`);
+  lines.push(`                                }`);
   lines.push(`                                .onFocusChanged { focused = it.isFocused }`);
   lines.push(`                                .then(if (dayRing != null && ringWidth > 0.dp) Modifier.border(ringWidth, dayRing, dayShape) else Modifier),`);
   lines.push(`                            contentAlignment = Alignment.Center,`);
   lines.push(`                        ) {`);
   lines.push(`                            BasicText(`);
-  lines.push(`                                text = FsdsDate.dayOfMonth(item).toString(),`);
-  lines.push(`                                style = TextStyle(color = ${selectedFgSlot ? `(if (selected) daySelectedForeground ?: gridForeground else gridForeground) ?: Color.Unspecified` : `${fgSlot ? "gridForeground" : "null"} ?: Color.Unspecified`}, fontSize = daySize),`);
+  lines.push(`                                text = day.label,`);
+  lines.push(`                                style = TextStyle(color = dayForeground ?: Color.Unspecified, fontSize = daySize),`);
   lines.push(`                            )`);
   lines.push(`                        }`);
   lines.push(`                    }`);

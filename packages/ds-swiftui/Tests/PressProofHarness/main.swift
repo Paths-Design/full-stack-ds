@@ -509,29 +509,39 @@ final class HarnessModel: ObservableObject {
                 self.counters.calendarButtonsDump = Self.axButtons().compactMap {
                     Self.title(of: $0) ?? Self.description(of: $0)
                 }
-                // The compact DatePicker exposes no date-labeled popup
-                // trigger; its real user path is the AXIncrementor day
-                // stepper. Increment once — an OS-mediated action — and
-                // expect exactly one onChange with a shifted date.
-                let incrementors = Self.axElements(withRoles: ["AXIncrementor"])
-                guard let incrementor = incrementors.first else {
-                    self.counters.limitations.append(
-                        "calendar: no AXIncrementor to step the date (buttons \(self.counters.calendarButtonsDump), census \(self.counters.calendarCensus.sorted { $0.key < $1.key })) — day-step proof unavailable on this host"
+                // Each day is a Button named by its full localized date;
+                // click one (an OS-synthesized press) and expect exactly
+                // one onChange, then click Next month and expect the grid
+                // to re-derive from the moved month.
+                let day = Self.axButtons(labeled: "March 10, 2031")
+                guard day.count == 1 else {
+                    self.failures.append(
+                        "calendar: expected one day button named 'March 10, 2031', found \(day.count) (buttons \(self.counters.calendarButtonsDump))"
                     )
                     self.phase = .compoundProofs
                     self.schedule(0.5) { self.advance() }
                     return
                 }
-                Self.increment(at: incrementor)
+                Self.click(at: day[0])
                 self.schedule(0.8) {
-                    if self.counters.calendarChanges.isEmpty {
-                        self.failures.append("calendar: AXIncrement incremented but onChange never fired")
+                    if self.counters.calendarChanges.count != 1 {
+                        self.failures.append("calendar: one day click fired onChange \(self.counters.calendarChanges.count)x, expected 1")
                     }
-                    if self.counters.calendarChanges.count > 1 {
-                        self.failures.append("calendar: single increment fired onChange \(self.counters.calendarChanges.count)x, expected 1")
+                    let next = Self.axButtons(labeled: "Next month")
+                    guard next.count == 1 else {
+                        self.failures.append("calendar: expected one 'Next month' control, found \(next.count)")
+                        self.phase = .compoundProofs
+                        self.schedule(0.5) { self.advance() }
+                        return
                     }
-                    self.phase = .compoundProofs
-                    self.schedule(0.5) { self.advance() }
+                    Self.click(at: next[0])
+                    self.schedule(0.8) {
+                        if Self.axButtons(labeled: "April 10, 2031").count != 1 {
+                            self.failures.append("calendar: Next month did not re-derive the grid for April 2031")
+                        }
+                        self.phase = .compoundProofs
+                        self.schedule(0.5) { self.advance() }
+                    }
                 }
             }
 
@@ -712,17 +722,6 @@ final class HarnessModel: ObservableObject {
     /// Static texts, for asserting presented sheet content.
     static func axStaticTexts() -> [AXUIElement] {
         axElements(withRoles: ["AXStaticText"])
-    }
-
-    /// OS-mediated date step on an AXIncrementor (DatePicker's day
-    /// stepper) — the same action a user's arrow press produces.
-    static func increment(at element: AXUIElement) {
-        focusOurWindow()
-        let result = AXUIElementPerformAction(element, kAXIncrementAction as CFString)
-        if result != .success {
-            FileHandle.standardError.write(Data(("AXIncrement error: \(result.rawValue)\n").utf8))
-        }
-        usleep(250_000)
     }
 
     /// Role census — the artifact that proves what a mounted surface
@@ -1046,7 +1045,9 @@ struct PressProofHarnessApp: App {
                 case .calendarDay:
                     Calendar(
                         value: $model.pickedDate,
-                        onChange: { model.counters.calendarChanges.append(String(describing: $0)) }
+                        onChange: { model.counters.calendarChanges.append(String(describing: $0)) },
+                        defaultMonth: Foundation.Calendar(identifier: .gregorian)
+                            .date(from: DateComponents(year: 2031, month: 3, day: 1))
                     )
                 case .compoundProofs:
                     VStack(spacing: 16) {

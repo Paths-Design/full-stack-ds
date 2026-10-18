@@ -37,7 +37,7 @@ function findPartOrNull(
 describe("CompositeControlIR", () => {
   it.each([
     ["Select", "option", "selection", "collection-selection", "activation", "click", "channelUpdate"],
-    ["Calendar", "day", "value", "collection-selection", "activation", "click", "channelCall"],
+    ["RadioGroup", "option", "selection", "collection-selection", "change", "change", "channelCall"],
     ["OTP", "field", "value", "segmented-text", "input", "input", "channelUpdate"],
   ] as const)(
     "lowers %s repeated-item ownership and synthesizes its commit event",

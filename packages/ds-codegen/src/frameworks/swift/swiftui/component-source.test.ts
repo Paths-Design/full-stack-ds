@@ -557,11 +557,44 @@ describe("generateSwiftUIComponentSource — final five", () => {
     expect(tabs).toContain("@StateObject private var activeTab: ControllableValue<String>");
   });
 
-  it("emits Calendar on the Date channel", () => {
+  it("derives Calendar's grid from the month channel and the locale (Calendar)", () => {
     const source = emit("Calendar");
     expect(source).toContain("@StateObject private var value: ControllableValue<Date?>");
-    expect(source).toContain("SwiftUI.DatePicker(");
-    expect(source).not.toContain("locale:");
+    expect(source).toContain("@StateObject private var values: ControllableValue<[Date]>");
+    expect(source).toContain("@StateObject private var month: ControllableValue<Date?>");
+    expect(source).toContain('locale: String = "en-US",');
+    expect(source).toContain("FsdsDateGrid.compute(");
+    expect(source).toContain("month: month.value,");
+    expect(source).toContain("locale: locale,");
+    expect(source).not.toContain("DatePicker");
+  });
+
+  it("steps the month from the declared nav actions with catalog names (Calendar)", () => {
+    const source = emit("Calendar");
+    expect(source).toContain("showMonth(FsdsDateGrid.addMonths(grid.month, -1), of: grid)");
+    expect(source).toContain("showMonth(FsdsDateGrid.addMonths(grid.month, 1), of: grid)");
+    expect(source).toContain(".disabled(grid.previousDisabled)");
+    expect(source).toContain(".disabled(grid.nextDisabled)");
+    expect(source).toContain('.accessibilityLabel(fsdsMessages.string("Calendar.previousMonth", default: "Previous month"))');
+    expect(source).toContain('.accessibilityLabel(fsdsMessages.string("Calendar.nextMonth", default: "Next month"))');
+    // The glyph is aria-hidden in the contract; the caption is announced as it changes.
+    expect(source).toContain('SwiftUI.Text(verbatim: "‹")');
+    expect(source).toContain(".accessibilityHidden(true)");
+    expect(source).toContain("AccessibilityNotification.Announcement(caption).post()");
+  });
+
+  it("exposes each day's name, selection and current-day value (Calendar)", () => {
+    const source = emit("Calendar");
+    expect(source).toContain(".accessibilityLabel(day.fullLabel)");
+    expect(source).toContain('let traits: AccessibilityTraits = day.isSelected ? [.isSelected] : []');
+    expect(source).toContain(".accessibilityAddTraits(traits)");
+    expect(source).toContain('let current: String = day.isToday ? grid.todayName : ""');
+    expect(source).toContain(".accessibilityValue(current)");
+    expect(source).toContain(".disabled(day.isDisabled)");
+    expect(source).toContain(".accessibilityLabel(grid.caption)");
+    expect(source).toContain(".accessibilityLabel(weekday.long)");
+    expect(source).toContain("values.set(FsdsDateGrid.select(values.value, day: day.date, range: true))");
+    expect(source).toContain("value.set(day.date)");
   });
 });
 

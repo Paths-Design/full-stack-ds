@@ -1,6 +1,7 @@
 <script lang="ts">
 // @generated:start imports
 import { useCalendar } from "./useCalendar.svelte.js";
+import { createReactiveDateGrid } from "../../primitives/date-grid.svelte.js";
 import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
@@ -19,6 +20,9 @@ type CalendarMode = "single" | "range";
 // @generated:start props
 interface Props {
   caption?: string;
+  month?: Date;
+  defaultMonth?: Date;
+  onMonthChange?: (month: Date) => void;
   value?: Date | Date[] | null;
   defaultValue?: Date | Date[] | null;
   onChange?: (value: Date | Date[] | null) => void;
@@ -28,14 +32,12 @@ interface Props {
   maxDate?: Date;
   locale?: string;
   shouldCloseOnSelect?: boolean;
-  days?: Date[];
   class?: string;
 }
 
-let { caption: captionProp, value, defaultValue, onChange, mode = "single", disabled, minDate, maxDate, locale = "en-US", shouldCloseOnSelect = true, days, class: className }: Props = $props();
-const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+let { caption, month, defaultMonth, onMonthChange, value, defaultValue, onChange, mode = "single", disabled, minDate, maxDate, locale = "en-US", shouldCloseOnSelect = true, class: className }: Props = $props();
+const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next month" };
 const fsdsMessages = useFsdsMessages("Calendar", CalendarMessages);
-const caption = $derived(captionProp ?? fsdsMessages.current.caption);
 // @generated:end
 
 // @generated:start hook
@@ -43,8 +45,12 @@ const behavior = useCalendar({
   value: () => value,
   defaultValue: () => defaultValue,
   onChange: () => onChange,
+  month: () => month,
+  defaultMonth: () => defaultMonth,
+  onMonthChange: () => onMonthChange,
   shouldCloseOnSelect: () => shouldCloseOnSelect,
 });
+const dateGrid = createReactiveDateGrid(() => ({ value: behavior.value, month: behavior.month, mode: mode, locale: locale, minDate: minDate, maxDate: maxDate, disabled: disabled, caption: caption, onValueChange: behavior.setValue, onMonthChange: behavior.setMonth }));
 // @generated:end
 
 // @generated:start classes
@@ -65,19 +71,34 @@ const classes = $derived(
 
 <div class={classes} role="application" data-fsds-component="calendar" data-fsds-box="">
   <div class={'calendar__header'}>
-    <button class={'calendar__nav'} aria-label={fsdsMessages.current.previousMonth}></button>
-    <span class={'calendar__caption'}>{caption}</span>
-    <button class={'calendar__nav'} aria-label={fsdsMessages.current.nextMonth}></button>
+    <button class={'calendar__nav'} type="button" data-calendar-nav="previous" onclick={dateGrid.previous} aria-label={fsdsMessages.current.previousMonth} aria-disabled={dateGrid.state.previousDisabled}>
+      <span aria-hidden="true">‹</span>
+    </button>
+    <span class={'calendar__caption'} aria-live="polite">{dateGrid.state.caption}</span>
+    <button class={'calendar__nav'} type="button" data-calendar-nav="next" onclick={dateGrid.next} aria-label={fsdsMessages.current.nextMonth} aria-disabled={dateGrid.state.nextDisabled}>
+      <span aria-hidden="true">›</span>
+    </button>
   </div>
-  <table class={'calendar__grid'} role="grid" aria-label={fsdsMessages.current.gridLabel}>
+  <table class={'calendar__grid'} role="grid" onkeydown={dateGrid.keydown} aria-label={dateGrid.state.caption}>
+    <thead>
+      <tr role="row">
+        {#each (dateGrid.state.weekdays ?? []) as item, index (index)}
+        <th class={'calendar__weekday'} role="columnheader" scope="col" aria-label={item.long}>
+          <span>{item.short}</span>
+        </th>
+        {/each}
+      </tr>
+    </thead>
     <tbody>
-      <tr>
-        {#each (days ?? []) as item, index (index)}
-        <td class={'calendar__cell'} role="gridcell" data-calendar-index={index}>
-          <button class={'calendar__day'} onclick={() => behavior.setValue(item)} tabindex="-1">{item.getDate()}</button>
+      {#each (dateGrid.state.weeks ?? []) as week, row (row)}
+      <tr role="row">
+        {#each (week.days ?? []) as day, column (column)}
+        <td class={'calendar__cell'} role="gridcell" aria-selected={day.selected} aria-current={day.current} data-outside-month={day.outsideMonth}>
+          <button class={'calendar__day'} type="button" onclick={() => dateGrid.select(day)} tabindex={day.tabIndex} aria-label={day.fullLabel} aria-disabled={day.disabled} data-date={day.key}>{day.label}</button>
         </td>
         {/each}
       </tr>
+      {/each}
     </tbody>
   </table>
 </div>

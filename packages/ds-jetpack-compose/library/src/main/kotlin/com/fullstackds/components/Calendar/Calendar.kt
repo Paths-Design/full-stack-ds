@@ -4,6 +4,7 @@ package com.fullstackds.components.calendar
 // @generated:start imports
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -28,13 +29,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.CollectionInfo
+import androidx.compose.ui.semantics.CollectionItemInfo
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.fullstackds.date.FsdsDate
+import com.fullstackds.date.FsdsDateGrid
+import com.fullstackds.date.FsdsDateGridDay
 import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
@@ -46,10 +55,6 @@ import java.util.Date
 // @generated:start types
 /** mode axis lowered from the contract's CalendarMode type. */
 enum class CalendarMode { Single, Range }
-
-/** Days per grid row. The contract declares no week-length axis, so the
- *  conventional calendar week is the emitter's framework-grammar constant. */
-private const val fsdsWeekLength = 7
 // @generated:end
 
 // @generated:start component
@@ -62,9 +67,12 @@ fun Calendar(
     values: List<Date>? = null,
     defaultValues: List<Date> = emptyList(),
     onValuesChange: ((List<Date>) -> Unit)? = null,
+    month: Date? = null,
+    defaultMonth: Date? = null,
+    onMonthChange: ((Date) -> Unit)? = null,
     mode: CalendarMode = CalendarMode.Single,
-    days: List<Date> = emptyList(),
-    caption: String = LocalFsdsMessages.current.string("Calendar.caption", "Calendar"),
+    locale: String = "en-US",
+    caption: String? = null,
     disabled: Boolean = false,
     minDate: Date? = null,
     maxDate: Date? = null,
@@ -74,6 +82,37 @@ fun Calendar(
     val resolvedValue = value ?: uncontrolledValue
     var uncontrolledValues by remember { mutableStateOf(defaultValues) }
     val resolvedValues = values ?: uncontrolledValues
+    var uncontrolledMonth by remember { mutableStateOf(defaultMonth) }
+    val range = mode == CalendarMode.Range
+    val dateGrid = FsdsDateGrid.compute(
+        selection = if (range) resolvedValues else listOfNotNull(resolvedValue),
+        month = month ?: uncontrolledMonth,
+        range = range,
+        locale = locale,
+        minDate = minDate,
+        maxDate = maxDate,
+        disabled = disabled,
+        caption = caption,
+    )
+    // A day outside the visible month moves the month channel to it.
+    fun showMonth(date: Date) {
+        if (FsdsDateGrid.isSameMonth(date, dateGrid.month)) return
+        val target = FsdsDateGrid.addMonths(date, 0)
+        if (month == null) { uncontrolledMonth = target }
+        onMonthChange?.invoke(target)
+    }
+    fun select(day: FsdsDateGridDay) {
+        if (day.disabled) return
+        if (range) {
+            val next = FsdsDateGrid.select(resolvedValues, day.date, range = true)
+            if (values == null) { uncontrolledValues = next }
+            onValuesChange?.invoke(next)
+        } else {
+            if (value == null) { uncontrolledValue = day.date }
+            onChange?.invoke(day.date)
+        }
+        showMonth(day.date)
+    }
     val fsdsTheme = LocalFsdsTheme.current
     fun layeredSlot(slotName: String): String? {
         val def = calendarTokenScopes["root"]?.get(slotName)
@@ -109,8 +148,7 @@ fun Calendar(
             .clip(gridShape)
             .then(if (gridBackground != null) Modifier.background(gridBackground, gridShape) else Modifier)
             .then(if (gridBorder != null) Modifier.border(1.dp, gridBorder, gridShape) else Modifier)
-            .padding(PaddingValues(gridInset))
-,
+            .padding(PaddingValues(gridInset)),
         verticalArrangement = Arrangement.spacedBy(gridGap),
     ) {
         Row(
@@ -120,69 +158,105 @@ fun Calendar(
             Box(
                 Modifier
                     .size(navSize)
+                    .clickable(enabled = !dateGrid.previousDisabled, role = Role.Button) {
+                        showMonth(FsdsDateGrid.addMonths(dateGrid.month, -1))
+                    }
                     .semantics { contentDescription = fsdsMessages.string("Calendar.previousMonth", "Previous month") },
                 contentAlignment = Alignment.Center,
-            ) { }
+            ) {
+                BasicText(
+                    text = "‹",
+                    modifier = Modifier.clearAndSetSemantics { },
+                    style = TextStyle(color = gridForeground ?: Color.Unspecified, fontSize = captionSize),
+                )
+            }
             BasicText(
-                text = caption,
+                text = dateGrid.caption,
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
                 style = TextStyle(color = gridForeground ?: Color.Unspecified, fontSize = captionSize),
             )
             Box(
                 Modifier
                     .size(navSize)
+                    .clickable(enabled = !dateGrid.nextDisabled, role = Role.Button) {
+                        showMonth(FsdsDateGrid.addMonths(dateGrid.month, 1))
+                    }
                     .semantics { contentDescription = fsdsMessages.string("Calendar.nextMonth", "Next month") },
                 contentAlignment = Alignment.Center,
-            ) { }
+            ) {
+                BasicText(
+                    text = "›",
+                    modifier = Modifier.clearAndSetSemantics { },
+                    style = TextStyle(color = gridForeground ?: Color.Unspecified, fontSize = captionSize),
+                )
+            }
         }
         Column(
-            Modifier.semantics { contentDescription = fsdsMessages.string("Calendar.gridLabel", "Calendar") }.padding(gridPadding),
+            Modifier
+                .semantics {
+                    contentDescription = dateGrid.caption
+                    collectionInfo = CollectionInfo(rowCount = dateGrid.weeks.size, columnCount = dateGrid.weekdays.size)
+                }
+                .padding(gridPadding),
+            verticalArrangement = Arrangement.spacedBy(gridGap),
         ) {
-            days.chunked(fsdsWeekLength).forEach { week ->
+            Row(horizontalArrangement = Arrangement.spacedBy(gridGap)) {
+                dateGrid.weekdays.forEach { weekday ->
+                    Box(
+                        Modifier.size(cellSize).semantics { contentDescription = weekday.long },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        BasicText(
+                            text = weekday.short,
+                            style = TextStyle(color = gridMuted ?: gridForeground ?: Color.Unspecified, fontSize = daySize),
+                        )
+                    }
+                }
+            }
+            dateGrid.weeks.forEachIndexed { row, week ->
                 Row(horizontalArrangement = Arrangement.spacedBy(gridGap)) {
-                    week.forEach { item ->
-                        val selected = if (mode == CalendarMode.Range) FsdsDate.isSameDayAsAny(item, resolvedValues) else FsdsDate.isSameDay(item, resolvedValue)
-                        val dayEnabled = !disabled && !FsdsDate.isBefore(item, minDate) && !FsdsDate.isAfter(item, maxDate)
+                    week.days.forEachIndexed { column, day ->
                         val interactionSource = remember { MutableInteractionSource() }
                         val hovered by interactionSource.collectIsHoveredAsState()
                         var focused by remember { mutableStateOf(false) }
                         val dayBackground = when {
-                            selected -> daySelectedBackground
-                            hovered && dayEnabled -> dayHover
+                            day.selected -> daySelectedBackground
+                            hovered && !day.disabled -> dayHover
                             else -> null
                         }
                         val dayRing = when {
                             focused -> focusRing
-                            FsdsDate.isToday(item) && !selected -> todayRing
+                            day.isToday && !day.selected -> todayRing
                             else -> null
+                        }
+                        val dayForeground = when {
+                            day.selected -> daySelectedForeground ?: gridForeground
+                            day.outsideMonth -> gridMuted ?: gridForeground
+                            else -> gridForeground
                         }
                         Box(
                             Modifier
                                 .size(cellSize)
                                 .clip(dayShape)
                                 .then(if (dayBackground != null) Modifier.background(dayBackground, dayShape) else Modifier)
-                                .hoverable(interactionSource, enabled = dayEnabled)
+                                .hoverable(interactionSource, enabled = !day.disabled)
                                 .selectable(
-                                    selected = selected,
-                                    enabled = dayEnabled,
+                                    selected = day.selected,
+                                    enabled = !day.disabled,
                                     role = Role.Button,
-                                    onClick = {
-                                        if (mode == CalendarMode.Range) {
-                                            val next = FsdsDate.toggle(resolvedValues, item)
-                                            if (values == null) { uncontrolledValues = next }
-                                            onValuesChange?.invoke(next)
-                                        } else {
-                                            if (value == null) { uncontrolledValue = item }
-                                            onChange?.invoke(item)
-                                        }
-                                    },
+                                    onClick = { select(day) },
                                 )
+                                .semantics {
+                                    contentDescription = day.fullLabel
+                                    collectionItemInfo = CollectionItemInfo(rowIndex = row, rowSpan = 1, columnIndex = column, columnSpan = 1)
+                                }
                                 .onFocusChanged { focused = it.isFocused }
                                 .then(if (dayRing != null && ringWidth > 0.dp) Modifier.border(ringWidth, dayRing, dayShape) else Modifier),
                             contentAlignment = Alignment.Center,
                         ) {
                             BasicText(
-                                text = FsdsDate.dayOfMonth(item).toString(),
-                                style = TextStyle(color = (if (selected) daySelectedForeground ?: gridForeground else gridForeground) ?: Color.Unspecified, fontSize = daySize),
+                                text = day.label,
+                                style = TextStyle(color = dayForeground ?: Color.Unspecified, fontSize = daySize),
                             )
                         }
                     }

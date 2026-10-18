@@ -41,6 +41,14 @@
       "layoutVariant": null
     },
     {
+      "name": "weekday",
+      "semanticElement": null,
+      "nativeTag": "th",
+      "isCompound": false,
+      "isRootOnly": false,
+      "layoutVariant": null
+    },
+    {
       "name": "cell",
       "semanticElement": null,
       "nativeTag": "td",
@@ -71,10 +79,36 @@
       "safeName": "caption",
       "type": "string",
       "required": false,
-      "description": "Visible month or range caption rendered above the day grid.",
-      "defaultExpr": "\"Calendar\"",
-      "nodeKind": null,
-      "defaultMessage": "caption"
+      "description": "Caption rendered above the day grid and naming it. Absent, the visible month and year are formatted in the locale.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "month",
+      "safeName": "month",
+      "type": "Date",
+      "required": false,
+      "description": "Controlled visible month: any date inside the month the grid shows.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "defaultMonth",
+      "safeName": "defaultMonth",
+      "type": "Date",
+      "required": false,
+      "description": "Uncontrolled initial visible month. Absent, the grid shows the selected date's month, else the current month.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "onMonthChange",
+      "safeName": "onMonthChange",
+      "type": "(month: Date) => void",
+      "required": false,
+      "description": "Called with the first day of the newly visible month when the month controls, a keyboard move or an adjacent-month day change it.",
+      "defaultExpr": null,
+      "nodeKind": null
     },
     {
       "name": "value",
@@ -156,25 +190,9 @@
       "description": "When true, selecting a date closes the popup. Wired to behavior.dismissalTriggers.select.enabledBy.",
       "defaultExpr": "true",
       "nodeKind": null
-    },
-    {
-      "name": "days",
-      "safeName": "days",
-      "type": "Date[]",
-      "required": false,
-      "description": "The concrete Date values the grid renders, one per day cell. The contract's closed dateDayOfMonth projection supplies each visible label, while compositeControl passes the same Date item to the value channel on activation. A typical month occupies 42 entries (6 weeks x 7 days).",
-      "defaultExpr": null,
-      "nodeKind": null
     }
   ],
   "messages": [
-    {
-      "key": "caption",
-      "catalogKey": "Calendar.caption",
-      "defaultMessage": "Calendar",
-      "description": "Caption shown above the month grid when the consumer supplies none.",
-      "params": []
-    },
     {
       "key": "previousMonth",
       "catalogKey": "Calendar.previousMonth",
@@ -187,13 +205,6 @@
       "catalogKey": "Calendar.nextMonth",
       "defaultMessage": "Next month",
       "description": "Accessible name of the button that shows the next month.",
-      "params": []
-    },
-    {
-      "key": "gridLabel",
-      "catalogKey": "Calendar.gridLabel",
-      "defaultMessage": "Calendar",
-      "description": "Accessible name of the date grid.",
       "params": []
     }
   ],
@@ -931,11 +942,11 @@
       },
       {
         "key": "PageUp",
-        "action": "Move focus to the same day in the previous month."
+        "action": "Move focus to the same day in the previous month (with Shift, the previous year)."
       },
       {
         "key": "PageDown",
-        "action": "Move focus to the same day in the next month."
+        "action": "Move focus to the same day in the next month (with Shift, the next year)."
       },
       {
         "key": "Home",
@@ -1146,7 +1157,18 @@
         "defaultValueProp": "defaultValue",
         "changeHandlerProp": "onChange",
         "valueType": "Date | Date[] | null",
-        "description": "Selected date or date range.",
+        "description": "Selected date (single mode) or [start, end] range (range mode).",
+        "callbackKind": "value",
+        "isDisclosureChannel": false,
+        "disclosurePriority": 9007199254740991
+      },
+      {
+        "name": "month",
+        "valueProp": "month",
+        "defaultValueProp": "defaultMonth",
+        "changeHandlerProp": "onMonthChange",
+        "valueType": "Date",
+        "description": "Visible month. The date-grid runtime derives the six-week grid from it.",
         "callbackKind": "value",
         "isDisclosureChannel": false,
         "disclosurePriority": 9007199254740991
@@ -1203,11 +1225,24 @@
       "orientation": "both",
       "initialFocus": "today",
       "wrap": false,
-      "description": "Arrow keys navigate between dates. Tab moves to prev/next month controls."
+      "description": "Exactly one day is a tab stop: the focused day, else the selected day, else today, else the first enabled day of the visible month. Arrow keys, Home/End and PageUp/PageDown move it, changing the month at its edges; Tab moves to the month controls."
     },
     "portal": null
   },
   "surface": null,
+  "dateGrid": {
+    "realization": "descriptor-only",
+    "facts": {
+      "valueChannel": "value",
+      "monthChannel": "month",
+      "modeProp": "mode",
+      "localeProp": "locale",
+      "minProp": "minDate",
+      "maxProp": "maxDate",
+      "disabledProp": "disabled",
+      "captionProp": "caption"
+    }
+  },
   "figma": {
     "intendedUse": "figma-library-materialization",
     "documentationFrame": "Calendar / Documentation",

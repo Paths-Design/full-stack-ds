@@ -234,6 +234,48 @@ final class InteractionTests: XCTestCase {
         XCTAssertFalse(names.contains("Suivant"), "the catalog must not override an explicit nextLabel: \(names)")
     }
 
+    /// The AX button whose title or description is exactly `name`.
+    private func axButton(named name: String) -> AXUIElement? {
+        axButtons(under: appElement()).first { axNames($0).contains(name) }
+    }
+
+    private func axSelected(_ element: AXUIElement) -> Bool? {
+        var value: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(element, kAXSelectedAttribute as CFString, &value) == .success else {
+            return nil
+        }
+        return value as? Bool
+    }
+
+    func testCalendarDaysSelectAndNavigationMovesTheMonth() throws {
+        try requireAXButtons()
+        let gregorian = Foundation.Calendar(identifier: .gregorian)
+        let date = { (month: Int, day: Int) in gregorian.date(from: DateComponents(year: 2031, month: month, day: day))! }
+        var values: [Date?] = []
+        var months: [Date?] = []
+        hostInWindow(
+            Calendar(
+                onChange: { values.append($0) },
+                defaultMonth: date(3, 1),
+                onMonthChange: { months.append($0) }
+            )
+        )
+        RunLoop.current.run(until: Date().addingTimeInterval(0.15))
+        guard let tenth = axButton(named: "Monday, March 10, 2031") else {
+            throw XCTSkip("AX tree empty under this runner — calendar proof requires an AX-capable host (visible skip, not a pass)")
+        }
+        XCTAssertEqual(AXUIElementPerformAction(tenth, kAXPressAction as CFString), .success)
+        RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        XCTAssertEqual(values, [date(3, 10)], "a day press writes that day to the value channel")
+        XCTAssertEqual(axButton(named: "Monday, March 10, 2031").flatMap(axSelected), true, "the selected day exposes the selected state")
+
+        let next = try XCTUnwrap(axButton(named: "Next month"), "the next control is named from the catalog")
+        XCTAssertEqual(AXUIElementPerformAction(next, kAXPressAction as CFString), .success)
+        RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        XCTAssertEqual(months, [date(4, 1)], "next moves the month channel to the following month")
+        XCTAssertNotNil(axButton(named: "Thursday, April 10, 2031"), "the grid re-derives from the moved month")
+    }
+
     func testSelectExposesPressableControl() throws {
         try requireAXButtons()
         guard let presses = try pressAllButtons(

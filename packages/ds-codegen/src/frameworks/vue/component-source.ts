@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -1663,6 +1664,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
+  if (ir.dateGrid) importLines.push(`import { useDateGrid } from "../../primitives/hooks/useDateGrid.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   importLines.push(...vueMessageImports(ir));
   const importsBody = importLines.join("\n");
@@ -1736,6 +1738,9 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     const page = ir.pagedSet;
     hookLines.push(`const pagedSet = usePagedSet(() => ({ index: behavior.${page.channel}.value, items: props.${page.itemsProp},`,
       `  count: ${page.countProp ? `props.${page.countProp}` : "undefined"}, disabled: ${page.disabledProp ? `props.${page.disabledProp}` : "false"}, onIndexChange: behavior.set${capitalize(page.channel)} }));`);
+  }
+  if (ir.dateGrid) {
+    hookLines.push(`const dateGrid = useDateGrid(() => (${dateGridOptions(ir.dateGrid, (prop) => `props.${prop}`, (channel) => `behavior.${channel}.value`, (channel) => `behavior.set${capitalize(channel)}`)}));`);
   }
   const hookBody = hookLines.join("\n");
 
@@ -2194,6 +2199,7 @@ function renderVueDomNode(
   // `iterationLocal` bindings on this node/descendants resolve to the
   // correct lexical name. Continue to extend the legacy `iterationScope`
   // identifier set for the `if:` guard grammar (V2 did not migrate `if:`).
+  const outerCtx = ctx;
   if (node.iteration) {
     const extendedScope = new Set(ctx.iterationScope ?? []);
     extendedScope.add(node.iteration.indexVar);
@@ -2567,8 +2573,9 @@ function renderVueDomNode(
   // setup>` doesn't auto-expose `defineProps` returns as bare locals).
   // The value renderer handles `prop:X` → `props.X` and
   // `channel:X.value` → `behavior.X.value`.
+  // A nested `iter:item.<path>` source names the enclosing iteration's item.
   const iterSourceExpr = iter
-    ? renderVueBindingValue(iter.source, ctx)
+    ? renderVueBindingValue(iter.source, outerCtx)
     : null;
   if (iter && iterSourceExpr === null) {
     throw new Error(
@@ -2760,6 +2767,7 @@ function renderVueTextContent(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `{{ ${pagedBindingExpression(expr, "pagedSet")} }}`;
+    case "dateGrid": return `{{ ${dateGridBindingExpression(expr, "dateGrid")} }}`;
     case "prop":
       return `{{ ${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)} }}`;
     case "literal":
@@ -2846,6 +2854,7 @@ function renderVueBinding(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `:${attr}="${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
+    case "dateGrid": return `:${attr}="${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "prop":
       return `:${attr}="${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
@@ -3004,6 +3013,7 @@ function renderVueBindingValue(
 ): string | null {
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+    case "dateGrid": return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(vuePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3089,6 +3099,7 @@ function renderVueEvent(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `@${eventName}="${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
+    case "dateGrid": return `@${eventName}="${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "prop":
       return `@${eventName}="${vuePropAccessor(expr.prop, ctx)}?.()"`;
     case "literal":

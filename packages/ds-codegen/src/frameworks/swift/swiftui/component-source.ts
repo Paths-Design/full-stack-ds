@@ -42,6 +42,7 @@ import { emitSwiftHighlightComponent } from "./highlight-source.js";
 import {
   collectDomSlots,
   countChildrenLeaves,
+  dateGridChrome,
   domGlyph,
   isCountIteratedFieldGroup,
   isArrayIteratedList,
@@ -68,6 +69,7 @@ import {
   channelToggledText,
   contentMessages,
   namedMessage,
+  nodeTextSource,
   partMessage,
   partTextSource,
   type NativeTextSource,
@@ -1916,55 +1918,300 @@ function emitSequencePager(ir: ComponentIR): string {
   return lines.join("\n");
 }
 
+/**
+ * The date-grid surface class: SwiftUI realizes the contract's `dateGrid`
+ * fact itself — the visible month derived from the month channel, six week
+ * rows from the hand-maintained `FsdsDateGrid` core, each day a Button —
+ * rather than delegating to a platform picker, so the declared chrome,
+ * labels and selection semantics are actually consumed. The header renders
+ * in the dom's own order (`dateGridChrome`): nav controls step the month
+ * channel, and a live caption is announced when it changes.
+ *
+ * The value channel's union (`Date | Date[] | null`) lowers to the
+ * scalar/many pair; the `dateGrid` fact pins the mode vocabulary to
+ * `single | range`, and `range` writes the many arm as a sorted span.
+ *
+ * Named divergences (ledgered in docs/architecture/native-target-admission.md):
+ *   - `focus.strategy = "roving"` and the grid's arrow and page keys are not
+ *     lowered: VoiceOver and Full Keyboard Access traverse the day Buttons;
+ *   - `calendar.elevation`, the hover colour and the focus-ring colour and
+ *     offset are not read (the system draws focus);
+ *   - `shouldCloseOnSelect` is not lowered (the grid owns no close semantics).
+ */
 function emitDateGridSurface(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
-  const chrome = resolveChrome(ir);
-  const hasDisabled = hasConventionalProp(ir, "disabled");
+  const grid = ir.dateGrid;
+  if (!grid) throw new Error(`emitDateGridSurface: ${ir.name} declares no dateGrid fact`);
+  const channelNamed = (channelName: string): NormalizedChannelIR => {
+    const found = ir.behavior.normalizedChannels.find((c) => c.name === channelName);
+    if (!found) throw new Error(`emitDateGridSurface: ${ir.name} declares no channel '${channelName}'`);
+    return found;
+  };
+  const propNamed = (propName: string | undefined) =>
+    propName === undefined ? undefined : ir.styledProps.find((p) => p.name === propName);
+  const value = channelNamed(grid.valueChannel);
+  const valueProp = escapeSwiftKeyword(value.valueProp);
+  const defaultValueProp = escapeSwiftKeyword(value.defaultValueProp ?? `${value.valueProp}Default`);
+  const changeProp = escapeSwiftKeyword(value.changeHandlerProp);
+  const manyValueProp = `${value.valueProp}s`;
+  const manyDefaultValueProp = `${value.defaultValueProp ?? `${value.valueProp}Default`}s`;
+  const manyChangeProp = `on${capitalize(manyValueProp)}Change`;
+  const month = channelNamed(grid.monthChannel);
+  const monthProp = escapeSwiftKeyword(month.valueProp);
+  const defaultMonthProp = escapeSwiftKeyword(month.defaultValueProp ?? `${month.valueProp}Default`);
+  const monthChangeProp = escapeSwiftKeyword(month.changeHandlerProp);
+  const modeProp = propNamed(grid.modeProp)!;
+  const modeType = modeProp.typeRefs?.find((ref) => ir.definedTypes[ref]?.values) ?? `${ir.name}Mode`;
+  const modeDefault = modeProp.defaultExpr?.replace(/^["']|["']$/g, "") ?? "single";
+  const localeProp = propNamed(grid.localeProp)!;
+  const localeDefault = localeProp.defaultExpr?.replace(/^["']|["']$/g, "") ?? "";
+  const captionProp = propNamed(grid.captionProp);
+  const disabledProp = propNamed(grid.disabledProp);
+  const minDateProp = propNamed(grid.minProp);
+  const maxDateProp = propNamed(grid.maxProp);
+
+  const accessibleLabel = (node: DomNodeIR | undefined): string | undefined => {
+    const source = nodeTextSource(ir, node, "aria-label");
+    if (source?.kind === "message") return swiftMessage(ir, source.ref.message);
+    const literal = node?.attrs?.["aria-label"];
+    return typeof literal === "string" && literal.length > 0 ? swiftLiteral(literal) : undefined;
+  };
+  const chrome = dateGridChrome(ir);
+  const gridLabel = chrome.gridLabel?.kind === "caption" ? "grid.caption" : accessibleLabel(chrome.gridLabel?.node);
+
+  const i1 = INDENT;
+  const i2 = INDENT.repeat(2);
+  const i3 = INDENT.repeat(3);
+  const i4 = INDENT.repeat(4);
+  const i5 = INDENT.repeat(5);
+  const i6 = INDENT.repeat(6);
   const lines: string[] = [];
   lines.push("// @generated:start component");
   if (ir.tokenScopes.length > 0) lines.push(...emitTokenScopesSection(ir));
   lines.push("");
-  lines.push(
-    `/// Emitted through the date-grid surface path: chrome shell over the ` +
-      `value channel; grid realization is a recorded follow-up.`,
-  );
+  lines.push(`/// A month grid derived from the ${month.name} channel through FsdsDateGrid.`);
   lines.push(`public struct ${exportName}: View {`);
   if (ir.tokenScopes.length > 0) {
-    lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
-    lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
-    lines.push(`${INDENT}}`);
+    lines.push(`${i1}private var fsdsScopes: FsdsComponentTokenScopes {`);
+    lines.push(`${i2}${ir.name}Tokens.scopes`);
+    lines.push(`${i1}}`);
   }
-  lines.push(`${INDENT}@StateObject private var value: ControllableValue<Date?>`);
-  if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
-  if (ir.tokenScopes.length > 0) {
-    lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
-  }
+  lines.push(`${i1}@StateObject private var ${valueProp}: ControllableValue<Date?>`);
+  lines.push(`${i1}@StateObject private var ${manyValueProp}: ControllableValue<[Date]>`);
+  lines.push(`${i1}@StateObject private var ${monthProp}: ControllableValue<Date?>`);
+  lines.push(`${i1}private let ${modeProp.safeName}: ${modeType}`);
+  lines.push(`${i1}private let ${localeProp.safeName}: String`);
+  if (captionProp) lines.push(`${i1}private let ${captionProp.safeName}: String?`);
+  if (disabledProp) lines.push(`${i1}private let ${disabledProp.safeName}: Bool`);
+  if (minDateProp) lines.push(`${i1}private let ${minDateProp.safeName}: Date?`);
+  if (maxDateProp) lines.push(`${i1}private let ${maxDateProp.safeName}: Date?`);
+  if (ir.tokenScopes.length > 0) lines.push(`${i1}@Environment(\\.fsdsTheme) private var fsdsTheme`);
   lines.push("");
-  lines.push(`${INDENT}public init(`);
-  const params = ["value: Binding<Date?>? = nil,", "defaultValue: Date? = nil,", "onChange: ((Date?) -> Void)? = nil,"];
-  if (hasDisabled) params.push("disabled: Bool = false");
+  lines.push(`${i1}public init(`);
+  const params = [
+    `${valueProp}: Binding<Date?>? = nil,`,
+    `${defaultValueProp}: Date? = nil,`,
+    `${changeProp}: ((Date?) -> Void)? = nil,`,
+    `${manyValueProp}: Binding<[Date]>? = nil,`,
+    `${manyDefaultValueProp}: [Date] = [],`,
+    `${manyChangeProp}: (([Date]) -> Void)? = nil,`,
+    `${monthProp}: Binding<Date?>? = nil,`,
+    `${defaultMonthProp}: Date? = nil,`,
+    `${monthChangeProp}: ((Date?) -> Void)? = nil,`,
+    `${modeProp.safeName}: ${modeType} = .${escapeSwiftKeyword(modeDefault)},`,
+    `${localeProp.safeName}: String = ${swiftLiteral(localeDefault)},`,
+  ];
+  if (captionProp) params.push(`${captionProp.safeName}: String? = nil,`);
+  if (disabledProp) params.push(`${disabledProp.safeName}: Bool = false,`);
+  if (minDateProp) params.push(`${minDateProp.safeName}: Date? = nil,`);
+  if (maxDateProp) params.push(`${maxDateProp.safeName}: Date? = nil,`);
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
-  for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
-  lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._value = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))`);
-  if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
-  lines.push(`${INDENT}}`);
+  for (const param of params) lines.push(`${i2}${param}`);
+  lines.push(`${i1}) {`);
+  const controllable = (local: string, controlled: string, initial: string, onChange: string) =>
+    `${i2}self._${local} = StateObject(wrappedValue: ControllableValue(controlled: ${controlled}, defaultValue: ${initial}, onChange: ${onChange}))`;
+  lines.push(controllable(valueProp, valueProp, defaultValueProp, changeProp));
+  lines.push(controllable(manyValueProp, manyValueProp, manyDefaultValueProp, manyChangeProp));
+  lines.push(controllable(monthProp, monthProp, defaultMonthProp, monthChangeProp));
+  for (const prop of [modeProp, localeProp, captionProp, disabledProp, minDateProp, maxDateProp]) {
+    if (prop) lines.push(`${i2}self.${prop.safeName} = ${prop.safeName}`);
+  }
+  lines.push(`${i1}}`);
   lines.push("");
-  lines.push(`${INDENT}public var body: some View {`);
-  lines.push(`${INDENT}${INDENT}VStack(spacing: 8) {`);
-  lines.push(`${INDENT}${INDENT}${INDENT}SwiftUI.DatePicker(`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}"",`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}selection: Binding(`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}get: { value.value ?? Date() },`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}set: { value.set($0) }`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT})`);
-  lines.push(`${INDENT}${INDENT}${INDENT})`);
-  if (hasDisabled) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.disabled(disabled)`);
-  lines.push(`${INDENT}${INDENT}}`);
-  lines.push(`${INDENT}}`);
+  lines.push(`${i1}private var range: Bool { ${modeProp.safeName} == .${escapeSwiftKeyword("range")} }`);
+  lines.push("");
+  lines.push(`${i1}private var dateGrid: FsdsDateGridState {`);
+  lines.push(`${i2}FsdsDateGrid.compute(`);
+  lines.push(`${i3}selection: range ? ${manyValueProp}.value : [${valueProp}.value].compactMap { $0 },`);
+  lines.push(`${i3}month: ${monthProp}.value,`);
+  lines.push(`${i3}range: range,`);
+  const tail = [`locale: ${localeProp.safeName}`];
+  if (minDateProp) tail.push(`minDate: ${minDateProp.safeName}`);
+  if (maxDateProp) tail.push(`maxDate: ${maxDateProp.safeName}`);
+  if (disabledProp) tail.push(`disabled: ${disabledProp.safeName}`);
+  if (captionProp) tail.push(`caption: ${captionProp.safeName}`);
+  tail.forEach((arg, index) => lines.push(`${i3}${arg}${index < tail.length - 1 ? "," : ""}`));
+  lines.push(`${i2})`);
+  lines.push(`${i1}}`);
+  lines.push("");
+  lines.push(`${i1}/// A day outside the visible month moves the month channel to it.`);
+  lines.push(`${i1}private func showMonth(_ date: Date, of grid: FsdsDateGridState) {`);
+  lines.push(`${i2}if FsdsDateGrid.isSameMonth(date, grid.month) { return }`);
+  lines.push(`${i2}${monthProp}.set(FsdsDateGrid.addMonths(date, 0))`);
+  lines.push(`${i1}}`);
+  lines.push("");
+  lines.push(`${i1}private func select(_ day: FsdsDateGridDay, of grid: FsdsDateGridState) {`);
+  lines.push(`${i2}if day.isDisabled { return }`);
+  lines.push(`${i2}if range {`);
+  lines.push(`${i3}${manyValueProp}.set(FsdsDateGrid.select(${manyValueProp}.value, day: day.date, range: true))`);
+  lines.push(`${i2}} else {`);
+  lines.push(`${i3}${valueProp}.set(day.date)`);
+  lines.push(`${i2}}`);
+  lines.push(`${i2}showMonth(day.date, of: grid)`);
+  lines.push(`${i1}}`);
+  const tokens = ir.tokenScopes.length > 0;
+  if (tokens) {
+    lines.push("");
+    lines.push(`${i1}private var layered: [String: FsdsTokenValue?] {`);
+    lines.push(`${i2}resolveFsdsLayeredTokens(`);
+    lines.push(`${i3}fsdsScopes,`);
+    lines.push(`${i3}fsdsTheme,`);
+    lines.push(`${i3}layers: ["root"]`);
+    lines.push(`${i2})`);
+    lines.push(`${i1}}`);
+    lines.push("");
+    lines.push(`${i1}private func colorSlot(_ suffix: String) -> Color? {`);
+    lines.push(`${i2}layered.first { $0.key.hasSuffix(suffix) }?.value?.color`);
+    lines.push(`${i1}}`);
+    lines.push("");
+    lines.push(`${i1}private func pxSlot(_ suffix: String) -> CGFloat? {`);
+    lines.push(`${i2}layered.first { $0.key.hasSuffix(suffix) }?.value?.px`);
+    lines.push(`${i1}}`);
+    lines.push("");
+  }
+  // Chrome reads by slot suffix. Colours and spacing fall back to the system
+  // appearance or zero; the grid's metrics have no neutral value, so a
+  // contract that declares no cell, nav or type size fails emission.
+  const declares = (suffix: string) => ir.tokenScopes.some((scope) => scope.values.some((v) => v.name.endsWith(suffix)));
+  const color = (suffix: string, fallback: string) => (tokens ? `colorSlot(${swiftLiteral(suffix)}) ?? ${fallback}` : fallback);
+  const px = (suffix: string) => (tokens ? `pxSlot(${swiftLiteral(suffix)}) ?? 0` : "0");
+  const metric = (suffix: string) => {
+    if (!declares(suffix)) throw new Error(`emitDateGridSurface: ${ir.name} declares no '${suffix}' token`);
+    return px(suffix);
+  };
+  lines.push(`${i1}private var background: Color { ${color(".color.background", ".clear")} }`);
+  lines.push(`${i1}private var foreground: Color { ${color(".color.foreground.primary", ".primary")} }`);
+  lines.push(`${i1}private var muted: Color { ${color(".color.foreground.muted", ".secondary")} }`);
+  lines.push(`${i1}private var border: Color { ${color(".color.border", ".clear")} }`);
+  lines.push(`${i1}private var selectedBackground: Color { ${color(".color.day.selected.background", ".accentColor")} }`);
+  lines.push(`${i1}private var selectedForeground: Color { ${color(".color.day.selected.foreground", ".white")} }`);
+  lines.push(`${i1}private var todayRing: Color { ${color(".color.today.ring", ".accentColor")} }`);
+  lines.push(`${i1}private var ringWidth: CGFloat { ${px(".focus.ring.width")} }`);
+  lines.push(`${i1}private var padding: CGFloat { ${px(".size.padding")} }`);
+  lines.push(`${i1}private var cellSize: CGFloat { ${metric(".size.cell")} }`);
+  lines.push(`${i1}private var navSize: CGFloat { ${metric(".size.nav")} }`);
+  lines.push(`${i1}private var radius: CGFloat { ${px(".size.radius")} }`);
+  lines.push(`${i1}private var dayRadius: CGFloat { ${px(".size.radius.day")} }`);
+  lines.push(`${i1}private var captionSize: CGFloat { ${metric(".typography.caption.size")} }`);
+  lines.push(`${i1}private var daySize: CGFloat { ${metric(".typography.day.size")} }`);
+  lines.push(`${i1}private var gap: CGFloat { ${px("box-model.gap")} }`);
+  lines.push("");
+  lines.push(`${i1}public var body: some View {`);
+  lines.push(`${i2}let grid = dateGrid`);
+  lines.push(`${i2}VStack(spacing: gap) {`);
+  lines.push(`${i3}header(grid)`);
+  lines.push(`${i3}days(grid)`);
+  lines.push(`${i2}}`);
+  lines.push(`${i2}.padding(padding)`);
+  lines.push(`${i2}.background(background, in: RoundedRectangle(cornerRadius: radius))`);
+  lines.push(`${i2}.overlay(RoundedRectangle(cornerRadius: radius).stroke(border, lineWidth: 1))`);
+  const live = chrome.header.some((item) => item.kind === "caption" && item.live !== undefined);
+  if (live) {
+    lines.push(`${i2}.onChange(of: grid.caption) { _, caption in`);
+    lines.push(`${i3}AccessibilityNotification.Announcement(caption).post()`);
+    lines.push(`${i2}}`);
+  }
+  lines.push(`${i1}}`);
+  lines.push("");
+  lines.push(`${i1}private func header(_ grid: FsdsDateGridState) -> some View {`);
+  lines.push(`${i2}HStack(spacing: gap) {`);
+  for (const item of chrome.header) {
+    if (item.kind === "caption") {
+      lines.push(`${i3}SwiftUI.Text(grid.caption)`);
+      lines.push(`${i4}.font(.system(size: captionSize))`);
+      lines.push(`${i4}.foregroundStyle(foreground)`);
+      lines.push(`${i4}.frame(maxWidth: .infinity)`);
+      continue;
+    }
+    const label = accessibleLabel(item.node);
+    if (!label) throw new Error(`emitDateGridSurface: ${ir.name} declares a ${item.action} control with no accessible name`);
+    lines.push(`${i3}Button {`);
+    lines.push(`${i4}showMonth(FsdsDateGrid.addMonths(grid.month, ${item.action === "previous" ? -1 : 1}), of: grid)`);
+    lines.push(`${i3}} label: {`);
+    lines.push(`${i4}SwiftUI.Text(verbatim: ${swiftLiteral(item.glyph ?? "")})`);
+    lines.push(`${i5}.font(.system(size: captionSize))`);
+    lines.push(`${i5}.foregroundStyle(foreground)`);
+    lines.push(`${i5}.frame(width: navSize, height: navSize)`);
+    lines.push(`${i5}.accessibilityHidden(true)`);
+    lines.push(`${i3}}`);
+    lines.push(`${i3}.buttonStyle(.plain)`);
+    lines.push(`${i3}.disabled(grid.${item.action === "previous" ? "previousDisabled" : "nextDisabled"})`);
+    lines.push(`${i3}.accessibilityLabel(${label})`);
+  }
+  lines.push(`${i2}}`);
+  lines.push(`${i1}}`);
+  lines.push("");
+  lines.push(`${i1}private func days(_ grid: FsdsDateGridState) -> some View {`);
+  lines.push(`${i2}Grid(horizontalSpacing: gap / 2, verticalSpacing: gap / 2) {`);
+  if (chrome.weekdays) {
+    lines.push(`${i3}GridRow {`);
+    lines.push(`${i4}ForEach(grid.weekdays) { weekday in`);
+    lines.push(`${i5}SwiftUI.Text(weekday.short)`);
+    lines.push(`${i6}.font(.system(size: daySize))`);
+    lines.push(`${i6}.foregroundStyle(muted)`);
+    lines.push(`${i6}.frame(width: cellSize)`);
+    lines.push(`${i6}.accessibilityLabel(weekday.long)`);
+    lines.push(`${i6}.accessibilityAddTraits(.isHeader)`);
+    lines.push(`${i4}}`);
+    lines.push(`${i3}}`);
+  }
+  lines.push(`${i3}ForEach(grid.weeks) { week in`);
+  lines.push(`${i4}GridRow {`);
+  lines.push(`${i5}ForEach(week.days) { day in`);
+  lines.push(`${i6}dayCell(day, grid)`);
+  lines.push(`${i5}}`);
+  lines.push(`${i4}}`);
+  lines.push(`${i3}}`);
+  lines.push(`${i2}}`);
+  lines.push(`${i2}.accessibilityElement(children: .contain)`);
+  if (gridLabel) lines.push(`${i2}.accessibilityLabel(${gridLabel})`);
+  lines.push(`${i1}}`);
+  lines.push("");
+  lines.push(`${i1}private func dayCell(_ day: FsdsDateGridDay, _ grid: FsdsDateGridState) -> some View {`);
+  lines.push(`${i2}let shape = RoundedRectangle(cornerRadius: dayRadius)`);
+  lines.push(`${i2}let ink: Color = day.isSelected ? selectedForeground : (day.isOutsideMonth ? muted : foreground)`);
+  lines.push(`${i2}let fill: Color = day.isSelected ? selectedBackground : .clear`);
+  lines.push(`${i2}let ring: Color = day.isToday && !day.isSelected ? todayRing : .clear`);
+  lines.push(`${i2}let current: String = day.isToday ? grid.todayName : ""`);
+  lines.push(`${i2}let traits: AccessibilityTraits = day.isSelected ? [.isSelected] : []`);
+  lines.push(`${i2}return Button {`);
+  lines.push(`${i3}select(day, of: grid)`);
+  lines.push(`${i2}} label: {`);
+  lines.push(`${i3}SwiftUI.Text(day.label)`);
+  lines.push(`${i4}.font(.system(size: daySize))`);
+  lines.push(`${i4}.foregroundStyle(ink)`);
+  lines.push(`${i4}.frame(width: cellSize, height: cellSize)`);
+  lines.push(`${i4}.background(fill, in: shape)`);
+  lines.push(`${i4}.overlay(shape.stroke(ring, lineWidth: ringWidth))`);
+  lines.push(`${i2}}`);
+  lines.push(`${i2}.buttonStyle(.plain)`);
+  lines.push(`${i2}.disabled(day.isDisabled)`);
+  lines.push(`${i2}.accessibilityLabel(day.fullLabel)`);
+  lines.push(`${i2}.accessibilityValue(current)`);
+  lines.push(`${i2}.accessibilityAddTraits(traits)`);
+  lines.push(`${i1}}`);
   lines.push(`}`);
   lines.push("// @generated:end");
-  void chrome;
   return lines.join("\n");
 }
 

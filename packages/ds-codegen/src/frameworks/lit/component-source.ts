@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -1658,6 +1659,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
   const lines: string[] = [`import { ${litImports.join(", ")} } from 'lit';`];
   if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.motion.countdown || ir.motion.sequence || ir.pagedSet) lines.push(`import { ref } from 'lit/directives/ref.js';`);
   if (ir.pagedSet) lines.push(`import { PagedSetController } from "../../primitives/controllers/PagingController.js";`);
+  if (ir.dateGrid) lines.push(`import { DateGridController } from "../../primitives/controllers/DateGridController.js";`);
   if (ir.motion.sequence) lines.push(`import { SequenceController } from "../../primitives/controllers/SequenceController.js";`);
   if (ir.messages.length > 0) {
     const names = ["FsdsMessagesController", ...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : [])];
@@ -1968,6 +1970,11 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
       const page = ir.pagedSet;
       lines.push(`  private pagedSet = new PagedSetController(this, () => ({ index: this.behavior.${page.channel}, items: this.${page.itemsProp} ?? [],`,
         `    count: ${page.countProp ? `this.${page.countProp}` : "undefined"}, disabled: ${page.disabledProp ? `this.${page.disabledProp}` : "false"}, onIndexChange: (value) => this.behavior.set${capitalizeLit(page.channel)}(value) }));`);
+    }
+    if (ir.dateGrid) {
+      lines.push(`  private dateGrid = new DateGridController(this, () => (${dateGridOptions(ir.dateGrid,
+        (prop) => defaultAwareLitPropAccessor(prop, styledByName), (channel) => `this.behavior.${channel}`,
+        (channel) => `(next) => this.behavior.set${capitalizeLit(channel)}(next)`)}));`);
     }
     const autoDismissPolicy = resolveSurfaceAutoDismiss(ir);
     const autoDismissChannel = autoDismissPolicy
@@ -2618,6 +2625,7 @@ function renderLitDomNode(
   // and every descendant when `iterate` is declared. Bindings resolve
   // `prop:item` / `prop:index` as bare locals from the map callback's
   // scope, not via `this.item`.
+  const outerCtx = ctx;
   if (node.iteration) {
     const extendedScope = new Set(ctx.iterationScope ?? []);
     extendedScope.add(node.iteration.indexVar);
@@ -3049,7 +3057,8 @@ function renderLitDomNode(
     // `this.behavior.X` (the controllable-state value), not the raw
     // `@property` field. Going through `renderLitBindingValue` keeps
     // the dispatch source-uniform.
-    const sourceExpr = renderLitBindingValue(source, ctx);
+    // A nested `iter:item.<path>` source names the enclosing iteration's item.
+    const sourceExpr = renderLitBindingValue(source, outerCtx);
     if (sourceExpr === null) {
       throw new Error(
         `Lit emitter: iteration source could not be lowered (source kind=${source.kind})`,
@@ -3095,6 +3104,9 @@ const LIT_READONLY_IDL_NAMES = new Set(["form", "labels", "list", "options"]);
 
 function isAttributeOnlyBinding(attr: string): boolean {
   if (attr.startsWith("aria-") || attr.startsWith("data-")) return true;
+  // The `tabindex` attribute's IDL property is `tabIndex`; a `.tabindex`
+  // property binding would set an unrelated expando.
+  if (attr === "tabindex") return true;
   return LIT_READONLY_IDL_NAMES.has(attr);
 }
 
@@ -3146,6 +3158,8 @@ function renderLitBinding(
   const attr = litDomAttrName(rawAttr);
   switch (expr.kind) {
     case "paged": return `.${attr}=\${${pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
+    // Date-grid values are strings and booleans that the attribute renders ("true"/"false").
+    case "dateGrid": return `${attr}=\${${dateGridBindingExpression(expr, "this.dateGrid")}}`;
     case "valueMap": {
       const lowered = renderLitBindingValue(expr, ctx);
       if (lowered === null) return null;
@@ -3417,6 +3431,7 @@ function renderLitContent(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `\${${pagedBindingExpression(expr, "this.pagedSet")}}`;
+    case "dateGrid": return `\${${dateGridBindingExpression(expr, "this.dateGrid")}}`;
     case "prop":
       return `\${${appendPath(litPropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -3507,6 +3522,7 @@ function renderLitBindingValue(
 ): string | null {
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+    case "dateGrid": return dateGridBindingExpression(expr, "this.dateGrid", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(litPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3593,6 +3609,7 @@ function renderLitEvent(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `@${eventName}=\${${pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
+    case "dateGrid": return `@${eventName}=\${${dateGridBindingExpression(expr, "this.dateGrid", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `@${eventName}=\${${litPropAccessor(expr.prop, ctx)}}`;
     case "literal":

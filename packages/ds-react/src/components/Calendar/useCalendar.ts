@@ -14,6 +14,12 @@ export interface UseCalendarOptions {
   defaultValue?: Date | Date[] | null;
   /** Called when "value" changes. */
   onChange?: (value: Date | Date[] | null) => void;
+  /** Controlled "month" value. */
+  month?: Date;
+  /** Initial uncontrolled "month" value. */
+  defaultMonth?: Date;
+  /** Called when "month" changes. */
+  onMonthChange?: (value: Date) => void;
   /** Selecting a date closes the popup (controlled by shouldCloseOnSelect). */
   shouldCloseOnSelect?: boolean;
 }
@@ -21,6 +27,8 @@ export interface UseCalendarOptions {
 export interface UseCalendarResult {
   value: Date | Date[] | null;
   setValue: (next: Date | Date[] | null) => void;
+  month: Date;
+  setMonth: (next: Date) => void;
 }
 // @generated:end
 
@@ -36,9 +44,17 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
     onChange: options.onChange,
   });
 
+  const [month, setMonth] = useControllableState<Date>({
+    controlled: options.month,
+    defaultValue: options.defaultMonth ?? undefined as never,
+    onChange: options.onMonthChange,
+  });
+
   return {
     value,
     setValue,
+    month,
+    setMonth,
   };
 }
 // @generated:end

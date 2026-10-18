@@ -12,6 +12,9 @@ export interface CalendarBehaviorOptions {
   value?: () => Date | Date[] | null | undefined;
   defaultValue?: Date | Date[] | null;
   onChange?: (value: Date | Date[] | null) => void;
+  month?: () => Date | undefined;
+  defaultMonth?: Date;
+  onMonthChange?: (value: Date) => void;
   shouldCloseOnSelect?: boolean;
 }
 // @generated:end
@@ -23,6 +26,7 @@ export interface CalendarBehaviorOptions {
 // @generated:start hook
 export class CalendarBehavior {
   readonly valueState: ControllableStateController<Date | Date[] | null>;
+  readonly monthState: ControllableStateController<Date>;
   readonly dismissal: DismissalController;
 
   constructor(host: ReactiveControllerHost, private opts: CalendarBehaviorOptions = {}) {
@@ -30,6 +34,11 @@ export class CalendarBehavior {
       controlled: opts.value,
       defaultValue: opts.defaultValue ?? undefined as never,
       onChange: opts.onChange,
+    });
+    this.monthState = new ControllableStateController<Date>(host, {
+      controlled: opts.month,
+      defaultValue: opts.defaultMonth ?? undefined as never,
+      onChange: opts.onMonthChange,
     });
     this.dismissal = new DismissalController(host, {
       open: () => true,
@@ -40,6 +49,9 @@ export class CalendarBehavior {
 
   get value(): Date | Date[] | null { return this.valueState.value; }
   setValue(value: Date | Date[] | null) { this.valueState.set(value); }
+
+  get month(): Date { return this.monthState.value; }
+  setMonth(value: Date) { this.monthState.set(value); }
 }
 // @generated:end
 

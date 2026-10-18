@@ -3,94 +3,113 @@ import { describe, expect, it } from "vitest";
 import TestRenderer, { act, type ReactTestInstance, type ReactTestRenderer } from "react-test-renderer";
 import { Calendar } from "../Calendar";
 
-const D1 = new Date(2026, 8, 1);
-const D2 = new Date(2026, 8, 2);
-const D3 = new Date(2026, 8, 3);
+const SEPTEMBER = new Date(2026, 8, 1);
+const day = (y: number, m: number, d: number) => new Date(y, m - 1, d);
 
 function mountCalendar(props: Record<string, unknown> = {}) {
   let renderer: ReactTestRenderer | undefined;
   act(() => {
-    renderer = TestRenderer.create(
-      <Calendar days={[D1, D2, D3]} testID="subject" {...props} />,
-    );
+    renderer = TestRenderer.create(<Calendar defaultMonth={SEPTEMBER} testID="subject" {...props} />);
   });
   return renderer!;
 }
 
 /**
- * Day cells are the only pressable buttons in the lowered tree. Match host
- * instances only (string type) — the test shim renders a component that wraps
- * a same-named host, and both carry identical props.
+ * Host Pressables only (string type) — the test shim renders a component that
+ * wraps a same-named host, and both carry identical props.
  */
-const dayPressables = (r: ReactTestRenderer): ReactTestInstance[] =>
-  r.root.findAll(
-    (n) =>
-      String(n.type) === "Pressable" &&
-      typeof n.props.onPress === "function" &&
-      n.props.accessibilityRole === "button",
-  );
+const pressables = (r: ReactTestRenderer): ReactTestInstance[] =>
+  r.root.findAll((n) => String(n.type) === "Pressable" && typeof n.props.onPress === "function");
+const navs = (r: ReactTestRenderer) => {
+  const [previous, next] = pressables(r).filter((n) => /month/i.test(String(n.props.accessibilityLabel)));
+  return { previous: previous!, next: next! };
+};
+const days = (r: ReactTestRenderer) => pressables(r).filter((n) => !/month/i.test(String(n.props.accessibilityLabel)));
+const dayNamed = (r: ReactTestRenderer, label: string) => days(r).find((n) => n.props.accessibilityLabel === label)!;
+const selectedLabels = (r: ReactTestRenderer) =>
+  days(r).filter((n) => n.props.accessibilityState.selected === true).map((n) => n.props.accessibilityLabel as string);
+const texts = (r: ReactTestRenderer) =>
+  r.root.findAll((n) => String(n.type) === "Text").map((n) => n.props.children).filter((c) => typeof c === "string");
 
-const selectedStates = (r: ReactTestRenderer) =>
-  dayPressables(r).map((n) => n.props.accessibilityState.selected as boolean);
-
-describe("Calendar — behavioral surfaces", () => {
-  it("marks each tapped day selected and reports its date through onChange", () => {
-    const reported: unknown[] = [];
-    const renderer = mountCalendar({
-      onChange: (next: unknown) => reported.push(next),
-    });
-    const pressed: ReactTestInstance[] = [];
-    for (const node of dayPressables(renderer)) {
-      act(() => node.props.onPress());
-      pressed.push(node);
-    }
-    // Each day node carries a distinct iterated date, so pressing all of
-    // them reports all three dates exactly once.
-    expect(new Set(reported)).toEqual(new Set([D1, D2, D3]));
-    // Uncontrolled mode: only the last-pressed day stays selected.
-    const stillSelected = dayPressables(renderer).filter(
-      (n) => n.props.accessibilityState.selected,
-    );
-    expect(stillSelected.length).toBe(1);
-    expect(stillSelected[0]).toBe(pressed.at(-1));
+describe("Calendar — month grid", () => {
+  it("renders the visible month's six locale-ordered weeks with full-date names", () => {
+    const renderer = mountCalendar();
+    const grid = days(renderer);
+    expect(grid).toHaveLength(42);
+    // September 1, 2026 is a Tuesday; en-US weeks start on Sunday, August 30.
+    expect(grid[0]!.props.accessibilityLabel).toBe("Sunday, August 30, 2026");
+    expect(grid[2]!.props.accessibilityLabel).toBe("Tuesday, September 1, 2026");
+    expect(texts(renderer)).toContain("September 2026");
+    expect(texts(renderer).slice(0, 10)).toEqual(expect.arrayContaining(["Sun", "Mon", "Sat"]));
   });
 
-  it("applies the selected style to exactly the selected day", () => {
-    const renderer = mountCalendar({ value: D2 });
-    const states = dayPressables(renderer).map((n) => ({
-      selected: n.props.accessibilityState.selected as boolean,
-      selectedStyle: (n.props.style as unknown[]).at(-1),
-    }));
-    const chosen = states.filter((s) => s.selected);
-    expect(chosen.length).toBe(1);
-    expect(chosen[0]!.selectedStyle).toEqual({ backgroundColor: "#d92d2e" });
-    for (const other of states.filter((s) => !s.selected)) {
-      expect(other.selectedStyle).toBeUndefined();
-    }
+  it("follows the locale for week start, names and caption", () => {
+    const renderer = mountCalendar({ locale: "de-DE" });
+    expect(days(renderer)[0]!.props.accessibilityLabel).toBe("Montag, 31. August 2026");
+    expect(texts(renderer)).toContain("September 2026");
+    expect(texts(renderer)).toContain("Mo");
+  });
+});
+
+describe("Calendar — selection", () => {
+  it("selects a tapped day, reports it through onChange, and styles only that day", () => {
+    const reported: unknown[] = [];
+    const renderer = mountCalendar({ onChange: (next: unknown) => reported.push(next) });
+    act(() => dayNamed(renderer, "Thursday, September 10, 2026").props.onPress());
+    expect(reported).toEqual([day(2026, 9, 10)]);
+    expect(selectedLabels(renderer)).toEqual(["Thursday, September 10, 2026"]);
+    const styled = days(renderer).filter((n) => (n.props.style as unknown[]).at(-1) !== undefined);
+    expect(styled.map((n) => n.props.accessibilityLabel)).toEqual(["Thursday, September 10, 2026"]);
   });
 
   it("keeps a controlled selection pinned while still reporting presses", () => {
     let reported: unknown;
-    const renderer = mountCalendar({
-      value: D2,
-      onChange: (next: unknown) => (reported = next),
-    });
-    const selectedNode = dayPressables(renderer).find(
-      (n) => n.props.accessibilityState.selected,
-    )!;
-    const unselectedNode = dayPressables(renderer).find(
-      (n) => !n.props.accessibilityState.selected,
-    )!;
-    // The selected node carries D2 as its iterated item, so pressing it can
-    // only ever report D2; the selection itself stays pinned by the prop.
-    act(() => selectedNode.props.onPress());
-    expect(reported).toBe(D2);
-    expect(selectedNode.props.accessibilityState.selected).toBe(true);
-    expect(unselectedNode.props.accessibilityState.selected).toBe(false);
+    const renderer = mountCalendar({ value: day(2026, 9, 2), onChange: (next: unknown) => (reported = next) });
+    act(() => dayNamed(renderer, "Saturday, September 5, 2026").props.onPress());
+    expect(reported).toEqual(day(2026, 9, 5));
+    expect(selectedLabels(renderer)).toEqual(["Wednesday, September 2, 2026"]);
   });
 
-  it("selects every date of a range value", () => {
-    const renderer = mountCalendar({ value: [D1, D3] });
-    expect(selectedStates(renderer).filter(Boolean).length).toBe(2);
+  it("builds an ordered range from two taps and selects every day of the span", () => {
+    const reported: unknown[] = [];
+    const renderer = mountCalendar({ mode: "range", onChange: (next: unknown) => reported.push(next) });
+    act(() => dayNamed(renderer, "Saturday, September 12, 2026").props.onPress());
+    act(() => dayNamed(renderer, "Wednesday, September 9, 2026").props.onPress());
+    expect(reported.at(-1)).toEqual([day(2026, 9, 9), day(2026, 9, 12)]);
+    expect(selectedLabels(renderer)).toEqual([
+      "Wednesday, September 9, 2026", "Thursday, September 10, 2026",
+      "Friday, September 11, 2026", "Saturday, September 12, 2026",
+    ]);
+  });
+
+  it("does not select a day outside the bounds, and reports it disabled", () => {
+    const reported: unknown[] = [];
+    const renderer = mountCalendar({ maxDate: day(2026, 9, 20), onChange: (next: unknown) => reported.push(next) });
+    const late = dayNamed(renderer, "Monday, September 21, 2026");
+    expect(late.props.accessibilityState.disabled).toBe(true);
+    act(() => late.props.onPress());
+    expect(reported).toEqual([]);
+  });
+});
+
+describe("Calendar — month navigation", () => {
+  it("next and previous move the month channel and the caption", () => {
+    const months: Date[] = [];
+    const renderer = mountCalendar({ onMonthChange: (next: Date) => months.push(next) });
+    act(() => navs(renderer).next.props.onPress());
+    expect(months).toEqual([day(2026, 10, 1)]);
+    expect(texts(renderer)).toContain("October 2026");
+    act(() => navs(renderer).previous.props.onPress());
+    act(() => navs(renderer).previous.props.onPress());
+    expect(months.at(-1)).toEqual(day(2026, 8, 1));
+    expect(texts(renderer)).toContain("August 2026");
+  });
+
+  it("labels the month buttons from the catalog and disables one at a bound", () => {
+    const renderer = mountCalendar({ minDate: day(2026, 9, 3) });
+    const { previous, next } = navs(renderer);
+    expect([previous.props.accessibilityLabel, next.props.accessibilityLabel]).toEqual(["Previous month", "Next month"]);
+    expect(previous.props.accessibilityState.disabled).toBe(true);
+    expect(next.props.accessibilityState.disabled).toBe(false);
   });
 });

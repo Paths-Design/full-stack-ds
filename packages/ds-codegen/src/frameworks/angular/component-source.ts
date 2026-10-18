@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -1495,6 +1496,7 @@ function generateDomTreeImports(ir: ComponentIR): string {
     `import { ${commonImports} } from "@angular/common";`,
   ];
   if (ir.pagedSet) lines.push(`import { createReactivePagedSet } from "../../primitives/paging-signal.js";`);
+  if (ir.dateGrid) lines.push(`import { createReactiveDateGrid } from "../../primitives/date-grid-signal.js";`);
   if (ir.motion.sequence) lines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
   if (ir.messages.length > 0) {
     const names = [...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : []), "injectFsdsMessages"];
@@ -1883,7 +1885,18 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     if (ANGULAR_RESERVED.has(p.name)) continue;
     const propLine = generateInputProp(p);
     const sequencePresentationProp = ir.motion.sequence?.progress.some(binding => binding.when?.axis === p.name);
-    if (sequencePresentationProp || controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name || (ir.motion.sequence && [ir.motion.sequence.itemsProp, ir.motion.sequence.timing.durationProp, ir.motion.sequence.timing.autoPlayProp].includes(p.name)) || (ir.pagedSet && [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp].includes(p.name))) {
+    // Inputs a date-grid computed reads are signal-backed so the grid
+    // recomputes when they change, and keep their contract defaults.
+    const dateGridProp = ir.dateGrid !== undefined && [ir.dateGrid.modeProp, ir.dateGrid.localeProp, ir.dateGrid.minProp,
+      ir.dateGrid.maxProp, ir.dateGrid.disabledProp, ir.dateGrid.captionProp].includes(p.name);
+    if (dateGridProp) {
+      const type = lowerAngularPropType(p.propType);
+      const fallback = p.defaultExpr !== undefined ? ` ?? ${p.defaultExpr}` : "";
+      lines.push(`  private readonly input${capitalizeAngular(p.safeName)} = signal<${type} | undefined>(undefined);`);
+      lines.push(`  @Input() get ${p.safeName}(): ${type} | undefined { return this.input${capitalizeAngular(p.safeName)}()${fallback}; }`);
+      lines.push(`  set ${p.safeName}(value: ${type} | undefined) { this.input${capitalizeAngular(p.safeName)}.set(value); }`);
+      declaredProps.add(p.name);
+    } else if (sequencePresentationProp || controlledChannels.has(p.name) || resolveSurfaceAutoDismiss(ir)?.durationProp === p.name || (ir.motion.sequence && [ir.motion.sequence.itemsProp, ir.motion.sequence.timing.durationProp, ir.motion.sequence.timing.autoPlayProp].includes(p.name)) || (ir.pagedSet && [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp].includes(p.name))) {
       const type = lowerAngularPropType(p.propType);
       lines.push(`  private readonly input${capitalizeAngular(p.safeName)} = signal<${type} | undefined>(undefined);`);
       const presentationDefault = sequencePresentationProp && p.defaultExpr !== undefined ? ` ?? ${p.defaultExpr}` : "";
@@ -2055,6 +2068,13 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       `  private pagedCleanup = this.destroyRef.onDestroy(() => this.pagedSet.destroy());`,
       `  private pagedEffect = effect(() => this.pagedSet.sync({ index: this.behavior.${page.channel}(), items: this.${page.itemsProp} ?? [],`,
       `    count: ${page.countProp ? `this.${page.countProp}` : "undefined"}, disabled: ${page.disabledProp ? `this.${page.disabledProp}` : "false"}, onIndexChange: (value) => this.behavior.set${capitalizeAngular(page.channel)}(value) }));`);
+  }
+  if (ir.dateGrid) {
+    const safe = (name: string) => ir.styledProps.find((prop) => prop.name === name)?.safeName ?? name;
+    lines.push(`  protected dateGrid = createReactiveDateGrid(() => (${dateGridOptions(ir.dateGrid, (prop) => `this.${safe(prop)}`,
+      (channel) => `this.behavior.${channel}()`, (channel) => `(next) => this.behavior.set${capitalizeAngular(channel)}(next)`)}));`,
+      `  private dateGridCleanup = this.destroyRef.onDestroy(() => this.dateGrid.destroy());`,
+      `  ngAfterViewChecked(): void { this.dateGrid.afterRender(); }`);
   }
   // classes computed
   lines.push(``);
@@ -2690,6 +2710,7 @@ function renderAngularDomNode(
   // template scope, not via `safePropertyExpr` (which would route them
   // through the component-class accessor and prefix reserved names
   // with `this.`).
+  const outerCtx = ctx;
   if (node.iteration) {
     const extendedScope = new Set(ctx.iterationScope ?? []);
     extendedScope.add(node.iteration.indexVar);
@@ -3162,7 +3183,8 @@ function renderAngularDomNode(
     // names with `this.`, and channel-driven sources resolve to
     // `behavior.X()` rather than the raw `@Input X`. Going through the
     // value renderer keeps the dispatch source-uniform.
-    const sourceExpr = renderAngularBindingValue(source, ctx);
+    // A nested `iter:item.<path>` source names the enclosing iteration's item.
+    const sourceExpr = renderAngularBindingValue(source, outerCtx);
     if (sourceExpr === null) {
       throw new Error(
         `Angular emitter: iteration source could not be lowered (source kind=${source.kind})`,
@@ -3461,6 +3483,7 @@ function renderAngularBinding(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `[${attr}]="${pagedBindingExpression(expr, "pagedSet")}"`;
+    case "dateGrid": return `${angularAttrBinding(attr, tag, refBinding)}="${dateGridBindingExpression(expr, "dateGrid")}"`;
     case "prop":
       return `${angularAttrBinding(attr, tag, refBinding)}="${appendPath(angularPropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
@@ -3579,6 +3602,7 @@ function renderAngularBindingValue(
 ): string | null {
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet");
+    case "dateGrid": return dateGridBindingExpression(expr, "dateGrid");
     case "prop":
       return appendPath(angularPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3701,6 +3725,8 @@ function renderAngularEvent(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `(${eventName})="pagedSet.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : expr.action === "commitOnEnter" ? "$event" : ""})"`;
+    // Angular event bindings are statements: call the action with its item, or the event for keydown.
+    case "dateGrid": return `(${eventName})="dateGrid.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : expr.action === "keydown" ? "$event" : ""})"`;
     case "prop":
       return `(${eventName})="${angularPropAccessor(expr.prop, ctx)} && ${angularPropAccessor(expr.prop, ctx)}()"`;
     case "literal":

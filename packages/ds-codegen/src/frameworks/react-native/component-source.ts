@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName } from "../../messages.js";
 import { nativeMotionImports, nativeMotionInstance, nativeMotionPart, nativeMotionRoot } from "./motion-parts.js";
 import { matchesTokenRole } from "../token-role.js";
@@ -8,6 +9,7 @@ import type {
   ComponentIR,
   DomNodeIR,
   HighlightTransformIR,
+  IterationIR,
   NormalizedChannelIR,
   NormalizedDismissalTriggerIR,
   ResolvedPropIR,
@@ -568,6 +570,7 @@ function emitImports(ir: ComponentIR, component: string): string {
       .map((name) => (name === "ReactNode" ? "type ReactNode" : name))
       .join(", ")} } from "react";`,
     ir.pagedSet ? `import { usePagedSet } from "../../primitives/hooks/usePaging";` : "",
+    ir.dateGrid ? `import { useDateGrid } from "../../primitives/hooks/useDateGrid";` : "",
     nativeMotionImports(component),
     component.includes("<NativeGlyph") ? `import { NativeGlyph } from "../../primitives/glyph";` : "",
     `import { useFsdsTheme } from "../../tokens";`,
@@ -768,6 +771,17 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
     usage.channelSetters.add(ir.pagedSet.channel);
     for (const name of [ir.pagedSet.itemsProp, ir.pagedSet.countProp, ir.pagedSet.disabledProp]) if (name) usage.props.add(safePropName(ir, name));
   }
+  if (ir.dateGrid) {
+    const grid = ir.dateGrid;
+    for (const channel of [grid.valueChannel, grid.monthChannel]) {
+      usage.channels.add(channel);
+      usage.channelValues.add(channel);
+      usage.channelSetters.add(channel);
+    }
+    for (const name of [grid.modeProp, grid.localeProp, grid.minProp, grid.maxProp, grid.disabledProp, grid.captionProp]) {
+      if (name) usage.props.add(safePropName(ir, name));
+    }
+  }
   if (rootPressableAcceptsOnPress(ir)) usage.props.add("onPress");
   if (ir.motion.sequence) {
     const sequence = ir.motion.sequence;
@@ -825,7 +839,7 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
   // Selected styling/accessibility synthesized from an attribute-state block
   // reads the channel even when the authored event only invokes its setter.
   const selection = selectionLowering(ir);
-  if (selection) {
+  if (selection?.channel) {
     usage.channels.add(selection.channel.name);
     usage.channelValues.add(selection.channel.name);
   }
@@ -946,6 +960,7 @@ function collectBindingRuntimeUsage(
   channelPurpose: "value" | "setter" = "value",
 ): void {
   if (binding.kind === "paged") { if (binding.arg) collectBindingRuntimeUsage(binding.arg, ir, usage); return; }
+  if (binding.kind === "dateGrid") return;
   if (binding.kind === "prop") {
     const safeName = safePropName(ir, binding.prop);
     usage.props.add(safeName);
@@ -1025,7 +1040,7 @@ function collectGuardRuntimeUsage(
 
 function emitComponent(ir: ComponentIR): string {
   const lines = ["// @generated:start component"];
-  if (selectionLowering(ir)) {
+  if (selectionLowering(ir)?.channel) {
     // Shared equality across primitive and Date channel payloads: Dates
     // compare by epoch, everything else by SameValueZero.
     lines.push(
@@ -1061,6 +1076,10 @@ function emitComponent(ir: ComponentIR): string {
     const page = ir.pagedSet;
     lines.push(`  const pagedSet = usePagedSet({ index: ${page.channel}, items: ${safePropName(ir, page.itemsProp)},`,
       `    count: ${page.countProp ? safePropName(ir, page.countProp) : "undefined"}, disabled: ${page.disabledProp ? safePropName(ir, page.disabledProp) : "false"}, onIndexChange: set${capitalize(page.channel)}Value });`);
+  }
+  if (ir.dateGrid) {
+    lines.push(`  const dateGrid = useDateGrid(${dateGridOptions(ir.dateGrid, (prop) => safePropName(ir, prop), (channel) => channel,
+      (channel) => `set${capitalize(channel)}Value`)});`);
   }
   const autoDismiss = rnAutoDismiss(ir);
   // Source: normalized sequence IR. Applies by capability, never component
@@ -2085,7 +2104,10 @@ function emitNodeProps(
     }
     if (name === "aria-current") {
       // Native accessibility has a selected state rather than ARIA's current
-      // token vocabulary. Preserve boolean and named-current bindings.
+      // token vocabulary. Preserve boolean and named-current bindings — unless
+      // the node also binds aria-selected, which owns `selected` (a calendar's
+      // today marker is not its selection).
+      if (node.bindings["aria-selected"]) continue;
       accessibilityState.push(`selected: Boolean(${expr}) && String(${expr}) !== "false"`);
       continue;
     }
@@ -2174,10 +2196,11 @@ function emitNodeProps(
     if (accessibilityRole) props.push(`${pad}accessibilityRole=${JSON.stringify(accessibilityRole)}`);
   }
   const selection = selectionLowering(ir);
+  // The selecting node is the accessible element for its item (a date grid's
+  // cell is a plain View screen readers never focus), so the item's
+  // selection state is announced there.
   if (selection && selection.subjectNode === node) {
-    accessibilityState.push(
-      `selected: isEntrySelected(${selection.itemLocal}, ${selection.channel.name})`,
-    );
+    accessibilityState.push(`selected: ${selection.selectedExpr}`);
   }
   if (accessibilityState.length > 0) {
     props.push(`${pad}accessibilityState={{ ${accessibilityState.join(", ")} }}`);
@@ -2402,6 +2425,7 @@ function eventHandlerExpr(
     return `() => set${capitalize(channel.name)}Value(${next})`;
   }
   if (binding.kind === "paged") return pagedBindingExpression(binding, "pagedSet", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
+  if (binding.kind === "dateGrid") return dateGridBindingExpression(binding, "dateGrid", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
   if (binding.kind === "prop") {
     const propName = safePropName(ir, binding.prop);
     return `() => ${propName}?.()`;
@@ -2460,6 +2484,7 @@ function eventHandlerExpr(
 
 function bindingExpr(binding: BindingExpression, ir: ComponentIR): string {
   if (binding.kind === "paged") return pagedBindingExpression(binding, "pagedSet", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
+  if (binding.kind === "dateGrid") return dateGridBindingExpression(binding, "dateGrid", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
   if (binding.kind === "prop") {
     const propName = safePropName(ir, binding.prop);
     return pathExpr(propName, binding.path);
@@ -2477,7 +2502,11 @@ function bindingExpr(binding: BindingExpression, ir: ComponentIR): string {
     return composeMessageExpression("fsdsMessages", binding, (value) => bindingExpr(value, ir)) ?? "undefined";
   }
   if (binding.kind === "iterationLocal") {
-    return pathExpr(binding.local, binding.path);
+    // Resolve the role against the innermost iteration being emitted, so a
+    // nested iteration's declared locals (`week`, `day`) are the ones read.
+    const scope = iterationScope[iterationScope.length - 1];
+    const name = !scope ? binding.local : binding.local === "index" ? scope.indexVar : scope.itemVar ?? "item";
+    return pathExpr(name, binding.path);
   }
   if (binding.kind === "valueMap") {
     return composeValueMapExpression(binding, bindingExpr(binding.source, ir));
@@ -2525,15 +2554,25 @@ function safePropName(ir: ComponentIR, propName: string): string {
   return ir.styledProps.find((p) => p.name === propName)?.safeName ?? propName;
 }
 
+/** Iterations enclosing the node being emitted, innermost last. */
+const iterationScope: IterationIR[] = [];
+
 function emitIteration(node: DomNodeIR, ir: ComponentIR, depth: number): string {
   const iteration = node.iteration;
   if (!iteration) return emitNode({ ...node, iteration: undefined }, ir, depth) ?? "";
   const pad = INDENT.repeat(depth);
   const childNode: DomNodeIR = { ...node, iteration: undefined };
   const indexVar = iteration.indexVar;
-  const rendered = emitNode(childNode, ir, depth + 2, indexVar) ?? "";
+  // The source reads the enclosing scope; the body reads this iteration's.
+  const source = bindingExpr(iteration.source, ir);
+  iterationScope.push(iteration);
+  let rendered: string;
+  try {
+    rendered = emitNode(childNode, ir, depth + 2, indexVar) ?? "";
+  } finally {
+    iterationScope.pop();
+  }
   if (iteration.kind === "array") {
-    const source = bindingExpr(iteration.source, ir);
     const itemVar = iteration.itemVar ?? "item";
     return [
       `${pad}{(${source} ?? []).map((${itemVar}, ${indexVar}) => (`,
@@ -2541,7 +2580,6 @@ function emitIteration(node: DomNodeIR, ir: ComponentIR, depth: number): string 
       `${pad}${INDENT}))}`,
     ].join("\n");
   }
-  const source = bindingExpr(iteration.source, ir);
   return [
     `${pad}{Array.from({ length: Number(${source} ?? 0) }).map((_, ${indexVar}) => (`,
     rendered,
@@ -3075,12 +3113,16 @@ function emPartSizeConsts(node: DomNodeIR, ir: ComponentIR): string[] {
  * never a component name.
  */
 interface SelectionLowering {
-  /** The dom node that mutates the channel with the iterated item. */
+  /** The dom node that selects its iterated item. */
   subjectNode: DomNodeIR;
-  /** The channel whose value the subject mutates (e.g. "value"). */
-  channel: NormalizedChannelIR;
-  /** The iteration item variable in scope at the subject (e.g. "item"). */
-  itemLocal: string;
+  /** Expression, in the subject's scope, that is true when its item is selected. */
+  selectedExpr: string;
+  /**
+   * The channel the emitter compares items against (`isEntrySelected`), when
+   * the subject writes a channel directly. Absent when a runtime (a date
+   * grid) already reports each item's selection.
+   */
+  channel?: NormalizedChannelIR;
   /** StyleSheet key of the selected-state style (e.g. "day_state_selected"). */
   styleKey: string;
   /** View-layer token entries realized from the attr-state block. */
@@ -3108,17 +3150,22 @@ function computeSelectionLowering(ir: ComponentIR): SelectionLowering | null {
     const targetPart = match[4] ?? match[2]!;
     const subject = findSelectionSubject(ir, targetPart);
     if (!subject) continue;
+    const entries = attrStateViewEntries(ir, block);
+    if (entries.length === 0) continue;
+    const styleKey = `${styleKeyForPart(targetPart)}_state_selected`;
+    if (subject.dateGrid) {
+      // The date-grid runtime reports each day's selection (single or range span).
+      return { subjectNode: subject.node, selectedExpr: `${subject.itemLocal}.selected`, styleKey, entries };
+    }
     const channel = ir.behavior.normalizedChannels.find(
       (candidate) => candidate.name === subject.channelName,
     );
     if (!channel) continue;
-    const entries = attrStateViewEntries(ir, block);
-    if (entries.length === 0) continue;
     return {
       subjectNode: subject.node,
+      selectedExpr: `isEntrySelected(${subject.itemLocal}, ${channel.name})`,
       channel,
-      itemLocal: subject.itemLocal,
-      styleKey: `${styleKeyForPart(targetPart)}_state_selected`,
+      styleKey,
       entries,
     };
   }
@@ -3126,10 +3173,12 @@ function computeSelectionLowering(ir: ComponentIR): SelectionLowering | null {
 }
 
 interface SelectionSubject {
-  /** The dom node that mutates the channel with the iterated item. */
+  /** The dom node that selects the iterated item. */
   node: DomNodeIR;
-  channelName: string;
+  channelName?: string;
   itemLocal: string;
+  /** The node selects through a date grid's `select` action. */
+  dateGrid?: true;
 }
 
 function findSelectionSubject(
@@ -3147,6 +3196,10 @@ function findSelectionSubject(
       ? [...itemLocals, node.iteration.itemVar]
       : itemLocals;
     if (node.part === targetPart && node.part !== "root" && locals.length > 0) {
+      const click = node.events.click;
+      if (click?.kind === "dateGrid" && click.action === "select") {
+        return { node, itemLocal: locals[locals.length - 1], dateGrid: true };
+      }
       for (const binding of Object.values(node.events)) {
         for (const local of locals) {
           if (bindingReferencesLocal(binding, local)) {
@@ -3252,7 +3305,7 @@ function attrStateViewEntries(
 function selectionStyleAppendix(node: DomNodeIR, ir: ComponentIR): string {
   const lowering = selectionLowering(ir);
   if (!lowering || lowering.subjectNode !== node) return "";
-  return `, isEntrySelected(${lowering.itemLocal}, ${lowering.channel.name}) ? styles.${lowering.styleKey} : undefined`;
+  return `, ${lowering.selectedExpr} ? styles.${lowering.styleKey} : undefined`;
 }
 
 /**

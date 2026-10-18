@@ -10,6 +10,7 @@
       "header",
       "nav",
       "grid",
+      "weekday",
       "cell",
       "day",
       "caption"
@@ -52,6 +53,18 @@
           ]
         }
       },
+      "weekday": {
+        "tag": "th",
+        "description": "Column header naming one day of the week in the locale's order.",
+        "role": "label",
+        "multiple": true,
+        "aria": {
+          "role": "columnheader",
+          "attributes": [
+            "aria-label"
+          ]
+        }
+      },
       "cell": {
         "tag": "td",
         "description": "Grid cell for one visible calendar day slot.",
@@ -89,21 +102,58 @@
             {
               "tag": "button",
               "part": "nav",
+              "attrs": {
+                "type": "button",
+                "data-calendar-nav": "previous"
+              },
               "bindings": {
-                "aria-label": "message:previousMonth"
-              }
+                "aria-label": "message:previousMonth",
+                "aria-disabled": "dateGrid:previousDisabled"
+              },
+              "events": {
+                "click": "dateGrid:previous"
+              },
+              "children": [
+                {
+                  "tag": "span",
+                  "attrs": {
+                    "aria-hidden": "true"
+                  },
+                  "content": "literal:‹"
+                }
+              ]
             },
             {
               "tag": "span",
               "part": "caption",
-              "content": "prop:caption"
+              "attrs": {
+                "aria-live": "polite"
+              },
+              "content": "dateGrid:caption"
             },
             {
               "tag": "button",
               "part": "nav",
+              "attrs": {
+                "type": "button",
+                "data-calendar-nav": "next"
+              },
               "bindings": {
-                "aria-label": "message:nextMonth"
-              }
+                "aria-label": "message:nextMonth",
+                "aria-disabled": "dateGrid:nextDisabled"
+              },
+              "events": {
+                "click": "dateGrid:next"
+              },
+              "children": [
+                {
+                  "tag": "span",
+                  "attrs": {
+                    "aria-hidden": "true"
+                  },
+                  "content": "literal:›"
+                }
+              ]
             }
           ]
         },
@@ -114,34 +164,98 @@
             "role": "grid"
           },
           "bindings": {
-            "aria-label": "message:gridLabel"
+            "aria-label": "dateGrid:caption"
+          },
+          "events": {
+            "keydown": "dateGrid:keydown"
           },
           "children": [
+            {
+              "tag": "thead",
+              "children": [
+                {
+                  "tag": "tr",
+                  "attrs": {
+                    "role": "row"
+                  },
+                  "children": [
+                    {
+                      "tag": "th",
+                      "part": "weekday",
+                      "iterate": {
+                        "source": "dateGrid:weekdays",
+                        "kind": "array",
+                        "itemType": "DateGridWeekday"
+                      },
+                      "attrs": {
+                        "role": "columnheader",
+                        "scope": "col"
+                      },
+                      "bindings": {
+                        "aria-label": "iter:item.long"
+                      },
+                      "children": [
+                        {
+                          "tag": "span",
+                          "content": "iter:item.short"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
             {
               "tag": "tbody",
               "children": [
                 {
                   "tag": "tr",
+                  "iterate": {
+                    "source": "dateGrid:weeks",
+                    "kind": "array",
+                    "itemType": "DateGridWeek",
+                    "itemVar": "week",
+                    "indexVar": "row"
+                  },
+                  "attrs": {
+                    "role": "row"
+                  },
                   "children": [
                     {
                       "tag": "td",
                       "part": "cell",
                       "iterate": {
-                        "source": "prop:days",
+                        "source": "iter:item.days",
                         "kind": "array",
-                        "itemType": "Date"
+                        "itemType": "DateGridDay",
+                        "itemVar": "day",
+                        "indexVar": "column"
                       },
                       "attrs": {
                         "role": "gridcell"
                       },
                       "bindings": {
-                        "data-calendar-index": "iter:index"
+                        "aria-selected": "iter:item.selected",
+                        "aria-current": "iter:item.current",
+                        "data-outside-month": "iter:item.outsideMonth"
                       },
                       "children": [
                         {
                           "tag": "button",
                           "part": "day",
-                          "content": "project:dateDayOfMonth(iter:item)"
+                          "attrs": {
+                            "type": "button"
+                          },
+                          "bindings": {
+                            "tabindex": "iter:item.tabIndex",
+                            "aria-label": "iter:item.fullLabel",
+                            "aria-disabled": "iter:item.disabled",
+                            "data-date": "iter:item.key"
+                          },
+                          "events": {
+                            "click": "dateGrid:select(iter:item)"
+                          },
+                          "content": "iter:item.label"
                         }
                       ]
                     }
@@ -154,18 +268,17 @@
       ]
     }
   },
-  "compositeControl": {
-    "part": "day",
-    "channel": "value",
-    "interactionModel": "collection-selection",
-    "commit": "activation",
-    "update": "channel:value.onChange(iter:item)"
+  "dateGrid": {
+    "valueChannel": "value",
+    "monthChannel": "month",
+    "modeProp": "mode",
+    "localeProp": "locale",
+    "minProp": "minDate",
+    "maxProp": "maxDate",
+    "disabledProp": "disabled",
+    "captionProp": "caption"
   },
   "messages": {
-    "caption": {
-      "defaultMessage": "Calendar",
-      "description": "Caption shown above the month grid when the consumer supplies none."
-    },
     "previousMonth": {
       "defaultMessage": "Previous month",
       "description": "Accessible name of the button that shows the previous month."
@@ -173,10 +286,6 @@
     "nextMonth": {
       "defaultMessage": "Next month",
       "description": "Accessible name of the button that shows the next month."
-    },
-    "gridLabel": {
-      "defaultMessage": "Calendar",
-      "description": "Accessible name of the date grid."
     }
   },
   "props": {
@@ -185,8 +294,28 @@
         {
           "name": "caption",
           "propType": { "kind": "string" },
-          "description": "Visible month or range caption rendered above the day grid.",
-          "defaultMessage": "caption"
+          "description": "Caption rendered above the day grid and naming it. Absent, the visible month and year are formatted in the locale."
+        },
+        {
+          "name": "month",
+          "propType": { "kind": "ref", "to": "Date" },
+          "description": "Controlled visible month: any date inside the month the grid shows."
+        },
+        {
+          "name": "defaultMonth",
+          "propType": { "kind": "ref", "to": "Date" },
+          "description": "Uncontrolled initial visible month. Absent, the grid shows the selected date's month, else the current month."
+        },
+        {
+          "name": "onMonthChange",
+          "propType": {
+            "kind": "callback",
+            "params": [
+              { "name": "month", "type": { "kind": "ref", "to": "Date" } }
+            ],
+            "returns": { "kind": "void" }
+          },
+          "description": "Called with the first day of the newly visible month when the month controls, a keyboard move or an adjacent-month day change it."
         },
         {
           "name": "value",
@@ -266,22 +395,24 @@
           "propType": { "kind": "boolean" },
           "description": "When true, selecting a date closes the popup. Wired to behavior.dismissalTriggers.select.enabledBy.",
           "default": true
-        },
-        {
-          "name": "days",
-          "propType": { "kind": "array", "items": { "kind": "ref", "to": "Date" } },
-          "description": "The concrete Date values the grid renders, one per day cell. The contract's closed dateDayOfMonth projection supplies each visible label, while compositeControl passes the same Date item to the value channel on activation. A typical month occupies 42 entries (6 weeks x 7 days)."
         }
       ]
     }
   },
   "channels": {
     "value": {
-      "description": "Selected date or date range.",
+      "description": "Selected date (single mode) or [start, end] range (range mode).",
       "value": "value",
       "defaultValue": "defaultValue",
       "onChange": "onChange",
       "valueType": "Date | Date[] | null"
+    },
+    "month": {
+      "description": "Visible month. The date-grid runtime derives the six-week grid from it.",
+      "value": "month",
+      "defaultValue": "defaultMonth",
+      "onChange": "onMonthChange",
+      "valueType": "Date"
     }
   },
   "types": {
@@ -433,7 +564,7 @@
     "orientation": "both",
     "initialFocus": "today",
     "wrap": false,
-    "description": "Arrow keys navigate between dates. Tab moves to prev/next month controls."
+    "description": "Exactly one day is a tab stop: the focused day, else the selected day, else today, else the first enabled day of the visible month. Arrow keys, Home/End and PageUp/PageDown move it, changing the month at its edges; Tab moves to the month controls."
   },
   "dismissal": {
     "triggers": [
@@ -493,11 +624,11 @@
       },
       {
         "key": "PageUp",
-        "action": "Move focus to the same day in the previous month."
+        "action": "Move focus to the same day in the previous month (with Shift, the previous year)."
       },
       {
         "key": "PageDown",
-        "action": "Move focus to the same day in the next month."
+        "action": "Move focus to the same day in the next month (with Shift, the next year)."
       },
       {
         "key": "Home",

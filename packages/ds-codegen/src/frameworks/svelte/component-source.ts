@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -1498,6 +1499,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     );
   }
   if (ir.pagedSet) importLines.push(`import { createReactivePagedSet } from "../../primitives/paging.svelte.js";`);
+  if (ir.dateGrid) importLines.push(`import { createReactiveDateGrid } from "../../primitives/date-grid.svelte.js";`);
   if (ir.motion.sequence) importLines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
   importLines.push(...svelteMessageImports(ir));
   const importsBody = importLines.join("\n");
@@ -1617,6 +1619,9 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
       `$effect(() => { pagedSet.sync({ index: ${hookVar}.${page.channel}, items: ${jsAccessorFor(page.itemsProp)},`,
       `  count: ${page.countProp ? jsAccessorFor(page.countProp) : "undefined"}, disabled: ${page.disabledProp ? jsAccessorFor(page.disabledProp) : "false"}, onIndexChange: ${hookVar}.set${capitalizeSvelte(page.channel)} }); });`,
       `$effect(() => () => pagedSet.destroy());`);
+  }
+  if (ir.dateGrid) {
+    hookLines.push(`const dateGrid = createReactiveDateGrid(() => (${dateGridOptions(ir.dateGrid, jsAccessorFor, (channel) => `${hookVar}.${channel}`, (channel) => `${hookVar}.set${capitalizeSvelte(channel)}`)}));`);
   }
   const hookBody = hookLines.join("\n");
 
@@ -1957,6 +1962,7 @@ function renderSvelteDomNode(
   // iterated node and its subtree resolve `prop:item` / `prop:index`
   // as bare locals from the {#each} scope, not as destructured
   // component props.
+  const outerCtx = ctx;
   if (node.iteration) {
     const extendedScope = new Set(ctx.iterationScope ?? []);
     extendedScope.add(node.iteration.indexVar);
@@ -2388,7 +2394,8 @@ function renderSvelteDomNode(
     // — but channel-driven sources (`channel:X.value` → `${hookVar}.X`)
     // now resolve to the hook's controllable-state value rather than the
     // raw `$props` field.
-    const sourceExpr = renderSvelteBindingValue(source, ctx);
+    // A nested `iter:item.<path>` source names the enclosing iteration's item.
+    const sourceExpr = renderSvelteBindingValue(source, outerCtx);
     if (sourceExpr === null) {
       throw new Error(
         `Svelte emitter: iteration source could not be lowered (source kind=${source.kind})`,
@@ -2532,6 +2539,7 @@ function renderSvelteTextChildExpression(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `{${pagedBindingExpression(expr, "pagedSet")}}`;
+    case "dateGrid": return `{${dateGridBindingExpression(expr, "dateGrid")}}`;
     case "prop":
       return `{${appendPath(sveltePropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -2596,6 +2604,7 @@ function renderSvelteBindingValue(
 ): string | null {
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+    case "dateGrid": return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(sveltePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -2684,6 +2693,7 @@ function renderSvelteBinding(
 ): string | null {
   switch (expr.kind) {
     case "paged": return `${attr}={${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
+    case "dateGrid": return `${attr}={${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `${attr}={${appendPath(sveltePropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -2856,6 +2866,7 @@ function renderSvelteEventHandlerExpr(
   ctx: SvelteRenderContext,
 ): string | null {
   if (expr.kind === "paged") return pagedBindingExpression(expr, "pagedSet");
+  if (expr.kind === "dateGrid") return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
   if (expr.kind === "prop") return sveltePropAccessor(expr.prop, ctx);
   if (expr.kind === "channel" && expr.forwardValue) {
     const channel = ctx.channelByName.get(expr.channel);
@@ -2876,6 +2887,7 @@ function renderSvelteEvent(
   const svelteEventAttr = `on${eventName}`;
   switch (expr.kind) {
     case "paged": return `${svelteEventAttr}={${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
+    case "dateGrid": return `${svelteEventAttr}={${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `${svelteEventAttr}={${sveltePropAccessor(expr.prop, ctx)}}`;
     case "literal":

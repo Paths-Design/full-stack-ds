@@ -2,6 +2,7 @@
 import type { StyleProp, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { useDateGrid } from "../../primitives/hooks/useDateGrid";
 import { useFsdsTheme } from "../../tokens";
 import { createCalendarStyles } from "./Calendar.styles";
 import { useFsdsMessages } from "../../primitives/messages";
@@ -14,6 +15,9 @@ export type CalendarMode = "single" | "range";
 // @generated:start props
 export interface CalendarProps {
   caption?: string;
+  month?: Date;
+  defaultMonth?: Date;
+  onMonthChange?: (month: Date) => void;
   value?: Date | Date[] | null;
   defaultValue?: Date | Date[] | null;
   onChange?: (value: Date | Date[] | null) => void;
@@ -23,7 +27,6 @@ export interface CalendarProps {
   maxDate?: Date;
   locale?: string;
   shouldCloseOnSelect?: boolean;
-  days?: Date[];
   children?: ReactNode;
   style?: StyleProp<ViewStyle>;
   testID?: string;
@@ -33,30 +36,27 @@ export interface CalendarProps {
 // @generated:end
 
 // @generated:start component
-const isEntrySelected = (candidate: unknown, current: unknown): boolean => {
-  if (current === null || current === undefined) return false;
-  const list = Array.isArray(current) ? current : [current];
-  return list.some((entry) =>
-    typeof entry === "object" && entry !== null && "getTime" in entry
-      ? (entry as Date).getTime() === (candidate as Date).getTime()
-      : entry === candidate);
-};
-
-const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next month" };
 
 export function Calendar({
-  caption: captionProp,
+  caption,
+  month: controlledMonth,
   value: controlledValue,
-  days,
+  mode = "single",
+  disabled,
+  minDate,
+  maxDate,
+  locale = "en-US",
   defaultValue = undefined,
   onChange,
+  defaultMonth = undefined,
+  onMonthChange,
   style,
   testID,
   accessibilityLabel,
   accessibilityLabelledBy,
 }: CalendarProps) {
   const fsdsMessages = useFsdsMessages("Calendar", CalendarMessages);
-  const caption = captionProp ?? fsdsMessages.caption;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createCalendarStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledValue, setUncontrolledValue] = useState<Date | Date[] | null>((defaultValue ?? undefined) as Date | Date[] | null);
@@ -66,6 +66,14 @@ export function Calendar({
     onChange?.(next);
   }, [controlledValue, onChange]);
 
+  const [uncontrolledMonth, setUncontrolledMonth] = useState<Date>((defaultMonth ?? undefined) as Date);
+  const month = controlledMonth ?? uncontrolledMonth;
+  const setMonthValue = useCallback((next: Date) => {
+    if (controlledMonth === undefined) setUncontrolledMonth(next);
+    onMonthChange?.(next);
+  }, [controlledMonth, onMonthChange]);
+
+  const dateGrid = useDateGrid({ value: value, month: month, mode: mode, locale: locale, minDate: minDate, maxDate: maxDate, disabled: disabled, caption: caption, onValueChange: setValueValue, onMonthChange: setMonthValue });
   return (
     <View
       testID={testID}
@@ -79,22 +87,41 @@ export function Calendar({
         <Pressable
           style={styles.nav}
           accessibilityLabel={fsdsMessages.previousMonth}
+          onPress={dateGrid.previous}
           accessibilityRole="button"
-        />
+          accessibilityState={{ disabled: String(dateGrid.state.previousDisabled) === "true" }}
+        >
+          <View
+            style={styles.root}
+            accessible={false}
+          >
+            <RNText>{"‹"}</RNText>
+          </View>
+        </Pressable>
         <View
           style={styles.caption}
+          accessibilityLiveRegion="polite"
         >
-          <RNText>{caption}</RNText>
+          <RNText>{dateGrid.state.caption}</RNText>
         </View>
         <Pressable
           style={styles.nav}
           accessibilityLabel={fsdsMessages.nextMonth}
+          onPress={dateGrid.next}
           accessibilityRole="button"
-        />
+          accessibilityState={{ disabled: String(dateGrid.state.nextDisabled) === "true" }}
+        >
+          <View
+            style={styles.root}
+            accessible={false}
+          >
+            <RNText>{"›"}</RNText>
+          </View>
+        </Pressable>
       </View>
       <View
         style={styles.grid}
-        accessibilityLabel={fsdsMessages.gridLabel}
+        accessibilityLabel={dateGrid.state.caption}
       >
         <View
           style={styles.root}
@@ -102,22 +129,48 @@ export function Calendar({
           <View
             style={styles.root}
           >
-            {(days ?? []).map((item, index) => (
+            {(dateGrid.state.weekdays ?? []).map((item, index) => (
                 <View
                   key={index}
-                  style={styles.cell}
+                  style={styles.weekday}
+                  accessibilityLabel={item.long}
                 >
-                  <Pressable
-                    style={[styles.day, isEntrySelected(item, value) ? styles.day_state_selected : undefined]}
-                    onPress={() => setValueValue(item)}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: isEntrySelected(item, value) }}
+                  <View
+                    style={styles.root}
                   >
-                    <RNText>{item.getDate()}</RNText>
-                  </Pressable>
+                    <RNText>{item.short}</RNText>
+                  </View>
                 </View>
               ))}
           </View>
+        </View>
+        <View
+          style={styles.root}
+        >
+          {(dateGrid.state.weeks ?? []).map((week, row) => (
+              <View
+                key={row}
+                style={styles.root}
+              >
+                {(week.days ?? []).map((day, column) => (
+                    <View
+                      key={column}
+                      style={styles.cell}
+                      accessibilityState={{ selected: String(day.selected) === "true" }}
+                    >
+                      <Pressable
+                        style={[styles.day, day.selected ? styles.day_state_selected : undefined]}
+                        accessibilityLabel={day.fullLabel}
+                        onPress={() => dateGrid.select(day)}
+                        accessibilityRole="button"
+                        accessibilityState={{ disabled: String(day.disabled) === "true", selected: day.selected }}
+                      >
+                        <RNText>{day.label}</RNText>
+                      </Pressable>
+                    </View>
+                  ))}
+              </View>
+            ))}
         </View>
       </View>
     </View>
