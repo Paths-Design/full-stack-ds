@@ -16,8 +16,7 @@ import { resolveSurfaceAutoDismiss } from "../../../semantics.js";
  * The component path refuses every surface kind; all surfaces route here.
  */
 import type { ComponentIR } from "../../../ir.js";
-import { partTextSource, propMessage, type NativeTextSource } from "../../native-messages.js";
-import { swiftLiteral } from "./icon-glyph.js";
+import { partTextSource, type NativeTextSource } from "../../native-messages.js";
 import { swiftMessage, swiftStringProp, withSwiftMessagesEnvironment, type SwiftStringProp } from "./messages.js";
 import {
   emitTypes,
@@ -90,17 +89,16 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   const searchChannel = ir.behavior.normalizedChannels.find(
     (c) => c.valueType === "string",
   );
-  // The search prompt is the placeholder prop's message (catalog-resolved)
-  // or its authored literal; with neither, the field renders no prompt.
-  const placeholderMessage = propMessage(ir, "placeholder");
-  const placeholderLiteral = ir.styledProps
-    .find((p) => p.safeName === "placeholder")
-    ?.defaultExpr?.replace(/^["']|["']$/g, "");
-  const searchPrompt = placeholderMessage
-    ? swiftMessage(ir, placeholderMessage)
-    : placeholderLiteral
-      ? swiftLiteral(placeholderLiteral)
-      : null;
+  // The search prompt is the placeholder prop: an explicit value, then its
+  // message (catalog-resolved) or authored literal; with no prop, no prompt.
+  const placeholder = searchChannel && ir.styledProps.some((p) => p.safeName === "placeholder")
+    ? swiftStringProp(ir, "placeholder", INDENT)
+    : null;
+  const searchPrompt = placeholder
+    ? placeholder.accessor.length > 0
+      ? "SwiftUI.Text(placeholder)"
+      : "placeholder.map { SwiftUI.Text($0) }"
+    : null;
   if (!openness) {
     throw new Error(
       `generateSwiftUISurfaceFiles: dialog surface on "${ir.name}" declares ` +
@@ -151,6 +149,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   if (searchChannel) {
   lines.push(`${INDENT}@StateObject private var search: ControllableValue<String>`);
   }
+  if (placeholder) lines.push(placeholder.stored);
   for (const region of regions) {
     lines.push(`${INDENT}private let ${region}: ${swiftCase(capitalize(region))}`);
   }
@@ -167,6 +166,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
     params.push('defaultSearch: String = "",');
     params.push("onSearchChange: ((String) -> Void)? = nil,");
   }
+  if (placeholder) params.push(placeholder.param);
   for (const region of regions) {
     params.push(
       `@ViewBuilder ${region}: () -> ${swiftCase(capitalize(region))} = { EmptyView() }${region === regions[regions.length - 1] ? "" : ","}`,
@@ -179,10 +179,12 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   if (searchChannel) {
   lines.push(`${INDENT}${INDENT}self._search = StateObject(wrappedValue: ControllableValue(controlled: search, defaultValue: defaultSearch, onChange: onSearchChange))`);
   }
+  if (placeholder) lines.push(placeholder.assign);
   for (const region of regions) {
     lines.push(`${INDENT}${INDENT}self.${region} = ${region}()`);
   }
   lines.push(`${INDENT}}`);
+  if (placeholder) lines.push(...placeholder.accessor);
   lines.push("");
   lines.push("");
   if (searchChannel) {
@@ -227,7 +229,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}get: { search.value },`);
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}set: { search.set($0) }`);
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT})${searchPrompt ? "," : ""}`);
-    if (searchPrompt) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}prompt: SwiftUI.Text(${searchPrompt})`);
+    if (searchPrompt) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}prompt: ${searchPrompt}`);
     lines.push(`${INDENT}${INDENT}${INDENT})`);
   }
   for (const region of regions) {
