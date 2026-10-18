@@ -15,9 +15,10 @@
  *   - L10N_LITERAL_PROP_DEFAULT — a string prop whose literal default holds
  *     letters. Use `defaultMessage`, or `translatable: false` when the default
  *     is not user-facing (a locale tag, an icon name).
- *   - L10N_LITERAL_INSTANCE_ATTRIBUTE — a letter-bearing static attr on a
- *     `componentRef` node that feeds a translatable string prop of the
- *     referenced component. Needs the contract corpus; skipped without it.
+ *   - L10N_LITERAL_INSTANCE_ATTRIBUTE — a letter-bearing static attr, or a
+ *     `literal:` binding, on a `componentRef` node that feeds a translatable
+ *     string prop of the referenced component. Needs the contract corpus;
+ *     skipped without it.
  *
  * Letters are any Unicode letter, so the gate is not English-specific.
  * Message references themselves are validated by the IR (`validateMessages`).
@@ -115,6 +116,18 @@ export function validateLocalization(
               pointer: `${pointer}/attrs/${name}`,
               message:
                 `[L10N_LITERAL_INSTANCE_ATTRIBUTE] "${name}" passes literal text "${value}" to ` +
+                `${target.name}'s translatable prop; ${advice}`,
+            });
+          }
+        }
+        for (const [name, value] of Object.entries(node.bindings ?? {})) {
+          if (TEXT_BEARING_ATTRIBUTES.has(name) || typeof value !== "string") continue;
+          if (!translatableStringProp(targetProps.get(name))) continue;
+          for (const text of literalText(value)) {
+            issues.push({
+              pointer: `${pointer}/bindings/${name}`,
+              message:
+                `[L10N_LITERAL_INSTANCE_ATTRIBUTE] "${name}" binds literal text "${text}" to ` +
                 `${target.name}'s translatable prop; ${advice}`,
             });
           }

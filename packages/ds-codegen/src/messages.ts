@@ -40,41 +40,53 @@ export function buildMessages(contract: ComponentContract): MessageIR[] {
   }));
 }
 
-/** Every message reference inside a binding, including nested operands. */
-export function collectMessageBindings(expr: BindingExpression | undefined, out: MessageBinding[] = []): MessageBinding[] {
-  if (!expr) return out;
+/** Visit a binding and every nested operand. */
+function visitBinding(expr: BindingExpression | undefined, visit: (expr: BindingExpression) => void): void {
+  if (!expr) return;
+  visit(expr);
   switch (expr.kind) {
-    case "message":
-      out.push(expr);
-      break;
     case "conditional":
-      collectMessageBindings(expr.condition, out);
-      collectMessageBindings(expr.whenTrue, out);
-      collectMessageBindings(expr.whenFalse, out);
+      visitBinding(expr.condition, visit);
+      visitBinding(expr.whenTrue, visit);
+      visitBinding(expr.whenFalse, visit);
       break;
     case "projection":
-      collectMessageBindings(expr.source, out);
+      visitBinding(expr.source, visit);
       if (expr.op === "selectionLabel") {
-        collectMessageBindings(expr.selection, out);
-        collectMessageBindings(expr.fallback, out);
+        visitBinding(expr.selection, visit);
+        visitBinding(expr.fallback, visit);
       }
       break;
     case "valueMap":
-      collectMessageBindings(expr.source, out);
+      visitBinding(expr.source, visit);
       break;
     default:
       break;
   }
+}
+
+/** Visit every binding in a DOM subtree: attributes, properties, content and component-instance bindings. */
+function visitDomBindings(node: DomNodeIR | undefined, visit: (expr: BindingExpression) => void): void {
+  if (!node) return;
+  for (const expr of Object.values(node.bindings)) visitBinding(expr, visit);
+  for (const expr of Object.values(node.propertyBindings)) visitBinding(expr, visit);
+  if (node.content && "kind" in node.content) visitBinding(node.content as BindingExpression, visit);
+  for (const child of node.children) visitDomBindings(child, visit);
+}
+
+/** Every message reference inside a binding, including nested operands. */
+export function collectMessageBindings(expr: BindingExpression | undefined, out: MessageBinding[] = []): MessageBinding[] {
+  visitBinding(expr, (e) => {
+    if (e.kind === "message") out.push(e);
+  });
   return out;
 }
 
 /** All message bindings in a DOM subtree: attributes, content and component-instance bindings. */
 export function collectDomMessageBindings(node: DomNodeIR | undefined, out: MessageBinding[] = []): MessageBinding[] {
-  if (!node) return out;
-  for (const expr of Object.values(node.bindings)) collectMessageBindings(expr, out);
-  for (const expr of Object.values(node.propertyBindings)) collectMessageBindings(expr, out);
-  if (node.content && "kind" in node.content) collectMessageBindings(node.content as BindingExpression, out);
-  for (const child of node.children) collectDomMessageBindings(child, out);
+  visitDomBindings(node, (e) => {
+    if (e.kind === "message") out.push(e);
+  });
   return out;
 }
 
@@ -129,7 +141,7 @@ export function findMessage(ir: { name: string; messages: MessageIR[] }, key: st
 }
 
 /**
- * Check the messages block against every reference: keys resolve, each
+ * Check the messages block against every reference: references parse, keys resolve, each
  * message's `{name}` placeholders equal its declared params, each binding
  * supplies exactly the declared params, prop defaults and sequence labels
  * name parameter-free messages (the slide position takes `index` and
@@ -154,6 +166,13 @@ export function validateMessages(
       fail(`message '${message.key}' placeholders {${placeholders.join("}, {")}} do not match params [${declared.join(", ")}]`);
     }
   }
+  // A `message:` reference the parser could not read falls through to a
+  // literal, which would render the reference text itself.
+  visitDomBindings(dom, (expr) => {
+    if (expr.kind === "literal" && expr.value.startsWith("message:")) {
+      fail(`malformed message reference '${expr.value}'; expected message:<key> or message:<key>(<name>=<binding>, ...)`);
+    }
+  });
   const used = new Set<string>();
   const use = (key: string, where: string, params: string[]) => {
     const message = byKey.get(key);
