@@ -1,0 +1,70 @@
+id: EXAMPLES-MOTION-LAB-01
+title: 'Motion lab example: consumer-side GSAP (Svelte, Lit) and native (SwiftUI, Compose) animation over FSDS motion tokens'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-18T07:18:35.545Z'
+updated_at: '2026-10-18T07:18:35.545Z'
+created_by_session: 'session-33d6eec5-b0e3-4321-8201-a4c377accd31'
+blast_radius:
+  modules:
+    - 'examples/motion-lab: svelte + lit GSAP lanes, swift + compose native lanes, shared motion token adapter + tests, native token generator'
+    - 'examples portfolio surfaces: examples/README.md status row, vitest.examples.config.ts include'
+    - 'ds-svelte consumer packaging: styles.css export + build step (packaging only)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/motion-lab'
+    - 'examples/README.md'
+    - 'vitest.examples.config.ts'
+    - 'package.json'
+    - 'pnpm-lock.yaml'
+    - 'packages/ds-svelte/package.json'
+    - 'packages/ds-svelte/scripts'
+  out: []
+invariants:
+  - 'Lanes consume public package exports only (@full-stack-ds/* export maps, gsap, platform SDKs); reaching into package dist internals or generated sources is a boundary failure'
+  - 'Every animated duration/easing/stagger/dwell resolves from the FSDS motion token graph at consumption time (CSS custom properties on web; lane-local committed constants generated from the public resolved token graph on native); effect code hardcodes no timing literals'
+  - 'Every lane substitutes a settled/static presentation under reduced motion that preserves content and end states'
+  - 'No ds-codegen emitter, contract, or token-graph semantic changes; the ds-svelte change is packaging-only (new export + build step)'
+acceptance:
+  - id: A1
+    given: 'the committed workspace after install'
+    when: 'pnpm --filter @full-stack-ds/example-motion-lab-svelte build runs'
+    then: 'the Svelte GSAP lane builds importing only public exports (@full-stack-ds/svelte, @full-stack-ds/svelte/styles.css, @full-stack-ds/tokens/tokens.css, gsap) plus app-level shared code'
+  - id: A2
+    given: 'the committed workspace after install'
+    when: 'pnpm --filter @full-stack-ds/example-motion-lab-lit build runs'
+    then: 'the Lit GSAP lane builds importing only public exports (@full-stack-ds/lit, @full-stack-ds/tokens/tokens.css, gsap) plus app-level shared code'
+  - id: A3
+    given: 'either built web lane served in a real browser'
+    when: 'each effect station is triggered'
+    then: 'animated targets change computed style over time, every timing value resolves at runtime from --fsds-core-motion-* custom properties, and reduced motion substitutes settled static presentations (evidence: screenshots under tmp/motion-lab plus browser-evaluated assertions)'
+  - id: A4
+    given: 'swiftc 6.x present'
+    when: 'swift build --package-path examples/motion-lab/swift runs'
+    then: 'the SwiftUI lane compiles importing only the DsSwiftUI public API plus lane-local generated MotionTokens constants'
+  - id: A5
+    given: 'a JDK 21 toolchain'
+    when: './examples/motion-lab/compose/gradlew -p examples/motion-lab/compose compileKotlin --no-daemon runs'
+    then: 'the Compose lane compiles importing only the ds-jetpack-compose:library public API plus lane-local generated MotionTokens constants'
+  - id: A6
+    given: 'the examples vitest lane'
+    when: 'pnpm run test:examples:data-api runs'
+    then: 'the motion-lab adapter suite passes, including duration/bezier parsing, fail-loud probes on malformed token strings, and reduced-motion default behavior'
+  - id: A7
+    given: 'any Svelte consumer of the workspace package'
+    when: 'importing @full-stack-ds/svelte/styles.css'
+    then: 'the export resolves and carries the generated component styles (packaging gap found by this example, promoted)'
+  - id: A8
+    given: 'the merged slice'
+    when: 'reviewing examples/motion-lab/spec.md and README.md'
+    then: 'findings (Svelte CSS export gap, native per-path SVG identity boundary, Compose reduced-motion boundary) and non-claims are ledgered per the examples portfolio doctrine'
+observability:
+  - 'Committed examples vitest lane (pnpm run test:examples:data-api) covering the motion adapter'
+  - 'Per-lane build/typecheck commands recorded in examples/motion-lab/README.md'
+  - 'Browser runtime evidence screenshots under tmp/motion-lab/ for web lanes'
+rollback:
+  - 'Delete examples/motion-lab and revert examples/README.md, vitest.examples.config.ts, package.json, pnpm-lock.yaml; revert packages/ds-svelte/package.json and remove packages/ds-svelte/scripts (export removal restores prior consumer surface)'
+non_functional: {}
+contracts: []
