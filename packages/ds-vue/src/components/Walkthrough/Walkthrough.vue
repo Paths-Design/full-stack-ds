@@ -3,6 +3,7 @@
 import { computed, shallowRef, type ComponentPublicInstance, useId, watchEffect } from "vue";
 import { useWalkthrough } from "./useWalkthrough.js";
 import { useAnchoredPosition } from "../../primitives/surfaces/useAnchoredPosition.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -42,16 +43,17 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   steps: () => ([{"anchor":"#step-1","title":"Welcome to the tour"},{"anchor":"#step-2","title":"Browse your dashboard"},{"anchor":"#step-3","title":"Configure preferences"}]),
   defaultIndex: 0,
-  label: "Feature tour",
   autoStart: false,
   closeOnOutsideClick: false,
   placement: "auto",
   previousDisabled: false,
-  nextLabel: "Next",
 });
+const WalkthroughMessages = { tourLabel: "Feature tour", skip: "Skip", skipTour: "Skip tour", previous: "Previous", previousStep: "Previous step", next: "Next" };
+const fsdsMessages = useFsdsMessages("Walkthrough", WalkthroughMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { label: "tourLabel", nextLabel: "next" });
 // @generated:end
 
 // @generated:start hook
@@ -114,11 +116,11 @@ const instanceId = useId();
         </p>
       </div>
       <div :class="'walkthrough__controls'">
-        <button :class="'walkthrough__skip'" type="button" @click="props.onSkip?.()" aria-label="Skip tour">
-          Skip
+        <button :class="'walkthrough__skip'" type="button" @click="props.onSkip?.()" :aria-label="fsdsMessages.skipTour">
+          {{ fsdsMessages.skip }}
         </button>
-        <button :class="'walkthrough__prev'" type="button" @click="props.onPrevious?.()" aria-label="Previous step" :disabled="props.previousDisabled">
-          Previous
+        <button :class="'walkthrough__prev'" type="button" @click="props.onPrevious?.()" :aria-label="fsdsMessages.previousStep" :disabled="props.previousDisabled">
+          {{ fsdsMessages.previous }}
         </button>
         <div :class="'walkthrough__dots'">
           <button v-for="(item, index) in (props.steps ?? [])" :key="index" :class="'walkthrough__dot'" type="button" @click="() => behavior.setStep(index)" :aria-label="item.title" :data-step-index="index"></button>

@@ -6,6 +6,7 @@ import { usePagedSet } from "../../primitives/hooks/usePaging";
 import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createPaginationStyles } from "./Pagination.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -32,10 +33,12 @@ export interface PaginationProps {
 // @generated:end
 
 // @generated:start component
+const PaginationMessages = { navigationLabel: "Choose page" };
+
 export function Pagination({
   pages = [],
   index: controlledPage,
-  label = "Choose page",
+  label: labelProp,
   disabled = false,
   defaultIndex = 0,
   onIndexChange,
@@ -44,6 +47,8 @@ export function Pagination({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: PaginationProps) {
+  const fsdsMessages = useFsdsMessages("Pagination", PaginationMessages);
+  const label = labelProp ?? fsdsMessages.navigationLabel;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createPaginationStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledPage, setUncontrolledPage] = useState<number>((defaultIndex ?? 0) as number);

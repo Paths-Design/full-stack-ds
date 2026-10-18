@@ -4,6 +4,7 @@ import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createAlertStyles } from "./Alert.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 import { Button } from "../Button/Button";
 // @generated:end
 
@@ -29,12 +30,14 @@ export interface AlertProps {
 // @generated:end
 
 // @generated:start component
+const AlertMessages = { dismiss: "Dismiss" };
+
 export function Alert({
   intent,
   level,
   dismissible,
   onDismiss,
-  dismissLabel = "Dismiss",
+  dismissLabel: dismissLabelProp,
   icon,
   children,
   style,
@@ -42,6 +45,8 @@ export function Alert({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: AlertProps) {
+  const fsdsMessages = useFsdsMessages("Alert", AlertMessages);
+  const dismissLabel = dismissLabelProp ?? fsdsMessages.dismiss;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createAlertStyles(fsdsTheme), [fsdsTheme]);
   const variantStyleForIntent = intent !== undefined ? ({ "info": styles.root_variant_info, "success": styles.root_variant_success, "warning": styles.root_variant_warning, "danger": styles.root_variant_danger } as Record<string, ViewStyle | undefined>)[intent] : undefined;

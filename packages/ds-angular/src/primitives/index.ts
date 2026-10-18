@@ -20,3 +20,12 @@ export type {
   PortalOptions,
   PortalResult,
 } from './hooks/index.js';
+export {
+  FSDS_MESSAGES,
+  formatFsdsMessage,
+  injectFsdsMessages,
+  mergeFsdsMessageCatalogs,
+  provideFsdsMessages,
+  resolveFsdsMessages,
+  type FsdsMessageCatalog,
+} from './messages.js';

@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, computed, DestroyRef, inject, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 // @generated:end
 
@@ -17,12 +18,14 @@ import { StackComponent } from "../../primitives/index.js";
 // @custom:end
 
 // @generated:start component
+const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
+
 @Component({
   selector: "fsds-breadcrumbs",
   standalone: true,
   imports: [NgClass],
   host: { "data-fsds-component": "breadcrumbs" },
-  template: `<nav [ngClass]="classes()" [attr.aria-label]="(ariaLabel ?? 'Breadcrumb')" data-fsds-box="">
+  template: `<nav [ngClass]="classes()" [attr.aria-label]="(ariaLabel ?? fsdsMessages().navigationLabel)" data-fsds-box="">
   <ol [ngClass]="'breadcrumbs__list'">
     <ng-content />
   </ol>
@@ -30,7 +33,8 @@ import { StackComponent } from "../../primitives/index.js";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BreadcrumbsComponent {
-  @Input() ariaLabel?: string = "Breadcrumb";
+  protected readonly fsdsMessages = injectFsdsMessages("Breadcrumbs", BreadcrumbsMessages);
+  @Input() ariaLabel?: string;
   @Input() separator?: string;
   @Input() class?: string;
 

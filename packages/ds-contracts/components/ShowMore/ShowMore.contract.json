@@ -64,6 +64,16 @@
       ]
     }
   },
+  "messages": {
+    "showMore": {
+      "defaultMessage": "Show more",
+      "description": "Text of the toggle while the content is collapsed."
+    },
+    "showLess": {
+      "defaultMessage": "Show less",
+      "description": "Text of the toggle while the content is expanded."
+    }
+  },
   "props": {
     "styled": {
       "description": "Props for the <ShowMore> expandable content component.",
@@ -93,13 +103,13 @@
           "name": "showMoreLabel",
           "type": "string",
           "description": "Label for the expand trigger button.",
-          "default": "Show more"
+          "defaultMessage": "showMore"
         },
         {
           "name": "showLessLabel",
           "type": "string",
           "description": "Label for the collapse trigger button.",
-          "default": "Show less"
+          "defaultMessage": "showLess"
         }
       ]
     }

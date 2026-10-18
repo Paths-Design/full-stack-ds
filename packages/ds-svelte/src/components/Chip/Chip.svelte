@@ -1,6 +1,7 @@
 <script lang="ts">
 // @generated:start imports
 import Button from "../Button/Button.svelte";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -36,7 +37,10 @@ interface Props {
   children?: import('svelte').Snippet;
 }
 
-let { type, variant, size, disabled, icon, title, ariaLabel, ariaExpanded, ariaPressed, onClick, dismissible, onDismiss, dismissLabel = "Remove", class: className, children }: Props = $props();
+let { type, variant, size, disabled, icon, title, ariaLabel, ariaExpanded, ariaPressed, onClick, dismissible, onDismiss, dismissLabel: dismissLabelProp, class: className, children }: Props = $props();
+const ChipMessages = { dismiss: "Remove" };
+const fsdsMessages = useFsdsMessages("Chip", ChipMessages);
+const dismissLabel = $derived(dismissLabelProp ?? fsdsMessages.current.dismiss);
 // @generated:end
 
 // @generated:start classes

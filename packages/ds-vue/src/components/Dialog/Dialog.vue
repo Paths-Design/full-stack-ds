@@ -3,6 +3,7 @@
 import { computed, useId } from "vue";
 import { useDialog } from "./useDialog.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -38,7 +39,7 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   open: undefined,
   defaultOpen: undefined,
   modal: true,
@@ -47,6 +48,9 @@ const props = withDefaults(defineProps<Props>(), {
   closeOnEscape: true,
   closeOnBackdropClick: true,
 });
+const DialogMessages = { close: "Close dialog" };
+const fsdsMessages = useFsdsMessages("Dialog", DialogMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 // @generated:end
 
 // @generated:start hook
@@ -89,7 +93,7 @@ const instanceId = useId();
           <h2 :class="'dialog__title'" :id="`${instanceId}-title`">
             <slot name="title" />
           </h2>
-          <button :class="'dialog__closeButton'" type="button" aria-label="Close dialog" @click="(e: MouseEvent) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }"></button>
+          <button :class="'dialog__closeButton'" type="button" @click="(e: MouseEvent) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }" :aria-label="fsdsMessages.close"></button>
         </div>
         <div :class="'dialog__body'" :id="`${instanceId}-body`">
           <slot />

@@ -480,6 +480,17 @@
       "$ref": "#/$defs/a2uiContract",
       "description": "Agent-facing authoring metadata. Keep lean \u2014 the runtime deriver pulls props, enum, default, events, form from the existing contract blocks."
     },
+    "messages": {
+      "type": "object",
+      "description": "Translatable strings this component owns, keyed by component-local message key. Each runtime family resolves `<Component>.<key>` through its message catalog and falls back to `defaultMessage`. Referenced by `message:<key>` bindings, prop `defaultMessage`, and sequence labels; every declared message must be referenced.",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/messageKey"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/messageDef"
+      }
+    },
     "sequence": {
       "type": "object",
       "additionalProperties": false,
@@ -569,24 +580,26 @@
         },
         "labels": {
           "type": "object",
+          "description": "Message keys (declared in `messages`) for sequence-owned text. `position` is the per-slide fallback name and takes the params `index` and `count`.",
           "additionalProperties": false,
           "required": [
             "start",
             "stop",
-            "item"
+            "item",
+            "position"
           ],
           "properties": {
             "start": {
-              "type": "string",
-              "minLength": 1
+              "$ref": "#/$defs/messageKey"
             },
             "stop": {
-              "type": "string",
-              "minLength": 1
+              "$ref": "#/$defs/messageKey"
             },
             "item": {
-              "type": "string",
-              "minLength": 1
+              "$ref": "#/$defs/messageKey"
+            },
+            "position": {
+              "$ref": "#/$defs/messageKey"
             }
           }
         }
@@ -621,6 +634,39 @@
     }
   },
   "$defs": {
+    "messageKey": {
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]*$",
+      "description": "Component-local message key (lower camelCase)."
+    },
+    "messageDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "defaultMessage",
+        "description"
+      ],
+      "properties": {
+        "defaultMessage": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Source-language text. `{name}` placeholders are filled from params and must match `params` exactly."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Translator context: where the text appears and what it names."
+        },
+        "params": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/messageKey"
+          }
+        }
+      }
+    },
     "domNode": {
       "type": "object",
       "oneOf": [
@@ -976,6 +1022,12 @@
         "name",
         "description"
       ],
+      "not": {
+        "required": [
+          "default",
+          "defaultMessage"
+        ]
+      },
       "oneOf": [
         {
           "required": [
@@ -1004,6 +1056,14 @@
         "required": {
           "type": "boolean",
           "description": "Whether the prop must be supplied by the consumer."
+        },
+        "defaultMessage": {
+          "$ref": "#/$defs/messageKey",
+          "description": "Key into the contract `messages` block whose text is this string prop's default. Mutually exclusive with `default`; an explicit consumer value still wins over the message catalog."
+        },
+        "translatable": {
+          "const": false,
+          "description": "Marks a string prop whose literal default is not user-facing text (a locale tag, an icon name), so the localization gate admits the literal."
         },
         "default": {
           "oneOf": [
@@ -1301,6 +1361,12 @@
         "name",
         "description"
       ],
+      "not": {
+        "required": [
+          "default",
+          "defaultMessage"
+        ]
+      },
       "oneOf": [
         {
           "required": [
@@ -1332,6 +1398,14 @@
         "required": {
           "type": "boolean",
           "default": false
+        },
+        "defaultMessage": {
+          "$ref": "#/$defs/messageKey",
+          "description": "Key into the contract `messages` block whose text is this string prop's default. Mutually exclusive with `default`."
+        },
+        "translatable": {
+          "const": false,
+          "description": "Marks a string prop whose literal default is not user-facing text."
         },
         "default": {
           "oneOf": [
@@ -1395,6 +1469,12 @@
         "description",
         "constraint"
       ],
+      "not": {
+        "required": [
+          "default",
+          "defaultMessage"
+        ]
+      },
       "oneOf": [
         {
           "required": [
@@ -1430,6 +1510,14 @@
         "required": {
           "type": "boolean",
           "default": false
+        },
+        "defaultMessage": {
+          "$ref": "#/$defs/messageKey",
+          "description": "Key into the contract `messages` block whose text is this string prop's default. Mutually exclusive with `default`."
+        },
+        "translatable": {
+          "const": false,
+          "description": "Marks a string prop whose literal default is not user-facing text."
         },
         "default": {
           "oneOf": [

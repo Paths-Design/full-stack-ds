@@ -5,6 +5,7 @@ import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react
 import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createDialogStyles } from "./Dialog.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -39,6 +40,8 @@ export interface DialogProps {
 // @generated:end
 
 // @generated:start component
+const DialogMessages = { close: "Close dialog" };
+
 export function Dialog({
   open: controlledOpenness,
   modal = true,
@@ -54,6 +57,7 @@ export function Dialog({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: DialogProps) {
+  const fsdsMessages = useFsdsMessages("Dialog", DialogMessages);
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createDialogStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpenness, setUncontrolledOpenness] = useState<boolean>((defaultOpen ?? false) as boolean);
@@ -105,6 +109,7 @@ export function Dialog({
           </View>
           <Pressable
             style={styles.closeButton}
+            accessibilityLabel={fsdsMessages.close}
             onPress={() => setOpennessValue(false)}
             accessibilityRole="button"
           />

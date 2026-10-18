@@ -29,8 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -115,25 +113,13 @@ fun Calendar(
             horizontalArrangement = Arrangement.spacedBy(gridGap),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                Modifier
-                    .size(navSize)
-                    .semantics { contentDescription = "Previous month" },
-                contentAlignment = Alignment.Center,
-            ) { }
             BasicText(
                 text = caption,
                 style = TextStyle(color = gridForeground ?: Color.Unspecified, fontSize = captionSize),
             )
-            Box(
-                Modifier
-                    .size(navSize)
-                    .semantics { contentDescription = "Next month" },
-                contentAlignment = Alignment.Center,
-            ) { }
         }
         Column(
-            Modifier.semantics { contentDescription = "Calendar" }.padding(gridPadding),
+            Modifier.padding(gridPadding),
         ) {
             days.chunked(fsdsWeekLength).forEach { week ->
                 Row(horizontalArrangement = Arrangement.spacedBy(gridGap)) {

@@ -3,6 +3,7 @@ import { type HTMLAttributes, type ReactNode, useId } from "react";
 import { Stack } from "../../primitives";
 import { Icon } from "../Icon/Icon";
 import { useCommand } from "./useCommand";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Command.css";
 // @generated:end
 
@@ -214,6 +215,8 @@ export function CommandItemDescription({
 // @generated:end
 
 // @generated:start component
+const CommandMessages = { searchPlaceholder: "Search...", searchLabel: "Search commands", emptyResults: "No results found.", dialogLabel: "Command palette" };
+
 export function Command({
   open: controlledOpen,
   defaultOpen,
@@ -223,15 +226,20 @@ export function Command({
   onSearchChange,
   className,
   "data-testid": testId,
-  placeholder = "Search...",
-  searchLabel = "Search commands",
-  emptyMessage = "No results found.",
-  label = "Command palette",
+  placeholder: placeholderProp,
+  searchLabel: searchLabelProp,
+  emptyMessage: emptyMessageProp,
+  label: labelProp,
   shouldFilter = true,
   filter,
   slots,
   ...rest
 }: CommandProps) {
+  const fsdsMessages = useFsdsMessages("Command", CommandMessages);
+  const placeholder = placeholderProp ?? fsdsMessages.searchPlaceholder;
+  const searchLabel = searchLabelProp ?? fsdsMessages.searchLabel;
+  const emptyMessage = emptyMessageProp ?? fsdsMessages.emptyResults;
+  const label = labelProp ?? fsdsMessages.dialogLabel;
   const { open, setOpen, search, setSearch, renderInPortal } = useCommand({
     open: controlledOpen,
     defaultOpen,

@@ -3,6 +3,7 @@
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { useDialog } from "./useDialog.svelte.js";
 import { portal } from "../../primitives/index.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -39,6 +40,8 @@ interface Props {
 }
 
 let { open, defaultOpen, onOpenChange, modal = true, size = "md", dismissible = true, closeOnEscape = true, closeOnBackdropClick = true, initialFocus, returnFocus, ariaLabel, ariaLabelledby, ariaDescribedby, class: className, children, footer, title }: Props = $props();
+const DialogMessages = { close: "Close dialog" };
+const fsdsMessages = useFsdsMessages("Dialog", DialogMessages);
 // @generated:end
 
 // @generated:start hook
@@ -83,7 +86,7 @@ const instanceId = $props.id();
       <h2 class={'dialog__title'} id={`${instanceId}-title`}>
         {@render title?.()}
       </h2>
-      <button class={'dialog__closeButton'} type="button" aria-label="Close dialog" onclick={(e) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }}></button>
+      <button class={'dialog__closeButton'} type="button" onclick={(e) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }} aria-label={fsdsMessages.current.close}></button>
     </div>
     <div class={'dialog__body'} id={`${instanceId}-body`}>
       {@render children?.()}

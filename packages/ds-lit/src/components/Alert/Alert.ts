@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import '../Button/Button.js';
 // @generated:end
@@ -18,6 +19,8 @@ export type AlertLevel = "inline" | "section" | "page";
 // @custom:end
 
 // @generated:start component
+const AlertMessages = { dismiss: "Dismiss" };
+
 export class AlertElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -202,11 +205,13 @@ export class AlertElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Alert", AlertMessages);
+
   @property({ type: String }) intent?: AlertIntent;
   @property({ type: String }) level?: AlertLevel;
   @property({ type: Boolean }) dismissible?: boolean;
   @property({ attribute: false }) onDismiss?: () => void;
-  @property({ type: String }) dismissLabel?: string = "Dismiss";
+  @property({ type: String }) dismissLabel?: string;
   @property({ attribute: false }) icon?: unknown;
 
   override connectedCallback(): void {
@@ -229,7 +234,7 @@ export class AlertElement extends LitElement {
   ` : nothing}
   <slot></slot>
   ${this.dismissible ? html`
-  <fsds-button class=${'alert__dismiss'} type="button" @click=${this.onDismiss} .ariaLabel=${(this.dismissLabel ?? "Dismiss")}></fsds-button>
+  <fsds-button class=${'alert__dismiss'} type="button" @click=${this.onDismiss} .ariaLabel=${(this.dismissLabel ?? this.fsdsMessages.value.dismiss)}></fsds-button>
   ` : nothing}
 </div>`;
   }

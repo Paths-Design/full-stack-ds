@@ -2,6 +2,7 @@
 import { LitElement, html, css, nothing } from 'lit';
 import { ref } from 'lit/directives/ref.js';
 import { PagedSetController } from "../../primitives/controllers/PagingController.js";
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { PaginationBehavior } from './PaginationBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -21,6 +22,8 @@ export type PaginationProgress = "none" | "elapsed";
 // @custom:end
 
 // @generated:start component
+const PaginationMessages = { navigationLabel: "Choose page" };
+
 export class PaginationElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -176,12 +179,14 @@ export class PaginationElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Pagination", PaginationMessages);
+
   @property({ attribute: false }) pages?: string[] = [];
   @property({ type: Number }) index?: number;
   @property({ type: Number }) defaultIndex?: number = 0;
   @property({ attribute: false }) onIndexChange?: (index: number) => void;
   @property({ type: String }) presentation?: PaginationPresentation = "indicators";
-  @property({ type: String }) label?: string = "Choose page";
+  @property({ type: String }) label?: string;
   @property({ type: Boolean }) disabled?: boolean = false;
   @property({ type: String }) progress?: PaginationProgress = "none";
 
@@ -211,7 +216,7 @@ export class PaginationElement extends LitElement {
   }
 
   override render() {
-    return html`<div class="${this.computeClasses()}" role="group" aria-label=${ifDefined((this.label ?? "Choose page"))} data-fsds-box="">
+    return html`<div class="${this.computeClasses()}" role="group" aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.navigationLabel))} data-fsds-box="">
   ${((this.pages ?? [])).map((item, index) => html`
   <button class=${'pagination__item'} type="button" @click=${() => this.pagedSet.request(index)} aria-label=${item} aria-current=${((index === this.behavior.page)) ? 'true' : 'false'} ?disabled=${(this.disabled ?? false)} data-current=${(index === this.behavior.page)}>
     <span class=${'pagination__marker'} aria-hidden="true">

@@ -2,6 +2,7 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 import { Stack } from "../../primitives";
 import { Button } from "../Button/Button";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Chip.css";
 // @generated:end
 
@@ -47,6 +48,8 @@ export interface ChipProps extends Omit<HTMLAttributes<HTMLSpanElement>, "ariaEx
 // @generated:end
 
 // @generated:start component
+const ChipMessages = { dismiss: "Remove" };
+
 export function Chip({
   variant,
   size,
@@ -63,9 +66,11 @@ export function Chip({
   onClick,
   dismissible,
   onDismiss,
-  dismissLabel = "Remove",
+  dismissLabel: dismissLabelProp,
   ...rest
 }: ChipProps) {
+  const fsdsMessages = useFsdsMessages("Chip", ChipMessages);
+  const dismissLabel = dismissLabelProp ?? fsdsMessages.dismiss;
   const classNames = [
     "chip",
     variant && `chip--${variant}`,

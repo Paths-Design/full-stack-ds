@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName } from "../../messages.js";
 import { nativeMotionImports, nativeMotionInstance, nativeMotionPart, nativeMotionRoot } from "./motion-parts.js";
 import { matchesTokenRole } from "../token-role.js";
 import type {
@@ -583,6 +584,9 @@ function emitImports(ir: ComponentIR, component: string): string {
     ir.motion.sequence
       ? `import { useSequence, SequenceChildren } from "../../primitives/useSequence";`
       : "",
+    component.includes("fsdsMessages")
+      ? `import { ${["useFsdsMessages", ...(component.includes("formatFsdsMessage(") ? ["formatFsdsMessage"] : [])].join(", ")} } from "../../primitives/messages";`
+      : "",
     // componentRef: import each referenced DS-RN sibling component
     // (CODEGEN-RECURSIVE-COMPOSITION-01). Named imports, relative sibling path.
     ...resolveComponentRefImports(ir.name, ir.dom, "react-native").map(
@@ -956,6 +960,10 @@ function collectBindingRuntimeUsage(
     return;
   }
   if (binding.kind === "iterationLocal" || binding.kind === "literal") return;
+  if (binding.kind === "message") {
+    for (const param of binding.params) collectBindingRuntimeUsage(param.value, ir, usage, channelPurpose);
+    return;
+  }
   if (binding.kind === "valueMap") {
     collectBindingRuntimeUsage(binding.source, ir, usage, channelPurpose);
     return;
@@ -1034,9 +1042,11 @@ function emitComponent(ir: ComponentIR): string {
   }
   const usage = collectRuntimeUsage(ir);
   const destructured = propDestructureEntries(ir, usage);
+  const messageDeclAt = lines.length;
   lines.push(`export function ${ir.name}({`);
   for (const entry of destructured) lines.push(`${INDENT}${entry},`);
   lines.push(`}: ${ir.name}Props) {`);
+  const messagePrologueAt = lines.length;
   lines.push(`${INDENT}const fsdsTheme = useFsdsTheme();`);
   lines.push(`${INDENT}const styles = useMemo(() => create${ir.name}Styles(fsdsTheme), [fsdsTheme]);`);
   if (usesNativeToggle(ir) || rnAutoDismiss(ir) || ir.motion.sequence) {
@@ -1136,6 +1146,16 @@ function emitComponent(ir: ComponentIR): string {
       lines.push(rendered);
     }
     lines.push(`${INDENT});`);
+  }
+  // Messages resolve only when the rendered body reads the catalog or a
+  // message-defaulted prop survived the usage-scoped destructure.
+  const messageProps = ir.styledProps.filter((prop) =>
+    prop.defaultMessage && destructured.includes(`${prop.safeName}: ${prop.safeName}Prop`));
+  if (ir.messages.length > 0 && (messageProps.length > 0 || lines.slice(messagePrologueAt).some((line) => line.includes("fsdsMessages")))) {
+    lines.splice(messagePrologueAt, 0,
+      `${INDENT}const fsdsMessages = useFsdsMessages(${JSON.stringify(ir.name)}, ${messageDefaultsName(ir.name)});`,
+      ...messageProps.map((prop) => `${INDENT}const ${prop.safeName} = ${prop.safeName}Prop ?? fsdsMessages.${prop.defaultMessage};`));
+    lines.splice(messageDeclAt, 0, `const ${messageDefaultsName(ir.name)} = ${messageDefaultsLiteral(ir.messages)};`, "");
   }
   lines.push("}");
   lines.push("// @generated:end");
@@ -1282,8 +1302,12 @@ function propDestructureEntries(ir: ComponentIR, usage: RuntimeUsage): string[] 
     if (channel && channelIsUsed) {
       entries.push(`${prop.safeName}: controlled${capitalize(channel.name)}`);
     } else {
-      const suffix = prop.defaultExpr ? ` = ${prop.defaultExpr}` : "";
-      entries.push(`${prop.safeName}${suffix}`);
+      if (prop.defaultMessage) {
+        entries.push(`${prop.safeName}: ${prop.safeName}Prop`);
+      } else {
+        const suffix = prop.defaultExpr ? ` = ${prop.defaultExpr}` : "";
+        entries.push(`${prop.safeName}${suffix}`);
+      }
     }
     emitted.add(prop.safeName);
   }
@@ -1860,8 +1884,8 @@ function emitComponentRefNode(
 
 function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): string[] {
   const sequence = ir.motion.sequence;
-  if (sequence && node.part === sequence.viewport) return [`${INDENT.repeat(depth)}<SequenceChildren sequence={sequence} labels={${safePropName(ir, sequence.itemsProp)}} />`];
-  if (sequence && node.part === sequence.rotation) return [`${INDENT.repeat(depth)}<RNText>{sequence.playing ? ${JSON.stringify(sequence.labels.stop)} : ${JSON.stringify(sequence.labels.start)}}</RNText>`];
+  if (sequence && node.part === sequence.viewport) return [`${INDENT.repeat(depth)}<SequenceChildren sequence={sequence} labels={${safePropName(ir, sequence.itemsProp)}} position={fsdsMessages.${sequence.labels.position}} />`];
+  if (sequence && node.part === sequence.rotation) return [`${INDENT.repeat(depth)}<RNText>{sequence.playing ? fsdsMessages.${sequence.labels.stop} : fsdsMessages.${sequence.labels.start}}</RNText>`];
   const textStyleExpr = node === ir.dom ? rootTextStyleExpression(ir) : null;
   const textStyleProp = textStyleExpr ? ` style={${textStyleExpr}}` : "";
   if (node.content) {
@@ -1991,7 +2015,7 @@ function emitNodeProps(
       accessibilityState.push("disabled: !sequence.valid");
       if (action) props.push(`${pad}onPress={sequence.${action}}`);
       if (isRotation) props.push(`${pad}onPressIn={sequence.rotatePressIn}`, `${pad}onPress={sequence.rotate}`,
-        `${pad}accessibilityLabel={sequence.playing ? ${JSON.stringify(sequence.labels.stop)} : ${JSON.stringify(sequence.labels.start)}}`);
+        `${pad}accessibilityLabel={sequence.playing ? fsdsMessages.${sequence.labels.stop} : fsdsMessages.${sequence.labels.start}}`);
       if (isPicker) {
         props.push(`${pad}onPress={() => sequence.select(index)}`);
         accessibilityState.push("selected: index === sequence.index");
@@ -2017,6 +2041,7 @@ function emitNodeProps(
       continue;
     }
     if (name === "aria-label") {
+      if (ir.motion.sequence && node.part === ir.motion.sequence.rotation) continue;
       props.push(
         `${pad}accessibilityLabel={${isRootNode ? `accessibilityLabel ?? ${expr}` : expr}}`,
       );
@@ -2448,6 +2473,9 @@ function bindingExpr(binding: BindingExpression, ir: ComponentIR): string {
     return binding.channel;
   }
   if (binding.kind === "literal") return JSON.stringify(binding.value);
+  if (binding.kind === "message") {
+    return composeMessageExpression("fsdsMessages", binding, (value) => bindingExpr(value, ir)) ?? "undefined";
+  }
   if (binding.kind === "iterationLocal") {
     return pathExpr(binding.local, binding.path);
   }

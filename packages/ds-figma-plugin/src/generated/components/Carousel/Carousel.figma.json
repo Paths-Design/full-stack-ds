@@ -462,9 +462,10 @@
           "defaultMs": 6000
         },
         "labels": {
-          "start": "Start slide rotation",
-          "stop": "Stop slide rotation",
-          "item": "slide"
+          "start": "rotationStart",
+          "stop": "rotationStop",
+          "item": "slideRoleDescription",
+          "position": "slidePosition"
         },
         "composition": "resolved",
         "selectors": {

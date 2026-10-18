@@ -61,6 +61,7 @@ export function useSequence(options: Omit<SequenceOptions, "childKeys">, childre
   };
 }
 
-export function SequenceChildren({ sequence, labels }: { sequence: ReturnType<typeof useSequence>; labels: readonly string[] }) {
-  return <SequenceViewport items={sequence.items} state={sequence} labels={labels} driver={sequence.driver.current} transition={sequence.transition} />;
+/** `position` names a slide with no consumer label; it fills `{index}` (1-based) and `{count}`. */
+export function SequenceChildren({ sequence, labels, position }: { sequence: ReturnType<typeof useSequence>; labels: readonly string[]; position?: string }) {
+  return <SequenceViewport items={sequence.items} state={sequence} labels={labels} position={position} driver={sequence.driver.current} transition={sequence.transition} />;
 }

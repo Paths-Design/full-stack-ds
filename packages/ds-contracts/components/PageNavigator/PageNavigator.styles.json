@@ -53,7 +53,7 @@
       }
     }
   },
-  "total": {
+  "context": {
     "font-variant-numeric": {
       "literal": "tabular-nums",
       "platforms": [

@@ -1,6 +1,7 @@
 // @generated:start imports
 import { type HTMLAttributes, type ReactNode } from "react";
 import { Stack } from "../../primitives";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Breadcrumbs.css";
 // @generated:end
 
@@ -67,14 +68,18 @@ export function BreadcrumbsItem({
 // @generated:end
 
 // @generated:start component
+const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
+
 export function Breadcrumbs({
   className,
   "data-testid": testId,
   children,
-  ariaLabel = "Breadcrumb",
+  ariaLabel: ariaLabelProp,
   separator,
   ...rest
 }: BreadcrumbsProps) {
+  const fsdsMessages = useFsdsMessages("Breadcrumbs", BreadcrumbsMessages);
+  const ariaLabel = ariaLabelProp ?? fsdsMessages.navigationLabel;
   const classNames = [
     "breadcrumbs",
     className,

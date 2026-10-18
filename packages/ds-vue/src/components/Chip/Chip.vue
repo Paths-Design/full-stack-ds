@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed } from "vue";
 import Button from "../Button/Button.vue";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -39,13 +40,15 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   disabled: undefined,
   ariaExpanded: undefined,
   ariaPressed: undefined,
   dismissible: undefined,
-  dismissLabel: "Remove",
 });
+const ChipMessages = { dismiss: "Remove" };
+const fsdsMessages = useFsdsMessages("Chip", ChipMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { dismissLabel: "dismiss" });
 // @generated:end
 
 // @generated:start classes

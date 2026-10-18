@@ -5,6 +5,7 @@ import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createCommandStyles } from "./Command.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 import { Icon } from "../Icon/Icon";
 // @generated:end
 
@@ -38,12 +39,14 @@ export interface CommandProps {
 // @generated:end
 
 // @generated:start component
+const CommandMessages = { searchPlaceholder: "Search...", searchLabel: "Search commands", emptyResults: "No results found.", dialogLabel: "Command palette" };
+
 export function Command({
   open: controlledOpen,
   search: controlledSearch,
-  placeholder = "Search...",
-  searchLabel = "Search commands",
-  label = "Command palette",
+  placeholder: placeholderProp,
+  searchLabel: searchLabelProp,
+  label: labelProp,
   defaultOpen = false,
   onOpenChange,
   defaultSearch = "",
@@ -54,6 +57,10 @@ export function Command({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: CommandProps) {
+  const fsdsMessages = useFsdsMessages("Command", CommandMessages);
+  const placeholder = placeholderProp ?? fsdsMessages.searchPlaceholder;
+  const searchLabel = searchLabelProp ?? fsdsMessages.searchLabel;
+  const label = labelProp ?? fsdsMessages.dialogLabel;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createCommandStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>((defaultOpen ?? false) as boolean);

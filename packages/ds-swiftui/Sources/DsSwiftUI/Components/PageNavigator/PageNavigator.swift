@@ -20,7 +20,6 @@ public struct PageNavigator: View {
     private let pageLabel: String?
     private let previousLabel: String?
     private let nextLabel: String?
-    private let ofLabel: String?
     private let commitLabel: String?
     private let showChoices: Bool
     private let label: String?
@@ -37,7 +36,6 @@ public struct PageNavigator: View {
         pageLabel: String? = "Current page",
         previousLabel: String? = "Previous page",
         nextLabel: String? = "Next page",
-        ofLabel: String? = "of",
         commitLabel: String? = "Go",
         showChoices: Bool = false,
         label: String? = "Page navigation",
@@ -50,7 +48,6 @@ public struct PageNavigator: View {
         self.pageLabel = pageLabel
         self.previousLabel = previousLabel
         self.nextLabel = nextLabel
-        self.ofLabel = ofLabel
         self.commitLabel = commitLabel
         self.showChoices = showChoices
         self.label = label
@@ -77,7 +74,6 @@ public struct PageNavigator: View {
             )
                 .frame(maxWidth: 48)
                 .onSubmit(commit)
-            SwiftUI.Text(ofLabel ?? "")
             SwiftUI.Text(String(position.count))
             FsdsButton(
                 disabled: position.stateDisabled,

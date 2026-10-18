@@ -2,6 +2,7 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 import { Stack } from "../../primitives";
 import { useOTP } from "./useOTP";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./OTP.css";
 // @generated:end
 
@@ -57,6 +58,8 @@ export function OTPGroup({
 // @generated:end
 
 // @generated:start component
+const OTPMessages = { groupLabel: "One-time password", fieldLabel: "One-time password digit" };
+
 export function OTP({
   value: controlledValue,
   defaultValue,
@@ -68,11 +71,14 @@ export function OTP({
   length = 6,
   onComplete,
   readOnly,
-  label = "One-time password",
-  fieldLabel = "One-time password digit",
+  label: labelProp,
+  fieldLabel: fieldLabelProp,
   ariaDescribedby,
   ...rest
 }: OTPProps) {
+  const fsdsMessages = useFsdsMessages("OTP", OTPMessages);
+  const label = labelProp ?? fsdsMessages.groupLabel;
+  const fieldLabel = fieldLabelProp ?? fsdsMessages.fieldLabel;
   const { value, setValue } = useOTP({
     value: controlledValue,
     defaultValue,

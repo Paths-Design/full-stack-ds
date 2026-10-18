@@ -4,6 +4,7 @@ import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createShowMoreStyles } from "./ShowMore.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -27,11 +28,13 @@ export interface ShowMoreProps {
 // @generated:end
 
 // @generated:start component
+const ShowMoreMessages = { showMore: "Show more", showLess: "Show less" };
+
 export function ShowMore({
   expanded: controlledExpanded,
   maxLines = 3,
-  showMoreLabel = "Show more",
-  showLessLabel = "Show less",
+  showMoreLabel: showMoreLabelProp,
+  showLessLabel: showLessLabelProp,
   defaultExpanded = false,
   onExpandedChange,
   children,
@@ -40,6 +43,9 @@ export function ShowMore({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: ShowMoreProps) {
+  const fsdsMessages = useFsdsMessages("ShowMore", ShowMoreMessages);
+  const showMoreLabel = showMoreLabelProp ?? fsdsMessages.showMore;
+  const showLessLabel = showLessLabelProp ?? fsdsMessages.showLess;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createShowMoreStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledExpanded, setUncontrolledExpanded] = useState<boolean>((defaultExpanded ?? false) as boolean);

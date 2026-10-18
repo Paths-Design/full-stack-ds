@@ -57,14 +57,6 @@
       "layoutVariant": null
     },
     {
-      "name": "total",
-      "semanticElement": null,
-      "nativeTag": "span",
-      "isCompound": false,
-      "isRootOnly": false,
-      "layoutVariant": null
-    },
-    {
       "name": "next",
       "semanticElement": null,
       "nativeTag": null,
@@ -195,15 +187,6 @@
       "required": false,
       "description": "Consumer-authored nextLabel text for the composed navigator.",
       "defaultExpr": "\"Next page\"",
-      "nodeKind": null
-    },
-    {
-      "name": "ofLabel",
-      "safeName": "ofLabel",
-      "type": "string",
-      "required": false,
-      "description": "Consumer-authored ofLabel text for the composed navigator.",
-      "defaultExpr": "\"of\"",
       "nodeKind": null
     },
     {
@@ -367,7 +350,7 @@
         }
       },
       {
-        "selector": ".page-navigator__total",
+        "selector": ".page-navigator__context",
         "declarations": {
           "font-variant-numeric": "tabular-nums"
         }

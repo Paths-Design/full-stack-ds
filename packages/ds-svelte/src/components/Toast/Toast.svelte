@@ -3,6 +3,7 @@
 import { useToast } from "./useToast.svelte.js";
 import { createAutoDismiss } from "../../primitives/index.js";
 import { portal } from "../../primitives/index.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -32,6 +33,8 @@ interface Props {
 }
 
 let { open, onOpenChange, title, variant = "info", politeness = "polite", duration, class: className, children, action }: Props = $props();
+const ToastMessages = { regionLabel: "Notifications", dismiss: "Dismiss" };
+const fsdsMessages = useFsdsMessages("Toast", ToastMessages);
 // @generated:end
 
 // @generated:start hook
@@ -72,7 +75,7 @@ const instanceId = $props.id();
 // @custom:end
 </script>
 
-<div class={classes} aria-label="Notifications" aria-live={politeness} data-fsds-component="toast" data-fsds-box="" use:portal={{ enabled: true }} onpointerenter={autoDismiss.pauseListeners.onpointerenter} onpointerleave={autoDismiss.pauseListeners.onpointerleave} onfocusin={autoDismiss.pauseListeners.onfocusin} onfocusout={autoDismiss.pauseListeners.onfocusout} role="region">
+<div class={classes} aria-label={fsdsMessages.current.regionLabel} aria-live={politeness} data-fsds-component="toast" data-fsds-box="" use:portal={{ enabled: true }} onpointerenter={autoDismiss.pauseListeners.onpointerenter} onpointerleave={autoDismiss.pauseListeners.onpointerleave} onfocusin={autoDismiss.pauseListeners.onfocusin} onfocusout={autoDismiss.pauseListeners.onfocusout} role="region">
   {#if behavior.open}
   <div class={'toast__item'} role="status" aria-labelledby={title ? `${instanceId}-title` : undefined}>
     <div class={'toast__row'}>
@@ -87,7 +90,7 @@ const instanceId = $props.id();
         {@render action?.()}
       </div>
       {/if}
-      <button class={'toast__close'} type="button" aria-label="Dismiss" onclick={() => behavior.setOpen(!behavior.open)}></button>
+      <button class={'toast__close'} type="button" onclick={() => behavior.setOpen(!behavior.open)} aria-label={fsdsMessages.current.dismiss}></button>
     </div>
     <div class={'toast__progress'} hidden use:autoDismiss.bindProgress aria-hidden="true"></div>
   </div>

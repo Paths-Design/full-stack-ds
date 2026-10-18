@@ -3,6 +3,7 @@ import { type HTMLAttributes, type ReactNode, useEffect, useId, useState } from 
 import { Stack } from "../../primitives";
 import { useAnchoredPosition } from "../../primitives/surfaces/useAnchoredPosition";
 import { useWalkthrough } from "./useWalkthrough";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Walkthrough.css";
 // @generated:end
 
@@ -107,6 +108,8 @@ export function WalkthroughDescription({
 // @generated:end
 
 // @generated:start component
+const WalkthroughMessages = { tourLabel: "Feature tour", skip: "Skip", skipTour: "Skip tour", previous: "Previous", previousStep: "Previous step", next: "Next" };
+
 export function Walkthrough({
   index: controlledIndex,
   defaultIndex = 0,
@@ -117,18 +120,21 @@ export function Walkthrough({
   steps = [{"anchor":"#step-1","title":"Welcome to the tour"},{"anchor":"#step-2","title":"Browse your dashboard"},{"anchor":"#step-3","title":"Configure preferences"}],
   onComplete,
   onSkip,
-  label = "Feature tour",
+  label: labelProp,
   storageKey,
   autoStart = false,
   closeOnOutsideClick = false,
   onPrevious,
   onNext,
   previousDisabled = false,
-  nextLabel = "Next",
+  nextLabel: nextLabelProp,
   progressLabel,
   slots,
   ...rest
 }: WalkthroughProps) {
+  const fsdsMessages = useFsdsMessages("Walkthrough", WalkthroughMessages);
+  const label = labelProp ?? fsdsMessages.tourLabel;
+  const nextLabel = nextLabelProp ?? fsdsMessages.next;
   const { step, setStep, renderInPortal } = useWalkthrough({
     index: controlledIndex,
     defaultIndex,
@@ -172,11 +178,11 @@ export function Walkthrough({
         </p>
       </div>
       <div className="walkthrough__controls">
-        <button className="walkthrough__skip" type="button" onClick={onSkip} aria-label={"Skip tour"}>
-          {"Skip"}
+        <button className="walkthrough__skip" type="button" onClick={onSkip} aria-label={fsdsMessages.skipTour}>
+          {fsdsMessages.skip}
         </button>
-        <button className="walkthrough__prev" type="button" onClick={onPrevious} aria-label={"Previous step"} disabled={previousDisabled}>
-          {"Previous"}
+        <button className="walkthrough__prev" type="button" onClick={onPrevious} aria-label={fsdsMessages.previousStep} disabled={previousDisabled}>
+          {fsdsMessages.previous}
         </button>
         <div className="walkthrough__dots">
           {(steps ?? []).map((item, index) => <button className="walkthrough__dot" type="button" onClick={() => setStep(index)} aria-label={item.title} data-step-index={index} key={index} />)}

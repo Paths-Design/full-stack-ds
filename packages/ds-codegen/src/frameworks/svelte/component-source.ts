@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig, sequencePresentation } from "../../sequence.js";
+import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
+import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
  * Svelte 5 SFC emission, IR-driven.
  *
@@ -119,6 +120,9 @@ const SVELTE_SKIP_PROPS = new Set(["class", "style", "className", "children"]);
  * (imports/types/props/classes/trailing); template is a simple block.
  */
 export function generateSvelteComponentSource(ir: ComponentIR): string {
+  if (ir.messages.length > 0 && (isDisclosureContainer(ir) || isCompoundStateContainer(ir))) {
+    throw new Error(`[MESSAGE_UNLOWERED] ${ir.name}: compound-state Svelte components do not resolve contract messages`);
+  }
   if (isDisclosureContainer(ir)) {
     return generateSvelteDisclosureStateRootSource(ir);
   }
@@ -131,7 +135,7 @@ export function generateSvelteComponentSource(ir: ComponentIR): string {
   // Relative import to the primitives barrel (not the package self-
   // reference) so svelte-package / svelte-check can resolve it during
   // the package's own build, before dist exists.
-  const importsBody = `import { Stack } from "../../primitives/index.js";`;
+  const importsBody = [`import { Stack } from "../../primitives/index.js";`, ...svelteMessageImports(ir)].join("\n");
 
   const typesBody = generateTypeAliases(ir);
   const propsBody = generatePropsBlock(ir);
@@ -218,6 +222,7 @@ function generatePropsBlock(ir: ComponentIR): string {
 
   const destructured = buildDestructure(ir);
   lines.push(`let { ${destructured} }: Props = $props();`);
+  lines.push(...svelteMessagePrologue(ir));
 
   return lines.join("\n");
 }
@@ -236,6 +241,30 @@ function collectNamedSlots(ir: ComponentIR): string[] {
   return names.sort();
 }
 
+/**
+ * After the `$props()` destructure: the component's default messages, its
+ * catalog view, and a `$derived` per message-defaulted prop so the public
+ * name resolves `explicit ?? catalog` and tracks locale changes.
+ */
+function svelteMessagePrologue(ir: ComponentIR): string[] {
+  if (ir.messages.length === 0) return [];
+  const lines = [
+    `const ${messageDefaultsName(ir.name)} = ${messageDefaultsLiteral(ir.messages)};`,
+    `const fsdsMessages = useFsdsMessages(${JSON.stringify(ir.name)}, ${messageDefaultsName(ir.name)});`,
+  ];
+  for (const p of ir.styledProps) {
+    if (p.defaultMessage) lines.push(`const ${p.safeName} = $derived(${p.safeName}Prop ?? fsdsMessages.current.${p.defaultMessage});`);
+  }
+  return lines;
+}
+
+/** Runtime message helpers a message-bearing component imports. */
+function svelteMessageImports(ir: ComponentIR): string[] {
+  if (ir.messages.length === 0) return [];
+  const names = ["useFsdsMessages", ...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : [])];
+  return [`import { ${names.join(", ")} } from "../../primitives/messages.js";`];
+}
+
 function buildDestructure(ir: ComponentIR): string {
   const parts: string[] = [];
   for (const p of ir.styledProps) {
@@ -243,7 +272,10 @@ function buildDestructure(ir: ComponentIR): string {
     // For hyphenated keys (e.g. "aria-label"), JS destructuring requires an
     // alias to a valid identifier. Use the IR's safeName ("ariaLabel").
     const key = p.name.includes("-") ? `"${p.name}": ${p.safeName}` : p.safeName;
-    if (p.defaultExpr !== undefined) {
+    if (p.defaultMessage) {
+      // Resolved after the destructure as `$derived(<name>Prop ?? catalog)`.
+      parts.push(`${p.name.includes("-") ? JSON.stringify(p.name) : p.safeName}: ${p.safeName}Prop`);
+    } else if (p.defaultExpr !== undefined) {
       parts.push(`${key} = ${p.defaultExpr}`);
     } else {
       parts.push(key);
@@ -1467,6 +1499,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
   }
   if (ir.pagedSet) importLines.push(`import { createReactivePagedSet } from "../../primitives/paging.svelte.js";`);
   if (ir.motion.sequence) importLines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
+  importLines.push(...svelteMessageImports(ir));
   const importsBody = importLines.join("\n");
 
   const typesBody = generateTypeAliases(ir);
@@ -1573,6 +1606,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
       `$effect(() => { sequence.sync({`,
       `  index: ${hookVar}.${seq.channel}, labels: ${jsAccessorFor(seq.itemsProp)}, autoPlay: ${jsAccessorFor(seq.timing.autoPlayProp)},`,
       `  presentation: ${sequencePresentation(seq, jsAccessorFor)},`,
+      `  messages: ${sequenceMessages(seq, key => `fsdsMessages.current.${key}`)},`,
       `  durationMs: ${jsAccessorFor(seq.timing.durationProp)} === undefined ? ${seq.timing.defaultMs} : ${jsAccessorFor(seq.timing.durationProp)},`,
       `  onIndexChange: ${hookVar}.set${capitalizeSvelte(seq.channel)},`, `}); });`,
       `$effect(() => () => sequence.destroy());`);
@@ -2502,6 +2536,10 @@ function renderSvelteTextChildExpression(
       return `{${appendPath(sveltePropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
       return escapeAttrValue(expr.value);
+    case "message": {
+      const lowered = renderSvelteBindingValue(expr, ctx);
+      return lowered === null ? null : `{${lowered}}`;
+    }
     case "iterationLocal": {
       const name = svelteIterationLocalName(expr.local, ctx);
       return name ? `{${appendPath(name, expr.path)}}` : null;
@@ -2562,6 +2600,8 @@ function renderSvelteBindingValue(
       return appendPath(sveltePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
       return JSON.stringify(expr.value);
+    case "message":
+      return composeMessageExpression("fsdsMessages.current", expr, (value) => renderSvelteBindingValue(value, ctx));
     case "iterationLocal": {
       const name = svelteIterationLocalName(expr.local, ctx);
       return name ? appendPath(name, expr.path) : null;
@@ -2648,6 +2688,10 @@ function renderSvelteBinding(
       return `${attr}={${appendPath(sveltePropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
       return `${attr}="${escapeAttrValue(expr.value)}"`;
+    case "message": {
+      const lowered = renderSvelteBindingValue(expr, ctx);
+      return lowered === null ? null : `${attr}={${lowered}}`;
+    }
     case "iterationLocal": {
       const name = svelteIterationLocalName(expr.local, ctx);
       return name ? `${attr}={${appendPath(name, expr.path)}}` : null;
@@ -2837,6 +2881,8 @@ function renderSvelteEvent(
     case "literal":
       // Rare. Emit as a string handler — consumer-error territory.
       return `${svelteEventAttr}="${escapeAttrValue(expr.value)}"`;
+    case "message":
+      return null;
     case "iterationLocal": {
       // Iteration locals are values, not handlers. Surface null so the
       // caller drops the attribute. Defensive — the IR validator would

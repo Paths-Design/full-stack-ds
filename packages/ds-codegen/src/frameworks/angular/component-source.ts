@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig, sequencePresentation } from "../../sequence.js";
+import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
+import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
  * Angular standalone component emission, IR-driven.
  *
@@ -107,6 +108,9 @@ const ANGULAR_RESERVED = new Set(["class", "style", "children", "className"]);
  * custom regions over.
  */
 export function generateAngularComponentSource(ir: ComponentIR): string {
+  if (ir.messages.length > 0 && (isDisclosureContainer(ir) || isCompoundStateContainer(ir) || !ir.dom)) {
+    throw new Error(`[MESSAGE_UNLOWERED] ${ir.name}: only dom-tree Angular components resolve contract messages`);
+  }
   // Compound-state-container (Tabs-shaped): emit a fully wired root component
   // that provides the context token to its children.
   if (isDisclosureContainer(ir)) {
@@ -1213,7 +1217,9 @@ function generateComponent(ir: ComponentIR): string {
 
 function generateInputProp(p: ResolvedPropIR): string | null {
   const type = lowerAngularPropType(p.propType);
-  const defaultPart = p.defaultExpr !== undefined ? ` = ${p.defaultExpr}` : "";
+  // A message-defaulted prop has no static default; template and class
+  // accessors resolve `explicit ?? fsdsMessages().<key>` at each read.
+  const defaultPart = p.defaultExpr !== undefined && !p.defaultMessage ? ` = ${p.defaultExpr}` : "";
   // Required props with no default need a definite-assignment assertion to
   // satisfy strictPropertyInitialization; optional props use `?:`.
   let modifier: string;
@@ -1490,6 +1496,10 @@ function generateDomTreeImports(ir: ComponentIR): string {
   ];
   if (ir.pagedSet) lines.push(`import { createReactivePagedSet } from "../../primitives/paging-signal.js";`);
   if (ir.motion.sequence) lines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
+  if (ir.messages.length > 0) {
+    const names = [...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : []), "injectFsdsMessages"];
+    lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
+  }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.compoundParts.length > 0) {
     lines.push(`import { StackComponent } from "../../primitives/index.js";`);
@@ -1824,6 +1834,10 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     lines.push(``);
   }
   lines.push(...generateAngularMarkdownCompanions(ir));
+  if (ir.messages.length > 0) {
+    lines.push(`const ${messageDefaultsName(ir.name)} = ${messageDefaultsLiteral(ir.messages)};`);
+    lines.push(``);
+  }
   lines.push(`@Component({`);
   lines.push(`  selector: "fsds-${selector}",`);
   lines.push(`  standalone: true,`);
@@ -1855,6 +1869,12 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     );
   } else {
     lines.push(`export class ${className} {`);
+  }
+  // Resolved messages: a computed signal over the injected catalog, read by
+  // template (`fsdsMessages().key`) and class (`this.fsdsMessages().key`).
+  if (ir.messages.length > 0) {
+    lines.push(`  protected readonly fsdsMessages = injectFsdsMessages(${JSON.stringify(ir.name)}, ${messageDefaultsName(ir.name)});`);
+    if (usesMessageFormatting(ir)) lines.push(`  protected readonly formatFsdsMessage = formatFsdsMessage;`);
   }
 
   // @Input declarations for all styled props (skipping reserved + event handlers)
@@ -2023,6 +2043,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       `  private sequenceEffect = effect(() => this.sequence.sync({`,
       `    index: this.behavior.${seq.channel}(), labels: this.${seq.itemsProp} ?? [], autoPlay: this.${seq.timing.autoPlayProp} ?? false,`,
       `    presentation: ${sequencePresentation(seq, prop => `this.${prop}`)},`,
+      `    messages: ${sequenceMessages(seq, key => `this.fsdsMessages().${key}`)},`,
       `    durationMs: this.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : this.${seq.timing.durationProp},`,
       `    onIndexChange: (value) => this.behavior.set${capitalizeAngular(seq.channel)}(value),`, `  }));`,
       `  @ViewChild("sequenceRoot") set sequenceRoot(el: ElementRef<HTMLElement> | undefined) {`,
@@ -2546,7 +2567,7 @@ interface AngularRenderContext {
   componentName?: string;
   channelByName: Map<string, NormalizedChannelIR>;
   /** Prop-name → resolved styled-prop lookup, mirroring the lit emitter's `styledByName`. Populated at root construction and carried into nested contexts via the `{ ...ctx }` spread. */
-  styledByName: Map<string, { type: string; defaultExpr?: string }>;
+  styledByName: Map<string, { type: string; defaultExpr?: string; defaultMessage?: string }>;
   isRoot: boolean;
   /**
    * Role synthesized on the rendered DOM root from `a11y.role` when the
@@ -3309,9 +3330,11 @@ function angularPropAccessor(propName: string, ctx: AngularRenderContext): strin
  */
 function defaultAwareAngularTemplatePropAccessor(
   propName: string,
-  styledByName: ReadonlyMap<string, { type: string; defaultExpr?: string }>,
+  styledByName: ReadonlyMap<string, { type: string; defaultExpr?: string; defaultMessage?: string }>,
 ): string {
   const bare = safePropertyExpr(propName);
+  const defaultMessage = styledByName.get(propName)?.defaultMessage;
+  if (defaultMessage) return `(${bare} ?? fsdsMessages().${defaultMessage})`;
   const defaultExpr = styledByName.get(propName)?.defaultExpr;
   return defaultExpr === undefined
     ? bare
@@ -3352,9 +3375,11 @@ function angularTemplateSafeDefaultExpr(defaultExpr: string): string {
  */
 function defaultAwareAngularClassPropAccessor(
   propName: string,
-  styledByName: ReadonlyMap<string, { type: string; defaultExpr?: string }>,
+  styledByName: ReadonlyMap<string, { type: string; defaultExpr?: string; defaultMessage?: string }>,
 ): string {
   const bare = `this.${propName}`;
+  const defaultMessage = styledByName.get(propName)?.defaultMessage;
+  if (defaultMessage) return `(${bare} ?? this.fsdsMessages().${defaultMessage})`;
   const defaultExpr = styledByName.get(propName)?.defaultExpr;
   return defaultExpr === undefined ? bare : `(${bare} ?? ${defaultExpr})`;
 }
@@ -3440,6 +3465,10 @@ function renderAngularBinding(
       return `${angularAttrBinding(attr, tag, refBinding)}="${appendPath(angularPropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
       return `${attr}="${escapeAngularAttr(expr.value)}"`;
+    case "message": {
+      const lowered = renderAngularBindingValue(expr, ctx);
+      return lowered === null ? null : `${angularAttrBinding(attr, tag, refBinding)}="${lowered}"`;
+    }
     case "iterationLocal": {
       const name = angularIterationLocalName(expr.local, ctx);
       return name ? `${angularAttrBinding(attr, tag, refBinding)}="${appendPath(name, expr.path)}"` : null;
@@ -3567,6 +3596,10 @@ function renderAngularBindingValue(
       // INDETERMINATE-01). Single quotes have no such collision in any
       // of this function's call sites.
       return `'${expr.value.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`;
+    case "message":
+      // `fsdsMessages` is a computed signal member; `formatFsdsMessage` is
+      // exposed on the class when any message takes params.
+      return composeMessageExpression("fsdsMessages()", expr, (value) => renderAngularBindingValue(value, ctx));
     case "iterationLocal": {
       const name = angularIterationLocalName(expr.local, ctx);
       return name ? appendPath(name, expr.path) : null;
@@ -3674,6 +3707,8 @@ function renderAngularEvent(
       // Rare — usually events should be wired to a callback. Pass the
       // literal through as the expression body.
       return `(${eventName})="${escapeAngularAttr(expr.value)}"`;
+    case "message":
+      return null;
     case "iterationLocal": {
       // Iteration locals are values, not callables. Drop the binding —
       // the IR validator would already have rejected a contract that

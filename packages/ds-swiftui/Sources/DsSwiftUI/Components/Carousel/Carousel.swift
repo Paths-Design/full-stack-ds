@@ -89,7 +89,7 @@ public struct Carousel<Content: View>: View {
 
     public var body: some View {
         VStack(spacing: gap) {
-            Button(playing ? "Stop slide rotation" : "Start slide rotation") {
+            Button(playing ? "rotationStop" : "rotationStart") {
                 playing.toggle()
             }
             .buttonStyle(.plain)

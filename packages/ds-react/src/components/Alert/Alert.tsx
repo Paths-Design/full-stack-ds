@@ -2,6 +2,7 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 import { Stack } from "../../primitives";
 import { Button } from "../Button/Button";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Alert.css";
 // @generated:end
 
@@ -74,6 +75,8 @@ export function AlertTitle({
 // @generated:end
 
 // @generated:start component
+const AlertMessages = { dismiss: "Dismiss" };
+
 export function Alert({
   intent,
   level,
@@ -82,10 +85,12 @@ export function Alert({
   children,
   dismissible,
   onDismiss,
-  dismissLabel = "Dismiss",
+  dismissLabel: dismissLabelProp,
   icon,
   ...rest
 }: AlertProps) {
+  const fsdsMessages = useFsdsMessages("Alert", AlertMessages);
+  const dismissLabel = dismissLabelProp ?? fsdsMessages.dismiss;
   const classNames = [
     "alert",
     intent && `alert--${intent}`,

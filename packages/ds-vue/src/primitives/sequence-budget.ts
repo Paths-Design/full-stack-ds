@@ -1,14 +1,26 @@
+import { formatFsdsMessage } from "./message-format.js";
 import { createPresenceBudget } from "./presence-budget.js";
 
 export interface SequenceConfig {
   delegatedPicker?: boolean;
-  labels: { start: string; stop: string; item: string };
   transition?: { durationMs: number; easing: string; referenceWidth: number; minMultiplier: number; maxMultiplier: number };
   parts: Record<"viewport" | "previous" | "next" | "rotation" | "picker", string>;
   progress: Array<{ selector: string; effect: "elapsed-width" | "elapsed-ring"; steps: number; when?: { axis: string; values: string[] } }>;
 }
+/**
+ * Sequence-owned text, resolved from the component's message catalog on every
+ * sync so a locale change re-renders it. `position` names a slide with no
+ * consumer label and fills `{index}` (1-based) and `{count}`.
+ */
+export interface SequenceMessages {
+  start: string;
+  stop: string;
+  item: string;
+  position: string;
+}
 export interface SequenceOptions {
   presentation?: Record<string, string | undefined>;
+  messages: SequenceMessages;
   index: number;
   labels: readonly string[];
   durationMs: number | null | undefined;
@@ -173,8 +185,8 @@ export function createSequenceBudget(config: SequenceConfig) {
       slide.inert = i !== index();
       slide.setAttribute("aria-hidden", String(i !== index()));
       slide.setAttribute("role", "group");
-      slide.setAttribute("aria-roledescription", config.labels.item);
-      slide.setAttribute("aria-label", options!.labels[i] ?? `${i + 1} of ${slides.length}`);
+      slide.setAttribute("aria-roledescription", options!.messages.item);
+      slide.setAttribute("aria-label", options!.labels[i] ?? formatFsdsMessage(options!.messages.position, { index: i + 1, count: slides.length }));
     });
     if (changedSlide) {
       const direction = requestedIndex === index() ? requestedDirection : Math.sign(index() - slides.indexOf(previousSlide)) || 1;
@@ -192,7 +204,7 @@ export function createSequenceBudget(config: SequenceConfig) {
     const rotation = part("rotation");
     if (rotation) {
       rotation.hidden = !timed;
-      const label = playing ? config.labels.stop : config.labels.start;
+      const label = playing ? options.messages.stop : options.messages.start;
       rotation.textContent = label;
       rotation.setAttribute("aria-label", label);
     }

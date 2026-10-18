@@ -1,6 +1,7 @@
 <script lang="ts">
 // @generated:start imports
 import { useTruncate } from "./useTruncate.svelte.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -20,7 +21,11 @@ interface Props {
   children?: import('svelte').Snippet;
 }
 
-let { lines, expandable, expanded, defaultExpanded, onExpandedChange, expandText = "Show more", collapseText = "Show less", class: className, children }: Props = $props();
+let { lines, expandable, expanded, defaultExpanded, onExpandedChange, expandText: expandTextProp, collapseText: collapseTextProp, class: className, children }: Props = $props();
+const TruncateMessages = { expand: "Show more", collapse: "Show less" };
+const fsdsMessages = useFsdsMessages("Truncate", TruncateMessages);
+const expandText = $derived(expandTextProp ?? fsdsMessages.current.expand);
+const collapseText = $derived(collapseTextProp ?? fsdsMessages.current.collapse);
 // @generated:end
 
 // @generated:start hook

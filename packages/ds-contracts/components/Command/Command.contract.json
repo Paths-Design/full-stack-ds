@@ -243,6 +243,24 @@
       ]
     }
   },
+  "messages": {
+    "searchPlaceholder": {
+      "defaultMessage": "Search...",
+      "description": "Placeholder text of the command search field."
+    },
+    "searchLabel": {
+      "defaultMessage": "Search commands",
+      "description": "Accessible name of the command search field."
+    },
+    "emptyResults": {
+      "defaultMessage": "No results found.",
+      "description": "Text shown when no command matches the search."
+    },
+    "dialogLabel": {
+      "defaultMessage": "Command palette",
+      "description": "Accessible name of the command palette."
+    }
+  },
   "props": {
     "styled": {
       "description": "Props for the <Command> component.",
@@ -281,25 +299,25 @@
           "name": "placeholder",
           "type": "string",
           "description": "Placeholder text for the search input.",
-          "default": "Search..."
+          "defaultMessage": "searchPlaceholder"
         },
         {
           "name": "searchLabel",
           "type": "string",
           "description": "Accessible label for the command search input.",
-          "default": "Search commands"
+          "defaultMessage": "searchLabel"
         },
         {
           "name": "emptyMessage",
           "type": "string",
           "description": "Message shown when no items match the current search.",
-          "default": "No results found."
+          "defaultMessage": "emptyResults"
         },
         {
           "name": "label",
           "type": "string",
           "description": "Accessible label for the command palette dialog.",
-          "default": "Command palette"
+          "defaultMessage": "dialogLabel"
         },
         {
           "name": "shouldFilter",

@@ -115,6 +115,12 @@
       ]
     }
   },
+  "messages": {
+    "dismiss": {
+      "defaultMessage": "Remove",
+      "description": "Accessible name of the button that removes the chip."
+    }
+  },
   "props": {
     "designed": {
       "members": [
@@ -182,7 +188,7 @@
           "name": "dismissLabel",
           "propType": { "kind": "string" },
           "description": "Accessible label for the dismiss control.",
-          "default": "Remove"
+          "defaultMessage": "dismiss"
         }
       ]
     }

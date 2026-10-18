@@ -148,12 +148,12 @@
                 "type": "button"
               },
               "bindings": {
-                "aria-label": "literal:Skip tour"
+                "aria-label": "message:skipTour"
               },
               "events": {
                 "click": "prop:onSkip"
               },
-              "content": "literal:Skip"
+              "content": "message:skip"
             },
             {
               "tag": "button",
@@ -162,13 +162,13 @@
                 "type": "button"
               },
               "bindings": {
-                "aria-label": "literal:Previous step",
+                "aria-label": "message:previousStep",
                 "disabled": "prop:previousDisabled"
               },
               "events": {
                 "click": "prop:onPrevious"
               },
-              "content": "literal:Previous"
+              "content": "message:previous"
             },
             {
               "tag": "div",
@@ -218,6 +218,32 @@
           ]
         }
       ]
+    }
+  },
+  "messages": {
+    "tourLabel": {
+      "defaultMessage": "Feature tour",
+      "description": "Accessible name of the tour region when the consumer supplies none."
+    },
+    "skip": {
+      "defaultMessage": "Skip",
+      "description": "Text of the button that ends the tour."
+    },
+    "skipTour": {
+      "defaultMessage": "Skip tour",
+      "description": "Accessible name of the button that ends the tour."
+    },
+    "previous": {
+      "defaultMessage": "Previous",
+      "description": "Text of the button that returns to the previous step."
+    },
+    "previousStep": {
+      "defaultMessage": "Previous step",
+      "description": "Accessible name of the button that returns to the previous step."
+    },
+    "next": {
+      "defaultMessage": "Next",
+      "description": "Text and accessible name of the next-step button when the consumer supplies none."
     }
   },
   "props": {
@@ -279,7 +305,7 @@
           "name": "label",
           "type": "string",
           "description": "Accessible label for the walkthrough region.",
-          "default": "Feature tour"
+          "defaultMessage": "tourLabel"
         },
         {
           "name": "storageKey",
@@ -323,7 +349,7 @@
         {
           "name": "nextLabel",
           "type": "string",
-          "default": "Next",
+          "defaultMessage": "next",
           "description": "Visible label for the next-step action, such as Finish on the final step."
         },
         {

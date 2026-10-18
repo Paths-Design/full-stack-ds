@@ -4,6 +4,7 @@ import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createWalkthroughStyles } from "./Walkthrough.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -42,15 +43,17 @@ export interface WalkthroughProps {
 // @generated:end
 
 // @generated:start component
+const WalkthroughMessages = { tourLabel: "Feature tour", skip: "Skip", skipTour: "Skip tour", previous: "Previous", previousStep: "Previous step", next: "Next" };
+
 export function Walkthrough({
   steps = [{"anchor":"#step-1","title":"Welcome to the tour"},{"anchor":"#step-2","title":"Browse your dashboard"},{"anchor":"#step-3","title":"Configure preferences"}],
   index: controlledStep,
   onSkip,
-  label = "Feature tour",
+  label: labelProp,
   onPrevious,
   onNext,
   previousDisabled = false,
-  nextLabel = "Next",
+  nextLabel: nextLabelProp,
   progressLabel,
   defaultIndex = 0,
   onStepChange,
@@ -60,6 +63,9 @@ export function Walkthrough({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: WalkthroughProps) {
+  const fsdsMessages = useFsdsMessages("Walkthrough", WalkthroughMessages);
+  const label = labelProp ?? fsdsMessages.tourLabel;
+  const nextLabel = nextLabelProp ?? fsdsMessages.next;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createWalkthroughStyles(fsdsTheme), [fsdsTheme]);
   const [, setUncontrolledStep] = useState<number>((defaultIndex ?? 0) as number);
@@ -96,21 +102,21 @@ export function Walkthrough({
       >
         <Pressable
           style={styles.skip}
-          accessibilityLabel={"Skip tour"}
+          accessibilityLabel={fsdsMessages.skipTour}
           onPress={() => onSkip?.()}
           accessibilityRole="button"
         >
-          <RNText>{"Skip"}</RNText>
+          <RNText>{fsdsMessages.skip}</RNText>
         </Pressable>
         <Pressable
           style={styles.prev}
-          accessibilityLabel={"Previous step"}
+          accessibilityLabel={fsdsMessages.previousStep}
           disabled={previousDisabled}
           onPress={() => onPrevious?.()}
           accessibilityRole="button"
           accessibilityState={{ disabled: previousDisabled }}
         >
-          <RNText>{"Previous"}</RNText>
+          <RNText>{fsdsMessages.previous}</RNText>
         </Pressable>
         <View
           style={styles.dots}

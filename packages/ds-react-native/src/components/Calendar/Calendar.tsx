@@ -4,6 +4,7 @@ import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createCalendarStyles } from "./Calendar.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -41,8 +42,10 @@ const isEntrySelected = (candidate: unknown, current: unknown): boolean => {
       : entry === candidate);
 };
 
+const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+
 export function Calendar({
-  caption = "Calendar",
+  caption: captionProp,
   value: controlledValue,
   days,
   defaultValue = undefined,
@@ -52,6 +55,8 @@ export function Calendar({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: CalendarProps) {
+  const fsdsMessages = useFsdsMessages("Calendar", CalendarMessages);
+  const caption = captionProp ?? fsdsMessages.caption;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createCalendarStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledValue, setUncontrolledValue] = useState<Date | Date[] | null>((defaultValue ?? undefined) as Date | Date[] | null);
@@ -73,6 +78,7 @@ export function Calendar({
       >
         <Pressable
           style={styles.nav}
+          accessibilityLabel={fsdsMessages.previousMonth}
           accessibilityRole="button"
         />
         <View
@@ -82,11 +88,13 @@ export function Calendar({
         </View>
         <Pressable
           style={styles.nav}
+          accessibilityLabel={fsdsMessages.nextMonth}
           accessibilityRole="button"
         />
       </View>
       <View
         style={styles.grid}
+        accessibilityLabel={fsdsMessages.gridLabel}
       >
         <View
           style={styles.root}

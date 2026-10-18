@@ -4,6 +4,7 @@ import { Pressable, Text as RNText, TextInput, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createSelectStyles } from "./Select.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -39,17 +40,19 @@ export interface SelectProps {
 // @generated:end
 
 // @generated:start component
+const SelectMessages = { triggerLabel: "Select an option", placeholder: "Select an option", searchLabel: "Search options" };
+
 export function Select({
   options = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}],
   value: controlledSelection,
   open: controlledOpen,
   multiple,
   disabled,
-  triggerLabel = "Select an option",
+  triggerLabel: triggerLabelProp,
   searchable,
   empty,
-  placeholder = "Select an option",
-  searchLabel = "Search options",
+  placeholder: placeholderProp,
+  searchLabel: searchLabelProp,
   defaultValue = undefined,
   onChange,
   defaultOpen = false,
@@ -59,6 +62,10 @@ export function Select({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: SelectProps) {
+  const fsdsMessages = useFsdsMessages("Select", SelectMessages);
+  const triggerLabel = triggerLabelProp ?? fsdsMessages.triggerLabel;
+  const placeholder = placeholderProp ?? fsdsMessages.placeholder;
+  const searchLabel = searchLabelProp ?? fsdsMessages.searchLabel;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createSelectStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string | string[]>((defaultValue ?? undefined) as string | string[]);

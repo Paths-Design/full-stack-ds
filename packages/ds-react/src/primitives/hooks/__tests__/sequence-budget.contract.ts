@@ -20,8 +20,8 @@ export function sequenceBudgetContract(name: string, create: typeof createSequen
       root = document.createElement("section");
       root.innerHTML = '<button class="rotation"></button><div class="viewport"><article>A<button>Action A</button></article><article style="display:flex">B<button>Action B</button></article><article>C</article></div><button class="previous"></button><button class="picker"><span class="fill"></span></button><button class="picker"><span class="fill"></span></button><button class="picker"><span class="fill"></span></button><button class="next"><span class="ring"></span></button>';
       document.body.append(root);
-      sequence = create({ transition: { durationMs: 250, easing: "ease", referenceWidth: 320, minMultiplier: 0.5, maxMultiplier: 2 }, labels: { start: "Start slide rotation", stop: "Stop slide rotation", item: "slide" }, parts: { viewport: ".viewport", previous: ".previous", next: ".next", rotation: ".rotation", picker: ".picker" }, progress: [{ selector: ".fill", effect: "elapsed-width", steps: 10, when: { axis: "indicator", values: ["pagination", "both"] } }, { selector: ".ring", effect: "elapsed-ring", steps: 10, when: { axis: "indicator", values: ["next", "both"] } }] });
-      options = { presentation: { indicator: "both" }, index: 0, labels: ["A", "B", "C"], autoPlay: true, durationMs: 1000, onIndexChange: vi.fn() };
+      sequence = create({ transition: { durationMs: 250, easing: "ease", referenceWidth: 320, minMultiplier: 0.5, maxMultiplier: 2 }, parts: { viewport: ".viewport", previous: ".previous", next: ".next", rotation: ".rotation", picker: ".picker" }, progress: [{ selector: ".fill", effect: "elapsed-width", steps: 10, when: { axis: "indicator", values: ["pagination", "both"] } }, { selector: ".ring", effect: "elapsed-ring", steps: 10, when: { axis: "indicator", values: ["next", "both"] } }] });
+      options = { presentation: { indicator: "both" }, messages: { start: "Start slide rotation", stop: "Stop slide rotation", item: "slide", position: "{index} of {count}" }, index: 0, labels: ["A", "B", "C"], autoPlay: true, durationMs: 1000, onIndexChange: vi.fn() };
       sequence.bindRoot(root);
       sequence.sync(options);
     });
@@ -316,6 +316,22 @@ export function sequenceBudgetContract(name: string, create: typeof createSequen
       expect(second.hidden).toBe(false);
       expect(second.style.display).toBe("flex");
       expect(second.getAttribute("aria-label")).toBe("B");
+    });
+    it("renders sequence text from the synced messages and re-renders it when they change", () => {
+      const slides = Array.from(select(".viewport").children) as HTMLElement[];
+      expect(slides[0].getAttribute("aria-roledescription")).toBe("slide");
+      expect(select(".rotation").textContent).toBe("Stop slide rotation");
+      sequence.sync({ ...options, messages: { start: "Lancer le défilement", stop: "Arrêter le défilement", item: "diapositive", position: "{index} sur {count}" } });
+      expect(slides[1].getAttribute("aria-roledescription")).toBe("diapositive");
+      expect(select(".rotation").textContent).toBe("Arrêter le défilement");
+      expect(select(".rotation").getAttribute("aria-label")).toBe("Arrêter le défilement");
+    });
+    it("names an unlabeled slide through the position template, in the translator's word order", () => {
+      sequence.sync({ ...options, labels: ["A"], messages: { ...options.messages, position: "{count} 枚中 {index} 枚目" } });
+      const slides = Array.from(select(".viewport").children) as HTMLElement[];
+      expect(slides[0].getAttribute("aria-label")).toBe("A");
+      expect(slides[1].getAttribute("aria-label")).toBe("3 枚中 2 枚目");
+      expect(slides[2].getAttribute("aria-label")).toBe("3 枚中 3 枚目");
     });
     it("cleans clocks and reconnects without accumulating listeners", () => {
       sequence.destroy(); vi.advanceTimersByTime(2000);

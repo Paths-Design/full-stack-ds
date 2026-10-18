@@ -6,6 +6,7 @@ import Icon from "../Icon/Icon.svelte";
 import Input from "../Input/Input.svelte";
 import Pagination from "../Pagination/Pagination.svelte";
 import { createReactivePagedSet } from "../../primitives/paging.svelte.js";
+import { useFsdsMessages, formatFsdsMessage } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -33,13 +34,19 @@ interface Props {
   pageLabel?: string;
   previousLabel?: string;
   nextLabel?: string;
-  ofLabel?: string;
   commitLabel?: string;
   showChoices?: boolean;
   class?: string;
 }
 
-let { pages = [], index, defaultIndex = 0, onIndexChange, presentation = "indicators", label = "Page navigation", disabled = false, pageCount, pageLabel = "Current page", previousLabel = "Previous page", nextLabel = "Next page", ofLabel = "of", commitLabel = "Go", showChoices = false, class: className }: Props = $props();
+let { pages = [], index, defaultIndex = 0, onIndexChange, presentation = "indicators", label: labelProp, disabled = false, pageCount, pageLabel: pageLabelProp, previousLabel: previousLabelProp, nextLabel: nextLabelProp, commitLabel: commitLabelProp, showChoices = false, class: className }: Props = $props();
+const PageNavigatorMessages = { groupLabel: "Page navigation", pageLabel: "Current page", previousPage: "Previous page", nextPage: "Next page", commit: "Go", pageCount: "of {count}" };
+const fsdsMessages = useFsdsMessages("PageNavigator", PageNavigatorMessages);
+const label = $derived(labelProp ?? fsdsMessages.current.groupLabel);
+const pageLabel = $derived(pageLabelProp ?? fsdsMessages.current.pageLabel);
+const previousLabel = $derived(previousLabelProp ?? fsdsMessages.current.previousPage);
+const nextLabel = $derived(nextLabelProp ?? fsdsMessages.current.nextPage);
+const commitLabel = $derived(commitLabelProp ?? fsdsMessages.current.commit);
 // @generated:end
 
 // @generated:start hook
@@ -76,8 +83,7 @@ const classes = $derived(
   <div class={'page-navigator__field'} onkeydown={pagedSet.commitOnEnter} onfocusout={pagedSet.commit}>
     <Input class={'page-navigator__input'} type="number" onChange={pagedSet.edit} value={pagedSet.state.draft} disabled={pagedSet.state.disabled} ariaLabel={pageLabel} />
   </div>
-  <span class={'page-navigator__context'}>{ofLabel}</span>
-  <span class={'page-navigator__total'}>{pagedSet.state.count}</span>
+  <span class={'page-navigator__context'}>{formatFsdsMessage(fsdsMessages.current.pageCount, { count: pagedSet.state.count })}</span>
   <Button class={'page-navigator__commit'} type="button" onClick={pagedSet.commit} disabled={pagedSet.state.disabled} ariaLabel={commitLabel}>
     <span>{commitLabel}</span>
   </Button>

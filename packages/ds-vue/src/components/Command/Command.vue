@@ -3,6 +3,7 @@
 import { computed, useId } from "vue";
 import { useCommand } from "./useCommand.js";
 import Icon from "../Icon/Icon.vue";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -37,15 +38,14 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   open: undefined,
   defaultOpen: undefined,
-  placeholder: "Search...",
-  searchLabel: "Search commands",
-  emptyMessage: "No results found.",
-  label: "Command palette",
   shouldFilter: true,
 });
+const CommandMessages = { searchPlaceholder: "Search...", searchLabel: "Search commands", emptyResults: "No results found.", dialogLabel: "Command palette" };
+const fsdsMessages = useFsdsMessages("Command", CommandMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { placeholder: "searchPlaceholder", searchLabel: "searchLabel", emptyMessage: "emptyResults", label: "dialogLabel" });
 // @generated:end
 
 // @generated:start hook
