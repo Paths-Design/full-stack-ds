@@ -52,11 +52,10 @@ evidence:
     commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
   - criterion_id: A2
     status: pass
-    evidence_ref: "Four real-filesystem tests execute exact-byte file hashing, explicit missing paths, file/directory/dangling symlinks, raw non-UTF-8 target bytes, target-content independence, and rejection of directories and ENOTDIR."
-    recorded_at: "2026-10-18T22:34:24.582Z"
+    evidence_ref: "Direct execution and assertion inspection: four real-filesystem tests pass for exact file bytes, missing paths, file/directory/dangling links, non-UTF-8 target bytes, target-content independence, directory rejection and ENOTDIR. Raw ignored runtime log: tmp/swift-build-manifest-b6396573/tmp/swift-build-manifest-checks/manifest.log. CAWS re-derives the source citation, not command execution."
+    recorded_at: "2026-10-18T22:45:38.256Z"
     command: node --test scripts/lib/source-manifest.test.mjs
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/swift-build-manifest-b6396573/tmp/swift-build-manifest-checks/manifest.log"
     commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
   - criterion_id: A3
     status: pass
