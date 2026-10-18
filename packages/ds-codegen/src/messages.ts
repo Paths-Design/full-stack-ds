@@ -174,7 +174,7 @@ export function validateMessages(
     }
   });
   const used = new Set<string>();
-  const use = (key: string, where: string, params: string[]) => {
+  const reference = (key: string, where: string, params: string[]) => {
     const message = byKey.get(key);
     if (!message) return fail(`${where} references unknown message '${key}'`);
     if ([...params].sort().join(",") !== [...message.params].sort().join(",")) {
@@ -183,7 +183,7 @@ export function validateMessages(
     used.add(key);
   };
   for (const binding of collectDomMessageBindings(dom)) {
-    use(binding.key, "DOM binding", binding.params.map((p) => p.name));
+    reference(binding.key, "DOM binding", binding.params.map((p) => p.name));
   }
   const members = new Map(
     [
@@ -198,13 +198,13 @@ export function validateMessages(
     if (member.default !== undefined) fail(`prop '${prop.name}' declares both default and defaultMessage`);
     const stringTyped = prop.propType.kind === "string" || prop.type.trim() === "string";
     if (!stringTyped) fail(`prop '${prop.name}' has defaultMessage but is not string-typed`);
-    use(member.defaultMessage, `prop '${prop.name}' defaultMessage`, []);
+    reference(member.defaultMessage, `prop '${prop.name}' defaultMessage`, []);
   }
   if (sequence) {
-    use(sequence.labels.start, "sequence.labels.start", []);
-    use(sequence.labels.stop, "sequence.labels.stop", []);
-    use(sequence.labels.item, "sequence.labels.item", []);
-    use(sequence.labels.position, "sequence.labels.position", ["index", "count"]);
+    reference(sequence.labels.start, "sequence.labels.start", []);
+    reference(sequence.labels.stop, "sequence.labels.stop", []);
+    reference(sequence.labels.item, "sequence.labels.item", []);
+    reference(sequence.labels.position, "sequence.labels.position", ["index", "count"]);
   }
   for (const message of messages) {
     if (!used.has(message.key)) fail(`message '${message.key}' is declared but never referenced`);
