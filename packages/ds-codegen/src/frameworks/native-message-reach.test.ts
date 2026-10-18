@@ -83,6 +83,25 @@ describe("native message reach", () => {
     expect(unrendered.sort()).toEqual(UNRENDERED);
   });
 
+  it("no native source authors a message default outside a catalog lookup", () => {
+    const authored: string[] = [];
+    for (const name of allCorpusComponentNames()) {
+      const messages = Object.values(loadCorpusContract(name).messages ?? {});
+      for (const [target, root] of Object.entries(NATIVE_ROOTS)) {
+        const source = committedSource(path.join(REPO_ROOT, root, name));
+        if (source === null) continue;
+        for (const message of messages) {
+          for (const line of source.split("\n")) {
+            if (line.includes(`"${message.defaultMessage}"`) && !line.includes(".string(")) {
+              authored.push(`${target} ${name}: ${line.trim()}`);
+            }
+          }
+        }
+      }
+    }
+    expect(authored).toEqual([]);
+  });
+
   it("a resolved key is a catalog lookup carrying the contract default", () => {
     const swift = committedSource(path.join(REPO_ROOT, NATIVE_ROOTS.swiftui, "Select"))!;
     const kotlin = committedSource(path.join(REPO_ROOT, NATIVE_ROOTS.compose, "Select"))!;
