@@ -83,3 +83,13 @@ contracts:
   - name: 'message-catalog'
     type: schema
     path: 'packages/ds-contracts/component.contract.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At d5eec68c0 messages.test.ts (22 tests) pins IR message facts (Carousel catalogKeys/params; message:pageCount(count=paged:count) parses to a typed message binding) and each MESSAGE_INVALID refusal by exact diagnostic: unknown key, unparseable reference, placeholder/param mismatch, duplicate param, binding param mismatch, unused message, default+defaultMessage, non-string defaultMessage, parameterized prop default, sequence label params. ir-build.test.ts pins that generate:check's IR step reports a failure as an issue; runtime demo: a broken PageNavigator key made generate:check print DRIFT [MESSAGE_INVALID] ..., validate 55/55, exit 1. Full gate logs: full-stack-ds/tmp/I18N-MESSAGE-CATALOG-01/gates-d5eec68c0 (root vitest 4884 passed). Not covered: vitest node ids are existence-checked only by --verify."
+    recorded_at: "2026-10-18T14:44:56.268Z"
+    test_nodeid: "packages/ds-codegen/src/messages.test.ts > message IR facts > parses a parameterized content reference into a message binding with typed params"
+    command: pnpm exec vitest run packages/ds-codegen/src/messages.test.ts packages/ds-codegen/src/validation/ir-build.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/messages.test.ts
+    commit_sha: d5eec68c0
