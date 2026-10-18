@@ -85,3 +85,7 @@ evidence:
     status: pass
     evidence_ref: "e2e/retoken-pages.spec.ts:6:5 pinterest 390px lane asserts every .save-button boundingBox height <= 44px; suite 7/7 pass @ 8900f4f77af1147249909c331c0dccd18a1b6fd4"
     recorded_at: "2026-10-18T06:21:59.311Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "FSDS_E2E_PORT=5173 pnpm exec playwright test e2e/retoken-pages.spec.ts --workers=2 -> 7 passed (10.1s) with all pre-existing assertions unchanged @ 8900f4f77af1147249909c331c0dccd18a1b6fd4"
+    recorded_at: "2026-10-18T06:22:01.853Z"
