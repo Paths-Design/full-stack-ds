@@ -155,6 +155,15 @@
       "nodeKind": null
     }
   ],
+  "messages": [
+    {
+      "key": "close",
+      "catalogKey": "Sheet.close",
+      "defaultMessage": "Close sheet",
+      "description": "Accessible name of the button that closes the sheet.",
+      "params": []
+    }
+  ],
   "designBindings": [
     {
       "property": "background.fill",

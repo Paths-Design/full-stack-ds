@@ -22,9 +22,11 @@ import { composeTokenReads, consumedComposeTokenScopes } from "../native-token-c
  * prototype, `__golden__/Switch/Switch.compose.kt`, with its line-67 `??`
  * defect corrected to the Kotlin elvis operator).
  */
-import type { ComponentIR, DomNodeIR, NormalizedChannelIR } from "../../ir.js";
+import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR } from "../../ir.js";
 import { collectCollapseIntents, collectContentTransforms } from "../../ir.js";
 import { emitComposeHighlightComponent } from "./highlight-source.js";
+import { kotlinMessage, kotlinStringDefault, kotlinStringLiteral, withKotlinMessages } from "./messages.js";
+import { nodeTextSource, partTextSource, textSourceOf, type NativeTextSource } from "../native-messages.js";
 // Shared native emission-class substrate (FEAT-COMPOSE-ADMISSION-SUBSTRATE-01):
 // the structural class facts this emitter dispatches on are target-neutral
 // and live exactly once there — swift's emitter used to steward them.
@@ -924,7 +926,7 @@ function emitPropTextLeaf(ir: ComponentIR): string {
   const slots = resolveStaticChrome(ir);
   const textSource = propTextSource(ir)!;
   const textProp = ir.styledProps.find((p) => p.safeName === textSource.prop);
-  const propHasDefault = textProp?.defaultExpr !== undefined;
+  const propHasDefault = kotlinStringDefault(ir, textProp) !== null;
   const fontSizeSlot = findLayeredSlotAny(ir, ["root"], [
     ".size.fontSize",
     ".typography.fontSize",
@@ -973,9 +975,7 @@ function emitPropTextLeaf(ir: ComponentIR): string {
   lines.push(`fun ${name}(`);
   if (propHasDefault) {
     lines.push(`    modifier: Modifier = Modifier,`);
-    lines.push(
-      `    ${textSource.prop}: String = ${JSON.stringify(textProp!.defaultExpr!.replace(/^["']|["']$/g, ""))},`,
-    );
+    lines.push(`    ${textSource.prop}: String = ${kotlinStringDefault(ir, textProp)},`);
   } else {
     lines.push(`    ${textSource.prop}: String,`);
     lines.push(`    modifier: Modifier = Modifier,`);
@@ -1133,8 +1133,15 @@ function emitExpandableContent(ir: ComponentIR): string {
     const gatePropDef = ir.styledProps.find((p) => p.safeName === gateProp);
     lines.push(`    ${gateProp}: Boolean = ${gatePropDef?.defaultExpr ?? "false"},`);
   }
-  if (collapseProp) lines.push(`    ${collapseProp}: String? = null,`);
-  if (expandProp) lines.push(`    ${expandProp}: String? = null,`);
+  // Trigger text params default to their messages (catalog, then contract
+  // default); a prop with no message stays nullable and renders empty.
+  const textParam = (prop: string | undefined) => {
+    if (!prop) return;
+    const fallback = kotlinStringDefault(ir, ir.styledProps.find((p) => p.safeName === prop));
+    lines.push(fallback ? `    ${prop}: String = ${fallback},` : `    ${prop}: String? = null,`);
+  };
+  textParam(collapseProp);
+  textParam(expandProp);
   lines.push(`    content: @Composable () -> Unit,`);
   lines.push(`) {`);
   lines.push(
@@ -1172,8 +1179,11 @@ function emitExpandableContent(ir: ComponentIR): string {
     if (hasToggle) {
       const toggleBody = () => {
         lines.push(`            BasicText(`);
+        const hasTextDefault = (prop: string | undefined) =>
+          prop !== undefined && kotlinStringDefault(ir, ir.styledProps.find((p) => p.safeName === prop)) !== null;
+        const nullable = !hasTextDefault(collapseProp) || !hasTextDefault(expandProp);
         lines.push(
-          `                text = (if (resolved${pascalCase(valueProp)}) ${collapseProp ?? "null"} else ${expandProp ?? "null"}) ?: "",`,
+          `                text = (if (resolved${pascalCase(valueProp)}) ${collapseProp ?? "null"} else ${expandProp ?? "null"})${nullable ? ' ?: ""' : ""},`,
         );
         lines.push(`                modifier = Modifier.clickable(`);
         lines.push(`                    role = Role.Button,`);
@@ -4032,11 +4042,10 @@ function emitSelectionControl(ir: ComponentIR): string {
  * the SwiftUI `emitCoachmarkSurface` path already makes.
  *
  * Named divergences (ledgered in docs/architecture/native-target-admission.md):
- *   - the previous / complete / skip controls are lowered as callbacks but no
- *     control is emitted for them: the contract declares no label for those
- *     controls and this emitter does not invent control text (the same rule the
- *     calendar's nav affordances follow). The next control is the one the
- *     contract labels (`nextLabel`);
+ *   - the complete / skip controls are lowered as callbacks but no control is
+ *     emitted for them; the previous and next controls render the text their
+ *     parts bind (catalog-resolved messages and the `nextLabel` prop, which
+ *     defaults to its message) — this emitter never invents control text;
  *   - the dots strip is unclaimed: the step count comes from `steps`, a
  *     declared alias this class does not materialise, so progress is the
  *     declared `progressLabel`;
@@ -4063,6 +4072,16 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   const placementDefault =
     placementProp?.defaultExpr?.replace(/^["']|["']$/g, "") ?? placementValues[0] ?? "";
   const slots = collectDomSlots(ir.dom!);
+  // The previous control's visible text and accessible name are the
+  // messages its part binds; the next control's text is its bound prop.
+  const previousText = partTextSource(ir, "prev", "content");
+  const previousName = partTextSource(ir, "prev", "aria-label");
+  const textExpr = (source: NativeTextSource | undefined): string | undefined =>
+    source?.kind === "message"
+      ? kotlinMessage(ir, source.ref.message)
+      : source?.kind === "prop"
+        ? source.prop
+        : undefined;
 
   const surfaceBgSlot = findLayeredSlotAny(ir, ["root"], [".surface.bg", ".color.background.default"]);
   const surfaceBorderSlot = findLayeredSlotAny(ir, ["root"], [".surface.border", ".color.border.default"]);
@@ -4135,6 +4154,10 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`import androidx.compose.ui.Modifier`);
   lines.push(`import androidx.compose.ui.draw.clip`);
   lines.push(`import androidx.compose.ui.graphics.Color`);
+  if (textExpr(previousName)) {
+    lines.push(`import androidx.compose.ui.semantics.contentDescription`);
+    lines.push(`import androidx.compose.ui.semantics.semantics`);
+  }
   lines.push(`import androidx.compose.ui.text.TextStyle`);
   lines.push(`import androidx.compose.ui.unit.TextUnit`);
   lines.push(`import androidx.compose.ui.unit.dp`);
@@ -4162,8 +4185,13 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`    ${defaultValueProp}: Int = 0,`);
   lines.push(`    ${changeProp}: ((Int) -> Unit)? = null,`);
   if (placementRef) lines.push(`    ${placementProp!.safeName}: ${placementEnum} = ${placementEnum}.${kotlinEnumName(placementDefault)},`);
+  // String params default to their messages (catalog, then contract default).
+  const stringDefaults = new Map<string, string>();
   for (const prop of ir.styledProps) {
-    if (prop.type === "string") lines.push(`    ${prop.safeName}: String? = null,`);
+    if (prop.type !== "string") continue;
+    const fallback = kotlinStringDefault(ir, prop);
+    if (fallback) stringDefaults.set(prop.safeName, fallback);
+    lines.push(fallback ? `    ${prop.safeName}: String = ${fallback},` : `    ${prop.safeName}: String? = null,`);
   }
   if (ir.styledProps.some((p) => p.safeName === "previousDisabled")) {
     lines.push(`    previousDisabled: Boolean = false,`);
@@ -4274,8 +4302,18 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`                        .then(if (coachmarkSecondaryBackground != null) Modifier.background(coachmarkSecondaryBackground, RoundedCornerShape(coachmarkSecondaryRadius)) else Modifier)`);
   lines.push(`                        .then(if (coachmarkSecondaryBorder != null) Modifier.border(1.dp, coachmarkSecondaryBorder, RoundedCornerShape(coachmarkSecondaryRadius)) else Modifier)`);
   lines.push(`                        .padding(coachmarkInset)`);
-  lines.push(`                        .clickable(enabled = !previousDisabled) { onPrevious?.invoke() },`);
-  lines.push(`                ) { }`);
+  const previousLabel = textExpr(previousName);
+  lines.push(
+    `                        .clickable(enabled = !previousDisabled) { onPrevious?.invoke() }${previousLabel ? `\n                        .semantics { contentDescription = ${previousLabel} }` : ""},`,
+  );
+  const previousContent = textExpr(previousText);
+  if (previousContent) {
+    lines.push(`                ) {`);
+    lines.push(`                    BasicText(text = ${previousContent})`);
+    lines.push(`                }`);
+  } else {
+    lines.push(`                ) { }`);
+  }
   lines.push(`                Box(`);
   lines.push(`                    Modifier`);
   lines.push(`                        .clip(RoundedCornerShape(coachmarkPrimaryRadius))`);
@@ -4283,12 +4321,17 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`                        .padding(coachmarkInset)`);
   lines.push(`                        .clickable { onNext?.invoke() },`);
   lines.push(`                ) {`);
-  lines.push(`                    if (nextLabel != null) {`);
-  lines.push(`                        BasicText(`);
-  lines.push(`                            text = nextLabel!!,`);
-  lines.push(`                            style = TextStyle(color = ${primaryColorSlot ? "coachmarkPrimaryColor ?: Color.Unspecified" : "Color.Unspecified"}),`);
-  lines.push(`                        )`);
-  lines.push(`                    }`);
+  const nextTextStyle = `TextStyle(color = ${primaryColorSlot ? "coachmarkPrimaryColor ?: Color.Unspecified" : "Color.Unspecified"})`;
+  if (stringDefaults.has("nextLabel")) {
+    lines.push(`                    BasicText(text = nextLabel, style = ${nextTextStyle})`);
+  } else {
+    lines.push(`                    if (nextLabel != null) {`);
+    lines.push(`                        BasicText(`);
+    lines.push(`                            text = nextLabel!!,`);
+    lines.push(`                            style = ${nextTextStyle},`);
+    lines.push(`                        )`);
+    lines.push(`                    }`);
+  }
   lines.push(`                }`);
   lines.push(`            }`);
   lines.push(`        }`);
@@ -4415,12 +4458,19 @@ function emitDateGridSurface(ir: ComponentIR): string {
 
   // The header renders in the dom's own child order, so a contract that moves
   // the caption between the nav controls keeps it there. Nav labels and the
-  // grid label are contract-authored accessible labels, never emitter text.
+  // grid label are contract-authored accessible labels, never emitter text:
+  // a message binding lowers to a LocalFsdsMessages lookup.
+  const accessibleLabel = (node: DomNodeIR | undefined): string | undefined => {
+    const source = nodeTextSource(ir, node, "aria-label");
+    if (source?.kind === "message") return kotlinMessage(ir, source.ref.message);
+    const literal = node?.attrs?.["aria-label"];
+    return typeof literal === "string" && literal.length > 0 ? kotlinStringLiteral(literal) : undefined;
+  };
   const headerChildren = domNodesForPart(ir, "header")[0]?.children ?? [];
   const headerItems: Array<{ kind: "nav" | "caption"; label?: string }> = [];
   for (const child of headerChildren) {
-    const label = child.attrs?.["aria-label"];
-    if (child.part === "nav" && typeof label === "string" && label.length > 0) {
+    const label = accessibleLabel(child);
+    if (child.part === "nav" && label) {
       headerItems.push({ kind: "nav", label });
     } else if (captionProp && propNameOf(child.content as { kind?: string; prop?: string } | undefined) === captionProp.safeName) {
       headerItems.push({ kind: "caption" });
@@ -4428,13 +4478,13 @@ function emitDateGridSurface(ir: ComponentIR): string {
   }
   if (headerItems.length === 0) {
     for (const label of domNodesForPart(ir, "nav")
-      .map((node) => node.attrs?.["aria-label"])
-      .filter((value): value is string => typeof value === "string" && value.length > 0)) {
+      .map(accessibleLabel)
+      .filter((value): value is string => value !== undefined)) {
       headerItems.push({ kind: "nav", label });
     }
     if (captionProp) headerItems.push({ kind: "caption" });
   }
-  const gridLabel = domNodesForPart(ir, "grid")[0]?.attrs?.["aria-label"];
+  const gridLabel = accessibleLabel(domNodesForPart(ir, "grid")[0]);
 
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary"]);
@@ -4533,8 +4583,7 @@ function emitDateGridSurface(ir: ComponentIR): string {
   if (axisRef) lines.push(`    ${axisParam}: ${axisEnumName} = ${axisEnumName}.${kotlinEnumName(axisDefaultValue)},`);
   if (daysProp) lines.push(`    ${daysProp.safeName}: List<Date> = emptyList(),`);
   if (captionProp) {
-    const captionDefault = captionProp.defaultExpr?.replace(/^["']|["']$/g, "") ?? "";
-    lines.push(`    ${captionProp.safeName}: String = ${JSON.stringify(captionDefault)},`);
+    lines.push(`    ${captionProp.safeName}: String = ${kotlinStringDefault(ir, captionProp) ?? '""'},`);
   }
   if (hasDisabled) lines.push(`    disabled: Boolean = false,`);
   if (minDateProp) lines.push(`    ${minDateProp.safeName}: Date? = null,`);
@@ -4620,7 +4669,7 @@ function emitDateGridSurface(ir: ComponentIR): string {
       lines.push(`            Box(`);
       lines.push(`                Modifier`);
       lines.push(`                    .size(navSize)`);
-      lines.push(`                    .semantics { contentDescription = ${JSON.stringify(item.label)} },`);
+      lines.push(`                    .semantics { contentDescription = ${item.label} },`);
       lines.push(`                contentAlignment = Alignment.Center,`);
       lines.push(`            ) { }`);
     } else {
@@ -4632,7 +4681,7 @@ function emitDateGridSurface(ir: ComponentIR): string {
   }
   lines.push(`        }`);
   lines.push(`        Column(`);
-  lines.push(`            Modifier${gridLabel ? `.semantics { contentDescription = ${JSON.stringify(gridLabel)} }` : ""}.padding(gridPadding),`);
+  lines.push(`            Modifier${gridLabel ? `.semantics { contentDescription = ${gridLabel} }` : ""}.padding(gridPadding),`);
   lines.push(`        ) {`);
   lines.push(`            ${daysProp ? daysProp.safeName : "days"}.chunked(fsdsWeekLength).forEach { week ->`);
   lines.push(`                Row(horizontalArrangement = Arrangement.spacedBy(gridGap)) {`);
@@ -4748,11 +4797,20 @@ interface ReferenceCallFacts {
   guard?: { prop: string; negated: boolean; boolean: boolean };
 }
 
-function referenceBindingExpr(expression: unknown): string {
+function referenceBindingExpr(ir: ComponentIR, expression: unknown): string {
   if (!expression || typeof expression !== "object") {
     throw new Error("component reference binding is not an expression");
   }
   const binding = expression as { kind?: string; prop?: string; path?: string[] };
+  if (binding.kind === "message") {
+    // A message passed to a child component resolves in the parent's
+    // composition, so the child receives the already-localized string.
+    const source = textSourceOf(ir, expression as BindingExpression);
+    if (source?.kind !== "message" || source.ref.params.length > 0) {
+      throw new Error("component reference message binding must be parameter-free");
+    }
+    return kotlinMessage(ir, source.ref.message);
+  }
   if (binding.kind === "literal") {
     const literal = expression as { value?: string };
     if (typeof literal.value !== "string") {
@@ -4829,7 +4887,7 @@ function referenceCallFacts(
     if (attr === "name") facts.arguments.push(`name = ${JSON.stringify(value)}`);
     else if (attr === "size") facts.arguments.push(enumArgument("size", "Size", value));
     else if (attr === "variant") facts.arguments.push(enumArgument("variant", "Variant", value));
-    else if (attr === "aria-label") facts.arguments.push(`accessibilityLabel = ${JSON.stringify(value)}`);
+    else if (attr === "aria-label") facts.arguments.push(`accessibilityLabel = ${kotlinStringLiteral(value)}`);
     else if (attr === "disabled") facts.arguments.push(`disabled = ${value === "true"}`);
     // HTML form authoring: `type` selects submit/reset browser behavior, which
     // no native target has. Structural, never an argument.
@@ -4877,9 +4935,9 @@ function referenceCallFacts(
         `name = when (${kotlinParamName(map.source.prop)}) {\n${arms.join("\n")}\n${indent}}`,
       );
     } else if (binding === "ariaLabel") {
-      facts.arguments.push(`accessibilityLabel = ${referenceBindingExpr(expression)}`);
+      facts.arguments.push(`accessibilityLabel = ${referenceBindingExpr(ir, expression)}`);
     } else if (binding === "disabled") {
-      facts.arguments.push(`disabled = ${referenceBindingExpr(expression)}`);
+      facts.arguments.push(`disabled = ${referenceBindingExpr(ir, expression)}`);
     } else if (binding === "ariaHidden") {
       facts.modifiers.push("Modifier.clearAndSetSemantics { }");
     } else if (binding === "ariaExpanded" || binding === "ariaPressed") {
@@ -4895,14 +4953,14 @@ function referenceCallFacts(
       // The default rule: a binding maps to the same-named callee parameter.
       // The cases above are the exceptions (ariaLabel -> accessibilityLabel,
       // HTML-only facts, state bindings the callee cannot take).
-      facts.arguments.push(`${binding} = ${referenceBindingExpr(expression)}`);
+      facts.arguments.push(`${binding} = ${referenceBindingExpr(ir, expression)}`);
     } else {
       throw new Error(`component reference binding "${binding}" has no parameter mapping`);
     }
   }
 
   const click = node.events?.click;
-  if (click) facts.arguments.push(`onClick = { ${referenceBindingExpr(click)}?.invoke() }`);
+  if (click) facts.arguments.push(`onClick = { ${referenceBindingExpr(ir, click)}?.invoke() }`);
 
   // A composite control's content parameter is required, so a trigger
   // reference always receives a body — empty when it projects nothing.
@@ -4974,7 +5032,7 @@ function referenceParameterLines(ir: ComponentIR, node: DomNodeIR): string[] {
     if (!prop) throw new Error(`reference bound prop "${name}" is not declared on ${ir.name}`);
     if (prop.type.startsWith("(")) lines.push(`    ${kotlinParamName(name)}: (() -> Unit)? = null,`);
     else if (prop.type === "boolean") lines.push(`    ${kotlinParamName(name)}: Boolean = ${prop.defaultExpr ?? "false"},`);
-    else if (prop.defaultExpr) lines.push(`    ${kotlinParamName(name)}: String = ${JSON.stringify(prop.defaultExpr.replace(/^["']|["']$/g, ""))},`);
+    else if (kotlinStringDefault(ir, prop) !== null) lines.push(`    ${kotlinParamName(name)}: String = ${kotlinStringDefault(ir, prop)},`);
     else lines.push(`    ${kotlinParamName(name)}: String? = null,`);
   }
   return lines;
@@ -6057,10 +6115,8 @@ function emitReferencedActionComposite(ir: ComponentIR): string {
     }
   }
   const dismissLabel = optionalString("dismissLabel");
-  if (dismissLabel?.defaultExpr) {
-    lines.push(
-      `    dismissLabel: String = ${JSON.stringify(dismissLabel.defaultExpr.replace(/^["']|["']$/g, ""))},`,
-    );
+  if (dismissLabel && kotlinStringDefault(ir, dismissLabel) !== null) {
+    lines.push(`    dismissLabel: String = ${kotlinStringDefault(ir, dismissLabel)},`);
   } else if (dismissLabel) {
     lines.push(`    dismissLabel: String = "",`);
   }
@@ -6282,8 +6338,8 @@ function emitCenteredSurface(ir: ComponentIR): string {
     lines.push(`    ${stringChannel.valueProp}: String? = null,`);
     lines.push(`    ${stringDefault}: String = "",`);
     lines.push(`    ${stringChannel.changeHandlerProp}: ((String) -> Unit)? = null,`);
-    if (placeholderProp?.defaultExpr) {
-      lines.push(`    placeholder: String = ${JSON.stringify(placeholderProp.defaultExpr.replace(/^["']|["']$/g, ""))},`);
+    if (placeholderProp && kotlinStringDefault(ir, placeholderProp) !== null) {
+      lines.push(`    placeholder: String = ${kotlinStringDefault(ir, placeholderProp)},`);
     } else if (placeholderProp) {
       lines.push(`    placeholder: String = "",`);
     }
@@ -6613,7 +6669,11 @@ function emitViewportEdgeSurface(ir: ComponentIR): string {
   return lines.join("\n");
 }
 
-export function generateJetpackComposeComponentSource(
+export function generateJetpackComposeComponentSource(ir: ComponentIR): string {
+  return withKotlinMessages(emitJetpackComposeComponentSource(ir));
+}
+
+function emitJetpackComposeComponentSource(
   ir: ComponentIR,
 ): string {
   const highlight = collectContentTransforms(ir.dom).find((content) => content.transform === "highlight");

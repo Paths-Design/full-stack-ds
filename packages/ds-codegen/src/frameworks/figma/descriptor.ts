@@ -1,5 +1,6 @@
 import type { DesignBindingIR } from '../../design-properties.js';
 import type { MotionIR } from '../../ir.js';
+import type { MessageIR } from '../../messages.js';
 export const FIGMA_COMPONENT_DESCRIPTOR_SCHEMA_VERSION = 1 as const;
 export const FIGMA_COMPONENT_DESCRIPTOR_SOURCE = "@full-stack-ds/codegen/frameworks/figma" as const;
 
@@ -28,7 +29,15 @@ export type FigmaComponentDescriptorV1 = {
     description: string | null;
     defaultExpr: string | null;
     nodeKind: string | null;
+    /** Message key the default text comes from; `defaultExpr` carries its contract default. */
+    defaultMessage?: string;
   }>;
+  /**
+   * Additive v1 metadata: the component's translatable strings, keyed as every
+   * runtime catalog keys them (`catalogKey`). Message references elsewhere in
+   * the descriptor (sequence labels, prop `defaultMessage`) resolve here.
+   */
+  messages?: MessageIR[];
   /** Binding metadata only; live Figma editing is not asserted. */
   designBindings?: DesignBindingIR[];
   /** Additive v1 metadata. These are source facts, not Figma prototype actions. */
@@ -137,6 +146,17 @@ export function assertFigmaComponentDescriptorV1(
     assertArray(facts.loops, "motion.facts.loops");
     for (const name of ["sequence", "countdown"] as const) {
       if (facts[name] !== null && !isRecord(facts[name])) throw new Error(`motion.facts.${name} must be an object or null.`);
+    }
+  }
+  if (descriptor.messages !== undefined) {
+    assertArray(descriptor.messages, "messages");
+    for (const [index, message] of descriptor.messages.entries()) {
+      if (!isRecord(message)) throw new Error(`messages[${index}] must be an object.`);
+      assertString(message.key, `messages[${index}].key`);
+      assertString(message.catalogKey, `messages[${index}].catalogKey`);
+      assertString(message.defaultMessage, `messages[${index}].defaultMessage`);
+      assertString(message.description, `messages[${index}].description`);
+      assertArray(message.params, `messages[${index}].params`);
     }
   }
   if (!isRecord(descriptor.behavior)) throw new Error("behavior block is required.");

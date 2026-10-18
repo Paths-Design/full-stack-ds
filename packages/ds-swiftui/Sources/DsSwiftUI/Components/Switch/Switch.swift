@@ -47,7 +47,6 @@ public struct Switch: View {
         .toggleStyle(.switch)
         .disabled(disabled)
         .fsdsAccessibilityLabel(accessibilityLabel)
-        .accessibilityValue(checked.value ? "on" : "off")
         .frame(width: trackWidth, height: trackHeight)
     }
 

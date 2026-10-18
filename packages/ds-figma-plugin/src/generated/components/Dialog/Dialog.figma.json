@@ -192,6 +192,15 @@
       "nodeKind": null
     }
   ],
+  "messages": [
+    {
+      "key": "close",
+      "catalogKey": "Dialog.close",
+      "defaultMessage": "Close dialog",
+      "description": "Accessible name of the button that closes the dialog.",
+      "params": []
+    }
+  ],
   "designBindings": [
     {
       "property": "background.fill",

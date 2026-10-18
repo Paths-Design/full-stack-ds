@@ -24,6 +24,7 @@ enum CommandTokens {
 
 /// Emitted through the centered-modal surface path: presented as a sheet whose native dismissal (Esc, overlay click) drives the openness channel back through onOpenChange — the contract's escape/overlayClick dismissal triggers realized by the platform.
 public struct Command<List: View, Group: View, GroupHeading: View, GroupItems: View, Item: View, ItemIcon: View, ItemContent: View, ItemLabel: View, ItemDescription: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         CommandTokens.scopes
     }
@@ -107,7 +108,7 @@ public struct Command<List: View, Group: View, GroupHeading: View, GroupItems: V
                     get: { search.value },
                     set: { search.set($0) }
                 ),
-                prompt: SwiftUI.Text("Search...")
+                prompt: SwiftUI.Text(fsdsMessages.string("Command.searchPlaceholder", default: "Search..."))
             )
             list
             group

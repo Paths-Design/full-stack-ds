@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
@@ -36,8 +37,8 @@ fun ShowMore(
     expanded: Boolean? = null,
     defaultExpanded: Boolean = false,
     onExpandedChange: ((Boolean) -> Unit)? = null,
-    showLessLabel: String? = null,
-    showMoreLabel: String? = null,
+    showLessLabel: String = LocalFsdsMessages.current.string("ShowMore.showLess", "Show less"),
+    showMoreLabel: String = LocalFsdsMessages.current.string("ShowMore.showMore", "Show more"),
     content: @Composable () -> Unit,
 ) {
     var uncontrolledExpanded by remember { mutableStateOf(defaultExpanded) }
@@ -75,7 +76,7 @@ fun ShowMore(
             content()
         }
             BasicText(
-                text = (if (resolvedExpanded) showLessLabel else showMoreLabel) ?: "",
+                text = (if (resolvedExpanded) showLessLabel else showMoreLabel),
                 modifier = Modifier.clickable(
                     role = Role.Button,
                 ) {

@@ -63,6 +63,15 @@ import {
   soleValueChannel,
 } from "../../native-emission-class.js";
 import { swiftLiteral } from "./icon-glyph.js";
+import { swiftMessage, swiftStringProp, withSwiftMessagesEnvironment } from "./messages.js";
+import {
+  channelToggledText,
+  contentMessages,
+  namedMessage,
+  partMessage,
+  partTextSource,
+  type NativeTextSource,
+} from "../../native-messages.js";
 import nodeFs from "node:fs";
 import nodePath from "node:path";
 import { emitNativeRadioGroup } from "./radio-group.js";
@@ -99,7 +108,10 @@ export function swiftExportName(componentName: string): string {
 export function generateSwiftUIComponentSource(ir: ComponentIR): string {
   const source = emitSwiftUIComponentSource(ir);
   const used = nativeSlotArguments(source, ["colorSlot", "pxSlot"]);
-  return emitSwiftUIComponentSource({ ...ir, tokenScopes: nativeTokenScopes(ir, used, true) });
+  return withSwiftMessagesEnvironment(
+    emitSwiftUIComponentSource({ ...ir, tokenScopes: nativeTokenScopes(ir, used, true) }),
+    INDENT,
+  );
 }
 
 function emitSwiftUIComponentSource(ir: ComponentIR): string {
@@ -1322,6 +1334,7 @@ function emitPagedPositionSet(ir: ComponentIR): string {
     : `[${layerArray.join(", ")}]`;
   const presentationAxis = axes.find((axis) => axis.prop === "presentation");
   const progressAxis = axes.find((axis) => axis.prop === "progress");
+  const labelProp = swiftStringProp(ir, "label", INDENT);
 
   const lines: string[] = [];
   lines.push("// @generated:start component");
@@ -1350,7 +1363,7 @@ function emitPagedPositionSet(ir: ComponentIR): string {
       `${INDENT}private let ${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}${axis.defaultMember === null ? "?" : ""}`,
     );
   }
-  if (hasLabel) lines.push(`${INDENT}private let label: String?`);
+  if (hasLabel) lines.push(labelProp.stored);
   if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
@@ -1370,7 +1383,7 @@ function emitPagedPositionSet(ir: ComponentIR): string {
         : `${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}? = nil,`,
     );
   }
-  if (hasLabel) params.push(`label: String? = ${swiftLiteral(propStringDefault(ir, "label") ?? "Choose page")},`);
+  if (hasLabel) params.push(labelProp.param);
   if (hasDisabled) params.push("disabled: Bool = false");
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
@@ -1384,10 +1397,14 @@ function emitPagedPositionSet(ir: ComponentIR): string {
       `${INDENT}${INDENT}self.${escapeSwiftKeyword(axis.prop)} = ${escapeSwiftKeyword(axis.prop)}`,
     );
   }
-  if (hasLabel) lines.push(`${INDENT}${INDENT}self.label = label`);
+  if (hasLabel) lines.push(labelProp.assign);
   if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
   lines.push(`${INDENT}}`);
   lines.push("");
+  if (hasLabel && labelProp.accessor.length > 0) {
+    lines.push(...labelProp.accessor);
+    lines.push("");
+  }
   lines.push(`${INDENT}private var position: FsdsPagedPosition {`);
   lines.push(
     `${INDENT}${INDENT}FsdsPagedPosition(index: ${page.channel}.value, count: ${page.itemsProp}.count${hasDisabled ? ", disabled: disabled" : ""})`,
@@ -1502,8 +1519,21 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
   const hasDisabled = hasConventionalProp(ir, page.disabledProp ?? "disabled");
   const presentationProp = ir.styledProps.find((p) => p.safeName === "presentation");
   const presentationType = presentationProp?.typeRefs.find((ref) => ir.definedTypes[ref]);
-  const labelProps = ["pageLabel", "previousLabel", "nextLabel", "ofLabel", "commitLabel"]
-    .filter((name) => hasConventionalProp(ir, name));
+  const labelProps = ["pageLabel", "previousLabel", "nextLabel", "commitLabel"]
+    .filter((name) => hasConventionalProp(ir, name))
+    .map((name) => ({ name, decl: swiftStringProp(ir, name, INDENT) }));
+  const groupLabel = swiftStringProp(ir, "label", INDENT);
+  // The page-count text is the content message whose params read the paged
+  // position (`of {count}`); translators own its word order, so the count is
+  // a message param rather than a sibling Text.
+  const countText = contentMessages(ir).find(({ ref }) =>
+    ref.params.some((param) => param.value.kind === "paged"),
+  );
+  const pagedParam = (value: BindingExpression): string => {
+    if (value.kind === "paged" && value.field === "count") return "String(position.count)";
+    if (value.kind === "paged" && value.field === "ordinal") return "position.ordinal";
+    throw new Error(`emitPagedNavigatorComposite: unsupported message param binding on ${ir.name}`);
+  };
 
   const lines: string[] = [];
   lines.push("// @generated:start component");
@@ -1523,11 +1553,9 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
   lines.push(`${INDENT}private let ${page.itemsProp}: [String]`);
   if (page.countProp) lines.push(`${INDENT}private let ${page.countProp}: Int?`);
   if (presentationType) lines.push(`${INDENT}private let presentation: ${presentationType}`);
-  for (const name of labelProps) {
-    lines.push(`${INDENT}private let ${name}: String?`);
-  }
+  for (const { decl } of labelProps) lines.push(decl.stored);
   if (hasConventionalProp(ir, "showChoices")) lines.push(`${INDENT}private let showChoices: Bool`);
-  if (hasLabel) lines.push(`${INDENT}private let label: String?`);
+  if (hasLabel) lines.push(groupLabel.stored);
   if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
   lines.push(`${INDENT}@State private var draft = ""`);
   lines.push("");
@@ -1543,12 +1571,9 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
     const presentationDefault = propStringDefault(ir, "presentation") ?? "indicators";
     params.push(`presentation: ${presentationType} = .${swiftCaseRef(presentationDefault)},`);
   }
-  for (const name of labelProps) {
-    const authored = propStringDefault(ir, name);
-    params.push(`${name}: String? = ${authored !== null ? swiftLiteral(authored) : "nil"},`);
-  }
+  for (const { decl } of labelProps) params.push(decl.param);
   if (hasConventionalProp(ir, "showChoices")) params.push("showChoices: Bool = false,");
-  if (hasLabel) params.push(`label: String? = ${swiftLiteral(propStringDefault(ir, "label") ?? "Page navigation")},`);
+  if (hasLabel) params.push(groupLabel.param);
   if (hasDisabled) params.push("disabled: Bool = false");
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
@@ -1559,12 +1584,18 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}self.${page.itemsProp} = ${page.itemsProp}`);
   if (page.countProp) lines.push(`${INDENT}${INDENT}self.${page.countProp} = ${page.countProp}`);
   if (presentationType) lines.push(`${INDENT}${INDENT}self.presentation = presentation`);
-  for (const name of labelProps) lines.push(`${INDENT}${INDENT}self.${name} = ${name}`);
+  for (const { decl } of labelProps) lines.push(decl.assign);
   if (hasConventionalProp(ir, "showChoices")) lines.push(`${INDENT}${INDENT}self.showChoices = showChoices`);
-  if (hasLabel) lines.push(`${INDENT}${INDENT}self.label = label`);
+  if (hasLabel) lines.push(groupLabel.assign);
   if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
   lines.push(`${INDENT}}`);
   lines.push("");
+  const accessors = [...labelProps.map(({ decl }) => decl), ...(hasLabel ? [groupLabel] : [])]
+    .flatMap((decl) => decl.accessor);
+  if (accessors.length > 0) {
+    lines.push(...accessors);
+    lines.push("");
+  }
   lines.push(`${INDENT}private var position: FsdsPagedPosition {`);
   lines.push(
     `${INDENT}${INDENT}FsdsPagedPosition(index: ${page.channel}.value, count: ${page.countProp ? `${page.countProp} ?? ${page.itemsProp}.count` : `${page.itemsProp}.count`}${hasDisabled ? ", disabled: disabled" : ""})`,
@@ -1591,22 +1622,26 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}${INDENT})`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.frame(maxWidth: 48)`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.onSubmit(commit)`);
-  if (hasConventionalProp(ir, "ofLabel")) {
-    lines.push(`${INDENT}${INDENT}${INDENT}SwiftUI.Text(ofLabel ?? "")`);
+  if (countText) {
+    const params = Object.fromEntries(
+      countText.ref.params.map((param) => [param.name, pagedParam(param.value)]),
+    );
+    lines.push(`${INDENT}${INDENT}${INDENT}SwiftUI.Text(${swiftMessage(ir, countText.ref.message, params)})`);
+  } else {
+    lines.push(`${INDENT}${INDENT}${INDENT}SwiftUI.Text(String(position.count))`);
   }
-  lines.push(`${INDENT}${INDENT}${INDENT}SwiftUI.Text(String(position.count))`);
+  const commitDecl = labelProps.find(({ name }) => name === "commitLabel")?.decl;
+  if (!commitDecl) {
+    throw new Error(`emitPagedNavigatorComposite: ${ir.name} declares no commitLabel text for its commit trigger`);
+  }
   lines.push(`${INDENT}${INDENT}${INDENT}FsdsButton(`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}disabled: position.stateDisabled,`);
-  if (hasConventionalProp(ir, "commitLabel")) {
-    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}accessibilityLabel: commitLabel,`);
-  }
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}accessibilityLabel: commitLabel,`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}onTap: commit`);
   lines.push(`${INDENT}${INDENT}${INDENT}) {`);
-  if (hasConventionalProp(ir, "commitLabel")) {
-    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Text(commitLabel ?? "")`);
-  } else {
-    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Text("Go")`);
-  }
+  lines.push(
+    `${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Text(${commitDecl.accessor.length > 0 ? "commitLabel" : 'commitLabel ?? ""'})`,
+  );
   lines.push(`${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}${INDENT}FsdsButton(`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}disabled: position.nextDisabled,`);
@@ -1685,21 +1720,19 @@ function emitSequencePager(ir: ComponentIR): string {
   const hasLabel = hasConventionalProp(ir, "label");
   const axes = collectVariantAxes(ir);
   const indicatorAxis = axes.find((axis) => axis.prop === "indicator");
-  // The picker composition's label comes from the composed componentRef
-  // node's declared attrs, addressed by the sequence policy's picker part —
-  // a structural part address, not a component-name match.
-  let pickerLabel = "Choose slide";
+  // Chrome text comes from the messages the sequence policy's owned parts
+  // bind (structural part addresses, not component-name matches); a part
+  // that binds no message renders no label rather than emitter English.
+  const regionLabel = swiftStringProp(ir, "label", INDENT);
   const pickerHostPart =
     typeof sequence.picker === "string"
       ? sequence.picker
       : sequence.picker.componentPart;
-  const findPicker = (node: DomNodeIR): void => {
-    if (pickerHostPart && node.part === pickerHostPart && node.attrs.label) {
-      pickerLabel = node.attrs.label;
-    }
-    (node.children ?? []).forEach(findPicker);
-  };
-  if (ir.dom) findPicker(ir.dom);
+  const pickerMessage = pickerHostPart ? partMessage(ir, pickerHostPart, "label") : undefined;
+  const previousMessage = partMessage(ir, sequence.previous, "aria-label");
+  const nextMessage = partMessage(ir, sequence.next, "aria-label");
+  const rotationStart = swiftMessage(ir, namedMessage(ir, sequence.labels.start));
+  const rotationStop = swiftMessage(ir, namedMessage(ir, sequence.labels.stop));
 
   const lines: string[] = [];
   lines.push("// @generated:start component");
@@ -1730,7 +1763,7 @@ function emitSequencePager(ir: ComponentIR): string {
       `${INDENT}private let ${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}${axis.defaultMember === null ? "?" : ""}`,
     );
   }
-  if (hasLabel) lines.push(`${INDENT}private let label: String?`);
+  if (hasLabel) lines.push(regionLabel.stored);
   lines.push(`${INDENT}private let content: Content`);
   lines.push(`${INDENT}@State private var playing: Bool`);
   if (ir.tokenScopes.length > 0) {
@@ -1753,7 +1786,7 @@ function emitSequencePager(ir: ComponentIR): string {
         : `${escapeSwiftKeyword(axis.prop)}: ${axis.typeName}? = nil,`,
     );
   }
-  if (hasLabel) params.push(`label: String? = ${swiftLiteral(propStringDefault(ir, "label") ?? "Featured content")},`);
+  if (hasLabel) params.push(regionLabel.param);
   params.push("@ViewBuilder content: () -> Content");
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
@@ -1769,11 +1802,15 @@ function emitSequencePager(ir: ComponentIR): string {
       `${INDENT}${INDENT}self.${escapeSwiftKeyword(axis.prop)} = ${escapeSwiftKeyword(axis.prop)}`,
     );
   }
-  if (hasLabel) lines.push(`${INDENT}${INDENT}self.label = label`);
+  if (hasLabel) lines.push(regionLabel.assign);
   lines.push(`${INDENT}${INDENT}self.content = content()`);
   lines.push(`${INDENT}${INDENT}self._playing = State(initialValue: autoPlay)`);
   lines.push(`${INDENT}}`);
   lines.push("");
+  if (hasLabel && regionLabel.accessor.length > 0) {
+    lines.push(...regionLabel.accessor);
+    lines.push("");
+  }
   lines.push(`${INDENT}private var valid: Bool {`);
   lines.push(
     `${INDENT}${INDENT}!${sequence.itemsProp}.isEmpty && ${channel}.value >= 0 && ${channel}.value < ${sequence.itemsProp}.count`,
@@ -1811,7 +1848,7 @@ function emitSequencePager(ir: ComponentIR): string {
   lines.push("");
   lines.push(`${INDENT}public var body: some View {`);
   lines.push(`${INDENT}${INDENT}VStack(spacing: ${chrome.gap ? "gap" : "4"}) {`);
-  lines.push(`${INDENT}${INDENT}${INDENT}Button(playing ? ${swiftLiteral(sequence.labels.stop)} : ${swiftLiteral(sequence.labels.start)}) {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}Button(playing ? ${rotationStop} : ${rotationStart}) {`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}playing.toggle()`);
   lines.push(`${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
@@ -1825,15 +1862,19 @@ function emitSequencePager(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.disabled(!valid)`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityLabel("Previous slide")`);
+  if (previousMessage) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityLabel(${swiftMessage(ir, previousMessage.message)})`);
+  }
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Pagination(`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}index: ${channel}.binding(),`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}pages: ${sequence.itemsProp},`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}presentation: .indicators,`);
   lines.push(
-    `${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}progress: ${indicatorAxis ? "(indicator == .pagination || indicator == .both) ? .elapsed : .none" : ".none"},`,
+    `${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}progress: ${indicatorAxis ? "(indicator == .pagination || indicator == .both) ? .elapsed : .none" : ".none"}${pickerMessage ? "," : ""}`,
   );
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}label: ${swiftLiteral(pickerLabel)}`);
+  if (pickerMessage) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}label: ${swiftMessage(ir, pickerMessage.message)}`);
+  }
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT})`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button {`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}step(1)`);
@@ -1842,7 +1883,9 @@ function emitSequencePager(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.disabled(!valid)`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityLabel("Next slide")`);
+  if (nextMessage) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.accessibilityLabel(${swiftMessage(ir, nextMessage.message)})`);
+  }
   lines.push(`${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}}`);
   if (hasLabel) lines.push(`${INDENT}${INDENT}.fsdsAccessibilityLabel(label)`);
@@ -2084,6 +2127,18 @@ function emitDualActionComposite(ir: ComponentIR, refs: DualActionRefs): string 
   const variantArgs = hasVariant && variantType && defaultVariant
     ? `variant: ${variantType} = .${swiftCaseRef(defaultVariant)},`
     : "";
+  // The dismiss trigger's accessible name follows its part binding: a
+  // message lowers to a catalog lookup, a prop surfaces as an init param
+  // that falls back to the prop's message.
+  const dismissText = partTextSource(ir, "dismiss", "ariaLabel");
+  const dismissProp =
+    dismissText?.kind === "prop" ? swiftStringProp(ir, dismissText.prop, INDENT) : undefined;
+  const dismissLabel =
+    dismissText?.kind === "message"
+      ? swiftMessage(ir, dismissText.ref.message)
+      : dismissText?.kind === "prop"
+        ? dismissText.prop
+        : undefined;
 
   const lines: string[] = [];
   lines.push("// @generated:start component");
@@ -2100,6 +2155,7 @@ function emitDualActionComposite(ir: ComponentIR, refs: DualActionRefs): string 
   lines.push(`${INDENT}private let onClick: (() -> Void)?`);
   lines.push(`${INDENT}private let onDismiss: (() -> Void)?`);
   if (hasAriaLabel) lines.push(`${INDENT}private let accessibilityLabel: String?`);
+  if (dismissProp) lines.push(dismissProp.stored);
   if (hasIcon) lines.push(`${INDENT}private let iconRegion: IconRegion`);
   lines.push(`${INDENT}private let text: Text`);
   lines.push("");
@@ -2111,6 +2167,7 @@ function emitDualActionComposite(ir: ComponentIR, refs: DualActionRefs): string 
   params.push("onClick: (() -> Void)? = nil,");
   params.push("onDismiss: (() -> Void)? = nil,");
   if (hasAriaLabel) params.push("accessibilityLabel: String? = nil,");
+  if (dismissProp) params.push(dismissProp.param);
   if (hasIcon) params.push("@ViewBuilder icon: () -> IconRegion = { EmptyView() },");
   params.push("@ViewBuilder text: () -> Text");
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
@@ -2122,10 +2179,15 @@ function emitDualActionComposite(ir: ComponentIR, refs: DualActionRefs): string 
   lines.push(`${INDENT}${INDENT}self.onClick = onClick`);
   lines.push(`${INDENT}${INDENT}self.onDismiss = onDismiss`);
   if (hasAriaLabel) lines.push(`${INDENT}${INDENT}self.accessibilityLabel = accessibilityLabel`);
+  if (dismissProp) lines.push(dismissProp.assign);
   if (hasIcon) lines.push(`${INDENT}${INDENT}self.iconRegion = icon()`);
   lines.push(`${INDENT}${INDENT}self.text = text()`);
   lines.push(`${INDENT}}`);
   lines.push("");
+  if (dismissProp && dismissProp.accessor.length > 0) {
+    lines.push(...dismissProp.accessor);
+    lines.push("");
+  }
   lines.push(`${INDENT}public var body: some View {`);
   lines.push(`${INDENT}${INDENT}HStack(spacing: 4) {`);
   lines.push(
@@ -2150,7 +2212,7 @@ function emitDualActionComposite(ir: ComponentIR, refs: DualActionRefs): string 
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}) {`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Image(systemName: "xmark")`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.fsdsAccessibilityLabel("Dismiss")`);
+  if (dismissLabel) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.fsdsAccessibilityLabel(${dismissLabel})`);
   lines.push(`${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}}`);
   lines.push(`${INDENT}}`);
@@ -2628,6 +2690,19 @@ function emitExpandableContent(ir: ComponentIR): string {
     lines.push("// @generated:end");
     return lines.join("\n");
   }
+  // The disclosure trigger's text is the contract's channel-toggled content
+  // binding: each arm is a message or a prop that falls back to one.
+  const toggleText = channelToggledText(ir, channel.name);
+  if (!toggleText) {
+    throw new Error(`emitExpandableContent: ${ir.name} binds no ${channel.name}-toggled trigger text`);
+  }
+  const armProps = [toggleText.whenTrue, toggleText.whenFalse]
+    .filter((arm): arm is Extract<NativeTextSource, { kind: "prop" }> => arm.kind === "prop")
+    .map((arm) => swiftStringProp(ir, arm.prop, INDENT));
+  const armText = (arm: NativeTextSource): string => {
+    if (arm.kind === "message") return swiftMessage(ir, arm.ref.message);
+    return arm.fallback ? arm.prop : `(${arm.prop} ?? "")`;
+  };
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
     lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
@@ -2636,6 +2711,7 @@ function emitExpandableContent(ir: ComponentIR): string {
   lines.push(`${INDENT}@StateObject private var expanded: ControllableValue<Bool>`);
   if (hasExpandable) lines.push(`${INDENT}private let expandable: Bool`);
   if (hasLines) lines.push(`${INDENT}private let ${linesProp}: Int`);
+  for (const arm of armProps) lines.push(arm.stored);
   lines.push(`${INDENT}private let content: Content`);
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
@@ -2649,6 +2725,7 @@ function emitExpandableContent(ir: ComponentIR): string {
   ];
   if (hasExpandable) params.push("expandable: Bool = true,");
   if (hasLines) params.push(`${linesProp}: Int = ${linesDefault.replace(/"/g, '"')},`);
+  for (const arm of armProps) params.push(arm.param);
   params.push("@ViewBuilder content: () -> Content");
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
@@ -2656,9 +2733,15 @@ function emitExpandableContent(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}self._expanded = StateObject(wrappedValue: ControllableValue(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange))`);
   if (hasExpandable) lines.push(`${INDENT}${INDENT}self.expandable = expandable`);
   if (hasLines) lines.push(`${INDENT}${INDENT}self.${linesProp} = ${linesProp}`);
+  for (const arm of armProps) lines.push(arm.assign);
   lines.push(`${INDENT}${INDENT}self.content = content()`);
   lines.push(`${INDENT}}`);
   lines.push("");
+  const armAccessors = armProps.flatMap((arm) => arm.accessor);
+  if (armAccessors.length > 0) {
+    lines.push(...armAccessors);
+    lines.push("");
+  }
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}private var layered: [String: FsdsTokenValue?] {`);
     lines.push(`${INDENT}${INDENT}resolveFsdsLayeredTokens(`);
@@ -2691,7 +2774,9 @@ function emitExpandableContent(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.lineLimit(expanded.value ? nil : ${linesProp})`);
   }
   lines.push(`${INDENT}${INDENT}${INDENT}if ${hasExpandable ? "expandable" : "true"} {`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button(expanded.value ? "Show less" : "Show more") {`);
+  lines.push(
+    `${INDENT}${INDENT}${INDENT}${INDENT}Button(expanded.value ? ${armText(toggleText.whenTrue)} : ${armText(toggleText.whenFalse)}) {`,
+  );
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}expanded.toggle()`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
@@ -3876,11 +3961,11 @@ function emitToggleComponent(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}.toggleStyle(.switch)`);
   lines.push(`${INDENT}${INDENT}.disabled(disabled)`);
+  // No accessibilityValue override: the native Toggle already reports its
+  // on/off value in the user's locale; an authored value would replace it
+  // with untranslated text.
   lines.push(
     `${INDENT}${INDENT}.fsdsAccessibilityLabel(accessibilityLabel)`,
-  );
-  lines.push(
-    `${INDENT}${INDENT}.accessibilityValue(checked.value ? "on" : "off")`,
   );
   if (hasTrackGeometry) {
     lines.push(

@@ -6,8 +6,9 @@
 // token slots (border width/radius, focus ring, transition duration,
 // disabled tones, touch minimums) must be reachable, and the wrapper
 // exposes only a fraction of them. Semantics parity with the wrapper era
-// is preserved through Modifier.toggleable with Role.Checkbox plus
-// stateDescription — the same accessibility contract M3 itself uses.
+// is preserved through Modifier.toggleable with Role.Checkbox — the same
+// accessibility contract M3 itself uses; its ToggleableState is announced
+// in the user's locale, so no English stateDescription overrides it.
 //
 // Named divergences (ledgered in
 // docs/architecture/native-target-admission.md, not silently dropped):
@@ -57,7 +58,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -141,7 +141,6 @@ fun FsdsCheckbox(
                 if (contentDescription != null) {
                     this.contentDescription = contentDescription
                 }
-                stateDescription = if (checked) "on" else "off"
             },
         contentAlignment = Alignment.Center,
     ) {

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsContentColor
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
@@ -36,7 +37,7 @@ fun Alert(
     level: AlertLevel? = null,
     icon: (@Composable () -> Unit)? = null,
     dismissible: Boolean = false,
-    dismissLabel: String = "Dismiss",
+    dismissLabel: String = LocalFsdsMessages.current.string("Alert.dismiss", "Dismiss"),
     onDismiss: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {

@@ -39,6 +39,10 @@ import {
   generateSwiftUISurfaceFiles,
   isSurfaceComponent,
 } from "./surface-emit.js";
+import { collectCorpusMessages, generateXcstrings } from "../../../message-catalog.js";
+
+/** Relative to the `Sources/DsSwiftUI/primitives` root: `packages/ds-swiftui/Localization/`. */
+export const SWIFTUI_XCSTRINGS_RELATIVE_PATH = "../../../Localization/FsdsComponents.xcstrings";
 
 export function createSwiftUIEmitter(): FrameworkEmitter {
   return {
@@ -96,16 +100,26 @@ export function createSwiftUIEmitter(): FrameworkEmitter {
       return generateSwiftUIBarrel(componentNames, componentsRoot);
     },
 
-    emitPrimitives(ir: PrimitiveIR, _opts: EmitOptions): GeneratedFile[] {
+    emitPrimitives(ir: PrimitiveIR, opts: EmitOptions): GeneratedFile[] {
       // Written to the `primitives/` root (sibling of `Components/`) by the
       // CLI's shared substrate pass; single-module SwiftPM target, so the
       // primitive is visible to every component without imports. The glyph
       // catalog rides the same channel — a shared substrate (like
-      // FsdsTheme) that every iconGlyph surface composes.
-      return [
+      // FsdsTheme) that every iconGlyph surface composes. The reference
+      // string catalog is corpus-wide too; it lands at the package root's
+      // Localization/ directory, outside the SwiftPM target, because it is a
+      // template host apps copy and translate — not a library resource.
+      const files = [
         ...generateSwiftUIPrimitiveFiles(ir),
         ...(generateGlyphCatalogFile() ? [generateGlyphCatalogFile()!] : []),
       ];
+      if (opts.contractsRoot) {
+        files.push({
+          relativePath: SWIFTUI_XCSTRINGS_RELATIVE_PATH,
+          contents: generateXcstrings(collectCorpusMessages(opts.contractsRoot)),
+        });
+      }
+      return files;
     },
 
     discoverComponentIds(componentsRoot: string): string[] {

@@ -29,10 +29,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.fullstackds.date.FsdsDate
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
@@ -61,11 +64,12 @@ fun Calendar(
     onValuesChange: ((List<Date>) -> Unit)? = null,
     mode: CalendarMode = CalendarMode.Single,
     days: List<Date> = emptyList(),
-    caption: String = "Calendar",
+    caption: String = LocalFsdsMessages.current.string("Calendar.caption", "Calendar"),
     disabled: Boolean = false,
     minDate: Date? = null,
     maxDate: Date? = null,
 ) {
+    val fsdsMessages = LocalFsdsMessages.current
     var uncontrolledValue by remember { mutableStateOf(defaultValue) }
     val resolvedValue = value ?: uncontrolledValue
     var uncontrolledValues by remember { mutableStateOf(defaultValues) }
@@ -113,13 +117,25 @@ fun Calendar(
             horizontalArrangement = Arrangement.spacedBy(gridGap),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            Box(
+                Modifier
+                    .size(navSize)
+                    .semantics { contentDescription = fsdsMessages.string("Calendar.previousMonth", "Previous month") },
+                contentAlignment = Alignment.Center,
+            ) { }
             BasicText(
                 text = caption,
                 style = TextStyle(color = gridForeground ?: Color.Unspecified, fontSize = captionSize),
             )
+            Box(
+                Modifier
+                    .size(navSize)
+                    .semantics { contentDescription = fsdsMessages.string("Calendar.nextMonth", "Next month") },
+                contentAlignment = Alignment.Center,
+            ) { }
         }
         Column(
-            Modifier.padding(gridPadding),
+            Modifier.semantics { contentDescription = fsdsMessages.string("Calendar.gridLabel", "Calendar") }.padding(gridPadding),
         ) {
             days.chunked(fsdsWeekLength).forEach { week ->
                 Row(horizontalArrangement = Arrangement.spacedBy(gridGap)) {

@@ -25,9 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsContentColor
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
@@ -50,9 +53,9 @@ fun Walkthrough(
     defaultIndex: Int = 0,
     onStepChange: ((Int) -> Unit)? = null,
     placement: WalkthroughPlacement = WalkthroughPlacement.Auto,
-    label: String? = null,
+    label: String = LocalFsdsMessages.current.string("Walkthrough.tourLabel", "Feature tour"),
     storageKey: String? = null,
-    nextLabel: String? = null,
+    nextLabel: String = LocalFsdsMessages.current.string("Walkthrough.next", "Next"),
     progressLabel: String? = null,
     previousDisabled: Boolean = false,
     onComplete: (() -> Unit)? = null,
@@ -62,6 +65,7 @@ fun Walkthrough(
     title: (@Composable () -> Unit)? = null,
     description: (@Composable () -> Unit)? = null,
 ) {
+    val fsdsMessages = LocalFsdsMessages.current
     var uncontrolledIndex by remember { mutableStateOf(defaultIndex) }
     val resolvedIndex = index ?: uncontrolledIndex
     val fsdsTheme = LocalFsdsTheme.current
@@ -125,8 +129,11 @@ fun Walkthrough(
                         .then(if (coachmarkSecondaryBackground != null) Modifier.background(coachmarkSecondaryBackground, RoundedCornerShape(coachmarkSecondaryRadius)) else Modifier)
                         .then(if (coachmarkSecondaryBorder != null) Modifier.border(1.dp, coachmarkSecondaryBorder, RoundedCornerShape(coachmarkSecondaryRadius)) else Modifier)
                         .padding(coachmarkInset)
-                        .clickable(enabled = !previousDisabled) { onPrevious?.invoke() },
-                ) { }
+                        .clickable(enabled = !previousDisabled) { onPrevious?.invoke() }
+                        .semantics { contentDescription = fsdsMessages.string("Walkthrough.previousStep", "Previous step") },
+                ) {
+                    BasicText(text = fsdsMessages.string("Walkthrough.previous", "Previous"))
+                }
                 Box(
                     Modifier
                         .clip(RoundedCornerShape(coachmarkPrimaryRadius))
@@ -134,12 +141,7 @@ fun Walkthrough(
                         .padding(coachmarkInset)
                         .clickable { onNext?.invoke() },
                 ) {
-                    if (nextLabel != null) {
-                        BasicText(
-                            text = nextLabel!!,
-                            style = TextStyle(color = coachmarkPrimaryColor ?: Color.Unspecified),
-                        )
-                    }
+                    BasicText(text = nextLabel, style = TextStyle(color = coachmarkPrimaryColor ?: Color.Unspecified))
                 }
             }
         }

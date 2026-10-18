@@ -196,6 +196,44 @@ final class InteractionTests: XCTestCase {
         XCTAssertEqual(completed2, 1, "onComplete fires when the step crosses 1")
     }
 
+    /// Every accessible name string (title, description) an AX element exposes.
+    private func axNames(_ element: AXUIElement) -> [String] {
+        [kAXTitleAttribute, kAXDescriptionAttribute].compactMap { attribute in
+            var value: CFTypeRef?
+            guard AXUIElementCopyAttributeValue(element, attribute as CFString, &value) == .success else {
+                return nil
+            }
+            return value as? String
+        }
+    }
+
+    func testWalkthroughControlsResolveFromTheMessageCatalog() throws {
+        try requireAXButtons()
+        hostInWindow(
+            Walkthrough(
+                step: 0,
+                onSkip: {},
+                nextLabel: "Terminer",
+                title: { SwiftUI.Text("t") }
+            )
+            .fsdsMessages(FsdsMessages(overrides: [
+                "Walkthrough.skip": "Passer",
+                "Walkthrough.skipTour": "Passer la visite",
+                "Walkthrough.previousStep": "Étape précédente",
+                "Walkthrough.next": "Suivant",
+            ]))
+        )
+        RunLoop.current.run(until: Date().addingTimeInterval(0.15))
+        let names = axButtons(under: appElement()).flatMap(axNames)
+        guard !names.isEmpty else {
+            throw XCTSkip("AX tree empty under this runner — catalog-to-label proof requires an AX-capable host (visible skip, not a pass)")
+        }
+        XCTAssertTrue(names.contains("Passer la visite"), "skip's accessible name comes from the catalog: \(names)")
+        XCTAssertTrue(names.contains("Étape précédente"), "previous's accessible name comes from the catalog: \(names)")
+        XCTAssertTrue(names.contains("Terminer"), "an explicit nextLabel wins over the catalog: \(names)")
+        XCTAssertFalse(names.contains("Suivant"), "the catalog must not override an explicit nextLabel: \(names)")
+    }
+
     func testSelectExposesPressableControl() throws {
         try requireAXButtons()
         guard let presses = try pressAllButtons(

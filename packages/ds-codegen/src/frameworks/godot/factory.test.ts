@@ -44,6 +44,11 @@ describe("Godot bounded lowering", () => {
       node.children?.forEach(restoreTargetProps);
     };
     if (dom) restoreTargetProps(dom);
+    // Message placeholders name template slots, not host props: the blanket
+    // `"index"` rename must not reach the slide-position template's params.
+    for (const [key, message] of Object.entries(c.messages ?? {})) {
+      if (message.params) renamed.messages![key]!.params = message.params;
+    }
     const ir = buildSequenceFixture(renamed);
     const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" });
     const script = files.find(file => file.relativePath === "Gallery/Gallery.gd")!.contents;

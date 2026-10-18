@@ -122,7 +122,9 @@ describe("generateSwiftUISurfaceFiles — coverage batch (sheet + search channel
     const { componentFile } = generateSwiftUISurfaceFiles(irFor("Command"));
     expect(componentFile).toContain("search: Binding<String>? = nil");
     expect(componentFile).toContain("ControllableValue(controlled: search");
-    expect(componentFile).toContain('prompt: SwiftUI.Text("Search...")');
+    expect(componentFile).toContain(
+      'prompt: SwiftUI.Text(fsdsMessages.string("Command.searchPlaceholder", default: "Search..."))',
+    );
     // Dialog carries no string channel → no search surface.
     const dialog = generateSwiftUISurfaceFiles(irFor("Dialog")).componentFile;
     expect(dialog).not.toContain("search: Binding<String>");
