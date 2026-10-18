@@ -19,6 +19,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
+      - run: node --test scripts/lib/source-manifest.test.mjs
       - run: pnpm run e2e:analytical
       - uses: actions/upload-artifact@v4
         if: always()

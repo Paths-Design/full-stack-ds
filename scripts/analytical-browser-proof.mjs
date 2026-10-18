@@ -1,8 +1,9 @@
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, openSync, closeSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync, openSync, closeSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { sourceManifest } from "./lib/source-manifest.mjs";
 
 const script = fileURLToPath(import.meta.url);
 process.chdir(path.resolve(path.dirname(script), ".."));
@@ -39,7 +40,7 @@ if (mode === "--renderer-build" || mode === "--guard-build") {
   writeFileSync(`${root}/source.patch`, diff);
   receipt.diffSha256 = digest(diff);
   const sources = git("ls-files", "--cached", "--others", "--exclude-standard", "-z").split("\0").filter(Boolean).sort();
-  writeFileSync(`${root}/source-manifest.json`, JSON.stringify(sources.map(file => ({ file, sha256: existsSync(file) ? digest(readFileSync(file)) : null })), null, 2));
+  writeFileSync(`${root}/source-manifest.json`, JSON.stringify(sourceManifest(sources), null, 2));
   receipt.sourceManifestSha256 = digest(readFileSync(`${root}/source-manifest.json`));
   const run = (name, command, args, env = {}) => {
     const log = `${root}/${name}.log`, fd = openSync(log, "w");
