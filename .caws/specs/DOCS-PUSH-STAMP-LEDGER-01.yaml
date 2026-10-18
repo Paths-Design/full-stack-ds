@@ -1,0 +1,26 @@
+id: DOCS-PUSH-STAMP-LEDGER-01
+title: 'Ledger two push-time-stale verified_at_commit stamps blocking the main push'
+mode: doc
+lifecycle_state: active
+created_at: '2026-10-18T19:39:03.956Z'
+updated_at: '2026-10-18T19:39:03.956Z'
+created_by_session: 'session-33d6eec5-b0e3-4321-8201-a4c377accd31'
+blast_radius:
+  modules:
+    - 'doc-freshness-baseline.json: deliberate-staleness ledger for verified stamps'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'doc-freshness-baseline.json'
+  out: []
+invariants:
+  - 'Only the ledger file changes'
+  - 'Ledgered stamps match the docs current verified_at_commit values exactly (normal-form d2ade4e91, admission-rail b1d510f9)'
+acceptance:
+  - id: A1
+    given: 'docs:check-claims failing on two stale verified_at_commit stamps'
+    when: 'both docs are ledgered in doc-freshness-baseline.json'
+    then: 'pnpm run docs:check-claims passes'
+non_functional: {}
+contracts: []
