@@ -20,9 +20,9 @@ scope:
     - 'docs/architecture/design/retoken-page-attempts.md'
   out: []
 invariants:
-  - 'Fixture appearance is declared only through component design/box-model custom properties and the root-class hooks already used in theme.css; no new selectors into generated internals'
   - 'All fixes stay within e2e/fixtures/retoken-pages, e2e/retoken-pages.spec.ts, and the retoken-page-attempts doc; no contract, IR, emitter, or generated-package changes'
   - 'Existing passing runtime facts in e2e/retoken-pages.spec.ts stay asserted and passing (no weakened gates)'
+  - 'Fixture appearance is declared through component design/box-model custom properties, established root-class hooks (.text/.icon/.input/.button), and at most element-structural selectors inside component roots following the pattern already in theme.css (.search-region input, .icon svg); no selectors targeting generated class names, and each new structural selector is documented as an upstream control gap in the attempts doc'
 acceptance:
   - id: A1
     given: 'the Pinterest page with a pin overflow menu or detail board chooser open'
