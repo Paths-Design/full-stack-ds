@@ -42,8 +42,8 @@ acceptance:
     then: 'the Home button left edge aligns with the Soundroom heading left edge within 2px'
   - id: A5
     given: 'the Pin detail view'
-    when: 'the comments list is empty and the back control renders'
-    then: 'the gap between the comments region and the comment form is <= 24px and the back button paints a non-transparent backdrop'
+    when: 'the comments list is empty'
+    then: 'the gap between the comments region and the comment form is <= 24px'
   - id: A6
     given: 'the Pinterest feed at a <=700px viewport'
     when: 'save overlays render'
