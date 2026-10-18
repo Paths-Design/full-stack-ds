@@ -79,3 +79,7 @@ evidence:
     status: pass
     evidence_ref: "packages/ds-codegen/src/frameworks/lit/binding-defaults.test.ts CODEGEN-EMIT-LINT-HYGIENE-01 describes (6 tests: guard-free defaulted + guard-kept no-default for aria-boolean AND css-var, with falsification cases) — vitest lit filter 57/57 at commit ae218c5ed"
     recorded_at: "2026-10-18T19:41:34.325Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "angular/import-hygiene.test.ts (14 tests incl. two-directional meta-oracle), lit icon-glyph-lowering nothing-present/absent pins, vue+svelte hook-source.test.ts hygiene describes, react component-source.test.ts corpus pins — all green in the 740-test frameworks run at commit ae218c5ed; angular corpus sweep 148 files 0 unused/0 missing"
+    recorded_at: "2026-10-18T19:41:52.525Z"
