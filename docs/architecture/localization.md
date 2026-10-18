@@ -5,7 +5,7 @@ status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
 updated: 2026-10-18
-verified_at_commit: 51e15eafd
+verified_at_commit: da764dee5
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
@@ -69,12 +69,16 @@ take:
 
 | Code | Route |
 |---|---|
-| `L10N_LITERAL_TEXT_ATTRIBUTE` | A static `aria-label`, `aria-roledescription`, `aria-valuetext`, `aria-description`, `aria-placeholder`, `title`, `placeholder` or `alt`; or a `literal:` or value-map arm bound to one. |
-| `L10N_LITERAL_CONTENT` | Element content that is a `literal:`, including each `conditional:` arm. |
+| `L10N_LITERAL_TEXT_ATTRIBUTE` | A static `aria-label`, `aria-roledescription`, `aria-valuetext`, `aria-description`, `aria-placeholder`, `title`, `placeholder` or `alt`; a binding on one that renders a literal; or a DOM `properties` binding that renders one. |
+| `L10N_LITERAL_CONTENT` | Element content whose expression renders a literal. |
 | `L10N_LITERAL_PROP_DEFAULT` | A translatable string prop with a literal default. |
-| `L10N_LITERAL_INSTANCE_ATTRIBUTE` | A static attr or `literal:` binding on a `componentRef` node that feeds the referenced component's translatable string prop. |
+| `L10N_LITERAL_INSTANCE_ATTRIBUTE` | A static attr, or a binding that renders a literal, on a `componentRef` node that feeds the referenced component's translatable string prop. |
 
-"Letter" means any Unicode letter, so `literal:次へ` fails and `literal:×` passes.
+The gate reads each binding with the IR's own parser, so a literal counts
+wherever it sits: `literal:` or unprefixed text, a `conditional:` arm, a
+`selectionLabel` fallback, or a value-map value or fallback. A binding the
+parser rejects is left to the IR build's own error. "Letter" means any
+Unicode letter, so `literal:次へ` fails and `literal:×` passes.
 
 ## Runtime surface
 
@@ -113,8 +117,14 @@ composable context. Body lookups use one hoisted
 lambdas are not composable. Android string resource names cannot contain
 `.`, so a `resolve` bridge owns that mapping.
 
+Native string literals escape quotes, backslashes, Kotlin template dollars
+and every control character, so a multiline message default stays one
+literal.
+
 Figma descriptors carry `messages` and each prop's `defaultMessage` as
-metadata. The Godot pilot renders contract defaults; it has no catalog.
+metadata. The Godot pilot has no catalog: its configuration carries the
+contract default of each message it shows, including the sequence labels
+its runtime reads as rotation text.
 
 ## Evidence
 
@@ -122,8 +132,14 @@ metadata. The Godot pilot renders contract defaults; it has no catalog.
   `MESSAGE_INVALID` refusal by exact diagnostic, and the rotation control's
   single text writer.
 - `packages/ds-codegen/src/validation/localization.test.ts`: the corpus passes;
-  each `L10N_*` route fails with its pointer and message; `translatable: false`,
-  letterless text and non-string instance props are admitted.
+  each `L10N_*` route fails with its pointer and message, including literals
+  nested in conditional arms, `selectionLabel` fallbacks, value maps and DOM
+  properties; `translatable: false`, letterless text and non-string instance
+  props are admitted.
+- `packages/ds-codegen/src/frameworks/native-message-reach.test.ts`: every
+  message of a component SwiftUI or Compose emits resolves through a catalog
+  lookup in the committed native source, or is ledgered as unrendered.
+  `native-string-literals.test.ts` pins literal escaping in both emitters.
 - `packages/ds-react/src/primitives/hooks/__tests__/messages.contract.ts` runs
   one obligation set against React, Vue, Svelte, Angular and Lit harnesses:
   defaults, attribute/content/prop replacement, per-key fallback, prop
@@ -156,7 +172,12 @@ metadata. The Godot pilot renders contract defaults; it has no catalog.
   Replacing it with `selected =` and expand/collapse semantics belongs to the
   native accessibility semantics slice, and `audit:a11y-realization` counts
   those facts as unrealized.
-- The Compose Walkthrough emits no skip control.
+- SwiftUI and Compose leave some messages unrendered: the native realization
+  has no such part (dismiss and close buttons, month navigation, a search
+  field), or renders the element without the contract's accessible name
+  (OTP fields, Command search, group and region labels). The Compose
+  Walkthrough emits no skip control. `native-message-reach.test.ts` ledgers
+  each case; it is native accessibility debt, and the ledger only shrinks.
 - React Native has no role-description equivalent; `roleDescription`
   messages are not rendered there.
 - Unity and GPUI do not lower messages. None of their allowlisted components
