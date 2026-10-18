@@ -94,6 +94,7 @@
     "typecheck:figma": "pnpm --filter @full-stack-ds/figma-plugin run typecheck",
     "typecheck:example:react-native": "pnpm --filter @full-stack-ds/example-settings-react-native run typecheck",
     "typecheck:example:compose": "./examples/settings/compose/gradlew -p examples/settings/compose compileKotlin --no-daemon",
+    "typecheck:example:motion-compose": "./examples/motion-lab/compose/gradlew -p examples/motion-lab/compose compileKotlin --no-daemon",
     "typecheck:all": "pnpm run typecheck && pnpm run typecheck:vue && pnpm run typecheck:angular && pnpm run typecheck:lit && pnpm run typecheck:svelte && pnpm run typecheck:react-native && pnpm run typecheck:figma",
     "build:react": "pnpm --filter @full-stack-ds/react run build",
     "lint": "eslint . --max-warnings=0",
