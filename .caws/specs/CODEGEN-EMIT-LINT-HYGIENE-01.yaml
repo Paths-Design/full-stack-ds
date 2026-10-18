@@ -95,3 +95,7 @@ evidence:
     status: pass
     evidence_ref: "eslint.config.js commit f857b5c48: react/react-hooks rules scoped to src/** + ds-react + ds-react-native files blocks (probe-verified zero rules-of-hooks findings on angular/vue generated output, was 9+2); lit no-this-alias off behind declared policy-boundary comment mirroring validation/frameworks/lit.ts"
     recorded_at: "2026-10-18T19:42:15.068Z"
+  - criterion_id: A7
+    status: pass
+    evidence_ref: "pnpm run governed:rail Overall: PASS at merged tree (post ae218c5ed + merge 54a5c38dc reconciliation): react/vue/svelte/lit/angular/react-native all typecheck=pass lint=pass (+templateTypecheck/runtime as declared); SFC gaps in vue/svelte plan knownGaps"
+    recorded_at: "2026-10-18T19:42:17.776Z"
