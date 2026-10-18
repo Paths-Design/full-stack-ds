@@ -64,7 +64,14 @@ acceptance:
   - id: A5
     given: 'SwiftUI and Jetpack Compose generated components'
     when: 'they render a message-bearing label'
-    then: 'SwiftUI resolves String(localized:defaultValue:table:) keyed Component.key against a generated reference FsdsComponents.xcstrings, Compose resolves through LocalFsdsMessages with the contract default, and neither emitter authors an English label'
+    then: >-
+      SwiftUI resolves Component.key through the FsdsMessages environment value
+      (Bundle.localizedString(forKey:value:table:) over the FsdsComponents table,
+      overrides first) with a generated reference FsdsComponents.xcstrings
+      drift-tested against the corpus, Compose resolves through LocalFsdsMessages
+      with the contract default, and neither emitter authors English for a
+      message-bearing label; Compose's expanded/collapsed/selected stateDescription
+      words are the named residual of the native accessibility semantics slice
   - id: A6
     given: 'the landed mechanism'
     when: 'a reader consults docs/architecture/localization.md and the claim ledger'
