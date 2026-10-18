@@ -149,6 +149,72 @@ describe("localization gate refuses each literal route", () => {
     ]);
   });
 
+  it("unprefixed text bound to a text-bearing attribute, which the parser reads as a literal", () => {
+    const contract = loadCorpusContract("Carousel");
+    rootOf(contract).bindings = { ...rootOf(contract).bindings, "aria-label": "Featured content" };
+    expect(validateLocalization(contract, corpus)).toEqual([
+      {
+        pointer: "/anatomy/dom/bindings/aria-label",
+        message: `[L10N_LITERAL_TEXT_ATTRIBUTE] "aria-label" binds literal text "Featured content"; ${advice}`,
+      },
+    ]);
+  });
+
+  it("a value-map fallback on a text-bearing attribute", () => {
+    const contract = loadCorpusContract("Carousel");
+    rotationOf(contract).bindings = {
+      "aria-description": { kind: "map", source: "prop:autoplay", values: { true: "—" }, fallback: "Continue" },
+    };
+    expect(validateLocalization(contract, corpus).map((issue) => issue.message)).toEqual([
+      `[L10N_LITERAL_TEXT_ATTRIBUTE] "aria-description" binds literal text "Continue"; ${advice}`,
+    ]);
+  });
+
+  it("a literal selectionLabel fallback in content", () => {
+    const contract = loadCorpusContract("Carousel");
+    rotationOf(contract).content = "project:selectionLabel(prop:slides, channel:slide.value, literal:Choose)";
+    expect(validateLocalization(contract, corpus).map((issue) => issue.message)).toEqual([
+      `[L10N_LITERAL_CONTENT] content renders literal text "Choose"; ${advice}`,
+    ]);
+  });
+
+  it("an unprefixed arm of conditional content, beside a message arm", () => {
+    const contract = loadCorpusContract("Carousel");
+    rotationOf(contract).content = "conditional:prop:autoplay | message:rotationStop | Play";
+    expect(validateLocalization(contract, corpus).map((issue) => issue.message)).toEqual([
+      `[L10N_LITERAL_CONTENT] content renders literal text "Play"; ${advice}`,
+    ]);
+  });
+
+  it("a DOM property bound to literal text", () => {
+    const contract = loadCorpusContract("Carousel");
+    rotationOf(contract).properties = { title: "literal:Rotate" };
+    expect(validateLocalization(contract, corpus)).toEqual([
+      {
+        pointer: "/anatomy/dom/children/0/properties/title",
+        message: `[L10N_LITERAL_TEXT_ATTRIBUTE] property "title" binds literal text "Rotate"; ${advice}`,
+      },
+    ]);
+  });
+
+  it("a value map on a component instance feeding a translatable prop", () => {
+    const contract = loadCorpusContract("Carousel");
+    const { node, pointer } = paginationOf(contract);
+    node.bindings = { ...node.bindings, label: { kind: "map", source: "prop:indicator", values: { pagination: "Choose slide" } } };
+    expect(validateLocalization(contract, corpus)).toEqual([
+      {
+        pointer: `${pointer}/bindings/label`,
+        message: `[L10N_LITERAL_INSTANCE_ATTRIBUTE] "label" binds literal text "Choose slide" to Pagination's translatable prop; ${advice}`,
+      },
+    ]);
+  });
+
+  it("leaves a binding the parser rejects to the IR build instead of throwing", () => {
+    const contract = loadCorpusContract("Carousel");
+    rotationOf(contract).content = "paged:bogus";
+    expect(validateLocalization(contract, corpus)).toEqual([]);
+  });
+
   it("text in any script, not only Latin letters", () => {
     const contract = loadCorpusContract("Carousel");
     rotationOf(contract).content = "literal:次へ";

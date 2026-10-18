@@ -41,7 +41,7 @@ export function buildMessages(contract: ComponentContract): MessageIR[] {
 }
 
 /** Visit a binding and every nested operand. */
-function visitBinding(expr: BindingExpression | undefined, visit: (expr: BindingExpression) => void): void {
+export function visitBinding(expr: BindingExpression | undefined, visit: (expr: BindingExpression) => void): void {
   if (!expr) return;
   visit(expr);
   switch (expr.kind) {

@@ -8,10 +8,14 @@
  *   - L10N_LITERAL_TEXT_ATTRIBUTE — a text-bearing attribute (`aria-label`,
  *     `aria-roledescription`, `aria-valuetext`, `aria-description`,
  *     `aria-placeholder`, `title`, `placeholder`, `alt`) authored in `attrs`
- *     with letter-bearing text, or bound to a letter-bearing `literal:` /
- *     value-map arm.
- *   - L10N_LITERAL_CONTENT — element content that is a letter-bearing
- *     `literal:`, including a `conditional:` arm.
+ *     with letter-bearing text, or bound to an expression that renders a
+ *     letter-bearing literal; also any DOM `properties` binding that does.
+ *   - L10N_LITERAL_CONTENT — element content whose expression renders a
+ *     letter-bearing literal.
+ *
+ * Bindings are read with the IR's parser, so a literal counts wherever it
+ * sits in the expression: `literal:` or unprefixed text, a `conditional:`
+ * arm, a `selectionLabel` fallback, a value-map value or fallback.
  *   - L10N_LITERAL_PROP_DEFAULT — a string prop whose literal default holds
  *     letters. Use `defaultMessage`, or `translatable: false` when the default
  *     is not user-facing (a locale tag, an icon name).
@@ -24,8 +28,10 @@
  * Message references themselves are validated by the IR (`validateMessages`).
  */
 
-import type { ComponentContract, ContractDomNode, StyledPropMember } from "../contract.js";
+import type { ComponentContract, ContractDomNode, ContractValueMapBinding, StyledPropMember } from "../contract.js";
 import { getPropMembers } from "../contract.js";
+import { parseBindingExpression } from "../ir.js";
+import { visitBinding } from "../messages.js";
 import type { ValidationIssue } from "../validate.js";
 
 export const TEXT_BEARING_ATTRIBUTES: ReadonlySet<string> = new Set([
@@ -45,18 +51,27 @@ function hasLetters(text: string): boolean {
   return LETTER.test(text);
 }
 
-/** Letter-bearing `literal:` text an expression would render, if any. */
-function literalText(expr: string): string[] {
-  const out: string[] = [];
-  const visit = (value: string) => {
-    if (value.startsWith("literal:") && hasLetters(value.slice(8))) out.push(value.slice(8));
-  };
-  if (expr.startsWith("conditional:")) {
-    const arms = expr.slice(12).split("|").map((s) => s.trim());
-    arms.slice(1).forEach(visit);
-  } else {
-    visit(expr);
+/**
+ * Letter-bearing literal text a binding would render. The binding is read
+ * with the IR's own parser, so every literal operand counts wherever it
+ * sits: a `literal:` or unprefixed string, a `conditional:` arm, a
+ * `selectionLabel` fallback, or a value-map value or fallback.
+ */
+function literalTexts(value: string | ContractValueMapBinding): string[] {
+  if (typeof value !== "string") {
+    const arms = [...Object.values(value.values ?? {}), ...(value.fallback === undefined ? [] : [value.fallback])];
+    return [...literalTexts(value.source), ...arms.filter(hasLetters)];
   }
+  let expr;
+  try {
+    expr = parseBindingExpression(value);
+  } catch {
+    return []; // malformed: the IR build reports it
+  }
+  const out: string[] = [];
+  visitBinding(expr, (e) => {
+    if (e.kind === "literal" && hasLetters(e.value)) out.push(e.value);
+  });
   return out;
 }
 
@@ -87,18 +102,24 @@ export function validateLocalization(
     }
     for (const [name, value] of Object.entries(node.bindings ?? {})) {
       if (!TEXT_BEARING_ATTRIBUTES.has(name)) continue;
-      const texts = typeof value === "string"
-        ? literalText(value)
-        : Object.values((value as { values?: Record<string, string> }).values ?? {}).filter(hasLetters);
-      for (const text of texts) {
+      for (const text of literalTexts(value)) {
         issues.push({
           pointer: `${pointer}/bindings/${name}`,
           message: `[L10N_LITERAL_TEXT_ATTRIBUTE] "${name}" binds literal text "${text}"; ${advice}`,
         });
       }
     }
+    // DOM properties hold property-only facts (`indeterminate`); none carries text.
+    for (const [name, value] of Object.entries(node.properties ?? {})) {
+      for (const text of literalTexts(value)) {
+        issues.push({
+          pointer: `${pointer}/properties/${name}`,
+          message: `[L10N_LITERAL_TEXT_ATTRIBUTE] property "${name}" binds literal text "${text}"; ${advice}`,
+        });
+      }
+    }
     if (typeof node.content === "string") {
-      for (const text of literalText(node.content)) {
+      for (const text of literalTexts(node.content)) {
         issues.push({
           pointer: `${pointer}/content`,
           message: `[L10N_LITERAL_CONTENT] content renders literal text "${text}"; ${advice}`,
@@ -121,9 +142,9 @@ export function validateLocalization(
           }
         }
         for (const [name, value] of Object.entries(node.bindings ?? {})) {
-          if (TEXT_BEARING_ATTRIBUTES.has(name) || typeof value !== "string") continue;
+          if (TEXT_BEARING_ATTRIBUTES.has(name)) continue;
           if (!translatableStringProp(targetProps.get(name))) continue;
-          for (const text of literalText(value)) {
+          for (const text of literalTexts(value)) {
             issues.push({
               pointer: `${pointer}/bindings/${name}`,
               message:
