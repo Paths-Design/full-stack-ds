@@ -59,6 +59,11 @@ export default tseslint.config(
       ".codex/**",
       "packages/ds-contracts/portfolio-original/**",
       "packages/ds-contracts/tokens/**",
+      // Angular host components the preview dev server synthesizes on every
+      // run (src/runtime/angular-compiler/host.ts). Gitignored throwaway
+      // output, not package source: linting it fails on any machine that has
+      // previewed Angular.
+      "packages/ds-angular/.fsds-preview-hosts/**",
       "**/__tests__/**",
       "**/*.test.ts",
       "**/*.test.tsx",
