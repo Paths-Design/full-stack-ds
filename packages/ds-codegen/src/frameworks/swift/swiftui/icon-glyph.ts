@@ -170,7 +170,21 @@ export function generateGlyphCatalogFile(): GeneratedFile | null {
   };
 }
 
-/** Swift string literal with escaping (quotes, backslashes). */
+/**
+ * Swift single-line string literal. Escapes backslashes and quotes, and every
+ * control character (a raw line break would end the literal mid-string).
+ */
 export function swiftLiteral(value: string): string {
-  return `"${value.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
+  const escaped = value.replace(/[\\"\u0000-\u001f\u007f]/g, (ch) => {
+    switch (ch) {
+      case "\\": return "\\\\";
+      case '"': return '\\"';
+      case "\n": return "\\n";
+      case "\r": return "\\r";
+      case "\t": return "\\t";
+      case "\0": return "\\0";
+      default: return `\\u{${ch.charCodeAt(0).toString(16)}}`;
+    }
+  });
+  return `"${escaped}"`;
 }

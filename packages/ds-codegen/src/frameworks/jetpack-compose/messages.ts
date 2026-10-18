@@ -22,9 +22,24 @@ export const KOTLIN_MESSAGES_VALUE = "fsdsMessages";
 const KOTLIN_MESSAGES_IMPORT = "import com.fullstackds.messages.LocalFsdsMessages";
 const KOTLIN_MESSAGES_HOIST = `val ${KOTLIN_MESSAGES_VALUE} = ${KOTLIN_MESSAGES_LOCAL}`;
 
-/** Kotlin string literal with escaping (backslashes, quotes, template dollars). */
+/**
+ * Kotlin string literal. Escapes backslashes, quotes, template dollars and
+ * every control character (a raw line break would end the literal mid-string).
+ */
 export function kotlinStringLiteral(value: string): string {
-  return `"${value.replaceAll("\\", "\\\\").replaceAll("$", "\\$").replaceAll('"', '\\"')}"`;
+  const escaped = value.replace(/[\\"$\u0000-\u001f\u007f]/g, (ch) => {
+    switch (ch) {
+      case "\\": return "\\\\";
+      case '"': return '\\"';
+      case "$": return "\\$";
+      case "\n": return "\\n";
+      case "\r": return "\\r";
+      case "\t": return "\\t";
+      case "\b": return "\\b";
+      default: return `\\u${ch.charCodeAt(0).toString(16).padStart(4, "0")}`;
+    }
+  });
+  return `"${escaped}"`;
 }
 
 /**
