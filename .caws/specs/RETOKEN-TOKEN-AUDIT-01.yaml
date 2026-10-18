@@ -87,3 +87,7 @@ evidence:
     status: pass
     evidence_ref: "gate parity check: all 3 cross-scope differences (.retoken->.pinterest card chrome) carry recorded decisions; classifier emits no uncovered candidates @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
     recorded_at: "2026-10-18T07:57:10.089Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "gate literal census: 13/13 literals ledgered; brand accents #1ed760/#071b0b/#3be477/#e60023/#ad081b/#870a18 defined once as --retoken-accent-* page tokens and consumed via var() in theme.css @ 73468ea1f2cb8a38ed6eebd166e3b5e887e73a66"
+    recorded_at: "2026-10-18T07:57:12.168Z"
