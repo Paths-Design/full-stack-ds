@@ -77,3 +77,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm --filter @full-stack-ds/example-motion-lab-lit build exit 0 (tsc --noEmit + vite build) at merge 66cb7a051; imports only @full-stack-ds/lit, @full-stack-ds/tokens/tokens.css, gsap, and app-level ../src/motion"
     recorded_at: "2026-10-18T18:38:41.843Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "artifact tmp/motion-lab/svelte-evidence.json and tmp/motion-lab/lit-evidence.json: all five token readouts resolve runtime values; entrance/stagger inline tweens observed; skeleton mid-pulse opacities (0.9823); icon rotation matrices mid-loop; scramble mid-swap pool symbols with identity-preserving settles; per-path SVG reveal opacities 0-to-1; full reduced-motion substitution (no inline styles, static opacities, settled text). Screenshots tmp/motion-lab/{svelte,lit}-{default,reduced}.png"
+    recorded_at: "2026-10-18T18:38:43.263Z"
