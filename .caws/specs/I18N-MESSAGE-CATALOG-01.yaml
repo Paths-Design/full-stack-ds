@@ -102,3 +102,13 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-codegen/src/validation/localization.test.ts
     commit_sha: d5eec68c0
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At d5eec68c0 one obligation set (messages.contract.ts) runs in React, Vue, Svelte, Angular and Lit harnesses: contract defaults with no catalog; provided keys replace aria-label, aria-roledescription, content and message-defaulted prop text; a partial catalog keeps other defaults; an explicit prop beats the catalog; entries are scoped to their component; a parameterized message follows translator word order ('{count} pages au total'). Each harness also changes the catalog after mount, including the runtime-owned rotation text and name ('Lancer'); the cited Angular test is that check. React Native (Carousel/__tests__/messages.test.tsx, 5 tests) asserts the same on accessibilityLabel and Text incl. position template '3 枚中 3 枚目'. gates-d5eec68c0: test:frameworks vue 819, lit 585 (+2 skipped), svelte 720, angular jest 546, react-native 240 passed; root 4884 passed."
+    recorded_at: "2026-10-18T14:46:36.936Z"
+    test_nodeid: "packages/ds-angular/src/primitives/__tests__/messages.test.ts::a signal catalog change re-renders consumers"
+    command: "pnpm run test:frameworks && pnpm test"
+    exit_code: 0
+    artifact_path: packages/ds-react/src/primitives/hooks/__tests__/messages.contract.ts
+    commit_sha: d5eec68c0
+    test_verified_at: d5eec68c02e60964f9514ca31029e0cb157bee92
