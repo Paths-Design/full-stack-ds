@@ -3,6 +3,7 @@
 import { computed, useId } from "vue";
 import { useToast } from "./useToast.js";
 import { useAutoDismiss } from "../../primitives/index.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -32,11 +33,14 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   open: undefined,
   variant: "info",
   politeness: "polite",
 });
+const ToastMessages = { regionLabel: "Notifications", dismiss: "Dismiss" };
+const fsdsMessages = useFsdsMessages("Toast", ToastMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 // @generated:end
 
 // @generated:start hook
@@ -73,7 +77,7 @@ const instanceId = useId();
 
 <template>
   <Teleport to="body">
-    <div :class="classNames" aria-label="Notifications" :aria-live="props.politeness" role="region" :data-testid="props.dataTestid" data-fsds-component="toast" data-fsds-box="" v-on="autoDismiss.pauseListeners">
+    <div :class="classNames" :aria-label="fsdsMessages.regionLabel" :aria-live="props.politeness" role="region" :data-testid="props.dataTestid" data-fsds-component="toast" data-fsds-box="" v-on="autoDismiss.pauseListeners">
       <div v-if="behavior.open.value" :class="'toast__item'" role="status" :aria-labelledby="props.title ? `${instanceId}-title` : undefined">
         <div :class="'toast__row'">
           <div v-if="props.title" :class="'toast__title'" :id="`${instanceId}-title`">
@@ -85,7 +89,7 @@ const instanceId = useId();
           <div v-if="$slots.action" :class="'toast__action'">
             <slot name="action" />
           </div>
-          <button :class="'toast__close'" type="button" aria-label="Dismiss" @click="() => behavior.setOpen(!behavior.open.value)"></button>
+          <button :class="'toast__close'" type="button" @click="() => behavior.setOpen(!behavior.open.value)" :aria-label="fsdsMessages.dismiss"></button>
         </div>
         <div :class="'toast__progress'" hidden :ref="autoDismiss.bindProgress" aria-hidden="true"></div>
       </div>

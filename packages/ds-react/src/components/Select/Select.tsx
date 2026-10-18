@@ -2,6 +2,7 @@
 import { type HTMLAttributes, type ReactNode, useId } from "react";
 import { Stack } from "../../primitives";
 import { useSelect } from "./useSelect";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Select.css";
 // @generated:end
 
@@ -103,6 +104,8 @@ export function SelectOption({
 // @generated:end
 
 // @generated:start component
+const SelectMessages = { triggerLabel: "Select an option", placeholder: "Select an option", searchLabel: "Search options" };
+
 export function Select({
   value: controlledValue,
   defaultValue = "beta",
@@ -117,14 +120,18 @@ export function Select({
   "data-testid": testId,
   options = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}],
   multiple,
-  triggerLabel = "Select an option",
-  filterFn: _filterFn,
+  triggerLabel: triggerLabelProp,
+  filterFn,
   searchable,
   empty,
-  placeholder = "Select an option",
-  searchLabel = "Search options",
+  placeholder: placeholderProp,
+  searchLabel: searchLabelProp,
   ...rest
 }: SelectProps) {
+  const fsdsMessages = useFsdsMessages("Select", SelectMessages);
+  const triggerLabel = triggerLabelProp ?? fsdsMessages.triggerLabel;
+  const placeholder = placeholderProp ?? fsdsMessages.placeholder;
+  const searchLabel = searchLabelProp ?? fsdsMessages.searchLabel;
   const { panelRef, anchorRef, selection, setSelection, open, setOpen, handleTriggerKeydown, handleContentKeydown, handleOptionKeydown } = useSelect({
     value: controlledValue,
     defaultValue,

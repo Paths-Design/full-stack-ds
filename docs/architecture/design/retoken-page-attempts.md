@@ -1,6 +1,13 @@
 ---
+doc_id: ARCH-RETOKEN-PAGE-ATTEMPTS-001
+authority: architecture
+status: active
 title: Retokening page attempts
-updated: 2026-09-06
+owner: "@darianrosebrook"
+updated: 2026-10-18
+governs:
+  - e2e/fixtures/retoken-pages/**
+  - e2e/retoken-pages.spec.ts
 ---
 
 # Spotify and Pinterest as consumer probes
@@ -121,3 +128,42 @@ are a fixed local collection, not personalization. The reference's account
 analytics, advertising tools, photo assets, and complete icon set are not
 reproduced. CSS columns retain their sequential reading order and bounded
 collection; this remains a composition witness, not a virtualized feed.
+
+## Visual audit repairs (October 2026)
+
+A browser-render audit at 1440/900/390 px surfaced four defects the interaction
+suite could not see, all repaired in this slice (`RETOKEN-VISUAL-FIXES-01`):
+
+| Defect | Repair |
+|---|---|
+| Popover content portals to `document.body`, outside the page's `.retoken` scope; menu buttons fell back to the default 1px brand border and 16px text | `.pin-menu` now carries every page-scope variable it relies on (border width, base text size); the suite asserts computed `0px`/`14px` inside an open menu |
+| Quick-pick labels clipped mid-glyph at narrow widths (`white-space: nowrap; text-overflow: clip`) | Label span constrained with ellipsis. **Upstream control gap recorded:** Button exposes no label-truncation control (`Text.truncate` has no Button counterpart); the fixture's `.quick-pick .button > span` selector is a documented structural selector inside a component root, not a pattern to copy |
+| Boards sharing a `kind` rendered identical display text (three "Material futures.", three "Independent minds."), reading as duplicates inside one rail | `pinArtwork` derives each board's display text from a per-pin `headline`, with per-index issue numbers and rotated card labels; the suite asserts every related-rail image has a distinct decoded text content |
+| Comment form floated on `margin-top: auto` with `padding-top: 36px`, leaving a dead band above it whenever a pin has no comments | Fixed 16px offset; the suite bounds the comments-to-form gap at ≤24px |
+
+Polish in the same slice: the library "Home" button left-aligns with the
+"Soundroom" heading (Button's flex centering had centered the label inside its
+stretched box), and Save overlays at ≤700px use a smaller footprint so they
+cover less artwork. The suite asserts both. The detail view's back chip still
+overlaps text baked into some artwork; as an overlay control that collision is
+inherent and stays a composition decision rather than a defect.
+
+## Token audit (RETOKEN-TOKEN-AUDIT-01)
+
+A five-axis audit of the token scope both pages share (`theme.css`), each with a
+mechanical artifact committed beside the fixture
+(`token-audit-baseline.json`, gate `pnpm run audit:retoken-tokens`,
+probe `scripts/retoken-token-probe.mjs`):
+
+| Axis | Method | Finding |
+|---|---|---|
+| Consumption inventory | Static extraction of every `--fsds-*` declaration with scope, value, and literal/ref kind | 119 declarations before adjudication; 111 after dead removal |
+| Load-bearing | Runtime removal probe: unset each declaration in-page (transitions disabled), watch used properties on the matched subtree at 1440/390 plus detail/popover passes | 99 load-bearing, 12 state-conditioned, 8 dead — all 8 deleted (the base button fill was shadowed by `.quiet`/`.selected`/`.play-button`/`.save-button` on every rendered button; three box-model guards restated package defaults) |
+| Default-chain fallback | Static resolution of every unset design var's fallback chain to its terminal | 30 single-hex terminals ledgered as inherited-by-intent; multi-stop shadow terminals are an explicit non-claim of this ledger |
+| Cross-page parity | Same-slot value comparison across `.retoken`/`.spotify`/`.pinterest` scopes | 3 differences, all Pinterest card-chrome decisions, recorded with their reference rationale |
+| Literal census + contrast | Every hex literal ledgered; brand-shaped accents named once | Playback green and save/brand red promoted to `--retoken-accent-*` page tokens; 13 bounded neutrals ledgered; 7 curated AA contrast pairs pass |
+
+Non-claims: the probe samples resting DOM at the committed pages, so
+interaction-state slots are classified statically rather than exercised; the
+gate is local-only (pre-push family `RETOKEN_TOKEN_AUDIT`), not yet a CI step;
+shadow-composition fallback terminals are outside the color ledger's scope.

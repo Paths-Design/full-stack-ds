@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig, sequencePresentation } from "../../sequence.js";
+import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
+import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
  * Vue 3 SFC emission, IR-driven.
  *
@@ -117,6 +118,9 @@ const VUE_SKIP_PROPS = new Set(["class", "style", "children", "className"]);
  * users override entire SFCs rather than splice template fragments).
  */
 export function generateVueComponentSource(ir: ComponentIR): string {
+  if (ir.messages.length > 0 && (isDisclosureContainer(ir) || isCompoundStateContainer(ir))) {
+    throw new Error(`[MESSAGE_UNLOWERED] ${ir.name}: compound-state Vue components do not resolve contract messages`);
+  }
   if (isDisclosureContainer(ir)) {
     return generateVueDisclosureStateRootSource(ir);
   }
@@ -129,6 +133,7 @@ export function generateVueComponentSource(ir: ComponentIR): string {
   const importsBody = [
     `import { computed } from "vue";`,
     `import { Stack } from "../../primitives/index.js";`,
+    ...vueMessageImports(ir),
   ].join("\n");
 
   const typesBody = emitNonReactTypeAliases(ir).join("\n");
@@ -208,22 +213,42 @@ function generatePropsInterface(ir: ComponentIR): string {
   return lines.join("\n");
 }
 
+/** Runtime message helpers a message-bearing component imports. */
+function vueMessageImports(ir: ComponentIR): string[] {
+  if (ir.messages.length === 0) return [];
+  const names = ["useFsdsMessages", "withFsdsMessageDefaults", ...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : [])];
+  return [`import { ${names.join(", ")} } from "../../primitives/messages.js";`];
+}
+
 function generateDefineProps(ir: ComponentIR): string {
   const defaults = collectDefaults(ir);
+  // A message-bearing component declares its props under `fsdsProps`, then
+  // exposes `props` as a read-through view whose message-defaulted keys
+  // resolve `explicit ?? catalog`, so every `props.x` reference (template
+  // and script) sees the localized default without per-site rewriting.
+  const target = ir.messages.length > 0 ? "fsdsProps" : "props";
+  const lines: string[] = [];
   if (defaults.length === 0) {
-    return `const props = defineProps<Props>();`;
+    lines.push(`const ${target} = defineProps<Props>();`);
+  } else {
+    lines.push(`const ${target} = withDefaults(defineProps<Props>(), {`);
+    for (const [name, value, needsFactory] of defaults) {
+      const propKey = vuePropKey(name);
+      // Vue's withDefaults requires a factory function whenever the prop type
+      // covers non-primitive shapes — including `unknown`, which is what
+      // ReactNode / ReactElement / etc. translate to. Wrap the literal value
+      // so TS doesn't complain that the literal isn't a factory.
+      const expr = needsFactory ? `() => (${value})` : value;
+      lines.push(`  ${propKey}: ${expr},`);
+    }
+    lines.push(`});`);
   }
-  const lines: string[] = [`const props = withDefaults(defineProps<Props>(), {`];
-  for (const [name, value, needsFactory] of defaults) {
-    const propKey = vuePropKey(name);
-    // Vue's withDefaults requires a factory function whenever the prop type
-    // covers non-primitive shapes — including `unknown`, which is what
-    // ReactNode / ReactElement / etc. translate to. Wrap the literal value
-    // so TS doesn't complain that the literal isn't a factory.
-    const expr = needsFactory ? `() => (${value})` : value;
-    lines.push(`  ${propKey}: ${expr},`);
+  if (ir.messages.length > 0) {
+    const messageProps = ir.styledProps.filter((p) => p.defaultMessage);
+    lines.push(`const ${messageDefaultsName(ir.name)} = ${messageDefaultsLiteral(ir.messages)};`);
+    lines.push(`const fsdsMessages = useFsdsMessages(${JSON.stringify(ir.name)}, ${messageDefaultsName(ir.name)});`);
+    lines.push(`const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { ${messageProps.map((p) => `${vuePropKey(p.name)}: ${JSON.stringify(p.defaultMessage)}`).join(", ")} });`);
   }
-  lines.push(`});`);
   return lines.join("\n");
 }
 
@@ -255,6 +280,9 @@ function collectDefaults(ir: ComponentIR): Array<[string, string, boolean]> {
   const out: Array<[string, string, boolean]> = [];
   for (const p of ir.styledProps) {
     if (VUE_SKIP_PROPS.has(p.name)) continue;
+    // A message-defaulted prop has no static default: the catalog supplies
+    // it through `withFsdsMessageDefaults` (see generateDefineProps).
+    if (p.defaultMessage) continue;
     if (p.defaultExpr !== undefined) {
       out.push([p.name, p.defaultExpr, defaultNeedsFactory(lowerVuePropType(p.propType))]);
       continue;
@@ -1636,6 +1664,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
+  importLines.push(...vueMessageImports(ir));
   const importsBody = importLines.join("\n");
 
   const typesBody = emitNonReactTypeAliases(ir).join("\n");
@@ -1699,6 +1728,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     hookLines.push(`const sequence = useSequence(${sequenceConfig(seq, ir.cssPrefix)}, () => ({`,
       `  index: behavior.${seq.channel}.value, labels: props.${seq.itemsProp}, autoPlay: props.${seq.timing.autoPlayProp},`,
       `  presentation: ${sequencePresentation(seq, prop => `props.${prop}`)},`,
+      `  messages: ${sequenceMessages(seq, key => `fsdsMessages.value.${key}`)},`,
       `  durationMs: props.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : props.${seq.timing.durationProp},`,
       `  onIndexChange: behavior.set${capitalize(seq.channel)},`, `}));`);
   }
@@ -2734,6 +2764,10 @@ function renderVueTextContent(
       return `{{ ${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)} }}`;
     case "literal":
       return escapeAttrString(expr.value);
+    case "message": {
+      const lowered = renderVueBindingValue(expr, ctx);
+      return lowered === null ? null : `{{ ${lowered} }}`;
+    }
     case "iterationLocal": {
       const name = vueIterationLocalName(expr.local, ctx);
       return name ? `{{ ${appendPath(name, expr.path)} }}` : null;
@@ -2816,6 +2850,10 @@ function renderVueBinding(
       return `:${attr}="${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
       return `${attr}="${escapeAttrString(expr.value)}"`;
+    case "message": {
+      const lowered = renderVueBindingValue(expr, ctx);
+      return lowered === null ? null : `:${attr}="${lowered}"`;
+    }
     case "iterationLocal": {
       const name = vueIterationLocalName(expr.local, ctx);
       return name ? `:${attr}="${appendPath(name, expr.path)}"` : null;
@@ -2970,6 +3008,9 @@ function renderVueBindingValue(
       return appendPath(vuePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
       return singleQuotedJsString(expr.value);
+    case "message":
+      // Template scope auto-unwraps the `fsdsMessages` computed.
+      return composeMessageExpression("fsdsMessages", expr, (value) => renderVueBindingValue(value, ctx));
     case "iterationLocal": {
       const name = vueIterationLocalName(expr.local, ctx);
       return name ? appendPath(name, expr.path) : null;
@@ -3053,6 +3094,8 @@ function renderVueEvent(
     case "literal":
       // Rare. Inline as a string handler.
       return `@${eventName}="${escapeAttrString(expr.value)}"`;
+    case "message":
+      return null;
     case "iterationLocal": {
       // Iteration locals (index/item) are values, not callables. An
       // event-handler binding to an iteration local doesn't make sense;

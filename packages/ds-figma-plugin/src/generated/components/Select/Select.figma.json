@@ -170,7 +170,8 @@
       "required": false,
       "description": "Accessible name for the button that opens the option list.",
       "defaultExpr": "\"Select an option\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "triggerLabel"
     },
     {
       "name": "size",
@@ -215,7 +216,8 @@
       "required": false,
       "description": "Visible prompt when no selected value matches an option.",
       "defaultExpr": "\"Select an option\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "placeholder"
     },
     {
       "name": "searchLabel",
@@ -224,7 +226,31 @@
       "required": false,
       "description": "Accessible name for the search text control.",
       "defaultExpr": "\"Search options\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "searchLabel"
+    }
+  ],
+  "messages": [
+    {
+      "key": "triggerLabel",
+      "catalogKey": "Select.triggerLabel",
+      "defaultMessage": "Select an option",
+      "description": "Accessible name of the trigger while no value is selected.",
+      "params": []
+    },
+    {
+      "key": "placeholder",
+      "catalogKey": "Select.placeholder",
+      "defaultMessage": "Select an option",
+      "description": "Text shown in the trigger while no value is selected.",
+      "params": []
+    },
+    {
+      "key": "searchLabel",
+      "catalogKey": "Select.searchLabel",
+      "defaultMessage": "Search options",
+      "description": "Accessible name of the option search field.",
+      "params": []
     }
   ],
   "designBindings": [

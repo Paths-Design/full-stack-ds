@@ -56,6 +56,7 @@
       "members": [
         {
           "name": "name",
+          "translatable": false,
           "propType": { "kind": "string" },
           "description": "Canonical icon name resolved against the @full-stack-ds/iconography catalog (e.g. \"check\", \"circle\"). An unknown name renders no glyph.",
           "required": true

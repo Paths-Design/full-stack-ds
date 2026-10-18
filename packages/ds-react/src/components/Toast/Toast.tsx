@@ -2,6 +2,7 @@
 import { type HTMLAttributes, type ReactNode, useId } from "react";
 import { Stack } from "../../primitives";
 import { useToast } from "./useToast";
+import { useFsdsMessages } from "../../primitives/messages";
 import { useAutoDismiss } from "../../primitives/hooks";
 import "./Toast.css";
 // @generated:end
@@ -97,6 +98,8 @@ export function ToastDescription({
 // @generated:end
 
 // @generated:start component
+const ToastMessages = { regionLabel: "Notifications", dismiss: "Dismiss" };
+
 export function Toast({
   open: controlledOpen,
   onOpenChange,
@@ -110,6 +113,7 @@ export function Toast({
   slots,
   ...rest
 }: ToastProps) {
+  const fsdsMessages = useFsdsMessages("Toast", ToastMessages);
   const { open, setOpen, renderInPortal } = useToast({
     open: controlledOpen,
     onOpenChange,
@@ -136,7 +140,7 @@ export function Toast({
 
   return (
     renderInPortal(
-    <Stack layout="native" className={`${classNames}`} aria-label="Notifications" aria-live={politeness} role="region" data-testid={testId} data-fsds-component="toast" data-fsds-box="" {...autoDismissPauseProps} {...rest}>
+    <Stack layout="native" className={`${classNames}`} aria-label={fsdsMessages.regionLabel} aria-live={politeness} role="region" data-testid={testId} data-fsds-component="toast" data-fsds-box="" {...autoDismissPauseProps} {...rest}>
       {open ? (
         <div className="toast__item" role="status" aria-labelledby={title ? `${instanceId}-title` : undefined}>
           <div className="toast__row">
@@ -153,7 +157,7 @@ export function Toast({
                 {slots?.action}
               </div>
             ) : null}
-            <button className="toast__close" type="button" aria-label="Dismiss" onClick={() => setOpen(!open)} />
+            <button className="toast__close" type="button" onClick={() => setOpen(!open)} aria-label={fsdsMessages.dismiss} />
           </div>
           <div className="toast__progress" hidden ref={autoDismiss.bindProgress} aria-hidden="true" />
         </div>

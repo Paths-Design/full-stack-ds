@@ -51,6 +51,7 @@ function fixtureIR(): ComponentIR {
     },
     surface: null,
     motion: { sequence: null, countdown: null, loops: [], transitions: [], honorsReducedMotion: true, reducedMotion: null },
+    messages: [],
   } as unknown as ComponentIR;
 }
 

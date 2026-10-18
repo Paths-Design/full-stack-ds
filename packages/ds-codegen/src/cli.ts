@@ -79,6 +79,7 @@ import {
 } from "./validation/emission-manifest-path.js";
 import { readManifestForVerification } from "./validation/required-mode.js";
 import { validateContractSemantics } from "./validation/semantic.js";
+import { validateContractIr } from "./validation/ir-build.js";
 import { buildFigmaStackPrimitiveDescriptor } from "./frameworks/figma/factory.js";
 import { readPrimitiveIR } from "./primitive-contract.js";
 import { validateContractIconRefs } from "./validation/icon-refs.js";
@@ -583,7 +584,11 @@ function main(): void {
     // All pass results merge — one DRIFT line per failing contract
     // with all issues from all validators concatenated.
     if (args.checkSemantics) {
-      const driftIssues = [
+      // The IR build validates message references, sequence parts and the
+      // other normalized facts; several validators below build it too, so a
+      // contract whose IR fails reports only that failure.
+      const irIssues = validateContractIr(result.value, allContractsByName);
+      const driftIssues = irIssues.length > 0 ? irIssues : [
         ...validateContractSemantics(result.value, {
           allContracts: allContractsByName,
         }),

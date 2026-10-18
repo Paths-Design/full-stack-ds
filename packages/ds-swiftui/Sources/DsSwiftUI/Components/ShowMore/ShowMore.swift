@@ -24,11 +24,14 @@ enum ShowMoreTokens {
 
 /// Emitted through the expandable-content path: the expanded channel (ControllableValue substrate) gates the line limit; the disclosure toggle appears when the contract authors one.
 public struct ShowMore<Content: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         ShowMoreTokens.scopes
     }
     @StateObject private var expanded: ControllableValue<Bool>
     private let maxLines: Int
+    private let showLessLabelProp: String?
+    private let showMoreLabelProp: String?
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
 
@@ -37,12 +40,19 @@ public struct ShowMore<Content: View>: View {
         defaultExpanded: Bool = false,
         onExpandedChange: ((Bool) -> Void)? = nil,
         maxLines: Int = 3,
+        showLessLabel: String? = nil,
+        showMoreLabel: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self._expanded = StateObject(wrappedValue: ControllableValue(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange))
         self.maxLines = maxLines
+        self.showLessLabelProp = showLessLabel
+        self.showMoreLabelProp = showMoreLabel
         self.content = content()
     }
+
+    private var showLessLabel: String { showLessLabelProp ?? fsdsMessages.string("ShowMore.showLess", default: "Show less") }
+    private var showMoreLabel: String { showMoreLabelProp ?? fsdsMessages.string("ShowMore.showMore", default: "Show more") }
 
     private var layered: [String: FsdsTokenValue?] {
         resolveFsdsLayeredTokens(
@@ -73,7 +83,7 @@ public struct ShowMore<Content: View>: View {
             content
                 .lineLimit(expanded.value ? nil : maxLines)
             if true {
-                Button(expanded.value ? "Show less" : "Show more") {
+                Button(expanded.value ? showLessLabel : showMoreLabel) {
                     expanded.toggle()
                 }
                 .buttonStyle(.plain)

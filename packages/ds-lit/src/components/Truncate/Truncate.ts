@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { TruncateBehavior } from './TruncateBehavior.js';
 import { styleMap } from 'lit/directives/style-map.js';
@@ -18,6 +19,8 @@ import { styleMap } from 'lit/directives/style-map.js';
 // @custom:end
 
 // @generated:start component
+const TruncateMessages = { expand: "Show more", collapse: "Show less" };
+
 export class TruncateElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -119,13 +122,15 @@ export class TruncateElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Truncate", TruncateMessages);
+
   @property({ type: Number }) lines?: number;
   @property({ type: Boolean }) expandable?: boolean;
   @property({ type: Boolean }) expanded?: boolean;
   @property({ type: Boolean }) defaultExpanded?: boolean;
   @property({ attribute: false }) onExpandedChange?: (expanded: boolean) => void;
-  @property({ type: String }) expandText?: string = "Show more";
-  @property({ type: String }) collapseText?: string = "Show less";
+  @property({ type: String }) expandText?: string;
+  @property({ type: String }) collapseText?: string;
 
   private initializedBehavior?: TruncateBehavior;
   private get behavior(): TruncateBehavior {
@@ -154,7 +159,7 @@ export class TruncateElement extends LitElement {
     <slot></slot>
   </span>
   ${this.expandable ? html`
-  <button class=${'truncate__toggle'} type="button" @click=${() => this.behavior.setExpanded(!this.behavior.expanded)} aria-expanded=${this.behavior.expanded ? 'true' : 'false'}>${(this.behavior.expanded ? (this.collapseText ?? "Show less") : (this.expandText ?? "Show more"))}</button>
+  <button class=${'truncate__toggle'} type="button" @click=${() => this.behavior.setExpanded(!this.behavior.expanded)} aria-expanded=${this.behavior.expanded ? 'true' : 'false'}>${(this.behavior.expanded ? (this.collapseText ?? this.fsdsMessages.value.collapse) : (this.expandText ?? this.fsdsMessages.value.expand))}</button>
   ` : nothing}
 </div>`;
   }

@@ -28,7 +28,7 @@
   width: var(--fsds-page-navigator-design-input-sizing-width, 100%);
 }
 
-.page-navigator__total {
+.page-navigator__context {
   font-variant-numeric: tabular-nums;
 }
 /* @generated:end */

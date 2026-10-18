@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog as ComposeDialog
 import androidx.compose.ui.window.DialogProperties
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsContentColor
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
@@ -49,7 +50,7 @@ fun Command(
     search: String? = null,
     defaultSearch: String = "",
     onSearchChange: ((String) -> Unit)? = null,
-    placeholder: String = "Search...",
+    placeholder: String = LocalFsdsMessages.current.string("Command.searchPlaceholder", "Search..."),
     content: @Composable () -> Unit,
 ) {
     var uncontrolledOpen by remember { mutableStateOf(defaultOpen) }

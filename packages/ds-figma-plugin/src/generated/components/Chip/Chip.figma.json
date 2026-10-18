@@ -165,7 +165,17 @@
       "required": false,
       "description": "Accessible label for the dismiss control.",
       "defaultExpr": "\"Remove\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "dismiss"
+    }
+  ],
+  "messages": [
+    {
+      "key": "dismiss",
+      "catalogKey": "Chip.dismiss",
+      "defaultMessage": "Remove",
+      "description": "Accessible name of the button that removes the chip.",
+      "params": []
     }
   ],
   "designBindings": [

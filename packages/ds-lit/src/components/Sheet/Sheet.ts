@@ -1,6 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
 import { ref } from 'lit/directives/ref.js';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
 import { SheetBehavior } from './SheetBehavior.js';
@@ -20,6 +21,8 @@ export type SheetSide = "top" | "right" | "bottom" | "left";
 // @custom:end
 
 // @generated:start component
+const SheetMessages = { close: "Close sheet" };
+
 export class SheetElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -241,6 +244,8 @@ export class SheetElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Sheet", SheetMessages);
+
   @property({ type: Boolean }) open?: boolean;
   @property({ type: Boolean }) defaultOpen?: boolean;
   @property({ attribute: false }) onOpenChange?: (open: boolean) => void;
@@ -322,7 +327,7 @@ export class SheetElement extends LitElement {
       <p class=${'sheet__description'} id="sheet-description">
         <slot name="description" @slotchange=${() => this.requestUpdate()}></slot>
       </p>
-      <button class=${'sheet__close'} type="button" aria-label="Close sheet" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setOpenness(false); }}></button>
+      <button class=${'sheet__close'} type="button" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setOpenness(false); }} aria-label=${this.fsdsMessages.value.close}></button>
     </div>
     <div class=${'sheet__body'}>
       <slot></slot>

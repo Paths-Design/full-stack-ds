@@ -102,7 +102,8 @@
       "required": false,
       "description": "Accessible name for this set of choices.",
       "defaultExpr": "\"Choose page\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "navigationLabel"
     },
     {
       "name": "disabled",
@@ -121,6 +122,15 @@
       "description": "Enable a decorative elapsed projection supplied by an enclosing owner. This component never starts a timer.",
       "defaultExpr": "\"none\"",
       "nodeKind": null
+    }
+  ],
+  "messages": [
+    {
+      "key": "navigationLabel",
+      "catalogKey": "Pagination.navigationLabel",
+      "defaultMessage": "Choose page",
+      "description": "Accessible name of the page choices.",
+      "params": []
     }
   ],
   "designBindings": [

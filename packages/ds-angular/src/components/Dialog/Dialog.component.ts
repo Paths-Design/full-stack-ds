@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, ViewChild, ElementRef, Injector, runInInjectionContext, untracked, type OnInit, type OnDestroy } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useDialog } from "./useDialog.js";
@@ -21,6 +22,8 @@ export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
 // @generated:start component
 let nextInstanceId = 0;
 
+const DialogMessages = { close: "Close dialog" };
+
 @Component({
   selector: "fsds-dialog",
   standalone: true,
@@ -36,7 +39,7 @@ let nextInstanceId = 0;
         <h2 [ngClass]="'dialog__title'" [attr.id]="instanceId + '-title'">
           <ng-content select="[slot=title]" />
         </h2>
-        <button [ngClass]="'dialog__closeButton'" type="button" aria-label="Close dialog" (click)="canActivateInteraction($event, false) && behavior.setOpenness(false)"></button>
+        <button [ngClass]="'dialog__closeButton'" type="button" (click)="canActivateInteraction($event, false) && behavior.setOpenness(false)" [attr.aria-label]="fsdsMessages().close"></button>
       </div>
       <div [ngClass]="'dialog__body'" [attr.id]="instanceId + '-body'">
         <ng-content />
@@ -50,6 +53,7 @@ let nextInstanceId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogComponent implements OnInit, OnDestroy {
+  protected readonly fsdsMessages = injectFsdsMessages("Dialog", DialogMessages);
   private readonly inputOpen = signal<boolean | undefined>(undefined);
   @Input() get open(): boolean | undefined { return this.inputOpen(); }
   set open(value: boolean | undefined) { this.inputOpen.set(value); }

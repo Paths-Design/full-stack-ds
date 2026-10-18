@@ -2,6 +2,7 @@
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, effect, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
 import { createReactivePagedSet } from "../../primitives/paging-signal.js";
+import { formatFsdsMessage, injectFsdsMessages } from "../../primitives/messages.js";
 import { ButtonComponent } from "../Button/Button.component.js";
 import { IconComponent } from "../Icon/Icon.component.js";
 import { InputComponent } from "../Input/Input.component.js";
@@ -22,39 +23,40 @@ export type PageNavigatorPresentation = "indicators" | "pages";
 // @custom:end
 
 // @generated:start component
+const PageNavigatorMessages = { groupLabel: "Page navigation", pageLabel: "Current page", previousPage: "Previous page", nextPage: "Next page", commit: "Go", pageCount: "of {count}" };
+
 @Component({
   selector: "fsds-page-navigator",
   standalone: true,
   imports: [NgClass, NgIf, ButtonComponent, IconComponent, InputComponent, PaginationComponent],
   host: { "data-fsds-component": "page-navigator" },
-  template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="(label ?? 'Page navigation')" data-fsds-box="">
-  <fsds-button [ngClass]="'page-navigator__previous'" type="button" [onClick]="pagedSet.previous" [disabled]="pagedSet.state.previousDisabled" [ariaLabel]="(previousLabel ?? 'Previous page')">
+  template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="(label ?? fsdsMessages().groupLabel)" data-fsds-box="">
+  <fsds-button [ngClass]="'page-navigator__previous'" type="button" [onClick]="pagedSet.previous" [disabled]="pagedSet.state.previousDisabled" [ariaLabel]="(previousLabel ?? fsdsMessages().previousPage)">
     <fsds-icon [ngClass]="'page-navigator__previousIcon'" name="arrow-left" size="sm"></fsds-icon>
   </fsds-button>
   <div [ngClass]="'page-navigator__field'" (keydown)="pagedSet.commitOnEnter($event)" (focusout)="pagedSet.commit()">
-    <fsds-input [ngClass]="'page-navigator__input'" type="number" [onChange]="pagedSet.edit" [value]="pagedSet.state.draft" [disabled]="pagedSet.state.disabled" [ariaLabel]="(pageLabel ?? 'Current page')"></fsds-input>
+    <fsds-input [ngClass]="'page-navigator__input'" type="number" [onChange]="pagedSet.edit" [value]="pagedSet.state.draft" [disabled]="pagedSet.state.disabled" [ariaLabel]="(pageLabel ?? fsdsMessages().pageLabel)"></fsds-input>
   </div>
   <span [ngClass]="'page-navigator__context'">
-    {{ (ofLabel ?? 'of') }}
+    {{ formatFsdsMessage(fsdsMessages().pageCount, { count: pagedSet.state.count }) }}
   </span>
-  <span [ngClass]="'page-navigator__total'">
-    {{ pagedSet.state.count }}
-  </span>
-  <fsds-button [ngClass]="'page-navigator__commit'" type="button" [onClick]="pagedSet.commit" [disabled]="pagedSet.state.disabled" [ariaLabel]="(commitLabel ?? 'Go')">
+  <fsds-button [ngClass]="'page-navigator__commit'" type="button" [onClick]="pagedSet.commit" [disabled]="pagedSet.state.disabled" [ariaLabel]="(commitLabel ?? fsdsMessages().commit)">
     <span>
-      {{ (commitLabel ?? 'Go') }}
+      {{ (commitLabel ?? fsdsMessages().commit) }}
     </span>
   </fsds-button>
-  <fsds-button [ngClass]="'page-navigator__next'" type="button" [onClick]="pagedSet.next" [disabled]="pagedSet.state.nextDisabled" [ariaLabel]="(nextLabel ?? 'Next page')">
+  <fsds-button [ngClass]="'page-navigator__next'" type="button" [onClick]="pagedSet.next" [disabled]="pagedSet.state.nextDisabled" [ariaLabel]="(nextLabel ?? fsdsMessages().nextPage)">
     <fsds-icon [ngClass]="'page-navigator__nextIcon'" name="arrow-right" size="sm"></fsds-icon>
   </fsds-button>
   <ng-container *ngIf="showChoices">
-    <fsds-pagination [ngClass]="'page-navigator__choices'" [onIndexChange]="pagedSet.request" [pages]="(pages ?? [])" [index]="behavior.page()" [presentation]="(presentation ?? 'indicators')" [label]="(label ?? 'Page navigation')" [disabled]="pagedSet.state.disabled"></fsds-pagination>
+    <fsds-pagination [ngClass]="'page-navigator__choices'" [onIndexChange]="pagedSet.request" [pages]="(pages ?? [])" [index]="behavior.page()" [presentation]="(presentation ?? 'indicators')" [label]="(label ?? fsdsMessages().groupLabel)" [disabled]="pagedSet.state.disabled"></fsds-pagination>
   </ng-container>
 </div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageNavigatorComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("PageNavigator", PageNavigatorMessages);
+  protected readonly formatFsdsMessage = formatFsdsMessage;
   private readonly inputPages = signal<string[] | undefined>(undefined);
   @Input() get pages(): string[] | undefined { return this.inputPages(); }
   set pages(value: string[] | undefined) { this.inputPages.set(value); }
@@ -64,18 +66,17 @@ export class PageNavigatorComponent {
   @Input() defaultIndex?: number = 0;
   @Input() onIndexChange?: (index: number) => void;
   @Input() presentation?: PageNavigatorPresentation = "indicators";
-  @Input() label?: string = "Page navigation";
+  @Input() label?: string;
   private readonly inputDisabled = signal<boolean | undefined>(undefined);
   @Input() get disabled(): boolean | undefined { return this.inputDisabled(); }
   set disabled(value: boolean | undefined) { this.inputDisabled.set(value); }
   private readonly inputPageCount = signal<number | undefined>(undefined);
   @Input() get pageCount(): number | undefined { return this.inputPageCount(); }
   set pageCount(value: number | undefined) { this.inputPageCount.set(value); }
-  @Input() pageLabel?: string = "Current page";
-  @Input() previousLabel?: string = "Previous page";
-  @Input() nextLabel?: string = "Next page";
-  @Input() ofLabel?: string = "of";
-  @Input() commitLabel?: string = "Go";
+  @Input() pageLabel?: string;
+  @Input() previousLabel?: string;
+  @Input() nextLabel?: string;
+  @Input() commitLabel?: string;
   @Input() showChoices?: boolean = false;
   @Input() class?: string;
 

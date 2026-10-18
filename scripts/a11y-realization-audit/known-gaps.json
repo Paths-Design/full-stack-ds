@@ -1015,6 +1015,356 @@
       "class": "keyboard",
       "key": "ArrowLeft",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "react",
+      "class": "keyboard",
+      "key": "Enter|Space",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "react",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Table",
+      "family": "react",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "TABLE-SELECTION-STATE-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "vue",
+      "class": "keyboard",
+      "key": "Enter|Space",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "vue",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Table",
+      "family": "vue",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "TABLE-SELECTION-STATE-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "svelte",
+      "class": "keyboard",
+      "key": "Enter|Space",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "svelte",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Table",
+      "family": "svelte",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "TABLE-SELECTION-STATE-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "lit",
+      "class": "keyboard",
+      "key": "Enter|Space",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "lit",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Table",
+      "family": "lit",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "TABLE-SELECTION-STATE-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "angular",
+      "class": "keyboard",
+      "key": "Enter|Space",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "angular",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "CALENDAR-DATE-GRID-01"
+    },
+    {
+      "component": "Table",
+      "family": "angular",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "TABLE-SELECTION-STATE-01"
+    },
+    {
+      "component": "Button",
+      "family": "react-native",
+      "class": "state-attribute",
+      "key": "aria-pressed",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Details",
+      "family": "react-native",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Popover",
+      "family": "react-native",
+      "class": "interactive-role",
+      "key": "activation",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Select",
+      "family": "react-native",
+      "class": "interactive-role",
+      "key": "activation",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Shuttle",
+      "family": "react-native",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "SHUTTLE-DUAL-LISTBOX-01"
+    },
+    {
+      "component": "Table",
+      "family": "react-native",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "TABLE-SELECTION-STATE-01"
+    },
+    {
+      "component": "Tooltip",
+      "family": "react-native",
+      "class": "interactive-role",
+      "key": "activation",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Accordion",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Button",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Button",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-pressed",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Command",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Popover",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Select",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "ShowMore",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Shuttle",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "SHUTTLE-DUAL-LISTBOX-01"
+    },
+    {
+      "component": "Table",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "TABLE-SELECTION-STATE-01"
+    },
+    {
+      "component": "Tabs",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Truncate",
+      "family": "swiftui",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Accordion",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Accordion",
+      "family": "jetpack-compose",
+      "class": "interactive-role",
+      "key": "activation",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Button",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Button",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-pressed",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Command",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Details",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Popover",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Popover",
+      "family": "jetpack-compose",
+      "class": "interactive-role",
+      "key": "activation",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Select",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Select",
+      "family": "jetpack-compose",
+      "class": "interactive-role",
+      "key": "activation",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "ShowMore",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Shuttle",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "SHUTTLE-DUAL-LISTBOX-01"
+    },
+    {
+      "component": "Table",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "TABLE-SELECTION-STATE-01"
+    },
+    {
+      "component": "Tabs",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-selected",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Tabs",
+      "family": "jetpack-compose",
+      "class": "interactive-role",
+      "key": "activation",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Truncate",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-expanded",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Walkthrough",
+      "family": "jetpack-compose",
+      "class": "interactive-role",
+      "key": "activation",
+      "spec": "NATIVE-A11Y-SEMANTICS-01"
     }
   ]
 }

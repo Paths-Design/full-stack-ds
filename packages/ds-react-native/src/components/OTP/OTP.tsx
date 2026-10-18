@@ -4,6 +4,7 @@ import { TextInput, View } from "react-native";
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createOTPStyles } from "./OTP.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -32,13 +33,15 @@ export interface OTPProps {
 // @generated:end
 
 // @generated:start component
+const OTPMessages = { groupLabel: "One-time password", fieldLabel: "One-time password digit" };
+
 export function OTP({
   length = 6,
   value: controlledValue,
   disabled,
   readOnly,
-  label = "One-time password",
-  fieldLabel = "One-time password digit",
+  label: labelProp,
+  fieldLabel: fieldLabelProp,
   defaultValue = "",
   onChange,
   style,
@@ -46,6 +49,9 @@ export function OTP({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: OTPProps) {
+  const fsdsMessages = useFsdsMessages("OTP", OTPMessages);
+  const label = labelProp ?? fsdsMessages.groupLabel;
+  const fieldLabel = fieldLabelProp ?? fsdsMessages.fieldLabel;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createOTPStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledValue, setUncontrolledValue] = useState<string>((defaultValue ?? "") as string);

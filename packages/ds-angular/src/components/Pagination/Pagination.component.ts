@@ -2,6 +2,7 @@
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, effect, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass, NgFor } from "@angular/common";
 import { createReactivePagedSet } from "../../primitives/paging-signal.js";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { usePagination } from "./usePagination.js";
 // @generated:end
 
@@ -19,12 +20,14 @@ export type PaginationProgress = "none" | "elapsed";
 // @custom:end
 
 // @generated:start component
+const PaginationMessages = { navigationLabel: "Choose page" };
+
 @Component({
   selector: "fsds-pagination",
   standalone: true,
   imports: [NgClass, NgFor],
   host: { "data-fsds-component": "pagination" },
-  template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="(label ?? 'Choose page')" data-fsds-box="">
+  template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="(label ?? fsdsMessages().navigationLabel)" data-fsds-box="">
   <ng-container *ngFor="let item of ((pages ?? [])); let index = index">
     <button [ngClass]="'pagination__item'" type="button" (click)="pagedSet.request(index)" [attr.aria-label]="item" [attr.aria-current]="(index === behavior.page())" [disabled]="(disabled ?? false)" [attr.data-current]="(index === behavior.page())">
       <span [ngClass]="'pagination__marker'" aria-hidden="true">
@@ -39,6 +42,7 @@ export type PaginationProgress = "none" | "elapsed";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("Pagination", PaginationMessages);
   private readonly inputPages = signal<string[] | undefined>(undefined);
   @Input() get pages(): string[] | undefined { return this.inputPages(); }
   set pages(value: string[] | undefined) { this.inputPages.set(value); }
@@ -48,7 +52,7 @@ export class PaginationComponent {
   @Input() defaultIndex?: number = 0;
   @Input() onIndexChange?: (index: number) => void;
   @Input() presentation?: PaginationPresentation = "indicators";
-  @Input() label?: string = "Choose page";
+  @Input() label?: string;
   private readonly inputDisabled = signal<boolean | undefined>(undefined);
   @Input() get disabled(): boolean | undefined { return this.inputDisabled(); }
   set disabled(value: boolean | undefined) { this.inputDisabled.set(value); }

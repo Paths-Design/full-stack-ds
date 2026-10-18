@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed } from "vue";
 import { useOTP } from "./useOTP.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -35,14 +36,15 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   length: 6,
   mode: "numeric",
   disabled: undefined,
   readOnly: undefined,
-  label: "One-time password",
-  fieldLabel: "One-time password digit",
 });
+const OTPMessages = { groupLabel: "One-time password", fieldLabel: "One-time password digit" };
+const fsdsMessages = useFsdsMessages("OTP", OTPMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { label: "groupLabel", fieldLabel: "fieldLabel" });
 // @generated:end
 
 // @generated:start hook

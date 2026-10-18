@@ -1,6 +1,7 @@
 <script lang="ts">
 // @generated:start imports
 import { useSelect } from "./useSelect.svelte.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -38,7 +39,12 @@ interface Props {
   class?: string;
 }
 
-let { options = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}], value, defaultValue = "beta", onChange, open, defaultOpen = true, onOpenChange, multiple, disabled, triggerLabel = "Select an option", size = "md", filterFn, searchable, empty, placeholder = "Select an option", searchLabel = "Search options", position, class: className }: Props = $props();
+let { options = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}], value, defaultValue = "beta", onChange, open, defaultOpen = true, onOpenChange, multiple, disabled, triggerLabel: triggerLabelProp, size = "md", filterFn, searchable, empty, placeholder: placeholderProp, searchLabel: searchLabelProp, position, class: className }: Props = $props();
+const SelectMessages = { triggerLabel: "Select an option", placeholder: "Select an option", searchLabel: "Search options" };
+const fsdsMessages = useFsdsMessages("Select", SelectMessages);
+const triggerLabel = $derived(triggerLabelProp ?? fsdsMessages.current.triggerLabel);
+const placeholder = $derived(placeholderProp ?? fsdsMessages.current.placeholder);
+const searchLabel = $derived(searchLabelProp ?? fsdsMessages.current.searchLabel);
 // @generated:end
 
 // @generated:start hook

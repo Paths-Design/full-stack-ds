@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useTruncate } from "./useTruncate.js";
 // @generated:end
@@ -18,6 +19,8 @@ import { useTruncate } from "./useTruncate.js";
 // @custom:end
 
 // @generated:start component
+const TruncateMessages = { expand: "Show more", collapse: "Show less" };
+
 @Component({
   selector: "fsds-truncate",
   standalone: true,
@@ -29,13 +32,14 @@ import { useTruncate } from "./useTruncate.js";
   </span>
   <ng-container *ngIf="expandable">
     <button [ngClass]="'truncate__toggle'" type="button" (click)="behavior.setExpanded(!behavior.expanded())" [attr.aria-expanded]="behavior.expanded()">
-      {{ (behavior.expanded() ? (collapseText ?? 'Show less') : (expandText ?? 'Show more')) }}
+      {{ (behavior.expanded() ? (collapseText ?? fsdsMessages().collapse) : (expandText ?? fsdsMessages().expand)) }}
     </button>
   </ng-container>
 </div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TruncateComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("Truncate", TruncateMessages);
   @Input() lines?: number;
   @Input() expandable?: boolean;
   private readonly inputExpanded = signal<boolean | undefined>(undefined);
@@ -43,8 +47,8 @@ export class TruncateComponent {
   set expanded(value: boolean | undefined) { this.inputExpanded.set(value); }
   @Input() defaultExpanded?: boolean;
   @Input() onExpandedChange?: (expanded: boolean) => void;
-  @Input() expandText?: string = "Show more";
-  @Input() collapseText?: string = "Show less";
+  @Input() expandText?: string;
+  @Input() collapseText?: string;
   @Input() class?: string;
 
   private destroyRef = inject(DestroyRef);

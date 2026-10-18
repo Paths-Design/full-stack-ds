@@ -7,6 +7,7 @@ import { useFsdsTheme } from "../../tokens";
 import { createCarouselStyles } from "./Carousel.styles";
 import { resolveCarouselTokens } from "./Carousel.tokens";
 import { useSequence, SequenceChildren } from "../../primitives/useSequence";
+import { useFsdsMessages } from "../../primitives/messages";
 import { Icon } from "../Icon/Icon";
 import { Pagination } from "../Pagination/Pagination";
 // @generated:end
@@ -34,13 +35,15 @@ export interface CarouselProps {
 // @generated:end
 
 // @generated:start component
+const CarouselMessages = { regionLabel: "Featured content", roleDescription: "carousel", rotationStart: "Start slide rotation", rotationStop: "Stop slide rotation", slideRoleDescription: "slide", slidePosition: "{index} of {count}", previousSlide: "Previous slide", nextSlide: "Next slide", chooseSlide: "Choose slide" };
+
 export function Carousel({
   slides = [],
   index: controlledSlide,
   autoPlay = false,
   duration,
   indicator = "pagination",
-  label = "Featured content",
+  label: labelProp,
   defaultIndex = 0,
   onIndexChange,
   children,
@@ -49,6 +52,8 @@ export function Carousel({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: CarouselProps) {
+  const fsdsMessages = useFsdsMessages("Carousel", CarouselMessages);
+  const label = labelProp ?? fsdsMessages.regionLabel;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createCarouselStyles(fsdsTheme), [fsdsTheme]);
   const tokens = useMemo(() => resolveCarouselTokens(fsdsTheme), [fsdsTheme]);
@@ -83,17 +88,17 @@ export function Carousel({
         onFocus={sequence.stop}
         onPressIn={sequence.rotatePressIn}
         onPress={sequence.rotate}
-        accessibilityLabel={sequence.playing ? "Stop slide rotation" : "Start slide rotation"}
+        accessibilityLabel={sequence.playing ? fsdsMessages.rotationStop : fsdsMessages.rotationStart}
         accessibilityRole="button"
         accessibilityState={{ disabled: !sequence.valid }}
       >
-        <RNText>{sequence.playing ? "Stop slide rotation" : "Start slide rotation"}</RNText>
+        <RNText>{sequence.playing ? fsdsMessages.rotationStop : fsdsMessages.rotationStart}</RNText>
       </Pressable>
       ) : null}
       <View
         style={styles.viewport}
       >
-        <SequenceChildren sequence={sequence} labels={slides} />
+        <SequenceChildren sequence={sequence} labels={slides} position={fsdsMessages.slidePosition} />
       </View>
       <View
         style={styles.controls}
@@ -103,7 +108,7 @@ export function Carousel({
           disabled={!sequence.valid}
           onFocus={sequence.stop}
           onPress={sequence.previous}
-          accessibilityLabel="Previous slide"
+          accessibilityLabel={fsdsMessages.previousSlide}
           accessibilityRole="button"
           accessibilityState={{ disabled: !sequence.valid }}
         >
@@ -114,10 +119,10 @@ export function Carousel({
         </Pressable>
 <MotionPartsProvider value={{ "fill": { effect: "elapsed-width", elapsed: sequence.elapsed, reducedMotion: sequence.reducedMotion, steps: 10, visible: sequence.valid && sequence.timed && ["pagination","both"].includes(indicator ?? ""), activeIndex: sequence.index } }}>
         <Pagination
+          label={fsdsMessages.chooseSlide}
           pages={slides}
           index={slide}
           progress={(indicator === "pagination" ? "elapsed" : (indicator === "next" ? "none" : "elapsed"))}
-          label="Choose slide"
           presentation="indicators"
           onIndexChange={sequence.select}
         />
@@ -127,7 +132,7 @@ export function Carousel({
           disabled={!sequence.valid}
           onFocus={sequence.stop}
           onPress={sequence.next}
-          accessibilityLabel="Next slide"
+          accessibilityLabel={fsdsMessages.nextSlide}
           accessibilityRole="button"
           accessibilityState={{ disabled: !sequence.valid }}
         >

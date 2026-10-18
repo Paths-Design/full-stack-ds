@@ -73,7 +73,8 @@
       "required": false,
       "description": "Visible month or range caption rendered above the day grid.",
       "defaultExpr": "\"Calendar\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "caption"
     },
     {
       "name": "value",
@@ -164,6 +165,36 @@
       "description": "The concrete Date values the grid renders, one per day cell. The contract's closed dateDayOfMonth projection supplies each visible label, while compositeControl passes the same Date item to the value channel on activation. A typical month occupies 42 entries (6 weeks x 7 days).",
       "defaultExpr": null,
       "nodeKind": null
+    }
+  ],
+  "messages": [
+    {
+      "key": "caption",
+      "catalogKey": "Calendar.caption",
+      "defaultMessage": "Calendar",
+      "description": "Caption shown above the month grid when the consumer supplies none.",
+      "params": []
+    },
+    {
+      "key": "previousMonth",
+      "catalogKey": "Calendar.previousMonth",
+      "defaultMessage": "Previous month",
+      "description": "Accessible name of the button that shows the previous month.",
+      "params": []
+    },
+    {
+      "key": "nextMonth",
+      "catalogKey": "Calendar.nextMonth",
+      "defaultMessage": "Next month",
+      "description": "Accessible name of the button that shows the next month.",
+      "params": []
+    },
+    {
+      "key": "gridLabel",
+      "catalogKey": "Calendar.gridLabel",
+      "defaultMessage": "Calendar",
+      "description": "Accessible name of the date grid.",
+      "params": []
     }
   ],
   "designBindings": [

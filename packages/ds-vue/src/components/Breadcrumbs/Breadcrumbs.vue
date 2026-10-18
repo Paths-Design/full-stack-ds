@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // @generated:start imports
 import { computed } from "vue";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -25,9 +26,10 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
-  ariaLabel: "Breadcrumb",
-});
+const fsdsProps = defineProps<Props>();
+const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
+const fsdsMessages = useFsdsMessages("Breadcrumbs", BreadcrumbsMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { ariaLabel: "navigationLabel" });
 // @generated:end
 
 // @generated:start classes

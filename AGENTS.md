@@ -124,9 +124,15 @@ pnpm run docs:check-links                      # Every relative .md link in a tr
 
 `build:all` derives package order from workspace dependencies, runs existing
 workspace `build` scripts, and builds the root showcase last. Packages without
-a build script are skipped (including the source-only React Native package and
-example). It does not regenerate component sources or run native/engine lanes
-outside pnpm; use the existing generation and target-specific commands for those.
+a build script are skipped (e.g. the source-only React Native package).
+Workspace example lanes that carry a build script — the settings React/Vue
+lanes, the operations-dashboard React lane, spatial-console web, and the
+motion-lab Svelte/Lit GSAP lanes — build inside `build:all` after their
+workspace dependencies (the motion-lab lanes consume the generated package
+`dist/` trees that earlier build steps, including `ds-svelte`'s
+`scripts/build-styles.mjs`, produce). It does not regenerate component
+sources or run native/engine lanes outside pnpm; use the existing generation
+and target-specific commands for those.
 
 **Governed doc numbers.** Any count you write in prose will rot. Mark it instead, in ANY tracked
 markdown file, and `docs:check-claims` derives and enforces it:

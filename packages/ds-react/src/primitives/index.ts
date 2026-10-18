@@ -21,3 +21,12 @@ export type {
 } from "./hooks";
 
 export { InteractionHost, bindInteractionHost, type InteractionHostProps } from "./InteractionHost";
+export {
+  FsdsMessagesProvider,
+  formatFsdsMessage,
+  mergeFsdsMessageCatalogs,
+  resolveFsdsMessages,
+  useFsdsMessages,
+  type FsdsMessageCatalog,
+  type FsdsMessagesProviderProps,
+} from "./messages";

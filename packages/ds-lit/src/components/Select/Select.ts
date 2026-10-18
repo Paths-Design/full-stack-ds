@@ -1,6 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
 import { ref } from 'lit/directives/ref.js';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { SelectBehavior } from './SelectBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -20,6 +21,8 @@ export type SelectSize = "sm" | "md" | "lg";
 // @custom:end
 
 // @generated:start component
+const SelectMessages = { triggerLabel: "Select an option", placeholder: "Select an option", searchLabel: "Search options" };
+
 export class SelectElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -265,6 +268,8 @@ export class SelectElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Select", SelectMessages);
+
   @property({ attribute: false }) options?: SelectOption[] = [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}];
   @property({ attribute: false }) value?: string | string[];
   @property({ attribute: false }) defaultValue?: string | string[] = "beta";
@@ -274,13 +279,13 @@ export class SelectElement extends LitElement {
   @property({ attribute: false }) onOpenChange?: (open: boolean) => void;
   @property({ type: Boolean }) multiple?: boolean;
   @property({ type: Boolean }) disabled?: boolean;
-  @property({ type: String }) triggerLabel?: string = "Select an option";
+  @property({ type: String }) triggerLabel?: string;
   @property({ type: String }) size?: SelectSize = "md";
   @property({ attribute: false }) filterFn?: (option: SelectOption, searchTerm: string) => boolean;
   @property({ type: Boolean }) searchable?: boolean;
   @property({ type: Boolean }) empty?: boolean;
-  @property({ type: String }) placeholder?: string = "Select an option";
-  @property({ type: String }) searchLabel?: string = "Search options";
+  @property({ type: String }) placeholder?: string;
+  @property({ type: String }) searchLabel?: string;
   @property() position?: string;
   private interactionPanel?: HTMLElement;
   private interactionAnchor?: HTMLElement;
@@ -317,15 +322,15 @@ export class SelectElement extends LitElement {
   }
 
   override render() {
-    return html`<div class="${this.computeClasses()}" role="combobox" aria-haspopup="listbox" aria-label=${ifDefined((this.triggerLabel ?? "Select an option"))} aria-expanded=${this.behavior.open ? 'true' : 'false'} aria-disabled=${ifDefined(this.disabled === undefined ? undefined : (this.disabled ? 'true' : 'false'))} aria-controls=${ifDefined([this.open ? 'select-content' : null].filter(Boolean).join(' ') || undefined)} data-fsds-box="">
-  <button class=${'select__trigger'} ${ref(element => { this.interactionAnchor = element instanceof HTMLElement ? element : undefined; })} type="button" @click=${() => this.behavior.setOpen(!this.behavior.open)} @keydown=${(e: KeyboardEvent) => this.behavior.handleTriggerKeydown(e)} ?disabled=${this.disabled ?? false} aria-label=${ifDefined((this.triggerLabel ?? "Select an option"))} aria-expanded=${this.behavior.open ? 'true' : 'false'} aria-controls=${ifDefined([this.open ? 'select-content' : null].filter(Boolean).join(' ') || undefined)}>
-    <span class=${'select__text'}>${(((this.options ?? [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}]) || []).filter(option => (Array.isArray(this.behavior.selection) ? this.behavior.selection : [this.behavior.selection]).includes(option.value)).map(option => option.label).join(', ') || (this.placeholder ?? "Select an option"))}</span>
+    return html`<div class="${this.computeClasses()}" role="combobox" aria-haspopup="listbox" aria-label=${ifDefined((this.triggerLabel ?? this.fsdsMessages.value.triggerLabel))} aria-expanded=${this.behavior.open ? 'true' : 'false'} aria-disabled=${ifDefined(this.disabled === undefined ? undefined : (this.disabled ? 'true' : 'false'))} aria-controls=${ifDefined([this.open ? 'select-content' : null].filter(Boolean).join(' ') || undefined)} data-fsds-box="">
+  <button class=${'select__trigger'} ${ref(element => { this.interactionAnchor = element instanceof HTMLElement ? element : undefined; })} type="button" @click=${() => this.behavior.setOpen(!this.behavior.open)} @keydown=${(e: KeyboardEvent) => this.behavior.handleTriggerKeydown(e)} ?disabled=${this.disabled ?? false} aria-label=${ifDefined((this.triggerLabel ?? this.fsdsMessages.value.triggerLabel))} aria-expanded=${this.behavior.open ? 'true' : 'false'} aria-controls=${ifDefined([this.open ? 'select-content' : null].filter(Boolean).join(' ') || undefined)}>
+    <span class=${'select__text'}>${(((this.options ?? [{"value":"alpha","label":"Alpha"},{"value":"beta","label":"Beta"},{"value":"gamma","label":"Gamma"}]) || []).filter(option => (Array.isArray(this.behavior.selection) ? this.behavior.selection : [this.behavior.selection]).includes(option.value)).map(option => option.label).join(', ') || (this.placeholder ?? this.fsdsMessages.value.placeholder))}</span>
   </button>
   ${this.behavior.open ? html`
   <div class=${'select__content'} ${ref(element => { this.interactionPanel = element instanceof HTMLElement ? element : undefined; })} role="listbox" @keydown=${(e: KeyboardEvent) => this.behavior.handleContentKeydown(e)} tabindex="-1" id="select-content" data-fsds-channel-renders="open">
     ${this.searchable ? html`
     <div class=${'select__search'}>
-      <input class=${'select__searchInput'} type="text" aria-label=${ifDefined((this.searchLabel ?? "Search options"))} ?disabled=${this.disabled ?? false} />
+      <input class=${'select__searchInput'} type="text" aria-label=${ifDefined((this.searchLabel ?? this.fsdsMessages.value.searchLabel))} ?disabled=${this.disabled ?? false} />
     </div>
     ` : nothing}
     <div class=${'select__options'}>

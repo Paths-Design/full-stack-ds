@@ -756,11 +756,21 @@ describe("generateSwiftUIComponentSource — paged/sequence position composites"
     expect(source).toContain(
       "@StateObject private var slide: ControllableValue<Int>",
     );
+    // Rotation, stepper and picker text resolve through the message catalog
+    // keyed <Component>.<key>, with the contract default at the call site.
+    expect(source).toContain("@Environment(\\.fsdsMessages) private var fsdsMessages");
     expect(source).toContain(
-      'Button(playing ? "Stop slide rotation" : "Start slide rotation")',
+      'Button(playing ? fsdsMessages.string("Carousel.rotationStop", default: "Stop slide rotation") : fsdsMessages.string("Carousel.rotationStart", default: "Start slide rotation"))',
     );
+    expect(source).toContain('.accessibilityLabel(fsdsMessages.string("Carousel.previousSlide", default: "Previous slide"))');
     expect(source).toContain("Timer.publish(every: dwellSeconds");
     expect(source).toContain("index: slide.binding()");
-    expect(source).toContain('label: "Choose slide"');
+    expect(source).toContain('label: fsdsMessages.string("Carousel.chooseSlide", default: "Choose slide")');
+    // The region label is an explicit-first parameter: init stores the
+    // argument, the body reads the catalog only when it was omitted.
+    expect(source).toContain("label: String? = nil,");
+    expect(source).toContain(
+      'private var label: String { labelProp ?? fsdsMessages.string("Carousel.regionLabel", default: "Featured content") }',
+    );
   });
 });

@@ -29,6 +29,7 @@ import { matchesTokenRole } from '../token-role.js';
 import type { ComponentIR } from "../../ir.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 import { generateJetpackComposeTokensFile } from "./component-source.js";
+import { withKotlinMessages } from "./messages.js";
 
 export function isSurfaceComponent(ir: ComponentIR): boolean {
   return ir.surface != null && isPartAnchoredSurface(ir.surface);
@@ -50,7 +51,12 @@ function slot(ir: ComponentIR, suffix: string) {
     ?.values.find((value) => matchesTokenRole(value.name, suffix));
 }
 
-export function generateJetpackComposeSurfaceFiles(
+export function generateJetpackComposeSurfaceFiles(ir: ComponentIR): JetpackComposeSurfaceFiles {
+  const files = emitJetpackComposeSurfaceFiles(ir);
+  return { ...files, componentFile: withKotlinMessages(files.componentFile) };
+}
+
+function emitJetpackComposeSurfaceFiles(
   ir: ComponentIR,
 ): JetpackComposeSurfaceFiles {
   const name = ir.name;

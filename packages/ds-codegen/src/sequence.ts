@@ -68,6 +68,13 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
   const names = [sequence.viewport, sequence.previous, sequence.next, sequence.rotation];
   if (new Set([...names, JSON.stringify(sequence.picker)]).size !== names.length + 1) fail("control and viewport parts must be distinct");
   for (const part of names.slice(1)) if (owned(part).tag !== "button") fail(`${part} must be a native button`);
+  // The runtime toggles the rotation control between labels.start and
+  // labels.stop as playback changes, so it is the control's only text writer;
+  // template-bound text would be a second writer the runtime overwrites.
+  const rotation = owned(sequence.rotation);
+  if (rotation.content !== undefined || rotation.children?.length || rotation.attrs?.["aria-label"] !== undefined || rotation.bindings?.["aria-label"] !== undefined) {
+    fail(`${sequence.rotation} text and name are owned by sequence.labels; the part must not declare content, children or aria-label`);
+  }
   if (!owned(sequence.viewport).children?.some(n => n.tag === "children")) fail("viewport must project consumer children");
   const resolvedPicker = address(sequence.picker);
   const picker = resolvedPicker.node;
@@ -134,7 +141,6 @@ export function buildSequence(contract: ComponentContract, tokens: TokenFactIR[]
 export function sequenceConfig(sequence: SequenceIR, prefix: string): string {
   if (sequence.composition === "unresolved") throw new Error("[SEQUENCE_INVALID] Emitting composed sequence behavior requires the resolved contract corpus");
   return JSON.stringify({
-    labels: sequence.labels,
     delegatedPicker: typeof sequence.picker === "string" || !sequence.picker.componentPart,
     transition: sequence.transition && {
       durationMs: sequence.transition.durationMs, easing: sequence.transition.easing,
@@ -144,6 +150,17 @@ export function sequenceConfig(sequence: SequenceIR, prefix: string): string {
     parts: Object.fromEntries((["viewport", "previous", "next", "rotation", "picker"] as const).map(key => [key, key === "picker" ? sequence.selectors.picker : `.${prefix}__${sequence[key]}`])),
     progress: sequence.progress.map((p, index) => ({ selector: sequence.selectors.progress[index], effect: p.effect, steps: p.reducedMotion.steps, ...(p.when ? { when: p.when } : {}) })),
   });
+}
+
+/**
+ * Sequence-owned text, resolved at runtime from the component's message
+ * catalog so a locale change re-renders it. `access` lowers a message key to
+ * the backend's catalog accessor; the runtime fills `position`'s `{index}` and
+ * `{count}` placeholders.
+ */
+export function sequenceMessages(sequence: SequenceIR, access: (key: string) => string): string {
+  const { start, stop, item, position } = sequence.labels;
+  return `{ start: ${access(start)}, stop: ${access(stop)}, item: ${access(item)}, position: ${access(position)} }`;
 }
 
 /** Runtime values are supplied by each framework's reactive prop accessors. */

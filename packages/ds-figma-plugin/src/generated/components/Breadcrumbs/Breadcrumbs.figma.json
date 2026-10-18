@@ -73,7 +73,8 @@
       "required": false,
       "description": "Accessible label for the nav landmark. Defaults to \"Breadcrumb\".",
       "defaultExpr": "\"Breadcrumb\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "navigationLabel"
     },
     {
       "name": "separator",
@@ -83,6 +84,15 @@
       "description": "Separator character or string rendered between items.",
       "defaultExpr": null,
       "nodeKind": null
+    }
+  ],
+  "messages": [
+    {
+      "key": "navigationLabel",
+      "catalogKey": "Breadcrumbs.navigationLabel",
+      "defaultMessage": "Breadcrumb",
+      "description": "Accessible name of the breadcrumb navigation landmark.",
+      "params": []
     }
   ],
   "designBindings": [

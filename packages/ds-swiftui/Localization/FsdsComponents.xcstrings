@@ -1,0 +1,570 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Alert.dismiss": {
+      "comment": "Accessible name of the button that dismisses the alert.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismiss"
+          }
+        }
+      }
+    },
+    "AlertNotice.dismiss": {
+      "comment": "Accessible name of the button that dismisses the notice.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismiss"
+          }
+        }
+      }
+    },
+    "Breadcrumbs.navigationLabel": {
+      "comment": "Accessible name of the breadcrumb navigation landmark.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breadcrumb"
+          }
+        }
+      }
+    },
+    "Calendar.caption": {
+      "comment": "Caption shown above the month grid when the consumer supplies none.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar"
+          }
+        }
+      }
+    },
+    "Calendar.gridLabel": {
+      "comment": "Accessible name of the date grid.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendar"
+          }
+        }
+      }
+    },
+    "Calendar.nextMonth": {
+      "comment": "Accessible name of the button that shows the next month.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next month"
+          }
+        }
+      }
+    },
+    "Calendar.previousMonth": {
+      "comment": "Accessible name of the button that shows the previous month.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous month"
+          }
+        }
+      }
+    },
+    "Carousel.chooseSlide": {
+      "comment": "Accessible name of the slide picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose slide"
+          }
+        }
+      }
+    },
+    "Carousel.nextSlide": {
+      "comment": "Accessible name of the button that shows the next slide.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next slide"
+          }
+        }
+      }
+    },
+    "Carousel.previousSlide": {
+      "comment": "Accessible name of the button that shows the previous slide.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous slide"
+          }
+        }
+      }
+    },
+    "Carousel.regionLabel": {
+      "comment": "Accessible name of the carousel region when the consumer supplies none.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Featured content"
+          }
+        }
+      }
+    },
+    "Carousel.roleDescription": {
+      "comment": "Role description announced for the carousel region.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "carousel"
+          }
+        }
+      }
+    },
+    "Carousel.rotationStart": {
+      "comment": "Text and accessible name of the control that starts automatic rotation.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start slide rotation"
+          }
+        }
+      }
+    },
+    "Carousel.rotationStop": {
+      "comment": "Text and accessible name of the control that stops automatic rotation.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop slide rotation"
+          }
+        }
+      }
+    },
+    "Carousel.slidePosition": {
+      "comment": "Accessible name of a slide with no consumer label: its 1-based position and the slide count. Placeholders: {index}, {count}.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{index} of {count}"
+          }
+        }
+      }
+    },
+    "Carousel.slideRoleDescription": {
+      "comment": "Role description announced for each slide.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "slide"
+          }
+        }
+      }
+    },
+    "Chip.dismiss": {
+      "comment": "Accessible name of the button that removes the chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "Command.dialogLabel": {
+      "comment": "Accessible name of the command palette.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command palette"
+          }
+        }
+      }
+    },
+    "Command.emptyResults": {
+      "comment": "Text shown when no command matches the search.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No results found."
+          }
+        }
+      }
+    },
+    "Command.searchLabel": {
+      "comment": "Accessible name of the command search field.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search commands"
+          }
+        }
+      }
+    },
+    "Command.searchPlaceholder": {
+      "comment": "Placeholder text of the command search field.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search..."
+          }
+        }
+      }
+    },
+    "Dialog.close": {
+      "comment": "Accessible name of the button that closes the dialog.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close dialog"
+          }
+        }
+      }
+    },
+    "OTP.fieldLabel": {
+      "comment": "Accessible name of each code field.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One-time password digit"
+          }
+        }
+      }
+    },
+    "OTP.groupLabel": {
+      "comment": "Accessible name of the group of code fields.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One-time password"
+          }
+        }
+      }
+    },
+    "PageNavigator.commit": {
+      "comment": "Text and accessible name of the button that applies the typed page number.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go"
+          }
+        }
+      }
+    },
+    "PageNavigator.groupLabel": {
+      "comment": "Accessible name of the navigator group.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page navigation"
+          }
+        }
+      }
+    },
+    "PageNavigator.nextPage": {
+      "comment": "Accessible name of the button that moves to the next page.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next page"
+          }
+        }
+      }
+    },
+    "PageNavigator.pageCount": {
+      "comment": "Text after the page number field: the total page count. Placeholders: {count}.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of {count}"
+          }
+        }
+      }
+    },
+    "PageNavigator.pageLabel": {
+      "comment": "Accessible name of the page number field.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current page"
+          }
+        }
+      }
+    },
+    "PageNavigator.previousPage": {
+      "comment": "Accessible name of the button that moves to the previous page.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous page"
+          }
+        }
+      }
+    },
+    "Pagination.navigationLabel": {
+      "comment": "Accessible name of the page choices.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose page"
+          }
+        }
+      }
+    },
+    "Select.placeholder": {
+      "comment": "Text shown in the trigger while no value is selected.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select an option"
+          }
+        }
+      }
+    },
+    "Select.searchLabel": {
+      "comment": "Accessible name of the option search field.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search options"
+          }
+        }
+      }
+    },
+    "Select.triggerLabel": {
+      "comment": "Accessible name of the trigger while no value is selected.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select an option"
+          }
+        }
+      }
+    },
+    "Sheet.close": {
+      "comment": "Accessible name of the button that closes the sheet.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close sheet"
+          }
+        }
+      }
+    },
+    "ShowMore.showLess": {
+      "comment": "Text of the toggle while the content is expanded.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show less"
+          }
+        }
+      }
+    },
+    "ShowMore.showMore": {
+      "comment": "Text of the toggle while the content is collapsed.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show more"
+          }
+        }
+      }
+    },
+    "Toast.dismiss": {
+      "comment": "Accessible name of the button that dismisses a notification.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismiss"
+          }
+        }
+      }
+    },
+    "Toast.regionLabel": {
+      "comment": "Accessible name of the notification region.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications"
+          }
+        }
+      }
+    },
+    "Truncate.collapse": {
+      "comment": "Text of the toggle while the full text is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show less"
+          }
+        }
+      }
+    },
+    "Truncate.expand": {
+      "comment": "Text of the toggle while the text is clamped.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show more"
+          }
+        }
+      }
+    },
+    "Walkthrough.next": {
+      "comment": "Text and accessible name of the next-step button when the consumer supplies none.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next"
+          }
+        }
+      }
+    },
+    "Walkthrough.previous": {
+      "comment": "Text of the button that returns to the previous step.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous"
+          }
+        }
+      }
+    },
+    "Walkthrough.previousStep": {
+      "comment": "Accessible name of the button that returns to the previous step.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous step"
+          }
+        }
+      }
+    },
+    "Walkthrough.skip": {
+      "comment": "Text of the button that ends the tour.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip"
+          }
+        }
+      }
+    },
+    "Walkthrough.skipTour": {
+      "comment": "Accessible name of the button that ends the tour.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip tour"
+          }
+        }
+      }
+    },
+    "Walkthrough.tourLabel": {
+      "comment": "Accessible name of the tour region when the consumer supplies none.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feature tour"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

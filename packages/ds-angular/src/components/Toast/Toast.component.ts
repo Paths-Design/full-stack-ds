@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, effect, signal, ViewChild, ElementRef, Injector, runInInjectionContext, untracked, type OnInit, type OnDestroy } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useToast } from "./useToast.js";
 import { createAutoDismiss } from "../../primitives/index.js";
@@ -22,12 +23,14 @@ export type ToastPoliteness = "polite" | "assertive";
 // @generated:start component
 let nextInstanceId = 0;
 
+const ToastMessages = { regionLabel: "Notifications", dismiss: "Dismiss" };
+
 @Component({
   selector: "fsds-toast",
   standalone: true,
   imports: [NgClass, NgIf],
   host: { "data-fsds-component": "toast" },
-  template: `<div [ngClass]="classes()" aria-label="Notifications" [attr.aria-live]="(politeness ?? 'polite')" data-fsds-box="" role="region" (pointerenter)="autoDismiss.pauseListeners.pointerenter()" (pointerleave)="autoDismiss.pauseListeners.pointerleave()" (focusin)="autoDismiss.pauseListeners.focusin()" (focusout)="autoDismiss.pauseListeners.focusout($event)">
+  template: `<div [ngClass]="classes()" [attr.aria-label]="fsdsMessages().regionLabel" [attr.aria-live]="(politeness ?? 'polite')" data-fsds-box="" role="region" (pointerenter)="autoDismiss.pauseListeners.pointerenter()" (pointerleave)="autoDismiss.pauseListeners.pointerleave()" (focusin)="autoDismiss.pauseListeners.focusin()" (focusout)="autoDismiss.pauseListeners.focusout($event)">
   <ng-container *ngIf="behavior.open()">
     <div [ngClass]="'toast__item'" role="status" [attr.aria-labelledby]="itemAriaLabelledby">
       <div [ngClass]="'toast__row'">
@@ -42,7 +45,7 @@ let nextInstanceId = 0;
         <div [ngClass]="'toast__action'">
           <ng-content select="[slot=action]" />
         </div>
-        <button [ngClass]="'toast__close'" type="button" aria-label="Dismiss" (click)="behavior.setOpen(!behavior.open())"></button>
+        <button [ngClass]="'toast__close'" type="button" (click)="behavior.setOpen(!behavior.open())" [attr.aria-label]="fsdsMessages().dismiss"></button>
       </div>
       <div [ngClass]="'toast__progress'" hidden #countdownProgress aria-hidden="true"></div>
     </div>
@@ -51,6 +54,7 @@ let nextInstanceId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastComponent implements OnInit, OnDestroy {
+  protected readonly fsdsMessages = injectFsdsMessages("Toast", ToastMessages);
   private readonly inputOpen = signal<boolean | undefined>(undefined);
   @Input() get open(): boolean | undefined { return this.inputOpen(); }
   set open(value: boolean | undefined) { this.inputOpen.set(value); }

@@ -16,6 +16,8 @@ import { resolveSurfaceAutoDismiss } from "../../../semantics.js";
  * The component path refuses every surface kind; all surfaces route here.
  */
 import type { ComponentIR } from "../../../ir.js";
+import { partTextSource, type NativeTextSource } from "../../native-messages.js";
+import { swiftMessage, swiftStringProp, withSwiftMessagesEnvironment, type SwiftStringProp } from "./messages.js";
 import {
   emitTypes,
   swiftCase,
@@ -50,7 +52,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
     const original = emitTokenScopesSection(ir).join("\n");
     const projected = emitTokenScopesSection({ ...ir, tokenScopes: nativeTokenScopes(ir, used, true) }).join("\n");
     if (!body.includes(original)) throw new Error(`Missing Swift token section for ${ir.name}`);
-    const sections = [emitTypes(ir), body.replace(original, projected)];
+    const sections = [emitTypes(ir), withSwiftMessagesEnvironment(body.replace(original, projected), INDENT)];
     return sections.filter((x) => x.trim().length > 0).join("\n\n") + "\n";
   };
   if (!ir.surface) {
@@ -87,9 +89,15 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   const searchChannel = ir.behavior.normalizedChannels.find(
     (c) => c.valueType === "string",
   );
-  const searchPlaceholder = searchChannel
-    ? ir.styledProps.find((p) => p.safeName === "placeholder")?.defaultExpr
-        ?.replace(/^["']|["']$/g, "") ?? "Search..."
+  // The search prompt is the placeholder prop: an explicit value, then its
+  // message (catalog-resolved) or authored literal; with no prop, no prompt.
+  const placeholder = searchChannel && ir.styledProps.some((p) => p.safeName === "placeholder")
+    ? swiftStringProp(ir, "placeholder", INDENT)
+    : null;
+  const searchPrompt = placeholder
+    ? placeholder.accessor.length > 0
+      ? "SwiftUI.Text(placeholder)"
+      : "placeholder.map { SwiftUI.Text($0) }"
     : null;
   if (!openness) {
     throw new Error(
@@ -141,6 +149,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   if (searchChannel) {
   lines.push(`${INDENT}@StateObject private var search: ControllableValue<String>`);
   }
+  if (placeholder) lines.push(placeholder.stored);
   for (const region of regions) {
     lines.push(`${INDENT}private let ${region}: ${swiftCase(capitalize(region))}`);
   }
@@ -157,6 +166,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
     params.push('defaultSearch: String = "",');
     params.push("onSearchChange: ((String) -> Void)? = nil,");
   }
+  if (placeholder) params.push(placeholder.param);
   for (const region of regions) {
     params.push(
       `@ViewBuilder ${region}: () -> ${swiftCase(capitalize(region))} = { EmptyView() }${region === regions[regions.length - 1] ? "" : ","}`,
@@ -169,10 +179,12 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   if (searchChannel) {
   lines.push(`${INDENT}${INDENT}self._search = StateObject(wrappedValue: ControllableValue(controlled: search, defaultValue: defaultSearch, onChange: onSearchChange))`);
   }
+  if (placeholder) lines.push(placeholder.assign);
   for (const region of regions) {
     lines.push(`${INDENT}${INDENT}self.${region} = ${region}()`);
   }
   lines.push(`${INDENT}}`);
+  if (placeholder) lines.push(...placeholder.accessor);
   lines.push("");
   lines.push("");
   if (searchChannel) {
@@ -216,8 +228,8 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}text: Binding(`);
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}get: { search.value },`);
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}set: { search.set($0) }`);
-    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}),`);
-    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}prompt: SwiftUI.Text("${searchPlaceholder}")`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT})${searchPrompt ? "," : ""}`);
+    if (searchPrompt) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}prompt: ${searchPrompt}`);
     lines.push(`${INDENT}${INDENT}${INDENT})`);
   }
   for (const region of regions) {
@@ -665,6 +677,36 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
         })()
       : 3;
   const hasOnSkip = hasConventionalPropEmit(ir, "onSkip");
+  // Control text follows each control part's content/aria-label bindings:
+  // messages lower to catalog lookups, props surface as init params that
+  // fall back to their message.
+  const control = (part: string) => {
+    const content = partTextSource(ir, part, "content");
+    if (!content) throw new Error(`emitCoachmarkSurface: ${ir.name} part ${part} binds no text`);
+    const label = partTextSource(ir, part, "aria-label");
+    return { content, label };
+  };
+  const skip = hasOnSkip ? control("skip") : undefined;
+  const previous = control("prev");
+  const next = control("next");
+  const textProps = new Map<string, SwiftStringProp>();
+  for (const source of [skip?.content, skip?.label, previous.content, previous.label, next.content, next.label]) {
+    if (source?.kind === "prop" && !textProps.has(source.prop)) {
+      textProps.set(source.prop, swiftStringProp(ir, source.prop, INDENT));
+    }
+  }
+  const text = (source: NativeTextSource): string => {
+    if (source.kind === "message") return swiftMessage(ir, source.ref.message);
+    return source.fallback ? source.prop : `(${source.prop} ?? "")`;
+  };
+  // An aria-label that repeats the visible text adds nothing on SwiftUI,
+  // where the button title is already the accessible name.
+  const sourceKey = (source: NativeTextSource): string =>
+    source.kind === "prop" ? `prop:${source.prop}` : `message:${source.ref.message.key}`;
+  const labelModifier = (entry: { content: NativeTextSource; label: NativeTextSource | undefined }): string | null =>
+    !entry.label || sourceKey(entry.label) === sourceKey(entry.content)
+      ? null
+      : `.accessibilityLabel(${text(entry.label)})`;
 
   const lines: string[] = [];
   lines.push("// @generated:start imports");
@@ -690,6 +732,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`${INDENT}private let stepCount: Int`);
   if (hasOnComplete) lines.push(`${INDENT}private let onComplete: (() -> Void)?`);
   if (hasOnSkip) lines.push(`${INDENT}private let onSkip: (() -> Void)?`);
+  for (const decl of textProps.values()) lines.push(decl.stored);
   for (const slot of slots) {
     lines.push(`${INDENT}private let ${slot}: ${swiftCase(capitalize(slot))}Region`);
   }
@@ -703,6 +746,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   ];
   if (hasOnComplete) params.push("onComplete: (() -> Void)? = nil,");
   if (hasOnSkip) params.push("onSkip: (() -> Void)? = nil,");
+  for (const decl of textProps.values()) params.push(decl.param);
   slots.forEach((slot) => {
     params.push(`@ViewBuilder ${slot}: () -> ${swiftCase(capitalize(slot))}Region = { EmptyView() },`);
   });
@@ -713,9 +757,15 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}self.stepCount = stepCount`);
   if (hasOnComplete) lines.push(`${INDENT}${INDENT}self.onComplete = onComplete`);
   if (hasOnSkip) lines.push(`${INDENT}${INDENT}self.onSkip = onSkip`);
+  for (const decl of textProps.values()) lines.push(decl.assign);
   for (const slot of slots) lines.push(`${INDENT}${INDENT}self.${slot} = ${slot}()`);
   lines.push(`${INDENT}}`);
   lines.push("");
+  const textAccessors = [...textProps.values()].flatMap((decl) => decl.accessor);
+  if (textAccessors.length > 0) {
+    lines.push(...textAccessors);
+    lines.push("");
+  }
   lines.push(`${INDENT}private var layered: [String: FsdsTokenValue?] {`);
   lines.push(`${INDENT}${INDENT}resolveFsdsLayeredTokens(`);
   lines.push(`${INDENT}${INDENT}${INDENT}fsdsScopes,`);
@@ -743,18 +793,27 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}VStack(spacing: ${chrome.gap ? "gap" : "8"}) {`);
   for (const slot of slots) lines.push(`${INDENT}${INDENT}${INDENT}${slot}`);
   lines.push(`${INDENT}${INDENT}${INDENT}HStack {`);
-  if (hasOnSkip) {
-    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button("Skip") { onSkip?() }`);
+  const pushLabel = (entry: { content: NativeTextSource; label: NativeTextSource | undefined }): void => {
+    const modifier = labelModifier(entry);
+    if (modifier) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${modifier}`);
+  };
+  if (skip) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button(${text(skip.content)}) { onSkip?() }`);
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
+    pushLabel(skip);
   }
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Spacer()`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button("Back") { if step.value > 0 { step.set(step.value - 1) } }`);
+  lines.push(
+    `${INDENT}${INDENT}${INDENT}${INDENT}Button(${text(previous.content)}) { if step.value > 0 { step.set(step.value - 1) } }`,
+  );
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button("Next") {`);
+  pushLabel(previous);
+  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button(${text(next.content)}) {`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}step.set(step.value + 1)`);
   if (hasOnComplete) lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}if Int(step.value) >= stepCount - 1 { onComplete?() }`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.borderedProminent)`);
+  pushLabel(next);
   lines.push(`${INDENT}${INDENT}${INDENT}}`);
   lines.push(`${INDENT}${INDENT}}`);
   if (chrome.blockPadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`);

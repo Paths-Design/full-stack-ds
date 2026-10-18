@@ -1,6 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
 import { PagedSetController } from "../../primitives/controllers/PagingController.js";
+import { FsdsMessagesController, formatFsdsMessage } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import '../Button/Button.js';
 import '../Icon/Icon.js';
@@ -23,6 +24,8 @@ export type PageNavigatorPresentation = "indicators" | "pages";
 // @custom:end
 
 // @generated:start component
+const PageNavigatorMessages = { groupLabel: "Page navigation", pageLabel: "Current page", previousPage: "Previous page", nextPage: "Next page", commit: "Go", pageCount: "of {count}" };
+
 export class PageNavigatorElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -100,25 +103,26 @@ export class PageNavigatorElement extends LitElement {
       width: var(--fsds-page-navigator-design-input-sizing-width, 100%);
     }
 
-    .page-navigator__total {
+    .page-navigator__context {
       font-variant-numeric: tabular-nums;
     }
     }
   `;
+
+  private readonly fsdsMessages = new FsdsMessagesController(this, "PageNavigator", PageNavigatorMessages);
 
   @property({ attribute: false }) pages?: string[] = [];
   @property({ type: Number }) index?: number;
   @property({ type: Number }) defaultIndex?: number = 0;
   @property({ attribute: false }) onIndexChange?: (index: number) => void;
   @property({ type: String }) presentation?: PageNavigatorPresentation = "indicators";
-  @property({ type: String }) label?: string = "Page navigation";
+  @property({ type: String }) label?: string;
   @property({ type: Boolean }) disabled?: boolean = false;
   @property({ type: Number }) pageCount?: number;
-  @property({ type: String }) pageLabel?: string = "Current page";
-  @property({ type: String }) previousLabel?: string = "Previous page";
-  @property({ type: String }) nextLabel?: string = "Next page";
-  @property({ type: String }) ofLabel?: string = "of";
-  @property({ type: String }) commitLabel?: string = "Go";
+  @property({ type: String }) pageLabel?: string;
+  @property({ type: String }) previousLabel?: string;
+  @property({ type: String }) nextLabel?: string;
+  @property({ type: String }) commitLabel?: string;
   @property({ type: Boolean }) showChoices?: boolean = false;
 
   private initializedBehavior?: PageNavigatorBehavior;
@@ -145,23 +149,22 @@ export class PageNavigatorElement extends LitElement {
   }
 
   override render() {
-    return html`<div class="${this.computeClasses()}" role="group" aria-label=${ifDefined((this.label ?? "Page navigation"))} data-fsds-box="">
-  <fsds-button class=${'page-navigator__previous'} type="button" .onClick=${this.pagedSet.previous} .disabled=${this.pagedSet.state.previousDisabled} .ariaLabel=${(this.previousLabel ?? "Previous page")}>
+    return html`<div class="${this.computeClasses()}" role="group" aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.groupLabel))} data-fsds-box="">
+  <fsds-button class=${'page-navigator__previous'} type="button" .onClick=${this.pagedSet.previous} .disabled=${this.pagedSet.state.previousDisabled} .ariaLabel=${(this.previousLabel ?? this.fsdsMessages.value.previousPage)}>
     <fsds-icon class=${'page-navigator__previousIcon'} name="arrow-left" size="sm"></fsds-icon>
   </fsds-button>
   <div class=${'page-navigator__field'} @keydown=${this.pagedSet.commitOnEnter} @focusout=${this.pagedSet.commit}>
-    <fsds-input class=${'page-navigator__input'} type="number" .onChange=${this.pagedSet.edit} .value=${this.pagedSet.state.draft} .disabled=${this.pagedSet.state.disabled} .ariaLabel=${(this.pageLabel ?? "Current page")}></fsds-input>
+    <fsds-input class=${'page-navigator__input'} type="number" .onChange=${this.pagedSet.edit} .value=${this.pagedSet.state.draft} .disabled=${this.pagedSet.state.disabled} .ariaLabel=${(this.pageLabel ?? this.fsdsMessages.value.pageLabel)}></fsds-input>
   </div>
-  <span class=${'page-navigator__context'}>${(this.ofLabel ?? "of")}</span>
-  <span class=${'page-navigator__total'}>${this.pagedSet.state.count}</span>
-  <fsds-button class=${'page-navigator__commit'} type="button" .onClick=${this.pagedSet.commit} .disabled=${this.pagedSet.state.disabled} .ariaLabel=${(this.commitLabel ?? "Go")}>
-    <span>${(this.commitLabel ?? "Go")}</span>
+  <span class=${'page-navigator__context'}>${formatFsdsMessage(this.fsdsMessages.value.pageCount, { count: this.pagedSet.state.count })}</span>
+  <fsds-button class=${'page-navigator__commit'} type="button" .onClick=${this.pagedSet.commit} .disabled=${this.pagedSet.state.disabled} .ariaLabel=${(this.commitLabel ?? this.fsdsMessages.value.commit)}>
+    <span>${(this.commitLabel ?? this.fsdsMessages.value.commit)}</span>
   </fsds-button>
-  <fsds-button class=${'page-navigator__next'} type="button" .onClick=${this.pagedSet.next} .disabled=${this.pagedSet.state.nextDisabled} .ariaLabel=${(this.nextLabel ?? "Next page")}>
+  <fsds-button class=${'page-navigator__next'} type="button" .onClick=${this.pagedSet.next} .disabled=${this.pagedSet.state.nextDisabled} .ariaLabel=${(this.nextLabel ?? this.fsdsMessages.value.nextPage)}>
     <fsds-icon class=${'page-navigator__nextIcon'} name="arrow-right" size="sm"></fsds-icon>
   </fsds-button>
   ${this.showChoices ? html`
-  <fsds-pagination class=${'page-navigator__choices'} .onIndexChange=${this.pagedSet.request} .pages=${(this.pages ?? [])} .index=${this.behavior.page} .presentation=${(this.presentation ?? "indicators")} .label=${(this.label ?? "Page navigation")} .disabled=${this.pagedSet.state.disabled}></fsds-pagination>
+  <fsds-pagination class=${'page-navigator__choices'} .onIndexChange=${this.pagedSet.request} .pages=${(this.pages ?? [])} .index=${this.behavior.page} .presentation=${(this.presentation ?? "indicators")} .label=${(this.label ?? this.fsdsMessages.value.groupLabel)} .disabled=${this.pagedSet.state.disabled}></fsds-pagination>
   ` : nothing}
 </div>`;
   }

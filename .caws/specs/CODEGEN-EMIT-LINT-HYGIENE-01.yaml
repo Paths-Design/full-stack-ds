@@ -1,9 +1,10 @@
 id: CODEGEN-EMIT-LINT-HYGIENE-01
 title: 'Emitter lint hygiene: conditional imports, dead-guard fix, test-import correctness, lint admission for generated output'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: emit-lint-hygiene
 created_at: '2026-10-18T05:45:45.561Z'
-updated_at: '2026-10-18T05:45:45.561Z'
+updated_at: '2026-10-18T18:41:46.196Z'
 created_by_session: 'session-56f657a0-b59d-4872-93a8-7d5eb2fe452f'
 blast_radius:
   modules:
@@ -25,6 +26,8 @@ scope:
     - 'packages/ds-react-native/src/**'
     - 'eslint.config.js'
     - 'docs/specifications/admission-rail.md'
+    - docs/current-implementation-snapshot.md
+    - vitest.config.ts
   out: []
 invariants:
   - 'No hand-edits to generated component files: every byte change comes from emitter changes plus regeneration; @custom regions are preserved untouched'

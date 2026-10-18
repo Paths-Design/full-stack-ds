@@ -69,6 +69,8 @@ import { buildNativeStyleRules, type NativeStyleRulesIR } from "./native-style-r
 import { resolveIdRelationships } from "./id-relationships.js";
 import { tokenSlug } from "./token-path.js";
 import { buildSequence, type SequenceIR } from "./sequence.js";
+import { buildMessages, validateMessages, type MessageIR } from "./messages.js";
+export type { MessageIR } from "./messages.js";
 import { buildMotionCountdown, type MotionCountdownIR } from "./motion-countdown.js";
 import { buildMotionLoops, type MotionLoopIR } from "./motion-loops.js";
 import { buildMotionPorts, type MotionPortIR } from "./motion-ports.js";
@@ -336,6 +338,18 @@ export type BindingExpression =
   | { kind: "prop"; prop: string; path?: string[] }
   | { kind: "channel"; channel: string; field: "value" | "onChange" | "defaultValue"; path?: string[]; forwardValue?: "channel" | "sequence" | "pagedSet" }
   | { kind: "literal"; value: string }
+  | {
+      /**
+       * A translatable string from the contract `messages` block
+       * (`message:<key>` or `message:<key>(<param>=<binding>, ...)`). Each
+       * backend resolves it through its message catalog; the contract
+       * default is the fallback. Params are value-shaped bindings that fill
+       * the message's `{name}` placeholders.
+       */
+      kind: "message";
+      key: string;
+      params: Array<{ name: string; value: BindingExpression }>;
+    }
   | { kind: "iterationLocal"; local: "index" | "item"; path?: string[] }
   | {
       /** Closed, value-shaped projection over a binding source. */
@@ -1132,6 +1146,13 @@ export interface ResolvedPropIR {
   description?: string;
   /** Default literal as a code expression, e.g. `"primary"` or `false`. */
   defaultExpr?: string;
+  /**
+   * Message key whose catalog text is this prop's default. When set,
+   * `defaultExpr` is the message's source-language text so a backend without
+   * a catalog still renders the contract default; catalog-aware backends
+   * resolve `explicit prop ?? catalog[key] ?? default` instead.
+   */
+  defaultMessage?: string;
   nodeKind?: StyledPropMember["nodeKind"];
   /**
    * The framework-neutral type. Emitters migrated to PropTypeIR lower from this;
@@ -1752,6 +1773,13 @@ export interface ComponentIR {
   unresolvedTypeRefs: UnresolvedTypeRefIR[];
 
   /**
+   * Translatable strings from the contract `messages` block, validated
+   * against every `message` binding, prop `defaultMessage` and sequence
+   * label. Empty when the component owns no user-facing text.
+   */
+  messages: MessageIR[];
+
+  /**
    * ARIA-obligation gaps acknowledged via `a11y.obligations.suppress`.
    * Each entry is point-in-time evidence that a static role in
    * `anatomy.dom` carries a known-missing required attribute. Unmet
@@ -2159,12 +2187,16 @@ export function buildComponentIR(
     polymorphicDefaultTag,
   );
 
+  const messages = buildMessages(contract);
+  validateMessages(contract, messages, dom, styledProps, motion.sequence);
+
   return {
     name: contract.name,
     cssPrefix,
     parts,
     compoundParts,
     styledProps,
+    messages,
     definedTypes: contract.types || {},
     unresolvedTypeRefs: collectUnresolvedTypes(
       styledProps,
@@ -4253,6 +4285,14 @@ export function parseBindingExpression(expr: string): BindingExpression {
       field: channelCallbackMatch[2] as "onChange" | "defaultValue",
     };
   }
+  // `message:<key>` / `message:<key>(<name>=<binding>, ...)`. Key existence
+  // and param agreement are checked against the messages block by
+  // `validateMessages`; a malformed form falls through to literal.
+  const messageMatch = expr.match(/^message:([a-z][A-Za-z0-9]*)(?:\((.*)\))?$/);
+  if (messageMatch) {
+    const params = messageMatch[2] === undefined ? [] : tryParseMessageParams(messageMatch[2]);
+    if (params) return { kind: "message", key: messageMatch[1], params };
+  }
   const literalMatch = expr.match(/^literal:(.*)$/);
   if (literalMatch) {
     return { kind: "literal", value: literalMatch[1] };
@@ -4281,6 +4321,29 @@ export function parseBindingExpression(expr: string): BindingExpression {
   // Unrecognized — treat the whole expression as a literal so the contract's
   // intent (whatever it was) appears in output for visible failure.
   return { kind: "literal", value: expr };
+}
+
+/**
+ * Parse `name=binding, ...` message params. Each value must be a value-shaped
+ * binding (prop, channel value, iteration local, paged field); names are
+ * unique. Returns null on any malformed entry so the caller falls through to
+ * a visible literal.
+ */
+function tryParseMessageParams(inner: string): Array<{ name: string; value: BindingExpression }> | null {
+  const params: Array<{ name: string; value: BindingExpression }> = [];
+  for (const part of inner.split(",").map((s) => s.trim())) {
+    const match = part.match(/^([a-z][A-Za-z0-9]*)=(.+)$/);
+    if (!match || params.some((p) => p.name === match[1])) return null;
+    const value = parseBindingExpression(match[2].trim());
+    const valueShaped =
+      value.kind === "prop" ||
+      value.kind === "iterationLocal" ||
+      (value.kind === "channel" && value.field === "value") ||
+      (value.kind === "paged" && value.field !== undefined);
+    if (!valueShaped) return null;
+    params.push({ name: match[1], value });
+  }
+  return params.length > 0 ? params : null;
 }
 
 function parseDomBindingExpression(
@@ -5863,6 +5926,7 @@ function resolveProps(contract: ComponentContract): ResolvedPropIR[] {
     // populated so import scanners / type-ref extraction / un-migrated emitters
     // behave identically.
     const type = p.propType ? canonicalTsType(propType) : p.type ?? "";
+    const messageDefault = p.defaultMessage === undefined ? undefined : contract.messages?.[p.defaultMessage]?.defaultMessage;
     return {
       name: p.name,
       safeName: toSafeIdentifier(p.name),
@@ -5870,7 +5934,8 @@ function resolveProps(contract: ComponentContract): ResolvedPropIR[] {
       typeRefs: extractTypeRefs(type),
       required: p.required ?? false,
       description: p.description,
-      defaultExpr: defaultExpr(p),
+      defaultExpr: messageDefault === undefined ? defaultExpr(p) : JSON.stringify(messageDefault),
+      ...(p.defaultMessage === undefined ? {} : { defaultMessage: p.defaultMessage }),
       nodeKind: nodeKindForPropType(propType, p.nodeKind),
       propType,
     };

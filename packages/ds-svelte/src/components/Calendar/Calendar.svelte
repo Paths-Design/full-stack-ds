@@ -1,6 +1,7 @@
 <script lang="ts">
 // @generated:start imports
 import { useCalendar } from "./useCalendar.svelte.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -31,7 +32,10 @@ interface Props {
   class?: string;
 }
 
-let { caption = "Calendar", value, defaultValue, onChange, mode = "single", disabled, minDate, maxDate, locale = "en-US", shouldCloseOnSelect = true, days, class: className }: Props = $props();
+let { caption: captionProp, value, defaultValue, onChange, mode = "single", disabled, minDate, maxDate, locale = "en-US", shouldCloseOnSelect = true, days, class: className }: Props = $props();
+const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+const fsdsMessages = useFsdsMessages("Calendar", CalendarMessages);
+const caption = $derived(captionProp ?? fsdsMessages.current.caption);
 // @generated:end
 
 // @generated:start hook
@@ -61,11 +65,11 @@ const classes = $derived(
 
 <div class={classes} role="application" data-fsds-component="calendar" data-fsds-box="">
   <div class={'calendar__header'}>
-    <button class={'calendar__nav'} aria-label="Previous month"></button>
+    <button class={'calendar__nav'} aria-label={fsdsMessages.current.previousMonth}></button>
     <span class={'calendar__caption'}>{caption}</span>
-    <button class={'calendar__nav'} aria-label="Next month"></button>
+    <button class={'calendar__nav'} aria-label={fsdsMessages.current.nextMonth}></button>
   </div>
-  <table class={'calendar__grid'} role="grid" aria-label="Calendar">
+  <table class={'calendar__grid'} role="grid" aria-label={fsdsMessages.current.gridLabel}>
     <tbody>
       <tr>
         {#each (days ?? []) as item, index (index)}

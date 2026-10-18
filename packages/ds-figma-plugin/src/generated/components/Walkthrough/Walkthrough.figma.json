@@ -159,7 +159,8 @@
       "required": false,
       "description": "Accessible label for the walkthrough region.",
       "defaultExpr": "\"Feature tour\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "tourLabel"
     },
     {
       "name": "storageKey",
@@ -231,7 +232,8 @@
       "required": false,
       "description": "Visible label for the next-step action, such as Finish on the final step.",
       "defaultExpr": "\"Next\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "next"
     },
     {
       "name": "progressLabel",
@@ -241,6 +243,50 @@
       "description": "Visible progress text supplied by the consumer, such as 1 of 3.",
       "defaultExpr": null,
       "nodeKind": null
+    }
+  ],
+  "messages": [
+    {
+      "key": "tourLabel",
+      "catalogKey": "Walkthrough.tourLabel",
+      "defaultMessage": "Feature tour",
+      "description": "Accessible name of the tour region when the consumer supplies none.",
+      "params": []
+    },
+    {
+      "key": "skip",
+      "catalogKey": "Walkthrough.skip",
+      "defaultMessage": "Skip",
+      "description": "Text of the button that ends the tour.",
+      "params": []
+    },
+    {
+      "key": "skipTour",
+      "catalogKey": "Walkthrough.skipTour",
+      "defaultMessage": "Skip tour",
+      "description": "Accessible name of the button that ends the tour.",
+      "params": []
+    },
+    {
+      "key": "previous",
+      "catalogKey": "Walkthrough.previous",
+      "defaultMessage": "Previous",
+      "description": "Text of the button that returns to the previous step.",
+      "params": []
+    },
+    {
+      "key": "previousStep",
+      "catalogKey": "Walkthrough.previousStep",
+      "defaultMessage": "Previous step",
+      "description": "Accessible name of the button that returns to the previous step.",
+      "params": []
+    },
+    {
+      "key": "next",
+      "catalogKey": "Walkthrough.next",
+      "defaultMessage": "Next",
+      "description": "Text and accessible name of the next-step button when the consumer supplies none.",
+      "params": []
     }
   ],
   "designBindings": [

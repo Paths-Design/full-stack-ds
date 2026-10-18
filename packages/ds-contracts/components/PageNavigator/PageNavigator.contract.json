@@ -18,7 +18,6 @@
       "field",
       "input",
       "context",
-      "total",
       "next",
       "nextIcon",
       "commit",
@@ -55,11 +54,6 @@
         "focusable": true
       },
       "context": {
-        "role": "label",
-        "subcomponent": false,
-        "tag": "span"
-      },
-      "total": {
         "role": "label",
         "subcomponent": false,
         "tag": "span"
@@ -151,12 +145,7 @@
         {
           "tag": "span",
           "part": "context",
-          "content": "prop:ofLabel"
-        },
-        {
-          "tag": "span",
-          "part": "total",
-          "content": "paged:count"
+          "content": "message:pageCount(count=paged:count)"
         },
         {
           "componentRef": "fsds.Button",
@@ -220,6 +209,35 @@
       ]
     }
   },
+  "messages": {
+    "groupLabel": {
+      "defaultMessage": "Page navigation",
+      "description": "Accessible name of the navigator group."
+    },
+    "pageLabel": {
+      "defaultMessage": "Current page",
+      "description": "Accessible name of the page number field."
+    },
+    "previousPage": {
+      "defaultMessage": "Previous page",
+      "description": "Accessible name of the button that moves to the previous page."
+    },
+    "nextPage": {
+      "defaultMessage": "Next page",
+      "description": "Accessible name of the button that moves to the next page."
+    },
+    "commit": {
+      "defaultMessage": "Go",
+      "description": "Text and accessible name of the button that applies the typed page number."
+    },
+    "pageCount": {
+      "defaultMessage": "of {count}",
+      "description": "Text after the page number field: the total page count.",
+      "params": [
+        "count"
+      ]
+    }
+  },
   "props": {
     "styled": {
       "members": [
@@ -275,7 +293,7 @@
         {
           "name": "label",
           "type": "string",
-          "default": "Page navigation",
+          "defaultMessage": "groupLabel",
           "description": "Accessible name for this set of choices."
         },
         {
@@ -292,31 +310,25 @@
         {
           "name": "pageLabel",
           "type": "string",
-          "default": "Current page",
+          "defaultMessage": "pageLabel",
           "description": "Consumer-authored pageLabel text for the composed navigator."
         },
         {
           "name": "previousLabel",
           "type": "string",
-          "default": "Previous page",
+          "defaultMessage": "previousPage",
           "description": "Consumer-authored previousLabel text for the composed navigator."
         },
         {
           "name": "nextLabel",
           "type": "string",
-          "default": "Next page",
+          "defaultMessage": "nextPage",
           "description": "Consumer-authored nextLabel text for the composed navigator."
-        },
-        {
-          "name": "ofLabel",
-          "type": "string",
-          "default": "of",
-          "description": "Consumer-authored ofLabel text for the composed navigator."
         },
         {
           "name": "commitLabel",
           "type": "string",
-          "default": "Go",
+          "defaultMessage": "commit",
           "description": "Consumer-authored commitLabel text for the composed navigator."
         },
         {

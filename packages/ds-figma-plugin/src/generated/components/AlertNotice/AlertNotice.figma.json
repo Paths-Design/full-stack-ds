@@ -93,7 +93,8 @@
       "required": false,
       "description": "Accessible label for the dismiss control. Defaults to \"Dismiss\".",
       "defaultExpr": "\"Dismiss\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "dismiss"
     },
     {
       "name": "icon",
@@ -103,6 +104,15 @@
       "description": "Optional icon node rendered before the alert content",
       "defaultExpr": null,
       "nodeKind": "node-ref"
+    }
+  ],
+  "messages": [
+    {
+      "key": "dismiss",
+      "catalogKey": "AlertNotice.dismiss",
+      "defaultMessage": "Dismiss",
+      "description": "Accessible name of the button that dismisses the notice.",
+      "params": []
     }
   ],
   "designBindings": [

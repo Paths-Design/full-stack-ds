@@ -68,6 +68,16 @@
       ]
     }
   },
+  "messages": {
+    "expand": {
+      "defaultMessage": "Show more",
+      "description": "Text of the toggle while the text is clamped."
+    },
+    "collapse": {
+      "defaultMessage": "Show less",
+      "description": "Text of the toggle while the full text is shown."
+    }
+  },
   "props": {
     "designed": {
       "members": [
@@ -104,13 +114,13 @@
           "name": "expandText",
           "propType": { "kind": "string" },
           "description": "Custom expand button label.",
-          "default": "Show more"
+          "defaultMessage": "expand"
         },
         {
           "name": "collapseText",
           "propType": { "kind": "string" },
           "description": "Custom collapse button label.",
-          "default": "Show less"
+          "defaultMessage": "collapse"
         }
       ]
     }

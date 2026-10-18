@@ -57,8 +57,29 @@ export interface StyledPropMember {
   description?: string;
   required?: boolean;
   default?: unknown;
+  /**
+   * Key into the contract `messages` block whose text is this string prop's
+   * default. Mutually exclusive with `default` (schema-enforced). The
+   * consumer's explicit value still wins; the catalog supplies the fallback.
+   */
+  defaultMessage?: string;
+  /**
+   * `false` marks a string prop whose literal default is not user-facing
+   * text (a locale tag, an icon name), so the localization gate admits it.
+   */
+  translatable?: false;
   /** A2UI disambiguation hint for ReactNode-typed props. */
   nodeKind?: 'node-ref' | 'icon-ref';
+}
+
+/**
+ * One translatable string owned by a component. `defaultMessage` is the
+ * source-language text; `{name}` placeholders must match `params` exactly.
+ */
+export interface ContractMessage {
+  defaultMessage: string;
+  description: string;
+  params?: string[];
 }
 
 export interface ContractTypeDef {
@@ -568,7 +589,12 @@ export interface ContractMotionCountdown {
 /** A finite, circular content sequence. Children of viewport are the slides. */
 export interface ContractPartAddress { part: string; componentPart?: string; }
 export interface ContractSequence {
-  labels: { start: string; stop: string; item: string };
+  /**
+   * Message keys (declared in the contract `messages` block) for the
+   * sequence-owned text: rotation start/stop names, the slide role
+   * description, and the per-slide position fallback (params `index`, `count`).
+   */
+  labels: { start: string; stop: string; item: string; position: string };
   channel: string;
   itemsProp: string;
   viewport: string;
@@ -1015,6 +1041,8 @@ export interface ComponentContract {
   };
   motion?: ContractMotion;
   sequence?: ContractSequence;
+  /** Translatable strings keyed by component-local message key. */
+  messages?: Record<string, ContractMessage>;
   focus?: ContractFocus;
   portal?: ContractPortal;
   textOverflow?: ContractTextOverflow;

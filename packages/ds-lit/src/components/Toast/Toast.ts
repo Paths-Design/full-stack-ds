@@ -1,6 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
 import { ref } from 'lit/directives/ref.js';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { ToastBehavior } from './ToastBehavior.js';
 import { AutoDismissController } from '../../primitives/index.js';
@@ -22,6 +23,8 @@ export type ToastPoliteness = "polite" | "assertive";
 // @custom:end
 
 // @generated:start component
+const ToastMessages = { regionLabel: "Notifications", dismiss: "Dismiss" };
+
 export class ToastElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -215,6 +218,8 @@ export class ToastElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Toast", ToastMessages);
+
   @property({ type: Boolean }) open?: boolean;
   @property({ attribute: false }) onOpenChange?: (open: boolean) => void;
   @property({ type: String }) variant?: ToastVariant = "info";
@@ -277,7 +282,7 @@ export class ToastElement extends LitElement {
   }
 
   override render() {
-    return html`<div class="${this.computeClasses()}" aria-label="Notifications" role="region" aria-live=${ifDefined((this.politeness ?? "polite"))} data-fsds-box="" @pointerenter=${this.autoDismiss.pauseListeners.pointerenter} @pointerleave=${this.autoDismiss.pauseListeners.pointerleave} @focusin=${this.autoDismiss.pauseListeners.focusin} @focusout=${this.autoDismiss.pauseListeners.focusout}>
+    return html`<div class="${this.computeClasses()}" role="region" aria-label=${this.fsdsMessages.value.regionLabel} aria-live=${ifDefined((this.politeness ?? "polite"))} data-fsds-box="" @pointerenter=${this.autoDismiss.pauseListeners.pointerenter} @pointerleave=${this.autoDismiss.pauseListeners.pointerleave} @focusin=${this.autoDismiss.pauseListeners.focusin} @focusout=${this.autoDismiss.pauseListeners.focusout}>
   ${this.behavior.open ? html`
   <div class=${'toast__item'} role="status" aria-labelledby=${ifDefined([this.title ? 'toast-title' : null].filter(Boolean).join(' ') || undefined)} data-fsds-channel-renders="open">
     <div class=${'toast__row'}>
@@ -292,7 +297,7 @@ export class ToastElement extends LitElement {
         <slot name="action"></slot>
       </div>
       ` : nothing}
-      <button class=${'toast__close'} type="button" aria-label="Dismiss" @click=${() => this.behavior.setOpen(!this.behavior.open)}></button>
+      <button class=${'toast__close'} type="button" @click=${() => this.behavior.setOpen(!this.behavior.open)} aria-label=${this.fsdsMessages.value.dismiss}></button>
     </div>
     <div class=${'toast__progress'} hidden ${ref(this.autoDismiss.bindProgress)} aria-hidden="true"></div>
   </div>

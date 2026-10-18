@@ -4,6 +4,7 @@ import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createBreadcrumbsStyles } from "./Breadcrumbs.styles";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -23,14 +24,18 @@ export interface BreadcrumbsProps {
 // @generated:end
 
 // @generated:start component
+const BreadcrumbsMessages = { navigationLabel: "Breadcrumb" };
+
 export function Breadcrumbs({
-  ariaLabel = "Breadcrumb",
+  ariaLabel: ariaLabelProp,
   children,
   style,
   testID,
   accessibilityLabel,
   accessibilityLabelledBy,
 }: BreadcrumbsProps) {
+  const fsdsMessages = useFsdsMessages("Breadcrumbs", BreadcrumbsMessages);
+  const ariaLabel = ariaLabelProp ?? fsdsMessages.navigationLabel;
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createBreadcrumbsStyles(fsdsTheme), [fsdsTheme]);
   return (

@@ -77,7 +77,8 @@
       "required": false,
       "description": "Label for the expand trigger button.",
       "defaultExpr": "\"Show more\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "showMore"
     },
     {
       "name": "showLessLabel",
@@ -86,7 +87,24 @@
       "required": false,
       "description": "Label for the collapse trigger button.",
       "defaultExpr": "\"Show less\"",
-      "nodeKind": null
+      "nodeKind": null,
+      "defaultMessage": "showLess"
+    }
+  ],
+  "messages": [
+    {
+      "key": "showMore",
+      "catalogKey": "ShowMore.showMore",
+      "defaultMessage": "Show more",
+      "description": "Text of the toggle while the content is collapsed.",
+      "params": []
+    },
+    {
+      "key": "showLess",
+      "catalogKey": "ShowMore.showLess",
+      "defaultMessage": "Show less",
+      "description": "Text of the toggle while the content is expanded.",
+      "params": []
     }
   ],
   "designBindings": [

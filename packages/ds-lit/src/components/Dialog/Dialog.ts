@@ -1,6 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
 import { ref } from 'lit/directives/ref.js';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
 import { DialogBehavior } from './DialogBehavior.js';
@@ -20,6 +21,8 @@ export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
 // @custom:end
 
 // @generated:start component
+const DialogMessages = { close: "Close dialog" };
+
 export class DialogElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -252,6 +255,8 @@ export class DialogElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Dialog", DialogMessages);
+
   @property({ type: Boolean }) open?: boolean;
   @property({ type: Boolean }) defaultOpen?: boolean;
   @property({ attribute: false }) onOpenChange?: (open: boolean) => void;
@@ -340,7 +345,7 @@ export class DialogElement extends LitElement {
       <h2 class=${'dialog__title'} id="dialog-title">
         <slot name="title" @slotchange=${() => this.requestUpdate()}></slot>
       </h2>
-      <button class=${'dialog__closeButton'} type="button" aria-label="Close dialog" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setOpenness(false); }}></button>
+      <button class=${'dialog__closeButton'} type="button" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setOpenness(false); }} aria-label=${this.fsdsMessages.value.close}></button>
     </div>
     <div class=${'dialog__body'} id="dialog-body">
       <slot></slot>

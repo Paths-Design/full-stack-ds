@@ -5,6 +5,7 @@ import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react
 import { useFsdsTheme } from "../../tokens";
 import { createToastStyles } from "./Toast.styles";
 import { resolveToastTokens } from "./Toast.tokens";
+import { useFsdsMessages } from "../../primitives/messages";
 // @generated:end
 
 // @generated:start types
@@ -32,6 +33,8 @@ export interface ToastProps {
 // @generated:end
 
 // @generated:start component
+const ToastMessages = { regionLabel: "Notifications", dismiss: "Dismiss" };
+
 export function Toast({
   open: controlledOpen,
   title,
@@ -45,6 +48,7 @@ export function Toast({
   accessibilityLabel,
   accessibilityLabelledBy,
 }: ToastProps) {
+  const fsdsMessages = useFsdsMessages("Toast", ToastMessages);
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createToastStyles(fsdsTheme), [fsdsTheme]);
   const tokens = useMemo(() => resolveToastTokens(fsdsTheme), [fsdsTheme]);
@@ -66,8 +70,8 @@ export function Toast({
     <View
       testID={testID}
       style={[styles.viewport, style]}
+      accessibilityLabel={accessibilityLabel ?? fsdsMessages.regionLabel}
       accessibilityLiveRegion={politeness}
-      accessibilityLabel={accessibilityLabel}
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
       {open ? (
@@ -98,6 +102,7 @@ export function Toast({
           ) : null}
           <Pressable
             style={styles.close}
+            accessibilityLabel={fsdsMessages.dismiss}
             onPress={() => setOpenValue(!open)}
             accessibilityRole="button"
           />

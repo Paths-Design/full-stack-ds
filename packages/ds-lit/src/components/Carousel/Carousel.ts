@@ -2,6 +2,7 @@
 import { LitElement, html, css } from 'lit';
 import { ref } from 'lit/directives/ref.js';
 import { SequenceController } from "../../primitives/controllers/SequenceController.js";
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import '../Icon/Icon.js';
 import '../Pagination/Pagination.js';
@@ -22,6 +23,8 @@ export type CarouselIndicator = "pagination" | "next" | "both";
 // @custom:end
 
 // @generated:start component
+const CarouselMessages = { regionLabel: "Featured content", roleDescription: "carousel", rotationStart: "Start slide rotation", rotationStop: "Stop slide rotation", slideRoleDescription: "slide", slidePosition: "{index} of {count}", previousSlide: "Previous slide", nextSlide: "Next slide", chooseSlide: "Choose slide" };
+
 export class CarouselElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -186,6 +189,8 @@ export class CarouselElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Carousel", CarouselMessages);
+
   @property({ attribute: false }) slides?: string[] = [];
   @property({ type: Number }) index?: number;
   @property({ type: Number }) defaultIndex?: number = 0;
@@ -193,7 +198,7 @@ export class CarouselElement extends LitElement {
   @property({ type: Boolean }) autoPlay?: boolean = false;
   @property({ attribute: false }) duration?: number | null;
   @property({ type: String }) indicator?: CarouselIndicator = "pagination";
-  @property({ type: String }) label?: string = "Featured content";
+  @property({ type: String }) label?: string;
 
   private initializedBehavior?: CarouselBehavior;
   private get behavior(): CarouselBehavior {
@@ -203,9 +208,10 @@ export class CarouselElement extends LitElement {
     onIndexChange: (v) => this.onIndexChange?.(v),
   });
   }
-  private sequence = new SequenceController(this, {"labels":{"start":"Start slide rotation","stop":"Stop slide rotation","item":"slide"},"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10,"when":{"axis":"indicator","values":["pagination","both"]}},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10,"when":{"axis":"indicator","values":["next","both"]}}]}, () => ({
+  private sequence = new SequenceController(this, {"delegatedPicker":false,"transition":{"durationMs":250,"easing":"cubic-bezier(0.4, 0, 0.2, 1)","referenceWidth":320,"minMultiplier":0.5,"maxMultiplier":2},"parts":{"viewport":".carousel__viewport","previous":".carousel__previous","next":".carousel__next","rotation":".carousel__rotation","picker":".carousel__pagination .pagination__item"},"progress":[{"selector":".carousel__pagination .pagination__fill","effect":"elapsed-width","steps":10,"when":{"axis":"indicator","values":["pagination","both"]}},{"selector":".carousel__ring","effect":"elapsed-ring","steps":10,"when":{"axis":"indicator","values":["next","both"]}}]}, () => ({
     index: this.behavior.slide, labels: this.slides ?? [], autoPlay: this.autoPlay ?? false,
     presentation: { "indicator": (this.indicator ?? "pagination") },
+    messages: { start: this.fsdsMessages.value.rotationStart, stop: this.fsdsMessages.value.rotationStop, item: this.fsdsMessages.value.slideRoleDescription, position: this.fsdsMessages.value.slidePosition },
     durationMs: this.duration === undefined ? 6000 : this.duration,
     onIndexChange: (value) => this.behavior.setSlide(value),
   }));
@@ -223,17 +229,17 @@ export class CarouselElement extends LitElement {
   }
 
   override render() {
-    return html`<section class="${this.computeClasses()}" role="region" aria-roledescription="carousel" aria-label=${ifDefined((this.label ?? "Featured content"))} data-fsds-box="" ${ref(this.sequence.bindRoot)}>
-  <button class=${'carousel__rotation'} type="button" aria-label="Start slide rotation">Start slide rotation</button>
+    return html`<section class="${this.computeClasses()}" role="region" aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.regionLabel))} aria-roledescription=${this.fsdsMessages.value.roleDescription} data-fsds-box="" ${ref(this.sequence.bindRoot)}>
+  <button class=${'carousel__rotation'} type="button"></button>
   <div class=${'carousel__viewport'} aria-live="off" aria-atomic="false">
     <slot></slot>
   </div>
   <div class=${'carousel__controls'}>
-    <button class=${'carousel__previous'} type="button" aria-label="Previous slide">
+    <button class=${'carousel__previous'} type="button" aria-label=${this.fsdsMessages.value.previousSlide}>
       <fsds-icon name="arrow-left" size="sm"></fsds-icon>
     </button>
-    <fsds-pagination class=${'carousel__pagination'} label="Choose slide" presentation="indicators" .onIndexChange=${this.sequence.requestIndex} .pages=${(this.slides ?? [])} .index=${this.behavior.slide} .progress=${((this.indicator ?? "pagination") === "pagination" ? "elapsed" : ((this.indicator ?? "pagination") === "next" ? "none" : "elapsed"))}></fsds-pagination>
-    <button class=${'carousel__next'} type="button" aria-label="Next slide">
+    <fsds-pagination class=${'carousel__pagination'} presentation="indicators" .onIndexChange=${this.sequence.requestIndex} .label=${this.fsdsMessages.value.chooseSlide} .pages=${(this.slides ?? [])} .index=${this.behavior.slide} .progress=${((this.indicator ?? "pagination") === "pagination" ? "elapsed" : ((this.indicator ?? "pagination") === "next" ? "none" : "elapsed"))}></fsds-pagination>
+    <button class=${'carousel__next'} type="button" aria-label=${this.fsdsMessages.value.nextSlide}>
       <span class=${'carousel__ring'} aria-hidden="true"></span>
       <fsds-icon name="arrow-right" size="sm"></fsds-icon>
     </button>

@@ -3,6 +3,7 @@
 import { computed } from "vue";
 import { usePagination } from "./usePagination.js";
 import { usePagedSet } from "../../primitives/hooks/usePaging.js";
+import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -34,14 +35,16 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   pages: () => ([]),
   defaultIndex: 0,
   presentation: "indicators",
-  label: "Choose page",
   disabled: false,
   progress: "none",
 });
+const PaginationMessages = { navigationLabel: "Choose page" };
+const fsdsMessages = useFsdsMessages("Pagination", PaginationMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { label: "navigationLabel" });
 // @generated:end
 
 // @generated:start hook

@@ -1,0 +1,8 @@
+Target dependency graph (4 targets)
+Target 'AllExcludingTests' in project 'Aggregate'
+➜ Explicit dependency on target 'MotionLabExample-product' in project 'motion-lab-swift-example'
+Target 'MotionLabExample-product' in project 'motion-lab-swift-example'
+➜ Explicit dependency on target 'DsSwiftUI-product' in project 'ds-swiftui'
+Target 'DsSwiftUI-product' in project 'ds-swiftui'
+➜ Explicit dependency on target 'DsSwiftUI' in project 'ds-swiftui'
+Target 'DsSwiftUI' in project 'ds-swiftui' (no dependencies)

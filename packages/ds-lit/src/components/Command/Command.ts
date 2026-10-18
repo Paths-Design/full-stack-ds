@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import '../Icon/Icon.js';
 import { CommandBehavior } from './CommandBehavior.js';
@@ -19,6 +20,8 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 // @custom:end
 
 // @generated:start component
+const CommandMessages = { searchPlaceholder: "Search...", searchLabel: "Search commands", emptyResults: "No results found.", dialogLabel: "Command palette" };
+
 export class CommandElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -273,16 +276,18 @@ export class CommandElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Command", CommandMessages);
+
   @property({ type: Boolean }) open?: boolean;
   @property({ type: Boolean }) defaultOpen?: boolean;
   @property({ attribute: false }) onOpenChange?: (open: boolean) => void;
   @property({ type: String }) search?: string;
   @property({ type: String }) defaultSearch?: string;
   @property({ attribute: false }) onSearchChange?: (value: string) => void;
-  @property({ type: String }) placeholder?: string = "Search...";
-  @property({ type: String }) searchLabel?: string = "Search commands";
-  @property({ type: String }) emptyMessage?: string = "No results found.";
-  @property({ type: String }) label?: string = "Command palette";
+  @property({ type: String }) placeholder?: string;
+  @property({ type: String }) searchLabel?: string;
+  @property({ type: String }) emptyMessage?: string;
+  @property({ type: String }) label?: string;
   @property({ type: Boolean }) shouldFilter?: boolean = true;
   @property({ attribute: false }) filter?: ((value: string, search: string) => number) | undefined;
 
@@ -350,10 +355,10 @@ export class CommandElement extends LitElement {
   <div class=${'command__overlay'} aria-hidden="true" data-fsds-channel-renders="open"></div>
   ` : nothing}
   ${this.behavior.open ? html`
-  <div class=${'command__dialog'} role="dialog" aria-modal="true" aria-label=${ifDefined((this.label ?? "Command palette"))} data-fsds-channel-renders="open" @click=${(e: Event) => e.stopPropagation()}>
+  <div class=${'command__dialog'} role="dialog" aria-modal="true" aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.dialogLabel))} data-fsds-channel-renders="open" @click=${(e: Event) => e.stopPropagation()}>
     <div class=${'command__inputWrapper'}>
       <fsds-icon class=${'command__searchIcon'} name="search" size="sm"></fsds-icon>
-      <input class=${'command__input'} type="search" role="combobox" aria-autocomplete="list" @input=${(e: Event) => this.handleSearchChange(e)} aria-expanded=${this.behavior.open ? 'true' : 'false'} aria-label=${ifDefined((this.searchLabel ?? "Search commands"))} placeholder=${ifDefined((this.placeholder ?? "Search..."))} .value=${this.behavior.search} id="command-input" aria-controls="command-list" />
+      <input class=${'command__input'} type="search" role="combobox" aria-autocomplete="list" @input=${(e: Event) => this.handleSearchChange(e)} aria-expanded=${this.behavior.open ? 'true' : 'false'} aria-label=${ifDefined((this.searchLabel ?? this.fsdsMessages.value.searchLabel))} placeholder=${ifDefined((this.placeholder ?? this.fsdsMessages.value.searchPlaceholder))} .value=${this.behavior.search} id="command-input" aria-controls="command-list" />
     </div>
     <div class=${'command__list'} role="listbox" id="command-list" aria-labelledby="command-input">
       <div class=${'command__empty'}></div>

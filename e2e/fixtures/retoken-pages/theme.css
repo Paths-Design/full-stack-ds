@@ -1,5 +1,7 @@
-/* Page geometry belongs to this consumer. Component appearance below uses only
-   declared component/box controls, never selectors into generated internals. */
+/* Page geometry belongs to this consumer. Component appearance uses declared
+   component/box controls, root-class hooks (.text/.button/.input/.icon), and
+   documented element-structural selectors inside component roots where the
+   package exposes no control (each is recorded in retoken-page-attempts.md). */
 body { margin: 0; font-family: Arial, sans-serif; }
 * { box-sizing: border-box; }
 .retoken {
@@ -7,10 +9,17 @@ body { margin: 0; font-family: Arial, sans-serif; }
   --page-muted: #686868;
   --page-surface: #fff;
   --page-hover: #eee;
+  /* Brand-shaped accents, named once (RETOKEN-TOKEN-AUDIT-01): the playback
+     green belongs to the music reference, the save red to the pinning one. */
+  --retoken-accent-play: #1ed760;
+  --retoken-accent-play-ink: #071b0b;
+  --retoken-accent-play-hover: #3be477;
+  --retoken-accent-brand: #e60023;
+  --retoken-accent-brand-hover: #ad081b;
+  --retoken-accent-brand-active: #870a18;
   --fsds-text-design-root-foreground-color: var(--page-foreground);
   --fsds-text-design-root-typography-size: 14px;
   --fsds-text-design-root-typography-line-height: 1.4;
-  --fsds-icon-design-root-foreground-color: currentColor;
   --fsds-button-design-root-shape-radius: 999px;
   --fsds-button-design-root-border-width: 0px;
   --fsds-button-design-root-typography-size: 14px;
@@ -44,14 +53,14 @@ body { margin: 0; font-family: Arial, sans-serif; }
 .quiet { --fsds-button-design-root-background-fill: transparent; }
 .selected { --fsds-button-design-root-background-fill: #fff; --fsds-button-design-root-foreground-color: #161616; --fsds-button-design-hover-background-fill: #ddd; }
 .search-region { gap: 8px; align-items: center; flex: 1; min-width: 0; }
-.search-region input { --fsds-box-model-width: 100%; --fsds-box-model-min-width: 0px; }
+.search-region input { --fsds-box-model-width: 100%; }
 .section-heading { justify-content: space-between; align-items: center; gap: 12px; }
 .spotify { --page-foreground: #fff; --page-muted: #b3b3b3; --page-surface: #181818; --page-hover: #2b2b2b; background: #000; min-height: 100vh; padding: 8px 8px 108px; }
 .music-shell { display: grid; grid-template-columns: 240px minmax(0,1fr) 250px; gap: 8px; }
 .library { display: flex; flex-direction: column; gap: 8px; }
 .home-links, .library-body, .now-playing { background: #121212; border-radius: 8px; padding: 18px 14px; gap: 18px; }
 .library-body { flex: 1; }
-.home-links .button { --fsds-box-model-padding-inline: 0px; }
+.home-links .button { --fsds-box-model-padding-inline: 0px; justify-content: flex-start; }
 .pills { gap: 4px; }
 .library-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .library-row > div { min-width: 0; }
@@ -62,6 +71,10 @@ body { margin: 0; font-family: Arial, sans-serif; }
 .quick-picks { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin: 18px 0 30px; }
 .quick-pick { display: flex; align-items: center; gap: 8px; background: #ffffff14; border-radius: 4px; overflow: hidden; }
 .quick-pick .button { --fsds-box-model-padding-inline: 0px; --fsds-button-design-root-typography-size: 12px; }
+/* Upstream control gap: Button exposes no label-truncation control (no Text.truncate
+   counterpart), so the label span is constrained here. Documented in
+   retoken-page-attempts.md; do not copy as a pattern for new consumers. */
+.quick-pick .button > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .album-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin-top: 18px; }
 .album-title { --fsds-box-model-padding: 0px; --fsds-box-model-min-height: 24px; --fsds-button-design-root-typography-size: 13px; }
 .now-playing { display: flex; flex-direction: column; gap: 16px; }
@@ -69,13 +82,13 @@ body { margin: 0; font-family: Arial, sans-serif; }
 .player { position: fixed; bottom: 0; left: 0; right: 0; min-height: 94px; background: #000; display: grid; grid-template-columns: 260px minmax(0,1fr) 260px; align-items: center; gap: 24px; padding: 12px 20px; }
 .playback { gap: 8px; }
 .transport { justify-content: center; align-items: center; gap: 12px; }
-.play-button { --fsds-button-design-root-background-fill: #1ed760; --fsds-button-design-root-foreground-color: #071b0b; --fsds-button-design-hover-background-fill: #3be477; }
+.play-button { --fsds-button-design-root-background-fill: var(--retoken-accent-play); --fsds-button-design-root-foreground-color: var(--retoken-accent-play-ink); --fsds-button-design-hover-background-fill: var(--retoken-accent-play-hover); }
 .timeline { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 10px; }
-.timeline .progress { --fsds-box-model-height: 4px; --fsds-box-model-width: 100%; --fsds-progress-design-track-background-fill: #4d4d4d; --fsds-progress-design-fill-background-fill: #fff; }
+.timeline .progress { --fsds-box-model-height: 4px; --fsds-progress-design-track-background-fill: #4d4d4d; --fsds-progress-design-fill-background-fill: #fff; }
 .pinterest { padding: 0 16px 32px; min-height: 100vh; background: #fff; --fsds-card-design-root-spacing-padding: 0px; --fsds-card-design-root-spacing-gap: 6px; --fsds-card-design-media-shape-radius: 16px; --fsds-card-design-content-spacing-gap: 2px; }
 .pin-header { display: flex; align-items: center; gap: 8px; min-height: 72px; position: sticky; top: 0; background: #fff; z-index: 10; }
 .pin-brand { --fsds-box-model-padding-inline: 4px; --fsds-box-model-gap: 6px; }
-.pin-mark { --fsds-text-design-root-foreground-color: #e60023; --fsds-text-design-root-typography-size: 34px; --fsds-text-design-root-typography-line-height: 1; }
+.pin-mark { --fsds-text-design-root-foreground-color: var(--retoken-accent-brand); --fsds-text-design-root-typography-size: 34px; --fsds-text-design-root-typography-line-height: 1; }
 .pin-header .search-region { margin: 0 12px; }
 .pin-profile { --fsds-avatar-design-root-background-fill: #ded5c7; --fsds-avatar-design-root-foreground-color: #242424; }
 .pinterest .selected { --fsds-button-design-root-background-fill: #111; --fsds-button-design-root-foreground-color: #fff; --fsds-button-design-hover-background-fill: #333; }
@@ -90,11 +103,18 @@ body { margin: 0; font-family: Arial, sans-serif; }
 .pin-caption-copy { flex: 1; min-width: 0; }
 .pin-caption .text { --fsds-text-design-root-typography-size: 13px; --fsds-text-design-root-typography-line-height: 1.3; }
 .pin-caption .small { --fsds-text-design-root-typography-size: 12px; }
-.icon-button { --fsds-box-model-padding: 4px; --fsds-box-model-min-width: 32px; --fsds-box-model-min-height: 32px; }
+.icon-button { --fsds-box-model-padding: 4px; --fsds-box-model-min-height: 32px; }
 .pin-action { position: absolute; right: 10px; top: 10px; opacity: 0; }
 .pin-placement:hover .pin-action, .pin-placement:focus-within .pin-action { opacity: 1; }
-.save-button { --fsds-button-design-root-background-fill: #e60023; --fsds-button-design-root-foreground-color: #fff; --fsds-button-design-hover-background-fill: #ad081b; --fsds-button-design-active-background-fill: #870a18; --fsds-box-model-padding: 12px 16px; }
-.pin-menu { --fsds-popover-design-content-spacing-padding: 12px; --fsds-popover-design-content-background-fill: #fff; --fsds-popover-design-content-foreground-color: #222; --fsds-button-design-root-background-fill: transparent; --fsds-button-design-root-foreground-color: #222; --fsds-button-design-hover-background-fill: #eee; }
+.save-button { --fsds-button-design-root-background-fill: var(--retoken-accent-brand); --fsds-button-design-root-foreground-color: #fff; --fsds-button-design-hover-background-fill: var(--retoken-accent-brand-hover); --fsds-button-design-active-background-fill: var(--retoken-accent-brand-active); --fsds-box-model-padding: 12px 16px; }
+/* The popover portals to document.body, outside .retoken's scope, so this menu
+   carries every page-scope variable it relies on. Inheritable declarations made
+   only on .retoken (e.g. border-width, base text size) do NOT reach portaled
+   content and must be restated here. Content background/foreground and button
+   transparency were audited out (RETOKEN-TOKEN-AUDIT-01): the package default
+   content surface is already white-on-dark-text, and each menu button carries
+   .quiet. */
+.pin-menu { --fsds-popover-design-content-spacing-padding: 12px; --fsds-button-design-root-foreground-color: #222; --fsds-button-design-hover-background-fill: #eee; --fsds-button-design-root-border-width: 0px; --fsds-button-design-root-typography-size: 14px; --fsds-text-design-root-typography-size: 14px; --fsds-text-design-root-typography-line-height: 1.4; }
 .pin-detail-layout { display: grid; grid-template-columns: minmax(0,3fr) minmax(360px,2fr); gap: 16px; align-items: start; padding-top: 4px; }
 .pin-detail-card { --fsds-card-design-root-border-width: 1px; --fsds-card-design-root-border-color: #deded9; --fsds-card-design-root-shape-radius: 18px; --fsds-card-design-root-spacing-gap: 0px; }
 .pin-detail-panel { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
@@ -111,8 +131,8 @@ body { margin: 0; font-family: Arial, sans-serif; }
 .pin-detail-heading .text { --fsds-text-design-root-typography-size: 22px; --fsds-text-design-root-typography-line-height: 1.25; }
 .pin-context { --fsds-card-design-root-background-fill: #eeeee8; --fsds-card-design-root-shape-radius: 14px; --fsds-card-design-root-spacing-padding: 16px; }
 .pin-comments { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
-.pin-comment-form { display: flex; align-items: center; gap: 4px; margin-top: auto; padding-top: 36px; }
-.pin-comment-form .input { --fsds-box-model-width: 100%; --fsds-box-model-min-width: 0px; --fsds-input-design-root-background-fill: #fff; --fsds-input-design-root-border-width: 1px; --fsds-input-design-root-border-color: #deded9; --fsds-input-design-root-typography-size: 13px; }
+.pin-comment-form { display: flex; align-items: center; gap: 4px; }
+.pin-comment-form .input { --fsds-box-model-width: 100%; --fsds-input-design-root-background-fill: #fff; --fsds-input-design-root-border-width: 1px; --fsds-input-design-root-border-color: #deded9; --fsds-input-design-root-typography-size: 13px; }
 .related-pins .pin-feed { columns: 165px; column-gap: 14px; }
 .related-heading { --fsds-text-design-root-typography-size: 16px; --fsds-box-model-padding: 4px 4px 12px; }
 .empty-state { --fsds-box-model-padding: 40px; }
@@ -144,6 +164,7 @@ body { margin: 0; font-family: Arial, sans-serif; }
   .pin-detail-art { border-radius: 17px 17px 0 0; max-height: 620px; overflow-y: auto; }
   .related-pins .pin-feed { columns: 2; }
   .pin-toolbar { flex-wrap: wrap; }
+  .save-button { --fsds-box-model-padding: 8px 12px; --fsds-button-design-root-typography-size: 12px; }
   .pin-feed { columns: 2; column-gap: 12px; }
   .pin-action { opacity: 1; }
 }

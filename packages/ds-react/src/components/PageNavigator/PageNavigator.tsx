@@ -7,6 +7,7 @@ import { Input } from "../Input/Input";
 import { Pagination } from "../Pagination/Pagination";
 import { usePageNavigator } from "./usePageNavigator";
 import { usePagedSet } from "../../primitives/hooks/usePaging.js";
+import { useFsdsMessages, formatFsdsMessage } from "../../primitives/messages";
 import "./PageNavigator.css";
 // @generated:end
 
@@ -23,7 +24,7 @@ export type PageNavigatorPresentation = "indicators" | "pages";
 // @custom:end
 
 // @generated:start props
-export interface PageNavigatorProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "className" | "commitLabel" | "data-testid" | "defaultIndex" | "disabled" | "index" | "label" | "nextLabel" | "ofLabel" | "onIndexChange" | "pageCount" | "pageLabel" | "pages" | "presentation" | "previousLabel" | "showChoices"> {
+export interface PageNavigatorProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "className" | "commitLabel" | "data-testid" | "defaultIndex" | "disabled" | "index" | "label" | "nextLabel" | "onIndexChange" | "pageCount" | "pageLabel" | "pages" | "presentation" | "previousLabel" | "showChoices"> {
   pages?: string[];
   index?: number;
   defaultIndex?: number;
@@ -35,7 +36,6 @@ export interface PageNavigatorProps extends Omit<HTMLAttributes<HTMLDivElement>,
   pageLabel?: string;
   previousLabel?: string;
   nextLabel?: string;
-  ofLabel?: string;
   commitLabel?: string;
   showChoices?: boolean;
   className?: string;
@@ -48,6 +48,8 @@ export interface PageNavigatorProps extends Omit<HTMLAttributes<HTMLDivElement>,
 // @generated:end
 
 // @generated:start component
+const PageNavigatorMessages = { groupLabel: "Page navigation", pageLabel: "Current page", previousPage: "Previous page", nextPage: "Next page", commit: "Go", pageCount: "of {count}" };
+
 export function PageNavigator({
   index: controlledIndex,
   defaultIndex = 0,
@@ -57,16 +59,21 @@ export function PageNavigator({
   "data-testid": testId,
   pages = [],
   presentation = "indicators",
-  label = "Page navigation",
+  label: labelProp,
   pageCount,
-  pageLabel = "Current page",
-  previousLabel = "Previous page",
-  nextLabel = "Next page",
-  ofLabel = "of",
-  commitLabel = "Go",
+  pageLabel: pageLabelProp,
+  previousLabel: previousLabelProp,
+  nextLabel: nextLabelProp,
+  commitLabel: commitLabelProp,
   showChoices = false,
   ...rest
 }: PageNavigatorProps) {
+  const fsdsMessages = useFsdsMessages("PageNavigator", PageNavigatorMessages);
+  const label = labelProp ?? fsdsMessages.groupLabel;
+  const pageLabel = pageLabelProp ?? fsdsMessages.pageLabel;
+  const previousLabel = previousLabelProp ?? fsdsMessages.previousPage;
+  const nextLabel = nextLabelProp ?? fsdsMessages.nextPage;
+  const commitLabel = commitLabelProp ?? fsdsMessages.commit;
   const { page, setPage } = usePageNavigator({
     index: controlledIndex,
     defaultIndex,
@@ -92,10 +99,7 @@ export function PageNavigator({
       <Input className="page-navigator__input" type="number" onChange={pagedSet.edit} value={pagedSet.state.draft} disabled={pagedSet.state.disabled} ariaLabel={pageLabel} />
     </div>
     <span className="page-navigator__context">
-      {ofLabel}
-    </span>
-    <span className="page-navigator__total">
-      {pagedSet.state.count}
+      {formatFsdsMessage(fsdsMessages.pageCount, { count: pagedSet.state.count })}
     </span>
     <Button className="page-navigator__commit" type="button" onClick={pagedSet.commit} disabled={pagedSet.state.disabled} ariaLabel={commitLabel}>
       <span>

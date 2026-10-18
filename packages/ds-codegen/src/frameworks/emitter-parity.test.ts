@@ -178,10 +178,14 @@ describe("nested interactive labels remain contract-owned", () => {
     const react = generateReactComponentSource(ir, "../../primitives");
     const vue = generateVueComponentSource(ir);
 
+    // The label's default is the contract message; an explicit prop wins over
+    // the provided catalog, which wins over that default.
     expect(react).toContain(`searchLabel?: string;`);
-    expect(react).toContain(`searchLabel = "Search commands"`);
+    expect(react).toContain(`searchLabel: "Search commands"`);
+    expect(react).toContain(`const searchLabel = searchLabelProp ?? fsdsMessages.searchLabel;`);
     expect(react).toContain(`aria-label={searchLabel}`);
     expect(propsInterface(vue)).toContain(`searchLabel?: string;`);
+    expect(vue).toContain(`searchLabel: "searchLabel"`);
     expect(vue).toContain(`:aria-label="props.searchLabel"`);
     expect(react).toContain(`{slots?.items}`);
     expect(react).not.toContain(`<div className="command__item" role="option">`);
@@ -261,7 +265,8 @@ describe("nested interactive labels remain contract-owned", () => {
     const vue = generateVueComponentSource(ir);
 
     expect(react).toContain(`triggerLabel?: string;`);
-    expect(react).toContain(`triggerLabel = "Select an option"`);
+    expect(react).toContain(`triggerLabel: "Select an option"`);
+    expect(react).toContain(`const triggerLabel = triggerLabelProp ?? fsdsMessages.triggerLabel;`);
     expect(react).toContain(`aria-label={triggerLabel}`);
     expect(
       react

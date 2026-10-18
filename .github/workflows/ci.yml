@@ -300,10 +300,12 @@ jobs:
         run: pnpm run audit:behavior-realization
 
       # A11y-realization rail: derives accessibility obligations (ARIA
-      # relationships, keyboard surfaces, focus strategies) from the LIVE
-      # contract corpus and asserts each is realized in the generated output
-      # of every rail-admitted family (iterated from the AdmissionDescriptor
-      # registry — web + native lanes, never a hardcoded web list). Same
+      # relationships, per-key keyboard surfaces, focus strategies, state
+      # attributes, native activation roles) from the LIVE contract corpus
+      # and asserts each is realized in the generated output of every
+      # rail-admitted family (iterated from the AdmissionDescriptor registry —
+      # web + native lanes, never a hardcoded web list) plus the registered
+      # SwiftUI and Jetpack Compose target packs. Same
       # placement rationale as the behavior rail above: the preceding steps
       # proved the trees are the regenerated, committed bytes; this rail reads
       # those verified bytes. Pre-existing debt is enumerated in

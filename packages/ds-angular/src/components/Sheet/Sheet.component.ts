@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, ViewChild, ElementRef, Injector, runInInjectionContext, untracked, type OnInit, type OnDestroy } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useSheet } from "./useSheet.js";
@@ -21,6 +22,8 @@ export type SheetSide = "top" | "right" | "bottom" | "left";
 // @generated:start component
 let nextInstanceId = 0;
 
+const SheetMessages = { close: "Close sheet" };
+
 @Component({
   selector: "fsds-sheet",
   standalone: true,
@@ -39,7 +42,7 @@ let nextInstanceId = 0;
         <p [ngClass]="'sheet__description'" [attr.id]="instanceId + '-description'">
           <ng-content select="[slot=description]" />
         </p>
-        <button [ngClass]="'sheet__close'" type="button" aria-label="Close sheet" (click)="canActivateInteraction($event, false) && behavior.setOpenness(false)"></button>
+        <button [ngClass]="'sheet__close'" type="button" (click)="canActivateInteraction($event, false) && behavior.setOpenness(false)" [attr.aria-label]="fsdsMessages().close"></button>
       </div>
       <div [ngClass]="'sheet__body'">
         <ng-content />
@@ -53,6 +56,7 @@ let nextInstanceId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SheetComponent implements OnInit, OnDestroy {
+  protected readonly fsdsMessages = injectFsdsMessages("Sheet", SheetMessages);
   private readonly inputOpen = signal<boolean | undefined>(undefined);
   @Input() get open(): boolean | undefined { return this.inputOpen(); }
   set open(value: boolean | undefined) { this.inputOpen.set(value); }

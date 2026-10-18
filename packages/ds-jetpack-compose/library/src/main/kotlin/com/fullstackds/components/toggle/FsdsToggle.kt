@@ -10,8 +10,10 @@
 // resolves scope data through LocalFsdsTheme and passes a FsdsToggleStyle.
 //
 // Semantics parity with the wrapper era is preserved: Modifier.toggleable
-// with Role.Switch (the same accessibility contract M3 itself uses) plus the
-// stateDescription behavior. Interaction physics (press/focus animation) is
+// with Role.Switch (the same accessibility contract M3 itself uses); its
+// ToggleableState carries the on/off value, which the platform announces in
+// the user's locale, so no English stateDescription overrides it.
+// Interaction physics (press/focus animation) is
 // now ours — a named ownership trade, not an accident.
 //
 // Zero androidx.compose.material imports: runtime/ui/foundation/animation
@@ -51,7 +53,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -159,7 +160,6 @@ fun FsdsToggle(
                 if (contentDescription != null) {
                     this.contentDescription = contentDescription
                 }
-                stateDescription = if (checked) "on" else "off"
             },
         contentAlignment = Alignment.Center,
     ) {

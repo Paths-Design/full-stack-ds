@@ -57,12 +57,15 @@ const PATTERNS = {
     /^(packages\/ds-(contracts|codegen|react|vue|svelte|angular|lit)\/|scripts\/behavior-realization-audit\/)/,
   // a11y-realization rail (RAIL-A11Y-REALIZATION-01). Same shape, but the
   // family surface is iterated from the AdmissionDescriptor registry — all SIX
-  // admitted families INCLUDING react-native — and the known-gaps ledger lives
-  // in the audit's own directory, so an entry added or removed there moves a
-  // verdict too. Tokens move neither interactivity nor ARIA bytes, so
-  // ds-tokens is deliberately NOT an input (styling-audit precedent).
+  // admitted families INCLUDING react-native — plus the registered SwiftUI and
+  // Jetpack Compose target packs (A11Y-AUDIT-DEPTH-01), whose emitted trees it
+  // also reads; fsds.targets.json decides which of those are registered. The
+  // known-gaps ledger lives in the audit's own directory, so an entry added or
+  // removed there moves a verdict too. Tokens move neither interactivity nor
+  // ARIA bytes, so ds-tokens is deliberately NOT an input (styling-audit
+  // precedent).
   a11yAudit:
-    /^(packages\/ds-(contracts|codegen|react|vue|svelte|angular|lit|react-native)\/|scripts\/a11y-realization-audit\/)/,
+    /^(packages\/ds-(contracts|codegen|react|vue|svelte|angular|lit|react-native|swiftui|jetpack-compose)\/|scripts\/a11y-realization-audit\/|fsds\.targets\.json$)/,
   // custom-region occupancy (RAIL-CUSTOM-REGION-GATE-01). Inputs are the six
   // EMITTED trees it scans and the audit itself. `ds-contracts` is deliberately
   // NOT an input: a contract edit alone cannot occupy a region — only a write
@@ -106,6 +109,13 @@ const PATTERNS = {
   // without rerunning itself is exactly the dormant-rail failure being closed.
   railToolchainCoupling:
     /^(packages\/ds-codegen\/src\/validation\/|packages\/ds-(compose-smoke|swift-smoke)\/compile-lane\.json$|scripts\/(run-native-compile-lane|rail-toolchain-coupling-audit|prepush-scope(?:\.test)?)\.mjs$|\.github\/workflows\/ci\.yml$|\.githooks\/pre-push$|fsds\.targets\.json$|package\.json$)/,
+  // Retoken-page token audit (RETOKEN-TOKEN-AUDIT-01). LOCAL-ONLY family — not
+  // yet a CI step; the pre-push hook runs strictly MORE than CI here, which the
+  // "never silently skips an input" contract permits. Inputs: the fixture CSS
+  // the inventory classifies, the committed baseline it diffs against, and the
+  // audit/probe scripts themselves.
+  retokenTokenAudit:
+    /^(e2e\/fixtures\/retoken-pages\/|scripts\/audit-retoken-tokens\.mjs$|scripts\/retoken-token-probe\.mjs$)/,
   // eslint runs over the whole repo, so ANY lintable file (incl. scripts/*.mjs)
   lintable: /\.(ts|tsx|js|jsx|mjs|cjs|vue|svelte)$/,
   // tsc / vue-tsc only cover the packages|src trees — loose scripts/*.mjs aren't
@@ -140,6 +150,7 @@ export function classify(files, opts = {}) {
   const contractOracleSelfcheck = full || has("contractOracleSelfcheck");
   const swiftuiSemanticDefaults = full || has("swiftuiSemanticDefaults");
   const railToolchainCoupling = full || has("railToolchainCoupling");
+  const retokenTokenAudit = full || has("retokenTokenAudit");
 
   // generate:check + governed:rail run when a contract/codegen/token/generated
   // input could change emitted output or the resolvesTo graph.
@@ -204,6 +215,9 @@ export function classify(files, opts = {}) {
     RUN_SWIFTUI_SEMANTIC_DEFAULTS: swiftuiSemanticDefaults,
     // Static authority check; no build products or package install required.
     RUN_RAIL_TOOLCHAIN_COUPLING: railToolchainCoupling,
+    // Local-only family (see PATTERNS.retokenTokenAudit): fixture-scoped token
+    // audit gate, not yet a CI step.
+    RUN_RETOKEN_TOKEN_AUDIT: retokenTokenAudit,
   };
   const active = Object.entries(flags)
     .filter(([, v]) => v)

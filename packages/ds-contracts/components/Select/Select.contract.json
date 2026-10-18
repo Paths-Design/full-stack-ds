@@ -205,6 +205,20 @@
     "commit": "activation",
     "update": "channel:selection.onChange:toggleMembership(iter:item.value, prop:multiple)"
   },
+  "messages": {
+    "triggerLabel": {
+      "defaultMessage": "Select an option",
+      "description": "Accessible name of the trigger while no value is selected."
+    },
+    "placeholder": {
+      "defaultMessage": "Select an option",
+      "description": "Text shown in the trigger while no value is selected."
+    },
+    "searchLabel": {
+      "defaultMessage": "Search options",
+      "description": "Accessible name of the option search field."
+    }
+  },
   "props": {
     "designed": {
       "members": [
@@ -353,7 +367,7 @@
             "kind": "string"
           },
           "description": "Accessible name for the button that opens the option list.",
-          "default": "Select an option"
+          "defaultMessage": "triggerLabel"
         },
         {
           "name": "size",
@@ -409,7 +423,7 @@
             "kind": "string"
           },
           "description": "Visible prompt when no selected value matches an option.",
-          "default": "Select an option"
+          "defaultMessage": "placeholder"
         },
         {
           "name": "searchLabel",
@@ -417,7 +431,7 @@
             "kind": "string"
           },
           "description": "Accessible name for the search text control.",
-          "default": "Search options"
+          "defaultMessage": "searchLabel"
         }
       ]
     }

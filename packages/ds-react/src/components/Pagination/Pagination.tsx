@@ -3,6 +3,7 @@ import { type HTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import { usePagination } from "./usePagination";
 import { usePagedSet } from "../../primitives/hooks/usePaging.js";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Pagination.css";
 // @generated:end
 
@@ -40,6 +41,8 @@ export interface PaginationProps extends Omit<HTMLAttributes<HTMLDivElement>, "c
 // @generated:end
 
 // @generated:start component
+const PaginationMessages = { navigationLabel: "Choose page" };
+
 export function Pagination({
   index: controlledIndex,
   defaultIndex = 0,
@@ -50,9 +53,11 @@ export function Pagination({
   className,
   "data-testid": testId,
   pages = [],
-  label = "Choose page",
+  label: labelProp,
   ...rest
 }: PaginationProps) {
+  const fsdsMessages = useFsdsMessages("Pagination", PaginationMessages);
+  const label = labelProp ?? fsdsMessages.navigationLabel;
   const { page, setPage } = usePagination({
     index: controlledIndex,
     defaultIndex,

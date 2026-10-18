@@ -3,6 +3,7 @@
 import { useWalkthrough } from "./useWalkthrough.svelte.js";
 import { portal } from "../../primitives/index.js";
 import { createAnchoredPosition, type AnchoredPlacement } from "../../primitives/surfaces/createAnchoredPosition.svelte.js";
+import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -41,7 +42,11 @@ interface Props {
   title?: import('svelte').Snippet;
 }
 
-let { steps = [{"anchor":"#step-1","title":"Welcome to the tour"},{"anchor":"#step-2","title":"Browse your dashboard"},{"anchor":"#step-3","title":"Configure preferences"}], index, defaultIndex = 0, onStepChange, onComplete, onSkip, label = "Feature tour", storageKey, autoStart = false, closeOnOutsideClick = false, placement = "auto", onPrevious, onNext, previousDisabled = false, nextLabel = "Next", progressLabel, class: className, description, title }: Props = $props();
+let { steps = [{"anchor":"#step-1","title":"Welcome to the tour"},{"anchor":"#step-2","title":"Browse your dashboard"},{"anchor":"#step-3","title":"Configure preferences"}], index, defaultIndex = 0, onStepChange, onComplete, onSkip, label: labelProp, storageKey, autoStart = false, closeOnOutsideClick = false, placement = "auto", onPrevious, onNext, previousDisabled = false, nextLabel: nextLabelProp, progressLabel, class: className, description, title }: Props = $props();
+const WalkthroughMessages = { tourLabel: "Feature tour", skip: "Skip", skipTour: "Skip tour", previous: "Previous", previousStep: "Previous step", next: "Next" };
+const fsdsMessages = useFsdsMessages("Walkthrough", WalkthroughMessages);
+const label = $derived(labelProp ?? fsdsMessages.current.tourLabel);
+const nextLabel = $derived(nextLabelProp ?? fsdsMessages.current.next);
 // @generated:end
 
 // @generated:start hook
@@ -98,8 +103,8 @@ const instanceId = $props.id();
     </p>
   </div>
   <div class={'walkthrough__controls'}>
-    <button class={'walkthrough__skip'} type="button" onclick={onSkip} aria-label="Skip tour">Skip</button>
-    <button class={'walkthrough__prev'} type="button" onclick={onPrevious} aria-label="Previous step" disabled={previousDisabled}>Previous</button>
+    <button class={'walkthrough__skip'} type="button" onclick={onSkip} aria-label={fsdsMessages.current.skipTour}>{fsdsMessages.current.skip}</button>
+    <button class={'walkthrough__prev'} type="button" onclick={onPrevious} aria-label={fsdsMessages.current.previousStep} disabled={previousDisabled}>{fsdsMessages.current.previous}</button>
     <div class={'walkthrough__dots'}>
       {#each (steps ?? []) as item, index (index)}
       <button class={'walkthrough__dot'} type="button" onclick={() => behavior.setStep(index)} aria-label={item.title} data-step-index={index}></button>

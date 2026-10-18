@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: The Normal Form of Compositional Systems
 owner: "@darianrosebrook"
-updated: 2026-10-03
-verified_at_commit: 8b6f66cb000be230a1df1c82379c64b1fb4c477a
+updated: 2026-10-18
+verified_at_commit: d2ade4e91
 governs:
   - packages/ds-contracts/**/*.contract.json
   - packages/ds-contracts/component.contract.schema.json
@@ -158,7 +158,7 @@ The cleanest example in this codebase is `validateDomBindings` in `ir.ts`. When 
 
 This is fail-closed governance at codegen time. The principle: when the system has more information than the author (it knows what channels exist; the author might have mistyped), it rejects ambiguity loudly rather than guessing. The alternative — silent fallthrough to a literal string in the generated output — is common enough in codegen tools that we treat it as a default to be refused, not a discovery. The fail-closed choice keeps the contract authoritative; silent fallthrough lets the generated output become a second, accidental source of truth.
 
-A system in normal form has fail-loud linters at *every* boundary where the system can detect ambiguity the author could not. The DOM-binding check and schema validation against `component.contract.schema.json` are fail-closed. Unresolved type references are reported, but generation continues with `unknown` unless `--strict-types` is supplied; that diagnostic is not a default fail-closed type boundary.
+A system in normal form has fail-loud linters at *every* boundary where the system can detect ambiguity the author could not. The DOM-binding check and schema validation against `component.contract.schema.json` are fail-closed. So is component-owned text: an unparseable `message:` reference fails the IR build rather than rendering its own text, and the localization gate refuses a letter-bearing literal on every route text could take into a component (see [component message catalogs](architecture/localization.md)). Unresolved type references are reported, but generation continues with `unknown` unless `--strict-types` is supplied; that diagnostic is not a default fail-closed type boundary.
 
 ### 6. Stable mutable/immutable site discipline that allows human edits to survive regeneration without violating invariants
 
@@ -303,7 +303,7 @@ establish rendered layout on Android devices.
 
 ## Carousel motion reconciliation
 
-Carousel adds normalized sequence and motion facts without another rendered primitive contract. Renamed-contract tests exercise each web emitter to guard against component-name dispatch. React Native derives navigation, controlled index, reading-budget and token-resolved movement bindings from that sequence IR. A generated consumer's own autoplay clock drives a recorded iOS Simulator slide transition, with intermediate pixels observed; its controls, icons and progress presentation remain incomplete. The SwiftUI and Compose allowlists do not yet include Carousel. See [native implementation boundaries](architecture/carousel-sequences.md#native-implementation-work-in-progress) and the [bounded iOS witness](testing/native-carousel-probe.md).
+Carousel adds normalized sequence and motion facts without another rendered primitive contract. Renamed-contract tests exercise each web emitter to guard against component-name dispatch. React Native derives navigation, controlled index, reading-budget and token-resolved movement bindings from that sequence IR. A generated consumer's own autoplay clock drives a recorded iOS Simulator slide transition, with intermediate pixels observed; its controls, icons and progress presentation remain incomplete. SwiftUI emits Carousel; the Compose allowlist excludes it. See [native implementation boundaries](architecture/carousel-sequences.md#native-implementation-work-in-progress) and the [bounded iOS witness](testing/native-carousel-probe.md).
 
 Each progress binding declares its presentation condition in the motion contract.
 The IR validates the variant axis and choices; web runtimes project visibility

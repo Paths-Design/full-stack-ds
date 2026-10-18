@@ -32,6 +32,15 @@ for (const kind of ['spotify','pinterest']) {
         expect((await page.locator('.player').boundingBox())!.height).toBeLessThan(170);
         await expect(page.locator('.album').first()).toHaveCSS('border-width','0px');
         await expect(page.locator('.album').first()).toHaveCSS('background-color','rgb(24, 24, 24)');
+        const homeAlign=await page.evaluate(()=>{
+          const heading=document.querySelector('.home-links h1')!.getBoundingClientRect();
+          const home=document.querySelector('.home-links .button')!.getBoundingClientRect();
+          return Math.abs(heading.x-home.x);
+        });
+        expect(homeAlign).toBeLessThanOrEqual(2);
+        for(const pick of await page.locator('.quick-pick .button').all()) {
+          expect(await pick.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(0);
+        }
         await page.getByRole('button',{name:'Play',exact:true}).click();
         await expect(page.getByRole('button',{name:'Pause',exact:true})).toHaveAttribute('aria-pressed','true');
         await page.getByRole('button',{name:'Pause',exact:true}).press('Space');
@@ -62,6 +71,18 @@ for (const kind of ['spotify','pinterest']) {
         await page.getByRole('button',{name:'Home',exact:true}).click();
         await page.getByRole('textbox',{name:'Search collection'}).fill('Designing systems');
         await expect(page.locator('.pin')).toHaveCount(1);
+        if(width===390) {
+          for(const save of await page.locator('.save-button').all()) {
+            expect((await save.boundingBox())!.height).toBeLessThanOrEqual(44);
+          }
+        }
+        await page.getByRole('button',{name:'More options for Designing systems that leave room for change',exact:true}).click();
+        const hide=page.getByRole('button',{name:'Hide this Pin',exact:true});
+        await expect(hide).toBeVisible();
+        await expect(hide).toHaveCSS('border-width','0px');
+        await expect(hide).toHaveCSS('font-size','14px');
+        await page.keyboard.press('Escape');
+        await expect(hide).toBeHidden();
       }
       await page.getByRole('textbox',{name:'Search collection'}).fill('unmatched search');
       await expect(page.getByRole('status')).toHaveText(kind==='spotify'?'No mixes found':'No ideas found');
@@ -86,6 +107,15 @@ for (const width of [1440,390]) {
     await expect(detail.locator('.avatar')).toHaveCSS('width','24px');
     await expect(page.getByRole('complementary',{name:'Related Pins'}).locator('.pin')).toHaveCount(17);
     await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    const railTexts=await page.getByRole('complementary',{name:'Related Pins'}).locator('img').evaluateAll(imgs=>imgs.map(img=>decodeURIComponent((img as HTMLImageElement).src.replace('data:image/svg+xml,','')).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim()));
+    expect(new Set(railTexts).size).toBe(railTexts.length);
+    const commentGap=await page.evaluate(()=>{
+      const notes=document.querySelectorAll('.pin-comments .text');
+      const last=notes[notes.length-1]!.getBoundingClientRect();
+      const form=document.querySelector('.pin-comment-form')!.getBoundingClientRect();
+      return form.top-last.bottom;
+    });
+    expect(commentGap).toBeLessThanOrEqual(24);
     await page.screenshot({path:info.outputPath(`pin-detail-${width}.png`),fullPage:true});
     await detail.getByRole('button',{name:'Save '+title,exact:true}).click();
     await detail.getByRole('button',{name:'Like '+title,exact:true}).click();

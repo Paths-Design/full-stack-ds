@@ -133,8 +133,10 @@
                   "tag": "button",
                   "part": "close",
                   "attrs": {
-                    "type": "button",
-                    "aria-label": "Close sheet"
+                    "type": "button"
+                  },
+                  "bindings": {
+                    "aria-label": "message:close"
                   }
                 }
               ]
@@ -161,6 +163,12 @@
           ]
         }
       ]
+    }
+  },
+  "messages": {
+    "close": {
+      "defaultMessage": "Close sheet",
+      "description": "Accessible name of the button that closes the sheet."
     }
   },
   "props": {

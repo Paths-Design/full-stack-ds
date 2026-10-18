@@ -1,5 +1,6 @@
 // @generated:start imports
-import { LitElement, html, css, type PropertyValues } from 'lit';
+import { LitElement, html, css, nothing, type PropertyValues } from 'lit';
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { WalkthroughBehavior } from './WalkthroughBehavior.js';
 import { AnchoredPositionController } from '../../primitives/surfaces/AnchoredPositionController.js';
@@ -20,6 +21,8 @@ export type WalkthroughPlacement = "top" | "bottom" | "left" | "right" | "auto";
 // @custom:end
 
 // @generated:start component
+const WalkthroughMessages = { tourLabel: "Feature tour", skip: "Skip", skipTour: "Skip tour", previous: "Previous", previousStep: "Previous step", next: "Next" };
+
 export class WalkthroughElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -209,13 +212,15 @@ export class WalkthroughElement extends LitElement {
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Walkthrough", WalkthroughMessages);
+
   @property({ attribute: false }) steps?: WalkthroughStepSpec[] = [{"anchor":"#step-1","title":"Welcome to the tour"},{"anchor":"#step-2","title":"Browse your dashboard"},{"anchor":"#step-3","title":"Configure preferences"}];
   @property({ type: Number }) index?: number;
   @property({ type: Number }) defaultIndex?: number = 0;
   @property({ attribute: false }) onStepChange?: (index: number) => void;
   @property({ attribute: false }) onComplete?: () => void;
   @property({ attribute: false }) onSkip?: () => void;
-  @property({ type: String }) label?: string = "Feature tour";
+  @property({ type: String }) label?: string;
   @property({ type: String }) storageKey?: string;
   @property({ type: Boolean }) autoStart?: boolean = false;
   @property({ type: Boolean }) closeOnOutsideClick?: boolean = false;
@@ -223,7 +228,7 @@ export class WalkthroughElement extends LitElement {
   @property({ attribute: false }) onPrevious?: () => void;
   @property({ attribute: false }) onNext?: () => void;
   @property({ type: Boolean }) previousDisabled?: boolean = false;
-  @property({ type: String }) nextLabel?: string = "Next";
+  @property({ type: String }) nextLabel?: string;
   @property({ type: String }) progressLabel?: string;
 
   private initializedBehavior?: WalkthroughBehavior;
@@ -311,9 +316,9 @@ export class WalkthroughElement extends LitElement {
   }
 
   override render() {
-    return html`<div class="${this.computeClasses()}" role="status" aria-label=${ifDefined((this.label ?? "Feature tour"))} data-fsds-box="">
+    return html`<div class="${this.computeClasses()}" role="status" aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.tourLabel))} data-fsds-box="">
   <div class=${'walkthrough__content'} role="group" aria-labelledby=${ifDefined([this.querySelector('[slot="title"]') !== null ? 'walkthrough-title' : null].filter(Boolean).join(' ') || undefined)} aria-describedby=${ifDefined([this.querySelector('[slot="description"]') !== null ? 'walkthrough-description' : null].filter(Boolean).join(' ') || undefined)}>
-    <h3 class=${'walkthrough__title'} aria-label=${ifDefined((this.label ?? "Feature tour"))} id="walkthrough-title">
+    <h3 class=${'walkthrough__title'} aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.tourLabel))} id="walkthrough-title">
       <slot name="title" @slotchange=${() => this.requestUpdate()}></slot>
     </h3>
     <p class=${'walkthrough__description'} id="walkthrough-description">
@@ -321,15 +326,15 @@ export class WalkthroughElement extends LitElement {
     </p>
   </div>
   <div class=${'walkthrough__controls'}>
-    <button class=${'walkthrough__skip'} type="button" @click=${this.onSkip} aria-label="Skip tour">Skip</button>
-    <button class=${'walkthrough__prev'} type="button" @click=${this.onPrevious} aria-label="Previous step" ?disabled=${(this.previousDisabled ?? false)}>Previous</button>
+    <button class=${'walkthrough__skip'} type="button" @click=${this.onSkip} aria-label=${this.fsdsMessages.value.skipTour}>${this.fsdsMessages.value.skip}</button>
+    <button class=${'walkthrough__prev'} type="button" @click=${this.onPrevious} aria-label=${this.fsdsMessages.value.previousStep} ?disabled=${(this.previousDisabled ?? false)}>${this.fsdsMessages.value.previous}</button>
     <div class=${'walkthrough__dots'}>
       ${((this.steps ?? [{"anchor":"#step-1","title":"Welcome to the tour"},{"anchor":"#step-2","title":"Browse your dashboard"},{"anchor":"#step-3","title":"Configure preferences"}])).map((item, index) => html`
       <button class=${'walkthrough__dot'} type="button" @click=${() => this.behavior.setStep(index)} aria-label=${ifDefined(item.title)} data-step-index=${index}></button>
       `)}
     </div>
     <span class=${'walkthrough__counter'}>${this.progressLabel}</span>
-    <button class=${'walkthrough__next'} type="button" @click=${this.onNext} aria-label=${ifDefined((this.nextLabel ?? "Next"))}>${(this.nextLabel ?? "Next")}</button>
+    <button class=${'walkthrough__next'} type="button" @click=${this.onNext} aria-label=${ifDefined((this.nextLabel ?? this.fsdsMessages.value.next))}>${(this.nextLabel ?? this.fsdsMessages.value.next)}</button>
   </div>
 </div>`;
   }

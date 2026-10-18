@@ -137,6 +137,22 @@
       "nodeKind": null
     }
   ],
+  "messages": [
+    {
+      "key": "regionLabel",
+      "catalogKey": "Toast.regionLabel",
+      "defaultMessage": "Notifications",
+      "description": "Accessible name of the notification region.",
+      "params": []
+    },
+    {
+      "key": "dismiss",
+      "catalogKey": "Toast.dismiss",
+      "defaultMessage": "Dismiss",
+      "description": "Accessible name of the button that dismisses a notification.",
+      "params": []
+    }
+  ],
   "designBindings": [
     {
       "property": "spacing.gap",

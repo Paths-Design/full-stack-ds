@@ -1,0 +1,141 @@
+id: I18N-MESSAGE-CATALOG-01
+title: 'Contract message catalog: translatable strings from contract to every runtime family'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Contract messages block with catalog runtimes on every web framework, React Native, SwiftUI and Compose; MESSAGE_INVALID and L10N gates enforced in generate:check; native residuals ledgered'
+created_at: '2026-10-18T08:27:17.320Z'
+updated_at: '2026-10-18T14:55:08.854Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts (schema + corpus messages)'
+    - 'packages/ds-codegen (IR message fact, validation gate, all runtime emitters)'
+    - 'framework runtime primitives (message providers)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-contracts/components'
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui/Sources'
+    - 'packages/ds-swiftui/Tests'
+    - 'packages/ds-jetpack-compose/src'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'docs/architecture/localization.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/codegen-authority.md'
+    - 'e2e'
+    - 'src'
+    - packages/ds-jetpack-compose/library
+    - packages/ds-swiftui/Localization
+    - packages/ds-codegen/__golden__/Switch/Switch.swiftui.generated.swift
+    - docs/normal-form.md
+    - docs/architecture/design/box-model-primitive.md
+    - docs/architecture/design/component-design-bindings.md
+  out: []
+invariants:
+  - 'Precedence is explicit prop value, then provided catalog entry, then contract default.'
+  - 'Emitters lower message facts from the IR with no component-name special-casing.'
+  - 'A message default is authored once, in the contract messages block; emitters never author user-facing English for a message-bearing part. Compose''s expanded/collapsed/selected stateDescription words are the one named residual, owned by the native accessibility semantics slice.'
+acceptance:
+  - id: A1
+    given: 'a contract declaring a messages block and message:<key> bindings, content or prop defaultMessage'
+    when: 'the IR builds'
+    then: 'each reference lowers to a message fact resolved against the block, and an unknown key, a placeholder/param mismatch, or an unused message fails generate:check'
+  - id: A2
+    given: 'the contract corpus'
+    when: 'generate:check runs'
+    then: 'no text-bearing attribute, letter-bearing literal content, translatable string prop default, sequence label or child-component string attribute carries an English literal, and reintroducing one fails the check'
+  - id: A3
+    given: 'a web or React Native app providing a partial message catalog'
+    when: 'a generated component renders'
+    then: 'provided keys replace the default text in attributes, content and message-defaulted props, an explicit prop still wins, and missing keys fall back to the contract default, proven by runtime tests in React, Vue, Svelte, Angular, Lit and React Native'
+  - id: A4
+    given: 'a Carousel'
+    when: 'slides render'
+    then: 'slide role description, rotation start/stop labels and the per-slide position fallback come from the catalog, and the position fallback is one parameterized message rather than string concatenation in every sequence runtime'
+  - id: A5
+    given: 'SwiftUI and Jetpack Compose generated components'
+    when: 'they render a message-bearing label'
+    then: >-
+      SwiftUI resolves Component.key through the FsdsMessages environment value
+      (Bundle.localizedString(forKey:value:table:) over the FsdsComponents table,
+      overrides first) with a generated reference FsdsComponents.xcstrings
+      drift-tested against the corpus, Compose resolves through LocalFsdsMessages
+      with the contract default, and neither emitter authors English for a
+      message-bearing label; Compose's expanded/collapsed/selected stateDescription
+      words are the named residual of the native accessibility semantics slice
+  - id: A6
+    given: 'the landed mechanism'
+    when: 'a reader consults docs/architecture/localization.md and the claim ledger'
+    then: 'each family''s consumer path and non-claims (plurals, word order around inputs, engine pilots) are documented and the ledger row cites the gate and tests'
+rollback:
+  - 'Revert the merge commit; contracts, IR and generated trees move together.'
+non_functional: {}
+contracts:
+  - name: 'message-catalog'
+    type: schema
+    path: 'packages/ds-contracts/component.contract.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At d5eec68c0 messages.test.ts (22 tests) pins IR message facts (Carousel catalogKeys/params; message:pageCount(count=paged:count) parses to a typed message binding) and each MESSAGE_INVALID refusal by exact diagnostic: unknown key, unparseable reference, placeholder/param mismatch, duplicate param, binding param mismatch, unused message, default+defaultMessage, non-string defaultMessage, parameterized prop default, sequence label params. ir-build.test.ts pins that generate:check's IR step reports a failure as an issue; runtime demo: a broken PageNavigator key made generate:check print DRIFT [MESSAGE_INVALID] ..., validate 55/55, exit 1. Full gate logs: full-stack-ds/tmp/I18N-MESSAGE-CATALOG-01/gates-d5eec68c0 (root vitest 4884 passed). Not covered: vitest node ids are existence-checked only by --verify."
+    recorded_at: "2026-10-18T14:44:56.268Z"
+    test_nodeid: "packages/ds-codegen/src/messages.test.ts > message IR facts > parses a parameterized content reference into a message binding with typed params"
+    command: pnpm exec vitest run packages/ds-codegen/src/messages.test.ts packages/ds-codegen/src/validation/ir-build.test.ts
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/messages.test.ts
+    commit_sha: d5eec68c0
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At d5eec68c0 localization.test.ts (28 tests): the 55-contract corpus yields no L10N issue, and the gate runs inside validateContractSemantics (generate:check). Each reintroduced literal fails with exact pointer and code: static/bound/unprefixed text-bearing attribute, value-map value and fallback, literal and conditional-arm content (incl. unprefixed arm), selectionLabel literal fallback, DOM property, translatable prop default incl. nullable string unions, componentRef static attr, literal binding and value map; translatable:false, letterless text, non-string and string|array instance/default values are admitted. Six parse-route and three nullable pins failed against the previous gate. Sequence labels are message keys validated by A1 (sequence.labels refusals). generate:check exit 0 over 55/55 in gates-d5eec68c0."
+    recorded_at: "2026-10-18T14:45:18.313Z"
+    test_nodeid: "packages/ds-codegen/src/validation/localization.test.ts > localization gate over the corpus > finds no literal user-facing text in any contract"
+    command: "pnpm exec vitest run packages/ds-codegen/src/validation/localization.test.ts && pnpm run generate:check"
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/validation/localization.test.ts
+    commit_sha: d5eec68c0
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At d5eec68c0 one obligation set (messages.contract.ts) runs in React, Vue, Svelte, Angular and Lit harnesses: contract defaults with no catalog; provided keys replace aria-label, aria-roledescription, content and message-defaulted prop text; a partial catalog keeps other defaults; an explicit prop beats the catalog; entries are scoped to their component; a parameterized message follows translator word order ('{count} pages au total'). Each harness also changes the catalog after mount, including the runtime-owned rotation text and name ('Lancer'); the cited Angular test is that check. React Native (Carousel/__tests__/messages.test.tsx, 5 tests) asserts the same on accessibilityLabel and Text incl. position template '3 枚中 3 枚目'. gates-d5eec68c0: test:frameworks vue 819, lit 585 (+2 skipped), svelte 720, angular jest 546, react-native 240 passed; root 4884 passed."
+    recorded_at: "2026-10-18T14:46:36.936Z"
+    test_nodeid: "packages/ds-angular/src/primitives/__tests__/messages.test.ts::a signal catalog change re-renders consumers"
+    command: "pnpm run test:frameworks && pnpm test"
+    exit_code: 0
+    artifact_path: packages/ds-react/src/primitives/hooks/__tests__/messages.contract.ts
+    commit_sha: d5eec68c0
+    test_verified_at: d5eec68c02e60964f9514ca31029e0cb157bee92
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At d5eec68c0 sequence-budget.contract.ts runs in all five web harnesses: slides take aria-roledescription from messages.item and re-render on change ('slide' -> 'diapositive'), and an unlabeled slide is named by the position template in the translator's order ('{count} 枚中 {index} 枚目'). messages.contract.ts catalog-change tests prove rotation start/stop text and name follow the catalog; the IR refuses template-bound rotation text (sequence runtime is its only writer). All six sequence runtimes (5 web sequence-budget.ts + RN sequence-motion.tsx) build the fallback with formatFsdsMessage(messages.position, {index, count}); grep finds no ' of ${' concatenation in any primitives tree. RN messages test pins '3 枚中 3 枚目'. gates-d5eec68c0 all green. Not covered: SwiftUI does not render slide position/role description (ledgered in native-message-reach.test.ts); Compose does not emit Carousel."
+    recorded_at: "2026-10-18T14:48:06.766Z"
+    test_nodeid: "packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.contract.ts > sequence budget > names an unlabeled slide through the position template, in the translator's word order"
+    command: "pnpm run test:frameworks && pnpm test"
+    exit_code: 0
+    artifact_path: packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.contract.ts
+    commit_sha: d5eec68c0
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "At d5eec68c0/d2ade4e91: SwiftUI views read @Environment(\\.fsdsMessages) and call fsdsMessages.string(\"<Component>.<key>\", default:) backed by Bundle.localizedString(forKey:value:table:) over FsdsComponents, overrides first (FsdsMessagesTests.swift 7 passed: missing key->default, table beats default, override beats table, table name, word order, unknown placeholder). Message-defaulted SwiftUI props store an optional and resolve explicit-first (Select placeholder, Command placeholder). FsdsComponents.xcstrings equals a fresh corpus render (message-catalog.test.ts). Compose defaults through LocalFsdsMessages.current.string(key, default) (FsdsMessagesTest.kt 6 + SelectTriggerLabelTest 4 executed via gradle). native-message-reach.test.ts: no quoted message default outside a lookup line (fails on an injected SwiftUI.Text(\"Select an option\")); every reached key is a lookup; 37 unrendered messages ledgered. native-string-literals.test.ts: escaping proven by swift and kotlinc round-trip. Residuals named in A5: Compose expanded/collapsed/selected stateDescription English (native a11y slice). Limits: SwiftUI AX test skips without trust; no Compose UI harness; xcstrings not compiled by an app build."
+    recorded_at: "2026-10-18T14:50:17.077Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/native-message-reach.test.ts > native message reach > no native source authors a message default outside a catalog lookup"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/native-message-reach.test.ts packages/ds-codegen/src/message-catalog.test.ts packages/ds-codegen/src/frameworks/native-string-literals.test.ts && swift test --package-path packages/ds-swiftui && packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose --offline :library:test"
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/native-message-reach.test.ts
+    commit_sha: d2ade4e91
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "docs/architecture/localization.md (ARCH-LOCALIZATION-001, verified_at_commit 59b7fa6fa, fresh per docs:check-claims at ec10a8d5a) documents the contract surface, both gates with every L10N_* route, the per-family consumer path in a table (React/RN FsdsMessagesProvider, Vue provider/provideFsdsMessages, Svelte setFsdsMessages, Angular provideFsdsMessages, Lit setFsdsMessages registry, SwiftUI .fsdsMessages over the FsdsComponents table + reference xcstrings, Compose LocalFsdsMessages), evidence, and non-claims incl. no plural/ICU, word order beside inputs, Lit global registry, engine pilots (Godot defaults; Unity/GPUI do not lower), unrendered native messages, Compose stateDescription English, Walkthrough demo steps, locale/RTL out of scope. docs/current-implementation-snapshot.md has the 'Component message catalogs (localization)' ledger row citing the gates and tests. codegen-authority.md accessible-name guidance points at message:. docs:check-claims OK and docs:check-links OK (205 links)."
+    recorded_at: "2026-10-18T14:51:25.354Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/localization.md
+    commit_sha: ec10a8d5a

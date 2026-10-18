@@ -7,6 +7,7 @@ import Icon from "../Icon/Icon.vue";
 import Input from "../Input/Input.vue";
 import Pagination from "../Pagination/Pagination.vue";
 import { usePagedSet } from "../../primitives/hooks/usePaging.js";
+import { useFsdsMessages, withFsdsMessageDefaults, formatFsdsMessage } from "../../primitives/messages.js";
 // @generated:end
 
 // @custom:start imports
@@ -34,7 +35,6 @@ interface Props {
   pageLabel?: string;
   previousLabel?: string;
   nextLabel?: string;
-  ofLabel?: string;
   commitLabel?: string;
   showChoices?: boolean;
   class?: string;
@@ -43,19 +43,16 @@ interface Props {
 // @generated:end
 
 // @generated:start defineProps
-const props = withDefaults(defineProps<Props>(), {
+const fsdsProps = withDefaults(defineProps<Props>(), {
   pages: () => ([]),
   defaultIndex: 0,
   presentation: "indicators",
-  label: "Page navigation",
   disabled: false,
-  pageLabel: "Current page",
-  previousLabel: "Previous page",
-  nextLabel: "Next page",
-  ofLabel: "of",
-  commitLabel: "Go",
   showChoices: false,
 });
+const PageNavigatorMessages = { groupLabel: "Page navigation", pageLabel: "Current page", previousPage: "Previous page", nextPage: "Next page", commit: "Go", pageCount: "of {count}" };
+const fsdsMessages = useFsdsMessages("PageNavigator", PageNavigatorMessages);
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { label: "groupLabel", pageLabel: "pageLabel", previousLabel: "previousPage", nextLabel: "nextPage", commitLabel: "commit" });
 // @generated:end
 
 // @generated:start hook
@@ -90,10 +87,7 @@ const classNames = computed(() => [
       <Input :class="'page-navigator__input'" type="number" :onChange="pagedSet.edit" :value="pagedSet.state.draft" :disabled="pagedSet.state.disabled" :ariaLabel="props.pageLabel" />
     </div>
     <span :class="'page-navigator__context'">
-      {{ props.ofLabel }}
-    </span>
-    <span :class="'page-navigator__total'">
-      {{ pagedSet.state.count }}
+      {{ formatFsdsMessage(fsdsMessages.pageCount, { count: pagedSet.state.count }) }}
     </span>
     <Button :class="'page-navigator__commit'" type="button" :onClick="pagedSet.commit" :disabled="pagedSet.state.disabled" :ariaLabel="props.commitLabel">
       <span>

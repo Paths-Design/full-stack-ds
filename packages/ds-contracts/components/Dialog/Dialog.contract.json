@@ -116,8 +116,10 @@
                   "tag": "button",
                   "part": "closeButton",
                   "attrs": {
-                    "type": "button",
-                    "aria-label": "Close dialog"
+                    "type": "button"
+                  },
+                  "bindings": {
+                    "aria-label": "message:close"
                   }
                 }
               ]
@@ -144,6 +146,12 @@
           ]
         }
       ]
+    }
+  },
+  "messages": {
+    "close": {
+      "defaultMessage": "Close dialog",
+      "description": "Accessible name of the button that closes the dialog."
     }
   },
   "props": {

@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 // @generated:end
 
@@ -18,6 +19,8 @@ export type AlertNoticeLevel = "page" | "section" | "inline";
 // @custom:end
 
 // @generated:start component
+const AlertNoticeMessages = { dismiss: "Dismiss" };
+
 @Component({
   selector: "fsds-alert-notice",
   standalone: true,
@@ -31,17 +34,18 @@ export type AlertNoticeLevel = "page" | "section" | "inline";
   </ng-container>
   <ng-content />
   <ng-container *ngIf="dismissible">
-    <button [ngClass]="'alert-notice__dismiss'" type="button" (click)="onDismiss && onDismiss()" [attr.aria-label]="(dismissLabel ?? 'Dismiss')"></button>
+    <button [ngClass]="'alert-notice__dismiss'" type="button" (click)="onDismiss && onDismiss()" [attr.aria-label]="(dismissLabel ?? fsdsMessages().dismiss)"></button>
   </ng-container>
 </div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlertNoticeComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("AlertNotice", AlertNoticeMessages);
   @Input() status?: AlertNoticeStatus;
   @Input() level?: AlertNoticeLevel;
   @Input() dismissible?: boolean;
   @Input() onDismiss?: () => void;
-  @Input() dismissLabel?: string = "Dismiss";
+  @Input() dismissLabel?: string;
   @Input() icon?: unknown;
   @Input() class?: string;
 

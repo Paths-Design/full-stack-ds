@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass, NgFor } from "@angular/common";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { StackComponent } from "../../primitives/index.js";
 import { useOTP } from "./useOTP.js";
 // @generated:end
@@ -18,21 +19,24 @@ export type OTPMode = "numeric" | "alphanumeric";
 // @custom:end
 
 // @generated:start component
+const OTPMessages = { groupLabel: "One-time password", fieldLabel: "One-time password digit" };
+
 @Component({
   selector: "fsds-otp",
   standalone: true,
   imports: [NgClass, NgFor],
   host: { "data-fsds-component": "otp" },
-  template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="(label ?? 'One-time password')" [attr.aria-describedby]="ariaDescribedby" data-fsds-box="">
+  template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="(label ?? fsdsMessages().groupLabel)" [attr.aria-describedby]="ariaDescribedby" data-fsds-box="">
   <div [ngClass]="'otp__group'">
     <ng-container *ngFor="let _ of arrayFromCount((length ?? 6)); let index = index">
-      <input [ngClass]="'otp__field'" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" (input)="applySetCharAtValue($event, index)" [disabled]="disabled" [attr.aria-label]="(fieldLabel ?? 'One-time password digit')" [attr.aria-readonly]="readOnly" [attr.data-otp-index]="index" />
+      <input [ngClass]="'otp__field'" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" (input)="applySetCharAtValue($event, index)" [disabled]="disabled" [attr.aria-label]="(fieldLabel ?? fsdsMessages().fieldLabel)" [attr.aria-readonly]="readOnly" [attr.data-otp-index]="index" />
     </ng-container>
   </div>
 </div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OTPComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("OTP", OTPMessages);
   @Input() length?: number = 6;
   private readonly inputValue = signal<string | undefined>(undefined);
   @Input() get value(): string | undefined { return this.inputValue(); }
@@ -43,8 +47,8 @@ export class OTPComponent {
   @Input() mode?: OTPMode = "numeric";
   @Input() disabled?: boolean;
   @Input() readOnly?: boolean;
-  @Input() label?: string = "One-time password";
-  @Input() fieldLabel?: string = "One-time password digit";
+  @Input() label?: string;
+  @Input() fieldLabel?: string;
   @Input() ariaDescribedby?: string;
   @Input() class?: string;
 

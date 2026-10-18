@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
-import { sequenceConfig, sequencePresentation } from "../../sequence.js";
+import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
+import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
  * Lit LitElement emission, IR-driven.
  *
@@ -231,9 +232,11 @@ function litPropAccessor(propName: string, ctx: LitRenderContext): string {
  */
 function defaultAwareLitPropAccessor(
   propName: string,
-  styledByName: ReadonlyMap<string, { type: string; defaultExpr?: string }>,
+  styledByName: ReadonlyMap<string, { type: string; defaultExpr?: string; defaultMessage?: string }>,
 ): string {
   const bare = propAccessor(propName);
+  const defaultMessage = styledByName.get(propName)?.defaultMessage;
+  if (defaultMessage) return `(${bare} ?? this.fsdsMessages.value.${defaultMessage})`;
   const defaultExpr = styledByName.get(propName)?.defaultExpr;
   return defaultExpr === undefined ? bare : `(${bare} ?? ${defaultExpr})`;
 }
@@ -560,7 +563,7 @@ function generatePropertyDeclarations(ir: ComponentIR): string[] {
       // by its kebab name, not via the JS field directly.
       const t = applyLitTypeRename(lowerLitPropType(p.propType), rename);
       const defaultPart =
-        p.defaultExpr !== undefined ? ` = ${p.defaultExpr}` : "";
+        p.defaultExpr !== undefined && !p.defaultMessage ? ` = ${p.defaultExpr}` : "";
       lines.push(`  @property({ attribute: '${toKebab(p.name)}' })`);
       lines.push(`  _${p.name}?: ${t}${defaultPart};`);
       declared.add(p.name);
@@ -570,7 +573,7 @@ function generatePropertyDeclarations(ir: ComponentIR): string[] {
     const t = applyLitTypeRename(lowerLitPropType(p.propType), rename);
     const propName = p.name.includes("-") ? `"${p.name}"` : p.name;
     const defaultPart =
-      p.defaultExpr !== undefined ? ` = ${p.defaultExpr}` : "";
+      p.defaultExpr !== undefined && !p.defaultMessage ? ` = ${p.defaultExpr}` : "";
     // litPropertyType returns null for function-typed and other non-
     // attribute-reflectable props. Emit them with `attribute: false`
     // rather than dropping them entirely — callbacks like onDismiss must
@@ -1553,6 +1556,9 @@ function generateCompoundStateSource(ir: ComponentIR): string {
  * regeneration.
  */
 export function generateLitComponentSource(ir: ComponentIR): string {
+  if (ir.messages.length > 0 && (isDisclosureContainer(ir) || isCompoundStateContainer(ir) || !ir.dom)) {
+    throw new Error(`[MESSAGE_UNLOWERED] ${ir.name}: only dom-tree Lit components resolve contract messages`);
+  }
   // Compound-state-container components (Tabs-shaped) get a bespoke emitter
   // that produces four LitElement classes instead of the generic wrapper.
   if (isDisclosureContainer(ir)) {
@@ -1671,6 +1677,10 @@ function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: 
   if (usesRef) lines.push(`import { ref } from 'lit/directives/ref.js';`);
   if (ir.pagedSet) lines.push(`import { PagedSetController } from "../../primitives/controllers/PagingController.js";`);
   if (ir.motion.sequence) lines.push(`import { SequenceController } from "../../primitives/controllers/SequenceController.js";`);
+  if (ir.messages.length > 0) {
+    const names = ["FsdsMessagesController", ...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : [])];
+    lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
+  }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   // Always include `property`; add `state` when the dom tree has a children
   // guard so the private _hasChildren reactive field can be declared.
@@ -1850,9 +1860,17 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
 
   const lines: string[] = [];
   lines.push(...iconGlyphHintsLines);
+  if (ir.messages.length > 0) {
+    lines.push(`const ${messageDefaultsName(ir.name)} = ${messageDefaultsLiteral(ir.messages)};`, ``);
+  }
   lines.push(`export class ${className} extends LitElement {`);
   lines.push(...litStaticStylesLine(ir));
   lines.push(``);
+  // Resolved messages: the controller re-renders the host when the global
+  // catalog changes; templates read `this.fsdsMessages.value.<key>`.
+  if (ir.messages.length > 0) {
+    lines.push(`  private readonly fsdsMessages = new FsdsMessagesController(this, ${JSON.stringify(ir.name)}, ${messageDefaultsName(ir.name)});`, ``);
+  }
 
   // Property declarations for every styled prop
   const declared = new Set<string>();
@@ -1960,6 +1978,7 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
       lines.push(`  private sequence = new SequenceController(this, ${sequenceConfig(seq, ir.cssPrefix)}, () => ({`,
         `    index: this.behavior.${seq.channel}, labels: this.${seq.itemsProp} ?? [], autoPlay: this.${seq.timing.autoPlayProp} ?? false,`,
         `    presentation: ${sequencePresentation(seq, prop => defaultAwareLitPropAccessor(prop, styledByName))},`,
+        `    messages: ${sequenceMessages(seq, key => `this.fsdsMessages.value.${key}`)},`,
         `    durationMs: this.${seq.timing.durationProp} === undefined ? ${seq.timing.defaultMs} : this.${seq.timing.durationProp},`,
         `    onIndexChange: (value) => this.behavior.set${capitalizeLit(seq.channel)}(value),`, `  }));`);
     }
@@ -2355,6 +2374,7 @@ function generateLitDomTreePropertyDecl(
     type: string;
     propType: PropTypeIR;
     defaultExpr?: string;
+    defaultMessage?: string;
     required: boolean;
   },
   rename: { from: string; to: string } | null = null,
@@ -2395,14 +2415,14 @@ function generateLitDomTreePropertyDecl(
   }
   if (LIT_ELEMENT_METHOD_NAMES.has(p.name)) {
     const propType = applyLitTypeRename(lowerLitPropType(p.propType), rename);
-    const defaultPart = p.defaultExpr !== undefined ? ` = ${p.defaultExpr}` : "";
+    const defaultPart = p.defaultExpr !== undefined && !p.defaultMessage ? ` = ${p.defaultExpr}` : "";
     return [
       `  @property({ attribute: '${toKebab(p.name)}' })`,
       `  _${p.name}?: ${propType}${defaultPart};`,
     ].join("\n");
   }
   const propType = applyLitTypeRename(lowerLitPropType(p.propType), rename);
-  const defaultPart = p.defaultExpr !== undefined ? ` = ${p.defaultExpr}` : "";
+  const defaultPart = p.defaultExpr !== undefined && !p.defaultMessage ? ` = ${p.defaultExpr}` : "";
   // Use the same policy as the legacy emitter (litPropertyType +
   // litPropertyDecoratorOptions): primitives → `{ type: <T> }`,
   // anything else → `{ attribute: false }`. This is what lit-analyzer's
@@ -2443,7 +2463,7 @@ interface LitRenderContext {
   preformatted?: boolean;
   classRecipe: string;
   channelByName: Map<string, NormalizedChannelIR>;
-  styledByName: Map<string, { type: string; defaultExpr?: string }>;
+  styledByName: Map<string, { type: string; defaultExpr?: string; defaultMessage?: string }>;
   isRoot: boolean;
   /**
    * Field-association control slug when this component PROVIDES field
@@ -3306,6 +3326,11 @@ function renderLitBinding(
     }
     case "literal":
       return `${attr}="${expr.value.replace(/"/g, "&quot;")}"`;
+    case "message": {
+      const lowered = renderLitBindingValue(expr, ctx);
+      if (lowered === null) return null;
+      return refBinding?.kind === "prop" ? `.${refBinding.targetProp}=\${${lowered}}` : `${attr}=\${${lowered}}`;
+    }
     case "iterationLocal": {
       // The item exists, but a projected record field may be absent.
       // Omit absent attributes while preserving explicit false values;
@@ -3453,6 +3478,10 @@ function renderLitContent(
       return expr.value.replace(/[<>&]/g, (c) =>
         c === "<" ? "&lt;" : c === ">" ? "&gt;" : "&amp;",
       );
+    case "message": {
+      const lowered = renderLitBindingValue(expr, ctx);
+      return lowered === null ? null : `\${${lowered}}`;
+    }
     case "iterationLocal": {
       const name = litIterationLocalName(expr.local, ctx);
       return name ? `\${${appendPath(name, expr.path)}}` : null;
@@ -3537,6 +3566,8 @@ function renderLitBindingValue(
       return appendPath(litPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
       return JSON.stringify(expr.value);
+    case "message":
+      return composeMessageExpression("this.fsdsMessages.value", expr, (value) => renderLitBindingValue(value, ctx));
     case "iterationLocal": {
       const name = litIterationLocalName(expr.local, ctx);
       return name ? appendPath(name, expr.path) : null;
@@ -3623,6 +3654,8 @@ function renderLitEvent(
       // Rare. Inline as a string handler — would need eval at runtime;
       // emit verbatim and let the consumer catch authoring errors.
       return `@${eventName}="${expr.value.replace(/"/g, "&quot;")}"`;
+    case "message":
+      return null;
     case "iterationLocal": {
       // Iteration locals are values, not callables. Drop the binding —
       // the IR validator would already reject a contract that routes

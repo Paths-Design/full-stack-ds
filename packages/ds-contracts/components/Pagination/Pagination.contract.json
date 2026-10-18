@@ -107,6 +107,12 @@
       ]
     }
   },
+  "messages": {
+    "navigationLabel": {
+      "defaultMessage": "Choose page",
+      "description": "Accessible name of the page choices."
+    }
+  },
   "props": {
     "styled": {
       "members": [
@@ -162,7 +168,7 @@
         {
           "name": "label",
           "type": "string",
-          "default": "Choose page",
+          "defaultMessage": "navigationLabel",
           "description": "Accessible name for this set of choices."
         },
         {

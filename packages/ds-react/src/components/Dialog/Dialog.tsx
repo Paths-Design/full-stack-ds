@@ -3,6 +3,7 @@ import { canActivateInteraction } from "../../primitives/interaction.js";
 import { type HTMLAttributes, type ReactNode, useId } from "react";
 import { Stack } from "../../primitives";
 import { useDialog } from "./useDialog";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Dialog.css";
 // @generated:end
 
@@ -122,6 +123,8 @@ export function DialogFooter({
 // @generated:end
 
 // @generated:start component
+const DialogMessages = { close: "Close dialog" };
+
 export function Dialog({
   open: controlledOpen,
   defaultOpen,
@@ -142,6 +145,7 @@ export function Dialog({
   slots,
   ...rest
 }: DialogProps) {
+  const fsdsMessages = useFsdsMessages("Dialog", DialogMessages);
   const { panelRef, openness, setOpenness, renderInPortal } = useDialog({
     open: controlledOpen,
     defaultOpen,
@@ -175,7 +179,7 @@ export function Dialog({
             <h2 className="dialog__title" id={`${instanceId}-title`}>
               {slots?.title}
             </h2>
-            <button className="dialog__closeButton" type="button" aria-label="Close dialog" onClick={(e) => { if (canActivateInteraction(e, false)) setOpenness(false); }} />
+            <button className="dialog__closeButton" type="button" onClick={(e) => { if (canActivateInteraction(e, false)) setOpenness(false); }} aria-label={fsdsMessages.close} />
           </div>
           <div className="dialog__body" id={`${instanceId}-body`}>
             {children}
