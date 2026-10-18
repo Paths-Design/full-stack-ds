@@ -1,11 +1,9 @@
 id: A11Y-AUDIT-DEPTH-01
 title: 'A11y audit: per-key, roving-reachability, state-attribute, and native-family realization checks'
 mode: feature
-lifecycle_state: closed
-resolution: completed
-closure_notes: 'A11y audit gained per-key, roving-reachability, state-attribute, interactive-role and SwiftUI/Compose native-family checks; 50 newly surfaced gaps ledgered under owning lanes'
+lifecycle_state: active
 created_at: '2026-10-18T05:17:53.538Z'
-updated_at: '2026-10-18T07:46:24.796Z'
+updated_at: '2026-10-18T07:49:16.504Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
