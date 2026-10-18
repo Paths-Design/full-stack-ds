@@ -121,3 +121,12 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.contract.ts
     commit_sha: d5eec68c0
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "At d5eec68c0/d2ade4e91: SwiftUI views read @Environment(\\.fsdsMessages) and call fsdsMessages.string(\"<Component>.<key>\", default:) backed by Bundle.localizedString(forKey:value:table:) over FsdsComponents, overrides first (FsdsMessagesTests.swift 7 passed: missing key->default, table beats default, override beats table, table name, word order, unknown placeholder). Message-defaulted SwiftUI props store an optional and resolve explicit-first (Select placeholder, Command placeholder). FsdsComponents.xcstrings equals a fresh corpus render (message-catalog.test.ts). Compose defaults through LocalFsdsMessages.current.string(key, default) (FsdsMessagesTest.kt 6 + SelectTriggerLabelTest 4 executed via gradle). native-message-reach.test.ts: no quoted message default outside a lookup line (fails on an injected SwiftUI.Text(\"Select an option\")); every reached key is a lookup; 37 unrendered messages ledgered. native-string-literals.test.ts: escaping proven by swift and kotlinc round-trip. Residuals named in A5: Compose expanded/collapsed/selected stateDescription English (native a11y slice). Limits: SwiftUI AX test skips without trust; no Compose UI harness; xcstrings not compiled by an app build."
+    recorded_at: "2026-10-18T14:50:17.077Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/native-message-reach.test.ts > native message reach > no native source authors a message default outside a catalog lookup"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/native-message-reach.test.ts packages/ds-codegen/src/message-catalog.test.ts packages/ds-codegen/src/frameworks/native-string-literals.test.ts && swift test --package-path packages/ds-swiftui && packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose --offline :library:test"
+    exit_code: 0
+    artifact_path: packages/ds-codegen/src/frameworks/native-message-reach.test.ts
+    commit_sha: d2ade4e91
