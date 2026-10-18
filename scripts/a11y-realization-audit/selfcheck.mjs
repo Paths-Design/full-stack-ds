@@ -10,8 +10,12 @@
 import {
   atomicKeys,
   classify,
+  declaredStateAttributes,
   deriveObligations,
+  handlesKey,
   relationshipTokens,
+  rovingReachable,
+  unroledComposeActivations,
 } from "./audit.mjs";
 
 let failures = 0;
@@ -55,9 +59,53 @@ check(
       to: "control",
       cssPrefix: "fixture",
     },
-    { component: "Fixture", class: "keyboard", key: "ArrowDown" },
-    { component: "Fixture", class: "focus", key: "roving" },
+    { component: "Fixture", class: "keyboard", key: "ArrowDown", roving: { entryAction: false } },
+    { component: "Fixture", class: "focus", key: "roving", roving: { entryAction: false } },
   ],
+);
+// A `behavior: "open"` keyboard entry is the roving composite's way in.
+check(
+  "an open-behavior keyboard entry declares a roving entry action",
+  deriveObligations([{ name: "Menu", contract: {
+    a11y: { keyboard: [{ key: "ArrowDown", when: "trigger", behavior: "open" }] },
+    focus: { strategy: "roving" },
+  } }]).find((o) => o.class === "focus").roving,
+  { entryAction: true },
+);
+// State attributes come from state dimensions and dom attrs/bindings, once each.
+check(
+  "state attributes derive from states and dom, deduped",
+  declaredStateAttributes({
+    states: { dimensions: { selection: { a11y: { attribute: "aria-selected" } } } },
+    anatomy: { dom: { tag: "div", bindings: { "aria-selected": "channel:v.value" }, children: [
+      { tag: "button", bindings: { "aria-expanded": "channel:open.value" } },
+    ] } },
+  }),
+  [{ attribute: "aria-selected" }, { attribute: "aria-expanded" }],
+);
+// A dom constant the contract never declares as varying state is declaredStatic.
+check(
+  "a dom-only constant state attribute is declared static",
+  declaredStateAttributes({
+    anatomy: { dom: { tag: "ul", children: [{ tag: "li", attrs: { role: "option", "aria-selected": "true" } }] } },
+  }),
+  [{ attribute: "aria-selected", declaredStatic: true }],
+);
+// A contract suppression carries its reason onto the obligation.
+check(
+  "a contract obligation suppression is carried with its reason",
+  declaredStateAttributes({
+    states: { dimensions: { selection: { a11y: { attribute: "aria-selected" } } } },
+    a11y: { obligations: { suppress: [{ role: "option", attr: "aria-selected", reason: "cursor, not selection" }] } },
+  }),
+  [{ attribute: "aria-selected", suppressed: "cursor, not selection" }],
+);
+check(
+  "an interactive anatomy part derives an interactive-role obligation",
+  deriveObligations([{ name: "Toggle", contract: {
+    anatomy: { details: { trigger: { interactive: true } } },
+  } }]),
+  [{ component: "Toggle", class: "interactive-role", key: "activation" }],
 );
 
 // -- relationship surfaces ----------------------------------------------------
@@ -382,9 +430,60 @@ check(
   "unrealized",
 );
 check(
-  "ArrowDown realized by explicit keydown handler",
-  classify({ component: "X", class: "keyboard", key: "ArrowDown" }, "web-dom", "onKeyDown={h}", new Set())
-    .verdict,
+  "ArrowDown realized by a keydown handler that compares it",
+  classify({ component: "X", class: "keyboard", key: "ArrowDown" }, "web-dom",
+    'onKeyDown={h} if (e.key === "ArrowDown") next();', new Set()).verdict,
+  "realized",
+);
+check(
+  "a keydown handler that never names PageUp does not realize PageUp",
+  classify({ component: "X", class: "keyboard", key: "PageUp" }, "web-dom",
+    'onKeyDown={h} if (e.key === "ArrowDown") next();', new Set()).verdict,
+  "unrealized",
+);
+check(
+  "every atomic key of an alternative must be handled",
+  classify({ component: "X", class: "keyboard", key: "Home|End" }, "web-dom",
+    'onKeyDown={h} if (event.key === "Home") first();', new Set()).verdict,
+  "unrealized",
+);
+// Key spellings: Space is " " on KeyboardEvent.key, "Space" on .code.
+check("Space realized by key === \" \"", handlesKey('if (e.key === " ") select();', "Space"), true);
+check("Space realized by code === \"Space\"", handlesKey('if (e.code === "Space") select();', "Space"), true);
+check("key === \"Space\" never matches the space bar", handlesKey('if (e.key === "Space") select();', "Space"), false);
+check("a class-name join is not a Space comparison", handlesKey('[a, b].join(" ")', "Space"), false);
+check("a switch arm names the key", handlesKey('switch (e.key) { case "End": last(); }', "End"), true);
+check("a guard comparison names the key", handlesKey('if (key !== "End") return; last();', "End"), true);
+// A primitive's key tokens count only when the component binds the handler.
+check(
+  "a primitive comparing Escape realizes it when the component binds keydown",
+  classify({ component: "X", class: "keyboard", key: "Escape" }, "web-dom",
+    { own: "onKeyDown={paged.commitOnEnter}", relationship: 'onKeyDown={paged.commitOnEnter} if (event.key === "Escape") cancel();' },
+    new Set()).via,
+  "primitive handler",
+);
+check(
+  "a primitive comparing a key realizes nothing without the component's handler",
+  classify({ component: "X", class: "keyboard", key: "PageDown" }, "web-dom",
+    { own: "<div>", relationship: '<div> onKeyDown={h} if (e.key === "PageDown") page();' },
+    new Set()).verdict,
+  "unrealized",
+);
+// Roving composites: native activation needs a reachable item.
+const rovingKey = { component: "X", class: "keyboard", key: "Enter|Space", roving: { entryAction: false } };
+check(
+  "native Enter/Space on untabbable roving items is unrealized",
+  classify(rovingKey, "web-dom", '<button tabIndex={-1}> onKeyDown={h}', new Set(["button"])).verdict,
+  "unrealized",
+);
+check(
+  "native Enter/Space on a roving composite with a computed tab stop is realized",
+  classify(rovingKey, "web-dom", '<button tabIndex={i === active ? 0 : -1}>', new Set(["button"])).verdict,
+  "realized",
+);
+check(
+  "native Enter/Space on a roving composite with an entry action is realized",
+  classify({ ...rovingKey, roving: { entryAction: true } }, "web-dom", '<button tabIndex={-1}>', new Set(["button"])).verdict,
   "realized",
 );
 check(
@@ -412,6 +511,124 @@ check(
     .verdict,
   "unrealized",
 );
+const rovingFocus = { component: "X", class: "focus", key: "roving", roving: { entryAction: false } };
+check(
+  "roving with a handler but only literal tabindex has no way in",
+  classify(rovingFocus, "web-dom", 'onKeyDown={h} <button tabIndex={-1}>', new Set()).verdict,
+  "unrealized",
+);
+check(
+  "roving with a declared entry action is reachable",
+  classify({ ...rovingFocus, roving: { entryAction: true } }, "web-dom", 'onKeyDown={h} <button tabIndex={-1}>', new Set()).verdict,
+  "realized",
+);
+for (const [family, source] of [
+  ["react", "tabIndex={isActive ? 0 : -1}"],
+  ["svelte", "tabindex={isActive ? 0 : -1}"],
+  ["vue", ':tabindex="isActive ? 0 : -1"'],
+  ["angular", '[attr.tabindex]="isActive() ? 0 : -1"'],
+  ["lit", 'this.setAttribute("tabindex", isActive ? "0" : "-1")'],
+]) {
+  check(`${family}: a computed tabindex is a roving tab stop`, rovingReachable(source, { entryAction: false }), true);
+}
+for (const [family, source] of [
+  ["react", "tabIndex={-1}"],
+  ["vue", ':tabindex="0"'],
+  ["angular", '[attr.tabindex]="0"'],
+  ["lit", 'this.setAttribute("tabindex", "0")'],
+]) {
+  check(`${family}: a literal tabindex is not a roving tab stop`, rovingReachable(source, { entryAction: false }), false);
+}
+
+// -- state attributes ---------------------------------------------------------
+const selectedState = { component: "X", class: "state-attribute", key: "aria-selected" };
+for (const [family, source] of [
+  ["react", "aria-selected={isActive}"],
+  ["vue", ' :aria-selected="isActive"'],
+  ["angular", '[attr.aria-selected]="isActive()"'],
+  ["lit", "aria-selected=${this.active}"],
+  ["programmatic", 'el.setAttribute("aria-selected", isActive ? "true" : "false")'],
+  ["prop getter", '{ "aria-selected": ctx.active }'],
+]) {
+  check(`${family}: a bound aria-selected is realized`,
+    classify(selectedState, "web-dom", source, new Set()).verdict, "realized");
+}
+check("a static aria-selected literal does not track state",
+  classify(selectedState, "web-dom", '<li aria-selected="true">', new Set()).reason,
+  "aria-selected is a static literal");
+check("a static setAttribute value does not track state",
+  classify(selectedState, "web-dom", 'el.setAttribute("aria-selected", "true")', new Set()).verdict,
+  "unrealized");
+check("a CSS attribute selector is not a binding",
+  classify(selectedState, "web-dom", '.cal__cell[aria-selected="true"] { color: red }', new Set()).reason,
+  "aria-selected is never bound");
+check("a contract-declared constant is realized by emitting it",
+  classify({ ...selectedState, declaredStatic: true }, "web-dom", '<li aria-selected="true">', new Set()).via,
+  "static as declared");
+check("a contract suppression is an explicit exclusion",
+  classify({ ...selectedState, suppressed: "cursor" }, "web-dom", "", new Set()).verdict,
+  "excluded");
+check("a bound native checked carries aria-checked on an input",
+  classify({ component: "X", class: "state-attribute", key: "aria-checked" }, "web-dom",
+    "<input type=\"checkbox\" checked={value} />", new Set(["input"])).via,
+  "native input");
+check("a state attribute set by an imported primitive is realized",
+  classify({ component: "X", class: "state-attribute", key: "aria-expanded" }, "web-dom",
+    { own: "<button>", relationship: '<button> anchor.setAttribute("aria-expanded", isOpen ? "true" : "false")' },
+    new Set()).verdict,
+  "realized");
+check("react-native accessibilityState tracking state is realized",
+  classify(selectedState, "native-mobile", "accessibilityState={{ selected: isActive }}", new Set()).verdict,
+  "realized");
+check("react-native constant accessibilityState does not track state",
+  classify(selectedState, "native-mobile", "accessibilityState={{ selected: true }}", new Set()).verdict,
+  "unrealized");
+check("react-native has no aria-current surface",
+  classify({ component: "X", class: "state-attribute", key: "aria-current" }, "native-mobile", "", new Set()).verdict,
+  "excluded");
+check("swiftui conditional isSelected trait is realized",
+  classify(selectedState, "native-declarative", ".accessibilityAddTraits(i == page ? [.isSelected] : [])", new Set(), "swiftui").verdict,
+  "realized");
+check("swiftui isSelected method call is not a trait",
+  classify(selectedState, "native-declarative", "if selection.isSelected(option.value) {", new Set(), "swiftui").verdict,
+  "unrealized");
+check("compose selected semantics argument is realized",
+  classify(selectedState, "native-declarative", "Modifier.selectable(selected = selected, role = Role.Tab)", new Set(), "jetpack-compose").verdict,
+  "realized");
+check("compose val declaration and English stateDescription are not selected semantics",
+  classify(selectedState, "native-declarative",
+    'val selected = state.value == key\n.semantics { stateDescription = if (selected) "selected" else "not selected" }',
+    new Set(), "jetpack-compose").verdict,
+  "unrealized");
+check("compose delegated control semantics count for the component",
+  classify({ component: "X", class: "state-attribute", key: "aria-checked" }, "native-declarative",
+    { own: "FsdsCheckbox(checked)", relationship: "FsdsCheckbox(checked)", delegated: "FsdsCheckbox(checked) Modifier.toggleable(value = checked, role = Role.Checkbox)" },
+    new Set(), "jetpack-compose").verdict,
+  "realized");
+check("declarative native keyboard obligations are excluded",
+  classify({ component: "X", class: "keyboard", key: "Enter" }, "native-declarative", "", new Set(), "swiftui").verdict,
+  "excluded");
+
+// -- interactive roles --------------------------------------------------------
+const activation = { component: "X", class: "interactive-role", key: "activation" };
+check("compose clickable without a role is unrealized",
+  unroledComposeActivations("Column(modifier.clickable { onSelect() })"), ["clickable"]);
+check("compose clickable with enabled but no role is unrealized",
+  unroledComposeActivations("Modifier.clickable(enabled = enabled) { open() }"), ["clickable"]);
+check("compose selectable with a role is realized",
+  unroledComposeActivations("Modifier.selectable(selected = s, role = Role.Tab, onClick = { pick() })"), []);
+check("compose import lines are not activation sites",
+  unroledComposeActivations("import androidx.compose.foundation.clickable\n"), []);
+check("react-native pressable without accessibilityRole is unrealized",
+  classify(activation, "native-mobile", "<Pressable onPress={go}>", new Set()).verdict, "unrealized");
+check("react-native pressable with accessibilityRole is realized",
+  classify(activation, "native-mobile", '<Pressable accessibilityRole="button" onPress={go}>', new Set()).verdict, "realized");
+check("react-native backdrop hidden from assistive tech needs no role",
+  classify(activation, "native-mobile", "<Pressable accessible={false} onPress={close}>", new Set()).verdict, "realized");
+check("swiftui onTapGesture without the button trait is unrealized",
+  classify(activation, "native-declarative", "Text(label).onTapGesture { go() }", new Set(), "swiftui").verdict, "unrealized");
+check("web interactive roles are an explicit exclusion",
+  classify(activation, "web-dom", "<div>", new Set()).verdict, "excluded");
 
 if (failures > 0) {
   console.error(`\n[a11y-rail selfcheck] ${failures} assertion(s) failed`);
