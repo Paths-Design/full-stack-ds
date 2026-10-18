@@ -8,12 +8,14 @@ import { defineConfig } from "vitest/config";
 //
 // Scope and non-claims:
 // - Node environment only. These are pure fixture -> adapter -> typed-promise
-//   API tests with no DOM, so no jsdom, no React plugin, and no setup file.
-// - The include list is exactly the three example data/API src trees. It does
-//   not pick up framework lane files (`examples/*/{react,vue,svelte,angular,lit}`)
-//   or any generated package.
-// - This proves the data/API seam, not framework app parity, not visual
-//   fidelity, not a real backend, and not generated-artifact admission.
+//   API tests (plus the motion-lab token adapter) with no DOM, so no jsdom,
+//   no React plugin, and no setup file.
+// - The include list is exactly the three example data/API src trees plus the
+//   motion-lab shared src tree. It does not pick up framework lane files
+//   (`examples/*/{react,vue,svelte,angular,lit,web}`) or any generated package.
+// - This proves the data/API seam and the motion token adapter, not framework
+//   app parity, not visual fidelity, not a real backend, and not
+//   generated-artifact admission.
 export default defineConfig({
   test: {
     environment: "node",
@@ -21,6 +23,7 @@ export default defineConfig({
       "examples/operations-dashboard/src/**/*.{test,spec}.ts",
       "examples/storefront-checkout/src/**/*.{test,spec}.ts",
       "examples/social-feed/src/**/*.{test,spec}.ts",
+      "examples/motion-lab/src/**/*.{test,spec}.ts",
     ],
   },
 });
