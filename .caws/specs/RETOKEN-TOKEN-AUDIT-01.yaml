@@ -1,0 +1,67 @@
+id: RETOKEN-TOKEN-AUDIT-01
+title: 'Retoken-page token audit: inventory, load-bearing probes, fallback trace, adjudicated baseline and gate'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-18T07:01:08.487Z'
+updated_at: '2026-10-18T07:01:08.487Z'
+created_by_session: 'session-a9c94ee7-6f8e-47ee-a9b2-6bc6ca490a8f'
+blast_radius:
+  modules:
+    - 'scripts/audit-retoken-tokens.mjs'
+    - 'e2e/fixtures/retoken-pages/theme.css'
+    - 'package.json'
+    - '.githooks/pre-push'
+    - 'docs/architecture/design/retoken-page-attempts.md'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'e2e/fixtures/retoken-pages'
+    - 'scripts'
+    - 'package.json'
+    - '.githooks/pre-push'
+    - 'scripts/prepush-scope.mjs'
+    - 'docs/architecture/design/retoken-page-attempts.md'
+  out: []
+invariants:
+  - 'The gate is static-only (no browser): runtime probe verdicts are recorded in the committed baseline, and the gate re-checks inventory-vs-baseline, adjudication completeness, ledgered brand literals, and contrast pairs'
+  - 'No token-source, contract, IR, emitter, or generated-package changes; brand-shaped literals are named at page scope or ledgered, never silently inlined'
+  - 'Fixture rendering behavior is preserved: the retoken-pages Playwright suite stays 7/7 after adjudication edits'
+acceptance:
+  - id: A1
+    given: 'the committed audit script'
+    when: 'it runs on a clean tree'
+    then: 'it emits an inventory of every --fsds-* declaration in theme.css with scope, value, and literal-or-ref kind and exits 0 against the committed baseline'
+  - id: A2
+    given: 'the probe script against a served fixture page'
+    when: 'each inventoried declaration is removed and affected regions re-measured'
+    then: 'every declaration records a load-bearing or dead verdict, and every dead declaration is deleted or carries an adjudication entry'
+  - id: A3
+    given: 'each component kind rendered on either page'
+    when: 'its unset design vars resolve through the component default chain'
+    then: 'every chain terminating in a literal is fixed or carries a ledger entry, with zero unadjudicated entries'
+  - id: A4
+    given: 'same-role declarations across the .spotify and .pinterest scopes'
+    when: 'their values differ'
+    then: 'each difference maps to an adjudication entry naming the reference decision, or the values are unified'
+  - id: A5
+    given: 'theme.css'
+    when: 'scanned for brand-shaped accent literals'
+    then: 'each is defined exactly once as a named page token or carries a ledger entry, and unledgered brand literals count zero'
+  - id: A6
+    given: 'the curated page color pairs in the baseline'
+    when: 'the gate computes WCAG contrast ratios'
+    then: 'every pair meets AA (4.5:1 text, 3:1 large text or UI)'
+  - id: A7
+    given: 'the committed gate'
+    when: 'the baseline or theme.css drifts from the adjudicated state'
+    then: 'pnpm run audit:retoken-tokens exits non-zero, and restoring committed state exits zero'
+observability:
+  - 'audit:retoken-tokens gate result appears in prepush-scope family output when fixture or token-source paths change'
+rollback:
+  - 'Revert slice commits; fixture/script-only change with no token-source or generated-artifact migration'
+non_functional: {}
+contracts:
+  - name: 'retoken-token-audit'
+    type: contract-test
+    path: 'scripts/audit-retoken-tokens.mjs'
