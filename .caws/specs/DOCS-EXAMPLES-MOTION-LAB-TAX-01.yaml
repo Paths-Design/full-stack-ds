@@ -43,3 +43,7 @@ evidence:
     status: pass
     evidence_ref: "commit 637bd4476: snapshot Examples portfolio row records motion-lab (four lanes, token-graph timing, promoted svelte styles.css export, 70/70 at 66cb7a051) with non-claims and next-steps updated; snapshot frontmatter updated to 2026-10-18"
     recorded_at: "2026-10-18T18:56:52.133Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run build:all exit 0 on canonical after pnpm install sync: examples/motion-lab/{svelte,lit} build Done inside the dependency-sorted run, after ds-svelte build-styles wrote dist/svelte.css; AGENTS.md note corrected in commit d05f41eca"
+    recorded_at: "2026-10-18T18:56:53.380Z"
