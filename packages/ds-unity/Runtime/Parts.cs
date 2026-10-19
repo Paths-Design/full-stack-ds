@@ -66,5 +66,17 @@ namespace FullStackDS
         }
 
         public static string Key(VisualElement element) => (element as IKeyedPart)?.Value;
+
+        // Content a behavior may take out of the hierarchy (unmounted, parked, floating)
+        // keeps no ancestor to prove ownership, so the last behavior to discover it holds it.
+        private static readonly ConditionalWeakTable<VisualElement, object> holders = new ConditionalWeakTable<VisualElement, object>();
+
+        public static void Hold(VisualElement part, object behavior)
+        {
+            holders.Remove(part);
+            holders.Add(part, behavior);
+        }
+
+        public static bool Holds(VisualElement part, object behavior) => holders.TryGetValue(part, out var holder) && ReferenceEquals(holder, behavior);
     }
 }

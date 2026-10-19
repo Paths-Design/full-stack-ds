@@ -135,8 +135,12 @@ namespace FullStackDS
                 trigger.clicked += handler; hooked[trigger] = handler;
             }
             triggers = nextTriggers;
-            foreach (var gone in unmounted.Where(m => m.Value.Parent != host && !host.Contains(m.Value.Parent)).Select(m => m.Key).ToArray()) unmounted.Remove(gone);
-            contents = PartDiscovery.Find(host, contentClass).Where(c => c is IKeyedPart).Concat(unmounted.Keys).ToList();
+            var discovered = PartDiscovery.Find(host, contentClass).Where(c => c is IKeyedPart).ToList();
+            foreach (var content in discovered) PartDiscovery.Hold(content, this);
+            // A parked panel stays ours only while nobody re-parented or re-discovered it
+            // and its saved insertion point is still under this host.
+            foreach (var gone in unmounted.Where(m => m.Key.hierarchy.parent != null || !PartDiscovery.Holds(m.Key, this) || (m.Value.Parent != host && !host.Contains(m.Value.Parent))).Select(m => m.Key).ToArray()) unmounted.Remove(gone);
+            contents = discovered.Concat(unmounted.Keys).ToList();
             foreach (var content in contents) { content.focusable = true; content.tabIndex = 0; }
             if (select && !explicitValue) selected = triggers.Where(t => t.enabledSelf).Take(1).Select(PartDiscovery.Key).ToArray();
             Present();

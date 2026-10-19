@@ -35,7 +35,9 @@ namespace FullStackDS
             PartDiscovery.Claim(host, triggerClass, contentClass);
             host.RegisterCallback<AttachToPanelEvent>(OnAttach);
             host.RegisterCallback<DetachFromPanelEvent>(OnDetach);
-            // Discover a trigger composed after attachment before its Button handles the event.
+            // Discover parts composed after attachment: on layout change, and before the
+            // trigger's Button handles pointer or submit input.
+            host.RegisterCallback<GeometryChangedEvent>(_ => Discover());
             host.RegisterCallback<PointerDownEvent>(_ => Discover(), TrickleDown.TrickleDown);
             host.RegisterCallback<NavigationSubmitEvent>(_ => Discover(), TrickleDown.TrickleDown);
         }
@@ -65,22 +67,36 @@ namespace FullStackDS
             }
         }
 
+        /// <summary>Adopts the composed trigger and content; a newly adopted part gets the
+        /// current presentation immediately (closed content leaves the hierarchy).</summary>
         private void Discover()
         {
+            bool changed = false;
             var nextTrigger = PartDiscovery.Find(host, triggerClass).OfType<Button>().FirstOrDefault();
             if (nextTrigger != trigger) {
                 if (trigger != null) { trigger.clicked -= Toggle; trigger.UnregisterCallback<GeometryChangedEvent>(AnchorGeometry); }
                 trigger = nextTrigger;
                 if (trigger != null) { trigger.clicked += Toggle; trigger.RegisterCallback<GeometryChangedEvent>(AnchorGeometry); }
+                changed = true;
             }
-            // Content leaves the host while closed or floating; once adopted it stays owned.
-            if (content != null) return;
-            content = PartDiscovery.Find(host, contentClass).FirstOrDefault();
-            if (content == null) return;
-            Theme.Attach(content);
-            content.style.position = Position.Absolute;
-            content.focusable = true;
-            content.RegisterCallback<GeometryChangedEvent>(AnchorGeometry);
+            // Content leaves the host while closed or floating, so it has no ancestor to prove
+            // ownership; it stays ours until another surface discovers it.
+            if (content != null && !PartDiscovery.Holds(content, this)) {
+                content.UnregisterCallback<GeometryChangedEvent>(AnchorGeometry);
+                content = null; changed = true;
+            }
+            if (content == null) {
+                content = PartDiscovery.Find(host, contentClass).FirstOrDefault();
+                if (content != null) {
+                    PartDiscovery.Hold(content, this);
+                    Theme.Attach(content);
+                    content.style.position = Position.Absolute;
+                    content.focusable = true;
+                    content.RegisterCallback<GeometryChangedEvent>(AnchorGeometry);
+                    changed = true;
+                }
+            }
+            if (changed) Present();
         }
 
         private void Toggle() => RequestValue(!current);
@@ -139,9 +155,9 @@ namespace FullStackDS
             ValueRequested?.Invoke(next);
         }
         public void SetValueWithoutNotify(bool next) { current = next; Refresh(); }
-        private void Refresh()
+        private void Refresh() { Discover(); Present(); }
+        private void Present()
         {
-            Discover();
             host.EnableInClassList(stateClass, current && host.enabledInHierarchy);
             if (panelRoot == null) return;
             if (current) tracking?.Resume(); else tracking?.Pause();

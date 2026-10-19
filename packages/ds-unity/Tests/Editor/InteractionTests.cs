@@ -202,6 +202,30 @@ namespace FullStackDS.Tests
             Assert.That(other.Group.Triggers.Single(), Is.EqualTo(a.tab)); Assert.That(other.Value, Is.EqualTo("a"));
             Assert.That(changes, Is.Zero);
         }
+        [Test] public void ParkedPanelAdoptedByAnotherGroupLeavesItsFormerGroup()
+        {
+            var former = new Tabs { UnmountInactive = true }; Tab(former, "a"); var parked = Tab(former, "b"); Mount(former);
+            Assert.That(parked.panel.parent, Is.Null);
+            var adopter = new Tabs(); Tab(adopter, "x"); adopter.Add(parked.panel); Mount(adopter);
+            var display = parked.panel.style.display.value;
+            // The former group must neither remove the adopted panel nor reclaim it through later selection.
+            former.Group.Synchronize();
+            Assert.That(parked.panel.parent, Is.EqualTo(adopter)); Assert.That(parked.panel.style.display.value, Is.EqualTo(display));
+            former.Value = "b";
+            Assert.That(parked.panel.parent, Is.EqualTo(adopter)); Assert.That(parked.panel.ClassListContains("is-selected"), Is.False);
+            former.Value = "a";
+            Assert.That(parked.panel.parent, Is.EqualTo(adopter)); Assert.That(parked.panel.style.display.value, Is.EqualTo(display));
+        }
+        [Test] public void PanelParkedByTwoGroupsBelongsToTheLastDiscoverer()
+        {
+            var former = new Tabs { UnmountInactive = true }; Tab(former, "a"); var moved = Tab(former, "b"); Mount(former);
+            var adopter = new Tabs { UnmountInactive = true }; Tab(adopter, "x"); adopter.Q<TabsList>().Add(new TabsTab { Value = "b", text = "b" });
+            adopter.Add(moved.panel); Mount(adopter);
+            // Both groups now hold a parked record with no parent; only the adopter discovered it last.
+            Assert.That(moved.panel.parent, Is.Null);
+            former.Value = "b"; Assert.That(moved.panel.parent, Is.Null);
+            adopter.Value = "b"; Assert.That(moved.panel.parent, Is.EqualTo(adopter));
+        }
         [Test] public void NestedTabsKeepTheirOwnParts()
         {
             var outer = new Tabs(); var x = Tab(outer, "x"); Tab(outer, "y");
@@ -258,6 +282,31 @@ namespace FullStackDS.Tests
             Assert.That(nested.Trigger, Is.EqualTo(nestedParts.trigger)); Assert.That(nested.Open, Is.False);
             Submit(trigger);
             Assert.That(content.parent, Is.Null); Assert.That(popover.ClassListContains("is-open"), Is.False);
+        }
+        [UnityTest] public IEnumerator ContentComposedIntoAnAttachedClosedPopoverIsParked()
+        {
+            var popover = Mount(new Popover()); yield return null;
+            var trigger = new PopoverTrigger { text = "Help" }; var content = new PopoverContent(); content.Add(new Label("Late content"));
+            popover.Add(trigger); popover.Add(content);
+            yield return null; yield return null;
+            // Layout alone (no getter, no channel call) must apply the closed presentation.
+            Assert.That(content.parent, Is.Null);
+            Assert.That(popover.Content, Is.EqualTo(content)); Assert.That(content.parent, Is.Null);
+            Assert.That(popover.Open, Is.False); Assert.That(popover.ClassListContains("is-open"), Is.False);
+            Submit(trigger); Assert.That(content.parent, Is.EqualTo(window.rootVisualElement.panel.visualTree));
+            Submit(trigger); Assert.That(content.parent, Is.Null);
+        }
+        [Test] public void PopoverContentAdoptedByAnotherPopoverLeavesItsFormerSurface()
+        {
+            var former = new Popover(); var parts = Compose(former); Mount(former);
+            Assert.That(parts.content.parent, Is.Null);
+            var adopter = new Popover(); var adopterTrigger = new PopoverTrigger { text = "Other" }; adopter.Add(adopterTrigger); adopter.Add(parts.content); Mount(adopter);
+            Assert.That(adopter.Content, Is.EqualTo(parts.content));
+            // Opening the former surface must not pull the adopted content back to the panel root.
+            former.Open = true;
+            Assert.That(parts.content.parent, Is.Null); Assert.That(former.Content, Is.Null);
+            adopter.Open = true; Assert.That(parts.content.parent, Is.EqualTo(window.rootVisualElement.panel.visualTree));
+            former.Open = false; Assert.That(parts.content.parent, Is.EqualTo(window.rootVisualElement.panel.visualTree));
         }
         [Test] public void PopoverPointerBoundaryExcludesItsOwnContent()
         {
