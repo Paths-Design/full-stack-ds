@@ -86,3 +86,11 @@ evidence:
     command: "pnpm run test:unity && node scripts/engine-comparison.mjs"
     exit_code: 0
     commit_sha: "301f52b64"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "generate:unity ran at 764129c65, 95282a70b (worktree) and 942ce0cc2 (canonical main after merge) and git status over packages/ds-unity was empty each time; governed:rail required-mode verify printed Overall PASS with a clean tree; unity emitter vitest set (factory 30, boundary 35, capabilities 4, lore 5, no-component-name-lore 13, cli 22) passed 109/109; root pnpm test 4995/4995 and all five framework suites passed at 764129c65 (the later commits touch only the unity emitter, the Unity runtime, its tests and docs); factory.test.ts drives the walker with synthetic Dial/Flyout/Toggle contracts outside the corpus and Lane A's corpus snapshot showed identical output or refusal for all 55 contracts before and after the review repairs"
+    recorded_at: "2026-10-19T07:26:23.986Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts::synthesizes a parts-only tree from ir.parts: root-only part is the class, other parts are children or compound classes"
+    command: "pnpm run generate:unity && git status --short packages/ds-unity"
+    exit_code: 0
+    commit_sha: "301f52b64"
