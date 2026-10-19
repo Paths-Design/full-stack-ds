@@ -70,7 +70,18 @@ describe("dateGrid refusals", () => {
   it("refuses a missing or mistyped channel", () => {
     refuses((c) => { c.dateGrid!.monthChannel = "visible"; }, `monthChannel "visible" must name a value channel typed Date`);
     refuses((c) => { c.channels!.month.valueType = "string"; }, `monthChannel "month" must name a value channel typed Date`);
-    refuses((c) => { c.channels!.value.valueType = "string"; }, `valueChannel "value" must name a Date-valued value channel`);
+    const valueTyped = `valueChannel "value" must name a value channel typed Date | Date[], optionally | null`;
+    refuses((c) => { c.channels!.value.valueType = "string"; }, valueTyped);
+    // A name that merely contains "Date", and a channel missing the arm range mode commits.
+    refuses((c) => { c.channels!.value.valueType = "DateRange"; }, valueTyped);
+    refuses((c) => { c.channels!.value.valueType = "Date | null"; }, valueTyped);
+    refuses((c) => { c.channels!.value.valueType = "Date | Date[] | string"; }, valueTyped);
+  });
+
+  it("accepts a value channel without the null arm", () => {
+    const contract = calendar();
+    contract.channels!.value.valueType = "Date[] | Date";
+    expect(build(contract).dateGrid?.valueChannel).toBe("value");
   });
 
   it("refuses mistyped props", () => {
@@ -99,6 +110,22 @@ describe("dateGrid refusals", () => {
     refuses((c) => { delete part(c, "day").bindings!["data-date"]; }, "a day node must bind data-date to iter:item.key");
     refuses((c) => { delete part(c, "day").events; }, "a day node must bind click to dateGrid:select(iter:item)");
     refuses((c) => { delete part(c, "grid").events; }, "an ancestor of the day cells must bind keydown to dateGrid:keydown");
+  });
+
+  it("refuses day bindings split across the cell and its button", () => {
+    const together = "exactly one day node must carry the tabindex, data-date and click bindings together";
+    // The roving tabindex on the cell, activation on the button: 42 buttons stay tabbable.
+    refuses((c) => {
+      part(c, "cell").bindings!.tabindex = part(c, "day").bindings!.tabindex;
+      delete part(c, "day").bindings!.tabindex;
+    }, together);
+    // Two roving tab stops per day.
+    refuses((c) => { part(c, "cell").bindings!.tabindex = "iter:item.tabIndex"; }, together);
+    // The focus target is not the activated element.
+    refuses((c) => {
+      part(c, "cell").bindings!["data-date"] = part(c, "day").bindings!["data-date"];
+      delete part(c, "day").bindings!["data-date"];
+    }, together);
   });
 
   it("refuses actions on the wrong event and values used as handlers", () => {

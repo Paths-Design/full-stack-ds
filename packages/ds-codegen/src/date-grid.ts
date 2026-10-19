@@ -115,9 +115,13 @@ export function buildDateGridIR(contract: ComponentContract, channels: Normalize
     return undefined;
   }
 
+  // The runtime commits a Date in single mode, a Date[] in range mode and
+  // reads null as no selection, so the channel carries exactly those arms.
   const valueChannel = channels.find((channel) => channel.name === input.valueChannel);
-  if (!valueChannel || !(valueChannel.valueType ?? "").includes("Date") || valueChannel.callbackKind === "event") {
-    fail(`valueChannel "${input.valueChannel}" must name a Date-valued value channel`);
+  const arms = new Set((valueChannel?.valueType ?? "").split("|").map((arm) => arm.trim()));
+  const valueArms = arms.has("Date") && arms.has("Date[]") && [...arms].every((arm) => ["Date", "Date[]", "null"].includes(arm));
+  if (!valueChannel || !valueArms || valueChannel.callbackKind === "event") {
+    fail(`valueChannel "${input.valueChannel}" must name a value channel typed Date | Date[], optionally | null`);
   }
   const monthChannel = channels.find((channel) => channel.name === input.monthChannel);
   if (!monthChannel || monthChannel.valueType !== "Date" || monthChannel.callbackKind === "event") {
@@ -192,6 +196,16 @@ export function buildDateGridIR(contract: ComponentContract, channels: Normalize
   if (!bound("data-date", "key")) fail("a day node must bind data-date to iter:item.key so focus can follow keyboard moves");
   const selects = subtree.some((node) => node.events.click?.kind === "dateGrid" && node.events.click.action === "select");
   if (!selects) fail("a day node must bind click to dateGrid:select(iter:item)");
+  // The tab stop, the focus target and the activation are one element. A
+  // roving tabindex on the cell beside a clickable button would leave every
+  // button in the natural tab order and move focus to a node that is not the
+  // stop.
+  const rovers = subtree.filter((node) => isBinding(node.bindings.tabindex, "iterationLocal", "tabIndex"));
+  const control = rovers.length === 1 ? rovers[0] : undefined;
+  if (!control || !isBinding(control.bindings["data-date"], "iterationLocal", "key") ||
+      control.events.click?.kind !== "dateGrid" || control.events.click.action !== "select") {
+    fail("exactly one day node must carry the tabindex, data-date and click bindings together, so the tab stop, focus target and activation are the same element");
+  }
   if (!chain.some((node) => node.events.keydown?.kind === "dateGrid" && node.events.keydown.action === "keydown")) {
     fail("an ancestor of the day cells must bind keydown to dateGrid:keydown");
   }
