@@ -1,9 +1,11 @@
 id: UNITY-ANATOMY-WALKER-01
 title: 'Unity anatomy walker: lower ir.dom and ir.compoundParts into generated VisualElement trees; runtime bases become fact-attached behaviors'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Generic anatomy walker (walker.ts/behaviors.ts) lowers ir.dom, parts-only shapes and compound parts into UxmlElement classes; runtime bases became fact-attached behaviors with no hand-written VisualElement; boundary anatomy/slots families lowered with zero pending P2; 26/26 EditMode on Unity 6000.5.3f1 and frozen traces matched; six peer-review claims confirmed and repaired; P2 of the Unity parity program'
 created_at: '2026-10-19T03:10:03.709Z'
-updated_at: '2026-10-19T03:11:27.198Z'
+updated_at: '2026-10-19T07:27:34.190Z'
 created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
 blast_radius:
   modules:
