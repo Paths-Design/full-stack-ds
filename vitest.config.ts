@@ -58,6 +58,9 @@ export default defineConfig({
     ],
   },
   test: {
+    // Corpus audits and CLI tests compete for CPU with jsdom workers. Bound
+    // parallelism so their existing deadlines hold on shared development hosts.
+    maxWorkers: 4,
     environment: "jsdom",
     setupFiles: ["./src/test-setup.ts"],
     css: true,
