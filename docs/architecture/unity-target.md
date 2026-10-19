@@ -1,10 +1,15 @@
 ---
 doc_id: ARCH-UNITY-TARGET-001
-authority: implementation
+authority: architecture
 status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
 updated: 2026-10-19
+verified_at_commit: f26cb23fc
+governs:
+  - packages/ds-codegen/src/frameworks/unity/**
+  - packages/ds-unity/Runtime/**
+  - packages/ds-unity/Tests/**
 ---
 
 # Unity UI Toolkit pilot
@@ -27,11 +32,17 @@ The initial graphics-disabled run failed during panel setup; it supplied no beha
 
 The local evidence files are `tmp/unity-pilot/results.xml` and `tmp/unity-pilot/editor.log`, reproduced by the command above. They are not committed build artifacts. The existing root/framework suites and admission rail also passed during the slice; those checks do not extend Unity's narrow runtime claim. Player builds, screen-reader behavior and full visual parity remain outside this pilot.
 
-## Runtime styling follow-up
+## Styling projection
 
-`UNITY-RUNTIME-STYLING-01` addresses the Editor-default inheritance exposed by the consuming RC project: low-contrast Player text, partial native button styling, crowded disclosure labels and an unthemed portaled popover. The shared runtime attaches a package-owned USS resource to controls and floating content. This leaves contract lowering unchanged and keeps consumer panel scaling outside package authority.
+The package stylesheet `packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss` is generated, not authored. [`uss.ts`](../../packages/ds-codegen/src/frameworks/unity/uss.ts) runs through the `emitTargetAssets` seam of the codegen CLI after a full-corpus Unity run and writes two assets: the stylesheet and the unsupported ledger `Controls.unsupported.json` beside it. The CLI records only rail targets in the emission manifest, so these assets stay outside it until P5 admission.
 
-`StylingTests.cs` checks Editor typography, switch/disclosure spacing and focus, then enters Play mode to render Player panels at 640×800 and 320×600 with Constant Pixel Size. It checks selected/disabled states, floating text/button styles, viewport containment and reachable scrolling. The runner writes screenshot witnesses beside its logs. These bounded checks do not establish arbitrary-resolution visual parity or player-build admission. The USS palette remains Unity-specific; full design-token and brand projection is future work.
+The sheet has two sections. The token section declares every consumed `--fsds-*` custom property from `resolved.tokens.json` on `.fsds-theme`, overrides it on `.fsds-theme.fsds-theme--dark`, and layers each brand from the token build's brand layer on `.fsds-theme.fsds-brand-<brand>` in both themes. The component section lowers `ir.nativeStyleRules`, the same framework-neutral style facts the GPUI target reads, into one USS rule per part, variant, state and pseudo predicate. State predicates land on the runtime's state classes (`is-checked`, `is-disabled`, `is-hover`, `is-active`, `is-focus`) at the host the behavior sets them on; variant predicates land on the `<prefix>--<value>` recipe classes; floating content restates its component scope because it leaves the component's subtree; a composed-content host repeats its owner's container facts so composed children lay out as the contract describes.
+
+USS is a subset of CSS, and the projection lowers rather than copies. Logical sides become physical LTR sides, `inline-flex` becomes `flex` with a row direction, `outline` becomes a focus-only border, `gap` becomes the `--fsds-gap` custom property that the runtime's `Gap` helper realizes as child margins (a ScrollView's in-flow children live in its content container, which does not inherit the host's custom properties, so `Gap` resolves that container itself). A declaration with more than one component never carries `var()`: USS keeps only the variable and silently drops the other components, so scope-invariant tokens are inlined and scope-varying ones are ledgered. Everything the projection cannot express is written to the ledger with a reason (`uss-property`, `uss-scalar`, `uss-pseudo`, `uss-pseudo-element`, `uss-selector`, `uss-owner-mismatch`, `uss-floating-scope`, `uss-design-slot`, `uss-var-composite`) instead of being approximated. The support boundary classifies the token and style sidecar leaves these rules consume as `lowered` and the ledgered families as `refused` or `pending`; the emitter never reads the boundary.
+
+The runtime selects scopes rather than values: behaviors attach the sheet without adding `fsds-theme`, consumers call `Theme.SetDark` and `Theme.SetBrand` on an ancestor, and floating content mirrors its owner's theme classes. `Samples~/InteractiveControls/Sample.uss` carries sample-only skin for Unity's built-in controls at the lowest specificity; it is not package styling.
+
+Witnesses: `uss.test.ts` pins the projection on synthetic contracts outside the corpus, including the composite rule, the focus and display lowering, the floating restatement and the brand carry-over; `cli.test.ts` pins the seam. `audit:token-resolvability` and `audit:variant-realization` each scan the generated sheet as a `unity` surface. In the package, `StylingTests.cs` asserts the stylesheet imports with no errors or warnings, resolves token values in light and dark scope, checks Switch geometry at every size including the thumb's translate, and renders Player panels at 640×800 and 320×600 into screenshot witnesses beside the runner logs; `GapTests.cs` pins the gap realization including the ScrollView case. These bounded checks do not establish arbitrary-resolution visual parity, brand design-slot overrides (ledgered as `uss-design-slot`), the Accordion chevron glyph (a `componentRef` placeholder until P4), or the a11y-attribute and web-template state selectors (`[aria-expanded]`, `tab--active`), which stay ledgered as `uss-selector` until the IR carries them as state facts.
 
 ## Anatomy walker
 
@@ -102,6 +113,6 @@ The boundary is accounting plus a gate. A `lowered` disposition records that a f
 
 In order. Each phase retires its `pending` rules, and the audit's per-phase pending count measures what remains.
 
-1. **P3, styling projection.** Project consumed token, style and icon facts into generated USS, covering variants (including styling-bound axes such as Switch `size`), states and box-model geometry. Emit explicit unsupported-property diagnostics, propagate the theme to floating content, and remove the hand-authored palette.
-2. **P4, interaction families.** Lower static pressables, blocking and hover surfaces, composite and non-boolean form controls, componentRef composition (the walker's placeholder nodes), iteration and conditional guards, messages, motion and typed C# declarations. Each family moves from a catch-all to an explicit `lowered` or `refused` rule.
+1. **IR state facts.** Promote `isCompound` and `isRootOnly` from name lists to role-derived facts, and promote the a11y-attribute and web-template state selectors the native style grammar refuses (`[aria-expanded="true"]`, `tab--active`) to a `state` predicate derived from `states.dimensions`, so the Accordion chevron rotate and the selected-tab styling leave the `uss-selector` ledger.
+2. **P4, interaction families.** Lower static pressables, blocking and hover surfaces, composite and non-boolean form controls, componentRef composition (the walker's placeholder nodes, including the Icon glyph the Accordion chevron needs), iteration and conditional guards, messages, motion and typed C# declarations. Each family moves from a catch-all to an explicit `lowered` or `refused` rule.
 3. **P5, corpus and admission.** Compose an independent settings/inventory workflow to select the next component families and widen the allowlist toward the SwiftUI set, then add a CI compile lane, a committed-byte drift diff and build/runtime admission. Before widening platform promises, verify actual input routing, accessibility feasibility, UI Builder round trips and the minimum Unity version. The standalone fixture consumes the package sample, so it is not that independent application acceptance test.
