@@ -50,12 +50,12 @@ export const BUILTIN_TARGET_PACKS: Readonly<Record<BuiltinTargetId, TargetPackMa
     target: { id: "unity", family: "native-view", label: "Unity UI Toolkit", maturity: "experimental" },
     compatibility: { codegenProtocol: "builtin-framework-emitter-v1", componentIR: "ComponentIR@v1", targetFamilyIR: "unity-ui-toolkit@pilot" },
     entrypoints: { emitter: "packages/ds-codegen/src/frameworks/unity/factory.ts" },
-    outputs: { componentsRoot: "Runtime/Components", barrelFile: "Components.generated.cs", fileKinds: ["component-source", "barrel"] },
+    outputs: { componentsRoot: "Runtime/Components", barrelFile: "Components.generated.cs", fileKinds: ["component-source", "style-source", "documentation", "barrel"] },
     capabilities: { components: true, tests: false, behavior: true, compoundParts: true, surface: true, tokens: "native-theme-module", customRegions: false },
     permissions: SAFE_BUILTIN_PERMISSIONS,
     admission: {
       commands: [{ check: "unity-editmode", command: ["node", "scripts/unity-tests.mjs"], scope: { packageRoot: "packages/ds-unity/", extensions: [".cs", ".uxml"], coverage: "covered_by_package_check" } }],
-      knownGaps: ["Pilot allowlist only; outside the TypeScript admission rail. Unity Editor tests are an explicit local lane, not CI.", "A separate explicit local lane witnesses a macOS Player on Unity 6000.5.3f1; other platforms and the declared minimum version remain unverified. No screen-reader, controller-input, full styling/motion or visual parity claim. Token geometry uses declared fallback values."],
+      knownGaps: ["Pilot allowlist only; outside the TypeScript admission rail. Unity Editor tests are an explicit local lane, not CI.", "A separate explicit local lane witnesses a macOS Player on Unity 6000.5.3f1; other platforms and the declared minimum version remain unverified. No screen-reader, controller-input, full styling/motion or visual parity claim.", "Styling is the generated Controls.uss projected from the token graph and IR style facts; declarations USS cannot realise are listed in the generated Controls.unsupported.json. Unity has no rail framework, so the sheet is outside the emission manifest: its drift proof is regeneration plus a clean tree."],
     },
   },
   react: {
