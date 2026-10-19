@@ -105,9 +105,8 @@ evidence:
     commit_sha: "7c24b5e95"
   - criterion_id: A6
     status: pass
-    evidence_ref: "docs/architecture/unity-target.md gains the Support boundary section (dispositions, keyed pointers and roles, the three refusal codes, dispatcher fact guards, audit command, non-claims); the snapshot Unity row and packages/ds-unity/README.md cite the boundary file and pnpm run audit:unity-boundary; docs:check-claims and docs:check-links exit 0 (docs-gates.log)"
-    recorded_at: "2026-10-19T01:20:46.702Z"
+    evidence_ref: "docs/architecture/unity-target.md gains the Support boundary section (dispositions, keyed pointers and roles, the three refusal codes, dispatcher fact guards, audit command, non-claims); the snapshot Unity row and packages/ds-unity/README.md cite the boundary file and pnpm run audit:unity-boundary; docs:check-claims and docs:check-links exited 0 at 7c24b5e95 (ignored log: tmp/unity-support-boundary-01/docs-gates.log)"
+    recorded_at: "2026-10-19T01:46:19.298Z"
     command: "pnpm run docs:check-claims && pnpm run docs:check-links"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/docs-gates.log"
     commit_sha: "7c24b5e95"
