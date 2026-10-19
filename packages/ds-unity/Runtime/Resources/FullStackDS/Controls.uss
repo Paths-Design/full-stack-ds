@@ -11,40 +11,7 @@
     --fsds-border: #53647d;
     --fsds-accent: #295bb5;
     --fsds-focus: #a9ceff;
-    color: var(--fsds-text);
-    font-size: 16px;
-    -unity-font-style: normal;
-    white-space: normal;
-    flex-shrink: 0;
-    min-width: 0;
 }
-.fsds-theme .unity-text-element {
-    color: var(--fsds-text);
-    font-size: 16px;
-    -unity-font-style: normal;
-    white-space: normal;
-    min-width: 0;
-}
-.fsds-theme .unity-label { margin: 0; padding: 0; }
-.fsds-theme .unity-button {
-    color: var(--fsds-text);
-    background-color: var(--fsds-surface);
-    background-image: none;
-    font-size: 16px;
-    min-height: 40px;
-    flex-shrink: 0;
-    margin: 0;
-    padding: 8px 12px;
-    border-width: 1px;
-    border-color: var(--fsds-border);
-    border-radius: 6px;
-    -unity-text-align: middle-left;
-    white-space: normal;
-}
-.fsds-theme .unity-button:hover { background-color: var(--fsds-hover); }
-.fsds-theme .unity-button:active { background-color: var(--fsds-accent); }
-.fsds-theme .unity-button:focus { border-width: 2px; border-color: var(--fsds-focus); }
-.fsds-theme .unity-button:disabled { opacity: 0.5; }
 
 /* Switch: label root > [input (native activation + focus ring), track > thumb, children]. */
 .switch {
@@ -129,24 +96,3 @@
     overflow: hidden;
 }
 .popover__content .unity-scroll-view__content-container { padding: 16px; }
-.popover__content .unity-button { margin-top: 12px; }
-.popover__content .unity-label { flex-shrink: 1; white-space: normal; }
-
-.fsds-sample {
-    height: 100%;
-    flex-shrink: 1;
-    background-color: var(--fsds-background);
-    padding: 24px;
-    flex-grow: 1;
-    min-width: 0;
-}
-.fsds-sample-body { max-width: 640px; align-self: stretch; min-width: 0; }
-.fsds-theme .fsds-sample-title { font-size: 24px; -unity-font-style: bold; margin-bottom: 8px; }
-.fsds-theme .fsds-sample-description { color: var(--fsds-muted-text); margin-bottom: 24px; }
-.fsds-sample-section { margin-top: 20px; }
-
-.fsds-theme .unity-scroller { background-color: var(--fsds-background); }
-.fsds-theme .unity-base-slider__tracker { background-color: var(--fsds-background); }
-.fsds-theme .unity-base-slider__dragger { background-color: var(--fsds-border); border-width: 0; border-radius: 6px; }
-
-.fsds-theme .unity-scroller__low-button, .fsds-theme .unity-scroller__high-button { background-color: var(--fsds-border); }
