@@ -142,3 +142,11 @@ evidence:
     command: swift run --package-path packages/ds-swiftui PressProofHarness
     exit_code: 0
     commit_sha: ff44f9b89
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "docs/architecture/date-grid.md documents the dateGrid contract surface, the IR rules, per-family realization, locale behavior, evidence and non-claims (verified_at_commit b3546085e, fresh under docs:check-claims at ff44f9b89; localization.md stamped at 822201bba); docs/architecture/localization.md's Dates section names date formatting through Intl and the date grid; docs/current-implementation-snapshot.md rows 68 and 88 cite the Calendar tests, the runtime rail and the press-proof harness. pnpm run docs:check-claims and pnpm run docs:check-links (CI gate) exit 0 at ff44f9b89."
+    recorded_at: "2026-10-19T13:15:20.640Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/date-grid.md
+    commit_sha: ff44f9b89
