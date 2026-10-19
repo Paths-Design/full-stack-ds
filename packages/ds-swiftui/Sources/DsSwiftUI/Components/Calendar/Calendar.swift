@@ -40,9 +40,9 @@ public struct Calendar: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         CalendarTokens.scopes
     }
-    @StateObject private var value: ControllableValue<Date?>
-    @StateObject private var values: ControllableValue<[Date]>
-    @StateObject private var month: ControllableValue<Date?>
+    @ControllableState private var value: ControllableValue<Date?>
+    @ControllableState private var values: ControllableValue<[Date]>
+    @ControllableState private var month: ControllableValue<Date?>
     private let mode: CalendarMode
     private let locale: String
     private let caption: String?
@@ -68,9 +68,9 @@ public struct Calendar: View {
         minDate: Date? = nil,
         maxDate: Date? = nil
     ) {
-        self._value = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))
-        self._values = StateObject(wrappedValue: ControllableValue(controlled: values, defaultValue: defaultValues, onChange: onValuesChange))
-        self._month = StateObject(wrappedValue: ControllableValue(controlled: month, defaultValue: defaultMonth, onChange: onMonthChange))
+        self._value = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)
+        self._values = ControllableState(controlled: values, defaultValue: defaultValues, onChange: onValuesChange)
+        self._month = ControllableState(controlled: month, defaultValue: defaultMonth, onChange: onMonthChange)
         self.mode = mode
         self.locale = locale
         self.caption = caption

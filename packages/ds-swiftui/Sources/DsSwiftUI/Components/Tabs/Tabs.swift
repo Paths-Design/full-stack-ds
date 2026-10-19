@@ -36,7 +36,7 @@ public struct Tabs<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         TabsTokens.scopes
     }
-    @StateObject private var activeTab: ControllableValue<String>
+    @ControllableState private var activeTab: ControllableValue<String>
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
 
@@ -46,7 +46,7 @@ public struct Tabs<Content: View>: View {
         onActiveTabChange: ((String) -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self._activeTab = StateObject(wrappedValue: ControllableValue(controlled: activeTab, defaultValue: defaultActiveTab, onChange: onActiveTabChange))
+        self._activeTab = ControllableState(controlled: activeTab, defaultValue: defaultActiveTab, onChange: onActiveTabChange)
         self.content = content()
     }
 

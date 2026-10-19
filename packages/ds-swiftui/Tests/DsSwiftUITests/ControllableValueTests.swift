@@ -69,4 +69,52 @@ final class ControllableValueTests: XCTestCase {
         v.toggle()
         XCTAssertTrue(v.value)
     }
+
+    /// The view re-binds the channel before each body: reads, writes and the
+    /// callback all follow the binding and onChange it passed last.
+    func testRebindFollowsTheViewsCurrentBindingAndCallback() {
+        var first = "first", second = "second"
+        var firstFired: [String] = [], secondFired: [String] = []
+        let v = ControllableValue<String>(
+            controlled: Binding(get: { first }, set: { first = $0 }),
+            defaultValue: "default",
+            onChange: { firstFired.append($0) }
+        )
+        v.rebind(Binding(get: { second }, set: { second = $0 }), onChange: { secondFired.append($0) })
+        XCTAssertEqual(v.value, "second")
+        v.set("next")
+        XCTAssertEqual(second, "next")
+        XCTAssertEqual(first, "first")
+        XCTAssertEqual(secondFired, ["next"])
+        XCTAssertEqual(firstFired, [])
+    }
+
+    /// A controlled write announces the change, so the view reading the
+    /// channel re-renders even when the binding's source does not publish.
+    func testControlledSetPublishes() {
+        var upstream = false
+        let v = ControllableValue<Bool>(controlled: Binding(get: { upstream }, set: { upstream = $0 }), defaultValue: false)
+        var announced = 0
+        let subscription = v.objectWillChange.sink { announced += 1 }
+        v.set(true)
+        XCTAssertEqual(announced, 1)
+        XCTAssertTrue(upstream)
+        subscription.cancel()
+    }
+
+    func testSelectionRebindFollowsTheViewsCurrentBindings() {
+        var first = "a", second = "b"
+        var fired: [String] = []
+        let s = SelectionState(selection: Binding(get: { first }, set: { first = $0 }))
+        s.rebind(selection: Binding(get: { second }, set: { second = $0 }), multipleSelection: nil, onSelectionChange: { fired.append("\($0)") })
+        XCTAssertTrue(s.isSelected("b"))
+        var announced = 0
+        let subscription = s.objectWillChange.sink { announced += 1 }
+        s.apply("c")
+        XCTAssertEqual(second, "c")
+        XCTAssertEqual(first, "a")
+        XCTAssertEqual(fired, ["c"])
+        XCTAssertEqual(announced, 1)
+        subscription.cancel()
+    }
 }

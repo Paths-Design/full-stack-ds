@@ -46,7 +46,7 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
     private var fsdsScopes: FsdsComponentTokenScopes {
         DialogTokens.scopes
     }
-    @StateObject private var open: ControllableValue<Bool>
+    @ControllableState private var open: ControllableValue<Bool>
     private let openControlled: Binding<Bool>?
     private let header: Header
     private let title: Title
@@ -63,7 +63,7 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
         @ViewBuilder bodyContent: () -> BodyContent = { EmptyView() },
         @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
-        self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))
+        self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
         self.openControlled = open
         self.header = header()
         self.title = title()

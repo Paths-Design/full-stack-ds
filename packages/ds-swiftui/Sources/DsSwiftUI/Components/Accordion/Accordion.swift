@@ -27,7 +27,7 @@ public struct Accordion<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         AccordionTokens.scopes
     }
-    @StateObject private var openness: ControllableValue<[String]>
+    @ControllableState private var openness: ControllableValue<[String]>
     private let disabled: Bool
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
@@ -39,7 +39,7 @@ public struct Accordion<Content: View>: View {
         disabled: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
-        self._openness = StateObject(wrappedValue: ControllableValue(controlled: openness, defaultValue: defaultOpenness, onChange: onOpennessChange))
+        self._openness = ControllableState(controlled: openness, defaultValue: defaultOpenness, onChange: onOpennessChange)
         self.disabled = disabled
         self.content = content()
     }

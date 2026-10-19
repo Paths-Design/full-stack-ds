@@ -137,7 +137,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
   lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
   lines.push(`${INDENT}}`);
-  lines.push(`${INDENT}@StateObject private var open: ControllableValue<Bool>`);
+  lines.push(`${INDENT}@ControllableState private var open: ControllableValue<Bool>`);
   // The consumer's binding is stored separately: a CONTROLLED binding is
   // dependency-tracked by SwiftUI (projected from the consumer's observed
   // state) and drives presentation directly, while a computed binding over
@@ -147,7 +147,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   // onOpenChange fires and native dismissal writes the channel back.
   lines.push(`${INDENT}private let openControlled: Binding<Bool>?`);
   if (searchChannel) {
-  lines.push(`${INDENT}@StateObject private var search: ControllableValue<String>`);
+  lines.push(`${INDENT}@ControllableState private var search: ControllableValue<String>`);
   }
   if (placeholder) lines.push(placeholder.stored);
   for (const region of regions) {
@@ -174,10 +174,10 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   }
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))`);
+  lines.push(`${INDENT}${INDENT}self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)`);
   lines.push(`${INDENT}${INDENT}self.openControlled = open`);
   if (searchChannel) {
-  lines.push(`${INDENT}${INDENT}self._search = StateObject(wrappedValue: ControllableValue(controlled: search, defaultValue: defaultSearch, onChange: onSearchChange))`);
+  lines.push(`${INDENT}${INDENT}self._search = ControllableState(controlled: search, defaultValue: defaultSearch, onChange: onSearchChange)`);
   }
   if (placeholder) lines.push(placeholder.assign);
   for (const region of regions) {
@@ -379,7 +379,7 @@ function emitAnchoredSurface(ir: ComponentIR): string {
   lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
   lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
   lines.push(`${INDENT}}`);
-  lines.push(`${INDENT}@StateObject private var open: ControllableValue<Bool>`);
+  lines.push(`${INDENT}@ControllableState private var open: ControllableValue<Bool>`);
   // See the centered-modal emitter for why the controlled binding is stored.
   lines.push(`${INDENT}private let openControlled: Binding<Bool>?`);
   if (placementValues.length > 0) {
@@ -408,7 +408,7 @@ function emitAnchoredSurface(ir: ComponentIR): string {
   params.push("@ViewBuilder content: () -> Content = { EmptyView() }");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))`);
+  lines.push(`${INDENT}${INDENT}self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)`);
   lines.push(`${INDENT}${INDENT}self.openControlled = open`);
   if (placementValues.length > 0 && defaultPlacement) {
     lines.push(`${INDENT}${INDENT}self.placement = placement`);
@@ -564,7 +564,7 @@ function emitToastSurface(ir: ComponentIR): string {
   lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
   lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
   lines.push(`${INDENT}}`);
-  lines.push(`${INDENT}@StateObject private var open: ControllableValue<Bool>`);
+  lines.push(`${INDENT}@ControllableState private var open: ControllableValue<Bool>`);
   for (const region of regions) {
     lines.push(`${INDENT}private let ${region}: ${swiftCase(capitalize(region))}`);
   }
@@ -583,7 +583,7 @@ function emitToastSurface(ir: ComponentIR): string {
   });
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))`);
+  lines.push(`${INDENT}${INDENT}self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)`);
   for (const region of regions) {
     lines.push(`${INDENT}${INDENT}self.${region} = ${region}()`);
   }
@@ -728,7 +728,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
   lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
   lines.push(`${INDENT}}`);
-  lines.push(`${INDENT}@StateObject private var step: ControllableValue<Double>`)
+  lines.push(`${INDENT}@ControllableState private var step: ControllableValue<Double>`)
   lines.push(`${INDENT}private let stepCount: Int`);
   if (hasOnComplete) lines.push(`${INDENT}private let onComplete: (() -> Void)?`);
   if (hasOnSkip) lines.push(`${INDENT}private let onSkip: (() -> Void)?`);
@@ -753,7 +753,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._step = StateObject(wrappedValue: ControllableValue(controlled: nil, defaultValue: step, onChange: onStepChange))`)
+  lines.push(`${INDENT}${INDENT}self._step = ControllableState(controlled: nil, defaultValue: step, onChange: onStepChange)`)
   lines.push(`${INDENT}${INDENT}self.stepCount = stepCount`);
   if (hasOnComplete) lines.push(`${INDENT}${INDENT}self.onComplete = onComplete`);
   if (hasOnSkip) lines.push(`${INDENT}${INDENT}self.onSkip = onSkip`);

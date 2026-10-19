@@ -27,7 +27,7 @@ public struct Details<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         DetailsTokens.scopes
     }
-    @StateObject private var open: ControllableValue<Bool>
+    @ControllableState private var open: ControllableValue<Bool>
     private let summary: String?
     private let disabled: Bool
     private let content: Content
@@ -41,7 +41,7 @@ public struct Details<Content: View>: View {
         disabled: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
-        self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))
+        self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
         self.summary = summary
         self.disabled = disabled
         self.content = content()

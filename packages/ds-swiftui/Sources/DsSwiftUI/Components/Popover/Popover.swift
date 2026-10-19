@@ -32,7 +32,7 @@ public struct Popover<Trigger: View, Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         PopoverTokens.scopes
     }
-    @StateObject private var open: ControllableValue<Bool>
+    @ControllableState private var open: ControllableValue<Bool>
     private let openControlled: Binding<Bool>?
     private let placement: PopoverPlacement
     private let disabled: Bool
@@ -49,7 +49,7 @@ public struct Popover<Trigger: View, Content: View>: View {
         @ViewBuilder trigger: () -> Trigger,
         @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
-        self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))
+        self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
         self.openControlled = open
         self.placement = placement
         self.disabled = disabled

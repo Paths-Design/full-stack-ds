@@ -32,7 +32,7 @@ public struct Sheet<Content: View, Header: View, Title: View, Description: View,
     private var fsdsScopes: FsdsComponentTokenScopes {
         SheetTokens.scopes
     }
-    @StateObject private var open: ControllableValue<Bool>
+    @ControllableState private var open: ControllableValue<Bool>
     private let openControlled: Binding<Bool>?
     private let content: Content
     private let header: Header
@@ -53,7 +53,7 @@ public struct Sheet<Content: View, Header: View, Title: View, Description: View,
         @ViewBuilder bodyContent: () -> BodyContent = { EmptyView() },
         @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
-        self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))
+        self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
         self.openControlled = open
         self.content = content()
         self.header = header()

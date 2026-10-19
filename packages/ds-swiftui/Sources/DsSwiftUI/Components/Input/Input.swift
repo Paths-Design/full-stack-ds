@@ -25,7 +25,7 @@ public struct Input: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         InputTokens.scopes
     }
-    @StateObject private var text: ControllableValue<String>
+    @ControllableState private var text: ControllableValue<String>
     private let placeholder: String?
     private let disabled: Bool
     @Environment(\.fsdsTheme) private var fsdsTheme
@@ -37,7 +37,7 @@ public struct Input: View {
         placeholder: String? = nil,
         disabled: Bool = false
     ) {
-        self._text = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))
+        self._text = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)
         self.placeholder = placeholder
         self.disabled = disabled
     }

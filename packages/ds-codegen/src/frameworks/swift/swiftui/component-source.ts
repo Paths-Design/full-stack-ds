@@ -417,7 +417,7 @@ function emitTextControlComponent(ir: ComponentIR): string {
   lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
   lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
   lines.push(`${INDENT}}`);
-  lines.push(`${INDENT}@StateObject private var text: ControllableValue<String>`);
+  lines.push(`${INDENT}@ControllableState private var text: ControllableValue<String>`);
   if (hasProp("placeholder")) {
     lines.push(`${INDENT}private let placeholder: String?`);
   }
@@ -441,7 +441,7 @@ function emitTextControlComponent(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._text = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))`);
+  lines.push(`${INDENT}${INDENT}self._text = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)`);
   if (hasProp("placeholder")) {
     lines.push(`${INDENT}${INDENT}self.placeholder = placeholder`);
   }
@@ -525,7 +525,7 @@ function emitBooleanControlComponent(ir: ComponentIR): string {
     );
   }
   lines.push(`public struct ${exportName}: View {`);
-  lines.push(`${INDENT}@StateObject private var checked: ControllableValue<Bool>`);
+  lines.push(`${INDENT}@ControllableState private var checked: ControllableValue<Bool>`);
   if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
   lines.push("");
   lines.push(`${INDENT}public init(`);
@@ -534,7 +534,7 @@ function emitBooleanControlComponent(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._checked = StateObject(wrappedValue: ControllableValue(controlled: checked, defaultValue: defaultChecked, onChange: onChange))`);
+  lines.push(`${INDENT}${INDENT}self._checked = ControllableState(controlled: checked, defaultValue: defaultChecked, onChange: onChange)`);
   if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
   lines.push(`${INDENT}}`);
   lines.push("");
@@ -851,8 +851,8 @@ function emitSelectionControl(ir: ComponentIR): string {
   const emptyLabel = placeholder ? (placeholder.accessor.length > 0 ? "placeholder" : `(placeholder ?? "")`) : null;
   lines.push(`public struct ${exportName}: View {`);
   lines.push(`${INDENT}private let options: [${optionType}]`);
-  lines.push(`${INDENT}@StateObject private var selection: SelectionState`);
-  lines.push(`${INDENT}@StateObject private var open: ControllableValue<Bool>`);
+  lines.push(`${INDENT}@ControllableSelection private var selection: SelectionState`);
+  lines.push(`${INDENT}@ControllableState private var open: ControllableValue<Bool>`);
   if (hasSize) lines.push(`${INDENT}private let size: ${sizeType}`);
   if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
   if (placeholder) lines.push(placeholder.stored);
@@ -877,15 +877,15 @@ function emitSelectionControl(ir: ComponentIR): string {
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
   lines.push(`${INDENT}${INDENT}self.options = options`);
-  lines.push(`${INDENT}${INDENT}self._selection = StateObject(wrappedValue: SelectionState(`);
+  lines.push(`${INDENT}${INDENT}self._selection = ControllableSelection(`);
   lines.push(`${INDENT}${INDENT}${INDENT}selection: selection,`);
   lines.push(`${INDENT}${INDENT}${INDENT}defaultSelection: defaultSelection,`);
   lines.push(`${INDENT}${INDENT}${INDENT}multipleSelection: multipleSelection,`);
   lines.push(`${INDENT}${INDENT}${INDENT}defaultMultipleSelection: defaultMultipleSelection,`);
   lines.push(`${INDENT}${INDENT}${INDENT}multiple: ${hasMultiple ? "multiple" : "false"},`);
   lines.push(`${INDENT}${INDENT}${INDENT}onSelectionChange: onSelectionChange`);
-  lines.push(`${INDENT}${INDENT}))`);
-  lines.push(`${INDENT}${INDENT}self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))`);
+  lines.push(`${INDENT}${INDENT})`);
+  lines.push(`${INDENT}${INDENT}self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)`);
   if (hasSize) lines.push(`${INDENT}${INDENT}self.size = size`);
   if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
   if (placeholder) lines.push(placeholder.assign);
@@ -1101,7 +1101,7 @@ function emitArrayIteratedList(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
     lines.push(`${INDENT}}`);
   }
-  lines.push(`${INDENT}@StateObject private var ${channel.name}: ControllableValue<[String]>`);
+  lines.push(`${INDENT}@ControllableState private var ${channel.name}: ControllableValue<[String]>`);
   if (hasAria) lines.push(`${INDENT}private let accessibilityLabel: String?`);
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
@@ -1113,7 +1113,7 @@ function emitArrayIteratedList(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._${channel.name} = StateObject(wrappedValue: ControllableValue(controlled: ${channel.name}, defaultValue: default${swiftCase(capitalize(channel.name))}, onChange: on${swiftCase(capitalize(channel.name))}Change))`);
+  lines.push(`${INDENT}${INDENT}self._${channel.name} = ControllableState(controlled: ${channel.name}, defaultValue: default${swiftCase(capitalize(channel.name))}, onChange: on${swiftCase(capitalize(channel.name))}Change)`);
   if (hasAria) lines.push(`${INDENT}${INDENT}self.accessibilityLabel = accessibilityLabel`);
   lines.push(`${INDENT}}`);
   if (ir.tokenScopes.length > 0) {
@@ -1189,7 +1189,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
     lines.push(`${INDENT}}`);
   }
-  lines.push(`${INDENT}@StateObject private var ${channel.name}: ControllableValue<${chanType}>`);
+  lines.push(`${INDENT}@ControllableState private var ${channel.name}: ControllableValue<${chanType}>`);
   if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
   if (hasAria) lines.push(`${INDENT}private let accessibilityLabel: String?`);
   lines.push(`${INDENT}private let content: Content`);
@@ -1205,7 +1205,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._${channel.name} = StateObject(wrappedValue: ControllableValue(controlled: ${channel.name}, defaultValue: default${swiftCase(capitalize(channel.name))}, onChange: on${swiftCase(capitalize(channel.name))}Change))`);
+  lines.push(`${INDENT}${INDENT}self._${channel.name} = ControllableState(controlled: ${channel.name}, defaultValue: default${swiftCase(capitalize(channel.name))}, onChange: on${swiftCase(capitalize(channel.name))}Change)`);
   if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
   if (hasAria) lines.push(`${INDENT}${INDENT}self.accessibilityLabel = accessibilityLabel`);
   lines.push(`${INDENT}${INDENT}self.content = content()`);
@@ -1372,7 +1372,7 @@ function emitPagedPositionSet(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
     lines.push(`${INDENT}}`);
   }
-  lines.push(`${INDENT}@StateObject private var ${page.channel}: ControllableValue<Int>`);
+  lines.push(`${INDENT}@ControllableState private var ${page.channel}: ControllableValue<Int>`);
   lines.push(`${INDENT}private let ${page.itemsProp}: [String]`);
   for (const axis of axes) {
     lines.push(
@@ -1405,7 +1405,7 @@ function emitPagedPositionSet(ir: ComponentIR): string {
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
   lines.push(
-    `${INDENT}${INDENT}self._${page.channel} = StateObject(wrappedValue: ControllableValue(controlled: ${valueParam}, defaultValue: ${defaultParam}, onChange: ${changeParam}))`,
+    `${INDENT}${INDENT}self._${page.channel} = ControllableState(controlled: ${valueParam}, defaultValue: ${defaultParam}, onChange: ${changeParam})`,
   );
   lines.push(`${INDENT}${INDENT}self.${page.itemsProp} = ${page.itemsProp}`);
   for (const axis of axes) {
@@ -1565,7 +1565,7 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
     lines.push(`/// SwiftUI reserves \`${ir.name}\`; exported as \`${exportName}\`.`);
   }
   lines.push(`public struct ${exportName}: View {`);
-  lines.push(`${INDENT}@StateObject private var ${page.channel}: ControllableValue<Int>`);
+  lines.push(`${INDENT}@ControllableState private var ${page.channel}: ControllableValue<Int>`);
   lines.push(`${INDENT}private let ${page.itemsProp}: [String]`);
   if (page.countProp) lines.push(`${INDENT}private let ${page.countProp}: Int?`);
   if (presentationType) lines.push(`${INDENT}private let presentation: ${presentationType}`);
@@ -1595,7 +1595,7 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
   lines.push(
-    `${INDENT}${INDENT}self._${page.channel} = StateObject(wrappedValue: ControllableValue(controlled: ${navValueParam}, defaultValue: ${navDefaultParam}, onChange: ${navChangeParam}))`,
+    `${INDENT}${INDENT}self._${page.channel} = ControllableState(controlled: ${navValueParam}, defaultValue: ${navDefaultParam}, onChange: ${navChangeParam})`,
   );
   lines.push(`${INDENT}${INDENT}self.${page.itemsProp} = ${page.itemsProp}`);
   if (page.countProp) lines.push(`${INDENT}${INDENT}self.${page.countProp} = ${page.countProp}`);
@@ -1770,7 +1770,7 @@ function emitSequencePager(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
     lines.push(`${INDENT}}`);
   }
-  lines.push(`${INDENT}@StateObject private var ${channel}: ControllableValue<Int>`);
+  lines.push(`${INDENT}@ControllableState private var ${channel}: ControllableValue<Int>`);
   lines.push(`${INDENT}private let ${sequence.itemsProp}: [String]`);
   lines.push(`${INDENT}private let autoPlay: Bool`);
   lines.push(`${INDENT}private let duration: Double?`);
@@ -1808,7 +1808,7 @@ function emitSequencePager(ir: ComponentIR): string {
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
   lines.push(
-    `${INDENT}${INDENT}self._${channel} = StateObject(wrappedValue: ControllableValue(controlled: ${valueParam}, defaultValue: ${defaultParam}, onChange: ${changeParam}))`,
+    `${INDENT}${INDENT}self._${channel} = ControllableState(controlled: ${valueParam}, defaultValue: ${defaultParam}, onChange: ${changeParam})`,
   );
   lines.push(`${INDENT}${INDENT}self.${sequence.itemsProp} = ${sequence.itemsProp}`);
   lines.push(`${INDENT}${INDENT}self.autoPlay = autoPlay`);
@@ -1996,9 +1996,9 @@ function emitDateGridSurface(ir: ComponentIR): string {
     lines.push(`${i2}${ir.name}Tokens.scopes`);
     lines.push(`${i1}}`);
   }
-  lines.push(`${i1}@StateObject private var ${valueProp}: ControllableValue<Date?>`);
-  lines.push(`${i1}@StateObject private var ${manyValueProp}: ControllableValue<[Date]>`);
-  lines.push(`${i1}@StateObject private var ${monthProp}: ControllableValue<Date?>`);
+  lines.push(`${i1}@ControllableState private var ${valueProp}: ControllableValue<Date?>`);
+  lines.push(`${i1}@ControllableState private var ${manyValueProp}: ControllableValue<[Date]>`);
+  lines.push(`${i1}@ControllableState private var ${monthProp}: ControllableValue<Date?>`);
   lines.push(`${i1}private let ${modeProp.safeName}: ${modeType}`);
   lines.push(`${i1}private let ${localeProp.safeName}: String`);
   if (captionProp) lines.push(`${i1}private let ${captionProp.safeName}: String?`);
@@ -2029,7 +2029,7 @@ function emitDateGridSurface(ir: ComponentIR): string {
   for (const param of params) lines.push(`${i2}${param}`);
   lines.push(`${i1}) {`);
   const controllable = (local: string, controlled: string, initial: string, onChange: string) =>
-    `${i2}self._${local} = StateObject(wrappedValue: ControllableValue(controlled: ${controlled}, defaultValue: ${initial}, onChange: ${onChange}))`;
+    `${i2}self._${local} = ControllableState(controlled: ${controlled}, defaultValue: ${initial}, onChange: ${onChange})`;
   lines.push(controllable(valueProp, valueProp, defaultValueProp, changeProp));
   lines.push(controllable(manyValueProp, manyValueProp, manyDefaultValueProp, manyChangeProp));
   lines.push(controllable(monthProp, monthProp, defaultMonthProp, monthChangeProp));
@@ -2261,7 +2261,7 @@ function emitLabeledTextControl(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
     lines.push(`${INDENT}}`);
   }
-  lines.push(`${INDENT}@StateObject private var value: ControllableValue<String>`);
+  lines.push(`${INDENT}@ControllableState private var value: ControllableValue<String>`);
   for (const slot of slots) {
     lines.push(`${INDENT}private let ${slot}: ${swiftCase(capitalize(slot))}Region`);
   }
@@ -2285,7 +2285,7 @@ function emitLabeledTextControl(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._value = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))`);
+  lines.push(`${INDENT}${INDENT}self._value = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)`);
   for (const slot of slots) {
     lines.push(`${INDENT}${INDENT}self.${slot} = ${slot}()`);
   }
@@ -2524,7 +2524,7 @@ function emitCountFieldGroup(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
     lines.push(`${INDENT}}`);
   }
-  lines.push(`${INDENT}@StateObject private var value: ControllableValue<String>`);
+  lines.push(`${INDENT}@ControllableState private var value: ControllableValue<String>`);
   if (hasLength) lines.push(`${INDENT}private let length: Int`);
   if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
   if (hasOnComplete) lines.push(`${INDENT}private let onComplete: ((String) -> Void)?`);
@@ -2544,7 +2544,7 @@ function emitCountFieldGroup(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._value = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))`);
+  lines.push(`${INDENT}${INDENT}self._value = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)`);
   if (hasLength) lines.push(`${INDENT}${INDENT}self.length = length`);
   if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
   if (hasOnComplete) lines.push(`${INDENT}${INDENT}self.onComplete = onComplete`);
@@ -2976,7 +2976,7 @@ function emitExpandableContent(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
     lines.push(`${INDENT}}`);
   }
-  lines.push(`${INDENT}@StateObject private var expanded: ControllableValue<Bool>`);
+  lines.push(`${INDENT}@ControllableState private var expanded: ControllableValue<Bool>`);
   if (hasExpandable) lines.push(`${INDENT}private let expandable: Bool`);
   if (hasLines) lines.push(`${INDENT}private let ${linesProp}: Int`);
   for (const arm of armProps) lines.push(arm.stored);
@@ -2998,7 +2998,7 @@ function emitExpandableContent(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._expanded = StateObject(wrappedValue: ControllableValue(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange))`);
+  lines.push(`${INDENT}${INDENT}self._expanded = ControllableState(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange)`);
   if (hasExpandable) lines.push(`${INDENT}${INDENT}self.expandable = expandable`);
   if (hasLines) lines.push(`${INDENT}${INDENT}self.${linesProp} = ${linesProp}`);
   for (const arm of armProps) lines.push(arm.assign);
@@ -3104,7 +3104,7 @@ function emitDisclosureComponent(ir: ComponentIR): string {
   lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
   lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
   lines.push(`${INDENT}}`);
-  lines.push(`${INDENT}@StateObject private var open: ControllableValue<Bool>`);
+  lines.push(`${INDENT}@ControllableState private var open: ControllableValue<Bool>`);
   if (hasSummary) lines.push(`${INDENT}private let summary: String?`);
   if (hasDisabled) lines.push(`${INDENT}private let disabled: Bool`);
   lines.push(`${INDENT}private let content: Content`);
@@ -3118,7 +3118,7 @@ function emitDisclosureComponent(ir: ComponentIR): string {
   params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
   for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))`);
+  lines.push(`${INDENT}${INDENT}self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)`);
   if (hasSummary) lines.push(`${INDENT}${INDENT}self.summary = summary`);
   if (hasDisabled) lines.push(`${INDENT}${INDENT}self.disabled = disabled`);
   lines.push(`${INDENT}${INDENT}self.content = content()`);
@@ -4178,7 +4178,7 @@ function emitToggleComponent(ir: ComponentIR): string {
   lines.push(`public struct ${ir.name}: View {`);
 
   // Channel storage
-  lines.push(`${INDENT}@StateObject private var checked: ControllableValue<Bool>`);
+  lines.push(`${INDENT}@ControllableState private var checked: ControllableValue<Bool>`);
 
   // Non-channel props (deterministic order matching golden)
   if (sizeTypeName) {
@@ -4203,7 +4203,7 @@ function emitToggleComponent(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}value: String? = nil,`);
   lines.push(`${INDENT}${INDENT}accessibilityLabel: String? = nil`);
   lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._checked = StateObject(wrappedValue: ControllableValue(controlled: checked, defaultValue: defaultChecked, onChange: onChange))`);
+  lines.push(`${INDENT}${INDENT}self._checked = ControllableState(controlled: checked, defaultValue: defaultChecked, onChange: onChange)`);
   if (sizeTypeName) {
     lines.push(`${INDENT}${INDENT}self.size = size`);
   }
