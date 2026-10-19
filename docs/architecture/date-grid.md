@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: Month date grids
 owner: "@darianrosebrook"
-updated: 2026-10-18
-verified_at_commit: d9a355a17
+updated: 2026-10-19
+verified_at_commit: 89d585c3a
 governs:
   - packages/ds-codegen/src/date-grid.ts
   - packages/ds-codegen/src/date/date-grid.ts
