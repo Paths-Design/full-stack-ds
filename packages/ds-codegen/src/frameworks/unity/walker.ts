@@ -45,6 +45,8 @@ const BUTTON_TAG = "button";
 const LABEL_TAG = "label";
 const TEXT_LEAF_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", LABEL_TAG]);
 const DISABLED_ATTRIBUTE = "disabled";
+/** Source: `ContractPartDetails.role` enum value naming the component root part. */
+const ROOT_ROLE = "root";
 
 /** Source: token path geometry suffixes (R10); `size` sets both axes. */
 const GEOMETRY_SUFFIXES: Readonly<Record<string, readonly ("width" | "height")[]>> = {
@@ -145,8 +147,15 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
   // (after every generated child) already preserves it.
+  const rendered = (node: DomNodeIR): boolean => !isCompound(node) && !isInsertion(node);
   const firstCompound = nodes.findIndex(isCompound);
-  const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(n => !isCompound(n) && !isInsertion(n));
+  const lastCompound = nodes.map(isCompound).lastIndexOf(true);
+  // One composed position cannot keep compound parts on both sides of a
+  // rendered sibling in document order.
+  if (nodes.some((node, index) => rendered(node) && index > firstCompound && index < lastCompound)) {
+    throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} ${cls.name} interleaves compound parts around a rendered sibling (pending P4)`);
+  }
+  const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
     if (isCompound(node)) {
       if (composedHost && index === firstCompound) insertionHost(ctx, cls, parent, holes);
@@ -213,12 +222,13 @@ function planClasses(ctx: Context): ClassPlan[] {
     walkChildren(ctx, root, root.root, ir.dom.children, { count: 0 });
     classes.push(root);
   } else {
-    // R9: parts-only contract. The first root-only part is the class itself;
-    // every other non-compound part is a direct child in declared order.
-    const rootPart = ir.parts.find(p => p.isRootOnly);
+    // R9: parts-only contract. The part declaring the root role is the class
+    // itself (the first root-only part when none declares it); every other
+    // non-compound part is a direct child in declared order.
+    const rootPart = ir.parts.find(p => p.details?.role === ROOT_ROLE) ?? ir.parts.find(p => p.isRootOnly);
     const root = newClass(name, "VisualElement", true, rootIdentity(ctx, rootPart?.name));
     for (const part of ir.parts) {
-      if (part.isRootOnly || ctx.compound.has(part.name)) continue;
+      if (part === rootPart || ctx.compound.has(part.name)) continue;
       const type: ElementType = ctx.triggers.has(part.name) || part.nativeTag === BUTTON_TAG ? "Button" : "VisualElement";
       const element: ElementPlan = { ref: identifier(pascal(part.name)), declaration: "property", type, identity: identityFor(ctx, part.name), part: part.name, children: [] };
       root.root.children.push(element);

@@ -34,6 +34,7 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   toggle: "InteractionIR trigger operation enum",
   select: "InteractionIR trigger operation enum",
   selection: "ContractStateDimension.category enum",
+  root: "ContractPartDetails.role enum value naming the component root part (compared on details.role)",
   value: "HTML form field attribute the boundary's propRoles assigns to participating forms",
 };
 
@@ -72,9 +73,44 @@ function identitySubject(node: ts.Expression): string | undefined {
   return undefined;
 }
 
-/** Predicates that compare an identity accessor to a literal from `vocabulary`. */
+const unwrap = (node: ts.Expression): ts.Expression => {
+  let expr = node;
+  while (ts.isParenthesizedExpression(expr) || ts.isAsExpression(expr) || ts.isSatisfiesExpression(expr) || ts.isNonNullExpression(expr)) expr = expr.expression;
+  return expr;
+};
+
+/** String elements of `[..]` or `new Set([..])`, resolving constant elements. */
+function collectionOf(node: ts.Expression, strings: ReadonlyMap<string, string>): string[] | undefined {
+  let target = unwrap(node);
+  if (ts.isNewExpression(target) && target.arguments?.length) target = unwrap(target.arguments[0]!);
+  if (!ts.isArrayLiteralExpression(target)) return undefined;
+  return target.elements.flatMap(element => {
+    const lit = stringOf(element) ?? (ts.isIdentifier(element) ? strings.get(element.text) : undefined);
+    return lit === undefined ? [] : [lit];
+  });
+}
+
+/** Top-level `const NAME = "literal"` and `const NAME = [..] | new Set([..])` declarations. */
+function topLevelConstants(source: ts.SourceFile): { strings: Map<string, string>; collections: Map<string, string[]> } {
+  const strings = new Map<string, string>(), collections = new Map<string, string[]>();
+  const declarations = source.statements
+    .filter((s): s is ts.VariableStatement => ts.isVariableStatement(s) && (s.declarationList.flags & ts.NodeFlags.Const) !== 0)
+    .flatMap(s => [...s.declarationList.declarations])
+    .filter(d => ts.isIdentifier(d.name) && d.initializer);
+  for (const d of declarations) { const lit = stringOf(unwrap(d.initializer!)); if (lit !== undefined) strings.set((d.name as ts.Identifier).text, lit); }
+  for (const d of declarations) { const items = collectionOf(d.initializer!, strings); if (items) collections.set((d.name as ts.Identifier).text, items); }
+  return { strings, collections };
+}
+
+/** Predicates that compare an identity accessor to a literal from `vocabulary`,
+ * directly or through a top-level constant of the same file. */
 export function identityPredicates(file: string, text: string, vocabulary: Set<string>): Finding[] {
   const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true);
+  const { strings, collections } = topLevelConstants(source);
+  const valueOf = (node: ts.Expression): string | undefined => {
+    const expr = unwrap(node);
+    return stringOf(expr) ?? (ts.isIdentifier(expr) ? strings.get(expr.text) : undefined);
+  };
   const out: Finding[] = [];
   const report = (at: ts.Node, literal: string) => {
     if (!vocabulary.has(literal)) return;
@@ -84,19 +120,19 @@ export function identityPredicates(file: string, text: string, vocabulary: Set<s
   const comparisons = new Set([ts.SyntaxKind.EqualsEqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsEqualsToken, ts.SyntaxKind.EqualsEqualsToken, ts.SyntaxKind.ExclamationEqualsToken]);
   const visit = (node: ts.Node): void => {
     if (ts.isBinaryExpression(node) && comparisons.has(node.operatorToken.kind)) {
-      const left = stringOf(node.left), right = stringOf(node.right);
+      const left = valueOf(node.left), right = valueOf(node.right);
       if (right !== undefined && identitySubject(node.left)) report(node, right);
       if (left !== undefined && identitySubject(node.right)) report(node, left);
     }
     if (ts.isSwitchStatement(node) && identitySubject(node.expression)) {
-      for (const clause of node.caseBlock.clauses) if (ts.isCaseClause(clause)) { const lit = stringOf(clause.expression); if (lit !== undefined) report(clause, lit); }
+      for (const clause of node.caseBlock.clauses) if (ts.isCaseClause(clause)) { const lit = valueOf(clause.expression); if (lit !== undefined) report(clause, lit); }
     }
-    // [..literals].includes(subject) / new Set([..literals]).has(subject)
+    // [..literals].includes(subject) / new Set([..literals]).has(subject), inline or as a top-level constant.
     if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) && ["includes", "has", "indexOf"].includes(node.expression.name.text) &&
         node.arguments.length && identitySubject(node.arguments[0]!)) {
-      let target: ts.Expression = node.expression.expression;
-      if (ts.isNewExpression(target) && target.arguments?.length) target = target.arguments[0]!;
-      if (ts.isArrayLiteralExpression(target)) for (const element of target.elements) { const lit = stringOf(element); if (lit !== undefined) report(node, lit); }
+      const target = unwrap(node.expression.expression);
+      const items = ts.isIdentifier(target) ? collections.get(target.text) : collectionOf(target, strings);
+      for (const lit of items ?? []) report(node, lit);
     }
     ts.forEachChild(node, visit);
   };
@@ -131,6 +167,14 @@ describe("Unity emitter lowers facts, not names (R11)", () => {
     expect(hits('switch (p.name) { case "tab": break; case "other": break; }')).toEqual(["tab"]);
     // Platform vocabulary compared on a non-identity subject is not lore.
     expect(hits('if (node.tag === "label") x(); if (dim.category === "content") y();')).toEqual([]);
+    // A top-level constant resolves to its literal: an identity compared to a tag
+    // constant is lore, the same constant compared on `.tag` is HTML vocabulary.
+    expect(hits('const LABEL_TAG = "label";\nif (node.part === LABEL_TAG) x();')).toEqual(["label"]);
+    expect(hits('const T = "trigger";\nif (T !== x.name) y();')).toEqual(["trigger"]);
+    expect(hits('const LABEL_TAG = "label";\nif (node.tag === LABEL_TAG) x();')).toEqual([]);
+    expect(hits('const PARTS = ["tab", "panel"];\nconst t = PARTS.includes(part.name);')).toEqual(["tab", "panel"]);
+    expect(hits('const PARTS = new Set(["content"]);\nconst t = PARTS.has(node.part!);')).toEqual(["content"]);
+    expect(hits('const TAGS = new Set(["label"]);\nconst t = TAGS.has(node.tag);')).toEqual([]);
   });
 
   it("the unity emitter sources compare no part, channel, prop or slot identity to a corpus literal", () => {

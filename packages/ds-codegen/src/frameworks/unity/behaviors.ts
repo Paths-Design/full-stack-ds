@@ -100,10 +100,17 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (focus !== "roving" && focus !== "manual") return refuseFocus("ItemGroup");
     const orientation = ir.behavior.focus?.orientation;
     if (!orientation) throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares ${focus} focus without an orientation, which ItemGroup needs to map arrow keys`);
+    // ItemGroup pairs composed sub-elements through IKeyedPart; a part that
+    // opts out of being compound renders inline with no pairing key.
+    const trigger = interaction.triggers[0]!.part;
+    const compound = new Set(ir.compoundParts.map(p => p.name));
+    const pairing = "must be a compound sub-element so it can carry the pairing key";
+    if (!compound.has(trigger.name)) throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} ItemGroup trigger part ${trigger.name} ${pairing}`);
+    if (!compound.has(interaction.content.name)) throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} ItemGroup content part ${interaction.content.name} ${pairing}`);
     return {
       behavior: "ItemGroup",
       channel: interaction.channel,
-      trigger: interaction.triggers[0]!.part,
+      trigger,
       content: interaction.content,
       operation: interaction.triggers[0]!.operation,
       multiple: (interaction.channel.valueType ?? "").includes("[]"),

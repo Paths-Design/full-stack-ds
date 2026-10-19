@@ -80,7 +80,7 @@
       "id": "anatomy-subcomponent",
       "match": ["contract:/anatomy/details/*/subcomponent"],
       "disposition": "lowered",
-      "via": "walker.ts (R1, R4): each ir.compoundParts entry is its own [UxmlElement] <Name><Part> class the consumer composes; a part that opts out stays inline in its parent class. Composed content keeps document order: when a rendered sibling follows the first compound node, a private children host at that position is the contentContainer."
+      "via": "walker.ts (R1, R4): each ir.compoundParts entry is its own [UxmlElement] <Name><Part> class the consumer composes; a part that opts out stays inline in its parent class. Composed content keeps document order: when a rendered sibling follows the first compound node, a private children host at that position is the contentContainer. Restrictions: an ItemGroup's trigger and content parts must stay compound, because the sub-element carries the IKeyedPart pairing key (opting out is refused with UNITY_UNSUPPORTED_INTERACTION); compound parts on both sides of a rendered sibling are pending P4 (refused with UNITY_UNSUPPORTED_ANATOMY until a second composed position exists)."
     },
     {
       "id": "anatomy-part-role",

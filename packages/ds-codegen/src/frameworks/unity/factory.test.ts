@@ -358,6 +358,26 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     expect(() => emit(both as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Dial DialRail declares more than one children insertion point");
   });
 
+  it("refuses compound parts interleaved around a rendered sibling, which one composed position cannot order", () => {
+    // [notch, glint, stop]: composed notch and stop cannot both keep their side of the glint.
+    const interleaved = dial() as unknown as Record<string, any>;
+    interleaved.anatomy.parts.push("stop");
+    interleaved.anatomy.details.stop = { tag: "span", role: "decoration", subcomponent: true };
+    interleaved.anatomy.dom.children[1].children.push({ tag: "span", part: "stop" });
+    expect(buildComponentIR(interleaved as unknown as ComponentContract).compoundParts.map(p => p.name)).toContain("stop");
+    expect(() => emit(interleaved as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Dial DialRail interleaves compound parts around a rendered sibling (pending P4)");
+    // Compound parts adjacent on one side of the sibling keep a single composed position.
+    const adjacent = dial() as unknown as Record<string, any>;
+    adjacent.anatomy.parts.push("stop");
+    adjacent.anatomy.details.stop = { tag: "span", role: "decoration", subcomponent: true };
+    adjacent.anatomy.dom.children[1].children.splice(1, 0, { tag: "span", part: "stop" });
+    expect(ctor(emit(adjacent as unknown as ComponentContract), "DialRail")).toBe(lines(
+      'name = "rail";', 'AddToClassList("dial__rail");',
+      'children.name = "children";', 'children.AddToClassList("dial__children");', "hierarchy.Add(children);",
+      'Glint.name = "glint";', 'Glint.AddToClassList("dial__glint");', "hierarchy.Add(Glint);",
+    ));
+  });
+
   it("lowers a boolean control with a children hole beside siblings and a named slot, in document order", () => {
     const contract = lamp();
     expect(() => createUnityEmitter().admitContract!(contract, { admitted: false })).not.toThrow();
@@ -417,6 +437,30 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     expect(source).not.toContain("IKeyedPart");
     expect(source).toContain("    public partial class FlyoutOpener : Button\n    {\n        [UxmlAttribute] public bool Disabled");
     expect(ctor(source, "FlyoutSheet")).toBe(lines('name = "sheet";', 'AddToClassList("flyout__sheet");'));
+  });
+
+  it("selects the parts-only class root by its declared root role, not by a root-only part name", () => {
+    const framed = flyout() as unknown as Record<string, any>;
+    framed.anatomy.parts[0] = "frame";
+    framed.anatomy.details = { frame: { ...framed.anatomy.details.root, role: "root" }, ...framed.anatomy.details };
+    delete framed.anatomy.details.root;
+    framed.slots = { frame: framed.slots.root, opener: framed.slots.opener, sheet: framed.slots.sheet };
+    const ir = buildComponentIR(framed as unknown as ComponentContract);
+    // The name list does not know `frame`; only the role fact names it the root.
+    expect(ir.parts.find(p => p.name === "frame")).toMatchObject({ isRootOnly: false, details: { role: "root" } });
+    const source = emit(framed as unknown as ComponentContract);
+    expect(ctor(source, "Flyout")).toBe(lines(
+      'name = "frame";',
+      'AddToClassList("flyout");',
+      'Tip.name = "tip";',
+      'Tip.AddToClassList("flyout__tip");',
+      "hierarchy.Add(Tip);",
+      'Surface = AnchoredSurface.Attach(this, triggerClass: "flyout__opener", contentClass: "flyout__sheet", stateClass: "is-open");',
+      "CloseOnEscape = true;",
+      "CloseOnOutsideClick = true;",
+      "CloseOnBlur = true;",
+    ));
+    expect(source).not.toMatch(/\bFrame\b/);
   });
 
   it("realises the IR-synthesized presence guard on an unmount content part through the behavior and refuses any other guard", () => {
@@ -512,6 +556,18 @@ describe("Unity behavior selection refusals", () => {
     compoundControl.anatomy.details.actuator.subcomponent = true;
     compoundControl.anatomy.dom.children.splice(2, 1);
     expect(() => emit(compoundControl as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Lamp renders its form-control part actuator outside the root class");
+  });
+
+  it("refuses an ItemGroup whose trigger or content part opts out of being a compound sub-element", () => {
+    // ItemGroup pairs composed parts through IKeyedPart; an inline part has no pairing key.
+    const inlineTrigger = dial() as unknown as Record<string, any>;
+    inlineTrigger.anatomy.details.notch.subcomponent = false;
+    const triggerIr = buildComponentIR(inlineTrigger as unknown as ComponentContract);
+    expect(triggerIr.compoundParts.map(p => p.name)).not.toContain("notch");
+    expect(() => unityLowering(triggerIr)).toThrow("UNITY_UNSUPPORTED_INTERACTION: Dial ItemGroup trigger part notch must be a compound sub-element so it can carry the pairing key");
+    const inlineContent = dial() as unknown as Record<string, any>;
+    inlineContent.anatomy.details.well.subcomponent = false;
+    expect(() => unityLowering(buildComponentIR(inlineContent as unknown as ComponentContract))).toThrow("UNITY_UNSUPPORTED_INTERACTION: Dial ItemGroup content part well must be a compound sub-element so it can carry the pairing key");
   });
 
   it("refuses a dismissal trigger the anchored surface has no knob for", () => {
