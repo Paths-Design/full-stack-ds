@@ -1,10 +1,11 @@
 id: CALENDAR-DATE-GRID-01
 title: 'Calendar date grid: month channel, roving day focus, selection state and locale on every target'
 mode: feature
-lifecycle_state: active
-worktree: calendar-date-grid
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge calendar-date-grid at da1f477a2eeceb15e9dc2de6f3f50df0a64f9bb2'
 created_at: '2026-10-18T15:19:48.751Z'
-updated_at: '2026-10-19T14:24:48.678Z'
+updated_at: '2026-10-19T14:25:53.841Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
