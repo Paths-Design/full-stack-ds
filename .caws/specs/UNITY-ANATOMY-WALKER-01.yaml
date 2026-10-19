@@ -1,0 +1,64 @@
+id: UNITY-ANATOMY-WALKER-01
+title: 'Unity anatomy walker: lower ir.dom and ir.compoundParts into generated VisualElement trees; runtime bases become fact-attached behaviors'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-19T03:10:03.709Z'
+updated_at: '2026-10-19T03:10:03.709Z'
+created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
+blast_radius:
+  modules:
+    - 'Unity emitter (factory.ts walker), Unity runtime behaviors, Unity EditMode witnesses, Unity sample and showcase'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-unity'
+    - 'scripts/unity-tests.mjs'
+    - 'scripts/engine-comparison.mjs'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The Unity emitter lowers IR facts only: no branch on ir.name, and no branch on literal part, prop, channel or class names; element type, part identity, insertion points and behavior attachment all derive from DomNodeIR, PartIR, FormControlIR, InteractionIR, SurfaceIR and BehaviorIR fields'
+  - 'packages/ds-unity/Runtime contains no hand-written VisualElement subclass after this slice: BooleanControl, ItemGroup/SelectionItem and AnchoredSurface are replaced by attachable behavior classes the generated constructor wires from facts, and no fourth hand-written base is introduced'
+  - 'The unity allowlist in fsds.targets.json stays at Switch, Accordion, Popover, Tabs; no component is added or removed'
+  - 'Channel semantics frozen by packages/ds-godot/fixtures/traces.json are unchanged: controlled/uncontrolled commit, disabled suppression, single/multiple/collapsible selection and surface toggling produce the same state sequences before and after'
+  - 'Public channel API survives on the generated root types: Checked/Open/Value/Values, Controlled, ValueRequested, RequestValue, SetValueWithoutNotify and INotifyValueChanged<bool> where the channel is boolean; compound composition changes from <Name>Item to one generated sub-element per ir.compoundParts entry and that change is documented as deliberate'
+acceptance:
+  - id: A1
+    given: 'the four allowlisted contracts and the unity emitter'
+    when: 'pnpm run generate:unity runs'
+    then: 'every component''s C# is produced by one generic walk over ir.dom (or a role-synthesized part tree when anatomy.dom is absent) plus one generated [UxmlElement] class per ir.compoundParts entry, each part node carrying name=<part> and class <cssPrefix>__<part>, and packages/ds-codegen/src/frameworks/unity contains no branch on ir.name or on literal part, prop, channel or class names (coupling-audit --check and the unity lore test pass)'
+  - id: A2
+    given: 'the walker in place'
+    when: 'pnpm run audit:unity-boundary runs'
+    then: 'the anatomy and slots rule families are lowered with via naming the walker, every DomNodeIR kind (element, children hole, named slot, componentRef, conditional guard, iteration, content binding) resolves to exactly one lowering or an explicit pending/refused rule naming the phase or reason, and the audit reports zero pending P2 leaves and zero violations'
+  - id: A3
+    given: 'the regenerated package under Unity 6000.5.3f1'
+    when: 'pnpm run test:unity runs'
+    then: 'all EditMode tests pass with at least one case per attached behavior (boolean control, item group selection and roving focus, anchored surface dismissal and geometry), the UXML sample imports the generated root and compound sub-elements, and the engine-comparison EditMode filter reproduces the frozen traces'
+  - id: A4
+    given: 'the regenerated package'
+    when: 'pnpm run generate:unity runs a second time and the Unity emitter vitest suite runs'
+    then: 'git diff --exit-code over packages/ds-unity is clean, the emitter suite passes, and factory tests pin the walker against a synthetic contract that is not in the corpus (proving no corpus-shape adapter)'
+  - id: A5
+    given: 'docs/architecture/unity-target.md, packages/ds-unity/README.md and the implementation snapshot'
+    when: 'docs:check-claims and docs:check-links run'
+    then: 'the walker rules (node kind to element type, part identity, insertion points, behavior attachment by fact, compound sub-elements), the consumer composition change and the EditMode run id with Unity version are documented and both gates pass'
+observability:
+  - 'audit:unity-boundary per-phase pending counts (P2 must read 0 after the slice)'
+  - 'tmp/unity-pilot/results.xml test-run summary with Unity version and run id, cited in the snapshot'
+rollback:
+  - 'revert the slice commits and regenerate: generated C# returns to the three-base dispatcher shape; the UPM package has no persisted state'
+non_functional: {}
+contracts:
+  - name: 'unity-walker-tests'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/unity/factory.test.ts'
+  - name: 'unity-editmode-witness'
+    type: behavior
+    path: 'packages/ds-unity/Tests/Editor/InteractionTests.cs'
+  - name: 'unity-support-boundary'
+    type: schema
+    path: 'packages/ds-codegen/src/frameworks/unity/support-boundary.schema.json'
