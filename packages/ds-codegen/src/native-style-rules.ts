@@ -22,6 +22,10 @@ function selectorPlan(key: string, prefix: string, parts: string[], recipe: Clas
  let selector = key;
  if (['hover', 'active', 'focus', 'disabled'].includes(key)) selector = `.${prefix}:${key}`;
  if (key.startsWith('--') || key.startsWith('[')) selector = `.${prefix}${key}`;
+ // styles.json shorthand: a bare `__<part>` or `--<modifier>` compound names the
+ // component's own part or modifier class (`--pills __tab` is
+ // `.<prefix>--pills .<prefix>__tab`, a bare `__tab` is `.<prefix>__tab`).
+ selector = selector.replace(/(^|\s)(__|--)(?=[A-Za-z0-9])/g, (_all, lead: string, sigil: string) => `${lead}.${prefix}${sigil}`);
  const stem = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
  let invalid = false;
  selector = selector.replace(new RegExp(`:has\\(\\.${stem}__([A-Za-z0-9_-]+):(checked|disabled|indeterminate|focus-visible)\\)`, 'g'), (_all, part: string, state: string) => {
