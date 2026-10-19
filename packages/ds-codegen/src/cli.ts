@@ -688,12 +688,18 @@ function main(): void {
 
   // Build IRs once; emitters share them. Pair each IR with the
   // contract's provenance so emit time can stamp every artifact
-  // group with its source contract revision.
-  const irInputs: { ir: ComponentIR; provenance: ContractProvenance }[] =
-    validContracts.map((input) => ({
-      ir: buildComponentIR(input.contract, { allContracts: corpusForIr }),
-      provenance: input.provenance,
-    }));
+  // group with its source contract revision, and with the validated
+  // contract (sidecar tokens/styles merged) so a target's optional
+  // admitContract hook can refuse facts it has not classified.
+  const irInputs: {
+    ir: ComponentIR;
+    provenance: ContractProvenance;
+    contract: ComponentContract;
+  }[] = validContracts.map((input) => ({
+    ir: buildComponentIR(input.contract, { allContracts: corpusForIr }),
+    provenance: input.provenance,
+    contract: input.contract,
+  }));
   const irs: ComponentIR[] = irInputs.map((x) => x.ir);
 
   if (!surfaceTypeDiagnostics(irs, args.strictTypes, requestedTargets)) {
@@ -783,10 +789,19 @@ function explicitBuiltinTargets(rawTargetArg: string | undefined): BuiltinTarget
  * a count for the human-summary line. Each group carries the source contract
  * provenance the IR was built from. Groups are empty in `--dry-run` mode
  * (no files were actually written).
+ *
+ * Before each component is lowered, the emitter's optional `admitContract`
+ * hook sees the validated contract. A refusal throws and fails generation
+ * exactly like an emitter error — in `--dry-run` too, since a refused
+ * contract is a generation failure whether or not bytes would be written.
  */
 function emitForTarget(
   binding: TargetBinding,
-  irInputs: { ir: ComponentIR; provenance: ContractProvenance }[],
+  irInputs: {
+    ir: ComponentIR;
+    provenance: ContractProvenance;
+    contract: ComponentContract;
+  }[],
   args: CliArgs,
 ): { processed: number; groups: EmittedArtifactGroup[] } {
   const { emitter, componentsRoot } = binding;
@@ -800,7 +815,12 @@ function emitForTarget(
   }
 
   const groups: EmittedArtifactGroup[] = [];
-  for (const { ir, provenance } of irInputs) {
+  for (const { ir, provenance, contract } of irInputs) {
+    emitter.admitContract?.(contract, {
+      admitted: binding.admittedComponents
+        ? binding.admittedComponents.includes(ir.name)
+        : true,
+    });
     const writtenFiles = writeFiles(emitter, ir, binding, args);
     if (writtenFiles.length > 0 && binding.railFrameworkId) {
       groups.push({
@@ -1577,8 +1597,15 @@ function startWatch(
           path: toPosixRel(filePath),
           sha256: crypto.createHash("sha256").update(rawBytes).digest("hex"),
         };
+        // Watch builds IR and admission input from the bare contract: no
+        // sidecar tokens/styles merge and no allowlist filter, so a hook
+        // sees what this dev path lowers, not what a full `generate` does.
         for (const targetId of initialTargets) {
-          emitForTarget(registry.get(targetId), [{ ir, provenance }], args);
+          emitForTarget(
+            registry.get(targetId),
+            [{ ir, provenance, contract: result.value }],
+            args,
+          );
         }
       } catch (err) {
         console.error((err as Error).stack ?? (err as Error).message);

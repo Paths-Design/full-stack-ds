@@ -41,7 +41,7 @@ invariants:
   - 'The Calendar grid is derived from the visible month channel; no caller-supplied day list.'
   - 'Date arithmetic, selection, focus movement and Intl formatting live in one date-grid core per runtime family; emitters lower the dateGrid IR fact with no component-name special-casing.'
   - 'The selection dimension a11y attribute declared in states is the attribute bound on the day cell; the IR refuses a dateGrid contract that binds a different one.'
-  - 'Exactly one day button is a tab stop at any time.'
+  - 'Exactly one day gridcell is a tab stop at any time.'
 acceptance:
   - id: A1
     given: 'a contract declaring a dateGrid block'
@@ -50,14 +50,33 @@ acceptance:
       it yields a DateGridIR naming the value and month channels and the mode,
       locale, min, max, disabled and caption props; nested iteration over iter:item
       paths builds, an inner iteration's locals shadowing the enclosing ones as
-      dom-tree.test.ts pins; and a missing or mistyped channel or prop, a dateGrid
-      binding without the block, a compositeControl on the value channel, a cell
-      that does not bind the selection dimension a11y attribute, or a day node
-      missing its tabindex, data-date or select binding fails generate:check
+      dom-tree.test.ts pins; and a missing or mistyped channel or prop (a value
+      channel must be typed Date | Date[], optionally | null), a dateGrid binding
+      without the block, a compositeControl on the value channel, a cell that does
+      not bind the selection dimension a11y attribute, a day cell that is not itself
+      the gridcell control (no role=gridcell, a missing tabindex, data-date or
+      select binding, or a focusable, editable or interactive element inside it), or
+      a grid that does not bind aria-multiselectable to dateGrid:multiselectable
+      fails generate:check
   - id: A2
     given: 'a generated Calendar in React, Vue, Svelte, Angular and Lit'
-    when: 'a user tabs, presses arrow keys, Home, End, PageUp, PageDown (Shift for year), Enter or Space, or activates the previous and next buttons'
-    then: 'exactly one day button is tabbable (selected day, else today, else first day of the month), focus moves by the declared amount (Left and Right mirrored in RTL), crossing a month edge moves the month channel, activation selects through the value channel in single and range mode, nav buttons have visible content and labels and move the month, cells carry aria-selected from the selection state and aria-current=date on today, and min/max/disabled days are aria-disabled and unselectable, proven by one shared behavioral test run in every web harness'
+    when: >-
+      a user tabs, presses arrow keys, Home, End, PageUp, PageDown (Shift for year),
+      Enter or Space on a focused day, clicks a day, or activates the previous and
+      next buttons
+    then: >-
+      following the ARIA grid pattern each day is a gridcell that is itself the
+      control: exactly one gridcell is tabbable (focused day, else selected day,
+      else today, else first enabled day), focus moves onto the gridcell by the
+      declared amount (Left and Right mirrored in RTL) with no focusable element
+      inside any cell, crossing a month edge moves the month channel, click, Enter
+      and Space select through the value channel in single and range mode, the grid
+      declares aria-multiselectable true in range mode and false in single mode, nav
+      buttons have visible content and labels and move the month, the gridcell
+      carries aria-selected from the selection state and aria-current=date on today
+      on the same element that holds focus, and min/max/disabled days are
+      aria-disabled and unselectable, proven by one shared behavioral test run in
+      every web harness and by the browser runtime rail
   - id: A3
     given: 'a locale prop such as de-DE, ar-EG or en-US'
     when: 'the grid renders on any web family or React Native'
@@ -81,3 +100,53 @@ contracts:
   - name: 'date-grid'
     type: schema
     path: 'packages/ds-contracts/component.contract.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "packages/ds-codegen/src/date-grid.test.ts pins the DateGridIR and every refusal: a missing or mistyped channel or prop (value typed Date | Date[], optionally | null), a dateGrid binding without the block, a compositeControl on the value channel, a cell not binding the selection a11y attribute, a day cell that is not itself the gridcell control (no role=gridcell, missing tabindex, data-date or select binding, or focusable, editable or interactive content), and the nearest grid of the cells not binding aria-multiselectable to dateGrid:multiselectable, even inside an enclosing grid that does; packages/ds-codegen/src/dom-tree.test.ts pins nested iter:item iteration and shadowing. Rerun the cited command (224 tests pass at ff44f9b89). CI's pnpm run generate:check and pnpm run governed:rail exit 0 at ff44f9b89."
+    recorded_at: "2026-10-19T13:14:52.496Z"
+    test_nodeid: "packages/ds-codegen/src/date-grid.test.ts::refuses a grid that does not declare multiple selection from the mode"
+    command: pnpm exec vitest run packages/ds-codegen/src/date-grid.test.ts packages/ds-codegen/src/dom-tree.test.ts packages/ds-codegen/src/date/date-grid.test.ts
+    exit_code: 0
+    commit_sha: ff44f9b89
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "One obligation set, packages/ds-react/src/primitives/hooks/__tests__/calendar.contract.ts, runs in every web harness: pnpm exec vitest run packages/ds-react/src/primitives/hooks/__tests__/calendar.test.tsx; pnpm --filter @full-stack-ds/{vue,svelte,lit} exec vitest run src/primitives/__tests__/calendar.test.ts; pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs src/primitives/__tests__/calendar.test.ts (19/19 vitest each, 20/20 jest at ff44f9b89). It covers the tab-stop precedence, each key move incl. RTL, no focusable element inside a cell, month-edge crossing, click/Enter/Space selection in single and range mode, aria-multiselectable per mode, one selected day in single mode for an array value, nav content, labels and month moves, aria-selected and aria-current on the focused gridcell, and bounds and disabled days. e2e/runtime-rail.spec.ts drives the same in Chromium on all five targets, including range mode, bounds and a disabled calendar (the cited command: 45 Calendar tests pass at ff44f9b89 with FSDS_E2E_PORT set locally; the full pnpm run e2e:rail, CI runtime-rail job, passed at a1f555e25 and at ff44f9b89 failed on this loaded host only outside Calendar, in Angular cold-start page aborts and newPage timeouts, every Angular rail test passing against a warm dev server). No screen reader output is observed."
+    recorded_at: "2026-10-19T13:14:54.051Z"
+    test_nodeid: "e2e/runtime-rail.spec.ts::days outside the bounds are aria-disabled, refuse a click, and stop a key move at the bound"
+    command: "pnpm exec playwright test e2e/runtime-rail.spec.ts -g \"Runtime rail — Calendar\""
+    exit_code: 0
+    commit_sha: ff44f9b89
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "The shared test 'formats the caption, headers and day names in the locale' (calendar.contract.ts, run by all five web harnesses) pins de-DE caption, Monday-first headers and full-date names and ar-EG Arabic digits; packages/ds-codegen/src/date/date-grid.test.ts 'formats in Gregorian when the locale's calendar months differ' pins fa-IR (Persian default calendar) formatted in Gregorian, in the core every web package copies verbatim (generate:check drift-gated); React Native: packages/ds-react-native/src/components/Calendar/__tests__/Calendar.behavior.test.tsx 'follows the locale for week start, names and caption' (pnpm --filter @full-stack-ds/react-native exec vitest run src/components/Calendar); Chromium de-DE grid on all five targets in e2e/runtime-rail.spec.ts."
+    recorded_at: "2026-10-19T13:15:04.219Z"
+    test_nodeid: "packages/ds-angular/src/primitives/__tests__/calendar.test.ts::a locale input change re-renders the grid"
+    command: "pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs src/primitives/__tests__/calendar.test.ts"
+    exit_code: 0
+    commit_sha: ff44f9b89
+    test_verified_at: ff44f9b897ea9c69ae81800f94d83af8c7825017
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Commit 2d7a7c8b5 deletes the Calendar web keyboard, roving-focus, Enter|Space and aria-selected entries from scripts/a11y-realization-audit/known-gaps.json; the one Calendar entry left is jetpack-compose aria-current (NATIVE-STATE-SEMANTICS-01, a documented non-claim). pnpm run audit:a11y-realization (CI gate) exits 0 at ff44f9b89, and it exits 1 on any unledgered gap (scripts/a11y-realization-audit/audit.mjs), so a reproduced Calendar web gap would fail it."
+    recorded_at: "2026-10-19T13:15:10.289Z"
+    command: "pnpm run audit:a11y-realization"
+    exit_code: 0
+    artifact_path: scripts/a11y-realization-audit/known-gaps.json
+    commit_sha: ff44f9b89
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "React Native: Calendar.behavior.test.tsx pins the grid from the month channel, locale week start, names and caption, accessibilityState.selected on exactly the chosen days, and nav moving the month (pnpm --filter @full-stack-ds/react-native exec vitest run src/components/Calendar). Compose: packages/ds-jetpack-compose/library/src/test/kotlin/com/fullstackds/date/FsdsDateGridTest.kt and components/calendar/CalendarSemanticsTest.kt assert Compose selected semantics on the desktop JVM (./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test, CI lane, exit 0 at ff44f9b89; not an Android device). SwiftUI: packages/ds-swiftui/Tests/DsSwiftUITests/FsdsDateGridTests.swift pins grid derivation, locale and bounds under swift test (CI, exit 0), whose AX interaction test skips; the isSelected trait is observed by the cited command, packages/ds-swiftui/Tests/PressProofHarness/main.swift, which presses days through AXPress and reads AXSelected on the pressed day alone, after a parent-set value, and in de-DE, plus Next month (exit 0 at ff44f9b89). It is rerunnable on macOS with accessibility access for the invoking process and is not a CI step or iOS evidence."
+    recorded_at: "2026-10-19T13:15:15.559Z"
+    test_nodeid: "packages/ds-react-native/src/components/Calendar/__tests__/Calendar.behavior.test.tsx::selects a tapped day, reports it through onChange, and styles only that day"
+    command: swift run --package-path packages/ds-swiftui PressProofHarness
+    exit_code: 0
+    commit_sha: ff44f9b89
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "docs/architecture/date-grid.md documents the dateGrid contract surface, the IR rules, per-family realization, locale behavior, evidence and non-claims (verified_at_commit b3546085e, fresh under docs:check-claims at ff44f9b89; localization.md stamped at 822201bba); docs/architecture/localization.md's Dates section names date formatting through Intl and the date grid; docs/current-implementation-snapshot.md rows 68 and 88 cite the Calendar tests, the runtime rail and the press-proof harness. pnpm run docs:check-claims and pnpm run docs:check-links (CI gate) exit 0 at ff44f9b89."
+    recorded_at: "2026-10-19T13:15:20.640Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: docs/architecture/date-grid.md
+    commit_sha: ff44f9b89

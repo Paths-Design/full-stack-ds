@@ -1,0 +1,114 @@
+id: UNITY-SUPPORT-BOUNDARY-01
+title: 'Unity support boundary: classify every contract and sidecar leaf as lowered, pending or refused; refuse unclassified facts at generation'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Committed Unity support boundary (lowered/pending/refused per leaf family, realisation checks, dispatcher fact guards) with admitContract gate, audit:unity-boundary and docs; generated C# byte-identical; evidence re-recorded with mechanical commit and test citations; P1 of the Unity parity program'
+created_at: '2026-10-18T22:52:41.128Z'
+updated_at: '2026-10-19T01:48:39.751Z'
+created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
+blast_radius:
+  modules:
+    - 'Unity emitter admission, support boundary and capability inventory'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-codegen/src/emitter.ts'
+    - 'packages/ds-codegen/src/cli.ts'
+    - 'packages/ds-unity/README.md'
+    - 'packages/ds-unity/Runtime/Components'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'package.json'
+    - packages/ds-codegen/src/cli.test.ts
+    - docs/architecture/design/box-model-primitive.md
+  out: []
+invariants:
+  - 'Generated Unity C# for the four admitted components is byte-identical before and after this slice'
+  - 'A lowered rule names a lowering the emitter or shared runtime actually performs today, never an aspiration; pending rules name the phase that will lower them; refused rules state why UI Toolkit cannot lower the fact idiomatically'
+  - 'No emitter branch on component identity is introduced; the boundary classifies pointer families, not components'
+acceptance:
+  - id: A1
+    given: 'the live contract corpus with token and style sidecars'
+    when: 'the Unity capability inventory runs'
+    then: 'every leaf resolves to exactly one boundary rule with disposition lowered, pending or refused and the inventory reports zero unclassified leaves'
+  - id: A2
+    given: 'a contract containing a leaf no boundary rule matches'
+    when: 'the Unity target generates it'
+    then: 'generation fails with UNITY_BOUNDARY_UNCLASSIFIED naming the component and pointer'
+  - id: A3
+    given: 'an allowlisted Unity component with a leaf that resolves only to a catch-all rule'
+    when: 'the Unity target generates it'
+    then: 'generation fails with UNITY_BOUNDARY_UNADJUDICATED naming the pointer'
+  - id: A4
+    given: 'the committed boundary file'
+    when: 'the boundary audit runs'
+    then: 'every rule matches at least one live leaf, every refused rule carries a reason, every pending rule names a phase, and every not-emitted prop of an admitted component resolves to a non-catch-all rule'
+  - id: A5
+    given: 'the boundary in place'
+    when: 'pnpm run generate:unity runs'
+    then: 'git diff over packages/ds-unity is empty and the Unity emitter test suite passes'
+  - id: A6
+    given: 'docs/architecture/unity-target.md and the implementation snapshot'
+    when: 'docs:check-claims runs'
+    then: 'the boundary file, its vocabulary and the audit command are documented and claims pass'
+observability:
+  - 'audit:unity-boundary prints per-disposition leaf counts and lists any unclassified or dead rules'
+rollback:
+  - 'revert the slice commits; generated Unity bytes are unchanged so no regeneration is needed'
+non_functional: {}
+contracts:
+  - name: 'unity-support-boundary'
+    type: schema
+    path: 'packages/ds-codegen/src/frameworks/unity/support-boundary.schema.json'
+  - name: 'unity-boundary-tests'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/unity/boundary.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "boundary.test.ts \"classifies every leaf of the live corpus and its sidecars with no dead rules\" asserts zero unclassified over all 55 contracts plus token/style sidecars; pnpm run audit:unity-boundary at 7c24b5e95 printed unclassified:0 and exited 0 (ignored log: tmp/unity-support-boundary-01/audit-unity-boundary.log)"
+    recorded_at: "2026-10-19T01:45:23.300Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/boundary.test.ts::classifies every leaf of the live corpus and its sidecars with no dead rules"
+    command: "pnpm run audit:unity-boundary"
+    exit_code: 0
+    commit_sha: "7c24b5e95"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "boundary.test.ts \"an unclassified leaf fails generation for any component\" and factory.test.ts \"gates generation on the support boundary before lowering\" pin UNITY_BOUNDARY_UNCLASSIFIED naming Switch and contract:/futureBlock/enabled through the emitter admitContract hook the CLI calls (cli.test.ts seam cases; 70/70 in tmp/unity-support-boundary-01/unity-and-cli-tests.log). Scope: the contract schema already rejects unknown top-level blocks, so the CLI path is reachable only after a schema change; the function and emitter-object gates are what is proven"
+    recorded_at: "2026-10-19T01:45:27.928Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts::gates generation on the support boundary before lowering"
+    commit_sha: "7c24b5e95"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "CLI run at 7c24b5e95 with an unadjudicated prop added to Switch: pnpm run generate:unity exited 1 with UNITY_BOUNDARY_UNADJUDICATED naming contract:/props/designed/members/plain:futureBehavior/name (ignored log: tmp/unity-support-boundary-01/generate-unadjudicated.log); factory.test.ts and boundary.test.ts pin the same refusal and that an explicit non-allowlisted request tolerates the catch-all"
+    recorded_at: "2026-10-19T01:45:51.831Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/boundary.test.ts::an allowlisted component may not rely on a catch-all; an explicit request may"
+    command: "pnpm run generate:unity (with tmp/Switch.unadjudicated.json copied over Switch.contract.json, then restored)"
+    exit_code: 1
+    commit_sha: "7c24b5e95"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "auditBoundary reports deadRules [] and unadjudicated [] over the live corpus (boundary.test.ts corpus case; audit log above); validateBoundary rejects refused rules without reason, pending rules without phase, lowered rules without via, catch-all lowered/refused rules and realizes on non-lowered rules (boundary.test.ts \"rejects a malformed boundary\" cases); capabilities.test.ts asserts every prop of every component carries a rule and every allowlisted component realises its lowered claims"
+    recorded_at: "2026-10-19T01:46:00.511Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/capabilities.test.ts::accounts for the actual corpus and keeps unadmitted shapes distinct"
+    command: "pnpm run audit:unity-boundary"
+    exit_code: 0
+    commit_sha: "7c24b5e95"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run generate:unity at 7c24b5e95 emitted the four allowlisted components with the admission hook live and git status over packages/ds-unity was empty (ignored logs: tmp/unity-support-boundary-01/generate-unity.log, generate-unity-diff.log with 0 lines); governed:rail required-mode verify reported Overall PASS with a clean tree; Unity emitter, boundary, capability and CLI seam suites pass 70/70"
+    recorded_at: "2026-10-19T01:46:09.215Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts::registers the four-component pilot without claiming TypeScript rail admission"
+    command: "pnpm run generate:unity"
+    exit_code: 0
+    commit_sha: "7c24b5e95"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "docs/architecture/unity-target.md gains the Support boundary section (dispositions, keyed pointers and roles, the three refusal codes, dispatcher fact guards, audit command, non-claims); the snapshot Unity row and packages/ds-unity/README.md cite the boundary file and pnpm run audit:unity-boundary; docs:check-claims and docs:check-links exited 0 at 7c24b5e95 (ignored log: tmp/unity-support-boundary-01/docs-gates.log)"
+    recorded_at: "2026-10-19T01:46:19.298Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    commit_sha: "7c24b5e95"

@@ -1,9 +1,11 @@
 id: FIX-SWIFT-BUILD-MANIFEST-01
 title: 'Exclude Swift build products and hash source symlinks without traversal'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Removed tracked Swift build products and verified explicit symlink hashing plus the analytical browser proof; root regression tests retain unchanged-test timeouts and peer feedback was unavailable.'
 created_at: '2026-10-18T21:38:54.036Z'
-updated_at: '2026-10-18T21:39:46.962Z'
+updated_at: '2026-10-18T22:47:55.672Z'
 created_by_session: '01a150ef-9a59-7450-81cd-c4fec38649d3'
 blast_radius:
   modules:
@@ -47,23 +49,20 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Candidate b6396573 removes 2837 tracked build entries (155180750 bytes), ignores nested .build products, and preserves all eight Swift source/package paths; canonical merged index independently checked."
-    recorded_at: "2026-10-18T22:34:22.547Z"
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/swift-build-manifest-b6396573/tmp/swift-build-manifest-checks/inventory.log"
+    evidence_ref: "Directly inspected and executed inventory assertions at b6396573: 2837 build entries (155180750 bytes) removed, nested .build ignored, eight Swift source/package paths unchanged; canonical merged index checked. Ignored runtime log retained at tmp/swift-build-manifest-b6396573/tmp/swift-build-manifest-checks/inventory.log; this citation re-derives the source commit only."
+    recorded_at: "2026-10-18T22:45:35.153Z"
     commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
   - criterion_id: A2
     status: pass
-    evidence_ref: "Four real-filesystem tests execute exact-byte file hashing, explicit missing paths, file/directory/dangling symlinks, raw non-UTF-8 target bytes, target-content independence, and rejection of directories and ENOTDIR."
-    recorded_at: "2026-10-18T22:34:24.582Z"
+    evidence_ref: "Direct execution and assertion inspection: four real-filesystem tests pass for exact file bytes, missing paths, file/directory/dangling links, non-UTF-8 target bytes, target-content independence, directory rejection and ENOTDIR. Raw ignored runtime log: tmp/swift-build-manifest-b6396573/tmp/swift-build-manifest-checks/manifest.log. CAWS re-derives the source citation, not command execution."
+    recorded_at: "2026-10-18T22:45:38.256Z"
     command: node --test scripts/lib/source-manifest.test.mjs
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/swift-build-manifest-b6396573/tmp/swift-build-manifest-checks/manifest.log"
     commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
   - criterion_id: A3
     status: pass
-    evidence_ref: "Clean candidate receipt binds the inspected source-manifest digest; all 24 Chromium cases pass, the renderer control fails for shared scale distance, and the forbidden-import control fails at the browser boundary guard."
-    recorded_at: "2026-10-18T22:34:26.561Z"
+    evidence_ref: "Directly executed full analytical proof and inspected clean-candidate receipt plus matching manifest digest: 24 Chromium cases pass; renderer shared-scale and forbidden-import controls reject their designated defects. Ignored runtime receipt: tmp/swift-build-manifest-b6396573/tmp/analytical-browser-proof/receipt.json. CAWS re-derives the source citation, not browser execution."
+    recorded_at: "2026-10-18T22:45:42.165Z"
     command: "pnpm run e2e:analytical"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/swift-build-manifest-b6396573/tmp/analytical-browser-proof/receipt.json"
     commit_sha: b63965731fd5dd027ca3077bef0bec4e31f1b32f
