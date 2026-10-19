@@ -5,7 +5,7 @@ status: active
 title: Month date grids
 owner: "@darianrosebrook"
 updated: 2026-10-19
-verified_at_commit: e1df6da47
+verified_at_commit: b3546085e
 governs:
   - packages/ds-codegen/src/date-grid.ts
   - packages/ds-codegen/src/date/date-grid.ts
@@ -53,7 +53,9 @@ screen reader reads the state with the focus. The day's number renders in a
 presentational `span` inside the cell. The grid binds `aria-multiselectable`
 to the mode: `"true"` in range mode, where several cells are selected, and
 `"false"` in single mode. WAI-ARIA 1.2's grid role asks a grid that allows
-several selected gridcells to declare it.
+several selected gridcells to declare it. Single mode selects at most one
+day: given an array value, such as a range kept after the mode changes, it
+selects the first.
 
 `buildDateGridIR` (`packages/ds-codegen/src/date-grid.ts`) refuses a contract
 with `DATE_GRID_INVALID` unless:
@@ -70,8 +72,8 @@ with `DATE_GRID_INVALID` unless:
   focusable tag, `tabindex`, `contenteditable` other than `"false"`, event or
   component reference (attribute names compare case-insensitively);
 - an ancestor of the cells binds keydown to `dateGrid:keydown`;
-- the cells' `role="grid"` ancestor binds `aria-multiselectable` to
-  `dateGrid:multiselectable`;
+- the cells' nearest `role="grid"` ancestor, the grid that owns them, binds
+  `aria-multiselectable` to `dateGrid:multiselectable`;
 - no `dateGrid:` binding appears without a `dateGrid` declaration.
 
 ## The core
@@ -155,14 +157,15 @@ divergences are ledgered in
 - `packages/ds-codegen/src/date-grid.test.ts` pins the IR refusals, including
   a focusable control inside the cell (the shape before the grid pattern), an
   editable span inside it, a cell without `role="gridcell"`, a grid without
-  `aria-multiselectable`, and value channels whose type merely names `Date`.
+  `aria-multiselectable` (including inside an enclosing grid that has it), and
+  value channels whose type merely names `Date`.
   The core test types a setter without the null arm against `onValueChange`,
   checked by the codegen package's `typecheck`.
 - `packages/ds-react/src/primitives/hooks/__tests__/calendar.contract.ts` runs
   one obligation set through the React, Vue, Svelte, Angular and Lit harnesses,
   including the grid pattern's shape, the grid's multiple-selection
-  declaration per mode, and Enter and Space selection; React Native has its own
-  Calendar tests.
+  declaration per mode, one selected day in single mode for an array value,
+  and Enter and Space selection; React Native has its own Calendar tests.
 - `e2e/runtime-rail.spec.ts` drives Calendar in Chromium on all five web
   targets under a fixed clock: one tab stop on today, real arrow, Home, End and
   PageDown keys moving DOM focus onto the gridcell, Enter and Space selection

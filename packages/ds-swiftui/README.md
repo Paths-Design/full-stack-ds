@@ -38,7 +38,7 @@ swift build --package-path packages/ds-swiftui
 | Claim | Status |
 |---|---|
 | Contracts can emit compiling SwiftUI source through the shared IR | Yes — Switch emits a `Toggle(.switch)` View via the `native-toggle-affordance` collapse intent; `swift build` compiles the module |
-| Controlled/uncontrolled channel semantics survive the projection | The `checked` channel lowers to `Binding<Bool>?` + a `ControllableValue` + `onChange` with controlled-takes-precedence, matching React's `useControllableState` rule. Every generated channel is held through the `ControllableState` (or, for Select, `ControllableSelection`) dynamic property, which re-binds the state object to the view's current `Binding` and callback before each body; an emitter test fails if a generated view holds a bare `@StateObject` channel |
+| Controlled/uncontrolled channel semantics survive the projection | The `checked` channel lowers to `Binding<Bool>?` + a `ControllableValue` + `onChange` with controlled-takes-precedence, matching React's `useControllableState` rule. Every generated channel is held through the `ControllableState` (or, for Select, `ControllableSelection`) dynamic property, which re-binds the state object to the view's current `Binding` and callback before each body; an emitter test fails if a generated view holds a bare `@StateObject` channel. Compound roots (Tabs, Accordion) hand their channel to subcomponents with `fsdsChannel`, which also passes its current value through the environment, so a value the parent sets reaches the panels and items in the same update; an emitter test fails on a bare `.environmentObject` injection |
 | Size variants resolve from typed token facts | Yes — `ir.tokenFacts` (FEAT-MOBILE-IR-001), not CSS parsing; `sm`/`lg` fall through to `md` until those tokens are authored |
 | The Stack primitive lowers from `PrimitiveIR` like the web targets | Yes — axis (VStack/HStack) from `axisByVariant`, gated on `axisModes` only (native = neutral container, no imposed spacing); emitted via `emitPrimitives` with mutation-pinned gating |
 | Multi-part anatomy emits with theme-driven styling | Yes — the projected-children action path (root button + single content region) emits `FsdsButton`; styling comes from `ir.tokenScopes` shipped as data and resolved through the hand-authored `FsdsTheme`, layering root + variant_<size> + variant_<intent>. The shared native conformance fixture pins slot-name override → semantic-ref override → authored literal/fallback for ordinary and layered resolution. |
@@ -48,7 +48,7 @@ swift build --package-path packages/ds-swiftui
 | Selection semantics compose the controllable substrate | Yes — SelectionState holds single+multi ControllableValue projections behind the mode-gated apply() (replace vs toggleMembership); Select lowers through it with a contract-alias-derived option struct and Menu iteration |
 | Glyph pipeline renders the iconography catalog natively | Yes — hand-maintained SVGPath runtime (arc→cubic conversion, XCTest-pinned on real glyph bounds) + a generated GlyphCatalog substrate; Icon lowers through the iconGlyph class with size hints and catalog-driven decorative defaults; unknown names surface via accessibility, never silent |
 | Anchored surfaces emit through native popovers | Tooltip's trigger region hosts consumer content and `onHover` drives the open channel. Popover's contract-authored `openTriggers: ["click"]` lowers to a plain native Button that toggles the same controllable channel and is disabled by the declared prop. The PressProof harness independently observes an OS accessibility press → `onOpenChange(true)` → visible content. |
-| Centered-modal surfaces emit as sheets with the openness channel | Dialog presents a sheet and routes the platform presentation binding through `ControllableValue`; compound regions emit as closures (`body` renames to bodyContent for the View collision). Controlled/default presentation is host-proven; native-dismissal callback remains emitter-level because the harness cannot safely press into the modal sheet. |
+| Centered-modal surfaces emit as sheets with the openness channel | Dialog presents a sheet whose presentation binding is the channel's own `open.binding()`, for reads and writes alike; compound regions emit as closures (`body` renames to bodyContent for the View collision). Controlled/default presentation is host-proven; native-dismissal callback remains emitter-level because the harness cannot safely press into the modal sheet. |
 | Value-channel text controls emit with the controllable-state projection | Yes — Input is a SwiftUI TextField whose string channel projects through Binding + @State + onChange (controlled takes precedence), keyed on the IR channel rather than component identity; placeholder/disabled realized, HTML-form props omitted |
 | Named-slot composers emit as region closures | Yes — Field is one ViewBuilder region per dom slot (label/control/help/error/validatingIndicator), gated on every dom leaf being a slot (TextField's component-instance leaf and Dialog's surface block stay out); the web value-channel API is omitted, not accepted-and-ignored |
 
@@ -93,8 +93,13 @@ naming any failed counter. Current proven surface (press → channel):
   selection
 - **Dialog** — controlled false→true→false presentation and
   `defaultOpen: true` presentation at mount
-- **Tabs** — selecting tab `b` drives the active-tab channel
-- **Accordion** — expanding then collapsing item `k1` drives openness
+- **Tabs** — selecting tab `b` drives the active-tab channel; a controlled
+  Tabs shows the panel its parent sets, in both directions
+- **Accordion** — expanding then collapsing item `k1` drives openness; a
+  controlled Accordion opens and closes the item its parent sets
+- **Controlled Switch** — bound to storage SwiftUI cannot observe, a press
+  writes the storage but the switch keeps showing off; a binding that refuses
+  the write keeps the owner's value and `onChange` still reports `true`
 - **Shuttle** — moving `beta` forward then back drives selection
 
 Token painting is pixel-proven in `Tests/DsSwiftUITests/TokenPaintTests.swift`:
@@ -110,6 +115,10 @@ controlled channel: a `Binding` held only inside the `@StateObject` read the
 value it had when the view first appeared, so a Switch turned on still
 rendered off, Select's trigger kept its placeholder and Calendar showed no
 selected day. With the re-binding removed, the harness fails on all three.
+Re-binding alone did not reach Tabs' panels or Accordion's items, which read
+the channel through an environment object that a parent's change never
+publishes; a controlled Tabs kept its old panel and a controlled Accordion
+never opened until the root passed the value through the environment too.
 It later falsified its own initial
 structural finding for Tabs, Accordion, and Shuttle: their generated controls
 now expose OS-pressable elements and the channel counters above move.
@@ -153,6 +162,9 @@ level is sample-proven by `TokenPaintTests` — see runtime proof above.)
   product correctness.
 - Tooltip's declared focus trigger is not lowered on SwiftUI; its hover trigger
   is live. The Popover click trigger is host-proven on macOS, not iOS.
+- A controlled channel shows the value its owner publishes. A `Binding` over
+  storage SwiftUI cannot observe receives the write, but the component keeps
+  showing the value from its parent's last render.
 - Switch's track geometry comes from its authored size token facts
   (32/48/64 px). ToggleSwitch authors none, so it renders at the native
   Toggle's intrinsic size — its size prop has no visual effect on this target
