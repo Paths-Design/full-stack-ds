@@ -94,3 +94,10 @@ evidence:
     command: "pnpm run generate:unity && git status --short packages/ds-unity"
     exit_code: 0
     commit_sha: "301f52b64"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "docs/architecture/unity-target.md gains the Anatomy walker section (classes, part identity, insertion points incl. the composed-content host, props and the knob-driven variant rule, behavior attachment by fact with the state class derivation, geometry, the consumer composition change with UXML examples, discovery timing) and rewrites the lowering-path intro and dispatcher refusals; packages/ds-unity/README.md documents the sub-element composition and Group.Synchronize; docs/current-implementation-snapshot.md Unity row records the walker, the EditMode run (source 95282a70, Unity 6000.5.3f1, start 2026-10-19 07:18:56Z, 26/26, named per-behavior and ownership-transfer cases) and the frozen-trace match; docs:check-claims and docs:check-links exited 0 in the worktree gate chain at 95282a70b and 764129c65"
+    recorded_at: "2026-10-19T07:26:45.036Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    commit_sha: "301f52b64"
