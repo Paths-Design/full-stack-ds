@@ -2,7 +2,6 @@ id: UNITY-ANATOMY-WALKER-01
 title: 'Unity anatomy walker: lower ir.dom and ir.compoundParts into generated VisualElement trees; runtime bases become fact-attached behaviors'
 mode: feature
 lifecycle_state: active
-worktree: unity-anatomy-walker
 created_at: '2026-10-19T03:10:03.709Z'
 updated_at: '2026-10-19T03:11:27.198Z'
 created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
