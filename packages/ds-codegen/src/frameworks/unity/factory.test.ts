@@ -5,6 +5,8 @@ import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
 import { createUnityEmitter, unityLowering } from "./factory.js";
 import { createDefaultRegistry } from "../../registry.js";
+import { classifyContract, loadContractWithSidecars } from "./boundary.js";
+import { rootPublicMembers } from "./walker.js";
 
 const root = path.resolve(__dirname, "../../../../..");
 const contractsRoot = path.join(root, "packages/ds-contracts");
@@ -136,5 +138,347 @@ describe("Unity capability lowering", () => {
     expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Synthetic contracts that exist nowhere in the corpus. Their part, channel,
+// prop and class names share nothing with the allowlisted four, so any output
+// that matches here is derived from the walker rules, not a corpus adapter.
+// ---------------------------------------------------------------------------
+
+/** Keyed selection over a dom tree: compound rail/notch/well, a literal-content
+ * text leaf, a nested sole-child insertion point, a non-vocabulary variant axis. */
+const dial = (): ComponentContract => ({
+  name: "Dial", cssPrefix: "dial", layer: "composite", category: "navigation", description: "Synthetic keyed selection fixture.",
+  anatomy: {
+    parts: ["frame", "rail", "notch", "glint", "caption", "well", "wellBody"],
+    details: {
+      frame: { tag: "div", role: "root" },
+      rail: { tag: "div", role: "group", subcomponent: true },
+      notch: { tag: "button", role: "trigger", interactive: true, multiple: true, subcomponent: true },
+      glint: { tag: "span", role: "decoration" },
+      caption: { tag: "span", role: "label" },
+      well: { tag: "div", role: "region", multiple: true, subcomponent: true },
+      wellBody: { tag: "div", role: "decoration" },
+    },
+    dom: {
+      tag: "div", part: "frame", children: [
+        { tag: "span", part: "caption", content: "literal:Pick one" },
+        { tag: "div", part: "rail", children: [{ tag: "button", part: "notch", attrs: { type: "button" }, bindings: { "aria-pressed": "channel:pick.value" } }, { tag: "span", part: "glint" }] },
+        { tag: "div", part: "well", children: [{ tag: "div", part: "wellBody", children: [{ tag: "children" }] }] },
+      ],
+    },
+  },
+  channels: { pick: { value: "picked", defaultValue: "defaultPicked", onChange: "onPick", valueType: "string", description: "Picked notch." } },
+  interaction: { channel: "pick", content: "well", presence: "hidden", triggers: [{ part: "notch", operation: "select" }] },
+  focus: { strategy: "manual", orientation: "vertical", wrap: false },
+  props: {
+    styled: {
+      members: [
+        { name: "picked", type: "string" },
+        { name: "defaultPicked", type: "string" },
+        { name: "onPick", type: "(value: string) => void" },
+        { name: "tone", type: "DialTone", default: "calm" },
+        { name: "appearance", type: "DialAppearance", default: "flat" },
+        { name: "loop", type: "boolean", default: false },
+      ],
+    },
+  },
+  types: { DialTone: { kind: "union", values: ["calm", "loud"] }, DialAppearance: { kind: "union", values: ["flat", "raised"] } },
+  variants: { tone: ["calm", "loud"], appearance: ["flat", "raised"] },
+  states: { dimensions: { choice: { category: "selection", values: ["idle", "chosen"], initial: "idle" } } },
+}) as unknown as ComponentContract;
+
+/** Boolean control on a div root: a children hole with siblings, a named slot,
+ * and a disabled prop that is not called `disabled`. */
+const lamp = (): ComponentContract => ({
+  name: "Lamp", cssPrefix: "lamp", layer: "primitive", category: "action", description: "Synthetic boolean control fixture.",
+  anatomy: {
+    parts: ["shell", "actuator", "lead", "tail"],
+    details: {
+      shell: { tag: "div", role: "root" },
+      actuator: { tag: "button", role: "trigger", interactive: true, focusable: true },
+      tail: { tag: "span", role: "decoration" },
+    },
+    dom: {
+      tag: "div", part: "shell", children: [
+        { tag: "button", part: "actuator", bindings: { "aria-pressed": "channel:lit.value", disabled: "prop:off" } },
+        { tag: "slot", name: "lead" },
+        { tag: "children" },
+        { tag: "span", part: "tail" },
+      ],
+    },
+  },
+  channels: { lit: { value: "lit", defaultValue: "defaultLit", onChange: "onLit", valueType: "boolean", description: "Whether the lamp is lit." } },
+  formControl: { part: "actuator", channel: "lit", valueModel: "boolean", commit: "change" },
+  focus: { strategy: "auto" },
+  props: {
+    designed: {
+      members: [
+        { name: "lit", propType: { kind: "boolean" }, description: "Lit." },
+        { name: "defaultLit", propType: { kind: "boolean" }, description: "Initial." },
+        { name: "onLit", propType: { kind: "callback", params: [{ name: "lit", type: { kind: "boolean" } }], returns: { kind: "void" } }, description: "Change." },
+        { name: "off", propType: { kind: "boolean" }, description: "Disables the lamp." },
+      ],
+    },
+  },
+  states: { dimensions: { glow: { category: "visibility", effect: "channel", values: ["dark", "lit"], initial: "dark" } } },
+}) as unknown as ComponentContract;
+
+/** Parts-only anchored surface: Popover's facts with every part renamed, plus
+ * a non-compound decoration part. */
+function flyout(): ComponentContract {
+  const c = structuredClone(fixture("Popover")) as unknown as Record<string, any>;
+  const renamed: Record<string, string> = { trigger: "opener", content: "sheet" };
+  c.name = "Flyout"; c.cssPrefix = "flyout";
+  c.anatomy.parts = ["root", "opener", "sheet", "tip"];
+  c.anatomy.details = { root: c.anatomy.details.root, opener: { ...c.anatomy.details.trigger, subcomponent: true }, sheet: { ...c.anatomy.details.content, subcomponent: true }, tip: { role: "decoration", description: "Synthetic decoration." } };
+  c.surface.anchor.part = "opener"; c.surface.content.part = "sheet";
+  c.interaction.content = "sheet";
+  c.interaction.triggers = c.interaction.triggers.map((t: { part: string }) => ({ ...t, part: renamed[t.part] ?? t.part }));
+  c.relationships = c.relationships.map((r: { from: string; to: string }) => ({ ...r, from: renamed[r.from] ?? r.from, to: renamed[r.to] ?? r.to }));
+  for (const k of c.a11y?.keyboard ?? []) if (k.when && renamed[k.when]) k.when = renamed[k.when];
+  c.slots = { root: c.slots.root, opener: c.slots.trigger, sheet: c.slots.content };
+  return c as unknown as ComponentContract;
+}
+
+/** The constructor body of one generated class, for exact-order assertions. */
+function ctor(source: string, cls: string): string {
+  const start = source.indexOf(`        public ${cls}()\n        {\n`);
+  expect(start, `constructor of ${cls}`).toBeGreaterThan(-1);
+  const body = source.slice(start).split("\n        {\n")[1]!;
+  return body.slice(0, body.indexOf("\n        }"));
+}
+const lines = (...l: string[]) => l.map(x => `            ${x}`).join("\n");
+
+describe("Unity anatomy walker on synthetic contracts", () => {
+  it("lowers a keyed selection tree by rule: compound classes, identity, insertion point, behavior and vocabulary props", () => {
+    const contract = dial();
+    // The full admission gate (boundary + realisation) holds for a non-corpus contract.
+    expect(() => createUnityEmitter().admitContract!(contract, { admitted: false })).not.toThrow();
+    const ir = buildComponentIR(contract);
+    expect(unityLowering(ir)).toMatchObject({ behavior: "ItemGroup", trigger: { name: "notch" }, content: { name: "well" }, operation: "select", multiple: false, stateClass: "is-chosen", focus: { strategy: "manual", orientation: "vertical", wrap: false } });
+    const source = emit(contract);
+    // R1: one root class plus one class per compound part, in ir.compoundParts order.
+    expect([...source.matchAll(/public partial class (\w+) : ([\w, <>]+)\n/g)].map(m => `${m[1]} : ${m[2]}`))
+      .toEqual(["Dial : VisualElement", "DialRail : VisualElement", "DialNotch : Button, IKeyedPart", "DialWell : VisualElement, IKeyedPart"]);
+    // R2 + R5: the literal-content text leaf is a Label carrying its text; compound
+    // parts emit nothing inline (R4), so the root renders only the caption.
+    expect(source).toContain("        public Label Caption { get; } = new Label();\n");
+    expect(ctor(source, "Dial")).toBe(lines(
+      'name = "frame";',
+      'AddToClassList("dial");',
+      'Caption.name = "caption";',
+      'Caption.AddToClassList("dial__caption");',
+      'Caption.text = "Pick one";',
+      "hierarchy.Add(Caption);",
+      'Group = ItemGroup.Attach(this, triggerClass: "dial__notch", contentClass: "dial__well", operation: "select", stateClass: "is-chosen", multiple: false, focus: "manual", orientation: "vertical", wrap: false);',
+      'Appearance = "flat";',
+      "Loop = false;",
+    ));
+    // R4: the rail renders its non-compound child but not the nested compound notch.
+    expect(ctor(source, "DialRail")).toBe(lines('name = "rail";', 'AddToClassList("dial__rail");', 'Glint.name = "glint";', 'Glint.AddToClassList("dial__glint");', "hierarchy.Add(Glint);"));
+    // R3: a hole that is the sole child of a nested element makes that element the contentContainer.
+    expect(source).toContain("        public override VisualElement contentContainer => WellBody;\n");
+    expect(source.match(/contentContainer/g)).toHaveLength(1);
+    // R4: pairing key on the trigger and content parts, Disabled on the trigger only.
+    expect(source).toContain("    public partial class DialNotch : Button, IKeyedPart\n    {\n        [UxmlAttribute] public string Value { get; set; }\n        [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }\n");
+    expect(source).toContain("    public partial class DialWell : VisualElement, IKeyedPart\n    {\n        public VisualElement WellBody { get; } = new VisualElement();\n        public override VisualElement contentContainer => WellBody;\n        [UxmlAttribute] public string Value { get; set; }\n        public DialWell()");
+    // R8: the string channel API is named by the channel's own value prop.
+    expect(source).toContain("[UxmlAttribute] public string Picked { get => Group.Value; set => Group.Value = value; }");
+    expect(source).toContain('public const string ChannelName = "pick";');
+    // R6: a vocabulary axis is a class-recipe modifier; a vocabulary boolean drives its knob;
+    // an axis whose family the boundary does not lower (tone) is not emitted.
+    expect(source).toContain('[UxmlAttribute] public string Appearance { get => Variants.Get(this, "dial", "flat", "raised"); set { Variants.Set(this, "dial", value, "flat", "raised"); } }');
+    expect(source).toContain("[UxmlAttribute] public bool Loop { get => Group.Loop; set => Group.Loop = value; }");
+    expect(rootPublicMembers(source, "Dial")).toEqual(new Set(["Picked", "Controlled", "Appearance", "Loop"]));
+    expect(source).not.toMatch(/Tone|calm|loud/);
+  });
+
+  it("lowers a boolean control with a children hole beside siblings and a named slot, in document order", () => {
+    const contract = lamp();
+    expect(() => createUnityEmitter().admitContract!(contract, { admitted: false })).not.toThrow();
+    const source = emit(contract);
+    expect(source).toContain("    public partial class Lamp : VisualElement, INotifyValueChanged<bool>\n");
+    // R2/R3: part properties first, then the private children host that is the contentContainer.
+    expect(source).toContain([
+      "        public Button Actuator { get; } = new Button();",
+      "        public VisualElement LeadSlot { get; } = new VisualElement();",
+      "        public VisualElement Tail { get; } = new VisualElement();",
+      "        private readonly VisualElement children = new VisualElement();",
+      "        public override VisualElement contentContainer => children;",
+      "        public BooleanControl Control { get; }",
+      "        public Button Trigger => Actuator;",
+      "        [UxmlAttribute] public bool Lit { get => Control.Value; set => Control.Value = value; }",
+    ].join("\n"));
+    // R6: the disabled prop is whatever the control part's disabled binding names.
+    expect(source).toContain("[UxmlAttribute] public bool Off { get => !enabledSelf; set => SetEnabled(!value); }");
+    // Document order is preserved; a div root is no label host (R7).
+    expect(ctor(source, "Lamp")).toBe(lines(
+      'name = "shell";',
+      'AddToClassList("lamp");',
+      'Actuator.name = "actuator";',
+      'Actuator.AddToClassList("lamp__actuator");',
+      "hierarchy.Add(Actuator);",
+      'LeadSlot.name = "lead";',
+      'LeadSlot.AddToClassList("lamp__lead");',
+      "hierarchy.Add(LeadSlot);",
+      'children.name = "children";',
+      'children.AddToClassList("lamp__children");',
+      "hierarchy.Add(children);",
+      'Tail.name = "tail";',
+      'Tail.AddToClassList("lamp__tail");',
+      "hierarchy.Add(Tail);",
+      'Control = BooleanControl.Attach(this, control: Actuator, stateClass: "is-lit", labelHost: null);',
+    ));
+  });
+
+  it("synthesizes a parts-only tree from ir.parts: root-only part is the class, other parts are children or compound classes", () => {
+    const contract = flyout();
+    expect(() => createUnityEmitter().admitContract!(contract, { admitted: false })).not.toThrow();
+    const source = emit(contract);
+    expect([...source.matchAll(/public partial class (\w+) : ([\w, <>]+)\n/g)].map(m => `${m[1]} : ${m[2]}`))
+      .toEqual(["Flyout : VisualElement, INotifyValueChanged<bool>", "FlyoutOpener : Button", "FlyoutSheet : ScrollView"]);
+    expect(ctor(source, "Flyout")).toBe(lines(
+      'name = "root";',
+      'AddToClassList("flyout");',
+      'Tip.name = "tip";',
+      'Tip.AddToClassList("flyout__tip");',
+      "hierarchy.Add(Tip);",
+      'Surface = AnchoredSurface.Attach(this, triggerClass: "flyout__opener", contentClass: "flyout__sheet", stateClass: "is-open");',
+      "CloseOnEscape = true;",
+      "CloseOnOutsideClick = true;",
+      "CloseOnBlur = true;",
+    ));
+    // No pairing key without an item group; the anchor still carries Disabled (R4).
+    expect(source).not.toContain("IKeyedPart");
+    expect(source).toContain("    public partial class FlyoutOpener : Button\n    {\n        [UxmlAttribute] public bool Disabled");
+    expect(ctor(source, "FlyoutSheet")).toBe(lines('name = "sheet";', 'AddToClassList("flyout__sheet");'));
+  });
+
+  it("realises the IR-synthesized presence guard on an unmount content part through the behavior and refuses any other guard", () => {
+    const withDom = (guard?: (sheet: Record<string, unknown>) => void) => {
+      const c = flyout() as unknown as Record<string, any>;
+      const sheet: Record<string, unknown> = { tag: "div", part: "sheet", children: [{ tag: "children" }] };
+      guard?.(sheet);
+      c.anatomy.dom = { tag: "div", part: "root", children: [{ tag: "button", part: "opener" }, sheet] };
+      return c as unknown as ComponentContract;
+    };
+    // buildInteractionIR sets sheet.ifProp = open (presence unmount); the surface behavior owns it.
+    const source = emit(withDom());
+    expect(ctor(source, "FlyoutSheet")).toBe(lines('name = "sheet";', 'AddToClassList("flyout__sheet");'));
+    expect(buildComponentIR(withDom()).dom!.children[1]!.ifProp).toBe("open");
+    // Any other guard is pending P4 and refused rather than rendered unconditionally.
+    const tipGuard = flyout() as unknown as Record<string, any>;
+    tipGuard.anatomy.dom = { tag: "div", part: "root", children: [{ tag: "button", part: "opener" }, { tag: "div", part: "sheet" }, { tag: "span", part: "tip", if: "disabled" }] };
+    expect(() => emit(tipGuard as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Flyout part tip declares a conditional guard (pending P4)");
+  });
+});
+
+describe("Unity walker dispositions for non-lowered node kinds (R5)", () => {
+  it("renders a componentRef node as an identity-only placeholder and leaves its realization to the pending boundary rule", () => {
+    const source = emit(fixture("Accordion"));
+    expect(source).toContain("        public VisualElement Chevron { get; } = new VisualElement();\n");
+    expect(source.split("\n").filter(l => l.includes("Chevron"))).toEqual([
+      "        public VisualElement Chevron { get; } = new VisualElement();",
+      '            Chevron.name = "chevron";',
+      '            Chevron.AddToClassList("accordion__chevron");',
+      "            hierarchy.Add(Chevron);",
+    ]);
+    // Nothing of the referenced component (Icon, its name/size attrs) reaches the output.
+    expect(source).not.toMatch(/Icon|chevron-down|"sm"/);
+    const leaves = classifyContract(loadContractWithSidecars(root, "Accordion")).filter(l => l.keyed.includes("/ref:chevron/"));
+    expect(new Set(leaves.map(l => `${l.rule}:${l.disposition}`))).toEqual(new Set(["anatomy-component-ref-identity:lowered", "anatomy-component-ref:pending"]));
+  });
+
+  it("emits nothing for refused static attrs and form bindings, which the boundary refuses", () => {
+    const source = emit(fixture("Switch"));
+    expect(source).not.toMatch(/checkbox|aria|role|"button"/);
+    // No Name / Value: the form-serialization props are refused, not emitted.
+    expect([...rootPublicMembers(source, "Switch")].sort()).toEqual(["Checked", "Controlled", "Disabled", "value"]);
+    const refused = classifyContract(loadContractWithSidecars(root, "Switch")).filter(l => l.keyed.startsWith("/anatomy/dom/children/input/") && l.disposition === "refused").map(l => `${l.keyed}=${l.rule}`);
+    expect(refused).toEqual([
+      "/anatomy/dom/children/input/attrs/type=anatomy-static-attrs-refused",
+      "/anatomy/dom/children/input/attrs/role=anatomy-static-attrs-refused",
+      "/anatomy/dom/children/input/bindings/name=anatomy-form-binding",
+      "/anatomy/dom/children/input/bindings/value=anatomy-form-binding",
+    ]);
+  });
+
+  it("refuses iteration, a second insertion point and literal content on a non-text element instead of approximating them", () => {
+    const iterated = lamp() as unknown as Record<string, any>;
+    iterated.props.designed.members.push({ name: "count", propType: { kind: "number" }, description: "Count." });
+    iterated.anatomy.dom.children[3].iterate = { source: "prop:count", kind: "count" };
+    expect(() => emit(iterated as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Lamp part tail declares iteration (pending P4)");
+    const twoHoles = lamp() as unknown as Record<string, any>;
+    twoHoles.anatomy.dom.children[3] = { tag: "span", part: "tail", children: [{ tag: "children" }] };
+    expect(() => emit(twoHoles as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Lamp Lamp declares more than one children insertion point");
+    const literal = lamp() as unknown as Record<string, any>;
+    literal.anatomy.details.tail = { role: "decoration" };
+    literal.anatomy.dom.children[3] = { tag: "div", part: "tail", content: "literal:Hi" };
+    expect(() => emit(literal as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Lamp <div> carries literal content but lowers to no text element");
+    // A literal on a button lowers to Button.text.
+    literal.anatomy.dom.children[3] = { tag: "button", part: "tail", content: "literal:Hi" };
+    expect(emit(literal as unknown as ComponentContract)).toContain('            Tail.text = "Hi";\n');
+  });
+
+  it("refuses generated members that would collide with the behavior API", () => {
+    const collides = lamp() as unknown as Record<string, any>;
+    collides.anatomy.parts[3] = "control";
+    collides.anatomy.details = { ...collides.anatomy.details, control: collides.anatomy.details.tail };
+    delete collides.anatomy.details.tail;
+    collides.anatomy.dom.children[3].part = "control";
+    expect(() => emit(collides as unknown as ComponentContract)).toThrow("UNITY_IDENTIFIER_COLLISION: Lamp Lamp declares Control twice");
+  });
+});
+
+describe("Unity behavior selection refusals", () => {
+  it("refuses facts the selected behavior cannot project", () => {
+    // No channel-effect or selection state dimension: no state class to toggle.
+    const stateless = lamp() as unknown as Record<string, any>;
+    stateless.states = { dimensions: { glow: { category: "visibility", effect: "restyle", values: ["dark", "lit"], initial: "dark" } } };
+    expect(() => unityLowering(buildComponentIR(stateless as unknown as ComponentContract))).toThrow("UNITY_UNSUPPORTED_STATE: Lamp");
+    // Item-group focus without an orientation has no arrow-key mapping.
+    const unoriented = dial() as unknown as Record<string, any>;
+    delete unoriented.focus.orientation;
+    expect(() => unityLowering(buildComponentIR(unoriented as unknown as ComponentContract))).toThrow("UNITY_UNSUPPORTED_FOCUS: Dial declares manual focus without an orientation");
+    // A boolean control whose control part is a compound sub-element cannot be attached at construction.
+    const compoundControl = lamp() as unknown as Record<string, any>;
+    compoundControl.anatomy.details.actuator.subcomponent = true;
+    expect(() => emit(compoundControl as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Lamp renders its form-control part actuator outside the root class");
+  });
+
+  it("refuses a dismissal trigger the anchored surface has no knob for", () => {
+    const ir = buildComponentIR(fixture("Popover"));
+    ir.behavior.normalizedDismissalTriggers = [...ir.behavior.normalizedDismissalTriggers, { event: "routeChange", defaultEnabled: true }];
+    expect(() => unityLowering(ir)).toThrow('UNITY_UNSUPPORTED_SURFACE: Popover declares dismissal trigger "routeChange"');
+  });
+
+  it("refuses a variant axis whose class-recipe modifier is prefixed for disambiguation", () => {
+    const ir = buildComponentIR(fixture("Tabs"));
+    ir.classRecipe.valueModifiers = ir.classRecipe.valueModifiers.map(m => m.propName === "appearance" ? { ...m, valuePrefix: "appearance-" } : m);
+    expect(() => createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })).toThrow('UNITY_UNSUPPORTED_VARIANT: Tabs.appearance shares values with another axis (class-recipe prefix "appearance-")');
+  });
+
+  it("refuses anatomy bindings the attached behavior does not realise", () => {
+    const emitter = createUnityEmitter();
+    // A selected-channel binding off the trigger part has no state-class realisation.
+    const offTrigger = fixture("Switch") as unknown as Record<string, any>;
+    offTrigger.anatomy.dom.children[1].bindings = { "aria-checked": "channel:checked.value" };
+    expect(() => emitter.admitContract!(offTrigger as unknown as ComponentContract, { admitted: true }))
+      .toThrow("UNITY_BOUNDARY_UNREALIZED: Switch on BooleanControl does not realise binding /anatomy/dom/children/track/bindings/aria-checked (rule anatomy-channel-binding claims selected-channel-binding)");
+    // A binding to a channel the dispatcher did not select is unrealised too.
+    const foreign = lamp() as unknown as Record<string, any>;
+    foreign.anatomy.dom.children[0].bindings["aria-pressed"] = "channel:glow.value";
+    foreign.channels.glow = { value: "glowing", onChange: "onGlow", valueType: "boolean", description: "Second channel." };
+    foreign.props.designed.members.push({ name: "glowing", propType: { kind: "boolean" }, description: "x" }, { name: "onGlow", propType: { kind: "callback", params: [], returns: { kind: "void" } }, description: "x" });
+    expect(() => emitter.admitContract!(foreign as unknown as ComponentContract, { admitted: false }))
+      .toThrow(/UNITY_BOUNDARY_UNREALIZED: Lamp on BooleanControl does not realise .*binding \/anatomy\/dom\/children\/actuator\/bindings\/aria-pressed \(rule anatomy-channel-binding claims selected-channel-binding\)/);
+    // A disabled binding off the trigger part names no property the root emits for it.
+    const disabledOff = fixture("Switch") as unknown as Record<string, any>;
+    disabledOff.anatomy.dom.children[1].bindings = { disabled: "prop:disabled" };
+    expect(() => emitter.admitContract!(disabledOff as unknown as ComponentContract, { admitted: true }))
+      .toThrow("UNITY_BOUNDARY_UNREALIZED: Switch on BooleanControl does not realise binding /anatomy/dom/children/track/bindings/disabled (rule anatomy-disabled-binding claims bound-prop-property)");
   });
 });
