@@ -4,6 +4,7 @@ import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
 import { buildComponentIR } from "../../ir.js";
 import { admitContract, loadBoundary, type ClassifiedLeaf, type ContractWithSidecars } from "./boundary.js";
+import { triggerParts } from "./behaviors.js";
 import { identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
 
 export { unityLowering } from "./behaviors.js";
@@ -11,17 +12,30 @@ export type { UnityBehavior, UnityLowering } from "./behaviors.js";
 
 const quote = (s: string): string => JSON.stringify(s);
 
+/** The anatomy node a keyed `/anatomy/dom/(children/<key>/)*…` pointer names:
+ * the last `children/<key>` segment, or the dom root. Keys are part names for
+ * part-carrying nodes (see boundary.ts keyedLeaves). */
+function domNodeKey(keyed: string, ir: ComponentIR): string | undefined {
+  const segments = keyed.split("/").slice(1);
+  if (segments[0] !== "anatomy" || segments[1] !== "dom") return undefined;
+  let key = ir.dom?.part;
+  for (let i = 2; i < segments.length - 1; i++) if (segments[i] === "children") key = segments[i + 1];
+  return key;
+}
+
 /**
  * Realisation check behind the support boundary: a `lowered` rule that declares
  * `realizes` must hold for the control the emitter produces for THIS component.
  * A prop in a lowered family that the root class never emits, a second
- * channel, or an event not carried by the selected channel's change prop
- * would otherwise pass admission and be dropped silently.
+ * channel, an event not carried by the selected channel's change prop, or an
+ * anatomy binding the selected behavior does not consume would otherwise pass
+ * admission and be dropped silently.
  */
 export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, classified: ClassifiedLeaf[]): void {
   const { lowering, source } = walkComponent(ir);
   const { behavior, channel } = lowering;
   const emitted = rootPublicMembers(source, ir.name);
+  const triggers = triggerParts(ir);
   const rules = new Map(loadBoundary().rules.map(r => [r.id, r]));
   const events = (contract as { events?: Record<string, { emittedVia?: string[] }> }).events ?? {};
   const failures = new Set<string>();
@@ -32,6 +46,8 @@ export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, 
     const member = leaf.keyed.match(/^\/props\/[^/]+\/members\/[^/:]+:([^/]+)\//)?.[1];
     const channelKey = leaf.keyed.match(/^\/channels\/([^/]+)/)?.[1];
     const eventKey = leaf.keyed.match(/^\/events\/([^/]+)/)?.[1];
+    const binding = typeof leaf.value === "string" ? leaf.value : "";
+    const node = domNodeKey(leaf.keyed, ir);
     let ok: boolean;
     let subject: string;
     switch (rule.realizes) {
@@ -43,6 +59,12 @@ export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, 
         ok = channelKey === channel.name; subject = `channel ${channelKey}`; break;
       case "channel-change-event":
         ok = eventKey !== undefined && (events[eventKey]?.emittedVia ?? []).includes(channel.changeHandlerProp); subject = `event ${eventKey}`; break;
+      case "selected-channel-binding":
+        // The behavior's state class realises a binding to the selected
+        // channel's value only on a trigger part it owns.
+        ok = binding === `channel:${channel.name}.value` && node !== undefined && triggers.has(node); subject = `binding ${leaf.keyed}`; break;
+      case "bound-prop-property":
+        ok = binding.startsWith("prop:") && node !== undefined && triggers.has(node) && emitted.has(pascal(binding.slice(5))); subject = `binding ${leaf.keyed}`; break;
     }
     if (!ok) failures.add(`${subject} (rule ${rule.id} claims ${rule.realizes})`);
   }

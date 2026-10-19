@@ -53,6 +53,11 @@ describe("Unity capability accounting", () => {
     expect(result.obligations.find(o => o.pointer === "/formControl/commit")).toMatchObject({ disposition: "lowered", rule: "form-control-commit-change" });
     expect(result.obligations.find(o => o.pointer === "/a11y/labeling/0")).toMatchObject({ disposition: "refused", rule: "a11y" });
     expect(result.obligations.find(o => o.pointer === "/a11y/keyboard/0/key")).toMatchObject({ disposition: "lowered", rule: "a11y-keyboard" });
+    // Anatomy obligations carry walker rules, keyed by part, at their RFC 6901 pointers.
+    expect(result.obligations.find(o => o.pointer === "/anatomy/dom/children/0/bindings/checked")).toMatchObject({ keyed: "/anatomy/dom/children/input/bindings/checked", disposition: "lowered", rule: "anatomy-channel-binding" });
+    expect(result.obligations.find(o => o.pointer === "/anatomy/dom/children/0/attrs/role")).toMatchObject({ disposition: "refused", rule: "anatomy-static-attrs-refused" });
+    expect(result.obligations.filter(o => o.pointer.startsWith("/anatomy/") || o.pointer.startsWith("/slots/")).every(o => o.rule?.startsWith("anatomy-") || o.rule === "slots")).toBe(true);
+    expect(result.sidecarObligations.tokens.find(o => o.pointer === "/switch.size.md.thumb.height/fallback")).toMatchObject({ disposition: "lowered", rule: "token-default-geometry" });
     expect(result.sidecarObligations.tokens.find(o => o.pointer === "/switch.size.md.track.width/fallback")).toMatchObject({ disposition: "lowered", rule: "token-default-geometry" });
     expect(result.sidecarObligations.tokens.find(o => o.pointer === "/switch.size.lg.track.width/fallback")).toMatchObject({ disposition: "pending", rule: "tokens" });
   });

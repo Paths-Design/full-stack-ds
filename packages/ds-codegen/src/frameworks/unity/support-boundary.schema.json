@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://full-stack-ds.dev/schemas/unity-support-boundary.v1.json",
   "title": "Unity support boundary",
-  "description": "Ordered rules that classify every contract and sidecar leaf the Unity target sees. Patterns are `<source>:<keyed pointer glob>`; the first matching rule wins. Leaves are identity-keyed JSON pointers: array elements carrying `name`/`part` are keyed by it, and prop members are keyed `<role>:<name>` where role is channel-value, channel-default, channel-change, form-field or plain, derived from the contract's own channels and form blocks. A leaf no rule matches fails generation (UNITY_BOUNDARY_UNCLASSIFIED); a leaf an allowlisted component can only reach through a catchAll rule fails generation (UNITY_BOUNDARY_UNADJUDICATED).",
+  "description": "Ordered rules that classify every contract and sidecar leaf the Unity target sees. Patterns are `<source>:<keyed pointer glob>`; the first matching rule wins. Leaves are identity-keyed JSON pointers: array elements carrying `name`/`part` are keyed by it, anatomy nodes that render another component are keyed `ref:<part>`, and prop members are keyed `<role>:<name>` where role is channel-value, channel-default, channel-change, form-field or plain, derived from the contract's own channels and form blocks. A leaf no rule matches fails generation (UNITY_BOUNDARY_UNCLASSIFIED); a leaf an allowlisted component can only reach through a catchAll rule fails generation (UNITY_BOUNDARY_UNADJUDICATED).",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "rules"],
@@ -38,10 +38,16 @@
             "items": { "type": ["string", "number", "boolean", "null"] },
             "description": "Restrict the rule to scalar leaves whose value is one of these."
           },
+          "valuePattern": {
+            "type": "string",
+            "minLength": 1,
+            "format": "regex",
+            "description": "Restrict the rule to string leaves whose value matches this regular expression (e.g. a binding expression shape such as ^channel:<name>.value$)."
+          },
           "catchAll": { "type": "boolean", "description": "A family-level fallback an allowlisted component may not rely on." },
           "realizes": {
-            "enum": ["emitted-property", "selected-channel", "selected-channel-member", "channel-change-event"],
-            "description": "lowered: how the claim is checked against the emitted control. emitted-property: the prop member is a generated public property. selected-channel: the channel is the one the dispatcher selected. selected-channel-member: the prop is that channel's value/default/change prop. channel-change-event: the event is emitted via that channel's change prop. A failed realization refuses generation (UNITY_BOUNDARY_UNREALIZED)."
+            "enum": ["emitted-property", "selected-channel", "selected-channel-member", "channel-change-event", "selected-channel-binding", "bound-prop-property"],
+            "description": "lowered: how the claim is checked against the emitted control. emitted-property: the prop member is a generated public property of the root class. selected-channel: the channel is the one the dispatcher selected. selected-channel-member: the prop is that channel's value/default/change prop. channel-change-event: the event is emitted via that channel's change prop. selected-channel-binding: an anatomy binding to the selected channel's value sits on a trigger part. bound-prop-property: an anatomy prop:<p> binding on a trigger part names a prop the root class emits. A failed realization refuses generation (UNITY_BOUNDARY_UNREALIZED)."
           }
         },
         "allOf": [
