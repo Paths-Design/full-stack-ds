@@ -5,7 +5,7 @@ status: active
 title: Month date grids
 owner: "@darianrosebrook"
 updated: 2026-10-19
-verified_at_commit: 89d585c3a
+verified_at_commit: e1df6da47
 governs:
   - packages/ds-codegen/src/date-grid.ts
   - packages/ds-codegen/src/date/date-grid.ts
@@ -168,8 +168,10 @@ divergences are ledgered in
   PageDown keys moving DOM focus onto the gridcell, Enter and Space selection
   with focus and `aria-selected` on that gridcell, no control inside any cell,
   a range selected by two clicks on a grid that declares multiple selection,
-  an outside-month click keeping focus on its day, the month buttons, and a
-  de-DE grid.
+  an outside-month click keeping focus on its day, the month buttons, a
+  de-DE grid, and days outside `minDate` and `maxDate` (or every day of a
+  disabled calendar) marked `aria-disabled`, refusing a pointer click and the
+  month buttons, with a key move stopping at the bound.
 - `FsdsDateGridTest.kt` and `CalendarSemanticsTest.kt` (Compose, desktop JVM
   `runComposeUiTest`) and `FsdsDateGridTests.swift` pin the native cores and
   Compose's semantics tree, including a controlled `null` clearing the
