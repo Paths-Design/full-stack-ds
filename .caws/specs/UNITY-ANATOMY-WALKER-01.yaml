@@ -79,3 +79,10 @@ evidence:
     command: "pnpm run audit:unity-boundary"
     exit_code: 0
     commit_sha: "301f52b64"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Unity 6000.5.3f1 EditMode lane on the landed tree (HEAD 942ce0cc2, code at merge 301f52b64): test-run start 2026-10-19 07:23:36Z, 26/26 passed, 0 failed/skipped; same 26/26 at worktree 95282a70b (start 07:18:56Z). Per-behavior cases: SwitchTreeFollowsContractAnatomyAndLabelHostTogglesOnce and SwitchActivationChangesValueExactlyOnce… (BooleanControl), AccordionStateClassLandsOnPairedTriggerAndContentByValue, TabsArrowNavigationSkipsDisabledAndRespectsManualModeAndLoop, ParkedPanelAdoptedByAnotherGroupLeavesItsFormerGroup (ItemGroup), PopoverContentReparentsToPanelRootOnlyWhileOpen, ContentComposedIntoAnAttachedClosedPopoverIsParked, AnchoredGeometryFlipsAndShiftsAtViewportEdges (AnchoredSurface); UxmlImportsRealGeneratedControlsAndCompoundItems imports the generated roots and compound sub-elements from Samples~/InteractiveControls/Controls.uxml. Engine comparison run b7d386d0-3fd3-44d0-8a10-b3f1891efddf (Unity Editor + Godot) passed with rows equal to packages/ds-godot/fixtures/traces.json (tracesSha256 a38702aa…). Local receipts (ignored): tmp/unity-pilot/results.xml, tmp/unity-pilot/editor.log, tmp/engine-comparison/b7d386d0-3fd3-44d0-8a10-b3f1891efddf/comparison.json"
+    recorded_at: "2026-10-19T07:26:00.661Z"
+    command: "pnpm run test:unity && node scripts/engine-comparison.mjs"
+    exit_code: 0
+    commit_sha: "301f52b64"
