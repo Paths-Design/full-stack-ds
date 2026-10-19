@@ -22,6 +22,7 @@ namespace FullStackDS
         public event Action<bool> ValueRequested { add => Control.ValueRequested += value; remove => Control.ValueRequested -= value; }
         public void SetValueWithoutNotify(bool next) => Control.SetValueWithoutNotify(next);
         public void RequestValue(bool next) => Control.RequestValue(next);
+        [UxmlAttribute] public string Size { get => Variants.Get(this, "switch", "sm", "md", "lg"); set { Variants.Set(this, "switch", value, "sm", "md", "lg"); } }
         [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }
         public Switch()
         {
@@ -39,11 +40,10 @@ namespace FullStackDS
             children.name = "children";
             children.AddToClassList("switch__children");
             hierarchy.Add(children);
-            Track.style.width = 48f;
-            Track.style.height = 24f;
-            Thumb.style.width = 16f;
-            Thumb.style.height = 16f;
+            Gap.Attach(this);
+            Gap.Attach(children);
             Control = BooleanControl.Attach(this, control: Input, stateClass: "is-checked", labelHost: this);
+            Size = "md";
         }
     }
 }

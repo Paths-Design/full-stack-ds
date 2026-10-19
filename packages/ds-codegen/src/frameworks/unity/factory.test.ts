@@ -67,15 +67,23 @@ describe("Unity capability lowering", () => {
     expect(source).not.toContain("CloseOnBlur = true;");
     expect(source).not.toContain("CloseOnOutsideClick = true;");
   });
-  it("typed default-size geometry reaches the emitted part", () => {
-    const ir = buildComponentIR(fixture("Switch"));
+  it("leaves size geometry to the USS projection: no inline style, a Size modifier backed by USS carriers", () => {
+    // With its sidecars, as the CLI merges them: the styles sidecar carries the size rules.
+    const withSidecars = () => buildComponentIR(loadContractWithSidecars(root, "Switch") as unknown as ComponentContract);
+    const ir = withSidecars();
     const fact = (name: string, rawValue: string) => ({ name, cssVar: "--irrelevant", category: "size", layer: "semantic" as const, source: "tokens-sidecar" as const, rawValue, isLiteral: true });
-    ir.tokenFacts = [fact("switch.size.md.track.width", "61px"), fact("switch.size.lg.track.width", "99px"), fact("switch.size.md.thumb.size", "13px")];
+    // Token facts alone no longer reach the constructor (the P2 R10 inline geometry is gone).
+    ir.tokenFacts = [fact("switch.size.md.track.width", "61px"), fact("switch.size.md.thumb.size", "13px")];
     const source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
-    expect(source).toContain("Track.style.width = 61f;");
-    // Only the declared default value of the axis applies; `size` sets both axes.
-    expect(source).not.toContain("99f");
-    expect(source).toContain("Thumb.style.width = 13f;\n            Thumb.style.height = 13f;");
+    expect(source).not.toMatch(/style\.(width|height)/);
+    // The size axis has variant-predicated native style rules, so it is emitted
+    // as the class-recipe modifier the generated sheet keys, defaulting to md.
+    expect(source).toContain('[UxmlAttribute] public string Size { get => Variants.Get(this, "switch", "sm", "md", "lg"); set { Variants.Set(this, "switch", value, "sm", "md", "lg"); } }');
+    expect(source).toContain('            Size = "md";\n');
+    // Without any variant-predicated rule on the axis there is no carrier and no attribute.
+    const bare = withSidecars();
+    bare.nativeStyleRules = { rules: bare.nativeStyleRules!.rules.filter(rule => !rule.predicates.some(p => p.kind === "variant")), unsupported: [] };
+    expect(createUnityEmitter().emitComponent(bare, { componentsRoot: "", contractsRoot })[0]!.contents).not.toContain("Size");
   });
   it("refuses facts the selected runtime base would contradict instead of ignoring them", () => {
     // ItemGroup always runs arrow navigation: a non-roving strategy is not realised.
@@ -503,7 +511,7 @@ describe("Unity walker dispositions for non-lowered node kinds (R5)", () => {
     const source = emit(loadContractWithSidecars(root, "Switch") as unknown as ComponentContract);
     expect(source).not.toMatch(/checkbox|aria-|\brole\b|"button"/);
     // No Name / Value: the form-serialization props are refused, not emitted.
-    expect([...rootPublicMembers(source, "Switch")].sort()).toEqual(["Checked", "Controlled", "Disabled", "value"]);
+    expect([...rootPublicMembers(source, "Switch")].sort()).toEqual(["Checked", "Controlled", "Disabled", "Size", "value"]);
     const refused = classifyContract(loadContractWithSidecars(root, "Switch")).filter(l => l.keyed.startsWith("/anatomy/dom/children/input/") && l.disposition === "refused").map(l => `${l.keyed}=${l.rule}`);
     expect(refused).toEqual([
       "/anatomy/dom/children/input/attrs/type=anatomy-static-attrs-refused",

@@ -41,16 +41,14 @@
     {
       "id": "rtl",
       "match": ["contract:/rtl/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Icon flipping and row reversal are expressible as generated USS (flex-direction, scale) once styling projection exists; nothing honours rtl today."
+      "disposition": "refused",
+      "reason": "USS has no logical properties and no layout direction: the USS projection (uss.ts) lowers logical sides as LTR physical sides, so icon flipping and row reversal are not realised."
     },
     {
       "id": "morphology",
       "match": ["contract:/morphology/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "The box-model geometry profile projects into generated USS slot defaults."
+      "disposition": "lowered",
+      "via": "uss.ts (S3): the box-model geometry profile reaches ir.nativeStyleRules as box-model.* slot definitions and structure consumers, which project into the generated Controls.uss."
     },
     {
       "id": "anatomy-parts",
@@ -288,7 +286,7 @@
       "match": ["contract:/props/*/members/plain:appearance/**"],
       "disposition": "lowered",
       "realizes": "emitted-property",
-      "via": "walker.ts item-group vocabulary (R6): [UxmlAttribute] Appearance validated against its variant axis toggles the root's class-recipe modifier (<cssPrefix>--<value>), which the shipped stylesheet keys; P3 moves that styling into generated USS."
+      "via": "walker.ts item-group vocabulary (R6): [UxmlAttribute] Appearance validated against its variant axis toggles the root's class-recipe modifier (<cssPrefix>--<value>), which the generated USS keys (uss.ts)."
     },
     {
       "id": "prop-surface-dismissal-options",
@@ -311,9 +309,8 @@
     {
       "id": "prop-size",
       "match": ["contract:/props/*/members/plain:size/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Variant axis with no behavior knob; P3 projects its class modifier and geometry from the token graph. Only the declared default's geometry is lowered now, by token-default-geometry."
+      "disposition": "lowered",
+      "via": "walker.ts (S6) emits [UxmlAttribute] Size as the class-recipe modifier (<cssPrefix>--<value>) when the USS projection emits a carrier for the axis; uss.ts lowers the size-predicated native style rules onto those carriers."
     },
     {
       "id": "prop-id-base",
@@ -352,16 +349,14 @@
     {
       "id": "variants",
       "match": ["contract:/variants/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Variant axes project into generated USS modifier classes; no variant styling is generated today."
+      "disposition": "lowered",
+      "via": "uss.ts (S4): a variant predicate lowers to the class-recipe modifier carrier .<cssPrefix>--<value> on the root or as the part's ancestor; the walker emits the axis as a [UxmlAttribute] when a behavior knob consumes it or a carrier exists. A modifier with no Unity carrier is listed uss-selector in Controls.unsupported.json."
     },
     {
       "id": "states",
       "match": ["contract:/states/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Only the behavior's is-<value> state class is derived (from the channel-effect or selection dimension, R7); generic state dimensions and their styling arrive with USS projection."
+      "disposition": "lowered",
+      "via": "uss.ts (S4): a state predicate lowers to the behavior's state class at its placement (host for BooleanControl and AnchoredSurface, paired parts for ItemGroup), to native :hover/:active/:focus/:disabled, or to BooleanControl's mirrored is-hover/is-active/is-focus host classes; what USS cannot select is listed in Controls.unsupported.json (uss-pseudo, uss-owner-mismatch, uss-floating-scope)."
     },
     {
       "id": "keyframes",
@@ -530,9 +525,8 @@
     {
       "id": "portal-layering",
       "match": ["contract:/portal/layering"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Floating content is only brought to the front of the panel root; named layers need a generated z-order policy."
+      "disposition": "refused",
+      "reason": "USS has no z-index: UI Toolkit orders siblings by hierarchy and AnchoredSurface brings floating content to the front of the panel root, so named layers have no USS realisation."
     },
     {
       "id": "portal",
@@ -670,24 +664,16 @@
       "reason": "Sequence and paged-set position policies need their own runtime behavior."
     },
     {
-      "id": "token-default-geometry",
-      "match": ["tokens:/*.size.md.*.width/fallback", "tokens:/*.size.md.*.height/fallback", "tokens:/*.size.md.*.size/fallback"],
-      "disposition": "lowered",
-      "via": "walker.ts (R10): typed px fallback facts <prefix>.<axis>.<default>.<part>.<width|height|size> for a variant axis at its declared default set the rendered part's inline style.width / style.height in the generated constructor (size sets both). The pattern names md because the boundary cannot read a default; the walker applies the declared one."
-    },
-    {
       "id": "tokens",
       "match": ["tokens:/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Token bindings project into generated USS variables; today only the default-size geometry fallbacks are read."
+      "disposition": "lowered",
+      "via": "uss.ts (S2/S3): token bindings become component custom properties var(--fsds-<graph path>, <fallback>) over a generated token section (.fsds-theme light, .fsds-theme--dark, .fsds-brand-<id>) projected from resolved.tokens.json and the token build's @layer brand; non-scalar values are listed uss-scalar in Controls.unsupported.json."
     },
     {
       "id": "styles",
       "match": ["styles:/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Style declarations project into generated USS; the shipped stylesheet is hand-authored."
+      "disposition": "lowered",
+      "via": "uss.ts (S3-S5): each native style rule becomes one USS rule through the CSS-to-USS property table (gap lowers to --fsds-gap, realised by the runtime Gap helper; a composed-content host restates its owner's container declarations); a declaration USS cannot realise is listed with its reason in Controls.unsupported.json, generated beside Controls.uss."
     }
   ]
 }

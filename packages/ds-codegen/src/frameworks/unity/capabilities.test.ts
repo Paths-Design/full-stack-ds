@@ -49,7 +49,8 @@ describe("Unity capability accounting", () => {
     // Not emitted as a C# property, yet lowered by the runtime's change callback: the boundary says how.
     expect(prop("onChange")).toMatchObject({ disposition: "not-emitted", boundary: { rule: "prop-channel-change", disposition: "lowered", via: expect.stringContaining("RegisterValueChangedCallback") } });
     expect(prop("name")).toMatchObject({ disposition: "not-emitted", boundary: { rule: "prop-form-field", disposition: "refused" } });
-    expect(prop("size")).toMatchObject({ disposition: "not-emitted", boundary: { rule: "prop-size", disposition: "pending", phase: "P3" } });
+    // The size axis is emitted because the USS projection carries its modifier (S6).
+    expect(prop("size")).toMatchObject({ disposition: "emitted-api", boundary: { rule: "prop-size", disposition: "lowered", via: expect.stringContaining("uss.ts") } });
     expect(result.obligations.find(o => o.pointer === "/formControl/commit")).toMatchObject({ disposition: "lowered", rule: "form-control-commit-change" });
     expect(result.obligations.find(o => o.pointer === "/a11y/labeling/0")).toMatchObject({ disposition: "refused", rule: "a11y" });
     expect(result.obligations.find(o => o.pointer === "/a11y/keyboard/0/key")).toMatchObject({ disposition: "lowered", rule: "a11y-keyboard" });
@@ -57,9 +58,11 @@ describe("Unity capability accounting", () => {
     expect(result.obligations.find(o => o.pointer === "/anatomy/dom/children/0/bindings/checked")).toMatchObject({ keyed: "/anatomy/dom/children/input/bindings/checked", disposition: "lowered", rule: "anatomy-channel-binding" });
     expect(result.obligations.find(o => o.pointer === "/anatomy/dom/children/0/attrs/role")).toMatchObject({ disposition: "refused", rule: "anatomy-static-attrs-refused" });
     expect(result.obligations.filter(o => o.pointer.startsWith("/anatomy/") || o.pointer.startsWith("/slots/")).every(o => o.rule?.startsWith("anatomy-") || o.rule === "slots")).toBe(true);
-    expect(result.sidecarObligations.tokens.find(o => o.pointer === "/switch.size.md.thumb.height/fallback")).toMatchObject({ disposition: "lowered", rule: "token-default-geometry" });
-    expect(result.sidecarObligations.tokens.find(o => o.pointer === "/switch.size.md.track.width/fallback")).toMatchObject({ disposition: "lowered", rule: "token-default-geometry" });
-    expect(result.sidecarObligations.tokens.find(o => o.pointer === "/switch.size.lg.track.width/fallback")).toMatchObject({ disposition: "pending", rule: "tokens" });
+    // Every size's geometry now lowers through the USS projection, not only the default's.
+    for (const pointer of ["/switch.size.md.thumb.height/fallback", "/switch.size.md.track.width/fallback", "/switch.size.lg.track.width/fallback"]) {
+      expect(result.sidecarObligations.tokens.find(o => o.pointer === pointer), pointer).toMatchObject({ disposition: "lowered", rule: "tokens" });
+    }
+    expect(result.sidecarObligations.styles.every(o => o.disposition === "lowered" && o.rule === "styles")).toBe(true);
   });
   it("retains empty declarations, arrays and escaped property paths", () => {
     expect(declaredLeaves({ "a/b": { "~": [] }, flags: [true, false], missing: null })).toEqual(["/a~1b/~0", "/flags/0", "/flags/1", "/missing"]);

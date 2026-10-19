@@ -36,6 +36,9 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   selection: "ContractStateDimension.category enum",
   root: "ContractPartDetails.role enum value naming the component root part (compared on details.role)",
   value: "HTML form field attribute the boundary's propRoles assigns to participating forms",
+  row: "CSS flex-direction keyword (uss.ts display lowering and flex-direction vocabulary)",
+  overflow: "CSS property name keyed in the uss.ts CSS-to-USS property table",
+  checked: "NativeStylePredicateIR kind enum (uss.ts predicate lowering)",
 };
 
 const DECLARED_ITEM_GROUP_VOCABULARY = ["type", "collapsible", "loop", "unmountInactive", "orientation", "activationMode", "appearance"];
@@ -179,7 +182,7 @@ describe("Unity emitter lowers facts, not names (R11)", () => {
 
   it("the unity emitter sources compare no part, channel, prop or slot identity to a corpus literal", () => {
     expect(names.size).toBeGreaterThan(100);
-    expect(sourceFiles.map(f => f.name).sort()).toEqual(["behaviors.ts", "boundary.ts", "capabilities.ts", "factory.ts", "walker.ts"]);
+    expect(sourceFiles.map(f => f.name).sort()).toEqual(["behaviors.ts", "boundary.ts", "capabilities.ts", "factory.ts", "uss.ts", "walker.ts"]);
     const findings = sourceFiles.flatMap(f => identityPredicates(f.name, f.text, names));
     expect(findings).toEqual([]);
   });
@@ -198,8 +201,8 @@ describe("Unity emitter lowers facts, not names (R11)", () => {
     const imports = (text: string) => ts.createSourceFile("probe.ts", text, ts.ScriptTarget.Latest, true).statements
       .filter(ts.isImportDeclaration).map(s => (s.moduleSpecifier as ts.StringLiteral).text);
     expect(imports('import { a } from "./boundary.js";\nimport b from "./support-boundary.json";')).toEqual(["./boundary.js", "./support-boundary.json"]);
-    const emitterModules = sourceFiles.filter(f => f.name === "walker.ts" || f.name === "behaviors.ts");
-    expect(emitterModules).toHaveLength(2);
+    const emitterModules = sourceFiles.filter(f => f.name === "walker.ts" || f.name === "behaviors.ts" || f.name === "uss.ts");
+    expect(emitterModules).toHaveLength(3);
     for (const file of emitterModules) {
       expect(imports(file.text).filter(spec => /boundary/.test(spec)), file.name).toEqual([]);
       expect(file.text, file.name).not.toMatch(/\b(?:classifyLeaf|classifyContract|loadBoundary)\b/);
