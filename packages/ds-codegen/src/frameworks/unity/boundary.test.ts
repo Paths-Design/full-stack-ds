@@ -25,6 +25,10 @@ const root = path.resolve(__dirname, "../../../../..");
 const load = (name: string): ContractWithSidecars => loadContractWithSidecars(root, name);
 const rule = (overrides: Record<string, unknown>) => ({ id: "r", match: ["contract:/x"], disposition: "refused", reason: "why", ...overrides });
 const boundaryOf = (rules: Record<string, unknown>[]): Boundary => validateBoundary({ schema: "unity-support-boundary.v1", rules });
+// Corpus-wide cases load, build the IR for and classify every contract (about
+// 1s alone); under the root suite's parallel load they overran vitest's 5s
+// default. The budget covers that work; it relaxes no assertion.
+const CORPUS_TIMEOUT_MS = 20_000;
 
 describe("Unity support boundary", () => {
   it("classifies every leaf of the live corpus and its sidecars with no dead rules", () => {
@@ -44,7 +48,7 @@ describe("Unity support boundary", () => {
     // So is P3 (the styling projection): what it does not lower is refused or waits on P4.
     expect(audit.perPhase.P3).toBeUndefined();
     expect(loadBoundary().rules.filter(r => r.phase === "P3")).toEqual([]);
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it("resolves every anatomy node kind of the allowlist to exactly one walker lowering or an explicit pending/refused rule", () => {
     const of = (name: string, keyed: string) => {
@@ -264,7 +268,6 @@ function corpusDeclarations(): NonNullable<typeof corpus> {
 }
 const ruleOf = (d: Declaration): string | null => d.leaves[0]!.rule;
 const named = (d: Declaration): string => `${d.component} ${d.key}${d.property ? ` ${d.property}` : ""} = ${JSON.stringify(d.value)}`;
-const CORPUS_TIMEOUT_MS = 20_000;
 
 describe("Unity support boundary: sidecar declaration conditions", () => {
   it("matches a declaration condition on every leaf of the declaration, not on the leaf's own value", () => {
