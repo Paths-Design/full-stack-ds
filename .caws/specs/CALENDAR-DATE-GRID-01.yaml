@@ -100,3 +100,12 @@ contracts:
   - name: 'date-grid'
     type: schema
     path: 'packages/ds-contracts/component.contract.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "packages/ds-codegen/src/date-grid.test.ts pins the DateGridIR and every refusal: a missing or mistyped channel or prop (value typed Date | Date[], optionally | null), a dateGrid binding without the block, a compositeControl on the value channel, a cell not binding the selection a11y attribute, a day cell that is not itself the gridcell control (no role=gridcell, missing tabindex, data-date or select binding, or focusable, editable or interactive content), and the nearest grid of the cells not binding aria-multiselectable to dateGrid:multiselectable, even inside an enclosing grid that does; packages/ds-codegen/src/dom-tree.test.ts pins nested iter:item iteration and shadowing. Rerun the cited command (224 tests pass at ff44f9b89). CI's pnpm run generate:check and pnpm run governed:rail exit 0 at ff44f9b89."
+    recorded_at: "2026-10-19T13:14:52.496Z"
+    test_nodeid: "packages/ds-codegen/src/date-grid.test.ts::refuses a grid that does not declare multiple selection from the mode"
+    command: pnpm exec vitest run packages/ds-codegen/src/date-grid.test.ts packages/ds-codegen/src/dom-tree.test.ts packages/ds-codegen/src/date/date-grid.test.ts
+    exit_code: 0
+    commit_sha: ff44f9b89
