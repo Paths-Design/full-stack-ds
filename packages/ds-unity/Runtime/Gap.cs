@@ -70,6 +70,7 @@ namespace FullStackDS
             if (states.TryGetValue(host, out var state)) Apply(host, state);
         }
 
+        // A ScrollView's in-flow children live in its contentContainer, whose ICustomStyle does not carry the host's custom properties.
         private static VisualElement Container(VisualElement host) => host is ScrollView scroll ? scroll.contentContainer : host;
 
         private static void Apply(VisualElement host, State state)
