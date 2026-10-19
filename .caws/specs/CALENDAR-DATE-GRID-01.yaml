@@ -41,7 +41,7 @@ invariants:
   - 'The Calendar grid is derived from the visible month channel; no caller-supplied day list.'
   - 'Date arithmetic, selection, focus movement and Intl formatting live in one date-grid core per runtime family; emitters lower the dateGrid IR fact with no component-name special-casing.'
   - 'The selection dimension a11y attribute declared in states is the attribute bound on the day cell; the IR refuses a dateGrid contract that binds a different one.'
-  - 'Exactly one day button is a tab stop at any time.'
+  - 'Exactly one day gridcell is a tab stop at any time.'
 acceptance:
   - id: A1
     given: 'a contract declaring a dateGrid block'
