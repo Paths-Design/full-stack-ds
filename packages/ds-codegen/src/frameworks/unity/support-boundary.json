@@ -4,7 +4,7 @@
   "phases": {
     "P2": "Generic anatomy walker: ir.dom/ir.parts lower to a VisualElement tree; runtime bases become behaviors the generated constructor attaches.",
     "P3": "Styling projection: generated USS from token facts, variants, states and box-model geometry; hand-authored palette removed.",
-    "P4": "Interaction families: static pressables, blocking and hover surfaces, composite and non-boolean form controls, componentRef composition, messages, motion, typed C# declarations.",
+    "P4": "Interaction families: static pressables, blocking and hover surfaces, composite and non-boolean form controls, month date grids, componentRef composition, messages, motion, typed C# declarations.",
     "P5": "Corpus and admission: allowlist reaches the SwiftUI set; CI compile lane and committed-byte drift diff."
   },
   "rules": [
@@ -430,6 +430,13 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "Composite controls (Select, RadioGroup, …) need a composite runtime behavior; the dispatcher rejects them today."
+    },
+    {
+      "id": "date-grid",
+      "match": ["contract:/dateGrid/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A month date grid (Calendar) needs a date-grid runtime behavior: locale-formatted weeks, roving focus over gridcells and the value and month channels; the dispatcher rejects it today."
     },
     {
       "id": "interaction-operation",
