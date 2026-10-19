@@ -32,6 +32,23 @@ namespace FullStackDS.Tests
             if (settings != null) UnityEngine.Object.DestroyImmediate(settings);
             if (texture != null) { texture.Release(); UnityEngine.Object.DestroyImmediate(texture); }
         }
+        // The USS vocabulary oracle for the emitter's property table: an importer warning names a
+        // property or value USS does not accept, which belongs in Controls.unsupported.json, not in the sheet.
+        [Test] public void GeneratedStyleSheetImportsCleanly()
+        {
+            var sheet = Resources.Load<StyleSheet>("FullStackDS/Controls");
+            Assert.That(sheet, Is.Not.Null);
+            Assert.That(sheet.importedWithErrors, Is.False, "Controls.uss imported with errors; see the Editor log");
+            Assert.That(sheet.importedWithWarnings, Is.False, "Controls.uss imported with warnings; see the Editor log");
+        }
+        [Test] public void SampleStyleSheetImportsCleanlyAndIsFoundByItsGuid()
+        {
+            var sheet = FullStackDS.Editor.ControlsShowcase.SampleStyleSheet();
+            Assert.That(sheet, Is.Not.Null);
+            Assert.That(AssetDatabase.GetAssetPath(sheet), Is.EqualTo("Assets/InteractiveControls/Sample.uss"));
+            Assert.That(sheet.importedWithErrors, Is.False);
+            Assert.That(sheet.importedWithWarnings, Is.False);
+        }
         [UnityTest] public IEnumerator EditorControlsHaveExplicitTypographySpacingAndFocus()
         {
             window = ScriptableObject.CreateInstance<FullStackDS.Editor.ControlsShowcase>();
