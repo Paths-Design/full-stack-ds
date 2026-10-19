@@ -5,6 +5,11 @@ import { loadContractWithSidecars } from "./boundary.js";
 import { accountComponent, auditUnityTarget, declaredLeaves, inventory } from "./capabilities.js";
 const root = path.resolve(__dirname, "../../../../..");
 const fixture = (name: string) => loadContractWithSidecars(root, name);
+// The corpus case builds and classifies every contract twice (inventory, then
+// auditUnityTarget): about 2s alone, and it overran vitest's 5s default under
+// the root suite's parallel load. The budget covers that work; it relaxes no
+// assertion.
+const CORPUS_TIMEOUT_MS = 20_000;
 describe("Unity capability accounting", () => {
   it("accounts for the actual corpus and keeps unadmitted shapes distinct", () => {
     const rows = inventory(root);
@@ -26,7 +31,7 @@ describe("Unity capability accounting", () => {
     expect(audit.unrealized).toEqual([]);
     // Sidecar hashes bind the accounting to its inputs.
     expect(rows.find(r => r.component === "Switch")!.sidecarSha256).toEqual({ tokens: expect.stringMatching(/^[0-9a-f]{64}$/), styles: expect.stringMatching(/^[0-9a-f]{64}$/) });
-  });
+  }, CORPUS_TIMEOUT_MS);
   it("exposes an unknown prop as catch-all reliance instead of classifying it as supported", () => {
     const contract = fixture("Switch");
     const original = accountComponent(contract, true);
