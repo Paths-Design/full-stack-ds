@@ -21,6 +21,7 @@ import assert from "node:assert/strict";
 
 import {
   auditCssReferences,
+  auditUnitySheet,
   buildGraph,
   declaredNames,
   declaredValue,
@@ -29,6 +30,8 @@ import {
   readReferences,
   resolveChain,
   runtimeSetNames,
+  unityAllowlist,
+  unitySections,
   unresolvableId,
 } from "./audit.mjs";
 
@@ -198,6 +201,70 @@ check("a finding is identified by component and name together", () => {
   // two repairs to verify, and collapsing them would let one component's fix
   // mark the other's as burned.
   assert.equal(unresolvableId({ component: "Button", name: "--fsds-x" }), "Button --fsds-x");
+});
+
+// --- the unity surface (UNITY-STYLING-PROJECTION-01, S8) --------------------
+
+// The shape uss.ts generates: a token section, then one section per component
+// opened by a `/* <Name> (.<prefix>) */` comment.
+const UNITY_SHEET = `/* @generated:start unity-uss */
+/* Token graph, light (resolved.tokens.json) */
+.fsds-theme {
+    --fsds-semantic-gap: 8px;
+    --fsds-semantic-alias: var(--fsds-semantic-missing, 4px);
+}
+
+/* Lamp (.lamp) */
+.lamp {
+    --fsds-lamp-pad: var(--fsds-semantic-gap, 8px);
+}
+
+.lamp__tail {
+    padding: var(--fsds-lamp-pad, 8px);
+    margin: var(--fsds-dial-pad, 2px);
+}
+
+/* Dial (.dial) */
+.dial {
+    --fsds-dial-pad: 3px;
+    padding: var(--fsds-dial-pad, 3px);
+    width: var(--fsds-semantic-gap, 8px);
+}
+`;
+
+check("unitySections splits the token section from each component section at its opening comment", () => {
+  const { theme, components } = unitySections(UNITY_SHEET);
+  assert.deepEqual([...declaredNames(theme)], ["--fsds-semantic-gap", "--fsds-semantic-alias"]);
+  assert.deepEqual(components.map((c) => [c.component, c.prefix]), [["Lamp", "lamp"], ["Dial", "dial"]]);
+  assert.ok(components[0].css.includes(".lamp__tail") && !components[0].css.includes(".dial {"));
+});
+
+check("unity reads resolve against the token section plus the reading component's own section only", () => {
+  const rows = auditUnitySheet(UNITY_SHEET, ["Lamp", "Dial"]);
+  // Lamp reads Dial's slot. A Lamp inherits it only when nested inside a Dial,
+  // which the sheet cannot promise, so the read renders its fallback wherever a
+  // Lamp stands alone. The token section's own read of an undeclared graph name
+  // is a finding too.
+  assert.deepEqual(rows.map((r) => [r.target, r.component, r.name, r.fallback]), [
+    ["unity", "unity:(theme)", "--fsds-semantic-missing", "4px"],
+    ["unity", "unity:Lamp", "--fsds-dial-pad", "2px"],
+  ]);
+  assert.equal(unresolvableId(rows[1]), "unity:Lamp --fsds-dial-pad");
+});
+
+check("a fully declared unity sheet yields no findings", () => {
+  const clean = UNITY_SHEET.replace("var(--fsds-semantic-missing, 4px)", "4px").replace("var(--fsds-dial-pad, 2px)", "var(--fsds-lamp-pad, 2px)");
+  assert.deepEqual(auditUnitySheet(clean, ["Lamp", "Dial"]), []);
+});
+
+check("a unity sheet that disagrees with the allowlist fails loudly instead of auditing another set", () => {
+  assert.throws(() => auditUnitySheet(UNITY_SHEET, ["Lamp", "Dial", "Knob"]), /missing: Knob/);
+  assert.throws(() => auditUnitySheet(UNITY_SHEET, ["Lamp"]), /not allowlisted: Dial/);
+});
+
+check("the unity allowlist comes from the target registry, and an absent unity target means no unity census", () => {
+  assert.deepEqual(unityAllowlist({ targets: [{ id: "unity", components: ["Lamp"] }] }), ["Lamp"]);
+  assert.deepEqual(unityAllowlist({ targets: [{ id: "react" }] }), []);
 });
 
 console.log(

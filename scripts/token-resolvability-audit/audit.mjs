@@ -42,6 +42,19 @@
  * aliases pass. Contract-declared design overrides are intentionally unset;
  * they are admitted only with an emitted fallback. Every nested fallback
  * reference is still checked, so that exception cannot hide a graph typo. Read-only — this rail changes no token, contract, or artifact.
+ *
+ * UNITY SURFACE (UNITY-STYLING-PROJECTION-01, S8). The Unity target ships one
+ * generated stylesheet, Controls.uss (frameworks/unity/uss.ts): a token section
+ * (theme, dark, brand scopes) followed by one section per allowlisted component.
+ * Its reads are classified against the names that sheet itself declares — the
+ * token section, plus the reading component's own section — because it is the
+ * package's only source of --fsds-* definitions, and another component's slot
+ * reaches a reader only when the reader happens to be nested inside it.
+ * Consumer sheets (the package sample included) are not classified. Rows carry
+ * `target: "unity"` and a `unity:<Component>` (or `unity:(theme)`) source id.
+ * The sections are driven by fsds.targets.json's unity allowlist: a sheet
+ * missing an allowlisted component, or carrying one the allowlist dropped, is
+ * stale and fails loudly rather than auditing a different component set.
  */
 
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -58,6 +71,9 @@ const PRIMITIVES = resolve(REPO, "packages/ds-react/src/primitives");
 const GLOBAL_TOKENS = resolve(REPO, "packages/ds-tokens/generated/tokens.css");
 const OUT_DIR = resolve(REPO, "docs/internal/token-resolvability-audit");
 const LEDGER_PATH = resolve(HERE, "known-unresolvable.json");
+const TARGET_REGISTRY = resolve(REPO, "fsds.targets.json");
+const UNITY_SHEET = resolve(REPO, "packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss");
+export const UNITY_TARGET = "unity";
 
 const readText = (p) => (existsSync(p) ? readFileSync(p, "utf8") : "");
 
@@ -271,6 +287,64 @@ export function kebabCandidate(name, globalDeclared) {
   return kebab !== name && globalDeclared.has(kebab) ? kebab : null;
 }
 
+/** The unity allowlist declared in fsds.targets.json; empty when none is declared. */
+export function unityAllowlist(registry) {
+  return registry?.targets?.find((t) => t.id === UNITY_TARGET)?.components ?? [];
+}
+
+/**
+ * Split a generated Controls.uss into its token section and its component
+ * sections. uss.ts opens each component's first rule with a
+ * `/* <Name> (.<prefix>) *\/` comment; everything before the first such
+ * comment is the token section.
+ */
+export function unitySections(uss) {
+  const heads = [...uss.matchAll(/^\/\* ([A-Z][A-Za-z0-9]*) \(\.([a-z][a-z0-9-]*)\) \*\/$/gm)];
+  return {
+    theme: uss.slice(0, heads[0]?.index ?? uss.length),
+    components: heads.map((m, i) => ({
+      component: m[1],
+      prefix: m[2],
+      css: uss.slice(m.index, heads[i + 1]?.index ?? uss.length),
+    })),
+  };
+}
+
+/**
+ * Audit the Unity sheet. A component section's reads resolve against the
+ * token section plus that section's own declarations; the token section's
+ * reads against itself. A casing suggestion only ever points at a token-section
+ * name, as on the web.
+ */
+export function auditUnitySheet(uss, allowlist) {
+  const { theme, components } = unitySections(uss);
+  const present = components.map((c) => c.component);
+  const missing = allowlist.filter((name) => !present.includes(name));
+  const extra = present.filter((name) => !allowlist.includes(name));
+  if (missing.length || extra.length) {
+    throw new Error(
+      `Controls.uss does not match the unity allowlist (missing: ${missing.join(", ") || "none"}; not allowlisted: ${extra.join(", ") || "none"}). Run pnpm run generate:unity.`,
+    );
+  }
+  const themeDeclared = declaredNames(theme);
+  const rows = [...auditCssReferences(`${UNITY_TARGET}:(theme)`, theme, themeDeclared, buildGraph(theme))];
+  for (const { component, css } of components) {
+    const available = new Set([...themeDeclared, ...declaredNames(css)]);
+    rows.push(...auditCssReferences(`${UNITY_TARGET}:${component}`, css, available, buildGraph(`${theme}\n${css}`), new Set(), themeDeclared));
+  }
+  return rows.map((row) => ({ target: UNITY_TARGET, ...row }));
+}
+
+/** The unity rows, or none when no unity components are allowlisted. */
+export function runUnityAudit() {
+  const allowlist = unityAllowlist(JSON.parse(readText(TARGET_REGISTRY) || "{}"));
+  if (allowlist.length === 0) return [];
+  if (!existsSync(UNITY_SHEET)) {
+    throw new Error(`${UNITY_SHEET} is missing for the allowlisted unity components; run pnpm run generate:unity first.`);
+  }
+  return auditUnitySheet(readFileSync(UNITY_SHEET, "utf8"), allowlist);
+}
+
 export function runAudit() {
   const graphCss = readText(GLOBAL_TOKENS);
   const graph = buildGraph(graphCss);
@@ -301,13 +375,15 @@ export function runAudit() {
   for (const component of readdirSync(REACT).sort()) {
     findings.push(...auditComponent(component, globalDeclared, primitiveDeclared, graph));
   }
-  return { findings, declaredCount: globalDeclared.size };
+  const unity = runUnityAudit();
+  findings.push(...unity);
+  return { findings, declaredCount: globalDeclared.size, unityFindings: unity.length };
 }
 
 const RUN_DIRECTLY =
   process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (RUN_DIRECTLY) {
-  const { findings, declaredCount } = runAudit();
+  const { findings, declaredCount, unityFindings } = runAudit();
   const byName = new Map();
   for (const f of findings) {
     if (!byName.has(f.name)) byName.set(f.name, []);
@@ -322,6 +398,7 @@ if (RUN_DIRECTLY) {
         spec: "RAIL-TOKEN-REFERENCE-RESOLVABILITY-01",
         declaredInGraph: declaredCount,
         unresolvableReferences: findings.length,
+        unityUnresolvableReferences: unityFindings,
         distinctNames: byName.size,
         findings,
       },
@@ -359,6 +436,7 @@ if (RUN_DIRECTLY) {
   console.log(
     `\nRAIL-TOKEN-REFERENCE-RESOLVABILITY-01 — ${findings.length} unresolvable reference(s) across ${byName.size} distinct name(s)`,
   );
+  console.log(`  of which unity (Controls.uss): ${unityFindings}`);
   console.log(`Report: ${resolve(OUT_DIR, "resolvability-matrix.md")}\n`);
 
   const ledger = loadLedger(LEDGER_PATH, ["component", "name"]);

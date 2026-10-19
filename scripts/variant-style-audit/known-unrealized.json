@@ -516,6 +516,97 @@
       "evidence": "Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved.",
       "remedy": "None. A CSS modifier here would be actively wrong.",
       "note": "structural-behavioral — Same anchored/flip-shift positioning declaration; the rendered side is runtime-resolved. Remedy: None. A CSS modifier here would be actively wrong."
+    },
+    {
+      "target": "unity",
+      "component": "Accordion",
+      "axis": "type",
+      "value": "multiple",
+      "carrier": "accordion--multiple",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-STYLING-PROJECTION-01",
+      "adjudication": "structural-behavioral",
+      "evidence": "The generated Type attribute toggles the carrier and sets ItemGroup.SelectionType (single vs multiple open panels); selection cardinality, not appearance.",
+      "remedy": "None.",
+      "note": "structural-behavioral — The generated Type attribute toggles the carrier and sets ItemGroup.SelectionType (single vs multiple open panels); selection cardinality, not appearance. Remedy: None."
+    },
+    {
+      "target": "unity",
+      "component": "Popover",
+      "axis": "placement",
+      "value": "top",
+      "carrier": "popover--top",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-STYLING-PROJECTION-01",
+      "adjudication": "structural-behavioral",
+      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
+      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
+      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+    },
+    {
+      "target": "unity",
+      "component": "Popover",
+      "axis": "placement",
+      "value": "bottom",
+      "carrier": "popover--bottom",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-STYLING-PROJECTION-01",
+      "adjudication": "structural-behavioral",
+      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
+      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
+      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+    },
+    {
+      "target": "unity",
+      "component": "Popover",
+      "axis": "placement",
+      "value": "left",
+      "carrier": "popover--left",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-STYLING-PROJECTION-01",
+      "adjudication": "structural-behavioral",
+      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
+      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
+      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+    },
+    {
+      "target": "unity",
+      "component": "Popover",
+      "axis": "placement",
+      "value": "right",
+      "carrier": "popover--right",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-STYLING-PROJECTION-01",
+      "adjudication": "structural-behavioral",
+      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
+      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
+      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+    },
+    {
+      "target": "unity",
+      "component": "Popover",
+      "axis": "placement",
+      "value": "auto",
+      "carrier": "popover--auto",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-STYLING-PROJECTION-01",
+      "adjudication": "structural-behavioral",
+      "evidence": "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
+      "remedy": "None. A USS modifier would assert a side the runtime positioning owns.",
+      "note": "structural-behavioral — The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select. Remedy: None. A USS modifier would assert a side the runtime positioning owns."
+    },
+    {
+      "target": "unity",
+      "component": "Tabs",
+      "axis": "activationMode",
+      "value": "manual",
+      "carrier": "tabs--manual",
+      "disposition": "no-styling-intent",
+      "spec": "UNITY-STYLING-PROJECTION-01",
+      "adjudication": "structural-behavioral",
+      "evidence": "The generated ActivationMode attribute toggles the carrier and sets ItemGroup.ActivationMode (keyboard activation semantics); not appearance.",
+      "remedy": "None.",
+      "note": "structural-behavioral — The generated ActivationMode attribute toggles the carrier and sets ItemGroup.ActivationMode (keyboard activation semantics); not appearance. Remedy: None."
     }
   ]
 }

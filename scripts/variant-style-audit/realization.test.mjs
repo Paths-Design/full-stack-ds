@@ -30,6 +30,11 @@
  *     exercising the namespaced-realization detection path; the generated CSS
  *     contains `.<prefix>--<axis>-<value>` rules and no bare ambiguous rule.
  *
+ * UNITY-STYLING-PROJECTION-01 (S8) locks the unity surface: the census is the
+ * fsds.targets.json unity allowlist checked against the generated Controls.uss,
+ * default-aware, boundary-safe, independent of the React CSS, and keyed apart
+ * from the web rows.
+ *
  * Standalone (named *.test.mjs → exempt from the shortcut-language guard).
  * Run: node scripts/variant-style-audit/realization.test.mjs
  */
@@ -37,7 +42,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { classify } from "./audit.mjs";
+import { classify, gapRowsOf, unityAllowlist, unitySurface, unrealizedId, UNITY_TARGET } from "./audit.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "../..");
@@ -236,6 +241,35 @@ for (const fw of ["react", "vue", "svelte", "angular", "lit"]) {
     });
   }
 }
+
+console.log("\nUNITY-STYLING-PROJECTION-01 — the unity surface (S8):");
+const unitySize = (css) => classify("Switch", { target: UNITY_TARGET, css }).dims.find((d) => d.dim === "size");
+check("the unity census is exactly the fsds.targets.json unity allowlist", () => {
+  const registry = JSON.parse(readGen("fsds.targets.json"));
+  assert.deepEqual(unityAllowlist(), registry.targets.find((t) => t.id === "unity").components);
+  assert.deepEqual(unityAllowlist({ targets: [{ id: "react" }] }), [], "no unity target means no unity census");
+});
+check("Switch.size is realized in the generated Controls.uss: sm and lg carriers are selected, md is the default", () => {
+  const x = unitySize(unitySurface().css);
+  assert.equal(x.default, "md");
+  assert.deepEqual(x.values.map((v) => [v.value, v.realized, v.gap]), [["sm", true, false], ["md", true, false], ["lg", true, false]]);
+  assert.ok(x.values.every((v) => v.carrierProduced === undefined), "the web DOM carrier set is not a unity fact");
+});
+check("an empty unity sheet realizes nothing: every non-default value is a gap and the default never is", () => {
+  assert.deepEqual(unitySize("").gaps, ["sm", "lg"]);
+});
+check("the unity carrier match is boundary-safe (.switch--small and .switch--lg-x realize nothing)", () => {
+  assert.deepEqual(unitySize(".switch--small { }\n.switch--lg-x { }").gaps, ["sm", "lg"]);
+});
+check("a React realization never clears a unity gap: the unity surface reads only its own sheet", () => {
+  assert.deepEqual(dim("Switch", "size").gaps, [], "Switch.size is realized in the React CSS");
+  assert.deepEqual(unitySize("").gaps, ["sm", "lg"]);
+});
+check("unity gap rows carry target and a ledger identity distinct from the web row of the same value", () => {
+  const rows = gapRowsOf([classify("Switch", { target: UNITY_TARGET, css: "" })]);
+  assert.deepEqual(rows.map((r) => [r.target, unrealizedId(r)]), [["unity", "unity:Switch.size=sm"], ["unity", "unity:Switch.size=lg"]]);
+  assert.equal(unrealizedId({ component: "Switch", axis: "size", value: "sm" }), "Switch.size=sm");
+});
 
 console.log(`\nlocked test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
