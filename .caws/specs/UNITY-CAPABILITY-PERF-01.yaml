@@ -9,6 +9,7 @@ created_by_session: '01a15687-8fd6-73a3-9677-8a61cbe36703'
 blast_radius:
   modules:
     - 'Unity support-boundary classification and capability accounting'
+    - 'Root Vitest worker concurrency'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -27,6 +28,10 @@ acceptance:
     given: 'pointer globs and value-constrained boundary rules'
     when: 'matcher work is reused'
     then: 'source, segment wildcard, recursive wildcard, rule ordering and value matching semantics remain unchanged'
+  - id: A3
+    given: 'the complete root test corpus on a shared machine'
+    when: 'pnpm test runs with bounded worker concurrency'
+    then: 'the full root suite passes with the existing per-test deadlines and assertions'
 non_functional: {}
 contracts:
   - name: 'unity-boundary'
