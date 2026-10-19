@@ -196,7 +196,6 @@ const disableable = (c: Record<string, any>) => {
 };
 const contractsRoot = path.join(root, "packages/ds-contracts");
 const irOf = (c: Record<string, any>) => buildComponentIR(c as unknown as ComponentContract);
-const ledgerOf = (c: Record<string, any>) => sheetOf(c).ledger.entries.map(e => [e.sourceKey, e.property, e.reason]);
 
 describe("Unity USS projection: selectors", () => {
   it("lowers variant, state and pseudo predicates in variant, state, pseudo order", () => {
