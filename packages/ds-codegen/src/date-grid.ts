@@ -234,8 +234,9 @@ export function buildDateGridIR(contract: ComponentContract, channels: Normalize
     fail("an ancestor of the day cells must bind keydown to dateGrid:keydown");
   }
   // Range mode marks several cells aria-selected, which a grid only means
-  // when it declares multiple selection (WAI-ARIA 1.2, the grid role).
-  const grid = chain.find((node) => node.attrs.role === "grid");
+  // when it declares multiple selection (WAI-ARIA 1.2, the grid role). The
+  // cells belong to their nearest grid, as the runtime's closest() finds it.
+  const grid = [...chain].reverse().find((node) => node.attrs.role === "grid");
   if (!grid) fail(`an ancestor of the day cells must declare role="grid"`);
   const multiselectable = grid!.bindings["aria-multiselectable"];
   if (multiselectable?.kind !== "dateGrid" || multiselectable.field !== "multiselectable") {

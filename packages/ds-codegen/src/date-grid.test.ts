@@ -155,6 +155,12 @@ describe("dateGrid refusals", () => {
     refuses((c) => { delete part(c, "grid").bindings!["aria-multiselectable"]; }, multiple);
     refuses((c) => { part(c, "grid").bindings!["aria-multiselectable"] = "dateGrid:nextDisabled"; }, multiple);
     refuses((c) => { part(c, "grid").attrs = { role: "table" }; }, `an ancestor of the day cells must declare role="grid"`);
+    // The cells belong to their nearest grid; an enclosing grid's declaration does not stand in for it.
+    refuses((c) => {
+      dom(c).attrs = { ...dom(c).attrs, role: "grid" };
+      dom(c).bindings = { ...dom(c).bindings, "aria-multiselectable": "dateGrid:multiselectable" };
+      delete part(c, "grid").bindings!["aria-multiselectable"];
+    }, multiple);
   });
 
   it("refuses actions on the wrong event and values used as handlers", () => {

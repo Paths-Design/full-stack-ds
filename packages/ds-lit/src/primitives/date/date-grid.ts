@@ -108,7 +108,7 @@ function parseKey(key: string | null | undefined): Date | undefined {
   return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : undefined;
 }
 
-/** The selected days as a sorted [start, end] span (range) or a list (single). */
+/** The valid days of a value, in the order given: a range's two ends, or a single day. */
 function selectionOf(value: DateGridValue | undefined): Date[] {
   if (isValidDate(value)) return [startOfDay(value)];
   if (Array.isArray(value)) return value.filter(isValidDate).map(startOfDay);
@@ -210,7 +210,10 @@ function focusedDay(key: string): Element | undefined {
 /** Pure grid derivation from the options and the focused day. */
 export function computeDateGrid(options: DateGridOptions, focusedKey: string | undefined, today: Date = new Date()): DateGridState {
   const range = options.mode === "range";
-  const selection = selectionOf(options.value);
+  // Single mode shows at most one day, the first of an array value (a range
+  // kept after the mode changes keeps its start), so a grid that declares
+  // single selection never marks several cells selected.
+  const selection = range ? selectionOf(options.value) : selectionOf(options.value).slice(0, 1);
   const now = startOfDay(today);
   const month = startOfMonth(isValidDate(options.month) ? options.month : selection[0] ?? now);
   const min = isValidDate(options.minDate) ? startOfDay(options.minDate) : undefined;

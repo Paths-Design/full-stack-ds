@@ -89,6 +89,14 @@ describe("date grid derivation", () => {
     expect([single.multiselectable, range.multiselectable, open.multiselectable, unset.multiselectable]).toEqual([false, true, true, false]);
   });
 
+  it("selects at most one day in single mode, so a grid declaring single selection never shows several", () => {
+    // A range value kept after the mode changes to single: its start stays selected and is the tab stop.
+    const kept = computeDateGrid(options({ value: [day(2026, 10, 9), day(2026, 10, 6)] }), undefined, TODAY);
+    expect(keys(kept).filter((k) => find(kept, k).selected)).toEqual(["2026-10-09"]);
+    expect(tabStops(kept)).toEqual(["2026-10-09"]);
+    expect(kept.multiselectable).toBe(false);
+  });
+
   it("disables days outside the bounds and the nav buttons that would leave them", () => {
     const grid = computeDateGrid(options({ minDate: day(2026, 10, 5), maxDate: day(2026, 10, 28) }), undefined, TODAY);
     expect(find(grid, "2026-10-04").disabled).toBe(true);

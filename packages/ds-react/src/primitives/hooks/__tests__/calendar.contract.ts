@@ -146,6 +146,12 @@ export function calendarContract(framework: string, harness: CalendarHarness, ru
       expect(range.root.querySelector('table[role="grid"]')!.getAttribute("aria-multiselectable")).toBe("true");
     });
 
+    it("a single-selection grid marks one day selected even when the value is a range", async () => {
+      const { root } = await harness.mount({ defaultMonth: MARCH, mode: "single", value: [day(2031, 3, 12), day(2031, 3, 9)] });
+      expect(root.querySelector('table[role="grid"]')!.getAttribute("aria-multiselectable")).toBe("false");
+      expect(selected(root)).toEqual(["2031-03-12"]);
+    });
+
     it("moves focus and the tab stop with the arrow keys, Home and End", async () => {
       const view = await harness.mount({ defaultMonth: MARCH, defaultValue: day(2031, 3, 12) });
       const { root } = view;
