@@ -55,7 +55,9 @@
  *               buttons move an uncontrolled month; `locale=de-DE` gives a
  *               Monday-first German grid, and a controlled `month` stays put;
  *               a key move that controlled month refuses leaves focus and the
- *               tab stop on the day it started from.
+ *               tab stop on the day it started from; days outside minDate and
+ *               maxDate are aria-disabled, refuse a click, and stop a key move
+ *               at the bound, as does every day of a disabled calendar.
  *   CodeBlock — highlight content transform (RUNTIME-RAIL-CODEBLOCK-
  *               HIGHLIGHT-01): with code+language through the config bus,
  *               the rendered `[data-token]` kind sequence equals the frozen
@@ -78,9 +80,8 @@
  *     mechanism generalizes, but only these are asserted here.
  *   - Cross-framework behavioral parity beyond DOM shape (e.g.
  *     whether OTP's React input-focus advance behaves identically
- *     in Svelte). Calendar's keyboard, activation and range-selection
- *     facts are the exception; its min/max bounds are pinned only by the
- *     shared jsdom contract tests, and no rail observes what a screen
+ *     in Svelte). Calendar's keyboard, activation, range-selection and
+ *     bounds facts are the exception; no rail observes what a screen
  *     reader announces.
  *   - Non-default props beyond the three asserted components/props.
  */
@@ -290,6 +291,10 @@ interface CalendarFacts {
   gridMultiselectable: string | null;
   weekdays: string[];
   labels: Record<string, string>;
+  /** Days not marked aria-disabled="true", in grid order. */
+  enabled: string[];
+  /** aria-disabled on the previous and next month buttons. */
+  navDisabled: (string | null)[];
 }
 
 /** Read the rendered date grid; Lit renders it inside the host's shadow root. */
@@ -322,6 +327,10 @@ async function calendarFacts(page: Page, framework: Framework): Promise<Calendar
         gridMultiselectable: root.querySelector('[role="grid"]')?.getAttribute("aria-multiselectable") ?? null,
         weekdays: Array.from(root.querySelectorAll('[role="columnheader"]')).map((header) => header.getAttribute("aria-label") ?? ""),
         labels: Object.fromEntries(days.map((day) => [day.getAttribute("data-date") ?? "", day.getAttribute("aria-label") ?? ""])),
+        enabled: days.filter((day) => day.getAttribute("aria-disabled") !== "true").map(dayOf),
+        navDisabled: ["previous", "next"].map(
+          (direction) => root.querySelector(`[data-calendar-nav="${direction}"]`)?.getAttribute("aria-disabled") ?? null,
+        ),
       };
     },
     { host: `fsds-${kebab("Calendar")}`, isLit: framework === "lit" },
@@ -446,6 +455,53 @@ test.describe("Runtime rail — Calendar (date grid: roving focus, activation, m
       await page.locator('[data-date="2031-03-09"]').click();
       await expect.poll(async () => (await calendarFacts(page, framework))?.selected)
         .toEqual(["2031-03-09", "2031-03-10", "2031-03-11", "2031-03-12"]);
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: days outside the bounds are aria-disabled, refuse a click, and stop a key move at the bound`, async ({ page }) => {
+      // The month is uncontrolled, so a month button that were not refused would move it.
+      await goto(page, framework, "Calendar", "calendar", {
+        mode: "single",
+        minDate: new Date(2031, 2, 5),
+        maxDate: new Date(2031, 2, 25),
+      });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.enabled.length).toBe(21);
+      const march = await calendarFacts(page, framework);
+      expect([march!.enabled[0], march!.enabled.at(-1)]).toEqual(["2031-03-05", "2031-03-25"]);
+      expect(march!.navDisabled).toEqual(["true", "true"]);
+      expect(march!.tabStops).toEqual(["2031-03-12"]);
+
+      const settle = () => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      // force skips Playwright's own aria-disabled check: the pointer still lands on the day and the grid must refuse it.
+      await page.locator('[data-date="2031-03-26"]').click({ force: true });
+      await page.locator('[data-calendar-nav="next"]').click({ force: true });
+      await settle();
+      const refused = await calendarFacts(page, framework);
+      expect({ selected: refused!.selected, caption: refused!.caption }).toEqual({ selected: [], caption: "March 2031" });
+
+      await page.locator('[data-date="2031-03-20"]').focus();
+      await page.keyboard.press("ArrowDown");
+      await expect.poll(async () => (await calendarFacts(page, framework))?.focused).toBe("2031-03-25");
+      await page.keyboard.press("PageDown");
+      await settle();
+      expect((await calendarFacts(page, framework))!.focused).toBe("2031-03-25");
+      await page.keyboard.press("Enter");
+      await expect.poll(async () => (await calendarFacts(page, framework))?.selected).toEqual(["2031-03-25"]);
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: a disabled calendar marks every day disabled and refuses a click and the month buttons`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar", { mode: "single", disabled: true });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.navDisabled).toEqual(["true", "true"]);
+      const march = await calendarFacts(page, framework);
+      expect({ days: march!.keys.length, enabled: march!.enabled }).toEqual({ days: 42, enabled: [] });
+      await page.locator('[data-date="2031-03-10"]').click({ force: true });
+      await page.locator('[data-calendar-nav="next"]').click({ force: true });
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      const refused = await calendarFacts(page, framework);
+      expect({ selected: refused!.selected, caption: refused!.caption }).toEqual({ selected: [], caption: "March 2031" });
     });
   }
 
