@@ -1,5 +1,7 @@
 /* Unity pilot theme authority. These defaults are not a projection of the
-   complete Web token graph. All selectors are scoped to package-owned roots. */
+   complete Web token graph. Component selectors target the generated contract
+   part classes (<prefix>__<part>), root modifiers (<prefix>--<axis>-<value>)
+   and behavior state classes (is-checked, is-open, is-selected). */
 .fsds-theme {
     --fsds-text: #eef1f7;
     --fsds-muted-text: #b9c3d4;
@@ -43,16 +45,28 @@
 .fsds-theme .unity-button:active { background-color: var(--fsds-accent); }
 .fsds-theme .unity-button:focus { border-width: 2px; border-color: var(--fsds-focus); }
 .fsds-theme .unity-button:disabled { opacity: 0.5; }
-.fsds-theme .fsds-toggle-trigger {
-    background-color: transparent;
-    border-color: transparent;
+
+/* Switch: label root > [input (native activation + focus ring), track > thumb, children]. */
+.switch {
     flex-direction: row;
     align-items: center;
+    min-height: 40px;
     padding: 6px 0;
 }
-.fsds-theme .fsds-toggle-trigger:hover { background-color: var(--fsds-surface); }
-.fsds-theme .fsds-toggle-trigger:focus { border-color: var(--fsds-focus); }
-.fsds-toggle-track {
+.fsds-theme .switch__input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 0;
+    padding: 0;
+    background-color: transparent;
+    border-color: transparent;
+}
+.fsds-theme .switch__input:hover { background-color: var(--fsds-surface); }
+.fsds-theme .switch__input:focus { border-color: var(--fsds-focus); }
+.switch__track {
     flex-shrink: 0;
     flex-direction: row;
     align-items: center;
@@ -60,24 +74,49 @@
     background-color: var(--fsds-border);
     border-radius: 16px;
     padding: 3px;
+    margin-left: 4px;
     margin-right: 12px;
 }
-.fsds-theme.is-checked .fsds-toggle-track {
+.switch.is-checked .switch__track {
     background-color: var(--fsds-accent);
     justify-content: flex-end;
 }
-.fsds-toggle-thumb { flex-shrink: 0; background-color: #ffffff; border-radius: 12px; }
-.fsds-toggle-caption { flex-shrink: 1; flex-grow: 1; }
-.fsds-item { margin-bottom: 8px; min-width: 0; }
-.fsds-theme .fsds-disclosure-trigger { flex-direction: row; justify-content: space-between; }
-.fsds-item-caption { flex-grow: 1; flex-shrink: 1; }
-.fsds-theme .fsds-disclosure-marker { flex-shrink: 0; margin-left: 16px; -unity-text-align: middle-center; }
-.fsds-theme .fsds-disclosure-trigger.is-selected { background-color: var(--fsds-surface); border-color: var(--fsds-focus); }
-.fsds-item-content { padding: 12px; }
-.fsds-tab-list { margin-bottom: 8px; flex-wrap: wrap; }
-.fsds-theme .fsds-tab-trigger { margin-right: 6px; margin-bottom: 6px; }
-.fsds-theme .fsds-tab-trigger.is-selected { background-color: var(--fsds-accent); }
-.fsds-surface {
+.switch__thumb { flex-shrink: 0; background-color: #ffffff; border-radius: 12px; }
+.switch__children { flex-shrink: 1; flex-grow: 1; }
+
+/* Accordion: item > [header > trigger > [children, chevron], content > contentInner]. */
+.accordion__item { margin-bottom: 8px; min-width: 0; }
+.fsds-theme .accordion__trigger { flex-direction: row; align-items: center; }
+.fsds-theme .accordion__trigger.is-open { background-color: var(--fsds-surface); border-color: var(--fsds-focus); }
+.accordion__children { flex-grow: 1; flex-shrink: 1; }
+/* Placeholder for the Icon componentRef until the iconography catalog is ported. */
+.accordion__chevron {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    margin-left: 16px;
+    margin-right: 4px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-color: var(--fsds-text);
+    rotate: 45deg;
+}
+.accordion__trigger.is-open .accordion__chevron { rotate: 225deg; }
+.accordion__contentInner { padding: 12px; }
+
+/* Tabs: [list > [indicator, tab...], panel...]. */
+.tabs__list { flex-direction: row; margin-bottom: 8px; flex-wrap: wrap; }
+.tabs__indicator { position: absolute; height: 0; }
+.tabs--orientation-vertical { flex-direction: row; }
+.tabs--orientation-vertical .tabs__list { flex-direction: column; margin-right: 8px; }
+.fsds-theme .tabs__tab { margin-right: 6px; margin-bottom: 6px; }
+.fsds-theme .tabs__tab.is-selected { background-color: var(--fsds-accent); }
+.fsds-theme .tabs--appearance-underline .tabs__tab.is-selected { border-bottom-width: 3px; }
+.fsds-theme .tabs--appearance-pills .tabs__tab { border-radius: 20px; }
+.tabs__panel { padding: 12px; flex-grow: 1; }
+
+/* Popover content floats at the panel root while open. */
+.popover__content {
     position: absolute;
     background-color: var(--fsds-surface);
     border-width: 1px;
@@ -87,9 +126,10 @@
     width: 320px;
     overflow: hidden;
 }
-.fsds-surface .unity-scroll-view__content-container { padding: 16px; }
-.fsds-surface .unity-button { margin-top: 12px; }
-.fsds-surface .unity-label { flex-shrink: 1; white-space: normal; }
+.popover__content .unity-scroll-view__content-container { padding: 16px; }
+.popover__content .unity-button { margin-top: 12px; }
+.popover__content .unity-label { flex-shrink: 1; white-space: normal; }
+
 .fsds-sample {
     height: 100%;
     flex-shrink: 1;
