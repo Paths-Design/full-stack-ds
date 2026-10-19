@@ -81,12 +81,11 @@ evidence:
     commit_sha: "7c24b5e95"
   - criterion_id: A3
     status: pass
-    evidence_ref: "CLI run at the candidate with an unadjudicated prop added to Switch: pnpm run generate:unity exits 1 with UNITY_BOUNDARY_UNADJUDICATED naming contract:/props/designed/members/plain:futureBehavior/name (generate-unadjudicated.log); factory.test.ts and boundary.test.ts pin the same refusal and that an explicit non-allowlisted request tolerates the catch-all"
-    recorded_at: "2026-10-19T01:20:41.946Z"
+    evidence_ref: "CLI run at 7c24b5e95 with an unadjudicated prop added to Switch: pnpm run generate:unity exited 1 with UNITY_BOUNDARY_UNADJUDICATED naming contract:/props/designed/members/plain:futureBehavior/name (ignored log: tmp/unity-support-boundary-01/generate-unadjudicated.log); factory.test.ts and boundary.test.ts pin the same refusal and that an explicit non-allowlisted request tolerates the catch-all"
+    recorded_at: "2026-10-19T01:45:51.831Z"
     test_nodeid: "packages/ds-codegen/src/frameworks/unity/boundary.test.ts::an allowlisted component may not rely on a catch-all; an explicit request may"
     command: "pnpm run generate:unity (with tmp/Switch.unadjudicated.json copied over Switch.contract.json, then restored)"
     exit_code: 1
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/generate-unadjudicated.log"
     commit_sha: "7c24b5e95"
   - criterion_id: A4
     status: pass
