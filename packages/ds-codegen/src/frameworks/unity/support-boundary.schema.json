@@ -38,12 +38,16 @@
             "items": { "type": ["string", "number", "boolean", "null"] },
             "description": "Restrict the rule to scalar leaves whose value is one of these."
           },
-          "catchAll": { "type": "boolean", "description": "A family-level fallback an allowlisted component may not rely on." }
+          "catchAll": { "type": "boolean", "description": "A family-level fallback an allowlisted component may not rely on." },
+          "realizes": {
+            "enum": ["emitted-property", "selected-channel", "selected-channel-member", "channel-change-event"],
+            "description": "lowered: how the claim is checked against the emitted control. emitted-property: the prop member is a generated public property. selected-channel: the channel is the one the dispatcher selected. selected-channel-member: the prop is that channel's value/default/change prop. channel-change-event: the event is emitted via that channel's change prop. A failed realization refuses generation (UNITY_BOUNDARY_UNREALIZED)."
+          }
         },
         "allOf": [
           { "if": { "properties": { "disposition": { "const": "lowered" } } }, "then": { "required": ["via"], "not": { "required": ["catchAll"] } } },
-          { "if": { "properties": { "disposition": { "const": "pending" } } }, "then": { "required": ["phase", "reason"] } },
-          { "if": { "properties": { "disposition": { "const": "refused" } } }, "then": { "required": ["reason"], "not": { "required": ["catchAll"] } } }
+          { "if": { "properties": { "disposition": { "const": "pending" } } }, "then": { "required": ["phase", "reason"], "not": { "required": ["realizes"] } } },
+          { "if": { "properties": { "disposition": { "const": "refused" } } }, "then": { "required": ["reason"], "not": { "required": ["catchAll"] }, "not": { "required": ["realizes"] } } }
         ]
       }
     }

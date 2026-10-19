@@ -70,18 +70,21 @@
       "id": "prop-channel-value",
       "match": ["contract:/props/*/members/channel-value:*/**"],
       "disposition": "lowered",
+      "realizes": "emitted-property",
       "via": "[UxmlAttribute] value property (Checked, Open, Value/Values) on the generated control; SetValueWithoutNotify / SetValuesWithoutNotify for silent updates."
     },
     {
       "id": "prop-channel-default",
       "match": ["contract:/props/*/members/channel-default:*/**"],
       "disposition": "lowered",
+      "realizes": "selected-channel-member",
       "via": "Imperative initial assignment: a value assigned before panel attachment is the uncontrolled initial state; no separate default property is emitted."
     },
     {
       "id": "prop-channel-change",
       "match": ["contract:/props/*/members/channel-change:*/**"],
       "disposition": "lowered",
+      "realizes": "selected-channel-member",
       "via": "RegisterValueChangedCallback for boolean channels and the ValueChanged C# event for selection channels; Controlled + ValueRequested realise the owner-controlled half of the trio."
     },
     {
@@ -94,6 +97,7 @@
       "id": "prop-disabled",
       "match": ["contract:/props/*/members/plain:disabled/**"],
       "disposition": "lowered",
+      "realizes": "emitted-property",
       "via": "[UxmlAttribute] Disabled mapped to SetEnabled on the control root; disabled activation leaves state unchanged."
     },
     {
@@ -107,14 +111,15 @@
         "contract:/props/*/members/plain:type/**"
       ],
       "disposition": "lowered",
+      "realizes": "emitted-property",
       "via": "[UxmlAttribute] Collapsible, Loop, UnmountInactive, Orientation, ActivationMode and SelectionType on ItemGroup, emitted only when the contract declares the prop, initialised from the declared default."
     },
     {
       "id": "prop-appearance",
       "match": ["contract:/props/*/members/plain:appearance/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Appearance is exposed as an ItemGroup string property and class but no generated USS realises the declared appearance values."
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "[UxmlAttribute] Appearance on ItemGroup; Refresh realises underline (selected bottom border) and pills (radius) as inline styles. P3 moves that styling into generated USS."
     },
     {
       "id": "prop-surface-dismissal-options",
@@ -124,12 +129,14 @@
         "contract:/props/*/members/plain:closeOnBlur/**"
       ],
       "disposition": "lowered",
+      "realizes": "emitted-property",
       "via": "[UxmlAttribute] CloseOnEscape / CloseOnOutsideClick / CloseOnBlur on AnchoredSurface, initialised from the declared defaults; only triggers the surface declares are enabled."
     },
     {
       "id": "prop-placement",
       "match": ["contract:/props/*/members/plain:placement/**"],
       "disposition": "lowered",
+      "realizes": "emitted-property",
       "via": "[UxmlAttribute] Placement on AnchoredSurface; floating content flips and shifts at panel edges."
     },
     {
@@ -163,7 +170,8 @@
       "id": "channels",
       "match": ["contract:/channels/**"],
       "disposition": "lowered",
-      "via": "Each channel's value/default/change trio maps to the C# value property, pre-attachment assignment and change callback or event; Controlled + ValueRequested carry owner-controlled state."
+      "realizes": "selected-channel",
+      "via": "The one channel the dispatcher selects maps its value/default/change trio to the C# value property, pre-attachment assignment and change callback or event; Controlled + ValueRequested carry owner-controlled state. A second channel is unrealised and refuses generation."
     },
     {
       "id": "types",
@@ -203,7 +211,8 @@
       "id": "events",
       "match": ["contract:/events/**"],
       "disposition": "lowered",
-      "via": "Channel change events surface as RegisterValueChangedCallback (boolean) and the ValueChanged C# event (selection); C# signatures use arrays for both selection modes."
+      "realizes": "channel-change-event",
+      "via": "Events emitted through the selected channel's change prop surface as RegisterValueChangedCallback (boolean) or the ValueChanged C# event (selection); C# signatures use arrays for both selection modes. Any other event is unrealised and refuses generation."
     },
     {
       "id": "state-machine",
@@ -275,8 +284,9 @@
     {
       "id": "interaction-presence",
       "match": ["contract:/interaction/presence"],
+      "valueIn": ["hidden", "unmount"],
       "disposition": "lowered",
-      "via": "ItemGroup hides inactive content and detaches it when UnmountInactive is set; AnchoredSurface removes floating content on close."
+      "via": "The dispatcher admits hidden only on ItemGroup (inactive content hidden, detached when UnmountInactive is set) and unmount only on AnchoredSurface (floating content removed on close); other pairings are refused."
     },
     {
       "id": "interaction",
@@ -297,13 +307,14 @@
       "match": ["contract:/focus/strategy"],
       "valueIn": ["roving", "manual", "auto", "none"],
       "disposition": "lowered",
-      "via": "ItemGroup implements roving and manual arrow navigation with Home/End; auto and none defer to native UI Toolkit focus on the trigger button."
+      "via": "The dispatcher pairs each strategy with the base that realises it and refuses other pairings (UNITY_UNSUPPORTED_FOCUS): roving and manual on ItemGroup (arrow / Home / End navigation), auto on BooleanControl (native Button focus), none on AnchoredSurface (no trap; focus stays on the trigger or moves into the content). The value itself is not read at runtime."
     },
     {
       "id": "focus-initial",
       "match": ["contract:/focus/initialFocus"],
-      "disposition": "lowered",
-      "via": "ItemGroup moves initial focus to the trigger or tab element the contract names."
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The initial focus target is not read. ItemGroup's roving tabIndex makes the active tab, or every trigger, the first tab stop regardless of the declared part; a declared target that differs would be ignored."
     },
     {
       "id": "focus-description",
@@ -320,10 +331,47 @@
       "reason": "Focus trapping, restoration and other focus facts are not lowered and need an explicit decision here."
     },
     {
+      "id": "portal-enabled",
+      "match": ["contract:/portal/enabled"],
+      "valueIn": [true],
+      "disposition": "lowered",
+      "via": "AnchoredSurface reparents floating content to the panel root and re-attaches the stylesheet; the dispatcher refuses any non-surface shape that enables a portal (UNITY_UNSUPPORTED_PORTAL)."
+    },
+    {
+      "id": "portal-disabled",
+      "match": ["contract:/portal/enabled"],
+      "valueIn": [false],
+      "disposition": "lowered",
+      "via": "Content stays in the document tree; the dispatcher refuses an anchored surface whose portal is disabled because AnchoredSurface always reparents (UNITY_UNSUPPORTED_SURFACE)."
+    },
+    {
+      "id": "portal-target",
+      "match": ["contract:/portal/defaultTarget"],
+      "valueIn": ["body"],
+      "disposition": "lowered",
+      "via": "The panel root is the UI Toolkit equivalent of document.body."
+    },
+    {
+      "id": "portal-anchored",
+      "match": ["contract:/portal/positioning", "contract:/portal/collision"],
+      "valueIn": ["anchored", "flip-shift"],
+      "disposition": "lowered",
+      "via": "AnchoredSurface.Reposition anchors to the trigger's world bound and flips/shifts at panel edges."
+    },
+    {
+      "id": "portal-layering",
+      "match": ["contract:/portal/layering"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "Floating content is only brought to the front of the panel root; named layers need a generated z-order policy."
+    },
+    {
       "id": "portal",
       "match": ["contract:/portal/**"],
-      "disposition": "lowered",
-      "via": "Enabled portals reparent floating content to the panel root and re-attach the stylesheet (AnchoredSurface); disabled portals keep content in the document tree."
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "Other portal targets, positioning or collision policies need an explicit decision here."
     },
     {
       "id": "dismissal-supported",
@@ -368,9 +416,16 @@
     },
     {
       "id": "surface-anchor-content",
-      "match": ["contract:/surface/anchor/part", "contract:/surface/content/part", "contract:/surface/content/interactive"],
+      "match": ["contract:/surface/anchor/part", "contract:/surface/content/part"],
       "disposition": "lowered",
-      "via": "Configure(anchorPart, contentPart, prefix) names the trigger and floating content; interactive content receives focus and scrolls."
+      "via": "Configure(anchorPart, contentPart, prefix) names the trigger and floating content elements."
+    },
+    {
+      "id": "surface-content-interactive",
+      "match": ["contract:/surface/content/interactive"],
+      "valueIn": [true],
+      "disposition": "lowered",
+      "via": "Content is a focusable ScrollView; the dispatcher refuses non-interactive content because the runtime cannot make it inert (UNITY_UNSUPPORTED_SURFACE)."
     },
     {
       "id": "surface-anchor-relation",
@@ -380,9 +435,23 @@
     },
     {
       "id": "surface-positioning",
-      "match": ["contract:/surface/positioning/**", "contract:/surface/kind", "contract:/surface/presence"],
+      "match": ["contract:/surface/positioning/strategy", "contract:/surface/positioning/collision", "contract:/surface/kind"],
+      "valueIn": ["anchored", "flip-shift", "popover"],
       "disposition": "lowered",
-      "via": "AnchoredSurface anchors to the trigger, reads the Placement property and flip-shifts at panel edges; persistent surfaces keep their content object while closed."
+      "via": "The dispatcher admits part-anchored popovers only; AnchoredSurface.Reposition anchors to the trigger and flips/shifts at panel edges."
+    },
+    {
+      "id": "surface-placement-prop",
+      "match": ["contract:/surface/positioning/placementProp"],
+      "disposition": "lowered",
+      "via": "The named prop is emitted as [UxmlAttribute] Placement and drives Reposition."
+    },
+    {
+      "id": "surface-persistent",
+      "match": ["contract:/surface/presence"],
+      "valueIn": ["persistent"],
+      "disposition": "lowered",
+      "via": "The Content object is retained while closed (detached from the hierarchy, not disposed); the dispatcher refuses other presence values (UNITY_UNSUPPORTED_SURFACE)."
     },
     {
       "id": "surface",

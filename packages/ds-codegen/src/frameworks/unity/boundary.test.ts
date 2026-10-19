@@ -142,6 +142,8 @@ describe("Unity support boundary", () => {
     ["missing source prefix", rule({ match: ["/a11y/**"] }), /needs a contract:\/tokens:\/styles: prefix/],
     ["empty match", rule({ match: [] }), /non-empty string array/],
     ["empty valueIn", rule({ valueIn: [] }), /valueIn must be a non-empty array/],
+    ["realizes on a pending rule", rule({ disposition: "pending", phase: "P4", realizes: "emitted-property" }), /only lowered rules declare realizes/],
+    ["unknown realization", rule({ disposition: "lowered", via: "x", realizes: "magic" }), /realizes must be one of/],
   ])("rejects a malformed boundary: %s", (_label, bad, message) => {
     expect(() => boundaryOf([bad])).toThrow(message);
   });

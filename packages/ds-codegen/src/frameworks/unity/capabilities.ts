@@ -8,11 +8,14 @@ import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { listComponentContracts, findComponentStyles, findComponentTokens } from "../../contracts-fs.js";
 import { buildComponentIR } from "../../ir.js";
-import { createUnityEmitter, unityLowering } from "./factory.js";
+import { assertRealized, createUnityEmitter, unityLowering } from "./factory.js";
 import {
   auditBoundary,
   classifyContract,
   loadBoundary,
+  loadContractWithSidecars,
+  unityAllowlist,
+  type BoundaryAudit,
   type BoundaryDisposition,
   type ClassifiedLeaf,
   type ContractWithSidecars,
@@ -55,8 +58,14 @@ export function accountComponent(contract: ContractWithSidecars, admitted: boole
   const publicProperties = [...source.matchAll(/public (?:new )?(?:bool|string) (\w+) \{/g)].map(match => match[1]);
   const boundary = loadBoundary();
   const classified = classifyContract(contract, boundary);
+  // Lowered families that declare a realisation must hold for this component's
+  // control; a failure is reported here and refuses generation at admission.
+  let unrealized: string | null = null;
+  if (!diagnostic) {
+    try { assertRealized(contract, ir, classified); } catch (error) { unrealized = error instanceof Error ? error.message : String(error); }
+  }
   return {
-    component: ir.name, admitted, adapter, diagnostic,
+    component: ir.name, admitted, adapter, diagnostic, unrealized,
     status: diagnostic ? "unsupported-shape" : admitted ? "pilot-partial" : "unadmitted-candidate",
     proof: "source-accounting-only",
     props: ir.styledProps.map(prop => {
@@ -104,15 +113,35 @@ export function inventory(root: string) {
   });
 }
 
+/**
+ * Corpus audit for the Unity target: the boundary audit (every leaf classified,
+ * no dead rules, no allowlisted catch-all reliance) plus the realisation check
+ * for every allowlisted component. Any entry in `violations` fails `--check`.
+ */
+export function auditUnityTarget(root: string): BoundaryAudit & { unrealized: { component: string; message: string }[] } {
+  const audit = { ...auditBoundary(root), unrealized: [] as { component: string; message: string }[] };
+  for (const name of unityAllowlist(root)) {
+    const contract = loadContractWithSidecars(root, name);
+    try {
+      assertRealized(contract, buildComponentIR(contract), classifyContract(contract));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      audit.unrealized.push({ component: name, message });
+      audit.violations.push(`unrealized ${name}: ${message}`);
+    }
+  }
+  return audit;
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   const check = args.includes("--check");
   const root = path.resolve(args.find(a => !a.startsWith("--")) ?? process.cwd());
-  const audit = auditBoundary(root);
+  const audit = auditUnityTarget(root);
   if (check) {
     console.log(`unity support boundary: ${JSON.stringify(audit.counts)} pending by phase ${JSON.stringify(audit.perPhase)}`);
     for (const violation of audit.violations) console.error(`  VIOLATION ${violation}`);
-    console.log(audit.violations.length ? `unity support boundary: ${audit.violations.length} violation(s)` : "unity support boundary: every leaf classified, no dead rules, no allowlisted catch-all reliance");
+    console.log(audit.violations.length ? `unity support boundary: ${audit.violations.length} violation(s)` : "unity support boundary: every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist");
     process.exit(audit.violations.length ? 1 : 0);
   }
   const components = inventory(root);

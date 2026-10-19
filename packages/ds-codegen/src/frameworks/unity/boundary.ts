@@ -31,6 +31,18 @@ export type BoundaryDisposition = "lowered" | "pending" | "refused";
 export type LeafSource = "contract" | "tokens" | "styles";
 export const PHASES = ["P2", "P3", "P4", "P5"] as const;
 export type Phase = (typeof PHASES)[number];
+/**
+ * How a `lowered` rule's claim is checked against the control the emitter
+ * actually produces for a component (see factory.ts assertRealized):
+ *   emitted-property        the prop member is a generated public property;
+ *   selected-channel        the channel is the one the dispatcher selected;
+ *   selected-channel-member the prop is that channel's value/default/change prop;
+ *   channel-change-event    the event is emitted via that channel's change prop.
+ * A lowered leaf whose realization fails refuses generation
+ * (UNITY_BOUNDARY_UNREALIZED) instead of being silently dropped.
+ */
+export const REALIZATIONS = ["emitted-property", "selected-channel", "selected-channel-member", "channel-change-event"] as const;
+export type Realization = (typeof REALIZATIONS)[number];
 
 export interface BoundaryRule {
   id: string;
@@ -47,6 +59,8 @@ export interface BoundaryRule {
   valueIn?: (string | number | boolean | null)[];
   /** A family-level fallback; an allowlisted component may not rely on it. */
   catchAll?: boolean;
+  /** lowered: how the claim is checked against the emitted control. */
+  realizes?: Realization;
 }
 
 export interface Boundary {
@@ -185,6 +199,10 @@ export function validateBoundary(boundary: unknown): Boundary {
       throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: disposition must be lowered, pending or refused`);
     }
     if (rule.valueIn !== undefined && (!Array.isArray(rule.valueIn) || rule.valueIn.length === 0)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: valueIn must be a non-empty array`);
+    if (rule.realizes !== undefined) {
+      if (rule.disposition !== "lowered") throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: only lowered rules declare realizes`);
+      if (!REALIZATIONS.includes(rule.realizes)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: realizes must be one of ${REALIZATIONS.join(", ")}`);
+    }
   }
   return doc as Boundary;
 }

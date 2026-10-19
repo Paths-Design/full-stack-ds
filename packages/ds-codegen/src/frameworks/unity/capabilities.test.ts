@@ -2,7 +2,7 @@ import path from "node:path";
 import { describe, it, expect } from "vitest";
 import { listComponentContracts } from "../../contracts-fs.js";
 import { loadContractWithSidecars } from "./boundary.js";
-import { accountComponent, declaredLeaves, inventory } from "./capabilities.js";
+import { accountComponent, auditUnityTarget, declaredLeaves, inventory } from "./capabilities.js";
 const root = path.resolve(__dirname, "../../../../..");
 const fixture = (name: string) => loadContractWithSidecars(root, name);
 describe("Unity capability accounting", () => {
@@ -19,6 +19,11 @@ describe("Unity capability accounting", () => {
     expect(all.every(o => typeof o.rule === "string")).toBe(true);
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
+    // Every allowlisted component realises every lowered claim its leaves carry.
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Popover", null], ["Switch", null], ["Tabs", null]]);
+    const audit = auditUnityTarget(root);
+    expect(audit.violations).toEqual([]);
+    expect(audit.unrealized).toEqual([]);
     // Sidecar hashes bind the accounting to its inputs.
     expect(rows.find(r => r.component === "Switch")!.sidecarSha256).toEqual({ tokens: expect.stringMatching(/^[0-9a-f]{64}$/), styles: expect.stringMatching(/^[0-9a-f]{64}$/) });
   });
