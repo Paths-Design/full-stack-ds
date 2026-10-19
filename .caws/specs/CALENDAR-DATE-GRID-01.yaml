@@ -59,8 +59,22 @@ acceptance:
       generate:check
   - id: A2
     given: 'a generated Calendar in React, Vue, Svelte, Angular and Lit'
-    when: 'a user tabs, presses arrow keys, Home, End, PageUp, PageDown (Shift for year), Enter or Space, or activates the previous and next buttons'
-    then: 'exactly one day button is tabbable (selected day, else today, else first day of the month), focus moves by the declared amount (Left and Right mirrored in RTL), crossing a month edge moves the month channel, activation selects through the value channel in single and range mode, nav buttons have visible content and labels and move the month, cells carry aria-selected from the selection state and aria-current=date on today, and min/max/disabled days are aria-disabled and unselectable, proven by one shared behavioral test run in every web harness'
+    when: >-
+      a user tabs, presses arrow keys, Home, End, PageUp, PageDown (Shift for year),
+      Enter or Space on a focused day, clicks a day, or activates the previous and
+      next buttons
+    then: >-
+      following the ARIA grid pattern each day is a gridcell that is itself the
+      control: exactly one gridcell is tabbable (focused day, else selected day,
+      else today, else first enabled day), focus moves onto the gridcell by the
+      declared amount (Left and Right mirrored in RTL) with no focusable element
+      inside any cell, crossing a month edge moves the month channel, click, Enter
+      and Space select through the value channel in single and range mode, nav
+      buttons have visible content and labels and move the month, the gridcell
+      carries aria-selected from the selection state and aria-current=date on today
+      on the same element that holds focus, and min/max/disabled days are
+      aria-disabled and unselectable, proven by one shared behavioral test run in
+      every web harness and by the browser runtime rail
   - id: A3
     given: 'a locale prop such as de-DE, ar-EG or en-US'
     when: 'the grid renders on any web family or React Native'
