@@ -1,9 +1,10 @@
 id: UNITY-CAPABILITY-PERF-01
 title: 'Avoid repeated Unity boundary matcher parsing during corpus accounting'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: unity-capability-perf
 created_at: '2026-10-19T23:40:32.123Z'
-updated_at: '2026-10-19T23:40:32.123Z'
+updated_at: '2026-10-19T23:41:29.840Z'
 created_by_session: '01a15687-8fd6-73a3-9677-8a61cbe36703'
 blast_radius:
   modules:
