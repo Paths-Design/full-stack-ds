@@ -1,9 +1,11 @@
 id: UNITY-SUPPORT-BOUNDARY-01
 title: 'Unity support boundary: classify every contract and sidecar leaf as lowered, pending or refused; refuse unclassified facts at generation'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Committed Unity support boundary (lowered/pending/refused per leaf family, realisation checks, dispatcher fact guards) with admitContract gate, audit:unity-boundary and docs; generated C# byte-identical; P1 of the Unity parity program'
 created_at: '2026-10-18T22:52:41.128Z'
-updated_at: '2026-10-19T00:24:17.854Z'
+updated_at: '2026-10-19T01:33:04.902Z'
 created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
 blast_radius:
   modules:
