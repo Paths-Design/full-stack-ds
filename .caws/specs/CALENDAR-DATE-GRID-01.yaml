@@ -70,7 +70,8 @@ acceptance:
       else today, else first enabled day), focus moves onto the gridcell by the
       declared amount (Left and Right mirrored in RTL) with no focusable element
       inside any cell, crossing a month edge moves the month channel, click, Enter
-      and Space select through the value channel in single and range mode, nav
+      and Space select through the value channel in single and range mode, the grid
+      declares aria-multiselectable true in range mode and false in single mode, nav
       buttons have visible content and labels and move the month, the gridcell
       carries aria-selected from the selection state and aria-current=date on today
       on the same element that holds focus, and min/max/disabled days are
