@@ -664,10 +664,77 @@
       "reason": "Sequence and paged-set position policies need their own runtime behavior."
     },
     {
+      "id": "styles-uss-absent-property",
+      "match": ["styles:/*/box-shadow/**", "styles:/*/line-height/**", "styles:/*/animation/**", "styles:/*/contain/**", "styles:/*/clip/**", "styles:/*/z-index/**", "styles:/*/pointer-events/**", "styles:/*/text-align/**"],
+      "disposition": "refused",
+      "reason": "The USS property table (uss.ts) has no lowering for these CSS properties: USS (Unity 6000.5) has no box-shadow, line-height, keyframe animation, contain or clip; draw order is visual-tree order, not z-index; picking is VisualElement.pickingMode, set from C#, not pointer-events; and -unity-text-align couples the horizontal and vertical axes where CSS text-align gives only the horizontal one. Each declaration is listed uss-property in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-cursor",
+      "match": ["styles:/*/cursor/**"],
+      "disposition": "refused",
+      "reason": "uss.ts maps no CSS cursor keyword: a runtime USS cursor is a texture with a hotspot, which the contract does not carry (USS's named cursors apply in the Editor only). Each declaration is listed uss-scalar."
+    },
+    {
+      "id": "styles-outline-offset",
+      "match": ["styles:/*/outline-offset/**"],
+      "declaration": {
+        "valuePattern": "^(?!\\s*0\\s*$)"
+      },
+      "disposition": "refused",
+      "reason": "uss.ts paints a focus outline as the element's own border, which cannot stand off the box; only a zero offset is realised. Each other offset is listed uss-property."
+    },
+    {
+      "id": "styles-font-weight-unmapped",
+      "match": ["styles:/*/font-weight/**"],
+      "declaration": {
+        "valuePattern": "^(?!\\s*(?:bold|bolder|normal|400|[6-9]\\d\\d(?:\\.\\d+)?|1000)\\s*$)"
+      },
+      "disposition": "refused",
+      "reason": "-unity-font-style carries bold and normal only; an intermediate weight (100-300, 500) needs a font asset per weight, which the token graph does not carry. Classified by the declared value; uss.ts decides a token-fed weight by the token's value in every theme and brand scope, and Controls.unsupported.json records that outcome (uss-scalar, or uss-var-composite when the scopes disagree)."
+    },
+    {
+      "id": "styles-transition-unrealised",
+      "match": ["styles:/*/transition/**"],
+      "declaration": {
+        "valuePattern": "(?:^|,)\\s*transform\\s|(?:cubic-bezier|steps)\\(|(?:\\d+m?s|var\\([^()]*\\))\\s+var\\("
+      },
+      "disposition": "refused",
+      "reason": "A USS transition names USS properties and a keyword easing: a transition of transform (USS splits it into translate, rotate and scale) or with a cubic-bezier, steps or token-fed easing does not carry its CSS meaning. uss.ts keeps the realisable parts (properties, durations, ease) and lists the rest under the transition's longhand in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-calc",
+      "match": ["styles:/*/*/**"],
+      "declaration": {
+        "valuePattern": "calc\\("
+      },
+      "disposition": "refused",
+      "reason": "USS lengths are px or % literals; calc() has no USS form and uss.ts does not evaluate it. Each declaration is listed uss-scalar."
+    },
+    {
+      "id": "tokens-non-scalar",
+      "match": ["tokens:/**"],
+      "declaration": {
+        "valuePattern": "^(?!(?:var|rgba?)\\([\\s\\S]*\\)$)[\\s\\S]*[\\s,]|\\d(?:r?em|ch|[ds]?v[hw]|vmin|vmax)$"
+      },
+      "disposition": "refused",
+      "reason": "A component slot is defined only with one USS scalar (length, percentage, number, time, angle, colour, keyword, or a var() with a scalar fallback). A multi-component value (shadow list, two-value padding, font-family list), an easing function or a relative unit (rem, em, ch, vw, vh) has no USS custom-property form uss.ts emits; each definition is listed uss-scalar."
+    },
+    {
+      "id": "styles-outside-native-grammar",
+      "match": ["styles:/**"],
+      "declaration": {
+        "nativeGrammar": false
+      },
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The IR's native style grammar refuses the selector key (an attribute or ARIA state such as [aria-expanded], a web-template state class such as <part>--active, a combinator, or a structural pseudo-class), so no native style rule exists for USS to lower and uss.ts lists the key uss-selector. The IR-facts spec that carries these states as contract state predicates precedes P4, which lowers them."
+    },
+    {
       "id": "tokens",
       "match": ["tokens:/**"],
       "disposition": "lowered",
-      "via": "uss.ts (S2/S3): token bindings become component custom properties var(--fsds-<graph path>, <fallback>) over a generated token section (.fsds-theme light, .fsds-theme--dark, .fsds-brand-<id>) projected from resolved.tokens.json and the token build's @layer brand; non-scalar values are listed uss-scalar in Controls.unsupported.json."
+      "via": "uss.ts (S2/S3): token bindings become component custom properties var(--fsds-<graph path>, <fallback>) over a generated token section (.fsds-theme light, .fsds-theme--dark, .fsds-brand-<id>) projected from resolved.tokens.json and the token build's @layer brand."
     },
     {
       "id": "styles",

@@ -17,6 +17,13 @@
  * form-field:name, plain:disabled, …). That derivation is the only
  * contract-wide reasoning here; everything else is a pointer match.
  *
+ * A tokens/styles rule may also condition on the sidecar DECLARATION a leaf
+ * belongs to (one token entry, or one property of one styles block): its
+ * value (`literal`, else `fallback`) and, for styles, whether the IR's native
+ * style grammar admits the block's selector key. Every leaf of a declaration
+ * therefore classifies alike, which a per-leaf `valueIn`/`valuePattern`
+ * cannot do (`resolvesTo`, `platforms` and `design` leaves carry no value).
+ *
  * A leaf no rule matches is UNCLASSIFIED and fails generation for every
  * component. A leaf that only a `catchAll` rule matches is UNADJUDICATED and
  * fails generation for an allowlisted component: widening the allowlist or
@@ -26,6 +33,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { ComponentContract } from "../../contract.js";
 import { findComponentStyles, findComponentTokens, listComponentContracts } from "../../contracts-fs.js";
+import { buildComponentIR } from "../../ir.js";
 import boundaryJson from "./support-boundary.json" with { type: "json" };
 
 export type BoundaryDisposition = "lowered" | "pending" | "refused";
@@ -64,10 +72,19 @@ export interface BoundaryRule {
   valueIn?: (string | number | boolean | null)[];
   /** Only string leaves whose value matches this regular expression match. */
   valuePattern?: string;
+  /** tokens/styles only: conditions on the declaration the leaf belongs to. */
+  declaration?: DeclarationCondition;
   /** A family-level fallback; an allowlisted component may not rely on it. */
   catchAll?: boolean;
   /** lowered: how the claim is checked against the emitted control. */
   realizes?: Realization;
+}
+
+export interface DeclarationCondition {
+  /** The declaration's value (`literal`, else `fallback`, as a string) matches this regular expression. */
+  valuePattern?: string;
+  /** styles only: whether the IR's native style grammar admits the block's selector key. */
+  nativeGrammar?: boolean;
 }
 
 export interface Boundary {
@@ -82,6 +99,17 @@ export interface Leaf {
   /** Identity-keyed pointer the rules match against. */
   keyed: string;
   value: unknown;
+  /** tokens/styles: the declaration the leaf belongs to. */
+  declaration?: LeafDeclaration;
+}
+
+export interface LeafDeclaration {
+  /** The token path, or the styles block's selector key. */
+  key: string;
+  /** `literal`, else `fallback`, as a string; absent for a styles block with no property. */
+  value?: string;
+  /** styles: whether the IR's native style grammar admits `key`. */
+  nativeGrammar?: boolean;
 }
 
 export interface ClassifiedLeaf extends Leaf {
@@ -90,7 +118,9 @@ export interface ClassifiedLeaf extends Leaf {
   catchAll: boolean;
 }
 
-const escape = (key: string): string => key.replace(/~/g, "~0").replace(/\//g, "~1");
+/** RFC 6901 escaping of one pointer segment. */
+export const escape = (key: string): string => key.replace(/~/g, "~0").replace(/\//g, "~1");
+const unescape = (segment: string): string => segment.replace(/~1/g, "/").replace(/~0/g, "~");
 
 /** Prop roles the contract itself assigns: channel trio membership and form fields. */
 export function propRoles(contract: ComponentContract): Map<string, string> {
@@ -178,6 +208,13 @@ export function patternMatches(pattern: string, leaf: Pick<Leaf, "source" | "key
 function ruleMatches(rule: BoundaryRule, leaf: Leaf): boolean {
   if (rule.valueIn && !rule.valueIn.some(v => Object.is(v, leaf.value))) return false;
   if (rule.valuePattern !== undefined && (typeof leaf.value !== "string" || !new RegExp(rule.valuePattern).test(leaf.value))) return false;
+  if (rule.declaration) {
+    const declaration = leaf.declaration;
+    if (!declaration) return false;
+    const { valuePattern, nativeGrammar } = rule.declaration;
+    if (valuePattern !== undefined && (declaration.value === undefined || !new RegExp(valuePattern).test(declaration.value))) return false;
+    if (nativeGrammar !== undefined && declaration.nativeGrammar !== nativeGrammar) return false;
+  }
   return rule.match.some(pattern => patternMatches(pattern, leaf));
 }
 
@@ -216,6 +253,21 @@ export function validateBoundary(boundary: unknown): Boundary {
       if (typeof rule.valuePattern !== "string" || !rule.valuePattern) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: valuePattern must be a non-empty regular expression`);
       try { new RegExp(rule.valuePattern); } catch { throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: valuePattern ${JSON.stringify(rule.valuePattern)} is not a valid regular expression`); }
     }
+    if (rule.declaration !== undefined) {
+      const condition = rule.declaration as Record<string, unknown> | null;
+      if (!condition || typeof condition !== "object" || Array.isArray(condition)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration must be an object`);
+      const keys = Object.keys(condition);
+      if (!keys.length || keys.some(k => k !== "valuePattern" && k !== "nativeGrammar")) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration takes valuePattern and/or nativeGrammar`);
+      if (rule.match.some(m => !m.startsWith("tokens:") && !m.startsWith("styles:"))) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration conditions apply to tokens: and styles: patterns only`);
+      if (condition.valuePattern !== undefined) {
+        if (typeof condition.valuePattern !== "string" || !condition.valuePattern) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.valuePattern must be a non-empty regular expression`);
+        try { new RegExp(condition.valuePattern); } catch { throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.valuePattern ${JSON.stringify(condition.valuePattern)} is not a valid regular expression`); }
+      }
+      if (condition.nativeGrammar !== undefined) {
+        if (typeof condition.nativeGrammar !== "boolean") throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.nativeGrammar must be a boolean`);
+        if (rule.match.some(m => !m.startsWith("styles:"))) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.nativeGrammar applies to styles: patterns only`);
+      }
+    }
     if (rule.realizes !== undefined) {
       if (rule.disposition !== "lowered") throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: only lowered rules declare realizes`);
       if (!REALIZATIONS.includes(rule.realizes)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: realizes must be one of ${REALIZATIONS.join(", ")}`);
@@ -240,14 +292,46 @@ export function classifyLeaf(leaf: Leaf, boundary: Boundary = loadBoundary()): C
 
 export type ContractWithSidecars = ComponentContract & { tokens?: unknown; styles?: unknown };
 
+const declarationValue = (entry: unknown): string | undefined => {
+  if (entry === null || typeof entry !== "object") return entry === undefined ? undefined : String(entry);
+  const { literal, fallback } = entry as { literal?: unknown; fallback?: unknown };
+  const value = literal ?? fallback;
+  return value === undefined || value === null ? undefined : String(value);
+};
+
+/** Styles selector keys the IR's native style grammar refuses (no NativeStyleRuleIR exists for them). */
+function nativeGrammarRefusals(contract: ContractWithSidecars): Set<string> {
+  let ir: ReturnType<typeof buildComponentIR>;
+  try {
+    ir = buildComponentIR(contract);
+  } catch (error) {
+    throw new Error(`UNITY_BOUNDARY_IR: ${contract.name}: the styles sidecar is classified against the IR's native style grammar, and the IR does not build: ${error instanceof Error ? error.message : String(error)}`);
+  }
+  return new Set((ir.nativeStyleRules?.unsupported ?? []).map(u => u.sourceKey));
+}
+
 /** Leaves of a contract plus its merged `tokens`/`styles` sidecars. */
 export function contractLeaves(contract: ContractWithSidecars): Leaf[] {
   const { tokens, styles, ...body } = contract;
   const roles = propRoles(contract);
+  const segments = (leaf: Leaf) => leaf.pointer.slice(1).split("/").map(unescape);
+  const tokenLeaves = keyedLeaves(tokens, "tokens").map(leaf => {
+    const [key] = segments(leaf);
+    if (key === undefined || key === "") return leaf;
+    return { ...leaf, declaration: { key, value: declarationValue((tokens as Record<string, unknown>)[key]) } };
+  });
+  const styleLeaves = keyedLeaves(styles, "styles");
+  const refused = styleLeaves.length ? nativeGrammarRefusals(contract) : new Set<string>();
   return [
     ...keyedLeaves(body, "contract", roles),
-    ...keyedLeaves(tokens, "tokens"),
-    ...keyedLeaves(styles, "styles"),
+    ...tokenLeaves,
+    ...styleLeaves.map(leaf => {
+      const [key, property] = segments(leaf);
+      if (key === undefined || key === "") return leaf;
+      const block = (styles as Record<string, Record<string, unknown> | undefined>)[key];
+      const value = property === undefined ? undefined : declarationValue(block?.[property]);
+      return { ...leaf, declaration: { key, ...(value === undefined ? {} : { value }), nativeGrammar: !refused.has(key) } };
+    }),
   ];
 }
 
