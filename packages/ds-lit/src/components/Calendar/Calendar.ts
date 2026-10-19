@@ -1,8 +1,10 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
+import { DateGridController } from "../../primitives/controllers/DateGridController.js";
 import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { CalendarBehavior } from './CalendarBehavior.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
 
 // @custom:start imports
@@ -18,7 +20,7 @@ export type CalendarMode = "single" | "range";
 // @custom:end
 
 // @generated:start component
-const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next month" };
 
 export class CalendarElement extends LitElement {
   static override styles = css`
@@ -169,21 +171,13 @@ export class CalendarElement extends LitElement {
       display: contents;
     }
 
-    .calendar__cell {
+    .calendar__day {
       display: flex;
       align-items: center;
       justify-content: center;
       aspect-ratio: 1;
       min-width: var(--fsds-calendar-design-cell-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
       padding: var(--fsds-calendar-design-cell-spacing-padding, 0);
-    }
-
-    .calendar__day {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
       box-sizing: border-box;
       background: transparent;
       border: none;
@@ -204,13 +198,13 @@ export class CalendarElement extends LitElement {
       outline-style: var(--fsds-calendar-design-condition-f2bc584abce8-focus-style, solid);
     }
 
-    .calendar__cell[aria-selected="true"] .calendar__day {
+    .calendar__day[aria-selected="true"] {
       background-color: var(--fsds-calendar-design-condition-f43aab96a58c-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
       color: var(--fsds-calendar-design-condition-f43aab96a58c-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
       font-weight: var(--fsds-calendar-design-condition-f43aab96a58c-typography-weight, 600);
     }
 
-    .calendar__cell[aria-current="date"] .calendar__day {
+    .calendar__day[aria-current="date"] {
       box-shadow: var(--fsds-calendar-design-condition-789437ce1e22-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
       font-weight: var(--fsds-calendar-design-condition-789437ce1e22-typography-weight, 600);
     }
@@ -220,6 +214,9 @@ export class CalendarElement extends LitElement {
   private readonly fsdsMessages = new FsdsMessagesController(this, "Calendar", CalendarMessages);
 
   @property({ type: String }) caption?: string;
+  @property({ attribute: false }) month?: Date;
+  @property({ attribute: false }) defaultMonth?: Date;
+  @property({ attribute: false }) onMonthChange?: (month: Date) => void;
   @property({ attribute: false }) value?: Date | Date[] | null;
   @property({ attribute: false }) defaultValue?: Date | Date[] | null;
   @property({ attribute: false }) onChange?: (value: Date | Date[] | null) => void;
@@ -229,7 +226,6 @@ export class CalendarElement extends LitElement {
   @property({ attribute: false }) maxDate?: Date;
   @property({ type: String }) locale?: string = "en-US";
   @property({ type: Boolean }) shouldCloseOnSelect?: boolean = true;
-  @property({ attribute: false }) days?: Date[];
 
   private initializedBehavior?: CalendarBehavior;
   private get behavior(): CalendarBehavior {
@@ -237,9 +233,13 @@ export class CalendarElement extends LitElement {
     value: () => this.value,
     defaultValue: this.defaultValue,
     onChange: (v) => this.onChange?.(v),
+    month: () => this.month,
+    defaultMonth: this.defaultMonth,
+    onMonthChange: (v) => this.onMonthChange?.(v),
     shouldCloseOnSelect: this.shouldCloseOnSelect,
   });
   }
+  private dateGrid = new DateGridController(this, () => ({ value: this.behavior.value, month: this.behavior.month, mode: (this.mode ?? "single"), locale: (this.locale ?? "en-US"), minDate: this.minDate, maxDate: this.maxDate, disabled: this.disabled, caption: this.caption, onValueChange: (next) => this.behavior.setValue(next), onMonthChange: (next) => this.behavior.setMonth(next) }));
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -257,19 +257,34 @@ export class CalendarElement extends LitElement {
   override render() {
     return html`<div class="${this.computeClasses()}" role="application" data-fsds-box="">
   <div class=${'calendar__header'}>
-    <button class=${'calendar__nav'} aria-label=${this.fsdsMessages.value.previousMonth}></button>
-    <span class=${'calendar__caption'}>${(this.caption ?? this.fsdsMessages.value.caption)}</span>
-    <button class=${'calendar__nav'} aria-label=${this.fsdsMessages.value.nextMonth}></button>
+    <button class=${'calendar__nav'} type="button" data-calendar-nav="previous" @click=${this.dateGrid.previous} aria-label=${this.fsdsMessages.value.previousMonth} aria-disabled=${this.dateGrid.state.previousDisabled}>
+      <span aria-hidden="true">‹</span>
+    </button>
+    <span class=${'calendar__caption'} aria-live="polite">${this.dateGrid.state.caption}</span>
+    <button class=${'calendar__nav'} type="button" data-calendar-nav="next" @click=${this.dateGrid.next} aria-label=${this.fsdsMessages.value.nextMonth} aria-disabled=${this.dateGrid.state.nextDisabled}>
+      <span aria-hidden="true">›</span>
+    </button>
   </div>
-  <table class=${'calendar__grid'} role="grid" aria-label=${this.fsdsMessages.value.gridLabel}>
+  <table class=${'calendar__grid'} role="grid" @keydown=${this.dateGrid.keydown} aria-label=${this.dateGrid.state.caption} aria-multiselectable=${this.dateGrid.state.multiselectable}>
+    <thead>
+      <tr role="row">
+        ${(this.dateGrid.state.weekdays ?? []).map((item) => html`
+        <th class=${'calendar__weekday'} role="columnheader" scope="col" aria-label=${ifDefined(item.long)}>
+          <span>${item.short}</span>
+        </th>
+        `)}
+      </tr>
+    </thead>
     <tbody>
-      <tr>
-        ${(this.days ?? []).map((item, index) => html`
-        <td class=${'calendar__cell'} role="gridcell" data-calendar-index=${index}>
-          <button class=${'calendar__day'} @click=${() => this.behavior.setValue(item)} tabindex="-1">${item.getDate()}</button>
+      ${(this.dateGrid.state.weeks ?? []).map((week) => html`
+      <tr role="row">
+        ${(week.days ?? []).map((day) => html`
+        <td class=${'calendar__day'} role="gridcell" @click=${() => this.dateGrid.select(day)} tabindex=${ifDefined(day.tabIndex)} aria-label=${ifDefined(day.fullLabel)} aria-selected=${ifDefined(day.selected)} aria-current=${ifDefined(day.current)} aria-disabled=${ifDefined(day.disabled)} data-date=${ifDefined(day.key)} data-outside-month=${ifDefined(day.outsideMonth)}>
+          <span>${day.label}</span>
         </td>
         `)}
       </tr>
+      `)}
     </tbody>
   </table>
 </div>`;
@@ -428,21 +443,13 @@ export class CalendarHeaderElement extends LitElement {
       display: contents;
     }
 
-    .calendar__cell {
+    .calendar__day {
       display: flex;
       align-items: center;
       justify-content: center;
       aspect-ratio: 1;
       min-width: var(--fsds-calendar-design-cell-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
       padding: var(--fsds-calendar-design-cell-spacing-padding, 0);
-    }
-
-    .calendar__day {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
       box-sizing: border-box;
       background: transparent;
       border: none;
@@ -463,13 +470,13 @@ export class CalendarHeaderElement extends LitElement {
       outline-style: var(--fsds-calendar-design-condition-f2bc584abce8-focus-style, solid);
     }
 
-    .calendar__cell[aria-selected="true"] .calendar__day {
+    .calendar__day[aria-selected="true"] {
       background-color: var(--fsds-calendar-design-condition-f43aab96a58c-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
       color: var(--fsds-calendar-design-condition-f43aab96a58c-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
       font-weight: var(--fsds-calendar-design-condition-f43aab96a58c-typography-weight, 600);
     }
 
-    .calendar__cell[aria-current="date"] .calendar__day {
+    .calendar__day[aria-current="date"] {
       box-shadow: var(--fsds-calendar-design-condition-789437ce1e22-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
       font-weight: var(--fsds-calendar-design-condition-789437ce1e22-typography-weight, 600);
     }

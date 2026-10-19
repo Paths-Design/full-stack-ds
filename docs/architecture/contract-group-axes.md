@@ -4,7 +4,7 @@ authority: architecture
 status: active
 title: Contract Group Axes
 owner: "@darianrosebrook"
-updated: 2026-09-06
+updated: 2026-10-18
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-contracts/components/**/*.contract.json
@@ -101,9 +101,12 @@ checkbox can declare both capabilities. Field association targets
 labelable element.
 
 `compositeControl` is deliberately separate from `formControl`: Select options,
-Calendar days, and OTP fields are multiple runtime instances of one iterated
-DOM template. Their item/index payload belongs to the binding IR, and must not
-be reconstructed by component-name branches in framework emitters.
+RadioGroup radios, and OTP fields are multiple runtime instances of one
+iterated DOM template. Their item/index payload belongs to the binding IR, and
+must not be reconstructed by component-name branches in framework emitters.
+Calendar's days are iterated too, but they commit through the date-grid core's
+`dateGrid:select` binding ([Month date grids](date-grid.md)), not a
+`compositeControl`.
 
 ## Axis 8: Assistive-technology obligation
 

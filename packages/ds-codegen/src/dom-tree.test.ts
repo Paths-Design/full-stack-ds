@@ -3,11 +3,12 @@ import type { ComponentContract, ContractDomNode } from "./contract.js";
 import { buildComponentIR, parseBindingExpression } from "./ir.js";
 
 describe("parseBindingExpression", () => {
-  it("parses the closed Date day-of-month projection", () => {
+  it("leaves a projection outside the closed vocabulary as visible literal text", () => {
+    // Day labels are the date grid's locale-formatted `iter:item.label`; a
+    // locale-blind day-of-month projection is not part of the vocabulary.
     expect(parseBindingExpression("project:dateDayOfMonth(iter:item)")).toEqual({
-      kind: "projection",
-      op: "dateDayOfMonth",
-      source: { kind: "iterationLocal", local: "item" },
+      kind: "literal",
+      value: "project:dateDayOfMonth(iter:item)",
     });
     expect(parseBindingExpression("project:eval(iter:item)")).toEqual({
       kind: "literal",

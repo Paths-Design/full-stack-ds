@@ -1,5 +1,6 @@
 // Press-proof harness (FIX-SWIFTUI-PRESS-PROOF-01,
-// TEST-SWIFTUI-RUNTIME-BREADTH-01, FIX-SWIFTUI-POPOVER-TRIGGER-01).
+// TEST-SWIFTUI-RUNTIME-BREADTH-01, FIX-SWIFTUI-POPOVER-TRIGGER-01,
+// CALENDAR-DATE-GRID-01).
 //
 // A REAL SwiftUI App that drives itself: hosts each scenario in the
 // window, waits for the a11y tree to materialize (a genuine run loop
@@ -34,8 +35,16 @@ final class Counters {
     // TEST-SWIFTUI-RUNTIME-BREADTH-01 breadth phases.
     var switchStates: [Bool] = []
     var switchBindingFinal = false
+    var switchAXValues: [String] = []
+    /// After one press each: the rendered value and stored value of a switch
+    /// bound to unpublished storage, and the rendered value and callbacks of
+    /// a switch whose binding refuses every write.
+    var unpublishedSwitch: [String] = []
+    var refusingSwitch: [String] = []
+    var refusingChanges: [Bool] = []
     var selectChanges: [String] = []
     var selectBindingFinal = ""
+    var selectTriggerLabel = ""
     var popoverOpens: [Bool] = []
     var popoverVisibleAfterPress = false
     var otpChanges: [String] = []
@@ -55,10 +64,26 @@ final class Counters {
     var calendarButtonsDump: [String] = []
     var calendarChanges: [String] = []
     var calendarCensus: [String: Int] = [:]
+    // CALENDAR-DATE-GRID-01: the day's isSelected trait, the month channel
+    // and the locale, read back through the OS accessibility tree.
+    var calendarMonthChanges: [String] = []
+    var calendarSelectedBefore: [String] = []
+    var calendarSelectedAfter: [String] = []
+    var calendarBindingFinal = ""
+    var calendarHeadersEnUS: [String] = []
+    var calendarHeadersDeDE: [String] = []
+    var calendarDayLabelDeDE = ""
+    var calendarProbeSelected = false
+    var calendarStaticSelectedDeDE: [String] = []
+    var calendarSelectedExternal: [String] = []
+    var calendarUncontrolledAfterPress: [String] = []
     // FEAT-SWIFTUI-COMPOUND-INTERACTIVITY-01 compound proofs.
     var tabsChanges: [String] = []
     var accordionChanges: [String] = []
     var shuttleChanges: [String] = []
+    /// What the controlled Tabs and Accordion show at mount, after the parent
+    /// sets each value, and after it sets them back.
+    var controlledCompound: [String] = []
     var compoundCensus: [String: Int] = [:]
     var limitations: [String] = []
 }
@@ -71,6 +96,7 @@ final class HarnessModel: ObservableObject {
         case walkthroughCold
         case walkthroughThreshold
         case switchToggle
+        case switchUnpublished
         case selectOption
         case popoverClick
         case otpEntry
@@ -78,6 +104,7 @@ final class HarnessModel: ObservableObject {
         case dialogPlainProbe
         case dialogUncontrolled
         case calendarDay
+        case calendarLocale
         case compoundProofs
         case done
     }
@@ -93,6 +120,11 @@ final class HarnessModel: ObservableObject {
     var dialogPass = 1
     @Published var plainSheetOpen = false
     @Published var pickedDate: Date? = nil
+    /// Storage SwiftUI cannot observe: a binding over it publishes nothing.
+    final class Unpublished { var on = false }
+    let unpublished = Unpublished()
+    @Published var controlledTab = "x"
+    @Published var controlledOpenness: [String] = []
     let counters = Counters()
     var failures: [String] = []
 
@@ -322,8 +354,15 @@ final class HarnessModel: ObservableObject {
                 }
                 Self.click(at: pressables[0])
                 self.schedule(0.7) {
+                    // The rendered toggle, not only the callback, follows the
+                    // controlled binding: its AXValue is the state it shows.
+                    self.counters.switchAXValues.append(Self.numberValue(of: Self.axPressables().first ?? pressables[0]))
                     Self.click(at: Self.axPressables().first ?? pressables[0])
                     self.schedule(0.7) {
+                        self.counters.switchAXValues.append(Self.numberValue(of: Self.axPressables().first ?? pressables[0]))
+                        if self.counters.switchAXValues != ["1", "0"] {
+                            self.failures.append("switch: rendered AXValue after each press \(self.counters.switchAXValues), expected [\"1\", \"0\"]")
+                        }
                         self.counters.switchBindingFinal = self.switchOn
                         if self.counters.switchStates != [true, false] {
                             self.failures.append("switch: onChange values \(self.counters.switchStates), expected [true, false]")
@@ -331,9 +370,40 @@ final class HarnessModel: ObservableObject {
                         if self.counters.switchBindingFinal != false {
                             self.failures.append("switch: binding final \(self.counters.switchBindingFinal), expected false (two toggles)")
                         }
-                        self.phase = .selectOption
+                        self.phase = .switchUnpublished
                         self.schedule(0.5) { self.advance() }
                     }
+                }
+            }
+
+        case .switchUnpublished:
+            counters.refusingChanges = []
+            schedule(1.0) {
+                let labeled = { (label: String) in Self.axPressables().first { Self.description(of: $0) == label } }
+                guard let plain = labeled("unpublished-switch"), let refusing = labeled("refusing-switch") else {
+                    self.failures.append("switch(unpublished): expected the unpublished and refusing switches, found \(Self.axPressables().map { Self.description(of: $0) ?? "?" })")
+                    self.phase = .selectOption
+                    self.schedule(0.5) { self.advance() }
+                    return
+                }
+                Self.click(at: plain)
+                Self.click(at: refusing)
+                self.schedule(0.7) {
+                    // A controlled switch shows what its owner publishes. The
+                    // write reaches unpublished storage, but the switch keeps
+                    // the value from its parent's last render; a write the
+                    // owner refuses leaves its value on screen and the callback
+                    // still reports the request.
+                    self.counters.unpublishedSwitch = [labeled("unpublished-switch").map(Self.numberValue) ?? "<missing>", "stored \(self.unpublished.on)"]
+                    self.counters.refusingSwitch = [labeled("refusing-switch").map(Self.numberValue) ?? "<missing>"]
+                    if self.counters.unpublishedSwitch != ["0", "stored true"] {
+                        self.failures.append("switch(unpublished): shown/stored \(self.counters.unpublishedSwitch), expected [\"0\", \"stored true\"]")
+                    }
+                    if self.counters.refusingSwitch != ["0"] || self.counters.refusingChanges != [true] {
+                        self.failures.append("switch(refusing): shown \(self.counters.refusingSwitch) onChange \(self.counters.refusingChanges), expected [\"0\"] and [true]")
+                    }
+                    self.phase = .selectOption
+                    self.schedule(0.5) { self.advance() }
                 }
             }
 
@@ -369,6 +439,12 @@ final class HarnessModel: ObservableObject {
                     }
                     Self.click(at: optionB) // press option "B" (value "b")
                     self.schedule(0.8) {
+                        // The trigger renders the controlled selection's label.
+                        let trigger = Self.axElements(withRoles: ["AXButton", "AXMenuButton"]).first
+                        self.counters.selectTriggerLabel = trigger.flatMap { Self.title(of: $0) ?? Self.description(of: $0) } ?? "<missing>"
+                        if self.counters.selectTriggerLabel != "B" {
+                            self.failures.append("select: trigger shows \"\(self.counters.selectTriggerLabel)\" after choosing B, expected \"B\"")
+                        }
                         self.counters.selectBindingFinal = self.selection
                         if self.counters.selectChanges != ["b"] {
                             self.failures.append("select: onSelectionChange values \(self.counters.selectChanges), expected [\"b\"]")
@@ -502,33 +578,125 @@ final class HarnessModel: ObservableObject {
 
         case .calendarDay:
             counters.calendarChanges = []
+            counters.calendarMonthChanges = []
             counters.calendarCensus = [:]
             counters.calendarButtonsDump = []
             schedule(1.0) {
                 self.counters.calendarCensus = Self.axCensus()
                 self.counters.calendarButtonsDump = Self.axButtons().compactMap {
-                    Self.title(of: $0) ?? Self.description(of: $0)
+                    Self.description(of: $0) ?? Self.title(of: $0)
                 }
-                // The compact DatePicker exposes no date-labeled popup
-                // trigger; its real user path is the AXIncrementor day
-                // stepper. Increment once — an OS-mediated action — and
-                // expect exactly one onChange with a shifted date.
-                let incrementors = Self.axElements(withRoles: ["AXIncrementor"])
-                guard let incrementor = incrementors.first else {
-                    self.counters.limitations.append(
-                        "calendar: no AXIncrementor to step the date (buttons \(self.counters.calendarButtonsDump), census \(self.counters.calendarCensus.sorted { $0.key < $1.key })) — day-step proof unavailable on this host"
+                self.counters.calendarHeadersEnUS = Self.axHeadingLabels()
+                self.counters.calendarSelectedBefore = Self.selectedButtonLabels()
+                // en-US weeks begin on Sunday, and nothing is selected before
+                // the first press (the value binding starts nil).
+                if self.counters.calendarHeadersEnUS.count != 7 || self.counters.calendarHeadersEnUS.first != "Sunday" {
+                    self.failures.append("calendar: en-US column headers \(self.counters.calendarHeadersEnUS), expected 7 starting with Sunday")
+                }
+                if !self.counters.calendarSelectedBefore.isEmpty {
+                    self.failures.append("calendar: days selected before any press: \(self.counters.calendarSelectedBefore)")
+                }
+                // Each day is a Button named by its locale-formatted full
+                // date; press one through AXPress and expect exactly one
+                // commit of that day, the binding to follow, and the day
+                // alone to carry the isSelected trait (AXSelected).
+                let day = Self.axButtons(described: "Monday, March 10, 2031")
+                guard day.count == 1 else {
+                    self.failures.append(
+                        "calendar: expected one day button named 'Monday, March 10, 2031', found \(day.count) (buttons \(self.counters.calendarButtonsDump))"
                     )
-                    self.phase = .compoundProofs
+                    self.phase = .calendarLocale
                     self.schedule(0.5) { self.advance() }
                     return
                 }
-                Self.increment(at: incrementor)
+                Self.click(at: day[0])
                 self.schedule(0.8) {
-                    if self.counters.calendarChanges.isEmpty {
-                        self.failures.append("calendar: AXIncrement incremented but onChange never fired")
+                    self.counters.calendarBindingFinal = Self.dayKey(self.pickedDate)
+                    self.counters.calendarSelectedAfter = Self.waitForSelectedButtons(["Monday, March 10, 2031"])
+                    if self.counters.calendarChanges != ["2031-03-10"] {
+                        self.failures.append("calendar: onChange values \(self.counters.calendarChanges), expected [\"2031-03-10\"] after one press")
                     }
-                    if self.counters.calendarChanges.count > 1 {
-                        self.failures.append("calendar: single increment fired onChange \(self.counters.calendarChanges.count)x, expected 1")
+                    if self.counters.calendarBindingFinal != "2031-03-10" {
+                        self.failures.append("calendar: value binding \(self.counters.calendarBindingFinal), expected 2031-03-10")
+                    }
+                    // The plain control classifies a miss: if it reports
+                    // AXSelected and the day does not, the Calendar is at
+                    // fault; if neither does, the host's mapping is.
+                    self.counters.calendarProbeSelected = Self.axButtons(labeled: Self.selectedControl).first.map(Self.isSelected) ?? false
+                    if self.counters.calendarSelectedAfter != ["Monday, March 10, 2031"] {
+                        let pressed = Self.axButtons(described: "Monday, March 10, 2031").first.map(Self.attributeDump) ?? "<missing>"
+                        if self.counters.calendarProbeSelected {
+                            self.failures.append(
+                                "calendar: AXSelected days \(self.counters.calendarSelectedAfter), expected only Monday, March 10, 2031, while the plain isSelected control reports AXSelected (pressed day: \(pressed))"
+                            )
+                        } else {
+                            self.counters.limitations.append(
+                                "calendar: neither the selected day nor a plain Button carrying .isSelected reports AXSelected on this host — selected-state exposure unprovable here"
+                            )
+                        }
+                    }
+                    // The parent owns the controlled value: moving it from
+                    // outside moves the selected day with it.
+                    self.pickedDate = Foundation.Calendar(identifier: .gregorian)
+                        .date(from: DateComponents(year: 2031, month: 3, day: 12))
+                    // Read after the run loop turns: the re-render the write
+                    // schedules cannot happen while this closure polls.
+                    self.schedule(0.8) {
+                    self.counters.calendarSelectedExternal = Self.waitForSelectedButtons(["Wednesday, March 12, 2031"])
+                    if self.counters.calendarSelectedExternal != ["Wednesday, March 12, 2031"] {
+                        self.failures.append("calendar: after the parent set the value to March 12, AXSelected days \(self.counters.calendarSelectedExternal), expected only Wednesday, March 12, 2031")
+                    }
+                    let next = Self.axButtons(labeled: "Next month")
+                    guard next.count == 1 else {
+                        self.failures.append("calendar: expected one 'Next month' control, found \(next.count)")
+                        self.phase = .calendarLocale
+                        self.schedule(0.5) { self.advance() }
+                        return
+                    }
+                    Self.click(at: next[0])
+                    self.schedule(0.8) {
+                        // The month channel moves once, and the grid re-derives
+                        // from it: April's days replace March's.
+                        let april = Self.waitForButton(described: "Thursday, April 10, 2031")
+                        if !april {
+                            self.failures.append("calendar: Next month did not re-derive the grid for April 2031")
+                        }
+                        if !Self.axButtons(described: "Monday, March 10, 2031").isEmpty {
+                            self.failures.append("calendar: March 10 is still on screen after Next month")
+                        }
+                        if self.counters.calendarMonthChanges != ["2031-04"] {
+                            self.failures.append("calendar: onMonthChange values \(self.counters.calendarMonthChanges), expected [\"2031-04\"]")
+                        }
+                        self.phase = .calendarLocale
+                        self.schedule(0.5) { self.advance() }
+                    }
+                    }
+                }
+            }
+
+        case .calendarLocale:
+            schedule(1.0) {
+                // de-DE: Monday-first columns and German full-date names.
+                self.counters.calendarHeadersDeDE = Self.axHeadingLabels()
+                self.counters.calendarStaticSelectedDeDE = Self.selectedButtonLabels()
+                let day = Self.axButtons(described: "Montag, 10. März 2031")
+                self.counters.calendarDayLabelDeDE = day.first.flatMap { Self.description(of: $0) } ?? "<missing>"
+                if self.counters.calendarHeadersDeDE.count != 7 || self.counters.calendarHeadersDeDE.first != "Montag" {
+                    self.failures.append("calendar(de-DE): column headers \(self.counters.calendarHeadersDeDE), expected 7 starting with Montag")
+                }
+                if day.count != 1 {
+                    self.failures.append("calendar(de-DE): expected one day named 'Montag, 10. März 2031', found \(day.count)")
+                }
+                // Uncontrolled: the default value is selected at mount, and a
+                // press moves the selection to the pressed day.
+                if self.counters.calendarStaticSelectedDeDE != ["Montag, 10. März 2031"] {
+                    self.failures.append("calendar(de-DE): AXSelected at mount \(self.counters.calendarStaticSelectedDeDE), expected only Montag, 10. März 2031 (the default value)")
+                }
+                if let tuesday = Self.axButtons(described: "Dienstag, 11. März 2031").first { Self.click(at: tuesday) }
+                self.schedule(0.8) {
+                    self.counters.calendarUncontrolledAfterPress = Self.waitForSelectedButtons(["Dienstag, 11. März 2031"])
+                    if self.counters.calendarUncontrolledAfterPress != ["Dienstag, 11. März 2031"] {
+                        self.failures.append("calendar(de-DE): AXSelected after pressing Dienstag \(self.counters.calendarUncontrolledAfterPress), expected only Dienstag, 11. März 2031")
                     }
                     self.phase = .compoundProofs
                     self.schedule(0.5) { self.advance() }
@@ -576,6 +744,34 @@ final class HarnessModel: ObservableObject {
                             if !opened || !closed {
                                 let titles = Self.axStaticTexts().compactMap { Self.title(of: $0) }
                                 self.failures.append("accordion: content visibility did not track openness (opened=\(opened) closed=\(closed); staticTexts=\(titles))")
+                            }
+                            controlledCompoundStep()
+                        }
+                    }
+                }
+
+                @MainActor func controlledCompoundStep() {
+                    // -- Controlled Tabs and Accordion: the parent moves each
+                    // value with no press. Their panels and content read the
+                    // channel through the environment, so they must follow
+                    // the parent in both directions.
+                    let shown = { () -> String in
+                        let tab = Self.waitForStaticText("controlled panel x", attempts: 2) ? "x" : Self.waitForStaticText("controlled panel y", attempts: 2) ? "y" : "-"
+                        let content = Self.waitForStaticText("controlled content", attempts: 2) ? "open" : "closed"
+                        return "tab \(tab), item \(content)"
+                    }
+                    self.counters.controlledCompound = [shown()]
+                    self.controlledTab = "y"
+                    self.controlledOpenness = ["c1"]
+                    self.schedule(0.8) {
+                        self.counters.controlledCompound.append(shown())
+                        self.controlledTab = "x"
+                        self.controlledOpenness = []
+                        self.schedule(0.8) {
+                            self.counters.controlledCompound.append(shown())
+                            let expected = ["tab x, item closed", "tab y, item open", "tab x, item closed"]
+                            if self.counters.controlledCompound != expected {
+                                self.failures.append("controlled compound: shown \(self.counters.controlledCompound), expected \(expected) as the parent sets Tabs and Accordion")
                             }
                             self.finishCompound()
                         }
@@ -643,8 +839,12 @@ final class HarnessModel: ObservableObject {
             print("--- breadth (TEST-SWIFTUI-RUNTIME-BREADTH-01) ---")
             print("switch.onChange            : \(counters.switchStates) [expect [true, false]]")
             print("switch.bindingFinal        : \(counters.switchBindingFinal) [expect false]")
+            print("switch.AXValue per press   : \(counters.switchAXValues) [expect [\"1\", \"0\"]]")
+            print("switch(unpublished) shown  : \(counters.unpublishedSwitch) [expect [\"0\", \"stored true\"]]")
+            print("switch(refusing) shown     : \(counters.refusingSwitch) onChange \(counters.refusingChanges) [expect [\"0\"] and [true]]")
             print("select.onSelectionChange   : \(counters.selectChanges) [expect [\"b\"]]")
             print("select.bindingFinal        : \"\(counters.selectBindingFinal)\" [expect \"b\"]")
+            print("select.trigger label       : \"\(counters.selectTriggerLabel)\" [expect \"B\"]")
             print("popover.onOpenChange       : \(counters.popoverOpens) [expect first value true; phase unmount may append native-dismissal false]")
             print("popover.content after press: \(counters.popoverVisibleAfterPress) [expect true]")
             print("otp.onChange(last)         : \(counters.otpChanges.last ?? "<none>")")
@@ -655,12 +855,24 @@ final class HarnessModel: ObservableObject {
             print("dialog.uncontrolled visible at mount: \(counters.dialogUncontrolledVisible) [expect true — isolates EmptyView().sheet anchor]")
             print("dialog.uncontrolled onOpenChange: \(counters.dialogOpensUncontrolled)")
             print("dialog.plainProbe presented on after-mount flip: \(counters.plainSheetVisible) (trigger pressed \(counters.plainTriggerPresses)x)")
-            print("calendar.onChange          : \(counters.calendarChanges)")
+            print("calendar.onChange          : \(counters.calendarChanges) [expect [\"2031-03-10\"]]")
+            print("calendar.bindingFinal      : \(counters.calendarBindingFinal) [expect 2031-03-10]")
+            print("calendar.AXSelected before : \(counters.calendarSelectedBefore) [expect []]")
+            print("calendar.AXSelected after  : \(counters.calendarSelectedAfter) [expect [\"Monday, March 10, 2031\"]]")
+            print("calendar.isSelected control: selected=\(counters.calendarProbeSelected) [expect true]")
+            print("calendar.AXSelected after parent set: \(counters.calendarSelectedExternal) [expect [\"Wednesday, March 12, 2031\"]]")
+            print("calendar.de-DE AXSelected at mount: \(counters.calendarStaticSelectedDeDE) [expect [\"Montag, 10. März 2031\"]]")
+            print("calendar.de-DE AXSelected after press: \(counters.calendarUncontrolledAfterPress) [expect [\"Dienstag, 11. März 2031\"]]")
+            print("calendar.onMonthChange     : \(counters.calendarMonthChanges) [expect [\"2031-04\"]]")
+            print("calendar.headers en-US     : \(counters.calendarHeadersEnUS) [expect 7, first Sunday]")
+            print("calendar.headers de-DE     : \(counters.calendarHeadersDeDE) [expect 7, first Montag]")
+            print("calendar.day de-DE         : \(counters.calendarDayLabelDeDE) [expect Montag, 10. März 2031]")
             print("calendar.buttons           : \(counters.calendarButtonsDump)")
             print("calendar.census            : \(counters.calendarCensus.sorted { $0.key < $1.key })")
             print("compound.census            : \(counters.compoundCensus.sorted { $0.key < $1.key })")
             print("tabs.activeTab changes     : \(counters.tabsChanges) [expect [\"b\"]]")
             print("accordion.openness changes : \(counters.accordionChanges) [expect [\"[\\\"k1\\\"]\", \"[]\"]]")
+            print("controlled tabs/accordion  : \(counters.controlledCompound) [expect [\"tab x, item closed\", \"tab y, item open\", \"tab x, item closed\"]]")
             print("shuttle.selection changes  : \(counters.shuttleChanges) [expect [\"[\\\"beta\\\"]\", \"[]\"]]")
             for limitation in counters.limitations {
                 print("LIMITATION: \(limitation)")
@@ -692,6 +904,95 @@ final class HarnessModel: ObservableObject {
         }
     }
 
+    /// AXButtons whose AXDescription (the accessibility label) is exactly `label`.
+    static func axButtons(described label: String) -> [AXUIElement] {
+        axButtons().filter { description(of: $0) == label }
+    }
+
+    /// Whether the element reports AXSelected (SwiftUI's isSelected trait).
+    static func isSelected(_ element: AXUIElement) -> Bool {
+        var ref: CFTypeRef?
+        guard
+            AXUIElementCopyAttributeValue(element, kAXSelectedAttribute as CFString, &ref) == .success
+        else { return false }
+        return (ref as? Bool) ?? false
+    }
+
+    /// A control's numeric AXValue (a toggle's 0/1) as text, or "<none>".
+    static func numberValue(of element: AXUIElement) -> String {
+        var ref: CFTypeRef?
+        guard AXUIElementCopyAttributeValue(element, kAXValueAttribute as CFString, &ref) == .success,
+              let number = ref as? NSNumber else { return "<none>" }
+        return number.stringValue
+    }
+
+    /// Every AX attribute of an element with its value, for failure artifacts.
+    static func attributeDump(of element: AXUIElement) -> String {
+        var namesRef: CFArray?
+        guard AXUIElementCopyAttributeNames(element, &namesRef) == .success,
+              let names = namesRef as? [String] else { return "<no attributes>" }
+        return names.map { name -> String in
+            var value: CFTypeRef?
+            let read = AXUIElementCopyAttributeValue(element, name as CFString, &value)
+            guard read == .success, let value else { return "\(name)=<\(read.rawValue)>" }
+            let text = String(describing: value)
+            return "\(name)=\(text.count > 60 ? String(text.prefix(60)) + "…" : text)"
+        }.joined(separator: ", ")
+    }
+
+    /// The plain-SwiftUI Button that always carries the isSelected trait.
+    static let selectedControl = "selected-probe"
+
+    /// Labels of the AXButtons that report AXSelected, left to right,
+    /// leaving out the plain control.
+    static func selectedButtonLabels() -> [String] {
+        axButtons().filter(isSelected)
+            .map { description(of: $0) ?? title(of: $0) ?? "" }
+            .filter { $0 != selectedControl }
+    }
+
+    /// Poll until the selected buttons are `expected` (the AX tree lags a
+    /// press), returning the last read either way.
+    static func waitForSelectedButtons(_ expected: [String], attempts: Int = 8) -> [String] {
+        var labels = selectedButtonLabels()
+        for _ in 0..<attempts where labels != expected {
+            usleep(250_000)
+            labels = selectedButtonLabels()
+        }
+        return labels
+    }
+
+    /// Poll for a button whose accessibility label is exactly `label`.
+    static func waitForButton(described label: String, attempts: Int = 8) -> Bool {
+        for _ in 0..<attempts {
+            if !axButtons(described: label).isEmpty { return true }
+            usleep(250_000)
+        }
+        return false
+    }
+
+    /// Accessibility labels of the AXHeadings, left to right (a grid's
+    /// column headers).
+    static func axHeadingLabels() -> [String] {
+        axElements(withRoles: ["AXHeading"])
+            .sorted { center(of: $0).x < center(of: $1).x }
+            .map { description(of: $0) ?? title(of: $0) ?? "" }
+    }
+
+    /// A local calendar day as yyyy-MM-dd, or "nil".
+    static func dayKey(_ date: Date?) -> String {
+        guard let date else { return "nil" }
+        let parts = Foundation.Calendar(identifier: .gregorian).dateComponents([.year, .month, .day], from: date)
+        return String(format: "%04d-%02d-%02d", parts.year ?? 0, parts.month ?? 0, parts.day ?? 0)
+    }
+
+    /// A local calendar month as yyyy-MM, or "nil".
+    static func monthKey(_ date: Date?) -> String {
+        guard let date else { return "nil" }
+        let parts = Foundation.Calendar(identifier: .gregorian).dateComponents([.year, .month], from: date)
+        return String(format: "%04d-%02d", parts.year ?? 0, parts.month ?? 0)
+    }
+
     /// Pressable controls: SwiftUI Buttons (AXButton) and toggles
     /// (AXCheckBox / AXSwitch), sorted left-to-right.
     static func axPressables() -> [AXUIElement] {
@@ -712,17 +1013,6 @@ final class HarnessModel: ObservableObject {
     /// Static texts, for asserting presented sheet content.
     static func axStaticTexts() -> [AXUIElement] {
         axElements(withRoles: ["AXStaticText"])
-    }
-
-    /// OS-mediated date step on an AXIncrementor (DatePicker's day
-    /// stepper) — the same action a user's arrow press produces.
-    static func increment(at element: AXUIElement) {
-        focusOurWindow()
-        let result = AXUIElementPerformAction(element, kAXIncrementAction as CFString)
-        if result != .success {
-            FileHandle.standardError.write(Data(("AXIncrement error: \(result.rawValue)\n").utf8))
-        }
-        usleep(250_000)
     }
 
     /// Role census — the artifact that proves what a mounted surface
@@ -980,6 +1270,18 @@ struct PressProofHarnessApp: App {
                         onChange: { model.counters.switchStates.append($0) },
                         accessibilityLabel: "harness-switch"
                     )
+                case .switchUnpublished:
+                    VStack {
+                        Switch(
+                            checked: Binding(get: { model.unpublished.on }, set: { model.unpublished.on = $0 }),
+                            accessibilityLabel: "unpublished-switch"
+                        )
+                        Switch(
+                            checked: Binding(get: { false }, set: { _ in }),
+                            onChange: { model.counters.refusingChanges.append($0) },
+                            accessibilityLabel: "refusing-switch"
+                        )
+                    }
                 case .selectOption:
                     Select(
                         options: [
@@ -1046,7 +1348,26 @@ struct PressProofHarnessApp: App {
                 case .calendarDay:
                     Calendar(
                         value: $model.pickedDate,
-                        onChange: { model.counters.calendarChanges.append(String(describing: $0)) }
+                        onChange: { model.counters.calendarChanges.append(HarnessModel.dayKey($0)) },
+                        defaultMonth: Foundation.Calendar(identifier: .gregorian)
+                            .date(from: DateComponents(year: 2031, month: 3, day: 1)),
+                        onMonthChange: { model.counters.calendarMonthChanges.append(HarnessModel.monthKey($0)) }
+                    )
+                    .overlay(alignment: .topLeading) {
+                        // Plain-SwiftUI control for the selected-state read: if
+                        // this Button exposes the isSelected trait and a selected
+                        // day does not, the Calendar is at fault; if neither
+                        // does, the host's mapping is.
+                        SwiftUI.Button(HarnessModel.selectedControl) {}
+                            .accessibilityAddTraits(.isSelected)
+                    }
+                case .calendarLocale:
+                    Calendar(
+                        defaultValue: Foundation.Calendar(identifier: .gregorian)
+                            .date(from: DateComponents(year: 2031, month: 3, day: 10)),
+                        defaultMonth: Foundation.Calendar(identifier: .gregorian)
+                            .date(from: DateComponents(year: 2031, month: 3, day: 1)),
+                        locale: "de-DE"
                     )
                 case .compoundProofs:
                     VStack(spacing: 16) {
@@ -1069,6 +1390,15 @@ struct PressProofHarnessApp: App {
                         ) {
                             AccordionItem(key: "k1", trigger: { SwiftUI.Text("accordion trigger") }) {
                                 SwiftUI.Text("accordion content")
+                            }
+                        }
+                        Tabs(activeTab: $model.controlledTab) {
+                            TabsPanel(value: "x") { SwiftUI.Text("controlled panel x") }
+                            TabsPanel(value: "y") { SwiftUI.Text("controlled panel y") }
+                        }
+                        Accordion(openness: $model.controlledOpenness) {
+                            AccordionItem(key: "c1", trigger: { SwiftUI.Text("controlled trigger") }) {
+                                SwiftUI.Text("controlled content")
                             }
                         }
                         Shuttle(

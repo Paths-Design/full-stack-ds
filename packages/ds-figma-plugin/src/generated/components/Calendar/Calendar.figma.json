@@ -41,9 +41,9 @@
       "layoutVariant": null
     },
     {
-      "name": "cell",
+      "name": "weekday",
       "semanticElement": null,
-      "nativeTag": "td",
+      "nativeTag": "th",
       "isCompound": false,
       "isRootOnly": false,
       "layoutVariant": null
@@ -51,7 +51,7 @@
     {
       "name": "day",
       "semanticElement": null,
-      "nativeTag": "button",
+      "nativeTag": "td",
       "isCompound": false,
       "isRootOnly": false,
       "layoutVariant": null
@@ -71,10 +71,36 @@
       "safeName": "caption",
       "type": "string",
       "required": false,
-      "description": "Visible month or range caption rendered above the day grid.",
-      "defaultExpr": "\"Calendar\"",
-      "nodeKind": null,
-      "defaultMessage": "caption"
+      "description": "Caption rendered above the day grid and naming it. Absent, the visible month and year are formatted in the locale.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "month",
+      "safeName": "month",
+      "type": "Date",
+      "required": false,
+      "description": "Controlled visible month: any date inside the month the grid shows.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "defaultMonth",
+      "safeName": "defaultMonth",
+      "type": "Date",
+      "required": false,
+      "description": "Uncontrolled initial visible month. Absent, the grid shows the selected date's month, else the current month.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "onMonthChange",
+      "safeName": "onMonthChange",
+      "type": "(month: Date) => void",
+      "required": false,
+      "description": "Called with the first day of the newly visible month when the month controls, a keyboard move or an adjacent-month day change it.",
+      "defaultExpr": null,
+      "nodeKind": null
     },
     {
       "name": "value",
@@ -156,25 +182,9 @@
       "description": "When true, selecting a date closes the popup. Wired to behavior.dismissalTriggers.select.enabledBy.",
       "defaultExpr": "true",
       "nodeKind": null
-    },
-    {
-      "name": "days",
-      "safeName": "days",
-      "type": "Date[]",
-      "required": false,
-      "description": "The concrete Date values the grid renders, one per day cell. The contract's closed dateDayOfMonth projection supplies each visible label, while compositeControl passes the same Date item to the value channel on activation. A typical month occupies 42 entries (6 weeks x 7 days).",
-      "defaultExpr": null,
-      "nodeKind": null
     }
   ],
   "messages": [
-    {
-      "key": "caption",
-      "catalogKey": "Calendar.caption",
-      "defaultMessage": "Calendar",
-      "description": "Caption shown above the month grid when the consumer supplies none.",
-      "params": []
-    },
     {
       "key": "previousMonth",
       "catalogKey": "Calendar.previousMonth",
@@ -187,13 +197,6 @@
       "catalogKey": "Calendar.nextMonth",
       "defaultMessage": "Next month",
       "description": "Accessible name of the button that shows the next month.",
-      "params": []
-    },
-    {
-      "key": "gridLabel",
-      "catalogKey": "Calendar.gridLabel",
-      "defaultMessage": "Calendar",
-      "description": "Accessible name of the date grid.",
       "params": []
     }
   ],
@@ -535,14 +538,14 @@
       "slot": "calendar.design.cell.sizing.min-width",
       "cssVar": "--fsds-calendar-design-cell-sizing-min-width",
       "cssProperty": "min-width",
-      "selectorKey": "cell",
-      "part": "cell",
+      "selectorKey": "day",
+      "part": "day",
       "defaultValue": "32px",
       "resolvesTo": "calendar.size.cell",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell"
+      "selector": ".calendar__day"
     },
     {
       "property": "spacing.padding",
@@ -551,13 +554,13 @@
       "slot": "calendar.design.cell.spacing.padding",
       "cssVar": "--fsds-calendar-design-cell-spacing-padding",
       "cssProperty": "padding",
-      "selectorKey": "cell",
-      "part": "cell",
+      "selectorKey": "day",
+      "part": "day",
       "defaultValue": "0",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell"
+      "selector": ".calendar__day"
     },
     {
       "property": "foreground.color",
@@ -692,14 +695,14 @@
       "slot": "calendar.design.condition-f43aab96a58c.background.fill",
       "cssVar": "--fsds-calendar-design-condition-f43aab96a58c-background-fill",
       "cssProperty": "background-color",
-      "selectorKey": ".calendar__cell[aria-selected=\"true\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-selected=\"true\"]",
       "part": null,
       "defaultValue": "#d92d2e",
       "resolvesTo": "calendar.color.day.selected.background",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-selected=\"true\"] .calendar__day"
+      "selector": ".calendar__day[aria-selected=\"true\"]"
     },
     {
       "property": "foreground.color",
@@ -708,14 +711,14 @@
       "slot": "calendar.design.condition-f43aab96a58c.foreground.color",
       "cssVar": "--fsds-calendar-design-condition-f43aab96a58c-foreground-color",
       "cssProperty": "color",
-      "selectorKey": ".calendar__cell[aria-selected=\"true\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-selected=\"true\"]",
       "part": null,
       "defaultValue": "#fafafa",
       "resolvesTo": "calendar.color.day.selected.foreground",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-selected=\"true\"] .calendar__day"
+      "selector": ".calendar__day[aria-selected=\"true\"]"
     },
     {
       "property": "typography.weight",
@@ -724,13 +727,13 @@
       "slot": "calendar.design.condition-f43aab96a58c.typography.weight",
       "cssVar": "--fsds-calendar-design-condition-f43aab96a58c-typography-weight",
       "cssProperty": "font-weight",
-      "selectorKey": ".calendar__cell[aria-selected=\"true\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-selected=\"true\"]",
       "part": null,
       "defaultValue": "600",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-selected=\"true\"] .calendar__day"
+      "selector": ".calendar__day[aria-selected=\"true\"]"
     },
     {
       "property": "elevation.shadow",
@@ -739,13 +742,13 @@
       "slot": "calendar.design.condition-789437ce1e22.elevation.shadow",
       "cssVar": "--fsds-calendar-design-condition-789437ce1e22-elevation-shadow",
       "cssProperty": "box-shadow",
-      "selectorKey": ".calendar__cell[aria-current=\"date\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-current=\"date\"]",
       "part": null,
       "defaultValue": "inset 0 0 0 1px var(--fsds-calendar-color-today-ring)",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-current=\"date\"] .calendar__day"
+      "selector": ".calendar__day[aria-current=\"date\"]"
     },
     {
       "property": "typography.weight",
@@ -754,13 +757,13 @@
       "slot": "calendar.design.condition-789437ce1e22.typography.weight",
       "cssVar": "--fsds-calendar-design-condition-789437ce1e22-typography-weight",
       "cssProperty": "font-weight",
-      "selectorKey": ".calendar__cell[aria-current=\"date\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-current=\"date\"]",
       "part": null,
       "defaultValue": "600",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-current=\"date\"] .calendar__day"
+      "selector": ".calendar__day[aria-current=\"date\"]"
     }
   ],
   "motion": {
@@ -931,11 +934,11 @@
       },
       {
         "key": "PageUp",
-        "action": "Move focus to the same day in the previous month."
+        "action": "Move focus to the same day in the previous month (with Shift, the previous year)."
       },
       {
         "key": "PageDown",
-        "action": "Move focus to the same day in the next month."
+        "action": "Move focus to the same day in the next month (with Shift, the next year)."
       },
       {
         "key": "Home",
@@ -1078,24 +1081,14 @@
         }
       },
       {
-        "selector": ".calendar__cell",
+        "selector": ".calendar__day",
         "declarations": {
           "display": "flex",
           "align-items": "center",
           "justify-content": "center",
           "aspect-ratio": "1",
           "min-width": "var(--fsds-calendar-size-cell, 32px)",
-          "padding": "0"
-        }
-      },
-      {
-        "selector": ".calendar__day",
-        "declarations": {
-          "display": "flex",
-          "align-items": "center",
-          "justify-content": "center",
-          "width": "100%",
-          "height": "100%",
+          "padding": "0",
           "box-sizing": "border-box",
           "background": "transparent",
           "border": "none",
@@ -1121,7 +1114,7 @@
         }
       },
       {
-        "selector": ".calendar__cell[aria-selected=\"true\"] .calendar__day",
+        "selector": ".calendar__day[aria-selected=\"true\"]",
         "declarations": {
           "background-color": "var(--fsds-calendar-color-day-selected-background, #d92d2e)",
           "color": "var(--fsds-calendar-color-day-selected-foreground, #fafafa)",
@@ -1129,7 +1122,7 @@
         }
       },
       {
-        "selector": ".calendar__cell[aria-current=\"date\"] .calendar__day",
+        "selector": ".calendar__day[aria-current=\"date\"]",
         "declarations": {
           "box-shadow": "inset 0 0 0 1px var(--fsds-calendar-color-today-ring)",
           "font-weight": "600"
@@ -1146,7 +1139,18 @@
         "defaultValueProp": "defaultValue",
         "changeHandlerProp": "onChange",
         "valueType": "Date | Date[] | null",
-        "description": "Selected date or date range.",
+        "description": "Selected date (single mode) or [start, end] range (range mode).",
+        "callbackKind": "value",
+        "isDisclosureChannel": false,
+        "disclosurePriority": 9007199254740991
+      },
+      {
+        "name": "month",
+        "valueProp": "month",
+        "defaultValueProp": "defaultMonth",
+        "changeHandlerProp": "onMonthChange",
+        "valueType": "Date",
+        "description": "Visible month. The date-grid runtime derives the six-week grid from it.",
         "callbackKind": "value",
         "isDisclosureChannel": false,
         "disclosurePriority": 9007199254740991
@@ -1203,11 +1207,24 @@
       "orientation": "both",
       "initialFocus": "today",
       "wrap": false,
-      "description": "Arrow keys navigate between dates. Tab moves to prev/next month controls."
+      "description": "Exactly one day is a tab stop: the focused day, else the selected day, else today, else the first enabled day of the visible month. Arrow keys, Home/End and PageUp/PageDown move it, changing the month at its edges; Tab moves to the month controls."
     },
     "portal": null
   },
   "surface": null,
+  "dateGrid": {
+    "realization": "descriptor-only",
+    "facts": {
+      "valueChannel": "value",
+      "monthChannel": "month",
+      "modeProp": "mode",
+      "localeProp": "locale",
+      "minProp": "minDate",
+      "maxProp": "maxDate",
+      "disabledProp": "disabled",
+      "captionProp": "caption"
+    }
+  },
   "figma": {
     "intendedUse": "figma-library-materialization",
     "documentationFrame": "Calendar / Documentation",

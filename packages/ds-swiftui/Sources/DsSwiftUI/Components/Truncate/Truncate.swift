@@ -24,7 +24,7 @@ public struct Truncate<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         TruncateTokens.scopes
     }
-    @StateObject private var expanded: ControllableValue<Bool>
+    @ControllableState private var expanded: ControllableValue<Bool>
     private let expandable: Bool
     private let lines: Int
     private let collapseTextProp: String?
@@ -42,7 +42,7 @@ public struct Truncate<Content: View>: View {
         expandText: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self._expanded = StateObject(wrappedValue: ControllableValue(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange))
+        self._expanded = ControllableState(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange)
         self.expandable = expandable
         self.lines = lines
         self.collapseTextProp = collapseText

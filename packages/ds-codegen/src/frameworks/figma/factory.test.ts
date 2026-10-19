@@ -92,6 +92,16 @@ describe("Figma descriptor schema", () => {
     expect(() => assertFigmaComponentDescriptorV1({ ...descriptor, motion: { ...descriptor.motion, realization: "sequence-budget" } })).toThrow(/descriptor-only/);
     expect(() => assertFigmaComponentDescriptorV1({ ...descriptor, motion: { realization: "descriptor-only" } })).toThrow(/MotionIR metadata/);
   });
+  it("carries the date-grid fact as descriptor-only metadata and refuses an incomplete one", () => {
+    const facts = { valueChannel: "value", monthChannel: "month", modeProp: "mode", localeProp: "locale", minProp: "minDate" };
+    const descriptor = toFigmaComponentDescriptor({ ...fixtureIR(), dateGrid: facts });
+    expect(descriptor.dateGrid).toEqual({ realization: "descriptor-only", facts });
+    expect(() => assertFigmaComponentDescriptorV1(descriptor)).not.toThrow();
+    expect(toFigmaComponentDescriptor(fixtureIR()).dateGrid).toBeUndefined();
+    expect(() => assertFigmaComponentDescriptorV1({ ...descriptor, dateGrid: { realization: "runtime", facts } })).toThrow(/descriptor-only/);
+    const { monthChannel: _month, ...incomplete } = facts;
+    expect(() => assertFigmaComponentDescriptorV1({ ...descriptor, dateGrid: { realization: "descriptor-only", facts: incomplete } })).toThrow(/dateGrid\.facts\.monthChannel/);
+  });
 });
 
 describe("createFigmaEmitter", () => {

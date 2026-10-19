@@ -27,7 +27,7 @@ public struct Accordion<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         AccordionTokens.scopes
     }
-    @StateObject private var openness: ControllableValue<[String]>
+    @ControllableState private var openness: ControllableValue<[String]>
     private let disabled: Bool
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
@@ -39,7 +39,7 @@ public struct Accordion<Content: View>: View {
         disabled: Bool = false,
         @ViewBuilder content: () -> Content
     ) {
-        self._openness = StateObject(wrappedValue: ControllableValue(controlled: openness, defaultValue: defaultOpenness, onChange: onOpennessChange))
+        self._openness = ControllableState(controlled: openness, defaultValue: defaultOpenness, onChange: onOpennessChange)
         self.disabled = disabled
         self.content = content()
     }
@@ -69,13 +69,14 @@ public struct Accordion<Content: View>: View {
         VStack(spacing: gap) {
             content
         }
-            .environmentObject(openness)
+            .fsdsChannel(openness)
     }
 }
 
 /// Disclosure item: press toggles `openness` membership for `key`; content visible while contained.
 public struct AccordionItem<Trigger: View, Content: View>: View {
     @EnvironmentObject var openness: ControllableValue<[String]>
+    @Environment(\.fsdsChannelValues) private var fsdsChannelValues
     private let key: String
     private let trigger: Trigger
     private let content: Content
@@ -95,7 +96,7 @@ public struct AccordionItem<Trigger: View, Content: View>: View {
                 trigger
             }
                 .buttonStyle(.plain)
-            if openness.value.contains(key) {
+            if openness.value(in: fsdsChannelValues).contains(key) {
                 content
             } else {
                 EmptyView()

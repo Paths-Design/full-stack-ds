@@ -1,7 +1,7 @@
 // @generated:start imports
 import type { StyleProp, ViewStyle } from "react-native";
-import { Text as RNText, View } from "react-native";
-import { type ReactNode, useMemo, useState } from "react";
+import { Pressable, Text as RNText, View } from "react-native";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { useFsdsTheme } from "../../tokens";
 import { createDetailsStyles } from "./Details.styles";
 import { Icon } from "../Icon/Icon";
@@ -36,6 +36,7 @@ export function Details({
   disabled,
   variant = "default",
   defaultOpen = false,
+  onOpenChange,
   children,
   style,
   testID,
@@ -44,8 +45,12 @@ export function Details({
 }: DetailsProps) {
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createDetailsStyles(fsdsTheme), [fsdsTheme]);
-  const [uncontrolledOpen] = useState<boolean>((defaultOpen ?? false) as boolean);
-  const open = controlledOpen ?? uncontrolledOpen;
+  const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>((defaultOpen ?? false) as boolean);
+  const open = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
+  const setOpenValue = useCallback((next: boolean) => {
+    if (controlledOpen === undefined) setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  }, [controlledOpen, onOpenChange]);
 
   const variantStyleForVariant = variant !== undefined ? ({ "inline": styles.root_variant_inline } as Record<string, ViewStyle | undefined>)[variant] : undefined;
   return (
@@ -55,8 +60,11 @@ export function Details({
       accessibilityLabel={accessibilityLabel}
       accessibilityLabelledBy={accessibilityLabelledBy}
     >
-      <View
+      <Pressable
         style={styles.summary}
+        disabled={String(disabled) === "true"}
+        onPress={() => setOpenValue(!open)}
+        accessibilityRole="button"
         accessibilityState={{ disabled: String(disabled) === "true" }}
       >
         <View
@@ -72,7 +80,7 @@ export function Details({
             <RNText>{summary}</RNText>
           </View>
         </View>
-      </View>
+      </Pressable>
       {open ? (
       <View
         style={styles.content}

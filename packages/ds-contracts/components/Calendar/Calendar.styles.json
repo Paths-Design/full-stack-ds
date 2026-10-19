@@ -307,7 +307,7 @@
       ]
     }
   },
-  "cell": {
+  "day": {
     "display": {
       "literal": "flex",
       "platforms": [
@@ -349,38 +349,6 @@
         "property": "spacing.padding",
         "slot": "calendar.design.cell.spacing.padding"
       }
-    }
-  },
-  "day": {
-    "display": {
-      "literal": "flex",
-      "platforms": [
-        "web"
-      ]
-    },
-    "align-items": {
-      "literal": "center",
-      "platforms": [
-        "web"
-      ]
-    },
-    "justify-content": {
-      "literal": "center",
-      "platforms": [
-        "web"
-      ]
-    },
-    "width": {
-      "literal": "100%",
-      "platforms": [
-        "web"
-      ]
-    },
-    "height": {
-      "literal": "100%",
-      "platforms": [
-        "web"
-      ]
     },
     "box-sizing": {
       "literal": "border-box",
@@ -479,7 +447,7 @@
       }
     }
   },
-  ".calendar__cell[aria-selected=\"true\"] .calendar__day": {
+  ".calendar__day[aria-selected=\"true\"]": {
     "background-color": {
       "resolvesTo": "calendar.color.day.selected.background",
       "fallback": "#d92d2e",
@@ -507,7 +475,7 @@
       }
     }
   },
-  ".calendar__cell[aria-current=\"date\"] .calendar__day": {
+  ".calendar__day[aria-current=\"date\"]": {
     "box-shadow": {
       "literal": "inset 0 0 0 1px var(--fsds-calendar-color-today-ring)",
       "platforms": [

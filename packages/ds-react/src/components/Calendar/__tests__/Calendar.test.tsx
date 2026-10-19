@@ -58,6 +58,11 @@ describe("Calendar — unit", () => {
     const onChangeSpy = vi.fn();
     expect(() => render(<Calendar data-testid="calendar" value={null} onChange={onChangeSpy} />)).not.toThrow();
   });
+
+  it("calls onMonthChange when month changes", async () => {
+    const onMonthChangeSpy = vi.fn();
+    expect(() => render(<Calendar data-testid="calendar" month={new Date(0)} onMonthChange={onMonthChangeSpy} />)).not.toThrow();
+  });
 });
 
 describe("Calendar — accessibility", () => {

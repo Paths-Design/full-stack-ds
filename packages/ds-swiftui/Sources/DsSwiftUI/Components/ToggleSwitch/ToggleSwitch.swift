@@ -12,7 +12,7 @@ public enum ToggleSwitchSize: String, CaseIterable {
 
 // @generated:start component
 public struct ToggleSwitch: View {
-    @StateObject private var checked: ControllableValue<Bool>
+    @ControllableState private var checked: ControllableValue<Bool>
     private let size: ToggleSwitchSize
     private let disabled: Bool
     private let name: String?
@@ -29,7 +29,7 @@ public struct ToggleSwitch: View {
         value: String? = nil,
         accessibilityLabel: String? = nil
     ) {
-        self._checked = StateObject(wrappedValue: ControllableValue(controlled: checked, defaultValue: defaultChecked, onChange: onChange))
+        self._checked = ControllableState(controlled: checked, defaultValue: defaultChecked, onChange: onChange)
         self.size = size
         self.disabled = disabled
         self.name = name

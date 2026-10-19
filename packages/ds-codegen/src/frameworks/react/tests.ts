@@ -56,14 +56,18 @@ function collectRequiredPropTypeImports(plan: {
 }
 
 function channelValuePlaceholder(valueType: string | undefined): string {
-  if (valueType === "boolean") return "false";
-  if (valueType === "number") return "0";
-  if (valueType === "string") return '""';
-  if (valueType === "string | string[]") return '""';
-  if (valueType === "Date | Date[] | null") return "null";
+  // A union is satisfied by any one arm, in any order: a nullable channel
+  // by null, otherwise by a value of its first arm.
+  const arms = (valueType ?? "").split("|").map((arm) => arm.trim()).filter(Boolean);
+  if (arms.includes("null")) return "null";
+  const [arm] = arms;
+  if (arm === "boolean") return "false";
+  if (arm === "number") return "0";
+  if (arm === "string") return '""';
+  if (arm === "Date") return "new Date(0)";
   // Array channels (e.g. Shuttle's selection: string[]). An empty array
   // satisfies any array-typed prop and is the cleanest no-op placeholder.
-  if (valueType && /\[\]$/.test(valueType)) return "[]";
+  if (arm?.endsWith("[]")) return "[]";
   // Unknown / unspecified valueType. Default to `false` to match the
   // pre-fix behavior for boolean channels (which is the common case)
   // and avoid surfacing the unknown placeholder as a regression. New

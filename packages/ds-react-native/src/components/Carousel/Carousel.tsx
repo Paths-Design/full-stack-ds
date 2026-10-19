@@ -58,7 +58,7 @@ export function Carousel({
   const styles = useMemo(() => createCarouselStyles(fsdsTheme), [fsdsTheme]);
   const tokens = useMemo(() => resolveCarouselTokens(fsdsTheme), [fsdsTheme]);
   const [uncontrolledSlide, setUncontrolledSlide] = useState<number>((defaultIndex ?? 0) as number);
-  const slide = controlledSlide ?? uncontrolledSlide;
+  const slide = controlledSlide !== undefined ? controlledSlide : uncontrolledSlide;
   const setSlideValue = useCallback((next: number) => {
     if (controlledSlide === undefined) setUncontrolledSlide(next);
     onIndexChange?.(next);

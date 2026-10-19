@@ -21,6 +21,11 @@ dependencies {
     implementation(compose.material3)
     testImplementation(kotlin("test"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    // Semantics-tree tests drive generated composables headlessly
+    // (runComposeUiTest); the host's skiko runtime renders them.
+    @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+    testImplementation(compose.uiTest)
+    testImplementation(compose.desktop.currentOs)
 }
 
 tasks.withType<Test>().configureEach {

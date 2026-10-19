@@ -50,7 +50,7 @@ export function TextField({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createTextFieldStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledValue, setUncontrolledValue] = useState<string>((defaultValue ?? "") as string);
-  const value = controlledValue ?? uncontrolledValue;
+  const value = controlledValue !== undefined ? controlledValue : uncontrolledValue;
   const setValueValue = useCallback((next: string) => {
     if (controlledValue === undefined) setUncontrolledValue(next);
     onChange?.(next);

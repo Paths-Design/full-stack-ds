@@ -188,15 +188,15 @@ function renderResolved(
 function materializeProp(
   value: UsagePropValue,
   options: UsageRenderOptions,
-  materializer?: "date" | "date-array",
+  materializer?: "date" | "date-array" | "date-union",
 ): unknown {
-  if (materializer === "date") {
-    return typeof value === "string" ? new Date(value) : value;
-  }
+  const toDate = (item: unknown) => (typeof item === "string" ? new Date(item) : item);
+  if (materializer === "date") return toDate(value);
   if (materializer === "date-array") {
-    return Array.isArray(value)
-      ? value.map((item) => typeof item === "string" ? new Date(item) : item)
-      : value;
+    return Array.isArray(value) ? value.map(toDate) : value;
+  }
+  if (materializer === "date-union") {
+    return Array.isArray(value) ? value.map(toDate) : toDate(value);
   }
   if (typeof value === "string") {
     return resolveAssetSrc(value);

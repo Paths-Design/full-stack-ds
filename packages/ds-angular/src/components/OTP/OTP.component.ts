@@ -28,7 +28,7 @@ const OTPMessages = { groupLabel: "One-time password", fieldLabel: "One-time pas
   host: { "data-fsds-component": "otp" },
   template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="(label ?? fsdsMessages().groupLabel)" [attr.aria-describedby]="ariaDescribedby" data-fsds-box="">
   <div [ngClass]="'otp__group'">
-    <ng-container *ngFor="let _ of arrayFromCount((length ?? 6)); let index = index">
+    <ng-container *ngFor="let _ of arrayFromCount((length ?? 6)); let index = index; trackBy: trackByIndex">
       <input [ngClass]="'otp__field'" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" (input)="applySetCharAtValue($event, index)" [disabled]="disabled" [attr.aria-label]="(fieldLabel ?? fsdsMessages().fieldLabel)" [attr.aria-readonly]="readOnly" [attr.data-otp-index]="index" />
     </ng-container>
   </div>
@@ -85,6 +85,8 @@ export class OTPComponent {
     }
     return arr;
   }
+
+  protected readonly trackByIndex = (index: number): number => index;
 
   // Set the character at `index` to the last char of the input payload.
   protected applySetCharAtValue(event: Event, index: number): void {

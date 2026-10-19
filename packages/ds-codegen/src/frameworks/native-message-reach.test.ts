@@ -12,8 +12,8 @@ const NATIVE_ROOTS = {
 
 /**
  * Messages a native target emits a component for but never renders: the
- * part is not realized natively (a dismiss or close button, month navigation,
- * a search field) or the element renders without the contract's accessible
+ * part is not realized natively (a dismiss or close button, a search field)
+ * or the element renders without the contract's accessible
  * name. Each is native-realization debt owned by the native accessibility
  * semantics slice. The ledger only shrinks: an entry whose key starts
  * resolving must be removed.
@@ -37,10 +37,6 @@ const UNRENDERED = [
   "swiftui Alert.dismiss",
   "swiftui AlertNotice.dismiss",
   "swiftui Breadcrumbs.navigationLabel",
-  "swiftui Calendar.caption",
-  "swiftui Calendar.gridLabel",
-  "swiftui Calendar.nextMonth",
-  "swiftui Calendar.previousMonth",
   "swiftui Carousel.roleDescription",
   "swiftui Carousel.slidePosition",
   "swiftui Carousel.slideRoleDescription",

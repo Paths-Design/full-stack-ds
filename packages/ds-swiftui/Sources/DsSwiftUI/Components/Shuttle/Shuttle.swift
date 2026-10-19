@@ -27,7 +27,7 @@ public struct Shuttle: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         ShuttleTokens.scopes
     }
-    @StateObject private var selection: ControllableValue<[String]>
+    @ControllableState private var selection: ControllableValue<[String]>
     private let accessibilityLabel: String?
     @Environment(\.fsdsTheme) private var fsdsTheme
 
@@ -37,7 +37,7 @@ public struct Shuttle: View {
         onSelectionChange: (([String]) -> Void)? = nil,
         accessibilityLabel: String? = nil
     ) {
-        self._selection = StateObject(wrappedValue: ControllableValue(controlled: selection, defaultValue: defaultSelection, onChange: onSelectionChange))
+        self._selection = ControllableState(controlled: selection, defaultValue: defaultSelection, onChange: onSelectionChange)
         self.accessibilityLabel = accessibilityLabel
     }
 

@@ -1387,6 +1387,11 @@ function writeContentTransformRuntime(binding: TargetBinding): void {
       file: "markdown.ts",
       label: "markdown parser",
     },
+    {
+      dir: "date",
+      file: "date-grid.ts",
+      label: "date-grid core",
+    },
   ];
   for (const runtime of runtimes) {
     const sourcePath = path.join(
@@ -1407,11 +1412,16 @@ function writeContentTransformRuntime(binding: TargetBinding): void {
 }
 
 function writeNativeSourceRuntime(binding: TargetBinding): void {
-  const sourcePath = path.join(cwd, "packages/ds-codegen/src/highlight/source-model.ts");
-  const absolutePath = path.join(binding.componentsRoot, "..", "primitives", "highlight", "source-model.ts");
-  fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
-  fs.copyFileSync(sourcePath, absolutePath);
-  console.log(`\n  RUNTIME  ${path.relative(cwd, absolutePath)} (source line model)`);
+  for (const runtime of [
+    { dir: "highlight", file: "source-model.ts", label: "source line model" },
+    { dir: "date", file: "date-grid.ts", label: "date-grid core" },
+  ]) {
+    const sourcePath = path.join(cwd, "packages/ds-codegen/src", runtime.dir, runtime.file);
+    const absolutePath = path.join(binding.componentsRoot, "..", "primitives", runtime.dir, runtime.file);
+    fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
+    fs.copyFileSync(sourcePath, absolutePath);
+    console.log(`\n  RUNTIME  ${path.relative(cwd, absolutePath)} (${runtime.label})`);
+  }
 }
 
 /**

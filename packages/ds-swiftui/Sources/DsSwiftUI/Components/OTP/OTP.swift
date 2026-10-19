@@ -31,7 +31,7 @@ public struct OTP: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         OTPTokens.scopes
     }
-    @StateObject private var value: ControllableValue<String>
+    @ControllableState private var value: ControllableValue<String>
     private let length: Int
     private let disabled: Bool
     private let onComplete: ((String) -> Void)?
@@ -45,7 +45,7 @@ public struct OTP: View {
         disabled: Bool = false,
         onComplete: ((String) -> Void)? = nil
     ) {
-        self._value = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))
+        self._value = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)
         self.length = length
         self.disabled = disabled
         self.onComplete = onComplete

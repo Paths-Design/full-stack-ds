@@ -52,7 +52,7 @@ export function Pagination({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createPaginationStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledPage, setUncontrolledPage] = useState<number>((defaultIndex ?? 0) as number);
-  const page = controlledPage ?? uncontrolledPage;
+  const page = controlledPage !== undefined ? controlledPage : uncontrolledPage;
   const setPageValue = useCallback((next: number) => {
     if (controlledPage === undefined) setUncontrolledPage(next);
     onIndexChange?.(next);

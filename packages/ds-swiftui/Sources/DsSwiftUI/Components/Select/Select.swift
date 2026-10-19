@@ -29,8 +29,8 @@ public struct SelectOption: Identifiable {
 public struct Select: View {
     @Environment(\.fsdsMessages) private var fsdsMessages
     private let options: [SelectOption]
-    @StateObject private var selection: SelectionState
-    @StateObject private var open: ControllableValue<Bool>
+    @ControllableSelection private var selection: SelectionState
+    @ControllableState private var open: ControllableValue<Bool>
     private let size: SelectSize
     private let disabled: Bool
     private let placeholderProp: String?
@@ -51,15 +51,15 @@ public struct Select: View {
         disabled: Bool = false
     ) {
         self.options = options
-        self._selection = StateObject(wrappedValue: SelectionState(
+        self._selection = ControllableSelection(
             selection: selection,
             defaultSelection: defaultSelection,
             multipleSelection: multipleSelection,
             defaultMultipleSelection: defaultMultipleSelection,
             multiple: multiple,
             onSelectionChange: onSelectionChange
-        ))
-        self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))
+        )
+        self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
         self.size = size
         self.disabled = disabled
         self.placeholderProp = placeholder

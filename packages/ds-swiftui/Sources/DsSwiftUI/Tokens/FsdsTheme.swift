@@ -281,6 +281,7 @@ public enum FsdsSemanticDefaults {
         "core.spacing.size.04": .string("8px"),
         "core.spacing.size.05": .string("12px"),
         "core.spacing.size.06": .string("16px"),
+        "core.spacing.size.07": .string("24px"),
         "core.spacing.size.08": .string("32px"),
         "semantic.action.size.medium.gap": .string("8px"),
         "semantic.action.size.medium.min-height": .string("32px"),
@@ -288,6 +289,7 @@ public enum FsdsSemanticDefaults {
         "semantic.action.size.medium.padding-inline": .string("8px"),
         "semantic.color.action.background.primary.default": .string("#0566fe"),
         "semantic.color.action.background.secondary.default": .adaptive(light: "#fafafa", dark: "#141414"),
+        "semantic.color.background.accent": .adaptive(light: "#d92d2e", dark: "#d92d2e"),
         "semantic.color.background.accentSubtle": .adaptive(light: "#95dafb", dark: "#002782"),
         "semantic.color.background.danger.strong": .adaptive(light: "#b31b1b", dark: "#d92d2e"),
         "semantic.color.background.danger.subtle": .adaptive(light: "#fac2c2", dark: "#440000"),
@@ -332,6 +334,7 @@ public enum FsdsSemanticDefaults {
         "semantic.feedback.size.gap": .string("8px"),
         "semantic.feedback.size.padding-block": .string("16px"),
         "semantic.feedback.size.padding-inline": .string("16px"),
+        "semantic.focus.ring.width": .string("2px"),
         "semantic.glyph.badge.size.md.gap": .string("4px"),
         "semantic.glyph.badge.size.md.paddingX": .string("8px"),
         "semantic.glyph.badge.size.md.paddingY": .string("2px"),
@@ -350,6 +353,8 @@ public enum FsdsSemanticDefaults {
         "semantic.surface.size.gap": .string("8px"),
         "semantic.surface.size.padding-block": .string("16px"),
         "semantic.surface.size.padding-inline": .string("16px"),
+        "semantic.typography.body.02": .string("16px"),
+        "semantic.typography.body.03": .string("14px"),
     ]
     // @generated:end
 }

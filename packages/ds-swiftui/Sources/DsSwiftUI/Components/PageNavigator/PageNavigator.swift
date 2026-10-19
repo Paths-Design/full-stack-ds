@@ -14,7 +14,7 @@ public enum PageNavigatorPresentation: String, CaseIterable {
 /// Emitted through the paged navigator composite path: previous/next triggers, a draft page field committed on Return or via the commit trigger, and an optional composed position set — component references lower to their sibling generated views, and the shared FsdsPagedPosition policy owns the step/draft guards.
 public struct PageNavigator: View {
     @Environment(\.fsdsMessages) private var fsdsMessages
-    @StateObject private var page: ControllableValue<Int>
+    @ControllableState private var page: ControllableValue<Int>
     private let pages: [String]
     private let pageCount: Int?
     private let presentation: PageNavigatorPresentation
@@ -42,7 +42,7 @@ public struct PageNavigator: View {
         label: String? = nil,
         disabled: Bool = false
     ) {
-        self._page = StateObject(wrappedValue: ControllableValue(controlled: index, defaultValue: defaultIndex, onChange: onIndexChange))
+        self._page = ControllableState(controlled: index, defaultValue: defaultIndex, onChange: onIndexChange)
         self.pages = pages
         self.pageCount = pageCount
         self.presentation = presentation

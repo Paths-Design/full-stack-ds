@@ -4,8 +4,8 @@ import type { Bundle } from "../types/data";
 
 /**
  * Repo activity, rendered from build-time data (vite-plugin-fsds-data):
- * recent commits and CAWS spec events as Postcards, with a Calendar strip
- * marking the days that produced them.
+ * recent commits and CAWS spec events as Postcards, with a Calendar opened
+ * on the most recent day that produced them.
  */
 export function ActivityView({ bundle }: { bundle: Bundle }) {
   const events = bundle.activity ?? [];
@@ -34,7 +34,11 @@ export function ActivityView({ bundle }: { bundle: Bundle }) {
           <h2 className="section-title">Recent days</h2>
           <span className="section-meta">{dayStamps.length} active days</span>
         </Stack>
-        <Calendar days={dayStamps} aria-label="Days with recorded activity" />
+        <Calendar
+          defaultMonth={dayStamps[dayStamps.length - 1]}
+          defaultValue={dayStamps[dayStamps.length - 1] ?? null}
+          aria-label="Most recent day with recorded activity"
+        />
       </section>
 
       <section className="section">

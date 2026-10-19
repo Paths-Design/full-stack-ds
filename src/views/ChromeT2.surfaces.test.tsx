@@ -94,7 +94,9 @@ describe("ActivityView", () => {
     const articles = screen.getAllByRole("article");
     expect(articles.length).toBe(2);
     expect(screen.getByText(/feat\(x\): did a thing/)).toBeDefined();
-    expect(screen.getByLabelText(/Days with recorded activity/)).toBeDefined();
+    const calendar = screen.getByLabelText("Most recent day with recorded activity");
+    // The calendar opens on the latest active day's month with that day selected.
+    expect(calendar.querySelectorAll('[role="gridcell"][aria-selected="true"]')).toHaveLength(1);
   });
 });
 

@@ -50,7 +50,7 @@ const WalkthroughMessages = { tourLabel: "Feature tour", skip: "Skip", skipTour:
       {{ fsdsMessages().previous }}
     </button>
     <div [ngClass]="'walkthrough__dots'">
-      <ng-container *ngFor="let item of ((steps ?? [{'anchor':'#step-1','title':'Welcome to the tour'},{'anchor':'#step-2','title':'Browse your dashboard'},{'anchor':'#step-3','title':'Configure preferences'}])); let index = index">
+      <ng-container *ngFor="let item of ((steps ?? [{'anchor':'#step-1','title':'Welcome to the tour'},{'anchor':'#step-2','title':'Browse your dashboard'},{'anchor':'#step-3','title':'Configure preferences'}])); let index = index; trackBy: trackByIndex">
         <button [ngClass]="'walkthrough__dot'" type="button" (click)="behavior.setStep(index)" [attr.aria-label]="item.title" [attr.data-step-index]="index"></button>
       </ng-container>
     </div>
@@ -108,6 +108,8 @@ export class WalkthroughComponent implements OnInit, OnDestroy {
       this.class,
     ].filter(Boolean).join(" ");
   }
+
+  protected readonly trackByIndex = (index: number): number => index;
 
   private _el = inject(ElementRef<HTMLElement>);
   private _portalOriginParent: Node | null = null;

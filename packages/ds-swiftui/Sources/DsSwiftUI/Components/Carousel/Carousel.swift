@@ -26,7 +26,7 @@ public struct Carousel<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         CarouselTokens.scopes
     }
-    @StateObject private var slide: ControllableValue<Int>
+    @ControllableState private var slide: ControllableValue<Int>
     private let slides: [String]
     private let autoPlay: Bool
     private let duration: Double?
@@ -47,7 +47,7 @@ public struct Carousel<Content: View>: View {
         label: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self._slide = StateObject(wrappedValue: ControllableValue(controlled: index, defaultValue: defaultIndex, onChange: onIndexChange))
+        self._slide = ControllableState(controlled: index, defaultValue: defaultIndex, onChange: onIndexChange)
         self.slides = slides
         self.autoPlay = autoPlay
         self.duration = duration

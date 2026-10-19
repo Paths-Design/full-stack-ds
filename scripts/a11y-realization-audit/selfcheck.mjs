@@ -654,6 +654,35 @@ check("compose delegated control semantics count for the component",
     { own: "FsdsCheckbox(checked)", relationship: "FsdsCheckbox(checked)", delegated: "FsdsCheckbox(checked) Modifier.toggleable(value = checked, role = Role.Checkbox)" },
     new Set(), "jetpack-compose").verdict,
   "realized");
+// aria-current beside a dynamic aria-selected (a date grid's today among its
+// selected days) needs its own state value: the selection surface realizes
+// aria-selected and must not announce the current item as selected.
+const currentBesideSelection = { component: "X", class: "state-attribute", key: "aria-current", besideSelection: true };
+check("swiftui: the isSelected trait does not carry aria-current beside a selection",
+  classify(currentBesideSelection, "native-declarative", ".accessibilityAddTraits(day.isSelected ? [.isSelected] : [])", new Set(), "swiftui").verdict,
+  "unrealized");
+check("swiftui: a dynamic accessibilityValue carries aria-current beside a selection",
+  classify(currentBesideSelection, "native-declarative", ".accessibilityValue(current)", new Set(), "swiftui").verdict,
+  "realized");
+check("swiftui: a literal accessibilityValue does not track the current item",
+  classify(currentBesideSelection, "native-declarative", '.accessibilityValue("Today")', new Set(), "swiftui").verdict,
+  "unrealized");
+check("compose: selected semantics do not carry aria-current beside a selection",
+  classify(currentBesideSelection, "native-declarative", ".selectable(selected = day.selected, role = Role.Button)", new Set(), "jetpack-compose").verdict,
+  "unrealized");
+check("compose: a stateDescription carries aria-current beside a selection",
+  classify(currentBesideSelection, "native-declarative", ".semantics { stateDescription = currentName }", new Set(), "jetpack-compose").verdict,
+  "realized");
+check("aria-current alone keeps the selected-state surface (a current page is selected)",
+  classify({ component: "X", class: "state-attribute", key: "aria-current" }, "native-declarative",
+    ".accessibilityAddTraits(isCurrent ? [.isSelected] : [])", new Set(), "swiftui").verdict,
+  "realized");
+check("aria-current is derived beside a dynamic aria-selected only",
+  deriveObligations([
+    { name: "Grid", contract: { anatomy: { dom: { tag: "td", bindings: { "aria-selected": "iter:item.selected", "aria-current": "iter:item.current" } } } } },
+    { name: "Pager", contract: { anatomy: { dom: { tag: "a", bindings: { "aria-current": "prop:current" } } } } },
+  ]).filter((o) => o.class === "state-attribute" && o.key === "aria-current").map((o) => [o.component, o.besideSelection === true]),
+  [["Grid", true], ["Pager", false]]);
 check("declarative native keyboard obligations are excluded",
   classify({ component: "X", class: "keyboard", key: "Enter" }, "native-declarative", "", new Set(), "swiftui").verdict,
   "excluded");

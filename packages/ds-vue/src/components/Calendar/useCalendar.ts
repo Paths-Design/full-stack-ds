@@ -12,12 +12,17 @@ export interface UseCalendarOptions {
   value?: () => Date | Date[] | null | undefined;
   defaultValue?: Date | Date[] | null;
   onChange?: (value: Date | Date[] | null) => void;
+  month?: () => Date | undefined;
+  defaultMonth?: Date;
+  onMonthChange?: (value: Date) => void;
   shouldCloseOnSelect?: boolean;
 }
 
 export interface UseCalendarResult {
   value: Ref<Date | Date[] | null>;
   setValue: (next: Date | Date[] | null) => void;
+  month: Ref<Date>;
+  setMonth: (next: Date) => void;
   panelRef: Ref<HTMLElement | null>;
 }
 // @generated:end
@@ -34,6 +39,12 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
     onChange: options.onChange,
   });
 
+  const { value: month, set: setMonth } = useControllableState<Date>({
+    controlled: options.month,
+    defaultValue: options.defaultMonth ?? undefined as never,
+    onChange: options.onMonthChange,
+  });
+
   const panelRef = ref<HTMLElement | null>(null);
   useDismissal({
     open: () => true,
@@ -44,6 +55,8 @@ export function useCalendar(options: UseCalendarOptions = {}): UseCalendarResult
   return {
     value,
     setValue,
+    month,
+    setMonth,
     panelRef,
   };
 }

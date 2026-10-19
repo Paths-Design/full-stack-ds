@@ -64,14 +64,14 @@ export function Command({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createCommandStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>((defaultOpen ?? false) as boolean);
-  const open = controlledOpen ?? uncontrolledOpen;
+  const open = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
   const setOpenValue = useCallback((next: boolean) => {
     if (controlledOpen === undefined) setUncontrolledOpen(next);
     onOpenChange?.(next);
   }, [controlledOpen, onOpenChange]);
 
   const [uncontrolledSearch, setUncontrolledSearch] = useState<string>((defaultSearch ?? "") as string);
-  const search = controlledSearch ?? uncontrolledSearch;
+  const search = controlledSearch !== undefined ? controlledSearch : uncontrolledSearch;
   const setSearchValue = useCallback((next: string) => {
     if (controlledSearch === undefined) setUncontrolledSearch(next);
     onSearchChange?.(next);
