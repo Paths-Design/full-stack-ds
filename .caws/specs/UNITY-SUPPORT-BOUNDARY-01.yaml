@@ -75,3 +75,10 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/audit-unity-boundary.log"
     commit_sha: "7c24b5e95"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "boundary.test.ts \"an unclassified leaf fails generation for any component\" and factory.test.ts \"gates generation on the support boundary before lowering\" pin UNITY_BOUNDARY_UNCLASSIFIED naming Switch and contract:/futureBlock/enabled through the emitter admitContract hook the CLI calls (cli.test.ts seam cases). Scope: the contract schema already rejects unknown top-level blocks, so the CLI path is reachable only after a schema change; the function and emitter-object gates are what is proven"
+    recorded_at: "2026-10-19T01:20:40.263Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts::gates generation on the support boundary before lowering"
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/unity-and-cli-tests.log"
+    commit_sha: "7c24b5e95"
