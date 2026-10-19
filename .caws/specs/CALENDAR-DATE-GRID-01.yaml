@@ -126,3 +126,11 @@ evidence:
     exit_code: 0
     commit_sha: ff44f9b89
     test_verified_at: ff44f9b897ea9c69ae81800f94d83af8c7825017
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Commit 2d7a7c8b5 deletes the Calendar web keyboard, roving-focus, Enter|Space and aria-selected entries from scripts/a11y-realization-audit/known-gaps.json; the one Calendar entry left is jetpack-compose aria-current (NATIVE-STATE-SEMANTICS-01, a documented non-claim). pnpm run audit:a11y-realization (CI gate) exits 0 at ff44f9b89, and it exits 1 on any unledgered gap (scripts/a11y-realization-audit/audit.mjs), so a reproduced Calendar web gap would fail it."
+    recorded_at: "2026-10-19T13:15:10.289Z"
+    command: "pnpm run audit:a11y-realization"
+    exit_code: 0
+    artifact_path: scripts/a11y-realization-audit/known-gaps.json
+    commit_sha: ff44f9b89
