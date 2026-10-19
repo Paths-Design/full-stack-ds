@@ -17,6 +17,8 @@ if (process.argv.includes('--compile-only')) {
   const sdkRoot = path.join(scripting, 'DotNetSdk');
   const sdk = fs.readdirSync(path.join(sdkRoot, 'sdk')).sort().at(-1);
   const out = path.join(evidence, 'compile');
+  // Generator output is diagnostic evidence; clear it so removed classes do not linger.
+  fs.rmSync(path.join(out, 'uxml'), { recursive: true, force: true });
   fs.mkdirSync(path.join(out, 'uxml'), { recursive: true });
   const dlls = dir => fs.readdirSync(dir).filter(n => n.endsWith('.dll')).map(n => path.join(dir, n));
   const files = dir => fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? files(path.join(dir, e.name)) : e.name.endsWith('.cs') ? [path.join(dir, e.name)] : []);

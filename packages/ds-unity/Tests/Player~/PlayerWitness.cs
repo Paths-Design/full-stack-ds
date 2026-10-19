@@ -40,9 +40,9 @@ public class PlayerWitness : MonoBehaviour
             Submit(sound.Trigger);
             Check(!sound.Checked && changes == 1, "submit-delivers-one-switch-change");
             Check(sound.Trigger.resolvedStyle.fontSize == 16 && sound.Trigger.resolvedStyle.color.r > .9f, "packaged-stylesheet-resolves");
-            var accordion = root.Q<Accordion>("settings"); Submit(accordion.Items[1].Trigger);
+            var accordion = root.Q<Accordion>("settings"); Submit(accordion.Group.Triggers[1]);
             Check(accordion.Value == "audio", "accordion-selection");
-            var tabs = root.Q<Tabs>("pages"); Submit(tabs.Items[1].Trigger);
+            var tabs = root.Q<Tabs>("pages"); Submit(tabs.Group.Triggers[1]);
             Check(tabs.Value == "inventory", "tabs-selection");
             var help = root.Q<Popover>("help"); help.CloseOnBlur = false; Submit(help.Trigger);
             Check(help.Open && help.Content.parent == root.panel.visualTree, "popover-panel-root");

@@ -10,25 +10,35 @@ Open **Window → Full Stack DS → Interactive Controls** for the C# showcase. 
 
 ```xml
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ds="FullStackDS">
-    <ds:Switch label="Enable sound" checked="true" />
+    <ds:Switch checked="true"><ui:Label text="Enable sound" /></ds:Switch>
     <ds:Accordion collapsible="true">
-        <ds:AccordionItem value="graphics" label="Graphics">
-            <ui:Label text="Rendering preferences" />
+        <ds:AccordionItem>
+            <ds:AccordionHeader><ds:AccordionTrigger value="graphics" text="Graphics" /></ds:AccordionHeader>
+            <ds:AccordionContent value="graphics"><ui:Label text="Rendering preferences" /></ds:AccordionContent>
         </ds:AccordionItem>
     </ds:Accordion>
     <ds:Tabs>
-        <ds:TabsItem value="first" label="First"><ui:Label text="First panel" /></ds:TabsItem>
-        <ds:TabsItem value="second" label="Second"><ui:Label text="Second panel" /></ds:TabsItem>
+        <ds:TabsList>
+            <ds:TabsTab value="first" text="First" />
+            <ds:TabsTab value="second" text="Second" />
+        </ds:TabsList>
+        <ds:TabsPanel value="first"><ui:Label text="First panel" /></ds:TabsPanel>
+        <ds:TabsPanel value="second"><ui:Label text="Second panel" /></ds:TabsPanel>
     </ds:Tabs>
-    <ds:Popover label="Help"><ui:Label text="Helpful content" /></ds:Popover>
+    <ds:Popover>
+        <ds:PopoverTrigger text="Help" />
+        <ds:PopoverContent><ui:Label text="Helpful content" /></ds:PopoverContent>
+    </ds:Popover>
 </ui:UXML>
 ```
 
 ## State and composition
 
-Switch uses `Checked`, `value`, `SetValueWithoutNotify` and Unity's `RegisterValueChangedCallback`. Popover uses `Open` and the same boolean-channel APIs. `Label` supplies trigger text. Both expose the actual UI Toolkit `Trigger`; Popover routes `Add(child)` into its `Content` container.
+Each generated root builds the contract's anatomy as a `VisualElement` tree: every part carries `name="<part>"` and the class `<prefix>__<part>`, and the contract's children hole is the root's `contentContainer`. Compound parts are separate generated elements composed by the consumer, as on the web: `AccordionItem`, `AccordionHeader`, `AccordionTrigger`, `AccordionContent`; `TabsList`, `TabsTab`, `TabsPanel`; `PopoverTrigger`, `PopoverContent`. Trigger and content parts carry a `Value` pairing key; triggers carry `Disabled`.
 
-Accordion and Tabs expose `Value`, `Values`, `ValueChanged`, and `SetValuesWithoutNotify`. Construct an `AccordionItem` or `TabsItem`, set its non-empty unique `Value` and `Label`, add arbitrary content with `item.Add(child)`, then call `group.AddItem(item)`. UXML children register on panel attachment. Use `RemoveItem` before changing keys or moving an item to another group. For imperative `Add`/`Remove` outside these helpers, call `SynchronizeChildren` to update registration.
+The constructor attaches one behavior by contract fact and exposes it: `Switch.Control` (`BooleanControl`), `Accordion.Group` / `Tabs.Group` (`ItemGroup`), `Popover.Surface` (`AnchoredSurface`). Switch uses `Checked`, `value`, `SetValueWithoutNotify` and Unity's `RegisterValueChangedCallback`; its children are the label, and a click on the label outside the control toggles it once. Popover uses `Open` and the same boolean-channel APIs. Both expose the native `Trigger` button; Popover also exposes `Content`.
+
+Accordion and Tabs expose `Value`, `Values`, `ValueChanged`, and `Group.SetValuesWithoutNotify`. The group discovers trigger and content sub-elements by part class under the root and pairs them by `Value`; trigger values must be non-empty and unique. Discovery runs on panel attachment, before pointer or submit input reaches a trigger, on root layout changes and on every public mutation; call `Group.Synchronize()` after inserting parts imperatively into an attached root if presentation must update before the next input. A part moved to another root leaves its previous group. Nested components keep their own parts.
 
 Accordion defaults to single selection with `Collapsible = false`; use `Type = "multiple"` and `Values` for multiple sections. Tabs supports horizontal/vertical orientation, automatic/manual activation, looping, disabled items, Home/End, arrow navigation and `UnmountInactive`. Native UI Toolkit buttons own pointer and submit activation. Accordion's vertical arrows move focus without selecting.
 
@@ -40,7 +50,7 @@ Popover portals content to its current panel root. It uses the anchor/content un
 
 Controls attach the package stylesheet automatically in both Editor and Player panels. Popover content attaches it independently when moved to the panel root. Call `FullStackDS.Theme.Attach(container)` to apply the same text and button styling to a surrounding consumer container. The imported sample also includes the stylesheet for its layout and background.
 
-The stylesheet lives in `Runtime/Resources/FullStackDS/Controls.uss`: explicit typography, selected/disabled/focus states, switch spacing and wrapped, scrollable floating content. These are Unity pilot defaults, not a generated projection of the complete token graph. Consumer overrides should target the `fsds-*` classes; floating content lives outside the originating container, so apply overrides to `popover.Content` as well.
+The stylesheet lives in `Runtime/Resources/FullStackDS/Controls.uss`: explicit typography, selected/disabled/focus states, switch spacing and wrapped, scrollable floating content. These are Unity pilot defaults, not a generated projection of the complete token graph. Consumer overrides should target the part classes (`switch__track`, `tabs__tab`, …), the root modifiers (`tabs--appearance-pills`) and the state classes (`is-checked`, `is-open`, `is-selected`); floating content lives outside the originating container, so apply overrides to `popover.Content` as well.
 
 `PanelSettings` still owns screen scaling. The visual witnesses use **Constant Pixel Size**, scale 1, at 640×800 and 320×600. A consumer using **Scale With Screen Size** and a 960×640 reference can shrink the entire interface in a small Game view. Choose the scale mode and reference resolution for your game; the package does not overwrite them. Reimport the sample from Package Manager to update a previously copied sample.
 
@@ -69,4 +79,4 @@ The allowlist is in the repository's `fsds.targets.json`. The Unity backend is s
 
 [`support-boundary.json`](../ds-codegen/src/frameworks/unity/support-boundary.json) is the machine-readable statement of what the Unity target lowers, leaves pending for a named parity phase, or refuses, with the mechanism or reason for each rule. Generation fails when a contract carries a fact no rule classifies, when an allowlisted component relies on a catch-all rule, or when a lowered claim is not realised by the control a component gets; see [Support boundary](../../docs/architecture/unity-target.md#support-boundary).
 
-This slice implements the interactions above. It does not claim full framework parity, screen-reader integration, controller/gamepad navigation, cross-platform player-build admission, or full visual parity. Default-size switch geometry uses typed token fallback facts; the remaining visual skin is a small Unity-specific base theme. Dynamic brands, other switch sizes, token-color projection, motion, exact compound anatomy, icon-catalog fidelity, browser form props and DOM IDs are not ported. The disclosure marker uses a text affordance rather than the iconography catalog. Tabs keeps an inactive panel's object state even when detached.
+This slice implements the interactions above. It does not claim full framework parity, screen-reader integration, controller/gamepad navigation, cross-platform player-build admission, or full visual parity. Default-size switch geometry uses typed token fallback facts; the remaining visual skin is a small Unity-specific base theme. Dynamic brands, other switch sizes, token-color projection, motion, icon-catalog fidelity, browser form props and DOM IDs are not ported. The Accordion chevron is a placeholder element styled by the hand theme, not the iconography catalog. Tabs keeps an inactive panel's object state even when detached.

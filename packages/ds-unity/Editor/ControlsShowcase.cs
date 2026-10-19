@@ -7,27 +7,42 @@ namespace FullStackDS.Editor
     {
         [MenuItem("Window/Full Stack DS/Interactive Controls")]
         public static void Open() => GetWindow<ControlsShowcase>("Full Stack DS");
+        // Compound parts compose as sub-elements paired by Value, mirroring the web compound API.
+        private static void Section(Accordion accordion, string value, string title, params VisualElement[] body)
+        {
+            var item = new AccordionItem(); var header = new AccordionHeader();
+            header.Add(new AccordionTrigger { Value = value, text = title });
+            var content = new AccordionContent { Value = value };
+            foreach (var child in body) content.Add(child);
+            item.Add(header); item.Add(content); accordion.Add(item);
+        }
+        private static void Page(Tabs tabs, TabsList list, string value, string title, string body)
+        {
+            list.Add(new TabsTab { Value = value, text = title });
+            var panel = new TabsPanel { Value = value }; panel.Add(new Label(body)); tabs.Add(panel);
+        }
+        private static Switch Labeled(string text, bool on = false)
+        {
+            var control = new Switch { Checked = on }; control.Add(new Label(text)); return control;
+        }
         public void CreateGUI()
         {
             Theme.Attach(rootVisualElement);
             rootVisualElement.AddToClassList("fsds-sample");
             minSize = new UnityEngine.Vector2(320, 480);
-            var sound = new Switch { Label = "Enable sound", Checked = true };
+            var sound = Labeled("Enable sound", true);
             var accordion = new Accordion { Collapsible = true };
-            var first = new AccordionItem { Value = "graphics", Label = "Graphics" };
-            first.Add(new Label("Rendering preferences"));
-            first.Add(new Switch { Label = "High quality textures" });
-            accordion.AddItem(first);
-            var second = new AccordionItem { Value = "audio", Label = "Audio" };
-            second.Add(new Label("Music and sound effects")); accordion.AddItem(second);
-            var tabs = new Tabs();
-            var overview = new TabsItem { Value = "overview", Label = "Overview" };
-            overview.Add(new Label("Your adventure starts here.")); tabs.AddItem(overview);
-            var inventory = new TabsItem { Value = "inventory", Label = "Inventory" };
-            inventory.Add(new Label("Your collected items appear here.")); tabs.AddItem(inventory);
-            var popover = new Popover { Label = "About these controls" };
-            popover.Add(new Label("Generated from the same contracts as the web packages."));
-            popover.Add(new Button(() => popover.Open = false) { text = "Close" });
+            Section(accordion, "graphics", "Graphics", new Label("Rendering preferences"), Labeled("High quality textures"));
+            Section(accordion, "audio", "Audio", new Label("Music and sound effects"));
+            var tabs = new Tabs(); var list = new TabsList(); tabs.Add(list);
+            Page(tabs, list, "overview", "Overview", "Your adventure starts here.");
+            Page(tabs, list, "inventory", "Inventory", "Your collected items appear here.");
+            var popover = new Popover();
+            popover.Add(new PopoverTrigger { text = "About these controls" });
+            var content = new PopoverContent();
+            content.Add(new Label("Generated from the same contracts as the web packages."));
+            content.Add(new Button(() => popover.Open = false) { text = "Close" });
+            popover.Add(content);
             var title = new Label("Your experience"); title.AddToClassList("fsds-sample-title");
             rootVisualElement.Add(title);
             var description = new Label("Full Stack DS · Unity UI Toolkit"); description.AddToClassList("fsds-sample-description");
