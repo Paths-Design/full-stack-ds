@@ -16,12 +16,16 @@ const emit = (contract: ComponentContract) => createUnityEmitter().emitComponent
 describe("Unity capability lowering", () => {
   it.each([
     ["Switch", "BooleanControl"], ["Accordion", "ItemGroup"], ["Tabs", "ItemGroup"], ["Popover", "AnchoredSurface"],
-  ])("%s survives identity substitution with the same behavior adapter", (name, expected) => {
+  ])("%s survives identity substitution with the same attached behavior", (name, expected) => {
     const contract = fixture(name);
     contract.name = "UnrelatedFixture";
     const ir = buildComponentIR(contract);
-    expect(unityLowering(ir).base).toBe(expected);
-    expect(emit(contract)).toContain(`partial class UnrelatedFixture : ${expected}`);
+    expect(unityLowering(ir).behavior).toBe(expected);
+    const source = emit(contract);
+    // The behavior is attached to a generated VisualElement, never inherited.
+    expect(source).toMatch(/partial class UnrelatedFixture : VisualElement[,\n]/);
+    expect(source).toContain(` = ${expected}.Attach(this, `);
+    expect(source).not.toMatch(/: (?:BooleanControl|ItemGroup|AnchoredSurface)\b/);
   });
   it("refuses unsupported static and modal surfaces instead of emitting inert controls", () => {
     expect(() => emit(fixture("Text"))).toThrow("UNITY_UNSUPPORTED_INTERACTION");
@@ -30,12 +34,18 @@ describe("Unity capability lowering", () => {
   it("carries channel and anatomy names rather than assuming checked/input", () => {
     const ir = buildComponentIR(fixture("Switch"));
     ir.formControl!.channel = { ...ir.formControl!.channel, name: "armed", valueProp: "armed", changeHandlerProp: "onArmed" };
+    // Rename the control part consistently in the fact and the rendered tree.
     ir.formControl!.part = { ...ir.formControl!.part, name: "actuator" };
+    const visit = (node: NonNullable<typeof ir.dom>): void => { if (node.part === "input") node.part = "actuator"; node.children.forEach(visit); };
+    visit(ir.dom!);
     const source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
     expect(source).toContain('ChannelName = "armed"');
     expect(source).toContain('ChangeHandler = "onArmed"');
-    expect(source).toContain('public bool Armed');
-    expect(source).toContain('Configure("actuator", "switch")');
+    expect(source).toContain("[UxmlAttribute] public bool Armed { get => Control.Value; set => Control.Value = value; }");
+    expect(source).toContain("public Button Actuator { get; } = new Button();");
+    expect(source).toContain('Actuator.AddToClassList("switch__actuator");');
+    expect(source).toContain('Control = BooleanControl.Attach(this, control: Actuator, stateClass: "is-checked", labelHost: this);');
+    expect(source).not.toMatch(/\bInput\b|"checked"\.|onChange/);
   });
   it("declared default changes reach Unity construction", () => {
     const ir = buildComponentIR(fixture("Tabs"));
@@ -55,11 +65,15 @@ describe("Unity capability lowering", () => {
     expect(source).not.toContain("CloseOnBlur = true;");
     expect(source).not.toContain("CloseOnOutsideClick = true;");
   });
-  it("typed default-size geometry reaches the emitted control", () => {
+  it("typed default-size geometry reaches the emitted part", () => {
     const ir = buildComponentIR(fixture("Switch"));
-    ir.tokenFacts = [{ name: "renamed.size.md.track.width", cssVar: "--irrelevant", category: "size", layer: "semantic", source: "tokens-sidecar", rawValue: "61px", isLiteral: true }];
+    const fact = (name: string, rawValue: string) => ({ name, cssVar: "--irrelevant", category: "size", layer: "semantic" as const, source: "tokens-sidecar" as const, rawValue, isLiteral: true });
+    ir.tokenFacts = [fact("switch.size.md.track.width", "61px"), fact("switch.size.lg.track.width", "99px"), fact("switch.size.md.thumb.size", "13px")];
     const source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
-    expect(source).toContain("TrackWidth = 61f;");
+    expect(source).toContain("Track.style.width = 61f;");
+    // Only the declared default value of the axis applies; `size` sets both axes.
+    expect(source).not.toContain("99f");
+    expect(source).toContain("Thumb.style.width = 13f;\n            Thumb.style.height = 13f;");
   });
   it("refuses facts the selected runtime base would contradict instead of ignoring them", () => {
     // ItemGroup always runs arrow navigation: a non-roving strategy is not realised.
