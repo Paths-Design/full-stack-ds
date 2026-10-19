@@ -134,3 +134,11 @@ evidence:
     exit_code: 0
     artifact_path: scripts/a11y-realization-audit/known-gaps.json
     commit_sha: ff44f9b89
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "React Native: Calendar.behavior.test.tsx pins the grid from the month channel, locale week start, names and caption, accessibilityState.selected on exactly the chosen days, and nav moving the month (pnpm --filter @full-stack-ds/react-native exec vitest run src/components/Calendar). Compose: packages/ds-jetpack-compose/library/src/test/kotlin/com/fullstackds/date/FsdsDateGridTest.kt and components/calendar/CalendarSemanticsTest.kt assert Compose selected semantics on the desktop JVM (./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test, CI lane, exit 0 at ff44f9b89; not an Android device). SwiftUI: packages/ds-swiftui/Tests/DsSwiftUITests/FsdsDateGridTests.swift pins grid derivation, locale and bounds under swift test (CI, exit 0), whose AX interaction test skips; the isSelected trait is observed by the cited command, packages/ds-swiftui/Tests/PressProofHarness/main.swift, which presses days through AXPress and reads AXSelected on the pressed day alone, after a parent-set value, and in de-DE, plus Next month (exit 0 at ff44f9b89). It is rerunnable on macOS with accessibility access for the invoking process and is not a CI step or iOS evidence."
+    recorded_at: "2026-10-19T13:15:15.559Z"
+    test_nodeid: "packages/ds-react-native/src/components/Calendar/__tests__/Calendar.behavior.test.tsx::selects a tapped day, reports it through onChange, and styles only that day"
+    command: swift run --package-path packages/ds-swiftui PressProofHarness
+    exit_code: 0
+    commit_sha: ff44f9b89
