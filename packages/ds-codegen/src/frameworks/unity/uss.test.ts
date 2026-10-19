@@ -139,15 +139,71 @@ describe("Unity USS projection: var() inside multi-component declarations", () =
     expect(rule(uss, ".knob__glow")).toEqual(["translate: 3px 0;"]);
     expect(components[0]!.graphTokens.has("core.space.c")).toBe(false);
     expect(uss).not.toContain(`${cssVar("core.space.c")}:`);
-    expect(ledger.entries.filter(e => e.reason === "uss-var-composite").map(e => e.property).sort()).toEqual(["border-radius", "border-width", "margin"]);
+    expect(ledger.entries.filter(e => e.reason === "uss-var-composite").map(e => e.property).sort()).toEqual(["border-width", "margin"]);
   });
 
-  it("ledgers a composite whose token varies by theme, brand or component definition instead of emitting it", () => {
+  it("restates a composite under the state that redefines its component slot, with the value the slot takes there", () => {
+    const { uss } = sheetOf(knob());
+    // knob.lift is 2px on the host and 5px under is-on: the base rule takes the
+    // first, the definition's own selector restates the declaration with the second.
+    expect(rule(uss, ".knob")).toContain("border-radius: 2px 0;");
+    // The restatement follows its consumer rule; the definition rule keeps the custom property.
+    expect(rule(uss, ".knob.is-on")).toEqual(["border-radius: 5px 0;", "--fsds-knob-lift: 5px;"]);
+  });
+
+  it("restates nothing for a state definition that leaves the value unchanged, and lets an element's own definition shadow its ancestor's", () => {
+    // knob.lift is 2px under is-on too: no restatement, and the :hover rule that
+    // would otherwise refuse one competes with nothing.
+    const unchanged = sheetOf(knobWith(
+      { shell: { "border-radius": web("var(--fsds-knob-lift, 2px) 0") }, ".knob:has(.knob__actuator:checked)": { "knob.lift": web("2px") }, ".knob:hover": { "border-radius": web("0") } },
+      { "knob.lift": { literal: "2px" } },
+    ));
+    expect(rule(unchanged.uss, ".knob")).toContain("border-radius: 2px 0;");
+    expect(rule(unchanged.uss, ".knob.is-on")).toEqual(["--fsds-knob-lift: 2px;"]);
+    expect(unchanged.ledger.entries).toEqual([]);
+    // The tail defines knob.lift itself, so the host's is-on value never reaches it.
+    const shadowed = sheetOf(knobWith(
+      { tail: { "knob.lift": web("7px"), "border-radius": web("var(--fsds-knob-lift, 2px) 0") }, ".knob:has(.knob__actuator:checked)": { "knob.lift": web("5px") } },
+      { "knob.lift": { literal: "2px" } },
+    ));
+    expect(rule(shadowed.uss, ".knob__tail")).toEqual(["--fsds-knob-lift: 7px;", "border-radius: 7px 0;"]);
+    expect(shadowed.uss).not.toContain(".knob.is-on .knob__tail");
+    expect(shadowed.ledger.entries).toEqual([]);
+  });
+
+  it("does not substitute a value the element renders differently outside a state or that the sheet leaves undefined", () => {
+    // knob.lift reads knob.inner, which only is-on defines: outside it the inner
+    // fallback (2px) renders, so is-on's 5px is not the value.
+    const nested = sheetOf(knobWith(
+      { shell: { "knob.lift": web("var(--fsds-knob-inner, 2px)"), "border-radius": web("var(--fsds-knob-lift, 2px) 0") }, ".knob:has(.knob__actuator:checked)": { "knob.inner": web("5px") } },
+    ));
+    expect(nested.ledger.entries.map(e => [e.sourceKey, e.property, e.reason])).toEqual([["shell", "border-radius", "uss-var-composite"]]);
+    expect(consumers(nested.uss).filter(([property]) => property === "border-radius")).toEqual([]);
+    // A graph token whose value is not a USS scalar is not defined by the sheet,
+    // but the web defines it: its fallback is not substituted.
+    const tokens: TokenSources = { graph: { semantic: { blur: { $value: { x: 1, y: 2 } } } }, brands: [] };
+    const blurred = projectStylesheet([irOf(knobWith({ glow: { translate: { resolvesTo: "semantic.blur", fallback: "3px" } } }))], tokens);
+    expect(blurred.ledger.entries.map(e => [e.sourceKey, e.property, e.reason])).toEqual([["glow", "translate", "uss-var-composite"]]);
+    expect(consumers(blurred.uss).filter(([property]) => property === "translate")).toEqual([]);
+    // A brand that restates the token only in dark mode makes it vary by scope.
+    const night: TokenSources = { graph: { core: { space: { a: { $value: "8px" } } } }, brands: [{ id: "night", light: new Map(), dark: new Map([[cssVar("core.space.a"), "9px"]]) }] };
+    const branded = projectStylesheet([irOf(knobWith({ shell: { padding: web("var(--fsds-core-space-a, 8px) 2px") } }))], night);
+    expect(branded.ledger.entries.map(e => [e.sourceKey, e.property, e.reason])).toEqual([["shell", "padding", "uss-var-composite"]]);
+  });
+
+  it("substitutes the fallback of a component slot whose only definition sits on another element", () => {
+    // knob.lift is defined on the glow, a sibling of the tail, and nowhere else
+    // (no tokens-sidecar entry, which would define it on the host): the tail
+    // renders the fallback.
+    const { uss, ledger } = sheetOf(knobWith({ glow: { "knob.lift": web("9px") }, tail: { "border-radius": web("var(--fsds-knob-lift, 2px) 0") } }));
+    expect(rule(uss, ".knob__tail")).toEqual(["border-radius: 2px 0;"]);
+    expect(ledger.entries).toEqual([]);
+  });
+
+  it("ledgers a composite whose token varies by theme or brand instead of emitting it", () => {
     const { uss, ledger } = sheetOf(knob());
     const composite = ledger.entries.filter(e => e.reason === "uss-var-composite");
     expect(composite).toEqual([
-      // knob.lift is 2px on the host and 5px under is-on.
-      { component: "Knob", sourceKey: "shell", part: "shell", property: "border-radius", value: "var(--fsds-knob-lift, 2px) 0", reason: "uss-var-composite" },
       // core.space.b is 1px, 3px under the bold brand.
       { component: "Knob", sourceKey: "shell", part: "shell", property: "border-width", value: "var(--fsds-core-space-b, 1px) 0 0 0", reason: "uss-var-composite" },
       // semantic.ink is 4px light, 6px dark.
@@ -155,14 +211,15 @@ describe("Unity USS projection: var() inside multi-component declarations", () =
     ]);
     expect(ledger.reasons["uss-var-composite"]).toMatch(/takes over the whole value/);
     const shell = rule(uss, ".knob");
-    for (const property of ["margin", "border-width", "border-radius"]) expect(shell.some(d => d.startsWith(`${property}:`)), property).toBe(false);
+    for (const property of ["margin", "border-width"]) expect(shell.some(d => d.startsWith(`${property}:`)), property).toBe(false);
   });
 
   it("does not substitute a graph token it cannot see: without scope values a graph composite is ledgered", () => {
     const projection = projectComponent(buildComponentIR(knob() as unknown as ComponentContract));
-    expect(projection.unsupported.filter(e => e.reason === "uss-var-composite").map(e => e.property).sort()).toEqual(["border-radius", "border-width", "margin", "padding", "translate"]);
+    expect(projection.unsupported.filter(e => e.reason === "uss-var-composite").map(e => e.property).sort()).toEqual(["border-width", "margin", "padding", "translate"]);
     // Literal component slots still substitute: their definitions are in the component.
     expect(projection.rules.find(r => r.selector === ".knob.is-on .knob__tail")!.declarations).toEqual([["translate", "12px -50%"]]);
+    expect(projection.rules.filter(r => r.selector === ".knob.is-on").flatMap(r => r.declarations)).toContainEqual(["border-radius", "5px 0"]);
   });
 
   it("emits both translate axes for every translate, a one-value CSS translate included", () => {
@@ -282,8 +339,70 @@ describe("Unity USS projection: property table", () => {
       ["tail", "box-shadow", "0 1px 2px #000000", "uss-property"],
       ["tail", "font-weight", "500", "uss-scalar"],
       ["tail", "width", "calc(100% - 2px)", "uss-scalar"],
-      ["glow", "transition-timing-function", "cubic-bezier(0.4, 0, 0.2, 1)", "uss-scalar"],
+      ["glow", "transition", "cubic-bezier(0.4, 0, 0.2, 1)", "uss-scalar"],
     ]));
+    // A shorthand's refused part names the sidecar property and the USS longhand it concerns.
+    expect(ledger.entries.find(e => e.property === "transition")).toMatchObject({ sourceKey: "glow", longhand: "transition-timing-function" });
+  });
+});
+
+/** The knob's sidecars replaced by a glow weight read through `resolvesTo`, and `edit`. */
+const weighted = (resolvesTo: string, fallback: string, styles: Record<string, unknown> = {}, tokens: Record<string, unknown> = {}) =>
+  knobWith({ glow: { "font-weight": { resolvesTo, fallback } }, ...styles }, tokens);
+/** A graph whose one weight token takes `light` and `dark`, under a brand that leaves it alone. */
+const weightGraph = (light: number, dark: number): TokenSources => ({
+  graph: { semantic: { weight: { $value: { light, dark } } }, core: { space: { a: { $value: "8px" } } } },
+  brands: [{ id: "bold", light: new Map([[cssVar("core.space.a"), "9px"]]), dark: new Map() }],
+});
+const styleOf = (uss: string) => consumers(uss).filter(([property]) => property === "-unity-font-style");
+
+describe("Unity USS projection: keyword-valued token declarations", () => {
+  it("ledgers a weight token whose value differs between themes and emits no font style for it", () => {
+    const { uss, ledger } = projectStylesheet([irOf(weighted("semantic.weight", "700"))], weightGraph(700, 400));
+    expect(styleOf(uss)).toEqual([]);
+    expect(ledger.entries).toEqual([
+      { component: "Knob", sourceKey: "glow", part: "glow", property: "font-weight", value: "700", reason: "uss-var-composite" },
+    ]);
+    // The token is read by nothing that was emitted, so the token section omits it.
+    expect(uss).not.toContain("--fsds-semantic-weight");
+  });
+
+  it("maps a weight token that is 700 in every scope to bold, whatever its fallback", () => {
+    const { uss, ledger } = projectStylesheet([irOf(weighted("semantic.weight", "400"))], weightGraph(700, 700));
+    expect(rule(uss, ".knob__glow")).toEqual(["-unity-font-style: bold;"]);
+    expect(styleOf(uss)).toEqual([["-unity-font-style", "bold"]]);
+    expect(ledger.entries).toEqual([]);
+  });
+
+  it("restates the font style under a checked state that overrides the weight slot", () => {
+    const contract = weighted("knob.weight", "700", { ".knob:has(.knob__actuator:checked)": { "knob.weight": web("400") } }, { "knob.weight": { literal: "700" } });
+    const { uss, ledger } = sheetOf(contract);
+    expect(rule(uss, ".knob__glow")).toEqual(["-unity-font-style: bold;"]);
+    expect(rule(uss, ".knob.is-on .knob__glow")).toEqual(["-unity-font-style: normal;"]);
+    expect(styleOf(uss)).toHaveLength(2);
+    expect(ledger.entries).toEqual([]);
+  });
+
+  it("ledgers a weight that resolves to a value with no font-style keyword as a scalar", () => {
+    const { uss, ledger } = projectStylesheet([irOf(weighted("semantic.weight", "700"))], weightGraph(500, 500));
+    expect(styleOf(uss)).toEqual([]);
+    expect(ledger.entries.map(e => [e.property, e.value, e.reason])).toEqual([["font-weight", "700", "uss-scalar"]]);
+  });
+
+  it("refuses a restatement whose specificity would reorder the cascade", () => {
+    const override = { ".knob:has(.knob__actuator:checked)": { "knob.weight": web("400") } };
+    const slot = { "knob.weight": { literal: "700" } };
+    // Another rule on the element sets the property: CSS lets :hover win over the
+    // base declaration, but the restatement's state selector would outrank it.
+    const hovered = sheetOf(weighted("knob.weight", "700", { ...override, ".knob__glow:hover": { "font-weight": web("400") } }, slot));
+    expect(hovered.ledger.entries.map(e => [e.sourceKey, e.property, e.reason])).toEqual([["glow", "font-weight", "uss-var-composite"]]);
+    expect(rule(hovered.uss, ".knob__glow:hover")).toEqual(["-unity-font-style: normal;"]);
+    expect(hovered.uss).not.toContain(".knob.is-on .knob__glow");
+    // Under is-on the element's own definition (bold) wins over the inherited
+    // one (400) in CSS; restating the host's would paint the glow normal.
+    const layered = sheetOf(weighted("knob.weight", "700", { ...override, ".knob:has(.knob__actuator:checked) .knob__glow": { "knob.weight": web("bold") } }, slot));
+    expect(layered.ledger.entries.map(e => [e.sourceKey, e.property, e.reason])).toEqual([["glow", "font-weight", "uss-var-composite"]]);
+    expect(styleOf(layered.uss)).toEqual([]);
   });
 });
 

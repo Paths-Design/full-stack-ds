@@ -34,13 +34,19 @@
  * `platforms` tag is informational: UI Toolkit is a flexbox engine, so
  * web-tagged layout facts lower like any other.
  *
- * Composite rule: USS evaluates a var() inside a multi-component value as the
- * whole value, so a consuming declaration with more than one space- or
- * comma-separated component never carries a var(). Each var() is substituted
- * by its value when every scope gives it the same one, otherwise the
- * declaration is ledgered `uss-var-composite`. Carrier axes and gap classes
- * are computed before that ledgering, so a rule whose only declarations are
- * ledgered composites still reports its carrier; the unity surface of
+ * Scope resolution. Two kinds of consuming declaration cannot carry a var():
+ * a multi-component value (USS evaluates a var() inside one as the whole
+ * value) and a keyword-valued USS property fed by a token (-unity-font-style
+ * cannot map a numeric weight at runtime). Each var() is resolved instead:
+ * when every theme and brand scope gives it one value the declaration takes
+ * that literal (mapped to the keyword where it has one), and when a component
+ * state or variant redefines the variable on the element or an ancestor, the
+ * declaration is restated under that definition's selector with the value it
+ * gives there. A value that varies by theme or brand, or that does not
+ * resolve, is ledgered `uss-var-composite`; one that resolves to a value the
+ * keyword map cannot carry is ledgered `uss-scalar`. Carrier axes and gap
+ * classes are computed before that ledgering, so a rule whose only
+ * declarations are ledgered still reports its carrier; the unity surface of
  * audit:variant-realization is what catches a carrier no emitted rule keys.
  *
  * A fact USS cannot realise becomes an entry in the unsupported ledger (S6),
@@ -76,16 +82,20 @@ export const REASON_NOTES: Readonly<Record<UssReason, string>> = {
   "uss-owner-mismatch": "The state lives on a part that is neither the styled part nor its ancestor, and the attached behavior does not mirror that part's state onto the host.",
   "uss-floating-scope": "AnchoredSurface reparents its content to the panel root, so a definition or rule qualified by the host (variant modifier, state class or host pseudo-class) cannot reach the floating subtree.",
   "uss-design-slot": "A brand overrides a component design slot. Projecting it needs a nested var() fallback (design slot, then token slot), which this projection does not emit; follow-up in P4.",
-  "uss-var-composite": "In USS a var() inside a multi-component declaration (space- or comma-separated list, or a var() whose fallback is one) takes over the whole value and the other components are dropped without an importer warning (Unity 6000.5). The projection substitutes each var() with its value when that value is the same in every scope it can take (light, dark, every brand, every component definition, the declared fallback); this declaration's value varies by scope or does not resolve, so it is not emitted.",
+  "uss-var-composite": "The declaration needs its var() resolved at generation time: in USS a var() inside a multi-component declaration (space- or comma-separated list, or a var() whose fallback is one) takes over the whole value and drops the other components without an importer warning (Unity 6000.5), and a keyword-valued USS property (-unity-font-style) cannot map a token's numeric value at runtime. The projection substitutes the value when every theme and brand scope gives it the same one, restating the declaration under each component state or variant that redefines the variable; this declaration's value varies by theme or brand, or does not resolve, so it is not emitted.",
 };
 
 export interface UnsupportedEntry {
   component: string;
   sourceKey: string;
   part: string;
+  /** The CSS property (or token path) as the sidecar declares it. */
   property: string;
   value: string;
   reason: UssReason;
+  /** The USS longhand the entry concerns, when the CSS property is a shorthand
+   * the projection splits (transition → transition-timing-function). */
+  longhand?: string;
 }
 
 export interface UssRule {
@@ -224,6 +234,15 @@ const keyword = (allowed: readonly string[]): Scalar => {
   return self;
 };
 
+/** The -unity-font-style keyword for a CSS weight; undefined for intermediate
+ * weights, which USS can only reach through a separate font asset. */
+export const fontStyle = (value: string): string | undefined => {
+  const v = value.trim();
+  if (v === "bold" || v === "bolder" || (NUMBER.test(v) && Number(v) >= 600)) return "bold";
+  if (v === "normal" || v === "400") return "normal";
+  return undefined;
+};
+
 /** Up to `max` space-separated values of one kind (padding, margin, radius). */
 const many = (kind: Scalar, max: number): Scalar => value => {
   const parts = splitTop(value, " ");
@@ -256,6 +275,8 @@ interface DeclarationContext {
   value: string;
   /** Wraps a lowered fallback in the declaration's token reference, if any. */
   wrap: (fallback: string) => string;
+  /** The token the declaration reads (a component slot or graph path), if any. */
+  token?: string;
   /** The rule's predicates include focus (the focus-indicator idiom applies). */
   focus: boolean;
   /** Other CSS properties the same rule declares. */
@@ -265,7 +286,10 @@ interface DeclarationContext {
 }
 
 type Outcome =
-  | { set: [string, string][]; ledger?: { property: string; value: string; reason: UssReason }[] }
+  /** `resolve`: every declaration in `set` is a single token reference whose
+   * keyword is decided by the token's resolved value (scope resolution), not by
+   * the sidecar fallback. */
+  | { set: [string, string][]; ledger?: { property: string; value: string; reason: UssReason }[]; resolve?: (value: string) => string | undefined }
   | { noop: true }
   | { reason: UssReason };
 
@@ -493,11 +517,12 @@ export const HANDLERS: Readonly<Record<string, Handler>> = (() => {
   // Typography.
   table["font-size"] = same(PX_ONLY)("font-size");
   table["letter-spacing"] = same(PX_ONLY)("letter-spacing");
+  // -unity-font-style takes keywords, so a token-backed weight cannot stay a
+  // var(): it is resolved across scopes and the resolved value is mapped.
   table["font-weight"] = d => {
-    const v = d.value.trim();
-    if (v === "bold" || v === "bolder" || (NUMBER.test(v) && Number(v) >= 600)) return { set: [["-unity-font-style", "bold"]] };
-    if (v === "normal" || v === "400") return { set: [["-unity-font-style", "normal"]] };
-    return { reason: "uss-scalar" };
+    if (d.token) return { set: [["-unity-font-style", d.wrap(d.value.trim())]], resolve: fontStyle };
+    const keyword = fontStyle(d.value);
+    return keyword === undefined ? { reason: "uss-scalar" } : { set: [["-unity-font-style", keyword]] };
   };
   // Transforms. CSS composes `translate` with `transform`; USS has a single
   // translate, so a part's translate carries the vertical offset of the
@@ -551,12 +576,12 @@ export const isComposite = (value: string): boolean => value.includes("var(") &&
 
 /**
  * A graph custom property's value in every scope the token section emits
- * (light, dark, each brand in both themes); undefined when the name is not a
- * graph token. The default knows no graph, so a graph reference inside a
- * composite does not resolve and is ledgered.
+ * (light, dark, each brand in both themes), undefined in a scope the sheet
+ * leaves it undefined; undefined as a whole when the name is not a graph
+ * token. Without it (the walker's projection) a graph reference does not
+ * resolve and is ledgered.
  */
 export type ScopeValues = (name: string) => (string | undefined)[] | undefined;
-const NO_GRAPH: ScopeValues = () => [undefined];
 
 const VAR_READ = /var\(\s*(--[A-Za-z0-9_-]+)/g;
 
@@ -743,12 +768,12 @@ const isDefinition = (declaration: NativeStyleDeclarationIR): boolean => declara
 export const cssVar = (tokenPath: string): string => `--${tokenSlug(tokenPath)}`;
 
 /** Project one admitted component's native style rules into USS rules and ledger entries. */
-export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unityLowering(ir), hosts: readonly ContentHost[] = [], scopeValues: ScopeValues = NO_GRAPH): ComponentProjection {
+export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unityLowering(ir), hosts: readonly ContentHost[] = [], scopeValues?: ScopeValues): ComponentProjection {
   const ctx = buildContext(ir, lowering);
   const out: ComponentProjection = { component: ir.name, rules: [], unsupported: [], graphTokens: new Set(), carrierAxes: new Set(), designSlots: new Map(), gapClasses: new Set() };
   const baseGap = new Set<string>();
-  const ledger = (rule: { sourceKey: string; part: string }, property: string, value: string, reason: UssReason) =>
-    out.unsupported.push({ component: ir.name, sourceKey: rule.sourceKey, part: rule.part, property, value, reason });
+  const ledger = (rule: { sourceKey: string; part: string }, property: string, value: string, reason: UssReason, longhand?: string) =>
+    out.unsupported.push({ component: ir.name, sourceKey: rule.sourceKey, part: rule.part, property, value, reason, ...(longhand ? { longhand } : {}) });
   /** A reference to the declaration's token: a component slot, else a graph
    * token, which joins the token-section closure once a lowering uses it. */
   const reference = (token: string | undefined): ((fallback: string) => string) => {
@@ -763,10 +788,11 @@ export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unit
   // ones cannot follow it and are ledgered against the content part.
   const floatingRoot = lowering.behavior === "AnchoredSurface" ? lowering.content.name : undefined;
   const floatingDefinitions: [string, string][] = [];
-  /** Component custom property → every value its emitted definitions give it. */
-  const definitions = new Map<string, string[]>();
-  /** Emitted composite declarations, resolved once every definition is known. */
-  const composites = new Map<[string, string], { rule: NativeStyleRuleIR; property: string; value: string }>();
+  /** Component custom property → each emitted definition: its value, the part
+   * it sits on, its lowered selector, and whether a state or variant scopes it. */
+  const definitions = new Map<string, { value: string; part: string; selector: string; conditional: boolean }[]>();
+  /** Declarations whose var() must be resolved once every definition is known. */
+  const deferred = new Map<[string, string], { rule: NativeStyleRuleIR; property: string; value: string; map?: (value: string) => string | undefined }>();
   const rules = ir.nativeStyleRules?.rules ?? [];
   for (const rule of rules) {
     const lowered = lowerSelector(ctx, rule);
@@ -790,7 +816,7 @@ export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unit
         if (fallback === undefined) { ledger(rule, d.property, d.value, "uss-scalar"); continue; }
         const definition: [string, string] = [cssVar(d.property), reference(d.token)(fallback)];
         declarations.push(definition);
-        definitions.set(definition[0], [...(definitions.get(definition[0]) ?? []), definition[1]]);
+        definitions.set(definition[0], [...(definitions.get(definition[0]) ?? []), { value: definition[1], part: rule.part, selector: lowered.selector, conditional: rule.predicates.length > 0 }]);
         if (scopesFloating && rule.predicates.length) ledger({ sourceKey: rule.sourceKey, part: floatingRoot }, d.property, d.value, "uss-floating-scope");
         else if (scopesFloating) floatingDefinitions.push(definition);
         continue;
@@ -798,12 +824,16 @@ export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unit
       if (d.designSlot) out.designSlots.set(cssVar(d.designSlot), { sourceKey: rule.sourceKey, part: rule.part, property: d.property });
       const handler = Object.prototype.hasOwnProperty.call(HANDLERS, d.property) ? HANDLERS[d.property] : undefined;
       if (!handler) { ledger(rule, d.property, d.value, "uss-property"); continue; }
-      const outcome = handler({ value: d.value, wrap: reference(d.token), focus, siblings, baseTranslateY: ctx.baseTranslateY.get(rule.part) });
+      const outcome = handler({ value: d.value, wrap: reference(d.token), token: d.token, focus, siblings, baseTranslateY: ctx.baseTranslateY.get(rule.part) });
       if ("noop" in outcome) continue;
       if ("reason" in outcome) { ledger(rule, d.property, d.value, outcome.reason); continue; }
       declarations.push(...outcome.set);
-      for (const set of outcome.set) if (!set[0].startsWith("--") && isComposite(set[1])) composites.set(set, { rule, property: d.property, value: d.value });
-      for (const entry of outcome.ledger ?? []) ledger(rule, entry.property, entry.value, entry.reason);
+      for (const set of outcome.set) {
+        if (set[0].startsWith("--")) continue;
+        if (outcome.resolve) deferred.set(set, { rule, property: d.property, value: d.value, map: outcome.resolve });
+        else if (isComposite(set[1])) deferred.set(set, { rule, property: d.property, value: d.value });
+      }
+      for (const entry of outcome.ledger ?? []) ledger(rule, d.property, entry.value, entry.reason, entry.property === d.property ? undefined : entry.property);
     }
     if (!declarations.length) continue;
     out.rules.push({ selector: lowered.selector, declarations });
@@ -825,46 +855,127 @@ export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unit
   for (const className of out.gapClasses) if (!baseGap.has(className)) out.rules.push({ selector: `.${className}`, declarations: [[GAP_PROPERTY, "0"]] });
   const floatingSelector = floatingRoot === undefined ? undefined : ctx.selectorOf.get(floatingRoot);
   if (floatingDefinitions.length && floatingSelector) out.rules.push({ selector: floatingSelector, declarations: floatingDefinitions });
-  // A var() inside a multi-component value is substituted by its value when
-  // every scope gives it the same one; otherwise the declaration is ledgered.
-  const valuesOf = (text: string, seen: ReadonlySet<string>): (string | undefined)[] => {
+  // Scope resolution of deferred declarations (see the header). Nested
+  // references take the union of every definition (conservative); the
+  // top-level reference distinguishes the definitions that reach the element.
+  const selectorOfPart = (part: string): string => ctx.selectorOf.get(part)!;
+  /** Definitions of `name` that reach an element of `part`: on it or on an
+   * ancestor; a host-qualified one never reaches the reparented floating
+   * content, and an unconditional one on the element shadows every inherited one. */
+  const reaching = (name: string, part: string) => {
+    const element = selectorOfPart(part);
+    const defs = (definitions.get(name) ?? []).filter(def =>
+      (selectorOfPart(def.part) === element || isAncestor(ctx, def.part, part)) &&
+      !(def.conditional && ctx.floating.has(part) && !ctx.floating.has(def.part)));
+    const own = defs.filter(def => selectorOfPart(def.part) === element);
+    return own.some(def => !def.conditional) ? own : defs;
+  };
+  type Definition = { value: string; part: string; selector: string; conditional: boolean };
+  const nested = (text: string, seen: ReadonlySet<string>): (string | undefined)[] => {
     const match = VAR.exec(text.trim());
     if (!match) return [text.trim()];
     const [, name, fallback] = match as unknown as [string, string, string | undefined];
     if (seen.has(name)) return [undefined];
-    const next = new Set([...seen, name]);
-    const defined = definitions.get(name);
-    const graph = defined ? undefined : scopeValues(name);
-    const values = [...(defined ?? []).flatMap(v => valuesOf(v, next)), ...(graph ?? [])];
-    if (fallback !== undefined) values.push(...valuesOf(fallback, next));
-    return values.length ? values : [undefined];
+    return valuesFor(name, fallback, definitions.get(name) ?? [], new Set([...seen, name]));
   };
-  const substitute = (value: string): string | undefined => {
+  const slotVars = new Set([...ctx.slots].map(cssVar));
+  /** The values a reference renders given the definitions that reach it: theirs
+   * (plus the fallback unless one is unconditional); for a component slot none
+   * reaches, the fallback; else the graph's in every scope. A graph name the
+   * sheet leaves undefined in some scope is unresolved (undefined): the web
+   * defines it, so its fallback is not the value to substitute. */
+  const valuesFor = (name: string, fallback: string | undefined, defs: readonly Definition[], seen: ReadonlySet<string>): (string | undefined)[] => {
+    const fallbackValues = (): (string | undefined)[] => (fallback === undefined ? [undefined] : nested(fallback, seen));
+    if (defs.length) {
+      const values = defs.flatMap(def => nested(def.value, seen));
+      return defs.some(def => !def.conditional) ? values : [...values, ...fallbackValues()];
+    }
+    if (slotVars.has(name)) return fallbackValues();
+    return scopeValues?.(name) ?? [undefined];
+  };
+  type Resolution = { value: string } | { reason: UssReason };
+  /** The literal a deferred value takes when `override` (if given) is the one
+   * definition of its variable and every other reference takes its unconditional value. */
+  const resolveValue = (item: { rule: NativeStyleRuleIR; map?: (value: string) => string | undefined }, value: string, override?: { name: string; def: Definition }): Resolution => {
     const items: string[] = [];
-    for (const item of splitTop(value, ",")) {
+    for (const entry of splitTop(value, ",")) {
       const parts: string[] = [];
-      for (const part of splitTop(item, " ")) {
-        const values = new Set(valuesOf(part, new Set()));
+      for (const part of splitTop(entry, " ")) {
+        const match = VAR.exec(part);
+        if (!match) { parts.push(part); continue; }
+        const [, name, fallback] = match as unknown as [string, string, string | undefined];
+        const defs = override && override.name === name
+          ? [{ ...override.def, conditional: false }]
+          : reaching(name, item.rule.part).filter(def => !def.conditional);
+        const values = new Set(valuesFor(name, fallback, defs, new Set([name])));
         const [only] = values;
-        if (values.size !== 1 || only === undefined) return undefined;
+        if (values.size !== 1 || only === undefined) return { reason: "uss-var-composite" };
         parts.push(only);
       }
       items.push(parts.join(" "));
     }
     const literal = items.join(", ");
-    return literal.includes("var(") ? undefined : literal;
+    if (literal.includes("var(")) return { reason: "uss-var-composite" };
+    if (!item.map) return { value: literal };
+    const mapped = item.map(literal);
+    return mapped === undefined ? { reason: "uss-scalar" } : { value: mapped };
   };
-  if (composites.size) {
-    for (const rule of out.rules) {
-      rule.declarations = rule.declarations.flatMap((declaration): [string, string][] => {
-        const origin = composites.get(declaration);
-        if (!origin) return [declaration];
-        const literal = substitute(declaration[1]);
-        if (literal === undefined) { ledger(origin.rule, origin.property, origin.value, "uss-var-composite"); return []; }
-        return [[declaration[0], literal]];
-      });
+  /** The base value plus one restatement per state- or variant-scoped
+   * definition that reaches the element and changes the value. */
+  const project = (item: { rule: NativeStyleRuleIR; property: string; map?: (value: string) => string | undefined }, value: string): { base: string; extras: { def: Definition; value: string }[] } | { reason: UssReason } => {
+    const base = resolveValue(item, value);
+    if ("reason" in base) return base;
+    const names = [...new Set(splitTop(value, ",").flatMap(entry => splitTop(entry, " ")).map(part => VAR.exec(part)?.[1]).filter((n): n is string => !!n))];
+    const extras: { def: Definition; value: string }[] = [];
+    const varying = new Set<string>();
+    for (const name of names) {
+      const defs = reaching(name, item.rule.part);
+      for (const def of defs.filter(d => d.conditional)) {
+        const restated = resolveValue(item, value, { name, def });
+        if ("reason" in restated) return restated;
+        if (restated.value === base.value) continue;
+        extras.push({ def, value: restated.value });
+        varying.add(name);
+      }
     }
-    out.rules = out.rules.filter(rule => rule.declarations.length);
+    if (!extras.length) return { base: base.value, extras };
+    // A restatement is the definition's selector applied to this declaration,
+    // which reproduces the custom property's cascade only when one variable
+    // varies (two would need every combination), it is defined on one element
+    // (USS would rank an ancestor's restatement above the element's own), the
+    // consumer is unqualified (its selector would need merging with the
+    // definition's), and no other rule on the element sets the property (the
+    // restatement's specificity would outrank it).
+    const [name] = varying;
+    const element = selectorOfPart(item.rule.part);
+    const competes = rules.some(other => other !== item.rule && ctx.selectorOf.get(other.part) === element && other.declarations.some(d => d.property === item.property));
+    if (varying.size > 1 || new Set(reaching(name!, item.rule.part).map(def => selectorOfPart(def.part))).size > 1 ||
+      item.rule.predicates.length > 0 || item.rule.pseudo || competes) return { reason: "uss-var-composite" };
+    return { base: base.value, extras };
+  };
+  if (deferred.size) {
+    const rebuilt: UssRule[] = [];
+    for (const rule of out.rules) {
+      const extras = new Map<string, [string, string][]>();
+      rule.declarations = rule.declarations.flatMap((declaration): [string, string][] => {
+        const item = deferred.get(declaration);
+        if (!item) return [declaration];
+        const projected = project(item, declaration[1]);
+        if ("reason" in projected) { ledger(item.rule, item.property, item.value, projected.reason); return []; }
+        // The consumer rule is unqualified, so its selector starts with the
+        // element's: a definition on the element replaces that compound, one on
+        // an ancestor descends to it.
+        const element = selectorOfPart(item.rule.part);
+        for (const extra of projected.extras) {
+          const selector = selectorOfPart(extra.def.part) === element ? `${extra.def.selector}${rule.selector.slice(element.length)}` : `${extra.def.selector} ${rule.selector}`;
+          extras.set(selector, [...(extras.get(selector) ?? []), [declaration[0], extra.value]]);
+        }
+        return [[declaration[0], projected.base]];
+      });
+      if (rule.declarations.length) rebuilt.push(rule);
+      for (const [selector, declarations] of extras) rebuilt.push({ selector, declarations });
+    }
+    out.rules = rebuilt;
     // The token-section closure keeps only graph tokens a remaining declaration reads.
     const read = new Set(out.rules.flatMap(rule => rule.declarations.flatMap(([, value]) => [...value.matchAll(VAR_READ)].map(m => m[1]!))));
     for (const token of [...out.graphTokens]) if (!read.has(cssVar(token))) out.graphTokens.delete(token);
@@ -1026,10 +1137,23 @@ interface TokenScope { theme: Theme; brand?: BrandLayer }
 function scopeValue(sources: TokenSources, index: Map<string, string>, tokenPath: string, scope: TokenScope): string | undefined {
   const name = cssVar(tokenPath);
   const { brand, theme } = scope;
-  if (brand && theme === "dark" && brand.dark.has(name)) return brandValue(sources.graph, index, brand.dark.get(name)!, "dark");
-  if (brand?.light.has(name)) return brandValue(sources.graph, index, brand.light.get(name)!, theme);
-  const raw = graphValue(sources.graph, tokenPath, theme);
-  return raw === undefined ? undefined : tokenScalar(raw);
+  const themed = (t: Theme): string | undefined => {
+    const raw = graphValue(sources.graph, tokenPath, t);
+    return raw === undefined ? undefined : tokenScalar(raw);
+  };
+  // The token section defines a token only when its light value is a scalar;
+  // otherwise every scope leaves it undefined.
+  const light = themed("light");
+  if (light === undefined) return undefined;
+  if (brand && theme === "dark" && brand.dark.has(name)) {
+    const value = brandValue(sources.graph, index, brand.dark.get(name)!, "dark");
+    if (value !== undefined) return value;
+  }
+  if (brand?.light.has(name)) {
+    const value = brandValue(sources.graph, index, brand.light.get(name)!, theme);
+    if (value !== undefined) return value;
+  }
+  return theme === "dark" ? themed("dark") ?? light : light;
 }
 
 /** The theme-level ledger rows use this component key. */
@@ -1115,7 +1239,7 @@ export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hos
     const prefix = irs[i]!.cssPrefix;
     component.rules.forEach((rule, n) => sections.push(block(rule.selector, rule.declarations, n === 0 ? `${component.component} (.${prefix})` : undefined)));
   }
-  const key = (e: UnsupportedEntry) => [e.component, e.sourceKey, e.part, e.property, e.value, e.reason];
+  const key = (e: UnsupportedEntry) => [e.component, e.sourceKey, e.part, e.property, e.value, e.reason, e.longhand ?? ""];
   const sorted = [...new Map(entries.map(e => [JSON.stringify(key(e)), e])).values()].sort((a, b) => {
     const [x, y] = [key(a), key(b)];
     for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return x[i]! < y[i]! ? -1 : 1;

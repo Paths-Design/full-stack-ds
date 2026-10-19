@@ -195,9 +195,10 @@
       "component": "Accordion",
       "sourceKey": "chevron",
       "part": "chevron",
-      "property": "transition-property",
+      "property": "transition",
       "value": "transform 200ms ease",
-      "reason": "uss-property"
+      "reason": "uss-property",
+      "longhand": "transition-property"
     },
     {
       "component": "Accordion",
@@ -659,9 +660,10 @@
       "component": "Switch",
       "sourceKey": "thumb",
       "part": "thumb",
-      "property": "transition-timing-function",
+      "property": "transition",
       "value": "var(--fsds-switch-motion-easing)",
-      "reason": "uss-scalar"
+      "reason": "uss-scalar",
+      "longhand": "transition-timing-function"
     },
     {
       "component": "Switch",
@@ -683,9 +685,10 @@
       "component": "Switch",
       "sourceKey": "track",
       "part": "track",
-      "property": "transition-timing-function",
+      "property": "transition",
       "value": "var(--fsds-switch-motion-easing)",
-      "reason": "uss-scalar"
+      "reason": "uss-scalar",
+      "longhand": "transition-timing-function"
     },
     {
       "component": "Tabs",
@@ -699,9 +702,10 @@
       "component": "Tabs",
       "sourceKey": "--vertical __indicator",
       "part": "indicator",
-      "property": "transition-property",
+      "property": "transition",
       "value": "transform var(--fsds-tabs-motion-indicator) ease",
-      "reason": "uss-property"
+      "reason": "uss-property",
+      "longhand": "transition-property"
     },
     {
       "component": "Tabs",
@@ -795,9 +799,10 @@
       "component": "Tabs",
       "sourceKey": "indicator",
       "part": "indicator",
-      "property": "transition-property",
+      "property": "transition",
       "value": "transform var(--fsds-tabs-motion-indicator) ease",
-      "reason": "uss-property"
+      "reason": "uss-property",
+      "longhand": "transition-property"
     },
     {
       "component": "Tabs",
