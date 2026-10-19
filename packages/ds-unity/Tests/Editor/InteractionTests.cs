@@ -90,7 +90,9 @@ namespace FullStackDS.Tests
             Assert.That(control.Thumb.hierarchy.parent, Is.EqualTo(control.Track));
             Assert.That(caption.hierarchy.parent, Is.EqualTo(control.contentContainer));
             Assert.That(control.contentContainer.ClassListContains("switch__children"), Is.True);
-            Assert.That(control.Track.style.width.value.value, Is.EqualTo(48)); Assert.That(control.Thumb.style.height.value.value, Is.EqualTo(16));
+            // Geometry comes from the generated stylesheet (resolved values pinned in StylingTests); an inline
+            // style would outrank every USS rule and mask the size-variant carriers.
+            Assert.That(control.Track.style.width.keyword, Is.EqualTo(StyleKeyword.Null)); Assert.That(control.Thumb.style.height.keyword, Is.EqualTo(StyleKeyword.Null));
             int count = 0; control.RegisterValueChangedCallback(_ => count++);
             Click(caption);
             Assert.That(control.Checked, Is.True); Assert.That(count, Is.EqualTo(1));
