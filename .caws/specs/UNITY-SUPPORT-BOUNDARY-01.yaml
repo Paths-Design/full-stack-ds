@@ -2,7 +2,6 @@ id: UNITY-SUPPORT-BOUNDARY-01
 title: 'Unity support boundary: classify every contract and sidecar leaf as lowered, pending or refused; refuse unclassified facts at generation'
 mode: feature
 lifecycle_state: active
-worktree: unity-support-boundary
 created_at: '2026-10-18T22:52:41.128Z'
 updated_at: '2026-10-19T00:24:17.854Z'
 created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
