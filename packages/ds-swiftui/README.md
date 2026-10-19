@@ -38,7 +38,7 @@ swift build --package-path packages/ds-swiftui
 | Claim | Status |
 |---|---|
 | Contracts can emit compiling SwiftUI source through the shared IR | Yes — Switch emits a `Toggle(.switch)` View via the `native-toggle-affordance` collapse intent; `swift build` compiles the module |
-| Controlled/uncontrolled channel semantics survive the projection | The `checked` channel lowers to `Binding<Bool>?` + `@State` + `onChange` with controlled-takes-precedence, matching React's `useControllableState` rule |
+| Controlled/uncontrolled channel semantics survive the projection | The `checked` channel lowers to `Binding<Bool>?` + a `ControllableValue` + `onChange` with controlled-takes-precedence, matching React's `useControllableState` rule. Every generated channel is held through the `ControllableState` (or, for Select, `ControllableSelection`) dynamic property, which re-binds the state object to the view's current `Binding` and callback before each body; an emitter test fails if a generated view holds a bare `@StateObject` channel |
 | Size variants resolve from typed token facts | Yes — `ir.tokenFacts` (FEAT-MOBILE-IR-001), not CSS parsing; `sm`/`lg` fall through to `md` until those tokens are authored |
 | The Stack primitive lowers from `PrimitiveIR` like the web targets | Yes — axis (VStack/HStack) from `axisByVariant`, gated on `axisModes` only (native = neutral container, no imposed spacing); emitted via `emitPrimitives` with mutation-pinned gating |
 | Multi-part anatomy emits with theme-driven styling | Yes — the projected-children action path (root button + single content region) emits `FsdsButton`; styling comes from `ir.tokenScopes` shipped as data and resolved through the hand-authored `FsdsTheme`, layering root + variant_<size> + variant_<intent>. The shared native conformance fixture pins slot-name override → semantic-ref override → authored literal/fallback for ordinary and layered resolution. |
@@ -80,11 +80,17 @@ real App through OS-mediated accessibility interactions and exits nonzero
 naming any failed counter. Current proven surface (press → channel):
 
 - **Chip** (action, dismiss), **Walkthrough** (steps, skip, complete threshold)
-- **Switch** — onChange `[true, false]`, binding syncs both ways
-- **Select** — AXMenuButton trigger → menu option press → selection `"b"`
+- **Switch** — onChange `[true, false]`, binding syncs both ways, rendered
+  `AXValue` `["1", "0"]` after each press
+- **Select** — AXMenuButton trigger → menu option press → selection `"b"`,
+  trigger label `"B"`
 - **Popover** — native Button AXPress → first `onOpenChange` value `true` →
   content observable (phase unmount may append native-dismissal `false`)
-- **Calendar** — AXIncrementor step → onChange fires exactly once
+- **Calendar** — pressing a day commits it once, updates the binding and
+  leaves `AXSelected` on that day alone; a parent-set value moves the
+  selected day; Next month emits `onMonthChange` and re-derives the days; a
+  de-DE grid has Monday-first headers, German day names and an uncontrolled
+  selection
 - **Dialog** — controlled false→true→false presentation and
   `defaultOpen: true` presentation at mount
 - **Tabs** — selecting tab `b` drives the active-tab channel
@@ -99,7 +105,12 @@ action-primary hex.
 
 The harness found and fixed one real emitter defect (sheets anchored on
 `EmptyView()` never present; the anchor is now a zero-size `Color.clear`,
-regenerated for Dialog/Sheet/Command). It later falsified its own initial
+regenerated for Dialog/Sheet/Command). It found a second across every
+controlled channel: a `Binding` held only inside the `@StateObject` read the
+value it had when the view first appeared, so a Switch turned on still
+rendered off, Select's trigger kept its placeholder and Calendar showed no
+selected day. With the re-binding removed, the harness fails on all three.
+It later falsified its own initial
 structural finding for Tabs, Accordion, and Shuttle: their generated controls
 now expose OS-pressable elements and the channel counters above move.
 

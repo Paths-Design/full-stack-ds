@@ -174,7 +174,19 @@ divergences are ledgered in
   `runComposeUiTest`) and `FsdsDateGridTests.swift` pin the native cores and
   Compose's semantics tree, including a controlled `null` clearing the
   selection; `ControllableValueTests.swift` pins a SwiftUI binding holding
-  `nil` as an empty value.
+  `nil` as an empty value, and a channel that follows the binding and
+  callback its view passed last.
+- `swift run --package-path packages/ds-swiftui PressProofHarness` hosts the
+  generated SwiftUI Calendar in a real macOS app and presses days through
+  `AXPress`. It reads back one commit, the bound value and `AXSelected` on the
+  pressed day alone; the selected day moving when the parent sets the value;
+  the month channel and April's re-derived days; and, in de-DE, Monday-first
+  headers, German day names and an uncontrolled selection. Generated SwiftUI
+  views hold each controllable channel through `ControllableState` or
+  `ControllableSelection`, which re-bind it to the view's current `Binding`
+  before every body; a `Binding` held only inside the state object kept the
+  value it had at first appearance, so a controlled day never showed as
+  selected.
 - `pnpm run audit:a11y-realization` checks roving focus, the declared keys,
   `aria-selected` and `aria-current` against the generated web output, and the
   state attributes against SwiftUI and Compose, where today beside a selection
@@ -192,7 +204,9 @@ divergences are ledgered in
   `aria-selected` on one element, and the browser tests read the DOM, not the
   accessibility tree. The SwiftUI accessibility-tree test skips under
   `swift test`, which exposes no accessibility tree for its own window even
-  when the runner is trusted.
+  when the runner is trusted. The press-proof harness reads the macOS
+  accessibility tree instead, but it needs accessibility access for the
+  process that runs it, is not a CI step, and is not iOS evidence.
 - `shouldCloseOnSelect` is declared and not lowered on any target: the grid
   owns no dismissal.
 - The root keeps `role="application"`.
