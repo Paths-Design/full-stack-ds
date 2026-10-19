@@ -1157,7 +1157,7 @@ function scopeValue(sources: TokenSources, index: Map<string, string>, tokenPath
 }
 
 /** The theme-level ledger rows use this component key. */
-const THEME_COMPONENT = "(theme)";
+export const THEME_COMPONENT = "(theme)";
 
 export interface StylesheetProjection {
   uss: string;

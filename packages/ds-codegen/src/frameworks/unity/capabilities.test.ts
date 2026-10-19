@@ -1,8 +1,10 @@
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { describe, it, expect } from "vitest";
 import { listComponentContracts } from "../../contracts-fs.js";
-import { loadContractWithSidecars } from "./boundary.js";
-import { accountComponent, auditUnityTarget, declaredLeaves, inventory } from "./capabilities.js";
+import { loadBoundary, loadContractWithSidecars, type Boundary, type BoundaryRule } from "./boundary.js";
+import { accountComponent, auditUnityTarget, declaredLeaves, inventory, ledgerViolations, unsupportedLedgerPath } from "./capabilities.js";
 const root = path.resolve(__dirname, "../../../../..");
 const fixture = (name: string) => loadContractWithSidecars(root, name);
 // The corpus case builds and classifies every contract twice (inventory, then
@@ -67,7 +69,63 @@ describe("Unity capability accounting", () => {
     for (const pointer of ["/switch.size.md.thumb.height/fallback", "/switch.size.md.track.width/fallback", "/switch.size.lg.track.width/fallback"]) {
       expect(result.sidecarObligations.tokens.find(o => o.pointer === pointer), pointer).toMatchObject({ disposition: "lowered", rule: "tokens" });
     }
-    expect(result.sidecarObligations.styles.every(o => o.disposition === "lowered" && o.rule === "styles")).toBe(true);
+    // A sidecar declaration lowers through the projection unless its family is
+    // one the sheet does not realise: exactly the Switch rows of Controls.unsupported.json.
+    const notLowered = (kind: "tokens" | "styles", depth: number) => [...new Set(result.sidecarObligations[kind]
+      .filter(o => o.disposition !== "lowered").map(o => `${o.pointer.split("/").slice(1, 1 + depth).join("/")} ${o.disposition}:${o.rule}`))].sort();
+    expect(notLowered("styles", 2)).toEqual([
+      ".switch:has(.switch__input:focus-visible) .switch__track/outline-offset refused:styles-outline-offset",
+      "input/clip refused:styles-uss-absent-property",
+      "root/cursor refused:styles-cursor",
+      "thumb/box-shadow refused:styles-uss-absent-property",
+      "thumb/transition refused:styles-transition-unrealised",
+      "track/transition refused:styles-transition-unrealised",
+    ]);
+    expect(notLowered("tokens", 1)).toEqual(["switch.color.thumb.shadow refused:tokens-non-scalar", "switch.motion.easing refused:tokens-non-scalar"]);
+    expect(result.sidecarObligations.styles.filter(o => o.disposition === "lowered").every(o => o.rule === "styles")).toBe(true);
+  });
+  it("finds no ledgered declaration behind a lowered leaf, and names the entry when a rule claims one", () => {
+    const ledger = JSON.parse(fs.readFileSync(unsupportedLedgerPath(root), "utf8")) as { entries: { reason: string }[] };
+    expect(ledger.entries.filter(e => e.reason !== "uss-design-slot").length).toBeGreaterThan(20);
+    expect(ledgerViolations(root)).toEqual([]);
+    const committed = loadBoundary();
+    const entriesOf = (boundary: Boundary) => [...new Set(ledgerViolations(root, boundary).map(v => v.slice(0, v.indexOf("):") + 1)))].sort();
+    // A box-shadow lowering placed ahead of its refusal contradicts both shadow rows.
+    const shadow: BoundaryRule = { id: "box-shadow-lowered", match: ["styles:/*/box-shadow/**"], disposition: "lowered", via: "test" };
+    const lowered = { ...committed, rules: [shadow, ...committed.rules] };
+    expect(entriesOf(lowered)).toEqual(["ledger Popover content box-shadow (uss-property)", "ledger Switch thumb box-shadow (uss-property)"]);
+    expect(ledgerViolations(root, lowered)).toContain("ledger Popover content box-shadow (uss-property): styles:/content/box-shadow/fallback is classified lowered by rule box-shadow-lowered");
+    // The join's findings fail the corpus audit (audit:unity-boundary --check).
+    expect(auditUnityTarget(root, lowered).violations).toEqual(expect.arrayContaining(ledgerViolations(root, lowered)));
+    // Without the token and selector refusals, token rows and refused-selector rows fall to the blanket lowered rules.
+    const without = (id: string) => ({ ...committed, rules: committed.rules.filter(r => r.id !== id) });
+    expect(entriesOf(without("tokens-non-scalar"))).toEqual([
+      "ledger Popover tokens popover.elevation (uss-scalar)", "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
+      "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
+    ]);
+    expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
+      'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)', "ledger Tabs --pills __tab--active (uss-selector)", "ledger Tabs tab--active (uss-selector)",
+    ]);
+  }, CORPUS_TIMEOUT_MS);
+  it("counts a ledger entry no sidecar leaf backs as a violation, and skips brand design-slot and token-section rows", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "unity-ledger-"));
+    try {
+      const file = path.join(dir, "Controls.unsupported.json");
+      fs.writeFileSync(file, JSON.stringify({ entries: [
+        { component: "Switch", sourceKey: "nowhere", part: "root", property: "color", value: "#fff", reason: "uss-scalar" },
+        // A property name that only prefixes a declared one (thumb transition) is not that declaration.
+        { component: "Switch", sourceKey: "thumb", part: "thumb", property: "trans", value: "x", reason: "uss-scalar" },
+        { component: "Switch", sourceKey: "brand:bold", part: "track", property: "background-color", value: "#000", reason: "uss-design-slot" },
+        { component: "(theme)", sourceKey: "resolved.tokens.json", part: "", property: "--fsds-x", value: "1px 2px", reason: "uss-scalar" },
+      ] }));
+      expect(ledgerViolations(root, loadBoundary(), file)).toEqual([
+        "ledger Switch nowhere color (uss-scalar): no styles leaf under /nowhere/color",
+        "ledger Switch thumb trans (uss-scalar): no styles leaf under /thumb/trans",
+      ]);
+      expect(ledgerViolations(root, loadBoundary(), path.join(dir, "absent.json"))).toEqual([]);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
   });
   it("retains empty declarations, arrays and escaped property paths", () => {
     expect(declaredLeaves({ "a/b": { "~": [] }, flags: [true, false], missing: null })).toEqual(["/a~1b/~0", "/flags/0", "/flags/1", "/missing"]);

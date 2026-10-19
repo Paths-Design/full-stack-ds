@@ -8,14 +8,17 @@ import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { listComponentContracts, findComponentStyles, findComponentTokens } from "../../contracts-fs.js";
 import { buildComponentIR } from "../../ir.js";
-import { assertRealized, createUnityEmitter, unityLowering } from "./factory.js";
+import { assertRealized, createUnityEmitter, STYLESHEET_RESOURCE, unityLowering } from "./factory.js";
+import { THEME_COMPONENT, type UnsupportedEntry } from "./uss.js";
 import { rootPublicMembers } from "./walker.js";
 import {
   auditBoundary,
   classifyContract,
+  escape,
   loadBoundary,
   loadContractWithSidecars,
   unityAllowlist,
+  type Boundary,
   type BoundaryAudit,
   type BoundaryDisposition,
   type ClassifiedLeaf,
@@ -116,17 +119,61 @@ export function inventory(root: string) {
   });
 }
 
+/** The unsupported ledger the Unity emitter generates beside Controls.uss. */
+export const unsupportedLedgerPath = (root: string): string => path.join(root, "packages/ds-unity", `${STYLESHEET_RESOURCE}.unsupported.json`);
+
+/**
+ * Ledger-to-boundary agreement: a declaration the generated sheet does not
+ * realise must not sit behind a leaf the boundary classifies lowered. Each
+ * entry of the generated ledger names the sidecar declaration it came from:
+ * a styles entry the leaves under /<sourceKey>/<property>, a token entry
+ * (sourceKey "tokens") those under the token path, and a refused selector
+ * (uss-selector) every leaf of its styles block. An entry no sidecar leaf
+ * backs is itself a violation, so the join cannot pass vacuously. No ledger
+ * file (a checkout that has not generated the Unity target) yields none.
+ */
+export function ledgerViolations(root: string, boundary: Boundary = loadBoundary(), ledgerPath: string = unsupportedLedgerPath(root)): string[] {
+  if (!fs.existsSync(ledgerPath)) return [];
+  const ledger = JSON.parse(fs.readFileSync(ledgerPath, "utf8")) as { entries: UnsupportedEntry[] };
+  const classified = new Map<string, ClassifiedLeaf[]>();
+  const leavesOf = (component: string): ClassifiedLeaf[] => {
+    if (!classified.has(component)) classified.set(component, classifyContract(loadContractWithSidecars(root, component), boundary));
+    return classified.get(component)!;
+  };
+  const violations: string[] = [];
+  for (const entry of ledger.entries) {
+    // A brand's override of a component design slot (sourceKey brand:<id>)
+    // comes from the token build's @layer brand, not from a contract or
+    // sidecar leaf, so the boundary has no leaf to classify for it.
+    if (entry.reason === "uss-design-slot") continue;
+    // Token-section rows are token-graph values, not component leaves.
+    if (entry.component === THEME_COMPONENT) continue;
+    const [source, prefix] = entry.reason === "uss-selector"
+      ? ["styles", `/${escape(entry.sourceKey)}`]
+      : entry.sourceKey === "tokens"
+        ? ["tokens", `/${escape(entry.property)}`]
+        : ["styles", `/${escape(entry.sourceKey)}/${escape(entry.property)}`];
+    const backing = leavesOf(entry.component).filter(leaf => leaf.source === source && (leaf.pointer === prefix || leaf.pointer.startsWith(`${prefix}/`)));
+    const where = `${entry.component} ${entry.sourceKey}${entry.property ? ` ${entry.property}` : ""} (${entry.reason})`;
+    if (!backing.length) { violations.push(`ledger ${where}: no ${source} leaf under ${prefix}`); continue; }
+    for (const leaf of backing) if (leaf.disposition === "lowered") violations.push(`ledger ${where}: ${source}:${leaf.keyed} is classified lowered by rule ${leaf.rule}`);
+  }
+  return violations;
+}
+
 /**
  * Corpus audit for the Unity target: the boundary audit (every leaf classified,
- * no dead rules, no allowlisted catch-all reliance) plus the realisation check
- * for every allowlisted component. Any entry in `violations` fails `--check`.
+ * no dead rules, no allowlisted catch-all reliance), the realisation check for
+ * every allowlisted component, and the generated ledger's agreement with the
+ * boundary. Any entry in `violations` fails `--check`.
  */
-export function auditUnityTarget(root: string): BoundaryAudit & { unrealized: { component: string; message: string }[] } {
-  const audit = { ...auditBoundary(root), unrealized: [] as { component: string; message: string }[] };
+export function auditUnityTarget(root: string, boundary: Boundary = loadBoundary()): BoundaryAudit & { unrealized: { component: string; message: string }[]; ledger: string[] } {
+  const audit = { ...auditBoundary(root, boundary), unrealized: [] as { component: string; message: string }[], ledger: ledgerViolations(root, boundary) };
+  audit.violations.push(...audit.ledger);
   for (const name of unityAllowlist(root)) {
     const contract = loadContractWithSidecars(root, name);
     try {
-      assertRealized(contract, buildComponentIR(contract), classifyContract(contract));
+      assertRealized(contract, buildComponentIR(contract), classifyContract(contract, boundary));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       audit.unrealized.push({ component: name, message });
@@ -144,7 +191,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   if (check) {
     console.log(`unity support boundary: ${JSON.stringify(audit.counts)} pending by phase ${JSON.stringify(audit.perPhase)}`);
     for (const violation of audit.violations) console.error(`  VIOLATION ${violation}`);
-    console.log(audit.violations.length ? `unity support boundary: ${audit.violations.length} violation(s)` : "unity support boundary: every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist");
+    console.log(audit.violations.length ? `unity support boundary: ${audit.violations.length} violation(s)` : "unity support boundary: every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist, no ledgered declaration classified lowered");
     process.exit(audit.violations.length ? 1 : 0);
   }
   const components = inventory(root);
