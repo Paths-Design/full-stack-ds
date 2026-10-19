@@ -62,3 +62,12 @@ contracts:
   - name: 'unity-support-boundary'
     type: schema
     path: 'packages/ds-codegen/src/frameworks/unity/support-boundary.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "walker.ts + behaviors.ts produce every allowlisted component by one generic walk (ir.dom, or ir.parts for Popover's parts-only shape) plus one class per ir.compoundParts entry; part nodes carry name=<part> and <cssPrefix>__<part>; factory.test.ts synthetic-contract cases (keyed selection tree, boolean control with hole beside siblings and named slot, parts-only root by role, composed content order) and lore.test.ts (no identity comparison against corpus part/channel/prop/slot literals incl. file-local constants; the emitter never imports the boundary; prop names only via the item-group vocabulary) pass 109/109 in the unity+lore+cli vitest set; coupling audit --check OK; generate:unity exits 0 at 95282a70b and 942ce0cc2 with a clean packages/ds-unity tree"
+    recorded_at: "2026-10-19T07:25:14.258Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts::lowers a keyed selection tree by rule: compound classes, identity, insertion point, behavior and vocabulary props"
+    command: "pnpm run generate:unity && node scripts/rail-toolchain-coupling-audit.mjs --check"
+    exit_code: 0
+    commit_sha: "301f52b64"
