@@ -100,3 +100,12 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/audit-unity-boundary.log"
     commit_sha: "7c24b5e95"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "pnpm run generate:unity at the candidate emits the four allowlisted components with the admission hook live (generate-unity.log) and git status over packages/ds-unity is empty (generate-unity-diff.log, 0 lines); governed:rail required-mode verify reported Overall PASS with a clean tree; Unity emitter, boundary, capability and CLI seam suites pass 70/70 (unity-and-cli-tests.log)"
+    recorded_at: "2026-10-19T01:20:44.788Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts::registers the four-component pilot without claiming TypeScript rail admission"
+    command: "pnpm run generate:unity"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/generate-unity-diff.log"
+    commit_sha: "7c24b5e95"
