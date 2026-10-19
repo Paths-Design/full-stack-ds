@@ -51,8 +51,9 @@
  *               select (aria-selected on the cell); clicking an outside-month
  *               day shows its month with focus kept on that day; the month
  *               buttons move an uncontrolled month; `locale=de-DE` gives a
- *               Monday-first
- *               German grid, and a controlled `month` stays put.
+ *               Monday-first German grid, and a controlled `month` stays put;
+ *               a key move that controlled month refuses leaves focus and the
+ *               tab stop on the day it started from.
  *   CodeBlock — highlight content transform (RUNTIME-RAIL-CODEBLOCK-
  *               HIGHLIGHT-01): with code+language through the config bus,
  *               the rendered `[data-token]` kind sequence equals the frozen
@@ -440,6 +441,31 @@ test.describe("Runtime rail — Calendar (date grid: roving focus, activation, m
       await page.locator('[data-calendar-nav="next"]').click();
       await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       expect((await calendarFacts(page, framework))!.caption).toBe("Mai 2031");
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: a key move a controlled month refuses leaves focus and the tab stop where they were`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar", { mode: "single", month: new Date(2031, 4, 1) });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.caption).toBe("May 2031");
+      const settle = () => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      const position = async () => {
+        const facts = await calendarFacts(page, framework);
+        return facts && { caption: facts.caption, focused: facts.focused, tabStops: facts.tabStops };
+      };
+      await page.locator('[data-date="2031-05-31"]').focus();
+      // 1 June is on screen as an outside-month day of May's grid; focus must
+      // not jump to it while the grid still shows May.
+      await page.keyboard.press("ArrowRight");
+      await settle();
+      expect(await position()).toEqual({ caption: "May 2031", focused: "2031-05-31", tabStops: ["2031-05-31"] });
+      // 30 June is not on screen at all.
+      await page.keyboard.press("PageDown");
+      await settle();
+      expect(await position()).toEqual({ caption: "May 2031", focused: "2031-05-31", tabStops: ["2031-05-31"] });
+      // An in-month move still lands.
+      await page.keyboard.press("ArrowLeft");
+      await expect.poll(position).toEqual({ caption: "May 2031", focused: "2031-05-30", tabStops: ["2031-05-30"] });
     });
   }
 });

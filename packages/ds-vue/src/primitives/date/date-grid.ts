@@ -27,8 +27,9 @@ export interface DateGridOptions {
   disabled?: boolean;
   /** An explicit caption replaces the formatted month and year. */
   caption?: string;
-  onValueChange(value: DateGridValue): void;
-  onMonthChange(month: Date): void;
+  /** Property syntax, so a setter that accepts fewer value shapes fails to type-check. */
+  onValueChange: (value: DateGridValue) => void;
+  onMonthChange: (month: Date) => void;
 }
 
 export interface DateGridDay {
@@ -271,7 +272,12 @@ export function computeDateGrid(options: DateGridOptions, focusedKey: string | u
 export function createDateGrid(clock: () => Date = () => new Date()) {
   let options: DateGridOptions | undefined;
   let focusedKey: string | undefined;
-  let pendingFocus: { key: string; root: Element } | undefined;
+  /**
+   * A day focus should move to once it is rendered. `from` is the day a key
+   * move started on; `synced` records that the grid has been re-derived since,
+   * so the first render that could show the day decides the move.
+   */
+  let pendingFocus: { key: string; root: Element; from?: string; synced: boolean } | undefined;
   let state: DateGridState | undefined;
   let version = 0;
   const listeners = new Set<() => void>();
@@ -286,7 +292,8 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
   const showMonth = (date: Date) => {
     if (!sameMonth(date, current().month)) options!.onMonthChange(startOfMonth(date));
   };
-  const tabStop = (): Date => current().weeks.flatMap((week) => week.days).find((day) => day.tabIndex === 0)?.date ?? current().month;
+  const stopOf = (grid: DateGridState) => grid.weeks.flatMap((week) => week.days).find((day) => day.tabIndex === 0);
+  const tabStop = (): Date => stopOf(current())?.date ?? current().month;
   const move = (event: DateGridKeyEvent, step: (from: Date) => Date) => {
     const grid = current();
     if (grid.disabled || !options) return;
@@ -298,7 +305,7 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
     if (isValidDate(options.maxDate) && next > startOfDay(options.maxDate)) next = startOfDay(options.maxDate);
     if (sameDay(next, from)) return;
     const root = event.currentTarget as Element | null;
-    if (root) pendingFocus = { key: dateGridKey(next), root };
+    if (root) pendingFocus = { key: dateGridKey(next), root, from: dateGridKey(from), synced: false };
     focusedKey = dateGridKey(next);
     showMonth(next);
     publish();
@@ -324,6 +331,12 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
     sync(next: DateGridOptions): DateGridState {
       options = next;
       state = computeDateGrid(next, focusedKey, clock());
+      if (pendingFocus) {
+        pendingFocus.synced = true;
+        // Options that refuse the move (a controlled month that did not
+        // follow) leave the tab stop on the day focus is still on.
+        if (pendingFocus.from && stopOf(state)?.key !== pendingFocus.key) state = computeDateGrid(next, pendingFocus.from, clock());
+      }
       return state;
     },
     previous: () => step(-1),
@@ -332,7 +345,7 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
       if (!options || current().disabled || day.disabled) return;
       focusedKey = day.key;
       const root = focusedDay(day.key)?.closest('[role="grid"]');
-      if (root) pendingFocus = { key: day.key, root };
+      if (root) pendingFocus = { key: day.key, root, synced: false };
       if (options.mode === "range") {
         const selection = selectionOf(options.value);
         options.onValueChange(selection.length === 1
@@ -357,14 +370,23 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
         default: return undefined;
       }
     },
-    /** Move DOM focus to the day a keyboard move or a focused selection targeted, once it is rendered. */
+    /**
+     * Move DOM focus to the day a keyboard move or a focused selection
+     * targeted. The first render after the grid is re-derived decides: focus
+     * moves if that day is the tab stop, and otherwise the move was refused
+     * and focus stays put. Either way the request expires, so a later render
+     * never pulls focus back into the grid.
+     */
     afterRender() {
-      if (!pendingFocus) return;
-      const { key, root } = pendingFocus;
-      const button = root.querySelector<HTMLElement>(`[data-date="${key}"]`);
-      if (!button) return;
+      if (!pendingFocus?.synced) return;
+      const { key, root, from } = pendingFocus;
       pendingFocus = undefined;
-      if (button.ownerDocument.activeElement !== button) button.focus();
+      if (stopOf(current())?.key !== key) {
+        if (from) focusedKey = from;
+        return;
+      }
+      const button = root.querySelector<HTMLElement>(`[data-date="${key}"]`);
+      if (button && button.ownerDocument.activeElement !== button) button.focus();
     },
   };
 }

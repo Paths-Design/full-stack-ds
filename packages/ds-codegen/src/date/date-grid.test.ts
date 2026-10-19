@@ -108,6 +108,8 @@ describe("week start", () => {
   afterEach(() => vi.restoreAllMocks());
   it("reads the locale's first day of the week", () => {
     expect([dateGridWeekStart("en-US"), dateGridWeekStart("de-DE"), dateGridWeekStart("ar-EG"), dateGridWeekStart("fa-IR")]).toEqual([0, 1, 6, 6]);
+    // With Intl.Locale, a language-only tag takes its likely region's week.
+    expect(dateGridWeekStart("en")).toBe(0);
   });
   it("falls back to the CLDR territory table when the engine has no week info", () => {
     const proto = Intl.Locale.prototype as unknown as Record<string, unknown>;
@@ -132,8 +134,9 @@ describe("week start", () => {
         dateGridWeekStart("en-US"), dateGridWeekStart("de-DE"), dateGridWeekStart("ar-EG"),
         dateGridWeekStart("dv-MV"), dateGridWeekStart("zh-Hant-TW"), dateGridWeekStart("pt_BR"),
       ]).toEqual([0, 1, 6, 5, 0, 0]);
-      // A language-only tag names no region and takes the CLDR world default.
-      expect(dateGridWeekStart("de")).toBe(1);
+      // A language-only tag names no region and takes the CLDR world default,
+      // Monday, even where maximizing it would name a Sunday- or Saturday-first region.
+      expect([dateGridWeekStart("de"), dateGridWeekStart("en"), dateGridWeekStart("ar")]).toEqual([1, 1, 1]);
     } finally {
       Object.defineProperty(Intl, "Locale", saved);
     }
@@ -212,6 +215,17 @@ describe("date grid interaction", () => {
     expect(press(grid, opts, "ArrowUp", "2026-10-08").stop).toEqual(["2026-10-05"]);
     const other = press(grid, opts, "a", "2026-10-08");
     expect(other.preventDefault).not.toHaveBeenCalled();
+  });
+
+  it("clamps forward moves to the upper bound, short of the next month", () => {
+    const { grid, opts, onMonthChange, listener } = setup({ maxDate: day(2026, 10, 20) });
+    const atMax = press(grid, opts, "ArrowRight", "2026-10-20");
+    expect(atMax.preventDefault).toHaveBeenCalled();
+    expect(listener).not.toHaveBeenCalled();
+    expect(press(grid, opts, "ArrowDown", "2026-10-15").stop).toEqual(["2026-10-20"]);
+    expect(press(grid, opts, "PageDown", "2026-10-12").stop).toEqual(["2026-10-20"]);
+    expect(press(grid, opts, "PageDown", "2026-10-12", { shiftKey: true }).stop).toEqual(["2026-10-20"]);
+    expect(onMonthChange).not.toHaveBeenCalled();
   });
 
   it("a disabled grid neither moves nor selects", () => {
@@ -324,6 +338,55 @@ describe("date grid interaction", () => {
     grid.afterRender();
     expect(shadow.activeElement).toBe(dom.buttons[0]);
     host.remove();
+  });
+
+  it("a move a controlled month refuses leaves focus and the tab stop on the day it started from", () => {
+    // The parent pins October and ignores onMonthChange.
+    const { grid, opts, onMonthChange } = setup();
+    const dom = positionalGrid(document.body, ["2026-10-31", "2026-11-01"]);
+    dom.buttons[0].focus();
+    grid.keydown({ ...keyEvent("ArrowRight", "2026-10-31").event, target: dom.buttons[0], currentTarget: dom.root });
+    expect(onMonthChange).toHaveBeenLastCalledWith(day(2026, 11, 1));
+    grid.sync(opts);
+    expect(tabStops(grid.state)).toEqual(["2026-10-31"]);
+    grid.afterRender();
+    // 1 November is on screen as an outside-month day; focus must not jump to it.
+    expect(document.activeElement).toBe(dom.buttons[0]);
+    grid.sync(opts);
+    expect(tabStops(grid.state)).toEqual(["2026-10-31"]);
+    dom.root.remove();
+  });
+
+  it("a refused move's focus expires instead of landing when the month later changes", () => {
+    const { grid, opts } = setup();
+    const dom = positionalGrid(document.body, ["2026-10-15", "2026-10-16"]);
+    dom.buttons[0].focus();
+    grid.keydown({ ...keyEvent("PageDown", "2026-10-15").event, target: dom.buttons[0], currentTarget: dom.root });
+    grid.sync(opts);
+    grid.afterRender();
+    // The user moves on; something else later shows November.
+    const elsewhere = document.createElement("input");
+    document.body.append(elsewhere);
+    elsewhere.focus();
+    grid.sync({ ...opts, month: day(2026, 11, 1) });
+    dom.rerender(["2026-11-15", "2026-11-16"]);
+    grid.afterRender();
+    expect(document.activeElement).toBe(elsewhere);
+    dom.root.remove();
+    elsewhere.remove();
+  });
+
+  it("an effect that runs before the move's re-derivation does not consume its focus", () => {
+    const { grid, opts } = setup();
+    const dom = positionalGrid(document.body, ["2026-10-18", "2026-10-19"]);
+    dom.buttons[0].focus();
+    grid.keydown({ ...keyEvent("ArrowRight", "2026-10-18").event, target: dom.buttons[0], currentTarget: dom.root });
+    // A previous render's effect, flushed before the re-render.
+    grid.afterRender();
+    grid.sync(opts);
+    grid.afterRender();
+    expect(document.activeElement).toBe(dom.buttons[1]);
+    dom.root.remove();
   });
 
   it("a selection never pulls focus into the grid", () => {
