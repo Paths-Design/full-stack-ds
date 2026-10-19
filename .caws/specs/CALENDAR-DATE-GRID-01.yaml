@@ -117,3 +117,12 @@ evidence:
     command: "pnpm exec playwright test e2e/runtime-rail.spec.ts -g \"Runtime rail — Calendar\""
     exit_code: 0
     commit_sha: ff44f9b89
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "The shared test 'formats the caption, headers and day names in the locale' (calendar.contract.ts, run by all five web harnesses) pins de-DE caption, Monday-first headers and full-date names and ar-EG Arabic digits; packages/ds-codegen/src/date/date-grid.test.ts 'formats in Gregorian when the locale's calendar months differ' pins fa-IR (Persian default calendar) formatted in Gregorian, in the core every web package copies verbatim (generate:check drift-gated); React Native: packages/ds-react-native/src/components/Calendar/__tests__/Calendar.behavior.test.tsx 'follows the locale for week start, names and caption' (pnpm --filter @full-stack-ds/react-native exec vitest run src/components/Calendar); Chromium de-DE grid on all five targets in e2e/runtime-rail.spec.ts."
+    recorded_at: "2026-10-19T13:15:04.219Z"
+    test_nodeid: "packages/ds-angular/src/primitives/__tests__/calendar.test.ts::a locale input change re-renders the grid"
+    command: "pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs src/primitives/__tests__/calendar.test.ts"
+    exit_code: 0
+    commit_sha: ff44f9b89
+    test_verified_at: ff44f9b897ea9c69ae81800f94d83af8c7825017
