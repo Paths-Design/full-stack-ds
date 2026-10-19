@@ -1,5 +1,6 @@
 import { buildDesignBindings, type DesignBindingIR } from './design-properties.js';
 import { buildPagedSetIR, PAGED_VALUES, PAGED_ACTIONS, type PagedSetIR, type PagedValue, type PagedAction } from "./paging.js";
+import { buildDateGridIR, parseDateGridBinding, type DateGridIR, type DateGridValue, type DateGridAction } from "./date-grid.js";
 import { buildInteractionIR, type InteractionIR, type ActivationIR } from "./interaction.js";
 /**
  * Component IR: the framework-neutral derivation of a validated contract.
@@ -335,6 +336,7 @@ export function nativeTableAttrsFor(tag: string | undefined): NativeTableAttr[] 
  */
 export type BindingExpression =
   | { kind: "paged"; field?: PagedValue; action?: PagedAction; arg?: BindingExpression }
+  | { kind: "dateGrid"; field?: DateGridValue; action?: DateGridAction; arg?: BindingExpression }
   | { kind: "prop"; prop: string; path?: string[] }
   | { kind: "channel"; channel: string; field: "value" | "onChange" | "defaultValue"; path?: string[]; forwardValue?: "channel" | "sequence" | "pagedSet" }
   | { kind: "literal"; value: string }
@@ -351,12 +353,6 @@ export type BindingExpression =
       params: Array<{ name: string; value: BindingExpression }>;
     }
   | { kind: "iterationLocal"; local: "index" | "item"; path?: string[] }
-  | {
-      /** Closed, value-shaped projection over a binding source. */
-      kind: "projection";
-      op: "dateDayOfMonth";
-      source: BindingExpression;
-    }
   | {
       /** Labels of selected values in option order; unknown values use fallback. */
       kind: "projection";
@@ -461,8 +457,6 @@ export function composeBindingProjectionExpression(
         throw new Error("selectionLabel requires selection and fallback operands");
       }
       return `((${sourceExpression} || []).filter(option => (Array.isArray(${selectionExpression}) ? ${selectionExpression} : [${selectionExpression}]).includes(option.value)).map(option => option.label).join(', ') || ${fallbackExpression})`;
-    case "dateDayOfMonth":
-      return `${sourceExpression}.getDate()`;
   }
 }
 
@@ -1809,6 +1803,8 @@ export interface ComponentIR {
    */
   motion: MotionIR;
   pagedSet?: PagedSetIR;
+  /** Month-grid date selection owned by a date-grid runtime (see date-grid.ts). */
+  dateGrid?: DateGridIR;
 
   /**
    * Typed token facts (FEAT-MOBILE-IR-001). Substrate-neutral projection of
@@ -2129,6 +2125,8 @@ export function buildComponentIR(
     // fails once, loud, for all five targets instead of only under svelte-check.
     validateSlotPropNamespaces(dom, styledProps, contract.name);
   }
+  // Domain checks run on a DOM whose bindings and iteration scopes are valid.
+  const dateGrid = buildDateGridIR(contract, behavior.normalizedChannels, dom);
 
   // CODEGEN-RECURSIVE-COMPOSITION-01: resolve componentRef nodes into typed
   // ComponentInstanceIR facts. This is the single place componentRef bindings
@@ -2222,6 +2220,7 @@ export function buildComponentIR(
     keyframes,
     motion,
     pagedSet,
+    dateGrid,
     tokenFacts,
     designBindings,
     tokenScopes,
@@ -2467,6 +2466,19 @@ function validateDomNode(
   //   ReadonlyArray<T>, or a union containing one of those).
   // Reject sub-typing surprises early so the emitter can assume the type.
   if (node.iteration) {
+    const { source, itemType } = node.iteration;
+    const outer = enclosingIterations[enclosingIterations.length - 1];
+    if (source.kind === "iterationLocal" && (!outer || outer.kind !== "array")) {
+      throw new Error(
+        `[${componentName}] DOM iterate.source 'iter:item${source.path ? `.${source.path.join(".")}` : ""}' ` +
+          `iterates the enclosing item, but the node has no enclosing array iteration.`,
+      );
+    }
+    if ((source.kind === "dateGrid" || source.kind === "iterationLocal") && (itemType === undefined || itemType.trim() === "")) {
+      throw new Error(`[${componentName}] DOM iterate.kind="array" requires \`itemType\` to be set.`);
+    }
+  }
+  if (node.iteration && node.iteration.source.kind !== "dateGrid" && node.iteration.source.kind !== "iterationLocal") {
     const { sourceProp, kind } = node.iteration;
     if (!knownProps.has(sourceProp)) {
       throw new Error(
@@ -3008,16 +3020,19 @@ function validateBindingAgainstScope(
    */
   channelValueTypes: Map<string, string> = new Map(),
 ): void {
+  if (binding.kind === "dateGrid") {
+    if (!!binding.action !== allowChannelCall) throw new Error(`DATE_GRID_BINDING_INVALID: ${siteLabel} requires ${allowChannelCall ? "an action" : "a value"}`);
+    if (binding.arg) validateBindingAgainstScope(binding.arg, siteLabel, knownChannels, knownProps, enclosingIteration, componentName);
+    return;
+  }
   if (binding.kind === "paged") {
     if (!!binding.action !== allowChannelCall) throw new Error(`PAGED_BINDING_INVALID: ${siteLabel} requires ${allowChannelCall ? "an action" : "a value"}`);
     if (binding.arg) validateBindingAgainstScope(binding.arg, siteLabel, knownChannels, knownProps, enclosingIteration, componentName);
     return;
   }
   if (binding.kind === "projection") {
-    if (binding.op === "selectionLabel") {
-      for (const operand of [binding.selection, binding.fallback]) {
-        validateBindingAgainstScope(operand, `${siteLabel} selection label operand`, knownChannels, knownProps, enclosingIteration, componentName);
-      }
+    for (const operand of [binding.selection, binding.fallback]) {
+      validateBindingAgainstScope(operand, `${siteLabel} selection label operand`, knownChannels, knownProps, enclosingIteration, componentName);
     }
     validateBindingAgainstScope(
       binding.source,
@@ -3029,16 +3044,6 @@ function validateBindingAgainstScope(
       false,
       false,
     );
-    if (
-      binding.op === "dateDayOfMonth" &&
-      binding.source.kind === "iterationLocal" &&
-      binding.source.local === "item" &&
-      enclosingIteration?.itemType !== "Date"
-    ) {
-      throw new Error(
-        `[${componentName}] DOM ${siteLabel} uses project:dateDayOfMonth(iter:item), but the enclosing iteration itemType is '${enclosingIteration?.itemType ?? "(unspecified)"}', not 'Date'.`,
-      );
-    }
     return;
   }
   if (binding.kind === "valueMap") {
@@ -4043,6 +4048,24 @@ function parseIterate(node: ContractDomNode): IterationIR | undefined {
   } else if (source.kind === "channel" && source.field === "value") {
     // The validator resolves the channel to its valueProp.
     sourceProp = "";
+  } else if (source.kind === "dateGrid" || (source.kind === "iterationLocal" && source.local === "item")) {
+    // A runtime collection (`dateGrid:weeks`) or, for nested iteration, an
+    // array on the enclosing iteration's item (`iter:item.days`). Neither
+    // names a prop; the validator checks them against their own scope.
+    if (it.kind !== "array") {
+      throw new Error(
+        `anatomy.dom node (tag="${node.tag}", part="${node.part ?? "?"}"): ` +
+          `iterate.source "${it.source}" yields an array; use kind "array".`,
+      );
+    }
+    return {
+      kind: it.kind,
+      source,
+      sourceProp: "",
+      indexVar: it.indexVar ?? "index",
+      itemVar: it.itemVar ?? "item",
+      itemType: it.itemType,
+    };
   } else {
     throw new Error(
       `anatomy.dom node (tag="${node.tag}", part="${node.part ?? "?"}"): ` +
@@ -4174,6 +4197,7 @@ function subtreeHasNamedSlot(node: DomNodeIR, name: string): boolean {
  * in `validateDomNode`, not here, because this function is context-free.
  */
 export function parseBindingExpression(expr: string): BindingExpression {
+  if (expr.startsWith("dateGrid:")) return parseDateGridBinding(expr, parseBindingExpression);
   if (expr.startsWith("paged:")) {
     const value = expr.slice(6);
     if ((PAGED_VALUES as readonly string[]).includes(value)) return { kind: "paged", field: value as PagedValue };
@@ -4199,24 +4223,6 @@ export function parseBindingExpression(expr: string): BindingExpression {
       throw new Error("selectionLabel requires a prop collection, a channel value and a prop or literal fallback");
     }
     return { kind: "projection", op: "selectionLabel", source, selection, fallback };
-  }
-
-  const projectionMatch = expr.match(
-    /^project:(dateDayOfMonth)\((.*)\)$/,
-  );
-  if (projectionMatch) {
-    const source = parseBindingExpression(projectionMatch[2]);
-    if (
-      source.kind === "prop" ||
-      source.kind === "channel" ||
-      source.kind === "iterationLocal"
-    ) {
-      return {
-        kind: "projection",
-        op: projectionMatch[1] as "dateDayOfMonth",
-        source,
-      };
-    }
   }
 
   // Path: zero or more `.segment` tails. Anchored to consume the rest of
@@ -4659,9 +4665,7 @@ export function promoteIterationLocals(
 ): BindingExpression {
   if (binding.kind === "projection") {
     const source = promoteIterationLocals(binding.source, iteration);
-    if (binding.op === "selectionLabel") return { ...binding, source, selection: promoteIterationLocals(binding.selection, iteration), fallback: promoteIterationLocals(binding.fallback, iteration) };
-    if (source === binding.source) return binding;
-    return { ...binding, source };
+    return { ...binding, source, selection: promoteIterationLocals(binding.selection, iteration), fallback: promoteIterationLocals(binding.fallback, iteration) };
   }
   if (binding.kind === "valueMap") {
     const source = promoteIterationLocals(binding.source, iteration);

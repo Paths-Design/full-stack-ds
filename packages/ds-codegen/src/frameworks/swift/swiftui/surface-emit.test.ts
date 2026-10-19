@@ -42,17 +42,13 @@ describe("generateSwiftUISurfaceFiles — centered modal (Dialog)", () => {
     const { componentFile } = generateSwiftUISurfaceFiles(irFor("Dialog"));
 
     expect(componentFile).toContain("public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>: View {");
-    // Presentation rides the stored controlled binding when present (a
-    // computed binding over the StateObject never invalidates for
-    // controlled after-mount flips — press-proven defect fix), with set
-    // routing through ControllableValue so native dismissal fires
-    // onOpenChange.
-    expect(componentFile).toContain(".sheet(isPresented: presentationBinding)");
-    expect(componentFile).toContain("private let openControlled: Binding<Bool>?");
-    expect(componentFile).toContain("get: { controlled.wrappedValue },");
-    expect(componentFile).toContain("set: { open.set($0) }");
-    expect(componentFile).toContain("get: { open.value },");
-    expect(componentFile).toContain("ControllableValue(controlled: open");
+    // Presentation reads and writes one path, the channel's binding: the
+    // dynamic property keeps it on the consumer's current Binding, and set()
+    // fires onOpenChange when native dismissal writes it back.
+    expect(componentFile).toContain(".sheet(isPresented: open.binding())");
+    expect(componentFile).not.toContain("openControlled");
+    expect(componentFile).not.toContain("presentationBinding");
+    expect(componentFile).toContain("ControllableState(controlled: open");
     expect(componentFile).toContain("open: Binding<Bool>? = nil");
     expect(componentFile).toContain("defaultOpen: Bool = false");
     // `body` region renames to bodyContent (Swift View.body collision).
@@ -76,12 +72,12 @@ describe("generateSwiftUISurfaceFiles — centered modal (Dialog)", () => {
     expect(componentFile).toContain(
       "public struct Tooltip<Trigger: View, Content: View>: View {",
     );
-    expect(componentFile).toContain(".popover(isPresented: presentationBinding");
+    expect(componentFile).toContain(".popover(isPresented: open.binding()");
     expect(componentFile).toContain("arrowEdge: placementEdge");
     expect(componentFile).toContain(".onHover { hovering in");
     expect(componentFile).toContain("if !disabled { open.set(hovering) }");
     expect(componentFile).not.toContain("SwiftUI.Button(action: { open.toggle() })");
-    expect(componentFile).toContain("ControllableValue(controlled: open");
+    expect(componentFile).toContain("ControllableState(controlled: open");
     // placement union lowers through the grammar table, auto → platform default.
     expect(componentFile).toContain("case .auto: return .bottom");
     expect(componentFile).toContain("case .top: return .top");
@@ -103,7 +99,7 @@ describe("generateSwiftUISurfaceFiles — centered modal (Dialog)", () => {
     expect(componentFile).toContain("SwiftUI.Button(action: { open.toggle() }) {");
     expect(componentFile).toContain(".buttonStyle(.plain)");
     expect(componentFile).toContain(".disabled(disabled)");
-    expect(componentFile).toContain(".popover(isPresented: presentationBinding");
+    expect(componentFile).toContain(".popover(isPresented: open.binding()");
     expect(componentFile).not.toContain(".onHover { hovering in");
   });
 });
@@ -111,7 +107,7 @@ describe("generateSwiftUISurfaceFiles — centered modal (Dialog)", () => {
 describe("generateSwiftUISurfaceFiles — coverage batch (sheet + search channel)", () => {
   it("routes the sheet kind through the centered-modal branch", () => {
     const { componentFile } = generateSwiftUISurfaceFiles(irFor("Sheet"));
-    expect(componentFile).toContain(".sheet(isPresented: presentationBinding)");
+    expect(componentFile).toContain(".sheet(isPresented: open.binding())");
     expect(componentFile).toContain("open: Binding<Bool>? = nil");
     // side/modal props omitted, never accepted-and-ignored.
     expect(componentFile).not.toContain("side:");
@@ -121,7 +117,7 @@ describe("generateSwiftUISurfaceFiles — coverage batch (sheet + search channel
   it("projects a second string channel as the panel search field (Command)", () => {
     const { componentFile } = generateSwiftUISurfaceFiles(irFor("Command"));
     expect(componentFile).toContain("search: Binding<String>? = nil");
-    expect(componentFile).toContain("ControllableValue(controlled: search");
+    expect(componentFile).toContain("ControllableState(controlled: search");
     // The prompt is the placeholder prop: an explicit value wins over the catalog, then the contract default.
     expect(componentFile).toContain("placeholder: String? = nil,");
     expect(componentFile).toContain("self.placeholderProp = placeholder");
@@ -142,8 +138,8 @@ describe("generateSwiftUISurfaceFiles — toast (generative substrate proof)", (
       "public struct Toast<Item: View, Title: View, Description: View>: View {",
     );
     // The shared substrate — same field every controllable component emits.
-    expect(componentFile).toContain("@StateObject private var open: ControllableValue<Bool>");
-    expect(componentFile).toContain("ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)");
+    expect(componentFile).toContain("@ControllableState private var open: ControllableValue<Bool>");
+    expect(componentFile).toContain("ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)");
     // Ephemeral presence ⇒ dwell task driven by the notification dismissal policy (6000ms).
     expect(componentFile).toContain(".task(id: open.value)");
     expect(componentFile).toContain("Task.sleep(for: .milliseconds(6000))");
@@ -157,7 +153,7 @@ describe("generateSwiftUISurfaceFiles — toast (generative substrate proof)", (
 describe("generateSwiftUISurfaceFiles — coachmark (Walkthrough)", () => {
   it("emits the step channel with prev/next and skip/complete", () => {
     const { componentFile } = generateSwiftUISurfaceFiles(irFor("Walkthrough"));
-    expect(componentFile).toContain("@StateObject private var step: ControllableValue<Double>");
+    expect(componentFile).toContain("@ControllableState private var step: ControllableValue<Double>");
     expect(componentFile).toContain("step.set(step.value + 1)");
     expect(componentFile).toContain("onSkip?()");
     expect(componentFile).toContain("onComplete?()");

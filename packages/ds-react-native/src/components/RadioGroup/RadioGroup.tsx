@@ -43,7 +43,7 @@ export function RadioGroup({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createRadioGroupStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string>((defaultValue ?? "") as string);
-  const selection = controlledSelection ?? uncontrolledSelection;
+  const selection = controlledSelection !== undefined ? controlledSelection : uncontrolledSelection;
   const setSelectionValue = useCallback((next: string) => {
     if (controlledSelection === undefined) setUncontrolledSelection(next);
     onChange?.(next);

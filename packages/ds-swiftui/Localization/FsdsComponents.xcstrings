@@ -37,30 +37,6 @@
         }
       }
     },
-    "Calendar.caption": {
-      "comment": "Caption shown above the month grid when the consumer supplies none.",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calendar"
-          }
-        }
-      }
-    },
-    "Calendar.gridLabel": {
-      "comment": "Accessible name of the date grid.",
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calendar"
-          }
-        }
-      }
-    },
     "Calendar.nextMonth": {
       "comment": "Accessible name of the button that shows the next month.",
       "extractionState": "manual",

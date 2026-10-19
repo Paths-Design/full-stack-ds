@@ -26,13 +26,13 @@ public struct RadioGroupOption {
 /// Native single-choice Picker; web form names have no SwiftUI transport meaning.
 public struct RadioGroup: View {
     private let options: [RadioGroupOption]
-    @StateObject private var selection: ControllableValue<String>
+    @ControllableState private var selection: ControllableValue<String>
     private let ariaLabel: String
     private let orientation: RadioGroupOrientation
 
     public init(options: [RadioGroupOption], value: Binding<String>? = nil, defaultValue: String = "", onChange: ((String) -> Void)? = nil, ariaLabel: String = "", orientation: RadioGroupOrientation = .vertical) {
         self.options = options
-        self._selection = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))
+        self._selection = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)
         self.ariaLabel = ariaLabel
         self.orientation = orientation
     }

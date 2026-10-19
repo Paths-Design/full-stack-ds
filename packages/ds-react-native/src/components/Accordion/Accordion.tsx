@@ -40,7 +40,7 @@ export function Accordion({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createAccordionStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpenness] = useState<string | string[]>((defaultValue ?? undefined) as string | string[]);
-  const openness = controlledOpenness ?? uncontrolledOpenness;
+  const openness = controlledOpenness !== undefined ? controlledOpenness : uncontrolledOpenness;
 
   return (
     <View

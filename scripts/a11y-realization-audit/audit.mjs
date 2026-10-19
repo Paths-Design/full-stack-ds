@@ -522,6 +522,15 @@ const NATIVE_DECLARATIVE_STATE = {
   },
 };
 
+/** `aria-current` beside a dynamic `aria-selected` (a date grid's today among
+ * its selected days): the selected-state surfaces above already realize the
+ * selection, so crediting them for "current" would announce the current item
+ * as selected. A distinct state value must carry it. */
+const NATIVE_CURRENT_BESIDE_SELECTION = {
+  swiftui: [/\.accessibilityValue\((?!\s*")/],
+  "jetpack-compose": [/\bstateDescription\s*=/],
+};
+
 /** Behavior-primitive imports that own specific keys. The primitive set is
  * mirrored across frameworks under different names (useX / createX / XController). */
 const TRAP_RE = /useFocusTrap|createFocusTrap|FocusTrapController|focus-trap/;
@@ -662,13 +671,16 @@ export function deriveObligations(contracts) {
     if (strategy === "roving") {
       obligations.push({ component: name, class: "focus", key: strategy, roving });
     }
-    for (const { attribute, declaredStatic, declaredValue, suppressed } of declaredStateAttributes(contract)) {
+    const stateAttributes = declaredStateAttributes(contract);
+    const selectsDynamically = stateAttributes.some((entry) => entry.attribute === "aria-selected" && !entry.declaredStatic);
+    for (const { attribute, declaredStatic, declaredValue, suppressed } of stateAttributes) {
       obligations.push({
         component: name,
         class: "state-attribute",
         key: attribute,
         ...(declaredStatic ? { declaredStatic, declaredValue } : {}),
         ...(suppressed ? { suppressed } : {}),
+        ...(attribute === "aria-current" && !declaredStatic && selectsDynamically ? { besideSelection: true } : {}),
       });
     }
     if (hasInteractivePart(contract)) {
@@ -1388,7 +1400,9 @@ function classifyStateAttribute(obligation, kind, srcBundle, contractTags, famil
   }
   // native-declarative
   const src = typeof srcBundle === "string" ? srcBundle : srcBundle.delegated ?? ownSrc;
-  const patterns = NATIVE_DECLARATIVE_STATE[familyId]?.[attribute];
+  const patterns = obligation.besideSelection
+    ? NATIVE_CURRENT_BESIDE_SELECTION[familyId]
+    : NATIVE_DECLARATIVE_STATE[familyId]?.[attribute];
   if (!patterns) return { verdict: "excluded", reason: `no ${familyId} surface for ${attribute}` };
   if (obligation.declaredStatic) {
     const constant = NATIVE_DECLARATIVE_STATIC_STATE[familyId]?.[attribute] ?? [];
@@ -1595,7 +1609,7 @@ if (isMain) {
   );
   if (excludedFamilies.length > 0) {
     console.log(
-      `[a11y-rail] excluded families: ${excludedFamilies.map((f) => f.id).join(", ")} (no accessibility surface table; see a11y-matrix.md)`,
+      `[a11y-rail] excluded families: ${excludedFamilies.map((f) => f.id).join(", ")} (no accessibility surface table; see docs/internal/a11y-realization-audit/a11y-matrix.md)`,
     );
   }
   if (unledgered.length > 0) {

@@ -273,7 +273,7 @@ export interface UsageCompositionIR {
   childrenRegion: string | null;
   namedSlots: string[];
   subcomponents: UsageSubcomponentIR[];
-  propMaterializers: Record<string, "date" | "date-array">;
+  propMaterializers: Record<string, "date" | "date-array" | "date-union">;
 }
 
 export type UsagePropValue =

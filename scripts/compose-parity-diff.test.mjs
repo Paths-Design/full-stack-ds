@@ -97,7 +97,7 @@ for (const [path, markers, roleKey] of SURFACE_CASES) {
  *  prop-text and expandable roles all accept a bare `.background`/`.radius`
  *  vocabulary and would let this key go unchecked. */
 const dateGridFixture = (body) => fixture({
-  component: `fun Example(modifier: Modifier = Modifier) { FsdsDate.dayOfMonth(Date()); ${body}; val x = exampleTokenScopes["root"]?.get("example.width") }`,
+  component: `fun Example(modifier: Modifier = Modifier) { val dateGrid = FsdsDateGrid.compute(emptyList(), null, false, "en-US"); ${body}; val x = exampleTokenScopes["root"]?.get("example.width") }`,
   rnStyles: 'tokens.root?.["calendar.color.day.selected.background"];',
 });
 

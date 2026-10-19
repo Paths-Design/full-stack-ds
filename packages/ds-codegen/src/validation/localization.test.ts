@@ -255,12 +255,14 @@ describe("localization gate admits what is not translatable text", () => {
 
   it("a prop default marked translatable: false", () => {
     const contract = loadCorpusContract("Calendar");
-    const locale = contract.props!.designed!.members![8];
+    const members = contract.props!.designed!.members!;
+    const index = members.findIndex((member) => member.name === "locale");
+    const locale = members[index];
     expect(locale).toMatchObject({ name: "locale", translatable: false, default: "en-US" });
     expect(validateLocalization(contract, corpus)).toEqual([]);
     delete locale.translatable;
     expect(validateLocalization(contract, corpus).map((issue) => issue.pointer)).toEqual([
-      "/props/designed/members/8/default",
+      `/props/designed/members/${index}/default`,
     ]);
   });
 

@@ -28,7 +28,7 @@ public struct ShowMore<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         ShowMoreTokens.scopes
     }
-    @StateObject private var expanded: ControllableValue<Bool>
+    @ControllableState private var expanded: ControllableValue<Bool>
     private let maxLines: Int
     private let showLessLabelProp: String?
     private let showMoreLabelProp: String?
@@ -44,7 +44,7 @@ public struct ShowMore<Content: View>: View {
         showMoreLabel: String? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self._expanded = StateObject(wrappedValue: ControllableValue(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange))
+        self._expanded = ControllableState(controlled: expanded, defaultValue: defaultExpanded, onChange: onExpandedChange)
         self.maxLines = maxLines
         self.showLessLabelProp = showLessLabel
         self.showMoreLabelProp = showMoreLabel

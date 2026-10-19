@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -315,10 +315,9 @@ describe("generateSwiftUIComponentSource — value-channel text control (Input)"
   it("projects the string channel through the controllable-state pattern", () => {
     const source = emitInput();
     expect(source).toContain("public struct Input: View {");
-    expect(source).toContain("@StateObject private var text: ControllableValue<String>");
+    expect(source).toContain("@ControllableState private var text: ControllableValue<String>");
     expect(source).toContain("value: Binding<String>? = nil");
-    expect(source).toContain("@StateObject private var text: ControllableValue<String>");
-    expect(source).toContain("onChange: onChange))");
+    expect(source).toContain("self._text = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)");
     expect(source).toContain("TextField(");
     expect(source).toContain("prompt: placeholder.map(SwiftUI.Text.init)");
   });
@@ -351,7 +350,7 @@ describe("generateSwiftUIComponentSource — coverage batch (disclosure + static
     const source = emit("Details");
     expect(source).toContain("DisclosureGroup(isExpanded: Binding(");
     expect(source).toContain("summary: String? = nil");
-    expect(source).toContain("ControllableValue(controlled: open");
+    expect(source).toContain("ControllableState(controlled: open");
     expect(source).toContain("Text(summary)");
   });
 
@@ -384,7 +383,7 @@ describe("generateSwiftUIComponentSource — coverage batch 2", () => {
     expect(source).toContain("public struct Checkbox: View {");
     expect(source).toContain(".toggleStyle(.checkbox)");
     expect(source).toContain("checked: Binding<Bool>? = nil");
-    expect(source).toContain("onChange: onChange))");
+    expect(source).toContain("self._checked = ControllableState(controlled: checked, defaultValue: defaultChecked, onChange: onChange)");
     expect(source).not.toContain("indeterminate:");
   });
 
@@ -440,10 +439,10 @@ describe("generateSwiftUIComponentSource — selection control (Select)", () => 
   it("lowers the union channel to SelectionState with the mode gate", () => {
     const source = emitSelect();
     expect(source).toContain("public struct Select: View {");
-    expect(source).toContain("@StateObject private var selection: SelectionState");
+    expect(source).toContain("@ControllableSelection private var selection: SelectionState");
     expect(source).toContain("multiple: multiple,");
     expect(source).toContain("selection.apply(option.value)");
-    expect(source).toContain("@StateObject private var open: ControllableValue<Bool>");
+    expect(source).toContain("@ControllableState private var open: ControllableValue<Bool>");
     // searchable/filterFn omitted, never accepted-and-ignored.
     expect(source).not.toContain("searchable");
     expect(source).not.toContain("filterFn");
@@ -494,7 +493,7 @@ describe("generateSwiftUIComponentSource — count-iterated field group (OTP)", 
     >[0];
     const source = generateSwiftUIComponentSource(buildComponentIR(contract));
     expect(source).toContain("public struct OTP: View {");
-    expect(source).toContain("@StateObject private var value: ControllableValue<String>");
+    expect(source).toContain("@ControllableState private var value: ControllableValue<String>");
     expect(source).toContain("ForEach(0..<length");
     expect(source).toContain("setCharacter($0, at: index)");
     expect(source).toContain("payload[payload.count - 1]");
@@ -517,7 +516,7 @@ describe("generateSwiftUIComponentSource — compositeref batch (TextField, Chip
     expect(source).toContain(
       "public struct TextField<LabelRegion: View, DescriptionRegion: View, ErrorRegion: View>: View {",
     );
-    expect(source).toContain("@StateObject private var value: ControllableValue<String>");
+    expect(source).toContain("@ControllableState private var value: ControllableValue<String>");
     expect(source).toContain("SwiftUI.TextField(\"\", text: value.binding())");
     expect(source).toContain("@ViewBuilder label: () -> LabelRegion = { EmptyView() }");
     expect(source).not.toContain("required:");
@@ -546,7 +545,7 @@ describe("generateSwiftUIComponentSource — final five", () => {
 
   it("emits Shuttle over the array-channel substrate", () => {
     const source = emit("Shuttle");
-    expect(source).toContain("@StateObject private var selection: ControllableValue<[String]>");
+    expect(source).toContain("@ControllableState private var selection: ControllableValue<[String]>");
     expect(source).toContain("ForEach(selection.value, id: \\.self)");
   });
 
@@ -554,14 +553,47 @@ describe("generateSwiftUIComponentSource — final five", () => {
     const accordion = emit("Accordion");
     expect(accordion).toContain("ControllableValue<[String]>");
     const tabs = emit("Tabs");
-    expect(tabs).toContain("@StateObject private var activeTab: ControllableValue<String>");
+    expect(tabs).toContain("@ControllableState private var activeTab: ControllableValue<String>");
   });
 
-  it("emits Calendar on the Date channel", () => {
+  it("derives Calendar's grid from the month channel and the locale (Calendar)", () => {
     const source = emit("Calendar");
-    expect(source).toContain("@StateObject private var value: ControllableValue<Date?>");
-    expect(source).toContain("SwiftUI.DatePicker(");
-    expect(source).not.toContain("locale:");
+    expect(source).toContain("@ControllableState private var value: ControllableValue<Date?>");
+    expect(source).toContain("@ControllableState private var values: ControllableValue<[Date]>");
+    expect(source).toContain("@ControllableState private var month: ControllableValue<Date?>");
+    expect(source).toContain('locale: String = "en-US",');
+    expect(source).toContain("FsdsDateGrid.compute(");
+    expect(source).toContain("month: month.value,");
+    expect(source).toContain("locale: locale,");
+    expect(source).not.toContain("DatePicker");
+  });
+
+  it("steps the month from the declared nav actions with catalog names (Calendar)", () => {
+    const source = emit("Calendar");
+    expect(source).toContain("showMonth(FsdsDateGrid.addMonths(grid.month, -1), of: grid)");
+    expect(source).toContain("showMonth(FsdsDateGrid.addMonths(grid.month, 1), of: grid)");
+    expect(source).toContain(".disabled(grid.previousDisabled)");
+    expect(source).toContain(".disabled(grid.nextDisabled)");
+    expect(source).toContain('.accessibilityLabel(fsdsMessages.string("Calendar.previousMonth", default: "Previous month"))');
+    expect(source).toContain('.accessibilityLabel(fsdsMessages.string("Calendar.nextMonth", default: "Next month"))');
+    // The glyph is aria-hidden in the contract; the caption is announced as it changes.
+    expect(source).toContain('SwiftUI.Text(verbatim: "‹")');
+    expect(source).toContain(".accessibilityHidden(true)");
+    expect(source).toContain("AccessibilityNotification.Announcement(caption).post()");
+  });
+
+  it("exposes each day's name, selection and current-day value (Calendar)", () => {
+    const source = emit("Calendar");
+    expect(source).toContain(".accessibilityLabel(day.fullLabel)");
+    expect(source).toContain('let traits: AccessibilityTraits = day.isSelected ? [.isSelected] : []');
+    expect(source).toContain(".accessibilityAddTraits(traits)");
+    expect(source).toContain('let current: String = day.isToday ? grid.todayName : ""');
+    expect(source).toContain(".accessibilityValue(current)");
+    expect(source).toContain(".disabled(day.isDisabled)");
+    expect(source).toContain(".accessibilityLabel(grid.caption)");
+    expect(source).toContain(".accessibilityLabel(weekday.long)");
+    expect(source).toContain("values.set(FsdsDateGrid.select(values.value, day: day.date, range: true))");
+    expect(source).toContain("value.set(day.date)");
   });
 });
 
@@ -715,7 +747,7 @@ describe("generateSwiftUIComponentSource — paged/sequence position composites"
   it("Pagination lowers onto the shared paged-position policy (paged-position set)", () => {
     const source = emit("Pagination");
     expect(source).toContain(
-      "@StateObject private var page: ControllableValue<Int>",
+      "@ControllableState private var page: ControllableValue<Int>",
     );
     expect(source).toContain(
       "FsdsPagedPosition(index: page.value, count: pages.count",
@@ -754,7 +786,7 @@ describe("generateSwiftUIComponentSource — paged/sequence position composites"
     const source = emit("Carousel");
     expect(source).toContain("public struct Carousel<Content: View>: View {");
     expect(source).toContain(
-      "@StateObject private var slide: ControllableValue<Int>",
+      "@ControllableState private var slide: ControllableValue<Int>",
     );
     // Rotation, stepper and picker text resolve through the message catalog
     // keyed <Component>.<key>, with the contract default at the call site.
@@ -772,5 +804,44 @@ describe("generateSwiftUIComponentSource — paged/sequence position composites"
     expect(source).toContain(
       'private var label: String { labelProp ?? fsdsMessages.string("Carousel.regionLabel", default: "Featured content") }',
     );
+  });
+});
+
+describe("generated SwiftUI channels", () => {
+  it("hold every controllable channel through a dynamic property, never a bare state object", () => {
+    // A Binding held only by a state object reads the value it had when the
+    // view first appeared, so a controlled channel would never re-render.
+    // The committed tree is drift-gated against a fresh emission.
+    const sourcesRoot = resolve(repoRoot(), "packages/ds-swiftui/Sources/DsSwiftUI");
+    const swiftFiles = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+        entry.isDirectory() ? swiftFiles(resolve(dir, entry.name)) : entry.name.endsWith(".swift") ? [resolve(dir, entry.name)] : []);
+    const generated = ["Components", "primitives"].flatMap((folder) => swiftFiles(resolve(sourcesRoot, folder)));
+    const bare = /@StateObject private var \S+: (ControllableValue|SelectionState)|StateObject\(wrappedValue: (ControllableValue|SelectionState)\(/;
+    const offenders = generated.filter((path) => bare.test(readFileSync(path, "utf8")));
+    expect(offenders).toEqual([]);
+    const wrapped = generated.filter((path) => /@Controllable(State|Selection) private var /.test(readFileSync(path, "utf8")));
+    expect(wrapped.map((path) => path.split("/").pop())).toEqual(expect.arrayContaining(["Calendar.swift", "Switch.swift", "Select.swift"]));
+  });
+
+  it("hand a compound root's channel down with its value, and render subcomponents from that value", () => {
+    // A value the parent sets publishes nothing on the channel object, so a
+    // subcomponent that depends on the object alone keeps the old panel or
+    // content; one reading the value the root passes through the environment
+    // re-renders when it changes.
+    const sourcesRoot = resolve(repoRoot(), "packages/ds-swiftui/Sources/DsSwiftUI/Components");
+    const swiftFiles = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+        entry.isDirectory() ? swiftFiles(resolve(dir, entry.name)) : entry.name.endsWith(".swift") ? [resolve(dir, entry.name)] : []);
+    const generated = swiftFiles(sourcesRoot).map((path) => ({ name: path.split("/").pop()!, text: readFileSync(path, "utf8") }));
+    expect(generated.filter(({ text }) => text.includes(".environmentObject(")).map(({ name }) => name)).toEqual([]);
+    const compounds = generated.filter(({ text }) => text.includes(".fsdsChannel("));
+    expect(compounds.map(({ name }) => name).sort()).toEqual(["Accordion.swift", "Tabs.swift"]);
+    for (const { name, text } of compounds) {
+      const channel = /@EnvironmentObject var (\w+): ControllableValue/.exec(text)?.[1];
+      expect(channel, name).toBeDefined();
+      expect(text, name).toMatch(new RegExp(`\\bif ${channel}\\.value\\(in: fsdsChannelValues\\)`));
+      expect(text, name).not.toMatch(new RegExp(`\\bif ${channel}\\.value(?!\\(in:)`));
+    }
   });
 });

@@ -24,7 +24,7 @@ public struct TextField<LabelRegion: View, DescriptionRegion: View, ErrorRegion:
     private var fsdsScopes: FsdsComponentTokenScopes {
         TextFieldTokens.scopes
     }
-    @StateObject private var value: ControllableValue<String>
+    @ControllableState private var value: ControllableValue<String>
     private let label: LabelRegion
     private let description: DescriptionRegion
     private let error: ErrorRegion
@@ -40,7 +40,7 @@ public struct TextField<LabelRegion: View, DescriptionRegion: View, ErrorRegion:
         @ViewBuilder error: () -> ErrorRegion = { EmptyView() },
         disabled: Bool = false
     ) {
-        self._value = StateObject(wrappedValue: ControllableValue(controlled: value, defaultValue: defaultValue, onChange: onChange))
+        self._value = ControllableState(controlled: value, defaultValue: defaultValue, onChange: onChange)
         self.label = label()
         self.description = description()
         self.error = error()

@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dateGridBindingExpression, dateGridOptions, dateGridValueType } from "../../date-grid.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName } from "../../messages.js";
 /**
@@ -466,6 +467,7 @@ export function generateReactComponentSource(
     );
   }
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
+  if (ir.dateGrid) importLines.push(`import { useDateGrid } from "../../primitives/hooks/useDateGrid.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   if (ir.messages.length > 0) {
     const messageImports = ["useFsdsMessages", ...(bodyHaystack.includes("formatFsdsMessage(") ? ["formatFsdsMessage"] : [])];
@@ -2296,6 +2298,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     lines.push(`  const pagedSet = usePagedSet({ index: ${page.channel}, items: ${page.itemsProp},`,
       `    count: ${page.countProp ?? "undefined"}, disabled: ${page.disabledProp ?? "false"}, onIndexChange: set${capitalize(page.channel)} });`);
   }
+  if (ir.dateGrid) lines.push(`  const dateGrid = useDateGrid(${dateGridOptions(ir.dateGrid, (prop) => prop.includes("-") ? toCamelCase(prop) : prop, (channel) => channel, (channel) => `set${capitalize(channel)}`)});`);
   // Ephemeral-surface auto-dismiss: the presence budget flows from the
   // *.timing.auto-dismiss token (generation-resolved default) with the
   // contract's duration prop as the consumer override; pause props land on
@@ -2785,6 +2788,7 @@ function renderReactDomNode(
   // wraps the iterated subtree in `Array.from(...).map((item, index) =>
   // (...))` — so the callback parameter names match the iteration's
   // declared `indexVar` / `itemVar`.
+  const outerCtx = ctx;
   if (node.iteration) {
     ctx = { ...ctx, enclosingIteration: node.iteration };
   }
@@ -3305,7 +3309,9 @@ function renderReactDomNode(
     // alias. Going through `renderReactBinding` resolves `channel:X.value`
     // to the channel's runtime identifier (e.g. `selection`) and `prop:X`
     // to whatever the destructured local is.
-    const sourceExpr = renderReactBinding("__iter_source__", source, ctx);
+    // A nested iteration's `iter:item.<path>` source names the ENCLOSING
+    // iteration's item, so it renders in the scope outside this node.
+    const sourceExpr = renderReactBinding("__iter_source__", source, outerCtx);
     if (sourceExpr === null) {
       // Should never fire — `parseIterate` only accepts `prop:` and
       // `channel:X.value`, both of which the value renderer handles.
@@ -3416,7 +3422,7 @@ function inferBindingValueType(
     // shape against the iteration callback parameter's typed signature.
     return expr.local === "index" ? "number" : undefined;
   }
-  if (expr.kind === "projection") return expr.op === "selectionLabel" ? "string" : "number";
+  if (expr.kind === "projection") return "string";
   if (expr.kind === "predicate") {
     // BINDING-EXPRESSION-V2-PREDICATE-01: every predicate operator
     // (`eq`, `contains`, `memberOf`) evaluates to a boolean.
@@ -3426,6 +3432,7 @@ function inferBindingValueType(
     return inferBindingValueType(expr.whenTrue, ctx) ?? inferBindingValueType(expr.whenFalse, ctx);
   }
   if (expr.kind === "valueMap") return "string";
+  if (expr.kind === "dateGrid") return dateGridValueType(expr);
   return undefined;
 }
 
@@ -3445,6 +3452,7 @@ function renderReactBinding(
 ): string | null {
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
+    case "dateGrid": return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
     case "prop": {
       const base = expr.prop.includes("-") ? toCamelCase(expr.prop) : expr.prop;
       return appendPath(base, expr.path);
@@ -3469,9 +3477,7 @@ function renderReactBinding(
       const source = renderReactBinding("__projection_source__", expr.source, ctx);
       return source === null
         ? null
-        : expr.op === "selectionLabel"
-          ? composeBindingProjectionExpression(expr.op, source, renderReactBinding("__projection_operand__", expr.selection, ctx) ?? "undefined", renderReactBinding("__projection_operand__", expr.fallback, ctx) ?? "undefined")
-          : composeBindingProjectionExpression(expr.op, source);
+        : composeBindingProjectionExpression(expr.op, source, renderReactBinding("__projection_operand__", expr.selection, ctx) ?? "undefined", renderReactBinding("__projection_operand__", expr.fallback, ctx) ?? "undefined");
     }
     case "valueMap": {
       const source = renderReactBinding(attr, expr.source, ctx);

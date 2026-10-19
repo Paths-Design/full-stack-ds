@@ -1,3 +1,4 @@
+import type { DateGridIR } from '../../date-grid.js';
 import type { DesignBindingIR } from '../../design-properties.js';
 import type { MotionIR } from '../../ir.js';
 import type { MessageIR } from '../../messages.js';
@@ -63,6 +64,7 @@ export type FigmaComponentDescriptorV1 = {
   };
   surface: unknown;
   pagedSet?: { realization: "descriptor-only"; facts: { channel: string; itemsProp: string; countProp?: string; disabledProp?: string } };
+  dateGrid?: { realization: "descriptor-only"; facts: DateGridIR };
   figma: {
     intendedUse: "figma-library-materialization";
     documentationFrame: string;
@@ -131,6 +133,14 @@ export function assertFigmaComponentDescriptorV1(
     if (!isRecord(descriptor.pagedSet) || descriptor.pagedSet.realization !== "descriptor-only" || !isRecord(descriptor.pagedSet.facts)) throw new Error("pagedSet must contain descriptor-only normalized facts.");
     assertString(descriptor.pagedSet.facts.channel, "pagedSet.facts.channel");
     assertString(descriptor.pagedSet.facts.itemsProp, "pagedSet.facts.itemsProp");
+  }
+  if (descriptor.dateGrid !== undefined) {
+    if (!isRecord(descriptor.dateGrid) || descriptor.dateGrid.realization !== "descriptor-only" || !isRecord(descriptor.dateGrid.facts)) {
+      throw new Error("dateGrid must contain descriptor-only normalized facts.");
+    }
+    for (const field of ["valueChannel", "monthChannel", "modeProp", "localeProp"] as const) {
+      assertString(descriptor.dateGrid.facts[field], `dateGrid.facts.${field}`);
+    }
   }
   if (descriptor.motion !== undefined) {
     if (!isRecord(descriptor.motion) || descriptor.motion.realization !== "descriptor-only") {

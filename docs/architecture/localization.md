@@ -4,16 +4,19 @@ authority: architecture
 status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
-updated: 2026-10-18
-verified_at_commit: 59b7fa6fa
+updated: 2026-10-19
+verified_at_commit: 822201bba
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
   - packages/ds-codegen/src/message-catalog.ts
   - packages/ds-codegen/src/frameworks/native-messages.ts
   - packages/ds-codegen/src/validation/localization.ts
+  - packages/ds-codegen/src/date-grid.ts
+  - packages/ds-codegen/src/date/date-grid.ts
 caws_specs:
   - I18N-MESSAGE-CATALOG-01
+  - CALENDAR-DATE-GRID-01
 ---
 
 # Component message catalogs
@@ -128,6 +131,31 @@ metadata. The Godot pilot has no catalog: its configuration carries the
 contract default of each message it shows, including the sequence labels
 its runtime reads as rotation text.
 
+## Dates
+
+Text derived from a date is formatted, not translated. The `dateGrid` block
+of a [month date grid](date-grid.md) names the prop carrying a BCP 47 tag (`localeProp`, Calendar's
+`locale`); the IR refuses one that is not a string prop declared
+`translatable: false` (`packages/ds-codegen/src/date-grid.ts`). Each family's
+date-grid core formats from that tag:
+
+- the caption (month and year), each day's number, and its full date as the
+  day control's accessible name;
+- the weekday headers, short as visible text and long as the accessible name;
+- the first day of the week, which orders the columns;
+- the locale's digits, so `ar-EG` shows `١٨`.
+
+| Family | Core | Calendar used for text | First day of the week |
+|---|---|---|---|
+| React, Vue, Svelte, Angular, Lit, React Native | `primitives/date/date-grid.ts`, a copy of `packages/ds-codegen/src/date/date-grid.ts` | `Intl.DateTimeFormat` in the locale's calendar when its months are the Gregorian months (`th-TH` shows the Buddhist year), else Gregorian (`fa-IR`) | `Intl.Locale` week info; else the CLDR territory table, by the maximized region, or by the tag's own region where the engine has no `Intl.Locale`, so there a language-only tag (`en`, `ar`) takes the Monday default |
+| SwiftUI | `FsdsDateGrid.swift` (Foundation) | `DateFormatter` templates, with the same Gregorian-month rule | `Locale.calendar.firstWeekday` |
+| Jetpack Compose | `FsdsDateGrid.kt` (`java.time`) | ISO chronology with the locale's `DecimalStyle`, so `th-TH` shows the Gregorian year | `WeekFields.of(locale)`; a language-only tag takes the JVM's region-less, Sunday-first week |
+
+The grid itself is always Gregorian, and days are local calendar days. The
+month-navigation names are messages (`Calendar.previousMonth`, `nextMonth`).
+SwiftUI announces today through the system's localized relative name;
+Compose has none on the JVM and does not announce it.
+
 ## Evidence
 
 - `packages/ds-codegen/src/messages.test.ts`: IR message facts, each
@@ -153,6 +181,13 @@ its runtime reads as rotation text.
 - `packages/ds-swiftui/Tests/DsSwiftUITests/FsdsMessagesTests.swift` and
   `packages/ds-jetpack-compose/library/src/test/kotlin/com/fullstackds/messages/FsdsMessagesTest.kt`:
   table, override and default precedence, plus reordered placeholders.
+- `packages/ds-codegen/src/date/date-grid.test.ts`: en-US, de-DE, ar-EG,
+  fa-IR and th-TH captions, labels, digits and week starts, the CLDR
+  fallback and the engine without `Intl.Locale`.
+  `packages/ds-jetpack-compose/library/src/test/kotlin/com/fullstackds/date/FsdsDateGridTest.kt`
+  and `packages/ds-swiftui/Tests/DsSwiftUITests/FsdsDateGridTests.swift` pin
+  the native cores. The runtime rail (`e2e/runtime-rail.spec.ts`) renders a
+  de-DE Calendar in a browser on all five web targets.
 
 ## Non-claims
 
@@ -166,8 +201,9 @@ its runtime reads as rotation text.
   assertions and the `FsdsMessages` unit tests. The accessibility-tree test
   (`testWalkthroughControlsResolveFromTheMessageCatalog`) skips when the host
   does not trust the test runner for accessibility. Compose composition reads
-  are proven by compilation, source assertions and the class unit tests; there
-  is no Compose UI test harness.
+  are proven by compilation, source assertions and the class unit tests; the
+  Compose UI test harness (`runComposeUiTest` on the desktop JVM) covers
+  Calendar's semantics only.
 - The reference `.xcstrings` is not consumed by the package's own bundle and is
   not compiled by an Xcode app build in CI.
 - Compose still announces English `stateDescription` text ("expanded",
@@ -176,8 +212,8 @@ its runtime reads as rotation text.
   native accessibility semantics slice, and `audit:a11y-realization` counts
   those facts as unrealized.
 - SwiftUI and Compose leave some messages unrendered: the native realization
-  has no such part (dismiss and close buttons, month navigation, a search
-  field), or renders the element without the contract's accessible name
+  has no such part (dismiss and close buttons, a search field), or renders
+  the element without the contract's accessible name
   (OTP fields, Command search, group and region labels). The Compose
   Walkthrough emits no skip control. `native-message-reach.test.ts` ledgers
   each case; it is native accessibility debt, and the ledger only shrinks.
@@ -189,5 +225,12 @@ its runtime reads as rotation text.
   components render when a consumer passes no steps. It is consumer content in
   a default, outside the string-prop gate. The runtime fact rail reads it,
   so removing it requires the preview harnesses to supply steps.
-- Locale-sensitive formatting (dates, numbers), `locale` behavior and
-  right-to-left layout are separate concerns.
+- Number formatting and right-to-left layout are separate concerns. Date
+  formatting covers the date grid only; no other component formats a date.
+- Non-Gregorian grids (a Hijri or Persian month layout) are not built: those
+  locales see Gregorian months.
+- React Native's dates are proven under Node's full ICU. Device engines
+  (Hermes) were not exercised; the week-start fallback for an engine without
+  `Intl.Locale` is unit-tested by removing it. That fallback cannot maximize a
+  language-only tag, so `en` starts on Monday there and on Sunday under ICU;
+  a regional tag (`en-US`) agrees on both.

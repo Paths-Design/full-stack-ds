@@ -111,7 +111,7 @@ function emitterPath(ktSource) {
   if (/^private object \w+ScopeImpl : /m.test(ktSource)) return "compoundPartComposer";
   if (ktSource.includes("FoundationImage(")) return "mediaLeaf";
   if (ktSource.includes("contentDescription = ") && ktSource.includes("avatar")) return "referencedContentComposite";
-  if (ktSource.includes("FsdsDate.")) return "dateGrid";
+  if (ktSource.includes("FsdsDateGrid.compute(")) return "dateGrid";
   // A passive tree item renders a heading with text beside its catalog glyph;
   // the glyph-host class renders the glyph alone.
   if (ktSource.includes("FsdsGlyphIcon(") && ktSource.includes("BasicText(")) return "passiveTree";

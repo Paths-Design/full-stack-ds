@@ -1039,6 +1039,17 @@ export interface ComponentContract {
     countProp?: string;
     disabledProp?: string;
   };
+  /** Month-grid date selection: the channels and props a date-grid runtime reads. */
+  dateGrid?: {
+    valueChannel: string;
+    monthChannel: string;
+    modeProp: string;
+    localeProp: string;
+    minProp?: string;
+    maxProp?: string;
+    disabledProp?: string;
+    captionProp?: string;
+  };
   motion?: ContractMotion;
   sequence?: ContractSequence;
   /** Translatable strings keyed by component-local message key. */

@@ -24,7 +24,7 @@ import { useShuttle } from "./useShuttle.js";
   imports: [NgClass, NgFor],
   host: { "data-fsds-component": "shuttle" },
   template: `<ul [ngClass]="classes()" role="listbox" [attr.aria-label]="ariaLabel" data-fsds-box="">
-  <ng-container *ngFor="let item of (behavior.selection() ?? []); let index = index">
+  <ng-container *ngFor="let item of (behavior.selection() ?? []); let index = index; trackBy: trackByIndex">
     <li [ngClass]="'shuttle__item'" role="option" aria-selected="true">
       <span>
         {{ item }}
@@ -61,6 +61,8 @@ export class ShuttleComponent {
       this.class,
     ].filter(Boolean).join(" ");
   }
+
+  protected readonly trackByIndex = (index: number): number => index;
 }
 
 @Component({

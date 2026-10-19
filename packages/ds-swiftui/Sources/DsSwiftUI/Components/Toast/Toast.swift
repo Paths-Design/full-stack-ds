@@ -34,7 +34,7 @@ public struct Toast<Item: View, Title: View, Description: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         ToastTokens.scopes
     }
-    @StateObject private var open: ControllableValue<Bool>
+    @ControllableState private var open: ControllableValue<Bool>
     private let item: Item
     private let title: Title
     private let description: Description
@@ -48,7 +48,7 @@ public struct Toast<Item: View, Title: View, Description: View>: View {
         @ViewBuilder title: () -> Title = { EmptyView() },
         @ViewBuilder description: () -> Description = { EmptyView() }
     ) {
-        self._open = StateObject(wrappedValue: ControllableValue(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange))
+        self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
         self.item = item()
         self.title = title()
         self.description = description()

@@ -13,9 +13,11 @@
  */
 import { describe, expect, it } from "vitest";
 import type { ComponentContract } from "./contract.js";
+import { loadCorpusContract } from "./frameworks/corpus-fixtures.js";
 import {
   findRequiredRegionViolations,
   deriveRequiredRegionObligations,
+  deriveUsageComposition,
   type RequiredRegionObligation,
 } from "./usage-composition.js";
 
@@ -242,5 +244,21 @@ describe("deriveRequiredRegionObligations — narrowing", () => {
     expect(deriveRequiredRegionObligations(contract)).toEqual([
       { component: "Test", region: "actions" },
     ]);
+  });
+});
+
+describe("deriveUsageComposition — JSON date materialization", () => {
+  it("materializes Date props, and Date-valued unions by the value's shape (Calendar)", () => {
+    const { propMaterializers } = deriveUsageComposition(loadCorpusContract("Calendar"));
+    expect(propMaterializers).toMatchObject({
+      month: "date",
+      defaultMonth: "date",
+      minDate: "date",
+      maxDate: "date",
+      value: "date-union",
+      defaultValue: "date-union",
+    });
+    // A string-or-array union (Select's selection) holds option values, not dates.
+    expect(deriveUsageComposition(loadCorpusContract("Select")).propMaterializers).toEqual({});
   });
 });

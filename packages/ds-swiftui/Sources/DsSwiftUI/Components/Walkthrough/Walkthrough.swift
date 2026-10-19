@@ -32,7 +32,7 @@ public struct Walkthrough<TitleRegion: View, DescriptionRegion: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         WalkthroughTokens.scopes
     }
-    @StateObject private var step: ControllableValue<Double>
+    @ControllableState private var step: ControllableValue<Double>
     private let stepCount: Int
     private let onComplete: (() -> Void)?
     private let onSkip: (() -> Void)?
@@ -51,7 +51,7 @@ public struct Walkthrough<TitleRegion: View, DescriptionRegion: View>: View {
         @ViewBuilder title: () -> TitleRegion = { EmptyView() },
         @ViewBuilder description: () -> DescriptionRegion = { EmptyView() }
     ) {
-        self._step = StateObject(wrappedValue: ControllableValue(controlled: nil, defaultValue: step, onChange: onStepChange))
+        self._step = ControllableState(controlled: nil, defaultValue: step, onChange: onStepChange)
         self.stepCount = stepCount
         self.onComplete = onComplete
         self.onSkip = onSkip

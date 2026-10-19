@@ -46,7 +46,7 @@ export function Checkbox({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createCheckboxStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledChecked, setUncontrolledChecked] = useState<boolean>((defaultChecked ?? false) as boolean);
-  const checked = controlledChecked ?? uncontrolledChecked;
+  const checked = controlledChecked !== undefined ? controlledChecked : uncontrolledChecked;
   const setCheckedValue = useCallback((next: boolean) => {
     if (controlledChecked === undefined) setUncontrolledChecked(next);
     onChange?.(next);

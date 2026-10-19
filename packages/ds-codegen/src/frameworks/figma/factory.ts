@@ -157,6 +157,7 @@ export function toFigmaComponentDescriptor(ir: ComponentIR): FigmaComponentDescr
     },
     surface: ir.surface ?? null,
     pagedSet: ir.pagedSet ? { realization: "descriptor-only", facts: ir.pagedSet } : undefined,
+    dateGrid: ir.dateGrid ? { realization: "descriptor-only", facts: ir.dateGrid } : undefined,
     figma: {
       intendedUse: "figma-library-materialization",
       documentationFrame: `${ir.name} / Documentation`,

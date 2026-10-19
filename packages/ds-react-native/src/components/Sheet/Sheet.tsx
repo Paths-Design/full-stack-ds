@@ -55,7 +55,7 @@ export function Sheet({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createSheetStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpenness, setUncontrolledOpenness] = useState<boolean>((defaultOpen ?? false) as boolean);
-  const openness = controlledOpenness ?? uncontrolledOpenness;
+  const openness = controlledOpenness !== undefined ? controlledOpenness : uncontrolledOpenness;
   const setOpennessValue = useCallback((next: boolean) => {
     if (controlledOpenness === undefined) setUncontrolledOpenness(next);
     onOpenChange?.(next);

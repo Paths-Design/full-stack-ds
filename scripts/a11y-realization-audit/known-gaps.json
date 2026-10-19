@@ -2,69 +2,6 @@
   "$comment": "Known unrealized a11y obligations, each owned by a campaign spec. The rail fails on any unrealized obligation NOT listed here AND on any entry that no longer reproduces (delete it when fixed). This ledger can only shrink truthfully — see scripts/a11y-realization-audit/audit.mjs.",
   "gaps": [
     {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "ArrowLeft",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "ArrowUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "PageUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "PageDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "Home",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "End",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "focus",
-      "key": "roving",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
       "component": "Command",
       "family": "react",
       "class": "relationship",
@@ -200,69 +137,6 @@
       "family": "react",
       "class": "keyboard",
       "key": "ArrowLeft",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "ArrowLeft",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "ArrowUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "PageUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "PageDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "Home",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "End",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "focus",
-      "key": "roving",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -404,69 +278,6 @@
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "ArrowLeft",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "ArrowUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "PageUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "PageDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "Home",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "End",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "focus",
-      "key": "roving",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
       "component": "Command",
       "family": "svelte",
       "class": "relationship",
@@ -602,69 +413,6 @@
       "family": "svelte",
       "class": "keyboard",
       "key": "ArrowLeft",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "ArrowLeft",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "ArrowUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "PageUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "PageDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "Home",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "End",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "focus",
-      "key": "roving",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -816,69 +564,6 @@
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "ArrowLeft",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "ArrowUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "PageUp",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "PageDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "Home",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "End",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "focus",
-      "key": "roving",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
       "component": "Command",
       "family": "angular",
       "class": "relationship",
@@ -1017,39 +702,11 @@
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
-      "component": "Calendar",
-      "family": "react",
-      "class": "keyboard",
-      "key": "Enter|Space",
-      "spec": "CALENDAR-DATE-GRID-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "react",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "CALENDAR-DATE-GRID-01"
-    },
-    {
       "component": "Table",
       "family": "react",
       "class": "state-attribute",
       "key": "aria-selected",
       "spec": "TABLE-SELECTION-STATE-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "Enter|Space",
-      "spec": "CALENDAR-DATE-GRID-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "vue",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "CALENDAR-DATE-GRID-01"
     },
     {
       "component": "Table",
@@ -1059,20 +716,6 @@
       "spec": "TABLE-SELECTION-STATE-01"
     },
     {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "Enter|Space",
-      "spec": "CALENDAR-DATE-GRID-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "svelte",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "CALENDAR-DATE-GRID-01"
-    },
-    {
       "component": "Table",
       "family": "svelte",
       "class": "state-attribute",
@@ -1080,39 +723,11 @@
       "spec": "TABLE-SELECTION-STATE-01"
     },
     {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "Enter|Space",
-      "spec": "CALENDAR-DATE-GRID-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "lit",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "CALENDAR-DATE-GRID-01"
-    },
-    {
       "component": "Table",
       "family": "lit",
       "class": "state-attribute",
       "key": "aria-selected",
       "spec": "TABLE-SELECTION-STATE-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "Enter|Space",
-      "spec": "CALENDAR-DATE-GRID-01"
-    },
-    {
-      "component": "Calendar",
-      "family": "angular",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "CALENDAR-DATE-GRID-01"
     },
     {
       "component": "Table",
@@ -1365,6 +980,20 @@
       "class": "interactive-role",
       "key": "activation",
       "spec": "NATIVE-A11Y-SEMANTICS-01"
+    },
+    {
+      "component": "Calendar",
+      "family": "jetpack-compose",
+      "class": "state-attribute",
+      "key": "aria-current",
+      "spec": "NATIVE-STATE-SEMANTICS-01"
+    },
+    {
+      "component": "Walkthrough",
+      "family": "react",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01"
     }
   ]
 }

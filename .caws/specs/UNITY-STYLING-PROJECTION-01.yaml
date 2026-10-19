@@ -1,9 +1,10 @@
 id: UNITY-STYLING-PROJECTION-01
 title: 'Unity styling projection: generate Controls.uss from the token graph and IR style facts; retire the hand-authored palette'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: unity-styling-projection
 created_at: '2026-10-19T08:10:00.925Z'
-updated_at: '2026-10-19T08:10:00.925Z'
+updated_at: '2026-10-19T10:57:05.961Z'
 created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
 blast_radius:
   modules:
@@ -26,7 +27,11 @@ scope:
     - 'docs/architecture/unity-target.md'
     - 'docs/current-implementation-snapshot.md'
     - 'package.json'
+    - packages/ds-codegen/src/native-style-rules.ts
+    - packages/ds-codegen/src/native-style-rules.test.ts
   out: []
+  support:
+    - docs/architecture/design/box-model-primitive.md
 invariants:
   - 'Every USS rule is derived from IR facts (ir.nativeStyleRules, ir.tokenScopes, ir.tokenFacts, ir.classRecipe, ir.states, the selected behavior''s state-class placement) and the token graph; no selector, property or value is authored per component, and no emitter branch names a component, part, channel or class literal beyond the HTML/CSS/USS platform vocabulary'
   - 'A CSS fact USS cannot realise is recorded in a machine-readable unsupported ledger emitted beside the stylesheet and classified refused or pending in the support boundary; it is never silently dropped and never approximated by hand-authored USS'
@@ -53,7 +58,12 @@ acceptance:
   - id: A5
     given: 'the regenerated package'
     when: 'generate:unity runs a second time and the unity emitter and CLI suites run'
-    then: 'git diff --exit-code over packages/ds-unity is clean, governed:rail passes with the new target-asset files in the manifest, and the emitter suite pins the USS lowering against a synthetic contract outside the corpus'
+    then: >-
+      the packages/ds-unity working tree is clean after the second regeneration,
+      governed:rail still passes (the emission manifest records target assets for
+      rail targets; unity is outside the rail until P5, so its drift proof is
+      regeneration plus a clean tree), and the emitter suite pins the USS lowering
+      against a synthetic contract outside the corpus
   - id: A6
     given: 'docs/architecture/unity-target.md, packages/ds-unity/README.md and the implementation snapshot'
     when: 'docs:check-claims and docs:check-links run'

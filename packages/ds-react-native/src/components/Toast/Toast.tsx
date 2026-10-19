@@ -53,7 +53,7 @@ export function Toast({
   const styles = useMemo(() => createToastStyles(fsdsTheme), [fsdsTheme]);
   const tokens = useMemo(() => resolveToastTokens(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>((false) as boolean);
-  const open = controlledOpen ?? uncontrolledOpen;
+  const open = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
   const setOpenValue = useCallback((next: boolean) => {
     if (controlledOpen === undefined) setUncontrolledOpen(next);
     onOpenChange?.(next);

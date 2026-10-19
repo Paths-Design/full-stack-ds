@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed } from "vue";
 import { useCalendar } from "./useCalendar.js";
+import { useDateGrid } from "../../primitives/hooks/useDateGrid.js";
 import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
@@ -20,6 +21,9 @@ export type CalendarMode = "single" | "range";
 // @generated:start props
 interface Props {
   caption?: string;
+  month?: Date;
+  defaultMonth?: Date;
+  onMonthChange?: (month: Date) => void;
   value?: Date | Date[] | null;
   defaultValue?: Date | Date[] | null;
   onChange?: (value: Date | Date[] | null) => void;
@@ -29,7 +33,6 @@ interface Props {
   maxDate?: Date;
   locale?: string;
   shouldCloseOnSelect?: boolean;
-  days?: Date[];
   class?: string;
   dataTestid?: string;
 }
@@ -42,9 +45,9 @@ const fsdsProps = withDefaults(defineProps<Props>(), {
   locale: "en-US",
   shouldCloseOnSelect: true,
 });
-const CalendarMessages = { caption: "Calendar", previousMonth: "Previous month", nextMonth: "Next month", gridLabel: "Calendar" };
+const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next month" };
 const fsdsMessages = useFsdsMessages("Calendar", CalendarMessages);
-const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { caption: "caption" });
+const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 // @generated:end
 
 // @generated:start hook
@@ -52,8 +55,12 @@ const behavior = useCalendar({
   value: () => props.value,
   defaultValue: props.defaultValue,
   onChange: props.onChange,
+  month: () => props.month,
+  defaultMonth: props.defaultMonth,
+  onMonthChange: props.onMonthChange,
   shouldCloseOnSelect: props.shouldCloseOnSelect,
 });
+const dateGrid = useDateGrid(() => ({ value: behavior.value.value, month: behavior.month.value, mode: props.mode, locale: props.locale, minDate: props.minDate, maxDate: props.maxDate, disabled: props.disabled, caption: props.caption, onValueChange: behavior.setValue, onMonthChange: behavior.setMonth }));
 // @generated:end
 
 // @generated:start classes
@@ -73,19 +80,36 @@ const classNames = computed(() => [
 <template>
   <div :class="classNames" role="application" :data-testid="props.dataTestid" data-fsds-component="calendar" data-fsds-box="">
     <div :class="'calendar__header'">
-      <button :class="'calendar__nav'" :aria-label="fsdsMessages.previousMonth"></button>
-      <span :class="'calendar__caption'">
-        {{ props.caption }}
+      <button :class="'calendar__nav'" type="button" data-calendar-nav="previous" @click="dateGrid.previous" :aria-label="fsdsMessages.previousMonth" :aria-disabled="dateGrid.state.previousDisabled">
+        <span aria-hidden="true">
+          ‹
+        </span>
+      </button>
+      <span :class="'calendar__caption'" aria-live="polite">
+        {{ dateGrid.state.caption }}
       </span>
-      <button :class="'calendar__nav'" :aria-label="fsdsMessages.nextMonth"></button>
+      <button :class="'calendar__nav'" type="button" data-calendar-nav="next" @click="dateGrid.next" :aria-label="fsdsMessages.nextMonth" :aria-disabled="dateGrid.state.nextDisabled">
+        <span aria-hidden="true">
+          ›
+        </span>
+      </button>
     </div>
-    <table :class="'calendar__grid'" role="grid" :aria-label="fsdsMessages.gridLabel">
+    <table :class="'calendar__grid'" role="grid" @keydown="dateGrid.keydown" :aria-label="dateGrid.state.caption" :aria-multiselectable="dateGrid.state.multiselectable">
+      <thead>
+        <tr role="row">
+          <th v-for="(item, index) in (dateGrid.state.weekdays ?? [])" :key="index" :class="'calendar__weekday'" role="columnheader" scope="col" :aria-label="item.long">
+            <span>
+              {{ item.short }}
+            </span>
+          </th>
+        </tr>
+      </thead>
       <tbody>
-        <tr>
-          <td v-for="(item, index) in (props.days ?? [])" :key="index" :class="'calendar__cell'" role="gridcell" :data-calendar-index="index">
-            <button :class="'calendar__day'" @click="() => behavior.setValue(item)" tabindex="-1">
-              {{ item.getDate() }}
-            </button>
+        <tr v-for="(week, row) in (dateGrid.state.weeks ?? [])" :key="row" role="row">
+          <td v-for="(day, column) in (week.days ?? [])" :key="column" :class="'calendar__day'" role="gridcell" @click="() => dateGrid.select(day)" :tabindex="day.tabIndex" :aria-label="day.fullLabel" :aria-selected="day.selected" :aria-current="day.current" :aria-disabled="day.disabled" :data-date="day.key" :data-outside-month="day.outsideMonth">
+            <span>
+              {{ day.label }}
+            </span>
           </td>
         </tr>
       </tbody>

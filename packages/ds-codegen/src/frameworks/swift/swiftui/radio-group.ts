@@ -39,11 +39,11 @@ export function emitNativeRadioGroup(ir: ComponentIR, exportName: string): strin
   for (const field of members) lines.push(`        self.${field.name} = ${field.name}`);
   lines.push("    }", "}", "", "/// Native single-choice Picker; web form names have no SwiftUI transport meaning.",
     `public struct ${exportName}: View {`, `    private let ${optionsProp}: [${type}]`,
-    "    @StateObject private var selection: ControllableValue<String>");
+    "    @ControllableState private var selection: ControllableValue<String>");
   if (labelProp) lines.push(`    private let ${labelProp}: String`);
   if (hasOrientation) lines.push(`    private let orientation: ${orientation.typeName}`);
   lines.push("", `    public init(${params.join(", ")}) {`, `        self.${optionsProp} = ${optionsProp}`,
-    `        self._selection = StateObject(wrappedValue: ControllableValue(controlled: ${channel.valueProp}, defaultValue: ${defaultValue ?? '""'}, onChange: ${channel.changeHandlerProp}))`);
+    `        self._selection = ControllableState(controlled: ${channel.valueProp}, defaultValue: ${defaultValue ?? '""'}, onChange: ${channel.changeHandlerProp})`);
   if (labelProp) lines.push(`        self.${labelProp} = ${labelProp}`);
   if (hasOrientation) lines.push("        self.orientation = orientation");
   lines.push("    }", "", "    private var choices: some View {",

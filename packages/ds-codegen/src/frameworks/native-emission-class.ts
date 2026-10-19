@@ -667,49 +667,78 @@ export function isSelectionControl(ir: ComponentIR): boolean {
 }
 
 /**
- * The date-grid surface class: a dom-bearing, non-surface component whose
- * sole channel is Date-valued and whose grid projects each item's day of
- * month through the closed `dateDayOfMonth` projection. Calendar is the
- * corpus consumer.
+ * The date-grid surface class: a dom-bearing, non-surface component that
+ * declares the `dateGrid` IR fact — a value channel and a month channel the
+ * grid is derived from, with the cell, tab-stop and selection obligations the
+ * IR has already validated (`buildDateGridIR`). Calendar is the corpus
+ * consumer.
  *
  * This is the class the collection predicates already reserve: both
  * `isArrayIteratedList` and `isInteractiveComposite` reject a Date-typed
- * channel outright, because a date grid iterates its own `days` prop rather
- * than carrying an array *channel* or a trigger/content anatomy.
- *
- * Moved out of the swift emitter that first needed it, and strengthened
- * there with the projection fact: a Date-valued channel with no day grid (a
- * future date picker, a range summary) is no longer silently claimed by
- * this class (FEAT-COMPOSE-CALENDAR-ADMISSION-01).
+ * channel outright, because a date grid derives its days from the month
+ * rather than carrying an array *channel* or a trigger/content anatomy.
  *
  * Pure structural facts — target-neutral.
  */
 export function isDateGridSurface(ir: ComponentIR): boolean {
-  if (!ir.dom || ir.surface != null) return false;
-  const channels = ir.behavior.normalizedChannels;
-  if (channels.length !== 1) return false;
-  if (!(channels[0]!.valueType ?? "").includes("Date")) return false;
-  return domProjectsDateDayOfMonth(ir.dom);
+  return !!ir.dom && ir.surface == null && ir.dateGrid !== undefined;
 }
 
-/** Does any dom node realize the closed `dateDayOfMonth` projection as its
- *  content or an attribute binding? Walks the projection's own source chain
- *  so a nested/composed expression still counts. */
-function domProjectsDateDayOfMonth(node: DomNodeIR): boolean {
-  const projections = [
-    ...Object.values(node.bindings ?? {}),
-    node.content,
-  ];
-  if (projections.some(isDateDayOfMonthProjection)) return true;
-  return (node.children ?? []).some(domProjectsDateDayOfMonth);
+export type DateGridHeaderItem =
+  | { kind: "nav"; action: "previous" | "next"; node: DomNodeIR; glyph?: string }
+  | { kind: "caption"; live?: "polite" | "assertive" };
+
+/** The date-grid chrome a native target realizes, read from the dom. */
+export interface DateGridChrome {
+  /** Nav controls and the caption, in dom order. */
+  header: DateGridHeaderItem[];
+  /** Whether the dom iterates the weekday column headers. */
+  weekdays: boolean;
+  /** The grid's accessible name: the caption it binds, or the node authoring a label. */
+  gridLabel: { kind: "caption" } | { kind: "node"; node: DomNodeIR } | undefined;
 }
 
-function isDateDayOfMonthProjection(expression: unknown): boolean {
-  if (!expression || typeof expression !== "object") return false;
-  const candidate = expression as { kind?: string; op?: string; source?: unknown };
-  if (candidate.kind === "projection" && candidate.op === "dateDayOfMonth") return true;
-  if (candidate.kind === "projection") return isDateDayOfMonthProjection(candidate.source);
-  return false;
+/**
+ * Read the date-grid chrome from the dom. A node whose click is the
+ * `dateGrid` previous/next action is a nav control (its glyph is the first
+ * literal it renders); a node whose content is `dateGrid:caption` is the
+ * caption, live when it declares `aria-live`; the `role="grid"` node names
+ * the grid. Pure structural facts — target-neutral.
+ */
+export function dateGridChrome(ir: ComponentIR): DateGridChrome {
+  const field = (expression: unknown): string | undefined => {
+    const candidate = expression as { kind?: string; field?: string } | undefined;
+    return candidate?.kind === "dateGrid" ? candidate.field : undefined;
+  };
+  const glyphOf = (node: DomNodeIR): string | undefined => {
+    for (const child of node.children ?? []) {
+      const content = child.content as { kind?: string; value?: unknown } | undefined;
+      if (content?.kind === "literal" && typeof content.value === "string") return content.value;
+      const nested = glyphOf(child);
+      if (nested !== undefined) return nested;
+    }
+    return undefined;
+  };
+  const chrome: DateGridChrome = { header: [], weekdays: false, gridLabel: undefined };
+  const visit = (node: DomNodeIR): void => {
+    const click = node.events?.click as { kind?: string; action?: string } | undefined;
+    if (click?.kind === "dateGrid" && (click.action === "previous" || click.action === "next")) {
+      chrome.header.push({ kind: "nav", action: click.action, node, glyph: glyphOf(node) });
+      return;
+    }
+    if (field(node.content) === "caption") {
+      const live = node.attrs?.["aria-live"];
+      chrome.header.push({ kind: "caption", live: live === "polite" || live === "assertive" ? live : undefined });
+      return;
+    }
+    if (field(node.iteration?.source) === "weekdays") chrome.weekdays = true;
+    if (node.attrs?.role === "grid") {
+      chrome.gridLabel = field(node.bindings?.["aria-label"]) === "caption" ? { kind: "caption" } : { kind: "node", node };
+    }
+    (node.children ?? []).forEach(visit);
+  };
+  if (ir.dom) visit(ir.dom);
+  return chrome;
 }
 
 /**

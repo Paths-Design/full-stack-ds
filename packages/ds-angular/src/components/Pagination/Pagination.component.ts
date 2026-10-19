@@ -28,7 +28,7 @@ const PaginationMessages = { navigationLabel: "Choose page" };
   imports: [NgClass, NgFor],
   host: { "data-fsds-component": "pagination" },
   template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="(label ?? fsdsMessages().navigationLabel)" data-fsds-box="">
-  <ng-container *ngFor="let item of ((pages ?? [])); let index = index">
+  <ng-container *ngFor="let item of ((pages ?? [])); let index = index; trackBy: trackByIndex">
     <button [ngClass]="'pagination__item'" type="button" (click)="pagedSet.request(index)" [attr.aria-label]="item" [attr.aria-current]="(index === behavior.page())" [disabled]="(disabled ?? false)" [attr.data-current]="(index === behavior.page())">
       <span [ngClass]="'pagination__marker'" aria-hidden="true">
         <span [ngClass]="'pagination__fill'" aria-hidden="true"></span>
@@ -84,6 +84,8 @@ export class PaginationComponent {
       this.class,
     ].filter(Boolean).join(" ");
   }
+
+  protected readonly trackByIndex = (index: number): number => index;
 }
 // @generated:end
 

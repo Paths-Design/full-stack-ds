@@ -43,10 +43,21 @@
  *               producing `--fsds-show-more-content-max-lines`.
  *   OTP       — `length=6` (default) renders 6 `[data-otp-index]`
  *               nodes with values 0..5.
- *   Calendar  — `days: Date[]` array iteration (FEAT-BINDING-CALL-WITH-ARG-01,
- *               replacing the removed `daysShown` count). No default `days`, so
- *               the default preview renders ZERO cells; injecting an N-element
- *               `days` array renders N `[data-calendar-index]` nodes 0..N-1.
+ *   Calendar  — the date grid (CALENDAR-DATE-GRID-01) under a fixed clock
+ *               (Wednesday 12 March 2031): the default month renders 42 day
+ *               buttons with one tab stop on today and aria-current on its
+ *               cell; real arrow/Home/End/PageDown keys move DOM focus with
+ *               the tab stop, across a month re-render too; following the
+ *               ARIA grid pattern the gridcell is the focused, selected day,
+ *               with no control inside it; Enter and Space select through the
+ *               date-grid core (aria-selected on the cell); clicking an outside-month
+ *               day shows its month with focus kept on that day; the month
+ *               buttons move an uncontrolled month; `locale=de-DE` gives a
+ *               Monday-first German grid, and a controlled `month` stays put;
+ *               a key move that controlled month refuses leaves focus and the
+ *               tab stop on the day it started from; days outside minDate and
+ *               maxDate are aria-disabled, refuse a click, and stop a key move
+ *               at the bound, as does every day of a disabled calendar.
  *   CodeBlock — highlight content transform (RUNTIME-RAIL-CODEBLOCK-
  *               HIGHLIGHT-01): with code+language through the config bus,
  *               the rendered `[data-token]` kind sequence equals the frozen
@@ -64,12 +75,14 @@
  *
  * What this rail does NOT prove:
  *
- *   - Non-default props for components OTHER than the three above, or
+ *   - Non-default props for components OTHER than the ones above, or
  *     for prop kinds beyond the numeric/boolean query surface. The
- *     mechanism generalizes, but only these three are asserted here.
+ *     mechanism generalizes, but only these are asserted here.
  *   - Cross-framework behavioral parity beyond DOM shape (e.g.
  *     whether OTP's React input-focus advance behaves identically
- *     in Svelte). The iteration is structural here.
+ *     in Svelte). Calendar's keyboard, activation, range-selection and
+ *     bounds facts are the exception; no rail observes what a screen
+ *     reader announces.
  *   - Non-default props beyond the three asserted components/props.
  */
 
@@ -98,7 +111,7 @@ async function goto(
   framework: Framework,
   component: string,
   blockClass: string,
-  props?: Record<string, string | number | boolean | readonly unknown[]>,
+  props?: Record<string, string | number | boolean | Date | readonly unknown[]>,
 ) {
   await page.goto(`/preview/${framework}/${component}`, {
     waitUntil: "domcontentloaded",
@@ -257,113 +270,287 @@ test.describe("Runtime rail — OTP (count iteration)", () => {
   }
 });
 
-test.describe("Runtime rail — Calendar (array iteration over days: Date[])", () => {
-  // FEAT-BINDING-CALL-WITH-ARG-01: the Calendar contract's `cell` iteration was
-  // upgraded from a bare count (`prop:daysShown`, kind="count") to an array over
-  // real Date values (`prop:days`, kind="array") so the `day` button can wire
-  // `channel:value.onChange(iter:item)`. Consequences the rail now pins:
-  //   - `days` has NO default, so the DEFAULT preview renders ZERO cells (the
-  //     consumer supplies the day array). The old "42 cells by default" fact is
-  //     false BY DESIGN and is replaced here — not patched to stay green.
-  //   - Supplying an N-element `days` array renders exactly N `[data-calendar-
-  //     index]` cells, indices 0..N-1 (a real fact about the array contract).
-  // A Date only matters to the click handler; the rendered cell binds
-  // `data-calendar-index: iter:index` and never dereferences the item, so the
-  // injected element type does not affect this DOM fact.
-  const DAYS = [
-    new Date(2026, 6, 1),
-    new Date(2026, 6, 2),
-    new Date(2026, 6, 3),
-    new Date(2026, 6, 4),
-    new Date(2026, 6, 5),
-  ];
+// The instant every Calendar test runs at — Wednesday 12 March 2031, local
+// time. The date grid derives its default month and today from the clock, so
+// pinning it makes the default render (and its screenshot) a fixed fact.
+const CALENDAR_TODAY = new Date(2031, 2, 12, 10, 0, 0);
+
+interface CalendarFacts {
+  keys: string[];
+  tabStops: string[];
+  focused: string | null;
+  /** The focused element's role and selected state: the gridcell itself under the grid pattern. */
+  focusedCell: { role: string | null; selected: string | null } | null;
+  /** Focusable or clickable elements inside the grid body; none under the grid pattern. */
+  nestedControls: number;
+  selected: string[];
+  current: string[];
+  outsideMonth: number;
+  caption: string;
+  gridLabel: string | null;
+  gridMultiselectable: string | null;
+  weekdays: string[];
+  labels: Record<string, string>;
+  /** Days not marked aria-disabled="true", in grid order. */
+  enabled: string[];
+  /** aria-disabled on the previous and next month buttons. */
+  navDisabled: (string | null)[];
+}
+
+/** Read the rendered date grid; Lit renders it inside the host's shadow root. */
+async function calendarFacts(page: Page, framework: Framework): Promise<CalendarFacts | null> {
+  return page.evaluate(
+    ({ host, isLit }) => {
+      const root: Document | ShadowRoot | null = isLit
+        ? (document.querySelector(host) as HTMLElement | null)?.shadowRoot ?? null
+        : document;
+      if (!root) return null;
+      const dayOf = (cell: Element) => cell.getAttribute("data-date") ?? "";
+      const active = root.activeElement as HTMLElement | null;
+      const cells = (selector: string) => Array.from(root.querySelectorAll(`[role="gridcell"]${selector}`));
+      const days = Array.from(root.querySelectorAll<HTMLElement>("[data-date]"));
+      return {
+        keys: days.map((day) => day.getAttribute("data-date") ?? ""),
+        tabStops: days.filter((day) => day.getAttribute("tabindex") === "0").map((day) => day.getAttribute("data-date") ?? ""),
+        focused: active?.getAttribute("data-date") ?? null,
+        focusedCell: active?.hasAttribute("data-date")
+          ? { role: active.getAttribute("role"), selected: active.getAttribute("aria-selected") }
+          : null,
+        nestedControls: root.querySelectorAll("tbody button, tbody a, tbody input, tbody [data-date] [tabindex]").length,
+        selected: cells('[aria-selected="true"]').map(dayOf),
+        current: cells('[aria-current="date"]').map(dayOf),
+        // A false flag renders as "false" (React/Vue/Svelte/Angular) or is
+        // omitted (Lit's ifDefined); either way it is not an outside day.
+        outsideMonth: cells("[data-outside-month]").filter((cell) => cell.getAttribute("data-outside-month") !== "false").length,
+        caption: root.querySelector(".calendar__caption")?.textContent?.trim() ?? "",
+        gridLabel: root.querySelector('[role="grid"]')?.getAttribute("aria-label") ?? null,
+        gridMultiselectable: root.querySelector('[role="grid"]')?.getAttribute("aria-multiselectable") ?? null,
+        weekdays: Array.from(root.querySelectorAll('[role="columnheader"]')).map((header) => header.getAttribute("aria-label") ?? ""),
+        labels: Object.fromEntries(days.map((day) => [day.getAttribute("data-date") ?? "", day.getAttribute("aria-label") ?? ""])),
+        enabled: days.filter((day) => day.getAttribute("aria-disabled") !== "true").map(dayOf),
+        navDisabled: ["previous", "next"].map(
+          (direction) => root.querySelector(`[data-calendar-nav="${direction}"]`)?.getAttribute("aria-disabled") ?? null,
+        ),
+      };
+    },
+    { host: `fsds-${kebab("Calendar")}`, isLit: framework === "lit" },
+  );
+}
+
+test.describe("Runtime rail — Calendar (date grid: roving focus, activation, month and locale)", () => {
+  // CALENDAR-DATE-GRID-01: every web target binds the shared date-grid core, so
+  // the same facts hold in a real browser for all five. CSS locators pierce
+  // Lit's open shadow root; the active day is read from the root that owns it
+  // (document.activeElement is the Lit host).
+  test.beforeEach(async ({ page }) => {
+    await page.clock.setFixedTime(CALENDAR_TODAY);
+  });
 
   for (const framework of FRAMEWORKS) {
-    test(`${framework}: unset days renders zero grid cells (new default truth)`, async ({ page }) => {
+    test(`${framework}: the default grid shows today's month with one tab stop on today`, async ({ page }) => {
       await goto(page, framework, "Calendar", "calendar");
-
-      const count = await page.evaluate(
-        ({ host, isLit }) => {
-          const root: Document | ShadowRoot | null = isLit
-            ? (document.querySelector(host) as HTMLElement)?.shadowRoot ?? null
-            : document;
-          if (!root) return -1;
-          return root.querySelectorAll("[data-calendar-index]").length;
-        },
-        { host: `fsds-${kebab("Calendar")}`, isLit: framework === "lit" },
-      );
-
-      // No `days` prop => the `?? []` iteration guard renders no cells. This is
-      // the honest default of the array contract, not a bug: a stale assertion
-      // of 42 (the removed `daysShown` count default) would be false here.
-      expect(count).toBe(0);
+      const facts = await calendarFacts(page, framework);
+      expect(facts).not.toBeNull();
+      // March 2031 begins on a Saturday; en-US weeks begin on Sunday, so the
+      // six rendered weeks run from 23 February to 5 April.
+      expect(facts!.keys).toHaveLength(42);
+      expect(facts!.keys[0]).toBe("2031-02-23");
+      expect(facts!.keys[41]).toBe("2031-04-05");
+      expect(facts!.outsideMonth).toBe(11);
+      expect(facts!.tabStops).toEqual(["2031-03-12"]);
+      expect(facts!.current).toEqual(["2031-03-12"]);
+      expect(facts!.selected).toEqual([]);
+      expect(facts!.caption).toBe("March 2031");
+      expect(facts!.gridLabel).toBe("March 2031");
+      expect(facts!.gridMultiselectable).toBe("false");
+      expect(facts!.weekdays[0]).toBe("Sunday");
+      expect(facts!.weekdays).toHaveLength(7);
+      expect(facts!.labels["2031-03-12"]).toBe("Wednesday, March 12, 2031");
+      // The ARIA grid pattern: no control inside a cell; the gridcell is the day.
+      expect(facts!.nestedControls).toBe(0);
     });
   }
 
   for (const framework of FRAMEWORKS) {
-    test(`${framework}: days=[5 dates] renders 5 grid cells with data-calendar-index 0..4`, async ({ page }) => {
-      await goto(page, framework, "Calendar", "calendar", { days: DAYS });
-
-      const indices = await page.evaluate(
-        ({ host, isLit }) => {
-          const root: Document | ShadowRoot | null = isLit
-            ? (document.querySelector(host) as HTMLElement)?.shadowRoot ?? null
-            : document;
-          if (!root) return [];
-          return Array.from(root.querySelectorAll("[data-calendar-index]")).map(
-            (n) => Number((n as HTMLElement).getAttribute("data-calendar-index")),
-          );
-        },
-        { host: `fsds-${kebab("Calendar")}`, isLit: framework === "lit" },
-      );
-
-      // One cell per supplied day, 0-based and contiguous. Any gap, duplication,
-      // or off-by-one in the array-iteration lowering fails this.
-      expect(indices).toEqual([0, 1, 2, 3, 4]);
-    });
-  }
-
-  // BINDING-EXPRESSION-V2-01: Calendar's `data-calendar-index` binds `iter:index`.
-  // The runtime DOM fact must carry the numeric string of each cell's zero-based
-  // position. If the V2 lowering ever regresses to literal `"undefined"` (the
-  // former `String(undefined)` Lit bug) or drops the attribute, this fails. The
-  // evidence is now taken over an injected `days` array (the array contract)
-  // rather than the removed 42-count default.
-  for (const framework of FRAMEWORKS) {
-    test(`${framework}: iter:index lowers to position-accurate data-calendar-index (V2 evidence)`, async ({
-      page,
-    }) => {
-      await goto(page, framework, "Calendar", "calendar", { days: DAYS });
-      const facts = await page.evaluate(
-        ({ host, isLit }) => {
-          const root: Document | ShadowRoot | null = isLit
-            ? (document.querySelector(host) as HTMLElement)?.shadowRoot ?? null
-            : document;
-          if (!root) return { count: 0, samples: [] as Array<{ pos: number; raw: string | null }> };
-          const nodes = Array.from(
-            root.querySelectorAll("[data-calendar-index]"),
-          );
-          const sampleIndices = [0, 1, 2, 3, 4];
-          return {
-            count: nodes.length,
-            samples: sampleIndices.map((pos) => ({
-              pos,
-              raw: (nodes[pos] as HTMLElement | undefined)?.getAttribute(
-                "data-calendar-index",
-              ) ?? null,
-            })),
-          };
-        },
-        { host: `fsds-${kebab("Calendar")}`, isLit: framework === "lit" },
-      );
-
-      expect(facts.count).toBe(5);
-      // Each sampled cell carries the exact string of its zero-based position.
-      // The string form matters — a regression to numeric type or `"undefined"`
-      // would fail the strict equality.
-      for (const { pos, raw } of facts.samples) {
-        expect(raw).toBe(String(pos));
+    test(`${framework}: arrow/Home/End/Page keys move DOM focus with the tab stop; Enter and Space select`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar");
+      await page.locator('[data-date="2031-03-12"]').focus();
+      const expectFocus = async (key: string) => {
+        // Focus and the single tab stop must land on the same day.
+        await expect.poll(async () => {
+          const facts = await calendarFacts(page, framework);
+          return facts && { focused: facts.focused, tabStops: facts.tabStops };
+        }).toEqual({ focused: key, tabStops: [key] });
+      };
+      await expectFocus("2031-03-12");
+      const moves: Array<[string, string]> = [
+        ["ArrowRight", "2031-03-13"],
+        ["ArrowDown", "2031-03-20"],
+        ["Home", "2031-03-16"],
+        ["End", "2031-03-22"],
+        ["ArrowUp", "2031-03-15"],
+        ["ArrowLeft", "2031-03-14"],
+      ];
+      for (const [key, day] of moves) {
+        await page.keyboard.press(key);
+        await expectFocus(day);
       }
+
+      // A gridcell has no native activation: the date-grid core's Enter and
+      // Space select the focused day; single mode replaces the previous day.
+      await page.keyboard.press("Enter");
+      await expect.poll(async () => (await calendarFacts(page, framework))?.selected).toEqual(["2031-03-14"]);
+      // Focus and the selected state are on one element, the gridcell.
+      expect((await calendarFacts(page, framework))!.focusedCell).toEqual({ role: "gridcell", selected: "true" });
+      await page.keyboard.press("ArrowRight");
+      await expectFocus("2031-03-15");
+      await page.keyboard.press("Space");
+      await expect.poll(async () => (await calendarFacts(page, framework))?.selected).toEqual(["2031-03-15"]);
+
+      // PageDown leaves the month: the grid re-renders April and focus follows
+      // onto the day that did not exist in the previous render.
+      await page.keyboard.press("PageDown");
+      await expectFocus("2031-04-15");
+      const april = await calendarFacts(page, framework);
+      expect(april!.caption).toBe("April 2031");
+      expect(april!.gridLabel).toBe("April 2031");
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: the month buttons move an uncontrolled month`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar");
+      await page.locator('[data-calendar-nav="next"]').click();
+      await expect.poll(async () => (await calendarFacts(page, framework))?.caption).toBe("April 2031");
+      const april = await calendarFacts(page, framework);
+      expect(april!.gridLabel).toBe("April 2031");
+      expect(april!.tabStops).toEqual(["2031-04-12"]);
+      expect(april!.current).toEqual([]);
+
+      await page.locator('[data-calendar-nav="previous"]').click();
+      await page.locator('[data-calendar-nav="previous"]').click();
+      await expect.poll(async () => (await calendarFacts(page, framework))?.caption).toBe("February 2031");
+      expect((await calendarFacts(page, framework))!.tabStops).toEqual(["2031-02-12"]);
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: clicking an outside-month day selects it, shows its month and keeps focus on it`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar");
+      // Chromium focuses a clicked button. April's grid re-renders the buttons
+      // by position, so focus stays on 2 April only if it follows the day.
+      await page.locator('[data-date="2031-04-02"]').click();
+      await expect.poll(async () => {
+        const facts = await calendarFacts(page, framework);
+        return facts && { caption: facts.caption, selected: facts.selected, focused: facts.focused, tabStops: facts.tabStops };
+      }).toEqual({ caption: "April 2031", selected: ["2031-04-02"], focused: "2031-04-02", tabStops: ["2031-04-02"] });
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: range mode declares multiple selection on the grid and selects the span between two days`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar", { mode: "range", month: new Date(2031, 2, 1) });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.gridMultiselectable).toBe("true");
+      await page.locator('[data-date="2031-03-12"]').click();
+      await page.locator('[data-date="2031-03-09"]').click();
+      await expect.poll(async () => (await calendarFacts(page, framework))?.selected)
+        .toEqual(["2031-03-09", "2031-03-10", "2031-03-11", "2031-03-12"]);
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: days outside the bounds are aria-disabled, refuse a click, and stop a key move at the bound`, async ({ page }) => {
+      // The month is uncontrolled, so a month button that were not refused would move it.
+      await goto(page, framework, "Calendar", "calendar", {
+        mode: "single",
+        minDate: new Date(2031, 2, 5),
+        maxDate: new Date(2031, 2, 25),
+      });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.enabled.length).toBe(21);
+      const march = await calendarFacts(page, framework);
+      expect([march!.enabled[0], march!.enabled.at(-1)]).toEqual(["2031-03-05", "2031-03-25"]);
+      expect(march!.navDisabled).toEqual(["true", "true"]);
+      expect(march!.tabStops).toEqual(["2031-03-12"]);
+
+      const settle = () => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      // force skips Playwright's own aria-disabled check: the pointer still lands on the day and the grid must refuse it.
+      await page.locator('[data-date="2031-03-26"]').click({ force: true });
+      await page.locator('[data-calendar-nav="next"]').click({ force: true });
+      await settle();
+      const refused = await calendarFacts(page, framework);
+      expect({ selected: refused!.selected, caption: refused!.caption }).toEqual({ selected: [], caption: "March 2031" });
+
+      await page.locator('[data-date="2031-03-20"]').focus();
+      await page.keyboard.press("ArrowDown");
+      await expect.poll(async () => (await calendarFacts(page, framework))?.focused).toBe("2031-03-25");
+      await page.keyboard.press("PageDown");
+      await settle();
+      expect((await calendarFacts(page, framework))!.focused).toBe("2031-03-25");
+      await page.keyboard.press("Enter");
+      await expect.poll(async () => (await calendarFacts(page, framework))?.selected).toEqual(["2031-03-25"]);
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: a disabled calendar marks every day disabled and refuses a click and the month buttons`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar", { mode: "single", disabled: true });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.navDisabled).toEqual(["true", "true"]);
+      const march = await calendarFacts(page, framework);
+      expect({ days: march!.keys.length, enabled: march!.enabled }).toEqual({ days: 42, enabled: [] });
+      await page.locator('[data-date="2031-03-10"]').click({ force: true });
+      await page.locator('[data-calendar-nav="next"]').click({ force: true });
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      const refused = await calendarFacts(page, framework);
+      expect({ selected: refused!.selected, caption: refused!.caption }).toEqual({ selected: [], caption: "March 2031" });
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: locale de-DE renders a Monday-first German grid; a controlled month stays put`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar", {
+        locale: "de-DE",
+        mode: "single",
+        month: new Date(2031, 4, 1),
+      });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.caption).toBe("Mai 2031");
+      const may = await calendarFacts(page, framework);
+      // 1 May 2031 is a Thursday; de-DE weeks begin on Monday.
+      expect(may!.keys[0]).toBe("2031-04-28");
+      expect(may!.weekdays[0]).toBe("Montag");
+      expect(may!.labels["2031-05-01"]).toBe("Donnerstag, 1. Mai 2031");
+      expect(may!.tabStops).toEqual(["2031-05-01"]);
+
+      // The consumer owns a controlled month: without one applying
+      // onMonthChange, the grid keeps showing May through the frames in which
+      // an uncontrolled month re-renders (the previous test).
+      await page.locator('[data-calendar-nav="next"]').click();
+      await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      expect((await calendarFacts(page, framework))!.caption).toBe("Mai 2031");
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: a key move a controlled month refuses leaves focus and the tab stop where they were`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar", { mode: "single", month: new Date(2031, 4, 1) });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.caption).toBe("May 2031");
+      const settle = () => page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      const position = async () => {
+        const facts = await calendarFacts(page, framework);
+        return facts && { caption: facts.caption, focused: facts.focused, tabStops: facts.tabStops };
+      };
+      await page.locator('[data-date="2031-05-31"]').focus();
+      // 1 June is on screen as an outside-month day of May's grid; focus must
+      // not jump to it while the grid still shows May.
+      await page.keyboard.press("ArrowRight");
+      await settle();
+      expect(await position()).toEqual({ caption: "May 2031", focused: "2031-05-31", tabStops: ["2031-05-31"] });
+      // 30 June is not on screen at all.
+      await page.keyboard.press("PageDown");
+      await settle();
+      expect(await position()).toEqual({ caption: "May 2031", focused: "2031-05-31", tabStops: ["2031-05-31"] });
+      // An in-month move still lands.
+      await page.keyboard.press("ArrowLeft");
+      await expect.poll(position).toEqual({ caption: "May 2031", focused: "2031-05-30", tabStops: ["2031-05-30"] });
     });
   }
 });
@@ -1123,6 +1310,8 @@ test.describe("Runtime rail — screenshots", () => {
         OTP: "otp",
         Calendar: "calendar",
       };
+      // Calendar's default month and today come from the clock.
+      if (component === "Calendar") await page.clock.setFixedTime(CALENDAR_TODAY);
       await goto(page, "react", component, blockClass[component]);
       await expect(page).toHaveScreenshot(`${component}-react.png`, {
         maxDiffPixelRatio: 0.02,

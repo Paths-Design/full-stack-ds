@@ -34,7 +34,7 @@ public struct Pagination: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         PaginationTokens.scopes
     }
-    @StateObject private var page: ControllableValue<Int>
+    @ControllableState private var page: ControllableValue<Int>
     private let pages: [String]
     private let presentation: PaginationPresentation
     private let progress: PaginationProgress
@@ -52,7 +52,7 @@ public struct Pagination: View {
         label: String? = nil,
         disabled: Bool = false
     ) {
-        self._page = StateObject(wrappedValue: ControllableValue(controlled: index, defaultValue: defaultIndex, onChange: onIndexChange))
+        self._page = ControllableState(controlled: index, defaultValue: defaultIndex, onChange: onIndexChange)
         self.pages = pages
         self.presentation = presentation
         self.progress = progress

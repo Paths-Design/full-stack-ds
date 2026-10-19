@@ -36,7 +36,7 @@ public struct Tabs<Content: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         TabsTokens.scopes
     }
-    @StateObject private var activeTab: ControllableValue<String>
+    @ControllableState private var activeTab: ControllableValue<String>
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
 
@@ -46,7 +46,7 @@ public struct Tabs<Content: View>: View {
         onActiveTabChange: ((String) -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {
-        self._activeTab = StateObject(wrappedValue: ControllableValue(controlled: activeTab, defaultValue: defaultActiveTab, onChange: onActiveTabChange))
+        self._activeTab = ControllableState(controlled: activeTab, defaultValue: defaultActiveTab, onChange: onActiveTabChange)
         self.content = content()
     }
 
@@ -76,7 +76,7 @@ public struct Tabs<Content: View>: View {
         VStack(spacing: gap) {
             content
         }
-            .environmentObject(activeTab)
+            .fsdsChannel(activeTab)
     }
 }
 
@@ -98,6 +98,7 @@ public struct TabsTab: View {
 /// Panel region: content visible only while the `activeTab` channel equals `value`.
 public struct TabsPanel<Content: View>: View {
     @EnvironmentObject var activeTab: ControllableValue<String>
+    @Environment(\.fsdsChannelValues) private var fsdsChannelValues
     private let value: String
     private let content: Content
     public init(value: String, @ViewBuilder content: () -> Content) {
@@ -105,7 +106,7 @@ public struct TabsPanel<Content: View>: View {
         self.content = content()
     }
     public var body: some View {
-        if activeTab.value == value {
+        if activeTab.value(in: fsdsChannelValues) == value {
             content
         } else {
             EmptyView()
