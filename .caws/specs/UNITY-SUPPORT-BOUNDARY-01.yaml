@@ -67,12 +67,11 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "boundary.test.ts \"classifies every leaf of the live corpus and its sidecars with no dead rules\" asserts zero unclassified over all 55 contracts plus token/style sidecars; audit:unity-boundary at the candidate prints unclassified:0 and exit 0 (audit-unity-boundary.log)"
-    recorded_at: "2026-10-19T01:20:38.221Z"
+    evidence_ref: "boundary.test.ts \"classifies every leaf of the live corpus and its sidecars with no dead rules\" asserts zero unclassified over all 55 contracts plus token/style sidecars; pnpm run audit:unity-boundary at 7c24b5e95 printed unclassified:0 and exited 0 (ignored log: tmp/unity-support-boundary-01/audit-unity-boundary.log)"
+    recorded_at: "2026-10-19T01:45:23.300Z"
     test_nodeid: "packages/ds-codegen/src/frameworks/unity/boundary.test.ts::classifies every leaf of the live corpus and its sidecars with no dead rules"
     command: "pnpm run audit:unity-boundary"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/audit-unity-boundary.log"
     commit_sha: "7c24b5e95"
   - criterion_id: A2
     status: pass
