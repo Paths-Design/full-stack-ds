@@ -302,13 +302,19 @@ function defaultLiteral(ir: ComponentIR, prop: ResolvedPropIR, values?: string[]
   return typeof value === "string" ? quote(value) : String(value);
 }
 
-/** R6: a variant-axis prop validated against the axis values; the root
- * modifier class `<cssPrefix>--<axis>-<value>` is the single record of the
- * current value (runtime `Variants`), and a vocabulary knob follows it. */
+/** R6: a variant-axis prop validated against the axis values. The root
+ * modifier class follows `ir.classRecipe.valueModifiers` (`<base>--<value>`,
+ * as on the web) and is the single record of the current value (runtime
+ * `Variants`); a vocabulary knob follows it. */
 function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], knob: string | undefined): string {
   const name = identifier(pascal(prop.name));
-  const modifier = quote(`${ctx.prefix}--${prop.name}-`);
-  return `        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${modifier}); set { Variants.Set(this, ${modifier}, value, ${values.map(quote).join(", ")});${knob ? ` ${knob} = value;` : ""} } }`;
+  const modifier = ctx.ir.classRecipe.valueModifiers.find(m => m.propName === prop.name);
+  if (!modifier) throw new Error(`UNITY_UNSUPPORTED_VARIANT: ${ctx.ir.name}.${prop.name} is a variant axis without a class-recipe value modifier`);
+  // A colliding axis is disambiguated as `<base>--<prop>-<value>`; the runtime
+  // helper keys classes as `<prefix>--<value>` and cannot express it.
+  if (modifier.valuePrefix) throw new Error(`UNITY_UNSUPPORTED_VARIANT: ${ctx.ir.name}.${prop.name} shares values with another axis (class-recipe prefix ${JSON.stringify(modifier.valuePrefix)}), which Variants does not key`);
+  const args = `${quote(ctx.ir.classRecipe.base)}, ${values.map(quote).join(", ")}`;
+  return `        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${args}); set { Variants.Set(this, ${quote(ctx.ir.classRecipe.base)}, value, ${values.map(quote).join(", ")});${knob ? ` ${knob} = value;` : ""} } }`;
 }
 
 /** R6–R8: the root's behavior, channel API and props. */
@@ -397,12 +403,14 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
-/** R4: interaction trigger and content parts carry the pairing key (the web
- * `value` prop); trigger parts also carry a per-part Disabled. */
+/** R4: interaction trigger parts carry a per-part Disabled; the pairing key
+ * (the web `value` prop) exists only where a behavior pairs parts by it — the
+ * ItemGroup trigger and content parts. */
 function keyedRole(ctx: Context, part: PartIR | undefined): { keyed: boolean; trigger: boolean } {
-  const interaction = ctx.ir.interaction;
-  const trigger = !!part && !!interaction?.triggers.some(t => t.part.name === part.name);
-  return { keyed: trigger || (!!part && interaction?.content.name === part.name), trigger };
+  const { lowering } = ctx;
+  const trigger = !!part && !!ctx.ir.interaction?.triggers.some(t => t.part.name === part.name);
+  const keyed = !!part && lowering.behavior === "ItemGroup" && (part.name === lowering.trigger.name || part.name === lowering.content.name);
+  return { keyed, trigger };
 }
 
 function compoundApi(ctx: Context, cls: ClassPlan): string[] {
