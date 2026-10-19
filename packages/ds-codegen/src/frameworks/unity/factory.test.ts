@@ -149,7 +149,7 @@ describe("Unity capability lowering", () => {
 
 /** Keyed selection over a dom tree: compound rail/notch/well, a rendered sibling
  * after a compound node, a literal-content text leaf, a nested sole-child
- * insertion point, and a variant axis (tone) no styling fact or knob binds. */
+ * insertion point, and a variant axis (tone) no behavior knob or styling fact binds. */
 const dial = (): ComponentContract => ({
   name: "Dial", cssPrefix: "dial", layer: "composite", category: "navigation", description: "Synthetic keyed selection fixture.",
   anatomy: {
@@ -259,7 +259,6 @@ function classBody(source: string, cls: string): string {
   const next = source.indexOf("[UxmlElement]", start);
   return source.slice(start, next < 0 ? undefined : next);
 }
-const TONE_PROPERTY = '[UxmlAttribute] public string Tone { get => Variants.Get(this, "dial", "calm", "loud"); set { Variants.Set(this, "dial", value, "calm", "loud"); } }';
 
 describe("Unity anatomy walker on synthetic contracts", () => {
   it("lowers a keyed selection tree by rule: compound classes, identity, insertion point, behavior and vocabulary props", () => {
@@ -283,7 +282,6 @@ describe("Unity anatomy walker on synthetic contracts", () => {
       'Caption.text = "Pick one";',
       "hierarchy.Add(Caption);",
       'Group = ItemGroup.Attach(this, triggerClass: "dial__notch", contentClass: "dial__well", operation: "select", stateClass: "is-chosen", multiple: false, focus: "manual", orientation: "vertical", wrap: false);',
-      'Tone = "calm";',
       'Appearance = "flat";',
       "Loop = false;",
     ));
@@ -305,37 +303,35 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     expect(source).toContain("[UxmlAttribute] public string Picked { get => Group.Value; set => Group.Value = value; }");
     expect(source).toContain('public const string ChannelName = "pick";');
     // R6: a vocabulary axis is a class-recipe modifier; a vocabulary boolean drives its knob;
-    // an axis no styling fact binds (tone) is a class-only modifier.
+    // an axis no behavior consumes (tone) is a styling axis and is not emitted.
     expect(source).toContain('[UxmlAttribute] public string Appearance { get => Variants.Get(this, "dial", "flat", "raised"); set { Variants.Set(this, "dial", value, "flat", "raised"); } }');
-    expect(source).toContain(TONE_PROPERTY);
     expect(source).toContain("[UxmlAttribute] public bool Loop { get => Group.Loop; set => Group.Loop = value; }");
-    expect(rootPublicMembers(source, "Dial")).toEqual(new Set(["Picked", "Controlled", "Tone", "Appearance", "Loop"]));
+    expect(rootPublicMembers(source, "Dial")).toEqual(new Set(["Picked", "Controlled", "Appearance", "Loop"]));
+    expect(source).not.toMatch(/Tone|calm|loud/);
   });
 
-  it("emits a variant axis no styling fact binds as a class-only modifier and leaves a styling-bound axis to P3", () => {
-    const variant = (axis: string) => (ir: ReturnType<typeof buildComponentIR>) =>
-      !!ir.nativeStyleRules?.rules.some(r => r.predicates.some(p => p.kind === "variant" && p.axis === axis));
-    // Unbound: no token fact or style rule names tone, and no behavior knob drives it.
-    expect(variant("tone")(buildComponentIR(dial()))).toBe(false);
-    expect(emit(dial())).toContain(TONE_PROPERTY);
-    // Token-bound: a `<cssPrefix>.<axis>.<value>.…` fact for a declared value of the axis.
-    const tokenBound = dial() as unknown as Record<string, any>;
-    tokenBound.tokens = { "dial.tone.loud.rail.width": { literal: "4px" } };
-    expect(emit(tokenBound as unknown as ComponentContract)).not.toMatch(/Tone|calm|loud/);
-    // A fact whose value segment is not a declared value of the axis does not bind it.
-    const offValue = dial() as unknown as Record<string, any>;
-    offValue.tokens = { "dial.tone.shrill.rail.width": { literal: "4px" } };
-    expect(emit(offValue as unknown as ComponentContract)).toContain(TONE_PROPERTY);
-    // Rule-bound: a native style rule predicated on the axis.
-    const ruleBound = dial() as unknown as Record<string, any>;
-    ruleBound.styles = { "--loud": { "border-width": { resolvesTo: "dial.border.width", fallback: "2px" } } };
-    expect(variant("tone")(buildComponentIR(ruleBound as unknown as ComponentContract))).toBe(true);
-    expect(emit(ruleBound as unknown as ComponentContract)).not.toMatch(/Tone|calm|loud/);
-    // A vocabulary axis drives the attached behavior and is emitted even when styling binds it.
-    const vocabularyBound = dial() as unknown as Record<string, any>;
-    vocabularyBound.styles = { "--raised": { "border-width": { resolvesTo: "dial.border.width", fallback: "2px" } } };
-    expect(variant("appearance")(buildComponentIR(vocabularyBound as unknown as ComponentContract))).toBe(true);
-    expect(emit(vocabularyBound as unknown as ComponentContract)).toContain('[UxmlAttribute] public string Appearance { get => Variants.Get(this, "dial", "flat", "raised");');
+  it("emits a variant axis only when the attached behavior consumes it; every other axis waits for P3", () => {
+    // Outside the vocabulary and placement, and with no token fact or style rule
+    // naming it, tone is still a styling axis: withheld, not a class-only modifier.
+    const ir = buildComponentIR(dial());
+    expect(ir.variants.tone).toEqual(["calm", "loud"]);
+    expect(ir.tokenFacts.filter(f => f.name.split(".")[1] === "tone")).toEqual([]);
+    expect(ir.nativeStyleRules?.rules.filter(r => r.predicates.some(p => p.kind === "variant" && p.axis === "tone"))).toEqual([]);
+    const dialSource = emit(dial());
+    expect(dialSource).not.toMatch(/Tone|calm|loud/);
+    // A vocabulary axis emits when ItemGroup is attached.
+    expect(dialSource).toContain('[UxmlAttribute] public string Appearance { get => Variants.Get(this, "dial", "flat", "raised"); set { Variants.Set(this, "dial", value, "flat", "raised"); } }');
+    // The same vocabulary name on a behavior with no such knob is a styling axis.
+    const oriented = lamp() as unknown as Record<string, any>;
+    oriented.props.designed.members.push({ name: "orientation", propType: { kind: "ref", to: "LampOrientation" }, default: "row", description: "Layout axis." });
+    oriented.types = { LampOrientation: { kind: "union", values: ["row", "column"] } };
+    oriented.variants = { orientation: ["row", "column"] };
+    const orientedIr = buildComponentIR(oriented as unknown as ComponentContract);
+    expect(orientedIr.variants.orientation).toEqual(["row", "column"]);
+    expect(orientedIr.styledProps.map(p => p.name)).toContain("orientation");
+    expect(emit(oriented as unknown as ComponentContract)).not.toMatch(/Orientation|"row"|"column"/);
+    // The surface placement prop emits and drives the attached surface.
+    expect(emit(flyout())).toContain('[UxmlAttribute] public string Placement { get => Variants.Get(this, "flyout", "top", "bottom", "left", "right", "auto"); set { Variants.Set(this, "flyout", value, "top", "bottom", "left", "right", "auto"); Surface.Placement = value; } }');
   });
 
   it("keeps consumer-composed compound content in document order beside rendered siblings", () => {
@@ -459,7 +455,7 @@ describe("Unity walker dispositions for non-lowered node kinds (R5)", () => {
   });
 
   it("emits nothing for refused static attrs and form bindings, which the boundary refuses", () => {
-    // With its sidecars, as the CLI merges them: `size` is then styling-bound and not emitted.
+    // With its sidecars, as the CLI merges them.
     const source = emit(loadContractWithSidecars(root, "Switch") as unknown as ComponentContract);
     expect(source).not.toMatch(/checkbox|aria-|\brole\b|"button"/);
     // No Name / Value: the form-serialization props are refused, not emitted.

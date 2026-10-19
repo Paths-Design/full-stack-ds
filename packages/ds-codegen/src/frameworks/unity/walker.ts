@@ -297,19 +297,6 @@ function disabledProp(ir: ComponentIR): string | undefined {
   return binding?.kind === "prop" ? binding.prop : undefined;
 }
 
-/** A variant axis whose values carry styling (P3 projects its class modifier
- * and geometry): a token fact `<cssPrefix>.<axis>.<value>.…` for a declared
- * value of the axis, or a native style rule predicated on the axis. The
- * caller exempts vocabulary and placement axes, which drive a behavior. */
-function stylingBound(ir: ComponentIR, axis: string): boolean {
-  const values = ir.variants[axis] ?? [];
-  const tokenBound = ir.tokenFacts.some(fact => {
-    const [prefix, factAxis, value] = fact.name.split(".");
-    return prefix === ir.cssPrefix && factAxis === axis && value !== undefined && values.includes(value);
-  });
-  return tokenBound || !!ir.nativeStyleRules?.rules.some(rule => rule.predicates.some(p => p.kind === "variant" && p.axis === axis));
-}
-
 const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface" } as const;
 
 interface RootApi {
@@ -413,9 +400,10 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
       continue;
     }
     const knob = option ? (option.knob ? `${behavior}.${option.knob}` : undefined) : prop.name === placement ? `${behavior}.Placement` : undefined;
-    // A styling-bound axis outside the vocabulary and placement is P3's
-    // projection; every other variant axis is a class-recipe modifier now.
-    if (values && (option || prop.name === placement || !stylingBound(ir, prop.name))) {
+    // A variant axis emits only when the attached behavior consumes it (the
+    // item-group vocabulary, the surface placement prop); every other axis is
+    // a styling axis whose class modifier and geometry P3 projects.
+    if (values && (option || prop.name === placement)) {
       members.push(variantProperty(ctx, prop, values, knob));
       const literal = defaultLiteral(ir, prop, values);
       if (literal !== undefined) defaults.push(`${name} = ${literal};`);

@@ -313,7 +313,7 @@
       "match": ["contract:/props/*/members/plain:size/**"],
       "disposition": "pending",
       "phase": "P3",
-      "reason": "Styling-bound axis; class modifier and geometry projected by P3. Only the declared default's geometry is lowered now, by token-default-geometry."
+      "reason": "Variant axis with no behavior knob; P3 projects its class modifier and geometry from the token graph. Only the declared default's geometry is lowered now, by token-default-geometry."
     },
     {
       "id": "prop-id-base",
