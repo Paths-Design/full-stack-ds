@@ -471,6 +471,23 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     expect(source).not.toMatch(/\bFrame\b/);
   });
 
+  it("attaches gap to the gapped class itself, a ScrollView content class included", () => {
+    const gap = (px: string) => ({ gap: { literal: px, platforms: ["web"] } });
+    const gapped = flyout() as unknown as Record<string, any>;
+    gapped.styles = { root: gap("4px"), sheet: gap("8px") };
+    const source = emit(gapped as unknown as ComponentContract);
+    // The interactive surface content lowers to a ScrollView. Its --fsds-gap is
+    // resolved on the ScrollView (a contentContainer does not inherit the custom
+    // property into its ICustomStyle), and the runtime Gap helper spaces a
+    // ScrollView's contentContainer: the emitter attaches to the class itself.
+    expect(classBody(source, "FlyoutSheet")).toContain("public partial class FlyoutSheet : ScrollView");
+    expect(ctor(source, "FlyoutSheet")).toBe(lines('name = "sheet";', 'AddToClassList("flyout__sheet");', "Gap.Attach(this);"));
+    expect(source).not.toContain("Gap.Attach(contentContainer)");
+    expect(ctor(source, "Flyout").split("\n").filter(l => l.includes("Gap.Attach"))).toEqual(["            Gap.Attach(this);"]);
+    // No gap fact, no attachment.
+    expect(emit(flyout())).not.toContain("Gap.Attach");
+  });
+
   it("realises the IR-synthesized presence guard on an unmount content part through the behavior and refuses any other guard", () => {
     const withDom = (guard?: (sheet: Record<string, unknown>) => void) => {
       const c = flyout() as unknown as Record<string, any>;

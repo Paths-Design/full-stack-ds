@@ -54,7 +54,8 @@ export type UssReason =
   | "uss-selector"
   | "uss-owner-mismatch"
   | "uss-floating-scope"
-  | "uss-design-slot";
+  | "uss-design-slot"
+  | "uss-var-composite";
 
 /** What each reason means; emitted beside the entries that use it. */
 export const REASON_NOTES: Readonly<Record<UssReason, string>> = {
@@ -66,6 +67,7 @@ export const REASON_NOTES: Readonly<Record<UssReason, string>> = {
   "uss-owner-mismatch": "The state lives on a part that is neither the styled part nor its ancestor, and the attached behavior does not mirror that part's state onto the host.",
   "uss-floating-scope": "AnchoredSurface reparents its content to the panel root, so a definition or rule qualified by the host (variant modifier, state class or host pseudo-class) cannot reach the floating subtree.",
   "uss-design-slot": "A brand overrides a component design slot. Projecting it needs a nested var() fallback (design slot, then token slot), which this projection does not emit; follow-up in P4.",
+  "uss-var-composite": "In USS a var() inside a multi-component declaration (space- or comma-separated list, or a var() whose fallback is one) takes over the whole value and the other components are dropped without an importer warning (Unity 6000.5). The projection substitutes each var() with its value when that value is the same in every scope it can take (light, dark, every brand, every component definition, the declared fallback); this declaration's value varies by scope or does not resolve, so it is not emitted.",
 };
 
 export interface UnsupportedEntry {
@@ -522,6 +524,34 @@ export const HANDLERS: Readonly<Record<string, Handler>> = (() => {
 })();
 
 // ---------------------------------------------------------------------------
+// Composite declarations
+// ---------------------------------------------------------------------------
+
+/** Components of a value: space- and comma-separated at depth zero, a lone
+ * var() counting as many as its fallback has. */
+function width(value: string): number {
+  const components = splitTop(value, ",").flatMap(item => splitTop(item, " "));
+  if (components.length !== 1) return components.length;
+  const fallback = VAR.exec(components[0]!)?.[2];
+  return fallback === undefined ? 1 : width(fallback);
+}
+
+/** A USS declaration value USS cannot evaluate as written: a var() inside a
+ * multi-component value. Custom-property definitions are single scalars. */
+export const isComposite = (value: string): boolean => value.includes("var(") && width(value) > 1;
+
+/**
+ * A graph custom property's value in every scope the token section emits
+ * (light, dark, each brand in both themes); undefined when the name is not a
+ * graph token. The default knows no graph, so a graph reference inside a
+ * composite does not resolve and is ledgered.
+ */
+export type ScopeValues = (name: string) => (string | undefined)[] | undefined;
+const NO_GRAPH: ScopeValues = () => [undefined];
+
+const VAR_READ = /var\(\s*(--[A-Za-z0-9_-]+)/g;
+
+// ---------------------------------------------------------------------------
 // Component section (S3, S4)
 // ---------------------------------------------------------------------------
 
@@ -704,7 +734,7 @@ const isDefinition = (declaration: NativeStyleDeclarationIR): boolean => declara
 export const cssVar = (tokenPath: string): string => `--${tokenSlug(tokenPath)}`;
 
 /** Project one admitted component's native style rules into USS rules and ledger entries. */
-export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unityLowering(ir), hosts: readonly ContentHost[] = []): ComponentProjection {
+export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unityLowering(ir), hosts: readonly ContentHost[] = [], scopeValues: ScopeValues = NO_GRAPH): ComponentProjection {
   const ctx = buildContext(ir, lowering);
   const out: ComponentProjection = { component: ir.name, rules: [], unsupported: [], graphTokens: new Set(), carrierAxes: new Set(), designSlots: new Map(), gapClasses: new Set() };
   const baseGap = new Set<string>();
@@ -724,6 +754,10 @@ export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unit
   // ones cannot follow it and are ledgered against the content part.
   const floatingRoot = lowering.behavior === "AnchoredSurface" ? lowering.content.name : undefined;
   const floatingDefinitions: [string, string][] = [];
+  /** Component custom property → every value its emitted definitions give it. */
+  const definitions = new Map<string, string[]>();
+  /** Emitted composite declarations, resolved once every definition is known. */
+  const composites = new Map<[string, string], { rule: NativeStyleRuleIR; property: string; value: string }>();
   const rules = ir.nativeStyleRules?.rules ?? [];
   for (const rule of rules) {
     const lowered = lowerSelector(ctx, rule);
@@ -747,17 +781,19 @@ export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unit
         if (fallback === undefined) { ledger(rule, d.property, d.value, "uss-scalar"); continue; }
         const definition: [string, string] = [cssVar(d.property), reference(d.token)(fallback)];
         declarations.push(definition);
+        definitions.set(definition[0], [...(definitions.get(definition[0]) ?? []), definition[1]]);
         if (scopesFloating && rule.predicates.length) ledger({ sourceKey: rule.sourceKey, part: floatingRoot }, d.property, d.value, "uss-floating-scope");
         else if (scopesFloating) floatingDefinitions.push(definition);
         continue;
       }
       if (d.designSlot) out.designSlots.set(cssVar(d.designSlot), { sourceKey: rule.sourceKey, part: rule.part, property: d.property });
-      const handler = Object.hasOwn(HANDLERS, d.property) ? HANDLERS[d.property] : undefined;
+      const handler = Object.prototype.hasOwnProperty.call(HANDLERS, d.property) ? HANDLERS[d.property] : undefined;
       if (!handler) { ledger(rule, d.property, d.value, "uss-property"); continue; }
       const outcome = handler({ value: d.value, wrap: reference(d.token), focus, siblings, baseTranslateY: ctx.baseTranslateY.get(rule.part) });
       if ("noop" in outcome) continue;
       if ("reason" in outcome) { ledger(rule, d.property, d.value, outcome.reason); continue; }
       declarations.push(...outcome.set);
+      for (const set of outcome.set) if (!set[0].startsWith("--") && isComposite(set[1])) composites.set(set, { rule, property: d.property, value: d.value });
       for (const entry of outcome.ledger ?? []) ledger(rule, entry.property, entry.value, entry.reason);
     }
     if (!declarations.length) continue;
@@ -780,6 +816,50 @@ export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unit
   for (const className of out.gapClasses) if (!baseGap.has(className)) out.rules.push({ selector: `.${className}`, declarations: [[GAP_PROPERTY, "0"]] });
   const floatingSelector = floatingRoot === undefined ? undefined : ctx.selectorOf.get(floatingRoot);
   if (floatingDefinitions.length && floatingSelector) out.rules.push({ selector: floatingSelector, declarations: floatingDefinitions });
+  // A var() inside a multi-component value is substituted by its value when
+  // every scope gives it the same one; otherwise the declaration is ledgered.
+  const valuesOf = (text: string, seen: ReadonlySet<string>): (string | undefined)[] => {
+    const match = VAR.exec(text.trim());
+    if (!match) return [text.trim()];
+    const [, name, fallback] = match as unknown as [string, string, string | undefined];
+    if (seen.has(name)) return [undefined];
+    const next = new Set([...seen, name]);
+    const defined = definitions.get(name);
+    const graph = defined ? undefined : scopeValues(name);
+    const values = [...(defined ?? []).flatMap(v => valuesOf(v, next)), ...(graph ?? [])];
+    if (fallback !== undefined) values.push(...valuesOf(fallback, next));
+    return values.length ? values : [undefined];
+  };
+  const substitute = (value: string): string | undefined => {
+    const items: string[] = [];
+    for (const item of splitTop(value, ",")) {
+      const parts: string[] = [];
+      for (const part of splitTop(item, " ")) {
+        const values = new Set(valuesOf(part, new Set()));
+        const [only] = values;
+        if (values.size !== 1 || only === undefined) return undefined;
+        parts.push(only);
+      }
+      items.push(parts.join(" "));
+    }
+    const literal = items.join(", ");
+    return literal.includes("var(") ? undefined : literal;
+  };
+  if (composites.size) {
+    for (const rule of out.rules) {
+      rule.declarations = rule.declarations.flatMap((declaration): [string, string][] => {
+        const origin = composites.get(declaration);
+        if (!origin) return [declaration];
+        const literal = substitute(declaration[1]);
+        if (literal === undefined) { ledger(origin.rule, origin.property, origin.value, "uss-var-composite"); return []; }
+        return [[declaration[0], literal]];
+      });
+    }
+    out.rules = out.rules.filter(rule => rule.declarations.length);
+    // The token-section closure keeps only graph tokens a remaining declaration reads.
+    const read = new Set(out.rules.flatMap(rule => rule.declarations.flatMap(([, value]) => [...value.matchAll(VAR_READ)].map(m => m[1]!))));
+    for (const token of [...out.graphTokens]) if (!read.has(cssVar(token))) out.graphTokens.delete(token);
+  }
   for (const refused of ir.nativeStyleRules?.unsupported ?? []) {
     out.unsupported.push({ component: ir.name, sourceKey: refused.sourceKey, part: "", property: "", value: refused.reason, reason: "uss-selector" });
   }
@@ -928,6 +1008,21 @@ function block(selector: string, declarations: [string, string][], comment?: str
   return `${comment ? `/* ${comment} */\n` : ""}${selector} {\n${lines.join("\n")}\n}`;
 }
 
+/** One scope the token section emits: a theme, optionally under a brand. */
+interface TokenScope { theme: Theme; brand?: BrandLayer }
+
+/** A graph token's value in one scope under the emitted cascade: brand dark,
+ * then brand light (a brand alias resolving in the scope's theme), then the
+ * graph's theme value. */
+function scopeValue(sources: TokenSources, index: Map<string, string>, tokenPath: string, scope: TokenScope): string | undefined {
+  const name = cssVar(tokenPath);
+  const { brand, theme } = scope;
+  if (brand && theme === "dark" && brand.dark.has(name)) return brandValue(sources.graph, index, brand.dark.get(name)!, "dark");
+  if (brand?.light.has(name)) return brandValue(sources.graph, index, brand.light.get(name)!, theme);
+  const raw = graphValue(sources.graph, tokenPath, theme);
+  return raw === undefined ? undefined : tokenScalar(raw);
+}
+
 /** The theme-level ledger rows use this component key. */
 const THEME_COMPONENT = "(theme)";
 
@@ -939,8 +1034,13 @@ export interface StylesheetProjection {
 
 /** S2–S6 over every admitted component, in the order given (the allowlist order). */
 export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hostsOf: (ir: ComponentIR) => readonly ContentHost[] = () => []): StylesheetProjection {
-  const components = irs.map(ir => projectComponent(ir, unityLowering(ir), hostsOf(ir)));
   const index = varIndex(sources.graph);
+  const scopes: TokenScope[] = [{ theme: "light" }, { theme: "dark" }, ...sources.brands.flatMap(brand => (["light", "dark"] as const).map(theme => ({ theme, brand })))];
+  const scopeValues: ScopeValues = name => {
+    const tokenPath = index.get(name);
+    return tokenPath === undefined ? undefined : scopes.map(scope => scopeValue(sources, index, tokenPath, scope));
+  };
+  const components = irs.map(ir => projectComponent(ir, unityLowering(ir), hostsOf(ir), scopeValues));
   const entries: UnsupportedEntry[] = components.flatMap(c => c.unsupported);
   const closure = [...new Set(components.flatMap(c => [...c.graphTokens]))].sort((a, b) => cssVar(a).localeCompare(cssVar(b)));
   const light: [string, string][] = [], dark: [string, string][] = [];

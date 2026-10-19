@@ -692,14 +692,14 @@
 
 .switch__thumb {
     transition-property: translate, background-color;
-    transition-duration: var(--fsds-switch-motion-duration), var(--fsds-switch-motion-duration);
+    transition-duration: 100ms, 100ms;
     transition-timing-function: ease, ease;
     background-color: var(--fsds-switch-color-thumb-background, #ffffff);
     width: var(--fsds-switch-size-md-thumb-size, 16px);
     height: var(--fsds-switch-size-md-thumb-height, 16px);
     top: 50%;
     left: var(--fsds-switch-size-md-track-padding, 1px);
-    translate: var(--fsds-switch-size-md-thumb-translate-off, 0) -50%;
+    translate: 0 -50%;
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -722,7 +722,7 @@
 }
 
 .switch.is-checked .switch__thumb {
-    translate: var(--fsds-switch-size-md-thumb-translate-on, 24px) -50%;
+    translate: 24px -50%;
     --fsds-switch-color-thumb-background: var(--fsds-semantic-color-foreground-on-brand, #ffffff);
 }
 
@@ -771,11 +771,11 @@
     width: var(--fsds-switch-size-sm-thumb-size, 12px);
     height: var(--fsds-switch-size-sm-thumb-height, 12px);
     left: var(--fsds-switch-size-sm-track-padding, 1px);
-    translate: var(--fsds-switch-size-sm-thumb-translate-off, 0) -50%;
+    translate: 0 -50%;
 }
 
 .switch--sm.is-checked .switch__thumb {
-    translate: var(--fsds-switch-size-sm-thumb-translate-on, 16px) -50%;
+    translate: 16px -50%;
 }
 
 .switch--lg .switch__track {
@@ -789,11 +789,11 @@
     width: var(--fsds-switch-size-lg-thumb-size, 24px);
     height: var(--fsds-switch-size-lg-thumb-height, 24px);
     left: var(--fsds-switch-size-lg-track-padding, 1px);
-    translate: var(--fsds-switch-size-lg-thumb-translate-off, 0) -50%;
+    translate: 0 -50%;
 }
 
 .switch--lg.is-checked .switch__thumb {
-    translate: var(--fsds-switch-size-lg-thumb-translate-on, 36px) -50%;
+    translate: 36px -50%;
 }
 
 .switch.is-focus .switch__track {
@@ -1178,7 +1178,7 @@
 
 .tabs--pills .tabs__tab {
     border-radius: var(--fsds-tabs-shape-radius, 6px);
-    padding: var(--fsds-tabs-spacing-pill-padding, 4px 10px);
+    padding: 4px 10px;
 }
 
 .tabs--pills .tabs__indicator {
