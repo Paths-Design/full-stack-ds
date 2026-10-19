@@ -71,3 +71,11 @@ evidence:
     command: "pnpm run generate:unity && node scripts/rail-toolchain-coupling-audit.mjs --check"
     exit_code: 0
     commit_sha: "301f52b64"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "support-boundary.json splits the former anatomy/slots families into lowered rules with via naming the walker (anatomy-elements, anatomy-named-slot, anatomy-channel-binding, anatomy-disabled-binding, anatomy-events, anatomy-content, slots) and explicit refused/pending rules (anatomy-static-attrs-refused, anatomy-aria-binding, anatomy-form-binding refused; anatomy-component-ref, anatomy-guards, anatomy-iteration, anatomy-css-var-bindings, anatomy-icon-glyph pending P4); audit at 95282a70b and in the merged tree printed lowered 2784, pending 12744 (P4 2261, P3 10483, no P2 entry), refused 1647, unclassified 0, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist"
+    recorded_at: "2026-10-19T07:25:35.637Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/boundary.test.ts::resolves every anatomy node kind of the allowlist to exactly one walker lowering or an explicit pending/refused rule"
+    command: "pnpm run audit:unity-boundary"
+    exit_code: 0
+    commit_sha: "301f52b64"
