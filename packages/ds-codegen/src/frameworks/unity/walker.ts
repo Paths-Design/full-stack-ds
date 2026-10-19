@@ -12,7 +12,6 @@
  */
 import type { BindingExpression, ComponentIR, DomNodeIR, PartIR, ResolvedPropIR } from "../../ir.js";
 import { resolveAnchoredSurfacePolicy } from "../../semantics.js";
-import { classifyLeaf } from "./boundary.js";
 import { triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
 
 const quote = (s: string): string => JSON.stringify(s);
@@ -130,20 +129,37 @@ function identityFor(ctx: Context, part: string): { name: string; className: str
   return { name: part, className: `${ctx.prefix}__${part}` };
 }
 
+/** R3: a private `children` host at the current position becomes the
+ * class's contentContainer; a class has at most one insertion point. */
+function insertionHost(ctx: Context, cls: ClassPlan, parent: ElementPlan, holes: { count: number }): void {
+  if (++holes.count > 1) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} ${cls.name} declares more than one children insertion point`);
+  const host: ElementPlan = { ref: INSERTION_TAG, declaration: "private", type: "VisualElement", identity: identityFor(ctx, INSERTION_TAG), children: [] };
+  parent.children.push(host);
+  cls.members.push(host);
+  cls.contentContainer = host.ref;
+}
+
 function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: DomNodeIR[], holes: { count: number }): void {
-  for (const node of nodes) {
-    if (node.part && ctx.compound.has(node.part)) continue; // R4: composed by the consumer.
+  const isCompound = (node: DomNodeIR): boolean => !!node.part && ctx.compound.has(node.part);
+  // R4: compound nodes are composed by the consumer. When a rendered sibling
+  // follows the first of them, composed content keeps document order through
+  // an insertion host at that position; otherwise the default contentContainer
+  // (after every generated child) already preserves it.
+  const firstCompound = nodes.findIndex(isCompound);
+  const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(n => !isCompound(n) && !isInsertion(n));
+  for (const [index, node] of nodes.entries()) {
+    if (isCompound(node)) {
+      if (composedHost && index === firstCompound) insertionHost(ctx, cls, parent, holes);
+      continue;
+    }
     assertRenderable(ctx, node);
     if (isInsertion(node)) {
-      if (++holes.count > 1) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} ${cls.name} declares more than one children insertion point`);
       if (nodes.length === 1) {
+        if (++holes.count > 1) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} ${cls.name} declares more than one children insertion point`);
         if (parent.ref !== "this") cls.contentContainer = parent.ref;
         continue;
       }
-      const host: ElementPlan = { ref: INSERTION_TAG, declaration: "private", type: "VisualElement", identity: identityFor(ctx, INSERTION_TAG), children: [] };
-      parent.children.push(host);
-      cls.members.push(host);
-      cls.contentContainer = host.ref;
+      insertionHost(ctx, cls, parent, holes);
       continue;
     }
     if (isNamedSlot(node)) {
@@ -281,10 +297,17 @@ function disabledProp(ir: ComponentIR): string | undefined {
   return binding?.kind === "prop" ? binding.prop : undefined;
 }
 
-/** A prop family the support boundary lowers (variant axes only emit when lowered). */
-function boundaryLowers(prop: string): boolean {
-  const keyed = `/props/designed/members/plain:${prop.replace(/~/g, "~0").replace(/\//g, "~1")}/name`;
-  return classifyLeaf({ source: "contract", pointer: keyed, keyed, value: prop }).disposition === "lowered";
+/** A variant axis whose values carry styling (P3 projects its class modifier
+ * and geometry): a token fact `<cssPrefix>.<axis>.<value>.…` for a declared
+ * value of the axis, or a native style rule predicated on the axis. The
+ * caller exempts vocabulary and placement axes, which drive a behavior. */
+function stylingBound(ir: ComponentIR, axis: string): boolean {
+  const values = ir.variants[axis] ?? [];
+  const tokenBound = ir.tokenFacts.some(fact => {
+    const [prefix, factAxis, value] = fact.name.split(".");
+    return prefix === ir.cssPrefix && factAxis === axis && value !== undefined && values.includes(value);
+  });
+  return tokenBound || !!ir.nativeStyleRules?.rules.some(rule => rule.predicates.some(p => p.kind === "variant" && p.axis === axis));
 }
 
 const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface" } as const;
@@ -390,7 +413,9 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
       continue;
     }
     const knob = option ? (option.knob ? `${behavior}.${option.knob}` : undefined) : prop.name === placement ? `${behavior}.Placement` : undefined;
-    if (values && (option || prop.name === placement || boundaryLowers(prop.name))) {
+    // A styling-bound axis outside the vocabulary and placement is P3's
+    // projection; every other variant axis is a class-recipe modifier now.
+    if (values && (option || prop.name === placement || !stylingBound(ir, prop.name))) {
       members.push(variantProperty(ctx, prop, values, knob));
       const literal = defaultLiteral(ir, prop, values);
       if (literal !== undefined) defaults.push(`${name} = ${literal};`);

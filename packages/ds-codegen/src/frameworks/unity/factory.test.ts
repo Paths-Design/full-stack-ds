@@ -147,8 +147,9 @@ describe("Unity capability lowering", () => {
 // that matches here is derived from the walker rules, not a corpus adapter.
 // ---------------------------------------------------------------------------
 
-/** Keyed selection over a dom tree: compound rail/notch/well, a literal-content
- * text leaf, a nested sole-child insertion point, a non-vocabulary variant axis. */
+/** Keyed selection over a dom tree: compound rail/notch/well, a rendered sibling
+ * after a compound node, a literal-content text leaf, a nested sole-child
+ * insertion point, and a variant axis (tone) no styling fact or knob binds. */
 const dial = (): ComponentContract => ({
   name: "Dial", cssPrefix: "dial", layer: "composite", category: "navigation", description: "Synthetic keyed selection fixture.",
   anatomy: {
@@ -251,6 +252,14 @@ function ctor(source: string, cls: string): string {
   return body.slice(0, body.indexOf("\n        }"));
 }
 const lines = (...l: string[]) => l.map(x => `            ${x}`).join("\n");
+/** One generated class, from its declaration to the next `[UxmlElement]`. */
+function classBody(source: string, cls: string): string {
+  const start = source.indexOf(`    public partial class ${cls} :`);
+  expect(start, `class ${cls}`).toBeGreaterThan(-1);
+  const next = source.indexOf("[UxmlElement]", start);
+  return source.slice(start, next < 0 ? undefined : next);
+}
+const TONE_PROPERTY = '[UxmlAttribute] public string Tone { get => Variants.Get(this, "dial", "calm", "loud"); set { Variants.Set(this, "dial", value, "calm", "loud"); } }';
 
 describe("Unity anatomy walker on synthetic contracts", () => {
   it("lowers a keyed selection tree by rule: compound classes, identity, insertion point, behavior and vocabulary props", () => {
@@ -274,14 +283,21 @@ describe("Unity anatomy walker on synthetic contracts", () => {
       'Caption.text = "Pick one";',
       "hierarchy.Add(Caption);",
       'Group = ItemGroup.Attach(this, triggerClass: "dial__notch", contentClass: "dial__well", operation: "select", stateClass: "is-chosen", multiple: false, focus: "manual", orientation: "vertical", wrap: false);',
+      'Tone = "calm";',
       'Appearance = "flat";',
       "Loop = false;",
     ));
-    // R4: the rail renders its non-compound child but not the nested compound notch.
-    expect(ctor(source, "DialRail")).toBe(lines('name = "rail";', 'AddToClassList("dial__rail");', 'Glint.name = "glint";', 'Glint.AddToClassList("dial__glint");', "hierarchy.Add(Glint);"));
+    // R4: the rail renders its non-compound child but not the nested compound notch,
+    // whose composed position (before the glint) is the rail's contentContainer.
+    expect(ctor(source, "DialRail")).toBe(lines(
+      'name = "rail";', 'AddToClassList("dial__rail");',
+      'children.name = "children";', 'children.AddToClassList("dial__children");', "hierarchy.Add(children);",
+      'Glint.name = "glint";', 'Glint.AddToClassList("dial__glint");', "hierarchy.Add(Glint);",
+    ));
+    expect(classBody(source, "DialRail")).toContain("        public override VisualElement contentContainer => children;\n");
     // R3: a hole that is the sole child of a nested element makes that element the contentContainer.
-    expect(source).toContain("        public override VisualElement contentContainer => WellBody;\n");
-    expect(source.match(/contentContainer/g)).toHaveLength(1);
+    expect(classBody(source, "DialWell")).toContain("        public override VisualElement contentContainer => WellBody;\n");
+    expect(source.match(/contentContainer/g)).toHaveLength(2);
     // R4: pairing key on the trigger and content parts, Disabled on the trigger only.
     expect(source).toContain("    public partial class DialNotch : Button, IKeyedPart\n    {\n        [UxmlAttribute] public string Value { get; set; }\n        [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }\n");
     expect(source).toContain("    public partial class DialWell : VisualElement, IKeyedPart\n    {\n        public VisualElement WellBody { get; } = new VisualElement();\n        public override VisualElement contentContainer => WellBody;\n        [UxmlAttribute] public string Value { get; set; }\n        public DialWell()");
@@ -289,11 +305,61 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     expect(source).toContain("[UxmlAttribute] public string Picked { get => Group.Value; set => Group.Value = value; }");
     expect(source).toContain('public const string ChannelName = "pick";');
     // R6: a vocabulary axis is a class-recipe modifier; a vocabulary boolean drives its knob;
-    // an axis whose family the boundary does not lower (tone) is not emitted.
+    // an axis no styling fact binds (tone) is a class-only modifier.
     expect(source).toContain('[UxmlAttribute] public string Appearance { get => Variants.Get(this, "dial", "flat", "raised"); set { Variants.Set(this, "dial", value, "flat", "raised"); } }');
+    expect(source).toContain(TONE_PROPERTY);
     expect(source).toContain("[UxmlAttribute] public bool Loop { get => Group.Loop; set => Group.Loop = value; }");
-    expect(rootPublicMembers(source, "Dial")).toEqual(new Set(["Picked", "Controlled", "Appearance", "Loop"]));
-    expect(source).not.toMatch(/Tone|calm|loud/);
+    expect(rootPublicMembers(source, "Dial")).toEqual(new Set(["Picked", "Controlled", "Tone", "Appearance", "Loop"]));
+  });
+
+  it("emits a variant axis no styling fact binds as a class-only modifier and leaves a styling-bound axis to P3", () => {
+    const variant = (axis: string) => (ir: ReturnType<typeof buildComponentIR>) =>
+      !!ir.nativeStyleRules?.rules.some(r => r.predicates.some(p => p.kind === "variant" && p.axis === axis));
+    // Unbound: no token fact or style rule names tone, and no behavior knob drives it.
+    expect(variant("tone")(buildComponentIR(dial()))).toBe(false);
+    expect(emit(dial())).toContain(TONE_PROPERTY);
+    // Token-bound: a `<cssPrefix>.<axis>.<value>.…` fact for a declared value of the axis.
+    const tokenBound = dial() as unknown as Record<string, any>;
+    tokenBound.tokens = { "dial.tone.loud.rail.width": { literal: "4px" } };
+    expect(emit(tokenBound as unknown as ComponentContract)).not.toMatch(/Tone|calm|loud/);
+    // A fact whose value segment is not a declared value of the axis does not bind it.
+    const offValue = dial() as unknown as Record<string, any>;
+    offValue.tokens = { "dial.tone.shrill.rail.width": { literal: "4px" } };
+    expect(emit(offValue as unknown as ComponentContract)).toContain(TONE_PROPERTY);
+    // Rule-bound: a native style rule predicated on the axis.
+    const ruleBound = dial() as unknown as Record<string, any>;
+    ruleBound.styles = { "--loud": { "border-width": { resolvesTo: "dial.border.width", fallback: "2px" } } };
+    expect(variant("tone")(buildComponentIR(ruleBound as unknown as ComponentContract))).toBe(true);
+    expect(emit(ruleBound as unknown as ComponentContract)).not.toMatch(/Tone|calm|loud/);
+    // A vocabulary axis drives the attached behavior and is emitted even when styling binds it.
+    const vocabularyBound = dial() as unknown as Record<string, any>;
+    vocabularyBound.styles = { "--raised": { "border-width": { resolvesTo: "dial.border.width", fallback: "2px" } } };
+    expect(variant("appearance")(buildComponentIR(vocabularyBound as unknown as ComponentContract))).toBe(true);
+    expect(emit(vocabularyBound as unknown as ComponentContract)).toContain('[UxmlAttribute] public string Appearance { get => Variants.Get(this, "dial", "flat", "raised");');
+  });
+
+  it("keeps consumer-composed compound content in document order beside rendered siblings", () => {
+    const railCtor = (contract: Record<string, any>) => ctor(emit(contract as unknown as ComponentContract), "DialRail");
+    const glint = ['Glint.name = "glint";', 'Glint.AddToClassList("dial__glint");', "hierarchy.Add(Glint);"];
+    const host = ['children.name = "children";', 'children.AddToClassList("dial__children");', "hierarchy.Add(children);"];
+    const identity = ['name = "rail";', 'AddToClassList("dial__rail");'];
+    // A rendered sibling follows the first compound node: a children host takes that position.
+    expect(railCtor(dial() as unknown as Record<string, any>)).toBe(lines(...identity, ...host, ...glint));
+    // Every rendered sibling precedes the compound nodes: the default contentContainer
+    // (appended after the generated children) already keeps document order.
+    const after = dial() as unknown as Record<string, any>;
+    after.anatomy.dom.children[1].children.reverse();
+    expect(railCtor(after)).toBe(lines(...identity, ...glint));
+    expect(classBody(emit(after as unknown as ComponentContract), "DialRail")).not.toContain("contentContainer");
+    // Compound nodes are the only children: nothing is generated for them.
+    const only = dial() as unknown as Record<string, any>;
+    only.anatomy.dom.children[1].children = [only.anatomy.dom.children[1].children[0]];
+    expect(railCtor(only)).toBe(lines(...identity));
+    expect(classBody(emit(only as unknown as ComponentContract), "DialRail")).not.toContain("contentContainer");
+    // A composed-content position and an explicit hole in one class are two insertion points.
+    const both = dial() as unknown as Record<string, any>;
+    both.anatomy.dom.children[1].children.push({ tag: "children" });
+    expect(() => emit(both as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Dial DialRail declares more than one children insertion point");
   });
 
   it("lowers a boolean control with a children hole beside siblings and a named slot, in document order", () => {
@@ -393,8 +459,9 @@ describe("Unity walker dispositions for non-lowered node kinds (R5)", () => {
   });
 
   it("emits nothing for refused static attrs and form bindings, which the boundary refuses", () => {
-    const source = emit(fixture("Switch"));
-    expect(source).not.toMatch(/checkbox|aria|role|"button"/);
+    // With its sidecars, as the CLI merges them: `size` is then styling-bound and not emitted.
+    const source = emit(loadContractWithSidecars(root, "Switch") as unknown as ComponentContract);
+    expect(source).not.toMatch(/checkbox|aria-|\brole\b|"button"/);
     // No Name / Value: the form-serialization props are refused, not emitted.
     expect([...rootPublicMembers(source, "Switch")].sort()).toEqual(["Checked", "Controlled", "Disabled", "value"]);
     const refused = classifyContract(loadContractWithSidecars(root, "Switch")).filter(l => l.keyed.startsWith("/anatomy/dom/children/input/") && l.disposition === "refused").map(l => `${l.keyed}=${l.rule}`);
@@ -444,8 +511,10 @@ describe("Unity behavior selection refusals", () => {
     delete unoriented.focus.orientation;
     expect(() => unityLowering(buildComponentIR(unoriented as unknown as ComponentContract))).toThrow("UNITY_UNSUPPORTED_FOCUS: Dial declares manual focus without an orientation");
     // A boolean control whose control part is a compound sub-element cannot be attached at construction.
+    // (Without the hole: the compound actuator's composed position is then the one insertion point.)
     const compoundControl = lamp() as unknown as Record<string, any>;
     compoundControl.anatomy.details.actuator.subcomponent = true;
+    compoundControl.anatomy.dom.children.splice(2, 1);
     expect(() => emit(compoundControl as unknown as ComponentContract)).toThrow("UNITY_UNSUPPORTED_ANATOMY: Lamp renders its form-control part actuator outside the root class");
   });
 

@@ -148,6 +148,20 @@ describe("Unity emitter lowers facts, not names (R11)", () => {
     expect(Object.keys(PLATFORM_VOCABULARY).filter(word => !colliding.some(f => f.literal === word))).toEqual([]);
   });
 
+  it("the emitter never reads the support boundary it is checked against", () => {
+    // The boundary describes what the emitter does and assertRealized checks it
+    // independently; an emitter that consulted it would make `realizes` circular.
+    const imports = (text: string) => ts.createSourceFile("probe.ts", text, ts.ScriptTarget.Latest, true).statements
+      .filter(ts.isImportDeclaration).map(s => (s.moduleSpecifier as ts.StringLiteral).text);
+    expect(imports('import { a } from "./boundary.js";\nimport b from "./support-boundary.json";')).toEqual(["./boundary.js", "./support-boundary.json"]);
+    const emitterModules = sourceFiles.filter(f => f.name === "walker.ts" || f.name === "behaviors.ts");
+    expect(emitterModules).toHaveLength(2);
+    for (const file of emitterModules) {
+      expect(imports(file.text).filter(spec => /boundary/.test(spec)), file.name).toEqual([]);
+      expect(file.text, file.name).not.toMatch(/\b(?:classifyLeaf|classifyContract|loadBoundary)\b/);
+    }
+  });
+
   it("names props only through the item-group vocabulary the boundary declares lowered", () => {
     expect(Object.keys(ITEM_GROUP_OPTIONS).sort()).toEqual([...DECLARED_ITEM_GROUP_VOCABULARY].sort());
     // The vocabulary appears as table keys only; no source spells one as a string literal.

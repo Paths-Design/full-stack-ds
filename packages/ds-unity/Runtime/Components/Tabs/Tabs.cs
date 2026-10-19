@@ -36,10 +36,15 @@ namespace FullStackDS
     public partial class TabsList : VisualElement
     {
         public VisualElement Indicator { get; } = new VisualElement();
+        private readonly VisualElement children = new VisualElement();
+        public override VisualElement contentContainer => children;
         public TabsList()
         {
             name = "list";
             AddToClassList("tabs__list");
+            children.name = "children";
+            children.AddToClassList("tabs__children");
+            hierarchy.Add(children);
             Indicator.name = "indicator";
             Indicator.AddToClassList("tabs__indicator");
             hierarchy.Add(Indicator);

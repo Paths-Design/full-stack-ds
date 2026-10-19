@@ -80,7 +80,7 @@
       "id": "anatomy-subcomponent",
       "match": ["contract:/anatomy/details/*/subcomponent"],
       "disposition": "lowered",
-      "via": "walker.ts (R1, R4): each ir.compoundParts entry is its own [UxmlElement] <Name><Part> class the consumer composes; a part that opts out stays inline in its parent class."
+      "via": "walker.ts (R1, R4): each ir.compoundParts entry is its own [UxmlElement] <Name><Part> class the consumer composes; a part that opts out stays inline in its parent class. Composed content keeps document order: when a rendered sibling follows the first compound node, a private children host at that position is the contentContainer."
     },
     {
       "id": "anatomy-part-role",
@@ -313,7 +313,7 @@
       "match": ["contract:/props/*/members/plain:size/**"],
       "disposition": "pending",
       "phase": "P3",
-      "reason": "Only the default (md) geometry is lowered from typed token facts; other sizes arrive with USS projection."
+      "reason": "Styling-bound axis; class modifier and geometry projected by P3. Only the declared default's geometry is lowered now, by token-default-geometry."
     },
     {
       "id": "prop-id-base",
