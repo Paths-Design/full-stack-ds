@@ -98,6 +98,10 @@ namespace FullStackDS.Tests
             Assert.That(tabs.Group.Triggers[2].resolvedStyle.opacity, Is.EqualTo(.5f).Within(.01));
             ColorIs(tabs.Group.Triggers[0].resolvedStyle.backgroundColor, new Color32(41, 91, 181, 255));
             ColorIs(tabs.Group.Triggers[1].resolvedStyle.backgroundColor, Surface);
+            // The tab strip is a row: each tab starts right of the previous one on the same line.
+            Rect first = tabs.Group.Triggers[0].worldBound, second = tabs.Group.Triggers[1].worldBound;
+            Assert.That(second.xMin, Is.GreaterThanOrEqualTo(first.xMax)); Assert.That(second.yMin, Is.EqualTo(first.yMin).Within(1));
+            Assert.That(tabs.Group.Triggers[0].resolvedStyle.borderBottomWidth, Is.EqualTo(3)); Assert.That(tabs.Group.Triggers[1].resolvedStyle.borderBottomWidth, Is.EqualTo(1));
             Capture("runtime-controls-640");
             var surface = root.Q<Popover>("help"); surface.CloseOnBlur = false; surface.Open = true;
             yield return Frames();

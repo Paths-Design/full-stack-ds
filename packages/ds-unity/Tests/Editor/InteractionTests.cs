@@ -153,6 +153,11 @@ namespace FullStackDS.Tests
             Assert.That(a.panel.style.display.value, Is.EqualTo(DisplayStyle.None));
             Assert.That(b.panel.style.display.value, Is.EqualTo(DisplayStyle.Flex));
             Assert.That(b.tab.ClassListContains("is-selected"), Is.True); Assert.That(a.tab.ClassListContains("is-selected"), Is.False);
+            // dom: list > [{children}, indicator]: composed tabs sit in the list's children host, before the indicator, and are still discovered.
+            var list = root.Q<TabsList>();
+            Assert.That(a.tab.hierarchy.parent, Is.EqualTo(list.contentContainer)); Assert.That(list.contentContainer.ClassListContains("tabs__children"), Is.True);
+            Assert.That(list.hierarchy.Children().Select(c => c.name).ToArray(), Is.EqualTo(new[] { "children", "indicator" }));
+            Assert.That(root.Group.Triggers, Is.EqualTo(new Button[] { a.tab, b.tab }));
             Assert.Throws<ArgumentException>(() => root.Values = new[] { "a", "b" });
             var duplicate = new TabsTab { Value = "b", text = "b" }; root.Q<TabsList>().Add(duplicate);
             Assert.Throws<ArgumentException>(() => root.Group.Synchronize());

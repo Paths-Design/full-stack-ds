@@ -104,11 +104,13 @@
 .accordion__trigger.is-open .accordion__chevron { rotate: 225deg; }
 .accordion__contentInner { padding: 12px; }
 
-/* Tabs: [list > [indicator, tab...], panel...]. */
-.tabs__list { flex-direction: row; margin-bottom: 8px; flex-wrap: wrap; }
+/* Tabs: [list > [children > tab..., indicator], panel...]. Composed tabs live in the children host. */
+.tabs__list { margin-bottom: 8px; }
+.tabs__children { flex-direction: row; flex-wrap: wrap; }
 .tabs__indicator { position: absolute; height: 0; }
 .tabs--vertical { flex-direction: row; }
-.tabs--vertical .tabs__list { flex-direction: column; margin-right: 8px; }
+.tabs--vertical .tabs__list { margin-right: 8px; }
+.tabs--vertical .tabs__children { flex-direction: column; flex-wrap: nowrap; }
 .fsds-theme .tabs__tab { margin-right: 6px; margin-bottom: 6px; }
 .fsds-theme .tabs__tab.is-selected { background-color: var(--fsds-accent); }
 .fsds-theme .tabs--underline .tabs__tab.is-selected { border-bottom-width: 3px; }
