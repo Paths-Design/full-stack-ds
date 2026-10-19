@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: calendar-date-grid
 created_at: '2026-10-18T15:19:48.751Z'
-updated_at: '2026-10-18T21:36:15.689Z'
+updated_at: '2026-10-19T14:24:48.678Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -37,6 +37,7 @@ scope:
   out: []
   support:
     - eslint.config.js
+    - packages/ds-swiftui/README.md
 invariants:
   - 'The Calendar grid is derived from the visible month channel; no caller-supplied day list.'
   - 'Date arithmetic, selection, focus movement and Intl formatting live in one date-grid core per runtime family; emitters lower the dateGrid IR fact with no component-name special-casing.'
