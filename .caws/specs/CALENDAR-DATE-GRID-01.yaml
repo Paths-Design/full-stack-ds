@@ -109,3 +109,11 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/date-grid.test.ts packages/ds-codegen/src/dom-tree.test.ts packages/ds-codegen/src/date/date-grid.test.ts
     exit_code: 0
     commit_sha: ff44f9b89
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "One obligation set, packages/ds-react/src/primitives/hooks/__tests__/calendar.contract.ts, runs in every web harness: pnpm exec vitest run packages/ds-react/src/primitives/hooks/__tests__/calendar.test.tsx; pnpm --filter @full-stack-ds/{vue,svelte,lit} exec vitest run src/primitives/__tests__/calendar.test.ts; pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs src/primitives/__tests__/calendar.test.ts (19/19 vitest each, 20/20 jest at ff44f9b89). It covers the tab-stop precedence, each key move incl. RTL, no focusable element inside a cell, month-edge crossing, click/Enter/Space selection in single and range mode, aria-multiselectable per mode, one selected day in single mode for an array value, nav content, labels and month moves, aria-selected and aria-current on the focused gridcell, and bounds and disabled days. e2e/runtime-rail.spec.ts drives the same in Chromium on all five targets, including range mode, bounds and a disabled calendar (the cited command: 45 Calendar tests pass at ff44f9b89 with FSDS_E2E_PORT set locally; the full pnpm run e2e:rail, CI runtime-rail job, passed at a1f555e25 and at ff44f9b89 failed on this loaded host only outside Calendar, in Angular cold-start page aborts and newPage timeouts, every Angular rail test passing against a warm dev server). No screen reader output is observed."
+    recorded_at: "2026-10-19T13:14:54.051Z"
+    test_nodeid: "e2e/runtime-rail.spec.ts::days outside the bounds are aria-disabled, refuse a click, and stop a key move at the bound"
+    command: "pnpm exec playwright test e2e/runtime-rail.spec.ts -g \"Runtime rail — Calendar\""
+    exit_code: 0
+    commit_sha: ff44f9b89
