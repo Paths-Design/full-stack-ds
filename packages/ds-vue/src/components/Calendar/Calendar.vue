@@ -106,10 +106,10 @@ const classNames = computed(() => [
       </thead>
       <tbody>
         <tr v-for="(week, row) in (dateGrid.state.weeks ?? [])" :key="row" role="row">
-          <td v-for="(day, column) in (week.days ?? [])" :key="column" :class="'calendar__cell'" role="gridcell" :aria-selected="day.selected" :aria-current="day.current" :data-outside-month="day.outsideMonth">
-            <button :class="'calendar__day'" type="button" @click="() => dateGrid.select(day)" :tabindex="day.tabIndex" :aria-label="day.fullLabel" :aria-disabled="day.disabled" :data-date="day.key">
+          <td v-for="(day, column) in (week.days ?? [])" :key="column" :class="'calendar__day'" role="gridcell" @click="() => dateGrid.select(day)" :tabindex="day.tabIndex" :aria-label="day.fullLabel" :aria-selected="day.selected" :aria-current="day.current" :aria-disabled="day.disabled" :data-date="day.key" :data-outside-month="day.outsideMonth">
+            <span>
               {{ day.label }}
-            </button>
+            </span>
           </td>
         </tr>
       </tbody>

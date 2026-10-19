@@ -93,8 +93,8 @@ const classes = $derived(
       {#each (dateGrid.state.weeks ?? []) as week, row (row)}
       <tr role="row">
         {#each (week.days ?? []) as day, column (column)}
-        <td class={'calendar__cell'} role="gridcell" aria-selected={day.selected} aria-current={day.current} data-outside-month={day.outsideMonth}>
-          <button class={'calendar__day'} type="button" onclick={() => dateGrid.select(day)} tabindex={day.tabIndex} aria-label={day.fullLabel} aria-disabled={day.disabled} data-date={day.key}>{day.label}</button>
+        <td class={'calendar__day'} role="gridcell" onclick={() => dateGrid.select(day)} tabindex={day.tabIndex} aria-label={day.fullLabel} aria-selected={day.selected} aria-current={day.current} aria-disabled={day.disabled} data-date={day.key} data-outside-month={day.outsideMonth}>
+          <span>{day.label}</span>
         </td>
         {/each}
       </tr>

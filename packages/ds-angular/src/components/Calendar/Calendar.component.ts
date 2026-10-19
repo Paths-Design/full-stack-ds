@@ -59,10 +59,10 @@ const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next mon
       <ng-container *ngFor="let week of (dateGrid.state.weeks ?? []); let row = index; trackBy: trackByIndex">
         <tr role="row">
           <ng-container *ngFor="let day of (week.days ?? []); let column = index; trackBy: trackByIndex">
-            <td [ngClass]="'calendar__cell'" role="gridcell" [attr.aria-selected]="day.selected" [attr.aria-current]="day.current" [attr.data-outside-month]="day.outsideMonth">
-              <button [ngClass]="'calendar__day'" type="button" (click)="dateGrid.select(day)" [tabindex]="day.tabIndex" [attr.aria-label]="day.fullLabel" [attr.aria-disabled]="day.disabled" [attr.data-date]="day.key">
+            <td [ngClass]="'calendar__day'" role="gridcell" (click)="dateGrid.select(day)" [tabindex]="day.tabIndex" [attr.aria-label]="day.fullLabel" [attr.aria-selected]="day.selected" [attr.aria-current]="day.current" [attr.aria-disabled]="day.disabled" [attr.data-date]="day.key" [attr.data-outside-month]="day.outsideMonth">
+              <span>
                 {{ day.label }}
-              </button>
+              </span>
             </td>
           </ng-container>
         </tr>

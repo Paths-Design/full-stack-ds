@@ -2010,7 +2010,9 @@ function emitNodeProps(
     props.push(
       `${pad}style={[styles.${styleKey}${selectionStyleAppendix(node, ir)}]}`,
     );
-  } else {
+  } else if (node.part !== undefined) {
+    // A partless node has no style of its own, as it has no class on the web;
+    // borrowing the root's would repeat its padding, border and shadow.
     props.push(`${pad}style={styles.${styleKey}}`);
   }
   if (keyExpr) props.unshift(`${pad}key={${keyExpr}}`);
@@ -2086,6 +2088,9 @@ function emitNodeProps(
     }
     if (name === "aria-disabled") {
       if (node.bindings.disabled) continue;
+      // An aria-disabled control is perceivable but not operable: the web
+      // guards its activation, and a Pressable blocks the press natively.
+      if (component === "Pressable") props.push(`${pad}disabled={${rnBooleanishExpr(expr)}}`);
       accessibilityState.push(`disabled: ${rnBooleanishExpr(expr)}`);
       continue;
     }
@@ -2196,10 +2201,10 @@ function emitNodeProps(
     if (accessibilityRole) props.push(`${pad}accessibilityRole=${JSON.stringify(accessibilityRole)}`);
   }
   const selection = selectionLowering(ir);
-  // The selecting node is the accessible element for its item (a date grid's
-  // cell is a plain View screen readers never focus), so the item's
-  // selection state is announced there.
-  if (selection && selection.subjectNode === node) {
+  // The selecting node is the accessible element for its item, so the item's
+  // selection state is announced there; a node binding aria-selected already
+  // carries it.
+  if (selection && isSelectionSubject(selection, node) && !node.bindings["aria-selected"]) {
     accessibilityState.push(`selected: ${selection.selectedExpr}`);
   }
   if (accessibilityState.length > 0) {
@@ -2214,6 +2219,9 @@ function rnComponentForNode(node: DomNodeIR): string {
   if (node.tag === "input") return "TextInput";
   if (node.tag === "img" || node.tag === "image") return "RNImage";
   if (node.tag === "button" || node.attrs.role === "button") return "Pressable";
+  // An element the user activates is pressable whatever its tag: a View takes
+  // no press, so a clicked gridcell would otherwise render inert.
+  if (node.events.click !== undefined) return "Pressable";
   if (node.tag === "p" || node.tag === "strong" || node.tag === "em" || node.tag === "small") return "RNText";
   return "View";
 }
@@ -2347,6 +2355,8 @@ function rnDynamicStyleEntries(
 function roleFromNode(node: DomNodeIR): string | undefined {
   if (node.tag === "a") return "link";
   if (node.tag === "button") return "button";
+  // A <summary> is its <details>' disclosure button.
+  if (node.tag === "summary") return "button";
   if (node.tag === "img") return "image";
   if (node.tag === "input" && node.attrs.type === "checkbox") return "checkbox";
   if (node.tag === "input" && node.attrs.type === "radio") return "radio";
@@ -2372,6 +2382,9 @@ function rnAccessibilityRole(
   if (role === "menu") return "menu";
   if (role === "menuitem") return "menuitem";
   if (role === "alert") return "alert";
+  // Mobile platforms have no gridcell role. An activatable cell is announced
+  // as a button, as the SwiftUI and Compose targets realize a date-grid day.
+  if (role === "gridcell" && component === "Pressable") return "button";
   return undefined;
 }
 
@@ -3303,9 +3316,19 @@ function attrStateViewEntries(
 }
 
 /** Style-array appendix applying the selected style, or "" for non-subjects. */
+/**
+ * The selecting node, or the copy the iteration lowering renders in its place
+ * (`{ ...node, iteration: undefined }` shares the node's bindings and events).
+ */
+function isSelectionSubject(lowering: SelectionLowering, node: DomNodeIR): boolean {
+  const subject = lowering.subjectNode;
+  return subject === node || (subject.iteration !== undefined && node.iteration === undefined &&
+    subject.bindings === node.bindings && subject.events === node.events);
+}
+
 function selectionStyleAppendix(node: DomNodeIR, ir: ComponentIR): string {
   const lowering = selectionLowering(ir);
-  if (!lowering || lowering.subjectNode !== node) return "";
+  if (!lowering || !isSelectionSubject(lowering, node)) return "";
   return `, ${lowering.selectedExpr} ? styles.${lowering.styleKey} : undefined`;
 }
 

@@ -135,10 +135,10 @@ export function Calendar({
         {(dateGrid.state.weeks ?? []).map((week, row) => (
           <tr role="row" key={row}>
             {(week.days ?? []).map((day, column) => (
-              <td className="calendar__cell" role="gridcell" aria-selected={day.selected} aria-current={day.current} data-outside-month={day.outsideMonth} key={column}>
-                <button className="calendar__day" type="button" onClick={() => dateGrid.select(day)} tabIndex={day.tabIndex} aria-label={day.fullLabel} aria-disabled={day.disabled} data-date={day.key}>
+              <td className="calendar__day" role="gridcell" onClick={() => dateGrid.select(day)} tabIndex={day.tabIndex} aria-label={day.fullLabel} aria-selected={day.selected} aria-current={day.current} aria-disabled={day.disabled} data-date={day.key} data-outside-month={day.outsideMonth} key={column}>
+                <span>
                   {day.label}
-                </button>
+                </span>
               </td>
             ))}
           </tr>

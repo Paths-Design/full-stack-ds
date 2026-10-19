@@ -9,7 +9,6 @@ export function createCalendarStyles(theme?: FsdsTheme) {
   const tokens = resolveCalendarTokens(theme);
   return StyleSheet.create({
     caption: {},
-    cell: {},
     day: {},
     day_state_selected: definedStyle({ backgroundColor: (tokens.root?.["calendar.color.day.selected.background"] as string | undefined) }),
     grid: {},

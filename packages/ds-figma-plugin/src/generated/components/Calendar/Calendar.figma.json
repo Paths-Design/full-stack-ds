@@ -49,17 +49,9 @@
       "layoutVariant": null
     },
     {
-      "name": "cell",
-      "semanticElement": null,
-      "nativeTag": "td",
-      "isCompound": false,
-      "isRootOnly": false,
-      "layoutVariant": null
-    },
-    {
       "name": "day",
       "semanticElement": null,
-      "nativeTag": "button",
+      "nativeTag": "td",
       "isCompound": false,
       "isRootOnly": false,
       "layoutVariant": null
@@ -543,32 +535,32 @@
       "property": "sizing.min-width",
       "group": "sizing",
       "valueType": "dimension",
-      "slot": "calendar.design.cell.sizing.min-width",
-      "cssVar": "--fsds-calendar-design-cell-sizing-min-width",
+      "slot": "calendar.design.day.sizing.min-width",
+      "cssVar": "--fsds-calendar-design-day-sizing-min-width",
       "cssProperty": "min-width",
-      "selectorKey": "cell",
-      "part": "cell",
+      "selectorKey": "day",
+      "part": "day",
       "defaultValue": "32px",
       "resolvesTo": "calendar.size.cell",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell"
+      "selector": ".calendar__day"
     },
     {
       "property": "spacing.padding",
       "group": "spacing",
       "valueType": "dimension",
-      "slot": "calendar.design.cell.spacing.padding",
-      "cssVar": "--fsds-calendar-design-cell-spacing-padding",
+      "slot": "calendar.design.day.spacing.padding",
+      "cssVar": "--fsds-calendar-design-day-spacing-padding",
       "cssProperty": "padding",
-      "selectorKey": "cell",
-      "part": "cell",
+      "selectorKey": "day",
+      "part": "day",
       "defaultValue": "0",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell"
+      "selector": ".calendar__day"
     },
     {
       "property": "foreground.color",
@@ -700,78 +692,78 @@
       "property": "background.fill",
       "group": "background",
       "valueType": "color",
-      "slot": "calendar.design.condition-f43aab96a58c.background.fill",
-      "cssVar": "--fsds-calendar-design-condition-f43aab96a58c-background-fill",
+      "slot": "calendar.design.condition-9b3217d9acf9.background.fill",
+      "cssVar": "--fsds-calendar-design-condition-9b3217d9acf9-background-fill",
       "cssProperty": "background-color",
-      "selectorKey": ".calendar__cell[aria-selected=\"true\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-selected=\"true\"]",
       "part": null,
       "defaultValue": "#d92d2e",
       "resolvesTo": "calendar.color.day.selected.background",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-selected=\"true\"] .calendar__day"
+      "selector": ".calendar__day[aria-selected=\"true\"]"
     },
     {
       "property": "foreground.color",
       "group": "foreground",
       "valueType": "color",
-      "slot": "calendar.design.condition-f43aab96a58c.foreground.color",
-      "cssVar": "--fsds-calendar-design-condition-f43aab96a58c-foreground-color",
+      "slot": "calendar.design.condition-9b3217d9acf9.foreground.color",
+      "cssVar": "--fsds-calendar-design-condition-9b3217d9acf9-foreground-color",
       "cssProperty": "color",
-      "selectorKey": ".calendar__cell[aria-selected=\"true\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-selected=\"true\"]",
       "part": null,
       "defaultValue": "#fafafa",
       "resolvesTo": "calendar.color.day.selected.foreground",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-selected=\"true\"] .calendar__day"
+      "selector": ".calendar__day[aria-selected=\"true\"]"
     },
     {
       "property": "typography.weight",
       "group": "typography",
       "valueType": "number",
-      "slot": "calendar.design.condition-f43aab96a58c.typography.weight",
-      "cssVar": "--fsds-calendar-design-condition-f43aab96a58c-typography-weight",
+      "slot": "calendar.design.condition-9b3217d9acf9.typography.weight",
+      "cssVar": "--fsds-calendar-design-condition-9b3217d9acf9-typography-weight",
       "cssProperty": "font-weight",
-      "selectorKey": ".calendar__cell[aria-selected=\"true\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-selected=\"true\"]",
       "part": null,
       "defaultValue": "600",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-selected=\"true\"] .calendar__day"
+      "selector": ".calendar__day[aria-selected=\"true\"]"
     },
     {
       "property": "elevation.shadow",
       "group": "elevation",
       "valueType": "shadow",
-      "slot": "calendar.design.condition-789437ce1e22.elevation.shadow",
-      "cssVar": "--fsds-calendar-design-condition-789437ce1e22-elevation-shadow",
+      "slot": "calendar.design.condition-b9780abcd5e2.elevation.shadow",
+      "cssVar": "--fsds-calendar-design-condition-b9780abcd5e2-elevation-shadow",
       "cssProperty": "box-shadow",
-      "selectorKey": ".calendar__cell[aria-current=\"date\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-current=\"date\"]",
       "part": null,
       "defaultValue": "inset 0 0 0 1px var(--fsds-calendar-color-today-ring)",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-current=\"date\"] .calendar__day"
+      "selector": ".calendar__day[aria-current=\"date\"]"
     },
     {
       "property": "typography.weight",
       "group": "typography",
       "valueType": "number",
-      "slot": "calendar.design.condition-789437ce1e22.typography.weight",
-      "cssVar": "--fsds-calendar-design-condition-789437ce1e22-typography-weight",
+      "slot": "calendar.design.condition-b9780abcd5e2.typography.weight",
+      "cssVar": "--fsds-calendar-design-condition-b9780abcd5e2-typography-weight",
       "cssProperty": "font-weight",
-      "selectorKey": ".calendar__cell[aria-current=\"date\"] .calendar__day",
+      "selectorKey": ".calendar__day[aria-current=\"date\"]",
       "part": null,
       "defaultValue": "600",
       "editableTargets": [
         "web"
       ],
-      "selector": ".calendar__cell[aria-current=\"date\"] .calendar__day"
+      "selector": ".calendar__day[aria-current=\"date\"]"
     }
   ],
   "motion": {
@@ -1089,24 +1081,14 @@
         }
       },
       {
-        "selector": ".calendar__cell",
+        "selector": ".calendar__day",
         "declarations": {
           "display": "flex",
           "align-items": "center",
           "justify-content": "center",
           "aspect-ratio": "1",
           "min-width": "var(--fsds-calendar-size-cell, 32px)",
-          "padding": "0"
-        }
-      },
-      {
-        "selector": ".calendar__day",
-        "declarations": {
-          "display": "flex",
-          "align-items": "center",
-          "justify-content": "center",
-          "width": "100%",
-          "height": "100%",
+          "padding": "0",
           "box-sizing": "border-box",
           "background": "transparent",
           "border": "none",
@@ -1132,7 +1114,7 @@
         }
       },
       {
-        "selector": ".calendar__cell[aria-selected=\"true\"] .calendar__day",
+        "selector": ".calendar__day[aria-selected=\"true\"]",
         "declarations": {
           "background-color": "var(--fsds-calendar-color-day-selected-background, #d92d2e)",
           "color": "var(--fsds-calendar-color-day-selected-foreground, #fafafa)",
@@ -1140,7 +1122,7 @@
         }
       },
       {
-        "selector": ".calendar__cell[aria-current=\"date\"] .calendar__day",
+        "selector": ".calendar__day[aria-current=\"date\"]",
         "declarations": {
           "box-shadow": "inset 0 0 0 1px var(--fsds-calendar-color-today-ring)",
           "font-weight": "600"

@@ -119,7 +119,6 @@ export function PageNavigator({
         onClick={pagedSet.commit}
       >
         <View
-          style={styles.root}
         >
           <RNText>{commitLabel}</RNText>
         </View>

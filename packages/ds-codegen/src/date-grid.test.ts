@@ -48,7 +48,7 @@ describe("dateGrid IR fact", () => {
     const ir = build(calendar());
     const find = (node: typeof ir.dom, partName: string): typeof ir.dom | undefined =>
       node?.part === partName ? node : node?.children.map((child) => find(child, partName)).find(Boolean);
-    const cell = find(ir.dom, "cell")!;
+    const cell = find(ir.dom, "day")!;
     expect(cell.iteration).toMatchObject({
       kind: "array", source: { kind: "iterationLocal", local: "item", path: ["days"] },
       itemVar: "day", indexVar: "column", itemType: "DateGridDay",
@@ -98,34 +98,43 @@ describe("dateGrid refusals", () => {
   });
 
   it("refuses a day cell that does not carry the selection dimension's a11y attribute", () => {
-    refuses((c) => { delete part(c, "cell").bindings!["aria-selected"]; }, "the day cell must bind aria-selected (states.dimensions selection a11y) to iter:item.selected");
-    refuses((c) => { part(c, "cell").bindings!["aria-selected"] = "iter:item.current"; }, "the day cell must bind aria-selected");
+    refuses((c) => { delete part(c, "day").bindings!["aria-selected"]; }, "the day cell must bind aria-selected (states.dimensions selection a11y) to iter:item.selected");
+    refuses((c) => { part(c, "day").bindings!["aria-selected"] = "iter:item.current"; }, "the day cell must bind aria-selected");
     // The attribute is whatever the states block declares, not a hard-coded aria-selected.
     refuses((c) => { c.states!.dimensions!.selection.a11y!.attribute = "aria-checked"; }, "the day cell must bind aria-checked");
     refuses((c) => { c.states!.dimensions!.selection.a11y!.values = { unselected: "no", selected: "yes" }; }, `values must map "unselected" to "false" and "selected" to "true"`);
   });
 
   it("refuses a grid without a single roving tab stop, focus target, select action or keydown owner", () => {
-    refuses((c) => { delete part(c, "day").bindings!.tabindex; }, "a day node must bind tabindex to iter:item.tabIndex");
-    refuses((c) => { delete part(c, "day").bindings!["data-date"]; }, "a day node must bind data-date to iter:item.key");
-    refuses((c) => { delete part(c, "day").events; }, "a day node must bind click to dateGrid:select(iter:item)");
+    refuses((c) => { delete part(c, "day").bindings!.tabindex; }, "the day cell must bind tabindex to iter:item.tabIndex");
+    refuses((c) => { delete part(c, "day").bindings!["data-date"]; }, "the day cell must bind data-date to iter:item.key");
+    refuses((c) => { delete part(c, "day").events; }, "the day cell must bind click to dateGrid:select(iter:item)");
     refuses((c) => { delete part(c, "grid").events; }, "an ancestor of the day cells must bind keydown to dateGrid:keydown");
   });
 
-  it("refuses day bindings split across the cell and its button", () => {
-    const together = "exactly one day node must carry the tabindex, data-date and click bindings together";
-    // The roving tabindex on the cell, activation on the button: 42 buttons stay tabbable.
+  it("refuses a day cell that is not itself the gridcell control (the ARIA grid pattern)", () => {
+    const nestedControl = "the day cell must contain no focusable or interactive element";
+    // A focusable button inside the cell carrying the day's bindings: focus lands on
+    // the button while aria-selected sits on the cell.
     refuses((c) => {
-      part(c, "cell").bindings!.tabindex = part(c, "day").bindings!.tabindex;
-      delete part(c, "day").bindings!.tabindex;
-    }, together);
-    // Two roving tab stops per day.
-    refuses((c) => { part(c, "cell").bindings!.tabindex = "iter:item.tabIndex"; }, together);
-    // The focus target is not the activated element.
-    refuses((c) => {
-      part(c, "cell").bindings!["data-date"] = part(c, "day").bindings!["data-date"];
-      delete part(c, "day").bindings!["data-date"];
-    }, together);
+      const cell = part(c, "day");
+      const { tabindex, "aria-label": label, "aria-disabled": disabled, "data-date": date } = cell.bindings!;
+      for (const key of ["tabindex", "aria-label", "aria-disabled", "data-date"]) delete cell.bindings![key];
+      cell.children = [{ tag: "button", attrs: { type: "button" }, bindings: { tabindex, "aria-label": label, "aria-disabled": disabled, "data-date": date }, events: cell.events, content: "iter:item.label" }];
+      delete cell.events;
+    }, "the day cell must bind tabindex to iter:item.tabIndex");
+    // The cell is the control, yet a natively focusable element sits inside it.
+    refuses((c) => { part(c, "day").children = [{ tag: "button", attrs: { type: "button" } }]; }, `${nestedControl} (found <button>)`);
+    refuses((c) => { part(c, "day").children = [{ tag: "span", attrs: { tabindex: "0" } }]; }, `${nestedControl} (found <span>)`);
+    refuses((c) => { part(c, "day").children = [{ tag: "span", events: { click: "dateGrid:previous" } }]; }, `${nestedControl} (found <span>)`);
+    refuses((c) => { part(c, "day").children = [{ componentRef: "fsds.Button" } as ContractDomNode]; }, `${nestedControl} (found Button)`);
+    refuses((c) => { part(c, "day").attrs = { role: "button" }; }, `the day cell must declare role="gridcell"`);
+  });
+
+  it("admits presentational content inside the gridcell", () => {
+    const contract = calendar();
+    part(contract, "day").children = [{ tag: "span", children: [{ tag: "span", attrs: { "aria-hidden": "true" }, content: "iter:item.label" }] }];
+    expect(build(contract).dateGrid?.valueChannel).toBe("value");
   });
 
   it("refuses actions on the wrong event and values used as handlers", () => {
@@ -134,7 +143,7 @@ describe("dateGrid refusals", () => {
   });
 
   it("refuses an iteration item type that is not the runtime's", () => {
-    refuses((c) => { part(c, "cell").iterate!.itemType = "Date"; }, `an iteration over DateGridDay items must declare itemType "DateGridDay" (got "Date")`);
+    refuses((c) => { part(c, "day").iterate!.itemType = "Date"; }, `an iteration over DateGridDay items must declare itemType "DateGridDay" (got "Date")`);
   });
 
   it("refuses iterating the enclosing item outside any array iteration", () => {

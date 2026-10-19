@@ -84,6 +84,9 @@ export function dateGridIterationItem(iteration: IterationIR, enclosing: Iterati
 const isBinding = (value: BindingExpression | undefined, kind: string, path?: string): boolean =>
   !!value && value.kind === kind && (path === undefined || (value.kind === "iterationLocal" && value.local === "item" && value.path?.join(".") === path));
 
+/** Tags the browser makes focusable or activatable on their own. */
+const FOCUSABLE_TAGS = new Set(["a", "button", "input", "select", "textarea", "summary", "details", "iframe"]);
+
 export function buildDateGridIR(contract: ComponentContract, channels: NormalizedChannelIR[], dom: DomNodeIR | undefined): DateGridIR | undefined {
   const input = contract.dateGrid;
   const fail = (reason: string): never => { throw new Error(`DATE_GRID_INVALID: ${contract.name}: ${reason}`); };
@@ -188,23 +191,28 @@ export function buildDateGridIR(contract: ComponentContract, channels: Normalize
   if (!isBinding(cell.bindings[attribute], "iterationLocal", "selected")) {
     fail(`the day cell must bind ${attribute} (states.dimensions selection a11y) to iter:item.selected`);
   }
-  const subtree: DomNodeIR[] = [];
-  const collect = (node: DomNodeIR) => { subtree.push(node); node.children.forEach(collect); };
-  collect(cell);
-  const bound = (attr: string, path: string) => subtree.some((node) => isBinding(node.bindings[attr], "iterationLocal", path));
-  if (!bound("tabindex", "tabIndex")) fail("a day node must bind tabindex to iter:item.tabIndex so exactly one day is a tab stop");
-  if (!bound("data-date", "key")) fail("a day node must bind data-date to iter:item.key so focus can follow keyboard moves");
-  const selects = subtree.some((node) => node.events.click?.kind === "dateGrid" && node.events.click.action === "select");
-  if (!selects) fail("a day node must bind click to dateGrid:select(iter:item)");
-  // The tab stop, the focus target and the activation are one element. A
-  // roving tabindex on the cell beside a clickable button would leave every
-  // button in the natural tab order and move focus to a node that is not the
-  // stop.
-  const rovers = subtree.filter((node) => isBinding(node.bindings.tabindex, "iterationLocal", "tabIndex"));
-  const control = rovers.length === 1 ? rovers[0] : undefined;
-  if (!control || !isBinding(control.bindings["data-date"], "iterationLocal", "key") ||
-      control.events.click?.kind !== "dateGrid" || control.events.click.action !== "select") {
-    fail("exactly one day node must carry the tabindex, data-date and click bindings together, so the tab stop, focus target and activation are the same element");
+  // The ARIA grid pattern: the gridcell is the control. It is the one tab
+  // stop, the element focus moves to and the element a click selects, so its
+  // aria-selected is announced with the focus. A focusable element inside it
+  // would be a second stop whose state lives on another element.
+  if (cell.attrs.role !== "gridcell") fail(`the day cell must declare role="gridcell"`);
+  if (!isBinding(cell.bindings.tabindex, "iterationLocal", "tabIndex")) {
+    fail("the day cell must bind tabindex to iter:item.tabIndex so exactly one day is a tab stop");
+  }
+  if (!isBinding(cell.bindings["data-date"], "iterationLocal", "key")) {
+    fail("the day cell must bind data-date to iter:item.key so focus can follow keyboard moves");
+  }
+  if (cell.events.click?.kind !== "dateGrid" || cell.events.click.action !== "select") {
+    fail("the day cell must bind click to dateGrid:select(iter:item)");
+  }
+  const descendants: DomNodeIR[] = [];
+  const collect = (node: DomNodeIR) => { descendants.push(node); node.children.forEach(collect); };
+  cell.children.forEach(collect);
+  const nested = descendants.find((node) =>
+    node.componentRef !== undefined || FOCUSABLE_TAGS.has(node.tag) || node.attrs.tabindex !== undefined ||
+    node.bindings.tabindex !== undefined || Object.keys(node.events).length > 0);
+  if (nested) {
+    fail(`the day cell must contain no focusable or interactive element (found ${nested.componentRef ?? `<${nested.tag}>`}); the gridcell itself takes focus and selection`);
   }
   if (!chain.some((node) => node.events.keydown?.kind === "dateGrid" && node.events.keydown.action === "keydown")) {
     fail("an ancestor of the day cells must bind keydown to dateGrid:keydown");

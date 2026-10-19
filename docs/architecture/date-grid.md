@@ -43,6 +43,14 @@ The dom binds the core through a closed vocabulary. `dateGrid:caption`,
 and a week's days iterate as `iter:item.days`, declaring the runtime item
 types `DateGridWeek`, `DateGridWeekday` and `DateGridDay`.
 
+The grid follows the ARIA grid pattern (`a11y.apgPattern: "grid"`): each day
+is a `td` with `role="gridcell"`, and that gridcell is the control. It is
+the roving tab stop, takes focus, carries the full-date `aria-label`,
+`aria-selected`, `aria-current` and `aria-disabled`, and selects on click,
+Enter or Space. Because focus and the selected state are on one element, a
+screen reader reads the state with the focus. The day's number renders in a
+presentational `span` inside the cell.
+
 `buildDateGridIR` (`packages/ds-codegen/src/date-grid.ts`) refuses a contract
 with `DATE_GRID_INVALID` unless:
 
@@ -50,10 +58,12 @@ with `DATE_GRID_INVALID` unless:
 - the selection state dimension's a11y attribute maps its two values to
   `"false"` and `"true"`, and the day cell binds that attribute
   (`aria-selected`) to `iter:item.selected`;
-- exactly one node under the cell binds `tabindex` to `iter:item.tabIndex`,
-  and that node also binds `data-date` to `iter:item.key` and its click to
+- the day cell declares `role="gridcell"` and itself binds `tabindex` to
+  `iter:item.tabIndex`, `data-date` to `iter:item.key` and its click to
   `dateGrid:select(iter:item)`, so the tab stop, the focus target and the
-  activated element are one element;
+  activated element are the gridcell;
+- nothing inside the cell is focusable or interactive: no native control tag,
+  `tabindex`, event or component reference;
 - an ancestor of the cells binds keydown to `dateGrid:keydown`;
 - no `dateGrid:` binding appears without a `dateGrid` declaration.
 
@@ -77,16 +87,17 @@ enabled day. The keyboard moves it:
 | Arrow Up / Down | one week |
 | Home / End | the start or end of the locale's week |
 | Page Up / Down | one month; with Shift, one year (clamped to the target month's length) |
+| Enter, Space | select the focused day (a gridcell has no native activation); the key's default is prevented |
 
 A move is clamped to the bounds. A move or a selection into another month
 reports the month through `onMonthChange`, and the nav controls step it. The
 binding calls `afterRender` after each render. The first render after the
 grid is re-derived decides the move: if the targeted day is the tab stop,
-focus moves to its button, found by `data-date` inside the grid. Otherwise the
+focus moves to its gridcell, found by `data-date` inside the grid. Otherwise the
 options refused the move (a controlled month that did not follow), so the tab
 stop stays on the day the move started from and focus stays put. Either way
 the request expires, so a later render never pulls focus back into the grid.
-A selection hands focus over only when the activated button held it, read
+A selection hands focus over only when the activated day held it, read
 through open shadow roots, so a selection never pulls focus into a grid.
 
 In `range` mode a selection pairs a lone start with the new day into a sorted
@@ -97,7 +108,7 @@ span and otherwise starts a new range. Locale formatting is described in
 
 | Family | Core | Binding |
 |---|---|---|
-| React, React Native | `primitives/date/date-grid.ts` | `useDateGrid`; `afterRender` in an effect |
+| React, React Native | `primitives/date/date-grid.ts` | `useDateGrid`; `afterRender` in an effect. React Native renders each gridcell as a `Pressable` with the `button` role (mobile platforms have no gridcell role) and `selected` and `disabled` state |
 | Vue | the same core | `useDateGrid`; `afterRender` in `onUpdated` |
 | Svelte | the same core | `createReactiveDateGrid`; `afterRender` in `$effect` |
 | Angular | the same core | `createReactiveDateGrid` signals; `afterRender` in `ngAfterViewChecked`; iterations track by index |
@@ -135,14 +146,17 @@ divergences are ledgered in
   through a shadow root), a move a controlled month refuses, and the expiry of
   that move's focus.
 - `packages/ds-codegen/src/date-grid.test.ts` pins the IR refusals, including
-  day bindings split across the cell and its button and value channels whose
-  type merely names `Date`.
+  a focusable control inside the cell (the shape before the grid pattern), a
+  cell without `role="gridcell"`, and value channels whose type merely names
+  `Date`.
 - `packages/ds-react/src/primitives/hooks/__tests__/calendar.contract.ts` runs
-  one obligation set through the React, Vue, Svelte, Angular and Lit harnesses;
-  React Native has its own Calendar tests.
+  one obligation set through the React, Vue, Svelte, Angular and Lit harnesses,
+  including the grid pattern's shape and Enter and Space selection; React Native
+  has its own Calendar tests.
 - `e2e/runtime-rail.spec.ts` drives Calendar in Chromium on all five web
   targets under a fixed clock: one tab stop on today, real arrow, Home, End and
-  PageDown keys moving DOM focus, Enter and Space selection, an outside-month
+  PageDown keys moving DOM focus onto the gridcell, Enter and Space selection
+  with focus and `aria-selected` on that gridcell, no control inside any cell, an outside-month
   click keeping focus on its day, the month buttons, and a de-DE grid.
 - `FsdsDateGridTest.kt` and `CalendarSemanticsTest.kt` (Compose, desktop JVM
   `runComposeUiTest`) and `FsdsDateGridTests.swift` pin the native cores and
@@ -159,9 +173,11 @@ divergences are ledgered in
 - The grid is Gregorian. Hijri and Persian locales see Gregorian months.
 - Native targets do not lower roving focus or the grid's keys: every enabled
   day is a focus stop. Compose does not announce today.
-- No screen reader's announcement of `aria-selected` on the cell, with focus on
-  its inner button, has been observed. The SwiftUI accessibility-tree test
-  skips on a host that does not trust the test runner.
+- No screen reader's output has been observed: the pattern puts focus and
+  `aria-selected` on one element, and the browser tests read the DOM, not the
+  accessibility tree. The SwiftUI accessibility-tree test skips under
+  `swift test`, which exposes no accessibility tree for its own window even
+  when the runner is trusted.
 - `shouldCloseOnSelect` is declared and not lowered on any target: the grid
   owns no dismissal.
 - The root keeps `role="application"`.

@@ -52,7 +52,6 @@ export function Shuttle({
             style={styles.item}
           >
             <View
-              style={styles.root}
             >
               <RNText>{item}</RNText>
             </View>

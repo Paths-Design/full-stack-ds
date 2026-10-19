@@ -132,7 +132,6 @@ export function Select({
                 accessibilityState={{ selected: String(Array.isArray(selection) ? selection.includes(item.value) : item.value === selection) === "true", disabled: item.disabled }}
               >
                 <View
-                  style={styles.root}
                 >
                   <RNText>{item.label}</RNText>
                 </View>

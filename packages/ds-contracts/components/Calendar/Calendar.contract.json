@@ -11,7 +11,6 @@
       "nav",
       "grid",
       "weekday",
-      "cell",
       "day",
       "caption"
     ],
@@ -65,22 +64,22 @@
           ]
         }
       },
-      "cell": {
+      "day": {
         "tag": "td",
-        "description": "Grid cell for one visible calendar day slot.",
+        "description": "One visible calendar day. Following the ARIA grid pattern, the gridcell itself is the control: it is the roving tab stop, takes focus, and selects on click, Enter or Space, so its selected state is announced with the focus.",
         "role": "item",
         "multiple": true,
-        "aria": {
-          "role": "gridcell"
-        }
-      },
-      "day": {
-        "tag": "button",
-        "description": "Selectable day button inside a calendar grid cell.",
-        "role": "trigger",
-        "multiple": true,
         "interactive": true,
-        "focusable": true
+        "focusable": "roving",
+        "aria": {
+          "role": "gridcell",
+          "attributes": [
+            "aria-label",
+            "aria-selected",
+            "aria-current",
+            "aria-disabled"
+          ]
+        }
       },
       "caption": {
         "tag": "span",
@@ -223,7 +222,7 @@
                   "children": [
                     {
                       "tag": "td",
-                      "part": "cell",
+                      "part": "day",
                       "iterate": {
                         "source": "iter:item.days",
                         "kind": "array",
@@ -235,26 +234,20 @@
                         "role": "gridcell"
                       },
                       "bindings": {
+                        "tabindex": "iter:item.tabIndex",
+                        "aria-label": "iter:item.fullLabel",
                         "aria-selected": "iter:item.selected",
                         "aria-current": "iter:item.current",
+                        "aria-disabled": "iter:item.disabled",
+                        "data-date": "iter:item.key",
                         "data-outside-month": "iter:item.outsideMonth"
+                      },
+                      "events": {
+                        "click": "dateGrid:select(iter:item)"
                       },
                       "children": [
                         {
-                          "tag": "button",
-                          "part": "day",
-                          "attrs": {
-                            "type": "button"
-                          },
-                          "bindings": {
-                            "tabindex": "iter:item.tabIndex",
-                            "aria-label": "iter:item.fullLabel",
-                            "aria-disabled": "iter:item.disabled",
-                            "data-date": "iter:item.key"
-                          },
-                          "events": {
-                            "click": "dateGrid:select(iter:item)"
-                          },
+                          "tag": "span",
                           "content": "iter:item.label"
                         }
                       ]
@@ -600,7 +593,7 @@
   "relationships": [],
   "a11y": {
     "role": "application",
-    "apgPattern": null,
+    "apgPattern": "grid",
     "labeling": [
       "aria-label",
       "aria-labelledby"

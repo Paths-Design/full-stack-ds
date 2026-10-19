@@ -228,6 +228,31 @@ describe("date grid interaction", () => {
     expect(onMonthChange).not.toHaveBeenCalled();
   });
 
+  it("Enter and Space select the day the key is pressed on, without the key's default", () => {
+    const { grid, opts, onValueChange } = setup();
+    const enter = keyEvent("Enter", "2026-10-14");
+    grid.keydown(enter.event);
+    expect(enter.preventDefault).toHaveBeenCalled();
+    expect(onValueChange).toHaveBeenLastCalledWith(day(2026, 10, 14));
+    grid.sync(opts);
+    const space = keyEvent(" ", "2026-10-15");
+    grid.keydown(space.event);
+    expect(space.preventDefault).toHaveBeenCalled();
+    expect(onValueChange).toHaveBeenLastCalledWith(day(2026, 10, 15));
+    expect(onValueChange).toHaveBeenCalledTimes(2);
+  });
+
+  it("Enter on a disabled day keeps the page still and selects nothing; a key off any day is not taken", () => {
+    const { grid, onValueChange } = setup({ maxDate: day(2026, 10, 15) });
+    const disabled = keyEvent("Enter", "2026-10-16");
+    grid.keydown(disabled.event);
+    expect(disabled.preventDefault).toHaveBeenCalled();
+    const offGrid = keyEvent(" ", "1999-01-01");
+    grid.keydown(offGrid.event);
+    expect(offGrid.preventDefault).not.toHaveBeenCalled();
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
   it("a disabled grid neither moves nor selects", () => {
     const { grid, opts, onValueChange, listener } = setup({ disabled: true });
     const { preventDefault } = press(grid, opts, "ArrowRight", "2026-10-18");

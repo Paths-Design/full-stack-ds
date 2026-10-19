@@ -189,10 +189,10 @@ function isRtl(target: EventTarget | null): boolean {
 }
 
 /**
- * The day button holding focus, read through open shadow roots, when its
+ * The day element holding focus, read through open shadow roots, when its
  * day is `key`. A selection re-renders the grid by position, so a selected
- * day in another month lands on a different button; focus follows it only
- * if the activated button had focus, and never moves into a grid otherwise.
+ * day in another month lands on a different element; focus follows it only
+ * if the activated day had focus, and never moves into a grid otherwise.
  */
 function focusedDay(key: string): Element | undefined {
   if (typeof document === "undefined") return undefined;
@@ -320,6 +320,31 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
     publish();
   };
 
+  const select = (day: DateGridDay) => {
+    if (!options || current().disabled || day.disabled) return;
+    focusedKey = day.key;
+    const root = focusedDay(day.key)?.closest('[role="grid"]');
+    if (root) pendingFocus = { key: day.key, root, synced: false };
+    if (options.mode === "range") {
+      const selection = selectionOf(options.value);
+      options.onValueChange(selection.length === 1
+        ? (selection[0] <= day.date ? [selection[0], day.date] : [day.date, selection[0]])
+        : [day.date]);
+    } else {
+      options.onValueChange(day.date);
+    }
+    showMonth(day.date);
+    publish();
+  };
+  /** Enter or Space on a day selects it; the key never scrolls the page or submits a form. */
+  const activate = (event: DateGridKeyEvent) => {
+    const key = (event.target as Element | null)?.closest?.("[data-date]")?.getAttribute("data-date");
+    const day = current().weeks.flatMap((week) => week.days).find((candidate) => candidate.key === key);
+    if (!day) return;
+    event.preventDefault();
+    select(day);
+  };
+
   return {
     get state(): DateGridState { return current(); },
     get version(): number { return version; },
@@ -341,24 +366,12 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
     },
     previous: () => step(-1),
     next: () => step(1),
-    select(day: DateGridDay) {
-      if (!options || current().disabled || day.disabled) return;
-      focusedKey = day.key;
-      const root = focusedDay(day.key)?.closest('[role="grid"]');
-      if (root) pendingFocus = { key: day.key, root, synced: false };
-      if (options.mode === "range") {
-        const selection = selectionOf(options.value);
-        options.onValueChange(selection.length === 1
-          ? (selection[0] <= day.date ? [selection[0], day.date] : [day.date, selection[0]])
-          : [day.date]);
-      } else {
-        options.onValueChange(day.date);
-      }
-      showMonth(day.date);
-      publish();
-    },
+    select,
     keydown(event: DateGridKeyEvent) {
       switch (event.key) {
+        // A gridcell has no native activation: Enter and Space select the day it is.
+        case "Enter":
+        case " ": return activate(event);
         case "ArrowLeft": return move(event, (from) => addDays(from, isRtl(event.currentTarget) ? 1 : -1));
         case "ArrowRight": return move(event, (from) => addDays(from, isRtl(event.currentTarget) ? -1 : 1));
         case "ArrowUp": return move(event, (from) => addDays(from, -7));
@@ -385,8 +398,8 @@ export function createDateGrid(clock: () => Date = () => new Date()) {
         if (from) focusedKey = from;
         return;
       }
-      const button = root.querySelector<HTMLElement>(`[data-date="${key}"]`);
-      if (button && button.ownerDocument.activeElement !== button) button.focus();
+      const target = root.querySelector<HTMLElement>(`[data-date="${key}"]`);
+      if (target && target.ownerDocument.activeElement !== target) target.focus();
     },
   };
 }

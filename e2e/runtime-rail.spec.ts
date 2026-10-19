@@ -47,8 +47,10 @@
  *               (Wednesday 12 March 2031): the default month renders 42 day
  *               buttons with one tab stop on today and aria-current on its
  *               cell; real arrow/Home/End/PageDown keys move DOM focus with
- *               the tab stop, across a month re-render too; Enter and Space
- *               select (aria-selected on the cell); clicking an outside-month
+ *               the tab stop, across a month re-render too; following the
+ *               ARIA grid pattern the gridcell is the focused, selected day,
+ *               with no control inside it; Enter and Space select through the
+ *               date-grid core (aria-selected on the cell); clicking an outside-month
  *               day shows its month with focus kept on that day; the month
  *               buttons move an uncontrolled month; `locale=de-DE` gives a
  *               Monday-first German grid, and a controlled `month` stays put;
@@ -276,6 +278,10 @@ interface CalendarFacts {
   keys: string[];
   tabStops: string[];
   focused: string | null;
+  /** The focused element's role and selected state: the gridcell itself under the grid pattern. */
+  focusedCell: { role: string | null; selected: string | null } | null;
+  /** Focusable or clickable elements inside the grid body; none under the grid pattern. */
+  nestedControls: number;
   selected: string[];
   current: string[];
   outsideMonth: number;
@@ -293,13 +299,18 @@ async function calendarFacts(page: Page, framework: Framework): Promise<Calendar
         ? (document.querySelector(host) as HTMLElement | null)?.shadowRoot ?? null
         : document;
       if (!root) return null;
-      const dayOf = (cell: Element) => cell.querySelector("[data-date]")?.getAttribute("data-date") ?? "";
+      const dayOf = (cell: Element) => cell.getAttribute("data-date") ?? "";
+      const active = root.activeElement as HTMLElement | null;
       const cells = (selector: string) => Array.from(root.querySelectorAll(`[role="gridcell"]${selector}`));
       const days = Array.from(root.querySelectorAll<HTMLElement>("[data-date]"));
       return {
         keys: days.map((day) => day.getAttribute("data-date") ?? ""),
         tabStops: days.filter((day) => day.getAttribute("tabindex") === "0").map((day) => day.getAttribute("data-date") ?? ""),
-        focused: (root.activeElement as HTMLElement | null)?.getAttribute("data-date") ?? null,
+        focused: active?.getAttribute("data-date") ?? null,
+        focusedCell: active?.hasAttribute("data-date")
+          ? { role: active.getAttribute("role"), selected: active.getAttribute("aria-selected") }
+          : null,
+        nestedControls: root.querySelectorAll("tbody button, tbody a, tbody input, tbody [data-date] [tabindex]").length,
         selected: cells('[aria-selected="true"]').map(dayOf),
         current: cells('[aria-current="date"]').map(dayOf),
         // A false flag renders as "false" (React/Vue/Svelte/Angular) or is
@@ -343,6 +354,8 @@ test.describe("Runtime rail — Calendar (date grid: roving focus, activation, m
       expect(facts!.weekdays[0]).toBe("Sunday");
       expect(facts!.weekdays).toHaveLength(7);
       expect(facts!.labels["2031-03-12"]).toBe("Wednesday, March 12, 2031");
+      // The ARIA grid pattern: no control inside a cell; the gridcell is the day.
+      expect(facts!.nestedControls).toBe(0);
     });
   }
 
@@ -371,10 +384,12 @@ test.describe("Runtime rail — Calendar (date grid: roving focus, activation, m
         await expectFocus(day);
       }
 
-      // The browser's own button activation selects; single mode replaces
-      // the previous day.
+      // A gridcell has no native activation: the date-grid core's Enter and
+      // Space select the focused day; single mode replaces the previous day.
       await page.keyboard.press("Enter");
       await expect.poll(async () => (await calendarFacts(page, framework))?.selected).toEqual(["2031-03-14"]);
+      // Focus and the selected state are on one element, the gridcell.
+      expect((await calendarFacts(page, framework))!.focusedCell).toEqual({ role: "gridcell", selected: "true" });
       await page.keyboard.press("ArrowRight");
       await expectFocus("2031-03-15");
       await page.keyboard.press("Space");

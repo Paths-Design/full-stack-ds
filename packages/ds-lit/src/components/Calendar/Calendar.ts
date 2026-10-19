@@ -171,21 +171,13 @@ export class CalendarElement extends LitElement {
       display: contents;
     }
 
-    .calendar__cell {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      aspect-ratio: 1;
-      min-width: var(--fsds-calendar-design-cell-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
-      padding: var(--fsds-calendar-design-cell-spacing-padding, 0);
-    }
-
     .calendar__day {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      height: 100%;
+      aspect-ratio: 1;
+      min-width: var(--fsds-calendar-design-day-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
+      padding: var(--fsds-calendar-design-day-spacing-padding, 0);
       box-sizing: border-box;
       background: transparent;
       border: none;
@@ -206,15 +198,15 @@ export class CalendarElement extends LitElement {
       outline-style: var(--fsds-calendar-design-condition-f2bc584abce8-focus-style, solid);
     }
 
-    .calendar__cell[aria-selected="true"] .calendar__day {
-      background-color: var(--fsds-calendar-design-condition-f43aab96a58c-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
-      color: var(--fsds-calendar-design-condition-f43aab96a58c-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
-      font-weight: var(--fsds-calendar-design-condition-f43aab96a58c-typography-weight, 600);
+    .calendar__day[aria-selected="true"] {
+      background-color: var(--fsds-calendar-design-condition-9b3217d9acf9-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
+      color: var(--fsds-calendar-design-condition-9b3217d9acf9-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
+      font-weight: var(--fsds-calendar-design-condition-9b3217d9acf9-typography-weight, 600);
     }
 
-    .calendar__cell[aria-current="date"] .calendar__day {
-      box-shadow: var(--fsds-calendar-design-condition-789437ce1e22-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
-      font-weight: var(--fsds-calendar-design-condition-789437ce1e22-typography-weight, 600);
+    .calendar__day[aria-current="date"] {
+      box-shadow: var(--fsds-calendar-design-condition-b9780abcd5e2-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
+      font-weight: var(--fsds-calendar-design-condition-b9780abcd5e2-typography-weight, 600);
     }
     }
   `;
@@ -287,8 +279,8 @@ export class CalendarElement extends LitElement {
       ${(this.dateGrid.state.weeks ?? []).map((week) => html`
       <tr role="row">
         ${(week.days ?? []).map((day) => html`
-        <td class=${'calendar__cell'} role="gridcell" aria-selected=${ifDefined(day.selected)} aria-current=${ifDefined(day.current)} data-outside-month=${ifDefined(day.outsideMonth)}>
-          <button class=${'calendar__day'} type="button" @click=${() => this.dateGrid.select(day)} tabindex=${ifDefined(day.tabIndex)} aria-label=${ifDefined(day.fullLabel)} aria-disabled=${ifDefined(day.disabled)} data-date=${ifDefined(day.key)}>${day.label}</button>
+        <td class=${'calendar__day'} role="gridcell" @click=${() => this.dateGrid.select(day)} tabindex=${ifDefined(day.tabIndex)} aria-label=${ifDefined(day.fullLabel)} aria-selected=${ifDefined(day.selected)} aria-current=${ifDefined(day.current)} aria-disabled=${ifDefined(day.disabled)} data-date=${ifDefined(day.key)} data-outside-month=${ifDefined(day.outsideMonth)}>
+          <span>${day.label}</span>
         </td>
         `)}
       </tr>
@@ -451,21 +443,13 @@ export class CalendarHeaderElement extends LitElement {
       display: contents;
     }
 
-    .calendar__cell {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      aspect-ratio: 1;
-      min-width: var(--fsds-calendar-design-cell-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
-      padding: var(--fsds-calendar-design-cell-spacing-padding, 0);
-    }
-
     .calendar__day {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      height: 100%;
+      aspect-ratio: 1;
+      min-width: var(--fsds-calendar-design-day-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
+      padding: var(--fsds-calendar-design-day-spacing-padding, 0);
       box-sizing: border-box;
       background: transparent;
       border: none;
@@ -486,15 +470,15 @@ export class CalendarHeaderElement extends LitElement {
       outline-style: var(--fsds-calendar-design-condition-f2bc584abce8-focus-style, solid);
     }
 
-    .calendar__cell[aria-selected="true"] .calendar__day {
-      background-color: var(--fsds-calendar-design-condition-f43aab96a58c-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
-      color: var(--fsds-calendar-design-condition-f43aab96a58c-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
-      font-weight: var(--fsds-calendar-design-condition-f43aab96a58c-typography-weight, 600);
+    .calendar__day[aria-selected="true"] {
+      background-color: var(--fsds-calendar-design-condition-9b3217d9acf9-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
+      color: var(--fsds-calendar-design-condition-9b3217d9acf9-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
+      font-weight: var(--fsds-calendar-design-condition-9b3217d9acf9-typography-weight, 600);
     }
 
-    .calendar__cell[aria-current="date"] .calendar__day {
-      box-shadow: var(--fsds-calendar-design-condition-789437ce1e22-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
-      font-weight: var(--fsds-calendar-design-condition-789437ce1e22-typography-weight, 600);
+    .calendar__day[aria-current="date"] {
+      box-shadow: var(--fsds-calendar-design-condition-b9780abcd5e2-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
+      font-weight: var(--fsds-calendar-design-condition-b9780abcd5e2-typography-weight, 600);
     }
     }
   `;
