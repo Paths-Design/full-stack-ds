@@ -34,6 +34,15 @@
  * `platforms` tag is informational: UI Toolkit is a flexbox engine, so
  * web-tagged layout facts lower like any other.
  *
+ * Composite rule: USS evaluates a var() inside a multi-component value as the
+ * whole value, so a consuming declaration with more than one space- or
+ * comma-separated component never carries a var(). Each var() is substituted
+ * by its value when every scope gives it the same one, otherwise the
+ * declaration is ledgered `uss-var-composite`. Carrier axes and gap classes
+ * are computed before that ledgering, so a rule whose only declarations are
+ * ledgered composites still reports its carrier; the unity surface of
+ * audit:variant-realization is what catches a carrier no emitted rule keys.
+ *
  * A fact USS cannot realise becomes an entry in the unsupported ledger (S6),
  * never a hand-authored approximation. Nothing here branches on a component,
  * part, slot or token-path literal: only CSS property names, USS vocabulary,
