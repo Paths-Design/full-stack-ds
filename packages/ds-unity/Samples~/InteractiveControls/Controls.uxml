@@ -4,24 +4,38 @@
         <ui:VisualElement class="fsds-sample-body">
             <ui:Label text="Your experience" class="fsds-sample-title" />
             <ui:Label text="Preferences and content, built with Full Stack DS." class="fsds-sample-description" />
-            <ds:Switch name="sound" label="Enable sound" checked="true" />
+            <ds:Switch name="sound" checked="true"><ui:Label text="Enable sound" /></ds:Switch>
             <ds:Accordion name="settings" collapsible="true" value="graphics" class="fsds-sample-section">
-                <ds:AccordionItem value="graphics" label="Graphics">
-                    <ui:Label text="Adjust the quality of your experience." />
-                    <ds:Switch label="High quality textures" />
+                <ds:AccordionItem>
+                    <ds:AccordionHeader><ds:AccordionTrigger value="graphics" text="Graphics" /></ds:AccordionHeader>
+                    <ds:AccordionContent value="graphics">
+                        <ui:Label text="Adjust the quality of your experience." />
+                        <ds:Switch><ui:Label text="High quality textures" /></ds:Switch>
+                    </ds:AccordionContent>
                 </ds:AccordionItem>
-                <ds:AccordionItem value="audio" label="Audio">
-                    <ui:Label text="Music and sound effects settings." />
+                <ds:AccordionItem>
+                    <ds:AccordionHeader><ds:AccordionTrigger value="audio" text="Audio" /></ds:AccordionHeader>
+                    <ds:AccordionContent value="audio">
+                        <ui:Label text="Music and sound effects settings." />
+                    </ds:AccordionContent>
                 </ds:AccordionItem>
             </ds:Accordion>
             <ds:Tabs name="pages" value="overview" class="fsds-sample-section">
-                <ds:TabsItem value="overview" label="Overview"><ui:Label text="Your adventure starts here." /></ds:TabsItem>
-                <ds:TabsItem value="inventory" label="Inventory"><ui:Label text="Your collected items appear here." /></ds:TabsItem>
-                <ds:TabsItem value="locked" label="Locked" disabled="true"><ui:Label text="Not available yet." /></ds:TabsItem>
+                <ds:TabsList>
+                    <ds:TabsTab value="overview" text="Overview" />
+                    <ds:TabsTab value="inventory" text="Inventory" />
+                    <ds:TabsTab value="locked" text="Locked" disabled="true" />
+                </ds:TabsList>
+                <ds:TabsPanel value="overview"><ui:Label text="Your adventure starts here." /></ds:TabsPanel>
+                <ds:TabsPanel value="inventory"><ui:Label text="Your collected items appear here." /></ds:TabsPanel>
+                <ds:TabsPanel value="locked"><ui:Label text="Not available yet." /></ds:TabsPanel>
             </ds:Tabs>
-            <ds:Popover name="help" label="About these controls" placement="bottom" class="fsds-sample-section">
-                <ui:Label text="Contract-generated UI Toolkit components. These controls share one interaction contract across the Editor and your game." />
-                <ui:Button text="Focusable content" />
+            <ds:Popover name="help" placement="bottom" class="fsds-sample-section">
+                <ds:PopoverTrigger text="About these controls" />
+                <ds:PopoverContent>
+                    <ui:Label text="Contract-generated UI Toolkit components. These controls share one interaction contract across the Editor and your game." />
+                    <ui:Button text="Focusable content" />
+                </ds:PopoverContent>
             </ds:Popover>
         </ui:VisualElement>
     </ui:ScrollView>

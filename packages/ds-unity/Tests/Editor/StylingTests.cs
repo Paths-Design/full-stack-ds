@@ -43,13 +43,14 @@ namespace FullStackDS.Tests
             ColorIs(control.Trigger.resolvedStyle.color, Text);
             Assert.That(control.Trigger.resolvedStyle.fontSize, Is.EqualTo(16));
             Assert.That(control.Trigger.worldBound.height, Is.GreaterThanOrEqualTo(40));
+            // Contract anatomy: the children hole (the label) follows the track; the chevron follows the trigger's children.
             var track = control.Q<VisualElement>("track");
-            var caption = control.Q<Label>(className: "fsds-toggle-caption");
+            var caption = control.contentContainer.Q<Label>();
+            Assert.That(caption.text, Is.EqualTo("Enable sound"));
             Assert.That(caption.worldBound.xMin - track.worldBound.xMax, Is.GreaterThanOrEqualTo(11));
-            var item = root.Q<Accordion>().Items[0];
-            var itemCaption = item.Trigger.Q<Label>(className: "fsds-item-caption");
-            var marker = item.Trigger.Q<Label>(className: "fsds-disclosure-marker");
-            Assert.That(marker.worldBound.xMin - itemCaption.worldBound.xMax, Is.GreaterThanOrEqualTo(15));
+            var trigger = root.Q<AccordionTrigger>();
+            Assert.That(trigger.Chevron.layout.xMin - trigger.contentContainer.layout.xMax, Is.GreaterThanOrEqualTo(15));
+            Assert.That(trigger.Chevron.layout.width, Is.GreaterThan(0));
             control.Trigger.Focus(); yield return null; yield return null;
             Assert.That(control.Trigger.resolvedStyle.borderLeftWidth, Is.EqualTo(2));
             ColorIs(control.Trigger.resolvedStyle.borderLeftColor, new Color32(169, 206, 255, 255));
@@ -94,8 +95,13 @@ namespace FullStackDS.Tests
             Assert.That(sound.Trigger.resolvedStyle.fontSize, Is.EqualTo(16));
             ColorIs(sound.Trigger.resolvedStyle.color, Text);
             var tabs = root.Q<Tabs>("pages");
-            Assert.That(tabs.Items[2].Trigger.resolvedStyle.opacity, Is.EqualTo(.5f).Within(.01));
-            ColorIs(tabs.Items[0].Trigger.resolvedStyle.backgroundColor, new Color32(41, 91, 181, 255));
+            Assert.That(tabs.Group.Triggers[2].resolvedStyle.opacity, Is.EqualTo(.5f).Within(.01));
+            ColorIs(tabs.Group.Triggers[0].resolvedStyle.backgroundColor, new Color32(41, 91, 181, 255));
+            ColorIs(tabs.Group.Triggers[1].resolvedStyle.backgroundColor, Surface);
+            // The tab strip is a row: each tab starts right of the previous one on the same line.
+            Rect first = tabs.Group.Triggers[0].worldBound, second = tabs.Group.Triggers[1].worldBound;
+            Assert.That(second.xMin, Is.GreaterThanOrEqualTo(first.xMax)); Assert.That(second.yMin, Is.EqualTo(first.yMin).Within(1));
+            Assert.That(tabs.Group.Triggers[0].resolvedStyle.borderBottomWidth, Is.EqualTo(3)); Assert.That(tabs.Group.Triggers[1].resolvedStyle.borderBottomWidth, Is.EqualTo(1));
             Capture("runtime-controls-640");
             var surface = root.Q<Popover>("help"); surface.CloseOnBlur = false; surface.Open = true;
             yield return Frames();
@@ -121,7 +127,7 @@ namespace FullStackDS.Tests
             Assert.That(doc.rootVisualElement.Q<Popover>("help").Trigger.worldBound.yMax, Is.LessThanOrEqualTo(601));
             var surface = doc.rootVisualElement.Q<Popover>("help");
             surface.CloseOnBlur = false;
-            for (int i = 0; i < 12; i++) surface.Add(new Label("A long content paragraph must wrap within a narrow floating surface and remain reachable by scrolling."));
+            for (int i = 0; i < 12; i++) surface.Content.Add(new Label("A long content paragraph must wrap within a narrow floating surface and remain reachable by scrolling."));
             surface.Open = true; yield return Frames(15);
             Rect bounds = surface.Content.worldBound;
             Assert.That(bounds.width, Is.LessThanOrEqualTo(304.5));

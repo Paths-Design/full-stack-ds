@@ -11,7 +11,8 @@
  *
  * Rules match pointer FAMILIES, never component identities. Leaves are keyed
  * JSON pointers: array elements that carry a `name`/`part` identity are keyed
- * by it, and prop members are additionally keyed by the role the contract's
+ * by it, anatomy nodes that render another component are keyed
+ * `ref:<part>`, and prop members are additionally keyed by the role the contract's
  * own `channels` and `form` blocks assign to them (channel-value:checked,
  * form-field:name, plain:disabled, …). That derivation is the only
  * contract-wide reasoning here; everything else is a pointer match.
@@ -37,11 +38,15 @@ export type Phase = (typeof PHASES)[number];
  *   emitted-property        the prop member is a generated public property;
  *   selected-channel        the channel is the one the dispatcher selected;
  *   selected-channel-member the prop is that channel's value/default/change prop;
- *   channel-change-event    the event is emitted via that channel's change prop.
+ *   channel-change-event    the event is emitted via that channel's change prop;
+ *   selected-channel-binding an anatomy binding to the selected channel's value
+ *                           sits on a trigger part (the behavior's state class);
+ *   bound-prop-property     an anatomy `prop:<p>` binding on a trigger part names
+ *                           a prop the root class emits as a public property.
  * A lowered leaf whose realization fails refuses generation
  * (UNITY_BOUNDARY_UNREALIZED) instead of being silently dropped.
  */
-export const REALIZATIONS = ["emitted-property", "selected-channel", "selected-channel-member", "channel-change-event"] as const;
+export const REALIZATIONS = ["emitted-property", "selected-channel", "selected-channel-member", "channel-change-event", "selected-channel-binding", "bound-prop-property"] as const;
 export type Realization = (typeof REALIZATIONS)[number];
 
 export interface BoundaryRule {
@@ -57,6 +62,8 @@ export interface BoundaryRule {
   reason?: string;
   /** Only leaves whose value is one of these match (scalar leaves only). */
   valueIn?: (string | number | boolean | null)[];
+  /** Only string leaves whose value matches this regular expression match. */
+  valuePattern?: string;
   /** A family-level fallback; an allowlisted component may not rely on it. */
   catchAll?: boolean;
   /** lowered: how the claim is checked against the emitted control. */
@@ -109,7 +116,12 @@ function walk(value: unknown, source: LeafSource, pointer: string, keyed: string
         ? (item as Record<string, unknown>)
         : null;
       let key = String(index);
-      if (identity && typeof identity.name === "string") {
+      if (identity && typeof identity.componentRef === "string") {
+        // Anatomy nodes that render another component are keyed `ref:<part>`
+        // so their attrs and bindings classify as by-reference composition,
+        // not as facts of a native element.
+        key = `ref:${escape(typeof identity.part === "string" ? identity.part : String(index))}`;
+      } else if (identity && typeof identity.name === "string") {
         const role = keyed.endsWith("/members") ? `${roles.get(identity.name) ?? "plain"}:` : "";
         key = `${role}${escape(identity.name)}`;
       } else if (identity && typeof identity.part === "string") {
@@ -165,6 +177,7 @@ export function patternMatches(pattern: string, leaf: Pick<Leaf, "source" | "key
 
 function ruleMatches(rule: BoundaryRule, leaf: Leaf): boolean {
   if (rule.valueIn && !rule.valueIn.some(v => Object.is(v, leaf.value))) return false;
+  if (rule.valuePattern !== undefined && (typeof leaf.value !== "string" || !new RegExp(rule.valuePattern).test(leaf.value))) return false;
   return rule.match.some(pattern => patternMatches(pattern, leaf));
 }
 
@@ -199,6 +212,10 @@ export function validateBoundary(boundary: unknown): Boundary {
       throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: disposition must be lowered, pending or refused`);
     }
     if (rule.valueIn !== undefined && (!Array.isArray(rule.valueIn) || rule.valueIn.length === 0)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: valueIn must be a non-empty array`);
+    if (rule.valuePattern !== undefined) {
+      if (typeof rule.valuePattern !== "string" || !rule.valuePattern) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: valuePattern must be a non-empty regular expression`);
+      try { new RegExp(rule.valuePattern); } catch { throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: valuePattern ${JSON.stringify(rule.valuePattern)} is not a valid regular expression`); }
+    }
     if (rule.realizes !== undefined) {
       if (rule.disposition !== "lowered") throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: only lowered rules declare realizes`);
       if (!REALIZATIONS.includes(rule.realizes)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: realizes must be one of ${REALIZATIONS.join(", ")}`);

@@ -33,6 +33,58 @@ describe("Unity support boundary", () => {
     for (const disposition of ["lowered", "pending", "refused"] as const) expect(audit.counts[disposition]).toBeGreaterThan(0);
     // Pending debt is attributed to a phase, never floating.
     expect(Object.values(audit.perPhase).reduce((a, b) => a + b, 0)).toBe(audit.counts.pending);
+    // P2 (the anatomy walker) is discharged: no leaf anywhere waits on it.
+    expect(audit.perPhase.P2).toBeUndefined();
+    expect(loadBoundary().rules.filter(r => r.phase === "P2")).toEqual([]);
+  });
+
+  it("resolves every anatomy node kind of the allowlist to exactly one walker lowering or an explicit pending/refused rule", () => {
+    const of = (name: string, keyed: string) => {
+      const leaf = classifyContract(load(name)).find(l => l.keyed === keyed);
+      return leaf && { rule: leaf.rule, disposition: leaf.disposition };
+    };
+    const trigger = "/anatomy/dom/children/item/children/header/children/trigger";
+    // Element nodes, part identity and tags are lowered by the walker.
+    expect(of("Switch", "/anatomy/dom/part")).toEqual({ rule: "anatomy-elements", disposition: "lowered" });
+    expect(of("Switch", "/anatomy/dom/children/track/children/thumb/tag")).toEqual({ rule: "anatomy-tags", disposition: "lowered" });
+    expect(of("Tabs", "/anatomy/parts/3")).toEqual({ rule: "anatomy-parts", disposition: "lowered" });
+    // The children insertion point is a tag the walker lowers (contentContainer / host).
+    expect(of("Switch", "/anatomy/dom/children/2/tag")).toEqual({ rule: "anatomy-tags", disposition: "lowered" });
+    // Selected-channel bindings on trigger parts are realised by the behavior's state class.
+    expect(of("Switch", "/anatomy/dom/children/input/bindings/checked")).toEqual({ rule: "anatomy-channel-binding", disposition: "lowered" });
+    expect(of("Accordion", `${trigger}/bindings/aria-expanded`)).toEqual({ rule: "anatomy-channel-binding", disposition: "lowered" });
+    expect(of("Tabs", "/anatomy/dom/children/list/children/tab/bindings/aria-selected")).toEqual({ rule: "anatomy-channel-binding", disposition: "lowered" });
+    // disabled=prop:* is the root Disabled; name/value form bindings are refused.
+    expect(of("Switch", "/anatomy/dom/children/input/bindings/disabled")).toEqual({ rule: "anatomy-disabled-binding", disposition: "lowered" });
+    expect(of("Switch", "/anatomy/dom/children/input/bindings/name")).toEqual({ rule: "anatomy-form-binding", disposition: "refused" });
+    expect(of("Switch", "/anatomy/dom/children/input/bindings/value")).toEqual({ rule: "anatomy-form-binding", disposition: "refused" });
+    // Static role / aria-* / type attributes are refused.
+    expect(of("Switch", "/anatomy/dom/children/input/attrs/role")).toEqual({ rule: "anatomy-static-attrs-refused", disposition: "refused" });
+    expect(of("Switch", "/anatomy/dom/children/input/attrs/type")).toEqual({ rule: "anatomy-static-attrs-refused", disposition: "refused" });
+    expect(of("Tabs", "/anatomy/dom/children/list/children/indicator/attrs/aria-hidden")).toEqual({ rule: "anatomy-static-attrs-refused", disposition: "refused" });
+    // A componentRef node keeps its identity; everything else about it is P4,
+    // including attrs that would otherwise read as native element attributes.
+    expect(of("Accordion", `${trigger}/children/ref:chevron/part`)).toEqual({ rule: "anatomy-component-ref-identity", disposition: "lowered" });
+    expect(of("Accordion", `${trigger}/children/ref:chevron/componentRef`)).toEqual({ rule: "anatomy-component-ref", disposition: "pending" });
+    expect(of("Accordion", `${trigger}/children/ref:chevron/attrs/name`)).toEqual({ rule: "anatomy-component-ref", disposition: "pending" });
+    // Slot anchors are part identity.
+    expect(of("Popover", "/slots/content/selector")).toEqual({ rule: "slots", disposition: "lowered" });
+    // Kinds the allowlist does not use classify by pointer shape alone.
+    const shape = (keyed: string, value: unknown) => {
+      const leaf = classifyLeaf({ source: "contract", pointer: keyed, keyed, value });
+      return { rule: leaf.rule, disposition: leaf.disposition, phase: loadBoundary().rules.find(r => r.id === leaf.rule)?.phase };
+    };
+    expect(shape("/anatomy/dom/children/x/children/y/name", "label")).toEqual({ rule: "anatomy-named-slot", disposition: "lowered", phase: undefined });
+    expect(shape("/anatomy/dom/children/x/if", "icon")).toEqual({ rule: "anatomy-guards", disposition: "pending", phase: "P4" });
+    expect(shape("/anatomy/dom/children/x/iterate/source", "prop:items")).toEqual({ rule: "anatomy-iteration", disposition: "pending", phase: "P4" });
+    expect(shape("/anatomy/dom/children/x/cssVariableBindings/--fsds-x-y", "prop:y")).toEqual({ rule: "anatomy-css-var-bindings", disposition: "pending", phase: "P4" });
+    expect(shape("/anatomy/dom/children/x/iconGlyph/nameFrom", "prop:icon")).toEqual({ rule: "anatomy-icon-glyph", disposition: "pending", phase: "P4" });
+    expect(shape("/anatomy/dom/children/x/content", "prop:label")).toEqual({ rule: "anatomy-content", disposition: "pending", phase: "P4" });
+    // A part named like a dom field is still a part: `content` the part is not `content` the binding.
+    expect(shape("/anatomy/dom/children/item/children/content/tag", "div")).toEqual({ rule: "anatomy-tags", disposition: "lowered", phase: undefined });
+    // A channel binding is lowered only for the `.value` field shape; other channel fields fall through.
+    expect(shape("/anatomy/dom/children/x/bindings/aria-expanded", "channel:open.onChange")).toEqual({ rule: "anatomy-aria-binding", disposition: "refused", phase: undefined });
+    expect(shape("/anatomy/dom/children/x/bindings/href", "channel:open.onChange")).toEqual({ rule: "anatomy-bindings", disposition: "pending", phase: "P4" });
   });
 
   it("admits every allowlisted component and refuses nothing it carries today", () => {
@@ -72,6 +124,9 @@ describe("Unity support boundary", () => {
       ["/empty", "/empty", {}],
       ["/none", "/none", null],
     ]);
+    // Anatomy nodes that render another component are keyed ref:<part> (or ref:<index>).
+    expect(keyedLeaves({ children: [{ componentRef: "fsds.Icon", part: "chevron", attrs: { name: "x" } }, { componentRef: "fsds.Icon", name: "slotty" }] }, "contract").map(l => l.keyed))
+      .toEqual(["/children/ref:chevron/componentRef", "/children/ref:chevron/part", "/children/ref:chevron/attrs/name", "/children/ref:1/componentRef", "/children/ref:1/name"]);
     // Prop members take the derived role prefix; other named arrays do not.
     const roles = new Map([["checked", "channel-value"]]);
     expect(keyedLeaves({ props: { designed: { members: [{ name: "checked", type: "boolean" }, { name: "other", type: "string" }] } } }, "contract", roles).map(l => l.keyed))
@@ -110,6 +165,18 @@ describe("Unity support boundary", () => {
     expect(() => admitContract(contract, { admitted: true })).toThrow(/UNITY_BOUNDARY_UNADJUDICATED: Switch .*contract:\/formControl\/valueModel \(rule form-control\)/);
   });
 
+  it("valuePattern filters string leaves by regular expression and never matches non-strings", () => {
+    const boundary = boundaryOf([
+      rule({ id: "chan", match: ["contract:/b/*"], valuePattern: "^channel:[a-z]+\\.value$", disposition: "lowered", via: "state class", reason: undefined }),
+      rule({ id: "rest", match: ["contract:/b/*"], disposition: "pending", phase: "P4" }),
+    ]);
+    const leaf = (value: unknown) => classifyLeaf({ source: "contract", pointer: "/b/x", keyed: "/b/x", value }, boundary).rule;
+    expect(leaf("channel:open.value")).toBe("chan");
+    expect(leaf("channel:open.onChange")).toBe("rest");
+    expect(leaf("xchannel:open.value")).toBe("rest");
+    expect(leaf(true)).toBe("rest");
+  });
+
   it("an unclassified leaf fails generation for any component, allowlisted or not", () => {
     const contract = load("Switch") as ContractWithSidecars & { futureBlock?: unknown };
     contract.futureBlock = { enabled: true };
@@ -144,6 +211,8 @@ describe("Unity support boundary", () => {
     ["empty valueIn", rule({ valueIn: [] }), /valueIn must be a non-empty array/],
     ["realizes on a pending rule", rule({ disposition: "pending", phase: "P4", realizes: "emitted-property" }), /only lowered rules declare realizes/],
     ["unknown realization", rule({ disposition: "lowered", via: "x", realizes: "magic" }), /realizes must be one of/],
+    ["empty valuePattern", rule({ valuePattern: "" }), /valuePattern must be a non-empty regular expression/],
+    ["invalid valuePattern", rule({ valuePattern: "(" }), /valuePattern "\(" is not a valid regular expression/],
   ])("rejects a malformed boundary: %s", (_label, bad, message) => {
     expect(() => boundaryOf([bad])).toThrow(message);
   });

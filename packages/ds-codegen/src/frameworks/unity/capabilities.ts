@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { listComponentContracts, findComponentStyles, findComponentTokens } from "../../contracts-fs.js";
 import { buildComponentIR } from "../../ir.js";
 import { assertRealized, createUnityEmitter, unityLowering } from "./factory.js";
+import { rootPublicMembers } from "./walker.js";
 import {
   auditBoundary,
   classifyContract,
@@ -52,10 +53,12 @@ export function accountComponent(contract: ContractWithSidecars, admitted: boole
   const ir = buildComponentIR(contract);
   let source = "", adapter: string | null = null, diagnostic: string | null = null;
   try {
-    adapter = unityLowering(ir).base;
+    adapter = unityLowering(ir).behavior;
     source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" })[0]!.contents;
   } catch (error) { diagnostic = error instanceof Error ? error.message : String(error); }
-  const publicProperties = [...source.matchAll(/public (?:new )?(?:bool|string) (\w+) \{/g)].map(match => match[1]);
+  // Only the root class's members are the component's prop surface; compound
+  // sub-elements carry their own pairing keys.
+  const publicProperties = [...rootPublicMembers(source, ir.name)];
   const boundary = loadBoundary();
   const classified = classifyContract(contract, boundary);
   // Lowered families that declare a realisation must hold for this component's
