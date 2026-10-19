@@ -5,7 +5,7 @@ status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
 updated: 2026-10-18
-verified_at_commit: dd602a390
+verified_at_commit: f597e8cb5
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
@@ -147,7 +147,7 @@ date-grid core formats from that tag:
 
 | Family | Core | Calendar used for text | First day of the week |
 |---|---|---|---|
-| React, Vue, Svelte, Angular, Lit, React Native | `primitives/date/date-grid.ts`, a copy of `packages/ds-codegen/src/date/date-grid.ts` | `Intl.DateTimeFormat` in the locale's calendar when its months are the Gregorian months (`th-TH` shows the Buddhist year), else Gregorian (`fa-IR`) | `Intl.Locale` week info; else the CLDR territory table, by the maximized region, or by the tag's own region where the engine has no `Intl.Locale` |
+| React, Vue, Svelte, Angular, Lit, React Native | `primitives/date/date-grid.ts`, a copy of `packages/ds-codegen/src/date/date-grid.ts` | `Intl.DateTimeFormat` in the locale's calendar when its months are the Gregorian months (`th-TH` shows the Buddhist year), else Gregorian (`fa-IR`) | `Intl.Locale` week info; else the CLDR territory table, by the maximized region, or by the tag's own region where the engine has no `Intl.Locale`, so there a language-only tag (`en`, `ar`) takes the Monday default |
 | SwiftUI | `FsdsDateGrid.swift` (Foundation) | `DateFormatter` templates, with the same Gregorian-month rule | `Locale.calendar.firstWeekday` |
 | Jetpack Compose | `FsdsDateGrid.kt` (`java.time`) | ISO chronology with the locale's `DecimalStyle`, so `th-TH` shows the Gregorian year | `WeekFields.of(locale)`; a language-only tag takes the JVM's region-less, Sunday-first week |
 
@@ -231,4 +231,6 @@ Compose has none on the JVM and does not announce it.
   locales see Gregorian months.
 - React Native's dates are proven under Node's full ICU. Device engines
   (Hermes) were not exercised; the week-start fallback for an engine without
-  `Intl.Locale` is unit-tested by removing it.
+  `Intl.Locale` is unit-tested by removing it. That fallback cannot maximize a
+  language-only tag, so `en` starts on Monday there and on Sunday under ICU;
+  a regional tag (`en-US`) agrees on both.

@@ -1609,7 +1609,7 @@ if (isMain) {
   );
   if (excludedFamilies.length > 0) {
     console.log(
-      `[a11y-rail] excluded families: ${excludedFamilies.map((f) => f.id).join(", ")} (no accessibility surface table; see a11y-matrix.md)`,
+      `[a11y-rail] excluded families: ${excludedFamilies.map((f) => f.id).join(", ")} (no accessibility surface table; see docs/internal/a11y-realization-audit/a11y-matrix.md)`,
     );
   }
   if (unledgered.length > 0) {
