@@ -1,26 +1,50 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace FullStackDS
 {
-    [UxmlElement, HideInInspector]
-    public partial class AnchoredSurface : VisualElement, INotifyValueChanged<bool>
+    /// <summary>Anchored floating-surface behavior over a boolean open channel,
+    /// attached by a generated constructor when the contract declares a
+    /// part-anchored, non-blocking, click-opened surface. The trigger (anchor) and
+    /// content are composed sub-elements discovered under the host by part class.
+    /// While open, content is reparented to the panel root and positioned against
+    /// the trigger; while closed or detached it is out of the hierarchy.</summary>
+    public sealed class AnchoredSurface
     {
-        public Button Trigger { get; } = new Button();
-        public VisualElement Content { get; } = new ScrollView(ScrollViewMode.Vertical);
+        private readonly VisualElement host;
+        private readonly string triggerClass, contentClass, stateClass;
+        private Button trigger;
+        private VisualElement content;
         private bool current;
         private VisualElement panelRoot;
         private string placement = "bottom";
         private IVisualElementScheduledItem tracking;
-        public override VisualElement contentContainer => Content;
         public bool Controlled { get; set; }
         public event Action<bool> ValueRequested;
-        [UxmlAttribute] public string Label { get => Trigger.text; set => Trigger.text = value; }
         public bool CloseOnEscape { get; set; }
         public bool CloseOnOutsideClick { get; set; }
         public bool CloseOnBlur { get; set; }
-        public bool Disabled { get => !enabledSelf; set { SetEnabled(!value); Refresh(); } }
+
+        private AnchoredSurface(VisualElement host, string triggerClass, string contentClass, string stateClass)
+        {
+            this.host = host ?? throw new ArgumentNullException(nameof(host));
+            this.triggerClass = triggerClass; this.contentClass = contentClass; this.stateClass = stateClass;
+            Theme.Attach(host);
+            PartDiscovery.Claim(host, triggerClass, contentClass);
+            host.RegisterCallback<AttachToPanelEvent>(OnAttach);
+            host.RegisterCallback<DetachFromPanelEvent>(OnDetach);
+            // Discover a trigger composed after attachment before its Button handles the event.
+            host.RegisterCallback<PointerDownEvent>(_ => Discover(), TrickleDown.TrickleDown);
+            host.RegisterCallback<NavigationSubmitEvent>(_ => Discover(), TrickleDown.TrickleDown);
+        }
+
+        public static AnchoredSurface Attach(VisualElement host, string triggerClass, string contentClass, string stateClass)
+            => new AnchoredSurface(host, triggerClass, contentClass, stateClass);
+
+        public Button Trigger { get { Discover(); return trigger; } }
+        public VisualElement Content { get { Discover(); return content; } }
         public string Placement
         {
             get => placement;
@@ -30,66 +54,71 @@ namespace FullStackDS
                 placement = value; Reposition();
             }
         }
-        public bool value
+        public bool Value
         {
             get => current;
             set {
                 if (current == value) return;
                 using (var evt = ChangeEvent<bool>.GetPooled(current, value)) {
-                    SetValueWithoutNotify(value); evt.target = this; SendEvent(evt);
+                    SetValueWithoutNotify(value); evt.target = host; host.SendEvent(evt);
                 }
             }
         }
-        public AnchoredSurface()
+
+        private void Discover()
         {
-            Theme.Attach(this); Theme.Attach(Content);
-            Content.AddToClassList("fsds-surface");
-            hierarchy.Add(Trigger);
-            Trigger.clicked += () => RequestValue(!current);
-            Content.style.position = Position.Absolute;
-            Content.focusable = true;
-            Content.RegisterCallback<GeometryChangedEvent>(_ => Reposition());
-            Trigger.RegisterCallback<GeometryChangedEvent>(_ => Reposition());
-            RegisterCallback<AttachToPanelEvent>(OnAttach);
-            RegisterCallback<DetachFromPanelEvent>(OnDetach);
+            var nextTrigger = PartDiscovery.Find(host, triggerClass).OfType<Button>().FirstOrDefault();
+            if (nextTrigger != trigger) {
+                if (trigger != null) { trigger.clicked -= Toggle; trigger.UnregisterCallback<GeometryChangedEvent>(AnchorGeometry); }
+                trigger = nextTrigger;
+                if (trigger != null) { trigger.clicked += Toggle; trigger.RegisterCallback<GeometryChangedEvent>(AnchorGeometry); }
+            }
+            // Content leaves the host while closed or floating; once adopted it stays owned.
+            if (content != null) return;
+            content = PartDiscovery.Find(host, contentClass).FirstOrDefault();
+            if (content == null) return;
+            Theme.Attach(content);
+            content.style.position = Position.Absolute;
+            content.focusable = true;
+            content.RegisterCallback<GeometryChangedEvent>(AnchorGeometry);
         }
-        protected void Configure(string trigger, string content, string prefix)
-        {
-            Trigger.name = trigger; Content.name = content;
-            Trigger.AddToClassList(prefix + "__" + trigger);
-            Content.AddToClassList(prefix + "__" + content);
-        }
+
+        private void Toggle() => RequestValue(!current);
+        private void AnchorGeometry(GeometryChangedEvent _) => Reposition();
+
         private void OnAttach(AttachToPanelEvent evt)
         {
-            if (evt.target != this) return;
-            panelRoot = panel.visualTree;
+            // A queued attach can arrive after an ancestor surface already parked this subtree.
+            if (evt.target != host || host.panel == null || panelRoot != null) return;
+            panelRoot = host.panel.visualTree;
             panelRoot.RegisterCallback<PointerDownEvent>(Outside, TrickleDown.TrickleDown);
             panelRoot.RegisterCallback<KeyDownEvent>(Escape, TrickleDown.TrickleDown);
             panelRoot.RegisterCallback<FocusOutEvent>(Blur, TrickleDown.TrickleDown);
-            panelRoot.RegisterCallback<GeometryChangedEvent>(PanelGeometry);
-            tracking = schedule.Execute(() => { Refresh(); Reposition(); }).Every(16);
+            panelRoot.RegisterCallback<GeometryChangedEvent>(AnchorGeometry);
+            tracking = host.schedule.Execute(() => { Refresh(); Reposition(); }).Every(16);
             Refresh();
         }
         private void OnDetach(DetachFromPanelEvent evt)
         {
-            if (evt.target != this || panelRoot == null) return;
+            if (evt.target != host || panelRoot == null) return;
             panelRoot.UnregisterCallback<PointerDownEvent>(Outside, TrickleDown.TrickleDown);
             panelRoot.UnregisterCallback<KeyDownEvent>(Escape, TrickleDown.TrickleDown);
             panelRoot.UnregisterCallback<FocusOutEvent>(Blur, TrickleDown.TrickleDown);
-            panelRoot.UnregisterCallback<GeometryChangedEvent>(PanelGeometry);
+            panelRoot.UnregisterCallback<GeometryChangedEvent>(AnchorGeometry);
             tracking?.Pause(); tracking = null;
-            Content.RemoveFromHierarchy(); panelRoot = null;
+            content?.RemoveFromHierarchy(); panelRoot = null;
         }
-        private void PanelGeometry(GeometryChangedEvent _) => Reposition();
-        private bool Inside(VisualElement node) => node != null && (node == Trigger || Trigger.Contains(node) || node == Content || Content.Contains(node));
+        private bool Inside(VisualElement node) => node != null && (
+            (trigger != null && (node == trigger || trigger.Contains(node))) ||
+            (content != null && (node == content || content.Contains(node))));
         private void Outside(PointerDownEvent evt)
         {
             if (current && CloseOnOutsideClick && !Inside(evt.target as VisualElement)) RequestValue(false);
         }
         private void Escape(KeyDownEvent evt)
         {
-            if (current && enabledInHierarchy && CloseOnEscape && evt.keyCode == KeyCode.Escape && Inside(evt.target as VisualElement)) {
-                evt.StopPropagation(); RequestValue(false); Trigger.Focus();
+            if (current && host.enabledInHierarchy && CloseOnEscape && evt.keyCode == KeyCode.Escape && Inside(evt.target as VisualElement)) {
+                evt.StopPropagation(); RequestValue(false); trigger?.Focus();
             }
         }
         private void Blur(FocusOutEvent evt)
@@ -98,34 +127,36 @@ namespace FullStackDS
             if (evt.relatedTarget is VisualElement next) {
                 if (!Inside(next)) RequestValue(false);
             } else {
-                schedule.Execute(() => {
-                    if (panel != null && current && CloseOnBlur && !Inside(panel.focusController.focusedElement as VisualElement)) RequestValue(false);
+                host.schedule.Execute(() => {
+                    if (host.panel != null && current && CloseOnBlur && !Inside(host.panel.focusController.focusedElement as VisualElement)) RequestValue(false);
                 });
             }
         }
         public void RequestValue(bool next)
         {
-            if (!enabledInHierarchy || next == current) return;
-            if (!Controlled) value = next;
+            if (!host.enabledInHierarchy || next == current) return;
+            if (!Controlled) Value = next;
             ValueRequested?.Invoke(next);
         }
         public void SetValueWithoutNotify(bool next) { current = next; Refresh(); }
         private void Refresh()
         {
-            EnableInClassList("is-open", current && enabledInHierarchy);
+            Discover();
+            host.EnableInClassList(stateClass, current && host.enabledInHierarchy);
             if (panelRoot == null) return;
             if (current) tracking?.Resume(); else tracking?.Pause();
-            if (current && enabledInHierarchy) {
-                if (Content.parent != panelRoot) {
-                    panelRoot.Add(Content); Content.BringToFront();
-                    Content.schedule.Execute(Reposition);
+            if (content == null) return;
+            if (current && host.enabledInHierarchy) {
+                if (content.hierarchy.parent != panelRoot) {
+                    panelRoot.Add(content); content.BringToFront();
+                    content.schedule.Execute(Reposition);
                 }
-            } else Content.RemoveFromHierarchy();
+            } else content.RemoveFromHierarchy();
         }
         public void Reposition()
         {
-            if (!current || Content.parent == null || panelRoot == null) return;
-            Rect anchor = Trigger.worldBound;
+            if (!current || trigger == null || content == null || content.hierarchy.parent == null || panelRoot == null) return;
+            Rect anchor = trigger.worldBound;
             Vector2 start = panelRoot.WorldToLocal(anchor.position);
             Rect localAnchor = new Rect(start, anchor.size);
             Rect bounds = panelRoot.contentRect;
@@ -133,12 +164,12 @@ namespace FullStackDS
             // and constrain its scroll viewport before measuring placement.
             float maxWidth = Mathf.Max(0, bounds.width - 16);
             float maxHeight = Mathf.Max(0, bounds.height - 16);
-            Content.style.maxWidth = maxWidth;
-            Content.style.maxHeight = maxHeight;
-            Vector2 size = Content.layout.size;
+            content.style.maxWidth = maxWidth;
+            content.style.maxHeight = maxHeight;
+            Vector2 size = content.layout.size;
             if (float.IsNaN(size.x) || float.IsNaN(size.y)) return;
             Vector2 point = CalculatePosition(localAnchor, size, bounds.size, placement);
-            Content.style.left = point.x; Content.style.top = point.y;
+            content.style.left = point.x; content.style.top = point.y;
         }
         // Framework geometry law: preferred side, opposite-side flip, viewport shift.
         public static Vector2 CalculatePosition(Rect anchor, Vector2 content, Vector2 viewport, string placement)

@@ -6,102 +6,70 @@ using UnityEngine.UIElements;
 
 namespace FullStackDS
 {
-    [UxmlElement, HideInInspector]
-    public partial class SelectionItem : VisualElement
+    /// <summary>Keyed selection behavior, attached by a generated constructor when the
+    /// contract declares one select / toggle-item trigger over hidden content. It owns
+    /// no elements: trigger and content sub-elements are composed by the consumer,
+    /// discovered under the host by part class and paired by <see cref="IKeyedPart.Value"/>.
+    /// Discovery runs on panel attachment, before pointer/submit interaction reaches a
+    /// trigger, on host layout changes and on every public mutation; removed parts drop
+    /// out at the next discovery and an orphaned trigger's activation is ignored.</summary>
+    public sealed class ItemGroup
     {
-        public Button Trigger { get; } = new Button();
-        public VisualElement Content { get; } = new VisualElement();
-        private readonly Label marker = new Label();
-        private readonly Label caption = new Label();
-        private string key = "";
-        internal ItemGroup Owner;
-        [UxmlAttribute] public string Value
-        {
-            get => key;
-            set
-            {
-                if (Owner != null && key != value) throw new InvalidOperationException("Remove the item before changing its value.");
-                key = value;
-            }
-        }
-        [UxmlAttribute] public string Label { get => caption.text; set => caption.text = value; }
-        [UxmlAttribute] public bool Disabled
-        {
-            get => !enabledSelf;
-            set { SetEnabled(!value); Trigger.SetEnabled(!value); Owner?.Refresh(); }
-        }
-        public override VisualElement contentContainer => Content;
-        public SelectionItem()
-        {
-            Theme.Attach(this);
-            AddToClassList("fsds-item");
-            Content.AddToClassList("fsds-item-content");
-            marker.AddToClassList("fsds-disclosure-marker");
-            caption.AddToClassList("fsds-item-caption");
-            Trigger.Add(caption);
-            hierarchy.Add(Trigger); hierarchy.Add(Content);
-            Trigger.clicked += () => Owner?.Activate(this);
-            Trigger.RegisterCallback<KeyDownEvent>(e => Owner?.Navigate(this, e));
-            Content.focusable = true; Content.tabIndex = 0;
-            RegisterCallback<AttachToPanelEvent>(_ => schedule.Execute(() => {
-                var group = GetFirstAncestorOfType<ItemGroup>();
-                group?.SynchronizeChildren();
-            }));
-            RegisterCallback<DetachFromPanelEvent>(_ => {
-                var owner = Owner;
-                owner?.schedule.Execute(owner.SynchronizeChildren);
-            });
-        }
-        internal void Present(bool selected, bool tabs, bool unmount)
-        {
-            EnableInClassList("is-selected", selected);
-            Trigger.EnableInClassList("is-selected", selected);
-            Trigger.EnableInClassList("fsds-tab-trigger", tabs);
-            Trigger.EnableInClassList("fsds-disclosure-trigger", !tabs);
-            if (!tabs) {
-                marker.text = selected ? "−" : "+";
-                if (marker.parent != Trigger) Trigger.Add(marker);
-            } else marker.RemoveFromHierarchy();
-            if (unmount && !selected) Content.RemoveFromHierarchy();
-            else {
-                if (Content.parent != this) hierarchy.Add(Content);
-                Content.style.display = selected ? DisplayStyle.Flex : DisplayStyle.None;
-            }
-        }
-    }
-
-    [UxmlElement, HideInInspector]
-    public partial class ItemGroup : VisualElement
-    {
-        private readonly VisualElement itemsHost = new VisualElement();
-        private readonly VisualElement strip = new VisualElement();
-        private readonly List<SelectionItem> items = new List<SelectionItem>();
+        private readonly VisualElement host;
+        private readonly string triggerClass, contentClass, stateClass;
+        private readonly bool select, roving, allowMultiple;
+        private readonly Dictionary<Button, Action> hooked = new Dictionary<Button, Action>();
+        private readonly Dictionary<VisualElement, Mount> unmounted = new Dictionary<VisualElement, Mount>();
+        private List<Button> triggers = new List<Button>();
+        private List<VisualElement> contents = new List<VisualElement>();
         private string[] selected = Array.Empty<string>();
-        private bool explicitValue;
-        private bool tabs;
-        private bool multiple;
-        private bool collapsible;
-        private bool unmount;
-        private string orientation = "horizontal";
-        private string appearance = "underline";
-        private string activation = "automatic";
-        private string triggerPart = "trigger", contentPart = "content", prefix = "fsds";
-        public override VisualElement contentContainer => itemsHost;
-        public IReadOnlyList<SelectionItem> Items => items.AsReadOnly();
+        private bool explicitValue, multiple, unmount;
+        private string orientation, activation = "automatic";
+
+        private struct Mount { public VisualElement Parent, Next; public int Index; }
+
         public bool Controlled { get; set; }
         public event Action<string[]> ValueRequested;
         public event Action<string[]> ValueChanged;
-        public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }
-        public bool Loop { get; set; } = true;
-        public bool Collapsible { get => collapsible; set => collapsible = value; }
-        public bool UnmountInactive { get => unmount; set { unmount = value; Refresh(); } }
+        public bool Loop { get; set; }
+        public bool Collapsible { get; set; }
+        public IReadOnlyList<Button> Triggers { get { Synchronize(); return triggers.AsReadOnly(); } }
+
+        private ItemGroup(VisualElement host, string triggerClass, string contentClass, string operation, string stateClass, bool multiple, string focus, string orientation, bool wrap)
+        {
+            if (operation != "select" && operation != "toggle-item") throw new ArgumentException("ItemGroup realises select and toggle-item operations.");
+            if (focus != "roving" && focus != "manual") throw new ArgumentException("ItemGroup realises roving and manual focus.");
+            this.host = host ?? throw new ArgumentNullException(nameof(host));
+            this.triggerClass = triggerClass; this.contentClass = contentClass; this.stateClass = stateClass;
+            select = operation == "select"; roving = focus == "roving"; allowMultiple = multiple;
+            Orientation = orientation; Loop = wrap;
+            Theme.Attach(host);
+            PartDiscovery.Claim(host, triggerClass, contentClass);
+            host.RegisterCallback<AttachToPanelEvent>(_ => Synchronize());
+            host.RegisterCallback<GeometryChangedEvent>(_ => Synchronize());
+            // Hook triggers composed after attachment before the native Button handles the event.
+            host.RegisterCallback<PointerDownEvent>(evt => HookPending(evt.target), TrickleDown.TrickleDown);
+            host.RegisterCallback<NavigationSubmitEvent>(evt => HookPending(evt.target), TrickleDown.TrickleDown);
+            host.RegisterCallback<KeyDownEvent>(Navigate);
+        }
+
+        private void HookPending(IEventHandler target)
+        {
+            for (var node = target as VisualElement; node != null && node != host; node = node.hierarchy.parent)
+                if (node is Button button && button.ClassListContains(triggerClass) && !hooked.ContainsKey(button) && PartDiscovery.Owner(button, triggerClass) == host) { Synchronize(); return; }
+        }
+
+        public static ItemGroup Attach(VisualElement host, string triggerClass, string contentClass, string operation, string stateClass, bool multiple, string focus, string orientation, bool wrap)
+            => new ItemGroup(host, triggerClass, contentClass, operation, stateClass, multiple, focus, orientation, wrap);
+
+        public bool UnmountInactive { get => unmount; set { unmount = value; Synchronize(); } }
         public string SelectionType
         {
             get => multiple ? "multiple" : "single";
             set
             {
                 if (value != "multiple" && value != "single") throw new ArgumentException("Expected single or multiple.");
-                if (tabs && value == "multiple") throw new ArgumentException("Select operations are single-valued.");
+                if (!allowMultiple && value == "multiple") throw new ArgumentException("This channel is single-valued.");
                 multiple = value == "multiple";
                 if (!multiple && selected.Length > 1) SetValuesWithoutNotify(selected.Take(1).ToArray());
             }
@@ -113,8 +81,6 @@ namespace FullStackDS
             {
                 if (value != "horizontal" && value != "vertical") throw new ArgumentException("Expected horizontal or vertical.");
                 orientation = value;
-                strip.style.flexDirection = value == "vertical" ? FlexDirection.Column : FlexDirection.Row;
-                style.flexDirection = tabs && value == "vertical" ? FlexDirection.Row : FlexDirection.Column;
             }
         }
         public string ActivationMode
@@ -124,15 +90,6 @@ namespace FullStackDS
             {
                 if (value != "manual" && value != "automatic") throw new ArgumentException("Expected automatic or manual.");
                 activation = value;
-            }
-        }
-        public string Appearance
-        {
-            get => appearance;
-            set
-            {
-                if (value != "underline" && value != "pills") throw new ArgumentException("Expected underline or pills.");
-                appearance = value; Refresh();
             }
         }
         public string Value { get => selected.FirstOrDefault() ?? ""; set => Values = string.IsNullOrEmpty(value) ? Array.Empty<string>() : new[] { value }; }
@@ -146,80 +103,100 @@ namespace FullStackDS
                 if (!old.SequenceEqual(selected)) ValueChanged?.Invoke(Values);
             }
         }
-        public ItemGroup()
-        {
-            Theme.Attach(this);
-            strip.AddToClassList("fsds-tab-list");
-            hierarchy.Add(strip); hierarchy.Add(itemsHost);
-            itemsHost.style.flexGrow = 1;
-            RegisterCallback<AttachToPanelEvent>(_ => schedule.Execute(SynchronizeChildren));
-        }
-        protected void Configure(string operation, string trigger, string content, string cssPrefix)
-        {
-            tabs = operation == "select";
-            triggerPart = trigger; contentPart = content; prefix = cssPrefix;
-            strip.name = "list"; strip.style.display = tabs ? DisplayStyle.Flex : DisplayStyle.None;
-            Orientation = orientation;
-        }
-        public void AddItem(SelectionItem item)
-        {
-            if (item == null) throw new ArgumentNullException(nameof(item));
-            if (string.IsNullOrEmpty(item.Value) || items.Any(i => i.Value == item.Value)) throw new ArgumentException("Item values must be non-empty and unique.");
-            if (item.Owner != null) throw new InvalidOperationException("Remove the item from its previous group first.");
-            itemsHost.Add(item); SynchronizeChildren();
-        }
-        public void RemoveItem(SelectionItem item)
-        {
-            if (item.Owner != this) return;
-            item.Trigger.RemoveFromHierarchy();
-            item.hierarchy.Insert(0, item.Trigger);
-            item.RemoveFromHierarchy(); item.Owner = null;
-            SynchronizeChildren();
-        }
-        public void SynchronizeChildren()
-        {
-            var next = itemsHost.Children().OfType<SelectionItem>().ToList();
-            if (next.Any(i => string.IsNullOrEmpty(i.Value)) || next.Select(i => i.Value).Distinct().Count() != next.Count)
-                throw new ArgumentException("Item values must be non-empty and unique.");
-            foreach (var old in items.Where(i => !next.Contains(i)).ToArray()) {
-                old.Trigger.RemoveFromHierarchy(); old.hierarchy.Insert(0, old.Trigger); old.Owner = null;
-            }
-            items.Clear(); items.AddRange(next);
-            foreach (var item in items) {
-                item.Owner = this; item.Trigger.name = triggerPart; item.Content.name = contentPart;
-                item.Trigger.AddToClassList(prefix + "__" + triggerPart);
-                item.Content.AddToClassList(prefix + "__" + contentPart);
-                item.Trigger.SetEnabled(item.enabledSelf);
-                if (tabs) strip.Add(item.Trigger);
-            }
-            if (tabs && !explicitValue) selected = items.Where(i => i.enabledSelf).Take(1).Select(i => i.Value).ToArray();
-            Refresh();
-        }
+
         public void SetValuesWithoutNotify(string[] next)
         {
             if (next == null || next.Any(string.IsNullOrEmpty) || next.Distinct().Count() != next.Length)
                 throw new ArgumentException("Selected values must be non-null, non-empty and unique.");
-            if ((!multiple || tabs) && next.Length > 1) throw new ArgumentException("Single selection accepts at most one value.");
-            explicitValue = true; selected = (string[])next.Clone(); Refresh();
+            if (!multiple && next.Length > 1) throw new ArgumentException("Single selection accepts at most one value.");
+            explicitValue = true; selected = (string[])next.Clone(); Synchronize();
         }
-        public void Activate(SelectionItem item)
+
+        /// <summary>Activates the trigger keyed <paramref name="value"/> as a user would.</summary>
+        public void Activate(string value)
         {
-            if (!enabledInHierarchy || !items.Contains(item) || !item.enabledSelf) return;
+            Synchronize();
+            var trigger = triggers.FirstOrDefault(t => PartDiscovery.Key(t) == value);
+            if (trigger != null) Activate(trigger);
+        }
+
+        /// <summary>Re-discovers composed parts, rejects empty or duplicate trigger
+        /// keys, and presents selection on triggers and content.</summary>
+        public void Synchronize()
+        {
+            var nextTriggers = PartDiscovery.Find(host, triggerClass).OfType<Button>().Where(t => t is IKeyedPart).ToList();
+            var keys = nextTriggers.Select(PartDiscovery.Key).ToList();
+            if (keys.Any(string.IsNullOrEmpty) || keys.Distinct().Count() != keys.Count)
+                throw new ArgumentException("Trigger values must be non-empty and unique.");
+            foreach (var stale in hooked.Keys.Where(t => !nextTriggers.Contains(t)).ToArray()) { stale.clicked -= hooked[stale]; hooked.Remove(stale); }
+            foreach (var trigger in nextTriggers.Where(t => !hooked.ContainsKey(t))) {
+                var target = trigger;
+                Action handler = () => Activate(target);
+                trigger.clicked += handler; hooked[trigger] = handler;
+            }
+            triggers = nextTriggers;
+            foreach (var gone in unmounted.Where(m => m.Value.Parent != host && !host.Contains(m.Value.Parent)).Select(m => m.Key).ToArray()) unmounted.Remove(gone);
+            contents = PartDiscovery.Find(host, contentClass).Where(c => c is IKeyedPart).Concat(unmounted.Keys).ToList();
+            foreach (var content in contents) { content.focusable = true; content.tabIndex = 0; }
+            if (select && !explicitValue) selected = triggers.Where(t => t.enabledSelf).Take(1).Select(PartDiscovery.Key).ToArray();
+            Present();
+        }
+
+        private void Present()
+        {
+            var active = triggers.FirstOrDefault(t => selected.Contains(PartDiscovery.Key(t)) && t.enabledSelf) ?? triggers.FirstOrDefault(t => t.enabledSelf);
+            foreach (var trigger in triggers) {
+                trigger.EnableInClassList(stateClass, selected.Contains(PartDiscovery.Key(trigger)));
+                trigger.tabIndex = roving ? (trigger == active ? 0 : -1) : 0;
+            }
+            foreach (var content in contents) {
+                bool on = selected.Contains(PartDiscovery.Key(content));
+                content.EnableInClassList(stateClass, on);
+                if (unmount && !on) {
+                    if (content.hierarchy.parent == null) continue;
+                    var parent = content.hierarchy.parent;
+                    int index = parent.hierarchy.IndexOf(content);
+                    var next = index + 1 < parent.hierarchy.childCount ? parent.hierarchy[index + 1] : null;
+                    unmounted[content] = new Mount { Parent = parent, Next = next, Index = index };
+                    content.RemoveFromHierarchy();
+                } else {
+                    if (unmounted.TryGetValue(content, out var mount)) {
+                        unmounted.Remove(content);
+                        int index = mount.Next != null && mount.Next.hierarchy.parent == mount.Parent ? mount.Parent.hierarchy.IndexOf(mount.Next) : Math.Min(mount.Index, mount.Parent.hierarchy.childCount);
+                        mount.Parent.hierarchy.Insert(index, content);
+                    }
+                    content.style.display = on ? DisplayStyle.Flex : DisplayStyle.None;
+                }
+            }
+        }
+
+        private void Activate(Button trigger)
+        {
+            // A trigger moved out of this host keeps a stale handler until the next
+            // discovery; ownership is re-checked here so it never activates twice.
+            if (!host.enabledInHierarchy || !trigger.enabledSelf || PartDiscovery.Owner(trigger, triggerClass) != host) return;
+            var key = PartDiscovery.Key(trigger);
             var next = Values;
-            if (tabs) next = new[] { item.Value };
-            else if (multiple) next = next.Contains(item.Value) ? next.Where(v => v != item.Value).ToArray() : next.Concat(new[] { item.Value }).ToArray();
-            else if (next.Contains(item.Value)) { if (!collapsible) return; next = Array.Empty<string>(); }
-            else next = new[] { item.Value };
+            if (select) next = new[] { key };
+            else if (multiple) next = next.Contains(key) ? next.Where(v => v != key).ToArray() : next.Concat(new[] { key }).ToArray();
+            else if (next.Contains(key)) { if (!Collapsible) return; next = Array.Empty<string>(); }
+            else next = new[] { key };
             if (next.SequenceEqual(selected)) return;
             if (!Controlled) Values = next;
             ValueRequested?.Invoke((string[])next.Clone());
         }
-        internal void Navigate(SelectionItem item, KeyDownEvent evt)
+
+        private void Navigate(KeyDownEvent evt)
         {
-            if (!enabledInHierarchy || !item.enabledSelf) return;
-            var candidates = items.Where(i => i.enabledSelf).ToList();
-            var index = candidates.IndexOf(item);
-            if (index < 0) return;
+            var key = evt.keyCode;
+            if (!host.enabledInHierarchy || (key != KeyCode.Home && key != KeyCode.End && key != KeyCode.LeftArrow && key != KeyCode.RightArrow && key != KeyCode.UpArrow && key != KeyCode.DownArrow)) return;
+            Synchronize();
+            Button trigger = null;
+            for (var node = evt.target as VisualElement; node != null && node != host && trigger == null; node = node.hierarchy.parent)
+                if (node is Button button && triggers.Contains(button)) trigger = button;
+            if (trigger == null || !trigger.enabledSelf) return;
+            var candidates = triggers.Where(t => t.enabledSelf).ToList();
+            var index = candidates.IndexOf(trigger);
             int next;
             if (evt.keyCode == KeyCode.Home) next = 0;
             else if (evt.keyCode == KeyCode.End) next = candidates.Count - 1;
@@ -231,25 +208,9 @@ namespace FullStackDS
                 next = Loop ? (index + delta + candidates.Count) % candidates.Count : Math.Max(0, Math.Min(candidates.Count - 1, index + delta));
             }
             evt.StopPropagation();
-            candidates[next].Trigger.Focus();
-            if (tabs && activation == "automatic") Activate(candidates[next]);
-            if (tabs) foreach (var candidate in candidates) candidate.Trigger.tabIndex = candidate == candidates[next] ? 0 : -1;
-        }
-        internal void Refresh()
-        {
-            var active = items.FirstOrDefault(i => selected.Contains(i.Value) && i.enabledSelf) ?? items.FirstOrDefault(i => i.enabledSelf);
-            foreach (var item in items) {
-                bool isSelected = selected.Contains(item.Value);
-                item.Present(isSelected, tabs, unmount);
-                item.Trigger.tabIndex = tabs ? (item == active ? 0 : -1) : 0;
-                if (tabs) {
-                    float radius = appearance == "pills" ? 20 : 6;
-                    item.Trigger.style.borderTopLeftRadius = radius; item.Trigger.style.borderTopRightRadius = radius;
-                    item.Trigger.style.borderBottomLeftRadius = radius; item.Trigger.style.borderBottomRightRadius = radius;
-                    item.Trigger.style.borderBottomWidth = isSelected && appearance == "underline" ? 3 : 0;
-
-                }
-            }
+            candidates[next].Focus();
+            if (select && activation == "automatic") Activate(candidates[next]);
+            if (roving) foreach (var candidate in candidates) candidate.tabIndex = candidate == candidates[next] ? 0 : -1;
         }
     }
 }
