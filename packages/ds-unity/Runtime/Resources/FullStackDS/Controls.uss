@@ -1,6 +1,6 @@
 /* Unity pilot theme authority. These defaults are not a projection of the
    complete Web token graph. Component selectors target the generated contract
-   part classes (<prefix>__<part>), root modifiers (<prefix>--<axis>-<value>)
+   part classes (<prefix>__<part>), root modifiers (<prefix>--<value>)
    and behavior state classes (is-checked, is-open, is-selected). */
 .fsds-theme {
     --fsds-text: #eef1f7;
@@ -107,12 +107,12 @@
 /* Tabs: [list > [indicator, tab...], panel...]. */
 .tabs__list { flex-direction: row; margin-bottom: 8px; flex-wrap: wrap; }
 .tabs__indicator { position: absolute; height: 0; }
-.tabs--orientation-vertical { flex-direction: row; }
-.tabs--orientation-vertical .tabs__list { flex-direction: column; margin-right: 8px; }
+.tabs--vertical { flex-direction: row; }
+.tabs--vertical .tabs__list { flex-direction: column; margin-right: 8px; }
 .fsds-theme .tabs__tab { margin-right: 6px; margin-bottom: 6px; }
 .fsds-theme .tabs__tab.is-selected { background-color: var(--fsds-accent); }
-.fsds-theme .tabs--appearance-underline .tabs__tab.is-selected { border-bottom-width: 3px; }
-.fsds-theme .tabs--appearance-pills .tabs__tab { border-radius: 20px; }
+.fsds-theme .tabs--underline .tabs__tab.is-selected { border-bottom-width: 3px; }
+.fsds-theme .tabs--pills .tabs__tab { border-radius: 20px; }
 .tabs__panel { padding: 12px; flex-grow: 1; }
 
 /* Popover content floats at the panel root while open. */

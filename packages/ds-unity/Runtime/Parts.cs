@@ -13,26 +13,28 @@ namespace FullStackDS
         string Value { get; }
     }
 
-    /// <summary>Root modifier classes for variant-axis props:
-    /// <c>&lt;cssPrefix&gt;--&lt;axis&gt;-&lt;value&gt;</c>. The root's class list is the
-    /// single record of the current value.</summary>
+    /// <summary>Root modifier classes for variant-axis props, matching the web class
+    /// recipe: <c>&lt;cssPrefix&gt;--&lt;value&gt;</c> (<c>tabs--pills</c>). The root's class
+    /// list is the single record of the current value; each axis reads and swaps
+    /// only among its own declared values.</summary>
     public static class Variants
     {
-        public static string Get(VisualElement root, string modifier)
+        /// <summary>The declared value whose modifier class is on <paramref name="root"/>, or null.</summary>
+        public static string Get(VisualElement root, string prefix, params string[] values)
         {
-            foreach (var name in root.GetClasses())
-                if (name.StartsWith(modifier, StringComparison.Ordinal)) return name.Substring(modifier.Length);
+            foreach (var value in values)
+                if (root.ClassListContains(prefix + "--" + value)) return value;
             return null;
         }
 
-        public static void Set(VisualElement root, string modifier, string value, params string[] allowed)
+        /// <summary>Validates <paramref name="value"/> against the declared values and swaps the modifier class.</summary>
+        public static void Set(VisualElement root, string prefix, string value, params string[] values)
         {
-            if (value == null || Array.IndexOf(allowed, value) < 0)
-                throw new ArgumentException($"{modifier}: expected one of {string.Join(", ", allowed)}, got {value ?? "null"}.");
-            var previous = Get(root, modifier);
-            if (previous == value) return;
-            if (previous != null) root.RemoveFromClassList(modifier + previous);
-            root.AddToClassList(modifier + value);
+            if (value == null || Array.IndexOf(values, value) < 0)
+                throw new ArgumentException($"{prefix}: expected one of {string.Join(", ", values)}, got {value ?? "null"}.");
+            foreach (var other in values)
+                if (other != value) root.RemoveFromClassList(prefix + "--" + other);
+            root.AddToClassList(prefix + "--" + value);
         }
     }
 

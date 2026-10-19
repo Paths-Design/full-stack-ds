@@ -15,9 +15,9 @@ namespace FullStackDS
         public bool Controlled { get => Group.Controlled; set => Group.Controlled = value; }
         public event Action<string[]> ValueRequested { add => Group.ValueRequested += value; remove => Group.ValueRequested -= value; }
         public event Action<string[]> ValueChanged { add => Group.ValueChanged += value; remove => Group.ValueChanged -= value; }
-        [UxmlAttribute] public string Orientation { get => Variants.Get(this, "tabs--orientation-"); set { Variants.Set(this, "tabs--orientation-", value, "horizontal", "vertical"); Group.Orientation = value; } }
-        [UxmlAttribute] public string Appearance { get => Variants.Get(this, "tabs--appearance-"); set { Variants.Set(this, "tabs--appearance-", value, "underline", "pills"); } }
-        [UxmlAttribute] public string ActivationMode { get => Variants.Get(this, "tabs--activationMode-"); set { Variants.Set(this, "tabs--activationMode-", value, "automatic", "manual"); Group.ActivationMode = value; } }
+        [UxmlAttribute] public string Orientation { get => Variants.Get(this, "tabs", "horizontal", "vertical"); set { Variants.Set(this, "tabs", value, "horizontal", "vertical"); Group.Orientation = value; } }
+        [UxmlAttribute] public string Appearance { get => Variants.Get(this, "tabs", "underline", "pills"); set { Variants.Set(this, "tabs", value, "underline", "pills"); } }
+        [UxmlAttribute] public string ActivationMode { get => Variants.Get(this, "tabs", "automatic", "manual"); set { Variants.Set(this, "tabs", value, "automatic", "manual"); Group.ActivationMode = value; } }
         [UxmlAttribute] public bool Loop { get => Group.Loop; set => Group.Loop = value; }
         [UxmlAttribute] public bool UnmountInactive { get => Group.UnmountInactive; set => Group.UnmountInactive = value; }
         public Tabs()

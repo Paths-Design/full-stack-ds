@@ -18,7 +18,7 @@ namespace FullStackDS
         public event Action<bool> ValueRequested { add => Surface.ValueRequested += value; remove => Surface.ValueRequested -= value; }
         public void SetValueWithoutNotify(bool next) => Surface.SetValueWithoutNotify(next);
         public void RequestValue(bool next) => Surface.RequestValue(next);
-        [UxmlAttribute] public string Placement { get => Variants.Get(this, "popover--placement-"); set { Variants.Set(this, "popover--placement-", value, "top", "bottom", "left", "right", "auto"); Surface.Placement = value; } }
+        [UxmlAttribute] public string Placement { get => Variants.Get(this, "popover", "top", "bottom", "left", "right", "auto"); set { Variants.Set(this, "popover", value, "top", "bottom", "left", "right", "auto"); Surface.Placement = value; } }
         [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }
         [UxmlAttribute] public bool CloseOnEscape { get => Surface.CloseOnEscape; set => Surface.CloseOnEscape = value; }
         [UxmlAttribute] public bool CloseOnOutsideClick { get => Surface.CloseOnOutsideClick; set => Surface.CloseOnOutsideClick = value; }
@@ -35,9 +35,8 @@ namespace FullStackDS
     }
 
     [UxmlElement]
-    public partial class PopoverTrigger : Button, IKeyedPart
+    public partial class PopoverTrigger : Button
     {
-        [UxmlAttribute] public string Value { get; set; }
         [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }
         public PopoverTrigger()
         {
@@ -47,9 +46,8 @@ namespace FullStackDS
     }
 
     [UxmlElement]
-    public partial class PopoverContent : ScrollView, IKeyedPart
+    public partial class PopoverContent : ScrollView
     {
-        [UxmlAttribute] public string Value { get; set; }
         public PopoverContent()
         {
             name = "content";

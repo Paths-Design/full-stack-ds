@@ -209,14 +209,22 @@ namespace FullStackDS.Tests
         [Test] public void VariantPropsToggleRootModifiersAndRejectUndeclaredValues()
         {
             var tabs = new Tabs();
-            Assert.That(tabs.ClassListContains("tabs--orientation-horizontal") && tabs.ClassListContains("tabs--appearance-underline") && tabs.ClassListContains("tabs--activationMode-automatic"), Is.True);
+            // Web class recipe: <prefix>--<value>, one class per declared axis.
+            Assert.That(tabs.ClassListContains("tabs--horizontal") && tabs.ClassListContains("tabs--underline") && tabs.ClassListContains("tabs--automatic"), Is.True);
             tabs.Appearance = "pills";
-            Assert.That(tabs.ClassListContains("tabs--appearance-pills"), Is.True); Assert.That(tabs.ClassListContains("tabs--appearance-underline"), Is.False);
+            Assert.That(tabs.ClassListContains("tabs--pills"), Is.True); Assert.That(tabs.ClassListContains("tabs--underline"), Is.False);
+            // Swapping one axis leaves the other axes' modifiers in place.
+            Assert.That(tabs.Orientation, Is.EqualTo("horizontal")); Assert.That(tabs.ActivationMode, Is.EqualTo("automatic"));
+            tabs.Orientation = "vertical";
+            Assert.That(tabs.ClassListContains("tabs--vertical") && !tabs.ClassListContains("tabs--horizontal") && tabs.ClassListContains("tabs--pills"), Is.True);
             Assert.Throws<ArgumentException>(() => tabs.Appearance = "outline"); Assert.That(tabs.Appearance, Is.EqualTo("pills"));
-            var accordion = new Accordion(); Assert.That(accordion.Type, Is.EqualTo("single")); Assert.That(accordion.ClassListContains("accordion--type-single"), Is.True);
+            Assert.That(tabs.ClassListContains("tabs--outline"), Is.False);
+            var accordion = new Accordion(); Assert.That(accordion.Type, Is.EqualTo("single")); Assert.That(accordion.ClassListContains("accordion--single"), Is.True);
             accordion.Type = "multiple"; Assert.That(accordion.Group.SelectionType, Is.EqualTo("multiple"));
+            Assert.That(accordion.ClassListContains("accordion--multiple") && !accordion.ClassListContains("accordion--single"), Is.True);
             var popover = new Popover(); Assert.That(popover.Placement, Is.Null);
-            popover.Placement = "top"; Assert.That(popover.Surface.Placement, Is.EqualTo("top")); Assert.That(popover.ClassListContains("popover--placement-top"), Is.True);
+            popover.Placement = "top"; Assert.That(popover.Surface.Placement, Is.EqualTo("top")); Assert.That(popover.ClassListContains("popover--top"), Is.True);
+            popover.Placement = "bottom"; Assert.That(popover.ClassListContains("popover--bottom") && !popover.ClassListContains("popover--top"), Is.True);
             Assert.Throws<ArgumentException>(() => popover.Placement = "center");
         }
         [Test] public void PopoverActivationEscapeDisabledAndDetachHonorSurfaceBoundary()

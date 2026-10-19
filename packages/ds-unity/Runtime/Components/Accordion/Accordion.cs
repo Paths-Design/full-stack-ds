@@ -15,7 +15,7 @@ namespace FullStackDS
         public bool Controlled { get => Group.Controlled; set => Group.Controlled = value; }
         public event Action<string[]> ValueRequested { add => Group.ValueRequested += value; remove => Group.ValueRequested -= value; }
         public event Action<string[]> ValueChanged { add => Group.ValueChanged += value; remove => Group.ValueChanged -= value; }
-        [UxmlAttribute] public string Type { get => Variants.Get(this, "accordion--type-"); set { Variants.Set(this, "accordion--type-", value, "single", "multiple"); Group.SelectionType = value; } }
+        [UxmlAttribute] public string Type { get => Variants.Get(this, "accordion", "single", "multiple"); set { Variants.Set(this, "accordion", value, "single", "multiple"); Group.SelectionType = value; } }
         [UxmlAttribute] public bool Collapsible { get => Group.Collapsible; set => Group.Collapsible = value; }
         [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }
         public Accordion()
