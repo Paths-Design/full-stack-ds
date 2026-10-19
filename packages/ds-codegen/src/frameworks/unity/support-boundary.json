@@ -1,0 +1,524 @@
+{
+  "schema": "unity-support-boundary.v1",
+  "description": "Unity UI Toolkit support boundary. Ordered; first match wins. Rules classify pointer families for the shapes the dispatcher admits (boolean form controls, select/toggle-item item groups, click-opened non-blocking anchored surfaces); whether a component is admitted at all is the dispatcher's decision, recorded per component in the capability inventory. `lowered` names what the emitter or shared C# runtime performs today; `pending` names the parity phase that will lower the family; `refused` states why UI Toolkit cannot realise the family idiomatically. Catch-all rules exist so that unknown prop families are never silently supported: an allowlisted component that reaches one fails generation until the family is adjudicated here.",
+  "phases": {
+    "P2": "Generic anatomy walker: ir.dom/ir.parts lower to a VisualElement tree; runtime bases become behavior mixins.",
+    "P3": "Styling projection: generated USS from token facts, variants, states and box-model geometry; hand-authored palette removed.",
+    "P4": "Interaction families: static pressables, blocking and hover surfaces, composite and non-boolean form controls, componentRef composition, messages, motion, typed C# declarations.",
+    "P5": "Corpus and admission: allowlist reaches the SwiftUI set; CI compile lane and committed-byte drift diff."
+  },
+  "rules": [
+    {
+      "id": "authoring-metadata",
+      "match": ["contract:/$schema", "contract:/schemaVersion", "contract:/codegen/**"],
+      "disposition": "refused",
+      "reason": "Authoring and validator metadata consumed by the contract validator; no target lowers it into runtime source."
+    },
+    {
+      "id": "identity",
+      "match": ["contract:/name", "contract:/cssPrefix"],
+      "disposition": "lowered",
+      "via": "C# partial class name and the root USS class added in the generated constructor."
+    },
+    {
+      "id": "documentation",
+      "match": ["contract:/description", "contract:/category", "contract:/layer", "contract:/props/*/description"],
+      "disposition": "refused",
+      "reason": "Documentation and classification metadata consumed by docs and audits; no target emits it into component source."
+    },
+    {
+      "id": "a2ui",
+      "match": ["contract:/a2ui/**"],
+      "disposition": "refused",
+      "reason": "Agent-authoring metadata consumed by the a2ui runtime deriver, outside every emitter."
+    },
+    {
+      "id": "ssr",
+      "match": ["contract:/ssr/**"],
+      "disposition": "refused",
+      "reason": "UI Toolkit panels are retained-mode and are never server-rendered or hydrated."
+    },
+    {
+      "id": "rtl",
+      "match": ["contract:/rtl/**"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "Icon flipping and row reversal are expressible as generated USS (flex-direction, scale) once styling projection exists; nothing honours rtl today."
+    },
+    {
+      "id": "morphology",
+      "match": ["contract:/morphology/**"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "The box-model geometry profile projects into generated USS slot defaults."
+    },
+    {
+      "id": "anatomy",
+      "match": ["contract:/anatomy/**"],
+      "disposition": "pending",
+      "phase": "P2",
+      "reason": "The generic anatomy walker lowers dom, parts and details into a VisualElement tree. Today the shared runtime bases hand-build their trees and honour only the part names that formControl, interaction and surface facts reference."
+    },
+    {
+      "id": "slots",
+      "match": ["contract:/slots/**"],
+      "disposition": "pending",
+      "phase": "P2",
+      "reason": "Slot anchors belong to the anatomy walker; Popover routing Add(child) into Content and item Add(child) are hand-written exceptions, not slot lowering."
+    },
+    {
+      "id": "prop-channel-value",
+      "match": ["contract:/props/*/members/channel-value:*/**"],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "[UxmlAttribute] value property (Checked, Open, Value/Values) on the generated control; SetValueWithoutNotify / SetValuesWithoutNotify for silent updates."
+    },
+    {
+      "id": "prop-channel-default",
+      "match": ["contract:/props/*/members/channel-default:*/**"],
+      "disposition": "lowered",
+      "realizes": "selected-channel-member",
+      "via": "Imperative initial assignment: a value assigned before panel attachment is the uncontrolled initial state; no separate default property is emitted."
+    },
+    {
+      "id": "prop-channel-change",
+      "match": ["contract:/props/*/members/channel-change:*/**"],
+      "disposition": "lowered",
+      "realizes": "selected-channel-member",
+      "via": "RegisterValueChangedCallback for boolean channels and the ValueChanged C# event for selection channels; Controlled + ValueRequested realise the owner-controlled half of the trio."
+    },
+    {
+      "id": "prop-form-field",
+      "match": ["contract:/props/*/members/form-field:*/**"],
+      "disposition": "refused",
+      "reason": "HTML form submission fields (name, value) have no UI Toolkit counterpart: there is no form element to serialise into."
+    },
+    {
+      "id": "prop-disabled",
+      "match": ["contract:/props/*/members/plain:disabled/**"],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "[UxmlAttribute] Disabled mapped to SetEnabled on the control root; disabled activation leaves state unchanged."
+    },
+    {
+      "id": "prop-item-group-options",
+      "match": [
+        "contract:/props/*/members/plain:collapsible/**",
+        "contract:/props/*/members/plain:loop/**",
+        "contract:/props/*/members/plain:unmountInactive/**",
+        "contract:/props/*/members/plain:orientation/**",
+        "contract:/props/*/members/plain:activationMode/**",
+        "contract:/props/*/members/plain:type/**"
+      ],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "[UxmlAttribute] Collapsible, Loop, UnmountInactive, Orientation, ActivationMode and SelectionType on ItemGroup, emitted only when the contract declares the prop, initialised from the declared default."
+    },
+    {
+      "id": "prop-appearance",
+      "match": ["contract:/props/*/members/plain:appearance/**"],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "[UxmlAttribute] Appearance on ItemGroup; Refresh realises underline (selected bottom border) and pills (radius) as inline styles. P3 moves that styling into generated USS."
+    },
+    {
+      "id": "prop-surface-dismissal-options",
+      "match": [
+        "contract:/props/*/members/plain:closeOnEscape/**",
+        "contract:/props/*/members/plain:closeOnOutsideClick/**",
+        "contract:/props/*/members/plain:closeOnBlur/**"
+      ],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "[UxmlAttribute] CloseOnEscape / CloseOnOutsideClick / CloseOnBlur on AnchoredSurface, initialised from the declared defaults; only triggers the surface declares are enabled."
+    },
+    {
+      "id": "prop-placement",
+      "match": ["contract:/props/*/members/plain:placement/**"],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "[UxmlAttribute] Placement on AnchoredSurface; floating content flips and shifts at panel edges."
+    },
+    {
+      "id": "prop-size",
+      "match": ["contract:/props/*/members/plain:size/**"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "Only the default (md) geometry is lowered from typed token facts; other sizes arrive with USS projection."
+    },
+    {
+      "id": "prop-id-base",
+      "match": ["contract:/props/*/members/plain:idBase/**"],
+      "disposition": "refused",
+      "reason": "DOM id generation exists to wire ARIA relationships; UI Toolkit has no id-referenced accessibility relationships."
+    },
+    {
+      "id": "prop-passthrough",
+      "match": ["contract:/props/passthrough/**"],
+      "disposition": "refused",
+      "reason": "DOM attribute passthrough; UI Toolkit controls expose typed properties, not arbitrary host attributes."
+    },
+    {
+      "id": "props-unadjudicated",
+      "match": ["contract:/props/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "Prop families not yet adjudicated for UI Toolkit. An allowlisted component may not rely on this rule: add a family rule above."
+    },
+    {
+      "id": "channels",
+      "match": ["contract:/channels/**"],
+      "disposition": "lowered",
+      "realizes": "selected-channel",
+      "via": "The one channel the dispatcher selects maps its value/default/change trio to the C# value property, pre-attachment assignment and change callback or event; Controlled + ValueRequested carry owner-controlled state. A second channel is unrealised and refuses generation."
+    },
+    {
+      "id": "types",
+      "match": ["contract:/types/**", "contract:/dataModel/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Named types lower to C# string/bool today; enums, unions and records need typed C# declarations."
+    },
+    {
+      "id": "variants",
+      "match": ["contract:/variants/**"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "Variant axes project into generated USS modifier classes; no variant styling is generated today."
+    },
+    {
+      "id": "states",
+      "match": ["contract:/states/**"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "is-checked / is-selected classes are hand-written in the runtime bases; generic state dimensions and their styling arrive with USS projection."
+    },
+    {
+      "id": "keyframes",
+      "match": ["contract:/keyframes/**"],
+      "disposition": "refused",
+      "reason": "USS has no @keyframes; it supports property transitions only. Keyframe animation would need a scheduler-driven C# runtime, which is not an idiomatic lowering of a stylesheet fact."
+    },
+    {
+      "id": "motion",
+      "match": ["contract:/motion/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "USS transitions, loops and reduced-motion gating are not generated yet."
+    },
+    {
+      "id": "events",
+      "match": ["contract:/events/**"],
+      "disposition": "lowered",
+      "realizes": "channel-change-event",
+      "via": "Events emitted through the selected channel's change prop surface as RegisterValueChangedCallback (boolean) or the ValueChanged C# event (selection); C# signatures use arrays for both selection modes. Any other event is unrealised and refuses generation."
+    },
+    {
+      "id": "state-machine",
+      "match": ["contract:/stateMachine/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Transitions are implemented by hand in ItemGroup and AnchoredSurface; there is no generic state-machine lowering."
+    },
+    {
+      "id": "form",
+      "match": ["contract:/form/**", "contract:/fieldAssociation"],
+      "disposition": "refused",
+      "reason": "No HTML form participation, constraint validation or field association exists in UI Toolkit."
+    },
+    {
+      "id": "form-control-boolean",
+      "match": ["contract:/formControl/valueModel"],
+      "valueIn": ["boolean"],
+      "disposition": "lowered",
+      "via": "The dispatcher selects the BooleanControl base for boolean value models."
+    },
+    {
+      "id": "form-control-part-channel",
+      "match": ["contract:/formControl/part", "contract:/formControl/channel"],
+      "disposition": "lowered",
+      "via": "Configure(part, prefix) names the trigger element; the channel selects the generated C# value property and constants."
+    },
+    {
+      "id": "form-control-commit-change",
+      "match": ["contract:/formControl/commit"],
+      "valueIn": ["change"],
+      "disposition": "lowered",
+      "via": "BooleanControl commits on trigger activation, which is the change moment of a boolean control; there is no intermediate input phase to defer."
+    },
+    {
+      "id": "form-control",
+      "match": ["contract:/formControl/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "Non-boolean value models and commit policies need their own runtime base and an explicit decision here."
+    },
+    {
+      "id": "composite-control",
+      "match": ["contract:/compositeControl/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Composite controls (Select, RadioGroup, …) need a composite runtime base; the dispatcher rejects them today."
+    },
+    {
+      "id": "interaction-operation",
+      "match": ["contract:/interaction/triggers/*/operation"],
+      "valueIn": ["select", "toggle-item", "toggle"],
+      "disposition": "lowered",
+      "via": "The dispatcher selects ItemGroup for select / toggle-item and AnchoredSurface for toggle; Configure(operation, …) carries the operation into the runtime."
+    },
+    {
+      "id": "interaction-parts-channel",
+      "match": ["contract:/interaction/triggers/*/part", "contract:/interaction/content", "contract:/interaction/channel"],
+      "disposition": "lowered",
+      "via": "Configure(operation, triggerPart, contentPart, prefix) names the trigger and content elements; the channel selects the generated value property and constants."
+    },
+    {
+      "id": "interaction-disabled-prop",
+      "match": ["contract:/interaction/disabledProp"],
+      "disposition": "lowered",
+      "via": "The named prop is emitted as [UxmlAttribute] Disabled and gates activation through SetEnabled."
+    },
+    {
+      "id": "interaction-presence",
+      "match": ["contract:/interaction/presence"],
+      "valueIn": ["hidden", "unmount"],
+      "disposition": "lowered",
+      "via": "The dispatcher admits hidden only on ItemGroup (inactive content hidden, detached when UnmountInactive is set) and unmount only on AnchoredSurface (floating content removed on close); other pairings are refused."
+    },
+    {
+      "id": "interaction",
+      "match": ["contract:/interaction/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "Other operations (open, close, …), multi-trigger interactions and remaining interaction facts have no runtime base and need an explicit decision here."
+    },
+    {
+      "id": "focus-orientation-wrap",
+      "match": ["contract:/focus/orientation", "contract:/focus/wrap"],
+      "disposition": "lowered",
+      "via": "ItemGroup Orientation and Loop defaults when the contract declares no orientation/loop prop."
+    },
+    {
+      "id": "focus-strategy",
+      "match": ["contract:/focus/strategy"],
+      "valueIn": ["roving", "manual", "auto", "none"],
+      "disposition": "lowered",
+      "via": "The dispatcher pairs each strategy with the base that realises it and refuses other pairings (UNITY_UNSUPPORTED_FOCUS): roving and manual on ItemGroup (arrow / Home / End navigation), auto on BooleanControl (native Button focus), none on AnchoredSurface (no trap; focus stays on the trigger or moves into the content). The value itself is not read at runtime."
+    },
+    {
+      "id": "focus-initial",
+      "match": ["contract:/focus/initialFocus"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The initial focus target is not read. ItemGroup's roving tabIndex makes the active tab, or every trigger, the first tab stop regardless of the declared part; a declared target that differs would be ignored."
+    },
+    {
+      "id": "focus-description",
+      "match": ["contract:/focus/description"],
+      "disposition": "refused",
+      "reason": "Prose description of the focus strategy; documentation only."
+    },
+    {
+      "id": "focus",
+      "match": ["contract:/focus/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "Focus trapping, restoration and other focus facts are not lowered and need an explicit decision here."
+    },
+    {
+      "id": "portal-enabled",
+      "match": ["contract:/portal/enabled"],
+      "valueIn": [true],
+      "disposition": "lowered",
+      "via": "AnchoredSurface reparents floating content to the panel root and re-attaches the stylesheet; the dispatcher refuses any non-surface shape that enables a portal (UNITY_UNSUPPORTED_PORTAL)."
+    },
+    {
+      "id": "portal-disabled",
+      "match": ["contract:/portal/enabled"],
+      "valueIn": [false],
+      "disposition": "lowered",
+      "via": "Content stays in the document tree; the dispatcher refuses an anchored surface whose portal is disabled because AnchoredSurface always reparents (UNITY_UNSUPPORTED_SURFACE)."
+    },
+    {
+      "id": "portal-target",
+      "match": ["contract:/portal/defaultTarget"],
+      "valueIn": ["body"],
+      "disposition": "lowered",
+      "via": "The panel root is the UI Toolkit equivalent of document.body."
+    },
+    {
+      "id": "portal-anchored",
+      "match": ["contract:/portal/positioning", "contract:/portal/collision"],
+      "valueIn": ["anchored", "flip-shift"],
+      "disposition": "lowered",
+      "via": "AnchoredSurface.Reposition anchors to the trigger's world bound and flips/shifts at panel edges."
+    },
+    {
+      "id": "portal-layering",
+      "match": ["contract:/portal/layering"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "Floating content is only brought to the front of the panel root; named layers need a generated z-order policy."
+    },
+    {
+      "id": "portal",
+      "match": ["contract:/portal/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "Other portal targets, positioning or collision policies need an explicit decision here."
+    },
+    {
+      "id": "dismissal-supported",
+      "match": ["contract:/dismissal/triggers/*/event", "contract:/surface/dismissal/*"],
+      "valueIn": ["escape", "outsideClick", "outside-click", "blur"],
+      "disposition": "lowered",
+      "via": "AnchoredSurface CloseOnEscape / CloseOnOutsideClick / CloseOnBlur over the anchor/content union."
+    },
+    {
+      "id": "dismissal-enabled-by",
+      "match": ["contract:/dismissal/triggers/*/enabledBy"],
+      "disposition": "lowered",
+      "via": "The named prop is emitted as the matching [UxmlAttribute] CloseOn* flag."
+    },
+    {
+      "id": "dismissal-none",
+      "match": ["contract:/dismissal/triggers"],
+      "disposition": "lowered",
+      "via": "An empty trigger list declares no dismissal; the runtime bases register none."
+    },
+    {
+      "id": "dismissal",
+      "match": ["contract:/dismissal/**", "contract:/surface/dismissal/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "pointer-leave, close-button and other dismissal triggers need the blocking and hover surface bases and an explicit decision here."
+    },
+    {
+      "id": "surface-non-blocking",
+      "match": ["contract:/surface/modality"],
+      "valueIn": ["non-blocking"],
+      "disposition": "lowered",
+      "via": "The dispatcher selects AnchoredSurface for non-blocking surfaces."
+    },
+    {
+      "id": "surface-open-click",
+      "match": ["contract:/surface/openTriggers/*"],
+      "valueIn": ["click"],
+      "disposition": "lowered",
+      "via": "The trigger Button's clicked event toggles the surface."
+    },
+    {
+      "id": "surface-anchor-content",
+      "match": ["contract:/surface/anchor/part", "contract:/surface/content/part"],
+      "disposition": "lowered",
+      "via": "Configure(anchorPart, contentPart, prefix) names the trigger and floating content elements."
+    },
+    {
+      "id": "surface-content-interactive",
+      "match": ["contract:/surface/content/interactive"],
+      "valueIn": [true],
+      "disposition": "lowered",
+      "via": "Content is a focusable ScrollView; the dispatcher refuses non-interactive content because the runtime cannot make it inert (UNITY_UNSUPPORTED_SURFACE)."
+    },
+    {
+      "id": "surface-anchor-relation",
+      "match": ["contract:/surface/anchor/relation"],
+      "disposition": "refused",
+      "reason": "aria-controls / aria-expanded relations have no assistive-technology consumer in UI Toolkit."
+    },
+    {
+      "id": "surface-positioning",
+      "match": ["contract:/surface/positioning/strategy", "contract:/surface/positioning/collision", "contract:/surface/kind"],
+      "valueIn": ["anchored", "flip-shift", "popover"],
+      "disposition": "lowered",
+      "via": "The dispatcher admits part-anchored popovers only; AnchoredSurface.Reposition anchors to the trigger and flips/shifts at panel edges."
+    },
+    {
+      "id": "surface-placement-prop",
+      "match": ["contract:/surface/positioning/placementProp"],
+      "disposition": "lowered",
+      "via": "The named prop is emitted as [UxmlAttribute] Placement and drives Reposition."
+    },
+    {
+      "id": "surface-persistent",
+      "match": ["contract:/surface/presence"],
+      "valueIn": ["persistent"],
+      "disposition": "lowered",
+      "via": "The Content object is retained while closed (detached from the hierarchy, not disposed); the dispatcher refuses other presence values (UNITY_UNSUPPORTED_SURFACE)."
+    },
+    {
+      "id": "surface",
+      "match": ["contract:/surface/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "Blocking modality, hover/focus open triggers and remaining surface facts need the blocking and hover surface bases and an explicit decision here."
+    },
+    {
+      "id": "relationships",
+      "match": ["contract:/relationships/**"],
+      "disposition": "refused",
+      "reason": "Id-referenced ARIA relationships; UI Toolkit exposes no assistive-technology tree that could consume them."
+    },
+    {
+      "id": "a11y-keyboard",
+      "match": ["contract:/a11y/keyboard/**"],
+      "disposition": "lowered",
+      "via": "ItemGroup arrow / Home / End navigation and native Button submit activation (Space / Enter) through NavigationSubmitEvent."
+    },
+    {
+      "id": "a11y",
+      "match": ["contract:/a11y/**"],
+      "disposition": "refused",
+      "reason": "Roles, labels and ARIA attributes have no runtime consumer: UI Toolkit exposes no assistive-technology tree on desktop, and Unity's mobile AccessibilityHierarchy is not populated by UI Toolkit. Revisit when that integration exists."
+    },
+    {
+      "id": "messages",
+      "match": ["contract:/messages/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The component message catalog is not lowered for Unity; generated controls carry no localisable text."
+    },
+    {
+      "id": "text-overflow",
+      "match": ["contract:/textOverflow/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Truncation policy needs USS text-overflow projection and a measuring runtime."
+    },
+    {
+      "id": "sequence",
+      "match": ["contract:/sequence/**", "contract:/pagedSet/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Sequence and paged-set position policies need their own runtime base."
+    },
+    {
+      "id": "token-default-geometry",
+      "match": ["tokens:/*.size.md.track.width/fallback", "tokens:/*.size.md.track.height/fallback", "tokens:/*.size.md.thumb.size/fallback"],
+      "disposition": "lowered",
+      "via": "Typed px fallback facts assign TrackWidth, TrackHeight and ThumbSize in the generated constructor."
+    },
+    {
+      "id": "tokens",
+      "match": ["tokens:/**"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "Token bindings project into generated USS variables; today only the default-size geometry fallbacks are read."
+    },
+    {
+      "id": "styles",
+      "match": ["styles:/**"],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "Style declarations project into generated USS; the shipped stylesheet is hand-authored."
+    }
+  ]
+}

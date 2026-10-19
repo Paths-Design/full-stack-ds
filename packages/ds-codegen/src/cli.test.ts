@@ -4,7 +4,13 @@
 // via the rejection instead of killing the test runner. The suite runs
 // from the repo root (the codegen cwd contract), against the real
 // contracts corpus; generation paths use --dry-run so nothing is written.
+import fs from "node:fs";
+import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { mergeBoxModelDefaults } from "./box-model.js";
+import type { ComponentContract, TokenResolution } from "./contract.js";
+import type { FrameworkEmitter, TargetId } from "./emitter.js";
+import type { RegistryOptions, TargetRegistry } from "./registry.js";
 
 // Every case resets the module registry and re-imports cli.ts against the real
 // contracts corpus, so the import graph is rebuilt per test rather than shared:
@@ -159,5 +165,181 @@ describe("cli main — happy paths", () => {
     const { exit } = prepare(["--dry-run", "--migrate", "--target=react", "Button"]);
     await import("./cli.js");
     expect(exit).not.toHaveBeenCalled();
+  });
+});
+
+type EmitterEvent = {
+  kind: "admit" | "emit";
+  target: TargetId;
+  component: string;
+  admitted?: boolean;
+};
+
+/**
+ * prepare() plus a registry whose every emitter is replaced by a child
+ * object that records admitContract and emitComponent calls in order. The
+ * recording admitContract stands in for any real target hook, so these
+ * cases pin the CLI seam (what is passed, when, and how a throw surfaces),
+ * not any target's support boundary. `refuse` names a component whose
+ * admission throws.
+ */
+function prepareWithAdmissionRecorder(args: string[], refuse?: string) {
+  const handles = prepare(args);
+  const events: EmitterEvent[] = [];
+  const contracts = new Map<string, ComponentContract>();
+  vi.doMock("./registry.js", async (importOriginal) => {
+    const actual = await importOriginal<{
+      createDefaultRegistry: (opts: RegistryOptions) => TargetRegistry;
+    }>();
+    return {
+      ...actual,
+      createDefaultRegistry: (opts: RegistryOptions): TargetRegistry => {
+        const registry = actual.createDefaultRegistry(opts);
+        return {
+          ...registry,
+          get: (id: TargetId) => {
+            const binding = registry.get(id);
+            const base = binding.emitter;
+            const emitter: FrameworkEmitter = Object.create(base);
+            emitter.admitContract = (contract, context) => {
+              events.push({
+                kind: "admit",
+                target: id,
+                component: contract.name,
+                admitted: context.admitted,
+              });
+              contracts.set(`${id}:${contract.name}`, contract);
+              if (contract.name === refuse) {
+                throw new Error(`ADMISSION_REFUSED: ${id} refuses ${contract.name}`);
+              }
+            };
+            emitter.emitComponent = (ir, emitOpts) => {
+              events.push({ kind: "emit", target: id, component: ir.name });
+              return base.emitComponent(ir, emitOpts);
+            };
+            return { ...binding, emitter };
+          },
+        };
+      },
+    };
+  });
+  return { ...handles, events, contracts };
+}
+
+function readComponentJson(name: string, file: string): unknown {
+  return JSON.parse(
+    fs.readFileSync(
+      path.join(process.cwd(), "packages", "ds-contracts", "components", name, file),
+      "utf-8",
+    ),
+  );
+}
+
+describe("cli main — emitter admitContract seam", () => {
+  afterEach(() => {
+    vi.doUnmock("./registry.js");
+  });
+
+  it("passes the sidecar-merged contract with admitted=true on an allowlist-free target, before emit", async () => {
+    const { exit, events, contracts } = prepareWithAdmissionRecorder([
+      "--dry-run",
+      "--target=react",
+      "Button",
+    ]);
+    await import("./cli.js");
+    expect(exit).not.toHaveBeenCalled();
+    expect(events).toEqual([
+      { kind: "admit", target: "react", component: "Button", admitted: true },
+      { kind: "emit", target: "react", component: "Button" },
+    ]);
+
+    // The on-disk Button contract carries no tokens/styles of its own, so
+    // both fields reaching the hook prove the CLI merged the sidecars.
+    const raw = readComponentJson("Button", "Button.contract.json") as ComponentContract;
+    expect(raw.tokens).toBeUndefined();
+    expect(raw.styles).toBeUndefined();
+
+    const admittedContract = contracts.get("react:Button")!;
+    expect(admittedContract.styles).toEqual(
+      readComponentJson("Button", "Button.styles.json"),
+    );
+    // tokens are the box-model-default merge the generate path lowers from,
+    // with the authored sidecar winning on every slot it sets.
+    expect(admittedContract.tokens).toEqual(
+      mergeBoxModelDefaults(
+        readComponentJson("Button", "Button.tokens.json") as Record<string, TokenResolution>,
+        undefined,
+        raw.morphology,
+      ),
+    );
+  });
+
+  it("passes admitted=false for an explicit request outside the target's allowlist", async () => {
+    const { events } = prepareWithAdmissionRecorder([
+      "--dry-run",
+      "--target=unity",
+      "Button",
+    ]);
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    // Unity's own emitter may reject Button after admission; this case pins
+    // only the admission context, which is recorded before any emit.
+    await import("./cli.js").catch(() => undefined);
+    expect(events[0]).toEqual({
+      kind: "admit",
+      target: "unity",
+      component: "Button",
+      admitted: false,
+    });
+  });
+
+  it("passes admitted=true for an explicit request inside the target's allowlist", async () => {
+    const { exit, events } = prepareWithAdmissionRecorder([
+      "--dry-run",
+      "--target=unity",
+      "Switch",
+    ]);
+    await import("./cli.js");
+    expect(exit).not.toHaveBeenCalled();
+    expect(events).toEqual([
+      { kind: "admit", target: "unity", component: "Switch", admitted: true },
+      { kind: "emit", target: "unity", component: "Switch" },
+    ]);
+  });
+
+  it("admits exactly the allowlisted components, each admitted=true, on a full-corpus run", async () => {
+    const { exit, events } = prepareWithAdmissionRecorder(["--dry-run", "--target=unity"]);
+    await import("./cli.js");
+    expect(exit).not.toHaveBeenCalled();
+    const admits = events.filter((e) => e.kind === "admit");
+    expect(admits.map((e) => e.component).sort()).toEqual([
+      "Accordion",
+      "Popover",
+      "Switch",
+      "Tabs",
+    ]);
+    expect(admits.every((e) => e.admitted === true)).toBe(true);
+  });
+
+  it("a dry-run refusal propagates its error and stops generation before the refused component emits", async () => {
+    const { exit, log, events } = prepareWithAdmissionRecorder(
+      ["--dry-run", "--target=react", "Badge", "Button", "Card"],
+      "Button",
+    );
+    await expect(import("./cli.js")).rejects.toThrow(
+      "ADMISSION_REFUSED: react refuses Button",
+    );
+    // A refusal is a thrown generation failure, not a handled exit.
+    expect(exit).not.toHaveBeenCalled();
+    // Badge is admitted and emitted; Button is admitted then refused before
+    // emit; Card is never reached.
+    expect(events.map((e) => `${e.kind}:${e.component}`)).toEqual([
+      "admit:Badge",
+      "emit:Badge",
+      "admit:Button",
+    ]);
+    const lines = log.mock.calls.map((call) => String(call[0]));
+    expect(lines.some((l) => l.includes("DRY RUN  Badge"))).toBe(true);
+    expect(lines.some((l) => l.includes("DRY RUN  Button"))).toBe(false);
+    expect(lines.some((l) => l.startsWith("\nDone."))).toBe(false);
   });
 });

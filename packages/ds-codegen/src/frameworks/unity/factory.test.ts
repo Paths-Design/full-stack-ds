@@ -61,6 +61,60 @@ describe("Unity capability lowering", () => {
     const source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
     expect(source).toContain("TrackWidth = 61f;");
   });
+  it("refuses facts the selected runtime base would contradict instead of ignoring them", () => {
+    // ItemGroup always runs arrow navigation: a non-roving strategy is not realised.
+    const tabs = fixture("Tabs");
+    tabs.focus = { ...tabs.focus, strategy: "none" } as typeof tabs.focus;
+    expect(() => unityLowering(buildComponentIR(tabs))).toThrow('UNITY_UNSUPPORTED_FOCUS: Tabs declares focus.strategy "none", which ItemGroup does not realise');
+    // BooleanControl defers to native Button focus: roving is not realised.
+    const sw = fixture("Switch");
+    sw.focus = { ...sw.focus, strategy: "roving" } as typeof sw.focus;
+    expect(() => unityLowering(buildComponentIR(sw))).toThrow("UNITY_UNSUPPORTED_FOCUS: Switch");
+    // Only AnchoredSurface reparents content; an item group that enables a portal is refused.
+    const portaled = fixture("Tabs");
+    portaled.portal = { enabled: true } as typeof portaled.portal;
+    expect(() => unityLowering(buildComponentIR(portaled))).toThrow("UNITY_UNSUPPORTED_PORTAL: Tabs");
+    // AnchoredSurface always reparents: a surface whose portal is disabled is refused.
+    const inline = fixture("Popover");
+    inline.portal = { ...inline.portal, enabled: false } as typeof inline.portal;
+    expect(() => unityLowering(buildComponentIR(inline))).toThrow("UNITY_UNSUPPORTED_SURFACE: Popover declares portal/presence/content facts");
+    // ItemGroup hides inactive content (detaching only under UnmountInactive); an
+    // unconditional unmount presence is refused rather than approximated.
+    const unmount = fixture("Accordion");
+    unmount.interaction = { ...unmount.interaction!, presence: "unmount" };
+    expect(() => unityLowering(buildComponentIR(unmount))).toThrow('UNITY_UNSUPPORTED_INTERACTION: Accordion declares presence "unmount"');
+  });
+  it("refuses a lowered family the emitted control does not realise", () => {
+    const emitter = createUnityEmitter();
+    // `orientation` is a lowered ItemGroup option family, but BooleanControl emits no Orientation.
+    const sw = fixture("Switch");
+    sw.props!.designed!.members!.push({ name: "orientation", propType: { kind: "string" }, default: "horizontal" });
+    expect(() => emitter.admitContract!(sw, { admitted: true })).toThrow("UNITY_BOUNDARY_UNREALIZED: Switch on BooleanControl does not realise prop orientation (rule prop-item-group-options claims emitted-property)");
+    // A second channel is not the one the dispatcher selects.
+    const tabs = fixture("Tabs");
+    tabs.channels = { ...tabs.channels, extra: { value: "extra", defaultValue: "defaultExtra", onChange: "onExtraChange", valueType: "string", description: "probe" } };
+    tabs.props!.styled!.members!.push({ name: "extra", propType: { kind: "string" } }, { name: "defaultExtra", propType: { kind: "string" } }, { name: "onExtraChange", propType: { kind: "string" } });
+    expect(() => emitter.admitContract!(tabs, { admitted: true })).toThrow(/UNITY_BOUNDARY_UNREALIZED: Tabs on ItemGroup does not realise .*channel extra \(rule channels claims selected-channel\)/);
+    // An event not emitted through the selected channel's change prop has no C# surface.
+    const events = fixture("Tabs");
+    events.events = { ...events.events, probe: { description: "probe", emittedVia: ["onSomethingElse"] } } as typeof events.events;
+    expect(() => emitter.admitContract!(events, { admitted: true })).toThrow(/UNITY_BOUNDARY_UNREALIZED: Tabs on ItemGroup does not realise event probe \(rule events claims channel-change-event\)/);
+    // The explicit-request path is held to the same realisation standard.
+    expect(() => emitter.admitContract!(sw, { admitted: false })).toThrow("UNITY_BOUNDARY_UNREALIZED");
+  });
+  it("gates generation on the support boundary before lowering", () => {
+    const emitter = createUnityEmitter();
+    for (const name of ["Switch", "Accordion", "Popover", "Tabs"]) {
+      expect(() => emitter.admitContract!(fixture(name), { admitted: true })).not.toThrow();
+    }
+    const unclassified = fixture("Switch") as ComponentContract & { futureBlock?: unknown };
+    unclassified.futureBlock = { enabled: true };
+    expect(() => emitter.admitContract!(unclassified, { admitted: false })).toThrow("UNITY_BOUNDARY_UNCLASSIFIED: Switch: contract:/futureBlock/enabled");
+    const unadjudicated = fixture("Switch");
+    unadjudicated.props!.designed!.members!.push({ name: "futureBehavior", propType: { kind: "boolean" } });
+    expect(() => emitter.admitContract!(unadjudicated, { admitted: true })).toThrow("UNITY_BOUNDARY_UNADJUDICATED");
+    expect(() => emitter.admitContract!(unadjudicated, { admitted: false })).not.toThrow();
+  });
   it("registers the four-component pilot without claiming TypeScript rail admission", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");

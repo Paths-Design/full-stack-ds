@@ -10,6 +10,7 @@
  * looks emitters up by `id` from a registry.
  */
 
+import type { ComponentContract } from "./contract.js";
 import type { ComponentIR } from "./ir.js";
 import type { PrimitiveIR } from "./primitive-contract.js";
 
@@ -69,6 +70,22 @@ export interface EmitOptions {
  */
 export interface FrameworkEmitter {
   readonly id: TargetId;
+
+  /**
+   * Optional pre-lowering admission. Called by the CLI once per component per
+   * target, before emitComponent/emitHook/emitTests, with the validated
+   * contract: the generate path passes it with sidecar `tokens` and `styles`
+   * merged in, and watch mode passes the bare contract without the sidecar
+   * merge. A target that maintains a machine-readable support boundary throws
+   * here to refuse a contract carrying facts it has not classified; the error
+   * propagates and fails generation. `context.admitted` is true when the
+   * component is on the target's fsds.targets.json allowlist (or the target
+   * has no allowlist) and false for an explicit `generate <Name>` request that
+   * bypasses the allowlist.
+   * This is admission, not translation: implementations must not derive
+   * emitted source from the raw contract here.
+   */
+  admitContract?(contract: ComponentContract, context: { admitted: boolean }): void;
 
   /** Files representing the component implementation (TSX, SFC, etc.). */
   emitComponent(ir: ComponentIR, opts: EmitOptions): GeneratedFile[];
