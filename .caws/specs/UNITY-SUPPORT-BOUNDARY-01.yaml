@@ -91,3 +91,12 @@ evidence:
     exit_code: 1
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/generate-unadjudicated.log"
     commit_sha: "7c24b5e95"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "auditBoundary reports deadRules [] and unadjudicated [] over the live corpus (boundary.test.ts corpus case; audit-unity-boundary.log); validateBoundary rejects refused rules without reason, pending rules without phase, lowered rules without via, catch-all lowered/refused rules and realizes on non-lowered rules (boundary.test.ts \"rejects a malformed boundary\" cases); capabilities.test.ts asserts every prop of every component carries a rule and every allowlisted component realises its lowered claims"
+    recorded_at: "2026-10-19T01:20:43.365Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/capabilities.test.ts::accounts for the actual corpus and keeps unadmitted shapes distinct"
+    command: "pnpm run audit:unity-boundary"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-support-boundary-01/audit-unity-boundary.log"
+    commit_sha: "7c24b5e95"
