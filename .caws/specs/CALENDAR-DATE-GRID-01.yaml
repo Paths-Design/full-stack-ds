@@ -53,10 +53,11 @@ acceptance:
       dom-tree.test.ts pins; and a missing or mistyped channel or prop (a value
       channel must be typed Date | Date[], optionally | null), a dateGrid binding
       without the block, a compositeControl on the value channel, a cell that does
-      not bind the selection dimension a11y attribute, or a day cell that is not
-      itself the gridcell control (no role=gridcell, a missing tabindex, data-date
-      or select binding, or a focusable or interactive element inside it) fails
-      generate:check
+      not bind the selection dimension a11y attribute, a day cell that is not itself
+      the gridcell control (no role=gridcell, a missing tabindex, data-date or
+      select binding, or a focusable, editable or interactive element inside it), or
+      a grid that does not bind aria-multiselectable to dateGrid:multiselectable
+      fails generate:check
   - id: A2
     given: 'a generated Calendar in React, Vue, Svelte, Angular and Lit'
     when: >-
