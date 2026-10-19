@@ -54,7 +54,12 @@ acceptance:
   - id: A4
     given: 'the support boundary'
     when: 'pnpm run audit:unity-boundary runs'
-    then: 'the tokens, styles, variants, states, rtl and morphology families are lowered with via naming the USS projection or refused with a reason, zero leaves remain pending P3, and the audit reports zero violations'
+    then: >-
+      the tokens, styles, variants, states, rtl and morphology families are lowered
+      with via naming the USS projection, refused with a reason, or pending a later
+      named phase with a reason (never P3); every Controls.unsupported.json entry
+      backed by a sidecar leaf is classified refused or pending; zero leaves remain
+      pending P3, and the audit reports zero violations
   - id: A5
     given: 'the regenerated package'
     when: 'generate:unity runs a second time and the unity emitter and CLI suites run'
