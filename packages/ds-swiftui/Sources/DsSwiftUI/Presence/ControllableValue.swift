@@ -43,9 +43,6 @@ public final class ControllableValue<Value>: ObservableObject {
 
     public func set(_ next: Value) {
         if let binding = controlled {
-            // The binding lives in this object, not in the view, so nothing
-            // else tells SwiftUI the view that reads `value` is stale.
-            objectWillChange.send()
             binding.wrappedValue = next
         } else {
             uncontrolled = next
@@ -91,5 +88,44 @@ public struct ControllableState<Value>: DynamicProperty {
 
     public func update() {
         storage.rebind(controlled, onChange: onChange)
+    }
+}
+
+/// The current values of the compound channels above a view, keyed by channel
+/// object so a compound nested inside another does not shadow its channel.
+public struct FsdsChannelValues: Equatable {
+    fileprivate var values: [ObjectIdentifier: AnyHashable] = [:]
+    public init() {}
+}
+
+private struct FsdsChannelValuesKey: EnvironmentKey {
+    static var defaultValue: FsdsChannelValues { FsdsChannelValues() }
+}
+
+extension EnvironmentValues {
+    public var fsdsChannelValues: FsdsChannelValues {
+        get { self[FsdsChannelValuesKey.self] }
+        set { self[FsdsChannelValuesKey.self] = newValue }
+    }
+}
+
+extension ControllableValue where Value: Hashable {
+    /// The value this channel's compound root passed down, or the channel's
+    /// own value outside one.
+    public func value(in channels: FsdsChannelValues) -> Value {
+        channels.values[ObjectIdentifier(self)]?.base as? Value ?? value
+    }
+}
+
+extension View {
+    /// Hands a compound root's channel to its subcomponents: the object for
+    /// writes, and its current value through the environment. A value the
+    /// parent sets publishes nothing on the object, so a subcomponent that
+    /// depends on the object alone keeps showing the old value; one that reads
+    /// the environment value re-renders when the root's value changes, in the
+    /// same update.
+    public func fsdsChannel<Value: Hashable>(_ channel: ControllableValue<Value>) -> some View {
+        environmentObject(channel)
+            .transformEnvironment(\.fsdsChannelValues) { $0.values[ObjectIdentifier(channel)] = AnyHashable(channel.value) }
     }
 }

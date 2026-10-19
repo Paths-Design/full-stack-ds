@@ -823,4 +823,25 @@ describe("generated SwiftUI channels", () => {
     const wrapped = generated.filter((path) => /@Controllable(State|Selection) private var /.test(readFileSync(path, "utf8")));
     expect(wrapped.map((path) => path.split("/").pop())).toEqual(expect.arrayContaining(["Calendar.swift", "Switch.swift", "Select.swift"]));
   });
+
+  it("hand a compound root's channel down with its value, and render subcomponents from that value", () => {
+    // A value the parent sets publishes nothing on the channel object, so a
+    // subcomponent that depends on the object alone keeps the old panel or
+    // content; one reading the value the root passes through the environment
+    // re-renders when it changes.
+    const sourcesRoot = resolve(repoRoot(), "packages/ds-swiftui/Sources/DsSwiftUI/Components");
+    const swiftFiles = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+        entry.isDirectory() ? swiftFiles(resolve(dir, entry.name)) : entry.name.endsWith(".swift") ? [resolve(dir, entry.name)] : []);
+    const generated = swiftFiles(sourcesRoot).map((path) => ({ name: path.split("/").pop()!, text: readFileSync(path, "utf8") }));
+    expect(generated.filter(({ text }) => text.includes(".environmentObject(")).map(({ name }) => name)).toEqual([]);
+    const compounds = generated.filter(({ text }) => text.includes(".fsdsChannel("));
+    expect(compounds.map(({ name }) => name).sort()).toEqual(["Accordion.swift", "Tabs.swift"]);
+    for (const { name, text } of compounds) {
+      const channel = /@EnvironmentObject var (\w+): ControllableValue/.exec(text)?.[1];
+      expect(channel, name).toBeDefined();
+      expect(text, name).toMatch(new RegExp(`\\bif ${channel}\\.value\\(in: fsdsChannelValues\\)`));
+      expect(text, name).not.toMatch(new RegExp(`\\bif ${channel}\\.value(?!\\(in:)`));
+    }
+  });
 });

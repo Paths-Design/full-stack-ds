@@ -33,7 +33,6 @@ public struct Popover<Trigger: View, Content: View>: View {
         PopoverTokens.scopes
     }
     @ControllableState private var open: ControllableValue<Bool>
-    private let openControlled: Binding<Bool>?
     private let placement: PopoverPlacement
     private let disabled: Bool
     private let trigger: Trigger
@@ -50,7 +49,6 @@ public struct Popover<Trigger: View, Content: View>: View {
         @ViewBuilder content: () -> Content = { EmptyView() }
     ) {
         self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
-        self.openControlled = open
         self.placement = placement
         self.disabled = disabled
         self.trigger = trigger()
@@ -89,26 +87,13 @@ public struct Popover<Trigger: View, Content: View>: View {
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
     }
 
-    private var presentationBinding: Binding<Bool> {
-        if let controlled = openControlled {
-            return Binding(
-                get: { controlled.wrappedValue },
-                set: { open.set($0) }
-            )
-        }
-        return Binding(
-            get: { open.value },
-            set: { open.set($0) }
-        )
-    }
-
     public var body: some View {
         SwiftUI.Button(action: { open.toggle() }) {
             trigger
         }
         .buttonStyle(.plain)
         .disabled(disabled)
-        .popover(isPresented: presentationBinding, arrowEdge: placementEdge) {
+        .popover(isPresented: open.binding(), arrowEdge: placementEdge) {
             panel
         }
     }

@@ -1235,23 +1235,26 @@ function emitInteractiveComposite(ir: ComponentIR): string {
   lines.push(`${INDENT}${INDENT}VStack(spacing: ${chrome.gap ? "gap" : "4"}) {`);
   lines.push(`${INDENT}${INDENT}${INDENT}content`);
   lines.push(`${INDENT}${INDENT}}`);
-  lines.push(`${INDENT}${INDENT}${INDENT}.environmentObject(${channel.name})`);
+  lines.push(`${INDENT}${INDENT}${INDENT}.fsdsChannel(${channel.name})`);
   if (hasAria) lines.push(`${INDENT}${INDENT}${INDENT}.fsdsAccessibilityLabel(accessibilityLabel)`);
   lines.push(`${INDENT}}`);
   lines.push(`}`);
   lines.push("");
   // Press-wired subcomponents, keyed off the channel's IR type — the swift
   // lowering of the web/RN compound-context pattern: the root injects the
-  // channel (environmentObject above); the subcomponents consume it and
-  // mutate it through ControllableValue.set, never local divergent state.
-  // A subcomponent used outside its root traps at @EnvironmentObject access,
-  // mirroring the RN compound-context throw.
+  // channel (fsdsChannel above); the subcomponents mutate it through
+  // ControllableValue.set, never local divergent state, and render from the
+  // value the root passes through the environment, whose change re-renders
+  // them when the parent sets the channel. A subcomponent used outside its
+  // root traps at @EnvironmentObject access, mirroring the RN
+  // compound-context throw.
   if (isUnion) {
     lines.push(
       `/// Disclosure item: press toggles \`${channel.name}\` membership for \`key\`; content visible while contained.`,
     );
     lines.push(`public struct ${exportName}Item<Trigger: View, Content: View>: View {`);
     lines.push(`${INDENT}@EnvironmentObject var ${channel.name}: ControllableValue<[String]>`);
+    lines.push(`${INDENT}@Environment(\\.fsdsChannelValues) private var fsdsChannelValues`);
     lines.push(`${INDENT}private let key: String`);
     lines.push(`${INDENT}private let trigger: Trigger`);
     lines.push(`${INDENT}private let content: Content`);
@@ -1271,7 +1274,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}trigger`);
     lines.push(`${INDENT}${INDENT}${INDENT}}`);
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
-    lines.push(`${INDENT}${INDENT}${INDENT}if ${channel.name}.value.contains(key) {`);
+    lines.push(`${INDENT}${INDENT}${INDENT}if ${channel.name}.value(in: fsdsChannelValues).contains(key) {`);
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}content`);
     lines.push(`${INDENT}${INDENT}${INDENT}} else {`);
     lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}EmptyView()`);
@@ -1298,6 +1301,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`/// Panel region: content visible only while the \`${channel.name}\` channel equals \`value\`.`);
     lines.push(`public struct ${exportName}Panel<Content: View>: View {`);
     lines.push(`${INDENT}@EnvironmentObject var ${channel.name}: ControllableValue<String>`);
+    lines.push(`${INDENT}@Environment(\\.fsdsChannelValues) private var fsdsChannelValues`);
     lines.push(`${INDENT}private let value: String`);
     lines.push(`${INDENT}private let content: Content`);
     lines.push(`${INDENT}public init(value: String, @ViewBuilder content: () -> Content) {`);
@@ -1305,7 +1309,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}self.content = content()`);
     lines.push(`${INDENT}}`);
     lines.push(`${INDENT}public var body: some View {`);
-    lines.push(`${INDENT}${INDENT}if ${channel.name}.value == value {`);
+    lines.push(`${INDENT}${INDENT}if ${channel.name}.value(in: fsdsChannelValues) == value {`);
     lines.push(`${INDENT}${INDENT}${INDENT}content`);
     lines.push(`${INDENT}${INDENT}} else {`);
     lines.push(`${INDENT}${INDENT}${INDENT}EmptyView()`);

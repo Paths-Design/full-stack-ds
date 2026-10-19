@@ -89,17 +89,18 @@ final class ControllableValueTests: XCTestCase {
         XCTAssertEqual(firstFired, [])
     }
 
-    /// A controlled write announces the change, so the view reading the
-    /// channel re-renders even when the binding's source does not publish.
-    func testControlledSetPublishes() {
-        var upstream = false
-        let v = ControllableValue<Bool>(controlled: Binding(get: { upstream }, set: { upstream = $0 }), defaultValue: false)
-        var announced = 0
-        let subscription = v.objectWillChange.sink { announced += 1 }
+    /// The owner decides a controlled value: a write it refuses leaves the
+    /// owner's value in place, and the callback still reports the request.
+    func testARefusedControlledWriteKeepsTheOwnersValueAndReportsTheRequest() {
+        var requested: [Bool] = []
+        let v = ControllableValue<Bool>(
+            controlled: Binding(get: { false }, set: { _ in }),
+            defaultValue: true,
+            onChange: { requested.append($0) }
+        )
         v.set(true)
-        XCTAssertEqual(announced, 1)
-        XCTAssertTrue(upstream)
-        subscription.cancel()
+        XCTAssertFalse(v.value)
+        XCTAssertEqual(requested, [true])
     }
 
     func testSelectionRebindFollowsTheViewsCurrentBindings() {
@@ -108,13 +109,9 @@ final class ControllableValueTests: XCTestCase {
         let s = SelectionState(selection: Binding(get: { first }, set: { first = $0 }))
         s.rebind(selection: Binding(get: { second }, set: { second = $0 }), multipleSelection: nil, onSelectionChange: { fired.append("\($0)") })
         XCTAssertTrue(s.isSelected("b"))
-        var announced = 0
-        let subscription = s.objectWillChange.sink { announced += 1 }
         s.apply("c")
         XCTAssertEqual(second, "c")
         XCTAssertEqual(first, "a")
         XCTAssertEqual(fired, ["c"])
-        XCTAssertEqual(announced, 1)
-        subscription.cancel()
     }
 }

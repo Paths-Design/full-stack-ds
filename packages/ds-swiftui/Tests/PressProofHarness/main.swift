@@ -36,6 +36,12 @@ final class Counters {
     var switchStates: [Bool] = []
     var switchBindingFinal = false
     var switchAXValues: [String] = []
+    /// After one press each: the rendered value and stored value of a switch
+    /// bound to unpublished storage, and the rendered value and callbacks of
+    /// a switch whose binding refuses every write.
+    var unpublishedSwitch: [String] = []
+    var refusingSwitch: [String] = []
+    var refusingChanges: [Bool] = []
     var selectChanges: [String] = []
     var selectBindingFinal = ""
     var selectTriggerLabel = ""
@@ -75,6 +81,9 @@ final class Counters {
     var tabsChanges: [String] = []
     var accordionChanges: [String] = []
     var shuttleChanges: [String] = []
+    /// What the controlled Tabs and Accordion show at mount, after the parent
+    /// sets each value, and after it sets them back.
+    var controlledCompound: [String] = []
     var compoundCensus: [String: Int] = [:]
     var limitations: [String] = []
 }
@@ -87,6 +96,7 @@ final class HarnessModel: ObservableObject {
         case walkthroughCold
         case walkthroughThreshold
         case switchToggle
+        case switchUnpublished
         case selectOption
         case popoverClick
         case otpEntry
@@ -110,6 +120,11 @@ final class HarnessModel: ObservableObject {
     var dialogPass = 1
     @Published var plainSheetOpen = false
     @Published var pickedDate: Date? = nil
+    /// Storage SwiftUI cannot observe: a binding over it publishes nothing.
+    final class Unpublished { var on = false }
+    let unpublished = Unpublished()
+    @Published var controlledTab = "x"
+    @Published var controlledOpenness: [String] = []
     let counters = Counters()
     var failures: [String] = []
 
@@ -355,9 +370,40 @@ final class HarnessModel: ObservableObject {
                         if self.counters.switchBindingFinal != false {
                             self.failures.append("switch: binding final \(self.counters.switchBindingFinal), expected false (two toggles)")
                         }
-                        self.phase = .selectOption
+                        self.phase = .switchUnpublished
                         self.schedule(0.5) { self.advance() }
                     }
+                }
+            }
+
+        case .switchUnpublished:
+            counters.refusingChanges = []
+            schedule(1.0) {
+                let labeled = { (label: String) in Self.axPressables().first { Self.description(of: $0) == label } }
+                guard let plain = labeled("unpublished-switch"), let refusing = labeled("refusing-switch") else {
+                    self.failures.append("switch(unpublished): expected the unpublished and refusing switches, found \(Self.axPressables().map { Self.description(of: $0) ?? "?" })")
+                    self.phase = .selectOption
+                    self.schedule(0.5) { self.advance() }
+                    return
+                }
+                Self.click(at: plain)
+                Self.click(at: refusing)
+                self.schedule(0.7) {
+                    // A controlled switch shows what its owner publishes. The
+                    // write reaches unpublished storage, but the switch keeps
+                    // the value from its parent's last render; a write the
+                    // owner refuses leaves its value on screen and the callback
+                    // still reports the request.
+                    self.counters.unpublishedSwitch = [labeled("unpublished-switch").map(Self.numberValue) ?? "<missing>", "stored \(self.unpublished.on)"]
+                    self.counters.refusingSwitch = [labeled("refusing-switch").map(Self.numberValue) ?? "<missing>"]
+                    if self.counters.unpublishedSwitch != ["0", "stored true"] {
+                        self.failures.append("switch(unpublished): shown/stored \(self.counters.unpublishedSwitch), expected [\"0\", \"stored true\"]")
+                    }
+                    if self.counters.refusingSwitch != ["0"] || self.counters.refusingChanges != [true] {
+                        self.failures.append("switch(refusing): shown \(self.counters.refusingSwitch) onChange \(self.counters.refusingChanges), expected [\"0\"] and [true]")
+                    }
+                    self.phase = .selectOption
+                    self.schedule(0.5) { self.advance() }
                 }
             }
 
@@ -699,6 +745,34 @@ final class HarnessModel: ObservableObject {
                                 let titles = Self.axStaticTexts().compactMap { Self.title(of: $0) }
                                 self.failures.append("accordion: content visibility did not track openness (opened=\(opened) closed=\(closed); staticTexts=\(titles))")
                             }
+                            controlledCompoundStep()
+                        }
+                    }
+                }
+
+                @MainActor func controlledCompoundStep() {
+                    // -- Controlled Tabs and Accordion: the parent moves each
+                    // value with no press. Their panels and content read the
+                    // channel through the environment, so they must follow
+                    // the parent in both directions.
+                    let shown = { () -> String in
+                        let tab = Self.waitForStaticText("controlled panel x", attempts: 2) ? "x" : Self.waitForStaticText("controlled panel y", attempts: 2) ? "y" : "-"
+                        let content = Self.waitForStaticText("controlled content", attempts: 2) ? "open" : "closed"
+                        return "tab \(tab), item \(content)"
+                    }
+                    self.counters.controlledCompound = [shown()]
+                    self.controlledTab = "y"
+                    self.controlledOpenness = ["c1"]
+                    self.schedule(0.8) {
+                        self.counters.controlledCompound.append(shown())
+                        self.controlledTab = "x"
+                        self.controlledOpenness = []
+                        self.schedule(0.8) {
+                            self.counters.controlledCompound.append(shown())
+                            let expected = ["tab x, item closed", "tab y, item open", "tab x, item closed"]
+                            if self.counters.controlledCompound != expected {
+                                self.failures.append("controlled compound: shown \(self.counters.controlledCompound), expected \(expected) as the parent sets Tabs and Accordion")
+                            }
                             self.finishCompound()
                         }
                     }
@@ -766,6 +840,8 @@ final class HarnessModel: ObservableObject {
             print("switch.onChange            : \(counters.switchStates) [expect [true, false]]")
             print("switch.bindingFinal        : \(counters.switchBindingFinal) [expect false]")
             print("switch.AXValue per press   : \(counters.switchAXValues) [expect [\"1\", \"0\"]]")
+            print("switch(unpublished) shown  : \(counters.unpublishedSwitch) [expect [\"0\", \"stored true\"]]")
+            print("switch(refusing) shown     : \(counters.refusingSwitch) onChange \(counters.refusingChanges) [expect [\"0\"] and [true]]")
             print("select.onSelectionChange   : \(counters.selectChanges) [expect [\"b\"]]")
             print("select.bindingFinal        : \"\(counters.selectBindingFinal)\" [expect \"b\"]")
             print("select.trigger label       : \"\(counters.selectTriggerLabel)\" [expect \"B\"]")
@@ -796,6 +872,7 @@ final class HarnessModel: ObservableObject {
             print("compound.census            : \(counters.compoundCensus.sorted { $0.key < $1.key })")
             print("tabs.activeTab changes     : \(counters.tabsChanges) [expect [\"b\"]]")
             print("accordion.openness changes : \(counters.accordionChanges) [expect [\"[\\\"k1\\\"]\", \"[]\"]]")
+            print("controlled tabs/accordion  : \(counters.controlledCompound) [expect [\"tab x, item closed\", \"tab y, item open\", \"tab x, item closed\"]]")
             print("shuttle.selection changes  : \(counters.shuttleChanges) [expect [\"[\\\"beta\\\"]\", \"[]\"]]")
             for limitation in counters.limitations {
                 print("LIMITATION: \(limitation)")
@@ -1193,6 +1270,18 @@ struct PressProofHarnessApp: App {
                         onChange: { model.counters.switchStates.append($0) },
                         accessibilityLabel: "harness-switch"
                     )
+                case .switchUnpublished:
+                    VStack {
+                        Switch(
+                            checked: Binding(get: { model.unpublished.on }, set: { model.unpublished.on = $0 }),
+                            accessibilityLabel: "unpublished-switch"
+                        )
+                        Switch(
+                            checked: Binding(get: { false }, set: { _ in }),
+                            onChange: { model.counters.refusingChanges.append($0) },
+                            accessibilityLabel: "refusing-switch"
+                        )
+                    }
                 case .selectOption:
                     Select(
                         options: [
@@ -1301,6 +1390,15 @@ struct PressProofHarnessApp: App {
                         ) {
                             AccordionItem(key: "k1", trigger: { SwiftUI.Text("accordion trigger") }) {
                                 SwiftUI.Text("accordion content")
+                            }
+                        }
+                        Tabs(activeTab: $model.controlledTab) {
+                            TabsPanel(value: "x") { SwiftUI.Text("controlled panel x") }
+                            TabsPanel(value: "y") { SwiftUI.Text("controlled panel y") }
+                        }
+                        Accordion(openness: $model.controlledOpenness) {
+                            AccordionItem(key: "c1", trigger: { SwiftUI.Text("controlled trigger") }) {
+                                SwiftUI.Text("controlled content")
                             }
                         }
                         Shuttle(

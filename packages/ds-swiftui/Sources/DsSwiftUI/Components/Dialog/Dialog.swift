@@ -47,7 +47,6 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
         DialogTokens.scopes
     }
     @ControllableState private var open: ControllableValue<Bool>
-    private let openControlled: Binding<Bool>?
     private let header: Header
     private let title: Title
     private let bodyContent: BodyContent
@@ -64,7 +63,6 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
         @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
         self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
-        self.openControlled = open
         self.header = header()
         self.title = title()
         self.bodyContent = bodyContent()
@@ -112,22 +110,9 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
             .foregroundStyle(foreground)
     }
 
-    private var presentationBinding: Binding<Bool> {
-        if let controlled = openControlled {
-            return Binding(
-                get: { controlled.wrappedValue },
-                set: { open.set($0) }
-            )
-        }
-        return Binding(
-            get: { open.value },
-            set: { open.set($0) }
-        )
-    }
-
     public var body: some View {
         SwiftUI.Color.clear.frame(width: 0, height: 0)
-            .sheet(isPresented: presentationBinding) {
+            .sheet(isPresented: open.binding()) {
                 panel
             }
     }

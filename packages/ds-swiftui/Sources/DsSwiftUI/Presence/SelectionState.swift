@@ -67,7 +67,6 @@ public final class SelectionState: ObservableObject {
                 next.append(value)
             }
             if let binding = controlledMulti {
-                objectWillChange.send()
                 binding.wrappedValue = next
             } else {
                 uncontrolledMulti = next
@@ -75,7 +74,6 @@ public final class SelectionState: ObservableObject {
             onSelectionChange?(next)
         } else {
             if let binding = controlledSingle {
-                objectWillChange.send()
                 binding.wrappedValue = value
             } else {
                 uncontrolledSingle = value

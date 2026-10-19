@@ -69,13 +69,14 @@ public struct Accordion<Content: View>: View {
         VStack(spacing: gap) {
             content
         }
-            .environmentObject(openness)
+            .fsdsChannel(openness)
     }
 }
 
 /// Disclosure item: press toggles `openness` membership for `key`; content visible while contained.
 public struct AccordionItem<Trigger: View, Content: View>: View {
     @EnvironmentObject var openness: ControllableValue<[String]>
+    @Environment(\.fsdsChannelValues) private var fsdsChannelValues
     private let key: String
     private let trigger: Trigger
     private let content: Content
@@ -95,7 +96,7 @@ public struct AccordionItem<Trigger: View, Content: View>: View {
                 trigger
             }
                 .buttonStyle(.plain)
-            if openness.value.contains(key) {
+            if openness.value(in: fsdsChannelValues).contains(key) {
                 content
             } else {
                 EmptyView()
