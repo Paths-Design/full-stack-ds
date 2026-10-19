@@ -1,0 +1,42 @@
+id: SVELTE-PACKAGE-DTS-SCOPE-01
+title: 'Svelte packaging stops writing declarations into ds-react sources'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-19T16:04:38.436Z'
+updated_at: '2026-10-19T16:04:38.436Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-svelte'
+    - 'packages/ds-react/src/primitives'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-svelte/package.json'
+    - 'packages/ds-svelte/tsconfig.build.json'
+    - 'packages/ds-react/src/primitives/sequence-budget.d.ts'
+    - 'packages/ds-react/src/primitives/presence-budget.d.ts'
+    - 'packages/ds-react/src/primitives/hooks/__tests__/sequence-budget.contract.d.ts'
+    - 'src/consumption/source-declarations.test.ts'
+  out: []
+invariants:
+  - 'svelte-package declaration emit covers only ds-svelte''s non-test sources'
+  - 'No compiled declaration file shadows a same-named source in a package src tree'
+acceptance:
+  - id: A1
+    given: 'a clean checkout'
+    when: 'pnpm --filter @full-stack-ds/svelte run build runs'
+    then: 'no .d.ts file appears outside packages/ds-svelte (in particular none beside packages/ds-react/src sources)'
+  - id: A2
+    given: 'the tracked tree'
+    when: 'the root vitest suite runs'
+    then: 'no tracked .d.ts under packages/*/src or src/ sits beside a same-named .ts/.tsx/.mts source, and the three committed copies in packages/ds-react/src/primitives are gone'
+  - id: A3
+    given: 'the Svelte package build'
+    when: 'it packages src'
+    then: 'dist still carries declarations for the package''s own non-test sources (components and primitives)'
+rollback:
+  - 'Revert the merge commit; the three .d.ts files are restorable from git history'
+non_functional: {}
+contracts: []
