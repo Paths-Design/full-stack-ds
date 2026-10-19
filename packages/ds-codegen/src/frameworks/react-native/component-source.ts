@@ -1379,7 +1379,9 @@ function emitChannelState(
   lines.push(
     `${INDENT}const [${needsValue ? internal : ""}${needsSetter ? `, ${setInternal}` : ""}] = useState<${type}>((${initial}) as ${type});`,
   );
-  if (needsValue) lines.push(`${INDENT}const ${value} = ${controlled} ?? ${internal};`);
+  // Controlled means defined, as the setter decides it: a controlled null is a
+  // cleared value, not a fall-back to the uncontrolled one.
+  if (needsValue) lines.push(`${INDENT}const ${value} = ${controlled} !== undefined ? ${controlled} : ${internal};`);
   if (needsSetter) {
     lines.push(`${INDENT}const ${setter} = useCallback((next: ${type}) => {`);
     lines.push(`${INDENT}${INDENT}if (${controlled} === undefined) ${setInternal}(next);`);

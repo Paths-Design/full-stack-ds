@@ -4556,7 +4556,9 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(`@Composable`);
   lines.push(`fun ${name}(`);
   lines.push(`    modifier: Modifier = Modifier,`);
-  lines.push(`    ${valueProp}: Date? = null,`);
+  // The single date's channel admits null as a cleared selection, so
+  // "uncontrolled" is a marker default compared by identity, not null.
+  lines.push(`    ${valueProp}: Date? = FsdsDateGrid.Uncontrolled,`);
   lines.push(`    ${defaultValueProp}: Date? = null,`);
   lines.push(`    ${changeProp}: ((Date?) -> Unit)? = null,`);
   lines.push(`    ${manyValueProp}: List<Date>? = null,`);
@@ -4574,7 +4576,8 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(`) {`);
   const local = (prop: string) => pascalCase(prop);
   lines.push(`    var uncontrolled${local(valueProp)} by remember { mutableStateOf(${defaultValueProp}) }`);
-  lines.push(`    val resolved${local(valueProp)} = ${valueProp} ?: uncontrolled${local(valueProp)}`);
+  lines.push(`    val controlled${local(valueProp)} = ${valueProp} !== FsdsDateGrid.Uncontrolled`);
+  lines.push(`    val resolved${local(valueProp)} = if (controlled${local(valueProp)}) ${valueProp} else uncontrolled${local(valueProp)}`);
   lines.push(`    var uncontrolled${local(manyValueProp)} by remember { mutableStateOf(${manyDefaultValueProp}) }`);
   lines.push(`    val resolved${local(manyValueProp)} = ${manyValueProp} ?: uncontrolled${local(manyValueProp)}`);
   lines.push(`    var uncontrolled${local(monthProp)} by remember { mutableStateOf(${defaultMonthProp}) }`);
@@ -4603,7 +4606,7 @@ function emitDateGridSurface(ir: ComponentIR): string {
   lines.push(`            if (${manyValueProp} == null) { uncontrolled${local(manyValueProp)} = next }`);
   lines.push(`            ${manyChangeProp}?.invoke(next)`);
   lines.push(`        } else {`);
-  lines.push(`            if (${valueProp} == null) { uncontrolled${local(valueProp)} = day.date }`);
+  lines.push(`            if (!controlled${local(valueProp)}) { uncontrolled${local(valueProp)} = day.date }`);
   lines.push(`            ${changeProp}?.invoke(day.date)`);
   lines.push(`        }`);
   lines.push(`        showMonth(day.date)`);

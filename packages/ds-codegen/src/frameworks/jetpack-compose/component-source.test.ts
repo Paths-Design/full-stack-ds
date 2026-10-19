@@ -652,7 +652,13 @@ describe("generateJetpackComposeComponentSource — date-grid surface (CALENDAR-
     expect(src).not.toContain("days: List<Date>");
     expect(src).not.toContain("FsdsDate.dayOfMonth");
     // Both channels lowered: the value union as the scalar/many pair, and the month.
-    expect(src).toContain("value: Date? = null,");
+    // The single date admits null as a cleared selection, so "uncontrolled" is
+    // an identity-compared marker and the tap writes uncontrolled state only then.
+    expect(src).toContain("value: Date? = FsdsDateGrid.Uncontrolled,");
+    expect(src).toContain("val controlledValue = value !== FsdsDateGrid.Uncontrolled");
+    expect(src).toContain("val resolvedValue = if (controlledValue) value else uncontrolledValue");
+    expect(src).toContain("if (!controlledValue) { uncontrolledValue = day.date }");
+    expect(src).not.toContain("value ?: uncontrolledValue");
     expect(src).toContain("values: List<Date>? = null,");
     expect(src).toContain("onValuesChange: ((List<Date>) -> Unit)? = null,");
     expect(src).toContain("month: Date? = null,");

@@ -44,7 +44,7 @@ export function Switch({
   const styles = useMemo(() => createSwitchStyles(fsdsTheme), [fsdsTheme]);
   const tokens = useMemo(() => resolveSwitchTokens(fsdsTheme), [fsdsTheme]);
   const [uncontrolledChecked, setUncontrolledChecked] = useState<boolean>((defaultChecked ?? false) as boolean);
-  const checked = controlledChecked ?? uncontrolledChecked;
+  const checked = controlledChecked !== undefined ? controlledChecked : uncontrolledChecked;
   const setCheckedValue = useCallback((next: boolean) => {
     if (controlledChecked === undefined) setUncontrolledChecked(next);
     onChange?.(next);

@@ -44,9 +44,12 @@ describe("Calendar — month grid", () => {
   });
 
   it("follows the locale for week start, names and caption", () => {
-    const renderer = mountCalendar({ locale: "de-DE" });
-    expect(days(renderer)[0]!.props.accessibilityLabel).toBe("Montag, 31. August 2026");
-    expect(texts(renderer)).toContain("September 2026");
+    // October, whose German name differs from the English one.
+    const renderer = mountCalendar({ locale: "de-DE", defaultMonth: day(2026, 10, 1) });
+    // October 1, 2026 is a Thursday; de-DE weeks start on Monday, September 28.
+    expect(days(renderer)[0]!.props.accessibilityLabel).toBe("Montag, 28. September 2026");
+    expect(texts(renderer)).toContain("Oktober 2026");
+    expect(texts(renderer)).not.toContain("October 2026");
     expect(texts(renderer)).toContain("Mo");
   });
 });
@@ -68,6 +71,15 @@ describe("Calendar — selection", () => {
     act(() => dayNamed(renderer, "Saturday, September 5, 2026").props.onPress());
     expect(reported).toEqual(day(2026, 9, 5));
     expect(selectedLabels(renderer)).toEqual(["Wednesday, September 2, 2026"]);
+  });
+
+  it("treats a controlled null as an empty selection, not a fall-back to the default", () => {
+    const renderer = mountCalendar({ value: null, defaultValue: day(2026, 9, 2) });
+    expect(selectedLabels(renderer)).toEqual([]);
+    act(() => renderer.update(<Calendar defaultMonth={SEPTEMBER} value={day(2026, 9, 5)} defaultValue={day(2026, 9, 2)} />));
+    expect(selectedLabels(renderer)).toEqual(["Saturday, September 5, 2026"]);
+    act(() => renderer.update(<Calendar defaultMonth={SEPTEMBER} value={null} defaultValue={day(2026, 9, 2)} />));
+    expect(selectedLabels(renderer)).toEqual([]);
   });
 
   it("builds an ordered range from two taps and selects every day of the span", () => {

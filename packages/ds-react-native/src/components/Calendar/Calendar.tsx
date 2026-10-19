@@ -60,14 +60,14 @@ export function Calendar({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createCalendarStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledValue, setUncontrolledValue] = useState<Date | Date[] | null>((defaultValue ?? undefined) as Date | Date[] | null);
-  const value = controlledValue ?? uncontrolledValue;
+  const value = controlledValue !== undefined ? controlledValue : uncontrolledValue;
   const setValueValue = useCallback((next: Date | Date[] | null) => {
     if (controlledValue === undefined) setUncontrolledValue(next);
     onChange?.(next);
   }, [controlledValue, onChange]);
 
   const [uncontrolledMonth, setUncontrolledMonth] = useState<Date>((defaultMonth ?? undefined) as Date);
-  const month = controlledMonth ?? uncontrolledMonth;
+  const month = controlledMonth !== undefined ? controlledMonth : uncontrolledMonth;
   const setMonthValue = useCallback((next: Date) => {
     if (controlledMonth === undefined) setUncontrolledMonth(next);
     onMonthChange?.(next);

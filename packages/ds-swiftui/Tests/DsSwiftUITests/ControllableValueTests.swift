@@ -48,6 +48,22 @@ final class ControllableValueTests: XCTestCase {
         XCTAssertEqual(v.value, "new")
     }
 
+    /// A binding holding nil is a controlled empty value (a cleared calendar
+    /// selection), not a fall-back to the uncontrolled default.
+    func testControlledNilIsAClearedValue() {
+        var upstream: Date? = Date(timeIntervalSince1970: 0)
+        let v = ControllableValue<Date?>(
+            controlled: Binding(get: { upstream }, set: { upstream = $0 }),
+            defaultValue: Date(timeIntervalSince1970: 86_400)
+        )
+        upstream = nil
+        XCTAssertNil(v.value)
+        v.set(Date(timeIntervalSince1970: 172_800))
+        XCTAssertEqual(upstream, Date(timeIntervalSince1970: 172_800))
+        upstream = nil
+        XCTAssertNil(v.value)
+    }
+
     func testBoolToggle() {
         let v = ControllableValue<Bool>(defaultValue: false)
         v.toggle()

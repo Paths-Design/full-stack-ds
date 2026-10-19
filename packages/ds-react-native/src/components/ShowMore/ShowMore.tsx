@@ -49,7 +49,7 @@ export function ShowMore({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createShowMoreStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledExpanded, setUncontrolledExpanded] = useState<boolean>((defaultExpanded ?? false) as boolean);
-  const expanded = controlledExpanded ?? uncontrolledExpanded;
+  const expanded = controlledExpanded !== undefined ? controlledExpanded : uncontrolledExpanded;
   const setExpandedValue = useCallback((next: boolean) => {
     if (controlledExpanded === undefined) setUncontrolledExpanded(next);
     onExpandedChange?.(next);

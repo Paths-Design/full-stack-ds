@@ -61,7 +61,7 @@ enum class CalendarMode { Single, Range }
 @Composable
 fun Calendar(
     modifier: Modifier = Modifier,
-    value: Date? = null,
+    value: Date? = FsdsDateGrid.Uncontrolled,
     defaultValue: Date? = null,
     onChange: ((Date?) -> Unit)? = null,
     values: List<Date>? = null,
@@ -79,7 +79,8 @@ fun Calendar(
 ) {
     val fsdsMessages = LocalFsdsMessages.current
     var uncontrolledValue by remember { mutableStateOf(defaultValue) }
-    val resolvedValue = value ?: uncontrolledValue
+    val controlledValue = value !== FsdsDateGrid.Uncontrolled
+    val resolvedValue = if (controlledValue) value else uncontrolledValue
     var uncontrolledValues by remember { mutableStateOf(defaultValues) }
     val resolvedValues = values ?: uncontrolledValues
     var uncontrolledMonth by remember { mutableStateOf(defaultMonth) }
@@ -108,7 +109,7 @@ fun Calendar(
             if (values == null) { uncontrolledValues = next }
             onValuesChange?.invoke(next)
         } else {
-            if (value == null) { uncontrolledValue = day.date }
+            if (!controlledValue) { uncontrolledValue = day.date }
             onChange?.invoke(day.date)
         }
         showMonth(day.date)

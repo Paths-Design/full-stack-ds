@@ -37,7 +37,7 @@ export function Shuttle({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createShuttleStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledSelection] = useState<string[]>((defaultValue ?? undefined) as string[]);
-  const selection = controlledSelection ?? uncontrolledSelection;
+  const selection = controlledSelection !== undefined ? controlledSelection : uncontrolledSelection;
 
   return (
     <View

@@ -46,7 +46,7 @@ export function Tooltip({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createTooltipStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>((defaultOpen ?? false) as boolean);
-  const open = controlledOpen ?? uncontrolledOpen;
+  const open = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
   const setOpenValue = useCallback((next: boolean) => {
     if (controlledOpen === undefined) setUncontrolledOpen(next);
     onOpenChange?.(next);

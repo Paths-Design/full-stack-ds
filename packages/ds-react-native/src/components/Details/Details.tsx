@@ -45,7 +45,7 @@ export function Details({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createDetailsStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledOpen] = useState<boolean>((defaultOpen ?? false) as boolean);
-  const open = controlledOpen ?? uncontrolledOpen;
+  const open = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
 
   const variantStyleForVariant = variant !== undefined ? ({ "inline": styles.root_variant_inline } as Record<string, ViewStyle | undefined>)[variant] : undefined;
   return (

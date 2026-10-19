@@ -69,14 +69,14 @@ export function Select({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createSelectStyles(fsdsTheme), [fsdsTheme]);
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string | string[]>((defaultValue ?? undefined) as string | string[]);
-  const selection = controlledSelection ?? uncontrolledSelection;
+  const selection = controlledSelection !== undefined ? controlledSelection : uncontrolledSelection;
   const setSelectionValue = useCallback((next: string | string[]) => {
     if (controlledSelection === undefined) setUncontrolledSelection(next);
     onChange?.(next);
   }, [controlledSelection, onChange]);
 
   const [uncontrolledOpen, setUncontrolledOpen] = useState<boolean>((defaultOpen ?? false) as boolean);
-  const open = controlledOpen ?? uncontrolledOpen;
+  const open = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
   const setOpenValue = useCallback((next: boolean) => {
     if (controlledOpen === undefined) setUncontrolledOpen(next);
     onOpenChange?.(next);

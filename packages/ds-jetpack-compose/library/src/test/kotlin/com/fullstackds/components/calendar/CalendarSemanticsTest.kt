@@ -1,5 +1,8 @@
 package com.fullstackds.components.calendar
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ExperimentalTestApi
@@ -74,6 +77,25 @@ class CalendarSemanticsTest {
         tenth.assertIsSelected()
         onNodeWithContentDescription("Tuesday, March 11, 2031").assertIsNotSelected()
         assertEquals(listOf<Date?>(day(2031, 3, 10)), values)
+    }
+
+    @Test
+    fun aControlledNullIsAClearedSelection() = runComposeUiTest {
+        // The parent starts empty, accepts a tap, then clears; the tapped day
+        // must not reappear from uncontrolled state when the value is null again.
+        var selected by mutableStateOf<Date?>(null)
+        setContent { Calendar(value = selected, defaultMonth = day(2031, 3, 1), onChange = { selected = it }) }
+        val tenth = onNodeWithContentDescription("Monday, March 10, 2031")
+        tenth.performClick()
+        tenth.assertIsSelected()
+        selected = null
+        tenth.assertIsNotSelected()
+    }
+
+    @Test
+    fun aControlledNullHidesTheDefault() = runComposeUiTest {
+        setContent { Calendar(value = null, defaultValue = day(2031, 3, 10), defaultMonth = day(2031, 3, 1)) }
+        onNodeWithContentDescription("Monday, March 10, 2031").assertIsNotSelected()
     }
 
     @Test

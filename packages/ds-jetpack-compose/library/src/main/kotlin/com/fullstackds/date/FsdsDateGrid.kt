@@ -10,7 +10,10 @@
 // Gregorian (ISO chronology) with the locale's own digits.
 //
 // This file is NOT generated; it is committed substrate, like FsdsDate.kt.
-// java.time only, so it stays usable from any JVM target.
+// It depends on java.time alone, but the skeleton formats use
+// DateTimeFormatter.ofLocalizedPattern, which needs JDK 19 or later (the
+// library builds on a JDK 21 toolchain). Whether an Android lane's API level
+// provides that method is unverified.
 
 package com.fullstackds.date
 
@@ -53,6 +56,13 @@ data class FsdsDateGridState(
 object FsdsDateGrid {
     private const val WEEKS = 6
     private const val WEEK_LENGTH = 7
+
+    /**
+     * The default of a calendar's single-date `value`: the selection is
+     * uncontrolled. An explicit `null` is a controlled empty selection, so
+     * this marker is compared by identity (`!==`) and is never displayed.
+     */
+    @JvmField val Uncontrolled: Date = Date(Long.MIN_VALUE)
 
     /** A BCP 47 tag as a Locale; a blank tag is the JVM default locale. */
     fun locale(tag: String?): Locale =
