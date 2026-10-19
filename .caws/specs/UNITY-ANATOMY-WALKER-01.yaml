@@ -21,11 +21,11 @@ scope:
     - 'docs/current-implementation-snapshot.md'
   out: []
 invariants:
-  - 'The Unity emitter lowers IR facts only: no branch on ir.name, and no branch on literal part, prop, channel or class names; element type, part identity, insertion points and behavior attachment all derive from DomNodeIR, PartIR, FormControlIR, InteractionIR, SurfaceIR and BehaviorIR fields'
   - 'packages/ds-unity/Runtime contains no hand-written VisualElement subclass after this slice: BooleanControl, ItemGroup/SelectionItem and AnchoredSurface are replaced by attachable behavior classes the generated constructor wires from facts, and no fourth hand-written base is introduced'
   - 'The unity allowlist in fsds.targets.json stays at Switch, Accordion, Popover, Tabs; no component is added or removed'
   - 'Channel semantics frozen by packages/ds-godot/fixtures/traces.json are unchanged: controlled/uncontrolled commit, disabled suppression, single/multiple/collapsible selection and surface toggling produce the same state sequences before and after'
   - 'Public channel API survives on the generated root types: Checked/Open/Value/Values, Controlled, ValueRequested, RequestValue, SetValueWithoutNotify and INotifyValueChanged<bool> where the channel is boolean; compound composition changes from <Name>Item to one generated sub-element per ir.compoundParts entry and that change is documented as deliberate'
+  - 'The Unity emitter lowers IR facts only: no branch on ir.name and none on literal part, channel or class names; element type, part identity, insertion points and behavior attachment derive from DomNodeIR, PartIR, FormControlIR, InteractionIR, SurfaceIR, BehaviorIR and states facts. Option prop names are consulted only through the shared interaction vocabulary the support boundary declares lowered (item-group options), applied by fact match, never per component'
 acceptance:
   - id: A1
     given: 'the four allowlisted contracts and the unity emitter'
