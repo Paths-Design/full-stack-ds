@@ -176,8 +176,8 @@ export class CalendarElement extends LitElement {
       align-items: center;
       justify-content: center;
       aspect-ratio: 1;
-      min-width: var(--fsds-calendar-design-day-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
-      padding: var(--fsds-calendar-design-day-spacing-padding, 0);
+      min-width: var(--fsds-calendar-design-cell-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
+      padding: var(--fsds-calendar-design-cell-spacing-padding, 0);
       box-sizing: border-box;
       background: transparent;
       border: none;
@@ -199,14 +199,14 @@ export class CalendarElement extends LitElement {
     }
 
     .calendar__day[aria-selected="true"] {
-      background-color: var(--fsds-calendar-design-condition-9b3217d9acf9-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
-      color: var(--fsds-calendar-design-condition-9b3217d9acf9-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
-      font-weight: var(--fsds-calendar-design-condition-9b3217d9acf9-typography-weight, 600);
+      background-color: var(--fsds-calendar-design-condition-f43aab96a58c-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
+      color: var(--fsds-calendar-design-condition-f43aab96a58c-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
+      font-weight: var(--fsds-calendar-design-condition-f43aab96a58c-typography-weight, 600);
     }
 
     .calendar__day[aria-current="date"] {
-      box-shadow: var(--fsds-calendar-design-condition-b9780abcd5e2-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
-      font-weight: var(--fsds-calendar-design-condition-b9780abcd5e2-typography-weight, 600);
+      box-shadow: var(--fsds-calendar-design-condition-789437ce1e22-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
+      font-weight: var(--fsds-calendar-design-condition-789437ce1e22-typography-weight, 600);
     }
     }
   `;
@@ -448,8 +448,8 @@ export class CalendarHeaderElement extends LitElement {
       align-items: center;
       justify-content: center;
       aspect-ratio: 1;
-      min-width: var(--fsds-calendar-design-day-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
-      padding: var(--fsds-calendar-design-day-spacing-padding, 0);
+      min-width: var(--fsds-calendar-design-cell-sizing-min-width, var(--fsds-calendar-size-cell, 32px));
+      padding: var(--fsds-calendar-design-cell-spacing-padding, 0);
       box-sizing: border-box;
       background: transparent;
       border: none;
@@ -471,14 +471,14 @@ export class CalendarHeaderElement extends LitElement {
     }
 
     .calendar__day[aria-selected="true"] {
-      background-color: var(--fsds-calendar-design-condition-9b3217d9acf9-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
-      color: var(--fsds-calendar-design-condition-9b3217d9acf9-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
-      font-weight: var(--fsds-calendar-design-condition-9b3217d9acf9-typography-weight, 600);
+      background-color: var(--fsds-calendar-design-condition-f43aab96a58c-background-fill, var(--fsds-calendar-color-day-selected-background, #d92d2e));
+      color: var(--fsds-calendar-design-condition-f43aab96a58c-foreground-color, var(--fsds-calendar-color-day-selected-foreground, #fafafa));
+      font-weight: var(--fsds-calendar-design-condition-f43aab96a58c-typography-weight, 600);
     }
 
     .calendar__day[aria-current="date"] {
-      box-shadow: var(--fsds-calendar-design-condition-b9780abcd5e2-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
-      font-weight: var(--fsds-calendar-design-condition-b9780abcd5e2-typography-weight, 600);
+      box-shadow: var(--fsds-calendar-design-condition-789437ce1e22-elevation-shadow, inset 0 0 0 1px var(--fsds-calendar-color-today-ring));
+      font-weight: var(--fsds-calendar-design-condition-789437ce1e22-typography-weight, 600);
     }
     }
   `;
