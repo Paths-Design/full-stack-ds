@@ -56,7 +56,12 @@ acceptance:
   - id: A5
     given: 'the regenerated package'
     when: 'generate:unity runs a second time and the unity emitter and CLI suites run'
-    then: 'git diff --exit-code over packages/ds-unity is clean, governed:rail passes with the new target-asset files in the manifest, and the emitter suite pins the USS lowering against a synthetic contract outside the corpus'
+    then: >-
+      the packages/ds-unity working tree is clean after the second regeneration,
+      governed:rail still passes (the emission manifest records target assets for
+      rail targets; unity is outside the rail until P5, so its drift proof is
+      regeneration plus a clean tree), and the emitter suite pins the USS lowering
+      against a synthetic contract outside the corpus
   - id: A6
     given: 'docs/architecture/unity-target.md, packages/ds-unity/README.md and the implementation snapshot'
     when: 'docs:check-claims and docs:check-links run'
