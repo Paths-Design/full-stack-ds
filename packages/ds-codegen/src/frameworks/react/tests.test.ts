@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
-import { corpusIR } from "../corpus-fixtures.js";
+import { allCorpusComponentNames, corpusIR, loadCorpusContract } from "../corpus-fixtures.js";
 import { generateReactTest } from "./tests.js";
 
 describe("generateReactTest", () => {
@@ -78,6 +78,23 @@ describe("generateReactTest — real corpus contracts", () => {
     // Tabs' string channel is deep-bound: the plan falls back to
     // render-only prop acceptance instead of firing an event.
     expect(source).toContain(`value={""} onValueChange={onValueChangeSpy}`);
+  });
+
+  it("types each render-only channel placeholder by its value type, union arms in any order", () => {
+    const source = generateReactTest(corpusIR("Calendar"));
+    // Calendar's month channel is a Date and its value channel is nullable.
+    expect(source).toContain(`month={new Date(0)} onMonthChange={onMonthChangeSpy}`);
+    expect(source).toContain(`value={null} onChange={onChangeSpy}`);
+    const corpus = new Map(allCorpusComponentNames().map((name) => [name, loadCorpusContract(name)]));
+    const withValueType = (valueType: string) => {
+      const contract = structuredClone(corpus.get("Calendar")!) as ComponentContract;
+      contract.channels!.value.valueType = valueType;
+      return generateReactTest(buildComponentIR(contract, { allContracts: corpus }));
+    };
+    // The date grid admits a value channel without the null arm, in either order.
+    expect(withValueType("Date | Date[]")).toContain(`value={new Date(0)} onChange={onChangeSpy}`);
+    expect(withValueType("Date[] | Date")).toContain(`value={[]} onChange={onChangeSpy}`);
+    expect(withValueType("Date[] | Date | null")).toContain(`value={null} onChange={onChangeSpy}`);
   });
 
   it("emits the open-render prop and dismissal tests for Select", () => {

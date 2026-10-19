@@ -61,7 +61,7 @@ describe("Calendar — unit", () => {
 
   it("calls onMonthChange when month changes", async () => {
     const onMonthChangeSpy = vi.fn();
-    expect(() => render(<Calendar data-testid="calendar" month={false} onMonthChange={onMonthChangeSpy} />)).not.toThrow();
+    expect(() => render(<Calendar data-testid="calendar" month={new Date(0)} onMonthChange={onMonthChangeSpy} />)).not.toThrow();
   });
 });
 
