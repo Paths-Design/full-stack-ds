@@ -48,7 +48,8 @@
         "aria": {
           "role": "grid",
           "attributes": [
-            "aria-label"
+            "aria-label",
+            "aria-multiselectable"
           ]
         }
       },
@@ -163,7 +164,8 @@
             "role": "grid"
           },
           "bindings": {
-            "aria-label": "dateGrid:caption"
+            "aria-label": "dateGrid:caption",
+            "aria-multiselectable": "dateGrid:multiselectable"
           },
           "events": {
             "keydown": "dateGrid:keydown"

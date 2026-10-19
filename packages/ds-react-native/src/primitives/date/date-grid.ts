@@ -27,8 +27,12 @@ export interface DateGridOptions {
   disabled?: boolean;
   /** An explicit caption replaces the formatted month and year. */
   caption?: string;
-  /** Property syntax, so a setter that accepts fewer value shapes fails to type-check. */
-  onValueChange: (value: DateGridValue) => void;
+  /**
+   * A commit is a Date (single mode) or a Date[] (range mode), never null, so
+   * a channel without the null arm can pass its setter. Property syntax, so a
+   * setter that accepts fewer commit shapes fails to type-check.
+   */
+  onValueChange: (value: Date | Date[]) => void;
   onMonthChange: (month: Date) => void;
 }
 
@@ -64,6 +68,8 @@ export interface DateGridState {
   previousDisabled: boolean;
   nextDisabled: boolean;
   disabled: boolean;
+  /** Range mode selects several days, so the grid announces multiple selection. */
+  multiselectable: boolean;
 }
 
 export interface DateGridKeyEvent {
@@ -266,6 +272,7 @@ export function computeDateGrid(options: DateGridOptions, focusedKey: string | u
     previousDisabled: disabled || (min !== undefined && previousLast < min),
     nextDisabled: disabled || (max !== undefined && nextFirst > max),
     disabled,
+    multiselectable: range,
   };
 }
 

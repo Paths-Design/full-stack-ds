@@ -129,12 +129,32 @@ describe("dateGrid refusals", () => {
     refuses((c) => { part(c, "day").children = [{ tag: "span", events: { click: "dateGrid:previous" } }]; }, `${nestedControl} (found <span>)`);
     refuses((c) => { part(c, "day").children = [{ componentRef: "fsds.Button" } as ContractDomNode]; }, `${nestedControl} (found Button)`);
     refuses((c) => { part(c, "day").attrs = { role: "button" }; }, `the day cell must declare role="gridcell"`);
+    // An editing host takes focus and receives the keys the grid selects with.
+    for (const editable of ["true", "", "plaintext-only"]) {
+      refuses((c) => { part(c, "day").children = [{ tag: "span", attrs: { contenteditable: editable } }]; }, `${nestedControl} (found <span>)`);
+    }
+    refuses((c) => { part(c, "day").children = [{ tag: "span", attrs: { contentEditable: "true" } }]; }, `${nestedControl} (found <span>)`);
+    refuses((c) => { part(c, "day").children = [{ tag: "span", bindings: { contenteditable: "iter:item.selected" } }]; }, `${nestedControl} (found <span>)`);
+    refuses((c) => { part(c, "day").children = [{ tag: "span", attrs: { TabIndex: "-1" } }]; }, `${nestedControl} (found <span>)`);
+    for (const tag of ["area", "embed", "object", "audio", "video"]) {
+      refuses((c) => { part(c, "day").children = [{ tag }]; }, `${nestedControl} (found <${tag}>)`);
+    }
   });
 
   it("admits presentational content inside the gridcell", () => {
     const contract = calendar();
     part(contract, "day").children = [{ tag: "span", children: [{ tag: "span", attrs: { "aria-hidden": "true" }, content: "iter:item.label" }] }];
     expect(build(contract).dateGrid?.valueChannel).toBe("value");
+    // contenteditable="false" is not an editing host.
+    part(contract, "day").children = [{ tag: "span", attrs: { contenteditable: "false" }, content: "iter:item.label" }];
+    expect(build(contract).dateGrid?.valueChannel).toBe("value");
+  });
+
+  it("refuses a grid that does not declare multiple selection from the mode", () => {
+    const multiple = "the grid must bind aria-multiselectable to dateGrid:multiselectable";
+    refuses((c) => { delete part(c, "grid").bindings!["aria-multiselectable"]; }, multiple);
+    refuses((c) => { part(c, "grid").bindings!["aria-multiselectable"] = "dateGrid:nextDisabled"; }, multiple);
+    refuses((c) => { part(c, "grid").attrs = { role: "table" }; }, `an ancestor of the day cells must declare role="grid"`);
   });
 
   it("refuses actions on the wrong event and values used as handlers", () => {

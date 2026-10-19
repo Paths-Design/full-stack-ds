@@ -43,7 +43,7 @@ const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next mon
       </span>
     </button>
   </div>
-  <table [ngClass]="'calendar__grid'" role="grid" (keydown)="dateGrid.keydown($event)" [attr.aria-label]="dateGrid.state.caption">
+  <table [ngClass]="'calendar__grid'" role="grid" (keydown)="dateGrid.keydown($event)" [attr.aria-label]="dateGrid.state.caption" [attr.aria-multiselectable]="dateGrid.state.multiselectable">
     <thead>
       <tr role="row">
         <ng-container *ngFor="let item of (dateGrid.state.weekdays ?? []); let index = index; trackBy: trackByIndex">

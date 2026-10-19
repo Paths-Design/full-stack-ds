@@ -94,7 +94,7 @@ const classNames = computed(() => [
         </span>
       </button>
     </div>
-    <table :class="'calendar__grid'" role="grid" @keydown="dateGrid.keydown" :aria-label="dateGrid.state.caption">
+    <table :class="'calendar__grid'" role="grid" @keydown="dateGrid.keydown" :aria-label="dateGrid.state.caption" :aria-multiselectable="dateGrid.state.multiselectable">
       <thead>
         <tr role="row">
           <th v-for="(item, index) in (dateGrid.state.weekdays ?? [])" :key="index" :class="'calendar__weekday'" role="columnheader" scope="col" :aria-label="item.long">

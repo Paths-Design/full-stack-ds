@@ -8,7 +8,7 @@ import type { BindingExpression, DomNodeIR, IterationIR, NormalizedChannelIR } f
  * month, so the contract iterates `dateGrid:weeks` and, nested, each week's
  * `iter:item.days`.
  */
-export const DATE_GRID_VALUES = ["caption", "weekdays", "weeks", "previousDisabled", "nextDisabled"] as const;
+export const DATE_GRID_VALUES = ["caption", "weekdays", "weeks", "previousDisabled", "nextDisabled", "multiselectable"] as const;
 export const DATE_GRID_ACTIONS = ["previous", "next", "select", "keydown"] as const;
 export type DateGridValue = typeof DATE_GRID_VALUES[number];
 export type DateGridAction = typeof DATE_GRID_ACTIONS[number];
@@ -64,7 +64,7 @@ export function dateGridOptions(
 
 /** Static type of a date-grid value binding (`undefined` for collections and actions). */
 export function dateGridValueType(binding: { field?: DateGridValue }): string | undefined {
-  if (binding.field === "previousDisabled" || binding.field === "nextDisabled") return "boolean";
+  if (binding.field === "previousDisabled" || binding.field === "nextDisabled" || binding.field === "multiselectable") return "boolean";
   if (binding.field === "caption") return "string";
   return undefined;
 }
@@ -85,7 +85,25 @@ const isBinding = (value: BindingExpression | undefined, kind: string, path?: st
   !!value && value.kind === kind && (path === undefined || (value.kind === "iterationLocal" && value.local === "item" && value.path?.join(".") === path));
 
 /** Tags the browser makes focusable or activatable on their own. */
-const FOCUSABLE_TAGS = new Set(["a", "button", "input", "select", "textarea", "summary", "details", "iframe"]);
+const FOCUSABLE_TAGS = new Set([
+  "a", "area", "button", "input", "select", "textarea", "summary", "details",
+  "iframe", "embed", "object", "audio", "video",
+]);
+
+/** A static attribute by case-insensitive name. */
+const attrOf = (node: DomNodeIR, name: string): string | undefined =>
+  Object.entries(node.attrs).find(([key]) => key.toLowerCase() === name)?.[1];
+const hasBinding = (node: DomNodeIR, name: string): boolean =>
+  Object.keys(node.bindings).some((key) => key.toLowerCase() === name);
+
+/** Whether a node takes focus, edits content or handles input on its own. */
+const isInteractive = (node: DomNodeIR): boolean => {
+  const editable = attrOf(node, "contenteditable");
+  return node.componentRef !== undefined || FOCUSABLE_TAGS.has(node.tag) ||
+    attrOf(node, "tabindex") !== undefined || hasBinding(node, "tabindex") ||
+    (editable !== undefined && editable.toLowerCase() !== "false") || hasBinding(node, "contenteditable") ||
+    Object.keys(node.events).length > 0;
+};
 
 export function buildDateGridIR(contract: ComponentContract, channels: NormalizedChannelIR[], dom: DomNodeIR | undefined): DateGridIR | undefined {
   const input = contract.dateGrid;
@@ -208,14 +226,20 @@ export function buildDateGridIR(contract: ComponentContract, channels: Normalize
   const descendants: DomNodeIR[] = [];
   const collect = (node: DomNodeIR) => { descendants.push(node); node.children.forEach(collect); };
   cell.children.forEach(collect);
-  const nested = descendants.find((node) =>
-    node.componentRef !== undefined || FOCUSABLE_TAGS.has(node.tag) || node.attrs.tabindex !== undefined ||
-    node.bindings.tabindex !== undefined || Object.keys(node.events).length > 0);
+  const nested = descendants.find(isInteractive);
   if (nested) {
     fail(`the day cell must contain no focusable or interactive element (found ${nested.componentRef ?? `<${nested.tag}>`}); the gridcell itself takes focus and selection`);
   }
   if (!chain.some((node) => node.events.keydown?.kind === "dateGrid" && node.events.keydown.action === "keydown")) {
     fail("an ancestor of the day cells must bind keydown to dateGrid:keydown");
+  }
+  // Range mode marks several cells aria-selected, which a grid only means
+  // when it declares multiple selection (WAI-ARIA 1.2, the grid role).
+  const grid = chain.find((node) => node.attrs.role === "grid");
+  if (!grid) fail(`an ancestor of the day cells must declare role="grid"`);
+  const multiselectable = grid!.bindings["aria-multiselectable"];
+  if (multiselectable?.kind !== "dateGrid" || multiselectable.field !== "multiselectable") {
+    fail("the grid must bind aria-multiselectable to dateGrid:multiselectable so range selection is announced as multiple");
   }
   return { ...input };
 }

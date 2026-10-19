@@ -79,7 +79,7 @@ const classes = $derived(
       <span aria-hidden="true">›</span>
     </button>
   </div>
-  <table class={'calendar__grid'} role="grid" onkeydown={dateGrid.keydown} aria-label={dateGrid.state.caption}>
+  <table class={'calendar__grid'} role="grid" onkeydown={dateGrid.keydown} aria-label={dateGrid.state.caption} aria-multiselectable={dateGrid.state.multiselectable}>
     <thead>
       <tr role="row">
         {#each (dateGrid.state.weekdays ?? []) as item, index (index)}

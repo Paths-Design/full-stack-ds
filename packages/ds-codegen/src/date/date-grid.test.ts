@@ -84,6 +84,9 @@ describe("date grid derivation", () => {
     const open = computeDateGrid(options({ mode: "range", value: [day(2026, 10, 9)] }), undefined, TODAY);
     expect(keys(open).filter((k) => find(open, k).selected)).toEqual(["2026-10-09"]);
     expect(keys(single).filter((k) => find(single, k).current === "date")).toEqual(["2026-10-18"]);
+    // Only range mode selects several days, so only it declares multiple selection.
+    const unset = computeDateGrid(options({ mode: undefined }), undefined, TODAY);
+    expect([single.multiselectable, range.multiselectable, open.multiselectable, unset.multiselectable]).toEqual([false, true, true, false]);
   });
 
   it("disables days outside the bounds and the nav buttons that would leave them", () => {
@@ -283,6 +286,20 @@ describe("date grid interaction", () => {
     grid.sync({ ...opts, value: [day(2026, 10, 8), day(2026, 10, 12)] });
     grid.select(find(grid.state, "2026-10-20"));
     expect(onValueChange).toHaveBeenLastCalledWith([day(2026, 10, 20)]);
+  });
+
+  it("commits a Date or a Date[], so a setter for a channel without the null arm takes every commit", () => {
+    const commits: Array<Date | Date[]> = [];
+    // The setter an admitted `Date | Date[]` value channel emits.
+    const commit = (next: Date | Date[]) => { commits.push(next); };
+    const grid = createDateGrid(() => TODAY);
+    grid.sync(options({ onValueChange: commit }));
+    grid.select(find(grid.state, "2026-10-10"));
+    grid.sync(options({ mode: "range", onValueChange: commit }));
+    grid.select(find(grid.state, "2026-10-12"));
+    expect(commits).toEqual([day(2026, 10, 10), [day(2026, 10, 12)]]);
+    // @ts-expect-error a setter that cannot take a range commit does not type-check
+    options({ onValueChange: (next: Date) => commits.push(next) });
   });
 
   it("ignores a disabled day", () => {

@@ -78,8 +78,8 @@
  *     mechanism generalizes, but only these are asserted here.
  *   - Cross-framework behavioral parity beyond DOM shape (e.g.
  *     whether OTP's React input-focus advance behaves identically
- *     in Svelte). Calendar's keyboard and activation facts are the
- *     exception; its range mode and min/max bounds are pinned only by the
+ *     in Svelte). Calendar's keyboard, activation and range-selection
+ *     facts are the exception; its min/max bounds are pinned only by the
  *     shared jsdom contract tests, and no rail observes what a screen
  *     reader announces.
  *   - Non-default props beyond the three asserted components/props.
@@ -287,6 +287,7 @@ interface CalendarFacts {
   outsideMonth: number;
   caption: string;
   gridLabel: string | null;
+  gridMultiselectable: string | null;
   weekdays: string[];
   labels: Record<string, string>;
 }
@@ -318,6 +319,7 @@ async function calendarFacts(page: Page, framework: Framework): Promise<Calendar
         outsideMonth: cells("[data-outside-month]").filter((cell) => cell.getAttribute("data-outside-month") !== "false").length,
         caption: root.querySelector(".calendar__caption")?.textContent?.trim() ?? "",
         gridLabel: root.querySelector('[role="grid"]')?.getAttribute("aria-label") ?? null,
+        gridMultiselectable: root.querySelector('[role="grid"]')?.getAttribute("aria-multiselectable") ?? null,
         weekdays: Array.from(root.querySelectorAll('[role="columnheader"]')).map((header) => header.getAttribute("aria-label") ?? ""),
         labels: Object.fromEntries(days.map((day) => [day.getAttribute("data-date") ?? "", day.getAttribute("aria-label") ?? ""])),
       };
@@ -351,6 +353,7 @@ test.describe("Runtime rail — Calendar (date grid: roving focus, activation, m
       expect(facts!.selected).toEqual([]);
       expect(facts!.caption).toBe("March 2031");
       expect(facts!.gridLabel).toBe("March 2031");
+      expect(facts!.gridMultiselectable).toBe("false");
       expect(facts!.weekdays[0]).toBe("Sunday");
       expect(facts!.weekdays).toHaveLength(7);
       expect(facts!.labels["2031-03-12"]).toBe("Wednesday, March 12, 2031");
@@ -432,6 +435,17 @@ test.describe("Runtime rail — Calendar (date grid: roving focus, activation, m
         const facts = await calendarFacts(page, framework);
         return facts && { caption: facts.caption, selected: facts.selected, focused: facts.focused, tabStops: facts.tabStops };
       }).toEqual({ caption: "April 2031", selected: ["2031-04-02"], focused: "2031-04-02", tabStops: ["2031-04-02"] });
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: range mode declares multiple selection on the grid and selects the span between two days`, async ({ page }) => {
+      await goto(page, framework, "Calendar", "calendar", { mode: "range", month: new Date(2031, 2, 1) });
+      await expect.poll(async () => (await calendarFacts(page, framework))?.gridMultiselectable).toBe("true");
+      await page.locator('[data-date="2031-03-12"]').click();
+      await page.locator('[data-date="2031-03-09"]').click();
+      await expect.poll(async () => (await calendarFacts(page, framework))?.selected)
+        .toEqual(["2031-03-09", "2031-03-10", "2031-03-11", "2031-03-12"]);
     });
   }
 

@@ -265,7 +265,7 @@ export class CalendarElement extends LitElement {
       <span aria-hidden="true">›</span>
     </button>
   </div>
-  <table class=${'calendar__grid'} role="grid" @keydown=${this.dateGrid.keydown} aria-label=${this.dateGrid.state.caption}>
+  <table class=${'calendar__grid'} role="grid" @keydown=${this.dateGrid.keydown} aria-label=${this.dateGrid.state.caption} aria-multiselectable=${this.dateGrid.state.multiselectable}>
     <thead>
       <tr role="row">
         ${(this.dateGrid.state.weekdays ?? []).map((item) => html`

@@ -29,7 +29,7 @@ derives the grid from them. No emitter computes a date.
 
 | Field | Requirement the IR enforces |
 |---|---|
-| `valueChannel` | a value channel typed `Date \| Date[]`, optionally `\| null`: the core commits a `Date` in single mode and a `Date[]` in range mode, and reads `null` as no selection |
+| `valueChannel` | a value channel typed `Date \| Date[]`, optionally `\| null`: the core commits a `Date` in single mode and a `Date[]` in range mode, never `null`, and reads `null` as no selection; its `onValueChange` takes `Date \| Date[]`, so a channel without the null arm passes its setter |
 | `monthChannel` | a different value channel typed `Date`: any date inside the visible month |
 | `modeProp` | a prop typed by a `"single" \| "range"` union |
 | `localeProp` | a string prop declared `translatable: false`, carrying a BCP 47 tag |
@@ -37,7 +37,8 @@ derives the grid from them. No emitter computes a date.
 | `disabledProp`, `captionProp` | optional boolean and string props |
 
 The dom binds the core through a closed vocabulary. `dateGrid:caption`,
-`weekdays`, `weeks`, `previousDisabled` and `nextDisabled` are values;
+`weekdays`, `weeks`, `previousDisabled`, `nextDisabled` and `multiselectable`
+are values;
 `dateGrid:previous`, `next` and `select(iter:item)` bind a click and
 `dateGrid:keydown` binds a keydown. Only `weeks` and `weekdays` are iterable,
 and a week's days iterate as `iter:item.days`, declaring the runtime item
@@ -49,7 +50,10 @@ the roving tab stop, takes focus, carries the full-date `aria-label`,
 `aria-selected`, `aria-current` and `aria-disabled`, and selects on click,
 Enter or Space. Because focus and the selected state are on one element, a
 screen reader reads the state with the focus. The day's number renders in a
-presentational `span` inside the cell.
+presentational `span` inside the cell. The grid binds `aria-multiselectable`
+to the mode: `"true"` in range mode, where several cells are selected, and
+`"false"` in single mode. WAI-ARIA 1.2's grid role asks a grid that allows
+several selected gridcells to declare it.
 
 `buildDateGridIR` (`packages/ds-codegen/src/date-grid.ts`) refuses a contract
 with `DATE_GRID_INVALID` unless:
@@ -62,9 +66,12 @@ with `DATE_GRID_INVALID` unless:
   `iter:item.tabIndex`, `data-date` to `iter:item.key` and its click to
   `dateGrid:select(iter:item)`, so the tab stop, the focus target and the
   activated element are the gridcell;
-- nothing inside the cell is focusable or interactive: no native control tag,
-  `tabindex`, event or component reference;
+- nothing inside the cell is focusable, editable or interactive: no natively
+  focusable tag, `tabindex`, `contenteditable` other than `"false"`, event or
+  component reference (attribute names compare case-insensitively);
 - an ancestor of the cells binds keydown to `dateGrid:keydown`;
+- the cells' `role="grid"` ancestor binds `aria-multiselectable` to
+  `dateGrid:multiselectable`;
 - no `dateGrid:` binding appears without a `dateGrid` declaration.
 
 ## The core
@@ -146,18 +153,23 @@ divergences are ledgered in
   through a shadow root), a move a controlled month refuses, and the expiry of
   that move's focus.
 - `packages/ds-codegen/src/date-grid.test.ts` pins the IR refusals, including
-  a focusable control inside the cell (the shape before the grid pattern), a
-  cell without `role="gridcell"`, and value channels whose type merely names
-  `Date`.
+  a focusable control inside the cell (the shape before the grid pattern), an
+  editable span inside it, a cell without `role="gridcell"`, a grid without
+  `aria-multiselectable`, and value channels whose type merely names `Date`.
+  The core test types a setter without the null arm against `onValueChange`,
+  checked by the codegen package's `typecheck`.
 - `packages/ds-react/src/primitives/hooks/__tests__/calendar.contract.ts` runs
   one obligation set through the React, Vue, Svelte, Angular and Lit harnesses,
-  including the grid pattern's shape and Enter and Space selection; React Native
-  has its own Calendar tests.
+  including the grid pattern's shape, the grid's multiple-selection
+  declaration per mode, and Enter and Space selection; React Native has its own
+  Calendar tests.
 - `e2e/runtime-rail.spec.ts` drives Calendar in Chromium on all five web
   targets under a fixed clock: one tab stop on today, real arrow, Home, End and
   PageDown keys moving DOM focus onto the gridcell, Enter and Space selection
-  with focus and `aria-selected` on that gridcell, no control inside any cell, an outside-month
-  click keeping focus on its day, the month buttons, and a de-DE grid.
+  with focus and `aria-selected` on that gridcell, no control inside any cell,
+  a range selected by two clicks on a grid that declares multiple selection,
+  an outside-month click keeping focus on its day, the month buttons, and a
+  de-DE grid.
 - `FsdsDateGridTest.kt` and `CalendarSemanticsTest.kt` (Compose, desktop JVM
   `runComposeUiTest`) and `FsdsDateGridTests.swift` pin the native cores and
   Compose's semantics tree, including a controlled `null` clearing the
@@ -173,6 +185,9 @@ divergences are ledgered in
 - The grid is Gregorian. Hijri and Persian locales see Gregorian months.
 - Native targets do not lower roving focus or the grid's keys: every enabled
   day is a focus stop. Compose does not announce today.
+- Only the web targets declare multiple selection on the grid. The React
+  Native, SwiftUI and Compose emitters do not lower `aria-multiselectable`;
+  each day there still exposes its own selected state.
 - No screen reader's output has been observed: the pattern puts focus and
   `aria-selected` on one element, and the browser tests read the DOM, not the
   accessibility tree. The SwiftUI accessibility-tree test skips under

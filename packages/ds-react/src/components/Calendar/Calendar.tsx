@@ -119,7 +119,7 @@ export function Calendar({
         </span>
       </button>
     </div>
-    <table className="calendar__grid" role="grid" onKeyDown={dateGrid.keydown} aria-label={dateGrid.state.caption}>
+    <table className="calendar__grid" role="grid" onKeyDown={dateGrid.keydown} aria-label={dateGrid.state.caption} aria-multiselectable={dateGrid.state.multiselectable}>
       <thead>
         <tr role="row">
           {(dateGrid.state.weekdays ?? []).map((item, index) => (
