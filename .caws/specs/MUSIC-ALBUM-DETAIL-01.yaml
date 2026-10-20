@@ -61,11 +61,10 @@ evidence:
     commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
   - criterion_id: A3
     status: pass
-    evidence_ref: "Final full retoken suite 13/13 passed in fsds-album-final-e2e.log; final committed-source render/navigation rerun 4/4 passed at 1440 and 390px with document overflow, media, icon and control assertions; saved screenshots inspected. Earlier intermittent runs are retained, not erased."
-    recorded_at: "2026-10-20T01:44:30.238Z"
+    evidence_ref: "Primary full retoken run 13/13 passed in ignored tmp/music-album-detail/fsds-album-final-e2e.log; final committed-source desktop/mobile rerun 4/4 passed in final-music-render.log, including overflow/media/icon facts. Screenshots inspected; earlier intermittent logs retained. Commit re-derivation does not rerun tests."
+    recorded_at: "2026-10-20T01:48:45.535Z"
     command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --workers=1"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/music-album-detail/fsds-album-final-e2e.log"
     commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
   - criterion_id: A4
     status: pass
