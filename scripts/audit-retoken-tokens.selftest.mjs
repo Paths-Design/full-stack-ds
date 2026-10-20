@@ -17,6 +17,7 @@ try {
   write('e2e/fixtures/retoken-pages/theme.css','');
   write('e2e/fixtures/retoken-pages/pages.tsx',"import { Tooltip } from '../../../packages/ds-react/src/components';");
   write('e2e/fixtures/retoken-pages/pinterest.tsx','');
+  write('e2e/fixtures/retoken-pages/spotify.tsx','');
   write('packages/ds-react/src/components/Tooltip/Tooltip.css',`.tooltip { color: var(${variable}, #fafafa); }`);
   write('packages/ds-tokens/generated/tokens.css','');
   write(baseline,JSON.stringify({declarations:{},fallbackLedger:{}}));
