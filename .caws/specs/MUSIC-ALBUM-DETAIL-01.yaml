@@ -1,9 +1,10 @@
 id: MUSIC-ALBUM-DETAIL-01
 title: 'Music library album detail pages'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: music-album-detail
 created_at: '2026-10-20T00:54:45.382Z'
-updated_at: '2026-10-20T00:54:45.382Z'
+updated_at: '2026-10-20T00:54:50.703Z'
 created_by_session: '01a156cb-3d22-7082-8bfb-a913ec2f142d'
 blast_radius:
   modules:
