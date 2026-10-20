@@ -51,7 +51,7 @@ for (const kind of ['spotify','pinterest']) {
           const box=(await page.locator(`[data-testid="pin-${id}"] img`).boundingBox())!;
           expect(box.width/box.height).toBeCloseTo(ratio,2);
         }
-        await expect(page.locator('.pin-profile')).toHaveCSS('width','32px');
+        await expect(page.locator('.pin-avatar-trigger .pin-profile')).toHaveCSS('width','32px');
         await expect(page.locator('.pin .card__media').first()).toHaveCSS('border-radius','16px');
         await expect(page.locator('.pin-caption-copy .text').first()).toHaveCSS('text-overflow','ellipsis');
         const save=page.getByRole('button',{name:'Save Fieldwork — an independent design studio portfolio',exact:true});
@@ -65,7 +65,9 @@ for (const kind of ['spotify','pinterest']) {
         await page.getByRole('button',{name:'Unsave Fieldwork — an independent design studio portfolio'}).press('Enter');
         await expect(page.getByRole('status')).toHaveText('No ideas found');
         await page.getByRole('button',{name:'Home',exact:true}).click();
+        await page.getByRole('button',{name:'Search ideas',exact:true}).click();
         await page.getByRole('textbox',{name:'Search collection'}).fill('Designing systems');
+        await page.getByRole('textbox',{name:'Search collection'}).press('Enter');
         await expect(page.locator('.pin')).toHaveCount(1);
         if(width===390) {
           for(const save of await page.locator('.save-button').all()) {
@@ -80,6 +82,7 @@ for (const kind of ['spotify','pinterest']) {
         await page.keyboard.press('Escape');
         await expect(hide).toBeHidden();
       }
+      if(kind==='pinterest')await page.getByRole('button',{name:'Search ideas',exact:true}).click();
       await page.getByRole('textbox',{name:'Search collection'}).fill('unmatched search');
       await expect(kind==='spotify'?page.getByRole('region',{name:'Music discovery'}).getByRole('status'):page.getByRole('status')).toHaveText(kind==='spotify'?'No mixes found':'No ideas found');
       expect(errors).toEqual([]);
