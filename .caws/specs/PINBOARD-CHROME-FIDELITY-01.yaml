@@ -57,11 +57,10 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Merged Chromium packing and overflow assertions at 1357/900/390 widths; inspected feed-1357.png and the live 5202 page confirm compact business header, circular mark, topic rail and packed original artwork. Bounded local composition, not pixel identity."
-    recorded_at: "2026-10-20T02:58:51.156Z"
-    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep \"Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement\" --workers=2 --max-failures=1"
+    evidence_ref: "Merged Chromium packing/overflow at 1357/900/390 widths and inspected desktop render establish compact header, circular mark, topic rail and packed local artwork; no pixel-identity claim. Executed browser evidence: tmp/pinboard-chrome-fidelity/post-merge-browser.log (12 passed, inspected); runtime logs remain untracked. CLI verification here checks source-commit existence only, not behavioral correctness or test execution."
+    recorded_at: "2026-10-20T03:01:33.081Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep 'Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement' --workers=2 --max-failures=1"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/pinboard-chrome-fidelity/post-merge-browser.log"
     commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
   - criterion_id: A2
     status: pass
