@@ -108,7 +108,7 @@ function resolveValue(value, page) {
 
 function componentNames() {
   const names = new Set();
-  for (const page of ['pages.tsx', 'pinterest.tsx']) {
+  for (const page of ['pages.tsx', 'pinterest.tsx', 'spotify.tsx']) {
     const text = readFileSync(path.join(root, 'e2e/fixtures/retoken-pages', page), 'utf8');
     for (const m of text.matchAll(/<([A-Z][A-Za-z0-9]+)/g)) names.add(m[1]);
     for (const m of text.matchAll(/import \{([^}]*)\} from '\.\.\/\.\.\/\.\.\/packages\/ds-react\/src\/components'/g))
