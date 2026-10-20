@@ -1,0 +1,53 @@
+id: TOKEN-THEMING-EXAMPLE-01
+title: 'Promote retoken suite to token-theming example'
+mode: refactor
+lifecycle_state: draft
+created_at: '2026-10-20T03:05:31.093Z'
+updated_at: '2026-10-20T03:05:31.093Z'
+created_by_session: '01a156d3-2809-73b0-970f-b22d29357572'
+blast_radius:
+  modules:
+    - 'Token theming example, browser tests and token audit routing'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'e2e/fixtures/retoken-pages/'
+    - 'examples/token-theming/'
+    - 'examples/README.md'
+    - 'README.md'
+    - 'package.json'
+    - 'scripts/audit-retoken-tokens.mjs'
+    - 'scripts/audit-retoken-tokens.selftest.mjs'
+    - 'scripts/retoken-token-probe.mjs'
+    - 'scripts/prepush-scope.mjs'
+    - 'e2e/retoken-pages.spec.ts'
+    - 'e2e/pinterest-chrome.spec.ts'
+    - 'docs/architecture/design/retoken-page-attempts.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Both existing page compositions and original artwork retain their behavior and token audit adjudications'
+  - 'Browser test infrastructure stays under e2e while runnable consumer sources live in examples/token-theming'
+acceptance:
+  - id: A1
+    given: 'the committed retoken suite'
+    when: 'the example entry is built and both pages are opened at examples/token-theming'
+    then: 'both pages build and existing desktop and narrow browser flows pass without the old fixture directory'
+  - id: A2
+    given: 'the moved styles and audit baseline'
+    when: 'token audit and scanner selftests run'
+    then: 'audit remains adjudicated and prepush scoping includes the new location'
+  - id: A3
+    given: 'a reader browsing the repository'
+    when: 'they read the root and examples indexes'
+    then: 'token-theming is linked with working run commands and accurate proof limits'
+observability:
+  - 'Scoped Playwright, example production build, audit and docs output'
+rollback:
+  - 'Revert the move commit as a logical unit'
+non_functional: {}
+contracts:
+  - name: 'retoken-page-behavior'
+    type: contract-test
+    path: 'e2e/retoken-pages.spec.ts'
