@@ -44,3 +44,12 @@ contracts:
   - name: 'album-navigation'
     type: behavior
     path: 'e2e/retoken-pages.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Committed a7d816e4891e5f564151fa4e0a2400cf55969808: Chromium desktop/mobile cover activation, matching artwork/maker, direct and invalid links, browser Back and Home with focus restoration; final four-case render/navigation run passed."
+    recorded_at: "2026-10-20T01:42:21.734Z"
+    command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --grep \"spotify: composition|Album details\" --workers=1"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/music-album-detail/final-music-render.log"
+    commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
