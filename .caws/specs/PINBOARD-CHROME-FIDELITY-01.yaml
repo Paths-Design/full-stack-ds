@@ -1,9 +1,10 @@
 id: PINBOARD-CHROME-FIDELITY-01
 title: 'Pinboard reference header, discovery overlays and compact masonry'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: pinboard-chrome-fidelity
 created_at: '2026-10-20T01:03:23.305Z'
-updated_at: '2026-10-20T01:03:23.305Z'
+updated_at: '2026-10-20T01:03:27.884Z'
 created_by_session: '01a156d3-2809-73b0-970f-b22d29357572'
 blast_radius:
   modules:
