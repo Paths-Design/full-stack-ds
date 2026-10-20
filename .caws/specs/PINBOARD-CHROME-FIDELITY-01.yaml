@@ -64,11 +64,10 @@ evidence:
     commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
   - criterion_id: A2
     status: pass
-    evidence_ref: "Merged header-surface checks exercise global navigation, search, notifications, account and native audience dialog at desktop/narrow widths. Two focus regressions failed before repair and pass after persistent-trigger restoration; raw focus-before-repair.log retained."
-    recorded_at: "2026-10-20T02:58:51.742Z"
-    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep \"Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement\" --workers=2 --max-failures=1"
+    evidence_ref: "Merged header-surface and focus checks pass desktop/narrow. Two concrete focus regressions failed before repair and pass afterward. Executed browser evidence: tmp/pinboard-chrome-fidelity/post-merge-browser.log (12 passed, inspected); runtime logs remain untracked. CLI verification here checks source-commit existence only, not behavioral correctness or test execution."
+    recorded_at: "2026-10-20T03:01:34.159Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep 'Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement' --workers=2 --max-failures=1"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/pinboard-chrome-fidelity/post-merge-browser.log"
     commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
   - criterion_id: A3
     status: pass
