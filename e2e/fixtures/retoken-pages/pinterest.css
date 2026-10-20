@@ -4,7 +4,7 @@
 .pin-primary { display: flex; align-items: center; gap: 4px; width: 100%; height: 100%; }
 .pin-header-space { flex: 1; }
 .pin-header-hint { --fsds-box-model-padding: 0px; --fsds-box-model-min-width: 0px; display: inline-flex; }
-.pin-tooltip { --fsds-tooltip-design-content-background-fill: #111; --fsds-tooltip-design-content-foreground-color: #fff; --fsds-tooltip-design-content-border-width: 0px; --fsds-tooltip-design-content-shape-radius: 8px; --fsds-tooltip-design-content-spacing-padding: 10px; --fsds-tooltip-design-content-typography-size: 12px; }
+.pin-tooltip { --fsds-tooltip-design-content-background-fill: #111; --fsds-tooltip-design-content-foreground-color: #fff; --fsds-tooltip-design-content-border-width: 0px; --fsds-tooltip-design-content-border-color: transparent; --fsds-tooltip-design-content-shape-radius: 8px; --fsds-tooltip-design-content-spacing-padding: 10px; --fsds-tooltip-design-content-typography-size: 12px; }
 .pin-brand { --fsds-box-model-padding: 12px; --fsds-box-model-gap: 7px; flex-shrink: 0; }
 .pin-brand-symbol { width: 24px; height: 24px; color: var(--retoken-accent-brand); flex-shrink: 0; }
 .pin-brand-content, .pin-business-content { display: inline-flex; align-items: center; gap: 8px; }
@@ -14,6 +14,7 @@
 .pin-profile { --fsds-avatar-design-root-border-width: 0px; --fsds-image-design-root-media-fit: cover; --fsds-avatar-design-root-background-fill: #456652; --fsds-avatar-design-root-foreground-color: #fff; --fsds-avatar-design-root-typography-size: 10px; }
 .pin-notification-trigger { position: relative; }
 .pin-count { position: absolute; right: 7px; top: 3px; --fsds-badge-design-root-background-fill: var(--retoken-accent-brand); --fsds-badge-design-root-foreground-color: #fff; --fsds-badge-design-root-border-width: 2px; --fsds-badge-design-root-border-color: #fff; --fsds-badge-design-root-sizing-min-height: 18px; --fsds-badge-design-root-spacing-padding-block: 0px; --fsds-badge-design-root-spacing-padding-inline: 3px; --fsds-badge-design-root-typography-size: 11px; }
+.pin-count { --fsds-badge-design-hover-background-fill: var(--retoken-accent-brand); }
 .pin-topics { position: sticky; top: var(--pin-header-height); z-index: 5; display: flex; align-items: center; gap: 24px; height: 56px; overflow-x: auto; scrollbar-width: none; margin-bottom: 8px; padding: 0 16px; background: #fff; }
 .pin-topic { --fsds-box-model-padding: 14px 0; --fsds-box-model-min-height: 48px; --fsds-button-design-root-shape-radius: 0px; --fsds-button-design-root-typography-size: 15px; --fsds-button-design-root-typography-weight: 500; flex-shrink: 0; position: relative; }
 .pin-topic--active::after { content: ''; position: absolute; bottom: 8px; left: 0; right: 0; height: 2px; background: currentColor; }
@@ -37,6 +38,7 @@
 .pin-nav-link { --fsds-button-design-root-typography-weight: 400; --fsds-button-design-root-typography-size: 16px; --fsds-button-design-root-shape-radius: 8px; --fsds-box-model-padding: 12px 16px; --fsds-box-model-min-height: 46px; --fsds-box-model-gap: 5px; display: flex; justify-content: flex-start; text-align: left; white-space: normal; flex-wrap: wrap; }
 .pin-nav-link > span { white-space: normal; }
 .pin-new-tag { --fsds-badge-design-root-background-fill: #ebedff; --fsds-badge-design-root-foreground-color: #2946d5; --fsds-badge-design-root-shape-radius: 3px; --fsds-badge-design-root-border-width: 0px; --fsds-badge-design-root-sizing-min-height: 20px; --fsds-badge-design-root-spacing-padding-inline: 3px; --fsds-badge-design-root-spacing-padding-block: 1px; --fsds-badge-design-root-typography-size: 14px; }
+.pin-new-tag { --fsds-badge-design-hover-background-fill: #ebedff; }
 .pin-nav-hint { display: flex; align-items: center; gap: 8px; background: #fafafa; padding: 16px 24px; font-size: 14px; }
 .pin-header--search .pin-header-space { display: none; }
 .pin-search-field { position: relative; flex: 1; min-width: 0; }

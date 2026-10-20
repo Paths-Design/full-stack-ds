@@ -2,6 +2,28 @@ import { test, expect } from '@playwright/test';
 
 const fixture='/e2e/fixtures/retoken-pages/index.html?page=pinterest';
 
+test('Search scrim dismissal returns to its persistent trigger',async({page})=>{
+  await page.setViewportSize({width:1357,height:1000});
+  await page.goto(fixture);
+  const search=page.getByRole('button',{name:'Search ideas',exact:true});
+  await search.click();
+  await expect(page.getByRole('textbox',{name:'Search collection'})).toBeFocused();
+  await page.locator('.pin-scrim').click({position:{x:10,y:900}});
+  await expect(search).toBeFocused();
+});
+
+test('Account engagement dismissal returns to the persistent account trigger',async({page})=>{
+  await page.goto(fixture);
+  const account=page.getByRole('button',{name:'Account options',exact:true});
+  await account.click();
+  const engagement=page.getByRole('region',{name:'Account options',exact:true}).getByRole('button',{name:'Engagement',exact:true});
+  await engagement.focus();
+  await engagement.press('Enter');
+  await expect(page.getByRole('dialog',{name:'Build your audience'})).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(account).toBeFocused();
+});
+
 for(const width of [1357,390]) {
   test(`Pinboard photo, hints and collection search history at ${width}px`,async({page},info)=>{
     await page.setViewportSize({width,height:1000});

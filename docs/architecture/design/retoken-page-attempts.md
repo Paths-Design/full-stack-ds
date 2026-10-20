@@ -199,3 +199,8 @@ Non-claims: the probe samples resting DOM at the committed pages, so
 interaction-state slots are classified statically rather than exercised; the
 gate is local-only (pre-push family `RETOKEN_TOKEN_AUDIT`), not yet a CI step;
 shadow-composition fallback terminals are outside the color ledger's scope.
+The inventory and historical load-bearing classifications cover `theme.css`.
+The dedicated `pinterest.css` supplies also participate in unset-fallback
+classification; they do not inherit that sheet's declaration adjudications or
+runtime-removal verdicts. The audit self-test executes the real scanner against
+supplied, unledgered, intentionally inherited and missing-sheet fixtures.

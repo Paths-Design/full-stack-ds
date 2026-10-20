@@ -102,12 +102,23 @@ export function Pinterest() {
   const [selected,setSelected]=useState<number|null>(selectedFromUrl);
   const [query,setQuery]=useState('');
   const [overlay,setOverlay]=useState<'navigation'|'search'|'notifications'|'messages'|'account'|null>(null);
-  const [audienceOpen,setAudienceOpen]=useState(false);
+  const [audienceOpen,changeAudienceOpen]=useState(false);
   const [topic,setTopic]=useState('All');
   const [navHint,setNavHint]=useState<string|null>(null);
   const [recentSearches,setRecentSearches]=useState(['Designing systems','Editorial identity']);
   const [viewed,setViewed]=useState<number[]>([0,1,2,3,4,5,6]);
   const trigger=useRef<string|null>(null);
+  const audienceReturn=useRef<HTMLElement|null>(null);
+  const setAudienceOpen=(open:boolean)=>{
+    if(open) {
+      const active=document.activeElement;
+      audienceReturn.current=active instanceof HTMLElement&&active.closest('.pin-account-menu')
+        ?document.querySelector<HTMLElement>(trigger.current??'.pin-avatar-trigger')
+        :active instanceof HTMLElement?active:null;
+    }
+    changeAudienceOpen(open);
+    if(!open)requestAnimationFrame(()=>audienceReturn.current?.focus());
+  };
   const chrome=useRef<HTMLElement>(null);
   const audience=useRef<HTMLDialogElement>(null);
   const restoreTrigger=()=>{if(trigger.current)document.querySelector<HTMLElement>(trigger.current)?.focus();};
@@ -119,7 +130,12 @@ export function Pinterest() {
     if(!overlay)return;
     if(overlay==='search')document.querySelector<HTMLInputElement>('.pin-search-input')?.focus();
     const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'){event.preventDefault();setOverlay(null);requestAnimationFrame(restoreTrigger);}};
-    const outside=(event:PointerEvent)=>{if(!chrome.current?.contains(event.target as Node))setOverlay(null);};
+    const outside=(event:PointerEvent)=>{
+      const target=event.target;
+      // Let the scrim complete its click before unmounting it and the input.
+      if(target instanceof Element&&target.closest('.pin-scrim'))return;
+      if(!chrome.current?.contains(target as Node)){setOverlay(null);requestAnimationFrame(restoreTrigger);}
+    };
     document.addEventListener('keydown',escape);document.addEventListener('pointerdown',outside);
     return ()=>{document.removeEventListener('keydown',escape);document.removeEventListener('pointerdown',outside);};
   },[overlay]);
@@ -224,7 +240,7 @@ export function Pinterest() {
         <div className="pin-nav-columns">{navigation.map(group=><section key={group.title}><h2>{group.title}</h2>{group.items.map(item=>item==='Organic'||item==='Paid'?<h3 key={item}>{item}</h3>:<Button key={item} className="quiet pin-nav-link" onClick={()=>{if(item==='Home feed')home();else setNavHint(item);}} onFocus={()=>setNavHint(item)} onMouseEnter={()=>setNavHint(item)}><span>{item}</span>{item==='Conversion insights'&&<Badge className="pin-new-tag">Beta</Badge>}{item==='Experiments'&&<Badge className="pin-new-tag">New</Badge>}</Button>)}</section>)}</div>
         <div className="pin-nav-hint" role="status" aria-label="Navigation description" aria-live="polite"><Icon name="info" size="sm"/>{navHint?<><strong>{navHint}:</strong><span>{navDescriptions[navHint]}</span></>:<span>Discover tools to create, grow and manage your business.</span>}</div>
       </section>}
-      {overlay==='notifications'&&<section className="pin-notifications pin-overlay pin-floating-panel" id="pin-notifications" aria-label="Notifications"><h2>Updates</h2><p className="pin-panel-muted">Fresh inspiration for your next big idea.</p>{[8,12].map((index,i)=><Button key={index} className="quiet pin-update" onClick={()=>{navigate(index);dismiss();}}><Image src={pinArtwork(index)} alt="" width={64} height={80} objectFit="cover"/><span><strong>{i===0?'A little inspiration for you':'Ideas you might love'}</strong><br/>{pins[index].title}<small>{i===0?'2 hours ago':'Yesterday'}</small></span><i aria-label="Unread"/></Button>)}</section>}
+      {overlay==='notifications'&&<section className="pin-notifications pin-overlay pin-floating-panel" id="pin-notifications" aria-label="Notifications"><h2>Updates</h2><p className="pin-panel-muted">Fresh inspiration for your next big idea.</p>{[8,12].map((index,i)=><Button key={index} className="quiet pin-update" onClick={()=>{navigate(index);setOverlay(null);}}><Image src={pinArtwork(index)} alt="" width={64} height={80} objectFit="cover"/><span><strong>{i===0?'A little inspiration for you':'Ideas you might love'}</strong><br/>{pins[index].title}<small>{i===0?'2 hours ago':'Yesterday'}</small></span><i aria-label="Unread"/></Button>)}</section>}
       {overlay==='messages'&&<section className="pin-floating-panel pin-overlay" aria-label="Messages"><h2>Messages</h2><p className="pin-panel-muted">Share an idea. Start a conversation.</p></section>}
       {overlay==='account'&&<section className="pin-account-menu pin-overlay pin-floating-panel" id="pin-account-options" aria-label="Account options"><p>Currently in</p><div className="pin-current-account"><Avatar src={profilePhoto} name="Darian Rosebrook" size="large" className="pin-profile"/><div><strong>Darian Rosebrook</strong><small>Business</small></div><Icon name="check"/></div><p>Your collection</p><Button className="quiet pin-account-link" onClick={()=>home()}>Home feed</Button><Button className="quiet pin-account-link" onClick={()=>home(true)}>Saved ({saved.length})</Button><p>More options</p><Button className="quiet pin-account-link" onClick={()=>{setOverlay(null);setAudienceOpen(true);}}>Engagement</Button><Button className="quiet pin-account-link" onClick={()=>{location.search='?page=spotify';}}>Switch to music page<Icon name="external-link"/></Button></section>}
     </header>
