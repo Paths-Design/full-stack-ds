@@ -52,3 +52,11 @@ contracts:
   - name: 'retoken-page-behavior'
     type: contract-test
     path: 'e2e/retoken-pages.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Both moved page compositions passed all 20 desktop/narrow browser flows at committed f8cc993e0 (fresh port 5204); example production build exited 0 and both built page selectors were inspected over HTTP in CUA at port 5205. All nine fixture files moved, old directory absent; artwork/styles/baseline unchanged. Raw executing checks: tmp/token-theming-move/browser.log and build.log with revision/exit metadata. Commit verification below validates source existence only, not browser execution."
+    recorded_at: "2026-10-20T03:21:21.237Z"
+    command: "FSDS_E2E_PORT=5204 pnpm exec playwright test e2e/retoken-pages.spec.ts e2e/pinterest-chrome.spec.ts --workers=2 --max-failures=1"
+    exit_code: 0
+    commit_sha: f8cc993e09af92a8ddda04ba871be22371fa94a8
