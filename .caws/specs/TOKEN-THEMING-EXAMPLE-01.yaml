@@ -60,3 +60,10 @@ evidence:
     command: "FSDS_E2E_PORT=5204 pnpm exec playwright test e2e/retoken-pages.spec.ts e2e/pinterest-chrome.spec.ts --workers=2 --max-failures=1"
     exit_code: 0
     commit_sha: f8cc993e09af92a8ddda04ba871be22371fa94a8
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Moved token audit retained all adjudications; scanner supplied/unset/ledgered/missing-sheet cases and 58 prepush classifier tests passed, including new example and scanner-selftest paths. Raw execution: tmp/token-theming-move/{audit,audit-selftest,scope}.log with revision/exit metadata. Citation rederivation verifies source existence only."
+    recorded_at: "2026-10-20T03:21:22.911Z"
+    command: "node scripts/audit-retoken-tokens.mjs && node scripts/audit-retoken-tokens.selftest.mjs && node --test scripts/prepush-scope.test.mjs"
+    exit_code: 0
+    commit_sha: f8cc993e09af92a8ddda04ba871be22371fa94a8
