@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type ReactElement } from 'react';
-import { Avatar, Button, Card, CardMedia, CardContent, Image, Input, Text, Icon, Popover, Badge, Tooltip } from '../../../packages/ds-react/src/components';
-import { Stack } from '../../../packages/ds-react/src/primitives';
+import { Avatar, Button, Card, CardMedia, CardContent, Image, Input, Text, Icon, Popover, Badge, Tooltip } from '../../packages/ds-react/src/components';
+import { Stack } from '../../packages/ds-react/src/primitives';
 import { pinArtwork, pins } from './pin-artwork';
-import profilePhoto from '../../../src/assets/darian-profile.webp';
+import profilePhoto from '../../src/assets/darian-profile.webp';
 import './pinterest.css';
 
 function ChromeHint({label,children}:{label:string;children:ReactElement}) {

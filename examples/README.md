@@ -1,6 +1,8 @@
 # Examples
 
-Consumer-app parity proving surfaces. **Not** demos, **not** documentation, **not** marketing surfaces.
+[**Token theming**](token-theming/README.md) explores music and pinboard page compositions through generated React components and scoped design-token overrides. Run `pnpm run dev:token-theming` from the repo root. This source-linked appearance witness has its own [scope and checks](token-theming/README.md); it is separate from the standalone package-consumption parity lanes described below.
+
+The consumer-app parity lanes below are proving surfaces rather than documentation or marketing surfaces.
 
 This directory is the consumer-side falsification surface for the normal-form claim. The core repo proves that contracts can generate framework packages; `examples/` asks the next question: can those packages survive ordinary app composition without consumers learning renderer internals, generated file layout, or framework-specific escape hatches?
 
@@ -145,7 +147,7 @@ The examples lane should fail honestly on any of these:
 
 ## How to Run
 
-Each implementation is a standalone app. From the repo root:
+Each package-consumption implementation below is a standalone app. For the source-linked theming example, use `pnpm run dev:token-theming` or `pnpm run build:token-theming` from the repo root. For the parity lanes:
 
 ```bash
 cd examples/settings/react

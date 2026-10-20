@@ -17,9 +17,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const CSS = 'e2e/fixtures/retoken-pages/theme.css';
-const SUPPLEMENTAL_CSS = 'e2e/fixtures/retoken-pages/pinterest.css';
-const BASELINE = 'e2e/fixtures/retoken-pages/token-audit-baseline.json';
+const CSS = 'examples/token-theming/theme.css';
+const SUPPLEMENTAL_CSS = 'examples/token-theming/pinterest.css';
+const BASELINE = 'examples/token-theming/token-audit-baseline.json';
 const COMPONENTS = 'packages/ds-react/src/components';
 const TOKENS_CSS = 'packages/ds-tokens/generated/tokens.css';
 
@@ -119,9 +119,9 @@ function resolveValue(value, page) {
 function componentNames() {
   const names = new Set();
   for (const page of ['pages.tsx', 'pinterest.tsx', 'spotify.tsx']) {
-    const text = readFileSync(path.join(root, 'e2e/fixtures/retoken-pages', page), 'utf8');
+    const text = readFileSync(path.join(root, 'examples/token-theming', page), 'utf8');
     for (const m of text.matchAll(/<([A-Z][A-Za-z0-9]+)/g)) names.add(m[1]);
-    for (const m of text.matchAll(/import \{([^}]*)\} from '\.\.\/\.\.\/\.\.\/packages\/ds-react\/src\/components'/g))
+    for (const m of text.matchAll(/import \{([^}]*)\} from '\.\.\/\.\.\/packages\/ds-react\/src\/components'/g))
       for (const n of m[1].split(',').map(s => s.trim()).filter(Boolean)) names.add(n);
   }
   return [...names].filter(n => n !== 'Popover' || true);

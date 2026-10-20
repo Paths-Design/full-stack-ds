@@ -6,7 +6,7 @@ title: Retokening page attempts
 owner: "@darianrosebrook"
 updated: 2026-10-18
 governs:
-  - e2e/fixtures/retoken-pages/**
+  - examples/token-theming/**
   - e2e/retoken-pages.spec.ts
 ---
 
@@ -27,7 +27,7 @@ or pixel-identical copies of third-party pages.
 | Existing brand | [Streaming tokens](../../../packages/ds-tokens/src/brands/streaming.tokens.json) | Existing semantic palette/shape/density vocabulary; the attempts independently scope exact component overrides to test those controls. |
 | Components | [Contract corpus](../../../packages/ds-contracts/components/) | Card/media/content, Image, Button, Input, Text, Progress and Icon, composed with Stack. |
 | Icons | [Owned icon catalog](../../../packages/ds-iconography/icons/) | Home, search, navigation arrows, panels and overflow. Use canonical kebab-case names. No play/pause/volume glyphs in the inspected catalog; text labels carry the bounded controls. |
-| Artwork | [Original deterministic studies](../../../e2e/fixtures/retoken-pages/artwork.ts) | Local data-URI SVGs. No network images, proprietary fonts, logos or copied media committed. |
+| Artwork | [Original deterministic studies](../../../examples/token-theming/artwork.ts) | Local data-URI SVGs. No network images, proprietary fonts, logos or copied media committed. |
 
 ## Requirements minus available controls
 
@@ -49,9 +49,9 @@ or pixel-identical copies of third-party pages.
 ## Run and inspect
 
 Run `pnpm run tokens:build`, then `pnpm run dev`. Open
-`/e2e/fixtures/retoken-pages/index.html?page=spotify` or `?page=pinterest`.
-The source is [pages.tsx](../../../e2e/fixtures/retoken-pages/pages.tsx),
-with [theme.css](../../../e2e/fixtures/retoken-pages/theme.css) separating page
+`/examples/token-theming/index.html?page=spotify` or `?page=pinterest`.
+The source is [pages.tsx](../../../examples/token-theming/pages.tsx),
+with [theme.css](../../../examples/token-theming/theme.css) separating page
 geometry from component controls. There are no appearance declarations that
 reach into generated component parts. The page's system font, backgrounds,
 container spacing, columns and overlay positioning belong to composition.
@@ -137,7 +137,7 @@ topic rail, full-width grouped navigation, compact New/Beta tags, expanding
 search with thumbnail suggestions, notification counter, account flyout and
 audience modal. The fixture keeps its Pinboard name, original symbol and editorial
 artwork, and uses the user-supplied local profile photo. Geometry and chrome appearance
-live in [pinterest.css](../../../e2e/fixtures/retoken-pages/pinterest.css).
+live in [pinterest.css](../../../examples/token-theming/pinterest.css).
 The small bell, conversation, business and help glyphs are consumer-owned SVGs
 for shapes absent from the current icon catalog.
 
