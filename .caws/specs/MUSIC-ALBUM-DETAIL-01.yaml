@@ -68,9 +68,8 @@ evidence:
     commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
   - criterion_id: A4
     status: pass
-    evidence_ref: "Generated Card/Image/Text/Avatar/Popover/Tooltip/Button/Stack compose radio/artists/search/profile/library. Full suite tests hover/focus reveal, premium transform and live reduced-motion suppression; final two-case tooltip/focus run verifies collapse hint, search and profile keyboard behavior, collapse geometry and filtered-library focus return. Six-state token perturbation retained; motion uses shared CSS tokens, not the framework-specific lab adapter."
-    recorded_at: "2026-10-20T01:44:33.312Z"
+    evidence_ref: "Primary generated-component source and shared motion-token CSS inspected. Full-suite hover/focus and live reduced-motion assertions passed. Final tooltip/search/profile/collapse and filtered-library-focus run passed 2/2; ignored raw log tmp/music-album-detail/fsds-album-tooltip-focus.log. Six-state override perturbation retained separately. No audio or lab-adapter reuse claim; commit verification alone does not establish runtime behavior."
+    recorded_at: "2026-10-20T01:48:46.620Z"
     command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --grep \"Music discovery\" --workers=1"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/music-album-detail/fsds-album-tooltip-focus.log"
     commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
