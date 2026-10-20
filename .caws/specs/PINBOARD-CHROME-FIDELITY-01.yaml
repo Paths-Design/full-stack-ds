@@ -71,3 +71,11 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/pinboard-chrome-fidelity/post-merge-browser.log"
     commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Merged Pinboard composition, direct/invalid Pin links, detail navigation, saved search, board/like/comment/hide state and browser-back keyboard flows pass at desktop and narrow widths without horizontal overflow. State is session-local."
+    recorded_at: "2026-10-20T02:58:52.311Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep \"Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement\" --workers=2 --max-failures=1"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/pinboard-chrome-fidelity/post-merge-browser.log"
+    commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
