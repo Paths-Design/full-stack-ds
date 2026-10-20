@@ -124,10 +124,36 @@ keyboard access, overflow menus, and both viewport layouts.
 Save, board, like, comment, and hide state is in-memory for the current page
 session. Comments do not post to Pinterest or any service. Copy-link uses the
 local browser clipboard and reports failure if unavailable. Recommendations
-are a fixed local collection, not personalization. The reference's account
-analytics, advertising tools, photo assets, and complete icon set are not
-reproduced. CSS columns retain their sequential reading order and bounded
-collection; this remains a composition witness, not a virtualized feed.
+are a fixed local collection, not personalization. Account analytics,
+advertising operations and photo assets are outside the fixture. The bounded
+feed measures card heights and assigns each successive item to the shortest
+column, retaining source order for DOM and keyboard traversal. It does not
+virtualize or load additional content.
+
+## Pinboard reference navigation
+
+The user-supplied business-account screenshots guide the Pinboard header,
+topic rail, full-width grouped navigation, compact New/Beta tags, expanding
+search with thumbnail suggestions, notification counter, account flyout and
+audience modal. The fixture keeps its Pinboard name, original symbol,
+initials-based avatar and editorial artwork. Geometry and chrome appearance
+live in [pinterest.css](../../../e2e/fixtures/retoken-pages/pinterest.css).
+The small bell, conversation, business and help glyphs are consumer-owned SVGs
+for shapes absent from the current icon catalog.
+
+Search suggestions filter the local collection; notifications open deterministic
+Pins. Account actions select the feed or saved collection. Business navigation
+items show contextual feedback; they do not create campaigns, accounts or Pins.
+The audience surface uses the browser's native modal dialog for focus containment,
+Escape dismissal and focus restoration, with generated Button content. This is
+consumer composition evidence, not a new generated Dialog capability.
+
+[Chrome browser checks](../../../e2e/pinterest-chrome.spec.ts) exercise desktop
+and narrow overlays, keyboard return, local suggestion and notification actions,
+modal dismissal and measured feed packing after resize/filter/empty transitions.
+The feed's measured layout retains finite bottom-edge differences between columns;
+it removes column-break holes without claiming infinite-feed behavior or a
+pixel-identical Pinterest reproduction.
 
 ## Visual audit repairs (October 2026)
 
