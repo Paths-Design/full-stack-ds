@@ -135,15 +135,21 @@ virtualize or load additional content.
 The user-supplied business-account screenshots guide the Pinboard header,
 topic rail, full-width grouped navigation, compact New/Beta tags, expanding
 search with thumbnail suggestions, notification counter, account flyout and
-audience modal. The fixture keeps its Pinboard name, original symbol,
-initials-based avatar and editorial artwork. Geometry and chrome appearance
+audience modal. The fixture keeps its Pinboard name, original symbol and editorial
+artwork, and uses the user-supplied local profile photo. Geometry and chrome appearance
 live in [pinterest.css](../../../e2e/fixtures/retoken-pages/pinterest.css).
 The small bell, conversation, business and help glyphs are consumer-owned SVGs
 for shapes absent from the current icon catalog.
 
 Search suggestions filter the local collection; notifications open deterministic
 Pins. Account actions select the feed or saved collection. Business navigation
-items show contextual feedback; they do not create campaigns, accounts or Pins.
+items show their own descriptions in the footer on hover or keyboard focus;
+they do not create campaigns, accounts or Pins. Header icons use generated
+Tooltip triggers with public appearance controls for dark compact hints.
+Saved-collection search uses removable recent-search chips and viewed/saved
+thumbnail groups. History and viewed/saved state remain local to the page session;
+the seeded history is demonstration content. The profile-page reference guides
+this search variant; the fixture does not reproduce the complete profile page.
 The audience surface uses the browser's native modal dialog for focus containment,
 Escape dismissal and focus restoration, with generated Button content. This is
 consumer composition evidence, not a new generated Dialog capability.
