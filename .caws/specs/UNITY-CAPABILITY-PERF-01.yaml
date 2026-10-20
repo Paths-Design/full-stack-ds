@@ -53,3 +53,11 @@ evidence:
     exit_code: 0
     artifact_path: "/private/tmp/fsds-unity-focused-tests.log"
     commit_sha: "0ffc4ddaf79fbe5ae59c0b58a2705cd7c8c7784b"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Complete root suite: 346 files and 5092 tests passed with four workers and unchanged deadlines; tested config f21301c40, final CPU-budget clamp selects the same four workers on this 10-CPU host"
+    recorded_at: "2026-10-20T00:04:32.581Z"
+    command: pnpm test
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-unity-root-tests.log"
+    commit_sha: f21301c40a59f1146e0728e1a8919b659615eb20
