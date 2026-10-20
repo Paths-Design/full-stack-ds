@@ -1,9 +1,11 @@
 id: MUSIC-ALBUM-DETAIL-01
 title: 'Music library album detail pages'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Album detail and richer music discovery verified in desktop/mobile browser checks, with recorded executed commands and committed-source references; generated logs remain ignored.'
 created_at: '2026-10-20T00:54:45.382Z'
-updated_at: '2026-10-20T01:47:33.245Z'
+updated_at: '2026-10-20T01:49:20.909Z'
 created_by_session: '01a156cb-3d22-7082-8bfb-a913ec2f142d'
 blast_radius:
   modules:
