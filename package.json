@@ -10,6 +10,8 @@
     "worktree:install": "node scripts/worktree-install.mjs",
     "worktree:check": "node scripts/worktree-install.mjs --check",
     "dev": "vite",
+    "dev:token-theming": "vite --open /examples/token-theming/index.html",
+    "build:token-theming": "vite build --config examples/token-theming/vite.config.ts",
     "build": "vite build",
     "build:all": "pnpm --recursive --sort --filter '!full-stack-design-system' run build && pnpm run build",
     "fixtures:sync": "node scripts/sync-analytical-fixtures.mjs",

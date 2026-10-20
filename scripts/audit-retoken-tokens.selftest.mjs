@@ -7,17 +7,17 @@ import { spawnSync } from 'node:child_process';
 // Execute the real audit against a minimal consumer fixture. These cases pin
 // supplied-vs-unset classification, not runtime consumption or visual quality.
 const root=mkdtempSync(path.join(os.tmpdir(),'fsds-retoken-audit-'));
-const sheet='e2e/fixtures/retoken-pages/pinterest.css';
-const baseline='e2e/fixtures/retoken-pages/token-audit-baseline.json';
+const sheet='examples/token-theming/pinterest.css';
+const baseline='examples/token-theming/token-audit-baseline.json';
 const variable='--fsds-tooltip-design-content-foreground-color';
 const write=(file,text)=>{mkdirSync(path.dirname(path.join(root,file)),{recursive:true});writeFileSync(path.join(root,file),text);};
 const run=()=>spawnSync(process.execPath,['scripts/audit-retoken-tokens.mjs'],{cwd:root,encoding:'utf8'});
 try {
   write('scripts/audit-retoken-tokens.mjs',readFileSync(new URL('./audit-retoken-tokens.mjs',import.meta.url),'utf8'));
-  write('e2e/fixtures/retoken-pages/theme.css','');
-  write('e2e/fixtures/retoken-pages/pages.tsx',"import { Tooltip } from '../../../packages/ds-react/src/components';");
-  write('e2e/fixtures/retoken-pages/pinterest.tsx','');
-  write('e2e/fixtures/retoken-pages/spotify.tsx','');
+  write('examples/token-theming/theme.css','');
+  write('examples/token-theming/pages.tsx',"import { Tooltip } from '../../packages/ds-react/src/components';");
+  write('examples/token-theming/pinterest.tsx','');
+  write('examples/token-theming/spotify.tsx','');
   write('packages/ds-react/src/components/Tooltip/Tooltip.css',`.tooltip { color: var(${variable}, #fafafa); }`);
   write('packages/ds-tokens/generated/tokens.css','');
   write(baseline,JSON.stringify({declarations:{},fallbackLedger:{}}));

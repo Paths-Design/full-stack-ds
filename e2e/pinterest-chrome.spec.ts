@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const fixture='/e2e/fixtures/retoken-pages/index.html?page=pinterest';
+const fixture='/examples/token-theming/index.html?page=pinterest';
 
 test('Search scrim dismissal returns to its persistent trigger',async({page})=>{
   await page.setViewportSize({width:1357,height:1000});

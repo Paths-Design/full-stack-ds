@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Avatar, Button, Card, CardMedia, CardContent, Image, Input, Text, Icon, Progress, Popover, Tooltip } from '../../../packages/ds-react/src/components';
-import { Stack } from '../../../packages/ds-react/src/primitives';
+import { Avatar, Button, Card, CardMedia, CardContent, Image, Input, Text, Icon, Progress, Popover, Tooltip } from '../../packages/ds-react/src/components';
+import { Stack } from '../../packages/ds-react/src/primitives';
 import { artwork, studies } from './artwork';
 
 const tracks = [

@@ -8,6 +8,10 @@ Start with [`docs/current-implementation-snapshot.md`](docs/current-implementati
 
 Use this README as the orientation surface. Use the snapshot as the freshness index. Use the detailed docs under `docs/` for doctrine and rationale.
 
+## Token theming example
+
+Explore [token-theming](examples/token-theming/README.md): music and pinboard page compositions built from generated React components, with distinct scoped token themes and original artwork. Run `pnpm run dev:token-theming` to open the example, or `pnpm run build:token-theming` to build it. The example pressures appearance controls and local interactions; it does not establish pixel-identical reproduction or cross-framework app parity.
+
 ## The architectural claim
 
 This repository is not, primarily, a design system. It is a falsifiable claim about compositional systems, with a design system as the existence proof. The original falsification surface was "one primitive, one contract corpus, five Web DOM frameworks": if the same contract can drive React hooks, Vue composables, Svelte runes, Angular signals, and Lit controllers idiomatically without leaking framework detail into the contract, then the contract is carrying real semantic load.

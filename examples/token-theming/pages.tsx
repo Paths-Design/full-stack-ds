@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import '../../../packages/ds-tokens/generated/tokens.css';
+import '../../packages/ds-tokens/generated/tokens.css';
 import './theme.css';
 import { Pinterest } from './pinterest';
 import { Spotify } from './spotify';

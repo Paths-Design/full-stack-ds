@@ -7,7 +7,7 @@ for (const kind of ['spotify','pinterest']) {
       const errors:string[]=[];
       page.on('pageerror',error=>errors.push(error.message));
       await page.setViewportSize({width,height:1000});
-      await page.goto(`/e2e/fixtures/retoken-pages/index.html?page=${kind}`);
+      await page.goto(`/examples/token-theming/index.html?page=${kind}`);
       await expect(page.locator('.retoken')).toBeVisible();
       await expect.poll(()=>page.locator('img').evaluateAll(imgs=>imgs.every(img=>(img as HTMLImageElement).naturalWidth>0))).toBe(true);
       expect(await page.locator('.icon svg').count()).toBe(await page.locator('.icon').count());
@@ -95,7 +95,7 @@ for (const width of [1440,390]) {
   test(`Pin opens its detail, retains local interactions and returns at ${width}px`, async ({page},info)=>{
     const title='Fieldwork — an independent design studio portfolio';
     await page.setViewportSize({width,height:1000});
-    await page.goto('/e2e/fixtures/retoken-pages/index.html?page=pinterest');
+    await page.goto('/examples/token-theming/index.html?page=pinterest');
     const open=page.getByRole('link',{name:'Open '+title,exact:true});
     await open.focus();
     await open.press('Enter');
@@ -146,9 +146,9 @@ for (const width of [1440,390]) {
 }
 
 test('Pin links support direct loading and reject an out-of-range selection',async({page})=>{
-  await page.goto('/e2e/fixtures/retoken-pages/index.html?page=pinterest&pin=2');
+  await page.goto('/examples/token-theming/index.html?page=pinterest&pin=2');
   await expect(page.getByRole('region',{name:'Pin details'}).getByRole('heading')).toHaveText('Material futures: an editorial identity');
-  await page.goto('/e2e/fixtures/retoken-pages/index.html?page=pinterest&pin=999');
+  await page.goto('/examples/token-theming/index.html?page=pinterest&pin=999');
   await expect(page.locator('.pin-detail-layout')).toHaveCount(0);
   await expect(page.locator('.pin')).toHaveCount(18);
 });
@@ -158,7 +158,7 @@ for (const width of [1440,390]) {
     const errors:string[]=[];
     page.on('pageerror',error=>errors.push(error.message));
     await page.setViewportSize({width,height:1000});
-    await page.goto('/e2e/fixtures/retoken-pages/index.html?page=spotify');
+    await page.goto('/examples/token-theming/index.html?page=spotify');
     const open=page.getByRole('link',{name:'Open Slow mornings',exact:true});
     const player=page.locator('.player');
     await expect(player).toContainText('Blue hour');
@@ -218,7 +218,7 @@ for (const width of [1440,390]) {
 
   test(`Music discovery search, profile and library controls at ${width}px`,async({page})=>{
     await page.setViewportSize({width,height:1000});
-    await page.goto('/e2e/fixtures/retoken-pages/index.html?page=spotify');
+    await page.goto('/examples/token-theming/index.html?page=spotify');
     await expect(page.getByRole('region',{name:'Popular artists',exact:true})).toBeVisible();
     await expect(page.getByRole('region',{name:'Popular radio',exact:true})).toBeVisible();
     const search=page.getByRole('textbox',{name:'Search collection'});
@@ -282,13 +282,13 @@ for (const width of [1440,390]) {
 }
 
 test('Album links load directly and reject malformed or out-of-range selections',async({page})=>{
-  await page.goto('/e2e/fixtures/retoken-pages/index.html?page=spotify&album=2');
+  await page.goto('/examples/token-theming/index.html?page=spotify&album=2');
   const detail=page.getByRole('region',{name:'Album details'});
   await expect(detail.getByRole('heading',{name:'Rooms for reading',exact:true})).toBeFocused();
   await expect(detail).toContainText('Forma Studio');
   await expect(page.locator('.player')).toContainText('Blue hour');
   for(const selection of ['999','-1','1.5','not-an-album']) {
-    await page.goto(`/e2e/fixtures/retoken-pages/index.html?page=spotify&album=${selection}`);
+    await page.goto(`/examples/token-theming/index.html?page=spotify&album=${selection}`);
     await expect(detail).toHaveCount(0);
     await expect(page.locator('.album')).toHaveCount(8);
   }
@@ -297,7 +297,7 @@ test('Album links load directly and reject malformed or out-of-range selections'
 test('Music hover affordances respect reduced motion',async({page})=>{
   await page.setViewportSize({width:1440,height:1000});
   await page.emulateMedia({reducedMotion:'no-preference'});
-  await page.goto('/e2e/fixtures/retoken-pages/index.html?page=spotify');
+  await page.goto('/examples/token-theming/index.html?page=spotify');
   const album=page.locator('.album-placement').filter({has:page.getByRole('link',{name:'Open Slow mornings',exact:true})});
   const play=album.getByRole('button',{name:'Play Slow mornings',exact:true});
   await expect(play).toHaveCSS('opacity','0');
