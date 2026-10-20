@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: music-album-detail
 created_at: '2026-10-20T00:54:45.382Z'
-updated_at: '2026-10-20T00:54:50.703Z'
+updated_at: '2026-10-20T01:30:51.946Z'
 created_by_session: '01a156cb-3d22-7082-8bfb-a913ec2f142d'
 blast_radius:
   modules:
@@ -15,6 +15,7 @@ scope:
   in:
     - 'e2e/fixtures/retoken-pages'
     - 'e2e/retoken-pages.spec.ts'
+    - scripts/audit-retoken-tokens.mjs
   out: []
 invariants:
   - 'Generated DS component source remains unchanged; page appearance uses admitted controls.'
