@@ -252,6 +252,8 @@ for (const width of [1440,390]) {
     const library=page.locator('.library');
     if(width===1440) {
       const expanded=(await library.boundingBox())!;
+      await page.getByRole('button',{name:'Collapse Your Library',exact:true}).hover();
+      await expect(page.getByRole('tooltip')).toHaveText('Collapse Your Library');
       await page.getByRole('button',{name:'Collapse Your Library',exact:true}).click();
       await expect(page.getByRole('button',{name:'Expand Your Library',exact:true})).toHaveAttribute('aria-expanded','false');
       await expect.poll(async()=>(await library.boundingBox())!.width).toBeLessThan(expanded.width);

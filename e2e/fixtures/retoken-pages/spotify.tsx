@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Avatar, Button, Card, CardMedia, CardContent, Image, Input, Text, Icon, Progress, Popover } from '../../../packages/ds-react/src/components';
+import { Avatar, Button, Card, CardMedia, CardContent, Image, Input, Text, Icon, Progress, Popover, Tooltip } from '../../../packages/ds-react/src/components';
 import { Stack } from '../../../packages/ds-react/src/primitives';
 import { artwork, studies } from './artwork';
 
@@ -90,7 +90,7 @@ export function Spotify() {
     <div className="music-shell">
       <aside className="library" aria-label="Your Library">
         <Stack className="library-body">
-          <Stack variant="horizontal" className="section-heading library-heading"><Button className="quiet library-toggle" ariaLabel={collapsed ? 'Expand Your Library' : 'Collapse Your Library'} ariaExpanded={!collapsed} onClick={() => setCollapsed(!collapsed)} title={collapsed ? 'Expand Your Library' : 'Collapse Your Library'}><Icon name="panel-left"/><span className="library-label">Your Library</span></Button><Button className="quiet create-library" onClick={() => setNotice('Save an album to start your collection.')}>+ Create</Button></Stack>
+          <Stack variant="horizontal" className="section-heading library-heading"><Tooltip placement="right"><Tooltip.Trigger asChild><Button className="quiet library-toggle" ariaLabel={collapsed ? 'Expand Your Library' : 'Collapse Your Library'} ariaExpanded={!collapsed} onClick={() => setCollapsed(!collapsed)}><Icon name="panel-left"/><span className="library-label">Your Library</span></Button></Tooltip.Trigger><Tooltip.Content>{collapsed ? 'Expand Your Library' : 'Collapse Your Library'}</Tooltip.Content></Tooltip><Button className="quiet create-library" onClick={() => setNotice('Save an album to start your collection.')}>+ Create</Button></Stack>
           <div className="library-expanded">
             <Stack variant="horizontal" className="pills">{['All', 'Playlists', 'Artists', 'Albums'].map(label => <Button key={label} size="small" ariaPressed={category === label} className={category === label ? 'selected' : 'quiet'} onClick={() => setCategory(label)}>{label}</Button>)}</Stack>
             <Card className="library-prompt"><CardContent><Text weight="bold">Make yourself at home.</Text><Text className="small">A small collection. A whole new headspace.</Text><Button className="selected" size="small" onClick={() => { searchInput.current?.querySelector('input')?.focus(); }}>Find your next favorite</Button></CardContent></Card>

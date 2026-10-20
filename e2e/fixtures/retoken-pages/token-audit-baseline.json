@@ -197,6 +197,9 @@
     }
   },
   "fallbackLedger": {
+    "--fsds-tooltip-design-content-background-fill": { "terminal": "#141414", "decision": "Retain the generated Tooltip dark surface for the library collapse hint; source-derived fallback, without a full accessibility adequacy claim." },
+    "--fsds-tooltip-design-content-foreground-color": { "terminal": "#fafafa", "decision": "Retain the generated Tooltip light text for the library collapse hint; source-derived fallback." },
+    "--fsds-tooltip-design-content-border-color": { "terminal": "#d0d0d0", "decision": "Retain the generated Tooltip border fallback; source-derived fallback, not a rendered border-consumption claim." },
     "--fsds-input-design-condition-bd9b5883064e-foreground-color": { "terminal": "#888889", "note": "input inherits the package default (#888889) by intent — the pages restyle only the slots named in declarations" },
     "--fsds-input-design-hover-border-color": { "terminal": "#888889", "note": "input inherits the package default (#888889) by intent — the pages restyle only the slots named in declarations" },
     "--fsds-input-design-focus-border-color": { "terminal": "#0566fe", "note": "input inherits the package default (#0566fe) by intent — the pages restyle only the slots named in declarations" },
