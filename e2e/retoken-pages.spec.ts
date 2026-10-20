@@ -32,12 +32,8 @@ for (const kind of ['spotify','pinterest']) {
         expect((await page.locator('.player').boundingBox())!.height).toBeLessThan(170);
         await expect(page.locator('.album').first()).toHaveCSS('border-width','0px');
         await expect(page.locator('.album').first()).toHaveCSS('background-color','rgb(24, 24, 24)');
-        const homeAlign=await page.evaluate(()=>{
-          const heading=document.querySelector('.home-links h1')!.getBoundingClientRect();
-          const home=document.querySelector('.home-links .button')!.getBoundingClientRect();
-          return Math.abs(heading.x-home.x);
-        });
-        expect(homeAlign).toBeLessThanOrEqual(2);
+        await expect(page.getByRole('button',{name:'Soundroom home',exact:true})).toBeVisible();
+        await expect(page.getByRole('button',{name:'Home',exact:true})).toBeVisible();
         for(const pick of await page.locator('.quick-pick .button').all()) {
           expect(await pick.evaluate(el=>el.scrollWidth-el.clientWidth)).toBeLessThanOrEqual(0);
         }
@@ -85,7 +81,7 @@ for (const kind of ['spotify','pinterest']) {
         await expect(hide).toBeHidden();
       }
       await page.getByRole('textbox',{name:'Search collection'}).fill('unmatched search');
-      await expect(page.getByRole('status')).toHaveText(kind==='spotify'?'No mixes found':'No ideas found');
+      await expect(kind==='spotify'?page.getByRole('region',{name:'Music discovery'}).getByRole('status'):page.getByRole('status')).toHaveText(kind==='spotify'?'No mixes found':'No ideas found');
       expect(errors).toEqual([]);
     });
   }
@@ -152,4 +148,169 @@ test('Pin links support direct loading and reject an out-of-range selection',asy
   await page.goto('/e2e/fixtures/retoken-pages/index.html?page=pinterest&pin=999');
   await expect(page.locator('.pin-detail-layout')).toHaveCount(0);
   await expect(page.locator('.pin')).toHaveCount(18);
+});
+
+for (const width of [1440,390]) {
+  test(`Album details keep browsing separate from playback at ${width}px`,async({page},info)=>{
+    const errors:string[]=[];
+    page.on('pageerror',error=>errors.push(error.message));
+    await page.setViewportSize({width,height:1000});
+    await page.goto('/e2e/fixtures/retoken-pages/index.html?page=spotify');
+    const open=page.getByRole('link',{name:'Open Slow mornings',exact:true});
+    const player=page.locator('.player');
+    await expect(player).toContainText('Blue hour');
+    await open.focus();
+    await open.press('Enter');
+    await expect(page).toHaveURL(/page=spotify&album=0/);
+    const detail=page.getByRole('region',{name:'Album details'});
+    await expect(detail.getByRole('heading',{name:'Slow mornings',exact:true})).toBeFocused();
+    await expect(detail).toContainText('Studio North');
+    await expect(detail.getByRole('img',{name:'Slow mornings cover',exact:true})).toBeVisible();
+    await expect(player).toContainText('Blue hour');
+    await expect(player.getByRole('button',{name:'Play',exact:true})).toHaveAttribute('aria-pressed','false');
+    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    await page.screenshot({path:info.outputPath(`album-detail-${width}.png`),fullPage:true});
+
+    await detail.getByRole('button',{name:'Save Slow mornings',exact:true}).click();
+    await expect(detail.getByRole('button',{name:'Remove Slow mornings',exact:true})).toHaveAttribute('aria-pressed','true');
+    await detail.getByRole('button',{name:'Play Slow mornings',exact:true}).click();
+    await expect(detail.getByRole('button',{name:'Pause Slow mornings',exact:true})).toHaveAttribute('aria-pressed','true');
+    await expect(player).toContainText('Studio North');
+    await expect(player).toContainText('First light');
+    await player.getByRole('button',{name:'Pause',exact:true}).press('Space');
+    await expect(detail.getByRole('button',{name:'Play Slow mornings',exact:true})).toHaveAttribute('aria-pressed','false');
+    await detail.getByRole('button',{name:'Play First light',exact:true}).click();
+    await expect(player.getByRole('button',{name:'Pause',exact:true})).toHaveAttribute('aria-pressed','true');
+    await player.getByRole('button',{name:'Next track',exact:true}).click();
+    await expect(player).toContainText('An open window');
+    await expect(player).toContainText('Studio North');
+    await expect(player).toContainText('4:12');
+    await player.getByRole('button',{name:'Previous track',exact:true}).click();
+    await expect(player).toContainText('First light');
+    await detail.getByRole('button',{name:'Play Coffee, slowly',exact:true}).click();
+    await expect(player).toContainText('Coffee, slowly');
+    await expect(player).toContainText('2:48');
+    await detail.getByRole('button',{name:'Play First light',exact:true}).click();
+    await expect(player).toContainText('First light');
+
+    await page.goBack();
+    await expect(detail).toHaveCount(0);
+    await expect(open).toBeFocused();
+    await expect(player).toContainText('First light');
+    await expect(player.getByRole('button',{name:'Pause',exact:true})).toHaveAttribute('aria-pressed','true');
+    await open.press('Enter');
+    await expect(detail.getByRole('button',{name:'Remove Slow mornings',exact:true})).toHaveAttribute('aria-pressed','true');
+    await detail.getByRole('button',{name:'Remove Slow mornings',exact:true}).click();
+    await expect(detail.getByRole('button',{name:'Save Slow mornings',exact:true})).toHaveAttribute('aria-pressed','false');
+    await page.getByRole('button',{name:'Back to discovery',exact:true}).click();
+    await expect(open).toBeFocused();
+    await open.click();
+    await page.getByRole('button',{name:'Home',exact:true}).click();
+    await expect(detail).toHaveCount(0);
+    await expect(page).not.toHaveURL(/album=/);
+    await expect(open).toBeFocused();
+    await expect(player).toContainText('First light');
+    expect(errors).toEqual([]);
+  });
+
+  test(`Music discovery search, profile and library controls at ${width}px`,async({page})=>{
+    await page.setViewportSize({width,height:1000});
+    await page.goto('/e2e/fixtures/retoken-pages/index.html?page=spotify');
+    await expect(page.getByRole('region',{name:'Popular artists',exact:true})).toBeVisible();
+    await expect(page.getByRole('region',{name:'Popular radio',exact:true})).toBeVisible();
+    const search=page.getByRole('textbox',{name:'Search collection'});
+    const suggestions=page.getByRole('region',{name:'Search suggestions'});
+    await search.fill('Slow mornings');
+    await expect(page.locator('.album')).toHaveCount(1);
+    await expect(suggestions).toBeVisible();
+    await search.press('Escape');
+    await expect(suggestions).toBeHidden();
+    await expect(search).toHaveValue('Slow mornings');
+    await search.fill('Blue hour');
+    await expect(suggestions).toBeVisible();
+    await page.getByRole('button',{name:'Your profile',exact:true}).focus();
+    await expect(suggestions).toBeHidden();
+    await search.fill('Slow mornings');
+    await suggestions.getByRole('button',{name:/Slow mornings/}).click();
+    await expect(page.getByRole('region',{name:'Album details'}).getByRole('heading',{name:'Slow mornings',exact:true})).toBeFocused();
+    await page.getByRole('button',{name:'Home',exact:true}).click();
+    await expect(search).toHaveValue('');
+
+    const profile=page.getByRole('button',{name:'Your profile',exact:true});
+    await profile.focus();
+    await profile.press('Enter');
+    await expect(page.getByText('Your listening space',{exact:true})).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByText('Your listening space',{exact:true})).toBeHidden();
+    await expect(profile).toBeFocused();
+    if(width===1440) await page.locator('.library').getByRole('button',{name:'Artists',exact:true}).click();
+    await profile.click();
+    await page.getByRole('button',{name:'Recently played',exact:true}).click();
+    await expect(page.getByText('Your listening space',{exact:true})).toBeHidden();
+    await expect(page.locator('.library').getByRole('button',{name:'All',exact:true,includeHidden:true})).toHaveAttribute('aria-pressed','true');
+
+    const library=page.locator('.library');
+    if(width===1440) {
+      const expanded=(await library.boundingBox())!;
+      await page.getByRole('button',{name:'Collapse Your Library',exact:true}).click();
+      await expect(page.getByRole('button',{name:'Expand Your Library',exact:true})).toHaveAttribute('aria-expanded','false');
+      await expect.poll(async()=>(await library.boundingBox())!.width).toBeLessThan(expanded.width);
+      await expect(page.locator('.library-expanded')).toBeHidden();
+      await expect(library.getByRole('link',{name:'Open Slow mornings from library',exact:true})).toBeVisible();
+      await page.getByRole('button',{name:'Expand Your Library',exact:true}).press('Enter');
+      await expect(page.getByRole('button',{name:'Collapse Your Library',exact:true})).toHaveAttribute('aria-expanded','true');
+      await expect(page.locator('.library-expanded')).toBeVisible();
+      await expect.poll(async()=>(await library.boundingBox())!.width).toBeCloseTo(expanded.width,0);
+    } else {
+      await expect(library).toBeHidden();
+    }
+    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  });
+}
+
+test('Album links load directly and reject malformed or out-of-range selections',async({page})=>{
+  await page.goto('/e2e/fixtures/retoken-pages/index.html?page=spotify&album=2');
+  const detail=page.getByRole('region',{name:'Album details'});
+  await expect(detail.getByRole('heading',{name:'Rooms for reading',exact:true})).toBeFocused();
+  await expect(detail).toContainText('Forma Studio');
+  await expect(page.locator('.player')).toContainText('Blue hour');
+  for(const selection of ['999','-1','1.5','not-an-album']) {
+    await page.goto(`/e2e/fixtures/retoken-pages/index.html?page=spotify&album=${selection}`);
+    await expect(detail).toHaveCount(0);
+    await expect(page.locator('.album')).toHaveCount(8);
+  }
+});
+
+test('Music hover affordances respect reduced motion',async({page})=>{
+  await page.setViewportSize({width:1440,height:1000});
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.goto('/e2e/fixtures/retoken-pages/index.html?page=spotify');
+  const album=page.locator('.album-placement').filter({has:page.getByRole('link',{name:'Open Slow mornings',exact:true})});
+  const play=album.getByRole('button',{name:'Play Slow mornings',exact:true});
+  await expect(play).toHaveCSS('opacity','0');
+  await album.getByRole('link',{name:'Open Slow mornings',exact:true}).focus();
+  await expect(play).toHaveCSS('opacity','1');
+  await page.getByRole('button',{name:'Your profile',exact:true}).focus();
+  await expect(play).toHaveCSS('opacity','0');
+  await album.hover();
+  await expect(play).toHaveCSS('opacity','1');
+  await play.click();
+  await expect(page.getByRole('region',{name:'Album details'})).toHaveCount(0);
+  await expect(page.locator('.player')).toContainText('Slow mornings');
+  await expect(page.locator('.player').getByRole('button',{name:'Pause',exact:true})).toHaveAttribute('aria-pressed','true');
+  const premium=page.getByRole('button',{name:'Explore Premium',exact:true});
+  const resting=await premium.evaluate(el=>getComputedStyle(el).transform);
+  await premium.hover();
+  await expect.poll(()=>premium.evaluate(el=>getComputedStyle(el).transform)).not.toBe(resting);
+  const duration=await premium.evaluate(el=>getComputedStyle(el).transitionDuration);
+  expect(duration.split(',').some(value=>parseFloat(value)>0)).toBe(true);
+  await page.getByRole('textbox',{name:'Search collection'}).fill('Slow');
+  const suggestions=page.getByRole('region',{name:'Search suggestions'});
+  await expect(suggestions).toHaveCSS('animation-name','music-reveal');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  for(const target of [premium,play]) {
+    await expect.poll(()=>target.evaluate(el=>getComputedStyle(el).transitionDuration.split(',').every(value=>parseFloat(value)===0))).toBe(true);
+    await expect(target).toHaveCSS('animation-name','none');
+  }
+  await expect(suggestions).toHaveCSS('animation-name','none');
 });
