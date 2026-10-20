@@ -30,6 +30,7 @@ export function Spotify() {
   const [notice, setNotice] = useState('');
   const heading = useRef<HTMLHeadingElement>(null);
   const lastOpened = useRef<number | null>(null);
+  const opener = useRef<HTMLElement | null>(null);
   const feedScroll = useRef(0);
   const searchInput = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -39,10 +40,14 @@ export function Spotify() {
   }, []);
   useEffect(() => {
     if (album !== null) { window.scrollTo(0, 0); heading.current?.focus({ preventScroll: true }); }
-    else if (lastOpened.current !== null) { window.scrollTo(0, feedScroll.current); document.getElementById('open-album-' + lastOpened.current)?.focus({ preventScroll: true }); }
+    else if (lastOpened.current !== null) {
+      window.scrollTo(0, feedScroll.current);
+      const target = opener.current?.isConnected && opener.current.getClientRects().length ? opener.current : document.getElementById('open-album-' + lastOpened.current);
+      (target ?? searchInput.current?.querySelector('input'))?.focus({ preventScroll: true });
+    }
   }, [album]);
   const navigate = (index: number | null) => {
-    if (album === null && index !== null) { lastOpened.current = index; feedScroll.current = window.scrollY; }
+    if (album === null && index !== null) { lastOpened.current = index; feedScroll.current = window.scrollY; opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null; }
     const url = new URL(location.href);
     if (index === null) url.searchParams.delete('album'); else url.searchParams.set('album', String(index));
     history.pushState({}, '', url); setAlbum(index); setSearchOpen(false);

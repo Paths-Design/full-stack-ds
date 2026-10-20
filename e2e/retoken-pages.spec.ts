@@ -261,6 +261,14 @@ for (const width of [1440,390]) {
       await expect(page.getByRole('button',{name:'Collapse Your Library',exact:true})).toHaveAttribute('aria-expanded','true');
       await expect(page.locator('.library-expanded')).toBeVisible();
       await expect.poll(async()=>(await library.boundingBox())!.width).toBeCloseTo(expanded.width,0);
+      await search.fill('Blue hour');
+      await search.press('Escape');
+      const libraryOpener=library.getByRole('link',{name:'Open Slow mornings from library',exact:true});
+      await libraryOpener.focus();
+      await libraryOpener.press('Enter');
+      await page.getByRole('button',{name:'Back to discovery',exact:true}).click();
+      await expect(page.getByRole('link',{name:'Open Slow mornings',exact:true})).toHaveCount(0);
+      await expect(libraryOpener).toBeFocused();
     } else {
       await expect(library).toBeHidden();
     }
