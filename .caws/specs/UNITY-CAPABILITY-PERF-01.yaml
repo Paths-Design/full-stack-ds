@@ -46,11 +46,10 @@ evidence:
     commit_sha: "0ffc4ddaf79fbe5ae59c0b58a2705cd7c8c7784b"
   - criterion_id: A2
     status: pass
-    evidence_ref: "43 boundary tests passed including recursive wildcard backtracking, literal regex metacharacters, source separation, live value changes and first-match order after syntax-cache warmup"
-    recorded_at: "2026-10-20T00:04:31.253Z"
+    evidence_ref: "Executed 43 boundary tests exercising wildcard/source/value/order semantics; raw output retained at /private/tmp/fsds-unity-focused-tests.log (external execution log, not a repo artifact)"
+    recorded_at: "2026-10-20T00:06:10.679Z"
     command: pnpm exec vitest run packages/ds-codegen/src/frameworks/unity/capabilities.test.ts packages/ds-codegen/src/frameworks/unity/boundary.test.ts
     exit_code: 0
-    artifact_path: "/private/tmp/fsds-unity-focused-tests.log"
     commit_sha: "0ffc4ddaf79fbe5ae59c0b58a2705cd7c8c7784b"
   - criterion_id: A3
     status: pass
