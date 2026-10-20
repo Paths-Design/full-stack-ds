@@ -69,3 +69,11 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/music-album-detail/fsds-album-final-e2e.log"
     commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Generated Card/Image/Text/Avatar/Popover/Tooltip/Button/Stack compose radio/artists/search/profile/library. Full suite tests hover/focus reveal, premium transform and live reduced-motion suppression; final two-case tooltip/focus run verifies collapse hint, search and profile keyboard behavior, collapse geometry and filtered-library focus return. Six-state token perturbation retained; motion uses shared CSS tokens, not the framework-specific lab adapter."
+    recorded_at: "2026-10-20T01:44:33.312Z"
+    command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --grep \"Music discovery\" --workers=1"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/music-album-detail/fsds-album-tooltip-focus.log"
+    commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
