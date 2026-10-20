@@ -1,11 +1,9 @@
 id: MUSIC-ALBUM-DETAIL-01
 title: 'Music library album detail pages'
 mode: feature
-lifecycle_state: closed
-resolution: completed
-closure_notes: 'Album detail and richer music discovery with token-driven motion verified in desktop/mobile Chromium; A1-A4 recorded from primary runtime and test evidence.'
+lifecycle_state: active
 created_at: '2026-10-20T00:54:45.382Z'
-updated_at: '2026-10-20T01:46:22.547Z'
+updated_at: '2026-10-20T01:47:33.245Z'
 created_by_session: '01a156cb-3d22-7082-8bfb-a913ec2f142d'
 blast_radius:
   modules:
