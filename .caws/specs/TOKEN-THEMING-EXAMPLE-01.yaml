@@ -2,7 +2,6 @@ id: TOKEN-THEMING-EXAMPLE-01
 title: 'Promote retoken suite to token-theming example'
 mode: refactor
 lifecycle_state: active
-worktree: token-theming-example
 created_at: '2026-10-20T03:05:31.093Z'
 updated_at: '2026-10-20T03:06:46.940Z'
 created_by_session: '01a156d3-2809-73b0-970f-b22d29357572'
