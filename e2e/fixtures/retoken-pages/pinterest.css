@@ -51,7 +51,7 @@
 .pin-search-history h3, .pin-profile-search-group h3 { font-size: 16px; margin: 0 0 16px; }
 .pin-profile-search-group { margin-top: 24px; }
 .pin-profile-search-grid { display: grid; grid-template-columns: repeat(auto-fill,90px); gap: 8px; }
-.pin-history-thumbnail { --fsds-box-model-padding: 0px; --fsds-box-model-min-width: 0px; --fsds-button-design-root-shape-radius: 12px; }
+.pin-header .pin-history-thumbnail { --fsds-box-model-padding: 0px; --fsds-box-model-padding-inline: 0px; --fsds-box-model-min-width: 0px; --fsds-button-design-root-shape-radius: 12px; }
 .pin-history-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .pin-history-chip { display: flex; align-items: center; background: #efefef; border-radius: 999px; padding-right: 4px; }
 .pin-history-chip .button { --fsds-box-model-padding: 6px 12px; --fsds-box-model-min-height: 32px; --fsds-button-design-root-typography-weight: 400; }
