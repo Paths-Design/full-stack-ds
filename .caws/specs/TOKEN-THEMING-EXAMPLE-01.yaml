@@ -67,3 +67,10 @@ evidence:
     command: "node scripts/audit-retoken-tokens.mjs && node scripts/audit-retoken-tokens.selftest.mjs && node --test scripts/prepush-scope.test.mjs"
     exit_code: 0
     commit_sha: f8cc993e09af92a8ddda04ba871be22371fa94a8
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected root README, examples README, example README and detailed requirements: new path and commands linked prominently; source-linked theming is distinguished from package parity; local demonstration limits retained. Docs links passed all 224 tracked references; new build and run entry were exercised. Raw execution tmp/token-theming-move/docs.log. Citation rederivation verifies source existence only."
+    recorded_at: "2026-10-20T03:21:24.553Z"
+    command: "pnpm run docs:check-links"
+    exit_code: 0
+    commit_sha: f8cc993e09af92a8ddda04ba871be22371fa94a8
