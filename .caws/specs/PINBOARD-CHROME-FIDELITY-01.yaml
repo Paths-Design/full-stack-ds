@@ -54,3 +54,12 @@ contracts:
   - name: 'pinboard-consumer'
     type: behavior
     path: 'e2e/pinterest-chrome.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Merged Chromium packing and overflow assertions at 1357/900/390 widths; inspected feed-1357.png and the live 5202 page confirm compact business header, circular mark, topic rail and packed original artwork. Bounded local composition, not pixel identity."
+    recorded_at: "2026-10-20T02:58:51.156Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep \"Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement\" --workers=2 --max-failures=1"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/pinboard-chrome-fidelity/post-merge-browser.log"
+    commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
