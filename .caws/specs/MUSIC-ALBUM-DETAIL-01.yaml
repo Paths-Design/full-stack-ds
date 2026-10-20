@@ -32,6 +32,13 @@ acceptance:
     given: 'desktop and mobile viewports'
     when: 'the album detail page is rendered'
     then: 'the hero and track list remain usable without horizontal document overflow and existing retoken page checks pass.'
+  - id: A4
+    given: 'The music discovery fixture with original studio content'
+    when: 'Search suggestions, profile popover, library collapse and card or button hover are exercised'
+    then: >-
+      Popular artists and radio are composed from existing DS components; controls
+      respond to keyboard and pointer, and motion uses shared timing tokens with
+      reduced-motion suppression.
 non_functional: {}
 contracts:
   - name: 'album-navigation'
