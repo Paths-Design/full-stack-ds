@@ -35,6 +35,13 @@ acceptance:
     given: 'desktop and narrow viewports'
     when: 'existing Pin detail, search and save flows run'
     then: 'local state and navigation remain functional without horizontal overflow'
+  - id: A4
+    given: 'the supplied profile image and additional navigation references'
+    when: 'header controls are hovered or focused and saved-collection search is opened'
+    then: >-
+      photo avatars, accessible tooltips, item-specific navigation descriptions and
+      removable recent-search chips with viewed/saved thumbnail groups render and
+      respond locally
 observability:
   - 'Playwright geometry and interaction assertions plus rendered screenshots'
 rollback:
