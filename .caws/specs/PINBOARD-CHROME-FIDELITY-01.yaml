@@ -26,7 +26,9 @@ acceptance:
   - id: A1
     given: 'the reference screenshots and local feed'
     when: 'the desktop page renders'
-    then: 'a compact business header, outlined brand symbol, topic rail and gap-bounded shortest-column feed render without horizontal overflow'
+    then: >-
+      a compact business header, circular brand symbol, topic rail and gap-bounded
+      shortest-column feed render without horizontal overflow
   - id: A2
     given: 'the Pinboard header'
     when: 'global navigation, search, notifications, account and engagement controls are activated'
