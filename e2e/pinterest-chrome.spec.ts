@@ -61,6 +61,10 @@ for(const width of [1357,390]) {
     await expect(search).toHaveAttribute('placeholder','Try a title or description');
     await expect(page.getByRole('heading',{name:'Search your Pins',exact:true})).toBeVisible();
     await expect(page.getByRole('region',{name:'Recently viewed'}).getByRole('button')).toHaveCount(7);
+    for(const thumbnail of await page.getByRole('region',{name:'Recently viewed'}).locator('img').all()) {
+      await expect(thumbnail).toHaveCSS('width','90px');
+      await expect(thumbnail).toHaveCSS('height','116px');
+    }
     await expect(page.getByRole('region',{name:'Recently saved'}).getByRole('button')).toHaveCount(1);
     const history=page.getByRole('region',{name:'Recent searches',exact:true});
     await history.getByRole('button',{name:'Remove recent search Designing systems',exact:true}).click();
