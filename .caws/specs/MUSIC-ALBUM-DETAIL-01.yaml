@@ -54,11 +54,10 @@ evidence:
     commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
   - criterion_id: A2
     status: pass
-    evidence_ref: "At a7d816e4891e5f564151fa4e0a2400cf55969808 the desktop/mobile album tests exercise independent browsing/playback, save/remove, footer pause, explicit track selection and next/previous tracks, checking exact titles, durations and aria-pressed values. Playback is labeled visual preview."
-    recorded_at: "2026-10-20T01:44:27.527Z"
+    evidence_ref: "Primary desktop/mobile browser assertions inspected and executed for exact track titles/durations, preview play/pause, transport, save/remove and browsing-independence; visual-preview label retained. Ignored raw log: tmp/music-album-detail/final-music-render.log (4 passed). Source commit verification is separate from executed behavior evidence."
+    recorded_at: "2026-10-20T01:48:44.507Z"
     command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --grep \"spotify: composition|Album details\" --workers=1"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/music-album-detail/final-music-render.log"
     commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
   - criterion_id: A3
     status: pass
