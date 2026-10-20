@@ -1,9 +1,11 @@
 id: TOKEN-THEMING-EXAMPLE-01
 title: 'Promote retoken suite to token-theming example'
 mode: refactor
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Moved both themed compositions into examples with discovery links, build support and verified regression coverage'
 created_at: '2026-10-20T03:05:31.093Z'
-updated_at: '2026-10-20T03:06:46.940Z'
+updated_at: '2026-10-20T03:23:04.713Z'
 created_by_session: '01a156d3-2809-73b0-970f-b22d29357572'
 blast_radius:
   modules:
