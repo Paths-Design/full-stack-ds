@@ -36,3 +36,12 @@ contracts:
   - name: 'unity-boundary'
     type: behavior
     path: 'packages/ds-codegen/src/frameworks/unity/boundary.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Final candidate Unity accounting test passed in 3423ms with the unchanged 5000ms deadline; full root run also passed the accounting test in 2082ms"
+    recorded_at: "2026-10-20T00:04:30.324Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/unity/capabilities.test.ts packages/ds-codegen/src/frameworks/unity/boundary.test.ts
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-unity-focused-tests.log"
+    commit_sha: "0ffc4ddaf79fbe5ae59c0b58a2705cd7c8c7784b"
