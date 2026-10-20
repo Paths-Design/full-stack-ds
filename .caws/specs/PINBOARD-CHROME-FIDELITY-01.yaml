@@ -79,3 +79,11 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/pinboard-chrome-fidelity/post-merge-browser.log"
     commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Merged photo/hints/history checks assert the supplied profile asset at 32px, hover and focus tooltips, exact catalog/Locations footer descriptions, removable history and viewed/saved groups with uniform 90x116 thumbnails at desktop/narrow widths."
+    recorded_at: "2026-10-20T02:58:52.859Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep \"Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement\" --workers=2 --max-failures=1"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/pinboard-chrome-fidelity/post-merge-browser.log"
+    commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
