@@ -318,6 +318,21 @@ describe("Tabs — compound integration", () => {
     expect(getTab(host, "a").getAttribute("aria-selected")).toBe("true");
   });
 
+  it("in a right-to-left page, ArrowLeft moves to the next tab and ArrowRight to the previous", () => {
+    // A physical mapping sends ArrowLeft from A to C, wrapping to the previous tab.
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      dispatchKey(getList(host), "ArrowLeft");
+      fixture.detectChanges();
+      expect(getTab(host, "b").getAttribute("aria-selected")).toBe("true");
+      dispatchKey(getList(host), "ArrowRight");
+      fixture.detectChanges();
+      expect(getTab(host, "a").getAttribute("aria-selected")).toBe("true");
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
   it("Home key activates first tab", () => {
     getTab(host, "c").click();
     fixture.detectChanges();
@@ -378,6 +393,27 @@ describe("Tabs — manual activation mode", () => {
     expect(getTab(host, "b").getAttribute("aria-selected")).toBe("false");
     expect(getPanel(host, "a")).not.toBeNull();
     expect(getPanel(host, "b")).toBeNull();
+  });
+
+  it("repeated arrows move on from the focused tab while the selection stays", () => {
+    fixture.componentInstance.loop.set(false);
+    fixture.detectChanges();
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      const press = (key: string) => {
+        dispatchKey(document.activeElement as HTMLElement, key);
+        fixture.detectChanges();
+      };
+      getTab(host, "a").focus();
+      press("ArrowLeft");
+      press("ArrowLeft");
+      expect(document.activeElement).toBe(getTab(host, "c"));
+      expect(getTab(host, "a").getAttribute("aria-selected")).toBe("true");
+      press("ArrowRight");
+      expect(document.activeElement).toBe(getTab(host, "b"));
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
   });
 });
 

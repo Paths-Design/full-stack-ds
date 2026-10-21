@@ -4,16 +4,18 @@ authority: architecture
 status: active
 title: Month date grids
 owner: "@darianrosebrook"
-updated: 2026-10-20
-verified_at_commit: 715c19510
+updated: 2026-10-21
+verified_at_commit: d77f14dac
 governs:
   - packages/ds-codegen/src/date-grid.ts
   - packages/ds-codegen/src/date/date-grid.ts
+  - packages/ds-codegen/src/direction/direction.ts
   - packages/ds-contracts/components/Calendar
   - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/date/FsdsDateGrid.kt
   - packages/ds-swiftui/Sources/DsSwiftUI/Presence/FsdsDateGrid.swift
 caws_specs:
   - CALENDAR-DATE-GRID-01
+  - RTL-TABS-ARROW-DIRECTION-01
 ---
 
 # Month date grids
@@ -106,6 +108,12 @@ enabled day. The keyboard moves it:
 | Home / End | the start or end of the locale's week |
 | Page Up / Down | one month; with Shift, one year (clamped to the target month's length) |
 | Enter, Space | select the focused day (a gridcell has no native activation); the key's default is prevented |
+
+The direction comes from `isRtl` in the shared direction runtime
+(`packages/ds-codegen/src/direction/direction.ts`, copied into each package's
+primitives beside the date-grid core): the nearest `dir` attribute, read
+across shadow roots to their hosts. A horizontal tab list reads the same
+function.
 
 A move is clamped to the bounds. A move or a selection into another month
 reports the month through `onMonthChange`, and the nav controls step it. The
