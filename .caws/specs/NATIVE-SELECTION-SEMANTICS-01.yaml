@@ -79,6 +79,9 @@ evidence:
     exit_code: 0
     commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
   - criterion_id: A2
-    status: unchecked
-    evidence_ref: "Blocked on the console lock, not on the code: swift run --package-path packages/ds-swiftui PressProofHarness exits 139 while CGSSessionScreenIsLocked=Yes (locked since 01:05:50 on 2026-10-21), and the same exit reproduces on the pre-change bytes. Owner: session cc2e39ec. Resumption trigger: the console unlocks; then rerun the harness in the native-selection-semantics worktree on final bytes (expected tabsSelected [[tabs-a],[tabs-b]] and controlledTabsSelected [[ctab-x],[ctab-y],[ctab-x]]), record A2, merge main, rerun gates, land and close."
-    recorded_at: "2026-10-21T13:48:16.033Z"
+    status: pass
+    evidence_ref: "At e1bedc088 (lane merged with main) the PressProofHarness (packages/ds-swiftui/Tests/PressProofHarness/main.swift, tabs and controlled-tabs steps) drives the generated SwiftUI Tabs through the macOS AppKit accessibility path and reads each tab's AXSelected: uncontrolled tabs read [[tabs-a],[tabs-b]] before and after pressing tabs-b, and a parent-bound Tabs reads [[ctab-x],[ctab-y],[ctab-x]] as the parent sets y then x, so the trait follows a press and a parent-set value; a mismatch appends a harness failure and the run exits nonzero. Exit 0, all counters match. Bounded to the macOS host: not an iOS simulator or device run, and the harness is not a CI step."
+    recorded_at: "2026-10-21T15:34:38.038Z"
+    command: swift run --package-path packages/ds-swiftui PressProofHarness
+    exit_code: 0
+    commit_sha: e1bedc0886cfbb89fa9b4c9a6df93fd6e454ee5a
