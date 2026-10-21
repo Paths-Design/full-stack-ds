@@ -77,3 +77,10 @@ evidence:
     command: pnpm exec playwright test e2e/rtl-direction.spec.ts
     exit_code: 0
     commit_sha: "99c95db22"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At 99c95db22 (lane merged with main) with a clean tree: governed:rail overall pass, committed-tree check clean, typecheck:all, lint and docs:check-claims pass, the ten styling and realization audits pass (a11y rail: 164 obligations, 133 unrealized all ledgered, no stale entries), the root suite passes (349 files, 5110 tests) and the framework suites pass (Vue 842, Lit 608 with 2 skipped, Svelte 743, Angular 629, React Native 247)."
+    recorded_at: "2026-10-21T12:17:27.699Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run typecheck:all && pnpm run lint && pnpm run docs:check-claims && pnpm run audit:a11y-realization && pnpm run audit:dead-slots && pnpm run audit:pseudo-state && pnpm run audit:state-suppression && pnpm run audit:token-resolvability && pnpm run audit:custom-regions && pnpm run audit:motion-realization && pnpm run audit:carrier-reachability && pnpm run audit:variant-realization && pnpm run audit:behavior-realization && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "99c95db22"
