@@ -80,3 +80,11 @@ evidence:
     command: "pnpm exec vitest run packages/ds-react/src/components/Tabs; pnpm --filter @full-stack-ds/{vue,svelte,lit} exec vitest run src/components/Tabs; pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs src/components/Tabs"
     exit_code: 0
     commit_sha: "1dae1ebf4"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At 1dae1ebf4 bytes the five Chromium cases pass (react, vue, svelte, lit, lit-in-shadow-root). With the Tabs files swapped to e23936fac (physical mapping) the four framework cases fail; with the Lit direction copy stopping at shadow roots only lit-in-shadow-root fails. Angular is proven in jsdom only."
+    recorded_at: "2026-10-21T11:11:51.154Z"
+    test_nodeid: e2e/rtl-direction.spec.ts
+    command: "FSDS_E2E_PORT=<warm dev server port> pnpm exec playwright test e2e/rtl-direction.spec.ts"
+    exit_code: 0
+    commit_sha: "1dae1ebf4"
