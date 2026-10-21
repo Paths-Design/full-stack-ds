@@ -118,6 +118,13 @@ describe("generateAngularTest — axe scan", () => {
     expect(source).toContain(`(fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".icon");`);
   });
 
+  it("renders the default step's anchor so a selector-anchored root becomes visible to the scan", () => {
+    const source = generateAngularTest(corpusIR("Walkthrough"));
+
+    expect(source).toContain(`template: "<div id=\\"step-1\\"></div><fsds-walkthrough>`);
+    expect(source).toContain(`    const root = document.body.querySelector<HTMLElement>(".walkthrough");`);
+  });
+
   it("puts an attribute label on the host element and scans a listitem root inside a list", () => {
     const source = generateAngularTest(corpusIR("NavTree"));
 

@@ -6,7 +6,11 @@ import {
   runtimeRequiredPropExpression,
 } from "../../test-plan.js";
 import { toKebab } from "../../contract.js";
-import { portalsRootToBody, selectorAnchoredRootPortal } from "../../semantics.js";
+import {
+  portalsRootToBody,
+  selectorAnchoredRootPortal,
+  type SelectorAnchorFacts,
+} from "../../semantics.js";
 import { jestGlobalsImportLine } from "./emitted-imports.js";
 
 export function generateAngularTest(ir: ComponentIR): string {
@@ -313,8 +317,10 @@ function angularAxeLines(
     .map((fixture) => fixture.slotName ? withSlotAttribute(fixture.html, fixture.slotName) : fixture.html)
     .join("");
   const selector = `fsds-${toKebab(plan.name)}`;
-  const template = `<${selector}${hostAttributes.join("")}>${content}</${selector}>`;
-  const portal = portalsRootToBody(ir) || selectorAnchoredRootPortal(ir) !== null;
+  const anchorFacts = selectorAnchoredRootPortal(ir);
+  const anchor = anchorFacts ? selectorAnchorMarkup(ir, anchorFacts) : "";
+  const template = `${anchor}<${selector}${hostAttributes.join("")}>${content}</${selector}>`;
+  const portal = portalsRootToBody(ir) || anchorFacts !== null;
   const scope = portal ? "document.body" : "(fixture.nativeElement as HTMLElement)";
 
   const lines: string[] = [];
@@ -356,6 +362,35 @@ function angularAxeLines(
   lines.push(`  });`);
   lines.push(`});`);
   return lines;
+}
+
+/**
+ * The page element a selector-anchored root positions against. Until it
+ * resolves, the root stays hidden and axe skips everything inside it, so the
+ * host template renders the anchor of the default item the index channel
+ * starts on. Only an id selector names one element to render; any other
+ * selector fails generation rather than leave the scan empty.
+ */
+function selectorAnchorMarkup(ir: ComponentIR, facts: SelectorAnchorFacts): string {
+  const items: unknown = JSON.parse(
+    ir.styledProps.find((prop) => prop.name === facts.prop)?.defaultExpr ?? "null",
+  );
+  const channel = ir.behavior.normalizedChannels.find((c) => c.name === facts.indexChannel);
+  const startExpr = channel?.defaultValueProp
+    ? ir.styledProps.find((prop) => prop.name === channel.defaultValueProp)?.defaultExpr
+    : undefined;
+  const start = startExpr === undefined ? 0 : Number(startExpr);
+  const item: unknown = Array.isArray(items) ? items[start] : undefined;
+  const target = facts.path
+    .split(".")
+    .reduce<unknown>((value, key) => (value as Record<string, unknown> | undefined)?.[key], item);
+  const id = typeof target === "string" ? /^#([A-Za-z][\w-]*)$/.exec(target)?.[1] : undefined;
+  if (!id) {
+    throw new Error(
+      `generateAngularTest(${ir.name}): the axe fixture needs ${facts.prop}[${start}].${facts.path} to default to an id selector; got ${JSON.stringify(target)}`,
+    );
+  }
+  return `<div id="${id}"></div>`;
 }
 
 /** Marks a fixture's outermost element for `<ng-content select="[slot=…]">`. */

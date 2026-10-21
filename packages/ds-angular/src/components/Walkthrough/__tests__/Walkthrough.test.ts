@@ -60,7 +60,7 @@ const componentAxeOptions = { rules: { region: { enabled: false } } };
 @Component({
   standalone: true,
   imports: [WalkthroughComponent],
-  template: "<fsds-walkthrough><span slot=\"title\">Test Walkthrough title</span><span slot=\"description\">Test Walkthrough description</span></fsds-walkthrough>",
+  template: "<div id=\"step-1\"></div><fsds-walkthrough><span slot=\"title\">Test Walkthrough title</span><span slot=\"description\">Test Walkthrough description</span></fsds-walkthrough>",
 })
 class WalkthroughAxeHost {}
 
