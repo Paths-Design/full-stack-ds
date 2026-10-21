@@ -35,9 +35,12 @@ acceptance:
     when: 'a tab renders'
     then: 'it is a selectable node with Role.Tab whose selected state follows the active tab, and no English stateDescription is emitted for tabs'
   - id: A2
-    given: 'the generated SwiftUI Tabs and Select'
-    when: 'they render'
-    then: 'the active tab and the selected option carry the isSelected accessibility trait, read from the current channel value'
+    given: 'the generated SwiftUI Tabs'
+    when: 'a tab renders'
+    then: >-
+      the active tab carries the isSelected accessibility trait and the others do
+      not, read from the current channel value through the environment, and the
+      trait follows a press and a parent-set value
   - id: A3
     given: 'the generated Compose Walkthrough, Popover and Select'
     when: 'they render'
