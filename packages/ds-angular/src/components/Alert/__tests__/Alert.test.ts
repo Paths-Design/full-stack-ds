@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { AlertComponent } from "../Alert.component";
 // @generated:end
 
@@ -60,6 +62,30 @@ describe("Alert — unit", () => {
     const fixture = TestBed.createComponent(AlertComponent);
     fixture.componentInstance.level = "page";
     expect(classTokens(fixture.componentInstance)).toContain("alert--page");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [AlertComponent],
+  template: "<fsds-alert aria-label=\"Test Alert\"><span>content</span></fsds-alert>",
+})
+class AlertAxeHost {}
+
+describe("Alert — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [AlertAxeHost] });
+    const fixture = TestBed.createComponent(AlertAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".alert");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

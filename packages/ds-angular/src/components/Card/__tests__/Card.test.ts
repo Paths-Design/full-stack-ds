@@ -1,5 +1,8 @@
 // @generated:start imports
 import { describe, expect, it } from "@jest/globals";
+import { Component } from "@angular/core";
+import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { CardComponent } from "../Card.component";
 // @generated:end
 
@@ -27,14 +30,36 @@ describe("Card — unit", () => {
   });
 });
 
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [CardComponent],
+  template: "<fsds-card aria-label=\"Test Card\"></fsds-card>",
+})
+class CardAxeHost {}
+
+describe("Card — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [CardAxeHost] });
+    const fixture = TestBed.createComponent(CardAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".card");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
+  });
+});
+
 function classTokens(component: { classes: () => string }): string[] {
   return component.classes().split(/\s+/).filter(Boolean);
 }
 // @generated:end
 
 // @custom:start tests
-import { Component } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
 import { CardContentComponent, CardFooterComponent, CardHeaderComponent } from "../Card.component";
 
 @Component({

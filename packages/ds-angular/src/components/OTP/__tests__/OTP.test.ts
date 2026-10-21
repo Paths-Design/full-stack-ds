@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { OTPComponent } from "../OTP.component";
 // @generated:end
 
@@ -30,6 +32,32 @@ describe("OTP — unit", () => {
     const fixture = TestBed.createComponent(OTPComponent);
     fixture.componentInstance.mode = "alphanumeric";
     expect(classTokens(fixture.componentInstance)).toContain("otp--alphanumeric");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [OTPComponent],
+  template: "<fsds-otp [label]=\"label\"></fsds-otp>",
+})
+class OTPAxeHost {
+  readonly label = "Test OTP";
+}
+
+describe("OTP — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [OTPAxeHost] });
+    const fixture = TestBed.createComponent(OTPAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".otp");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

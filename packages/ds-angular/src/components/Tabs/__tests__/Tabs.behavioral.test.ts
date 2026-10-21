@@ -20,6 +20,7 @@
 import { describe, expect, it, beforeEach, jest } from "@jest/globals";
 import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
 import { TestBed, type ComponentFixture } from "@angular/core/testing";
+import axe from "axe-core";
 import { TabsComponent } from "../Tabs.component";
 import { TabsListComponent } from "../TabsList.component";
 import { TabsTabComponent } from "../TabsTab.component";
@@ -450,5 +451,22 @@ describe("Tabs — controlled mode", () => {
     expect(getTab(host, "c").getAttribute("aria-selected")).toBe("true");
     expect(getPanel(host, "c")).not.toBeNull();
     expect(getPanel(host, "b")).toBeNull();
+  });
+});
+
+// The generated scan renders the Tabs root alone; the tablist, tabs and
+// panels exist only in a composition.
+describe("Tabs — accessibility (composed)", () => {
+  it("a composed Tabs has no unexpected axe violations", async () => {
+    TestBed.configureTestingModule({ imports: [TabsFixtureComponent] });
+    const fixture = TestBed.createComponent(TabsFixtureComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const host = fixture.nativeElement as HTMLElement;
+    expect(getList(host).querySelectorAll('[role="tab"]')).toHaveLength(3);
+    expect(getPanel(host, "a")).not.toBeNull();
+    // `region` asks a page question; a component under test cannot answer it.
+    const results = await axe.run(host, { rules: { region: { enabled: false } } });
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });

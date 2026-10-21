@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { SkeletonComponent } from "../Skeleton.component";
 // @generated:end
 
@@ -96,6 +98,33 @@ describe("Skeleton — unit", () => {
     const fixture = TestBed.createComponent(SkeletonComponent);
     fixture.componentInstance.density = "spacious";
     expect(classTokens(fixture.componentInstance)).toContain("skeleton--spacious");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [SkeletonComponent],
+  template: "<fsds-skeleton [decorative]=\"decorative\" [ariaLabel]=\"ariaLabel\"></fsds-skeleton>",
+})
+class SkeletonAxeHost {
+  readonly decorative = false;
+  readonly ariaLabel = "Test Skeleton";
+}
+
+describe("Skeleton — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [SkeletonAxeHost] });
+    const fixture = TestBed.createComponent(SkeletonAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".skeleton");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

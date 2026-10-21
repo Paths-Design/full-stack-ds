@@ -5,6 +5,12 @@ import {
   findIndeterminateAriaCheckedFact,
   runtimeRequiredPropExpression,
 } from "../../test-plan.js";
+import { toKebab } from "../../contract.js";
+import {
+  portalsRootToBody,
+  selectorAnchoredRootPortal,
+  type SelectorAnchorFacts,
+} from "../../semantics.js";
 import { jestGlobalsImportLine } from "./emitted-imports.js";
 
 export function generateAngularTest(ir: ComponentIR): string {
@@ -248,6 +254,9 @@ export function generateAngularTest(ir: ComponentIR): string {
   }
 
   lines.push(``);
+  lines.push(...angularAxeLines(ir, plan));
+
+  lines.push(``);
   lines.push(`function classTokens(component: { classes: () => string }): string[] {`);
   lines.push(`  return component.classes().split(/\\s+/).filter(Boolean);`);
   lines.push(`}`);
@@ -259,7 +268,9 @@ export function generateAngularTest(ir: ComponentIR): string {
   // `jest`.
   const importsBody = [
     jestGlobalsImportLine(lines.join("\n")),
-    ...(isDomTree ? [`import { TestBed } from "@angular/core/testing";`] : []),
+    `import { Component } from "@angular/core";`,
+    `import { TestBed } from "@angular/core/testing";`,
+    `import axe from "axe-core";`,
     `import { ${className} } from "../${plan.name}.component";`,
   ].join("\n");
 
@@ -274,6 +285,118 @@ export function generateAngularTest(ir: ComponentIR): string {
   return renderSections(sections, "line");
 }
 
+
+/**
+ * The axe scan the other web frameworks run, from the same plan inputs: the
+ * component renders inside a host template that binds the required,
+ * render-open and role-activating props and the label input, and projects the contract's
+ * content fixtures (named ones through `[slot=<name>]`). The scan root is the
+ * element carrying the base class; a portalled root lives in document.body.
+ */
+function angularAxeLines(
+  ir: ComponentIR,
+  plan: ReturnType<typeof buildComponentTestPlan>,
+): string[] {
+  const hostName = `${plan.name}AxeHost`;
+  const inputs = new Map<string, string>();
+  for (const prop of plan.requiredProps) {
+    inputs.set(prop.name, runtimeRequiredPropExpression(prop.expression));
+  }
+  // An overlay renders its content only while open; scan it open, as the
+  // other frameworks do.
+  if (plan.renderOpenProp) inputs.set(plan.renderOpenProp, "true");
+  for (const prop of plan.accessibility.props) {
+    inputs.set(prop.name, JSON.stringify(prop.value));
+  }
+  const label = plan.accessibility.labelInput;
+  if (label?.kind === "prop") inputs.set(label.name, JSON.stringify(label.value));
+
+  const hostAttributes = [...inputs.keys()].map((name) => ` [${name}]="${name}"`);
+  if (label?.kind === "attribute") hostAttributes.push(` ${label.name}="${label.value}"`);
+  const content = plan.accessibility.content
+    .map((fixture) => fixture.slotName ? withSlotAttribute(fixture.html, fixture.slotName) : fixture.html)
+    .join("");
+  const selector = `fsds-${toKebab(plan.name)}`;
+  const anchorFacts = selectorAnchoredRootPortal(ir);
+  const anchor = anchorFacts ? selectorAnchorMarkup(ir, anchorFacts) : "";
+  const template = `${anchor}<${selector}${hostAttributes.join("")}>${content}</${selector}>`;
+  const portal = portalsRootToBody(ir) || anchorFacts !== null;
+  const scope = portal ? "document.body" : "(fixture.nativeElement as HTMLElement)";
+
+  const lines: string[] = [];
+  lines.push(`// \`region\` asks whether all page content is landmark-contained, a page`);
+  lines.push(`// question; a single component under test cannot answer it.`);
+  lines.push(`const componentAxeOptions = { rules: { region: { enabled: false } } };`);
+  lines.push(``);
+  lines.push(`@Component({`);
+  lines.push(`  standalone: true,`);
+  lines.push(`  imports: [${plan.name}Component],`);
+  lines.push(`  template: ${JSON.stringify(template)},`);
+  lines.push(`})`);
+  if (inputs.size === 0) {
+    lines.push(`class ${hostName} {}`);
+  } else {
+    lines.push(`class ${hostName} {`);
+    for (const [name, expression] of inputs) lines.push(`  readonly ${name} = ${expression};`);
+    lines.push(`}`);
+  }
+  lines.push(``);
+  lines.push(`describe("${plan.name} — accessibility", () => {`);
+  lines.push(`  it("has no unexpected axe violations with default props", async () => {`);
+  lines.push(`    TestBed.configureTestingModule({ imports: [${hostName}] });`);
+  lines.push(`    const fixture = TestBed.createComponent(${hostName});`);
+  lines.push(`    fixture.detectChanges();`);
+  lines.push(`    await fixture.whenStable();`);
+  lines.push(`    const root = ${scope}.querySelector<HTMLElement>(".${plan.cssPrefix}");`);
+  lines.push(`    expect(root).not.toBeNull();`);
+  if (plan.accessibility.needsListParent) {
+    lines.push(`    const list = document.createElement("ul");`);
+    lines.push(`    document.body.append(list);`);
+    lines.push(`    list.append(root as HTMLElement);`);
+    lines.push(`    const results = await axe.run(list, componentAxeOptions);`);
+    lines.push(`    list.remove();`);
+  } else {
+    lines.push(`    const results = await axe.run(root as HTMLElement, componentAxeOptions);`);
+  }
+  lines.push(`    expect(results.violations.map((v) => v.id)).toEqual([]);`);
+  lines.push(`  });`);
+  lines.push(`});`);
+  return lines;
+}
+
+/**
+ * The page element a selector-anchored root positions against. Until it
+ * resolves, the root stays hidden and axe skips everything inside it, so the
+ * host template renders the anchor of the default item the index channel
+ * starts on. Only an id selector names one element to render; any other
+ * selector fails generation rather than leave the scan empty.
+ */
+function selectorAnchorMarkup(ir: ComponentIR, facts: SelectorAnchorFacts): string {
+  const items: unknown = JSON.parse(
+    ir.styledProps.find((prop) => prop.name === facts.prop)?.defaultExpr ?? "null",
+  );
+  const channel = ir.behavior.normalizedChannels.find((c) => c.name === facts.indexChannel);
+  const startExpr = channel?.defaultValueProp
+    ? ir.styledProps.find((prop) => prop.name === channel.defaultValueProp)?.defaultExpr
+    : undefined;
+  const start = startExpr === undefined ? 0 : Number(startExpr);
+  const item: unknown = Array.isArray(items) ? items[start] : undefined;
+  const target = facts.path
+    .split(".")
+    .reduce<unknown>((value, key) => (value as Record<string, unknown> | undefined)?.[key], item);
+  const id = typeof target === "string" ? /^#([A-Za-z][\w-]*)$/.exec(target)?.[1] : undefined;
+  if (!id) {
+    throw new Error(
+      `generateAngularTest(${ir.name}): the axe fixture needs ${facts.prop}[${start}].${facts.path} to default to an id selector; got ${JSON.stringify(target)}`,
+    );
+  }
+  return `<div id="${id}"></div>`;
+}
+
+/** Marks a fixture's outermost element for `<ng-content select="[slot=…]">`. */
+function withSlotAttribute(html: string, slotName: string): string {
+  return html.replace(/^<([a-zA-Z][\w-]*)/, `<$1 slot="${slotName}"`);
+}
 
 /**
  * First-click expectation for a boolean channel toggle: the channel starts at

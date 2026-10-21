@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach, jest } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { SheetComponent } from "../Sheet.component";
 // @generated:end
 
@@ -75,6 +77,32 @@ describe("Sheet — overlay-click dismissal", () => {
     const overlay = fixture.nativeElement.querySelector('[role="presentation"]') as HTMLElement;
     overlay?.click();
     expect(onOpenChangeSpy).toHaveBeenCalledWith(false);
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [SheetComponent],
+  template: "<fsds-sheet [open]=\"open\"><span slot=\"title\">Test Sheet title</span><span slot=\"description\">Test Sheet description</span><span>content</span></fsds-sheet>",
+})
+class SheetAxeHost {
+  readonly open = true;
+}
+
+describe("Sheet — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [SheetAxeHost] });
+    const fixture = TestBed.createComponent(SheetAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = document.body.querySelector<HTMLElement>(".sheet");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 
