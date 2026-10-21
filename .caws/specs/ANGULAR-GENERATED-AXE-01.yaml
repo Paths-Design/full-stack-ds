@@ -1,9 +1,10 @@
 id: ANGULAR-GENERATED-AXE-01
 title: 'Generated Angular tests run axe over each component with contract-derived content'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: angular-generated-axe
 created_at: '2026-10-21T08:51:30.643Z'
-updated_at: '2026-10-21T08:51:30.643Z'
+updated_at: '2026-10-21T09:20:41.403Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -22,6 +23,9 @@ scope:
     - 'pnpm-lock.yaml'
     - 'docs/current-implementation-snapshot.md'
     - 'docs/internal/a11y-realization-audit/a11y-matrix.md'
+    - packages/ds-codegen/src/frameworks/angular/surface-tests.ts
+    - packages/ds-codegen/src/frameworks/angular/surface-tests.test.ts
+    - docs/architecture/design/box-model-primitive.md
   out: []
 invariants:
   - 'Every dom-tree Angular component that the other web frameworks scan with axe is scanned by its generated Angular test with the same plan inputs: activation props, label input, slot content and list parent'
