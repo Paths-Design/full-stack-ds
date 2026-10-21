@@ -78,3 +78,10 @@ evidence:
     command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
     exit_code: 0
     commit_sha: b266093f4
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At b266093f4 (lane merged with main) with a clean tree: audit:a11y-realization passes (selfcheck all pass; 167 obligations, 1336 checks, 695 realized, 137 unrealized all ledgered, no stale entry; the four new Walkthrough Escape rows carry owner WALKTHROUGH-ESCAPE-DISMISS-01 and a note naming the no-op onDismiss); the snapshot ledger row states the credit rules and their limits and docs:check-claims passes; governed:rail overall pass, committed-tree check clean, typecheck:all, lint, the other nine audits, the root suite (349 files, 5110 tests) and the framework suites (Vue 842, Lit 608 with 2 skipped, Svelte 743, Angular 629, React Native 247) pass."
+    recorded_at: "2026-10-21T13:38:33.580Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run typecheck:all && pnpm run lint && pnpm run docs:check-claims && pnpm run audit:a11y-realization && pnpm run audit:dead-slots && pnpm run audit:pseudo-state && pnpm run audit:state-suppression && pnpm run audit:token-resolvability && pnpm run audit:custom-regions && pnpm run audit:motion-realization && pnpm run audit:carrier-reachability && pnpm run audit:variant-realization && pnpm run audit:behavior-realization && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: b266093f4
