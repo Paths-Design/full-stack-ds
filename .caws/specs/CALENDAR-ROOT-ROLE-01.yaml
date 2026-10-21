@@ -84,3 +84,11 @@ evidence:
     exit_code: 0
     artifact_path: docs/architecture/date-grid.md
     commit_sha: "279dbf7d82e8e4ce4c954c0b1f38b0388c7ba293"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "The shared harness test names the group from the ariaLabel and ariaLabelledby props passes in all five web frameworks (React 30 at 279dbf7d8; Vue 30, Svelte 29, Lit 26, Angular 26 at 715c19510): the group element carries aria-label or aria-labelledby only when the prop is given. With the Svelte binding removed it fails. React Native output maps the props to accessibilityLabel and accessibilityLabelledBy (packages/ds-react-native/src/components/Calendar/Calendar.tsx); its 10 Calendar tests pass. Non-claim: attributes are asserted, not a computed accessible name; in Lit an aria-labelledby id cannot cross the shadow root."
+    recorded_at: "2026-10-21T06:08:01.029Z"
+    test_nodeid: packages/ds-react/src/primitives/hooks/__tests__/calendar.test.tsx
+    command: pnpm exec vitest run packages/ds-react/src/primitives/hooks/__tests__/calendar.test.tsx
+    exit_code: 0
+    commit_sha: "279dbf7d82e8e4ce4c954c0b1f38b0388c7ba293"
