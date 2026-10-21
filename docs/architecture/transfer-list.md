@@ -141,7 +141,7 @@ and the value then carries those strings.
   harnesses, including a controlled value that does not follow a transfer;
   `packages/ds-react-native/src/components/Shuttle/__tests__/Shuttle.behavior.test.tsx`
   covers React Native.
-- `e2e/shuttle.spec.ts` drives Shuttle in Chromium on all five web targets:
+- `e2e/runtime-rail.spec.ts`, which CI runs, drives Shuttle in Chromium on all five web targets:
   the listbox shape and names, one tab stop per list, real arrow, Home, End,
   Space and Enter keys moving DOM focus and the mark, focus after Enter, and
   click marking with Add and Remove.

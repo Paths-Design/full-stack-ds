@@ -58,6 +58,13 @@
  *               tab stop on the day it started from; days outside minDate and
  *               maxDate are aria-disabled, refuse a click, and stop a key move
  *               at the bound, as does every day of a disabled calendar.
+ *   Shuttle   — the dual-listbox transfer (SHUTTLE-DUAL-LISTBOX-01): two
+ *               multi-select listboxes named from the catalog with one tab
+ *               stop each and no control inside an option; real arrow, Home
+ *               and End keys move DOM focus with the tab stop, Space marks
+ *               (aria-selected), Enter moves the marked items with focus kept
+ *               on the nearest remaining option; a click marks, and Add and
+ *               Remove move the marked items.
  *   CodeBlock — highlight content transform (RUNTIME-RAIL-CODEBLOCK-
  *               HIGHLIGHT-01): with code+language through the config bus,
  *               the rendered `[data-token]` kind sequence equals the frozen
@@ -81,8 +88,8 @@
  *   - Cross-framework behavioral parity beyond DOM shape (e.g.
  *     whether OTP's React input-focus advance behaves identically
  *     in Svelte). Calendar's keyboard, activation, range-selection and
- *     bounds facts are the exception; no rail observes what a screen
- *     reader announces.
+ *     bounds facts and Shuttle's keyboard, mark and transfer facts are the
+ *     exceptions; no rail observes what a screen reader announces.
  *   - Non-default props beyond the three asserted components/props.
  */
 
@@ -555,76 +562,170 @@ test.describe("Runtime rail — Calendar (date grid: roving focus, activation, m
   }
 });
 
-test.describe("Runtime rail — Shuttle (array iteration with channel source)", () => {
-  // PRODUCTION-ARRAY-ITERATION-CONSUMER-01: the production proof.
-  // Shuttle's contract declares `defaultValue: ["alpha", "beta", "gamma"]`
-  // and binds `iterate.source` to `channel:selection.value` (the
-  // resolved channel value, not the raw destructured prop). At runtime
-  // we expect 3 `<li role="option">` cells with text "alpha", "beta",
-  // "gamma" in order.
-  //
-  // What this proves:
-  //   - The IR's V2 grammar (BindingExpression `iterationLocal`) lowers
-  //     to bare-identifier emit on each framework.
-  //   - The iteration source goes through the value renderer (so
-  //     `channel:selection.value` resolves to the controllable-state
-  //     identifier — `selection` in React, `behavior.selection.value`
-  //     in Vue, etc. — NOT the raw `value` prop).
-  //   - The `?? []` undefined-guard doesn't fire because defaultValue
-  //     seeds the controllable state.
-  //   - `content: "iter:item"` in the iterated `<li>`'s child `<span>`
-  //     lowers to the per-iteration item value at each position.
-  //
-  // What this does NOT prove:
-  //   - Mutating the selection at runtime (no transfer behavior tested).
-  //   - The unselected/source list (Shuttle's dual-listbox design
-  //     wasn't built; contract has selected-only DOM by design).
-  //   - That all listboxes in the system render `aria-selected` correctly.
-  //     This rail only asserts Shuttle, whose selected-only DOM makes
-  //     `aria-selected="true"` truthful on every rendered option.
-  //     Select and Command have suppression records pending the property-
-  //     path slice.
+const SHUTTLE_OPTIONS = ["alpha", "beta", "gamma", "delta", "epsilon"];
+
+interface ShuttleListFacts {
+  role: string | null;
+  label: string | null;
+  multiselectable: string | null;
+  keys: string[];
+  marked: string[];
+  tabStops: string[];
+  roles: string[];
+}
+
+interface ShuttleFacts {
+  groupRole: string | null;
+  available: ShuttleListFacts;
+  selected: ShuttleListFacts;
+  addDisabled: boolean;
+  removeDisabled: boolean;
+  addLabel: string;
+  removeLabel: string;
+  /** The focused option as side/key, or null when focus is not on an option. */
+  focused: string | null;
+  /** Focusable or interactive elements inside any option. */
+  nestedControls: number;
+}
+
+/** Read the rendered transfer; Lit renders it inside the host's shadow root. */
+async function shuttleFacts(page: Page, framework: Framework): Promise<ShuttleFacts | null> {
+  return page.evaluate(
+    ({ host, isLit }) => {
+      const root: Document | ShadowRoot | null = isLit
+        ? (document.querySelector(host) as HTMLElement | null)?.shadowRoot ?? null
+        : document;
+      if (!root) return null;
+      const list = (side: string) => {
+        const box = root.querySelector(`[data-side="${side}"]`);
+        const items = Array.from(box?.querySelectorAll<HTMLElement>("[data-value]") ?? []);
+        const key = (item: HTMLElement) => item.getAttribute("data-value") ?? "";
+        return {
+          role: box?.getAttribute("role") ?? null,
+          label: box?.getAttribute("aria-label") ?? null,
+          multiselectable: box?.getAttribute("aria-multiselectable") ?? null,
+          keys: items.map(key),
+          marked: items.filter((item) => item.getAttribute("aria-selected") === "true").map(key),
+          tabStops: items.filter((item) => item.getAttribute("tabindex") === "0").map(key),
+          roles: [...new Set(items.map((item) => item.getAttribute("role") ?? ""))],
+        };
+      };
+      const button = (part: string) => root.querySelector<HTMLButtonElement>(`.shuttle__${part}`);
+      const active = root.activeElement as HTMLElement | null;
+      const side = active?.closest("[data-side]")?.getAttribute("data-side");
+      return {
+        groupRole: root.querySelector(".shuttle")?.getAttribute("role") ?? null,
+        available: list("available"),
+        selected: list("selected"),
+        addDisabled: button("add")?.disabled ?? false,
+        removeDisabled: button("remove")?.disabled ?? false,
+        addLabel: button("add")?.textContent?.trim() ?? "",
+        removeLabel: button("remove")?.textContent?.trim() ?? "",
+        focused: active?.hasAttribute("data-value") && side ? `${side}/${active.getAttribute("data-value")}` : null,
+        nestedControls: root.querySelectorAll("[role=option] button, [role=option] a, [role=option] input, [role=option] [tabindex]").length,
+      };
+    },
+    { host: `fsds-${kebab("Shuttle")}`, isLit: framework === "lit" },
+  );
+}
+
+const shuttleItem = (page: Page, side: string, key: string) => page.locator(`[data-side="${side}"] [data-value="${key}"]`);
+
+test.describe("Runtime rail — Shuttle (dual-listbox transfer: listbox shape, keys, marks and transfers)", () => {
+  // SHUTTLE-DUAL-LISTBOX-01: every web target binds the shared transfer-list
+  // core. The preview mounts Shuttle uncontrolled with its contract defaults:
+  // options alpha..epsilon and an empty selection. CSS locators pierce Lit's
+  // open shadow root; the focused option is read from the root that owns it.
   for (const framework of FRAMEWORKS) {
-    test(`${framework}: renders defaultValue items as <li role="option" aria-selected="true"> with iter:item text`, async ({
-      page,
-    }) => {
+    test(`${framework}: two named multi-select listboxes, one tab stop each, nothing marked`, async ({ page }) => {
       await goto(page, framework, "Shuttle", "shuttle");
+      const facts = await shuttleFacts(page, framework);
+      expect(facts).not.toBeNull();
+      expect(facts!.groupRole).toBe("group");
+      expect(facts!.available).toEqual({
+        role: "listbox", label: "Available", multiselectable: "true",
+        keys: SHUTTLE_OPTIONS, marked: [], tabStops: ["alpha"], roles: ["option"],
+      });
+      expect(facts!.selected).toEqual({
+        role: "listbox", label: "Selected", multiselectable: "true",
+        keys: [], marked: [], tabStops: [], roles: [],
+      });
+      // A button stays disabled until its source list holds a mark.
+      expect([facts!.addDisabled, facts!.removeDisabled]).toEqual([true, true]);
+      expect([facts!.addLabel, facts!.removeLabel]).toEqual(["Add", "Remove"]);
+      // The listbox pattern: the option is the control; nothing focusable inside it.
+      expect(facts!.nestedControls).toBe(0);
+    });
+  }
 
-      const items = await page.evaluate(
-        ({ host, isLit }) => {
-          const root: Document | ShadowRoot | null = isLit
-            ? (document.querySelector(host) as HTMLElement)?.shadowRoot ?? null
-            : document;
-          if (!root)
-            return {
-              count: 0,
-              texts: [] as string[],
-              roles: [] as Array<string | null>,
-              ariaSelected: [] as Array<string | null>,
-            };
-          const nodes = Array.from(
-            root.querySelectorAll(".shuttle__item"),
-          );
-          return {
-            count: nodes.length,
-            texts: nodes.map((n) => (n.textContent ?? "").trim()),
-            roles: nodes.map((n) => n.getAttribute("role")),
-            ariaSelected: nodes.map((n) => n.getAttribute("aria-selected")),
-          };
-        },
-        { host: `fsds-${kebab("Shuttle")}`, isLit: framework === "lit" },
-      );
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: arrows, Home and End move focus with the tab stop; Space marks; Enter transfers`, async ({ page }) => {
+      await goto(page, framework, "Shuttle", "shuttle");
+      await shuttleItem(page, "available", "alpha").focus();
+      const expectFocus = async (key: string) => {
+        await expect.poll(async () => {
+          const facts = await shuttleFacts(page, framework);
+          return facts && { focused: facts.focused, tabStops: facts.available.tabStops };
+        }).toEqual({ focused: `available/${key}`, tabStops: [key] });
+      };
+      await expectFocus("alpha");
+      for (const [key, to] of [["ArrowDown", "beta"], ["End", "epsilon"], ["ArrowDown", "epsilon"], ["Home", "alpha"], ["ArrowUp", "alpha"]] as const) {
+        await page.keyboard.press(key);
+        await expectFocus(to);
+      }
 
-      // defaultValue = ["alpha", "beta", "gamma"] in the contract.
-      expect(items.count).toBe(3);
-      expect(items.texts).toEqual(["alpha", "beta", "gamma"]);
-      // Each cell carries role="option" per the contract's attr.
-      expect(items.roles).toEqual(["option", "option", "option"]);
-      // A11Y-CONTRACT-OBLIGATION-VALIDATOR-01: every rendered option in
-      // Shuttle's selected-only list is selected by definition. The
-      // contract's static `attrs.aria-selected: "true"` surfaces as a
-      // literal "true" string on each DOM node.
-      expect(items.ariaSelected).toEqual(["true", "true", "true"]);
+      // Space marks the focused option without moving it.
+      await page.keyboard.press("ArrowDown");
+      await expectFocus("beta");
+      await page.keyboard.press(" ");
+      await expect.poll(async () => (await shuttleFacts(page, framework))?.available.marked).toEqual(["beta"]);
+      await page.keyboard.press("ArrowDown");
+      await page.keyboard.press("ArrowDown");
+      await expectFocus("delta");
+      await page.keyboard.press(" ");
+      await expect.poll(async () => (await shuttleFacts(page, framework))?.available.marked).toEqual(["beta", "delta"]);
+      expect((await shuttleFacts(page, framework))!.addDisabled).toBe(false);
+
+      // Enter moves every marked option, in list order, and focus stays in the
+      // source list on the nearest option that remains.
+      await page.keyboard.press("Enter");
+      await expect.poll(async () => {
+        const facts = await shuttleFacts(page, framework);
+        return facts && { available: facts.available.keys, selected: facts.selected.keys, marked: facts.available.marked, focused: facts.focused };
+      }).toEqual({ available: ["alpha", "gamma", "epsilon"], selected: ["beta", "delta"], marked: [], focused: "available/gamma" });
+      expect((await shuttleFacts(page, framework))!.addDisabled).toBe(true);
+
+      // With nothing marked, Enter moves the focused option.
+      await page.keyboard.press("Enter");
+      await expect.poll(async () => (await shuttleFacts(page, framework))?.selected.keys).toEqual(["beta", "delta", "gamma"]);
+    });
+  }
+
+  for (const framework of FRAMEWORKS) {
+    test(`${framework}: a click marks an option, and Add and Remove move the marked options`, async ({ page }) => {
+      await goto(page, framework, "Shuttle", "shuttle");
+      await shuttleItem(page, "available", "gamma").click();
+      await shuttleItem(page, "available", "alpha").click();
+      await expect.poll(async () => (await shuttleFacts(page, framework))?.available.marked).toEqual(["alpha", "gamma"]);
+      // A second click unmarks.
+      await shuttleItem(page, "available", "alpha").click();
+      await expect.poll(async () => (await shuttleFacts(page, framework))?.available.marked).toEqual(["gamma"]);
+      await shuttleItem(page, "available", "alpha").click();
+
+      await page.locator(".shuttle__add").click();
+      await expect.poll(async () => {
+        const facts = await shuttleFacts(page, framework);
+        return facts && { available: facts.available.keys, selected: facts.selected.keys, addDisabled: facts.addDisabled };
+      }).toEqual({ available: ["beta", "delta", "epsilon"], selected: ["alpha", "gamma"], addDisabled: true });
+
+      await shuttleItem(page, "selected", "alpha").click();
+      await expect.poll(async () => (await shuttleFacts(page, framework))?.removeDisabled).toBe(false);
+      await page.locator(".shuttle__remove").click();
+      // A removed option returns to its place in options order.
+      await expect.poll(async () => {
+        const facts = await shuttleFacts(page, framework);
+        return facts && { available: facts.available.keys, selected: facts.selected.keys, removeDisabled: facts.removeDisabled };
+      }).toEqual({ available: ["alpha", "beta", "delta", "epsilon"], selected: ["gamma"], removeDisabled: true });
     });
   }
 });
@@ -657,8 +758,7 @@ test.describe("Runtime rail — Walkthrough (object-array iteration with paths)"
   //   - That paths work for predicates ("is this dot the active step?").
   //     That requires BINDING-EXPRESSION-V2-PREDICATE-01.
   //   - That object-array iteration scales beyond one production
-  //     consumer. The mechanism is the same as Shuttle's array iteration;
-  //     the path lowering is the new fact.
+  //     consumer; the path lowering is the new fact.
   //   - Select / Command aria-selected repayment — those suppressions
   //     remain pending the predicate slice.
   const EXPECTED_TITLES = [
