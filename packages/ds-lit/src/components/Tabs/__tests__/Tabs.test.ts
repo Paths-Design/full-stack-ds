@@ -445,10 +445,10 @@ describe("Tabs — behavioral", () => {
   it("manual activation: repeated arrows move on from the focused tab while the selection stays", async () => {
     const container = document.createElement("div");
     container.setAttribute("dir", "rtl");
-    const tabsEl = Object.assign(document.createElement("fsds-tabs"), { defaultValue: "a", activationMode: "manual", loop: false }) as TabsElement;
+    const tabsEl = Object.assign(document.createElement("fsds-tabs"), { defaultValue: "a", activationMode: "manual", loop: false }) as unknown as TabsElement;
     const listEl = document.createElement("fsds-tabs-list");
     const tabEls = ["a", "b", "c"].map((value) => {
-      const tab = Object.assign(document.createElement("fsds-tabs-tab"), { value }) as TabsElement;
+      const tab = Object.assign(document.createElement("fsds-tabs-tab"), { value }) as unknown as TabsElement;
       tab.textContent = `Tab ${value}`;
       return tab;
     });
