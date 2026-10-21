@@ -1,0 +1,48 @@
+id: ANGULAR-GENERATED-AXE-01
+title: 'Generated Angular tests run axe over each component with contract-derived content'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-21T08:51:30.643Z'
+updated_at: '2026-10-21T08:51:30.643Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/angular'
+    - 'packages/ds-angular'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/angular/tests.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/tests.test.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/emitted-imports.ts'
+    - 'packages/ds-angular/src/components'
+    - 'packages/ds-angular/package.json'
+    - 'packages/ds-angular/jest.config.cjs'
+    - 'pnpm-lock.yaml'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/internal/a11y-realization-audit/a11y-matrix.md'
+  out: []
+invariants:
+  - 'Every dom-tree Angular component that the other web frameworks scan with axe is scanned by its generated Angular test with the same plan inputs: activation props, label input, slot content and list parent'
+  - 'An axe test proves the scan root contains the rendered component before asserting no violations'
+acceptance:
+  - id: A1
+    given: 'the Angular test emitter'
+    when: 'it emits a dom-tree component test'
+    then: 'it emits an axe describe that renders the component through a host template carrying the plan props, label input and slot content, proves the component rendered, and asserts an empty violation id list, with emitter tests pinning that shape'
+  - id: A2
+    given: 'the regenerated Angular package'
+    when: 'its jest suite runs'
+    then: 'every generated axe test passes, the count of generated Angular axe tests matches the React count, and an axe test fails when a component renders an unnamed control'
+  - id: A3
+    given: 'the a11y matrix and implementation snapshot'
+    when: 'they describe generated axe coverage'
+    then: 'they state the Angular coverage the code now has'
+rollback:
+  - 'Revert the merge commit and regenerate Angular tests'
+non_functional: {}
+contracts:
+  - name: 'angular-generated-axe'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/angular/tests.ts'
