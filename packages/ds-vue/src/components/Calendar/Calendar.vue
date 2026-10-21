@@ -78,7 +78,7 @@ const classNames = computed(() => [
 </script>
 
 <template>
-  <div :class="classNames" role="application" :data-testid="props.dataTestid" data-fsds-component="calendar" data-fsds-box="">
+  <div :class="classNames" role="group" :data-testid="props.dataTestid" data-fsds-component="calendar" data-fsds-box="">
     <div :class="'calendar__header'">
       <button :class="'calendar__nav'" type="button" data-calendar-nav="previous" @click="dateGrid.previous" :aria-label="fsdsMessages.previousMonth" :aria-disabled="dateGrid.state.previousDisabled">
         <span aria-hidden="true">

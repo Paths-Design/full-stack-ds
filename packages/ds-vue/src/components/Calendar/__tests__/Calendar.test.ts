@@ -39,7 +39,7 @@ describe("Calendar — unit", () => {
 
   it("has the correct ARIA role", () => {
     const wrapper = mount(Calendar as Component, { props: {}, attrs: { "data-testid": "calendar" }, slots: { "default": "content" } });
-    expect(wrapper.attributes("role")).toBe("application");
+    expect(wrapper.attributes("role")).toBe("group");
   });
 
   it("applies mode=single variant class", () => {

@@ -34,7 +34,7 @@ describe("Calendar — unit", () => {
 
   it("has the correct ARIA role", () => {
     const { container } = render(Calendar as unknown as Component<Record<string, unknown>>, { props: {} });
-    expect(container.firstElementChild?.getAttribute("role")).toBe("application");
+    expect(container.firstElementChild?.getAttribute("role")).toBe("group");
   });
 
   it("applies mode=single variant class", () => {

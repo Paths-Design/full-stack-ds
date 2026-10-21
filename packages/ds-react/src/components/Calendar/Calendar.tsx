@@ -103,7 +103,7 @@ export function Calendar({
     .join(" ");
 
   return (
-  <div className={`${classNames}`} role="application" data-testid={testId} data-fsds-component="calendar" data-fsds-box="" {...rest}>
+  <div className={`${classNames}`} role="group" data-testid={testId} data-fsds-component="calendar" data-fsds-box="" {...rest}>
     <div className="calendar__header">
       <button className="calendar__nav" type="button" data-calendar-nav="previous" onClick={dateGrid.previous} aria-label={fsdsMessages.previousMonth} aria-disabled={dateGrid.state.previousDisabled}>
         <span aria-hidden="true">

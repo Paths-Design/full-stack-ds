@@ -41,7 +41,7 @@ describe("Calendar — unit", () => {
 
   it("has the correct ARIA role", () => {
     render(<Calendar data-testid="calendar" />);
-    expect(screen.getByTestId("calendar")).toHaveAttribute("role", "application");
+    expect(screen.getByTestId("calendar")).toHaveAttribute("role", "group");
   });
 
   it("applies mode=single variant class", () => {

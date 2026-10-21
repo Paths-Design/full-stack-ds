@@ -69,7 +69,7 @@ const classes = $derived(
 // @custom:end
 </script>
 
-<div class={classes} role="application" data-fsds-component="calendar" data-fsds-box="">
+<div class={classes} role="group" data-fsds-component="calendar" data-fsds-box="">
   <div class={'calendar__header'}>
     <button class={'calendar__nav'} type="button" data-calendar-nav="previous" onclick={dateGrid.previous} aria-label={fsdsMessages.current.previousMonth} aria-disabled={dateGrid.state.previousDisabled}>
       <span aria-hidden="true">‹</span>

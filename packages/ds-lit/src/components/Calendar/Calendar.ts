@@ -255,7 +255,7 @@ export class CalendarElement extends LitElement {
   }
 
   override render() {
-    return html`<div class="${this.computeClasses()}" role="application" data-fsds-box="">
+    return html`<div class="${this.computeClasses()}" role="group" data-fsds-box="">
   <div class=${'calendar__header'}>
     <button class=${'calendar__nav'} type="button" data-calendar-nav="previous" @click=${this.dateGrid.previous} aria-label=${this.fsdsMessages.value.previousMonth} aria-disabled=${this.dateGrid.state.previousDisabled}>
       <span aria-hidden="true">‹</span>

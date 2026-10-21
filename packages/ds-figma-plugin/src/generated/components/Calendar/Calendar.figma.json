@@ -5,7 +5,7 @@
     "name": "Calendar",
     "cssPrefix": "calendar",
     "rootElement": "div",
-    "effectiveRole": "application"
+    "effectiveRole": "group"
   },
   "anatomy": [
     {
@@ -909,8 +909,8 @@
   },
   "root": {
     "element": "div",
-    "explicitRole": "application",
-    "effectiveRole": "application",
+    "explicitRole": "group",
+    "effectiveRole": "group",
     "labeling": [
       "aria-label",
       "aria-labelledby"

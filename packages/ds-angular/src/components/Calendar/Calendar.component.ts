@@ -27,7 +27,7 @@ const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next mon
   standalone: true,
   imports: [NgClass, NgFor],
   host: { "data-fsds-component": "calendar" },
-  template: `<div [ngClass]="classes()" role="application" data-fsds-box="">
+  template: `<div [ngClass]="classes()" role="group" data-fsds-box="">
   <div [ngClass]="'calendar__header'">
     <button [ngClass]="'calendar__nav'" type="button" data-calendar-nav="previous" (click)="dateGrid.previous()" [attr.aria-label]="fsdsMessages().previousMonth" [attr.aria-disabled]="dateGrid.state.previousDisabled">
       <span aria-hidden="true">

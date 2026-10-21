@@ -17,10 +17,10 @@
     "details": {
       "root": {
         "tag": "div",
-        "description": "Interactive calendar surface that owns month navigation and date selection.",
+        "description": "Labelled group holding the month navigation and the date grid; the grid owns keyboard interaction, so the group stays browsable.",
         "role": "root",
         "aria": {
-          "role": "application"
+          "role": "group"
         }
       },
       "header": {
@@ -92,7 +92,7 @@
       "tag": "div",
       "part": "root",
       "attrs": {
-        "role": "application"
+        "role": "group"
       },
       "children": [
         {
@@ -594,7 +594,7 @@
   },
   "relationships": [],
   "a11y": {
-    "role": "application",
+    "role": "group",
     "apgPattern": "grid",
     "labeling": [
       "aria-label",

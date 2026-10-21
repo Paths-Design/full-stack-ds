@@ -98,6 +98,22 @@ export function calendarContract(framework: string, harness: CalendarHarness, ru
         .toEqual(["gridcell", "true", "Monday, March 10, 2031"]);
     });
 
+    // The grid alone takes over the keyboard. An application role around it
+    // would also switch screen readers out of browse mode for the caption and
+    // the month buttons, so the root is a group: a role that still takes a name.
+    it("roots the grid and the month controls in a group, with no application region in or around them", async () => {
+      const { root } = await harness.mount({ defaultMonth: MARCH });
+      expect(root.getAttribute("role")).toBe("group");
+      expect(root.closest('[role="application"]')).toBeNull();
+      expect(root.querySelectorAll('[role="application"]')).toHaveLength(0);
+      const grid = root.querySelector('table[role="grid"]')!;
+      expect(grid).not.toBeNull();
+      for (const control of [nav(root, "previous"), nav(root, "next"), root.querySelector(".calendar__caption")!]) {
+        expect(root.contains(control)).toBe(true);
+        expect(grid.contains(control)).toBe(false);
+      }
+    });
+
     it("Enter and Space on the focused day select it, and the keys' defaults are taken", async () => {
       const changes: unknown[] = [];
       const view = await harness.mount({ defaultMonth: MARCH, onChange: (v) => changes.push(v) });
