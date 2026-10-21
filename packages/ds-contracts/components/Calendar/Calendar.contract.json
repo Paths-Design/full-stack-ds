@@ -17,10 +17,10 @@
     "details": {
       "root": {
         "tag": "div",
-        "description": "Interactive calendar surface that owns month navigation and date selection.",
+        "description": "Labelled group holding the month navigation and the date grid; the grid owns keyboard interaction, so the group stays browsable.",
         "role": "root",
         "aria": {
-          "role": "application"
+          "role": "group"
         }
       },
       "header": {
@@ -92,7 +92,11 @@
       "tag": "div",
       "part": "root",
       "attrs": {
-        "role": "application"
+        "role": "group"
+      },
+      "bindings": {
+        "aria-label": "prop:ariaLabel",
+        "aria-labelledby": "prop:ariaLabelledby"
       },
       "children": [
         {
@@ -290,6 +294,16 @@
           "name": "caption",
           "propType": { "kind": "string" },
           "description": "Caption rendered above the day grid and naming it. Absent, the visible month and year are formatted in the locale."
+        },
+        {
+          "name": "ariaLabel",
+          "propType": { "kind": "string" },
+          "description": "Accessible name of the calendar group, such as the field it fills (\"Check-in date\")."
+        },
+        {
+          "name": "ariaLabelledby",
+          "propType": { "kind": "string" },
+          "description": "Id of the element that names the calendar group."
         },
         {
           "name": "month",
@@ -594,7 +608,7 @@
   },
   "relationships": [],
   "a11y": {
-    "role": "application",
+    "role": "group",
     "apgPattern": "grid",
     "labeling": [
       "aria-label",

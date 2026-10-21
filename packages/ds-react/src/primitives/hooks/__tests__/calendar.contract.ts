@@ -18,6 +18,8 @@ export interface CalendarTestProps {
   maxDate?: Date;
   disabled?: boolean;
   caption?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
   onChange?: (value: Date | Date[] | null) => void;
   onMonthChange?: (month: Date) => void;
 }
@@ -96,6 +98,31 @@ export function calendarContract(framework: string, harness: CalendarHarness, ru
       expect(active(root)).toBe(tenth);
       expect([active(root)!.getAttribute("role"), active(root)!.getAttribute("aria-selected"), active(root)!.getAttribute("aria-label")])
         .toEqual(["gridcell", "true", "Monday, March 10, 2031"]);
+    });
+
+    // The grid alone takes over the keyboard. An application role around it
+    // would also switch screen readers out of browse mode for the caption and
+    // the month buttons, so the root is a group: a role that still takes a name.
+    it("roots the grid and the month controls in a group, with no application region in or around them", async () => {
+      const { root } = await harness.mount({ defaultMonth: MARCH });
+      expect(root.getAttribute("role")).toBe("group");
+      expect(root.closest('[role="application"]')).toBeNull();
+      expect(root.querySelectorAll('[role="application"]')).toHaveLength(0);
+      const grid = root.querySelector('table[role="grid"]')!;
+      expect(grid).not.toBeNull();
+      for (const control of [nav(root, "previous"), nav(root, "next"), root.querySelector(".calendar__caption")!]) {
+        expect(root.contains(control)).toBe(true);
+        expect(grid.contains(control)).toBe(false);
+      }
+    });
+
+    it("names the group from the ariaLabel and ariaLabelledby props, and leaves it unnamed without them", async () => {
+      const unnamed = await harness.mount({ defaultMonth: MARCH });
+      expect([unnamed.root.getAttribute("aria-label"), unnamed.root.getAttribute("aria-labelledby")]).toEqual([null, null]);
+      const labelled = await harness.mount({ defaultMonth: MARCH, ariaLabel: "Check-in date" });
+      expect([labelled.root.getAttribute("role"), labelled.root.getAttribute("aria-label")]).toEqual(["group", "Check-in date"]);
+      const referenced = await harness.mount({ defaultMonth: MARCH, ariaLabelledby: "check-in-label" });
+      expect(referenced.root.getAttribute("aria-labelledby")).toBe("check-in-label");
     });
 
     it("Enter and Space on the focused day select it, and the keys' defaults are taken", async () => {

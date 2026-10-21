@@ -20,8 +20,10 @@ export type CalendarMode = "single" | "range";
 // @custom:end
 
 // @generated:start props
-export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "caption" | "children" | "className" | "data-testid" | "defaultMonth" | "defaultValue" | "disabled" | "locale" | "maxDate" | "minDate" | "mode" | "month" | "onChange" | "onMonthChange" | "shouldCloseOnSelect" | "value"> {
+export interface CalendarProps extends Omit<HTMLAttributes<HTMLDivElement>, "ariaLabel" | "ariaLabelledby" | "caption" | "children" | "className" | "data-testid" | "defaultMonth" | "defaultValue" | "disabled" | "locale" | "maxDate" | "minDate" | "mode" | "month" | "onChange" | "onMonthChange" | "shouldCloseOnSelect" | "value"> {
   caption?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
   month?: Date;
   defaultMonth?: Date;
   onMonthChange?: (month: Date) => void;
@@ -75,6 +77,8 @@ export function Calendar({
   className,
   "data-testid": testId,
   caption,
+  ariaLabel,
+  ariaLabelledby,
   minDate,
   maxDate,
   locale = "en-US",
@@ -103,7 +107,7 @@ export function Calendar({
     .join(" ");
 
   return (
-  <div className={`${classNames}`} role="application" data-testid={testId} data-fsds-component="calendar" data-fsds-box="" {...rest}>
+  <div className={`${classNames}`} role="group" aria-label={ariaLabel} aria-labelledby={ariaLabelledby} data-testid={testId} data-fsds-component="calendar" data-fsds-box="" {...rest}>
     <div className="calendar__header">
       <button className="calendar__nav" type="button" data-calendar-nav="previous" onClick={dateGrid.previous} aria-label={fsdsMessages.previousMonth} aria-disabled={dateGrid.state.previousDisabled}>
         <span aria-hidden="true">

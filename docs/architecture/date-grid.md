@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: Month date grids
 owner: "@darianrosebrook"
-updated: 2026-10-19
-verified_at_commit: b3546085e
+updated: 2026-10-20
+verified_at_commit: 715c19510
 governs:
   - packages/ds-codegen/src/date-grid.ts
   - packages/ds-codegen/src/date/date-grid.ts
@@ -56,6 +56,15 @@ to the mode: `"true"` in range mode, where several cells are selected, and
 several selected gridcells to declare it. Single mode selects at most one
 day: given an array value, such as a range kept after the mode changes, it
 selects the first.
+
+Calendar's root is a `role="group"`, not an application region. The grid
+alone takes over the arrow keys; an application role around it would also
+take screen readers out of browse mode for the caption and the month buttons.
+A group still accepts the `aria-label` or `aria-labelledby` its `a11y.labeling`
+declares, which a generic `div` does not. The `ariaLabel` and `ariaLabelledby`
+props bind them on the group in every web framework, so the name lands on the
+group rather than on a framework host element; React Native maps them to
+`accessibilityLabel` and `accessibilityLabelledBy`.
 
 `buildDateGridIR` (`packages/ds-codegen/src/date-grid.ts`) refuses a contract
 with `DATE_GRID_INVALID` unless:
@@ -214,7 +223,10 @@ divergences are ledgered in
   process that runs it, is not a CI step, and is not iOS evidence.
 - `shouldCloseOnSelect` is declared and not lowered on any target: the grid
   owns no dismissal.
-- The root keeps `role="application"`.
+- The shared tests read the group's `aria-label` and `aria-labelledby`
+  attributes, not a computed accessible name. In Lit the group sits inside the
+  shadow root, where an `aria-labelledby` id cannot reach an element in the
+  page; only `ariaLabel` names it there.
 - A parent that updates a controlled month after the render following a key
   move does not get focus on the moved-to day: that render already refused
   the move.

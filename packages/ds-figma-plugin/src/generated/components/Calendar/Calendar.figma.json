@@ -5,7 +5,7 @@
     "name": "Calendar",
     "cssPrefix": "calendar",
     "rootElement": "div",
-    "effectiveRole": "application"
+    "effectiveRole": "group"
   },
   "anatomy": [
     {
@@ -72,6 +72,24 @@
       "type": "string",
       "required": false,
       "description": "Caption rendered above the day grid and naming it. Absent, the visible month and year are formatted in the locale.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "ariaLabel",
+      "safeName": "ariaLabel",
+      "type": "string",
+      "required": false,
+      "description": "Accessible name of the calendar group, such as the field it fills (\"Check-in date\").",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "ariaLabelledby",
+      "safeName": "ariaLabelledby",
+      "type": "string",
+      "required": false,
+      "description": "Id of the element that names the calendar group.",
       "defaultExpr": null,
       "nodeKind": null
     },
@@ -909,8 +927,8 @@
   },
   "root": {
     "element": "div",
-    "explicitRole": "application",
-    "effectiveRole": "application",
+    "explicitRole": "group",
+    "effectiveRole": "group",
     "labeling": [
       "aria-label",
       "aria-labelledby"

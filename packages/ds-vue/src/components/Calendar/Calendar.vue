@@ -21,6 +21,8 @@ export type CalendarMode = "single" | "range";
 // @generated:start props
 interface Props {
   caption?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
   month?: Date;
   defaultMonth?: Date;
   onMonthChange?: (month: Date) => void;
@@ -78,7 +80,7 @@ const classNames = computed(() => [
 </script>
 
 <template>
-  <div :class="classNames" role="application" :data-testid="props.dataTestid" data-fsds-component="calendar" data-fsds-box="">
+  <div :class="classNames" role="group" :aria-label="props.ariaLabel" :aria-labelledby="props.ariaLabelledby" :data-testid="props.dataTestid" data-fsds-component="calendar" data-fsds-box="">
     <div :class="'calendar__header'">
       <button :class="'calendar__nav'" type="button" data-calendar-nav="previous" @click="dateGrid.previous" :aria-label="fsdsMessages.previousMonth" :aria-disabled="dateGrid.state.previousDisabled">
         <span aria-hidden="true">
