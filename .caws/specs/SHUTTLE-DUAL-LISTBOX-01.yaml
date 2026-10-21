@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: shuttle-dual-listbox
 created_at: '2026-10-21T13:49:30.428Z'
-updated_at: '2026-10-21T13:49:43.309Z'
+updated_at: '2026-10-21T16:22:05.995Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -38,6 +38,11 @@ scope:
     - 'docs/architecture/native-target-admission.md'
     - 'docs/current-implementation-snapshot.md'
   out: []
+  support:
+    - README.md
+    - docs/architecture/design/box-model-primitive.md
+    - docs/architecture/design/component-design-bindings.md
+    - docs/architecture/design/component-token-naming.md
 invariants:
   - 'The selection channel stays the public value: the ids in the selected list, in transfer order; the candidate set comes from an options prop in display order'
   - 'aria-selected on an option reports whether it is marked for transfer, never which list it is in'
