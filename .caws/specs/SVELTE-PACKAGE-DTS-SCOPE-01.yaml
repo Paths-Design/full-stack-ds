@@ -49,3 +49,11 @@ evidence:
     command: "pnpm --filter @full-stack-ds/svelte run build && git status --porcelain --untracked-files=all"
     exit_code: 0
     commit_sha: b7baa0e9993b7d8ea088211663e7e428d32a4753
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Commit ab7975ae9 deletes packages/ds-react/src/primitives/{sequence-budget,presence-budget}.d.ts and hooks/__tests__/sequence-budget.contract.d.ts. The root vitest test src/consumption/source-declarations.test.ts passes at b7baa0e99 and fails, naming all six files, when the pre-fix Svelte build has written them (observed at ab7975ae9). Shared suites importing the ds-react contracts pass without the deleted files: Svelte 30, Vue 30, Lit 31, Angular (jest) 30, React primitives 322."
+    recorded_at: "2026-10-21T02:33:25.215Z"
+    test_nodeid: src/consumption/source-declarations.test.ts
+    command: pnpm exec vitest run src/consumption/source-declarations.test.ts
+    exit_code: 0
+    commit_sha: b7baa0e9993b7d8ea088211663e7e428d32a4753
