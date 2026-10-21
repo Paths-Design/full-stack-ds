@@ -2,7 +2,6 @@ id: SVELTE-PACKAGE-DTS-SCOPE-01
 title: 'Svelte packaging stops writing declarations into ds-react sources'
 mode: fix
 lifecycle_state: active
-worktree: svelte-dts-scope
 created_at: '2026-10-19T16:04:38.436Z'
 updated_at: '2026-10-19T16:05:30.655Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
