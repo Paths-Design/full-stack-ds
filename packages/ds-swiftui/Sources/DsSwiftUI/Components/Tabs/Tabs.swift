@@ -83,6 +83,7 @@ public struct Tabs<Content: View>: View {
 /// Press-wired tab: sets the `activeTab` channel to `value`.
 public struct TabsTab: View {
     @EnvironmentObject var activeTab: ControllableValue<String>
+    @Environment(\.fsdsChannelValues) private var fsdsChannelValues
     private let value: String
     private let label: String
     public init(value: String, label: String) {
@@ -92,6 +93,7 @@ public struct TabsTab: View {
     public var body: some View {
         Button(label) { activeTab.set(value) }
             .buttonStyle(.plain)
+            .accessibilityAddTraits(activeTab.value(in: fsdsChannelValues) == value ? .isSelected : [])
     }
 }
 
