@@ -72,3 +72,11 @@ evidence:
     command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm exec vitest run packages/ds-codegen/src/relationship-lowering.test.ts"
     exit_code: 0
     commit_sha: "33f7ae21000b94cee8d9ed1031a3334bbd677842"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "The runtime-rail test exposes one combobox, the focusable trigger, valued by the selected label reads Chromium accessibility tree over CDP and passes in React, Vue, Svelte, Lit and Angular (34 Select tests passed, 1 documented Angular skip, on a warm dev server at 00bc70cb3, same component source): exactly one combobox, focusable, named Select an option, valued Beta, expanded, whose controls relation reaches the rendered listbox. Before the contract change it failed in all five (one unfocusable combobox with no value); with the Vue raw-prop gate restored it fails on controlsListbox. Showcase callers name their Selects through triggerLabel."
+    recorded_at: "2026-10-21T07:11:19.189Z"
+    test_nodeid: e2e/runtime-rail.spec.ts
+    command: "FSDS_E2E_PORT=<port> pnpm exec playwright test e2e/runtime-rail.spec.ts -g Select"
+    exit_code: 0
+    commit_sha: "33f7ae21000b94cee8d9ed1031a3334bbd677842"
