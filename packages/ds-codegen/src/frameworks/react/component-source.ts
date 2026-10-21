@@ -1072,10 +1072,12 @@ function generateCompoundStateSubcomponents(ir: ComponentIR): string {
   lines.push(`      const isHorizontal = ctx.${orientation} !== "vertical";`);
   // A horizontal list follows the inline direction: the arrow pointing toward
   // the inline end moves to the next tab.
-  lines.push(`      const [nextInline, previousInline] = isRtl(e.currentTarget) ? ["ArrowLeft", "ArrowRight"] : ["ArrowRight", "ArrowLeft"];`);
+  lines.push(`      const rtl = isRtl(e.currentTarget);`);
+  lines.push(`      const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";`);
+  lines.push(`      const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";`);
   lines.push(`      let nextIndex = currentIndex;`);
   lines.push(`      if (`);
-  lines.push(`        (isHorizontal && e.key === nextInline) ||`);
+  lines.push(`        (isHorizontal && towardEnd) ||`);
   lines.push(`        (!isHorizontal && e.key === "ArrowDown")`);
   lines.push(`      ) {`);
   lines.push(`        e.preventDefault();`);
@@ -1083,7 +1085,7 @@ function generateCompoundStateSubcomponents(ir: ComponentIR): string {
   lines.push(`          ? (currentIndex + 1) % tabs.length`);
   lines.push(`          : Math.min(currentIndex + 1, tabs.length - 1);`);
   lines.push(`      } else if (`);
-  lines.push(`        (isHorizontal && e.key === previousInline) ||`);
+  lines.push(`        (isHorizontal && towardStart) ||`);
   lines.push(`        (!isHorizontal && e.key === "ArrowUp")`);
   lines.push(`      ) {`);
   lines.push(`        e.preventDefault();`);

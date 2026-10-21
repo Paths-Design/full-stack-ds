@@ -943,12 +943,14 @@ function generateTabsListClass(ir: ComponentIR): string {
   lines.push(`    const isHorizontal = ctx.orientation !== "vertical";`);
   // A horizontal list follows the inline direction, read across the shadow
   // boundary: the arrow pointing toward the inline end moves to the next tab.
-  lines.push(`    const [nextInline, previousInline] = isRtl(e.currentTarget) ? ["ArrowLeft", "ArrowRight"] : ["ArrowRight", "ArrowLeft"];`);
+  lines.push(`    const rtl = isRtl(e.currentTarget);`);
+  lines.push(`    const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";`);
+  lines.push(`    const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";`);
   lines.push(`    let nextIndex = currentIndex;`);
-  lines.push(`    if ((isHorizontal && e.key === nextInline) || (!isHorizontal && e.key === "ArrowDown")) {`);
+  lines.push(`    if ((isHorizontal && towardEnd) || (!isHorizontal && e.key === "ArrowDown")) {`);
   lines.push(`      e.preventDefault();`);
   lines.push(`      nextIndex = ctx.loop ? (currentIndex + 1) % tabs.length : Math.min(currentIndex + 1, tabs.length - 1);`);
-  lines.push(`    } else if ((isHorizontal && e.key === previousInline) || (!isHorizontal && e.key === "ArrowUp")) {`);
+  lines.push(`    } else if ((isHorizontal && towardStart) || (!isHorizontal && e.key === "ArrowUp")) {`);
   lines.push(`      e.preventDefault();`);
   lines.push(`      nextIndex = ctx.loop ? (currentIndex - 1 + tabs.length) % tabs.length : Math.max(currentIndex - 1, 0);`);
   lines.push(`    } else if (e.key === "Home") {`);
