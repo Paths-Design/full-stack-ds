@@ -29,13 +29,24 @@ acceptance:
     when: 'the audit classifies it'
     then: 'it is unrealized, and selfcheck pins both directions'
   - id: A2
-    given: 'a component source that imports a focus-trap or dismissal primitive without invoking it (no call, instantiation, directive or action binding)'
+    given: >-
+      a component source that names a focus-trap or dismissal primitive without
+      running it: an import, a comment (call-shaped or not), or a dismissal whose
+      own onDismiss argument is a no-op, on one line or several
     when: 'the audit classifies the key that primitive carries'
-    then: 'it is unrealized, and selfcheck pins the import-only case'
+    then: >-
+      it is unrealized, an onDismiss outside the dismissal call does not lend it a
+      live callback, and selfcheck pins each case
   - id: A3
     given: 'a keyboard entry whose when field names an anatomy part'
     when: 'native-element credit is considered'
-    then: 'credit requires that part to render a native interactive element, and entries without a part keep component-wide native credit as a documented limit'
+    then: >-
+      credit requires the emitted source to render, on that part or a part inside
+      it, a native interactive element (the InteractionHost primitive renders its
+      literal as element, default button) or, for Tab only, a focusable host that
+      manages a tabindex; one key declared on two parts is two obligations with
+      distinct ledger identities; entries whose when is a state or absent keep
+      component-wide native credit as a documented limit
   - id: A4
     given: 'the corpus after the change'
     when: 'the audit, selfcheck, rail and suites run'
