@@ -19,7 +19,7 @@ scope:
   out: []
 invariants:
   - 'A consumer test identifies the Select trigger by the role the contract declares, combobox'
-  - 'Root tests run against the lane own installed workspace packages, never the canonical checkout through a symlink'
+  - 'A slice that changes a part role runs every consumer test that queries that part before landing'
 acceptance:
   - id: A1
     given: 'the shared-controls React test run against the lane own installed ds-react'
