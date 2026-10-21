@@ -41,3 +41,11 @@ rollback:
   - 'Revert the merge commit; the three .d.ts files are restorable from git history'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At b7baa0e99 (ab7975ae9 merged with main), pnpm --filter @full-stack-ds/svelte run build exits 0 and git status --porcelain --untracked-files=all is empty afterwards: no file is written outside packages/ds-svelte. Falsifier at ab7975ae9: the pre-fix command (svelte-package -i src -o dist, without --tsconfig ./tsconfig.build.json) wrote six .d.ts files beside packages/ds-react/src sources. Rerun both commands from a clean checkout to reproduce."
+    recorded_at: "2026-10-21T02:32:31.995Z"
+    command: "pnpm --filter @full-stack-ds/svelte run build && git status --porcelain --untracked-files=all"
+    exit_code: 0
+    commit_sha: b7baa0e9993b7d8ea088211663e7e428d32a4753
