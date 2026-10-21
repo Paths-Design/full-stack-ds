@@ -5,7 +5,7 @@ status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
 updated: 2026-10-18
-verified_at_commit: 9d5ef10fc
+verified_at_commit: 2a6d4c262
 governs:
   - packages/ds-codegen/src/design-properties.ts
   - packages/ds-codegen/src/validation/component-design-policy.ts
