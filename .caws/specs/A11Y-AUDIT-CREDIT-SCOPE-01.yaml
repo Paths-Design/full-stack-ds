@@ -71,3 +71,10 @@ evidence:
     command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
     exit_code: 0
     commit_sha: b266093f4
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At b266093f4 selfcheck pins: a when naming a part scopes the obligation to that part and its inner parts, a state when does not; one key on two parts stays two obligations in either order with distinct ledger identities; native credit comes from the emitted carrier (a div-rendered part the contract calls a button earns nothing, a native element on another part lends nothing, a tab list reaches its tabs); InteractionHost renders button by default, its literal as, nothing for a computed as or a literal asChild, and keeps button for a forwarded asChild; Tab only is credited from a carrier that writes a tabindex, not one that mentions the word. Corpus: obligations 164 to 167 (Select Enter, Space, ArrowDown on two parts each), every part-scoped row keeps its pre-slice verdict, OTP ArrowLeft/ArrowRight ledger rows gained part field. Not claimed: bindings whose when is a state or absent keep component-wide native credit; a part rendered through another component reads as non-native."
+    recorded_at: "2026-10-21T13:38:23.098Z"
+    command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
+    exit_code: 0
+    commit_sha: b266093f4
