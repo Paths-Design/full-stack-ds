@@ -68,3 +68,11 @@ evidence:
     command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
     exit_code: 0
     commit_sha: "279dbf7d82e8e4ce4c954c0b1f38b0388c7ba293"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "The shared harness test roots the grid and the month controls in a group, with no application region in or around them passes in React (root vitest, 30 tests at 279dbf7d8), Vue 30, Svelte 29, Lit 26 and Angular jest 26 (at 715c19510, same component source). With the React root edited back to application it fails. The browser Calendar block passed 45/45 on a warm dev server at 08945dbaf (one Svelte test hit a dev-server reload and passed on rerun)."
+    recorded_at: "2026-10-21T06:07:16.650Z"
+    test_nodeid: packages/ds-react/src/primitives/hooks/__tests__/calendar.test.tsx
+    command: pnpm exec vitest run packages/ds-react/src/primitives/hooks/__tests__/calendar.test.tsx
+    exit_code: 0
+    commit_sha: "279dbf7d82e8e4ce4c954c0b1f38b0388c7ba293"
