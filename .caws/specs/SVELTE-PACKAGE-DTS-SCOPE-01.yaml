@@ -1,10 +1,11 @@
 id: SVELTE-PACKAGE-DTS-SCOPE-01
 title: 'Svelte packaging stops writing declarations into ds-react sources'
 mode: fix
-lifecycle_state: active
-worktree: svelte-dts-scope
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Svelte build declaration program excludes __tests__; three stray ds-react .d.ts deleted; root test forbids a .d.ts beside its source'
 created_at: '2026-10-19T16:04:38.436Z'
-updated_at: '2026-10-19T16:05:30.655Z'
+updated_at: '2026-10-21T02:38:00.260Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -41,3 +42,26 @@ rollback:
   - 'Revert the merge commit; the three .d.ts files are restorable from git history'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At b7baa0e99 (ab7975ae9 merged with main), pnpm --filter @full-stack-ds/svelte run build exits 0 and git status --porcelain --untracked-files=all is empty afterwards: no file is written outside packages/ds-svelte. Falsifier at ab7975ae9: the pre-fix command (svelte-package -i src -o dist, without --tsconfig ./tsconfig.build.json) wrote six .d.ts files beside packages/ds-react/src sources. Rerun both commands from a clean checkout to reproduce."
+    recorded_at: "2026-10-21T02:32:31.995Z"
+    command: "pnpm --filter @full-stack-ds/svelte run build && git status --porcelain --untracked-files=all"
+    exit_code: 0
+    commit_sha: b7baa0e9993b7d8ea088211663e7e428d32a4753
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Commit ab7975ae9 deletes packages/ds-react/src/primitives/{sequence-budget,presence-budget}.d.ts and hooks/__tests__/sequence-budget.contract.d.ts. The root vitest test src/consumption/source-declarations.test.ts passes at b7baa0e99 and fails, naming all six files, when the pre-fix Svelte build has written them (observed at ab7975ae9). Shared suites importing the ds-react contracts pass without the deleted files: Svelte 30, Vue 30, Lit 31, Angular (jest) 30, React primitives 322."
+    recorded_at: "2026-10-21T02:33:25.215Z"
+    test_nodeid: src/consumption/source-declarations.test.ts
+    command: pnpm exec vitest run src/consumption/source-declarations.test.ts
+    exit_code: 0
+    commit_sha: b7baa0e9993b7d8ea088211663e7e428d32a4753
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "After pnpm --filter @full-stack-ds/svelte run build, find packages/ds-svelte/dist -name '*.d.ts' -not -path '*/__tests__/*' lists 194 files at b7baa0e99, the same 194-path set the pre-fix build emitted at the base (diffed path lists identical at ab7975ae9); only the 77 __tests__ declarations are no longer emitted. Non-claim: declaration contents were compared by path set, not byte for byte."
+    recorded_at: "2026-10-21T02:34:30.310Z"
+    command: "pnpm --filter @full-stack-ds/svelte run build && find packages/ds-svelte/dist -name '*.d.ts' -not -path '*/__tests__/*' | wc -l"
+    exit_code: 0
+    commit_sha: b7baa0e9993b7d8ea088211663e7e428d32a4753
