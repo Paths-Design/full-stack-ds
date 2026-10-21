@@ -1,0 +1,62 @@
+id: CALENDAR-ROOT-ROLE-01
+title: 'Calendar root is a labelled group, not an application'
+mode: fix
+lifecycle_state: active
+worktree: calendar-root-role
+created_at: '2026-10-21T04:19:05.545Z'
+updated_at: '2026-10-21T04:19:36.458Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/components/Calendar'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Calendar/Calendar.contract.json'
+    - 'packages/ds-react/src/components/Calendar'
+    - 'packages/ds-vue/src/components/Calendar'
+    - 'packages/ds-svelte/src/components/Calendar'
+    - 'packages/ds-angular/src/components/Calendar'
+    - 'packages/ds-lit/src/components/Calendar'
+    - 'packages/ds-react-native/src/components/Calendar'
+    - 'packages/ds-figma-plugin/src/generated/components/Calendar'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components/Calendar'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components/Calendar'
+    - 'packages/ds-react/src/primitives/hooks/__tests__/calendar.contract.ts'
+    - 'docs/architecture/date-grid.md'
+  out: []
+invariants:
+  - 'The Calendar''s grid keeps the ARIA grid pattern: gridcells own focus, selection and activation'
+  - 'The root carries an accessible name only through a role that allows one'
+acceptance:
+  - id: A1
+    given: 'the Calendar contract'
+    when: 'every target is generated'
+    then: 'the web roots carry role=group instead of role=application, and no generated Calendar output or descriptor declares the application role'
+  - id: A2
+    given: 'the generated Calendar in each web framework'
+    when: 'it renders'
+    then: >-
+      the root is role=group (a role that permits an accessible name), the month
+      grid stays role=grid inside it, the caption and month buttons sit inside the
+      root and outside the grid, and no element in or around the calendar has
+      role=application, so browse mode reaches the caption and month buttons
+  - id: A3
+    given: 'docs/architecture/date-grid.md'
+    when: 'docs:check-claims runs'
+    then: 'the doc states the root role and why, and is fresh'
+  - id: A4
+    given: 'a Calendar given the ariaLabel or ariaLabelledby prop'
+    when: 'it renders in each web framework'
+    then: >-
+      the group element itself carries aria-label or aria-labelledby (not only a
+      framework host), it carries neither without the props, and React Native maps
+      the props to accessibilityLabel and accessibilityLabelledBy
+rollback:
+  - 'Revert the merge commit and regenerate Calendar'
+non_functional: {}
+contracts:
+  - name: 'calendar-root-role'
+    type: behavior
+    path: 'packages/ds-contracts/components/Calendar/Calendar.contract.json'
