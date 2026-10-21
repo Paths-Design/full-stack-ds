@@ -26,8 +26,8 @@
     "typecheck": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run -c vitest.config.ts",
     "test:watch": "vitest -c vitest.config.ts",
-    "build": "svelte-package -i src -o dist && node scripts/build-styles.mjs",
-    "build:watch": "svelte-package -i src -o dist -w"
+    "build": "svelte-package -i src -o dist --tsconfig ./tsconfig.build.json && node scripts/build-styles.mjs",
+    "build:watch": "svelte-package -i src -o dist --tsconfig ./tsconfig.build.json -w"
   },
   "peerDependencies": {
     "svelte": ">=5.0.0"
