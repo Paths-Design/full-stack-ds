@@ -56,3 +56,11 @@ rollback:
   - 'Revert the merge commit; the ledger rows added by it revert with the audit'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At b266093f4 scripts/a11y-realization-audit/selfcheck.mjs passes with pins: a focus trap does not carry Escape; a dismissal does not carry Tab; a running focus trap carries Shift+Tab; a running dismissal whose onDismiss closes something carries Escape. The cross-credit line is gone from classify. Corpus effect in the audit run: Command Tab (five web families) moves from the removed cross-credit to native credit from its input; no other key changed for this rule."
+    recorded_at: "2026-10-21T13:38:03.288Z"
+    command: node scripts/a11y-realization-audit/selfcheck.mjs
+    exit_code: 0
+    commit_sha: b266093f4
