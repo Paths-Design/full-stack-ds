@@ -86,16 +86,15 @@ export function Select({
     <View
       testID={testID}
       style={[styles.root, style]}
-      accessibilityLabel={accessibilityLabel ?? triggerLabel}
+      accessibilityLabel={accessibilityLabel}
       accessibilityLabelledBy={accessibilityLabelledBy}
-      accessibilityState={{ expanded: String(open) === "true", disabled: String(disabled) === "true" }}
     >
       <Pressable
         style={styles.trigger}
         disabled={disabled}
         accessibilityLabel={triggerLabel}
         onPress={() => setOpenValue(!open)}
-        accessibilityRole="button"
+        accessibilityRole="combobox"
         accessibilityState={{ disabled: disabled, expanded: String(open) === "true" }}
       >
         <View

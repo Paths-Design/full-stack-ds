@@ -2131,7 +2131,10 @@ function vueIdRefGuardExpr(
     );
   }
   if (ref.when) {
-    const accessor = `props.${propAccess(ref.when.prop)}`;
+    // A channel gate reads the channel's effective value, as a `v-if` guard does.
+    const accessor = ref.when.channel
+      ? `behavior.${ref.when.channel}.value`
+      : `props.${propAccess(ref.when.prop)}`;
     if (ref.when.op === "eq") {
       conds.push(
         `${accessor} ${ref.when.negated ? "!==" : "==="} '${ref.when.value}'`,

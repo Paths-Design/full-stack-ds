@@ -2382,6 +2382,10 @@ function rnAccessibilityRole(
   if (role === "menu") return "menu";
   if (role === "menuitem") return "menuitem";
   if (role === "alert") return "alert";
+  // A pressable that opens a list of choices (Select's trigger). A combobox
+  // TextInput keeps its native text-field semantics instead: the platform
+  // role would describe a picker, not the editable field it is.
+  if (role === "combobox" && component === "Pressable") return "combobox";
   // Mobile platforms have no gridcell role. An activatable cell is announced
   // as a button, as the SwiftUI and Compose targets realize a date-grid day.
   if (role === "gridcell" && component === "Pressable") return "button";

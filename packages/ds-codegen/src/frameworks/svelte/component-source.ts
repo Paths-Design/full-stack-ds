@@ -1713,7 +1713,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     fieldAssocLines.push(
       `const fieldAssociationValue = $derived({`,
       `  controlId: ${svelteGeneratedIdExpr(assocProvides.controlSlug)},`,
-      `  describedBy: ${svelteIdRefListExpr(assocProvides.describedBy, undefined)},`,
+      `  describedBy: ${svelteIdRefListExpr(assocProvides.describedBy, undefined, hookVar)},`,
       `});`,
       `provideFieldAssociation(() => fieldAssociationValue);`,
     );
@@ -1900,11 +1900,14 @@ function svelteGeneratedIdExpr(slug: string): string {
   return `\`\${instanceId}-${slug}\``;
 }
 
-function svelteIdRefGuardExpr(ref: IdRefIR): string | undefined {
+function svelteIdRefGuardExpr(ref: IdRefIR, hookVar: string): string | undefined {
   const conds: string[] = [];
   if (ref.slotGate) conds.push(jsAccessorFor(ref.slotGate));
   if (ref.when) {
-    const accessor = jsAccessorFor(ref.when.prop);
+    // A channel gate reads the channel's effective value, as an `if` guard does.
+    const accessor = ref.when.channel
+      ? `${hookVar}.${ref.when.channel}`
+      : jsAccessorFor(ref.when.prop);
     if (ref.when.op === "eq") {
       conds.push(
         `${accessor} ${ref.when.negated ? "!==" : "==="} '${ref.when.value}'`,
@@ -1919,15 +1922,16 @@ function svelteIdRefGuardExpr(ref: IdRefIR): string | undefined {
 function svelteIdRefListExpr(
   refs: IdRefIR[],
   passthroughProp: string | undefined,
+  hookVar: string,
 ): string {
   if (refs.length === 0 && !passthroughProp) return "undefined";
   if (refs.length === 1 && !passthroughProp) {
-    const guard = svelteIdRefGuardExpr(refs[0]);
+    const guard = svelteIdRefGuardExpr(refs[0], hookVar);
     const id = svelteGeneratedIdExpr(refs[0].slug);
     return guard ? `${guard} ? ${id} : undefined` : id;
   }
   const parts = refs.map((ref) => {
-    const guard = svelteIdRefGuardExpr(ref);
+    const guard = svelteIdRefGuardExpr(ref, hookVar);
     const id = svelteGeneratedIdExpr(ref.slug);
     return guard ? `${guard} ? ${id} : null` : id;
   });
@@ -2151,7 +2155,7 @@ function renderSvelteDomNode(
   }
   for (const refAttr of node.idRefAttrs) {
     attrs.push(
-      `${refAttr.attribute}={${svelteIdRefListExpr(refAttr.refs, refAttr.passthroughProp)}}`,
+      `${refAttr.attribute}={${svelteIdRefListExpr(refAttr.refs, refAttr.passthroughProp, ctx.hookVar)}}`,
     );
   }
 

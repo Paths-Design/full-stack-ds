@@ -2566,7 +2566,10 @@ function litIdRefGuardExpr(ref: IdRefIR): string | undefined {
     conds.push(`this.querySelector('[slot="${ref.slotGate}"]') !== null`);
   }
   if (ref.when) {
-    const accessor = propAccessor(ref.when.prop);
+    // A channel gate reads the channel's effective value, as an `if` guard does.
+    const accessor = ref.when.channel
+      ? `this.behavior.${ref.when.channel}`
+      : propAccessor(ref.when.prop);
     if (ref.when.op === "eq") {
       conds.push(
         `${accessor} ${ref.when.negated ? "!==" : "==="} '${ref.when.value}'`,

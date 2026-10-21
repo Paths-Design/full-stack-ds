@@ -765,6 +765,14 @@ export interface IdRefConditionIR {
   /** Comparison literal — only for op "eq". */
   value?: string;
   negated: boolean;
+  /**
+   * Set when `prop` is a channel's value prop: the gate reads the channel's
+   * effective value, as the target's own `if` guard does. The raw prop is
+   * undefined while the channel runs uncontrolled (Select opened through
+   * `defaultOpen`), so gating on it would drop the reference to a rendered
+   * target.
+   */
+  channel?: string;
 }
 
 /**

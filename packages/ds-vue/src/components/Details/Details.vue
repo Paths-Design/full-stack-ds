@@ -73,7 +73,7 @@ const instanceId = useId();
 
 <template>
   <details :class="classNames" :open="behavior.open.value" :data-testid="props.dataTestid" data-fsds-component="details" data-fsds-box="">
-    <summary :class="'details__summary'" @click="(e: MouseEvent) => { if (canActivateInteraction(e, true)) behavior.setOpen(!behavior.open.value); }" :aria-disabled="props.disabled" :aria-controls="props.open ? `${instanceId}-content` : undefined">
+    <summary :class="'details__summary'" @click="(e: MouseEvent) => { if (canActivateInteraction(e, true)) behavior.setOpen(!behavior.open.value); }" :aria-disabled="props.disabled" :aria-controls="behavior.open.value ? `${instanceId}-content` : undefined">
       <span :class="'details__summaryContent'">
         <Icon :class="'details__icon'" name="chevron-down" size="sm" />
         <span :class="'details__summaryText'">

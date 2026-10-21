@@ -29,8 +29,8 @@ const SelectMessages = { triggerLabel: "Select an option", placeholder: "Select 
   standalone: true,
   imports: [NgClass, NgIf, NgFor],
   host: { "data-fsds-component": "select" },
-  template: `<div [ngClass]="classes()" role="combobox" aria-haspopup="listbox" [attr.aria-label]="(triggerLabel ?? fsdsMessages().triggerLabel)" [attr.aria-expanded]="behavior.open()" [attr.aria-disabled]="disabled" [attr.aria-controls]="rootAriaControls" data-fsds-box="">
-  <button [ngClass]="'select__trigger'" #interactionAnchor type="button" (click)="behavior.setOpen(!behavior.open())" (keydown)="behavior.handleTriggerKeydown($event)" [disabled]="disabled" [attr.aria-label]="(triggerLabel ?? fsdsMessages().triggerLabel)" [attr.aria-expanded]="behavior.open()" [attr.aria-controls]="triggerAriaControls">
+  template: `<div [ngClass]="classes()" data-fsds-box="">
+  <button [ngClass]="'select__trigger'" #interactionAnchor type="button" role="combobox" aria-haspopup="listbox" (click)="behavior.setOpen(!behavior.open())" (keydown)="behavior.handleTriggerKeydown($event)" [disabled]="disabled" [attr.aria-label]="(triggerLabel ?? fsdsMessages().triggerLabel)" [attr.aria-expanded]="behavior.open()" [attr.aria-controls]="triggerAriaControls">
     <span [ngClass]="'select__text'">
       {{ selectionLabel((options ?? [{'value':'alpha','label':'Alpha'},{'value':'beta','label':'Beta'},{'value':'gamma','label':'Gamma'}]), behavior.selection(), (placeholder ?? fsdsMessages().placeholder)) }}
     </span>
@@ -117,10 +117,6 @@ export class SelectComponent {
       this.disabled ? "select--disabled" : null,
       this.class,
     ].filter(Boolean).join(" ");
-  }
-
-  get rootAriaControls(): string | undefined {
-    return [this.behavior.open() ? `${this.instanceId}-content` : null].filter(Boolean).join(" ") || undefined;
   }
 
   get triggerAriaControls(): string | undefined {
