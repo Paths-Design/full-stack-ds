@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // @generated:start imports
 import { ref, computed } from "vue";
+import { isRtl } from "../../primitives/direction/direction.js";
 import { useTabsContext } from "./useTabs.js";
 // @generated:end
 
@@ -33,10 +34,13 @@ function handleKeyDown(e: KeyboardEvent): void {
   if (tabs.length === 0) return;
   const currentIndex = tabs.indexOf(ctx.activeTab.value);
   const isHorizontal = ctx.orientation !== "vertical";
+  // A horizontal list follows the inline direction: the arrow pointing
+  // toward the inline end moves to the next tab.
+  const [nextInline, previousInline] = isRtl(e.currentTarget) ? ["ArrowLeft", "ArrowRight"] : ["ArrowRight", "ArrowLeft"];
   let nextIndex = currentIndex;
 
   if (
-    (isHorizontal && e.key === "ArrowRight") ||
+    (isHorizontal && e.key === nextInline) ||
     (!isHorizontal && e.key === "ArrowDown")
   ) {
     e.preventDefault();
@@ -44,7 +48,7 @@ function handleKeyDown(e: KeyboardEvent): void {
       ? (currentIndex + 1) % tabs.length
       : Math.min(currentIndex + 1, tabs.length - 1);
   } else if (
-    (isHorizontal && e.key === "ArrowLeft") ||
+    (isHorizontal && e.key === previousInline) ||
     (!isHorizontal && e.key === "ArrowUp")
   ) {
     e.preventDefault();

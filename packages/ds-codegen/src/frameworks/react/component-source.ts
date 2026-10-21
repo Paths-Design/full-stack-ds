@@ -452,6 +452,9 @@ export function generateReactComponentSource(
   if (isCompound) {
     importLines.push(`import { createCompoundContext } from "../../primitives/hooks";`);
   }
+  if (/\bisRtl\(/.test(bodyHaystack)) {
+    importLines.push(`import { isRtl } from "../../primitives/direction/direction";`);
+  }
   // FEAT-A11Y-LABEL-ID-ASSOCIATION-01: field-association primitive imports,
   // body-scan driven like the react-hook imports above.
   const fieldAssocImports: string[] = [];
@@ -1067,9 +1070,12 @@ function generateCompoundStateSubcomponents(ir: ComponentIR): string {
   lines.push(`      if (tabs.length === 0) return;`);
   lines.push(`      const currentIndex = tabs.indexOf(ctx.${channelName});`);
   lines.push(`      const isHorizontal = ctx.${orientation} !== "vertical";`);
+  // A horizontal list follows the inline direction: the arrow pointing toward
+  // the inline end moves to the next tab.
+  lines.push(`      const [nextInline, previousInline] = isRtl(e.currentTarget) ? ["ArrowLeft", "ArrowRight"] : ["ArrowRight", "ArrowLeft"];`);
   lines.push(`      let nextIndex = currentIndex;`);
   lines.push(`      if (`);
-  lines.push(`        (isHorizontal && e.key === "ArrowRight") ||`);
+  lines.push(`        (isHorizontal && e.key === nextInline) ||`);
   lines.push(`        (!isHorizontal && e.key === "ArrowDown")`);
   lines.push(`      ) {`);
   lines.push(`        e.preventDefault();`);
@@ -1077,7 +1083,7 @@ function generateCompoundStateSubcomponents(ir: ComponentIR): string {
   lines.push(`          ? (currentIndex + 1) % tabs.length`);
   lines.push(`          : Math.min(currentIndex + 1, tabs.length - 1);`);
   lines.push(`      } else if (`);
-  lines.push(`        (isHorizontal && e.key === "ArrowLeft") ||`);
+  lines.push(`        (isHorizontal && e.key === previousInline) ||`);
   lines.push(`        (!isHorizontal && e.key === "ArrowUp")`);
   lines.push(`      ) {`);
   lines.push(`        e.preventDefault();`);

@@ -318,6 +318,21 @@ describe("Tabs — compound integration", () => {
     expect(getTab(host, "a").getAttribute("aria-selected")).toBe("true");
   });
 
+  it("in a right-to-left page, ArrowLeft moves to the next tab and ArrowRight to the previous", () => {
+    // A physical mapping sends ArrowLeft from A to C, wrapping to the previous tab.
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      dispatchKey(getList(host), "ArrowLeft");
+      fixture.detectChanges();
+      expect(getTab(host, "b").getAttribute("aria-selected")).toBe("true");
+      dispatchKey(getList(host), "ArrowRight");
+      fixture.detectChanges();
+      expect(getTab(host, "a").getAttribute("aria-selected")).toBe("true");
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
   it("Home key activates first tab", () => {
     getTab(host, "c").click();
     fixture.detectChanges();

@@ -262,6 +262,25 @@ desc("Tabs — behavioral", () => {
     exp(tabA.getAttribute("aria-selected")).toBe("true");
   });
 
+  test("in a right-to-left page, ArrowLeft moves to the next tab and ArrowRight to the previous", async () => {
+    // Without loop, a physical mapping leaves the first tab selected: ArrowLeft
+    // from the first tab has no previous tab to reach.
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      const { container } = renderTabs({ defaultValue: "a", loop: false });
+      await tick();
+      const list = container.querySelector<HTMLElement>(sel.tabList)!;
+      await fireEvent.keyDown(list, { key: "ArrowLeft" });
+      await tick();
+      exp(container.querySelector(sel.tabB)!.getAttribute("aria-selected")).toBe("true");
+      await fireEvent.keyDown(list, { key: "ArrowRight" });
+      await tick();
+      exp(container.querySelector(sel.tabA)!.getAttribute("aria-selected")).toBe("true");
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
   test("keyboard Home moves focus to first tab", async () => {
     const { container } = renderTabs({ defaultValue: "b" });
     await tick();

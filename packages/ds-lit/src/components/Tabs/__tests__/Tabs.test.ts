@@ -427,6 +427,21 @@ describe("Tabs — behavioral", () => {
     container.remove();
   });
 
+  it("in a right-to-left container, ArrowLeft moves to the next tab and ArrowRight to the previous", async () => {
+    // Without loop, a physical mapping leaves the first tab selected: ArrowLeft
+    // from the first tab has no previous tab to reach.
+    const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "a", activationMode: "automatic", loop: false });
+    container.setAttribute("dir", "rtl");
+    const listEl = tabsEl.querySelector("fsds-tabs-list")!;
+    listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true, composed: true }));
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
+    expect(tabB.getAttribute("aria-selected")).toBe("true");
+    listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, composed: true }));
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
+    expect(tabA.getAttribute("aria-selected")).toBe("true");
+    container.remove();
+  });
+
   it("keyboard Home moves to first tab", async () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "b", activationMode: "automatic" });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;

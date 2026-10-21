@@ -3,6 +3,7 @@ import { InteractionHost, type InteractionHostProps } from "../../primitives/Int
 import { type HTMLAttributes, type KeyboardEvent, type ReactNode, useCallback, useEffect, useRef } from "react";
 import { useTabs } from "./useTabs";
 import { createCompoundContext } from "../../primitives/hooks";
+import { isRtl } from "../../primitives/direction/direction";
 import "./Tabs.css";
 // @generated:end
 
@@ -77,9 +78,10 @@ export function TabsList({
       if (tabs.length === 0) return;
       const currentIndex = tabs.indexOf(ctx.activeTab);
       const isHorizontal = ctx.orientation !== "vertical";
+      const [nextInline, previousInline] = isRtl(e.currentTarget) ? ["ArrowLeft", "ArrowRight"] : ["ArrowRight", "ArrowLeft"];
       let nextIndex = currentIndex;
       if (
-        (isHorizontal && e.key === "ArrowRight") ||
+        (isHorizontal && e.key === nextInline) ||
         (!isHorizontal && e.key === "ArrowDown")
       ) {
         e.preventDefault();
@@ -87,7 +89,7 @@ export function TabsList({
           ? (currentIndex + 1) % tabs.length
           : Math.min(currentIndex + 1, tabs.length - 1);
       } else if (
-        (isHorizontal && e.key === "ArrowLeft") ||
+        (isHorizontal && e.key === previousInline) ||
         (!isHorizontal && e.key === "ArrowUp")
       ) {
         e.preventDefault();

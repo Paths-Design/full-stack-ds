@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, ElementRef, inject, ChangeDetectionStrategy } from "@angular/core";
 import { NgClass } from "@angular/common";
+import { isRtl } from "../../primitives/direction/direction.js";
 import { useTabsContext } from "./useTabs.js";
 // @generated:end
 
@@ -39,10 +40,13 @@ export class TabsListComponent {
     if (tabs.length === 0) return;
     const currentIndex = tabs.indexOf(this.ctx.activeTab());
     const isHorizontal = this.ctx.orientation() !== "vertical";
+    // A horizontal list follows the inline direction: the arrow pointing
+    // toward the inline end moves to the next tab.
+    const [nextInline, previousInline] = isRtl(e.currentTarget) ? ["ArrowLeft", "ArrowRight"] : ["ArrowRight", "ArrowLeft"];
     let nextIndex = currentIndex;
 
     if (
-      (isHorizontal && e.key === "ArrowRight") ||
+      (isHorizontal && e.key === nextInline) ||
       (!isHorizontal && e.key === "ArrowDown")
     ) {
       e.preventDefault();
@@ -50,7 +54,7 @@ export class TabsListComponent {
         ? (currentIndex + 1) % tabs.length
         : Math.min(currentIndex + 1, tabs.length - 1);
     } else if (
-      (isHorizontal && e.key === "ArrowLeft") ||
+      (isHorizontal && e.key === previousInline) ||
       (!isHorizontal && e.key === "ArrowUp")
     ) {
       e.preventDefault();

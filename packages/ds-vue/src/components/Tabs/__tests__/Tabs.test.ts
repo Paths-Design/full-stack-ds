@@ -303,6 +303,26 @@ describe("Tabs — behavioral", () => {
     wrapper.unmount();
   });
 
+  it("in a right-to-left page, ArrowLeft moves to the next tab and ArrowRight to the previous", async () => {
+    // Without loop, a physical mapping leaves the first tab selected: ArrowLeft
+    // from the first tab has no previous tab to reach.
+    document.documentElement.setAttribute("dir", "rtl");
+    const wrapper = mountTabs({ defaultValue: "a", loop: false });
+    try {
+      await wrapper.vm.$nextTick();
+      const list = wrapper.find(sel.tabList);
+      await list.trigger("keydown", { key: "ArrowLeft" });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(sel.tabB).attributes("aria-selected")).toBe("true");
+      await list.trigger("keydown", { key: "ArrowRight" });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(sel.tabA).attributes("aria-selected")).toBe("true");
+    } finally {
+      wrapper.unmount();
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
   it("keyboard Home moves focus to first tab", async () => {
     const wrapper = mountTabs({ defaultValue: "b" });
     await wrapper.vm.$nextTick();

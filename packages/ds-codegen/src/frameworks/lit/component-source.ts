@@ -941,11 +941,14 @@ function generateTabsListClass(ir: ComponentIR): string {
   lines.push(`    if (tabs.length === 0) return;`);
   lines.push(`    const currentIndex = tabs.indexOf(ctx.activeTab);`);
   lines.push(`    const isHorizontal = ctx.orientation !== "vertical";`);
+  // A horizontal list follows the inline direction, read across the shadow
+  // boundary: the arrow pointing toward the inline end moves to the next tab.
+  lines.push(`    const [nextInline, previousInline] = isRtl(e.currentTarget) ? ["ArrowLeft", "ArrowRight"] : ["ArrowRight", "ArrowLeft"];`);
   lines.push(`    let nextIndex = currentIndex;`);
-  lines.push(`    if ((isHorizontal && e.key === "ArrowRight") || (!isHorizontal && e.key === "ArrowDown")) {`);
+  lines.push(`    if ((isHorizontal && e.key === nextInline) || (!isHorizontal && e.key === "ArrowDown")) {`);
   lines.push(`      e.preventDefault();`);
   lines.push(`      nextIndex = ctx.loop ? (currentIndex + 1) % tabs.length : Math.min(currentIndex + 1, tabs.length - 1);`);
-  lines.push(`    } else if ((isHorizontal && e.key === "ArrowLeft") || (!isHorizontal && e.key === "ArrowUp")) {`);
+  lines.push(`    } else if ((isHorizontal && e.key === previousInline) || (!isHorizontal && e.key === "ArrowUp")) {`);
   lines.push(`      e.preventDefault();`);
   lines.push(`      nextIndex = ctx.loop ? (currentIndex - 1 + tabs.length) % tabs.length : Math.max(currentIndex - 1, 0);`);
   lines.push(`    } else if (e.key === "Home") {`);
@@ -1518,7 +1521,8 @@ function generateDisclosureStateSource(ir: ComponentIR): string {
 }
 
 function generateCompoundStateSource(ir: ComponentIR): string {
-  const importsBody = generateCompoundStateImports(ir);
+  // The tab list's keyboard handler reads the inline direction.
+  const importsBody = `${generateCompoundStateImports(ir)}\nimport { isRtl } from '../../primitives/direction/direction.js';`;
   const typesBody = generateCompoundStateTypes(ir);
   const componentBody = [
     generateCompoundStateRootClass(ir),
