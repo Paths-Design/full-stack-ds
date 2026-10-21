@@ -29,9 +29,14 @@ acceptance:
     when: 'the audit classifies it'
     then: 'it is unrealized, and selfcheck pins both directions'
   - id: A2
-    given: 'a component source that imports a focus-trap or dismissal primitive without invoking it (no call, instantiation, directive or action binding)'
+    given: >-
+      a component source that names a focus-trap or dismissal primitive without
+      running it: an import, a comment (call-shaped or not), or a dismissal whose
+      own onDismiss argument is a no-op, on one line or several
     when: 'the audit classifies the key that primitive carries'
-    then: 'it is unrealized, and selfcheck pins the import-only case'
+    then: >-
+      it is unrealized, an onDismiss outside the dismissal call does not lend it a
+      live callback, and selfcheck pins each case
   - id: A3
     given: 'a keyboard entry whose when field names an anatomy part'
     when: 'native-element credit is considered'
