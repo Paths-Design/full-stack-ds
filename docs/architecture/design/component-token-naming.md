@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component token state and variant naming
 owner: "@darianrosebrook"
-updated: 2026-10-01
-verified_at_commit: 395ecdbff
+updated: 2026-10-21
+verified_at_commit: 4ef5a4f30
 governs:
   - packages/ds-contracts/components/**/*.tokens.json
   - packages/ds-codegen/src/component-token-naming.ts

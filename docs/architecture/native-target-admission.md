@@ -4,7 +4,7 @@ authority: canonical
 status: active
 title: Native target admission — criteria per codegen output
 owner: "@darianrosebrook"
-updated: 2026-10-18
+updated: 2026-10-21
 governs:
   - packages/ds-codegen/src/frameworks/native-emission-class.ts
   - packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts
@@ -32,7 +32,7 @@ shared substrate module, `packages/ds-codegen/src/frameworks/native-emission-cla
 `isVisualOnlyLeaf`, `isGlyphHost`, `domGlyph`, `isIconDecoratedContent`),
 the control family (`isValueChannelControl` with `soleInputElement` /
 `soleValueChannel`, `isLabeledTextControl`, `isSelectionControl`,
-`radioGroupFacts`), the collection family (`isArrayIteratedList`,
+`radioGroupFacts`), the collection family (`isTransferSurface`,
 `isInteractiveComposite`, `isCountIteratedFieldGroup`, `isDateGridSurface`,
 `isReferencedActionComposite`, `isNamedSlotComposer`), the surface family
 (`isCenteredSurface`, `surfaceStringChannel`, `isViewportEdgeSurface`,
@@ -91,7 +91,7 @@ local twin):
 | text control | `isValueChannelControl` + string channel (substrate) | Input |
 | native-disclosure collapse | `collapseIntents: native-disclosure` | Details |
 | radio collection | `radioGroupFacts` (substrate) | RadioGroup |
-| array-iterated list | `isArrayIteratedList` (substrate) | Shuttle |
+| transfer surface | `isTransferSurface` (substrate) | Shuttle |
 | interactive composite | `isInteractiveComposite` (substrate) | Accordion, Tabs |
 | count-iterated field group | `isCountIteratedFieldGroup` (substrate) | OTP |
 | date-grid surface | `isDateGridSurface` (substrate) | Calendar |
@@ -175,7 +175,7 @@ anchor is selector-sourced.
 - **TextField (labeled text control)** — `type`, `name`, `required` and `ariaDescribedby` form-wiring props are not lowered v1; `invalid` gates the error region, which renders only when the consumer supplies it.
 - **OTP (count-iterated field group)** — `onComplete`, the `mode` axis, and `readOnly` are not lowered v1 (value changes ride the channel); `label`/`fieldLabel`/`ariaDescribedby` lower to a single group contentDescription.
 - **Accordion / Tabs (interactive composite)** — part-scoped typography (`accordion.text.sizeContent`) is unclaimed; group-level `disabled` is not lowered v1; a subcomponent used outside its root throws at CompositionLocal access (the swift @EnvironmentObject / RN compound-context trap).
-- **Shuttle (array-iterated list)** — item removal is the swift twin's documented write (filter the item out); hover/active-scoped slots are unclaimed (no interaction state v1).
+- **Shuttle (transfer surface)** — both native targets realize the contract's `transfer` fact themselves: the available and selected lists come from the target's `FsdsTransferList` core (Kotlin and Swift) over the options prop and the value channel, a tap marks an item (Compose `selectable(selected =)`, SwiftUI the `isSelected` trait — the web options' `aria-selected`), and Add and Remove move the marked items, each enabled only while its source list holds a mark. The lists and controls are named from the message catalog ([Dual-listbox transfer](transfer-list.md)). The root pads from `shuttle.size.padding` when declared, else from the box-model insets, matching the web cascade. The listbox keys (arrows, Home/End, Space, Enter) are not lowered: every item is a focus stop that TalkBack, switch access, VoiceOver and Full Keyboard Access traverse; the item hover and focus-ring slots are unclaimed (the system draws focus).
 - **RadioGroup (radio collection)** — the option alias's `title`/help
   member is carried on the lowered data class but not rendered v1 (the
   SwiftUI twin lowers it to `.help`); the option rows use the content
@@ -186,9 +186,8 @@ anchor is selector-sourced.
   bg/border color slots); form-wiring props (`name`/`id`/`ariaLabelledby`)
   are omitted v1; `ariaLabel` lowers to the semantics contentDescription.
 - **Icon (glyph host)** — NavTree also matches `isGlyphHost` (its item
-  icons carry the fact) but stays **unadmitted** on compose: its best
-  class is array-iterated list, not yet landed; admission is the
-  allowlist's decision, not the dispatch's. SwiftUI admits NavTree as a
+  icons carry the fact); compose dispatches it as a passive tree item,
+  whose predicate is tested first. SwiftUI admits NavTree as a
   glyph-host v1 (icon-only rendering) — its own ledgered degradation.
   Icon's unknown-name fallback paints a dashed placeholder rather than
   nothing; glyph stroke inherits the content color (the `currentColor`
