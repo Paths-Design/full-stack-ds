@@ -7,23 +7,39 @@
   "anatomy": {
     "parts": [
       "root",
-      "item"
+      "list",
+      "item",
+      "controls",
+      "add",
+      "remove"
     ],
     "details": {
       "root": {
-        "tag": "ul",
-        "description": "Listbox representing the current transferred selection.",
+        "tag": "div",
+        "description": "Group holding the available list, the transfer buttons and the selected list.",
         "role": "group",
         "aria": {
-          "role": "listbox",
+          "role": "group",
           "attributes": [
             "aria-label"
           ]
         }
       },
+      "list": {
+        "tag": "ul",
+        "description": "One side of the transfer: the available options, or the selected ones. Several options can be marked at once.",
+        "role": "group",
+        "aria": {
+          "role": "listbox",
+          "attributes": [
+            "aria-label",
+            "aria-multiselectable"
+          ]
+        }
+      },
       "item": {
         "tag": "li",
-        "description": "Selected listbox option rendered from the selection channel.",
+        "description": "An option; aria-selected reports whether it is marked for transfer.",
         "role": "item",
         "multiple": true,
         "focusable": "roving",
@@ -33,34 +49,152 @@
             "aria-selected"
           ]
         }
+      },
+      "controls": {
+        "tag": "div",
+        "description": "The transfer buttons between the two lists.",
+        "role": "group"
+      },
+      "add": {
+        "tag": "button",
+        "description": "Moves the marked available options to the selected list.",
+        "role": "control",
+        "interactive": true
+      },
+      "remove": {
+        "tag": "button",
+        "description": "Moves the marked selected options back to the available list.",
+        "role": "control",
+        "interactive": true
       }
     },
     "dom": {
-      "tag": "ul",
+      "tag": "div",
       "part": "root",
       "attrs": {
-        "role": "listbox"
+        "role": "group"
       },
       "bindings": {
         "aria-label": "prop:ariaLabel"
       },
       "children": [
         {
-          "tag": "li",
-          "part": "item",
-          "iterate": {
-            "source": "channel:selection.value",
-            "kind": "array",
-            "itemType": "string"
-          },
+          "tag": "ul",
+          "part": "list",
           "attrs": {
-            "role": "option",
-            "aria-selected": "true"
+            "role": "listbox",
+            "aria-multiselectable": "true",
+            "data-side": "available"
+          },
+          "bindings": {
+            "aria-label": "message:availableLabel"
+          },
+          "events": {
+            "keydown": "transfer:keydown"
           },
           "children": [
             {
-              "tag": "span",
-              "content": "iter:item"
+              "tag": "li",
+              "part": "item",
+              "iterate": {
+                "source": "transfer:available",
+                "kind": "array",
+                "itemType": "TransferListItem"
+              },
+              "attrs": {
+                "role": "option"
+              },
+              "bindings": {
+                "aria-selected": "iter:item.marked",
+                "tabindex": "iter:item.tabIndex",
+                "data-value": "iter:item.key"
+              },
+              "events": {
+                "click": "transfer:toggle(iter:item)"
+              },
+              "children": [
+                {
+                  "tag": "span",
+                  "content": "iter:item.label"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "tag": "div",
+          "part": "controls",
+          "children": [
+            {
+              "tag": "button",
+              "part": "add",
+              "attrs": {
+                "type": "button"
+              },
+              "bindings": {
+                "disabled": "transfer:addDisabled"
+              },
+              "events": {
+                "click": "transfer:add"
+              },
+              "content": "message:add"
+            },
+            {
+              "tag": "button",
+              "part": "remove",
+              "attrs": {
+                "type": "button"
+              },
+              "bindings": {
+                "disabled": "transfer:removeDisabled"
+              },
+              "events": {
+                "click": "transfer:remove"
+              },
+              "content": "message:remove"
+            }
+          ]
+        },
+        {
+          "tag": "ul",
+          "part": "list",
+          "attrs": {
+            "role": "listbox",
+            "aria-multiselectable": "true",
+            "data-side": "selected"
+          },
+          "bindings": {
+            "aria-label": "message:selectedLabel"
+          },
+          "events": {
+            "keydown": "transfer:keydown"
+          },
+          "children": [
+            {
+              "tag": "li",
+              "part": "item",
+              "iterate": {
+                "source": "transfer:selected",
+                "kind": "array",
+                "itemType": "TransferListItem"
+              },
+              "attrs": {
+                "role": "option"
+              },
+              "bindings": {
+                "aria-selected": "iter:item.marked",
+                "tabindex": "iter:item.tabIndex",
+                "data-value": "iter:item.key"
+              },
+              "events": {
+                "click": "transfer:toggle(iter:item)"
+              },
+              "children": [
+                {
+                  "tag": "span",
+                  "content": "iter:item.label"
+                }
+              ]
             }
           ]
         }
@@ -76,9 +210,15 @@
           "description": "Accessible label for the shuttle widget"
         },
         {
+          "name": "options",
+          "propType": { "kind": "array", "items": { "kind": "string" } },
+          "description": "Every candidate item id, in the order the available list shows them.",
+          "default": ["alpha", "beta", "gamma", "delta", "epsilon"]
+        },
+        {
           "name": "value",
           "propType": { "kind": "array", "items": { "kind": "string" } },
-          "description": "Controlled list of selected-item ids (items currently in the right-hand list)."
+          "description": "Controlled list of selected-item ids (items currently in the right-hand list), in the order they were moved there."
         },
         {
           "name": "defaultValue",
@@ -107,10 +247,14 @@
       "description": "The set of item ids currently in the right-hand (selected) list. Changes as items are transferred between the two listboxes."
     }
   },
+  "transfer": {
+    "valueChannel": "selection",
+    "optionsProp": "options"
+  },
   "focus": {
     "strategy": "roving",
     "orientation": "vertical",
-    "description": "Arrow keys move focus within each listbox independently. Focus does not leave the shuttle widget."
+    "description": "Each list is one tab stop. Arrow keys, Home and End move focus within a list; Tab moves between the lists and the buttons."
   },
   "portal": {
     "enabled": false
@@ -128,22 +272,53 @@
         ],
         "initial": "default",
         "exclusive": true
+      },
+      "mark": {
+        "category": "selection",
+        "effect": "restyle",
+        "values": [
+          "unmarked",
+          "marked"
+        ],
+        "initial": "unmarked",
+        "exclusive": true,
+        "a11y": {
+          "attribute": "aria-selected",
+          "values": {
+            "unmarked": "false",
+            "marked": "true"
+          }
+        }
       }
     }
   },
-  "slots": {
-    "item": {
-      "required": false
-    }
-  },
+  "slots": {},
   "ssr": {
     "hydrateOn": "interaction"
   },
   "rtl": {
     "flipIcon": false
   },
+  "messages": {
+    "availableLabel": {
+      "defaultMessage": "Available",
+      "description": "Accessible name of the list of items that can be added."
+    },
+    "selectedLabel": {
+      "defaultMessage": "Selected",
+      "description": "Accessible name of the list of items already added."
+    },
+    "add": {
+      "defaultMessage": "Add",
+      "description": "Button that moves the marked available items to the selected list."
+    },
+    "remove": {
+      "defaultMessage": "Remove",
+      "description": "Button that moves the marked selected items back to the available list."
+    }
+  },
   "a11y": {
-    "role": "listbox",
+    "role": "group",
     "apgPattern": "listbox",
     "labeling": [
       "aria-label",
@@ -151,16 +326,24 @@
     ],
     "keyboard": [
       {
-        "key": "Space",
-        "action": "Select or deselect the focused item"
+        "key": "ArrowUp|ArrowDown",
+        "action": "Move focus to the previous or next item in the list",
+        "when": "list"
       },
       {
-        "key": "ArrowUp|ArrowDown",
-        "action": "Navigate between items in a listbox"
+        "key": "Home|End",
+        "action": "Move focus to the first or last item in the list",
+        "when": "list"
+      },
+      {
+        "key": "Space",
+        "action": "Mark or unmark the focused item for transfer",
+        "when": "list"
       },
       {
         "key": "Enter",
-        "action": "Transfer the selected items to the other listbox"
+        "action": "Move the marked items, or the focused item when none is marked, to the other list",
+        "when": "list"
       }
     ]
   },
@@ -168,8 +351,8 @@
     "category": "action",
     "usageHints": [
       "Use for permission assignment, column selection, or playlist management",
-      "Support keyboard: Space to select/deselect, arrow keys to navigate, Enter to transfer",
-      "Show item counts in the listbox headers to communicate selection progress"
+      "Support keyboard: arrow keys to move within a list, Space to mark, Enter or the buttons to transfer",
+      "Pass every candidate id in options; the value is the selected list in the order items were added"
     ],
     "children": {
       "allowed": false
