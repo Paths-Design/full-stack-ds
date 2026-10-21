@@ -142,6 +142,13 @@ describe("Unity support boundary", () => {
     ["tokens:/*.size.md.track.width/fallback", "/switch.size.md.track.width/fallback", true],
     ["tokens:/*.size.md.track.width/fallback", "/switch.size.md.track.width/layer", false],
     ["styles:/**", "/root/color/design", true],
+    ["contract:/a/**/z", "/a/z", true],
+    ["contract:/a/**/z", "/a/x/y/z", true],
+    ["contract:/a/**/z", "/a/x/z/extra", false],
+    ["contract:/a/**/x/**/z", "/a/x/y/x/z", true],
+    ["contract:/a/*/z", "/a/x/y/z", false],
+    ["tokens:/*.size.md[0]+/fallback", "/switch.size.md[0]+/fallback", true],
+    ["tokens:/*.size.md[0]+/fallback", "/switch.size.md0/fallback", false],
   ])("pattern %s against %s → %s", (pattern, keyed, expected) => {
     const source = pattern.split(":")[0] as "contract" | "tokens" | "styles";
     expect(patternMatches(pattern, { source, keyed })).toBe(expected);
@@ -175,6 +182,22 @@ describe("Unity support boundary", () => {
     expect(leaf("channel:open.onChange")).toBe("rest");
     expect(leaf("xchannel:open.value")).toBe("rest");
     expect(leaf(true)).toBe("rest");
+  });
+
+  it("rechecks values, sources and edited rules after warming matcher syntax", () => {
+    const boundary = boundaryOf([
+      rule({ id: "first", match: ["contract:/x/**"], valuePattern: "^yes$" }),
+      rule({ id: "fallback", match: ["contract:/**"] }),
+    ]);
+    const leaf = { source: "contract" as const, pointer: "/x/y", keyed: "/x/y", value: "yes" };
+    expect(classifyLeaf(leaf, boundary).rule).toBe("first");
+    expect(classifyLeaf({ ...leaf, value: "no" }, boundary).rule).toBe("fallback");
+    expect(classifyLeaf({ ...leaf, source: "styles" }, boundary).rule).toBeNull();
+    boundary.rules[0]!.valuePattern = "^no$";
+    expect(classifyLeaf(leaf, boundary).rule).toBe("fallback");
+    expect(classifyLeaf({ ...leaf, value: "no" }, boundary).rule).toBe("first");
+    boundary.rules.reverse();
+    expect(classifyLeaf({ ...leaf, value: "no" }, boundary).rule).toBe("fallback");
   });
 
   it("an unclassified leaf fails generation for any component, allowlisted or not", () => {

@@ -114,7 +114,7 @@ const PATTERNS = {
   // the inventory classifies, the committed baseline it diffs against, and the
   // audit/probe scripts themselves.
   retokenTokenAudit:
-    /^(e2e\/fixtures\/retoken-pages\/|scripts\/audit-retoken-tokens\.mjs$|scripts\/retoken-token-probe\.mjs$)/,
+    /^(examples\/token-theming\/|scripts\/audit-retoken-tokens(?:\.selftest)?\.mjs$|scripts\/retoken-token-probe\.mjs$)/,
   // eslint runs over the whole repo, so ANY lintable file (incl. scripts/*.mjs)
   lintable: /\.(ts|tsx|js|jsx|mjs|cjs|vue|svelte)$/,
   // tsc / vue-tsc only cover the packages|src trees — loose scripts/*.mjs aren't

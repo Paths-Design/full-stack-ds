@@ -7,7 +7,7 @@
  * matched elements and their descendants. No used-property change anywhere
  * => 'dead' candidate; any change => 'load-bearing'.
  *
- * Usage: node scripts/retoken-token-probe.mjs --url http://localhost:5173/e2e/fixtures/retoken-pages/index.html?page=spotify [--baseline <path>]
+ * Usage: node scripts/retoken-token-probe.mjs --url http://localhost:5173/examples/token-theming/index.html?page=spotify [--baseline <path>]
  * Prints JSON { key: verdict } to stdout. Requires a running dev server.
  */
 import { readFileSync } from 'node:fs';
@@ -19,7 +19,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const baselinePath = args.includes('--baseline')
   ? args[args.indexOf('--baseline') + 1]
-  : 'e2e/fixtures/retoken-pages/token-audit-baseline.json';
+  : 'examples/token-theming/token-audit-baseline.json';
 
 const baseline = JSON.parse(readFileSync(path.resolve(root, baselinePath), 'utf8'));
 const declarations = Object.entries(baseline.declarations)
@@ -42,7 +42,7 @@ const results = {};
 
 for (const pageKind of ['spotify', 'pinterest', 'pinterest&pin=0']) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
-  await page.goto(`http://localhost:5173/e2e/fixtures/retoken-pages/index.html?page=${pageKind}`);
+  await page.goto(`http://localhost:5173/examples/token-theming/index.html?page=${pageKind}`);
   await page.waitForSelector('.retoken');
   if (pageKind.includes('pin=')) {
     // Open the pin overflow menu so .pin-menu (portal content) is present for probing.

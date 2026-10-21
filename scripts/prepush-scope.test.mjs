@@ -7,6 +7,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { classify } from "./prepush-scope.mjs";
 
+test("token theming sources and audit selftest reach the retoken gate", () => {
+  for (const file of ["examples/token-theming/theme.css", "examples/token-theming/pinterest.tsx", "examples/token-theming/token-audit-baseline.json", "scripts/audit-retoken-tokens.selftest.mjs"]) {
+    assert.equal(classify([file]).RUN_RETOKEN_TOKEN_AUDIT, true, file);
+  }
+  assert.equal(classify(["examples/settings/react/src/App.tsx"]).RUN_RETOKEN_TOKEN_AUDIT, false);
+});
+
 const on = (r, ...k) => k.every((key) => r[key] === true);
 const off = (r, ...k) => k.every((key) => r[key] === false);
 

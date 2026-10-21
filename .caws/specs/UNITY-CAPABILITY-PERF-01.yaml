@@ -1,0 +1,62 @@
+id: UNITY-CAPABILITY-PERF-01
+title: 'Avoid repeated Unity boundary matcher parsing during corpus accounting'
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Matcher syntax reuse and CPU-bounded root workers preserve classification and deadlines; executed focused, full root, framework, admission and policy checks passed'
+created_at: '2026-10-19T23:40:32.123Z'
+updated_at: '2026-10-20T00:06:12.805Z'
+created_by_session: '01a15687-8fd6-73a3-9677-8a61cbe36703'
+blast_radius:
+  modules:
+    - 'Unity support-boundary classification and capability accounting'
+    - 'Root Vitest worker concurrency'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity/'
+    - vitest.config.ts
+  out: []
+invariants:
+  - 'First matching boundary rule remains authoritative; unclassified and catch-all leaves remain refused by admission'
+acceptance:
+  - id: A1
+    given: 'the real contract corpus and sidecars'
+    when: 'Unity inventory and target audit run under the default test deadline'
+    then: 'accounting assertions pass without increasing test timeouts'
+  - id: A2
+    given: 'pointer globs and value-constrained boundary rules'
+    when: 'matcher work is reused'
+    then: 'source, segment wildcard, recursive wildcard, rule ordering and value matching semantics remain unchanged'
+  - id: A3
+    given: 'the complete root test corpus on a shared machine'
+    when: 'pnpm test runs with bounded worker concurrency'
+    then: 'the full root suite passes with the existing per-test deadlines and assertions'
+non_functional: {}
+contracts:
+  - name: 'unity-boundary'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/unity/boundary.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Executed final candidate focused tests: Unity accounting passed in 3423ms under unchanged 5000ms deadline; raw output retained at /private/tmp/fsds-unity-focused-tests.log (external execution log, not a repo artifact)"
+    recorded_at: "2026-10-20T00:06:09.700Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/unity/capabilities.test.ts packages/ds-codegen/src/frameworks/unity/boundary.test.ts
+    exit_code: 0
+    commit_sha: "0ffc4ddaf79fbe5ae59c0b58a2705cd7c8c7784b"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Executed 43 boundary tests exercising wildcard/source/value/order semantics; raw output retained at /private/tmp/fsds-unity-focused-tests.log (external execution log, not a repo artifact)"
+    recorded_at: "2026-10-20T00:06:10.679Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/unity/capabilities.test.ts packages/ds-codegen/src/frameworks/unity/boundary.test.ts
+    exit_code: 0
+    commit_sha: "0ffc4ddaf79fbe5ae59c0b58a2705cd7c8c7784b"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Executed full root suite: 346 files and 5092 tests passed under four-worker config f21301c40 with unchanged deadlines; final CPU clamp preserves four workers on this 10-CPU host. Raw output /private/tmp/fsds-unity-root-tests.log is an external execution log, not a repo artifact"
+    recorded_at: "2026-10-20T00:06:11.534Z"
+    command: pnpm test
+    exit_code: 0
+    commit_sha: f21301c40a59f1146e0728e1a8919b659615eb20
