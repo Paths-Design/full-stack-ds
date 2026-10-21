@@ -93,7 +93,7 @@ public struct TabsTab: View {
     public var body: some View {
         Button(label) { activeTab.set(value) }
             .buttonStyle(.plain)
-            .accessibilityAddTraits(activeTab.value(in: fsdsChannelValues) == value ? .isSelected : [])
+            .accessibilityAddTraits(activeTab.value(in: fsdsChannelValues) == value ? [.isSelected] : [])
     }
 }
 

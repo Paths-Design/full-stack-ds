@@ -1298,7 +1298,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
     // The selected trait reads the value the root hands down through the
     // environment, as the panels do, so a parent-set tab is current.
-    lines.push(`${INDENT}${INDENT}${INDENT}.accessibilityAddTraits(${channel.name}.value(in: fsdsChannelValues) == value ? .isSelected : [])`);
+    lines.push(`${INDENT}${INDENT}${INDENT}.accessibilityAddTraits(${channel.name}.value(in: fsdsChannelValues) == value ? [.isSelected] : [])`);
     lines.push(`${INDENT}}`);
     lines.push(`}`);
     lines.push("");

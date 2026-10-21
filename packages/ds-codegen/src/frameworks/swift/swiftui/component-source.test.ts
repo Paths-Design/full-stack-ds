@@ -853,6 +853,6 @@ describe("generated SwiftUI channels", () => {
     const source = generateSwiftUIComponentSource(buildComponentIR(contract));
     const tab = /public struct TabsTab: View \{[\s\S]*?\n\}\n/.exec(source)?.[0] ?? "";
     expect(tab).toContain("@Environment(\\.fsdsChannelValues) private var fsdsChannelValues");
-    expect(tab).toContain(".accessibilityAddTraits(activeTab.value(in: fsdsChannelValues) == value ? .isSelected : [])");
+    expect(tab).toContain(".accessibilityAddTraits(activeTab.value(in: fsdsChannelValues) == value ? [.isSelected] : [])");
   });
 });
