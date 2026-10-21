@@ -36,8 +36,8 @@ scope:
     - docs/architecture/design/component-design-bindings.md
   out: []
 invariants:
-  - 'A declaration whose side depends on reading direction names the inline start or end, so left-to-right rendering is unchanged and right-to-left mirrors it'
   - 'Physical side values that a component exposes as API (Sheet side, Tooltip and Popover placement, Text align) stay physical until the user decides their meaning'
+  - 'A declaration whose side depends on reading direction names the inline start or end, so horizontal left-to-right rendering is unchanged and right-to-left mirrors it'
 acceptance:
   - id: A1
     given: 'Toast, Switch, Dialog, Sheet, Alert, AlertNotice, Progress, Walkthrough, vertical Tabs, Accordion and Select sidecars'
