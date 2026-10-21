@@ -42,9 +42,14 @@ acceptance:
     when: 'ArrowLeft or ArrowRight is pressed on the focused tab'
     then: 'ArrowLeft moves to the next tab and ArrowRight to the previous, left-to-right and vertical lists are unchanged, and the unit tests fail under the physical mapping'
   - id: A2
-    given: 'the Tabs preview in Chromium for each of the five web frameworks with dir=rtl on the document element'
-    when: 'the first tab is focused and ArrowLeft is pressed'
-    then: 'the second tab becomes selected, including inside the Lit shadow root'
+    given: >-
+      two-tab lists without loop for React, Vue, Svelte and Lit, mounted in Chromium
+      inside a dir=rtl region
+    when: 'the first tab is focused and ArrowLeft is pressed, then ArrowRight'
+    then: >-
+      ArrowLeft selects the second tab and ArrowRight the first again, including
+      inside the Lit shadow root; Angular is proven in jsdom only, because its
+      browser preview needs the JIT pipeline
   - id: A3
     given: 'the date-grid core and the Tabs lists'
     when: 'the web targets and React Native are generated'
