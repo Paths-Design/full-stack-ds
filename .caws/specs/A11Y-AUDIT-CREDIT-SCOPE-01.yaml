@@ -2,7 +2,6 @@ id: A11Y-AUDIT-CREDIT-SCOPE-01
 title: 'A11y audit credits a keyboard primitive only for the key it compares and only when invoked'
 mode: fix
 lifecycle_state: active
-worktree: a11y-credit-scope
 created_at: '2026-10-21T12:23:13.507Z'
 updated_at: '2026-10-21T12:23:27.134Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
