@@ -566,6 +566,19 @@ check(
   "realized",
 );
 check(
+  "a dismissal whose onDismiss only returns closes nothing",
+  [
+    classify(escapeKey, "web-dom", "useDismissal({ open: () => true, onDismiss: () => { return; } });", new Set()).verdict,
+    classify(escapeKey, "web-dom", "useDismissal({ open: () => true, onDismiss: () => { return undefined; } });", new Set()).verdict,
+  ],
+  ["unrealized", "unrealized"],
+);
+check(
+  "a named onDismiss is credited without reading the function it names (the audit resolves no identifiers)",
+  classify(escapeKey, "web-dom", "const ignore = () => {};\nuseDismissal({ open: () => true, onDismiss: ignore });", new Set()).verdict,
+  "realized",
+);
+check(
   "an onDismiss outside the dismissal call does not lend it a live callback",
   classify(escapeKey, "web-dom", "const menu = { onDismiss: close };\nuseDismissal({\n  open: () => true,\n  onDismiss: () => void 0,\n});", new Set()).verdict,
   "unrealized",
@@ -662,6 +675,15 @@ check(
   ].map((src) => classify(scoped("Enter", "tab"), "web-dom", src, new Set()).verdict),
   ["realized", "realized", "unrealized", "unrealized"],
 );
+check(
+  "an InteractionHost that adopts its child as the host is not known to be native; a forwarded asChild keeps the default button",
+  [
+    "export function ScopedTab() {\n  return <InteractionHost asChild><div /></InteractionHost>;\n}",
+    "export function ScopedTab() {\n  return <InteractionHost asChild={true}><div /></InteractionHost>;\n}",
+    "export function ScopedTab() {\n  return <InteractionHost {...hostProps} asChild={asChild} role=\"tab\">{children}</InteractionHost>;\n}",
+  ].map((src) => classify(scoped("Enter", "tab"), "web-dom", src, new Set()).verdict),
+  ["unrealized", "unrealized", "realized"],
+);
 const tabHost = 'export class ScopedTabElement extends LitElement {\n  updated() {\n    this.setAttribute("tabindex", this.active ? "0" : "-1");\n  }\n}';
 check(
   "Tab moves on natively from a focusable custom-element host; Enter needs a native element or a handler",
@@ -670,6 +692,16 @@ check(
     classify(scoped("Enter", "tab"), "web-dom", tabHost, new Set()).verdict,
   ],
   ["realized", "unrealized"],
+);
+check(
+  "a carrier is focusable only where it writes a tabindex, not where the word appears",
+  [
+    "export class ScopedTabElement extends LitElement {\n  /* tabindex */\n}",
+    "export class ScopedTabElement extends LitElement {\n  render() { const tabindex = 0; return html`<span></span>`; }\n}",
+    '<div class="scoped__list" role="tablist" tabindex="-1">',
+    "export class ScopedTabElement extends LitElement {\n  updated() { this.tabIndex = this.active ? 0 : -1; }\n}",
+  ].map((src) => classify(scoped("Tab", "list", ["list", "tab"]), "web-dom", src, new Set()).verdict),
+  ["unrealized", "unrealized", "realized", "realized"],
 );
 check(
   "an unscoped binding keeps native credit from a native element in the emitted source",

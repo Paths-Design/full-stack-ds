@@ -546,7 +546,7 @@ const DISMISSAL_CALL_RE = /\b(?:useDismissal|createDismissal)\s*\(|\bnew\s+Dismi
 /** onDismiss shapes that do nothing — the lowering for a component with no
  * disclosure channel to close, where Escape is heard and ignored. Compared
  * after whitespace is collapsed. */
-const NO_OP_CALLBACK_RE = /^\(\)\s*=>\s*(?:void 0|undefined|\{\s*(?:void 0;?)?\s*\})$/;
+const NO_OP_CALLBACK_RE = /^\(\)\s*=>\s*(?:void 0|undefined|\{\s*(?:void 0;?|return(?:\s+undefined)?;?)?\s*\})$/;
 
 /** Source with block, line and markup comments removed. A `//` after a colon
  * (a URL) is kept. */
@@ -1139,12 +1139,26 @@ function partCarriers(srcBundle, obligation, part, { target = false } = {}) {
 }
 
 /** The element an opening tag renders. The InteractionHost primitive renders
- * its literal `as` element (default button); a computed `as` is unknown. */
+ * its literal `as` element (default button) on its default path; a computed
+ * `as`, or a literal asChild that adopts the child as the host, is unknown. A
+ * forwarded `asChild={asChild}` keeps the default path, and what a consumer
+ * passes is outside the generated source. */
 function renderedTagName(tag) {
   const name = /^<([A-Za-z][\w-]*)/.exec(tag)?.[1];
   if (name !== "InteractionHost") return name?.toLowerCase();
+  if (/\sasChild(?=[\s/>])|\sasChild=\{\s*true\s*\}/.test(tag)) return undefined;
   if (!/\sas=/.test(tag)) return "button";
   return /\sas=["']([a-z]+)["']/.exec(tag)?.[1];
+}
+
+/** A carrier writes a tabindex, so its element is focusable: an opening-tag
+ * attribute in any framework's spelling (`tabindex=`, `tabIndex={}`,
+ * `:tabindex=`, `[attr.tabindex]=`) or a programmatic write. Comments and
+ * other mentions of the word do not count. */
+function writesTabindex(carrier) {
+  const code = withoutComments(carrier);
+  if (/setAttribute\(\s*["']tabindex["']\s*,|\.tabIndex\s*=(?!=)/.test(code)) return true;
+  return openingTags(code).some((tag) => /\s(?::|\[(?:attr\.)?)?tab[iI]ndex\]?=/.test(tag));
 }
 
 /** What the emitted source renders on carriers of the obligation's part and
@@ -1156,7 +1170,7 @@ function emittedPartFacts(srcBundle, obligation) {
   let focusable = false;
   for (const part of obligation.subtreeParts ?? [obligation.part]) {
     for (const carrier of partCarriers(srcBundle, obligation, part)) {
-      if (/\btab[iI]ndex\b/.test(carrier)) focusable = true;
+      if (writesTabindex(carrier)) focusable = true;
       for (const tag of openingTags(carrier)) {
         const name = renderedTagName(tag);
         if (name && NATIVE_INTERACTIVE_TAGS.has(name)) nativeTags.add(name);
