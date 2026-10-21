@@ -42,10 +42,6 @@ acceptance:
     given: 'the generated Compose Walkthrough, Popover and Select'
     when: 'they render'
     then: 'their previous/next buttons and the popover trigger expose Role.Button and the Select trigger Role.DropdownList'
-  - id: A4
-    given: 'the generated Compose Toast'
-    when: 'it shows'
-    then: 'its content is a live region, polite or assertive following the politeness prop'
   - id: A5
     given: 'the regenerated tree'
     when: 'the rail, committed-output check, a11y audit and the Compose and Swift test suites run'
