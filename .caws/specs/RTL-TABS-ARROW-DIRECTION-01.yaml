@@ -88,3 +88,11 @@ evidence:
     command: "FSDS_E2E_PORT=<warm dev server port> pnpm exec playwright test e2e/rtl-direction.spec.ts"
     exit_code: 0
     commit_sha: "1dae1ebf4"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At 1dae1ebf4 direction.test.ts pins isRtl (no dir, nearest dir wins, crossing a shadow root, no DOM ancestry) and asserts the six package copies (react, vue, svelte, angular, lit, react-native) equal the source byte for byte; date-grid.ts imports isRtl from ../direction/direction.js and the date-grid right-to-left tests pass (58 tests across the three files)."
+    recorded_at: "2026-10-21T11:12:01.702Z"
+    test_nodeid: packages/ds-codegen/src/direction/direction.test.ts
+    command: pnpm exec vitest run packages/ds-codegen/src/direction packages/ds-codegen/src/date
+    exit_code: 0
+    commit_sha: "1dae1ebf4"
