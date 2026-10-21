@@ -64,3 +64,10 @@ evidence:
     command: node scripts/a11y-realization-audit/selfcheck.mjs
     exit_code: 0
     commit_sha: b266093f4
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At b266093f4 selfcheck pins: an imported dismissal that never runs, a focus trap named only in an import or a call-shaped line comment, and an anchor toggle in a call-shaped block comment carry nothing; a dismissal with onDismiss () => void 0, () => { void 0; }, an empty body across lines, () => { return; } or () => { return undefined; } carries no Escape; an onDismiss outside the dismissal call lends nothing; a multi-line live body carries Escape. Corpus effect: Walkthrough Escape on Vue, Svelte, Lit and Angular (dismissal with a no-op onDismiss) is unrealized and ledgered under WALKTHROUGH-ESCAPE-DISMISS-01. Not claimed: a named onDismiss is credited without resolving it (pinned as a limit); call-shaped text inside a string literal still credits."
+    recorded_at: "2026-10-21T13:38:13.301Z"
+    command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
+    exit_code: 0
+    commit_sha: b266093f4
