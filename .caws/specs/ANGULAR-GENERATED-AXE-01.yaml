@@ -66,3 +66,11 @@ evidence:
     command: "pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs --coverage=false"
     exit_code: 0
     commit_sha: "72b41433eae0891606b2a5315f3c80b984e155dc"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At 72b41433e the snapshot A11y-realization row names Angular axe-core coverage, cites angular/tests.ts and surface-tests.ts, and states the limits: surface scans in the other four frameworks miss portalled content, compound roots need composed scans (Tabs in React, Vue, Angular; Accordion in Angular), and the other four Walkthrough fixtures render no anchor. The a11y matrix sentence that web roles are checked by the generated axe tests now holds for Angular and needed no edit. docs:check-claims passes."
+    recorded_at: "2026-10-21T09:52:14.201Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: docs/current-implementation-snapshot.md
+    commit_sha: "72b41433eae0891606b2a5315f3c80b984e155dc"
