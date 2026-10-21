@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { ProgressComponent } from "../Progress.component";
 // @generated:end
 
@@ -72,6 +74,32 @@ describe("Progress — unit", () => {
     const fixture = TestBed.createComponent(ProgressComponent);
     fixture.componentInstance.intent = "danger";
     expect(classTokens(fixture.componentInstance)).toContain("progress--danger");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [ProgressComponent],
+  template: "<fsds-progress [label]=\"label\"><span>content</span></fsds-progress>",
+})
+class ProgressAxeHost {
+  readonly label = "Test Progress";
+}
+
+describe("Progress — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [ProgressAxeHost] });
+    const fixture = TestBed.createComponent(ProgressAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".progress");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

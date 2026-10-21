@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach, jest } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { SelectComponent } from "../Select.component";
 // @generated:end
 
@@ -80,6 +82,33 @@ describe("Select — Escape dismissal", () => {
     fixture.detectChanges();
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     expect(onOpenChangeSpy).toHaveBeenCalledWith(false);
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [SelectComponent],
+  template: "<fsds-select [open]=\"open\" [triggerLabel]=\"triggerLabel\"></fsds-select>",
+})
+class SelectAxeHost {
+  readonly open = true;
+  readonly triggerLabel = "Test Select";
+}
+
+describe("Select — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [SelectAxeHost] });
+    const fixture = TestBed.createComponent(SelectAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".select");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 
