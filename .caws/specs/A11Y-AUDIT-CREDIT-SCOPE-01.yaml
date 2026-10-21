@@ -1,0 +1,45 @@
+id: A11Y-AUDIT-CREDIT-SCOPE-01
+title: 'A11y audit credits a keyboard primitive only for the key it compares and only when invoked'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-21T12:23:13.507Z'
+updated_at: '2026-10-21T12:23:13.507Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'scripts/a11y-realization-audit'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/a11y-realization-audit/audit.mjs'
+    - 'scripts/a11y-realization-audit/selfcheck.mjs'
+    - 'scripts/a11y-realization-audit/known-gaps.json'
+    - 'docs/internal/a11y-realization-audit/a11y-matrix.json'
+    - 'docs/internal/a11y-realization-audit/a11y-matrix.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A keyboard obligation is credited to a focus-trap or dismissal primitive only for a key that primitive compares: Tab for the trap, Escape for dismissal'
+  - 'A newly detected unrealized obligation is ledgered under a named owner, never suppressed by loosening a check'
+acceptance:
+  - id: A1
+    given: 'a Tab obligation in a component whose source uses only a dismissal primitive, or an Escape obligation whose source uses only a focus trap'
+    when: 'the audit classifies it'
+    then: 'it is unrealized, and selfcheck pins both directions'
+  - id: A2
+    given: 'a component source that imports a focus-trap or dismissal primitive without invoking it (no call, instantiation, directive or action binding)'
+    when: 'the audit classifies the key that primitive carries'
+    then: 'it is unrealized, and selfcheck pins the import-only case'
+  - id: A3
+    given: 'a keyboard entry whose when field names an anatomy part'
+    when: 'native-element credit is considered'
+    then: 'credit requires that part to render a native interactive element, and entries without a part keep component-wide native credit as a documented limit'
+  - id: A4
+    given: 'the corpus after the change'
+    when: 'the audit, selfcheck, rail and suites run'
+    then: 'every newly unrealized obligation is ledgered with an owner and reason, no ledger entry is stale, the snapshot ledger row states the new credit rules, and all pass'
+rollback:
+  - 'Revert the merge commit; the ledger rows added by it revert with the audit'
+non_functional: {}
+contracts: []
