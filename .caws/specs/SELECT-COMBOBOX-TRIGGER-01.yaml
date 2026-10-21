@@ -63,3 +63,12 @@ contracts:
   - name: 'select-combobox'
     type: behavior
     path: 'packages/ds-contracts/components/Select/Select.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 33f7ae210 the Select contract puts role=combobox and aria-haspopup=listbox on the trigger button and the trigger-to-content aria-controls relationship is the only one; the wrapper declares no role or state. Regenerated output in React, Vue, Svelte, Angular and Lit carries combobox, aria-haspopup, aria-expanded and aria-controls on the trigger only; governed:rail and committed-tree-check generated exit 0. The aria-controls gate follows the open channel in all five (relationship-lowering test pins the IR gate and the Vue, Svelte and Lit lowerings; React and Angular read the effective value by construction)."
+    recorded_at: "2026-10-21T07:11:06.074Z"
+    test_nodeid: packages/ds-codegen/src/relationship-lowering.test.ts
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm exec vitest run packages/ds-codegen/src/relationship-lowering.test.ts"
+    exit_code: 0
+    commit_sha: "33f7ae21000b94cee8d9ed1031a3334bbd677842"
