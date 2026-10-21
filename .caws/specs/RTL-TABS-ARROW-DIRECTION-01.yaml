@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: rtl-tabs-direction
 created_at: '2026-10-21T09:56:04.722Z'
-updated_at: '2026-10-21T09:56:21.396Z'
+updated_at: '2026-10-21T10:16:47.005Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -30,6 +30,8 @@ scope:
     - 'packages/ds-react-native/src/primitives'
     - 'e2e/runtime-rail.spec.ts'
     - 'docs/architecture/date-grid.md'
+    - e2e/fixtures/rtl-tabs.tsx
+    - e2e/rtl-direction.spec.ts
   out: []
 invariants:
   - 'In a horizontal tab list, the arrow key that points toward the inline end moves to the next tab, whatever the inline direction'
