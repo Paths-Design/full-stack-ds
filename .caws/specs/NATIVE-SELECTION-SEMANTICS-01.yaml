@@ -1,0 +1,58 @@
+id: NATIVE-SELECTION-SEMANTICS-01
+title: 'Native targets expose selection, roles and live regions instead of English state text'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-21T07:16:16.343Z'
+updated_at: '2026-10-21T07:16:16.343Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose'
+    - 'packages/ds-codegen/src/frameworks/swift'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/surface-emit.ts'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.test.ts'
+    - 'packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/components'
+    - 'packages/ds-jetpack-compose/library/src/test/kotlin/com/fullstackds/components'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Components'
+    - 'packages/ds-swiftui/Tests'
+    - 'packages/ds-swiftui/README.md'
+    - 'scripts/a11y-realization-audit/known-gaps.json'
+  out: []
+invariants:
+  - 'Native selection state is exposed through the platform''s selected semantics, which the platform localizes, not through component-authored English words'
+  - 'A trait computed from a channel reads the current value, never a stale binding'
+acceptance:
+  - id: A1
+    given: 'the generated Compose Tabs'
+    when: 'a tab renders'
+    then: 'it is a selectable node with Role.Tab whose selected state follows the active tab, and no English stateDescription is emitted for tabs'
+  - id: A2
+    given: 'the generated SwiftUI Tabs and Select'
+    when: 'they render'
+    then: 'the active tab and the selected option carry the isSelected accessibility trait, read from the current channel value'
+  - id: A3
+    given: 'the generated Compose Walkthrough, Popover and Select'
+    when: 'they render'
+    then: 'their previous/next buttons and the popover trigger expose Role.Button and the Select trigger Role.DropdownList'
+  - id: A4
+    given: 'the generated Compose Toast'
+    when: 'it shows'
+    then: 'its content is a live region, polite or assertive following the politeness prop'
+  - id: A5
+    given: 'the regenerated tree'
+    when: 'the rail, committed-output check, a11y audit and the Compose and Swift test suites run'
+    then: 'all pass'
+rollback:
+  - 'Revert the merge commit and regenerate the native targets'
+non_functional: {}
+contracts:
+  - name: 'native-selection-semantics'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
