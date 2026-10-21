@@ -76,3 +76,11 @@ evidence:
     command: pnpm exec vitest run packages/ds-react/src/primitives/hooks/__tests__/calendar.test.tsx
     exit_code: 0
     commit_sha: "279dbf7d82e8e4ce4c954c0b1f38b0388c7ba293"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "docs/architecture/date-grid.md states the root is a group, why an application role is wrong around a grid, and how the label props name it; it is stamped 715c19510 and pnpm run docs:check-claims exits 0 at 279dbf7d8 with it fresh."
+    recorded_at: "2026-10-21T06:07:41.058Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: docs/architecture/date-grid.md
+    commit_sha: "279dbf7d82e8e4ce4c954c0b1f38b0388c7ba293"
