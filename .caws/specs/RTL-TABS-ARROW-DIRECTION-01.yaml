@@ -72,3 +72,11 @@ contracts:
   - name: 'tabs-inline-direction'
     type: behavior
     path: 'packages/ds-codegen/src/direction/direction.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 1dae1ebf4 each framework's Tabs tests include a right-to-left case (ArrowLeft selects the next tab, ArrowRight the previous) and a three-tab manual-activation case (two ArrowLefts from A move focus to C while A stays selected, ArrowRight returns to B); existing left-to-right and vertical cases still pass (React 32, Vue 32, Svelte 31, Lit 31, Angular 51). With the Tabs files swapped to e23936fac the five right-to-left cases fail; swapped to 1e5d3117b the five manual cases fail."
+    recorded_at: "2026-10-21T11:11:40.291Z"
+    command: "pnpm exec vitest run packages/ds-react/src/components/Tabs; pnpm --filter @full-stack-ds/{vue,svelte,lit} exec vitest run src/components/Tabs; pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs src/components/Tabs"
+    exit_code: 0
+    commit_sha: "1dae1ebf4"
