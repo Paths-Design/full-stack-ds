@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: select-combobox-trigger
 created_at: '2026-10-21T06:11:24.166Z'
-updated_at: '2026-10-21T06:56:59.401Z'
+updated_at: '2026-10-21T07:02:08.242Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -29,6 +29,15 @@ scope:
     - packages/ds-codegen/src/frameworks/react-native/accessibility-role.test.ts
     - src/views/AnalyticalFixturesScratchView.tsx
     - src/views/AnalyticalFixturesScratchView.smoke.test.tsx
+    - packages/ds-codegen/src/ir.ts
+    - packages/ds-codegen/src/id-relationships.ts
+    - packages/ds-codegen/src/frameworks/vue/component-source.ts
+    - packages/ds-codegen/src/frameworks/svelte/component-source.ts
+    - packages/ds-codegen/src/frameworks/lit/component-source.ts
+    - packages/ds-vue/src/components/Details
+    - packages/ds-svelte/src/components/Details
+    - packages/ds-lit/src/components/Details
+    - packages/ds-codegen/src/id-relationships.test.ts
   out: []
 invariants:
   - 'Exactly one element of a Select exposes the combobox role, and it is the element that takes focus'
