@@ -892,7 +892,7 @@ describe("anchored surfaces (FEAT-COMPOSE-ANCHORED-SURFACES-01)", () => {
     expect(componentFile).toContain("enum class PopoverPlacement {");
     expect(componentFile).toContain("trigger: @Composable () -> Unit,");
     expect(componentFile).toContain(".onGloballyPositioned { coords ->");
-    expect(componentFile).toContain(".clickable { setOpen(!resolvedOpen) }");
+    expect(componentFile).toContain(".clickable(role = Role.Button) { setOpen(!resolvedOpen) }");
     expect(componentFile).toContain("Popup(");
     expect(componentFile).toContain("offset = IntOffset(offsetX(placement, anchorWidth), offsetY(placement, anchorHeight)),");
     expect(componentFile).toContain('layeredSlot("popover.color.border")');
