@@ -36,3 +36,12 @@ contracts:
   - name: 'select-trigger-role'
     type: contract-test
     path: 'src/components/shared-controls.test.tsx'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At a55a3bbf9 the shared-controls test finds the Select trigger with getByRole combobox named Color and passes (full root suite 348 files, 5098 tests, 0 failures). Before the edit it failed on main with Unable to find role button named Color; with role=combobox removed from the generated React Select it fails with Unable to find role combobox named Color."
+    recorded_at: "2026-10-21T08:42:49.489Z"
+    test_nodeid: src/components/shared-controls.test.tsx
+    command: pnpm test
+    exit_code: 0
+    commit_sha: a55a3bbf9031d5fb0960418c0cb8d27e0005d828
