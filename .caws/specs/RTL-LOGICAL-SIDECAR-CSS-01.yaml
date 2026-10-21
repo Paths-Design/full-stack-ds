@@ -42,7 +42,11 @@ acceptance:
   - id: A1
     given: 'Toast, Switch, Dialog, Sheet, Alert, AlertNotice, Progress, Walkthrough, vertical Tabs, Accordion and Select sidecars'
     when: 'they are generated'
-    then: 'their direction-dependent declarations use inline-start or inline-end properties (or a dir=rtl mirror for the Switch track), and left-to-right generated CSS computes the same values as before'
+    then: >-
+      each direction-dependent declaration names the inline start or end with the
+      value of the physical property it replaces (or, for the Switch track, adds a
+      web-only dir=rtl mirror), so in horizontal left-to-right writing it resolves
+      to the same physical side as before; vertical writing modes are not claimed
   - id: A2
     given: 'the Toast, checked Switch, open Dialog and dismissible Alert previews in Chromium for each of the five web frameworks with dir=rtl on the document element'
     when: 'they render'
