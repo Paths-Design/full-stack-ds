@@ -48,9 +48,15 @@ acceptance:
       web-only dir=rtl mirror), so in horizontal left-to-right writing it resolves
       to the same physical side as before; vertical writing modes are not claimed
   - id: A2
-    given: 'the Toast, checked Switch, open Dialog and dismissible Alert previews in Chromium for each of the five web frameworks with dir=rtl on the document element'
-    when: 'they render'
-    then: 'the toast sits against the left viewport edge, the checked thumb sits left of the track centre, the dialog close button sits left of the modal centre and the alert dismiss sits at its left end, and the same probes under dir=ltr place them on the right'
+    given: >-
+      the Toast, checked Switch, open Dialog and dismissible Alert previews in
+      Chromium for each of the five web frameworks
+    when: 'each is measured under dir=ltr and then under dir=rtl on the document element'
+    then: >-
+      the toast sits on the right viewport edge in ltr and the left edge in rtl, and
+      the thumb, dialog close button and alert dismiss sit within a small gap of the
+      inline end in ltr and at that same gap, within 1px, from the opposite edge in
+      rtl
   - id: A3
     given: 'the regenerated tree'
     when: 'the rail, committed-output check, styling audits and every framework suite run'
