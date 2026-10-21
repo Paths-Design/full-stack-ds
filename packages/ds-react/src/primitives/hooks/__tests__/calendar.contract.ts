@@ -18,6 +18,8 @@ export interface CalendarTestProps {
   maxDate?: Date;
   disabled?: boolean;
   caption?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
   onChange?: (value: Date | Date[] | null) => void;
   onMonthChange?: (month: Date) => void;
 }
@@ -112,6 +114,15 @@ export function calendarContract(framework: string, harness: CalendarHarness, ru
         expect(root.contains(control)).toBe(true);
         expect(grid.contains(control)).toBe(false);
       }
+    });
+
+    it("names the group from the ariaLabel and ariaLabelledby props, and leaves it unnamed without them", async () => {
+      const unnamed = await harness.mount({ defaultMonth: MARCH });
+      expect([unnamed.root.getAttribute("aria-label"), unnamed.root.getAttribute("aria-labelledby")]).toEqual([null, null]);
+      const labelled = await harness.mount({ defaultMonth: MARCH, ariaLabel: "Check-in date" });
+      expect([labelled.root.getAttribute("role"), labelled.root.getAttribute("aria-label")]).toEqual(["group", "Check-in date"]);
+      const referenced = await harness.mount({ defaultMonth: MARCH, ariaLabelledby: "check-in-label" });
+      expect(referenced.root.getAttribute("aria-labelledby")).toBe("check-in-label");
     });
 
     it("Enter and Space on the focused day select it, and the keys' defaults are taken", async () => {

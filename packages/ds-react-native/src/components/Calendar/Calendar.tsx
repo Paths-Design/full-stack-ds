@@ -15,6 +15,8 @@ export type CalendarMode = "single" | "range";
 // @generated:start props
 export interface CalendarProps {
   caption?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
   month?: Date;
   defaultMonth?: Date;
   onMonthChange?: (month: Date) => void;
@@ -40,6 +42,8 @@ const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next mon
 
 export function Calendar({
   caption,
+  ariaLabel,
+  ariaLabelledby,
   month: controlledMonth,
   value: controlledValue,
   mode = "single",
@@ -78,8 +82,8 @@ export function Calendar({
     <View
       testID={testID}
       style={[styles.root, style]}
-      accessibilityLabel={accessibilityLabel}
-      accessibilityLabelledBy={accessibilityLabelledBy}
+      accessibilityLabel={accessibilityLabel ?? ariaLabel}
+      accessibilityLabelledBy={accessibilityLabelledBy ?? ariaLabelledby}
     >
       <View
         style={styles.header}

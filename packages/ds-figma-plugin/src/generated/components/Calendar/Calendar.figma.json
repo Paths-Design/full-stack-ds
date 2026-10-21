@@ -76,6 +76,24 @@
       "nodeKind": null
     },
     {
+      "name": "ariaLabel",
+      "safeName": "ariaLabel",
+      "type": "string",
+      "required": false,
+      "description": "Accessible name of the calendar group, such as the field it fills (\"Check-in date\").",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "ariaLabelledby",
+      "safeName": "ariaLabelledby",
+      "type": "string",
+      "required": false,
+      "description": "Id of the element that names the calendar group.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
       "name": "month",
       "safeName": "month",
       "type": "Date",

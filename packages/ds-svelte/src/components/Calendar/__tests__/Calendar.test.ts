@@ -50,7 +50,7 @@ describe("Calendar — unit", () => {
 
 describe("Calendar — accessibility", () => {
   it("has no unexpected axe violations with default props", async () => {
-    const { container } = render(Calendar as unknown as Component<Record<string, unknown>>, { props: { "aria-label": "Test Calendar" } });
+    const { container } = render(Calendar as unknown as Component<Record<string, unknown>>, { props: { "ariaLabel": "Test Calendar" } });
     const results = await axe(container, componentAxeOptions);
     expect(results.violations.map((v) => v.id)).toEqual([]);
   });
