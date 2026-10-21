@@ -1,10 +1,11 @@
 id: GOVERNED-CI-DRIFT-ROOTS-01
 title: 'Committed-output check covers every generated root; pre-push verifies the pushed commit'
 mode: fix
-lifecycle_state: active
-worktree: governed-ci-drift-roots
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'One committed-tree check covers all generated output in CI and pre-push; pre-push refuses a tree that differs from any pushed tip; rail docs restamped with rerunnable citations'
 created_at: '2026-10-19T17:08:55.725Z'
-updated_at: '2026-10-19T17:10:33.783Z'
+updated_at: '2026-10-21T05:58:34.985Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -62,3 +63,44 @@ contracts:
   - name: 'committed-tree-check'
     type: behavior
     path: 'scripts/committed-tree-check.mjs'
+evidence:
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "The real .githooks/pre-push, run in a throwaway repository, refuses before any gate when a pushed ref's tree differs from the checkout, in either ref order, naming the differing path; with every tip matching it passes the tree check (scripts/committed-tree-check.test.mjs, 14/14 at 12734d882). The same suite pins a tracked edit, a staged edit and an untracked non-ignored file as refusals. scripts/prepush-scope.test.mjs pins the check before install, lint, tests and the rail. Runtime: the hook refused at +0s with an untracked file present and when pushing an older commit than the checkout."
+    recorded_at: "2026-10-21T05:52:57.302Z"
+    test_nodeid: "scripts/committed-tree-check.test.mjs::pre-push compares every pushed tip with the working tree, whichever ref comes first"
+    command: "node --test scripts/committed-tree-check.test.mjs && node --test scripts/prepush-scope.test.mjs"
+    exit_code: 0
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 12734d882, pnpm run governed:rail exits 0 and node scripts/committed-tree-check.mjs generated then exits 0 (packages/ matches HEAD). A full step-for-step run of the ci.yml gate job at 76e62ec99 (same contracts and codegen) left no changed or untracked file after any step, so no earlier CI step dirties packages/. scripts/committed-tree-check.test.mjs (14/14) pins failure on a changed byte in a Unity root, a staged edit, an untracked file (and not an ignored one), a deletion, and a path with spaces; three mutants (no untracked listing, index instead of revision, no packages/ bound) each fail it."
+    recorded_at: "2026-10-21T05:53:45.608Z"
+    test_nodeid: "scripts/committed-tree-check.test.mjs::a changed byte in any package fails and names the file, not only the framework src trees"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
+    exit_code: 0
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At 12734d882 the classifier's generated pattern includes ds-figma-plugin, ds-unity and ds-godot. The test derives the package set from packages/ds-codegen/src/registry.ts and asserts each runs RUN_RAIL and RUN_GENERATE_CHECK; with the three packages removed from the pattern it fails naming ds-figma-plugin."
+    recorded_at: "2026-10-21T05:54:40.470Z"
+    test_nodeid: "scripts/prepush-scope.test.mjs::an edit in any package the target registry writes into runs the rail"
+    command: node --test scripts/prepush-scope.test.mjs
+    exit_code: 0
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "At 12734d882 pnpm run docs:check-claims exits 0 with both docs fresh (governed-ci.md stamped 44cead708, admission-rail.md 0d647e9ee) and neither listed in doc-freshness-baseline.json; docs:check-links exits 0. Both docs were audited claim by claim against ci.yml, package.json, the hook and the validation sources; the citation recipes cite command, commit and exit code only, and the completion review's R2 (an unreproducible drift recipe) and R3 (the RN suite runs in the gate) are corrected."
+    recorded_at: "2026-10-21T05:55:14.308Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: doc-freshness-baseline.json
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At 12734d882 the ci.yml gate job, the ci.yml GPUI job and .githooks/pre-push all run node scripts/committed-tree-check.mjs generated, and neither file keeps a git diff --exit-code over a packages/ds-* list. The prepush-scope test asserts both surfaces run the script and its contract test and carry no root list; it caught the leftover GPUI-job list before that was replaced."
+    recorded_at: "2026-10-21T05:56:04.536Z"
+    test_nodeid: "scripts/prepush-scope.test.mjs::CI and pre-push check generated output with the shared script and keep no root list"
+    command: node --test scripts/prepush-scope.test.mjs
+    exit_code: 0
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"

@@ -4,8 +4,8 @@ authority: spec
 status: implemented
 title: Generated artifact admission rail
 owner: "@darianrosebrook"
-updated: 2026-08-17
-verified_at_commit: b1d510f9
+updated: 2026-10-20
+verified_at_commit: 0d647e9ee
 governs:
   - packages/ds-codegen/src/validation/types.ts
   - packages/ds-codegen/src/validation/admission-descriptor.ts
@@ -29,7 +29,7 @@ governs:
 
 > CODEGEN-RAIL-DOCS-ADMISSION-ENTRY-01
 
-The admission rail is the inspection surface that answers "what evidence backs the generated output checked into this repo?" It is invoked locally as `pnpm run governed:rail`, runs in CI on every PR, and produces a machine-readable JSON report (`RailReport`) plus a markdown projection at `tmp/generated-admission-report.md`.
+The admission rail is the inspection surface that answers "what evidence backs the generated output checked into this repo?" It is invoked locally as `pnpm run governed:rail`, runs in CI's gate job on every push and pull request, and produces a machine-readable JSON report (`RailReport`) plus, when components are attributed to a manifest, a gitignored markdown projection at `tmp/generated-admission-report.md`.
 
 This document teaches the rail's claim. The diagnostic codes, the manifest, and the four evidence rungs all exist to make one specific kind of trust inspectable. Reading this doc first lets the rest of the rail surfaces ([`docs/specifications/manifest-schema.md`](./manifest-schema.md), [`docs/specifications/governed-ci.md`](./governed-ci.md)) make sense.
 
@@ -39,13 +39,13 @@ All <!-- rail-admitted-target-count -->6 rail-admitted frameworks emit the whole
 
 Do not hand-carry those magnitudes — they move whenever the corpus or the admitted target set does. Derive them instead:
 
-- **Rail-admitted targets:** `packages/ds-codegen/src/validation/admission-descriptor.ts` is the registry and the sole authority (<!-- rail-admitted-target-count -->6 today: react, vue, svelte, lit, angular, react-native; `figma` is generate-admitted but rail-excluded).
+- **Rail-admitted targets:** `packages/ds-codegen/src/validation/admission-descriptor.ts` is the registry and the sole authority (<!-- rail-admitted-target-count -->6: react, vue, svelte, lit, angular, react-native; `figma` is generate-admitted but rail-excluded).
 - **Corpus size:** the loader, `packages/ds-codegen/src/contracts-fs.ts`, which walks `components/*/<Name>.contract.json`.
 - **Groups and files:** read them off the last emission with
   `jq '{groups: (.groups | length), files: ([.groups[].files[]] | length)}' packages/ds-codegen/.emission-manifest.json`
   (gitignored per-machine state — regenerate with `pnpm run generate -- --target=all` if absent).
 
-Without the rail, that question has no machine-readable answer. A reviewer can run `pnpm test` and see 1000+ passing tests, but they cannot tell whether the generated files match the contracts, whether the emitter has drifted since the artifacts were last regenerated, or whether the manifest the rail cites was written by the same Node/codegen/lockfile state as the verifier is running under.
+Without the rail, that question has no machine-readable answer. A reviewer can run `pnpm test` and see a passing suite, but they cannot tell whether the generated files match the contracts, whether the emitter has drifted since the artifacts were last regenerated, or whether the manifest the rail cites was written by the same Node/codegen/lockfile state as the verifier is running under.
 
 The rail makes those questions answerable mechanically. It does not make the answer trustworthy by assertion — it makes the assertion's evidence inspectable.
 
@@ -59,7 +59,7 @@ The rail composes three records:
 
 1. **The emission manifest** (`packages/ds-codegen/.emission-manifest.json`, gitignored). Written by the codegen CLI at the end of every successful `generate` run. Records what the producer claims it emitted, the contract bytes that drove each group, the bounded emitter source set per framework, and the generate-time environment fingerprint. Schema is versioned; see [`docs/specifications/manifest-schema.md`](./manifest-schema.md) for the field-by-field reference.
 
-2. **Per-framework admission plans** (`packages/ds-codegen/src/validation/frameworks/*.ts`). Declare, per framework, which checks the rail will run (e.g. `tsc`, `ngc strictTemplates`, `lit-analyzer`, and for react-native a package typecheck plus generated render tests), what they exercise, and which artifact paths each check's command-line scope binds to. Each plan is wrapped by an `AdmissionDescriptor` in its own module and aggregated by `validation/admission-descriptor.ts`, which is the single place the rail's target set, generated-tree roots, source extensions, and report ordering are declared — five formerly-parallel literals now derive from it. Since CODEGEN-EMIT-LINT-HYGIENE-01 every rail-admitted plan also runs a `lint` check (`pnpm exec eslint packages/<pkg>/src --max-warnings=0` against the root flat config, generated `__tests__` included): the rail now also refuses emitted bytes the framework-agnostic linter rejects — unused imports, dead guards, type-only imports — with two declared policy boundaries (Lit's `no-this-alias`, see the lit plan's `knownGaps`) and two declared coverage gaps (`.vue`/`.svelte` SFCs need per-target eslint toolchains; see the vue and svelte plans' `knownGaps`).
+2. **Per-framework admission plans** (`packages/ds-codegen/src/validation/frameworks/*.ts`). Declare, per framework, which checks the rail will run (e.g. `tsc`, `ngc strictTemplates`, `lit-analyzer`, and for react-native a package typecheck plus the package test script), what they exercise, and which artifact paths each check's command-line scope binds to. Each plan is wrapped by an `AdmissionDescriptor` in its own module and aggregated by `validation/admission-descriptor.ts`, which declares the rail's target set, generated-tree roots, source extensions, and scoped-projection ordering; the markdown report's framework column order is a separate literal in `validation/markdown-report.ts`. Every rail-admitted plan also runs a `lint` check (`pnpm exec eslint packages/<pkg>/src --max-warnings=0` against the root flat config, generated `__tests__` included), so the rail refuses emitted bytes the framework-agnostic linter rejects — unused imports, dead guards, type-only imports — with two declared policy boundaries (Lit's `no-this-alias`, see the lit plan's `knownGaps`) and two declared coverage gaps (`.vue`/`.svelte` SFCs need per-target eslint toolchains; see the vue and svelte plans' `knownGaps`).
 
 3. **Required-mode verifier** (`packages/ds-codegen/src/validation/required-mode.ts`). Joins the manifest against the on-disk state and emits typed `RailDiagnostic` records when integrity claims do not hold. Each diagnostic has a stable code (e.g. `RAIL_REQUIRE_MANIFEST_HASH_MISMATCH`), an operator-facing message naming the specific failure, and a list of affected paths where applicable.
 
@@ -67,7 +67,7 @@ The producer and the verifier are decoupled: the producer never sees the verifie
 
 ## What the rail is not
 
-These are global non-claims. They apply across all four current evidence rungs. If a reader does not encounter them before the ladder, the rail will be over-read as a reproducibility system, and its statements will be misinterpreted accordingly.
+These are global non-claims. They apply across all four evidence rungs. If a reader does not encounter them before the ladder, the rail will be over-read as a reproducibility system, and its statements will be misinterpreted accordingly.
 
 - **The rail does not prove deterministic regeneration.** Identical inputs running through identical emitter source under an identical environment may still produce non-identical output if the emitter has nondeterministic ordering, the formatter has time-of-day behavior, or the underlying runtime resolves modules differently. The rail records what produced the manifest; it does not assert that re-running with the same inputs would produce byte-identical output.
 
@@ -79,7 +79,7 @@ These are global non-claims. They apply across all four current evidence rungs. 
 
 - **Changed-artifact scope is a reporting projection, not a reduced admission mode.** When `--scope-to-git-range` is passed, the rail STILL admits the full workspace; the projection narrows what the markdown report highlights. A passing scoped report does not mean a smaller set of artifacts was checked. Operators who want to "make CI faster by scoping" are pointed at the wrong tool.
 
-- **"The admission rail" is not everything CI proves about generated code.** Two non-pnpm *native compile lanes* (Kotlin via `kotlinc`, Swift via `swiftc`) run as their own CI jobs — `native-compile-rail` and `native-compile-rail-swift` — driven by `packages/ds-codegen/src/validation/native-compile-lane.ts`. They are `RailTargetId`s, not `FrameworkId`s: they admit no component, are absent from the manifest, and sit outside the evidence ladder below. They exist to prove the rail can bind a compiler family that has no `tsc`/`vitest`, and they compile hand-authored example consumers rather than generated component trees. Do not read a green native lane as byte-provenance for emitted `.kt`/`.swift`.
+- **"The admission rail" is not everything CI proves about generated code.** Two non-pnpm *native compile lanes* (Kotlin via `kotlinc`, Swift via `swiftc`) run as their own CI jobs — `native-compile-rail` and `native-compile-rail-swift` — driven by `packages/ds-codegen/src/validation/native-compile-lane.ts`. They are `RailTargetId`s, not `FrameworkId`s: they admit no component, are absent from the manifest, and sit outside the evidence ladder below. They exist to prove the rail can bind a compiler family that has no `tsc`/`vitest`: the lane compiles the language-construct fixtures in `packages/ds-compose-smoke` and `packages/ds-swift-smoke` (valid sources must compile, invalid ones must fail). The same CI jobs then compile the hand-authored settings examples (`examples/settings/compose`, `examples/settings/swift`), which consume the committed generated `ds-jetpack-compose` and `ds-swiftui` packages, and run those packages' token runtime tests. That proves the generated native packages compile as dependencies; it is not byte-provenance for emitted `.kt`/`.swift`, which the manifest does not attribute. The macOS GPUI job likewise regenerates the GPUI target, runs the committed-output check, and compiles a gallery with the GPUI engine tests, outside the evidence ladder.
 
 The rung-specific non-claims (e.g. "contract provenance does not prove emitter determinism," "emitter provenance does not prove the source set is complete by construction") live alongside their respective schema versions in [`docs/specifications/manifest-schema.md`](./manifest-schema.md). They are not repeated here so this document stays the conceptual entry surface rather than a reference manual.
 
@@ -91,13 +91,13 @@ The rail's claims compose as a ladder. Each rung adds one bounded class of attri
 
 Every emitted file is recorded in the manifest with its post-write sha256 digest. The verifier rejects drift between the manifest and the on-disk bytes via `RAIL_REQUIRE_MANIFEST_HASH_MISMATCH` (file content drifted), `RAIL_REQUIRE_MANIFEST_MISSING_PATHS` (file deleted), and `RAIL_REQUIRE_MANIFEST_UNTRACKED_GENERATED_PATHS` (file on disk under a generated tree but not in the manifest — typically a partial-target regenerate).
 
-Per-artifact-group `ArtifactAdmissionEntry` records bind each manifest group to the framework checks whose command-line scope includes it. Each entry carries the check name, its run status, and its coverage label (workspace / package / direct-template). A closure note can say "the lit-analyzer pass covered Button.ts with direct-template scope; the React tsc pass covered Button.tsx with package scope" without overclaiming per-file proof.
+Per-artifact-group `ArtifactAdmissionEntry` records bind each manifest group to the framework checks whose command-line scope includes it. Each entry carries the check name, its run status, and its coverage label (workspace / package / direct-template). A review can say "the lit-analyzer pass covered Button.ts with direct-template scope; the React tsc pass covered Button.tsx with package scope" without overclaiming per-file proof.
 
 ### 2. Contract provenance (CODEGEN-RAIL-CONTRACT-PROVENANCE-01)
 
 Every manifest group records the contract file that produced it (`{ path, sha256 }`). The verifier rejects drift via `RAIL_REQUIRE_MANIFEST_CONTRACT_HASH_MISMATCH` (contract bytes changed since generation — the generated output may reflect a stale contract revision) and `RAIL_REQUIRE_MANIFEST_CONTRACT_MISSING` (contract deleted).
 
-Contract integrity is checked independently of output integrity. A contract edit without regenerate produces clean output bytes on disk but drifted attribution: `HASH_MISMATCH` does not fire, but `CONTRACT_HASH_MISMATCH` does. Surfacing them separately lets a closure note cite which side of the source→artifact attribution moved.
+Contract integrity is checked independently of output integrity. A contract edit without regenerate produces clean output bytes on disk but drifted attribution: `HASH_MISMATCH` does not fire, but `CONTRACT_HASH_MISMATCH` does. Surfacing them separately lets a review name which side of the source→artifact attribution moved.
 
 ### 3. Emitter source attribution (CODEGEN-RAIL-EMITTER-PROVENANCE-01)
 
@@ -117,11 +117,11 @@ Top-level `environment` records Node major version, codegen package version, and
 
 The lockfile hash cannot tell *which* dep changed; `git diff pnpm-lock.yaml` is the operator's job. The diagnostic's claim is bounded: "the dependency surface that produced this manifest is no longer on disk."
 
-### 5. Future: deterministic replay
+### Outside the ladder: deterministic replay
 
-Not yet implemented. The ladder is intentionally incomplete at this rung. Closing it would require modeling container image / OS / architecture / registry mirror state as additional manifest fields, and a verification posture that compares those against the current environment. None of that exists today.
+The ladder stops at environment attribution. Replay would require modeling container image / OS / architecture / registry mirror state as additional manifest fields, and a verification posture that compares those against the current environment; the rail models none of them.
 
-The current rail's environment rung does NOT subsume this. It records four bounded inputs and rejects drift on those four; it makes no claim about reproducibility under a different OS or container.
+The environment rung does NOT subsume replay. It records three bounded inputs and rejects drift on those three; it makes no claim about reproducibility under a different OS or container.
 
 ## The manifest is not the proof
 
@@ -132,7 +132,7 @@ The manifest is **an attribution record**, not a proof:
 - It says "these emitted bytes came from this contract, generated by this emitter source, under this environment."
 - It does NOT say "these emitted bytes are correct."
 
-The proof comes from the checks the manifest is bound to: tsc, ngc, lit-analyzer, the behavior test suite, vitest-axe. The rail's job is to make sure those checks ran against the bytes the manifest names, not against substituted, stale, or unattributed files.
+The proof comes from the checks the plans bind to the manifest's groups: typecheck, template checks (ngc, lit-analyzer), lint, and for react-native the package test script. Behavior tests and axe checks run in the framework test suites, outside that binding. The rail's job is to make sure the bound checks ran against the bytes the manifest names, not against substituted, stale, or unattributed files.
 
 This split is why the rail can refuse with `RAIL_REQUIRE_MANIFEST_HASH_MISMATCH` even when the checks all passed: the checks may have passed against the right bytes, but the manifest's claim about those bytes is stale, so the rail's *attribution* is no longer honest. Operators are pointed at "regenerate to refresh the manifest," not at "the artifacts are broken."
 
@@ -142,20 +142,20 @@ The rail has two invocation modes with materially different evidence postures.
 
 ### Optional mode
 
-`pnpm run validate:generated` (no flags). Runs each framework's admission plan and emits the rail report. If a manifest exists and matches the rail's expected schema version, it's used to attribute checks to artifact groups (`artifactSelection: "by_manifest"`). If the manifest is missing, schema-mismatched, or unparseable, the rail issues a stderr warning and falls back to unattributed admission (`artifactSelection: "none"`).
+`pnpm run validate:generated` (no flags). Runs each framework's admission plan and emits the rail report. If a manifest exists and matches the rail's expected schema version, it's used to attribute checks to artifact groups (`artifactSelection: "by_manifest"`). If the manifest is schema-mismatched or unparseable, the rail issues a stderr warning and falls back to unattributed admission (`artifactSelection: "none"`); an absent manifest falls back the same way without a warning.
 
 Optional mode is a developer ergonomic. It never fails on attribution problems; it only fails on framework check failures.
 
 ### Required mode
 
-`pnpm run validate:generated --require-artifact-manifest` (the form CI uses, wrapped as `pnpm run governed:rail`). Refuses to pass when:
+`pnpm run validate:generated --require-artifact-manifest`, equivalent to the validator step of `pnpm run governed:rail` (which CI runs, and which invokes `validate-cli.js --require-artifact-manifest` directly). Refuses to pass when:
 
 - The manifest is missing → `RAIL_REQUIRE_MANIFEST_MISSING`.
 - The manifest exists but is unreadable / malformed JSON / structurally broken → `RAIL_REQUIRE_MANIFEST_MALFORMED`.
 - The manifest's schema version is not what this rail consumes → `RAIL_REQUIRE_MANIFEST_SCHEMA_MISMATCH`.
 - Any integrity check across the four evidence rungs fires.
 
-Required mode short-circuits the framework plans entirely on MISSING / MALFORMED / SCHEMA_MISMATCH — running 20 seconds of tsc/ngc/lit-analyzer when the evidence trail is already broken would only add misleading "pass" lines to a report that's going to fail anyway. Other diagnostics (path / hash drift) let plans run, because their output is still meaningful evidence even when content has drifted.
+Required mode short-circuits the framework plans entirely on MISSING / MALFORMED / SCHEMA_MISMATCH — running tsc/ngc/lit-analyzer when the evidence trail is already broken would only add misleading "pass" lines to a report that's going to fail anyway. Other diagnostics (path / hash drift) let plans run, because their output is still meaningful evidence even when content has drifted.
 
 CI must use required mode. Once attribution is available, governed admission must not silently degrade to unattributed workspace admission. The default of the rail script (`pnpm run governed:rail`) enforces this.
 
@@ -170,7 +170,7 @@ CI must use required mode. Once attribution is available, governed admission mus
 
 The rail still admits the full workspace in scoped mode. The overall verdict is independent of the projection. A passing scoped run does not mean a narrower verification was performed.
 
-This is load-bearing because the scoped surface is operationally tempting to misuse as "faster CI." It would corrupt the proof surface if used that way. The projection's job is reviewer focus — letting a closure note cite the PR-relevant subset of evidence — not reduced verification.
+This is load-bearing because the scoped surface is operationally tempting to misuse as "faster CI." It would corrupt the proof surface if used that way. The projection's job is reviewer focus — showing the change-relevant subset of evidence — not reduced verification.
 
 ## Diagnostic code reading guide
 
@@ -191,7 +191,7 @@ These three short-circuit the rail before framework plans run.
 | Code | Fires when | Repair |
 |---|---|---|
 | `RAIL_REQUIRE_MANIFEST_MISSING_PATHS` | Manifest names files that do not exist on disk (or exist but are not regular files). | Restore or regenerate. |
-| `RAIL_REQUIRE_MANIFEST_UNTRACKED_GENERATED_PATHS` | Files containing `@generated:start` exist on disk under any `packages/ds-{framework}/src/components/**` but are NOT in the manifest. | Regenerate with `--target=all`. |
+| `RAIL_REQUIRE_MANIFEST_UNTRACKED_GENERATED_PATHS` | Files containing `@generated:start` exist on disk under `packages/ds-{framework}/src/components/**` for a framework in the run (every rail-admitted framework unless `--framework` narrows it) but are NOT in the manifest. | Regenerate with `--target=all`. |
 | `RAIL_REQUIRE_MANIFEST_HASH_MISMATCH` | A manifest file's recorded digest does not match the on-disk bytes. | Regenerate, or revert the unintended edit. |
 
 ### Contract integrity (rung 2: contract provenance)
@@ -218,7 +218,7 @@ These three short-circuit the rail before framework plans run.
 | `RAIL_REQUIRE_MANIFEST_LOCKFILE_MISSING` | Manifest's lockfile path does not resolve to a regular file. | Restore the lockfile or regenerate. |
 | `RAIL_REQUIRE_MANIFEST_LOCKFILE_HASH_MISMATCH` | Lockfile bytes drifted since generation. | Regenerate. Use `git diff pnpm-lock.yaml` to identify the moved dep. |
 
-Distinct codes for distinct evidence states is doctrine, not preference. CODEGEN_VERSION_MISMATCH fires only when both sides parsed and disagreed; CODEGEN_PACKAGE_MISSING_OR_MALFORMED fires when the verifier could not even establish equality. A closure note can cite which one, and the operator's repair step is unambiguous.
+Distinct codes for distinct evidence states is doctrine, not preference. CODEGEN_VERSION_MISMATCH fires only when both sides parsed and disagreed; CODEGEN_PACKAGE_MISSING_OR_MALFORMED fires when the verifier could not even establish equality. A citation can name which one, and the operator's repair step is unambiguous.
 
 ## Verifier-never-throws doctrine
 
@@ -241,16 +241,15 @@ The rail must not become a place where hidden generation policy lives. It surfac
 
 The four evidence rungs taught here are how the rail *demonstrates* it owns evidence honestly. They are the layers that make "the rail owns validation evidence" auditable rather than aspirational.
 
-## What to cite in closure notes
+## Citing rail evidence
 
-When closing a PR that involves the rail, the closure note should cite specific evidence rather than "the rail passed":
+Cite what a reviewer can rerun from a clean checkout: the command, the commit SHA it ran at, and its exit code.
 
-- Which rungs were exercised, with the counts read off *your* `RailReport` rather than copied from this doc. ("Output integrity verified against `<N>` files; contract integrity against `<N>` contracts; emitter integrity against `<N>` declared sources; environment under Node 22 + codegen 1.0.0 + lockfile sha256 `<prefix…>`")
-- The scoped projection counts if the PR was scoped. ("3 matched artifact groups, 1 changed contract, 0 unmatched generated paths.")
-- Any diagnostic codes that fired and how they were resolved. ("`CONTRACT_HASH_MISMATCH` on Button.contract.json was the load-bearing signal that contract edits hadn't been regenerated; resolved by running `pnpm run generate -- --target=all` and recommitting.")
-- Any known gaps. ("Lit's `no-incompatible-type-binding` rule is disabled in `typecheck:templates`; declared in `knownGaps` and visible in the markdown report's `Known gaps` section.")
+- A clean run: "`pnpm run governed:rail` exits 0 at `<sha>`, and `node scripts/committed-tree-check.mjs generated` exits 0 after it."
+- Drift and its repair, each with its commit: "at `<before-sha>` the rail exits 0 and `node scripts/committed-tree-check.mjs generated` exits 1, listing the Button files regeneration changed; `<fix-sha>` commits the regenerated output and both exit 0." `governed:rail` rewrites the manifest before it validates, so the hash and missing-source codes cannot fire on a clean checkout; one that fires only against a manifest from an earlier local run is local state, not a citation.
+- Known gaps, quoted from the tracked plan source that declares them (each plan's `knownGaps` under `packages/ds-codegen/src/validation/frameworks/`).
 
-The rail report is designed to make those citations mechanical — the JSON is canonical, the markdown is a citation-friendly projection of the same evidence.
+Counts read off a `RailReport` are claims the reviewer re-derives by rerunning the command at that commit. Do not cite the markdown report, a redirected stdout file, or the emission manifest: all are gitignored per-machine state that a clean checkout does not have. [`governed-ci.md`](./governed-ci.md#citing-a-rail-result) carries the full recipes, including a pinned-range scoped run.
 
 ## Where to read next
 
