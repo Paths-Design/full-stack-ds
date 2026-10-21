@@ -2,7 +2,6 @@ id: CALENDAR-ROOT-ROLE-01
 title: 'Calendar root is a labelled group, not an application'
 mode: fix
 lifecycle_state: active
-worktree: calendar-root-role
 created_at: '2026-10-21T04:19:05.545Z'
 updated_at: '2026-10-21T04:19:36.458Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
