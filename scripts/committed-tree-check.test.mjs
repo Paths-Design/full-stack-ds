@@ -11,12 +11,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const SCRIPT = join(dirname(fileURLToPath(import.meta.url)), "committed-tree-check.mjs");
+const HOOK = join(dirname(fileURLToPath(import.meta.url)), "..", ".githooks", "pre-push");
+const ZERO = "0".repeat(40);
 
 function git(repo, ...args) {
   const result = spawnSync("git", args, { cwd: repo, encoding: "utf8" });
@@ -149,6 +151,51 @@ test("an unknown revision fails closed with exit 2, never as clean", (t) => {
   const result = check(repo, "pushed", "0123456789abcdef0123456789abcdef01234567");
   assert.equal(result.status, 2);
   assert.match(result.stderr, /does not name a commit/);
+});
+
+/**
+ * Runs the real pre-push hook in a repository that carries the check script.
+ * Only the hook's first step is under test: a refusal ends the hook there, and
+ * a pass reaches the classifier contract, which this repository lacks.
+ */
+function prePush(repo, updates) {
+  const input = updates.map(([ref, sha]) => `${ref} ${sha} ${ref} ${ZERO}`).join("\n") + "\n";
+  return spawnSync("bash", [HOOK, "origin", "https://example.invalid/repo.git"], { cwd: repo, input, encoding: "utf8" });
+}
+
+function hookRepository(t) {
+  const repo = repository(t);
+  write(repo, "scripts/committed-tree-check.mjs", readFileSync(SCRIPT, "utf8"));
+  git(repo, "add", "-A");
+  git(repo, "commit", "-q", "-m", "carry the check");
+  return repo;
+}
+
+test("pre-push compares every pushed tip with the working tree, whichever ref comes first", (t) => {
+  const repo = hookRepository(t);
+  const checkedOut = git(repo, "rev-parse", "HEAD");
+  git(repo, "checkout", "-q", "-b", "other");
+  write(repo, "docs/guide.md", "# Guide, on another branch\n");
+  git(repo, "commit", "-q", "-am", "other branch");
+  const other = git(repo, "rev-parse", "HEAD");
+  git(repo, "checkout", "-q", "main");
+  for (const updates of [
+    [["refs/heads/main", checkedOut], ["refs/heads/other", other]],
+    [["refs/heads/other", other], ["refs/heads/main", checkedOut]],
+  ]) {
+    const result = prePush(repo, updates);
+    assert.equal(result.status, 1, `order ${updates.map(([ref]) => ref).join(", ")}`);
+    assert.match(result.stderr, new RegExp(`differs from the commit being pushed \\(${other}\\)`));
+    assert.match(result.stderr, /M {2}docs\/guide\.md/);
+  }
+});
+
+test("pre-push passes the tree check when every pushed tip matches the working tree", (t) => {
+  const repo = hookRepository(t);
+  const head = git(repo, "rev-parse", "HEAD");
+  const result = prePush(repo, [["refs/heads/main", head], ["refs/heads/mirror", head]]);
+  assert.doesNotMatch(result.stderr, /differs from the commit being pushed/);
+  assert.equal(result.stdout.match(/committed-tree-check: the working tree matches/g)?.length, 2);
 });
 
 test("a usage error exits 2", (t) => {

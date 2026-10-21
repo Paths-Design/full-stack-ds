@@ -115,7 +115,7 @@ test("CI and pre-push check generated output with the shared script and keep no 
 
 test("pre-push refuses a working tree that differs from the pushed commit before any gate", () => {
   const hook = readFileSync(new URL("../.githooks/pre-push", import.meta.url), "utf8");
-  const treeCheck = hook.indexOf('node scripts/committed-tree-check.mjs pushed "$TIP"');
+  const treeCheck = hook.indexOf('node scripts/committed-tree-check.mjs pushed "$pushed_tip"');
   assert.notEqual(treeCheck, -1, "pre-push does not compare the working tree with the pushed commit");
   for (const gate of ["pnpm install --frozen-lockfile", "pnpm run lint", "pnpm test", "pnpm run governed:rail"]) {
     const at = hook.indexOf(gate);

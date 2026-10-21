@@ -51,16 +51,21 @@ say() { echo "[pre-push][+${SECONDS}s] $*"; }
 
 ZERO="0000000000000000000000000000000000000000"
 
-# Which commits are being pushed? Capture the tip + the remote sha from stdin.
+# Which commits are being pushed? TIP and REMOTE_SHA come from the first
+# updated ref and set the classified range; TIPS collects every updated ref,
+# because each one publishes its own tree.
 PUSHING_COMMITS=false
 TIP=""
 REMOTE_SHA=""
+TIPS=""
 while IFS=' ' read -r _local_ref local_sha _remote_ref remote_sha; do
   if [ -n "${local_sha:-}" ] && [ "$local_sha" != "$ZERO" ]; then
-    PUSHING_COMMITS=true
-    TIP="$local_sha"
-    REMOTE_SHA="${remote_sha:-}"
-    break
+    if [ "$PUSHING_COMMITS" = false ]; then
+      PUSHING_COMMITS=true
+      TIP="$local_sha"
+      REMOTE_SHA="${remote_sha:-}"
+    fi
+    TIPS="$TIPS $local_sha"
   fi
 done
 
@@ -69,13 +74,17 @@ if [ "$PUSHING_COMMITS" = false ]; then
   exit 0
 fi
 
-# --- the gates read the working tree; the push publishes $TIP ---
-# Refuse when the two differ, or every verdict below is about bytes the push
-# does not carry: a stray untracked file fails lint for a commit CI would pass,
-# and an uncommitted fix passes a commit CI would fail. Ignored files (build
+# --- the gates read the working tree; the push publishes every tip ---
+# Refuse when the working tree differs from any pushed tip, or the verdicts
+# below are about bytes the push does not carry: a stray untracked file fails
+# lint for a commit CI would pass, and an uncommitted fix passes a commit CI
+# would fail. Two refs whose trees differ can never both match, so the gates
+# only ever judge a tree every pushed ref carries. Ignored files (build
 # output, caches, CAWS runtime state) are outside the comparison.
-say "working tree vs the pushed commit ${TIP:0:9}"
-node scripts/committed-tree-check.mjs pushed "$TIP"
+for pushed_tip in $TIPS; do
+  say "working tree vs the pushed commit ${pushed_tip:0:9}"
+  node scripts/committed-tree-check.mjs pushed "$pushed_tip"
+done
 
 # --- determine the diff range (or fall back to FULL) ---
 FULL=false
