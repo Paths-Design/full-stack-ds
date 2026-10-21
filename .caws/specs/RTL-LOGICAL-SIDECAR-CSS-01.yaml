@@ -68,3 +68,12 @@ contracts:
   - name: 'logical-sidecar-css'
     type: behavior
     path: 'e2e/rtl-direction.spec.ts'
+evidence:
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At 99c95db22 the 20 geometry cases in e2e/rtl-direction.spec.ts pass in Chromium for react, vue, svelte, angular and lit. Each renders the preview, measures under dir=ltr, flips the document element to dir=rtl and measures again; annotated values in every framework: switch thumb gap 6 and 6 px, alert dismiss 17 and 17, dialog close 25 and 25, toast 1108..1280 in ltr and 0..172 in rtl of a 1280 viewport. Falsifier: with the generated web source of 2a6d4c262 reversed by git apply -R (served preview CSS checked physical in all five frameworks before and after the run) all 20 fail on the mirror assertion with ltr gaps unchanged (rtl gaps 26, 551, 443 px; toast left 1108). Not covered: a fresh mount under rtl rather than a live flip, CSS-only direction, mixed-direction subtrees, other browsers."
+    recorded_at: "2026-10-21T12:17:17.538Z"
+    test_nodeid: e2e/rtl-direction.spec.ts
+    command: pnpm exec playwright test e2e/rtl-direction.spec.ts
+    exit_code: 0
+    commit_sha: "99c95db22"
