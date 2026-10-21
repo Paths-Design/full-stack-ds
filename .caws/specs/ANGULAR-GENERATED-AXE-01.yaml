@@ -59,3 +59,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/frameworks/angular
     exit_code: 0
     commit_sha: "72b41433eae0891606b2a5315f3c80b984e155dc"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At 72b41433e the Angular jest suite runs 66 suites and 627 tests with 0 failures: 57 generated axe tests (the React generated count is also 57; React Tabs carries one more, hand-written) plus composed Tabs and Accordion scans. Each fails on a defective component: Checkbox without its aria-label binding gives label; open Dialog without aria-labelledby gives aria-dialog-name; Walkthrough step buttons without aria-label give button-name; a tab or accordion trigger whose aria-controls names a missing id gives aria-valid-attr-value."
+    recorded_at: "2026-10-21T09:52:03.919Z"
+    command: "pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs --coverage=false"
+    exit_code: 0
+    commit_sha: "72b41433eae0891606b2a5315f3c80b984e155dc"
