@@ -79,3 +79,11 @@ evidence:
     command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
     exit_code: 0
     commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At 12734d882 the classifier's generated pattern includes ds-figma-plugin, ds-unity and ds-godot. The test derives the package set from packages/ds-codegen/src/registry.ts and asserts each runs RUN_RAIL and RUN_GENERATE_CHECK; with the three packages removed from the pattern it fails naming ds-figma-plugin."
+    recorded_at: "2026-10-21T05:54:40.470Z"
+    test_nodeid: "scripts/prepush-scope.test.mjs::an edit in any package the target registry writes into runs the rail"
+    command: node --test scripts/prepush-scope.test.mjs
+    exit_code: 0
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
