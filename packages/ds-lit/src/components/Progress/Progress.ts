@@ -120,7 +120,7 @@ export class ProgressElement extends LitElement {
       display: inline-block;
       color: var(--fsds-progress-design-value-foreground-color, var(--fsds-progress-color-text, #474647));
       font-size: var(--fsds-progress-design-value-typography-size, 0.875em);
-      margin-left: var(--fsds-progress-spacing-gap, 2px);
+      margin-inline-start: var(--fsds-progress-spacing-gap, 2px);
     }
 
     .progress--info .progress__fill {

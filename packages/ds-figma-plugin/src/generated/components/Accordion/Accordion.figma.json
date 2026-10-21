@@ -352,7 +352,7 @@
       "cssProperty": "text-align",
       "selectorKey": "trigger",
       "part": "trigger",
-      "defaultValue": "left",
+      "defaultValue": "start",
       "editableTargets": [
         "web"
       ],
@@ -838,7 +838,7 @@
           "font-size": "var(--fsds-accordion-text-size, 16px)",
           "font-weight": "var(--fsds-accordion-text-weight, 500)",
           "color": "var(--fsds-accordion-color-text, #141414)",
-          "text-align": "left",
+          "text-align": "start",
           "line-height": "var(--fsds-accordion-text-line-height, 1.5)"
         }
       },

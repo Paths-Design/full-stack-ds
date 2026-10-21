@@ -398,7 +398,7 @@
       "resolvesTo": "sheet.spacing.padding",
       "fallback": "16px"
     },
-    "right": {
+    "inset-inline-end": {
       "resolvesTo": "sheet.spacing.padding",
       "fallback": "16px"
     },

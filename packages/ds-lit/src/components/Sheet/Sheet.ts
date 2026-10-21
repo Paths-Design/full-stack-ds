@@ -189,7 +189,7 @@ export class SheetElement extends LitElement {
     .sheet__close {
       position: absolute;
       top: var(--fsds-sheet-spacing-padding, 16px);
-      right: var(--fsds-sheet-spacing-padding, 16px);
+      inset-inline-end: var(--fsds-sheet-spacing-padding, 16px);
       width: var(--fsds-sheet-design-close-sizing-width, var(--fsds-sheet-size-close, 16px));
       height: var(--fsds-sheet-design-close-sizing-height, var(--fsds-sheet-size-close, 16px));
       display: inline-flex;
@@ -510,7 +510,7 @@ export class SheetContentElement extends LitElement {
     .sheet__close {
       position: absolute;
       top: var(--fsds-sheet-spacing-padding, 16px);
-      right: var(--fsds-sheet-spacing-padding, 16px);
+      inset-inline-end: var(--fsds-sheet-spacing-padding, 16px);
       width: var(--fsds-sheet-design-close-sizing-width, var(--fsds-sheet-size-close, 16px));
       height: var(--fsds-sheet-design-close-sizing-height, var(--fsds-sheet-size-close, 16px));
       display: inline-flex;
@@ -738,7 +738,7 @@ export class SheetHeaderElement extends LitElement {
     .sheet__close {
       position: absolute;
       top: var(--fsds-sheet-spacing-padding, 16px);
-      right: var(--fsds-sheet-spacing-padding, 16px);
+      inset-inline-end: var(--fsds-sheet-spacing-padding, 16px);
       width: var(--fsds-sheet-design-close-sizing-width, var(--fsds-sheet-size-close, 16px));
       height: var(--fsds-sheet-design-close-sizing-height, var(--fsds-sheet-size-close, 16px));
       display: inline-flex;
@@ -966,7 +966,7 @@ export class SheetTitleElement extends LitElement {
     .sheet__close {
       position: absolute;
       top: var(--fsds-sheet-spacing-padding, 16px);
-      right: var(--fsds-sheet-spacing-padding, 16px);
+      inset-inline-end: var(--fsds-sheet-spacing-padding, 16px);
       width: var(--fsds-sheet-design-close-sizing-width, var(--fsds-sheet-size-close, 16px));
       height: var(--fsds-sheet-design-close-sizing-height, var(--fsds-sheet-size-close, 16px));
       display: inline-flex;
@@ -1194,7 +1194,7 @@ export class SheetDescriptionElement extends LitElement {
     .sheet__close {
       position: absolute;
       top: var(--fsds-sheet-spacing-padding, 16px);
-      right: var(--fsds-sheet-spacing-padding, 16px);
+      inset-inline-end: var(--fsds-sheet-spacing-padding, 16px);
       width: var(--fsds-sheet-design-close-sizing-width, var(--fsds-sheet-size-close, 16px));
       height: var(--fsds-sheet-design-close-sizing-height, var(--fsds-sheet-size-close, 16px));
       display: inline-flex;
@@ -1422,7 +1422,7 @@ export class SheetBodyElement extends LitElement {
     .sheet__close {
       position: absolute;
       top: var(--fsds-sheet-spacing-padding, 16px);
-      right: var(--fsds-sheet-spacing-padding, 16px);
+      inset-inline-end: var(--fsds-sheet-spacing-padding, 16px);
       width: var(--fsds-sheet-design-close-sizing-width, var(--fsds-sheet-size-close, 16px));
       height: var(--fsds-sheet-design-close-sizing-height, var(--fsds-sheet-size-close, 16px));
       display: inline-flex;
@@ -1650,7 +1650,7 @@ export class SheetFooterElement extends LitElement {
     .sheet__close {
       position: absolute;
       top: var(--fsds-sheet-spacing-padding, 16px);
-      right: var(--fsds-sheet-spacing-padding, 16px);
+      inset-inline-end: var(--fsds-sheet-spacing-padding, 16px);
       width: var(--fsds-sheet-design-close-sizing-width, var(--fsds-sheet-size-close, 16px));
       height: var(--fsds-sheet-design-close-sizing-height, var(--fsds-sheet-size-close, 16px));
       display: inline-flex;

@@ -157,7 +157,7 @@ export class AccordionElement extends LitElement {
       font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, 16px));
       font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, 500));
       color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, #141414));
-      text-align: var(--fsds-accordion-design-trigger-typography-alignment, left);
+      text-align: var(--fsds-accordion-design-trigger-typography-alignment, start);
       line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, 1.5));
     }
 
@@ -429,7 +429,7 @@ export class AccordionItemElement extends LitElement {
       font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, 16px));
       font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, 500));
       color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, #141414));
-      text-align: var(--fsds-accordion-design-trigger-typography-alignment, left);
+      text-align: var(--fsds-accordion-design-trigger-typography-alignment, start);
       line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, 1.5));
     }
 
@@ -610,7 +610,7 @@ export class AccordionTriggerElement extends LitElement {
       font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, 16px));
       font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, 500));
       color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, #141414));
-      text-align: var(--fsds-accordion-design-trigger-typography-alignment, left);
+      text-align: var(--fsds-accordion-design-trigger-typography-alignment, start);
       line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, 1.5));
     }
 
@@ -836,7 +836,7 @@ export class AccordionContentElement extends LitElement {
       font-size: var(--fsds-accordion-design-trigger-typography-size, var(--fsds-accordion-text-size, 16px));
       font-weight: var(--fsds-accordion-design-trigger-typography-weight, var(--fsds-accordion-text-weight, 500));
       color: var(--fsds-accordion-design-trigger-foreground-color, var(--fsds-accordion-color-text, #141414));
-      text-align: var(--fsds-accordion-design-trigger-typography-alignment, left);
+      text-align: var(--fsds-accordion-design-trigger-typography-alignment, start);
       line-height: var(--fsds-accordion-design-trigger-typography-line-height, var(--fsds-accordion-text-line-height, 1.5));
     }
 
