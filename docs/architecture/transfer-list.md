@@ -5,7 +5,7 @@ status: active
 title: Dual-listbox transfer
 owner: "@darianrosebrook"
 updated: 2026-10-21
-verified_at_commit: 4ef5a4f30
+verified_at_commit: 026a193d2
 governs:
   - packages/ds-codegen/src/transfer.ts
   - packages/ds-codegen/src/transfer/transfer-list.ts
@@ -87,11 +87,16 @@ The keys act on the list they are pressed in, read from the listbox's
 | Enter | move the list's marked items, or the focused item when none is marked, to the other list |
 | Tab, others | left to the platform |
 
-The handled keys prevent their default. A transfer appends the marked
+The handled keys prevent their default. A key acts on the item an earlier key
+targeted while that key's render is still pending, else on the focused item,
+so keys pressed faster than the framework renders (a held arrow) all count.
+A transfer appends the marked
 available items to the end of the value in options order, or removes the
 marked selected items, reports the new value through the channel's change
 handler, and clears that side's marks, including when a controlled value does
-not follow. After Enter, focus stays in the source list on the nearest item
+not follow. Until the next sync brings options that answer it, the lists and
+any further transfer build on the reported value; the sync replaces it, so a
+controlled value that refused it takes effect. After Enter, focus stays in the source list on the nearest item
 that remains, or follows the moved item when the list empties. The binding
 calls `afterRender` after each render, which moves DOM focus to the item a key
 targeted once it renders, found by `data-value` inside the group; a render
@@ -132,8 +137,9 @@ and the value then carries those strings.
 
 - `packages/ds-codegen/src/transfer/transfer-list.test.ts` pins derivation,
   absent options or value, tab stops, marks, both transfers, every key with
-  its bound, the list a key acts on, and focus after a key move, after Enter
-  and when a list empties.
+  its bound, the list a key acts on, keys and transfers pressed before a
+  re-render, a reported value a sync replaces, and focus after a key move,
+  after Enter and when a list empties.
 - `packages/ds-codegen/src/transfer.test.ts` pins the IR fact and each
   refusal, including an interactive element inside an item.
 - `packages/ds-react/src/primitives/hooks/__tests__/shuttle.contract.ts` runs
@@ -143,8 +149,11 @@ and the value then carries those strings.
   covers React Native.
 - `e2e/runtime-rail.spec.ts`, which CI runs, drives Shuttle in Chromium on all five web targets:
   the listbox shape and names, one tab stop per list, real arrow, Home, End,
-  Space and Enter keys moving DOM focus and the mark, focus after Enter, and
-  click marking with Add and Remove.
+  Space and Enter keys moving DOM focus and the mark, two arrow presses in one
+  task both counting, focus after Enter, and click marking with Add and
+  Remove, with each transfer's reported value read from the preview's
+  callback capture (React, Vue, Svelte and Lit; the Angular preview does not
+  route callbacks through it).
 - `FsdsTransferListTest.kt` and `ShuttleSemanticsTest.kt` (Compose, desktop
   JVM `runComposeUiTest`) and `FsdsTransferListTests.swift` pin the native
   cores and Compose's semantics tree. The `PressProofHarness` presses an
