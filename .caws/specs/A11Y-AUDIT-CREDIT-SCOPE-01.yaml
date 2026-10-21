@@ -32,7 +32,8 @@ acceptance:
     given: >-
       a component source that names a focus-trap or dismissal primitive without
       running it: an import, a comment (call-shaped or not), or a dismissal whose
-      own onDismiss argument is a no-op, on one line or several
+      own onDismiss argument is an inline no-op arrow (empty, void 0, undefined or a
+      bare return), on one line or several
     when: 'the audit classifies the key that primitive carries'
     then: >-
       it is unrealized, an onDismiss outside the dismissal call does not lend it a
