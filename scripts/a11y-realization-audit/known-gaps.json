@@ -994,6 +994,38 @@
       "class": "keyboard",
       "key": "Escape",
       "spec": "WALKTHROUGH-ESCAPE-DISMISS-01"
+    },
+    {
+      "component": "Walkthrough",
+      "family": "vue",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => void 0 and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "svelte",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "lit",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "angular",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
     }
   ]
 }

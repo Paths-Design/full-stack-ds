@@ -13,6 +13,7 @@ import {
   declaredStateAttributes,
   deriveObligations,
   handlesKey,
+  partImpliedTags,
   relationshipTokens,
   resolveRegisteredFamilies,
   rovingReachable,
@@ -506,24 +507,106 @@ check(
   classify({ ...rovingKey, roving: { entryKeys: ["ArrowDown"] } }, "web-dom", emittedEntry, new Set(["button"])).verdict,
   "realized",
 );
+// A key primitive carries only the key it compares, and only where it runs.
+const escapeKey = { component: "X", class: "keyboard", key: "Escape" };
+const tabKey = { component: "X", class: "keyboard", key: "Shift+Tab" };
 check(
-  "Escape realized by dismissal primitive import",
-  classify({ component: "X", class: "keyboard", key: "Escape" }, "web-dom", "import { useDismissal }", new Set())
-    .verdict,
+  "a running dismissal whose onDismiss closes something carries Escape",
+  classify(escapeKey, "web-dom", "useDismissal({\n  open: () => open.value,\n  onDismiss: () => setOpen(false),\n});", new Set()),
+  { verdict: "realized", via: "primitive" },
+);
+check(
+  "an imported dismissal that never runs does not carry Escape",
+  classify(escapeKey, "web-dom", 'import { useDismissal } from "../../primitives/index.js";', new Set()).verdict,
+  "unrealized",
+);
+check(
+  "a dismissal running with onDismiss: () => void 0 hears Escape and closes nothing",
+  classify(escapeKey, "web-dom", "useDismissal({\n  open: () => true,\n  onDismiss: () => void 0,\n});", new Set()).verdict,
+  "unrealized",
+);
+check(
+  "a dismissal running with onDismiss: () => { void 0; } hears Escape and closes nothing",
+  classify(escapeKey, "web-dom", "new DismissalController(host, {\n  open: () => true,\n  onDismiss: () => { void 0; },\n});", new Set()).verdict,
+  "unrealized",
+);
+check(
+  "a running anchor toggle carries Escape",
+  classify(escapeKey, "web-dom", "this.anchorToggle = new AnchorToggleController(\n  this,", new Set()).verdict,
   "realized",
 );
 check(
-  "Escape NOT realized by focus-trap alone... unless trap present counts only for Tab",
-  classify({ component: "X", class: "keyboard", key: "Escape" }, "web-dom", "plain source", new Set())
-    .verdict,
+  "an anchored-surface controller named only in a comment does not carry Escape",
+  classify(escapeKey, "web-dom", "// installed by the substrate's AnchoredSurfaceController on the trigger", new Set()).verdict,
+  "unrealized",
+);
+check(
+  "a focus trap does not carry Escape",
+  classify(escapeKey, "web-dom", "useFocusTrap(panelRef, {\n  active: () => open.value,\n});", new Set()).verdict,
+  "unrealized",
+);
+check(
+  "a running focus trap carries Shift+Tab",
+  classify(tabKey, "web-dom", "createFocusTrap(panelRef, { active: blocking });", new Set()),
+  { verdict: "realized", via: "primitive" },
+);
+check(
+  "a dismissal does not carry Tab",
+  classify(tabKey, "web-dom", "useDismissal({\n  onDismiss: () => setOpen(false),\n});", new Set()).verdict,
   "unrealized",
 );
 
 // focus strategies
 check(
-  "trap realized by focus-trap primitive",
-  classify({ component: "X", class: "focus", key: "trap" }, "web-dom", "useFocusTrap(", new Set()).verdict,
+  "trap realized by a running focus-trap primitive",
+  classify({ component: "X", class: "focus", key: "trap" }, "web-dom", "useFocusTrap(panelRef, {", new Set()).verdict,
   "realized",
+);
+// A binding whose `when` names a part is scoped to that part's subtree.
+const scopedContract = {
+  anatomy: {
+    dom: {
+      part: "root", tag: "div",
+      children: [
+        { part: "list", tag: "div", children: [{ part: "tab", tag: "button" }] },
+        { part: "panel", tag: "div" },
+      ],
+    },
+  },
+  a11y: { keyboard: [{ key: "Tab", when: "list" }, { key: "Escape", when: "open" }, { key: "Enter", when: "panel" }] },
+};
+check(
+  "a `when` naming a part scopes the keyboard obligation; a state `when` does not",
+  deriveObligations([{ name: "Scoped", contract: scopedContract }])
+    .filter((ob) => ob.class === "keyboard")
+    .map((ob) => [ob.key, ob.part ?? null]),
+  [["Tab", "list"], ["Escape", null], ["Enter", "panel"]],
+);
+check("a part's tags include its descendants (a tab list holds focus on its tabs)",
+  [...partImpliedTags(scopedContract, "list")].sort(), ["button", "div"]);
+check("a part's tags exclude its siblings", [...partImpliedTags(scopedContract, "panel")], ["div"]);
+check(
+  "a native element elsewhere in the source does not lend native credit to a part-scoped binding",
+  classify({ component: "Scoped", class: "keyboard", key: "Enter", part: "panel" }, "web-dom", "<button onClick={go}>",
+    partImpliedTags(scopedContract, "panel")).verdict,
+  "unrealized",
+);
+check(
+  "an unscoped binding keeps native credit from a native element in the emitted source",
+  classify({ component: "Scoped", class: "keyboard", key: "Enter" }, "web-dom", "<button onClick={go}>", new Set(["div"])).verdict,
+  "realized",
+);
+check(
+  "a part-scoped binding is natively realized when its subtree renders a native element",
+  classify({ component: "Scoped", class: "keyboard", key: "Tab", part: "list" }, "web-dom", "<div>",
+    partImpliedTags(scopedContract, "list")),
+  { verdict: "realized", via: "native" },
+);
+
+check(
+  "trap not realized by a focus-trap import alone",
+  classify({ component: "X", class: "focus", key: "trap" }, "web-dom", 'import { useFocusTrap } from "../../primitives/hooks";', new Set()).verdict,
+  "unrealized",
 );
 check(
   "roving demands explicit key handling (never native)",

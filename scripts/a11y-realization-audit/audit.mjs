@@ -531,11 +531,35 @@ const NATIVE_CURRENT_BESIDE_SELECTION = {
   "jetpack-compose": [/\bstateDescription\s*=/],
 };
 
-/** Behavior-primitive imports that own specific keys. The primitive set is
- * mirrored across frameworks under different names (useX / createX / XController). */
-const TRAP_RE = /useFocusTrap|createFocusTrap|FocusTrapController|focus-trap/;
-const DISMISS_RE =
-  /useDismissal|createDismissal|DismissalController|useAnchorToggle|createAnchorToggle|AnchorToggleController|useAnchoredSurface|createAnchoredSurface|AnchoredSurfaceController/;
+/** Behavior primitives that own specific keys, mirrored across frameworks
+ * under different names (useX / createX / XController). A primitive counts
+ * only where the source runs it — `useX(`, `createX(` or `new XController(` —
+ * because an import, a type position or a comment names it without running
+ * it. The focus trap compares Tab only; the dismissal, anchor-toggle and
+ * anchored-surface primitives compare Escape only, so neither carries the
+ * other's key. */
+const TRAP_CALL_RE = /\b(?:useFocusTrap|createFocusTrap)\s*\(|\bnew\s+FocusTrapController\s*\(/;
+const ESCAPE_CLOSER_CALL_RE =
+  /\b(?:useAnchorToggle|createAnchorToggle|useAnchoredSurface|createAnchoredSurface)\s*\(|\bnew\s+(?:AnchorToggleController|AnchoredSurfaceController)\s*\(/;
+const DISMISSAL_CALL_RE = /\b(?:useDismissal|createDismissal)\s*\(|\bnew\s+DismissalController\s*\(/;
+/** A dismissal's onDismiss callback, and the shapes that do nothing — the
+ * lowering for a component with no disclosure channel to close, where Escape
+ * is heard and ignored. */
+const ON_DISMISS_RE = /\bonDismiss\s*:\s*([^,\n]+)/g;
+const NO_OP_CALLBACK_RE = /^\(\)\s*=>\s*(?:void 0|undefined|\{\s*(?:void 0;?)?\s*\})$/;
+
+/** The source runs the focus trap, which keeps Tab and Shift+Tab inside. */
+export function focusTrapInvoked(src) {
+  return TRAP_CALL_RE.test(src);
+}
+
+/** The source runs a primitive that closes on Escape: an anchor toggle or
+ * anchored surface, or a dismissal whose onDismiss does something. */
+export function escapeCloserInvoked(src) {
+  if (ESCAPE_CLOSER_CALL_RE.test(src)) return true;
+  if (!DISMISSAL_CALL_RE.test(src)) return false;
+  return [...src.matchAll(ON_DISMISS_RE)].some((match) => !NO_OP_CALLBACK_RE.test(match[1].trim()));
+}
 
 /** Keys the platform provides on native interactive elements. */
 const NATIVE_KEYS = new Set(["Enter", "Space", "Tab"]);
@@ -579,6 +603,14 @@ function domTags(node, acc = new Set()) {
   return acc;
 }
 
+/** All part names in a dom subtree. */
+function domParts(node, acc = new Set()) {
+  if (!node || typeof node !== "object") return acc;
+  if (typeof node.part === "string") acc.add(node.part);
+  for (const child of node.children ?? []) domParts(child, acc);
+  return acc;
+}
+
 /** All componentRef targets ("fsds.Button" -> "Button") in the dom tree. */
 function domComponentRefs(node, acc = new Set()) {
   if (!node || typeof node !== "object") return acc;
@@ -593,19 +625,30 @@ function domComponentRefs(node, acc = new Set()) {
  * The full set of element tags a component's contract implies: its own dom
  * tree, its anatomy.details part tags, and — resolved against the corpus —
  * the root tags of components it owns by-reference (Chip's dismiss/action are
- * fsds.Button, so `button` is implied). Derived, never hand-listed.
+ * fsds.Button, so `button` is implied). Derived, never hand-listed. With a
+ * `root` part node, only that part's subtree and its details.
  */
-function impliedTags(contract, contractByName) {
-  const tags = domTags(contract.anatomy?.dom);
-  for (const detail of Object.values(contract.anatomy?.details ?? {})) {
+function impliedTags(contract, contractByName, root = contract.anatomy?.dom) {
+  const tags = domTags(root);
+  const parts = root === contract.anatomy?.dom ? null : domParts(root);
+  for (const [part, detail] of Object.entries(contract.anatomy?.details ?? {})) {
+    if (parts && !parts.has(part)) continue;
     if (typeof detail?.tag === "string") tags.add(detail.tag);
   }
-  for (const ref of domComponentRefs(contract.anatomy?.dom)) {
+  for (const ref of domComponentRefs(root)) {
     const target = contractByName.get(ref);
     const rootTag = target?.anatomy?.dom?.tag;
     if (typeof rootTag === "string") tags.add(rootTag);
   }
   return tags;
+}
+
+/** The element tags one part implies: its subtree, its subtree's details, and
+ * the root tags of components the subtree owns. Focus "in" a part reaches its
+ * descendants (a tab list holds focus on its tabs). */
+export function partImpliedTags(contract, part, contractByName = new Map()) {
+  const node = findPartNode(contract?.anatomy?.dom, part);
+  return node ? impliedTags(contract, contractByName, node) : new Set();
 }
 
 /** Native interactive element present in the EMITTED source — the strongest
@@ -657,10 +700,17 @@ export function deriveObligations(contracts) {
         typeof entry === "string" ? entry : (entry.key ?? entry.keys ?? "");
       if (!keySpec) continue;
       const nativeRadio = nativeRadioCarrier(contract, name);
+      // `when` names either the anatomy part that holds focus or a state
+      // ("open"); only a part scopes the binding.
+      const part =
+        typeof entry === "object" && typeof entry.when === "string" && findPartNode(contract.anatomy?.dom, entry.when)
+          ? entry.when
+          : undefined;
       obligations.push({
         component: name,
         class: "keyboard",
         key: keySpec,
+        ...(part ? { part } : {}),
         ...(nativeRadio ? { nativeRadio } : {}),
         ...(roving ? { roving } : {}),
       });
@@ -1270,14 +1320,16 @@ export function classify(obligation, kind, srcBundle, contractTags, familyId) {
     }
     const trapKeys = keys.every((k) => k === "Tab");
     const dismissKeys = keys.every((k) => k === "Escape");
-    if (trapKeys && TRAP_RE.test(ownSrc)) return { verdict: "realized", via: "primitive" };
-    if (dismissKeys && DISMISS_RE.test(ownSrc)) return { verdict: "realized", via: "primitive" };
-    if ((trapKeys || dismissKeys) && (TRAP_RE.test(ownSrc) || DISMISS_RE.test(ownSrc)))
-      return { verdict: "realized", via: "primitive" };
+    if (trapKeys && focusTrapInvoked(ownSrc)) return { verdict: "realized", via: "primitive" };
+    if (dismissKeys && escapeCloserInvoked(ownSrc)) return { verdict: "realized", via: "primitive" };
     const hasHandler = EXPLICIT_KEY_RE.test(ownSrc);
+    // A part-scoped binding (`when` names the part that holds focus) gets
+    // native credit only from the part's own subtree, which the caller passes
+    // as contractTags; a native element elsewhere in the source cannot be
+    // attributed to that part.
     const hasNativeTag =
       [...contractTags].some((t) => NATIVE_INTERACTIVE_TAGS.has(t)) ||
-      NATIVE_ELEMENT_IN_SOURCE_RE.test(ownSrc);
+      (!obligation.part && NATIVE_ELEMENT_IN_SOURCE_RE.test(ownSrc));
     // Inside a roving composite, native activation needs a reachable item.
     const nativeReachable = !obligation.roving || rovingReachable(ownSrc, obligation.roving);
     const vias = new Set();
@@ -1315,7 +1367,7 @@ export function classify(obligation, kind, srcBundle, contractTags, familyId) {
   }
   // focus
   if (obligation.key === "trap") {
-    return TRAP_RE.test(ownSrc)
+    return focusTrapInvoked(ownSrc)
       ? { verdict: "realized", via: "primitive" }
       : { verdict: "unrealized" };
   }
@@ -1495,6 +1547,10 @@ export function runAudit({ repoRoot = REPO } = {}) {
   const tagsByComponent = new Map(
     contracts.map(({ name, contract }) => [name, impliedTags(contract, contractByName)]),
   );
+  const tagsFor = (ob) =>
+    ob.part
+      ? partImpliedTags(contractByName.get(ob.component), ob.part, contractByName)
+      : tagsByComponent.get(ob.component) ?? new Set();
 
   const families = [
     ...descriptors.map((d) => ({
@@ -1516,7 +1572,7 @@ export function runAudit({ repoRoot = REPO } = {}) {
         rows.push({ ...ob, family: d.id, verdict: "not-emitted" });
         continue;
       }
-      const res = classify(ob, d.kind, srcBundle, tagsByComponent.get(ob.component) ?? new Set(), d.id);
+      const res = classify(ob, d.kind, srcBundle, tagsFor(ob), d.id);
       rows.push({ ...ob, family: d.id, ...res });
     }
   }
