@@ -1,0 +1,38 @@
+id: SELECT-TRIGGER-CONSUMER-ORACLES-01
+title: 'Consumer tests query the Select trigger as the combobox it is'
+mode: fix
+lifecycle_state: active
+worktree: select-trigger-oracles
+created_at: '2026-10-21T08:15:51.699Z'
+updated_at: '2026-10-21T08:16:32.579Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'src/components'
+    - 'e2e'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/components/shared-controls.test.tsx'
+    - 'e2e/showcase-controls.spec.ts'
+  out: []
+invariants:
+  - 'A consumer test identifies the Select trigger by the role the contract declares, combobox'
+  - 'A slice that changes a part role runs every consumer test that queries that part before landing'
+acceptance:
+  - id: A1
+    given: 'the shared-controls React test'
+    when: 'it looks up the Select trigger'
+    then: 'it finds the combobox named by triggerLabel and passes, and it fails against a trigger exposed as a plain button'
+  - id: A2
+    given: 'the showcase-controls Playwright spec'
+    when: 'the Select test and the inspector density choice run in each of the five web frameworks'
+    then: 'each finds its trigger as a combobox by name and passes'
+rollback:
+  - 'Revert the merge commit'
+non_functional: {}
+contracts:
+  - name: 'select-trigger-role'
+    type: contract-test
+    path: 'src/components/shared-controls.test.tsx'
