@@ -128,6 +128,7 @@ export function Select({
                 style={styles.option}
                 disabled={item.disabled}
                 onPress={() => setSelectionValue(multiple ? ((Array.isArray(selection) ? selection : selection == null ? [] : [selection]).includes(item.value) ? (Array.isArray(selection) ? selection : selection == null ? [] : [selection]).filter((v) => v !== item.value) : [...(Array.isArray(selection) ? selection : selection == null ? [] : [selection]), item.value]) : item.value)}
+                accessibilityRole="button"
                 accessibilityState={{ selected: String(Array.isArray(selection) ? selection.includes(item.value) : item.value === selection) === "true", disabled: item.disabled }}
               >
                 <View

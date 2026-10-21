@@ -38,7 +38,7 @@ export { RadioGroupElement } from "./RadioGroup/RadioGroup.js";
 export { SelectElement, SelectContentElement, SelectOptionElement, SelectTriggerElement } from "./Select/Select.js";
 export { SheetElement, SheetBodyElement, SheetContentElement, SheetDescriptionElement, SheetFooterElement, SheetHeaderElement, SheetTitleElement } from "./Sheet/Sheet.js";
 export { ShowMoreElement, ShowMoreContentElement, ShowMoreTriggerElement } from "./ShowMore/ShowMore.js";
-export { ShuttleElement, ShuttleItemElement } from "./Shuttle/Shuttle.js";
+export { ShuttleElement } from "./Shuttle/Shuttle.js";
 export { SkeletonElement } from "./Skeleton/Skeleton.js";
 export { SpinnerElement } from "./Spinner/Spinner.js";
 export { StatElement } from "./Stat/Stat.js";

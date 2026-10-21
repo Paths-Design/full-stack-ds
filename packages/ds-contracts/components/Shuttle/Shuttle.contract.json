@@ -29,6 +29,7 @@
         "tag": "ul",
         "description": "One side of the transfer: the available options, or the selected ones. Several options can be marked at once.",
         "role": "group",
+        "subcomponent": false,
         "aria": {
           "role": "listbox",
           "attributes": [
@@ -41,6 +42,7 @@
         "tag": "li",
         "description": "An option; aria-selected reports whether it is marked for transfer.",
         "role": "item",
+        "subcomponent": false,
         "multiple": true,
         "focusable": "roving",
         "aria": {
@@ -58,14 +60,16 @@
       "add": {
         "tag": "button",
         "description": "Moves the marked available options to the selected list.",
-        "role": "control",
-        "interactive": true
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true
       },
       "remove": {
         "tag": "button",
         "description": "Moves the marked selected options back to the available list.",
-        "role": "control",
-        "interactive": true
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true
       }
     },
     "dom": {

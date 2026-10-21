@@ -445,30 +445,6 @@ export function radioGroupFacts(ir: ComponentIR): RadioGroupFacts | null {
 }
 
 /**
- * The array-iterated list class: exactly one channel whose value type is
- * an array (excluding Date arrays, which are grids) over a dom tree that
- * contains an array-iteration node. Shuttle is the corpus consumer.
- *
- * Pure structural facts — target-neutral, which is why it lives here
- * rather than in the swift emitter that first needed it
- * (FEAT-COMPOSE-SHUTTLE-ADMISSION-01).
- */
-export function isArrayIteratedList(ir: ComponentIR): boolean {
-  if (!ir.dom || ir.surface != null) return false;
-  const channels = ir.behavior.normalizedChannels;
-  if (channels.length !== 1) return false;
-  const vt = channels[0]!.valueType ?? "";
-  if (!vt.includes("[]")) return false;
-  if (vt.includes("Date")) return false;
-  const walk = (node: DomNodeIR): boolean => {
-    const iteration = (node as { iteration?: { kind?: string } }).iteration;
-    if (iteration?.kind === "array") return true;
-    return (node.children ?? []).some(walk);
-  };
-  return walk(ir.dom);
-}
-
-/**
  * The interactive-composite class: a div root with one scalar channel
  * (a string or a union of string members, excluding Date grids) over an
  * anatomy that carries both a trigger part (`trigger`/`tab`) and a content
@@ -673,15 +649,27 @@ export function isSelectionControl(ir: ComponentIR): boolean {
  * IR has already validated (`buildDateGridIR`). Calendar is the corpus
  * consumer.
  *
- * This is the class the collection predicates already reserve: both
- * `isArrayIteratedList` and `isInteractiveComposite` reject a Date-typed
- * channel outright, because a date grid derives its days from the month
- * rather than carrying an array *channel* or a trigger/content anatomy.
+ * This is the class the collection predicates already reserve:
+ * `isInteractiveComposite` rejects a Date-typed channel outright, because a
+ * date grid derives its days from the month rather than carrying a
+ * trigger/content anatomy.
  *
  * Pure structural facts — target-neutral.
  */
 export function isDateGridSurface(ir: ComponentIR): boolean {
   return !!ir.dom && ir.surface == null && ir.dateGrid !== undefined;
+}
+
+/**
+ * A dual-listbox transfer (Shuttle): two lists partitioning an options prop
+ * by a string-array value channel. Native targets realize it as a dedicated
+ * surface — both lists, a mark per item, add and remove — rather than a
+ * list of the value channel alone.
+ *
+ * Pure structural facts — target-neutral.
+ */
+export function isTransferSurface(ir: ComponentIR): boolean {
+  return !!ir.dom && ir.surface == null && ir.transfer !== undefined;
 }
 
 export type DateGridHeaderItem =

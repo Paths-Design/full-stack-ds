@@ -61,34 +61,6 @@
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
-      "component": "Shuttle",
-      "family": "react",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react",
-      "class": "focus",
-      "key": "roving",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
       "component": "Table",
       "family": "react",
       "class": "relationship",
@@ -201,34 +173,6 @@
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
-      "component": "Shuttle",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "vue",
-      "class": "focus",
-      "key": "roving",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
       "component": "Table",
       "family": "vue",
       "class": "relationship",
@@ -338,34 +282,6 @@
       "class": "keyboard",
       "key": "ArrowRight",
       "part": "field",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "svelte",
-      "class": "focus",
-      "key": "roving",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -491,34 +407,6 @@
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
-      "component": "Shuttle",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "lit",
-      "class": "focus",
-      "key": "roving",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
       "component": "Table",
       "family": "lit",
       "class": "relationship",
@@ -631,34 +519,6 @@
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
-      "component": "Shuttle",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "angular",
-      "class": "focus",
-      "key": "roving",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
       "component": "Table",
       "family": "angular",
       "class": "relationship",
@@ -768,20 +628,6 @@
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
-      "component": "Select",
-      "family": "react-native",
-      "class": "interactive-role",
-      "key": "activation",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react-native",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "SHUTTLE-DUAL-LISTBOX-01"
-    },
-    {
       "component": "Table",
       "family": "react-native",
       "class": "state-attribute",
@@ -843,13 +689,6 @@
       "class": "state-attribute",
       "key": "aria-expanded",
       "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "swiftui",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "SHUTTLE-DUAL-LISTBOX-01"
     },
     {
       "component": "Table",
@@ -948,13 +787,6 @@
       "class": "state-attribute",
       "key": "aria-expanded",
       "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "jetpack-compose",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "SHUTTLE-DUAL-LISTBOX-01"
     },
     {
       "component": "Table",

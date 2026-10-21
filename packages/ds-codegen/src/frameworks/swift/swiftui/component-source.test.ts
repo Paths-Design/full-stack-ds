@@ -543,10 +543,24 @@ describe("generateSwiftUIComponentSource — final five", () => {
     return generateSwiftUIComponentSource(buildComponentIR(contract));
   }
 
-  it("emits Shuttle over the array-channel substrate", () => {
+  it("emits Shuttle as a transfer surface over the options and the selection channel", () => {
     const source = emit("Shuttle");
     expect(source).toContain("@ControllableState private var selection: ControllableValue<[String]>");
-    expect(source).toContain("ForEach(selection.value, id: \\.self)");
+    expect(source).toContain('options: [String] = ["alpha", "beta", "gamma", "delta", "epsilon"],');
+    expect(source).toContain("FsdsTransferList.available(options: options, value: selection.value)");
+    expect(source).toContain("FsdsTransferList.selected(value: selection.value)");
+    // A tap marks an item; it never removes it outright.
+    expect(source).not.toContain("ForEach(selection.value, id: \\.self)");
+  });
+
+  it("announces each Shuttle item's mark as selected and gates add and remove on a mark", () => {
+    const source = emit("Shuttle");
+    expect(source).toContain("@State private var markedAvailable: Set<String> = []");
+    expect(source).toContain(".accessibilityAddTraits(isMarked ? [.isSelected] : [])");
+    expect(source).toContain('list(available, marked: $markedAvailable, label: fsdsMessages.string("Shuttle.availableLabel", default: "Available"))');
+    expect(source).toContain('Button(fsdsMessages.string("Shuttle.add", default: "Add")) { add() }');
+    expect(source).toContain(".disabled(FsdsTransferList.adding(markedAvailable, options: options, value: selection.value) == nil)");
+    expect(source).toContain(".disabled(FsdsTransferList.removing(markedSelected, value: selection.value) == nil)");
   });
 
   it("emits Accordion and Tabs as interactive composites", () => {

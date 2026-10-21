@@ -36,6 +36,11 @@ describe("Shuttle — unit", () => {
     const wrapper = mount(Shuttle as Component, { props: {}, attrs: { "data-testid": "shuttle" }, slots: { "default": "content" } });
     expect(wrapper.find('[data-testid="shuttle"]').exists()).toBe(true);
   });
+
+  it("has the correct ARIA role", () => {
+    const wrapper = mount(Shuttle as Component, { props: {}, attrs: { "data-testid": "shuttle" }, slots: { "default": "content" } });
+    expect(wrapper.attributes("role")).toBe("group");
+  });
 });
 
 describe("Shuttle — accessibility", () => {
@@ -48,18 +53,5 @@ describe("Shuttle — accessibility", () => {
 // @generated:end
 
 // @custom:start tests
-import ShuttleItem from "../ShuttleItem.vue";
 
-
-describe("Shuttle — compound parts", () => {
-  it("mounts ShuttleItem with tag, base class, and slot content", () => {
-    const wrapper = mount(ShuttleItem as Component, {
-      slots: { default: "Shuttle part" },
-      attrs: { "data-testid": "shuttle-shuttleitem" },
-    });
-    expect(wrapper.element.tagName.toLowerCase()).toBe("li");
-    expect(wrapper.classes()).toContain("shuttle__item");
-    expect(wrapper.text()).toContain("Shuttle part");
-  });
-});
 // @custom:end

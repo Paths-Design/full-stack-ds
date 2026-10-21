@@ -54,6 +54,17 @@ describe("transfer list derivation", () => {
     expect(state.selected.every((item) => item.side === "selected")).toBe(true);
   });
 
+  it("reads absent options or value as none", () => {
+    const state = computeTransferList({ onValueChange: () => {} }, { available: new Set(), selected: new Set() }, {});
+    expect([state.available, state.selected]).toEqual([[], []]);
+    const onValueChange = vi.fn();
+    const list = createTransferList();
+    list.sync({ options: ["alpha"], onValueChange });
+    list.toggle(list.state.available[0]);
+    list.add();
+    expect(onValueChange).toHaveBeenCalledWith(["alpha"]);
+  });
+
   it("gives each list one tab stop, the first item until another is focused", () => {
     const state = computeTransferList(options(), { available: new Set(), selected: new Set() }, { selected: "alpha" });
     expect(stops(state.available)).toEqual(["beta"]);

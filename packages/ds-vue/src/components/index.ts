@@ -138,7 +138,6 @@ export { default as ShowMoreContent } from "./ShowMore/ShowMoreContent.vue";
 export { default as ShowMoreTrigger } from "./ShowMore/ShowMoreTrigger.vue";
 import "./Shuttle/Shuttle.css";
 export { default as Shuttle } from "./Shuttle/Shuttle.vue";
-export { default as ShuttleItem } from "./Shuttle/ShuttleItem.vue";
 import "./Skeleton/Skeleton.css";
 export { default as Skeleton } from "./Skeleton/Skeleton.vue";
 import "./Spinner/Spinner.css";

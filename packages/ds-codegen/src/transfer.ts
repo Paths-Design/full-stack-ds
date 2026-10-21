@@ -52,7 +52,7 @@ export function transferOptions(
   value: (channel: string) => string,
   setter: (channel: string) => string,
 ): string {
-  return `{ options: ${prop(transfer.optionsProp)} ?? [], value: ${value(transfer.valueChannel)} ?? [], ` +
+  return `{ options: ${prop(transfer.optionsProp)}, value: ${value(transfer.valueChannel)}, ` +
     `onValueChange: ${setter(transfer.valueChannel)} }`;
 }
 
