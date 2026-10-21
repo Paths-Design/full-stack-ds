@@ -161,4 +161,21 @@ describe("Accordion — disclosure behavior", () => {
   });
 });
 
+// The generated scan renders the root alone; the triggers, regions and their
+// relationships exist only in a composition.
+describe("Accordion — accessibility (composed)", () => {
+  it("a composed Accordion with an open item has no unexpected axe violations", async () => {
+    TestBed.configureTestingModule({ imports: [AccordionHost] });
+    const fixture = TestBed.createComponent(AccordionHost);
+    fixture.componentInstance.defaultValue = "a";
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelectorAll("button[aria-expanded]")).toHaveLength(2);
+    expect(host.querySelector('[role="region"]')?.textContent).toContain("Panel A");
+    const results = await axe.run(host, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
+  });
+});
+
 // @custom:end
