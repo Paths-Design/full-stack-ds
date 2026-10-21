@@ -1,10 +1,11 @@
 id: SELECT-TRIGGER-CONSUMER-ORACLES-01
 title: 'Consumer tests query the Select trigger as the combobox it is'
 mode: fix
-lifecycle_state: active
-worktree: select-trigger-oracles
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Shared-controls test and showcase-controls e2e query the Select trigger as a combobox; root suite and all five Select e2e pass'
 created_at: '2026-10-21T08:15:51.699Z'
-updated_at: '2026-10-21T08:16:32.579Z'
+updated_at: '2026-10-21T08:44:23.419Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -36,3 +37,20 @@ contracts:
   - name: 'select-trigger-role'
     type: contract-test
     path: 'src/components/shared-controls.test.tsx'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At a55a3bbf9 the shared-controls test finds the Select trigger with getByRole combobox named Color and passes (full root suite 348 files, 5098 tests, 0 failures). Before the edit it failed on main with Unable to find role button named Color; with role=combobox removed from the generated React Select it fails with Unable to find role combobox named Color."
+    recorded_at: "2026-10-21T08:42:49.489Z"
+    test_nodeid: src/components/shared-controls.test.tsx
+    command: pnpm test
+    exit_code: 0
+    commit_sha: a55a3bbf9031d5fb0960418c0cb8d27e0005d828
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At a55a3bbf9 all 16 showcase-controls tests pass against a local dev server, including the Select test for react, vue, svelte, angular and lit and the inspector density choice. The same server with the spec from main fails those 6: five wait for getByRole button named Color, one for the density button at line 86."
+    recorded_at: "2026-10-21T08:43:00.647Z"
+    test_nodeid: e2e/showcase-controls.spec.ts
+    command: "FSDS_E2E_PORT=<dev server port> pnpm exec playwright test e2e/showcase-controls.spec.ts"
+    exit_code: 0
+    commit_sha: a55a3bbf9031d5fb0960418c0cb8d27e0005d828

@@ -8,6 +8,7 @@ import {
   provideContext,
   ContextConsumerController,
 } from '../../primitives/index.js';
+import { isRtl } from '../../primitives/direction/direction.js';
 // @generated:end
 
 // @custom:start imports
@@ -210,8 +211,8 @@ export class TabsElement extends LitElement {
     .tabs--vertical .tabs__indicator {
       top: 0;
       bottom: 0;
-      right: -1px;
-      left: auto;
+      inset-inline-end: -1px;
+      inset-inline-start: auto;
       width: var(--fsds-tabs-design-condition-1e00e77afe59-sizing-width, var(--fsds-tabs-size-indicator-thickness, 2px));
       height: auto;
       transition: transform var(--fsds-tabs-motion-indicator) ease, height var(--fsds-tabs-motion-indicator) ease;
@@ -494,8 +495,8 @@ export class TabsListElement extends LitElement {
     .tabs--vertical .tabs__indicator {
       top: 0;
       bottom: 0;
-      right: -1px;
-      left: auto;
+      inset-inline-end: -1px;
+      inset-inline-start: auto;
       width: var(--fsds-tabs-design-condition-1e00e77afe59-sizing-width, var(--fsds-tabs-size-indicator-thickness, 2px));
       height: auto;
       transition: transform var(--fsds-tabs-motion-indicator) ease, height var(--fsds-tabs-motion-indicator) ease;
@@ -533,13 +534,17 @@ export class TabsListElement extends LitElement {
     try { ctx = this._ctx.value; } catch { return; }
     const tabs = ctx.registeredTabs;
     if (tabs.length === 0) return;
-    const currentIndex = tabs.indexOf(ctx.activeTab);
+    const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");
+    const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.activeTab);
     const isHorizontal = ctx.orientation !== "vertical";
+    const rtl = isRtl(e.currentTarget);
+    const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";
+    const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";
     let nextIndex = currentIndex;
-    if ((isHorizontal && e.key === "ArrowRight") || (!isHorizontal && e.key === "ArrowDown")) {
+    if ((isHorizontal && towardEnd) || (!isHorizontal && e.key === "ArrowDown")) {
       e.preventDefault();
       nextIndex = ctx.loop ? (currentIndex + 1) % tabs.length : Math.min(currentIndex + 1, tabs.length - 1);
-    } else if ((isHorizontal && e.key === "ArrowLeft") || (!isHorizontal && e.key === "ArrowUp")) {
+    } else if ((isHorizontal && towardStart) || (!isHorizontal && e.key === "ArrowUp")) {
       e.preventDefault();
       nextIndex = ctx.loop ? (currentIndex - 1 + tabs.length) % tabs.length : Math.max(currentIndex - 1, 0);
     } else if (e.key === "Home") {
@@ -759,8 +764,8 @@ export class TabsTabElement extends LitElement {
     .tabs--vertical .tabs__indicator {
       top: 0;
       bottom: 0;
-      right: -1px;
-      left: auto;
+      inset-inline-end: -1px;
+      inset-inline-start: auto;
       width: var(--fsds-tabs-design-condition-1e00e77afe59-sizing-width, var(--fsds-tabs-size-indicator-thickness, 2px));
       height: auto;
       transition: transform var(--fsds-tabs-motion-indicator) ease, height var(--fsds-tabs-motion-indicator) ease;
@@ -1013,8 +1018,8 @@ export class TabsPanelElement extends LitElement {
     .tabs--vertical .tabs__indicator {
       top: 0;
       bottom: 0;
-      right: -1px;
-      left: auto;
+      inset-inline-end: -1px;
+      inset-inline-start: auto;
       width: var(--fsds-tabs-design-condition-1e00e77afe59-sizing-width, var(--fsds-tabs-size-indicator-thickness, 2px));
       height: auto;
       transition: transform var(--fsds-tabs-motion-indicator) ease, height var(--fsds-tabs-motion-indicator) ease;

@@ -427,6 +427,50 @@ describe("Tabs — behavioral", () => {
     container.remove();
   });
 
+  it("in a right-to-left container, ArrowLeft moves to the next tab and ArrowRight to the previous", async () => {
+    // Without loop, a physical mapping leaves the first tab selected: ArrowLeft
+    // from the first tab has no previous tab to reach.
+    const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "a", activationMode: "automatic", loop: false });
+    container.setAttribute("dir", "rtl");
+    const listEl = tabsEl.querySelector("fsds-tabs-list")!;
+    listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true, composed: true }));
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
+    expect(tabB.getAttribute("aria-selected")).toBe("true");
+    listEl.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, composed: true }));
+    await settleUpdates(tabsEl as TabsElement, tabA as TabsElement, tabB as TabsElement);
+    expect(tabA.getAttribute("aria-selected")).toBe("true");
+    container.remove();
+  });
+
+  it("manual activation: repeated arrows move on from the focused tab while the selection stays", async () => {
+    const container = document.createElement("div");
+    container.setAttribute("dir", "rtl");
+    const tabsEl = Object.assign(document.createElement("fsds-tabs"), { defaultValue: "a", activationMode: "manual", loop: false }) as unknown as TabsElement;
+    const listEl = document.createElement("fsds-tabs-list");
+    const tabEls = ["a", "b", "c"].map((value) => {
+      const tab = Object.assign(document.createElement("fsds-tabs-tab"), { value }) as unknown as TabsElement;
+      tab.textContent = `Tab ${value}`;
+      return tab;
+    });
+    listEl.append(...tabEls);
+    tabsEl.append(listEl);
+    container.append(tabsEl);
+    document.body.append(container);
+    const press = async (key: string) => {
+      (document.activeElement as HTMLElement).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, composed: true }));
+      await settleUpdates(tabsEl, ...tabEls);
+    };
+    await settleUpdates(tabsEl, ...tabEls);
+    tabEls[0].focus();
+    await press("ArrowLeft");
+    await press("ArrowLeft");
+    expect(document.activeElement).toBe(tabEls[2]);
+    expect(tabEls[0].getAttribute("aria-selected")).toBe("true");
+    await press("ArrowRight");
+    expect(document.activeElement).toBe(tabEls[1]);
+    container.remove();
+  });
+
   it("keyboard Home moves to first tab", async () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "b", activationMode: "automatic" });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;

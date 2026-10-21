@@ -218,7 +218,7 @@ export class DialogElement extends LitElement {
     .dialog__closeButton {
       position: absolute;
       top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
       width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
       height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
       display: inline-flex;
@@ -557,7 +557,7 @@ export class DialogHeaderElement extends LitElement {
     .dialog__closeButton {
       position: absolute;
       top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
       width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
       height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
       display: inline-flex;
@@ -796,7 +796,7 @@ export class DialogTitleElement extends LitElement {
     .dialog__closeButton {
       position: absolute;
       top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
       width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
       height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
       display: inline-flex;
@@ -1035,7 +1035,7 @@ export class DialogBodyElement extends LitElement {
     .dialog__closeButton {
       position: absolute;
       top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
       width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
       height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
       display: inline-flex;
@@ -1274,7 +1274,7 @@ export class DialogFooterElement extends LitElement {
     .dialog__closeButton {
       position: absolute;
       top: var(--fsds-dialog-spacing-header-padding-top, 16px);
-      right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+      inset-inline-end: var(--fsds-dialog-spacing-body-padding-right, 24px);
       width: var(--fsds-dialog-design-close-button-sizing-width, var(--fsds-dialog-size-close-button-size, 32px));
       height: var(--fsds-dialog-design-close-button-sizing-height, var(--fsds-dialog-size-close-button-size, 32px));
       display: inline-flex;

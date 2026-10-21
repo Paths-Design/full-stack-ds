@@ -39,6 +39,7 @@
     "@angular/platform-browser-dynamic": "^21.2.13",
     "@jest/globals": "^30.0.0",
     "@types/jest": "^30.0.0",
+    "axe-core": "^4.11.4",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
     "jest-preset-angular": "^16.1.5",

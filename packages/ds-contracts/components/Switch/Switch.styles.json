@@ -303,6 +303,14 @@
       "fallback": "#d0d0d0"
     }
   },
+  ".switch:dir(rtl) .switch__track": {
+    "scale": {
+      "literal": "-1 1",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
   "--sm": {
     "box-model.padding-block-start": {
       "resolvesTo": "semantic.action.size.small.padding-block",

@@ -133,7 +133,7 @@ export class ToastElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       position: fixed;
       bottom: 0;
-      right: 0;
+      inset-inline-end: 0;
       display: flex;
       flex-direction: column;
       z-index: 1000;
@@ -417,7 +417,7 @@ export class ToastItemElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       position: fixed;
       bottom: 0;
-      right: 0;
+      inset-inline-end: 0;
       display: flex;
       flex-direction: column;
       z-index: 1000;
@@ -622,7 +622,7 @@ export class ToastTitleElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       position: fixed;
       bottom: 0;
-      right: 0;
+      inset-inline-end: 0;
       display: flex;
       flex-direction: column;
       z-index: 1000;
@@ -822,7 +822,7 @@ export class ToastDescriptionElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       position: fixed;
       bottom: 0;
-      right: 0;
+      inset-inline-end: 0;
       display: flex;
       flex-direction: column;
       z-index: 1000;

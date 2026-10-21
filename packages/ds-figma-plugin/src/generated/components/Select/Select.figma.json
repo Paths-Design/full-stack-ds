@@ -263,7 +263,7 @@
       "cssProperty": "text-align",
       "selectorKey": "text",
       "part": "text",
-      "defaultValue": "left",
+      "defaultValue": "start",
       "editableTargets": [
         "web"
       ],
@@ -1357,7 +1357,7 @@
           "overflow": "hidden",
           "text-overflow": "ellipsis",
           "white-space": "nowrap",
-          "text-align": "left"
+          "text-align": "start"
         }
       },
       {

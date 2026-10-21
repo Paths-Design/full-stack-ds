@@ -21,7 +21,7 @@ describe('shared controls used by the showcase', () => {
   it('shows selected labels, closes a single selection and preserves controlled authority', () => {
     const change = vi.fn();
     const { rerender } = render(<Select options={choices} value="red" onChange={change} defaultOpen={false} triggerLabel="Color" />);
-    const trigger = screen.getByRole('button', { name: 'Color' });
+    const trigger = screen.getByRole('combobox', { name: 'Color' });
     expect(trigger).toHaveTextContent('Red');
     fireEvent.click(trigger);
     fireEvent.click(screen.getByRole('option', { name: 'Blue' }));

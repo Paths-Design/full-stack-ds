@@ -1,0 +1,77 @@
+id: ANGULAR-GENERATED-AXE-01
+title: 'Generated Angular tests run axe over each component with contract-derived content'
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Generated Angular tests scan every component with axe-core from the shared plan, with composed Tabs and Accordion scans and docs stating per-framework limits'
+created_at: '2026-10-21T08:51:30.643Z'
+updated_at: '2026-10-21T09:53:27.445Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks/angular'
+    - 'packages/ds-angular'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/angular/tests.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/tests.test.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/emitted-imports.ts'
+    - 'packages/ds-angular/src/components'
+    - 'packages/ds-angular/package.json'
+    - 'packages/ds-angular/jest.config.cjs'
+    - 'pnpm-lock.yaml'
+    - 'docs/current-implementation-snapshot.md'
+    - 'docs/internal/a11y-realization-audit/a11y-matrix.md'
+    - packages/ds-codegen/src/frameworks/angular/surface-tests.ts
+    - packages/ds-codegen/src/frameworks/angular/surface-tests.test.ts
+    - docs/architecture/design/box-model-primitive.md
+  out: []
+invariants:
+  - 'Every dom-tree Angular component that the other web frameworks scan with axe is scanned by its generated Angular test with the same plan inputs: activation props, label input, slot content and list parent'
+  - 'An axe test proves the scan root contains the rendered component before asserting no violations'
+acceptance:
+  - id: A1
+    given: 'the Angular test emitter'
+    when: 'it emits a dom-tree component test'
+    then: 'it emits an axe describe that renders the component through a host template carrying the plan props, label input and slot content, proves the component rendered, and asserts an empty violation id list, with emitter tests pinning that shape'
+  - id: A2
+    given: 'the regenerated Angular package'
+    when: 'its jest suite runs'
+    then: 'every generated axe test passes, the count of generated Angular axe tests matches the React count, and an axe test fails when a component renders an unnamed control'
+  - id: A3
+    given: 'the a11y matrix and implementation snapshot'
+    when: 'they describe generated axe coverage'
+    then: 'they state the Angular coverage the code now has'
+rollback:
+  - 'Revert the merge commit and regenerate Angular tests'
+non_functional: {}
+contracts:
+  - name: 'angular-generated-axe'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/angular/tests.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 72b41433e the describe generateAngularTest axe scan in tests.test.ts pins Dialog (open, title slot, document.body root asserted non-null, empty violation ids), Icon (required, activation and label props as host fields), Walkthrough (default step anchor rendered) and NavTree (host aria-label, listitem root scanned in a ul); surface-tests.test.ts pins the Tooltip and Popover closed and open scans. 61 Angular emitter tests pass; deleting the renderOpenProp line fails the Dialog pin."
+    recorded_at: "2026-10-21T09:51:53.024Z"
+    test_nodeid: packages/ds-codegen/src/frameworks/angular/tests.test.ts
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/angular
+    exit_code: 0
+    commit_sha: "72b41433eae0891606b2a5315f3c80b984e155dc"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At 72b41433e the Angular jest suite runs 66 suites and 627 tests with 0 failures: 57 generated axe tests (the React generated count is also 57; React Tabs carries one more, hand-written) plus composed Tabs and Accordion scans. Each fails on a defective component: Checkbox without its aria-label binding gives label; open Dialog without aria-labelledby gives aria-dialog-name; Walkthrough step buttons without aria-label give button-name; a tab or accordion trigger whose aria-controls names a missing id gives aria-valid-attr-value."
+    recorded_at: "2026-10-21T09:52:03.919Z"
+    command: "pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs --coverage=false"
+    exit_code: 0
+    commit_sha: "72b41433eae0891606b2a5315f3c80b984e155dc"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At 72b41433e the snapshot A11y-realization row names Angular axe-core coverage, cites angular/tests.ts and surface-tests.ts, and states the limits: surface scans in the other four frameworks miss portalled content, compound roots need composed scans (Tabs in React, Vue, Angular; Accordion in Angular), and the other four Walkthrough fixtures render no anchor. The a11y matrix sentence that web roles are checked by the generated axe tests now holds for Angular and needed no edit. docs:check-claims passes."
+    recorded_at: "2026-10-21T09:52:14.201Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    artifact_path: docs/current-implementation-snapshot.md
+    commit_sha: "72b41433eae0891606b2a5315f3c80b984e155dc"

@@ -45,7 +45,7 @@ for (const framework of ['react', 'vue', 'svelte', 'angular', 'lit']) {
     await page.goto(`/preview/${framework}/Select`);
     await page.locator('body[data-fsds-ready]').waitFor();
     await configure(page, { options, triggerLabel: 'Color', placeholder: 'Choose', defaultOpen: false });
-    const trigger = page.getByRole('button', { name: 'Color', exact: true });
+    const trigger = page.getByRole('combobox', { name: 'Color', exact: true });
     await expect(trigger).toHaveText('Choose');
     if (await trigger.getAttribute('aria-expanded') !== 'true') await trigger.click();
     await page.getByRole('option', { name: 'Red', exact: true }).click();
@@ -83,7 +83,7 @@ test('showcase uses shared brands, inspector choices and annotated code', async 
   await expect(page.getByRole('radiogroup', { name: 'Brand theme' })).toHaveAttribute('data-fsds-component', 'radio-group');
   await page.screenshot({ animations: 'disabled', path: info.outputPath('brand-settings.png') });
   await page.goto('/#/component/Card/design');
-  const density = page.locator('.fsds-pp').getByRole('button', { name: 'density', exact: true });
+  const density = page.locator('.fsds-pp').getByRole('combobox', { name: 'density', exact: true });
   await density.click();
   await page.getByRole('option', { name: 'inset', exact: true }).click();
   await expect(density).toHaveText('inset');

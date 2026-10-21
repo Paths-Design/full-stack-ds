@@ -100,10 +100,12 @@ function renderTabs(props: {
   loop?: boolean;
   unmountInactive?: boolean;
   orientation?: "horizontal" | "vertical";
+  values?: string[];
 } = {}) {
   return svelteRender(TabsFixture as unknown as SvelteComp<Record<string, unknown>>, {
     props: {
       defaultValue: props.defaultValue ?? "a",
+      ...(props.values !== undefined ? { values: props.values } : {}),
       ...(props.value !== undefined ? { value: props.value } : {}),
       ...(props.onValueChange !== undefined ? { onValueChange: props.onValueChange } : {}),
       ...(props.activationMode !== undefined ? { activationMode: props.activationMode } : {}),
@@ -260,6 +262,46 @@ desc("Tabs — behavioral", () => {
 
     const tabA = container.querySelector<HTMLButtonElement>(sel.tabA)!;
     exp(tabA.getAttribute("aria-selected")).toBe("true");
+  });
+
+  test("manual activation: repeated arrows move on from the focused tab while the selection stays", async () => {
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      const { container } = renderTabs({ defaultValue: "a", activationMode: "manual", loop: false, values: ["a", "b", "c"] });
+      await tick();
+      const press = async (key: string) => {
+        await fireEvent.keyDown(document.activeElement as HTMLElement, { key });
+        await tick();
+      };
+      container.querySelector<HTMLElement>('[role="tab"][data-value="a"]')!.focus();
+      await press("ArrowLeft");
+      await press("ArrowLeft");
+      exp(document.activeElement?.getAttribute("data-value")).toBe("c");
+      exp(container.querySelector('[role="tab"][data-value="a"]')!.getAttribute("aria-selected")).toBe("true");
+      await press("ArrowRight");
+      exp(document.activeElement?.getAttribute("data-value")).toBe("b");
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
+  test("in a right-to-left page, ArrowLeft moves to the next tab and ArrowRight to the previous", async () => {
+    // Without loop, a physical mapping leaves the first tab selected: ArrowLeft
+    // from the first tab has no previous tab to reach.
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      const { container } = renderTabs({ defaultValue: "a", loop: false });
+      await tick();
+      const list = container.querySelector<HTMLElement>(sel.tabList)!;
+      await fireEvent.keyDown(list, { key: "ArrowLeft" });
+      await tick();
+      exp(container.querySelector(sel.tabB)!.getAttribute("aria-selected")).toBe("true");
+      await fireEvent.keyDown(list, { key: "ArrowRight" });
+      await tick();
+      exp(container.querySelector(sel.tabA)!.getAttribute("aria-selected")).toBe("true");
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
   });
 
   test("keyboard Home moves focus to first tab", async () => {

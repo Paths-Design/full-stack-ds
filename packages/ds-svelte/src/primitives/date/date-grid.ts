@@ -14,6 +14,8 @@
  * Gregorian calendar otherwise, because the grid itself is Gregorian.
  */
 
+import { isRtl } from "../direction/direction.js";
+
 export type DateGridValue = Date | Date[] | null;
 
 export interface DateGridOptions {
@@ -178,21 +180,6 @@ export function dateGridWeekStart(locale: string | undefined): number {
   return 1;
 }
 
-/**
- * The direction the grid is laid out in: the nearest `dir` attribute on the
- * composed ancestor chain. The walk crosses shadow roots to their hosts,
- * because a page sets `dir` outside a web component's shadow tree.
- */
-function isRtl(target: EventTarget | null): boolean {
-  let element = target as Element | null;
-  while (element) {
-    const holder = element.closest?.("[dir]");
-    if (holder) return holder.getAttribute("dir") === "rtl";
-    const root = element.getRootNode?.() as ShadowRoot | Document | undefined;
-    element = root && "host" in root ? root.host : null;
-  }
-  return false;
-}
 
 /**
  * The day element holding focus, read through open shadow roots, when its

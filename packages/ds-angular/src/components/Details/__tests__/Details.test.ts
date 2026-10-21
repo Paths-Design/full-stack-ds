@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { DetailsComponent } from "../Details.component";
 // @generated:end
 
@@ -70,6 +72,33 @@ describe("Details — unit", () => {
     const fixture = createFixture();
     fixture.componentInstance.icon = "none";
     expect(classTokens(fixture.componentInstance)).toContain("details--none");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [DetailsComponent],
+  template: "<fsds-details [summary]=\"summary\" [open]=\"open\" aria-label=\"Test Details\"><span>content</span></fsds-details>",
+})
+class DetailsAxeHost {
+  readonly summary = "placeholder";
+  readonly open = true;
+}
+
+describe("Details — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [DetailsAxeHost] });
+    const fixture = TestBed.createComponent(DetailsAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".details");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

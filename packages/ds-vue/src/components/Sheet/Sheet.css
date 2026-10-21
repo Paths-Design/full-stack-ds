@@ -97,7 +97,7 @@
 .sheet__close {
   position: absolute;
   top: var(--fsds-sheet-spacing-padding, 16px);
-  right: var(--fsds-sheet-spacing-padding, 16px);
+  inset-inline-end: var(--fsds-sheet-spacing-padding, 16px);
   width: var(--fsds-sheet-design-close-sizing-width, var(--fsds-sheet-size-close, 16px));
   height: var(--fsds-sheet-design-close-sizing-height, var(--fsds-sheet-size-close, 16px));
   display: inline-flex;
