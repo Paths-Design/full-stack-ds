@@ -41,8 +41,11 @@ invariants:
 acceptance:
   - id: A1
     given: 'a horizontal Tabs in each of the five web frameworks inside a dir=rtl ancestor'
-    when: 'ArrowLeft or ArrowRight is pressed on the focused tab'
-    then: 'ArrowLeft moves to the next tab and ArrowRight to the previous, left-to-right and vertical lists are unchanged, and the unit tests fail under the physical mapping'
+    when: 'ArrowLeft or ArrowRight is pressed on the focused tab, in automatic or manual activation'
+    then: >-
+      ArrowLeft moves to the next tab and ArrowRight to the previous, counted from
+      the focused tab, left-to-right and vertical lists are unchanged, and the unit
+      tests fail under the physical mapping and under selection-based indexing
   - id: A2
     given: >-
       two-tab lists without loop for React, Vue, Svelte and Lit mounted in Chromium
