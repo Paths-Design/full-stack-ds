@@ -45,3 +45,11 @@ evidence:
     command: pnpm test
     exit_code: 0
     commit_sha: a55a3bbf9031d5fb0960418c0cb8d27e0005d828
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At a55a3bbf9 all 16 showcase-controls tests pass against a local dev server, including the Select test for react, vue, svelte, angular and lit and the inspector density choice. The same server with the spec from main fails those 6: five wait for getByRole button named Color, one for the density button at line 86."
+    recorded_at: "2026-10-21T08:43:00.647Z"
+    test_nodeid: e2e/showcase-controls.spec.ts
+    command: "FSDS_E2E_PORT=<dev server port> pnpm exec playwright test e2e/showcase-controls.spec.ts"
+    exit_code: 0
+    commit_sha: a55a3bbf9031d5fb0960418c0cb8d27e0005d828
