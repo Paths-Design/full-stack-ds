@@ -56,3 +56,25 @@ contracts:
   - name: 'native-selection-semantics'
     type: behavior
     path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 9749cfb6f RoleSemanticsTest.tabsAreSelectableTabsWhoseSelectionFollowsTheActiveTab (packages/ds-jetpack-compose/library/src/test/kotlin/com/fullstackds/components/semantics/RoleSemanticsTest.kt) asserts both tabs carry Role.Tab, alpha selected and beta not, no StateDescription key, and selection moving to beta on click; it failed against the pre-change generated Tabs.kt. The emitter pin is packages/ds-codegen/src/frameworks/jetpack-compose/component-source.test.ts. Gradle run: 43 tests, 0 failures."
+    recorded_at: "2026-10-21T08:34:14.385Z"
+    command: "./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon --rerun-tasks"
+    exit_code: 0
+    commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At 9749cfb6f RoleSemanticsTest (packages/ds-jetpack-compose/library/src/test/kotlin/com/fullstackds/components/semantics/RoleSemanticsTest.kt) asserts Role.Button on the Walkthrough Previous and Next controls and the Popover trigger, and Role.DropdownList on the Select trigger; each failed against the pre-change generated Kotlin. Gradle run: 43 tests, 0 failures."
+    recorded_at: "2026-10-21T08:34:25.473Z"
+    command: "./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon --rerun-tasks"
+    exit_code: 0
+    commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "At 9749cfb6f (lane merged with main): governed:rail exit 0; committed-tree-check generated reports packages/ matches HEAD; audit:a11y-realization PASS with 127 ledgered and no stale entries after retiring the six realized native rows; Compose library tests 43 with 0 failures; swift test 72 executed, 6 skipped, 0 failures; examples/settings/swift consumer build succeeds."
+    recorded_at: "2026-10-21T08:34:40.939Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run audit:a11y-realization && ./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon --rerun-tasks && swift test --package-path packages/ds-swiftui"
+    exit_code: 0
+    commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
