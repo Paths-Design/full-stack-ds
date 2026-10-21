@@ -71,3 +71,11 @@ evidence:
     command: "node --test scripts/committed-tree-check.test.mjs && node --test scripts/prepush-scope.test.mjs"
     exit_code: 0
     commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 12734d882, pnpm run governed:rail exits 0 and node scripts/committed-tree-check.mjs generated then exits 0 (packages/ matches HEAD). A full step-for-step run of the ci.yml gate job at 76e62ec99 (same contracts and codegen) left no changed or untracked file after any step, so no earlier CI step dirties packages/. scripts/committed-tree-check.test.mjs (14/14) pins failure on a changed byte in a Unity root, a staged edit, an untracked file (and not an ignored one), a deletion, and a path with spaces; three mutants (no untracked listing, index instead of revision, no packages/ bound) each fail it."
+    recorded_at: "2026-10-21T05:53:45.608Z"
+    test_nodeid: "scripts/committed-tree-check.test.mjs::a changed byte in any package fails and names the file, not only the framework src trees"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
+    exit_code: 0
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
