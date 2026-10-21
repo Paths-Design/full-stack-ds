@@ -78,3 +78,7 @@ evidence:
     command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run audit:a11y-realization && ./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon --rerun-tasks && swift test --package-path packages/ds-swiftui"
     exit_code: 0
     commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
+  - criterion_id: A2
+    status: unchecked
+    evidence_ref: "Blocked on the console lock, not on the code: swift run --package-path packages/ds-swiftui PressProofHarness exits 139 while CGSSessionScreenIsLocked=Yes (locked since 01:05:50 on 2026-10-21), and the same exit reproduces on the pre-change bytes. Owner: session cc2e39ec. Resumption trigger: the console unlocks; then rerun the harness in the native-selection-semantics worktree on final bytes (expected tabsSelected [[tabs-a],[tabs-b]] and controlledTabsSelected [[ctab-x],[ctab-y],[ctab-x]]), record A2, merge main, rerun gates, land and close."
+    recorded_at: "2026-10-21T13:48:16.033Z"
