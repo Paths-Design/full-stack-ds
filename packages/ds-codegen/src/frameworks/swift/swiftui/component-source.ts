@@ -1368,6 +1368,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`/// Press-wired tab: sets the \`${channel.name}\` channel to \`value\`.`);
     lines.push(`public struct ${exportName}Tab: View {`);
     lines.push(`${INDENT}@EnvironmentObject var ${channel.name}: ControllableValue<String>`);
+    lines.push(`${INDENT}@Environment(\\.fsdsChannelValues) private var fsdsChannelValues`);
     lines.push(`${INDENT}private let value: String`);
     lines.push(`${INDENT}private let label: String`);
     lines.push(`${INDENT}public init(value: String, label: String) {`);
@@ -1377,6 +1378,9 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`${INDENT}public var body: some View {`);
     lines.push(`${INDENT}${INDENT}Button(label) { ${channel.name}.set(value) }`);
     lines.push(`${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
+    // The selected trait reads the value the root hands down through the
+    // environment, as the panels do, so a parent-set tab is current.
+    lines.push(`${INDENT}${INDENT}${INDENT}.accessibilityAddTraits(${channel.name}.value(in: fsdsChannelValues) == value ? [.isSelected] : [])`);
     lines.push(`${INDENT}}`);
     lines.push(`}`);
     lines.push("");

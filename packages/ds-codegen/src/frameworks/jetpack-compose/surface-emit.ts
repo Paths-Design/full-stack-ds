@@ -126,6 +126,7 @@ function emitJetpackComposeSurfaceFiles(
   lines.push(`import androidx.compose.ui.Modifier`);
   lines.push(`import androidx.compose.ui.draw.clip`);
   lines.push(`import androidx.compose.ui.layout.onGloballyPositioned`);
+  if (isClick) lines.push(`import androidx.compose.ui.semantics.Role`);
   lines.push(`import androidx.compose.ui.unit.IntOffset`);
   lines.push(`import androidx.compose.ui.unit.dp`);
   lines.push(`import androidx.compose.ui.window.Popup`);
@@ -218,8 +219,8 @@ function emitJetpackComposeSurfaceFiles(
   ];
   if (isClick) {
     anchorModifier.push(hasDisabled
-      ? `            .clickable(enabled = enabled) { setOpen(!${resolved}) }`
-      : `            .clickable { setOpen(!${resolved}) }`);
+      ? `            .clickable(enabled = enabled, role = Role.Button) { setOpen(!${resolved}) }`
+      : `            .clickable(role = Role.Button) { setOpen(!${resolved}) }`);
   }
   if (isHover) {
     anchorModifier.push(`            .hoverable(interactionSource = interactionSource)`);

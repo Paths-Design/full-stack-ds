@@ -1,10 +1,11 @@
 id: NATIVE-SELECTION-SEMANTICS-01
 title: 'Native targets expose selection, roles and live regions instead of English state text'
 mode: fix
-lifecycle_state: active
-worktree: native-selection-semantics
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Auto-closed by caws worktree merge native-selection-semantics at 165f8a0bf88a610a451fb05b33e996992fc2b25d'
 created_at: '2026-10-21T07:16:16.343Z'
-updated_at: '2026-10-21T07:16:18.956Z'
+updated_at: '2026-10-21T15:36:28.167Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -73,12 +74,15 @@ evidence:
     commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
   - criterion_id: A5
     status: pass
-    evidence_ref: "At 9749cfb6f (lane merged with main): governed:rail exit 0; committed-tree-check generated reports packages/ matches HEAD; audit:a11y-realization PASS with 127 ledgered and no stale entries after retiring the six realized native rows; Compose library tests 43 with 0 failures; swift test 72 executed, 6 skipped, 0 failures; examples/settings/swift consumer build succeeds."
-    recorded_at: "2026-10-21T08:34:40.939Z"
+    evidence_ref: "At e1bedc088 (lane merged with main, worktree install refreshed for main's axe-core lockfile entry): governed:rail overall pass (react, vue, svelte, lit, angular all pass); committed-tree-check generated reports packages/ matches HEAD; audit:a11y-realization PASS, 167 obligations, 131 unrealized all ledgered, no stale entries; Compose :library:test BUILD SUCCESSFUL; swift test 72 executed, 6 skipped, 0 failures."
+    recorded_at: "2026-10-21T15:34:53.731Z"
     command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run audit:a11y-realization && ./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon --rerun-tasks && swift test --package-path packages/ds-swiftui"
     exit_code: 0
-    commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
+    commit_sha: e1bedc0886cfbb89fa9b4c9a6df93fd6e454ee5a
   - criterion_id: A2
-    status: unchecked
-    evidence_ref: "Blocked on the console lock, not on the code: swift run --package-path packages/ds-swiftui PressProofHarness exits 139 while CGSSessionScreenIsLocked=Yes (locked since 01:05:50 on 2026-10-21), and the same exit reproduces on the pre-change bytes. Owner: session cc2e39ec. Resumption trigger: the console unlocks; then rerun the harness in the native-selection-semantics worktree on final bytes (expected tabsSelected [[tabs-a],[tabs-b]] and controlledTabsSelected [[ctab-x],[ctab-y],[ctab-x]]), record A2, merge main, rerun gates, land and close."
-    recorded_at: "2026-10-21T13:48:16.033Z"
+    status: pass
+    evidence_ref: "At e1bedc088 (lane merged with main) the PressProofHarness (packages/ds-swiftui/Tests/PressProofHarness/main.swift, tabs and controlled-tabs steps) drives the generated SwiftUI Tabs through the macOS AppKit accessibility path and reads each tab's AXSelected: uncontrolled tabs read [[tabs-a],[tabs-b]] before and after pressing tabs-b, and a parent-bound Tabs reads [[ctab-x],[ctab-y],[ctab-x]] as the parent sets y then x, so the trait follows a press and a parent-set value; a mismatch appends a harness failure and the run exits nonzero. Exit 0, all counters match. Bounded to the macOS host: not an iOS simulator or device run, and the harness is not a CI step."
+    recorded_at: "2026-10-21T15:34:38.038Z"
+    command: swift run --package-path packages/ds-swiftui PressProofHarness
+    exit_code: 0
+    commit_sha: e1bedc0886cfbb89fa9b4c9a6df93fd6e454ee5a

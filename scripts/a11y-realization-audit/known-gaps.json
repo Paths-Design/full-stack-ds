@@ -698,13 +698,6 @@
       "spec": "TABLE-SELECTION-STATE-01"
     },
     {
-      "component": "Tabs",
-      "family": "swiftui",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
       "component": "Truncate",
       "family": "swiftui",
       "class": "state-attribute",
@@ -761,24 +754,10 @@
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
-      "component": "Popover",
-      "family": "jetpack-compose",
-      "class": "interactive-role",
-      "key": "activation",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
       "component": "Select",
       "family": "jetpack-compose",
       "class": "state-attribute",
       "key": "aria-expanded",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Select",
-      "family": "jetpack-compose",
-      "class": "interactive-role",
-      "key": "activation",
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
@@ -796,31 +775,10 @@
       "spec": "TABLE-SELECTION-STATE-01"
     },
     {
-      "component": "Tabs",
-      "family": "jetpack-compose",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Tabs",
-      "family": "jetpack-compose",
-      "class": "interactive-role",
-      "key": "activation",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
       "component": "Truncate",
       "family": "jetpack-compose",
       "class": "state-attribute",
       "key": "aria-expanded",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Walkthrough",
-      "family": "jetpack-compose",
-      "class": "interactive-role",
-      "key": "activation",
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {

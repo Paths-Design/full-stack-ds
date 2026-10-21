@@ -494,6 +494,19 @@ describe("generateJetpackComposeComponentSource — interactive-composite class 
     expect(src).toContain("state.value == key");
     expect(src).not.toMatch(/import androidx\.compose\.material/);
   });
+
+  it("imports the semantics extension a scalar composite with an accessible name calls", () => {
+    // Tabs declares no ariaLabel today; a scalar composite that does names its
+    // root through Modifier.semantics, so the file must import it.
+    type Members = { name: string; type: string; description: string }[];
+    const contract = loadContract("Tabs") as { props: { styled: { members: Members } } };
+    contract.props.styled.members.push({ name: "ariaLabel", type: "string", description: "Accessible name of the tab list." });
+    const src = generateJetpackComposeComponentSource(
+      buildComponentIR(contract as unknown as Parameters<typeof buildComponentIR>[0]),
+    );
+    expect(src).toContain("Modifier.semantics { this.contentDescription = contentDescription }");
+    expect(src).toContain("import androidx.compose.ui.semantics.semantics\n");
+  });
 });
 
 describe("generateJetpackComposeComponentSource — count-iterated field group (FEAT-COMPOSE-OTP-ADMISSION-01)", () => {
@@ -913,7 +926,7 @@ describe("anchored surfaces (FEAT-COMPOSE-ANCHORED-SURFACES-01)", () => {
     expect(componentFile).toContain("enum class PopoverPlacement {");
     expect(componentFile).toContain("trigger: @Composable () -> Unit,");
     expect(componentFile).toContain(".onGloballyPositioned { coords ->");
-    expect(componentFile).toContain(".clickable { setOpen(!resolvedOpen) }");
+    expect(componentFile).toContain(".clickable(role = Role.Button) { setOpen(!resolvedOpen) }");
     expect(componentFile).toContain("Popup(");
     expect(componentFile).toContain("offset = IntOffset(offsetX(placement, anchorWidth), offsetY(placement, anchorHeight)),");
     expect(componentFile).toContain('layeredSlot("popover.color.border")');
