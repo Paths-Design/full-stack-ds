@@ -74,7 +74,7 @@ fi
 # does not carry: a stray untracked file fails lint for a commit CI would pass,
 # and an uncommitted fix passes a commit CI would fail. Ignored files (build
 # output, caches, CAWS runtime state) are outside the comparison.
-say "working tree matches the pushed commit ${TIP:0:9}"
+say "working tree vs the pushed commit ${TIP:0:9}"
 node scripts/committed-tree-check.mjs pushed "$TIP"
 
 # --- determine the diff range (or fall back to FULL) ---
