@@ -147,7 +147,7 @@ export class SelectElement extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-align: var(--fsds-select-design-text-typography-alignment, left);
+      text-align: var(--fsds-select-design-text-typography-alignment, start);
     }
 
     .select__trigger {
@@ -476,7 +476,7 @@ export class SelectTriggerElement extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-align: var(--fsds-select-design-text-typography-alignment, left);
+      text-align: var(--fsds-select-design-text-typography-alignment, start);
     }
 
     .select__trigger {
@@ -728,7 +728,7 @@ export class SelectContentElement extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-align: var(--fsds-select-design-text-typography-alignment, left);
+      text-align: var(--fsds-select-design-text-typography-alignment, start);
     }
 
     .select__trigger {
@@ -980,7 +980,7 @@ export class SelectOptionElement extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-align: var(--fsds-select-design-text-typography-alignment, left);
+      text-align: var(--fsds-select-design-text-typography-alignment, start);
     }
 
     .select__trigger {

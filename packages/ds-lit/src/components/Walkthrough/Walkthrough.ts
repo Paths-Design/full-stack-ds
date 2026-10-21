@@ -165,7 +165,7 @@ export class WalkthroughElement extends LitElement {
       color: var(--fsds-walkthrough-design-skip-foreground-color, var(--fsds-walkthrough-button-secondary-color, #474647));
       cursor: pointer;
       padding: var(--fsds-walkthrough-design-skip-spacing-padding, 0);
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .walkthrough__prev {
@@ -485,7 +485,7 @@ export class WalkthroughContentElement extends LitElement {
       color: var(--fsds-walkthrough-design-skip-foreground-color, var(--fsds-walkthrough-button-secondary-color, #474647));
       cursor: pointer;
       padding: var(--fsds-walkthrough-design-skip-spacing-padding, 0);
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .walkthrough__prev {
@@ -681,7 +681,7 @@ export class WalkthroughTitleElement extends LitElement {
       color: var(--fsds-walkthrough-design-skip-foreground-color, var(--fsds-walkthrough-button-secondary-color, #474647));
       cursor: pointer;
       padding: var(--fsds-walkthrough-design-skip-spacing-padding, 0);
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .walkthrough__prev {
@@ -877,7 +877,7 @@ export class WalkthroughDescriptionElement extends LitElement {
       color: var(--fsds-walkthrough-design-skip-foreground-color, var(--fsds-walkthrough-button-secondary-color, #474647));
       cursor: pointer;
       padding: var(--fsds-walkthrough-design-skip-spacing-padding, 0);
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .walkthrough__prev {

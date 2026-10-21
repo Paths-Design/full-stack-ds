@@ -211,8 +211,8 @@ export class TabsElement extends LitElement {
     .tabs--vertical .tabs__indicator {
       top: 0;
       bottom: 0;
-      right: -1px;
-      left: auto;
+      inset-inline-end: -1px;
+      inset-inline-start: auto;
       width: var(--fsds-tabs-design-condition-1e00e77afe59-sizing-width, var(--fsds-tabs-size-indicator-thickness, 2px));
       height: auto;
       transition: transform var(--fsds-tabs-motion-indicator) ease, height var(--fsds-tabs-motion-indicator) ease;
@@ -495,8 +495,8 @@ export class TabsListElement extends LitElement {
     .tabs--vertical .tabs__indicator {
       top: 0;
       bottom: 0;
-      right: -1px;
-      left: auto;
+      inset-inline-end: -1px;
+      inset-inline-start: auto;
       width: var(--fsds-tabs-design-condition-1e00e77afe59-sizing-width, var(--fsds-tabs-size-indicator-thickness, 2px));
       height: auto;
       transition: transform var(--fsds-tabs-motion-indicator) ease, height var(--fsds-tabs-motion-indicator) ease;
@@ -764,8 +764,8 @@ export class TabsTabElement extends LitElement {
     .tabs--vertical .tabs__indicator {
       top: 0;
       bottom: 0;
-      right: -1px;
-      left: auto;
+      inset-inline-end: -1px;
+      inset-inline-start: auto;
       width: var(--fsds-tabs-design-condition-1e00e77afe59-sizing-width, var(--fsds-tabs-size-indicator-thickness, 2px));
       height: auto;
       transition: transform var(--fsds-tabs-motion-indicator) ease, height var(--fsds-tabs-motion-indicator) ease;
@@ -1018,8 +1018,8 @@ export class TabsPanelElement extends LitElement {
     .tabs--vertical .tabs__indicator {
       top: 0;
       bottom: 0;
-      right: -1px;
-      left: auto;
+      inset-inline-end: -1px;
+      inset-inline-start: auto;
       width: var(--fsds-tabs-design-condition-1e00e77afe59-sizing-width, var(--fsds-tabs-size-indicator-thickness, 2px));
       height: auto;
       transition: transform var(--fsds-tabs-motion-indicator) ease, height var(--fsds-tabs-motion-indicator) ease;

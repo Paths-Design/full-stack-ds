@@ -140,6 +140,10 @@ export class SwitchElement extends LitElement {
         translate: var(--fsds-switch-size-md-thumb-translate-on, 24px);
       }
 
+      &:dir(rtl) .switch__track {
+        scale: -1 1;
+      }
+
       &:has(.switch__input:focus-visible) .switch__track {
         outline-width: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-width, var(--fsds-switch-focus-ring-width, 2px));
         outline-color: var(--fsds-switch-design-condition-c9aff20d4aa9-focus-color, var(--fsds-switch-focus-ring-color, #0566fe));
