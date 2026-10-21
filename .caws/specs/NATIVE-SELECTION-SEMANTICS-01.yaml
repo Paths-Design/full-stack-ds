@@ -1,9 +1,10 @@
 id: NATIVE-SELECTION-SEMANTICS-01
 title: 'Native targets expose selection, roles and live regions instead of English state text'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: native-selection-semantics
 created_at: '2026-10-21T07:16:16.343Z'
-updated_at: '2026-10-21T07:16:16.343Z'
+updated_at: '2026-10-21T07:16:18.956Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -34,17 +35,16 @@ acceptance:
     when: 'a tab renders'
     then: 'it is a selectable node with Role.Tab whose selected state follows the active tab, and no English stateDescription is emitted for tabs'
   - id: A2
-    given: 'the generated SwiftUI Tabs and Select'
-    when: 'they render'
-    then: 'the active tab and the selected option carry the isSelected accessibility trait, read from the current channel value'
+    given: 'the generated SwiftUI Tabs'
+    when: 'a tab renders'
+    then: >-
+      the active tab carries the isSelected accessibility trait and the others do
+      not, read from the current channel value through the environment, and the
+      trait follows a press and a parent-set value
   - id: A3
     given: 'the generated Compose Walkthrough, Popover and Select'
     when: 'they render'
     then: 'their previous/next buttons and the popover trigger expose Role.Button and the Select trigger Role.DropdownList'
-  - id: A4
-    given: 'the generated Compose Toast'
-    when: 'it shows'
-    then: 'its content is a live region, polite or assertive following the politeness prop'
   - id: A5
     given: 'the regenerated tree'
     when: 'the rail, committed-output check, a11y audit and the Compose and Swift test suites run'
