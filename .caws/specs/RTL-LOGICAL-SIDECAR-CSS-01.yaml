@@ -1,0 +1,58 @@
+id: RTL-LOGICAL-SIDECAR-CSS-01
+title: 'Direction-dependent sidecar CSS uses logical properties'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-21T11:14:52.848Z'
+updated_at: '2026-10-21T11:14:52.848Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/components'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Toast/Toast.styles.json'
+    - 'packages/ds-contracts/components/Switch/Switch.styles.json'
+    - 'packages/ds-contracts/components/Dialog/Dialog.styles.json'
+    - 'packages/ds-contracts/components/Sheet/Sheet.styles.json'
+    - 'packages/ds-contracts/components/Alert/Alert.styles.json'
+    - 'packages/ds-contracts/components/AlertNotice/AlertNotice.styles.json'
+    - 'packages/ds-contracts/components/Progress/Progress.styles.json'
+    - 'packages/ds-contracts/components/Walkthrough/Walkthrough.styles.json'
+    - 'packages/ds-contracts/components/Tabs/Tabs.styles.json'
+    - 'packages/ds-contracts/components/Accordion/Accordion.styles.json'
+    - 'packages/ds-contracts/components/Select/Select.styles.json'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-figma-plugin'
+    - 'packages/ds-codegen/generated'
+    - 'e2e/rtl-direction.spec.ts'
+  out: []
+invariants:
+  - 'A declaration whose side depends on reading direction names the inline start or end, so left-to-right rendering is unchanged and right-to-left mirrors it'
+  - 'Physical side values that a component exposes as API (Sheet side, Tooltip and Popover placement, Text align) stay physical until the user decides their meaning'
+acceptance:
+  - id: A1
+    given: 'Toast, Switch, Dialog, Sheet, Alert, AlertNotice, Progress, Walkthrough, vertical Tabs, Accordion and Select sidecars'
+    when: 'they are generated'
+    then: 'their direction-dependent declarations use inline-start or inline-end properties (or a dir=rtl mirror for the Switch track), and left-to-right generated CSS computes the same values as before'
+  - id: A2
+    given: 'the Toast, checked Switch, open Dialog and dismissible Alert previews in Chromium for each of the five web frameworks with dir=rtl on the document element'
+    when: 'they render'
+    then: 'the toast sits against the left viewport edge, the checked thumb sits left of the track centre, the dialog close button sits left of the modal centre and the alert dismiss sits at its left end, and the same probes under dir=ltr place them on the right'
+  - id: A3
+    given: 'the regenerated tree'
+    when: 'the rail, committed-output check, styling audits and every framework suite run'
+    then: 'all pass'
+rollback:
+  - 'Revert the merge commit and regenerate every target'
+non_functional: {}
+contracts:
+  - name: 'logical-sidecar-css'
+    type: behavior
+    path: 'e2e/rtl-direction.spec.ts'
