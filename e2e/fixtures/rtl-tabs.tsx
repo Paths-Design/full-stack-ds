@@ -10,7 +10,7 @@ import SvelteTabsFixture from "../../packages/ds-svelte/src/components/Tabs/__te
 import "../../packages/ds-lit/src/components/Tabs/Tabs";
 import "../../packages/ds-tokens/generated/tokens.css";
 
-type Framework = "react" | "vue" | "svelte" | "lit";
+type Framework = "react" | "vue" | "svelte" | "lit" | "lit-in-shadow-root";
 
 /**
  * Mounts a two-tab list without loop inside a right-to-left region. Without
@@ -68,6 +68,15 @@ export function mountFixture(framework: Framework): void {
       element("fsds-tabs-panel", { value: "a" }, "Panel A content"),
       element("fsds-tabs-panel", { value: "b" }, "Panel B content"),
     );
-    region.append(tabs);
+    if (framework === "lit-in-shadow-root") {
+      // The whole composition sits inside another component's shadow root,
+      // with the direction declared outside it: reading it means crossing
+      // from the shadow tree to its host.
+      const outer = document.createElement("div");
+      outer.attachShadow({ mode: "open" }).append(tabs);
+      region.append(outer);
+    } else {
+      region.append(tabs);
+    }
   }
 }
