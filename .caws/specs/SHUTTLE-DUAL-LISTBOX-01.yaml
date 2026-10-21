@@ -1,0 +1,72 @@
+id: SHUTTLE-DUAL-LISTBOX-01
+title: 'Shuttle realizes the dual-listbox transfer its contract describes'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-21T13:49:30.428Z'
+updated_at: '2026-10-21T13:49:30.428Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/components/Shuttle'
+    - 'packages/ds-codegen/src'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Shuttle'
+    - 'packages/ds-contracts/component.contract.schema.json'
+    - 'packages/ds-codegen/src'
+    - 'packages/ds-codegen/generated'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-figma-plugin'
+    - 'packages/ds-unity'
+    - 'scripts/a11y-realization-audit/known-gaps.json'
+    - 'scripts/custom-region-audit/known-authored-regions.json'
+    - 'scripts/compose-parity-diff.mjs'
+    - 'e2e/shuttle.spec.ts'
+    - 'e2e/runtime-rail.spec.ts'
+    - 'docs/architecture/transfer-list.md'
+    - 'docs/architecture/localization.md'
+    - 'docs/architecture/native-target-admission.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The selection channel stays the public value: the ids in the selected list, in transfer order; the candidate set comes from an options prop in display order'
+  - 'aria-selected on an option reports whether it is marked for transfer, never which list it is in'
+  - 'Transfer button and list names come from the message catalog, never from English literals in emitted code'
+acceptance:
+  - id: A1
+    given: 'the Shuttle contract'
+    when: 'the IR is built'
+    then: 'it declares an options prop, the selection channel, two multiselectable listboxes named from the catalog, add and remove buttons named from the catalog, and a transfer fact, and IR validation rejects transfer usage without its declaration'
+  - id: A2
+    given: 'the transfer core'
+    when: 'it is driven'
+    then: 'the available list is options minus value in options order, the selected list is value in transfer order, Space toggles the focused item mark, arrows Home and End move one tab stop within a list, Enter and the buttons move the marked items (or the focused item when none is marked) to the other list, report the new value and clear marks, pinned by core unit tests with exact states'
+  - id: A3
+    given: 'the five web packages'
+    when: 'the generated Shuttle renders in Chromium'
+    then: 'each list is a multiselectable listbox whose options report marks through aria-selected, and arrows, Space, Enter and the buttons transfer items and report the value, in every framework'
+  - id: A4
+    given: 'React Native, SwiftUI and Jetpack Compose'
+    when: 'Shuttle renders'
+    then: 'both lists render, an item toggles its mark, add and remove transfer marked items, and the mark is exposed as the platform selected state, pinned by each platform test suite'
+  - id: A5
+    given: 'the regenerated tree'
+    when: 'the a11y audit, rail, committed-output check, typecheck, lint, doc claims, audits, framework suites and native compile lanes run'
+    then: 'the Shuttle ledger rows that the realization burns are removed, nothing new is unledgered, and all pass'
+  - id: A6
+    given: 'the docs'
+    when: 'a reader looks up Shuttle'
+    then: 'a transfer-list doc states the contract, the per-target realization and what is not claimed'
+rollback:
+  - 'Revert the merge commit and regenerate every target'
+non_functional: {}
+contracts: []
