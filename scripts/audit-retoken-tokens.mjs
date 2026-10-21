@@ -17,8 +17,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const CSS = 'e2e/fixtures/retoken-pages/theme.css';
-const BASELINE = 'e2e/fixtures/retoken-pages/token-audit-baseline.json';
+const CSS = 'examples/token-theming/theme.css';
+const SUPPLEMENTAL_CSS = 'examples/token-theming/pinterest.css';
+const BASELINE = 'examples/token-theming/token-audit-baseline.json';
 const COMPONENTS = 'packages/ds-react/src/components';
 const TOKENS_CSS = 'packages/ds-tokens/generated/tokens.css';
 
@@ -74,6 +75,10 @@ function parseCss(text) {
 
 const themeText = readFileSync(path.join(root, CSS), 'utf8');
 const rules = parseCss(themeText);
+// The adjudication baseline owns theme.css. Page-specific controls also supply
+// design variables, so include them when deciding whether a fallback is unset.
+// This does not assert a load-bearing verdict or literal census for that sheet.
+const supplementalRules = parseCss(readFileSync(path.join(root, SUPPLEMENTAL_CSS), 'utf8'));
 
 const fsdsEntries = [];
 const pageVars = { base: {}, spotify: {}, pinterest: {} };
@@ -92,6 +97,11 @@ for (const rule of rules) {
   }
 }
 
+const suppliedProps = new Set([
+  ...fsdsEntries.map(entry => entry.prop),
+  ...supplementalRules.flatMap(rule => rule.decls.filter(decl => decl.prop.startsWith('--fsds-')).map(decl => decl.prop)),
+]);
+
 function resolveValue(value, page) {
   // Resolve --page-*/--retoken-* refs in page order base -> page; returns final string.
   let out = value;
@@ -108,10 +118,10 @@ function resolveValue(value, page) {
 
 function componentNames() {
   const names = new Set();
-  for (const page of ['pages.tsx', 'pinterest.tsx']) {
-    const text = readFileSync(path.join(root, 'e2e/fixtures/retoken-pages', page), 'utf8');
+  for (const page of ['pages.tsx', 'pinterest.tsx', 'spotify.tsx']) {
+    const text = readFileSync(path.join(root, 'examples/token-theming', page), 'utf8');
     for (const m of text.matchAll(/<([A-Z][A-Za-z0-9]+)/g)) names.add(m[1]);
-    for (const m of text.matchAll(/import \{([^}]*)\} from '\.\.\/\.\.\/\.\.\/packages\/ds-react\/src\/components'/g))
+    for (const m of text.matchAll(/import \{([^}]*)\} from '\.\.\/\.\.\/packages\/ds-react\/src\/components'/g))
       for (const n of m[1].split(',').map(s => s.trim()).filter(Boolean)) names.add(n);
   }
   return [...names].filter(n => n !== 'Popover' || true);
@@ -242,10 +252,9 @@ const baselinePath = path.join(root, BASELINE);
 
 if (fallbacksMode) {
   const chains = designVarChains();
-  const setProps = new Set(fsdsEntries.map(e => e.prop));
   for (const [comp, vars] of Object.entries(chains)) {
     for (const [varName, info] of Object.entries(vars)) {
-      if (setProps.has(varName)) continue;
+      if (suppliedProps.has(varName)) continue;
       console.log(`${comp}\t${varName}\tfallback=${info.fallback || '(none)'}\tterminal=${info.terminal}`);
     }
   }
@@ -324,13 +333,12 @@ for (const cand of parityCandidates()) {
   if (!(key in (baseline.parity ?? {}))) { fail(`unexplained cross-scope value difference: ${key} (${cand.baseValue} -> ${cand.overrideValue})`); errors++; }
 }
 
-const setProps = new Set(fsdsEntries.map(e => e.prop));
 const chains = designVarChains();
 const ledger = baseline.fallbackLedger ?? {};
 const SINGLE_HEX = /^#[0-9a-fA-F]{3,8}$/;
 for (const [comp, vars] of Object.entries(chains)) {
   for (const [varName, info] of Object.entries(vars)) {
-    if (setProps.has(varName)) continue;
+    if (suppliedProps.has(varName)) continue;
     // Only single-hex terminals are color-ledger scope; multi-stop shadow
     // compositions are recorded as an explicit non-claim in the attempts doc.
     if (SINGLE_HEX.test(info.terminal) && !(varName in ledger)) {

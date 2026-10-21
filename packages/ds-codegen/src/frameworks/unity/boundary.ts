@@ -148,21 +148,30 @@ export function keyedLeaves(value: unknown, source: LeafSource, roles: Map<strin
   return out;
 }
 
+// Cache syntax, never classification results: values and rule order are live inputs.
+const segmentPatterns = new Map<string, RegExp>();
+const pointerPatterns = new Map<string, string[]>();
+const valuePatterns = new Map<string, RegExp>();
+
 function segmentMatches(pattern: string, segment: string): boolean {
   if (!pattern.includes("*")) return pattern === segment;
-  const re = new RegExp(`^${pattern.split("*").map(part => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[^/]*")}$`);
+  let re = segmentPatterns.get(pattern);
+  if (!re) {
+    re = new RegExp(`^${pattern.split("*").map(part => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[^/]*")}$`);
+    segmentPatterns.set(pattern, re);
+  }
   return re.test(segment);
 }
 
-function segmentsMatch(pattern: string[], segments: string[]): boolean {
-  if (pattern.length === 0) return segments.length === 0;
-  const [head, ...rest] = pattern;
+function segmentsMatch(pattern: string[], segments: string[], p = 0, s = 0): boolean {
+  if (p === pattern.length) return s === segments.length;
+  const head = pattern[p];
   if (head === "**") {
-    for (let skip = 0; skip <= segments.length; skip++) if (segmentsMatch(rest, segments.slice(skip))) return true;
+    for (let skip = s; skip <= segments.length; skip++) if (segmentsMatch(pattern, segments, p + 1, skip)) return true;
     return false;
   }
-  if (segments.length === 0) return false;
-  return segmentMatches(head!, segments[0]!) && segmentsMatch(rest, segments.slice(1));
+  if (s === segments.length) return false;
+  return segmentMatches(head!, segments[s]!) && segmentsMatch(pattern, segments, p + 1, s + 1);
 }
 
 /** `<source>:<keyed pointer glob>` against a leaf. */
@@ -172,12 +181,25 @@ export function patternMatches(pattern: string, leaf: Pick<Leaf, "source" | "key
   if (pattern.slice(0, colon) !== leaf.source) return false;
   const glob = pattern.slice(colon + 1);
   if (!glob.startsWith("/")) throw new Error(`UNITY_BOUNDARY_PATTERN: pointer must start with / in ${pattern}`);
-  return segmentsMatch(glob.slice(1).split("/"), leaf.keyed.slice(1).split("/"));
+  let segments = pointerPatterns.get(glob);
+  if (!segments) {
+    segments = glob.slice(1).split("/");
+    pointerPatterns.set(glob, segments);
+  }
+  return segmentsMatch(segments, leaf.keyed.slice(1).split("/"));
 }
 
 function ruleMatches(rule: BoundaryRule, leaf: Leaf): boolean {
   if (rule.valueIn && !rule.valueIn.some(v => Object.is(v, leaf.value))) return false;
-  if (rule.valuePattern !== undefined && (typeof leaf.value !== "string" || !new RegExp(rule.valuePattern).test(leaf.value))) return false;
+  if (rule.valuePattern !== undefined) {
+    if (typeof leaf.value !== "string") return false;
+    let re = valuePatterns.get(rule.valuePattern);
+    if (!re) {
+      re = new RegExp(rule.valuePattern);
+      valuePatterns.set(rule.valuePattern, re);
+    }
+    if (!re.test(leaf.value)) return false;
+  }
   return rule.match.some(pattern => patternMatches(pattern, leaf));
 }
 

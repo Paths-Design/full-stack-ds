@@ -1,0 +1,87 @@
+id: PINBOARD-CHROME-FIDELITY-01
+title: 'Pinboard reference header, discovery overlays and compact masonry'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Reference chrome and packed feed landed with inspected browser execution, repaired focus regressions and recorded source citations'
+created_at: '2026-10-20T01:03:23.305Z'
+updated_at: '2026-10-20T03:02:23.335Z'
+created_by_session: '01a156d3-2809-73b0-970f-b22d29357572'
+blast_radius:
+  modules:
+    - 'Pinboard consumer fixture and browser tests'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'e2e/fixtures/retoken-pages/pinterest.tsx'
+    - 'e2e/fixtures/retoken-pages/pinterest.css'
+    - 'e2e/pinterest-chrome.spec.ts'
+    - 'e2e/retoken-pages.spec.ts'
+    - 'docs/architecture/design/retoken-page-attempts.md'
+    - scripts/audit-retoken-tokens.mjs
+    - scripts/audit-retoken-tokens.selftest.mjs
+  out: []
+invariants:
+  - 'Generated component source and shared music fixture remain unchanged'
+  - 'Pin navigation, keyboard access and local saved state remain available'
+acceptance:
+  - id: A1
+    given: 'the reference screenshots and local feed'
+    when: 'the desktop page renders'
+    then: >-
+      a compact business header, circular brand symbol, topic rail and gap-bounded
+      shortest-column feed render without horizontal overflow
+  - id: A2
+    given: 'the Pinboard header'
+    when: 'global navigation, search, notifications, account and engagement controls are activated'
+    then: 'their corresponding local surfaces render, dismiss by Escape or outside activation, and retain usable keyboard focus'
+  - id: A3
+    given: 'desktop and narrow viewports'
+    when: 'existing Pin detail, search and save flows run'
+    then: 'local state and navigation remain functional without horizontal overflow'
+  - id: A4
+    given: 'the supplied profile image and additional navigation references'
+    when: 'header controls are hovered or focused and saved-collection search is opened'
+    then: >-
+      photo avatars, accessible tooltips, item-specific navigation descriptions and
+      removable recent-search chips with viewed/saved thumbnail groups render and
+      respond locally
+observability:
+  - 'Playwright geometry and interaction assertions plus rendered screenshots'
+rollback:
+  - 'Revert the isolated fixture implementation commit'
+non_functional: {}
+contracts:
+  - name: 'pinboard-consumer'
+    type: behavior
+    path: 'e2e/pinterest-chrome.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Merged Chromium packing/overflow at 1357/900/390 widths and inspected desktop render establish compact header, circular mark, topic rail and packed local artwork; no pixel-identity claim. Executed browser evidence: tmp/pinboard-chrome-fidelity/post-merge-browser.log (12 passed, inspected); runtime logs remain untracked. CLI verification here checks source-commit existence only, not behavioral correctness or test execution."
+    recorded_at: "2026-10-20T03:01:33.081Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep 'Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement' --workers=2 --max-failures=1"
+    exit_code: 0
+    commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Merged header-surface and focus checks pass desktop/narrow. Two concrete focus regressions failed before repair and pass afterward. Executed browser evidence: tmp/pinboard-chrome-fidelity/post-merge-browser.log (12 passed, inspected); runtime logs remain untracked. CLI verification here checks source-commit existence only, not behavioral correctness or test execution."
+    recorded_at: "2026-10-20T03:01:34.159Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep 'Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement' --workers=2 --max-failures=1"
+    exit_code: 0
+    commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Merged Pin detail, direct/invalid links, search/save, board/like/comment/hide and browser-back flows pass desktop/narrow without overflow; local state only. Executed browser evidence: tmp/pinboard-chrome-fidelity/post-merge-browser.log (12 passed, inspected); runtime logs remain untracked. CLI verification here checks source-commit existence only, not behavioral correctness or test execution."
+    recorded_at: "2026-10-20T03:01:35.148Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep 'Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement' --workers=2 --max-failures=1"
+    exit_code: 0
+    commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Merged photo/hints/history checks assert supplied 32px photo, hover/focus tooltips, catalog/Locations descriptions, removable history and viewed/saved groups with uniform 90x116 thumbnails. Executed browser evidence: tmp/pinboard-chrome-fidelity/post-merge-browser.log (12 passed, inspected); runtime logs remain untracked. CLI verification here checks source-commit existence only, not behavioral correctness or test execution."
+    recorded_at: "2026-10-20T03:01:36.063Z"
+    command: "FSDS_E2E_PORT=5202 pnpm exec playwright test e2e/pinterest-chrome.spec.ts e2e/retoken-pages.spec.ts --grep 'Pinboard|pinterest|Pin opens|Pin links|Shortest|Search scrim|Account engagement' --workers=2 --max-failures=1"
+    exit_code: 0
+    commit_sha: "76502a78164ab835a27e343e9cbead6b571f3245"

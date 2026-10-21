@@ -1,4 +1,5 @@
 import path from "node:path";
+import { availableParallelism } from "node:os";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
@@ -58,6 +59,9 @@ export default defineConfig({
     ],
   },
   test: {
+    // Corpus audits and CLI tests compete for CPU with jsdom workers. Bound
+    // parallelism so their existing deadlines hold on shared development hosts.
+    maxWorkers: Math.min(4, Math.max(1, availableParallelism() - 1)),
     environment: "jsdom",
     setupFiles: ["./src/test-setup.ts"],
     css: true,

@@ -1,0 +1,64 @@
+id: GOVERNED-CI-DRIFT-ROOTS-01
+title: 'Committed-output check covers every generated root; pre-push verifies the pushed commit'
+mode: fix
+lifecycle_state: active
+worktree: governed-ci-drift-roots
+created_at: '2026-10-19T17:08:55.725Z'
+updated_at: '2026-10-19T17:10:33.783Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - '.github/workflows'
+    - '.githooks'
+    - 'scripts'
+    - 'docs/specifications'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - '.github/workflows/ci.yml'
+    - '.githooks/pre-push'
+    - 'scripts/prepush-scope.mjs'
+    - 'scripts/prepush-scope.test.mjs'
+    - 'scripts/committed-tree-check.mjs'
+    - 'scripts/committed-tree-check.test.mjs'
+    - 'docs/specifications/governed-ci.md'
+    - 'docs/specifications/admission-rail.md'
+    - 'doc-freshness-baseline.json'
+    - 'CLAUDE.md'
+    - 'AGENTS.md'
+    - 'README.md'
+    - 'docs/architecture/native-target-admission.md'
+  out: []
+invariants:
+  - 'Every committed byte under packages/ that the generator writes is compared after regeneration, without a hand-maintained root list'
+  - 'Pre-push gates run against bytes equal to the pushed commit, or the push is refused'
+  - 'CI stays authoritative; the pre-push scope classifier may over-run but never skips a group whose input changed'
+acceptance:
+  - id: A1
+    given: 'a clean checkout after pnpm run governed:rail'
+    when: 'the committed-output check runs'
+    then: 'it fails on a changed tracked byte or an untracked file anywhere under packages/ (including the Figma, Unity and Godot generated roots the old ten-root list missed) and passes on a clean regeneration'
+  - id: A2
+    given: 'ci.yml and .githooks/pre-push'
+    when: 'either checks generated output after the rail'
+    then: 'both run the same committed-output script and neither carries its own list of roots'
+  - id: A3
+    given: 'a push whose working tree differs from the pushed commit (a tracked change or an untracked, non-ignored file)'
+    when: 'the pre-push hook starts'
+    then: 'it refuses before any gate runs and names the differing paths, and it proceeds when the tree equals the pushed commit'
+  - id: A4
+    given: 'a pushed change under any package the generator writes into (ds-figma-plugin, ds-unity, ds-godot as well as the framework packages)'
+    when: 'the pre-push classifier runs'
+    then: 'the rail group and the committed-output check run'
+  - id: A5
+    given: 'governed-ci.md and admission-rail.md'
+    when: 'docs:check-claims runs'
+    then: 'both are restamped fresh and absent from doc-freshness-baseline.json, cite only rerunnable evidence (command, commit, exit code), and describe the live CI steps, suites and manifest version'
+rollback:
+  - 'Revert the merge commit; ci.yml and pre-push return to the ten-root diff'
+non_functional: {}
+contracts:
+  - name: 'committed-tree-check'
+    type: behavior
+    path: 'scripts/committed-tree-check.mjs'
