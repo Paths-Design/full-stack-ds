@@ -1,9 +1,11 @@
 id: SVELTE-PACKAGE-DTS-SCOPE-01
 title: 'Svelte packaging stops writing declarations into ds-react sources'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Svelte build declaration program excludes __tests__; three stray ds-react .d.ts deleted; root test forbids a .d.ts beside its source'
 created_at: '2026-10-19T16:04:38.436Z'
-updated_at: '2026-10-19T16:05:30.655Z'
+updated_at: '2026-10-21T02:38:00.260Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
