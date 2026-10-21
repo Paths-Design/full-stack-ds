@@ -2,7 +2,6 @@ id: RTL-TABS-ARROW-DIRECTION-01
 title: 'Tabs arrow keys follow the inline direction in every web framework'
 mode: fix
 lifecycle_state: active
-worktree: rtl-tabs-direction
 created_at: '2026-10-21T09:56:04.722Z'
 updated_at: '2026-10-21T10:26:14.037Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
