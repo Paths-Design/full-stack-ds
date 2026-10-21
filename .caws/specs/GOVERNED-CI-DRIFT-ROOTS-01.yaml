@@ -1,9 +1,11 @@
 id: GOVERNED-CI-DRIFT-ROOTS-01
 title: 'Committed-output check covers every generated root; pre-push verifies the pushed commit'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'One committed-tree check covers all generated output in CI and pre-push; pre-push refuses a tree that differs from any pushed tip; rail docs restamped with rerunnable citations'
 created_at: '2026-10-19T17:08:55.725Z'
-updated_at: '2026-10-19T17:10:33.783Z'
+updated_at: '2026-10-21T05:58:34.985Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
