@@ -60,3 +60,11 @@ contracts:
   - name: 'calendar-root-role'
     type: behavior
     path: 'packages/ds-contracts/components/Calendar/Calendar.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 279dbf7d8 the Calendar contract declares role group in its anatomy, dom and a11y blocks. pnpm run governed:rail regenerates every target and node scripts/committed-tree-check.mjs generated exits 0, so the committed output matches: the five web roots render role=group, the Figma descriptor records group, and no generated Calendar file or descriptor contains the application role (React Native, SwiftUI and Compose never rendered it)."
+    recorded_at: "2026-10-21T06:07:00.731Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
+    exit_code: 0
+    commit_sha: "279dbf7d82e8e4ce4c954c0b1f38b0388c7ba293"
