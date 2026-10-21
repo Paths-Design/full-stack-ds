@@ -57,3 +57,10 @@ evidence:
     command: pnpm exec vitest run src/consumption/source-declarations.test.ts
     exit_code: 0
     commit_sha: b7baa0e9993b7d8ea088211663e7e428d32a4753
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "After pnpm --filter @full-stack-ds/svelte run build, find packages/ds-svelte/dist -name '*.d.ts' -not -path '*/__tests__/*' lists 194 files at b7baa0e99, the same 194-path set the pre-fix build emitted at the base (diffed path lists identical at ab7975ae9); only the 77 __tests__ declarations are no longer emitted. Non-claim: declaration contents were compared by path set, not byte for byte."
+    recorded_at: "2026-10-21T02:34:30.310Z"
+    command: "pnpm --filter @full-stack-ds/svelte run build && find packages/ds-svelte/dist -name '*.d.ts' -not -path '*/__tests__/*' | wc -l"
+    exit_code: 0
+    commit_sha: b7baa0e9993b7d8ea088211663e7e428d32a4753
