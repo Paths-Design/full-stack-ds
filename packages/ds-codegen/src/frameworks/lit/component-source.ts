@@ -939,7 +939,11 @@ function generateTabsListClass(ir: ComponentIR): string {
   lines.push(`    try { ctx = this._ctx.value; } catch { return; }`);
   lines.push(`    const tabs = ctx.registeredTabs;`);
   lines.push(`    if (tabs.length === 0) return;`);
-  lines.push(`    const currentIndex = tabs.indexOf(ctx.activeTab);`);
+  // Arrows move on from the focused tab, which manual activation leaves apart
+  // from the selected one. A tab's keydown reaches this host retargeted to the
+  // tab host, which carries role="tab" and data-value.
+  lines.push(`    const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");`);
+  lines.push(`    const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.activeTab);`);
   lines.push(`    const isHorizontal = ctx.orientation !== "vertical";`);
   // A horizontal list follows the inline direction, read across the shadow
   // boundary: the arrow pointing toward the inline end moves to the next tab.

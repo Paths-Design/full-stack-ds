@@ -30,7 +30,10 @@ let listRef: HTMLElement | null = $state(null);
 function handleKeyDown(e: KeyboardEvent): void {
   const tabs = ctx.registeredTabs;
   if (tabs.length === 0) return;
-  const currentIndex = tabs.indexOf(ctx.activeTab);
+  // Arrows move on from the focused tab, which manual activation leaves
+  // apart from the selected one.
+  const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");
+  const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.activeTab);
   const isHorizontal = ctx.orientation !== "vertical";
   // A horizontal list follows the inline direction: the arrow pointing
   // toward the inline end moves to the next tab.

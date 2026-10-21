@@ -534,7 +534,8 @@ export class TabsListElement extends LitElement {
     try { ctx = this._ctx.value; } catch { return; }
     const tabs = ctx.registeredTabs;
     if (tabs.length === 0) return;
-    const currentIndex = tabs.indexOf(ctx.activeTab);
+    const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");
+    const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.activeTab);
     const isHorizontal = ctx.orientation !== "vertical";
     const rtl = isRtl(e.currentTarget);
     const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";

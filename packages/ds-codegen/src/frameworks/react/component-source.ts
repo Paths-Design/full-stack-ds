@@ -1068,7 +1068,10 @@ function generateCompoundStateSubcomponents(ir: ComponentIR): string {
   lines.push(`    (e: KeyboardEvent<HTMLDivElement>) => {`);
   lines.push(`      const tabs = ctx.registeredTabs;`);
   lines.push(`      if (tabs.length === 0) return;`);
-  lines.push(`      const currentIndex = tabs.indexOf(ctx.${channelName});`);
+  // Arrows move on from the focused tab, which manual activation leaves
+  // apart from the selected one.
+  lines.push(`      const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");`);
+  lines.push(`      const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.${channelName});`);
   lines.push(`      const isHorizontal = ctx.${orientation} !== "vertical";`);
   // A horizontal list follows the inline direction: the arrow pointing toward
   // the inline end moves to the next tab.

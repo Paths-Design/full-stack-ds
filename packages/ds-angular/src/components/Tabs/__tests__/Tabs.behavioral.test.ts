@@ -394,6 +394,27 @@ describe("Tabs — manual activation mode", () => {
     expect(getPanel(host, "a")).not.toBeNull();
     expect(getPanel(host, "b")).toBeNull();
   });
+
+  it("repeated arrows move on from the focused tab while the selection stays", () => {
+    fixture.componentInstance.loop.set(false);
+    fixture.detectChanges();
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      const press = (key: string) => {
+        dispatchKey(document.activeElement as HTMLElement, key);
+        fixture.detectChanges();
+      };
+      getTab(host, "a").focus();
+      press("ArrowLeft");
+      press("ArrowLeft");
+      expect(document.activeElement).toBe(getTab(host, "c"));
+      expect(getTab(host, "a").getAttribute("aria-selected")).toBe("true");
+      press("ArrowRight");
+      expect(document.activeElement).toBe(getTab(host, "b"));
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
+  });
 });
 
 // ---------------------------------------------------------------------------

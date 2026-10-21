@@ -442,6 +442,35 @@ describe("Tabs — behavioral", () => {
     container.remove();
   });
 
+  it("manual activation: repeated arrows move on from the focused tab while the selection stays", async () => {
+    const container = document.createElement("div");
+    container.setAttribute("dir", "rtl");
+    const tabsEl = Object.assign(document.createElement("fsds-tabs"), { defaultValue: "a", activationMode: "manual", loop: false }) as TabsElement;
+    const listEl = document.createElement("fsds-tabs-list");
+    const tabEls = ["a", "b", "c"].map((value) => {
+      const tab = Object.assign(document.createElement("fsds-tabs-tab"), { value }) as TabsElement;
+      tab.textContent = `Tab ${value}`;
+      return tab;
+    });
+    listEl.append(...tabEls);
+    tabsEl.append(listEl);
+    container.append(tabsEl);
+    document.body.append(container);
+    const press = async (key: string) => {
+      (document.activeElement as HTMLElement).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, composed: true }));
+      await settleUpdates(tabsEl, ...tabEls);
+    };
+    await settleUpdates(tabsEl, ...tabEls);
+    tabEls[0].focus();
+    await press("ArrowLeft");
+    await press("ArrowLeft");
+    expect(document.activeElement).toBe(tabEls[2]);
+    expect(tabEls[0].getAttribute("aria-selected")).toBe("true");
+    await press("ArrowRight");
+    expect(document.activeElement).toBe(tabEls[1]);
+    container.remove();
+  });
+
   it("keyboard Home moves to first tab", async () => {
     const { container, tabsEl, tabA, tabB } = await renderTabs({ value: "b", activationMode: "automatic" });
     const listEl = tabsEl.querySelector("fsds-tabs-list")!;
