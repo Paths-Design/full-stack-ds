@@ -87,3 +87,11 @@ evidence:
     command: node --test scripts/prepush-scope.test.mjs
     exit_code: 0
     commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "At 12734d882 pnpm run docs:check-claims exits 0 with both docs fresh (governed-ci.md stamped 44cead708, admission-rail.md 0d647e9ee) and neither listed in doc-freshness-baseline.json; docs:check-links exits 0. Both docs were audited claim by claim against ci.yml, package.json, the hook and the validation sources; the citation recipes cite command, commit and exit code only, and the completion review's R2 (an unreproducible drift recipe) and R3 (the RN suite runs in the gate) are corrected."
+    recorded_at: "2026-10-21T05:55:14.308Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    artifact_path: doc-freshness-baseline.json
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
