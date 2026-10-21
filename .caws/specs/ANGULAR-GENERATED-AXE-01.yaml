@@ -50,3 +50,12 @@ contracts:
   - name: 'angular-generated-axe'
     type: contract-test
     path: 'packages/ds-codegen/src/frameworks/angular/tests.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 72b41433e the describe generateAngularTest axe scan in tests.test.ts pins Dialog (open, title slot, document.body root asserted non-null, empty violation ids), Icon (required, activation and label props as host fields), Walkthrough (default step anchor rendered) and NavTree (host aria-label, listitem root scanned in a ul); surface-tests.test.ts pins the Tooltip and Popover closed and open scans. 61 Angular emitter tests pass; deleting the renderOpenProp line fails the Dialog pin."
+    recorded_at: "2026-10-21T09:51:53.024Z"
+    test_nodeid: packages/ds-codegen/src/frameworks/angular/tests.test.ts
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/angular
+    exit_code: 0
+    commit_sha: "72b41433eae0891606b2a5315f3c80b984e155dc"
