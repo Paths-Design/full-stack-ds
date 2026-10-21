@@ -4,11 +4,13 @@ authority: spec
 status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
-updated: 2026-08-17
-verified_at_commit: b1d510f9
+updated: 2026-10-20
+verified_at_commit: 0d647e9ee
 governs:
   - package.json
   - .github/workflows/ci.yml
+  - .githooks/pre-push
+  - scripts/committed-tree-check.mjs
   - packages/ds-codegen/src/validation/validate-cli.ts
 ---
 
@@ -18,11 +20,9 @@ governs:
 
 This doc is the operator-facing companion to [`docs/specifications/admission-rail.md`](./admission-rail.md) (the rail's concept) and [`docs/specifications/manifest-schema.md`](./manifest-schema.md) (the manifest's reference). Read those first if you haven't — this doc assumes you know what the rail proves and what the manifest carries.
 
-This doc owns: what the operator runs, what CI runs, how the two compose, and how to read the rail's outputs in a way that's citable in closure notes.
+This doc owns: what the operator runs, what CI runs, how the two compose, how to read the rail's outputs, and how to cite a rail result so a reviewer can rerun it.
 
-## The two commands
-
-The operator surface is two npm scripts.
+## The rail commands
 
 ### `pnpm run governed:rail`
 
@@ -41,12 +41,13 @@ Three phases:
 2. **Generate** every registered target from contracts. Writes the v6 manifest at `packages/ds-codegen/.emission-manifest.json` as the last step.
 3. **Validate** in required mode. Refuses to pass unless every integrity invariant holds (see admission-rail.md's diagnostic-code reading guide).
 
-Exit code 0 = the bytes on disk match the manifest's claims across all four evidence rungs (artifact, contract, emitter source, environment). Exit 1 = at least one rung drifted; stderr names the specific diagnostics with their codes and paths.
+Exit code 0 = the bytes on disk match the manifest's claims across all four evidence rungs (artifact, contract, emitter source, environment) and every framework plan passed. Exit 1 = at least one rung drifted or a plan failed; stderr names the specific diagnostics with their codes and paths. Exit 2 = the validator hit a fatal error (for example an unknown `--framework`).
 
-The output goes to two surfaces:
+The validator writes to three surfaces:
 
-- **stdout** — the canonical machine-readable JSON `RailReport`. Pipe this to `jq` for programmatic queries; redirect to a file to cite in closure notes.
-- **stderr** — human-readable summary table + a "Required-mode diagnostics" block when codes fired. Also writes a markdown projection at `tmp/generated-admission-report.md` (gitignored).
+- **stdout** — the canonical machine-readable JSON `RailReport`. The two earlier phases log their progress to stdout too, so the stdout of `pnpm run governed:rail` is not pure JSON. To query the report, run the validator on its own after a generation (see [Reading the RailReport JSON](#reading-the-railreport-json)).
+- **stderr** — a human-readable summary table plus a "Required-mode diagnostics" block when codes fired.
+- **`tmp/generated-admission-report.md`** (gitignored) — a markdown projection, written only when the run attributes components to a manifest. Without a usable manifest the validator skips it and says so on stderr, so a file from an earlier run can remain.
 
 ### `pnpm run governed:rail:changed`
 
@@ -60,9 +61,9 @@ pnpm run generate:check \
        --scope-to-git-range origin/main...HEAD
 ```
 
-Same three phases. Same exit code semantics. Same JSON canonical output. The addition is a `scopedProjection` field on the report and a "Changed artifact scope" section in the markdown, narrowing the highlighted evidence to the PR-relevant subset.
+Same three phases. Same exit code semantics. Same JSON canonical output. The addition is a `scopedProjection` field on the report and a "Changed artifact scope" section in the markdown, narrowing the highlighted evidence to the change-relevant subset.
 
-**The rail still admits the FULL workspace in scoped mode.** This bears repeating in operator documentation: the scoped report is reviewer ergonomic, NOT a reduced gate. Operators tempted to "make CI faster" by scoping are misreading the surface; the rail's overall verdict is independent of the projection.
+**The rail still admits the FULL workspace in scoped mode.** The scoped report is reviewer ergonomics, not a reduced gate: the rail's overall verdict is independent of the projection.
 
 ### `pnpm run governed:rail:react-native`
 
@@ -77,7 +78,7 @@ pnpm run generate:check \
        --framework=react-native
 ```
 
-This admits the generated RN package through package typecheck, focused generated RN render tests, and required-mode manifest integrity scoped to the RN framework id. The render tests use a Vitest-only native host shim and cover host-render archetypes, variant/state style slices, and admitted presence surfaces. The lane does not prove simulator/device runtime behavior, native visual parity, platform accessibility parity, anchored collision handling, or compound-part emission.
+This admits the generated RN package through package typecheck, lint, the package test script (`pnpm --filter @full-stack-ds/react-native run test`, whose render tests run against the Vitest-only native host shim aliased in `packages/ds-react-native/vitest.config.ts`), and required-mode manifest integrity scoped to the RN framework id. The lane does not prove simulator/device runtime behavior, native visual parity, platform accessibility parity, anchored collision handling, or compound-part emission.
 
 `pnpm run governed:rail:react-native:changed` adds the same git-range projection as the web changed rail.
 
@@ -96,8 +97,8 @@ This admits the generated RN package through package typecheck, focused generate
 │    • Build codegen (tsc).                                       │
 │    • Read every loader-discovered contract.                     │
 │    • Build IR per contract.                                     │
-│    • For each framework, emit 5 file groups (source, hook,      │
-│      tests, css, etc.).                                         │
+│    • For each framework, emit one artifact group per component  │
+│      carrying all of that component's files.                    │
 │    • Write .emission-manifest.json with v6 environment +        │
 │      emitterSourceSets + groups + per-file digests.             │
 └─────────────────────────────────────────────────────────────────┘
@@ -120,12 +121,12 @@ This admits the generated RN package through package typecheck, focused generate
 │      • Environment integrity: nodeMajor, pkg version, lockfile. │
 │                                                                 │
 │    Run framework admission plans (parallel where independent):  │
-│      • react: tsc                                               │
-│      • vue: vue-tsc                                             │
-│      • svelte: svelte-check                                     │
-│      • angular: tsc + ngc strictTemplates                       │
-│      • lit: tsc + lit-analyzer                                  │
-│      • react-native: package typecheck + generated render tests │
+│      • react: tsc + eslint                                      │
+│      • vue: package typecheck (vue-tsc) + eslint                │
+│      • svelte: package typecheck (svelte-check) + eslint        │
+│      • angular: tsc + ngc strictTemplates + eslint              │
+│      • lit: tsc + lit-analyzer + eslint                         │
+│      • react-native: package typecheck + eslint + package tests │
 │                                                                 │
 │    Join manifest × command scopes → ArtifactAdmissionEntry per  │
 │    group. Build per-component admission index.                  │
@@ -135,7 +136,8 @@ This admits the generated RN package through package typecheck, focused generate
 │    Emit:                                                        │
 │      stdout — RailReport JSON                                   │
 │      stderr — summary table + required-mode diagnostics         │
-│      tmp/generated-admission-report.md                          │
+│      tmp/generated-admission-report.md (when components are     │
+│        attributed to a manifest)                                │
 │                                                                 │
 │    Exit 0 iff:                                                  │
 │      • All required-mode invariants hold AND                    │
@@ -143,67 +145,70 @@ This admits the generated RN package through package typecheck, focused generate
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-Order matters: integrity invariants are checked BEFORE framework plans run. Catastrophic failures (MISSING / MALFORMED / SCHEMA_MISMATCH) short-circuit plan execution — running 20 seconds of tsc/ngc/lit-analyzer when the evidence trail is already broken would only add misleading "pass" lines to a report that's going to fail anyway.
+Order matters: integrity invariants are checked BEFORE framework plans run. Catastrophic failures (MISSING / MALFORMED / SCHEMA_MISMATCH) short-circuit plan execution — running tsc/ngc/lit-analyzer when the evidence trail is already broken would only add misleading "pass" lines to a report that's going to fail anyway.
 
 Non-catastrophic integrity diagnostics (HASH_MISMATCH, CONTRACT_HASH_MISMATCH, etc.) let plans run, because plan output is still meaningful evidence even when content has drifted.
 
 ## CI integration
 
-The rail is wired into [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) as a two-step proof. The order of these two steps is the load-bearing piece:
+The rail is wired into the gate job of [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) as a two-step proof. The order of these two steps is the load-bearing piece:
 
 ```yaml
 - name: Governed generated-artifact rail
   run: pnpm run governed:rail
 
 - name: Generated artifacts are committed
-  run: |
-    git diff --exit-code -- \
-      packages/ds-react/src \
-      packages/ds-vue/src \
-      packages/ds-svelte/src \
-      packages/ds-angular/src \
-      packages/ds-lit/src \
-      packages/ds-react-native/src
+  run: node scripts/committed-tree-check.mjs generated
 ```
+
+The steps after them — Compose↔RN token parity, the iconography export and ledger checks, and the realization ledgers (behavior, a11y, dead slots, pseudo-state, state suppression, token resolvability, custom regions, motion, carrier reachability, variant realization) — classify the bytes these two steps have just verified. The macOS GPUI job regenerates only the GPUI target and runs the same committed-output check after it.
 
 ### What each step proves
 
-**Step 1 (`governed:rail`)**: the full generated workspace was regenerated from contracts and admitted by required-mode manifest validation. After this step succeeds, the bytes on disk are guaranteed to:
+**Step 1 (`governed:rail`)**: every registered target was regenerated from contracts, and the rail-admitted families were admitted by required-mode manifest validation. After this step succeeds, the bytes on disk:
 
 - Match the manifest's recorded digests across all four evidence rungs.
-- Pass each framework's compiler/parser/linter.
+- Pass each rail-admitted framework's compiler, template checker and linter.
 
 But — and this is why step 2 exists — the regeneration in step 1 may have changed bytes from what was committed. The manifest now matches disk, but disk may not match the committed tree.
 
-**Step 2 (`git diff --exit-code`)**: the regenerated workspace was already committed. After step 1 wrote fresh bytes to `packages/ds-{framework}/src/`, this step checks that those bytes are identical to what's on the PR branch. If they're not, the contracts changed without their emitted artifacts being updated and committed — the codegen contract is broken.
+**Step 2 (`committed-tree-check.mjs generated`)**: the regenerated workspace was already committed. The script fails when any tracked byte under `packages/` differs from `HEAD`, or when an untracked, non-ignored file appeared there, and lists each path with its git status. If it fails, the contracts or emitters changed without their emitted artifacts being regenerated and committed.
+
+The check covers all of `packages/` rather than a list of generated roots. The generator writes from several code paths — components, barrels, primitives, content-transform runtimes, glyph catalogs, Figma descriptors, Unity and Godot components — into every target package, and a root list falls behind each new writer. Untracked files count because `git diff` alone cannot see a newly emitted file that was never committed.
 
 ### Why the order is load-bearing
 
 Reversing would let a stale workspace pass the diff check on the way in:
 
-- If `git diff` ran first against an unchanged stale workspace, it would pass (the committed bytes match themselves).
-- Then `governed:rail` would regenerate and the diff check would already be over.
-- The PR would land with stale artifacts.
+- If the committed-output check ran first against an unchanged stale workspace, it would pass (the committed bytes match themselves).
+- Then `governed:rail` would regenerate and the check would already be over.
+- The change would land with stale artifacts.
 
 Validating first, then refusing drift, is the only ordering that catches "contract changed but artifacts weren't regenerated."
 
-### Why step 2 is CI-only
+### The same checks before a push
 
-`governed:rail` is designed to be local-runnable — operators run it on their machine to verify their work. But `git diff --exit-code` over the framework src trees would block any local invocation where the operator hasn't yet committed (which is most of development). Locally dirty trees are routine; CI-clean trees are mandatory. The split keeps both surfaces honest.
+[`.githooks/pre-push`](../../.githooks/pre-push) runs the same script twice:
+
+1. **Before any gate**, `committed-tree-check.mjs pushed <tip>` refuses a push whose working tree differs from the pushed commit — a tracked edit, staged or not, or an untracked, non-ignored file. The hook's gates read the working tree while the push publishes the commit, so without this a stray file could fail lint for a commit CI would pass, and an uncommitted fix could pass a commit CI would fail.
+2. **After `governed:rail`**, when the hook's classifier selects the rail group, `committed-tree-check.mjs generated --against <tip>` refuses regenerated output the pushed commit does not carry.
+
+On a working branch, run `pnpm run governed:rail` on its own: a dirty tree is routine there, and the rail's verdict is still meaningful evidence about the bytes on disk.
 
 ### Failure modes in CI
 
 | Symptom | Cause | Repair |
 |---|---|---|
-| `governed:rail` step fails with a `RAIL_REQUIRE_MANIFEST_*` diagnostic | Manifest invariant broken (digest drift, missing path, environment mismatch). | Read the diagnostic code and follow the repair in admission-rail.md's reading guide. Usually: `pnpm run generate -- --target=all && git add packages/ds-*/src && git commit`. |
-| `governed:rail` step fails on a framework check (tsc/ngc/lit-analyzer/etc.) | Generated code doesn't compile or fails framework lint. | Read the framework diagnostic block in stderr. The fix typically lives in the contract or the emitter — not in the generated file (which is overwritten on regenerate). |
-| `governed:rail` passes, `git diff` step fails | Contracts changed but `packages/ds-*/src` weren't regenerated and committed. | Run `pnpm run generate -- --target=all` locally, then commit the resulting diff in `packages/ds-*/src`. |
+| `governed:rail` step fails with a `RAIL_REQUIRE_MANIFEST_*` diagnostic | Manifest invariant broken (digest drift, missing path, environment mismatch). | Read the diagnostic code and follow the repair in admission-rail.md's reading guide. Usually: `pnpm run generate -- --target=all`, then commit the resulting changes under `packages/`. |
+| `governed:rail` step fails on a framework check (tsc/ngc/lit-analyzer/eslint/etc.) | Generated code doesn't compile or fails framework lint. | Read the framework diagnostic block in stderr. The fix typically lives in the contract or the emitter — not in the generated file (which is overwritten on regenerate). |
+| `governed:rail` passes, the committed-output step fails | Contracts or emitters changed but the generated output under `packages/` wasn't regenerated and committed. | Run `pnpm run generate -- --target=all` locally, then commit every path the check listed. |
+| pre-push refuses before any gate, listing paths | The working tree differs from the pushed commit. | Commit or remove the listed files, or push from a checkout that matches the commit. |
 
-The most common scenario is the third row: an operator edits a contract, runs tests locally without regenerating, sees them pass against the existing committed artifacts, and pushes. The rail catches this in CI.
+The third row is the case the step order exists for: a contract is edited, tests pass locally against the existing committed artifacts, and the change is pushed without regenerating.
 
 ## Reading the RailReport JSON
 
-`stdout` of `governed:rail` is the canonical machine-readable record. The full type is `RailReport` in [`packages/ds-codegen/src/validation/types.ts`](../packages/ds-codegen/src/validation/types.ts).
+The validator's stdout is the canonical machine-readable record. The full type is `RailReport` in [`packages/ds-codegen/src/validation/types.ts`](../../packages/ds-codegen/src/validation/types.ts).
 
 Top-level shape:
 
@@ -225,36 +230,41 @@ Top-level shape:
 
 ### Common queries
 
+Run the validator once after a generation and keep its stdout in a shell variable; each query then reads that report:
+
 ```bash
+pnpm run generate -- --target=all
+report="$(node packages/ds-codegen/dist/validation/validate-cli.js --require-artifact-manifest)"
+
 # Did the rail pass?
-jq '.overall' /tmp/rail.json
+jq '.overall' <<<"$report"
 # → "pass" or "fail"
 
 # What required-mode diagnostics fired (if any)?
-jq '.requiredModeDiagnostics // [] | map(.code)' /tmp/rail.json
+jq '.requiredModeDiagnostics // [] | map(.code)' <<<"$report"
 # → ["RAIL_REQUIRE_MANIFEST_CONTRACT_HASH_MISMATCH"]
 
 # Which files drifted in a HASH_MISMATCH diagnostic?
-jq '.requiredModeDiagnostics | map(select(.code == "RAIL_REQUIRE_MANIFEST_HASH_MISMATCH")) | .[0].paths' /tmp/rail.json
+jq '.requiredModeDiagnostics | map(select(.code == "RAIL_REQUIRE_MANIFEST_HASH_MISMATCH")) | .[0].paths' <<<"$report"
 
 # How many groups did each framework admit?
-jq '.frameworks | to_entries | map({key, count: (.value.artifacts // []) | length})' /tmp/rail.json
+jq '.frameworks | to_entries | map({key, count: (.value.artifacts // []) | length})' <<<"$report"
 
-# What's the component pivot say about Button?
-jq '.componentsIndex.Button' /tmp/rail.json
+# What does the component pivot say about Button?
+jq '.componentsIndex.Button' <<<"$report"
 # → {react: {status, coverages, knownRuleNarrowings}, vue: {...}, ...}
 
-# What were the scoped projection counts?
-jq '.scopedProjection | {matched: (.matchedGroups | length), changedFiles: (.changedGeneratedPaths | length), changedContracts: (.changedContractPaths | length)}' /tmp/rail.json
+# What were the scoped projection counts? (add --scope-to-git-range <base>...<head> to the validator)
+jq '.scopedProjection | {matched: (.matchedGroups | length), changedFiles: (.changedGeneratedPaths | length), changedContracts: (.changedContractPaths | length)}' <<<"$report"
 
 # What environment produced this manifest?
-jq '.artifactManifest.environment' /tmp/rail.json
+jq '.artifactManifest.environment' <<<"$report"
 # → {nodeMajor: 22, codegenPackageVersion: "1.0.0", lockfile: {...}}
 ```
 
 ### Stable claims
 
-These fields are public API for closure-note tooling; they are not renamed without a deliberate breaking change:
+These fields are public API for report tooling; they are not renamed without a deliberate breaking change:
 
 - `overall` — always `"pass"` or `"fail"`.
 - `requiredModeDiagnostics[i].code` — one of the documented `RAIL_REQUIRE_MANIFEST_*` codes.
@@ -267,7 +277,7 @@ Other fields (timestamps, manifest sub-shapes) follow the schema version in [`do
 
 ## Reading the markdown report
 
-Written to `tmp/generated-admission-report.md` after every rail run (gitignored, regenerated each time). The markdown is a citation-friendly projection of the same JSON evidence — designed for pasting sections into closure notes, code review comments, or audit logs.
+`tmp/generated-admission-report.md` is a readable projection of the same JSON, written when the run attributes components to a manifest. It is local and gitignored, and the next run overwrites it, so it is a reading aid, not evidence a reviewer can retrieve.
 
 Section layout:
 
@@ -307,7 +317,7 @@ Section layout:
               non-generated changed paths.
 
 ## Per-component admission index    (only when manifest present)
-  Table: Component | react | vue | svelte | lit | angular
+  Table: Component | react | vue | svelte | lit | angular | react-native
   Cell values: status + coverage abbreviations + (rule narrowings if any).
 
 ## Required-mode diagnostics        (only when requiredModeDiagnostics non-empty)
@@ -317,56 +327,57 @@ Section layout:
   Verbatim list of declared analyzer-policy boundaries.
 ```
 
-The authority footer at the top — "The JSON is canonical." — is deliberate. The markdown is a derived projection; if a closure note quotes the markdown and a reviewer wants to verify against the source-of-truth, they should `jq` the JSON.
+The authority line at the top — "The JSON is canonical." — is deliberate: the markdown is a derived projection, and the JSON is what a reviewer queries.
 
 ## When to use `governed:rail:changed`
 
 The changed-artifact projection is for **reviewer focus, not CI pipeline efficiency.** Two valid use cases:
 
-1. **PR reviewer walk-through.** You're reviewing a PR that touched contracts or codegen. Running `governed:rail:changed` against the PR branch produces a markdown report whose "Changed artifact scope" section names exactly which artifact groups were affected, which contracts changed, and which admission entries covered them. Faster comprehension than reading the full report.
+1. **Reviewer walk-through.** For a change that touched contracts or codegen, the "Changed artifact scope" section names exactly which artifact groups were affected, which contracts changed, and which admission entries covered them. Faster comprehension than reading the full report.
 
-2. **Closure-note citations.** When writing a closure note for a multi-component contract change, scoping makes it easy to enumerate the affected components without manually filtering the full per-component index.
+2. **Enumerating affected components.** For a multi-component contract change, scoping lists the affected components without manually filtering the full per-component index.
 
 Two invalid use cases:
 
-1. **"Make CI faster."** The scoped report is a projection over the full admission run. It does not reduce verification scope. CI uses `governed:rail` (unscoped); changing it to `governed:rail:changed` would not save time — both run the full generate + full validate pipeline.
+1. **"Make CI faster."** The scoped report is a projection over the full admission run. It does not reduce verification scope. CI uses `governed:rail` (unscoped); `governed:rail:changed` runs the same full generate + full validate pipeline.
 
-2. **"Skip rail for unchanged components."** The scoped report's `unmatchedGeneratedPaths` exists specifically to surface changed generated paths that no manifest group claims (the manifest is stale relative to the PR). Treating a clean projection as "nothing changed" misreads the doctrine — the projection is what changed in the manifest's view, NOT a proof that nothing else needs checking.
+2. **"Skip rail for unchanged components."** The scoped report's `unmatchedGeneratedPaths` exists specifically to surface changed generated paths that no manifest group claims (the manifest is stale relative to the change). Treating a clean projection as "nothing changed" misreads the doctrine — the projection is what changed in the manifest's view, NOT a proof that nothing else needs checking.
 
 ## Local vs CI invocation
 
 | Surface | Local | CI |
 |---|---|---|
-| `pnpm run governed:rail` | yes — verify before commit | yes — runs as a workflow step |
-| `pnpm run governed:rail:changed` | yes — for PR reviewer walk-through | possible but not currently wired; the unscoped form is the gate |
-| `git diff --exit-code -- packages/ds-*/src` | no — locally dirty trees are routine | yes — load-bearing for catching uncommitted regenerate drift |
-| `pnpm test` + `pnpm run test:frameworks` | yes | yes |
+| `pnpm run governed:rail` | yes — verify before commit; pre-push runs it when the classifier selects the rail group | yes — gate job |
+| `pnpm run governed:rail:changed` | yes — reviewer walk-through | no — the unscoped form is the gate |
+| `node scripts/committed-tree-check.mjs generated` | pre-push, after the rail, against the pushed tip | yes — gate job after the rail, and GPUI job after `generate:gpui` |
+| `node scripts/committed-tree-check.mjs pushed <tip>` | pre-push, before every gate | no — CI checks out the commit itself |
+| `pnpm test` + `pnpm run test:vue` | yes; pre-push runs both when the classifier selects tests | yes — gate job |
+| `pnpm run test:coverage` | yes | yes — coverage job: react, codegen, figma-plugin, tokens, showcase, vue, svelte, lit, angular and react-native suites under coverage thresholds |
+| `pnpm run test:frameworks` | yes | no — CI runs the Svelte, Lit, Angular and React Native suites only through `test:coverage` |
 
-The split between local-runnable rail and CI-only drift check is intentional. An operator should be able to run `governed:rail` on a dirty branch and get meaningful evidence; CI's job is to refuse landing dirty branches.
+## Citing a rail result
 
-## Closure-note citation recipes
+A citation is useful only if a reviewer can rerun it from a clean checkout. Cite three things: the command, the commit SHA it ran at, and its exit code. Counts, diagnostic codes and component lists are claims the reviewer re-derives by rerunning that command at that commit; quote them as such.
 
-When closing a PR, the closure note should cite specific rail evidence rather than "the rail passed." Patterns:
+Do not cite a redirected stdout file, `tmp/generated-admission-report.md`, or `packages/ds-codegen/.emission-manifest.json`. All three are gitignored, per-machine state: they do not exist on a clean checkout, and the next run overwrites them.
 
 ### Citing a clean run
 
-> Governed rail (`governed:rail`) passes at HEAD. Output integrity verified against `<N>` files; contract integrity against `<N>` contracts; emitter integrity against `<N>` declared sources; environment under Node 22 + codegen 1.0.0 + lockfile sha256 `<prefix…>`. No required-mode diagnostics. All six rail-admitted frameworks: status=pass.
-
-The `<N>` placeholders are deliberate: read them off *your* run's `RailReport`, never copy them from this doc. Every previous version of this recipe carried literal numbers, and every one of them went stale.
+> `pnpm run governed:rail` exits 0 at `<sha>`, and `node scripts/committed-tree-check.mjs generated` exits 0 after it.
 
 ### Citing a scoped run
 
-> Scoped rail (`governed:rail:changed`) against `origin/main...HEAD` shows 3 matched artifact groups (Button on react/vue/lit), 0 unmatched generated paths, 1 changed contract (`packages/ds-contracts/Button.contract.json`). Full-workspace admission still passes (overall: pass).
+`origin/main` moves, so pin the range to commits:
+
+> At `<head-sha>`, after `pnpm run generate -- --target=all`, `node packages/ds-codegen/dist/validation/validate-cli.js --require-artifact-manifest --scope-to-git-range <base-sha>...<head-sha>` exits 0; its scoped projection matches the Button groups on react, vue and lit and the changed contract `packages/ds-contracts/components/Button/Button.contract.json`.
 
 ### Citing a drift-and-fix
 
-> Initial run fired `RAIL_REQUIRE_MANIFEST_CONTRACT_HASH_MISMATCH` on `packages/ds-contracts/components/Button/Button.contract.json` — the contract was edited without a corresponding regenerate. Resolved with `pnpm run generate -- --target=all` and committed the resulting diff in `packages/ds-{react,vue,svelte,lit,angular}/src/components/Button`. Rerun passes.
+> At `<before-sha>`, `pnpm run governed:rail` exits 1 with `RAIL_REQUIRE_MANIFEST_CONTRACT_HASH_MISMATCH` on `packages/ds-contracts/components/Button/Button.contract.json`. `<fix-sha>` commits the regenerated Button output; at `<fix-sha>` the rail and `node scripts/committed-tree-check.mjs generated` both exit 0.
 
 ### Citing a known-gap declaration
 
-> Rail passes with one known gap (verbatim): "Declared analyzer-policy boundary (NOT a generated-output defect, NOT a binding-site type escape): the lit-analyzer rule `no-incompatible-type-binding` is disabled in the `typecheck:templates` script…" — visible in the markdown report's "Known gaps" section.
-
-The point of these recipes is to make closure-note authorship mechanical. The rail's outputs are the inputs to the recipe; the recipe is what gets pasted into the PR description.
+Known gaps are declared in tracked source: each framework plan's `knownGaps` list under `packages/ds-codegen/src/validation/frameworks/`. Cite the file and quote the entry, for example the Lit `no-incompatible-type-binding` boundary in `packages/ds-codegen/src/validation/frameworks/lit.ts`.
 
 ## Where to read next
 
