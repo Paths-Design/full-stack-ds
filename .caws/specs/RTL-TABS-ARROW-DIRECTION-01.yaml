@@ -41,17 +41,22 @@ invariants:
 acceptance:
   - id: A1
     given: 'a horizontal Tabs in each of the five web frameworks inside a dir=rtl ancestor'
-    when: 'ArrowLeft or ArrowRight is pressed on the focused tab'
-    then: 'ArrowLeft moves to the next tab and ArrowRight to the previous, left-to-right and vertical lists are unchanged, and the unit tests fail under the physical mapping'
+    when: 'ArrowLeft or ArrowRight is pressed on the focused tab, in automatic or manual activation'
+    then: >-
+      ArrowLeft moves to the next tab and ArrowRight to the previous, counted from
+      the focused tab, left-to-right and vertical lists are unchanged, and the unit
+      tests fail under the physical mapping and under selection-based indexing
   - id: A2
     given: >-
-      two-tab lists without loop for React, Vue, Svelte and Lit, mounted in Chromium
-      inside a dir=rtl region
+      two-tab lists without loop for React, Vue, Svelte and Lit mounted in Chromium
+      inside a dir=rtl region, plus a Lit composition inside an enclosing shadow
+      root whose host sits in that region
     when: 'the first tab is focused and ArrowLeft is pressed, then ArrowRight'
     then: >-
-      ArrowLeft selects the second tab and ArrowRight the first again, including
-      inside the Lit shadow root; Angular is proven in jsdom only, because its
-      browser preview needs the JIT pipeline
+      ArrowLeft selects the second tab and ArrowRight the first again in every case,
+      the shadow-root case failing when the direction read stops at the shadow root;
+      Angular is proven in jsdom only, because its browser preview needs the JIT
+      pipeline
   - id: A3
     given: 'the date-grid core and the Tabs lists'
     when: 'the web targets and React Native are generated'
