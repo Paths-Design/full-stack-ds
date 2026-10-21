@@ -35,9 +35,13 @@ acceptance:
     when: 'every target is generated'
     then: 'the web roots carry role=group instead of role=application, and no generated Calendar output or descriptor declares the application role'
   - id: A2
-    given: 'a Calendar with an accessible name'
-    when: 'it renders in each web framework'
-    then: 'the root is a named group, the month grid stays role=grid, and the caption and month buttons sit outside any application region so browse mode reaches them'
+    given: 'the generated Calendar in each web framework'
+    when: 'it renders'
+    then: >-
+      the root is role=group (a role that permits an accessible name), the month
+      grid stays role=grid inside it, the caption and month buttons sit inside the
+      root and outside the grid, and no element in or around the calendar has
+      role=application, so browse mode reaches the caption and month buttons
   - id: A3
     given: 'docs/architecture/date-grid.md'
     when: 'docs:check-claims runs'
