@@ -473,6 +473,19 @@ describe("generateJetpackComposeComponentSource — interactive-composite class 
     expect(src).toContain("state.value == key");
     expect(src).not.toMatch(/import androidx\.compose\.material/);
   });
+
+  it("imports the semantics extension a scalar composite with an accessible name calls", () => {
+    // Tabs declares no ariaLabel today; a scalar composite that does names its
+    // root through Modifier.semantics, so the file must import it.
+    type Members = { name: string; type: string; description: string }[];
+    const contract = loadContract("Tabs") as { props: { styled: { members: Members } } };
+    contract.props.styled.members.push({ name: "ariaLabel", type: "string", description: "Accessible name of the tab list." });
+    const src = generateJetpackComposeComponentSource(
+      buildComponentIR(contract as unknown as Parameters<typeof buildComponentIR>[0]),
+    );
+    expect(src).toContain("Modifier.semantics { this.contentDescription = contentDescription }");
+    expect(src).toContain("import androidx.compose.ui.semantics.semantics\n");
+  });
 });
 
 describe("generateJetpackComposeComponentSource — count-iterated field group (FEAT-COMPOSE-OTP-ADMISSION-01)", () => {

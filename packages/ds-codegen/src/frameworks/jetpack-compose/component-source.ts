@@ -3301,7 +3301,9 @@ function emitInteractiveComposite(ir: ComponentIR): string {
   lines.push(`import androidx.compose.ui.draw.clip`);
   lines.push(`import androidx.compose.ui.semantics.contentDescription`);
   if (!isUnion) lines.push(`import androidx.compose.ui.semantics.Role`);
-  if (isUnion) lines.push(`import androidx.compose.ui.semantics.semantics`);
+  // The union trigger's stateDescription and the root's accessible name both
+  // call Modifier.semantics.
+  if (isUnion || hasAria) lines.push(`import androidx.compose.ui.semantics.semantics`);
   if (isUnion) lines.push(`import androidx.compose.ui.semantics.stateDescription`);
   lines.push(`import androidx.compose.ui.unit.dp`);
   if (consumesTokens) lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
