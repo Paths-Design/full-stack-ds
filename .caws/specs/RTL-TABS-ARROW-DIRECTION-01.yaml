@@ -96,3 +96,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/direction packages/ds-codegen/src/date
     exit_code: 0
     commit_sha: "1dae1ebf4"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At 1dae1ebf4 governed:rail, the committed-tree check and typecheck:all pass; at fc3bf0e18 (differing only by two casts in the Lit Tabs test, rerun 31/31 and linted) lint, doc claims, the a11y audit (no unledgered or stale entries), the root suite (349 files, 5110 tests) and the framework suites (Vue 842, Lit 608, Svelte 743, Angular 629, React Native 247) pass."
+    recorded_at: "2026-10-21T11:12:12.448Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run typecheck:all && pnpm run lint && pnpm run docs:check-claims && pnpm run audit:a11y-realization && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "1dae1ebf4"
