@@ -197,6 +197,61 @@ describe("transfer list keyboard", () => {
     expect(onValueChange).toHaveBeenCalledWith(["delta"]);
   });
 
+  it("accumulates moves pressed before the list re-renders, from the item the last key targeted", () => {
+    const list = createTransferList();
+    const root = render(list.sync(options()));
+    // DOM focus stays on beta: no render runs between the two presses.
+    list.keydown(press(root, "available", "ArrowDown", "beta").event);
+    list.keydown(press(root, "available", "ArrowDown", "beta").event);
+    expect(stops(list.sync(options()).available)).toEqual(["epsilon"]);
+  });
+
+  it("marks the item a pending move targeted with Space", () => {
+    const list = createTransferList();
+    const root = render(list.sync(options()));
+    list.keydown(press(root, "available", "ArrowDown", "beta").event);
+    list.keydown(press(root, "available", " ", "beta").event);
+    expect(marked(list.sync(options()).available)).toEqual(["gamma"]);
+  });
+
+  it("builds a second Enter before the re-render on the value the first reported, and keeps focus on an item that remains", () => {
+    const onValueChange = vi.fn();
+    const list = createTransferList();
+    const root = render(list.sync(options({ onValueChange })));
+    list.keydown(press(root, "available", "Enter", "beta").event);
+    list.keydown(press(root, "available", "Enter", "beta").event);
+    expect(onValueChange.mock.calls).toEqual([[["delta", "alpha", "beta"]], [["delta", "alpha", "beta", "gamma"]]]);
+    const next = render(list.sync(options({ onValueChange, value: ["delta", "alpha", "beta", "gamma"] })));
+    list.afterRender();
+    expect(document.activeElement).toBe(option(next, "available", "epsilon"));
+  });
+
+  it("hands focus after a second Enter before the re-render to an item still in the list, never one the first moved", () => {
+    const onValueChange = vi.fn();
+    const list = createTransferList();
+    const root = render(list.sync(options({ onValueChange })));
+    // gamma moves and focus is pending on epsilon; Enter again moves epsilon,
+    // and the nearest item that remains is beta, not the moved gamma.
+    list.keydown(press(root, "available", "Enter", "gamma").event);
+    list.keydown(press(root, "available", "Enter", "gamma").event);
+    expect(onValueChange).toHaveBeenLastCalledWith(["delta", "alpha", "gamma", "epsilon"]);
+    const next = render(list.sync(options({ onValueChange, value: ["delta", "alpha", "gamma", "epsilon"] })));
+    list.afterRender();
+    expect(document.activeElement).toBe(option(next, "available", "beta"));
+  });
+
+  it("drops a reported value the next sync does not carry, as a controlled value that refused it", () => {
+    const onValueChange = vi.fn();
+    const list = createTransferList();
+    list.sync(options({ onValueChange }));
+    list.toggle(list.state.available[0]);
+    list.add();
+    expect(keys(list.sync(options({ onValueChange })).available)).toEqual(["beta", "gamma", "epsilon"]);
+    list.toggle(list.state.available[1]);
+    list.add();
+    expect(onValueChange).toHaveBeenLastCalledWith(["delta", "alpha", "gamma"]);
+  });
+
   it("leaves other keys to the platform", () => {
     const list = createTransferList();
     const root = render(list.sync(options()));

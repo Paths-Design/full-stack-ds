@@ -89,6 +89,10 @@ export function createTransferList() {
   const focus: TransferListFocus = {};
   /** An item DOM focus should move to once it renders, found from `root`. */
   let pendingFocus: { side: TransferListSide; key: string; root: Element } | undefined;
+  /** The value a transfer reported, until the next sync brings the options
+   * that answer it; the lists and a second transfer before then build on it,
+   * so keys pressed faster than renders act on what the user has done. */
+  let reported: string[] | undefined;
   let version = 0;
   const listeners = new Set<() => void>();
   const publish = () => {
@@ -104,16 +108,26 @@ export function createTransferList() {
   /** Move `moving` out of `side`, report the value, and clear that side's marks. */
   const transfer = (side: TransferListSide, moving: string[]) => {
     if (!options || moving.length === 0) return;
-    const current = options.value ?? [];
+    const current = reported ?? options.value ?? [];
     const value = side === "available"
-      ? [...current, ...moving]
+      ? [...current, ...moving.filter((key) => !current.includes(key))]
       : current.filter((key) => !moving.includes(key));
     marks[side].clear();
+    reported = value;
+    state = computeTransferList({ ...options, value }, marks, focus);
     options.onValueChange(value);
     publish();
   };
   /** The live marks of a side, in that list's order (marks change between syncs). */
   const markedIn = (side: TransferListSide) => current()[side].filter((item) => marks[side].has(item.key)).map((item) => item.key);
+
+  /** The item a key acts on: the one an earlier key targeted while its render
+   * is pending (so keys pressed faster than renders accumulate), else the
+   * focused item, else the list's tab stop. */
+  const anchorKey = (event: TransferListKeyEvent, side: TransferListSide) =>
+    (pendingFocus?.side === side ? pendingFocus.key : undefined)
+      ?? (event.target as Element | null)?.closest?.("[data-value]")?.getAttribute("data-value")
+      ?? current()[side].find((item) => item.tabIndex === 0)?.key;
 
   const move = (event: TransferListKeyEvent, to: (index: number, last: number) => number) => {
     const side = sideOf(event.currentTarget as Element | null);
@@ -121,22 +135,19 @@ export function createTransferList() {
     const items = current()[side];
     if (items.length === 0) return;
     event.preventDefault();
-    const from = items.findIndex((item) => item.tabIndex === 0);
+    const anchor = anchorKey(event, side);
+    const from = items.findIndex((item) => item.key === anchor);
     const next = items[Math.max(0, Math.min(items.length - 1, to(from, items.length - 1)))];
     focus[side] = next.key;
     pendingFocus = { side, key: next.key, root: rootOf(event.currentTarget as Element) };
     publish();
   };
 
-  const focusedKey = (event: TransferListKeyEvent, side: TransferListSide) =>
-    (event.target as Element | null)?.closest?.("[data-value]")?.getAttribute("data-value")
-      ?? current()[side].find((item) => item.tabIndex === 0)?.key;
-
   /** Space: mark or unmark the focused item. */
   const mark = (event: TransferListKeyEvent) => {
     const side = sideOf(event.currentTarget as Element | null);
     if (!side) return;
-    const key = focusedKey(event, side);
+    const key = anchorKey(event, side);
     const item = current()[side].find((candidate) => candidate.key === key);
     if (!item) return;
     event.preventDefault();
@@ -151,7 +162,7 @@ export function createTransferList() {
     const side = sideOf(event.currentTarget as Element | null);
     if (!side) return;
     const items = current()[side];
-    const key = focusedKey(event, side);
+    const key = anchorKey(event, side);
     const moving = markedIn(side).length > 0 ? markedIn(side) : items.filter((item) => item.key === key).map((item) => item.key);
     if (moving.length === 0) return;
     event.preventDefault();
@@ -181,6 +192,7 @@ export function createTransferList() {
     /** Record the latest options and derive both lists; never notifies. */
     sync(next: TransferListOptions): TransferListState {
       options = next;
+      reported = undefined;
       state = computeTransferList(next, marks, focus);
       return state;
     },

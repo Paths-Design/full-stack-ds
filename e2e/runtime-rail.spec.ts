@@ -673,6 +673,18 @@ test.describe("Runtime rail — Shuttle (dual-listbox transfer: listbox shape, k
         await page.keyboard.press(key);
         await expectFocus(to);
       }
+      // Two presses inside one task leave no render between them, as a held
+      // key can outpace rendering: both moves count.
+      await page.evaluate((isLit) => {
+        const root = isLit ? document.querySelector("fsds-shuttle")!.shadowRoot! : document;
+        const target = root.activeElement as HTMLElement;
+        for (const key of ["ArrowDown", "ArrowDown"]) {
+          target.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true, composed: true }));
+        }
+      }, framework === "lit");
+      await expectFocus("gamma");
+      await page.keyboard.press("Home");
+      await expectFocus("alpha");
 
       // Space marks the focused option without moving it.
       await page.keyboard.press("ArrowDown");
@@ -726,6 +738,17 @@ test.describe("Runtime rail — Shuttle (dual-listbox transfer: listbox shape, k
         const facts = await shuttleFacts(page, framework);
         return facts && { available: facts.available.keys, selected: facts.selected.keys, removeDisabled: facts.removeDisabled };
       }).toEqual({ available: ["alpha", "beta", "delta", "epsilon"], selected: ["gamma"], removeDisabled: true });
+
+      // Each transfer reports the new value once. The Angular preview does not
+      // route through the callback-capture wrapper (see the Select block).
+      if (framework !== "angular") {
+        const reported = await page.evaluate(() =>
+          ((window as unknown as { __fsdsCallbackLog?: Array<{ name: string; args: unknown[] }> }).__fsdsCallbackLog ?? [])
+            .filter((entry) => entry.name === "onValueChange")
+            .map((entry) => entry.args[0]),
+        );
+        expect(reported).toEqual([["alpha", "gamma"], ["gamma"]]);
+      }
     });
   }
 });
