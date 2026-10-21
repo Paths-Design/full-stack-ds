@@ -537,28 +537,87 @@ const NATIVE_CURRENT_BESIDE_SELECTION = {
  * because an import, a type position or a comment names it without running
  * it. The focus trap compares Tab only; the dismissal, anchor-toggle and
  * anchored-surface primitives compare Escape only, so neither carries the
- * other's key. */
+ * other's key. Matching runs on the source without comments; call-shaped
+ * text inside a string literal is not distinguished. */
 const TRAP_CALL_RE = /\b(?:useFocusTrap|createFocusTrap)\s*\(|\bnew\s+FocusTrapController\s*\(/;
 const ESCAPE_CLOSER_CALL_RE =
   /\b(?:useAnchorToggle|createAnchorToggle|useAnchoredSurface|createAnchoredSurface)\s*\(|\bnew\s+(?:AnchorToggleController|AnchoredSurfaceController)\s*\(/;
-const DISMISSAL_CALL_RE = /\b(?:useDismissal|createDismissal)\s*\(|\bnew\s+DismissalController\s*\(/;
-/** A dismissal's onDismiss callback, and the shapes that do nothing — the
- * lowering for a component with no disclosure channel to close, where Escape
- * is heard and ignored. */
-const ON_DISMISS_RE = /\bonDismiss\s*:\s*([^,\n]+)/g;
+const DISMISSAL_CALL_RE = /\b(?:useDismissal|createDismissal)\s*\(|\bnew\s+DismissalController\s*\(/g;
+/** onDismiss shapes that do nothing — the lowering for a component with no
+ * disclosure channel to close, where Escape is heard and ignored. Compared
+ * after whitespace is collapsed. */
 const NO_OP_CALLBACK_RE = /^\(\)\s*=>\s*(?:void 0|undefined|\{\s*(?:void 0;?)?\s*\})$/;
+
+/** Source with block, line and markup comments removed. A `//` after a colon
+ * (a URL) is kept. */
+export function withoutComments(src) {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/(^|[^:\\])\/\/[^\n]*/g, "$1");
+}
+
+/** Text from `open` (an opening bracket) to its balanced close, exclusive,
+ * skipping quoted strings. */
+function balancedFrom(src, open) {
+  const pairs = { "(": ")", "{": "}", "[": "]" };
+  const stack = [];
+  let quote = null;
+  for (let i = open; i < src.length; i += 1) {
+    const ch = src[i];
+    if (quote) {
+      if (ch === quote && src[i - 1] !== "\\") quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === "`") quote = ch;
+    else if (pairs[ch]) stack.push(pairs[ch]);
+    else if (ch === stack[stack.length - 1]) {
+      stack.pop();
+      if (stack.length === 0) return src.slice(open + 1, i);
+    }
+  }
+  return src.slice(open + 1);
+}
+
+/** The value of `name:` in an argument list, up to the next comma or close
+ * at its own depth, with whitespace collapsed. */
+function propertyValue(args, name) {
+  const match = new RegExp(`\\b${name}\\s*:\\s*`).exec(args);
+  if (!match) return undefined;
+  let depth = 0;
+  let quote = null;
+  const start = match.index + match[0].length;
+  for (let i = start; i < args.length; i += 1) {
+    const ch = args[i];
+    if (quote) {
+      if (ch === quote && args[i - 1] !== "\\") quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'" || ch === "`") quote = ch;
+    else if ("({[".includes(ch)) depth += 1;
+    else if (")}]".includes(ch)) {
+      if (depth === 0) return args.slice(start, i).replace(/\s+/g, " ").trim();
+      depth -= 1;
+    } else if (ch === "," && depth === 0) return args.slice(start, i).replace(/\s+/g, " ").trim();
+  }
+  return args.slice(start).replace(/\s+/g, " ").trim();
+}
 
 /** The source runs the focus trap, which keeps Tab and Shift+Tab inside. */
 export function focusTrapInvoked(src) {
-  return TRAP_CALL_RE.test(src);
+  return TRAP_CALL_RE.test(withoutComments(src));
 }
 
 /** The source runs a primitive that closes on Escape: an anchor toggle or
- * anchored surface, or a dismissal whose onDismiss does something. */
+ * anchored surface, or a dismissal whose own onDismiss argument does
+ * something. */
 export function escapeCloserInvoked(src) {
-  if (ESCAPE_CLOSER_CALL_RE.test(src)) return true;
-  if (!DISMISSAL_CALL_RE.test(src)) return false;
-  return [...src.matchAll(ON_DISMISS_RE)].some((match) => !NO_OP_CALLBACK_RE.test(match[1].trim()));
+  const code = withoutComments(src);
+  if (ESCAPE_CLOSER_CALL_RE.test(code)) return true;
+  return [...code.matchAll(DISMISSAL_CALL_RE)].some((call) => {
+    const onDismiss = propertyValue(balancedFrom(code, call.index + call[0].length - 1), "onDismiss");
+    return onDismiss !== undefined && !NO_OP_CALLBACK_RE.test(onDismiss);
+  });
 }
 
 /** Keys the platform provides on native interactive elements. */
@@ -625,30 +684,19 @@ function domComponentRefs(node, acc = new Set()) {
  * The full set of element tags a component's contract implies: its own dom
  * tree, its anatomy.details part tags, and — resolved against the corpus —
  * the root tags of components it owns by-reference (Chip's dismiss/action are
- * fsds.Button, so `button` is implied). Derived, never hand-listed. With a
- * `root` part node, only that part's subtree and its details.
+ * fsds.Button, so `button` is implied). Derived, never hand-listed.
  */
-function impliedTags(contract, contractByName, root = contract.anatomy?.dom) {
-  const tags = domTags(root);
-  const parts = root === contract.anatomy?.dom ? null : domParts(root);
-  for (const [part, detail] of Object.entries(contract.anatomy?.details ?? {})) {
-    if (parts && !parts.has(part)) continue;
+function impliedTags(contract, contractByName) {
+  const tags = domTags(contract.anatomy?.dom);
+  for (const detail of Object.values(contract.anatomy?.details ?? {})) {
     if (typeof detail?.tag === "string") tags.add(detail.tag);
   }
-  for (const ref of domComponentRefs(root)) {
+  for (const ref of domComponentRefs(contract.anatomy?.dom)) {
     const target = contractByName.get(ref);
     const rootTag = target?.anatomy?.dom?.tag;
     if (typeof rootTag === "string") tags.add(rootTag);
   }
   return tags;
-}
-
-/** The element tags one part implies: its subtree, its subtree's details, and
- * the root tags of components the subtree owns. Focus "in" a part reaches its
- * descendants (a tab list holds focus on its tabs). */
-export function partImpliedTags(contract, part, contractByName = new Map()) {
-  const node = findPartNode(contract?.anatomy?.dom, part);
-  return node ? impliedTags(contract, contractByName, node) : new Set();
 }
 
 /** Native interactive element present in the EMITTED source — the strongest
@@ -701,16 +749,19 @@ export function deriveObligations(contracts) {
       if (!keySpec) continue;
       const nativeRadio = nativeRadioCarrier(contract, name);
       // `when` names either the anatomy part that holds focus or a state
-      // ("open"); only a part scopes the binding.
-      const part =
-        typeof entry === "object" && typeof entry.when === "string" && findPartNode(contract.anatomy?.dom, entry.when)
-          ? entry.when
+      // ("open"); only a part scopes the binding, to the part and the parts
+      // inside it (a tab list holds focus on its tabs).
+      const partNode =
+        typeof entry === "object" && typeof entry.when === "string"
+          ? findPartNode(contract.anatomy?.dom, entry.when)
           : undefined;
       obligations.push({
         component: name,
         class: "keyboard",
         key: keySpec,
-        ...(part ? { part } : {}),
+        ...(partNode
+          ? { part: entry.when, cssPrefix: contract.cssPrefix ?? toKebab(name), subtreeParts: [...domParts(partNode)] }
+          : {}),
         ...(nativeRadio ? { nativeRadio } : {}),
         ...(roving ? { roving } : {}),
       });
@@ -740,7 +791,7 @@ export function deriveObligations(contracts) {
   // Dedupe (a contract may declare the same attribute in several relationships).
   const seen = new Set();
   return obligations.filter((o) => {
-    const id = tupleId(o.component, o.class, o.key, o.from, o.to);
+    const id = tupleId(o.component, o.class, o.key, o.from, o.to, o.part);
     if (seen.has(id)) return false;
     seen.add(id);
     return true;
@@ -1087,6 +1138,34 @@ function partCarriers(srcBundle, obligation, part, { target = false } = {}) {
   return [...new Set(candidates)];
 }
 
+/** The element an opening tag renders. The InteractionHost primitive renders
+ * its literal `as` element (default button); a computed `as` is unknown. */
+function renderedTagName(tag) {
+  const name = /^<([A-Za-z][\w-]*)/.exec(tag)?.[1];
+  if (name !== "InteractionHost") return name?.toLowerCase();
+  if (!/\sas=/.test(tag)) return "button";
+  return /\sas=["']([a-z]+)["']/.exec(tag)?.[1];
+}
+
+/** What the emitted source renders on carriers of the obligation's part and
+ * the parts inside it (a marked opening tag, or the part's compound
+ * boundary): the native interactive tags, and whether a carrier manages a
+ * tabindex (focusable, so the platform's Tab moves on from it). */
+function emittedPartFacts(srcBundle, obligation) {
+  const nativeTags = new Set();
+  let focusable = false;
+  for (const part of obligation.subtreeParts ?? [obligation.part]) {
+    for (const carrier of partCarriers(srcBundle, obligation, part)) {
+      if (/\btab[iI]ndex\b/.test(carrier)) focusable = true;
+      for (const tag of openingTags(carrier)) {
+        const name = renderedTagName(tag);
+        if (name && NATIVE_INTERACTIVE_TAGS.has(name)) nativeTags.add(name);
+      }
+    }
+  }
+  return { nativeTags, focusable: focusable || nativeTags.size > 0 };
+}
+
 function toPascal(value) {
   return String(value)
     .replace(/(^|[-_\s]+)([a-zA-Z0-9])/g, (_match, _sep, ch) => ch.toUpperCase());
@@ -1324,12 +1403,19 @@ export function classify(obligation, kind, srcBundle, contractTags, familyId) {
     if (dismissKeys && escapeCloserInvoked(ownSrc)) return { verdict: "realized", via: "primitive" };
     const hasHandler = EXPLICIT_KEY_RE.test(ownSrc);
     // A part-scoped binding (`when` names the part that holds focus) gets
-    // native credit only from the part's own subtree, which the caller passes
-    // as contractTags; a native element elsewhere in the source cannot be
-    // attributed to that part.
-    const hasNativeTag =
-      [...contractTags].some((t) => NATIVE_INTERACTIVE_TAGS.has(t)) ||
-      (!obligation.part && NATIVE_ELEMENT_IN_SOURCE_RE.test(ownSrc));
+    // native credit only from what the emitted source renders on that part or
+    // a part inside it; a native element elsewhere in the component cannot be
+    // attributed to the part. Tab also moves on natively from a focusable
+    // non-native carrier (a custom-element host with a roving tabindex).
+    const partFacts = obligation.part ? emittedPartFacts(srcBundle, obligation) : null;
+    const nativeTags = partFacts
+      ? partFacts.nativeTags
+      : new Set([...contractTags].filter((t) => NATIVE_INTERACTIVE_TAGS.has(t)));
+    const hasNativeTag = nativeTags.size > 0 || (!obligation.part && NATIVE_ELEMENT_IN_SOURCE_RE.test(ownSrc));
+    const textEntry = nativeTags.has("input");
+    const nativeFor = (k) =>
+      (hasNativeTag && (NATIVE_KEYS.has(k) || (textEntry && NATIVE_TEXT_KEYS.has(k)))) ||
+      (k === "Tab" && Boolean(partFacts?.focusable));
     // Inside a roving composite, native activation needs a reachable item.
     const nativeReachable = !obligation.roving || rovingReachable(ownSrc, obligation.roving);
     const vias = new Set();
@@ -1348,16 +1434,14 @@ export function classify(obligation, kind, srcBundle, contractTags, familyId) {
         vias.add("primitive handler");
         continue;
       }
-      const nativeKey = NATIVE_KEYS.has(k) || (contractTags.has("input") && NATIVE_TEXT_KEYS.has(k));
-      if (hasNativeTag && nativeKey && nativeReachable) {
+      if (nativeFor(k) && nativeReachable) {
         vias.add("native");
         continue;
       }
       missing.push(k);
     }
     if (missing.length === 0) return { verdict: "realized", via: [...vias].join("+") };
-    const unreachable = hasNativeTag && !nativeReachable &&
-      missing.every((k) => NATIVE_KEYS.has(k) || (contractTags.has("input") && NATIVE_TEXT_KEYS.has(k)));
+    const unreachable = !nativeReachable && missing.every(nativeFor);
     return {
       verdict: "unrealized",
       reason: unreachable
@@ -1529,7 +1613,7 @@ function classifyInteractiveRole(kind, srcBundle, familyId) {
 }
 
 // ---- main -------------------------------------------------------------------
-function gapId(row) {
+export function gapId(row) {
   return tupleId(
     row.component,
     row.family,
@@ -1537,6 +1621,7 @@ function gapId(row) {
     row.key,
     row.class === "relationship" ? row.from : undefined,
     row.class === "relationship" ? row.to : undefined,
+    row.class === "keyboard" ? row.part : undefined,
   );
 }
 
@@ -1547,10 +1632,6 @@ export function runAudit({ repoRoot = REPO } = {}) {
   const tagsByComponent = new Map(
     contracts.map(({ name, contract }) => [name, impliedTags(contract, contractByName)]),
   );
-  const tagsFor = (ob) =>
-    ob.part
-      ? partImpliedTags(contractByName.get(ob.component), ob.part, contractByName)
-      : tagsByComponent.get(ob.component) ?? new Set();
 
   const families = [
     ...descriptors.map((d) => ({
@@ -1572,7 +1653,7 @@ export function runAudit({ repoRoot = REPO } = {}) {
         rows.push({ ...ob, family: d.id, verdict: "not-emitted" });
         continue;
       }
-      const res = classify(ob, d.kind, srcBundle, tagsFor(ob), d.id);
+      const res = classify(ob, d.kind, srcBundle, tagsByComponent.get(ob.component) ?? new Set(), d.id);
       rows.push({ ...ob, family: d.id, ...res });
     }
   }
