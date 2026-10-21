@@ -46,6 +46,13 @@ acceptance:
     given: 'docs/architecture/date-grid.md'
     when: 'docs:check-claims runs'
     then: 'the doc states the root role and why, and is fresh'
+  - id: A4
+    given: 'a Calendar given the ariaLabel or ariaLabelledby prop'
+    when: 'it renders in each web framework'
+    then: >-
+      the group element itself carries aria-label or aria-labelledby (not only a
+      framework host), it carries neither without the props, and React Native maps
+      the props to accessibilityLabel and accessibilityLabelledBy
 rollback:
   - 'Revert the merge commit and regenerate Calendar'
 non_functional: {}
