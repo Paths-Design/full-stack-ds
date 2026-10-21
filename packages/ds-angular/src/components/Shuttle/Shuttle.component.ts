@@ -65,7 +65,7 @@ export class ShuttleComponent {
   private readonly inputValue = signal<string[] | undefined>(undefined);
   @Input() get value(): string[] | undefined { return this.inputValue(); }
   set value(value: string[] | undefined) { this.inputValue.set(value); }
-  @Input() defaultValue?: string[] = ["alpha","beta","gamma"];
+  @Input() defaultValue?: string[] = [];
   @Input() onValueChange?: (value: string[]) => void;
   @Input() class?: string;
 

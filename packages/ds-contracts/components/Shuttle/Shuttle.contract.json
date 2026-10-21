@@ -227,8 +227,8 @@
         {
           "name": "defaultValue",
           "propType": { "kind": "array", "items": { "kind": "string" } },
-          "description": "Uncontrolled initial selection.",
-          "default": ["alpha", "beta", "gamma"]
+          "description": "Uncontrolled initial selection: the ids that start in the selected list.",
+          "default": []
         },
         {
           "name": "onValueChange",

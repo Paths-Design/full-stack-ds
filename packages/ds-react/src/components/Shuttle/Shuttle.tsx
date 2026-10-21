@@ -40,7 +40,7 @@ const ShuttleMessages = { availableLabel: "Available", selectedLabel: "Selected"
 
 export function Shuttle({
   value: controlledValue,
-  defaultValue = ["alpha","beta","gamma"],
+  defaultValue = [],
   onValueChange,
   className,
   "data-testid": testId,

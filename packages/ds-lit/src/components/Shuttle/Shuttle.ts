@@ -181,7 +181,7 @@ export class ShuttleElement extends LitElement {
   override ariaLabel: string | null = null;
   @property({ attribute: false }) options?: string[] = ["alpha","beta","gamma","delta","epsilon"];
   @property({ attribute: false }) value?: string[];
-  @property({ attribute: false }) defaultValue?: string[] = ["alpha","beta","gamma"];
+  @property({ attribute: false }) defaultValue?: string[] = [];
   @property({ attribute: false }) onValueChange?: (value: string[]) => void;
 
   private initializedBehavior?: ShuttleBehavior;

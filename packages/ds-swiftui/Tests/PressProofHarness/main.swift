@@ -85,6 +85,8 @@ final class Counters {
     var controlledTabsSelected: [[String]] = []
     var accordionChanges: [String] = []
     var shuttleChanges: [String] = []
+    /// The AXSelected (marked) Shuttle items at mount and after each press.
+    var shuttleMarked: [[String]] = []
     /// What the controlled Tabs and Accordion show at mount, after the parent
     /// sets each value, and after it sets them back.
     var controlledCompound: [String] = []
@@ -794,32 +796,42 @@ final class HarnessModel: ObservableObject {
                 }
 
                 @MainActor func shuttleStep() {
-                    // -- Shuttle: the contract iterates the SELECTION channel
-                    // (web parity: `(selection ?? []).map`), so rendered rows
-                    // are selected items and press REMOVES. Two removals
-                    // prove press→channel→re-render in both observable
-                    // directions; an "add" press is not contract-modeled in
-                    // any family and is not asserted here.
-                    let rowAlpha = Self.axButtons(labeled: "alpha").first
-                    let rowBeta = Self.axButtons(labeled: "beta").first
-                    guard let alpha = rowAlpha else {
-                        self.failures.append("shuttle: no pressable 'alpha' row (census \(self.counters.compoundCensus.sorted { $0.key < $1.key }))")
-                        return accordionStep()
-                    }
-                    Self.click(at: alpha)
-                    self.schedule(0.8) {
-                        let alphaGone = Self.axButtons(labeled: "alpha").isEmpty
-                        if let beta = rowBeta ?? Self.axButtons(labeled: "beta").first {
-                            Self.click(at: beta)
+                    // -- Shuttle: a press marks an item (the isSelected trait,
+                    // the web options' aria-selected) and moves nothing; Add
+                    // appends the marked available items to the selection
+                    // and Remove takes the marked selected items out. The
+                    // selection starts as [alpha, beta].
+                    let items = ["alpha", "beta", "gamma", "delta", "epsilon"]
+                    @MainActor func press(_ label: String, then next: @escaping @MainActor () -> Void) {
+                        guard let control = Self.axButtons(labeled: label).first else {
+                            self.failures.append("shuttle: no pressable '\(label)' (census \(self.counters.compoundCensus.sorted { $0.key < $1.key }))")
+                            return accordionStep()
                         }
-                        self.schedule(0.8) {
-                            if self.counters.shuttleChanges != ["[\"beta\"]", "[]"] {
-                                self.failures.append("shuttle: selection changes \(self.counters.shuttleChanges), expected [\"[\\\"beta\\\"]\", \"[]\"]")
+                        Self.click(at: control)
+                        self.schedule(0.8) { next() }
+                    }
+                    let markedAtMount = Self.selectedButtons(labeled: items)
+                    press("gamma") {
+                        self.counters.shuttleMarked = [markedAtMount, Self.selectedButtons(labeled: items)]
+                        let markMoved = self.counters.shuttleChanges
+                        press("Add") {
+                            self.counters.shuttleMarked.append(Self.selectedButtons(labeled: items))
+                            press("alpha") {
+                                self.counters.shuttleMarked.append(Self.selectedButtons(labeled: items))
+                                press("Remove") {
+                                    self.counters.shuttleMarked.append(Self.selectedButtons(labeled: items))
+                                    if !markMoved.isEmpty {
+                                        self.failures.append("shuttle: marking 'gamma' changed the selection \(markMoved); a mark moves nothing")
+                                    }
+                                    if self.counters.shuttleChanges != ["[\"alpha\", \"beta\", \"gamma\"]", "[\"beta\", \"gamma\"]"] {
+                                        self.failures.append("shuttle: selection changes \(self.counters.shuttleChanges), expected [alpha, beta, gamma] then [beta, gamma]")
+                                    }
+                                    if self.counters.shuttleMarked != [[], ["gamma"], [], ["alpha"], []] {
+                                        self.failures.append("shuttle: AXSelected items \(self.counters.shuttleMarked), expected [[], [gamma], [], [alpha], []]")
+                                    }
+                                    accordionStep()
+                                }
                             }
-                            if !alphaGone {
-                                self.failures.append("shuttle: pressed row 'alpha' did not leave the rendered selection")
-                            }
-                            accordionStep()
                         }
                     }
                 }
@@ -898,7 +910,8 @@ final class HarnessModel: ObservableObject {
             print("controlled tabs.AXSelected : \(counters.controlledTabsSelected) [expect [[\"ctab-x\"], [\"ctab-y\"], [\"ctab-x\"]]]")
             print("accordion.openness changes : \(counters.accordionChanges) [expect [\"[\\\"k1\\\"]\", \"[]\"]]")
             print("controlled tabs/accordion  : \(counters.controlledCompound) [expect [\"tab x, item closed\", \"tab y, item open\", \"tab x, item closed\"]]")
-            print("shuttle.selection changes  : \(counters.shuttleChanges) [expect [\"[\\\"beta\\\"]\", \"[]\"]]")
+            print("shuttle.selection changes  : \(counters.shuttleChanges) [expect [\"[\\\"alpha\\\", \\\"beta\\\", \\\"gamma\\\"]\", \"[\\\"beta\\\", \\\"gamma\\\"]\"]]")
+            print("shuttle.AXSelected items   : \(counters.shuttleMarked) [expect [[], [\"gamma\"], [], [\"alpha\"], []]]")
             for limitation in counters.limitations {
                 print("LIMITATION: \(limitation)")
             }

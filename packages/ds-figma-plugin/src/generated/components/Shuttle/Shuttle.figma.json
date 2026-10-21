@@ -90,8 +90,8 @@
       "safeName": "defaultValue",
       "type": "string[]",
       "required": false,
-      "description": "Uncontrolled initial selection.",
-      "defaultExpr": "[\"alpha\",\"beta\",\"gamma\"]",
+      "description": "Uncontrolled initial selection: the ids that start in the selected list.",
+      "defaultExpr": "[]",
       "nodeKind": null
     },
     {

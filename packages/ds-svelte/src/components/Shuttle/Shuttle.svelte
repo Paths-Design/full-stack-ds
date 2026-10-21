@@ -19,7 +19,7 @@ interface Props {
   class?: string;
 }
 
-let { ariaLabel, options = ["alpha","beta","gamma","delta","epsilon"], value, defaultValue = ["alpha","beta","gamma"], onValueChange, class: className }: Props = $props();
+let { ariaLabel, options = ["alpha","beta","gamma","delta","epsilon"], value, defaultValue = [], onValueChange, class: className }: Props = $props();
 const ShuttleMessages = { availableLabel: "Available", selectedLabel: "Selected", add: "Add", remove: "Remove" };
 const fsdsMessages = useFsdsMessages("Shuttle", ShuttleMessages);
 // @generated:end

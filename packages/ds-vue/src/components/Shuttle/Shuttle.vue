@@ -33,7 +33,7 @@ interface Props {
 // @generated:start defineProps
 const fsdsProps = withDefaults(defineProps<Props>(), {
   options: () => (["alpha","beta","gamma","delta","epsilon"]),
-  defaultValue: () => (["alpha","beta","gamma"]),
+  defaultValue: () => ([]),
 });
 const ShuttleMessages = { availableLabel: "Available", selectedLabel: "Selected", add: "Add", remove: "Remove" };
 const fsdsMessages = useFsdsMessages("Shuttle", ShuttleMessages);
