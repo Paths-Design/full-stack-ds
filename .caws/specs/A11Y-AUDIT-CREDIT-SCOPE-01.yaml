@@ -44,10 +44,10 @@ acceptance:
     then: >-
       credit requires the emitted source to render, on that part or a part inside
       it, a native interactive element (the InteractionHost primitive renders its
-      literal as element, default button) or, for Tab only, a focusable host that
-      manages a tabindex; one key declared on two parts is two obligations with
-      distinct ledger identities; entries whose when is a state or absent keep
-      component-wide native credit as a documented limit
+      literal as element, default button, unless a literal asChild adopts the child)
+      or, for Tab only, a host that writes a tabindex; one key declared on two parts
+      is two obligations with distinct ledger identities; entries whose when is a
+      state or absent keep component-wide native credit as a documented limit
   - id: A4
     given: 'the corpus after the change'
     when: 'the audit, selfcheck, rail and suites run'
