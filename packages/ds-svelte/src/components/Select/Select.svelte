@@ -82,7 +82,7 @@ const instanceId = $props.id();
 </script>
 
 <div class={classes} data-fsds-component="select" data-fsds-box="">
-  <button class={'select__trigger'} bind:this={behavior.anchorRef.el} type="button" role="combobox" aria-haspopup="listbox" onclick={() => behavior.setOpen(!behavior.open)} onkeydown={behavior.handleTriggerKeydown} disabled={disabled} aria-label={triggerLabel} aria-expanded={behavior.open} aria-controls={open ? `${instanceId}-content` : undefined}>
+  <button class={'select__trigger'} bind:this={behavior.anchorRef.el} type="button" role="combobox" aria-haspopup="listbox" onclick={() => behavior.setOpen(!behavior.open)} onkeydown={behavior.handleTriggerKeydown} disabled={disabled} aria-label={triggerLabel} aria-expanded={behavior.open} aria-controls={behavior.open ? `${instanceId}-content` : undefined}>
     <span class={'select__text'}>{((options || []).filter(option => (Array.isArray(behavior.selection) ? behavior.selection : [behavior.selection]).includes(option.value)).map(option => option.label).join(', ') || placeholder)}</span>
   </button>
   {#if behavior.open}

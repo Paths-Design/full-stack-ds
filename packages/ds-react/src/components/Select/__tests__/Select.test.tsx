@@ -111,12 +111,12 @@ describe("Select — accessibility", () => {
 
 describe("Select — trigger naming", () => {
   it("has a useful default name and honors the consumer override", () => {
-    const { rerender } = render(<Select aria-label="Fruit" />);
+    const { rerender } = render(<Select />);
     expect(
       screen.getByRole("combobox", { name: "Select an option" }),
     ).toBeInTheDocument();
 
-    rerender(<Select aria-label="Fruit" triggerLabel="Choose a fruit" />);
+    rerender(<Select triggerLabel="Choose a fruit" />);
     expect(
       screen.getByRole("combobox", { name: "Choose a fruit" }),
     ).toBeInTheDocument();
@@ -134,7 +134,6 @@ describe("Select — option selection (FEAT-BINDING-CALL-WITH-ARG-01)", () => {
     const onChange = vi.fn();
     render(
       <Select
-        aria-label="Fruit"
         open={true}
         value={""}
         onChange={onChange}
@@ -158,7 +157,6 @@ describe("Select — option selection (FEAT-BINDING-CALL-WITH-ARG-01)", () => {
     const onChange = vi.fn();
     render(
       <Select
-        aria-label="Fruit"
         open={true}
         value={"beta"}
         onChange={onChange}
@@ -186,7 +184,6 @@ describe("Select — multiple-mode toggle (channelUpdate toggleMembership)", () 
     const onChange = vi.fn();
     render(
       <Select
-        aria-label="Fruit"
         multiple
         open={true}
         value={["alpha"]}
@@ -202,7 +199,6 @@ describe("Select — multiple-mode toggle (channelUpdate toggleMembership)", () 
     const onChange = vi.fn();
     render(
       <Select
-        aria-label="Fruit"
         multiple
         open={true}
         value={["alpha", "beta"]}
@@ -221,7 +217,6 @@ describe("Select — multiple-mode toggle (channelUpdate toggleMembership)", () 
     const onChange = vi.fn();
     render(
       <Select
-        aria-label="Fruit"
         multiple
         open={true}
         value={"beta" as unknown as string[]}
@@ -239,7 +234,6 @@ describe("Select — multiple-mode toggle (channelUpdate toggleMembership)", () 
     const onChange = vi.fn();
     render(
       <Select
-        aria-label="Fruit"
         open={true}
         value={"alpha"}
         onChange={onChange}
@@ -267,7 +261,6 @@ describe("Select — keyboard realization (FEAT-A11Y-COMPOSITE-KEYBOARD-01)", ()
   const renderOpen = (props: Record<string, unknown> = {}) =>
     render(
       <Select
-        aria-label="Fruit"
         open={true}
         options={OPTIONS}
         {...props}
@@ -276,7 +269,7 @@ describe("Select — keyboard realization (FEAT-A11Y-COMPOSITE-KEYBOARD-01)", ()
 
   it("ArrowDown on the closed trigger opens the panel and moves focus into the listbox", async () => {
     const onOpenChange = vi.fn();
-    render(<Select aria-label="Fruit" onOpenChange={onOpenChange} options={OPTIONS} />);
+    render(<Select onOpenChange={onOpenChange} options={OPTIONS} />);
     const trigger = screen.getByRole("combobox", { name: "Select an option" });
     fireEvent.keyDown(trigger, { key: "ArrowDown" });
     expect(onOpenChange).toHaveBeenCalledWith(true);

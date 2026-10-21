@@ -190,6 +190,14 @@ export function resolveIdRelationships(
 
   const byPart = collectPartOccurrences(dom);
   const slotNames = collectSlotNames(dom);
+  const channelByValueProp = new Map(
+    Object.entries(contract.channels ?? {}).map(([name, channel]) => [channel.value, name]),
+  );
+  /** A gate on a channel's value prop reads the channel, as an `if` guard does. */
+  const onChannel = (cond: IdRefConditionIR | undefined): IdRefConditionIR | undefined => {
+    const channel = cond && channelByValueProp.get(cond.prop);
+    return channel ? { ...cond, channel } : cond;
+  };
   let provider: FieldAssociationProviderIR | undefined;
 
   for (const rel of relationships) {
@@ -198,8 +206,9 @@ export function resolveIdRelationships(
     const to = byPart.get(rel.to);
     if (!from || !to) continue; // part never rendered — contract overclaim
     if (from.inIteration || to.inIteration) continue; // per-item ids not modeled
-    const resolved = resolveWhenClause(rel.when, propNames, slotNames);
-    if (!resolved.ok) continue;
+    const clause = resolveWhenClause(rel.when, propNames, slotNames);
+    if (!clause.ok) continue;
+    const resolved = { ...clause, cond: onChannel(clause.cond) };
 
     if (rel.attribute === "for" && hostsSlot(to.node)) {
       // Slotted control: its id is delivered via field association; the
@@ -243,9 +252,11 @@ export function resolveIdRelationships(
     // removed (Toast's title `if: "title"`).
     const gate: IdRefConditionIR | undefined =
       resolved.cond ??
-      (to.node.ifProp && !to.node.ifNegated
-        ? { prop: to.node.ifProp, op: "truthy", negated: false }
-        : undefined);
+      onChannel(
+        to.node.ifProp && !to.node.ifNegated
+          ? { prop: to.node.ifProp, op: "truthy", negated: false }
+          : undefined,
+      );
     pushIdRef(from.node, rel.attribute, {
       slug: rel.to,
       when: gate,

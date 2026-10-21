@@ -65,7 +65,7 @@ const instanceId = $props.id();
 </script>
 
 <details class={classes} open={behavior.open} data-fsds-component="details" data-fsds-box="">
-  <summary class={'details__summary'} onclick={(e) => { if (canActivateInteraction(e, true)) behavior.setOpen(!behavior.open); }} aria-disabled={disabled} aria-controls={open ? `${instanceId}-content` : undefined}>
+  <summary class={'details__summary'} onclick={(e) => { if (canActivateInteraction(e, true)) behavior.setOpen(!behavior.open); }} aria-disabled={disabled} aria-controls={behavior.open ? `${instanceId}-content` : undefined}>
     <span class={'details__summaryContent'}>
       <Icon class={'details__icon'} name="chevron-down" size="sm" />
       <span class={'details__summaryText'}>{summary}</span>

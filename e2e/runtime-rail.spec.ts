@@ -804,10 +804,13 @@ test.describe("Runtime rail — Select (predicate:memberOf for aria-selected)", 
     // CDP (Lit's shadow content is part of it). A combobox role on a wrapper
     // that cannot take focus, beside a focusable button whose aria-label hides
     // its text, reads as "Select an option" whatever is selected.
+    // The preview mounts Select uncontrolled (defaultOpen, no open prop), so
+    // the listbox is open through internal state: the combobox must still
+    // point at it.
     test(`${framework}: exposes one combobox, the focusable trigger, valued by the selected label`, async ({ page }) => {
       await goto(page, framework, "Select", "select");
       expect(await comboboxes(page)).toEqual([
-        { name: "Select an option", value: "Beta", expanded: true, focusable: true },
+        { name: "Select an option", value: "Beta", expanded: true, focusable: true, controlsListbox: true },
       ]);
     });
   }
@@ -820,14 +823,20 @@ async function comboboxes(page: Page) {
   const { nodes } = await client.send("Accessibility.getFullAXTree");
   await client.detach();
   const property = (node: (typeof nodes)[number], name: string) =>
-    node.properties?.find((entry) => entry.name === name)?.value.value ?? null;
+    node.properties?.find((entry) => entry.name === name)?.value;
+  const listboxes = new Set(
+    nodes.filter((node) => !node.ignored && node.role?.value === "listbox").map((node) => node.backendDOMNodeId),
+  );
   return nodes
     .filter((node) => !node.ignored && node.role?.value === "combobox")
     .map((node) => ({
       name: node.name?.value ?? null,
       value: node.value?.value ?? null,
-      expanded: property(node, "expanded"),
-      focusable: property(node, "focusable"),
+      expanded: property(node, "expanded")?.value ?? null,
+      focusable: property(node, "focusable")?.value ?? null,
+      controlsListbox: (property(node, "controls")?.relatedNodes ?? []).some((related) =>
+        listboxes.has(related.backendDOMNodeId),
+      ),
     }));
 }
 

@@ -4,6 +4,9 @@ import {
   componentNeedsInstanceId,
 } from "./id-relationships.js";
 import { buildComponentIR, type DomNodeIR } from "./ir.js";
+import { generateVueComponentSource } from "./frameworks/vue/component-source.js";
+import { generateSvelteComponentSource } from "./frameworks/svelte/component-source.js";
+import { generateLitComponentSource } from "./frameworks/lit/component-source.js";
 
 /**
  * FEAT-A11Y-LABEL-ID-ASSOCIATION-01 — relationship lowering.
@@ -212,6 +215,49 @@ describe("owned-pair relationship lowering", () => {
         slotGate: undefined,
       },
     ]);
+  });
+
+  // An uncontrolled channel leaves its value prop undefined while the target
+  // renders on internal state, so a gate on the raw prop drops the reference
+  // to a rendered element (Select opened through defaultOpen).
+  it("gates a reference to a channel-rendered target on the channel, in every web emitter", () => {
+    const contract = {
+      name: "FixturePicker",
+      cssPrefix: "fx-picker",
+      anatomy: {
+        parts: ["root", "trigger", "content"],
+        dom: {
+          tag: "div",
+          part: "root",
+          children: [
+            { tag: "button", part: "trigger", attrs: { type: "button" } },
+            { tag: "div", part: "content", if: "open" },
+          ],
+        },
+      },
+      props: {
+        designed: {
+          members: [
+            booleanProp("open"),
+            booleanProp("defaultOpen"),
+            {
+              name: "onOpenChange",
+              propType: { kind: "callback", params: [{ name: "open", type: { kind: "boolean" } }], returns: { kind: "void" } },
+              description: "onOpenChange",
+            },
+          ],
+        },
+      },
+      channels: { open: { value: "open", defaultValue: "defaultOpen", onChange: "onOpenChange", valueType: "boolean" } },
+      relationships: [{ from: "trigger", to: "content", attribute: "aria-controls" }],
+    } as unknown as ComponentContract;
+    const ir = buildComponentIR(contract);
+    expect(findPart(ir.dom!, "trigger").idRefAttrs[0].refs).toEqual([
+      { slug: "content", when: { prop: "open", op: "truthy", negated: false, channel: "open" }, slotGate: undefined },
+    ]);
+    expect(generateVueComponentSource(ir)).toContain(':aria-controls="behavior.open.value ? `${instanceId}-content` : undefined"');
+    expect(generateSvelteComponentSource(ir)).toContain("aria-controls={behavior.open ? `${instanceId}-content` : undefined}");
+    expect(generateLitComponentSource(ir)).toContain("aria-controls=${ifDefined([this.behavior.open ? 'fx-picker-content' : null]");
   });
 
   it("lowers eq and negated-eq when clauses against a string prop", () => {

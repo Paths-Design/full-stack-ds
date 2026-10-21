@@ -64,11 +64,11 @@ function indexButtons(): HTMLElement[] {
  * the page never cross-contaminate.
  */
 function chooseFilter(label: string, value: string): void {
-  const combo = screen.getByRole("combobox", { name: label });
-  const trigger = combo.querySelector<HTMLButtonElement>(".select__trigger");
-  expect(trigger, `select trigger for "${label}" is rendered`).toBeTruthy();
-  fireEvent.click(trigger!);
-  const option = combo.querySelector<HTMLElement>(`.select__option[data-value="${value}"]`);
+  // The trigger is the combobox, named by the Select's triggerLabel.
+  const trigger = screen.getByRole("combobox", { name: label });
+  expect(trigger.classList.contains("select__trigger"), `"${label}" names the select trigger`).toBe(true);
+  fireEvent.click(trigger);
+  const option = trigger.closest(".select")?.querySelector<HTMLElement>(`.select__option[data-value="${value}"]`);
   expect(option, `option "${value}" is offered by "${label}"`).toBeTruthy();
   fireEvent.click(option!);
 }

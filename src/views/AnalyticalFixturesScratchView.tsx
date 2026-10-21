@@ -243,13 +243,11 @@ export function AnalyticalFixturesScratchView() {
           />
           <div className="afx-filter-row">
             <div className="afx-filter">
-              {/* DS Select's generated trigger does not display the selected
-                  label, so the current value is echoed in a visible caption. */}
               <Select
                 className="afx-filter-select"
                 size="sm"
                 defaultOpen={false}
-                aria-label="Filter by transformation class"
+                triggerLabel="Filter by transformation class"
                 options={[
                   { value: "all", label: "transformation: all" },
                   ...TRANSFORMATIONS.map((s) => ({ value: s, label: `transformation: ${s}` })),
@@ -264,7 +262,7 @@ export function AnalyticalFixturesScratchView() {
                 className="afx-filter-select"
                 size="sm"
                 defaultOpen={false}
-                aria-label="Filter by assertion kind"
+                triggerLabel="Filter by assertion kind"
                 options={[
                   { value: "all", label: "assertion: all" },
                   ...ASSERTION_KINDS.map((k) => ({ value: k, label: `assertion: ${k}` })),
