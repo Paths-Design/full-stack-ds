@@ -62,3 +62,12 @@ contracts:
   - name: 'committed-tree-check'
     type: behavior
     path: 'scripts/committed-tree-check.mjs'
+evidence:
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "The real .githooks/pre-push, run in a throwaway repository, refuses before any gate when a pushed ref's tree differs from the checkout, in either ref order, naming the differing path; with every tip matching it passes the tree check (scripts/committed-tree-check.test.mjs, 14/14 at 12734d882). The same suite pins a tracked edit, a staged edit and an untracked non-ignored file as refusals. scripts/prepush-scope.test.mjs pins the check before install, lint, tests and the rail. Runtime: the hook refused at +0s with an untracked file present and when pushing an older commit than the checkout."
+    recorded_at: "2026-10-21T05:52:57.302Z"
+    test_nodeid: "scripts/committed-tree-check.test.mjs::pre-push compares every pushed tip with the working tree, whichever ref comes first"
+    command: "node --test scripts/committed-tree-check.test.mjs && node --test scripts/prepush-scope.test.mjs"
+    exit_code: 0
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
