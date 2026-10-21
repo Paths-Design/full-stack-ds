@@ -49,6 +49,7 @@
       "family": "react",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -56,6 +57,7 @@
       "family": "react",
       "class": "keyboard",
       "key": "ArrowRight",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -187,6 +189,7 @@
       "family": "vue",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -194,6 +197,7 @@
       "family": "vue",
       "class": "keyboard",
       "key": "ArrowRight",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -325,6 +329,7 @@
       "family": "svelte",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -332,6 +337,7 @@
       "family": "svelte",
       "class": "keyboard",
       "key": "ArrowRight",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -473,6 +479,7 @@
       "family": "lit",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -480,6 +487,7 @@
       "family": "lit",
       "class": "keyboard",
       "key": "ArrowRight",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -611,6 +619,7 @@
       "family": "angular",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -618,6 +627,7 @@
       "family": "angular",
       "class": "keyboard",
       "key": "ArrowRight",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -994,6 +1004,38 @@
       "class": "keyboard",
       "key": "Escape",
       "spec": "WALKTHROUGH-ESCAPE-DISMISS-01"
+    },
+    {
+      "component": "Walkthrough",
+      "family": "vue",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => void 0 and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "svelte",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "lit",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "angular",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
     }
   ]
 }
