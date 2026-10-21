@@ -19,29 +19,22 @@
     "details": {
       "root": {
         "tag": "div",
-        "description": "Combobox host that coordinates trigger state, selected value, and listbox visibility.",
-        "role": "root",
+        "description": "Host that holds the trigger and positions the floating listbox; it carries no role, so the trigger is the only combobox.",
+        "role": "root"
+      },
+      "trigger": {
+        "tag": "button",
+        "description": "The combobox: the focusable control that opens or closes the listbox. Its name is the trigger label and its value is the visible selected text.",
+        "role": "trigger",
+        "interactive": true,
+        "focusable": true,
         "aria": {
           "role": "combobox",
           "attributes": [
             "aria-haspopup",
             "aria-controls",
             "aria-expanded",
-            "aria-disabled",
             "aria-label"
-          ]
-        }
-      },
-      "trigger": {
-        "tag": "button",
-        "description": "Button control that opens or closes the select listbox.",
-        "role": "trigger",
-        "interactive": true,
-        "focusable": true,
-        "aria": {
-          "attributes": [
-            "aria-label",
-            "aria-expanded"
           ]
         }
       },
@@ -99,21 +92,14 @@
     "dom": {
       "tag": "div",
       "part": "root",
-      "attrs": {
-        "role": "combobox",
-        "aria-haspopup": "listbox"
-      },
-      "bindings": {
-        "aria-label": "prop:triggerLabel",
-        "aria-expanded": "channel:open.value",
-        "aria-disabled": "prop:disabled"
-      },
       "children": [
         {
           "tag": "button",
           "part": "trigger",
           "attrs": {
-            "type": "button"
+            "type": "button",
+            "role": "combobox",
+            "aria-haspopup": "listbox"
           },
           "bindings": {
             "disabled": "prop:disabled",
@@ -630,12 +616,6 @@
     "flipIcon": false
   },
   "relationships": [
-    {
-      "from": "root",
-      "to": "content",
-      "attribute": "aria-controls",
-      "description": "References this instance's open listbox."
-    },
     {
       "from": "trigger",
       "to": "content",

@@ -156,8 +156,8 @@ export function Select({
   const instanceId = useId();
 
   return (
-  <Stack layout="native" className={`${classNames}`} role="combobox" aria-haspopup="listbox" aria-label={triggerLabel} aria-expanded={open} aria-disabled={disabled} aria-controls={open ? `${instanceId}-content` : undefined} data-testid={testId} data-fsds-component="select" data-fsds-box="" {...rest}>
-    <button className="select__trigger" type="button" onClick={() => setOpen(!open)} onKeyDown={handleTriggerKeydown} disabled={disabled} aria-label={triggerLabel} aria-expanded={open} ref={element => { anchorRef.current = element; }} aria-controls={open ? `${instanceId}-content` : undefined}>
+  <Stack layout="native" className={`${classNames}`} data-testid={testId} data-fsds-component="select" data-fsds-box="" {...rest}>
+    <button className="select__trigger" type="button" role="combobox" aria-haspopup="listbox" onClick={() => setOpen(!open)} onKeyDown={handleTriggerKeydown} disabled={disabled} aria-label={triggerLabel} aria-expanded={open} ref={element => { anchorRef.current = element; }} aria-controls={open ? `${instanceId}-content` : undefined}>
       <span className="select__text">
         {((options || []).filter(option => (Array.isArray(selection) ? selection : [selection]).includes(option.value)).map(option => option.label).join(', ') || placeholder)}
       </span>

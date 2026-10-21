@@ -113,12 +113,12 @@ describe("Select — trigger naming", () => {
   it("has a useful default name and honors the consumer override", () => {
     const { rerender } = render(<Select aria-label="Fruit" />);
     expect(
-      screen.getByRole("button", { name: "Select an option" }),
+      screen.getByRole("combobox", { name: "Select an option" }),
     ).toBeInTheDocument();
 
     rerender(<Select aria-label="Fruit" triggerLabel="Choose a fruit" />);
     expect(
-      screen.getByRole("button", { name: "Choose a fruit" }),
+      screen.getByRole("combobox", { name: "Choose a fruit" }),
     ).toBeInTheDocument();
   });
 });
@@ -277,7 +277,7 @@ describe("Select — keyboard realization (FEAT-A11Y-COMPOSITE-KEYBOARD-01)", ()
   it("ArrowDown on the closed trigger opens the panel and moves focus into the listbox", async () => {
     const onOpenChange = vi.fn();
     render(<Select aria-label="Fruit" onOpenChange={onOpenChange} options={OPTIONS} />);
-    const trigger = screen.getByRole("button", { name: "Select an option" });
+    const trigger = screen.getByRole("combobox", { name: "Select an option" });
     fireEvent.keyDown(trigger, { key: "ArrowDown" });
     expect(onOpenChange).toHaveBeenCalledWith(true);
     await waitFor(() => {
