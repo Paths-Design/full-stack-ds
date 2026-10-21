@@ -64,3 +64,10 @@ evidence:
     command: "./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon --rerun-tasks"
     exit_code: 0
     commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At 9749cfb6f RoleSemanticsTest (packages/ds-jetpack-compose/library/src/test/kotlin/com/fullstackds/components/semantics/RoleSemanticsTest.kt) asserts Role.Button on the Walkthrough Previous and Next controls and the Popover trigger, and Role.DropdownList on the Select trigger; each failed against the pre-change generated Kotlin. Gradle run: 43 tests, 0 failures."
+    recorded_at: "2026-10-21T08:34:25.473Z"
+    command: "./packages/ds-jetpack-compose/gradlew -p packages/ds-jetpack-compose :library:test --no-daemon --rerun-tasks"
+    exit_code: 0
+    commit_sha: "9749cfb6fbe30cd130c0ef3dde2233221ff01733"
