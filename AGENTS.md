@@ -172,7 +172,7 @@ over writing a bare count.
 
 It is **not** a step-for-step mirror. `scripts/prepush-scope.mjs` derives a per-push flag set from the changed paths and the hook skips families whose inputs did not change (`PREPUSH_FULL=1` forces the full sequence). The hook's own header states it "can over-skip relative to CI but never silently skips a step whose input changed; CI is authoritative." So a green pre-push means *the lanes your change touched* passed — it is not a proof that CI will pass. Do not `--no-verify` to dodge gate failures — fix the underlying issue.
 
-Before any gate, the hook runs `node scripts/committed-tree-check.mjs pushed <tip>` and refuses a push whose working tree differs from the pushed commit (a tracked edit, staged or not, or an untracked, non-ignored file): its gates read the working tree, so their verdict would otherwise be about bytes the push does not carry. Commit or remove the listed files, or push from a checkout that matches the commit.
+Before any gate, the hook runs `node scripts/committed-tree-check.mjs pushed <tip>` for every pushed ref and refuses the push when the working tree differs from any pushed commit (a tracked edit, staged or not, or an untracked, non-ignored file): its gates read the working tree, so their verdict would otherwise be about bytes the push does not carry. Commit or remove the listed files, or push from a checkout that matches the commit.
 
 ### CAWS slice lifecycle (spec → worktree → work → merge → evidence → close)
 

@@ -246,7 +246,7 @@ The four evidence rungs taught here are how the rail *demonstrates* it owns evid
 Cite what a reviewer can rerun from a clean checkout: the command, the commit SHA it ran at, and its exit code.
 
 - A clean run: "`pnpm run governed:rail` exits 0 at `<sha>`, and `node scripts/committed-tree-check.mjs generated` exits 0 after it."
-- Diagnostic codes that fired and how they were resolved, each with its commit: "at `<before-sha>` the rail exits 1 with `RAIL_REQUIRE_MANIFEST_CONTRACT_HASH_MISMATCH` on `packages/ds-contracts/components/Button/Button.contract.json`; `<fix-sha>` commits the regenerated output and the rail exits 0."
+- Drift and its repair, each with its commit: "at `<before-sha>` the rail exits 0 and `node scripts/committed-tree-check.mjs generated` exits 1, listing the Button files regeneration changed; `<fix-sha>` commits the regenerated output and both exit 0." `governed:rail` rewrites the manifest before it validates, so the hash and missing-source codes cannot fire on a clean checkout; one that fires only against a manifest from an earlier local run is local state, not a citation.
 - Known gaps, quoted from the tracked plan source that declares them (each plan's `knownGaps` under `packages/ds-codegen/src/validation/frameworks/`).
 
 Counts read off a `RailReport` are claims the reviewer re-derives by rerunning the command at that commit. Do not cite the markdown report, a redirected stdout file, or the emission manifest: all are gitignored per-machine state that a clean checkout does not have. [`governed-ci.md`](./governed-ci.md#citing-a-rail-result) carries the full recipes, including a pinned-range scoped run.

@@ -5,7 +5,7 @@ status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
 updated: 2026-10-20
-verified_at_commit: 423a2f734
+verified_at_commit: 44cead708
 governs:
   - package.json
   - .github/workflows/ci.yml
@@ -190,7 +190,7 @@ Validating first, then refusing drift, is the only ordering that catches "contra
 
 [`.githooks/pre-push`](../../.githooks/pre-push) runs the same script twice:
 
-1. **Before any gate**, `committed-tree-check.mjs pushed <tip>` refuses a push whose working tree differs from the pushed commit — a tracked edit, staged or not, or an untracked, non-ignored file. The hook's gates read the working tree while the push publishes the commit, so without this a stray file could fail lint for a commit CI would pass, and an uncommitted fix could pass a commit CI would fail.
+1. **Before any gate**, `committed-tree-check.mjs pushed <tip>` runs once per pushed ref and refuses the push when the working tree differs from any pushed commit — a tracked edit, staged or not, or an untracked, non-ignored file. The hook's gates read the working tree while the push publishes the commits, so without this a stray file could fail lint for a commit CI would pass, and an uncommitted fix could pass a commit CI would fail. Two refs whose trees differ cannot both match, so a push of several refs passes only when they all carry the checked-out tree; the first ref sets the range the classifier scopes.
 2. **After `governed:rail`**, when the hook's classifier selects the rail group, `committed-tree-check.mjs generated --against <tip>` refuses regenerated output the pushed commit does not carry.
 
 On a working branch, run `pnpm run governed:rail` on its own: a dirty tree is routine there, and the rail's verdict is still meaningful evidence about the bytes on disk.
@@ -353,7 +353,7 @@ Two invalid use cases:
 | `node scripts/committed-tree-check.mjs pushed <tip>` | pre-push, before every gate | no — CI checks out the commit itself |
 | `pnpm test` + `pnpm run test:vue` | yes; pre-push runs both when the classifier selects tests | yes — gate job |
 | `pnpm run test:coverage` | yes | yes — coverage job: react, codegen, figma-plugin, tokens, showcase, vue, svelte, lit, angular and react-native suites under coverage thresholds |
-| `pnpm run test:frameworks` | yes | no — CI runs the Svelte, Lit, Angular and React Native suites only through `test:coverage` |
+| `pnpm run test:frameworks` | yes | no — CI runs the Svelte, Lit and Angular suites only through `test:coverage`; the React Native suite also runs in the gate job as the rail's react-native runtime check (`pnpm --filter @full-stack-ds/react-native run test`) |
 
 ## Citing a rail result
 
@@ -373,7 +373,9 @@ Do not cite a redirected stdout file, `tmp/generated-admission-report.md`, or `p
 
 ### Citing a drift-and-fix
 
-> At `<before-sha>`, `pnpm run governed:rail` exits 1 with `RAIL_REQUIRE_MANIFEST_CONTRACT_HASH_MISMATCH` on `packages/ds-contracts/components/Button/Button.contract.json`. `<fix-sha>` commits the regenerated Button output; at `<fix-sha>` the rail and `node scripts/committed-tree-check.mjs generated` both exit 0.
+> At `<before-sha>`, `pnpm run governed:rail` exits 0 and `node scripts/committed-tree-check.mjs generated` then exits 1, listing the Button files under `packages/ds-*/src/components/Button/` that regeneration changed. `<fix-sha>` commits the regenerated output; at `<fix-sha>` both exit 0.
+
+`governed:rail` rewrites the manifest before it validates, so on a clean checkout the hash and missing-source diagnostics (`*_HASH_MISMATCH`, `*_MISSING`) cannot fire: stale bytes show up in the committed-output check instead. A diagnostic that can fire there is one generation itself leaves behind, such as `RAIL_REQUIRE_MANIFEST_UNTRACKED_GENERATED_PATHS` for a committed generated file that no contract produces any more. A diagnostic seen only against a manifest from an earlier local run is local state; cite the command that reproduces the underlying drift instead.
 
 ### Citing a known-gap declaration
 
