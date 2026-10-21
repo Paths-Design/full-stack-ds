@@ -95,3 +95,11 @@ evidence:
     exit_code: 0
     artifact_path: doc-freshness-baseline.json
     commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At 12734d882 the ci.yml gate job, the ci.yml GPUI job and .githooks/pre-push all run node scripts/committed-tree-check.mjs generated, and neither file keeps a git diff --exit-code over a packages/ds-* list. The prepush-scope test asserts both surfaces run the script and its contract test and carry no root list; it caught the leftover GPUI-job list before that was replaced."
+    recorded_at: "2026-10-21T05:56:04.536Z"
+    test_nodeid: "scripts/prepush-scope.test.mjs::CI and pre-push check generated output with the shared script and keep no root list"
+    command: node --test scripts/prepush-scope.test.mjs
+    exit_code: 0
+    commit_sha: "12734d8820cb0e0304022fb3ee808e09b4315081"
