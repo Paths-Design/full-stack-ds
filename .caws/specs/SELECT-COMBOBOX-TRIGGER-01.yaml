@@ -2,7 +2,6 @@ id: SELECT-COMBOBOX-TRIGGER-01
 title: 'Select''s combobox role and state live on its focusable trigger'
 mode: fix
 lifecycle_state: active
-worktree: select-combobox-trigger
 created_at: '2026-10-21T06:11:24.166Z'
 updated_at: '2026-10-21T07:03:31.387Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
