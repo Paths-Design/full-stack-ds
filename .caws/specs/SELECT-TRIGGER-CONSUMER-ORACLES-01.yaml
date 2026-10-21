@@ -22,7 +22,7 @@ invariants:
   - 'A slice that changes a part role runs every consumer test that queries that part before landing'
 acceptance:
   - id: A1
-    given: 'the shared-controls React test run against the lane own installed ds-react'
+    given: 'the shared-controls React test'
     when: 'it looks up the Select trigger'
     then: 'it finds the combobox named by triggerLabel and passes, and it fails against a trigger exposed as a plain button'
   - id: A2
