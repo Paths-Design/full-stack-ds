@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: rtl-logical-css
 created_at: '2026-10-21T11:14:52.848Z'
-updated_at: '2026-10-21T11:15:07.223Z'
+updated_at: '2026-10-21T11:41:20.849Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -33,19 +33,30 @@ scope:
     - 'packages/ds-figma-plugin'
     - 'packages/ds-codegen/generated'
     - 'e2e/rtl-direction.spec.ts'
+    - docs/architecture/design/component-design-bindings.md
   out: []
 invariants:
-  - 'A declaration whose side depends on reading direction names the inline start or end, so left-to-right rendering is unchanged and right-to-left mirrors it'
   - 'Physical side values that a component exposes as API (Sheet side, Tooltip and Popover placement, Text align) stay physical until the user decides their meaning'
+  - 'A declaration whose side depends on reading direction names the inline start or end, so horizontal left-to-right rendering is unchanged and right-to-left mirrors it'
 acceptance:
   - id: A1
     given: 'Toast, Switch, Dialog, Sheet, Alert, AlertNotice, Progress, Walkthrough, vertical Tabs, Accordion and Select sidecars'
     when: 'they are generated'
-    then: 'their direction-dependent declarations use inline-start or inline-end properties (or a dir=rtl mirror for the Switch track), and left-to-right generated CSS computes the same values as before'
+    then: >-
+      each direction-dependent declaration names the inline start or end with the
+      value of the physical property it replaces (or, for the Switch track, adds a
+      web-only dir=rtl mirror), so in horizontal left-to-right writing it resolves
+      to the same physical side as before; vertical writing modes are not claimed
   - id: A2
-    given: 'the Toast, checked Switch, open Dialog and dismissible Alert previews in Chromium for each of the five web frameworks with dir=rtl on the document element'
-    when: 'they render'
-    then: 'the toast sits against the left viewport edge, the checked thumb sits left of the track centre, the dialog close button sits left of the modal centre and the alert dismiss sits at its left end, and the same probes under dir=ltr place them on the right'
+    given: >-
+      the Toast, checked Switch, open Dialog and dismissible Alert previews in
+      Chromium for each of the five web frameworks
+    when: 'each is measured under dir=ltr and then under dir=rtl on the document element'
+    then: >-
+      the toast sits on the right viewport edge in ltr and the left edge in rtl, and
+      the thumb, dialog close button and alert dismiss sit within a small gap of the
+      inline end in ltr and at that same gap, within 1px, from the opposite edge in
+      rtl
   - id: A3
     given: 'the regenerated tree'
     when: 'the rail, committed-output check, styling audits and every framework suite run'
