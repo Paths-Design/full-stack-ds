@@ -844,4 +844,15 @@ describe("generated SwiftUI channels", () => {
       expect(text, name).not.toMatch(new RegExp(`\\bif ${channel}\\.value(?!\\(in:)`));
     }
   });
+
+  it("mark the active tab selected from the value the root passes down", () => {
+    // VoiceOver announces the isSelected trait in the user's language. The
+    // tab depends on the environment value for the same reason a panel does:
+    // a parent-set tab publishes nothing on the channel object.
+    const contract = loadContract("Tabs") as Parameters<typeof buildComponentIR>[0];
+    const source = generateSwiftUIComponentSource(buildComponentIR(contract));
+    const tab = /public struct TabsTab: View \{[\s\S]*?\n\}\n/.exec(source)?.[0] ?? "";
+    expect(tab).toContain("@Environment(\\.fsdsChannelValues) private var fsdsChannelValues");
+    expect(tab).toContain(".accessibilityAddTraits(activeTab.value(in: fsdsChannelValues) == value ? [.isSelected] : [])");
+  });
 });

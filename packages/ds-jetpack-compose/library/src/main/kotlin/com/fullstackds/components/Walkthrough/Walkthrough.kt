@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -129,7 +130,7 @@ fun Walkthrough(
                         .then(if (coachmarkSecondaryBackground != null) Modifier.background(coachmarkSecondaryBackground, RoundedCornerShape(coachmarkSecondaryRadius)) else Modifier)
                         .then(if (coachmarkSecondaryBorder != null) Modifier.border(1.dp, coachmarkSecondaryBorder, RoundedCornerShape(coachmarkSecondaryRadius)) else Modifier)
                         .padding(coachmarkInset)
-                        .clickable(enabled = !previousDisabled) { onPrevious?.invoke() }
+                        .clickable(enabled = !previousDisabled, role = Role.Button) { onPrevious?.invoke() }
                         .semantics { contentDescription = fsdsMessages.string("Walkthrough.previousStep", "Previous step") },
                 ) {
                     BasicText(text = fsdsMessages.string("Walkthrough.previous", "Previous"))
@@ -139,7 +140,7 @@ fun Walkthrough(
                         .clip(RoundedCornerShape(coachmarkPrimaryRadius))
                         .then(if (coachmarkPrimaryBackground != null) Modifier.background(coachmarkPrimaryBackground, RoundedCornerShape(coachmarkPrimaryRadius)) else Modifier)
                         .padding(coachmarkInset)
-                        .clickable { onNext?.invoke() },
+                        .clickable(role = Role.Button) { onNext?.invoke() },
                 ) {
                     BasicText(text = nextLabel, style = TextStyle(color = coachmarkPrimaryColor ?: Color.Unspecified))
                 }

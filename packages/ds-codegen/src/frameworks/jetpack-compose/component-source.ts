@@ -3282,12 +3282,13 @@ function emitInteractiveComposite(ir: ComponentIR): string {
   lines.push(`// @generated:start imports`);
   if (bgSlot) lines.push(`import androidx.compose.foundation.background`);
   if (borderSlot) lines.push(`import androidx.compose.foundation.border`);
-  lines.push(`import androidx.compose.foundation.clickable`);
+  if (isUnion) lines.push(`import androidx.compose.foundation.clickable`);
   lines.push(`import androidx.compose.foundation.layout.Arrangement`);
   lines.push(`import androidx.compose.foundation.layout.Column`);
   lines.push(`import androidx.compose.foundation.layout.PaddingValues`);
   lines.push(`import androidx.compose.foundation.layout.padding`);
   lines.push(`import androidx.compose.foundation.layout.requiredSizeIn`);
+  if (!isUnion) lines.push(`import androidx.compose.foundation.selection.selectable`);
   lines.push(`import androidx.compose.foundation.shape.RoundedCornerShape`);
   lines.push(`import androidx.compose.runtime.Composable`);
   lines.push(`import androidx.compose.runtime.CompositionLocalProvider`);
@@ -3299,8 +3300,11 @@ function emitInteractiveComposite(ir: ComponentIR): string {
   lines.push(`import androidx.compose.ui.Modifier`);
   lines.push(`import androidx.compose.ui.draw.clip`);
   lines.push(`import androidx.compose.ui.semantics.contentDescription`);
-  lines.push(`import androidx.compose.ui.semantics.semantics`);
-  lines.push(`import androidx.compose.ui.semantics.stateDescription`);
+  if (!isUnion) lines.push(`import androidx.compose.ui.semantics.Role`);
+  // The union trigger's stateDescription and the root's accessible name both
+  // call Modifier.semantics.
+  if (isUnion || hasAria) lines.push(`import androidx.compose.ui.semantics.semantics`);
+  if (isUnion) lines.push(`import androidx.compose.ui.semantics.stateDescription`);
   lines.push(`import androidx.compose.ui.unit.dp`);
   if (consumesTokens) lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
   if (bgSlot || borderSlot) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
@@ -3415,7 +3419,13 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     `    val state = ${localName}.current ?: error("${triggerName} must be used inside ${name}")`,
   );
   lines.push(`    val selected = ${isUnion ? "state.value.contains(key)" : "state.value == key"}`);
-  lines.push(`    Column(modifier.clickable { ${isUnion ? "state.onToggle(key)" : "state.onSelect(key)"} }.semantics { stateDescription = if (selected) "selected" else "not selected" }) {`);
+  // A tab is a selectable with Role.Tab: TalkBack announces the tab role and
+  // its selected state in the device's language.
+  lines.push(
+    isUnion
+      ? `    Column(modifier.clickable { state.onToggle(key) }.semantics { stateDescription = if (selected) "selected" else "not selected" }) {`
+      : `    Column(modifier.selectable(selected = selected, role = Role.Tab, onClick = { state.onSelect(key) })) {`,
+  );
   for (const ref of referenceNodes(ir, "decoration")) {
     lines.push(...emitComponentReference(ir, ref, "        ", [
       `Modifier.rotate(if (selected) 180f else 0f)`,
@@ -3952,10 +3962,11 @@ function emitSelectionControl(ir: ComponentIR): string {
   lines.push(`        Row(`);
   lines.push(`            modifier`);
   lines.push(`                .then(chromeModifier)`);
+  // The trigger opens a list of choices: Role.DropdownList.
   if (hasDisabled) {
-    lines.push(`                .clickable(enabled = enabled) {`);
+    lines.push(`                .clickable(enabled = enabled, role = Role.DropdownList) {`);
   } else {
-    lines.push(`                .clickable {`);
+    lines.push(`                .clickable(role = Role.DropdownList) {`);
   }
   if (openChannel) {
     lines.push(`                    val next = !resolvedOpen`);
@@ -4161,6 +4172,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`import androidx.compose.ui.Modifier`);
   lines.push(`import androidx.compose.ui.draw.clip`);
   lines.push(`import androidx.compose.ui.graphics.Color`);
+  lines.push(`import androidx.compose.ui.semantics.Role`);
   if (textExpr(previousName)) {
     lines.push(`import androidx.compose.ui.semantics.contentDescription`);
     lines.push(`import androidx.compose.ui.semantics.semantics`);
@@ -4311,7 +4323,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`                        .padding(coachmarkInset)`);
   const previousLabel = textExpr(previousName);
   lines.push(
-    `                        .clickable(enabled = !previousDisabled) { onPrevious?.invoke() }${previousLabel ? `\n                        .semantics { contentDescription = ${previousLabel} }` : ""},`,
+    `                        .clickable(enabled = !previousDisabled, role = Role.Button) { onPrevious?.invoke() }${previousLabel ? `\n                        .semantics { contentDescription = ${previousLabel} }` : ""},`,
   );
   const previousContent = textExpr(previousText);
   if (previousContent) {
@@ -4326,7 +4338,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   lines.push(`                        .clip(RoundedCornerShape(coachmarkPrimaryRadius))`);
   lines.push(`                        .then(if (coachmarkPrimaryBackground != null) Modifier.background(coachmarkPrimaryBackground, RoundedCornerShape(coachmarkPrimaryRadius)) else Modifier)`);
   lines.push(`                        .padding(coachmarkInset)`);
-  lines.push(`                        .clickable { onNext?.invoke() },`);
+  lines.push(`                        .clickable(role = Role.Button) { onNext?.invoke() },`);
   lines.push(`                ) {`);
   const nextTextStyle = `TextStyle(color = ${primaryColorSlot ? "coachmarkPrimaryColor ?: Color.Unspecified" : "Color.Unspecified"})`;
   if (stringDefaults.has("nextLabel")) {
