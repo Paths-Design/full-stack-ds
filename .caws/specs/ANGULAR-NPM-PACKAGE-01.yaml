@@ -48,3 +48,12 @@ contracts:
   - name: 'angular-packed-consumer'
     type: contract-test
     path: 'scripts/angular-package-consumer/verify.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Built and packed Angular exports resolve to installed JavaScript, declarations and aggregate CSS; no development preview export or src tree. Raw verifier checks the tarball installation and partial declaration metadata."
+    recorded_at: "2026-10-22T22:17:35.008Z"
+    command: "pnpm run test:package:angular"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/ANGULAR-NPM-PACKAGE-01/fsds-angular-package-consumer-realpath.log"
+    commit_sha: "46f3f1315457ca115c44417df1507551c16815ea"
