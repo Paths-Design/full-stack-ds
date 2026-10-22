@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: Dual-listbox transfer
 owner: "@darianrosebrook"
-updated: 2026-10-21
-verified_at_commit: 026a193d2
+updated: 2026-10-22
+verified_at_commit: 0c2dbf674ac37f75e1c581d158feb105d09c60d8
 governs:
   - packages/ds-codegen/src/transfer.ts
   - packages/ds-codegen/src/transfer/transfer-list.ts
@@ -152,8 +152,8 @@ and the value then carries those strings.
 - `e2e/runtime-rail.spec.ts`, which CI runs, drives Shuttle in Chromium on all five web targets:
   the listbox shape and names, one tab stop per list, real arrow, Home, End,
   Space and Enter keys moving DOM focus and the mark, two arrow presses in one
-  task both counting, focus after Enter, and click marking with Add and
-  Remove, with each transfer's reported value read from the preview's
+  task both counting, focus after Enter and keyboard activation of Add and
+  Remove, and click marking and transfers, with each transfer's reported value read from the preview's
   callback capture (React, Vue, Svelte and Lit; the Angular preview does not
   route callbacks through it).
 - `FsdsTransferListTest.kt` and `ShuttleSemanticsTest.kt` (Compose, desktop
