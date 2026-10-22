@@ -1,0 +1,48 @@
+id: KEYBOARD-DIRECTION-01
+title: 'Follow resolved reading direction in keyboard navigation'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-22T23:08:03.173Z'
+updated_at: '2026-10-22T23:08:03.173Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Shared keyboard reading-direction resolution'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/direction'
+    - 'packages/ds-react/src/primitives/direction'
+    - 'packages/ds-vue/src/primitives/direction'
+    - 'packages/ds-svelte/src/primitives/direction'
+    - 'packages/ds-angular/src/primitives/direction'
+    - 'packages/ds-lit/src/primitives/direction'
+    - 'packages/ds-react-native/src/primitives/direction'
+    - 'e2e/keyboard-direction.spec.ts'
+  out: []
+invariants:
+  - 'Keyboard arrows follow the live rendered direction across DOM and shadow boundaries without changing component state contracts'
+  - 'Targets without a DOM including React Native retain the existing left-to-right fallback'
+acceptance:
+  - id: A1
+    given: 'DOM targets whose resolved direction comes from mixed-case dir values inheritance CSS or auto direction'
+    when: 'shared keyboard direction is resolved'
+    then: 'it follows live computed direction and valid nested overrides with deterministic non-DOM fallback'
+  - id: A2
+    given: 'Calendar in every web framework and the existing composed Tabs fixtures'
+    when: 'trusted arrow keys act under changed direction'
+    then: 'focused dates and selected tabs follow the resolved reading direction including uppercase RTL and shadow-root inheritance'
+  - id: A3
+    given: 'regenerated direction runtime copies'
+    when: 'focused tests required rail root framework and documentation checks run'
+    then: 'all six copies match their authority and gates pass without unrelated generated drift'
+observability:
+  - 'Browser assertions compare computed direction with exact focused date and tab changes'
+rollback:
+  - 'Revert the merge and regenerate direction runtime copies'
+non_functional: {}
+contracts:
+  - name: 'keyboard-direction'
+    type: behavior
+    path: 'packages/ds-codegen/src/direction/direction.ts'
