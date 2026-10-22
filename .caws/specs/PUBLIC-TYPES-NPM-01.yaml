@@ -1,9 +1,10 @@
 id: PUBLIC-TYPES-NPM-01
 title: 'Export idiomatic component props and aliases through npm declarations'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: public-types-npm
 created_at: '2026-10-22T23:05:17.159Z'
-updated_at: '2026-10-22T23:05:18.627Z'
+updated_at: '2026-10-22T23:05:20.405Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
