@@ -4,8 +4,8 @@ authority: spec
 status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
-updated: 2026-10-20
-verified_at_commit: 44cead708
+updated: 2026-10-22
+verified_at_commit: 46f3f1315457ca115c44417df1507551c16815ea
 governs:
   - package.json
   - .github/workflows/ci.yml
@@ -354,6 +354,7 @@ Two invalid use cases:
 | `pnpm test` + `pnpm run test:vue` | yes; pre-push runs both when the classifier selects tests | yes — gate job |
 | `pnpm run test:coverage` | yes | yes — coverage job: react, codegen, figma-plugin, tokens, showcase, vue, svelte, lit, angular and react-native suites under coverage thresholds |
 | `pnpm run test:frameworks` | yes | no — CI runs the Svelte, Lit and Angular suites only through `test:coverage`; the React Native suite also runs in the gate job as the rail's react-native runtime check (`pnpm --filter @full-stack-ds/react-native run test`) |
+| `pnpm run test:package:angular` | yes — builds and installs Angular and iconography tarballs outside the workspace, checks strict AOT inputs and exercises the production consumer in Chromium; external peers use the pinned local store | no — separate package-consumer check, not part of the admission rail |
 
 ## Citing a rail result
 

@@ -12,9 +12,9 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./preview": {
-      "types": "./src/preview/index.ts",
-      "default": "./src/preview/index.ts"
+    "./styles.css": {
+      "types": "./dist/angular.css.d.ts",
+      "default": "./dist/angular.css"
     }
   },
   "files": [
@@ -24,11 +24,11 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:ngc": "ngc -p tsconfig.ngc.json",
     "test": "jest --config jest.config.cjs",
-    "build": "tsc -p tsconfig.build.json"
+    "build": "node scripts/build.mjs"
   },
   "peerDependencies": {
-    "@angular/common": ">=17.0.0",
-    "@angular/core": ">=17.0.0"
+    "@angular/common": "^21.2.13",
+    "@angular/core": "^21.2.13"
   },
   "devDependencies": {
     "@angular/common": "^21.2.13",
