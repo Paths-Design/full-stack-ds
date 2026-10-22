@@ -5,7 +5,7 @@ status: active
 title: Dual-listbox transfer
 owner: "@darianrosebrook"
 updated: 2026-10-22
-verified_at_commit: 0c2dbf674ac37f75e1c581d158feb105d09c60d8
+verified_at_commit: b2494cbef
 governs:
   - packages/ds-codegen/src/transfer.ts
   - packages/ds-codegen/src/transfer/transfer-list.ts
