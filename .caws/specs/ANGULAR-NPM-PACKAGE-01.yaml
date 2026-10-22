@@ -1,0 +1,47 @@
+id: ANGULAR-NPM-PACKAGE-01
+title: 'Build Angular npm artifacts with partial compilation and packaged consumer proof'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-22T21:34:22.753Z'
+updated_at: '2026-10-22T21:34:22.753Z'
+created_by_session: '01a16581-c9b7-7862-841d-80df8886b0ce'
+blast_radius:
+  modules:
+    - 'Angular npm packaging and isolated packed-consumer validation'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-angular/package.json'
+    - 'packages/ds-angular/tsconfig.build.json'
+    - 'packages/ds-angular/tsconfig.ngc.json'
+    - 'packages/ds-angular/scripts'
+    - 'scripts/angular-package-consumer'
+    - 'package.json'
+  out: []
+invariants:
+  - 'Generated component semantics remain authoritative and unchanged by packaging'
+  - 'Consumer checks compile and render installed tarball bytes without source aliases or JIT compiler imports'
+  - 'No packages are published and private release disposition is retained'
+acceptance:
+  - id: A1
+    given: 'freshly built Angular package'
+    when: 'npm tarball file and export targets are inspected'
+    then: 'exported JavaScript declarations and aggregate CSS exist and development preview exports do not reference absent sources'
+  - id: A2
+    given: 'Angular and iconography tarballs installed outside the workspace'
+    when: 'a strict AOT Button consumer compiles'
+    then: 'Angular input metadata supports typed variant and disabled props without importing the JIT compiler'
+  - id: A3
+    given: 'the production built packed Button consumer'
+    when: 'Chromium changes disabled state and clicks the button'
+    then: 'authored CSS is computed and enabled clicks update consumer state while disabled activation is suppressed'
+observability:
+  - 'Packed-consumer verification reports tarball identities compiler diagnostics and browser assertions'
+rollback:
+  - 'Revert the packaging slice commit and rebuild Angular outputs'
+non_functional: {}
+contracts:
+  - name: 'angular-packed-consumer'
+    type: contract-test
+    path: 'scripts/angular-package-consumer/verify.mjs'
