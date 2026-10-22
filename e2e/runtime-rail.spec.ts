@@ -637,6 +637,25 @@ test.describe("Runtime rail — Shuttle (dual-listbox transfer: listbox shape, k
   // options alpha..epsilon and an empty selection. CSS locators pierce Lit's
   // open shadow root; the focused option is read from the root that owns it.
   for (const framework of FRAMEWORKS) {
+    test(`${framework}: controlled rejected transfers preserve focus on the retained option`, async ({ page }) => {
+      for (const side of ["available", "selected"] as const) {
+        await goto(page, framework, "Shuttle", "shuttle", {
+          options: ["alpha"], value: side === "available" ? [] : ["alpha"],
+        });
+        const retained = shuttleItem(page, side, "alpha");
+        await expect(retained).toBeVisible();
+        await retained.focus();
+        await page.keyboard.press(" ");
+        const button = page.locator(side === "available" ? ".shuttle__add" : ".shuttle__remove");
+        await expect(button).toBeEnabled();
+        await button.focus();
+        await page.keyboard.press("Enter");
+        await expect(button).toBeDisabled();
+        await expect.poll(async () => (await shuttleFacts(page, framework))?.focused).toBe(`${side}/alpha`);
+        await expect(retained).toHaveAttribute("tabindex", "0");
+      }
+    });
+
     test(`${framework}: keyboard Add and Remove preserve focus when their buttons become disabled`, async ({ page }) => {
       await goto(page, framework, "Shuttle", "shuttle");
       await shuttleItem(page, "available", "alpha").focus();

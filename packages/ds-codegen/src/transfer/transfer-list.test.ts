@@ -262,6 +262,25 @@ describe("transfer list keyboard", () => {
 });
 
 describe("transfer list focus after render", () => {
+  it.each(["available", "selected"] as const)("keeps focus and the tab stop on a retained %s item when a controlled parent rejects a button transfer", (side) => {
+    const core = createTransferList();
+    const values = ["alpha", "beta", "gamma"];
+    const onValueChange = vi.fn();
+    const controlled = options({ options: values, value: side === "available" ? [] : values, onValueChange });
+    let root = render(core.sync(controlled));
+    for (const item of core.state[side]) core.toggle(item);
+    const button = document.createElement("button");
+    root.append(button);
+    button.focus();
+    core[side === "available" ? "add" : "remove"]({ currentTarget: button });
+    expect(onValueChange.mock.calls).toEqual([[side === "available" ? values : []]]);
+    root = render(core.sync(controlled));
+    core.afterRender();
+    expect(document.activeElement).toBe(option(root, side, "alpha"));
+    expect(stops(core.state[side])).toEqual(["alpha"]);
+    expect(marked(core.state[side])).toEqual([]);
+  });
+
   it("focuses the item an arrow moved to once it renders", () => {
     const list = createTransferList();
     let root = render(list.sync(options()));

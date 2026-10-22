@@ -210,6 +210,17 @@ export function createTransferList() {
       options = next;
       reported = undefined;
       state = computeTransferList(next, marks, focus);
+      const requested = pendingFocus;
+      if (requested && !state[requested.side].some((item) => item.key === requested.key)) {
+        // A controlled parent may reject the predicted transfer. Follow the
+        // retained item in the authoritative list and keep its tab stop with it.
+        const retainedSide = other(requested.side);
+        if (state[retainedSide].some((item) => item.key === requested.key)) {
+          requested.side = retainedSide;
+          focus[retainedSide] = requested.key;
+          state = computeTransferList(next, marks, focus);
+        }
+      }
       return state;
     },
     /** Mark or unmark an item (a click on an option). */

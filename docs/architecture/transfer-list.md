@@ -104,6 +104,8 @@ nothing asked to focus leaves focus alone. The Add and Remove buttons are
 disabled until their source list holds a mark. Activating either web button
 moves focus to the nearest remaining source option, or follows the first moved
 option when the source empties, so disabling the button preserves a focus target.
+If a controlled value rejects the transfer, the next sync redirects that pending
+focus and the tab stop to the retained item in its actual list.
 
 ## Per-family bindings
 
