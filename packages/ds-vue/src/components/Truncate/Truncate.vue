@@ -46,7 +46,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { expandText: "ex
 const behavior = useTruncate({
   expanded: () => props.expanded,
   defaultExpanded: props.defaultExpanded,
-  onExpandedChange: props.onExpandedChange,
+  onExpandedChange: (...args) => props.onExpandedChange?.(...args),
 });
 // @generated:end
 

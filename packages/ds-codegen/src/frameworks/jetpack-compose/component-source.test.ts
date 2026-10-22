@@ -431,19 +431,40 @@ describe("generateJetpackComposeComponentSource — radio-collection class (FEAT
   });
 });
 
-describe("generateJetpackComposeComponentSource — array-iterated list class (FEAT-COMPOSE-SHUTTLE-ADMISSION-01)", () => {
-  it("lowers the array channel onto removable rows (Shuttle)", () => {
+describe("generateJetpackComposeComponentSource — transfer surface (SHUTTLE-DUAL-LISTBOX-01)", () => {
+  it("derives both lists from the options and the value channel (Shuttle)", () => {
     const src = generateJetpackComposeComponentSource(irFor("Shuttle"));
+    expect(src).toContain('options: List<String> = listOf("alpha", "beta", "gamma", "delta", "epsilon"),');
     expect(src).toContain("value: List<String>? = null,");
     expect(src).toContain("defaultValue: List<String> = emptyList(),");
     expect(src).toContain("val resolvedValue = value ?: uncontrolledValue");
-    expect(src).toContain("resolvedValue.forEach { item ->");
-    expect(src).toContain("val next = resolvedValue.filter { it != item }");
-    // The change-handler prop name comes from the contract channel.
-    expect(src).toMatch(/\?\.invoke\(next\)/);
-    expect(src).toContain('layeredSlot("shuttle.color.background")');
+    expect(src).toContain("items = FsdsTransferList.available(options, resolvedValue),");
+    expect(src).toContain("items = FsdsTransferList.selected(resolvedValue),");
+    // A tap marks an item; it never removes it outright.
+    expect(src).not.toContain("resolvedValue.filter { it != item }");
+    // The sidecar's root padding outranks the box-model insets, as on web.
+    expect(src).toContain('val rootPadding = layeredSlot("shuttle.size.padding")?.toFsdsDp()?.let { PaddingValues(it) } ?: PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp,');
+    expect(src).toContain(".sizeIn(minWidth = minWidth, minHeight = minHeight)");
     expect(src).not.toMatch(/import androidx\.compose\.material/);
     expect(src.match(/fun Shuttle\(([^)]*)\)/)![1]!.trim().startsWith("modifier: Modifier = Modifier,")).toBe(true);
+  });
+
+  it("announces each item's mark as its selected state and names both lists from the catalog (Shuttle)", () => {
+    const src = generateJetpackComposeComponentSource(irFor("Shuttle"));
+    expect(src).toContain(".selectable(selected = isMarked, role = Role.Button, onClick = { onToggle(item) })");
+    expect(src).toContain('label = fsdsMessages.string("Shuttle.availableLabel", "Available"),');
+    expect(src).toContain('label = fsdsMessages.string("Shuttle.selectedLabel", "Selected"),');
+    expect(src).toContain(".semantics { contentDescription = label }");
+  });
+
+  it("enables add and remove only while their source list has a mark, and clears the marks on transfer (Shuttle)", () => {
+    const src = generateJetpackComposeComponentSource(irFor("Shuttle"));
+    expect(src).toContain("val addNext = FsdsTransferList.adding(markedAvailable, options, resolvedValue)");
+    expect(src).toContain("val removeNext = FsdsTransferList.removing(markedSelected, resolvedValue)");
+    expect(src).toContain(".clickable(enabled = addNext != null, role = Role.Button) { addNext?.let { markedAvailable = emptySet(); commit(it) } }");
+    expect(src).toContain(".clickable(enabled = removeNext != null, role = Role.Button) { removeNext?.let { markedSelected = emptySet(); commit(it) } }");
+    expect(src).toContain('text = fsdsMessages.string("Shuttle.add", "Add"),');
+    expect(src).toContain('text = fsdsMessages.string("Shuttle.remove", "Remove"),');
   });
 });
 

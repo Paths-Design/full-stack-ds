@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions, transferValueType } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -1689,6 +1690,7 @@ function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: 
   if (usesRef) lines.push(`import { ref } from 'lit/directives/ref.js';`);
   if (ir.pagedSet) lines.push(`import { PagedSetController } from "../../primitives/controllers/PagingController.js";`);
   if (ir.dateGrid) lines.push(`import { DateGridController } from "../../primitives/controllers/DateGridController.js";`);
+  if (ir.transfer) lines.push(`import { TransferListController } from "../../primitives/controllers/TransferListController.js";`);
   if (ir.motion.sequence) lines.push(`import { SequenceController } from "../../primitives/controllers/SequenceController.js";`);
   if (ir.messages.length > 0) {
     const names = ["FsdsMessagesController", ...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : [])];
@@ -2002,6 +2004,11 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     }
     if (ir.dateGrid) {
       lines.push(`  private dateGrid = new DateGridController(this, () => (${dateGridOptions(ir.dateGrid,
+        (prop) => defaultAwareLitPropAccessor(prop, styledByName), (channel) => `this.behavior.${channel}`,
+        (channel) => `(next) => this.behavior.set${capitalizeLit(channel)}(next)`)}));`);
+    }
+    if (ir.transfer) {
+      lines.push(`  private transfer = new TransferListController(this, () => (${transferOptions(ir.transfer,
         (prop) => defaultAwareLitPropAccessor(prop, styledByName), (channel) => `this.behavior.${channel}`,
         (channel) => `(next) => this.behavior.set${capitalizeLit(channel)}(next)`)}));`);
     }
@@ -3219,6 +3226,14 @@ function renderLitBinding(
     case "paged": return `.${attr}=\${${pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     // Date-grid values are strings and booleans that the attribute renders ("true"/"false").
     case "dateGrid": return `${attr}=\${${dateGridBindingExpression(expr, "this.dateGrid")}}`;
+    case "transfer": {
+      // A boolean runtime value (addDisabled) needs Lit's boolean-attribute
+      // binding: `disabled=${false}` would serialize as disabled="false",
+      // which disables the button. ARIA attributes take the explicit string.
+      const value = transferBindingExpression(expr, "this.transfer");
+      if (transferValueType(expr) !== "boolean") return `${attr}=\${${value}}`;
+      return attr.startsWith("aria-") ? `${attr}=\${${value} ? 'true' : 'false'}` : `?${attr}=\${${value}}`;
+    }
     case "valueMap": {
       const lowered = renderLitBindingValue(expr, ctx);
       if (lowered === null) return null;
@@ -3501,6 +3516,7 @@ function renderLitContent(
   switch (expr.kind) {
     case "paged": return `\${${pagedBindingExpression(expr, "this.pagedSet")}}`;
     case "dateGrid": return `\${${dateGridBindingExpression(expr, "this.dateGrid")}}`;
+    case "transfer": return `\${${transferBindingExpression(expr, "this.transfer")}}`;
     case "prop":
       return `\${${appendPath(litPropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -3592,6 +3608,7 @@ function renderLitBindingValue(
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "dateGrid": return dateGridBindingExpression(expr, "this.dateGrid", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+    case "transfer": return transferBindingExpression(expr, "this.transfer", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(litPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3677,6 +3694,7 @@ function renderLitEvent(
   switch (expr.kind) {
     case "paged": return `@${eventName}=\${${pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "dateGrid": return `@${eventName}=\${${dateGridBindingExpression(expr, "this.dateGrid", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
+    case "transfer": return `@${eventName}=\${${transferBindingExpression(expr, "this.transfer", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `@${eventName}=\${${litPropAccessor(expr.prop, ctx)}}`;
     case "literal":

@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -656,7 +657,7 @@ function generateVueCompoundStateRootSource(ir: ComponentIR): string {
     if (channel.defaultValueProp) {
       hookLines.push(`  ${channel.defaultValueProp}: props.${propAccess(channel.defaultValueProp)},`);
     }
-    hookLines.push(`  ${channel.changeHandlerProp}: props.${propAccess(channel.changeHandlerProp)},`);
+    hookLines.push(`  ${channel.changeHandlerProp}: (...args) => props.${propAccess(channel.changeHandlerProp)}?.(...args),`);
   }
   hookLines.push(`  idBase: props.idBase,`);
   hookLines.push(`});`);
@@ -820,7 +821,7 @@ function generateVueDisclosureStateRootSource(ir: ComponentIR): string {
     if (channel.defaultValueProp) {
       hookLines.push(`  ${channel.defaultValueProp}: props.${propAccess(channel.defaultValueProp)},`);
     }
-    hookLines.push(`  ${channel.changeHandlerProp}: props.${propAccess(channel.changeHandlerProp)},`);
+    hookLines.push(`  ${channel.changeHandlerProp}: (...args) => props.${propAccess(channel.changeHandlerProp)}?.(...args),`);
   }
   hookLines.push(`});`);
   hookLines.push(``);
@@ -1674,6 +1675,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.dateGrid) importLines.push(`import { useDateGrid } from "../../primitives/hooks/useDateGrid.js";`);
+  if (ir.transfer) importLines.push(`import { useTransferList } from "../../primitives/hooks/useTransferList.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   importLines.push(...vueMessageImports(ir));
   const importsBody = importLines.join("\n");
@@ -1698,7 +1700,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       if (ch.defaultValueProp) {
         hookLines.push(`  ${ch.defaultValueProp}: props.${propAccess(ch.defaultValueProp)},`);
       }
-      hookLines.push(`  ${ch.changeHandlerProp}: props.${propAccess(ch.changeHandlerProp)},`);
+      hookLines.push(`  ${ch.changeHandlerProp}: (...args) => props.${propAccess(ch.changeHandlerProp)}?.(...args),`);
     }
     for (const trigger of ir.behavior.normalizedDismissalTriggers) {
       if (!trigger.enabledByProp) continue;
@@ -1747,6 +1749,9 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     const page = ir.pagedSet;
     hookLines.push(`const pagedSet = usePagedSet(() => ({ index: behavior.${page.channel}.value, items: props.${page.itemsProp},`,
       `  count: ${page.countProp ? `props.${page.countProp}` : "undefined"}, disabled: ${page.disabledProp ? `props.${page.disabledProp}` : "false"}, onIndexChange: behavior.set${capitalize(page.channel)} }));`);
+  }
+  if (ir.transfer) {
+    hookLines.push(`const transfer = useTransferList(() => (${transferOptions(ir.transfer, (prop) => `props.${prop}`, (channel) => `behavior.${channel}.value`, (channel) => `behavior.set${capitalize(channel)}`)}));`);
   }
   if (ir.dateGrid) {
     hookLines.push(`const dateGrid = useDateGrid(() => (${dateGridOptions(ir.dateGrid, (prop) => `props.${prop}`, (channel) => `behavior.${channel}.value`, (channel) => `behavior.set${capitalize(channel)}`)}));`);
@@ -2780,6 +2785,7 @@ function renderVueTextContent(
   switch (expr.kind) {
     case "paged": return `{{ ${pagedBindingExpression(expr, "pagedSet")} }}`;
     case "dateGrid": return `{{ ${dateGridBindingExpression(expr, "dateGrid")} }}`;
+    case "transfer": return `{{ ${transferBindingExpression(expr, "transfer")} }}`;
     case "prop":
       return `{{ ${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)} }}`;
     case "literal":
@@ -2867,6 +2873,7 @@ function renderVueBinding(
   switch (expr.kind) {
     case "paged": return `:${attr}="${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "dateGrid": return `:${attr}="${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
+    case "transfer": return `:${attr}="${transferBindingExpression(expr, "transfer", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "prop":
       return `:${attr}="${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
@@ -3026,6 +3033,7 @@ function renderVueBindingValue(
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "dateGrid": return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+    case "transfer": return transferBindingExpression(expr, "transfer", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(vuePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3110,6 +3118,7 @@ function renderVueEvent(
   switch (expr.kind) {
     case "paged": return `@${eventName}="${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "dateGrid": return `@${eventName}="${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
+    case "transfer": return `@${eventName}="${transferBindingExpression(expr, "transfer", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "prop":
       return `@${eventName}="${vuePropAccessor(expr.prop, ctx)}?.()"`;
     case "literal":

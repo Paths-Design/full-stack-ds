@@ -1,6 +1,7 @@
 import { buildDesignBindings, type DesignBindingIR } from './design-properties.js';
 import { buildPagedSetIR, PAGED_VALUES, PAGED_ACTIONS, type PagedSetIR, type PagedValue, type PagedAction } from "./paging.js";
 import { buildDateGridIR, parseDateGridBinding, type DateGridIR, type DateGridValue, type DateGridAction } from "./date-grid.js";
+import { buildTransferIR, parseTransferBinding, type TransferIR, type TransferValue, type TransferAction } from "./transfer.js";
 import { buildInteractionIR, type InteractionIR, type ActivationIR } from "./interaction.js";
 /**
  * Component IR: the framework-neutral derivation of a validated contract.
@@ -337,6 +338,7 @@ export function nativeTableAttrsFor(tag: string | undefined): NativeTableAttr[] 
 export type BindingExpression =
   | { kind: "paged"; field?: PagedValue; action?: PagedAction; arg?: BindingExpression }
   | { kind: "dateGrid"; field?: DateGridValue; action?: DateGridAction; arg?: BindingExpression }
+  | { kind: "transfer"; field?: TransferValue; action?: TransferAction; arg?: BindingExpression }
   | { kind: "prop"; prop: string; path?: string[] }
   | { kind: "channel"; channel: string; field: "value" | "onChange" | "defaultValue"; path?: string[]; forwardValue?: "channel" | "sequence" | "pagedSet" }
   | { kind: "literal"; value: string }
@@ -1813,6 +1815,8 @@ export interface ComponentIR {
   pagedSet?: PagedSetIR;
   /** Month-grid date selection owned by a date-grid runtime (see date-grid.ts). */
   dateGrid?: DateGridIR;
+  /** Dual-listbox transfer owned by a transfer-list runtime (see transfer.ts). */
+  transfer?: TransferIR;
 
   /**
    * Typed token facts (FEAT-MOBILE-IR-001). Substrate-neutral projection of
@@ -2135,6 +2139,7 @@ export function buildComponentIR(
   }
   // Domain checks run on a DOM whose bindings and iteration scopes are valid.
   const dateGrid = buildDateGridIR(contract, behavior.normalizedChannels, dom);
+  const transfer = buildTransferIR(contract, behavior.normalizedChannels, dom);
 
   // CODEGEN-RECURSIVE-COMPOSITION-01: resolve componentRef nodes into typed
   // ComponentInstanceIR facts. This is the single place componentRef bindings
@@ -2229,6 +2234,7 @@ export function buildComponentIR(
     motion,
     pagedSet,
     dateGrid,
+    ...(transfer ? { transfer } : {}),
     tokenFacts,
     designBindings,
     tokenScopes,
@@ -2482,11 +2488,11 @@ function validateDomNode(
           `iterates the enclosing item, but the node has no enclosing array iteration.`,
       );
     }
-    if ((source.kind === "dateGrid" || source.kind === "iterationLocal") && (itemType === undefined || itemType.trim() === "")) {
+    if ((source.kind === "dateGrid" || source.kind === "transfer" || source.kind === "iterationLocal") && (itemType === undefined || itemType.trim() === "")) {
       throw new Error(`[${componentName}] DOM iterate.kind="array" requires \`itemType\` to be set.`);
     }
   }
-  if (node.iteration && node.iteration.source.kind !== "dateGrid" && node.iteration.source.kind !== "iterationLocal") {
+  if (node.iteration && node.iteration.source.kind !== "dateGrid" && node.iteration.source.kind !== "transfer" && node.iteration.source.kind !== "iterationLocal") {
     const { sourceProp, kind } = node.iteration;
     if (!knownProps.has(sourceProp)) {
       throw new Error(
@@ -3030,6 +3036,11 @@ function validateBindingAgainstScope(
 ): void {
   if (binding.kind === "dateGrid") {
     if (!!binding.action !== allowChannelCall) throw new Error(`DATE_GRID_BINDING_INVALID: ${siteLabel} requires ${allowChannelCall ? "an action" : "a value"}`);
+    if (binding.arg) validateBindingAgainstScope(binding.arg, siteLabel, knownChannels, knownProps, enclosingIteration, componentName);
+    return;
+  }
+  if (binding.kind === "transfer") {
+    if (!!binding.action !== allowChannelCall) throw new Error(`TRANSFER_BINDING_INVALID: ${siteLabel} requires ${allowChannelCall ? "an action" : "a value"}`);
     if (binding.arg) validateBindingAgainstScope(binding.arg, siteLabel, knownChannels, knownProps, enclosingIteration, componentName);
     return;
   }
@@ -4056,8 +4067,8 @@ function parseIterate(node: ContractDomNode): IterationIR | undefined {
   } else if (source.kind === "channel" && source.field === "value") {
     // The validator resolves the channel to its valueProp.
     sourceProp = "";
-  } else if (source.kind === "dateGrid" || (source.kind === "iterationLocal" && source.local === "item")) {
-    // A runtime collection (`dateGrid:weeks`) or, for nested iteration, an
+  } else if (source.kind === "dateGrid" || source.kind === "transfer" || (source.kind === "iterationLocal" && source.local === "item")) {
+    // A runtime collection (`dateGrid:weeks`, `transfer:available`) or, for nested iteration, an
     // array on the enclosing iteration's item (`iter:item.days`). Neither
     // names a prop; the validator checks them against their own scope.
     if (it.kind !== "array") {
@@ -4206,6 +4217,7 @@ function subtreeHasNamedSlot(node: DomNodeIR, name: string): boolean {
  */
 export function parseBindingExpression(expr: string): BindingExpression {
   if (expr.startsWith("dateGrid:")) return parseDateGridBinding(expr, parseBindingExpression);
+  if (expr.startsWith("transfer:")) return parseTransferBinding(expr, parseBindingExpression);
   if (expr.startsWith("paged:")) {
     const value = expr.slice(6);
     if ((PAGED_VALUES as readonly string[]).includes(value)) return { kind: "paged", field: value as PagedValue };

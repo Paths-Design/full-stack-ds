@@ -26,19 +26,19 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR } f
 import { collectCollapseIntents, collectContentTransforms } from "../../ir.js";
 import { emitComposeHighlightComponent } from "./highlight-source.js";
 import { kotlinMessage, kotlinStringDefault, kotlinStringLiteral, withKotlinMessages } from "./messages.js";
-import { nodeTextSource, partTextSource, textSourceOf, type NativeTextSource } from "../native-messages.js";
+import { nodeTextSource, partMessage, partTextSource, textSourceOf, type NativeTextSource } from "../native-messages.js";
 // Shared native emission-class substrate (FEAT-COMPOSE-ADMISSION-SUBSTRATE-01):
 // the structural class facts this emitter dispatches on are target-neutral
 // and live exactly once there — swift's emitter used to steward them.
 import {
   domGlyph,
-  isArrayIteratedList,
   isBareRuleLeaf,
   collectDomSlots,
   isCenteredSurface,
   isCoachmarkSurface,
   dateGridChrome,
   isDateGridSurface,
+  isTransferSurface,
   surfaceStringChannel,
   isGlyphHost,
   isCountIteratedFieldGroup,
@@ -3039,178 +3039,213 @@ function emitRadioGroup(ir: ComponentIR, facts: RadioGroupFacts): string {
 }
 
 /**
- * The array-iterated list class (FEAT-COMPOSE-SHUTTLE-ADMISSION-01): the
- * sole array channel rides the controlled/uncontrolled pattern; each item
- * renders as a removable row (the contract's iteration-local removal
- * write), with chrome (background/border/radius/padding/gap) resolved
- * from the token scopes. Shuttle is the corpus consumer.
- *
- * Named divergences (ledgered in docs/architecture/native-target-admission.md):
- *   - the item removal is the swift twin's write (filter the item out);
- *     other iteration-local channel writes are not consulted;
- *   - hover/active-scoped slots are unclaimed (no interaction state v1).
+ * A dual-listbox transfer (`ir.transfer`): the options outside the value
+ * channel and the value itself (FsdsTransferList), each item marked by a tap
+ * (selectable's selected state, as the web options' aria-selected) and moved
+ * by the add and remove controls. The lists are content-described from the
+ * catalog; arrow-key focus belongs to the platform.
  */
-function emitArrayIteratedList(ir: ComponentIR): string {
+function emitTransferSurface(ir: ComponentIR): string {
+  const transfer = ir.transfer;
+  if (!transfer) throw new Error(`emitTransferSurface: ${ir.name} declares no transfer fact`);
   const name = ir.name;
   const segment = packageSegment(name);
-  const channel = ir.behavior.normalizedChannels[0]!;
+  const channel = ir.behavior.normalizedChannels.find((c) => c.name === transfer.valueChannel);
+  if (!channel) throw new Error(`emitTransferSurface: ${name} declares no channel '${transfer.valueChannel}'`);
+  const optionsProp = ir.styledProps.find((p) => p.name === transfer.optionsProp);
+  if (!optionsProp) throw new Error(`emitTransferSurface: ${name} declares no prop '${transfer.optionsProp}'`);
+  let optionsDefault: string[] = [];
+  try {
+    const parsed = optionsProp.defaultExpr ? JSON.parse(optionsProp.defaultExpr) : [];
+    if (Array.isArray(parsed)) optionsDefault = parsed.map(String);
+  } catch { /* a non-literal default leaves the options empty */ }
   const valueProp = channel.valueProp;
   const defaultValueProp = channel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = channel.changeHandlerProp;
   const hasAria = ir.styledProps.some((p) => p.safeName === "ariaLabel");
-
-  const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
-  const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary", ".color.text.default"]);
-  const borderSlot = findLayeredSlotAny(ir, ["root"], [".color.border.default"]);
-  const radiusSlot = findLayeredSlotAny(ir, ["root"], [".size.radius"]);
-  const gapSlot = findTokenSlot(ir, "root", "box-model.gap");
-  const minWidthSlot = findTokenSlot(ir, "root", "box-model.min-width");
-  const minHeightSlot = findTokenSlot(ir, "root", "box-model.min-height");
-  const paddingInlineStartSlot = findTokenSlot(ir, "root", "box-model.padding-inline-start");
-  const paddingInlineEndSlot = findTokenSlot(ir, "root", "box-model.padding-inline-end");
-  const paddingBlockStartSlot = findTokenSlot(ir, "root", "box-model.padding-block-start");
-  const paddingBlockEndSlot = findTokenSlot(ir, "root", "box-model.padding-block-end");
+  const listNode = (side: string): DomNodeIR | undefined => {
+    const visit = (node: DomNodeIR): DomNodeIR | undefined =>
+      node.attrs["data-side"] === side ? node : node.children.map(visit).find(Boolean);
+    return ir.dom ? visit(ir.dom) : undefined;
+  };
+  const listLabel = (side: string): string => {
+    const source = nodeTextSource(ir, listNode(side), "aria-label");
+    if (source?.kind !== "message") throw new Error(`emitTransferSurface: ${name} names its ${side} list through no catalog message`);
+    return kotlinMessage(ir, source.ref.message);
+  };
+  const buttonText = (part: string): string => {
+    const ref = partMessage(ir, part, "content");
+    if (!ref) throw new Error(`emitTransferSurface: ${name} names its ${part} button through no catalog message`);
+    return kotlinMessage(ir, ref.message);
+  };
   const consumesTokens = ir.tokenScopes.some((s) => s.values.length > 0);
+  const slot = (token: string, convert: string, fallback: string) =>
+    consumesTokens ? `layeredSlot(${JSON.stringify(token)})?.${convert}() ?: ${fallback}` : fallback;
+  const prefix = name.charAt(0).toLowerCase() + name.slice(1);
+  const resolved = `resolved${pascalCase(valueProp)}`;
+  const uncontrolled = `uncontrolled${pascalCase(valueProp)}`;
 
   const lines: string[] = [];
-  lines.push(
-    `// @generated by ds-codegen from components/${name}/${name}.contract.json — do not edit by hand.`,
-  );
+  lines.push(`// @generated by ds-codegen from components/${name}/${name}.contract.json — do not edit by hand.`);
   lines.push(`package com.fullstackds.components.${segment}`);
   lines.push(``);
   lines.push(`// @generated:start imports`);
-  if (bgSlot) lines.push(`import androidx.compose.foundation.background`);
-  if (borderSlot) lines.push(`import androidx.compose.foundation.border`);
-  lines.push(`import androidx.compose.foundation.clickable`);
-  lines.push(`import androidx.compose.foundation.layout.Arrangement`);
-  lines.push(`import androidx.compose.foundation.layout.Column`);
-  lines.push(`import androidx.compose.foundation.layout.PaddingValues`);
-  lines.push(`import androidx.compose.foundation.layout.padding`);
-  lines.push(`import androidx.compose.foundation.layout.requiredSizeIn`);
-  lines.push(`import androidx.compose.foundation.shape.RoundedCornerShape`);
-  lines.push(`import androidx.compose.foundation.text.BasicText`);
-  lines.push(`import androidx.compose.runtime.Composable`);
-  lines.push(`import androidx.compose.runtime.CompositionLocalProvider`);
-  lines.push(`import androidx.compose.runtime.getValue`);
-  lines.push(`import androidx.compose.runtime.mutableStateOf`);
-  lines.push(`import androidx.compose.runtime.remember`);
-  lines.push(`import androidx.compose.runtime.setValue`);
-  lines.push(`import androidx.compose.ui.Modifier`);
-  lines.push(`import androidx.compose.ui.draw.clip`);
-  lines.push(`import androidx.compose.ui.graphics.Color`);
-  lines.push(`import androidx.compose.ui.semantics.contentDescription`);
-  lines.push(`import androidx.compose.ui.semantics.semantics`);
-  lines.push(`import androidx.compose.ui.text.TextStyle`);
-  lines.push(`import androidx.compose.ui.unit.dp`);
-  lines.push(`import com.fullstackds.tokens.LocalFsdsContentColor`);
-  if (consumesTokens) {
-    lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
-    if (bgSlot || fgSlot || borderSlot) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    lines.push(`import com.fullstackds.tokens.toFsdsDp`);
-  }
+  for (const line of [
+    "androidx.compose.foundation.background",
+    "androidx.compose.foundation.border",
+    "androidx.compose.foundation.clickable",
+    "androidx.compose.foundation.layout.Arrangement",
+    "androidx.compose.foundation.layout.Column",
+    "androidx.compose.foundation.layout.PaddingValues",
+    "androidx.compose.foundation.layout.Row",
+    "androidx.compose.foundation.layout.fillMaxWidth",
+    "androidx.compose.foundation.layout.padding",
+    "androidx.compose.foundation.layout.requiredSizeIn",
+    "androidx.compose.foundation.layout.sizeIn",
+    "androidx.compose.foundation.selection.selectable",
+    "androidx.compose.foundation.shape.RoundedCornerShape",
+    "androidx.compose.foundation.text.BasicText",
+    "androidx.compose.runtime.Composable",
+    "androidx.compose.runtime.getValue",
+    "androidx.compose.runtime.mutableStateOf",
+    "androidx.compose.runtime.remember",
+    "androidx.compose.runtime.setValue",
+    "androidx.compose.ui.Modifier",
+    "androidx.compose.ui.graphics.Color",
+    "androidx.compose.ui.graphics.Shape",
+    "androidx.compose.ui.semantics.Role",
+    "androidx.compose.ui.semantics.contentDescription",
+    "androidx.compose.ui.semantics.semantics",
+    "androidx.compose.ui.text.TextStyle",
+    "androidx.compose.ui.unit.dp",
+    ...(consumesTokens ? ["com.fullstackds.tokens.LocalFsdsTheme", "com.fullstackds.tokens.toFsdsColor", "com.fullstackds.tokens.toFsdsDp"] : []),
+    "com.fullstackds.transfer.FsdsTransferList",
+  ]) lines.push(`import ${line}`);
   lines.push(`// @generated:end`);
   lines.push(``);
   lines.push(`// @generated:start component`);
+  lines.push(`/** One side of the transfer: a content-described list whose items toggle their mark. */`);
+  lines.push(`@Composable`);
+  lines.push(`private fun ${name}List(`);
+  lines.push(`    modifier: Modifier,`);
+  lines.push(`    items: List<String>,`);
+  lines.push(`    marked: Set<String>,`);
+  lines.push(`    label: String,`);
+  lines.push(`    onToggle: (String) -> Unit,`);
+  lines.push(`    shape: Shape,`);
+  lines.push(`    listColor: Color,`);
+  lines.push(`    borderColor: Color,`);
+  lines.push(`    contentColor: Color,`);
+  lines.push(`    markedColor: Color,`);
+  lines.push(`    markedContentColor: Color,`);
+  lines.push(`) {`);
+  lines.push(`    Column(`);
+  lines.push(`        modifier`);
+  lines.push(`            .requiredSizeIn(minWidth = 120.dp, minHeight = 96.dp)`);
+  lines.push(`            .background(listColor, shape)`);
+  lines.push(`            .border(1.dp, borderColor, shape)`);
+  lines.push(`            .semantics { contentDescription = label },`);
+  lines.push(`    ) {`);
+  lines.push(`        items.forEach { item ->`);
+  lines.push(`            val isMarked = item in marked`);
+  lines.push(`            BasicText(`);
+  lines.push(`                text = item,`);
+  lines.push(`                modifier = Modifier`);
+  lines.push(`                    .fillMaxWidth()`);
+  lines.push(`                    .background(if (isMarked) markedColor else Color.Transparent)`);
+  lines.push(`                    .selectable(selected = isMarked, role = Role.Button, onClick = { onToggle(item) })`);
+  lines.push(`                    .padding(horizontal = 8.dp, vertical = 4.dp),`);
+  lines.push(`                style = TextStyle(color = if (isMarked) markedContentColor else contentColor),`);
+  lines.push(`            )`);
+  lines.push(`        }`);
+  lines.push(`    }`);
+  lines.push(`}`);
+  lines.push(``);
   lines.push(`@Composable`);
   lines.push(`fun ${name}(`);
   lines.push(`    modifier: Modifier = Modifier,`);
+  lines.push(`    ${optionsProp.safeName}: List<String> = listOf(${optionsDefault.map(kotlinStringLiteral).join(", ")}),`);
   lines.push(`    ${valueProp}: List<String>? = null,`);
   lines.push(`    ${defaultValueProp}: List<String> = emptyList(),`);
   lines.push(`    ${changeProp}: ((List<String>) -> Unit)? = null,`);
   if (hasAria) lines.push(`    contentDescription: String? = null,`);
   lines.push(`) {`);
-  lines.push(
-    `    var uncontrolled${pascalCase(valueProp)} by remember { mutableStateOf(${defaultValueProp}) }`,
-  );
-  lines.push(
-    `    val resolved${pascalCase(valueProp)} = ${valueProp} ?: uncontrolled${pascalCase(valueProp)}`,
-  );
+  lines.push(`    var ${uncontrolled} by remember { mutableStateOf(${defaultValueProp}) }`);
+  lines.push(`    val ${resolved} = ${valueProp} ?: ${uncontrolled}`);
+  lines.push(`    var markedAvailable by remember { mutableStateOf(emptySet<String>()) }`);
+  lines.push(`    var markedSelected by remember { mutableStateOf(emptySet<String>()) }`);
+  lines.push(`    fun commit(next: List<String>) {`);
+  lines.push(`        if (${valueProp} == null) { ${uncontrolled} = next }`);
+  lines.push(`        ${changeProp}?.invoke(next)`);
+  lines.push(`    }`);
   if (consumesTokens) {
     lines.push(`    val fsdsTheme = LocalFsdsTheme.current`);
     lines.push(`    fun layeredSlot(slotName: String): String? {`);
     lines.push(`        val def = ${tokenConstName(ir)}["root"]?.get(slotName)`);
     lines.push(`        return def?.let { fsdsTheme.resolve(it) }`);
     lines.push(`    }`);
-    if (bgSlot) {
-      lines.push(`    val containerColor = layeredSlot(${JSON.stringify(bgSlot.name)})?.toFsdsColor()`);
-    }
-    if (fgSlot) {
-      lines.push(`    val contentColor = layeredSlot(${JSON.stringify(fgSlot.name)})?.toFsdsColor()`);
-    }
-    if (borderSlot) {
-      lines.push(`    val borderColor = layeredSlot(${JSON.stringify(borderSlot.name)})?.toFsdsColor()`);
-    }
-    if (radiusSlot) {
-      lines.push(`    val cornerRadius = layeredSlot(${JSON.stringify(radiusSlot.name)})?.toFsdsDp() ?: 0.dp`);
-    }
-    if (gapSlot) {
-      lines.push(`    val listGap = layeredSlot(${JSON.stringify(gapSlot.name)})?.toFsdsDp() ?: 0.dp`);
-    } else {
-      lines.push(`    val listGap = 0.dp`);
-    }
-    const side = (slot: { name: string } | undefined) =>
-      slot
-        ? `layeredSlot(${JSON.stringify(slot.name)})?.toFsdsDp() ?: 0.dp`
-        : `0.dp`;
-    lines.push(
-      `    val listPadding = PaddingValues(start = ${side(paddingInlineStartSlot)}, end = ${side(paddingInlineEndSlot)}, top = ${side(paddingBlockStartSlot)}, bottom = ${side(paddingBlockEndSlot)})`,
-    );
-    if (minWidthSlot || minHeightSlot) {
-      lines.push(`    val listMinWidth = ${side(minWidthSlot)}`);
-      lines.push(`    val listMinHeight = ${side(minHeightSlot)}`);
-    }
-    lines.push(``);
+  }
+  lines.push(`    val containerColor = ${slot(`${prefix}.color.background`, "toFsdsColor", "Color.Transparent")}`);
+  lines.push(`    val contentColor = ${slot(`${prefix}.color.foreground.primary`, "toFsdsColor", "Color.Black")}`);
+  lines.push(`    val borderColor = ${slot(`${prefix}.color.border`, "toFsdsColor", "Color.Gray")}`);
+  lines.push(`    val listColor = ${slot(`${prefix}.color.list.background`, "toFsdsColor", "Color.Transparent")}`);
+  lines.push(`    val markedColor = ${slot(`${prefix}.color.item.marked.background`, "toFsdsColor", "Color.Black")}`);
+  lines.push(`    val markedContentColor = ${slot(`${prefix}.color.item.marked.foreground`, "toFsdsColor", "Color.White")}`);
+  lines.push(`    val cornerRadius = ${slot(`${prefix}.size.radius`, "toFsdsDp", "6.dp")}`);
+  const boxPadding = `PaddingValues(start = ${slot("box-model.padding-inline-start", "toFsdsDp", "0.dp")}, ` +
+    `end = ${slot("box-model.padding-inline-end", "toFsdsDp", "0.dp")}, ` +
+    `top = ${slot("box-model.padding-block-start", "toFsdsDp", "0.dp")}, ` +
+    `bottom = ${slot("box-model.padding-block-end", "toFsdsDp", "0.dp")})`;
+  if (consumesTokens) {
+    // The sidecar's root padding outranks the box-model insets, as its later
+    // declaration does on web.
+    lines.push(`    val rootPadding = layeredSlot(${JSON.stringify(`${prefix}.size.padding`)})?.toFsdsDp()?.let { PaddingValues(it) } ?: ${boxPadding}`);
   } else {
-    lines.push(`    val listGap = 0.dp`);
-    lines.push(`    val listPadding = PaddingValues(0.dp)`);
-    if (minWidthSlot || minHeightSlot) {
-      lines.push(`    val listMinWidth = 0.dp`);
-      lines.push(`    val listMinHeight = 0.dp`);
-    }
+    lines.push(`    val rootPadding = ${boxPadding}`);
   }
-  lines.push(`    val shape = RoundedCornerShape(${radiusSlot ? "cornerRadius" : "0.dp"})`);
-  lines.push(`    val listModifier = modifier`);
-  if (minWidthSlot || minHeightSlot) {
-    lines.push(`        .requiredSizeIn(minWidth = listMinWidth, minHeight = listMinHeight)`);
-  }
-  lines.push(`        .clip(shape)`);
-  if (bgSlot) {
-    lines.push(
-      `        .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)`,
-    );
-  }
-  if (borderSlot) {
-    lines.push(
-      `        .then(if (borderColor != null) Modifier.border(1.dp, borderColor, shape) else Modifier)`,
-    );
-  }
-  lines.push(`        .padding(listPadding)`);
-  if (hasAria) {
-    lines.push(`        .then(if (contentDescription != null) Modifier.semantics { this.contentDescription = contentDescription } else Modifier)`);
-  }
-  lines.push(`    CompositionLocalProvider(`);
-  lines.push(
-    `        LocalFsdsContentColor provides (${fgSlot ? "contentColor ?: Color.Unspecified" : "Color.Unspecified"}),`,
-  );
+  lines.push(`    val minWidth = ${slot("box-model.min-width", "toFsdsDp", "0.dp")}`);
+  lines.push(`    val minHeight = ${slot("box-model.min-height", "toFsdsDp", "0.dp")}`);
+  lines.push(`    val gap = ${slot("box-model.gap", "toFsdsDp", "16.dp")}`);
+  lines.push(`    val shape = RoundedCornerShape(cornerRadius)`);
+  lines.push(`    val addNext = FsdsTransferList.adding(markedAvailable, ${optionsProp.safeName}, ${resolved})`);
+  lines.push(`    val removeNext = FsdsTransferList.removing(markedSelected, ${resolved})`);
+  lines.push(`    Row(`);
+  lines.push(`        modifier`);
+  lines.push(`            .sizeIn(minWidth = minWidth, minHeight = minHeight)`);
+  lines.push(`            .background(containerColor, shape)`);
+  lines.push(`            .padding(rootPadding)`);
+  if (hasAria) lines.push(`            .then(if (contentDescription != null) Modifier.semantics { this.contentDescription = contentDescription } else Modifier),`);
+  else lines[lines.length - 1] += ",";
+  lines.push(`        horizontalArrangement = Arrangement.spacedBy(gap),`);
   lines.push(`    ) {`);
-  lines.push(`        Column(`);
-  lines.push(`            listModifier,`);
-  lines.push(`            verticalArrangement = Arrangement.spacedBy(listGap),`);
-  lines.push(`        ) {`);
-  lines.push(`            resolved${pascalCase(valueProp)}.forEach { item ->`);
-  lines.push(`                BasicText(`);
-  lines.push(`                    text = item,`);
-  lines.push(`                    modifier = Modifier.clickable {`);
-  lines.push(`                        val next = resolved${pascalCase(valueProp)}.filter { it != item }`);
-  lines.push(
-    `                        if (${valueProp} == null) { uncontrolled${pascalCase(valueProp)} = next }`,
-  );
-  lines.push(`                        ${changeProp}?.invoke(next)`);
-  lines.push(`                    },`);
-  lines.push(`                    style = TextStyle(color = LocalFsdsContentColor.current),`);
-  lines.push(`                )`);
-  lines.push(`            }`);
+  const list = (side: "available" | "selected", items: string, marked: string) => {
+    lines.push(`        ${name}List(`);
+    lines.push(`            // The two lists share the row; the controls keep their own width.`);
+    lines.push(`            modifier = Modifier.weight(1f),`);
+    lines.push(`            items = ${items},`);
+    lines.push(`            marked = ${marked},`);
+    lines.push(`            label = ${listLabel(side)},`);
+    lines.push(`            onToggle = { item -> ${marked} = if (item in ${marked}) ${marked} - item else ${marked} + item },`);
+    lines.push(`            shape = shape, listColor = listColor, borderColor = borderColor, contentColor = contentColor,`);
+    lines.push(`            markedColor = markedColor, markedContentColor = markedContentColor,`);
+    lines.push(`        )`);
+  };
+  list("available", `FsdsTransferList.available(${optionsProp.safeName}, ${resolved})`, "markedAvailable");
+  lines.push(`        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {`);
+  const control = (part: string, next: string, marked: string) => {
+    lines.push(`            BasicText(`);
+    lines.push(`                text = ${buttonText(part)},`);
+    lines.push(`                modifier = Modifier`);
+    lines.push(`                    .border(1.dp, borderColor, shape)`);
+    lines.push(`                    .clickable(enabled = ${next} != null, role = Role.Button) { ${next}?.let { ${marked} = emptySet(); commit(it) } }`);
+    lines.push(`                    .padding(horizontal = 12.dp, vertical = 6.dp),`);
+    lines.push(`                style = TextStyle(color = contentColor),`);
+    lines.push(`            )`);
+  };
+  control("add", "addNext", "markedAvailable");
+  control("remove", "removeNext", "markedSelected");
   lines.push(`        }`);
+  list("selected", `FsdsTransferList.selected(${resolved})`, "markedSelected");
   lines.push(`    }`);
   lines.push(`}`);
   lines.push(`// @generated:end`);
@@ -6769,11 +6804,11 @@ function emitJetpackComposeComponentSource(
   if (isDateGridSurface(ir)) {
     return emitDateGridSurface(ir);
   }
+  if (isTransferSurface(ir)) {
+    return emitTransferSurface(ir);
+  }
   if (radioGroupFacts(ir)) {
     return emitRadioGroup(ir, radioGroupFacts(ir)!);
-  }
-  if (isArrayIteratedList(ir)) {
-    return emitArrayIteratedList(ir);
   }
   if (isInteractiveComposite(ir)) {
     return emitInteractiveComposite(ir);

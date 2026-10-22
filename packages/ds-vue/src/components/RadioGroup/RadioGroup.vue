@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
 const behavior = useRadioGroup({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
 });
 // @generated:end
 

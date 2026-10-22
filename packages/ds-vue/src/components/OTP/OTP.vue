@@ -51,7 +51,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { label: "groupLa
 const behavior = useOTP({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
 });
 // @generated:end
 

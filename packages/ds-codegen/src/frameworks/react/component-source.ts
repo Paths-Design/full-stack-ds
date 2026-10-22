@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions, dateGridValueType } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions, transferValueType } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName } from "../../messages.js";
 /**
@@ -471,6 +472,7 @@ export function generateReactComponentSource(
   }
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.dateGrid) importLines.push(`import { useDateGrid } from "../../primitives/hooks/useDateGrid.js";`);
+  if (ir.transfer) importLines.push(`import { useTransferList } from "../../primitives/hooks/useTransferList.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   if (ir.messages.length > 0) {
     const messageImports = ["useFsdsMessages", ...(bodyHaystack.includes("formatFsdsMessage(") ? ["formatFsdsMessage"] : [])];
@@ -2310,6 +2312,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
       `    count: ${page.countProp ?? "undefined"}, disabled: ${page.disabledProp ?? "false"}, onIndexChange: set${capitalize(page.channel)} });`);
   }
   if (ir.dateGrid) lines.push(`  const dateGrid = useDateGrid(${dateGridOptions(ir.dateGrid, (prop) => prop.includes("-") ? toCamelCase(prop) : prop, (channel) => channel, (channel) => `set${capitalize(channel)}`)});`);
+  if (ir.transfer) lines.push(`  const transfer = useTransferList(${transferOptions(ir.transfer, (prop) => prop.includes("-") ? toCamelCase(prop) : prop, (channel) => channel, (channel) => `set${capitalize(channel)}`)});`);
   // Ephemeral-surface auto-dismiss: the presence budget flows from the
   // *.timing.auto-dismiss token (generation-resolved default) with the
   // contract's duration prop as the consumer override; pause props land on
@@ -3444,6 +3447,7 @@ function inferBindingValueType(
   }
   if (expr.kind === "valueMap") return "string";
   if (expr.kind === "dateGrid") return dateGridValueType(expr);
+  if (expr.kind === "transfer") return transferValueType(expr);
   return undefined;
 }
 
@@ -3464,6 +3468,7 @@ function renderReactBinding(
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
     case "dateGrid": return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
+    case "transfer": return transferBindingExpression(expr, "transfer", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
     case "prop": {
       const base = expr.prop.includes("-") ? toCamelCase(expr.prop) : expr.prop;
       return appendPath(base, expr.path);

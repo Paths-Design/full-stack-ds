@@ -626,6 +626,19 @@
       },
       "description": "Month-grid date selection. The runtime derives six locale-ordered weeks from the month channel, owns the focused day, and exposes caption, weekdays, weeks and nav state as dateGrid: values and previous, next, select(iter:item) and keydown as dateGrid: actions."
     },
+    "transfer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "valueChannel",
+        "optionsProp"
+      ],
+      "properties": {
+        "valueChannel": { "type": "string", "minLength": 1, "description": "string[] channel holding the ids in the selected list, in transfer order." },
+        "optionsProp": { "type": "string", "minLength": 1, "description": "Array-of-strings prop listing every candidate id, in display order." }
+      },
+      "description": "Dual-listbox transfer. The runtime derives the available list (options outside the value, in options order) and the selected list (the value), owns each list's marks and focused item, and exposes them as transfer:available, transfer:selected, transfer:addDisabled and transfer:removeDisabled values and add, remove, toggle(iter:item) and keydown actions. Each listbox declares role=\"listbox\", aria-multiselectable=\"true\" and data-side; each option binds the selection dimension's a11y attribute to iter:item.marked, tabindex to iter:item.tabIndex and data-value to iter:item.key."
+    },
     "pagedSet": {
       "type": "object",
       "additionalProperties": false,
@@ -966,8 +979,8 @@
           "properties": {
             "source": {
               "type": "string",
-              "pattern": "^(prop:[A-Za-z_$][\\w$-]*|channel:[A-Za-z_$][\\w$-]*\\.value|dateGrid:(weeks|weekdays)|iter:item(\\.[A-Za-z_$][\\w$]*)*)$",
-              "description": "Iteration source as a binding expression: 'prop:X' (a contract prop), 'channel:X.value' (a declared channel's resolved value), 'dateGrid:weeks' / 'dateGrid:weekdays' (the date-grid runtime's collections), or 'iter:item' / 'iter:item.<path>' (an array on the enclosing iteration's item, for nested iteration, where an inner iteration's locals shadow the enclosing one's)."
+              "pattern": "^(prop:[A-Za-z_$][\\w$-]*|channel:[A-Za-z_$][\\w$-]*\\.value|dateGrid:(weeks|weekdays)|transfer:(available|selected)|iter:item(\\.[A-Za-z_$][\\w$]*)*)$",
+              "description": "Iteration source as a binding expression: 'prop:X' (a contract prop), 'channel:X.value' (a declared channel's resolved value), 'dateGrid:weeks' / 'dateGrid:weekdays' (the date-grid runtime's collections), 'transfer:available' / 'transfer:selected' (the transfer-list runtime's lists), or 'iter:item' / 'iter:item.<path>' (an array on the enclosing iteration's item, for nested iteration, where an inner iteration's locals shadow the enclosing one's)."
             },
             "kind": {
               "type": "string",

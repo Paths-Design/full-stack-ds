@@ -97,7 +97,6 @@ export { default as ShowMore } from "./ShowMore/ShowMore.svelte";
 export { default as ShowMoreContent } from "./ShowMore/ShowMoreContent.svelte";
 export { default as ShowMoreTrigger } from "./ShowMore/ShowMoreTrigger.svelte";
 export { default as Shuttle } from "./Shuttle/Shuttle.svelte";
-export { default as ShuttleItem } from "./Shuttle/ShuttleItem.svelte";
 export { default as Skeleton } from "./Skeleton/Skeleton.svelte";
 export { default as Spinner } from "./Spinner/Spinner.svelte";
 export { default as Stat } from "./Stat/Stat.svelte";

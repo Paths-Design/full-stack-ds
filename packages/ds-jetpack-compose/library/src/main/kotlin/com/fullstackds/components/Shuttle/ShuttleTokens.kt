@@ -63,6 +63,30 @@ val shuttleTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.border.light",
             fallback = "#b8b8b8",
         ),
+        "shuttle.color.list.background" to ComponentTokenDefinition(
+            name = "shuttle.color.list.background",
+            cssVar = "--fsds-shuttle-color-list-background",
+            ref = "semantic.color.background.primary",
+            fallback = "#ffffff",
+        ),
+        "shuttle.color.item.marked.background" to ComponentTokenDefinition(
+            name = "shuttle.color.item.marked.background",
+            cssVar = "--fsds-shuttle-color-item-marked-background",
+            ref = "semantic.color.background.accent",
+            fallback = "#d92d2e",
+        ),
+        "shuttle.color.item.marked.foreground" to ComponentTokenDefinition(
+            name = "shuttle.color.item.marked.foreground",
+            cssVar = "--fsds-shuttle-color-item-marked-foreground",
+            ref = "semantic.color.foreground.onColor",
+            fallback = "#ffffff",
+        ),
+        "shuttle.size.padding" to ComponentTokenDefinition(
+            name = "shuttle.size.padding",
+            cssVar = "--fsds-shuttle-size-padding",
+            ref = "core.spacing.size.07",
+            fallback = "24px",
+        ),
         "shuttle.size.radius" to ComponentTokenDefinition(
             name = "shuttle.size.radius",
             cssVar = "--fsds-shuttle-size-radius",

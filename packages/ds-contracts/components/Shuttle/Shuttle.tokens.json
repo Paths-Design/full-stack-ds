@@ -24,6 +24,31 @@
     "fallback": "#d92d2e",
     "layer": "semantic"
   },
+  "shuttle.color.list.background": {
+    "resolvesTo": "semantic.color.background.primary",
+    "fallback": "#ffffff",
+    "layer": "semantic"
+  },
+  "shuttle.color.item.marked.background": {
+    "resolvesTo": "semantic.color.background.accent",
+    "fallback": "#d92d2e",
+    "layer": "semantic"
+  },
+  "shuttle.color.item.marked.foreground": {
+    "resolvesTo": "semantic.color.foreground.onColor",
+    "fallback": "#ffffff",
+    "layer": "semantic"
+  },
+  "shuttle.color.focus.ring": {
+    "resolvesTo": "semantic.focus.ring.color",
+    "fallback": "#0566fe",
+    "layer": "semantic"
+  },
+  "shuttle.focus.ring.width": {
+    "resolvesTo": "semantic.focus.ring.width",
+    "fallback": "2px",
+    "layer": "semantic"
+  },
   "shuttle.size.padding": {
     "resolvesTo": "core.spacing.size.07",
     "fallback": "24px",

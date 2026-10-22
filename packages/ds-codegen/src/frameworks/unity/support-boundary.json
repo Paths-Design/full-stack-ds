@@ -439,6 +439,13 @@
       "reason": "A month date grid (Calendar) needs a date-grid runtime behavior: locale-formatted weeks, roving focus over gridcells and the value and month channels; the dispatcher rejects it today."
     },
     {
+      "id": "transfer-list",
+      "match": ["contract:/transfer/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A dual-listbox transfer (Shuttle) needs a transfer-list runtime behavior: the available and selected lists derived from the options prop and the value channel, a mark per item, add and remove, and per-list focus; its iterated options are refused with the rest of anatomy iteration."
+    },
+    {
       "id": "interaction-operation",
       "match": ["contract:/interaction/triggers/*/operation"],
       "valueIn": ["select", "toggle-item", "toggle"],

@@ -1,5 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
+import { TransferListController } from "../../primitives/controllers/TransferListController.js";
+import { FsdsMessagesController } from "../../primitives/messages.js";
 import { property } from 'lit/decorators.js';
 import { ShuttleBehavior } from './ShuttleBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -18,6 +20,8 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 // @custom:end
 
 // @generated:start component
+const ShuttleMessages = { availableLabel: "Available", selectedLabel: "Selected", add: "Add", remove: "Remove" };
+
 export class ShuttleElement extends LitElement {
   static override styles = css`
     :host { display: contents; }
@@ -74,6 +78,11 @@ export class ShuttleElement extends LitElement {
       --fsds-shuttle-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-shuttle-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
       --fsds-shuttle-color-border-accent: var(--fsds-semantic-color-border-accent, #d92d2e);
+      --fsds-shuttle-color-list-background: var(--fsds-semantic-color-background-primary, #ffffff);
+      --fsds-shuttle-color-item-marked-background: var(--fsds-semantic-color-background-accent, #d92d2e);
+      --fsds-shuttle-color-item-marked-foreground: var(--fsds-semantic-color-foreground-on-color, #ffffff);
+      --fsds-shuttle-color-focus-ring: var(--fsds-semantic-focus-ring-color, #0566fe);
+      --fsds-shuttle-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-shuttle-size-padding: var(--fsds-core-spacing-size-07, 24px);
       --fsds-shuttle-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
     }
@@ -91,10 +100,25 @@ export class ShuttleElement extends LitElement {
       height: var(--fsds-box-model-height, auto);
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
+      display: flex;
+      align-items: stretch;
       background-color: var(--fsds-shuttle-design-root-background-fill, var(--fsds-shuttle-color-background, #f7f7f7));
       border-color: var(--fsds-shuttle-design-root-border-color, var(--fsds-shuttle-color-border-accent, #d92d2e));
       padding: var(--fsds-shuttle-design-root-spacing-padding, var(--fsds-shuttle-size-padding, 24px));
       border-radius: var(--fsds-shuttle-design-root-shape-radius, var(--fsds-shuttle-size-radius, 6px));
+    }
+
+    .shuttle__list {
+      list-style: none;
+      margin: 0;
+      padding: var(--fsds-shuttle-design-list-spacing-padding, 0);
+      min-inline-size: 10rem;
+      min-block-size: 8rem;
+      background-color: var(--fsds-shuttle-design-list-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
+      border-style: var(--fsds-shuttle-design-list-border-style, solid);
+      border-width: var(--fsds-shuttle-design-list-border-width, 1px);
+      border-color: var(--fsds-shuttle-design-list-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+      border-radius: var(--fsds-shuttle-design-list-shape-radius, var(--fsds-shuttle-size-radius, 6px));
     }
 
     .shuttle__item {
@@ -107,13 +131,57 @@ export class ShuttleElement extends LitElement {
       border-block-end-color: var(--fsds-shuttle-design-item-border-block-end-color, var(--fsds-shuttle-color-border, #b8b8b8));
       cursor: pointer;
     }
+
+    .shuttle__item[aria-selected="true"] {
+      background-color: var(--fsds-shuttle-design-condition-24ad0618e5a2-background-fill, var(--fsds-shuttle-color-item-marked-background, #d92d2e));
+      color: var(--fsds-shuttle-design-condition-24ad0618e5a2-foreground-color, var(--fsds-shuttle-color-item-marked-foreground, #ffffff));
+    }
+
+    .shuttle__item:focus-visible {
+      outline-style: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-style, solid);
+      outline-width: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-width, var(--fsds-shuttle-focus-ring-width, 2px));
+      outline-color: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-color, var(--fsds-shuttle-color-focus-ring, #0566fe));
+      outline-offset: var(--fsds-shuttle-design-condition-2ee696e37c75-focus-offset, -2px);
+    }
+
+    .shuttle__controls {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--fsds-shuttle-design-controls-spacing-gap, 8px);
+    }
+
+    .shuttle__add {
+      padding: var(--fsds-shuttle-design-add-spacing-padding, 6px 12px);
+      color: var(--fsds-shuttle-design-add-foreground-color, var(--fsds-shuttle-color-foreground-primary, #141414));
+      background-color: var(--fsds-shuttle-design-add-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
+      border-style: var(--fsds-shuttle-design-add-border-style, solid);
+      border-width: var(--fsds-shuttle-design-add-border-width, 1px);
+      border-color: var(--fsds-shuttle-design-add-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+      border-radius: var(--fsds-shuttle-design-add-shape-radius, var(--fsds-shuttle-size-radius, 6px));
+      cursor: pointer;
+    }
+
+    .shuttle__remove {
+      padding: var(--fsds-shuttle-design-remove-spacing-padding, 6px 12px);
+      color: var(--fsds-shuttle-design-remove-foreground-color, var(--fsds-shuttle-color-foreground-primary, #141414));
+      background-color: var(--fsds-shuttle-design-remove-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
+      border-style: var(--fsds-shuttle-design-remove-border-style, solid);
+      border-width: var(--fsds-shuttle-design-remove-border-width, 1px);
+      border-color: var(--fsds-shuttle-design-remove-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+      border-radius: var(--fsds-shuttle-design-remove-shape-radius, var(--fsds-shuttle-size-radius, 6px));
+      cursor: pointer;
+    }
     }
   `;
 
+  private readonly fsdsMessages = new FsdsMessagesController(this, "Shuttle", ShuttleMessages);
+
   @property({ attribute: 'aria-label', reflect: true })
   override ariaLabel: string | null = null;
+  @property({ attribute: false }) options?: string[] = ["alpha","beta","gamma","delta","epsilon"];
   @property({ attribute: false }) value?: string[];
-  @property({ attribute: false }) defaultValue?: string[] = ["alpha","beta","gamma"];
+  @property({ attribute: false }) defaultValue?: string[] = [];
   @property({ attribute: false }) onValueChange?: (value: string[]) => void;
 
   private initializedBehavior?: ShuttleBehavior;
@@ -124,6 +192,7 @@ export class ShuttleElement extends LitElement {
     onValueChange: (v) => this.onValueChange?.(v),
   });
   }
+  private transfer = new TransferListController(this, () => ({ options: (this.options ?? ["alpha","beta","gamma","delta","epsilon"]), value: this.behavior.selection, onValueChange: (next) => this.behavior.setSelection(next) }));
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -137,122 +206,31 @@ export class ShuttleElement extends LitElement {
   }
 
   override render() {
-    return html`<ul class="${this.computeClasses()}" role="listbox" aria-label=${ifDefined(this.ariaLabel ?? undefined)} data-fsds-box="">
-  ${(this.behavior.selection ?? []).map((item) => html`
-  <li class=${'shuttle__item'} role="option" aria-selected="true">
-    <span>${item}</span>
-  </li>
-  `)}
-</ul>`;
+    return html`<div class="${this.computeClasses()}" role="group" aria-label=${ifDefined(this.ariaLabel ?? undefined)} data-fsds-box="">
+  <ul class=${'shuttle__list'} role="listbox" aria-multiselectable="true" data-side="available" @keydown=${this.transfer.keydown} aria-label=${this.fsdsMessages.value.availableLabel}>
+    ${(this.transfer.state.available ?? []).map((item) => html`
+    <li class=${'shuttle__item'} role="option" @click=${() => this.transfer.toggle(item)} aria-selected=${ifDefined(item.marked)} tabindex=${ifDefined(item.tabIndex)} data-value=${ifDefined(item.key)}>
+      <span>${item.label}</span>
+    </li>
+    `)}
+  </ul>
+  <div class=${'shuttle__controls'}>
+    <button class=${'shuttle__add'} type="button" @click=${this.transfer.add} ?disabled=${this.transfer.state.addDisabled}>${this.fsdsMessages.value.add}</button>
+    <button class=${'shuttle__remove'} type="button" @click=${this.transfer.remove} ?disabled=${this.transfer.state.removeDisabled}>${this.fsdsMessages.value.remove}</button>
+  </div>
+  <ul class=${'shuttle__list'} role="listbox" aria-multiselectable="true" data-side="selected" @keydown=${this.transfer.keydown} aria-label=${this.fsdsMessages.value.selectedLabel}>
+    ${(this.transfer.state.selected ?? []).map((item) => html`
+    <li class=${'shuttle__item'} role="option" @click=${() => this.transfer.toggle(item)} aria-selected=${ifDefined(item.marked)} tabindex=${ifDefined(item.tabIndex)} data-value=${ifDefined(item.key)}>
+      <span>${item.label}</span>
+    </li>
+    `)}
+  </ul>
+</div>`;
   }
 }
 
 customElements.define('fsds-shuttle', ShuttleElement);
 
-
-export class ShuttleItemElement extends LitElement {
-  static override styles = css`
-    :host { display: contents; }
-    /* @generated by ds-codegen from the box-model primitive */
-    @layer components {
-      @layer primitive, defaults, box, axes, sides;
-      :where([data-fsds-component]), :host([data-fsds-component]) {
-        --fsds-box-model-padding: initial;
-        --fsds-box-model-padding-block: initial;
-        --fsds-box-model-padding-block-start: initial;
-        --fsds-box-model-padding-block-end: initial;
-        --fsds-box-model-padding-inline: initial;
-        --fsds-box-model-padding-inline-start: initial;
-        --fsds-box-model-padding-inline-end: initial;
-        --fsds-box-model-gap: initial;
-        --fsds-box-model-width: initial;
-        --fsds-box-model-min-width: initial;
-        --fsds-box-model-max-width: initial;
-        --fsds-box-model-height: initial;
-        --fsds-box-model-min-height: initial;
-        --fsds-box-model-max-height: initial;
-      }
-      @layer box {
-        :where([data-fsds-box]) {
-          padding: var(--fsds-box-model-padding, revert-layer);
-          gap: var(--fsds-box-model-gap, revert-layer);
-          width: var(--fsds-box-model-width, revert-layer);
-          min-width: var(--fsds-box-model-min-width, revert-layer);
-          max-width: var(--fsds-box-model-max-width, revert-layer);
-          height: var(--fsds-box-model-height, revert-layer);
-          min-height: var(--fsds-box-model-min-height, revert-layer);
-          max-height: var(--fsds-box-model-max-height, revert-layer);
-        }
-      }
-      @layer axes {
-        :where([data-fsds-box]) {
-          padding-block: var(--fsds-box-model-padding-block, revert-layer);
-          padding-inline: var(--fsds-box-model-padding-inline, revert-layer);
-        }
-      }
-      @layer sides {
-        :where([data-fsds-box]) {
-          padding-block-start: var(--fsds-box-model-padding-block-start, revert-layer);
-          padding-block-end: var(--fsds-box-model-padding-block-end, revert-layer);
-          padding-inline-start: var(--fsds-box-model-padding-inline-start, revert-layer);
-          padding-inline-end: var(--fsds-box-model-padding-inline-end, revert-layer);
-        }
-      }
-    }
-
-
-    .shuttle {
-      --fsds-shuttle-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-shuttle-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-shuttle-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
-      --fsds-shuttle-color-border-accent: var(--fsds-semantic-color-border-accent, #d92d2e);
-      --fsds-shuttle-size-padding: var(--fsds-core-spacing-size-07, 24px);
-      --fsds-shuttle-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
-    }
-
-    @layer components.defaults {
-    .shuttle {
-      padding-block-start: var(--fsds-box-model-padding-block-start, 0);
-      padding-block-end: var(--fsds-box-model-padding-block-end, 0);
-      padding-inline-start: var(--fsds-box-model-padding-inline-start, 0);
-      padding-inline-end: var(--fsds-box-model-padding-inline-end, 0);
-      gap: var(--fsds-box-model-gap, var(--fsds-semantic-structure-size-gap, 16px));
-      width: var(--fsds-box-model-width, auto);
-      min-width: var(--fsds-box-model-min-width, 0);
-      max-width: var(--fsds-box-model-max-width, none);
-      height: var(--fsds-box-model-height, auto);
-      min-height: var(--fsds-box-model-min-height, 0);
-      max-height: var(--fsds-box-model-max-height, none);
-      background-color: var(--fsds-shuttle-design-root-background-fill, var(--fsds-shuttle-color-background, #f7f7f7));
-      border-color: var(--fsds-shuttle-design-root-border-color, var(--fsds-shuttle-color-border-accent, #d92d2e));
-      padding: var(--fsds-shuttle-design-root-spacing-padding, var(--fsds-shuttle-size-padding, 24px));
-      border-radius: var(--fsds-shuttle-design-root-shape-radius, var(--fsds-shuttle-size-radius, 6px));
-    }
-
-    .shuttle__item {
-      display: flex;
-      align-items: center;
-      padding: var(--fsds-shuttle-design-item-spacing-padding, 4px 8px);
-      color: var(--fsds-shuttle-design-item-foreground-color, var(--fsds-shuttle-color-foreground-primary, #141414));
-      border-block-end-style: solid;
-      border-block-end-width: var(--fsds-shuttle-design-item-border-block-end-width, 1px);
-      border-block-end-color: var(--fsds-shuttle-design-item-border-block-end-color, var(--fsds-shuttle-color-border, #b8b8b8));
-      cursor: pointer;
-    }
-    }
-  `;
-
-  override connectedCallback(): void {
-    super.connectedCallback();
-    this.setAttribute("role", "listitem");
-  }
-
-  override render() {
-    return html`<fsds-stack as="li" class="shuttle__item"><slot></slot></fsds-stack>`;
-  }
-}
-
-customElements.define('fsds-shuttle-item', ShuttleItemElement);
 // @generated:end
 
 // @custom:start trailing

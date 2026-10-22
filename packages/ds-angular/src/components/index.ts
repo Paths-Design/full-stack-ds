@@ -38,7 +38,7 @@ export { RadioGroupComponent } from "./RadioGroup/RadioGroup.component.js";
 export { SelectComponent, SelectContentComponent, SelectOptionComponent, SelectTriggerComponent } from "./Select/Select.component.js";
 export { SheetComponent, SheetBodyComponent, SheetContentComponent, SheetDescriptionComponent, SheetFooterComponent, SheetHeaderComponent, SheetTitleComponent } from "./Sheet/Sheet.component.js";
 export { ShowMoreComponent, ShowMoreContentComponent, ShowMoreTriggerComponent } from "./ShowMore/ShowMore.component.js";
-export { ShuttleComponent, ShuttleItemComponent } from "./Shuttle/Shuttle.component.js";
+export { ShuttleComponent } from "./Shuttle/Shuttle.component.js";
 export { SkeletonComponent } from "./Skeleton/Skeleton.component.js";
 export { SpinnerComponent } from "./Spinner/Spinner.component.js";
 export { StatComponent } from "./Stat/Stat.component.js";

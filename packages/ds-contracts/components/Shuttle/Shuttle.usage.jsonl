@@ -1,1 +1,1 @@
-{"name":"default","description":"Shuttle with an initial selected team member supplied through its public value channel.","tree":{"fsds.Shuttle":{"props":{"ariaLabel":"Assign team members","defaultValue":["Alice Johnson"]}}}}
+{"name":"default","description":"Shuttle assigning team members: every candidate in options, one already selected through the public value channel.","tree":{"fsds.Shuttle":{"props":{"ariaLabel":"Assign team members","options":["Alice Johnson","Bob Smith","Carol Davis","Dan Lee"],"defaultValue":["Alice Johnson"]}}}}

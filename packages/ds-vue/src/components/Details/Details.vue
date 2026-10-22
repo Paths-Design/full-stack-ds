@@ -47,7 +47,7 @@ const props = withDefaults(defineProps<Props>(), {
 const behavior = useDetails({
   open: () => props.open,
   defaultOpen: props.defaultOpen,
-  onOpenChange: props.onOpenChange,
+  onOpenChange: (...args) => props.onOpenChange?.(...args),
 });
 // @generated:end
 

@@ -57,7 +57,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 const behavior = useDialog({
   open: () => props.open,
   defaultOpen: props.defaultOpen,
-  onOpenChange: props.onOpenChange,
+  onOpenChange: (...args) => props.onOpenChange?.(...args),
   closeOnEscape: props.closeOnEscape,
   closeOnBackdropClick: props.closeOnBackdropClick,
   initialFocus: () => props.initialFocus,

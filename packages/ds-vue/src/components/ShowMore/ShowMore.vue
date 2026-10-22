@@ -46,7 +46,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { showMoreLabel: 
 const behavior = useShowMore({
   expanded: () => props.expanded,
   defaultExpanded: props.defaultExpanded,
-  onExpandedChange: props.onExpandedChange,
+  onExpandedChange: (...args) => props.onExpandedChange?.(...args),
 });
 // @generated:end
 

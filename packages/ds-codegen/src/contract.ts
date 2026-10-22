@@ -1050,6 +1050,11 @@ export interface ComponentContract {
     disabledProp?: string;
     captionProp?: string;
   };
+  /** Dual-listbox transfer: the value channel and options prop a transfer-list runtime reads. */
+  transfer?: {
+    valueChannel: string;
+    optionsProp: string;
+  };
   motion?: ContractMotion;
   sequence?: ContractSequence;
   /** Translatable strings keyed by component-local message key. */

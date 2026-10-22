@@ -1,7 +1,9 @@
 // @generated:start imports
-import { type HTMLAttributes, type ReactNode } from "react";
+import { type HTMLAttributes } from "react";
 import { Stack } from "../../primitives";
 import { useShuttle } from "./useShuttle";
+import { useTransferList } from "../../primitives/hooks/useTransferList.js";
+import { useFsdsMessages } from "../../primitives/messages";
 import "./Shuttle.css";
 // @generated:end
 
@@ -18,8 +20,9 @@ import "./Shuttle.css";
 // @custom:end
 
 // @generated:start props
-export interface ShuttleProps extends Omit<HTMLAttributes<HTMLUListElement>, "ariaLabel" | "children" | "className" | "data-testid" | "defaultValue" | "onValueChange" | "value"> {
+export interface ShuttleProps extends Omit<HTMLAttributes<HTMLDivElement>, "ariaLabel" | "children" | "className" | "data-testid" | "defaultValue" | "onValueChange" | "options" | "value"> {
   ariaLabel?: string;
+  options?: string[];
   value?: string[];
   defaultValue?: string[];
   onValueChange?: (value: string[]) => void;
@@ -29,42 +32,30 @@ export interface ShuttleProps extends Omit<HTMLAttributes<HTMLUListElement>, "ar
 // @generated:end
 
 // @generated:start subcomponents
-export interface ShuttleItemProps {
-  children?: ReactNode;
-  className?: string;
-  "data-testid"?: string;
-}
 
-export function ShuttleItem({
-  children,
-  className,
-  "data-testid": testId,
-}: ShuttleItemProps) {
-  const classNames = ["shuttle__item", className].filter(Boolean).join(" ");
-  return (
-    <Stack as="li" className={classNames} data-testid={testId}>
-      {children}
-    </Stack>
-  );
-}
 // @generated:end
 
 // @generated:start component
+const ShuttleMessages = { availableLabel: "Available", selectedLabel: "Selected", add: "Add", remove: "Remove" };
+
 export function Shuttle({
   value: controlledValue,
-  defaultValue = ["alpha","beta","gamma"],
+  defaultValue = [],
   onValueChange,
   className,
   "data-testid": testId,
   ariaLabel,
+  options = ["alpha","beta","gamma","delta","epsilon"],
   ...rest
 }: ShuttleProps) {
-  const { selection, setSelection: _setSelection } = useShuttle({
+  const fsdsMessages = useFsdsMessages("Shuttle", ShuttleMessages);
+  const { selection, setSelection } = useShuttle({
     value: controlledValue,
     defaultValue,
     onValueChange,
   });
 
+  const transfer = useTransferList({ options: options, value: selection, onValueChange: setSelection });
   const classNames = [
     "shuttle",
     className,
@@ -73,14 +64,33 @@ export function Shuttle({
     .join(" ");
 
   return (
-  <Stack layout="native" as="ul" className={`${classNames}`} role="listbox" aria-label={ariaLabel} data-testid={testId} data-fsds-component="shuttle" data-fsds-box="" {...rest}>
-    {(selection ?? []).map((item, index) => (
-      <li className="shuttle__item" role="option" aria-selected="true" key={index}>
-        <span>
-          {item}
-        </span>
-      </li>
-    ))}
+  <Stack layout="native" className={`${classNames}`} role="group" aria-label={ariaLabel} data-testid={testId} data-fsds-component="shuttle" data-fsds-box="" {...rest}>
+    <ul className="shuttle__list" role="listbox" aria-multiselectable="true" data-side="available" onKeyDown={transfer.keydown} aria-label={fsdsMessages.availableLabel}>
+      {(transfer.state.available ?? []).map((item, index) => (
+        <li className="shuttle__item" role="option" onClick={() => transfer.toggle(item)} aria-selected={item.marked} tabIndex={item.tabIndex} data-value={item.key} key={index}>
+          <span>
+            {item.label}
+          </span>
+        </li>
+      ))}
+    </ul>
+    <div className="shuttle__controls">
+      <button className="shuttle__add" type="button" onClick={transfer.add} disabled={transfer.state.addDisabled}>
+        {fsdsMessages.add}
+      </button>
+      <button className="shuttle__remove" type="button" onClick={transfer.remove} disabled={transfer.state.removeDisabled}>
+        {fsdsMessages.remove}
+      </button>
+    </div>
+    <ul className="shuttle__list" role="listbox" aria-multiselectable="true" data-side="selected" onKeyDown={transfer.keydown} aria-label={fsdsMessages.selectedLabel}>
+      {(transfer.state.selected ?? []).map((item, index) => (
+        <li className="shuttle__item" role="option" onClick={() => transfer.toggle(item)} aria-selected={item.marked} tabIndex={item.tabIndex} data-value={item.key} key={index}>
+          <span>
+            {item.label}
+          </span>
+        </li>
+      ))}
+    </ul>
   </Stack>
   );
 }

@@ -8,81 +8,155 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSizeIn
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.fullstackds.tokens.LocalFsdsContentColor
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
+import com.fullstackds.transfer.FsdsTransferList
 // @generated:end
 
 // @generated:start component
+/** One side of the transfer: a content-described list whose items toggle their mark. */
+@Composable
+private fun ShuttleList(
+    modifier: Modifier,
+    items: List<String>,
+    marked: Set<String>,
+    label: String,
+    onToggle: (String) -> Unit,
+    shape: Shape,
+    listColor: Color,
+    borderColor: Color,
+    contentColor: Color,
+    markedColor: Color,
+    markedContentColor: Color,
+) {
+    Column(
+        modifier
+            .requiredSizeIn(minWidth = 120.dp, minHeight = 96.dp)
+            .background(listColor, shape)
+            .border(1.dp, borderColor, shape)
+            .semantics { contentDescription = label },
+    ) {
+        items.forEach { item ->
+            val isMarked = item in marked
+            BasicText(
+                text = item,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(if (isMarked) markedColor else Color.Transparent)
+                    .selectable(selected = isMarked, role = Role.Button, onClick = { onToggle(item) })
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                style = TextStyle(color = if (isMarked) markedContentColor else contentColor),
+            )
+        }
+    }
+}
+
 @Composable
 fun Shuttle(
     modifier: Modifier = Modifier,
+    options: List<String> = listOf("alpha", "beta", "gamma", "delta", "epsilon"),
     value: List<String>? = null,
     defaultValue: List<String> = emptyList(),
     onValueChange: ((List<String>) -> Unit)? = null,
     contentDescription: String? = null,
 ) {
+    val fsdsMessages = LocalFsdsMessages.current
     var uncontrolledValue by remember { mutableStateOf(defaultValue) }
     val resolvedValue = value ?: uncontrolledValue
+    var markedAvailable by remember { mutableStateOf(emptySet<String>()) }
+    var markedSelected by remember { mutableStateOf(emptySet<String>()) }
+    fun commit(next: List<String>) {
+        if (value == null) { uncontrolledValue = next }
+        onValueChange?.invoke(next)
+    }
     val fsdsTheme = LocalFsdsTheme.current
     fun layeredSlot(slotName: String): String? {
         val def = shuttleTokenScopes["root"]?.get(slotName)
         return def?.let { fsdsTheme.resolve(it) }
     }
-    val containerColor = layeredSlot("shuttle.color.background")?.toFsdsColor()
-    val contentColor = layeredSlot("shuttle.color.foreground.primary")?.toFsdsColor()
-    val borderColor = layeredSlot("shuttle.color.border")?.toFsdsColor()
-    val cornerRadius = layeredSlot("shuttle.size.radius")?.toFsdsDp() ?: 0.dp
-    val listGap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 0.dp
-    val listPadding = PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
-    val listMinWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp
-    val listMinHeight = layeredSlot("box-model.min-height")?.toFsdsDp() ?: 0.dp
-
+    val containerColor = layeredSlot("shuttle.color.background")?.toFsdsColor() ?: Color.Transparent
+    val contentColor = layeredSlot("shuttle.color.foreground.primary")?.toFsdsColor() ?: Color.Black
+    val borderColor = layeredSlot("shuttle.color.border")?.toFsdsColor() ?: Color.Gray
+    val listColor = layeredSlot("shuttle.color.list.background")?.toFsdsColor() ?: Color.Transparent
+    val markedColor = layeredSlot("shuttle.color.item.marked.background")?.toFsdsColor() ?: Color.Black
+    val markedContentColor = layeredSlot("shuttle.color.item.marked.foreground")?.toFsdsColor() ?: Color.White
+    val cornerRadius = layeredSlot("shuttle.size.radius")?.toFsdsDp() ?: 6.dp
+    val rootPadding = layeredSlot("shuttle.size.padding")?.toFsdsDp()?.let { PaddingValues(it) } ?: PaddingValues(start = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp, end = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp, top = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp, bottom = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp)
+    val minWidth = layeredSlot("box-model.min-width")?.toFsdsDp() ?: 0.dp
+    val minHeight = layeredSlot("box-model.min-height")?.toFsdsDp() ?: 0.dp
+    val gap = layeredSlot("box-model.gap")?.toFsdsDp() ?: 16.dp
     val shape = RoundedCornerShape(cornerRadius)
-    val listModifier = modifier
-        .requiredSizeIn(minWidth = listMinWidth, minHeight = listMinHeight)
-        .clip(shape)
-        .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)
-        .then(if (borderColor != null) Modifier.border(1.dp, borderColor, shape) else Modifier)
-        .padding(listPadding)
-        .then(if (contentDescription != null) Modifier.semantics { this.contentDescription = contentDescription } else Modifier)
-    CompositionLocalProvider(
-        LocalFsdsContentColor provides (contentColor ?: Color.Unspecified),
+    val addNext = FsdsTransferList.adding(markedAvailable, options, resolvedValue)
+    val removeNext = FsdsTransferList.removing(markedSelected, resolvedValue)
+    Row(
+        modifier
+            .sizeIn(minWidth = minWidth, minHeight = minHeight)
+            .background(containerColor, shape)
+            .padding(rootPadding)
+            .then(if (contentDescription != null) Modifier.semantics { this.contentDescription = contentDescription } else Modifier),
+        horizontalArrangement = Arrangement.spacedBy(gap),
     ) {
-        Column(
-            listModifier,
-            verticalArrangement = Arrangement.spacedBy(listGap),
-        ) {
-            resolvedValue.forEach { item ->
-                BasicText(
-                    text = item,
-                    modifier = Modifier.clickable {
-                        val next = resolvedValue.filter { it != item }
-                        if (value == null) { uncontrolledValue = next }
-                        onValueChange?.invoke(next)
-                    },
-                    style = TextStyle(color = LocalFsdsContentColor.current),
-                )
-            }
+        ShuttleList(
+            // The two lists share the row; the controls keep their own width.
+            modifier = Modifier.weight(1f),
+            items = FsdsTransferList.available(options, resolvedValue),
+            marked = markedAvailable,
+            label = fsdsMessages.string("Shuttle.availableLabel", "Available"),
+            onToggle = { item -> markedAvailable = if (item in markedAvailable) markedAvailable - item else markedAvailable + item },
+            shape = shape, listColor = listColor, borderColor = borderColor, contentColor = contentColor,
+            markedColor = markedColor, markedContentColor = markedContentColor,
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            BasicText(
+                text = fsdsMessages.string("Shuttle.add", "Add"),
+                modifier = Modifier
+                    .border(1.dp, borderColor, shape)
+                    .clickable(enabled = addNext != null, role = Role.Button) { addNext?.let { markedAvailable = emptySet(); commit(it) } }
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                style = TextStyle(color = contentColor),
+            )
+            BasicText(
+                text = fsdsMessages.string("Shuttle.remove", "Remove"),
+                modifier = Modifier
+                    .border(1.dp, borderColor, shape)
+                    .clickable(enabled = removeNext != null, role = Role.Button) { removeNext?.let { markedSelected = emptySet(); commit(it) } }
+                    .padding(horizontal = 12.dp, vertical = 6.dp),
+                style = TextStyle(color = contentColor),
+            )
         }
+        ShuttleList(
+            // The two lists share the row; the controls keep their own width.
+            modifier = Modifier.weight(1f),
+            items = FsdsTransferList.selected(resolvedValue),
+            marked = markedSelected,
+            label = fsdsMessages.string("Shuttle.selectedLabel", "Selected"),
+            onToggle = { item -> markedSelected = if (item in markedSelected) markedSelected - item else markedSelected + item },
+            shape = shape, listColor = listColor, borderColor = borderColor, contentColor = contentColor,
+            markedColor = markedColor, markedContentColor = markedContentColor,
+        )
     }
 }
 // @generated:end

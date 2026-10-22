@@ -63,10 +63,10 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { triggerLabel: "
 const behavior = useSelect({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
   open: () => props.open,
   defaultOpen: props.defaultOpen,
-  onOpenChange: props.onOpenChange,
+  onOpenChange: (...args) => props.onOpenChange?.(...args),
   multiple: () => props.multiple,
 });
 function bindInteractionAnchor(element: unknown): void { behavior.anchorRef.value = element instanceof HTMLElement ? element : null; }
