@@ -85,3 +85,11 @@ rollback:
   - 'Revert the merge commit and regenerate every target'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Thirteen executed transfer IR tests pin options/value facts and reject missing transfer declarations, invalid channel/iteration/event/mark semantics and nested controls. Inspected Shuttle contract supplies catalog-named lists and controls. Raw fsds-shuttle-rejection-core-green.log retained under .caws/state/release-evidence/SHUTTLE-DUAL-LISTBOX-01."
+    recorded_at: "2026-10-22T23:00:12.341Z"
+    command: "pnpm exec vitest run packages/ds-codegen/src/transfer/transfer-list.test.ts packages/ds-codegen/src/transfer.test.ts --maxWorkers=2"
+    exit_code: 0
+    commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
