@@ -1,0 +1,59 @@
+id: PUBLIC-TYPES-NPM-01
+title: 'Export idiomatic component props and aliases through npm declarations'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-22T23:05:17.159Z'
+updated_at: '2026-10-22T23:05:17.159Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Framework public type generation and installed declaration consumption'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/vue'
+    - 'packages/ds-codegen/src/frameworks/svelte'
+    - 'packages/ds-codegen/src/frameworks/react-native/barrel.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/barrel.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/barrel.ts'
+    - 'packages/ds-codegen/src/frameworks/public-types.test.ts'
+    - 'packages/ds-vue/src/components'
+    - 'packages/ds-svelte/src/components'
+    - 'packages/ds-react-native/src/components/index.ts'
+    - 'packages/ds-angular/src/components/index.ts'
+    - 'packages/ds-lit/src/components/index.ts'
+    - 'packages/ds-svelte/src/primitives/index.ts'
+    - 'packages/ds-vue/package.json'
+    - 'packages/ds-svelte/package.json'
+    - 'scripts/normalize-package-declarations.mjs'
+    - 'scripts/normalize-package-declarations.test.mjs'
+    - 'scripts/public-types-consumer'
+    - 'package.json'
+  out: []
+invariants:
+  - 'Contract and semantic IR remain the sole authority for prop and alias shapes; inferred component props preserve requiredness and framework-specific composition'
+  - 'Runtime component behavior and CSS remain unchanged; Angular and Lit retain idiomatic class APIs'
+  - 'No publishing or release-license choice occurs in this slice'
+acceptance:
+  - id: A1
+    given: 'generated framework package entrypoints'
+    when: 'a consumer imports component props compound-part props and existing aliases'
+    then: 'Vue Svelte React Native Angular and Lit expose the appropriate public types without widening values or losing required props'
+  - id: A2
+    given: 'built Vue and Svelte packages installed outside source aliases'
+    when: 'strict Bundler and NodeNext consumers compile'
+    then: 'public declaration imports resolve including component suffixes and valid examples compile while wrong variants malformed options missing required part values and invalid layout values fail for their intended type error'
+  - id: A3
+    given: 'regenerated committed outputs'
+    when: 'focused type fixtures and required rail root framework and documentation gates execute'
+    then: 'checks pass with no generated drift or runtime semantic changes'
+observability:
+  - 'Consumer fixtures retain exact positive and negative compiler diagnostics'
+rollback:
+  - 'Revert the slice merge and rebuild package declarations'
+non_functional: {}
+contracts:
+  - name: 'public-type-consumer'
+    type: contract-test
+    path: 'scripts/public-types-consumer'
