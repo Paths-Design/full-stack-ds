@@ -16,6 +16,23 @@ function mount(html: string): HTMLElement {
 }
 
 describe("isRtl", () => {
+  it("accepts case-insensitive direction keywords", () => {
+    expect(isRtl(mount(`<div dir="RTL"><button id="target"></button></div>`))).toBe(true);
+    expect(isRtl(mount(`<div dir="rTl"><button id="target"></button></div>`))).toBe(true);
+    expect(isRtl(mount(`<div dir="rtl"><div dir="LTR"><button id="target"></button></div></div>`))).toBe(false);
+  });
+
+  it("continues past invalid direction attributes to an inherited direction", () => {
+    expect(isRtl(mount(`<div dir="RTL"><div dir="invalid"><button id="target"></button></div></div>`))).toBe(true);
+  });
+
+  it("uses computed CSS direction when it overrides the HTML direction", () => {
+    const target = mount(`<button dir="ltr" style="direction:rtl" id="target"></button>`);
+    expect(isRtl(target)).toBe(true);
+    target.style.direction = "ltr";
+    expect(isRtl(target)).toBe(false);
+  });
+
   it("reads left-to-right when no ancestor declares a direction", () => {
     expect(isRtl(mount(`<div><button id="target"></button></div>`))).toBe(false);
   });
