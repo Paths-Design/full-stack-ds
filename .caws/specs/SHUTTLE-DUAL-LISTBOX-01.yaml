@@ -100,3 +100,10 @@ evidence:
     command: "pnpm exec vitest run packages/ds-codegen/src/transfer/transfer-list.test.ts packages/ds-codegen/src/transfer.test.ts --maxWorkers=2"
     exit_code: 0
     commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Chromium25 tests passed across React Vue Svelte Lit Angular: named multiselect lists, marks, tab stops, arrows Home End Space Enter, Add/Remove and controlled refusal focus. Callback payload capture asserted in four targets; Angular visible lists assert transfers because preview does not expose callback capture. Raw fsds-shuttle-rejection-browser-green.log retained in .caws/state/release-evidence/SHUTTLE-DUAL-LISTBOX-01."
+    recorded_at: "2026-10-22T23:00:31.123Z"
+    command: "FSDS_E2E_BASE=http://127.0.0.1:5190 pnpm exec playwright test e2e/runtime-rail.spec.ts --grep Shuttle --workers=1"
+    exit_code: 0
+    commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
