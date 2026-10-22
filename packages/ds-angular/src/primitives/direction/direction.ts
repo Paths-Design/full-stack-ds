@@ -6,16 +6,31 @@
  */
 
 /**
- * Whether `target` sits in right-to-left text: the nearest `dir` attribute on
- * the composed ancestor chain. The walk crosses shadow roots to their hosts,
- * because a page sets `dir` outside a web component's shadow tree. A target
- * with no DOM ancestry (React Native) reads as left-to-right.
+ * Whether `target` sits in right-to-left text, using the live computed
+ * direction so CSS, inherited direction and dir=auto agree with rendering.
+ * DOM emulators without a computed direction fall back to valid dir keywords
+ * along the composed ancestor chain. Non-DOM targets read as left-to-right.
  */
 export function isRtl(target: EventTarget | null): boolean {
   let element = target as Element | null;
+  const view = element?.ownerDocument?.defaultView;
+  if (view && element?.nodeType === 1) {
+    const direction = view.getComputedStyle(element).direction;
+    if (direction === "rtl" || direction === "ltr") return direction === "rtl";
+  }
   while (element) {
     const holder = element.closest?.("[dir]");
-    if (holder) return holder.getAttribute("dir") === "rtl";
+    if (holder) {
+      const direction = holder.getAttribute("dir")?.toLowerCase();
+      if (direction === "rtl" || direction === "ltr") return direction === "rtl";
+      // Invalid and automatic values do not themselves declare a fallback.
+      // Inspect higher ancestors, including a shadow host when appropriate.
+      element = holder;
+      if (holder.parentElement) {
+        element = holder.parentElement;
+        continue;
+      }
+    }
     const root = element.getRootNode?.() as ShadowRoot | Document | undefined;
     element = root && "host" in root ? root.host : null;
   }
