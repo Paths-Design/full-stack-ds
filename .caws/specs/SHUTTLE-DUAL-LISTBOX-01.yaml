@@ -93,3 +93,10 @@ evidence:
     command: "pnpm exec vitest run packages/ds-codegen/src/transfer/transfer-list.test.ts packages/ds-codegen/src/transfer.test.ts --maxWorkers=2"
     exit_code: 0
     commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Twenty-seven exact-state core tests execute list ordering, marks, keyboard, transfer callbacks, controlled refusal and focus/tab-stop reconciliation. Chromium additionally exercises both buttons including refused controlled transfers. Raw fsds-shuttle-rejection-core-green.log and fsds-shuttle-rejection-browser-green.log retained in .caws/state/release-evidence/SHUTTLE-DUAL-LISTBOX-01."
+    recorded_at: "2026-10-22T23:00:22.265Z"
+    command: "pnpm exec vitest run packages/ds-codegen/src/transfer/transfer-list.test.ts packages/ds-codegen/src/transfer.test.ts --maxWorkers=2"
+    exit_code: 0
+    commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
