@@ -117,3 +117,8 @@ evidence:
     evidence_ref: "Inspected docs/architecture/transfer-list.md at64324eaf2 against IR, core, per-family bindings and executed evidence. It describes catalog strings, marks versus values, controlled refusal focus, target realization and bounded native/engine claims. Final doc claims and links passed; logs retained under .caws/state/release-evidence/SHUTTLE-DUAL-LISTBOX-01."
     recorded_at: "2026-10-22T23:01:35.132Z"
     commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Final required rail all6 passed; root352files5166tests; Vue853 Lit618+2skips Svelte753 Angular639 RN250; lint typecheck docs links committed-output and CAWS scope gates passed. Ten realization audits rerun on combined landed main exited0 with no unledgered/stale rows. Compose token parity and fresh native compile/test lanes passed; Swift semantic-defaults drift repaired and check passed. Raw final, review-audit, native and integrated logs retained in .caws/state/release-evidence/SHUTTLE-DUAL-LISTBOX-01. Ledgered global gaps are not treated as whole-release readiness."
+    recorded_at: "2026-10-22T23:02:58.878Z"
+    commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
