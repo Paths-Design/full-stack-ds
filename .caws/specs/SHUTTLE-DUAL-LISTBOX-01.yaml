@@ -57,7 +57,14 @@ acceptance:
   - id: A2
     given: 'the transfer core'
     when: 'it is driven'
-    then: 'the available list is options minus value in options order, the selected list is value in transfer order, Space toggles the focused item mark, arrows Home and End move one tab stop within a list, Enter and the buttons move the marked items (or the focused item when none is marked) to the other list, report the new value and clear marks, pinned by core unit tests with exact states'
+    then: >-
+      the available list is options minus value in options order, the selected list
+      is value in transfer order, Space toggles the focused item mark, arrows Home
+      and End move one tab stop within a list, Enter moves marked items or the
+      focused item when none is marked, Add and Remove move marked items and remain
+      disabled without marks, transfers report the new value and clear marks, and
+      web transfer activation preserves option focus, pinned by exact-state core
+      tests and browser interaction tests
   - id: A3
     given: 'the five web packages'
     when: 'the generated Shuttle renders in Chromium'
