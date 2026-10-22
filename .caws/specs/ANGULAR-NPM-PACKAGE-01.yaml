@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: angular-npm-package
 created_at: '2026-10-22T21:34:22.753Z'
-updated_at: '2026-10-22T21:52:22.359Z'
+updated_at: '2026-10-22T22:14:30.818Z'
 created_by_session: '01a16581-c9b7-7862-841d-80df8886b0ce'
 blast_radius:
   modules:
@@ -21,6 +21,8 @@ scope:
     - 'package.json'
     - pnpm-lock.yaml
   out: []
+  support:
+    - docs/specifications/governed-ci.md
 invariants:
   - 'Generated component semantics remain authoritative and unchanged by packaging'
   - 'Consumer checks compile and render installed tarball bytes without source aliases or JIT compiler imports'
