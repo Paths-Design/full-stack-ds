@@ -59,7 +59,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { label: "groupLa
 const behavior = usePageNavigator({
   index: () => props.index,
   defaultIndex: props.defaultIndex,
-  onIndexChange: props.onIndexChange,
+  onIndexChange: (...args) => props.onIndexChange?.(...args),
 });
 const pagedSet = usePagedSet(() => ({ index: behavior.page.value, items: props.pages,
   count: props.pageCount, disabled: props.disabled, onIndexChange: behavior.setPage }));

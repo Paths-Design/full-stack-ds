@@ -157,27 +157,43 @@ export function createTransferList() {
     publish();
   };
 
-  /** Enter: move the marked items, or the focused item when none is marked. */
-  const send = (event: TransferListKeyEvent) => {
-    const side = sideOf(event.currentTarget as Element | null);
-    if (!side) return;
+  const scheduleTransferFocus = (side: TransferListSide, moving: string[], root: Element) => {
     const items = current()[side];
-    const key = anchorKey(event, side);
-    const moving = markedIn(side).length > 0 ? markedIn(side) : items.filter((item) => item.key === key).map((item) => item.key);
-    if (moving.length === 0) return;
-    event.preventDefault();
     // Focus stays in this list on the nearest item that remains, or follows
     // the first moved item when the list empties.
     const remaining = items.filter((item) => !moving.includes(item.key));
     const at = items.findIndex((item) => item.key === moving[0]);
     const nearest = remaining.find((item) => items.indexOf(item) > at) ?? remaining[remaining.length - 1];
-    const root = rootOf(event.currentTarget as Element);
     if (nearest) {
       focus[side] = nearest.key;
       pendingFocus = { side, key: nearest.key, root };
     } else {
       focus[other(side)] = moving[0];
       pendingFocus = { side: other(side), key: moving[0], root };
+    }
+  };
+
+  /** Enter: move the marked items, or the focused item when none is marked. */
+  const send = (event: TransferListKeyEvent) => {
+    const side = sideOf(event.currentTarget as Element | null);
+    if (!side) return;
+    const key = anchorKey(event, side);
+    const moving = markedIn(side).length > 0 ? markedIn(side) : current()[side].filter((item) => item.key === key).map((item) => item.key);
+    if (moving.length === 0) return;
+    event.preventDefault();
+    scheduleTransferFocus(side, moving, rootOf(event.currentTarget as Element));
+    transfer(side, moving);
+  };
+
+  /** A web button becomes disabled after consuming its marks. Move focus to
+   * an option before that leaves the user without a focused control. Native
+   * press events and imperative calls have no DOM focus target. */
+  const buttonTransfer = (side: TransferListSide, event?: { currentTarget?: unknown }) => {
+    const moving = markedIn(side);
+    if (moving.length === 0) return;
+    const target = event?.currentTarget as Element | undefined;
+    if (target && typeof target.closest === "function") {
+      scheduleTransferFocus(side, moving, rootOf(target));
     }
     transfer(side, moving);
   };
@@ -205,9 +221,9 @@ export function createTransferList() {
       publish();
     },
     /** Move the marked available items to the end of the value. */
-    add: () => transfer("available", markedIn("available")),
+    add: (event?: { currentTarget?: unknown }) => buttonTransfer("available", event),
     /** Move the marked selected items back to the available list. */
-    remove: () => transfer("selected", markedIn("selected")),
+    remove: (event?: { currentTarget?: unknown }) => buttonTransfer("selected", event),
     /** Keys act on the list they are pressed in (its data-side). */
     keydown(event: TransferListKeyEvent) {
       switch (event.key) {

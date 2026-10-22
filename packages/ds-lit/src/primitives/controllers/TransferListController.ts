@@ -15,8 +15,8 @@ export class TransferListController implements ReactiveController {
   hostUpdated() { this.transfer.afterRender(); }
   hostDisconnected() { this.unsubscribe?.(); }
   get state() { return this.transfer.state; }
-  add = () => this.transfer.add();
-  remove = () => this.transfer.remove();
+  add = (event?: Event) => this.transfer.add(event);
+  remove = (event?: Event) => this.transfer.remove(event);
   toggle = (item: TransferListItem) => this.transfer.toggle(item);
   keydown = (event: TransferListKeyEvent) => this.transfer.keydown(event);
 }

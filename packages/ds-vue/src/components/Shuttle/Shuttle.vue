@@ -44,7 +44,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 const behavior = useShuttle({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onValueChange: props.onValueChange,
+  onValueChange: (...args) => props.onValueChange?.(...args),
 });
 const transfer = useTransferList(() => ({ options: props.options, value: behavior.selection.value, onValueChange: behavior.setSelection }));
 // @generated:end

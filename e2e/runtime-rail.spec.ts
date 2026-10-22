@@ -637,6 +637,29 @@ test.describe("Runtime rail — Shuttle (dual-listbox transfer: listbox shape, k
   // options alpha..epsilon and an empty selection. CSS locators pierce Lit's
   // open shadow root; the focused option is read from the root that owns it.
   for (const framework of FRAMEWORKS) {
+    test(`${framework}: keyboard Add and Remove preserve focus when their buttons become disabled`, async ({ page }) => {
+      await goto(page, framework, "Shuttle", "shuttle");
+      await shuttleItem(page, "available", "alpha").focus();
+      await page.keyboard.press(" ");
+      const add = page.locator(".shuttle__add");
+      await expect(add).toBeEnabled();
+      await add.focus();
+      await expect(add).toBeFocused();
+      await page.keyboard.press("Enter");
+      await expect.poll(async () => (await shuttleFacts(page, framework))?.focused).toBe("available/beta");
+      await expect(add).toBeDisabled();
+      await shuttleItem(page, "selected", "alpha").focus();
+      await page.keyboard.press(" ");
+      const remove = page.locator(".shuttle__remove");
+      await expect(remove).toBeEnabled();
+      await remove.focus();
+      await expect(remove).toBeFocused();
+      await page.keyboard.press(" ");
+      await expect.poll(async () => (await shuttleFacts(page, framework))?.focused).toBe("available/alpha");
+      await expect(remove).toBeDisabled();
+    });
+  }
+  for (const framework of FRAMEWORKS) {
     test(`${framework}: two named multi-select listboxes, one tab stop each, nothing marked`, async ({ page }) => {
       await goto(page, framework, "Shuttle", "shuttle");
       const facts = await shuttleFacts(page, framework);

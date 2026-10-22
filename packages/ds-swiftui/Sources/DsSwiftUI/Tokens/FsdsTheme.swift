@@ -317,6 +317,7 @@ public enum FsdsSemanticDefaults {
         "semantic.color.foreground.on.info.subtle": .adaptive(light: "#013ab0", dark: "#00a9fb"),
         "semantic.color.foreground.on.success.subtle": .adaptive(light: "#2c4f09", dark: "#6eb157"),
         "semantic.color.foreground.on.warning.subtle": .adaptive(light: "#6c3a00", dark: "#ec8802"),
+        "semantic.color.foreground.onColor": .adaptive(light: "#ffffff", dark: "#ffffff"),
         "semantic.color.foreground.primary": .adaptive(light: "#141414", dark: "#fafafa"),
         "semantic.color.foreground.secondary": .adaptive(light: "#474647", dark: "#a0a0a1"),
         "semantic.color.foreground.success": .adaptive(light: "#497f21", dark: "#5b973c"),

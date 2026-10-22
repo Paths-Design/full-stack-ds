@@ -657,7 +657,7 @@ function generateVueCompoundStateRootSource(ir: ComponentIR): string {
     if (channel.defaultValueProp) {
       hookLines.push(`  ${channel.defaultValueProp}: props.${propAccess(channel.defaultValueProp)},`);
     }
-    hookLines.push(`  ${channel.changeHandlerProp}: props.${propAccess(channel.changeHandlerProp)},`);
+    hookLines.push(`  ${channel.changeHandlerProp}: (...args) => props.${propAccess(channel.changeHandlerProp)}?.(...args),`);
   }
   hookLines.push(`  idBase: props.idBase,`);
   hookLines.push(`});`);
@@ -821,7 +821,7 @@ function generateVueDisclosureStateRootSource(ir: ComponentIR): string {
     if (channel.defaultValueProp) {
       hookLines.push(`  ${channel.defaultValueProp}: props.${propAccess(channel.defaultValueProp)},`);
     }
-    hookLines.push(`  ${channel.changeHandlerProp}: props.${propAccess(channel.changeHandlerProp)},`);
+    hookLines.push(`  ${channel.changeHandlerProp}: (...args) => props.${propAccess(channel.changeHandlerProp)}?.(...args),`);
   }
   hookLines.push(`});`);
   hookLines.push(``);
@@ -1700,7 +1700,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       if (ch.defaultValueProp) {
         hookLines.push(`  ${ch.defaultValueProp}: props.${propAccess(ch.defaultValueProp)},`);
       }
-      hookLines.push(`  ${ch.changeHandlerProp}: props.${propAccess(ch.changeHandlerProp)},`);
+      hookLines.push(`  ${ch.changeHandlerProp}: (...args) => props.${propAccess(ch.changeHandlerProp)}?.(...args),`);
     }
     for (const trigger of ir.behavior.normalizedDismissalTriggers) {
       if (!trigger.enabledByProp) continue;

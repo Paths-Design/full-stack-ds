@@ -37,10 +37,10 @@ const ShuttleMessages = { availableLabel: "Available", selectedLabel: "Selected"
     </ng-container>
   </ul>
   <div [ngClass]="'shuttle__controls'">
-    <button [ngClass]="'shuttle__add'" type="button" (click)="transfer.add()" [disabled]="transfer.state.addDisabled">
+    <button [ngClass]="'shuttle__add'" type="button" (click)="transfer.add($event)" [disabled]="transfer.state.addDisabled">
       {{ fsdsMessages().add }}
     </button>
-    <button [ngClass]="'shuttle__remove'" type="button" (click)="transfer.remove()" [disabled]="transfer.state.removeDisabled">
+    <button [ngClass]="'shuttle__remove'" type="button" (click)="transfer.remove($event)" [disabled]="transfer.state.removeDisabled">
       {{ fsdsMessages().remove }}
     </button>
   </div>

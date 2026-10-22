@@ -56,10 +56,10 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 const behavior = useCalendar({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
   month: () => props.month,
   defaultMonth: props.defaultMonth,
-  onMonthChange: props.onMonthChange,
+  onMonthChange: (...args) => props.onMonthChange?.(...args),
   shouldCloseOnSelect: props.shouldCloseOnSelect,
 });
 const dateGrid = useDateGrid(() => ({ value: behavior.value.value, month: behavior.month.value, mode: props.mode, locale: props.locale, minDate: props.minDate, maxDate: props.maxDate, disabled: props.disabled, caption: props.caption, onValueChange: behavior.setValue, onMonthChange: behavior.setMonth }));

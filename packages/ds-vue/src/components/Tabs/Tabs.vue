@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { activeTab, setActiveTab, registeredTabs, registerTab, unregisterTab, idBase } = useTabs({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onValueChange: props.onValueChange,
+  onValueChange: (...args) => props.onValueChange?.(...args),
   idBase: props.idBase,
 });
 

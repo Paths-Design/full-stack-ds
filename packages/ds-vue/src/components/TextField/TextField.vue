@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 const behavior = useTextField({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
 });
 // @generated:end
 

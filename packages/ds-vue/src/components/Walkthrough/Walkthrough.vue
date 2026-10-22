@@ -60,7 +60,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { label: "tourLab
 const behavior = useWalkthrough({
   index: () => props.index,
   defaultIndex: props.defaultIndex,
-  onStepChange: props.onStepChange,
+  onStepChange: (...args) => props.onStepChange?.(...args),
   closeOnOutsideClick: props.closeOnOutsideClick,
 });
 // @generated:end

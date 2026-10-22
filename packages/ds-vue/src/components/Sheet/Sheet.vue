@@ -49,7 +49,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 const behavior = useSheet({
   open: () => props.open,
   defaultOpen: props.defaultOpen,
-  onOpenChange: props.onOpenChange,
+  onOpenChange: (...args) => props.onOpenChange?.(...args),
   modal: () => props.modal,
 });
 function bindInteractionPanel(element: unknown): void { behavior.panelRef.value = element instanceof HTMLElement ? element : null; }

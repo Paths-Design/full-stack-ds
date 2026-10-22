@@ -101,7 +101,9 @@ that remains, or follows the moved item when the list empties. The binding
 calls `afterRender` after each render, which moves DOM focus to the item a key
 targeted once it renders, found by `data-value` inside the group; a render
 nothing asked to focus leaves focus alone. The Add and Remove buttons are
-disabled until their source list holds a mark.
+disabled until their source list holds a mark. Activating either web button
+moves focus to the nearest remaining source option, or follows the first moved
+option when the source empties, so disabling the button preserves a focus target.
 
 ## Per-family bindings
 

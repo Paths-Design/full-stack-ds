@@ -3844,7 +3844,7 @@ function renderAngularEvent(
     case "paged": return `(${eventName})="pagedSet.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : expr.action === "commitOnEnter" ? "$event" : ""})"`;
     // Angular event bindings are statements: call the action with its item, or the event for keydown.
     case "dateGrid": return `(${eventName})="dateGrid.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : expr.action === "keydown" ? "$event" : ""})"`;
-    case "transfer": return `(${eventName})="transfer.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : expr.action === "keydown" ? "$event" : ""})"`;
+    case "transfer": return `(${eventName})="transfer.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : "$event"})"`;
     case "prop":
       return `(${eventName})="${angularPropAccessor(expr.prop, ctx)} && ${angularPropAccessor(expr.prop, ctx)}()"`;
     case "literal":
