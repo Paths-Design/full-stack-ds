@@ -65,3 +65,11 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/ANGULAR-NPM-PACKAGE-01/fsds-angular-package-consumer-realpath.log"
     commit_sha: "46f3f1315457ca115c44417df1507551c16815ea"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Chromium rendered installed tarball bytes: computed display inline-flex, background rgb(18,52,86), minHeight48px; enabled clicks update count0 to1 to2, disabled native activation leaves count1, and pageerrors stay empty. Screenshot and raw assertions retained."
+    recorded_at: "2026-10-22T22:18:05.001Z"
+    command: "pnpm run test:package:angular"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/ANGULAR-NPM-PACKAGE-01/fsds-angular-package-consumer-realpath.log"
+    commit_sha: "46f3f1315457ca115c44417df1507551c16815ea"
