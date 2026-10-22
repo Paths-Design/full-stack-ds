@@ -112,3 +112,8 @@ evidence:
     evidence_ref: "React Native authored Shuttle rendered-host tests assert named lists, selected marks, disabled controls and exact transfer payloads within final250-test suite. Compose rendered semantics3 and core6 tests freshly executed without skips; XML retained. Swift core6 and actual PressProofHarness passed exact Shuttle selection and AXSelected transitions. Evidence under .caws/state/release-evidence/SHUTTLE-DUAL-LISTBOX-01 includes final-frameworks, compose-fresh, swift and press-proof logs plus XML. RN host shim is not device or VoiceOver proof; unrelated Swift harness OTP/Dialog limitations remain explicit."
     recorded_at: "2026-10-22T23:01:33.596Z"
     commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "Inspected docs/architecture/transfer-list.md at64324eaf2 against IR, core, per-family bindings and executed evidence. It describes catalog strings, marks versus values, controlled refusal focus, target realization and bounded native/engine claims. Final doc claims and links passed; logs retained under .caws/state/release-evidence/SHUTTLE-DUAL-LISTBOX-01."
+    recorded_at: "2026-10-22T23:01:35.132Z"
+    commit_sha: "64324eaf2b94ddced5bbc03af9aec5a0ee23578f"
