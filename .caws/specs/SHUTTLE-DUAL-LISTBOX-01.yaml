@@ -1,9 +1,11 @@
 id: SHUTTLE-DUAL-LISTBOX-01
 title: 'Shuttle realizes the dual-listbox transfer its contract describes'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Dual-listbox transfer semantics and localized labels realized with keyboard focus including controlled refusal, live Vue callbacks, five-framework browser proof and bounded native runtime evidence; required gates passed and remaining global release blockers stay open'
 created_at: '2026-10-21T13:49:30.428Z'
-updated_at: '2026-10-22T22:52:36.828Z'
+updated_at: '2026-10-22T23:03:30.504Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
