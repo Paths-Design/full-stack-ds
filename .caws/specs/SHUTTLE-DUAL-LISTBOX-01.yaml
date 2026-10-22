@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: shuttle-dual-listbox
 created_at: '2026-10-21T13:49:30.428Z'
-updated_at: '2026-10-21T16:36:03.384Z'
+updated_at: '2026-10-22T22:52:36.828Z'
 created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
 blast_radius:
   modules:
@@ -45,6 +45,7 @@ scope:
     - docs/architecture/design/component-token-naming.md
     - src/consumption/chrome-coverage.test.ts
     - src/views/DisplayCaseView.tsx
+    - scripts/compose-parity-diff.test.mjs
 invariants:
   - 'The selection channel stays the public value: the ids in the selected list, in transfer order; the candidate set comes from an options prop in display order'
   - 'aria-selected on an option reports whether it is marked for transfer, never which list it is in'
