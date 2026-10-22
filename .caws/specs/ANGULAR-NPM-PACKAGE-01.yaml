@@ -1,9 +1,11 @@
 id: ANGULAR-NPM-PACKAGE-01
 title: 'Build Angular npm artifacts with partial compilation and packaged consumer proof'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Partial AOT Angular tarballs and typed aggregate CSS verified by installed consumer compilation and Chromium behavior with pinned local peers; raw evidence retained and wider npm qualification remains outside this slice'
 created_at: '2026-10-22T21:34:22.753Z'
-updated_at: '2026-10-22T22:19:54.172Z'
+updated_at: '2026-10-22T22:40:45.737Z'
 created_by_session: '01a16581-c9b7-7862-841d-80df8886b0ce'
 blast_radius:
   modules:
