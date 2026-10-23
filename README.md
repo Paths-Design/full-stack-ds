@@ -21,9 +21,10 @@ Project code is [MIT licensed](LICENSE), copyright DesignPaths, LLC.
 for adapted icon geometry.
 
 `pnpm run test:package:release` packs the libraries through their build hooks,
-checks payloads and strict imports, and runs installed web consumers in Chromium.
-It uses pinned local peers and does not publish packages or establish complete
-component accessibility or native device compatibility.
+checks payloads and strict imports, runs installed web consumers in Chromium,
+and builds native consumers with Metro for iOS and Android. It uses pinned local
+peers and does not publish packages or establish complete component accessibility
+or native device compatibility.
 
 ## Token theming example
 

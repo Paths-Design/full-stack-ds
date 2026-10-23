@@ -11,6 +11,7 @@ import ts from "typescript";
 import { assertReleasePayload } from "./payload.mjs";
 import { verifyBrowsers } from "./browser.mjs";
 import { runtimeFixture } from "./runtime.mjs";
+import { verifyNativeBundles } from "./native.mjs";
 import { nativeCases, webCases } from "../public-types-consumer/fixtures.mjs";
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -145,4 +146,5 @@ for (const format of ["esm", "cjs"]) {
   run("runtime-" + format, process.execPath, [file], consumer);
 }
 await verifyBrowsers({ repo, consumer, evidence });
+await verifyNativeBundles({ repo, consumer, evidence });
 console.log("Release payload verified against pinned local peers; no registry publication or native-device qualification: " + evidence);
