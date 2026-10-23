@@ -66,7 +66,9 @@ function checkCase(group, mode, fixture) {
   const label = [group, mode.id, fixture.name].join("-");
   const file = join(consumer, label + "." + mode.extension);
   writeFileSync(file, fixture.source);
-  const options = { noEmit: true, strict: true, skipLibCheck: true, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, types: [], module: mode.module, moduleResolution: mode.moduleResolution };
+  // Web checks include declaration internals. Native source remains checked;
+  // its platform dependency declarations are excluded from this fixture.
+  const options = { noEmit: true, strict: true, skipLibCheck: group === "native", target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, types: [], module: mode.module, moduleResolution: mode.moduleResolution };
   const diagnostics = ts.getPreEmitDiagnostics(ts.createProgram([file], options));
   const messages = diagnostics.map((diagnostic) => ({ code: diagnostic.code, file: diagnostic.file?.fileName, start: diagnostic.start, message: ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n") }));
   writeFileSync(join(evidence, label + ".json"), JSON.stringify(messages, null, 2));
