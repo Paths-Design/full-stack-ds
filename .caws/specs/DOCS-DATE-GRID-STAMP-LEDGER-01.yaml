@@ -1,9 +1,10 @@
 id: DOCS-DATE-GRID-STAMP-LEDGER-01
 title: 'Ledger the stale date-grid.md freshness stamp while its refresh waits in npm-release-payload'
 mode: chore
-lifecycle_state: draft
+lifecycle_state: active
+worktree: date-grid-stamp-ledger
 created_at: '2026-10-23T05:58:05.554Z'
-updated_at: '2026-10-23T05:58:05.554Z'
+updated_at: '2026-10-23T05:58:35.779Z'
 created_by_session: '3b29f352-c5e6-433c-901e-4323cd0c34c4'
 blast_radius:
   modules:
