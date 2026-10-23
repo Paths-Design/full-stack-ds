@@ -1,9 +1,11 @@
 id: KEYBOARD-DIRECTION-01
 title: 'Follow resolved reading direction in keyboard navigation'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Keyboard navigation follows live rendered direction with focused and browser regression evidence across web frameworks'
 created_at: '2026-10-22T23:08:03.173Z'
-updated_at: '2026-10-22T23:08:05.102Z'
+updated_at: '2026-10-23T01:38:34.106Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
