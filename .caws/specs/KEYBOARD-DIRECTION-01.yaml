@@ -61,3 +61,10 @@ evidence:
     command: "PLAYWRIGHT_BASE_URL=http://localhost:5190 pnpm exec playwright test e2e/keyboard-direction.spec.ts --project=chromium --workers=1"
     exit_code: 0
     commit_sha: "3b6297be88689c1f5327de6328632c6c85a1aa0f"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Candidate 3b6297be8: governed rail, root tests (5169), framework suites, lint, typecheck:all, docs claims/links, CAWS gates, and committed generated-output check all exited 0. Retained raw logs under .caws/state/release-evidence/KEYBOARD-DIRECTION-01/. Review feedback independently grounded against source and raw checks; no broader accessibility or package readiness claim."
+    recorded_at: "2026-10-23T01:31:33.044Z"
+    command: "pnpm run governed:rail && pnpm test && pnpm run test:frameworks && pnpm run lint && pnpm run typecheck:all"
+    exit_code: 0
+    commit_sha: "3b6297be88689c1f5327de6328632c6c85a1aa0f"
