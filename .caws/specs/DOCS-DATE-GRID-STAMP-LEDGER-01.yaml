@@ -1,9 +1,11 @@
 id: DOCS-DATE-GRID-STAMP-LEDGER-01
 title: 'Ledger the stale date-grid.md freshness stamp while its refresh waits in npm-release-payload'
 mode: chore
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'date-grid.md stale stamp d77f14dac ledgered so main passes docs:check-claims; the doc refresh stays with npm-release-payload and the ratchet forces the entry out when it lands'
 created_at: '2026-10-23T05:58:05.554Z'
-updated_at: '2026-10-23T05:58:35.779Z'
+updated_at: '2026-10-23T06:04:37.464Z'
 created_by_session: '3b29f352-c5e6-433c-901e-4323cd0c34c4'
 blast_radius:
   modules:
