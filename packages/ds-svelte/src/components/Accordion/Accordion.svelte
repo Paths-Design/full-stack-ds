@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type AccordionType = "single" | "multiple";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { toggleInteractionItem } from "../../primitives/interaction.js";
@@ -10,8 +16,6 @@ import { useAccordion, provideAccordionContext } from "./useAccordion.svelte.js"
 
 // @generated:start types
 let _accordionIdCounter = 0;
-
-type AccordionType = "single" | "multiple";
 // @generated:end
 
 // @custom:start types

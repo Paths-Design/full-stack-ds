@@ -91,6 +91,7 @@
     "typecheck:vue": "pnpm --filter @full-stack-ds/vue run typecheck",
     "typecheck:angular": "pnpm --filter @full-stack-ds/angular run typecheck",
     "test:package:angular": "node scripts/angular-package-consumer/verify.mjs",
+    "test:package:types": "node --test scripts/normalize-package-declarations.test.mjs && node scripts/public-types-consumer/verify.mjs",
     "typecheck:lit": "pnpm --filter @full-stack-ds/lit run typecheck",
     "typecheck:svelte": "pnpm --filter @full-stack-ds/svelte run typecheck",
     "typecheck:react-native": "pnpm --filter @full-stack-ds/react-native run typecheck",

@@ -1,3 +1,11 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type ProgressVariant = "linear" | "circular";
+export type ProgressSize = "sm" | "md" | "lg";
+export type ProgressIntent = "info" | "success" | "warning" | "danger";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,9 +16,7 @@
 // @custom:end
 
 // @generated:start types
-type ProgressVariant = "linear" | "circular";
-type ProgressSize = "sm" | "md" | "lg";
-type ProgressIntent = "info" | "success" | "warning" | "danger";
+
 // @generated:end
 
 // @custom:start types

@@ -1,4 +1,5 @@
 export { default as Stack } from './Stack.svelte';
+export type StackProps = import('svelte').ComponentProps<typeof import('./Stack.svelte').default>;
 export {
   createControllableState,
   createAnchorToggle,

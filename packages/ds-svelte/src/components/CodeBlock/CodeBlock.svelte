@@ -1,3 +1,11 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type CodeBlockLanguage = "bash" | "css" | "html" | "javascript" | "json" | "jsx" | "markdown" | "plaintext" | "svelte" | "tsx" | "typescript" | "vue";
+export type CodeBlockTokenType = "comment" | "definition" | "keyword" | "plain" | "property" | "punctuation" | "static" | "string" | "tag";
+export type CodeBlockToken = { kind: CodeBlockTokenType; text: string };
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { prepareHighlightSource } from "../../primitives/highlight/tokenize.js";
@@ -10,9 +18,7 @@ import CodeBlockTokenPart from "./CodeBlockToken.svelte";
 // @custom:end
 
 // @generated:start types
-type CodeBlockLanguage = "bash" | "css" | "html" | "javascript" | "json" | "jsx" | "markdown" | "plaintext" | "svelte" | "tsx" | "typescript" | "vue";
-type CodeBlockTokenType = "comment" | "definition" | "keyword" | "plain" | "property" | "punctuation" | "static" | "string" | "tag";
-type CodeBlockToken = { kind: CodeBlockTokenType; text: string };
+
 // @generated:end
 
 // @custom:start types

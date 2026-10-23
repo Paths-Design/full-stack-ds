@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type RadioGroupOption = { value: string; label: string; disabled?: boolean; description?: string };
+export type RadioGroupOrientation = "vertical" | "horizontal";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useRadioGroup } from "./useRadioGroup.svelte.js";
@@ -8,8 +15,7 @@ import { useRadioGroup } from "./useRadioGroup.svelte.js";
 // @custom:end
 
 // @generated:start types
-type RadioGroupOption = { value: string; label: string; disabled?: boolean; description?: string };
-type RadioGroupOrientation = "vertical" | "horizontal";
+
 // @generated:end
 
 // @custom:start types

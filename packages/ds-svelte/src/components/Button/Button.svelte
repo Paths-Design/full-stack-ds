@@ -1,3 +1,11 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type ButtonSize = "small" | "medium" | "large";
+export type ButtonVariant = "primary" | "secondary" | "tertiary" | "ghost" | "destructive" | "outline";
+export type ButtonType = "button" | "submit" | "reset";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import Spinner from "../Spinner/Spinner.svelte";
@@ -8,9 +16,7 @@ import Spinner from "../Spinner/Spinner.svelte";
 // @custom:end
 
 // @generated:start types
-type ButtonSize = "small" | "medium" | "large";
-type ButtonVariant = "primary" | "secondary" | "tertiary" | "ghost" | "destructive" | "outline";
-type ButtonType = "button" | "submit" | "reset";
+
 // @generated:end
 
 // @custom:start types

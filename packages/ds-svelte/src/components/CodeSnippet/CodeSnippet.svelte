@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type CodeSnippetElement = "code" | "kbd" | "samp";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,7 +14,7 @@
 // @custom:end
 
 // @generated:start types
-type CodeSnippetElement = "code" | "kbd" | "samp";
+
 // @generated:end
 
 // @custom:start types

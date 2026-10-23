@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type CheckboxSize = "sm" | "md" | "lg";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useCheckbox } from "./useCheckbox.svelte.js";
@@ -9,7 +15,7 @@ import { useFieldAssociation } from "../../primitives/index.js";
 // @custom:end
 
 // @generated:start types
-type CheckboxSize = "sm" | "md" | "lg";
+
 // @generated:end
 
 // @custom:start types

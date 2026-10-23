@@ -84,7 +84,8 @@ function svelteTableAttrBinding(attr: NativeTableAttr): string {
       return `{${attr}}`; // id, style, scope
   }
 }
-import { emitNonReactTypeAliases, translateNonReactType } from "../../non-react-types.js";
+import { translateNonReactType } from "../../non-react-types.js";
+import { SVELTE_SKIP_PROPS, sveltePublicTypeAliases, emitSveltePublicTypeModule } from "./public-types.js";
 import { resolveComponentRefImports } from "../component-ref-imports.js";
 import { renderSections, type Section } from "../../preserve.js";
 import {
@@ -111,17 +112,16 @@ import {
   iconGlyphSizeHintsLiteral,
 } from "../icon-glyph.js";
 
-// Props the Svelte emitter handles natively: `class` via `class: className`
-// destructuring, `children` via `import('svelte').Snippet`, `style` passthrough.
-// `className` is the React convention for `class`; we translate it to `class`.
-const SVELTE_SKIP_PROPS = new Set(["class", "style", "className", "children"]);
-
 /**
  * Emit a Svelte 5 Single File Component for a `ComponentIR`. The script
  * block is partitioned into the same marker regions React and Vue use
  * (imports/types/props/classes/trailing); template is a simple block.
  */
 export function generateSvelteComponentSource(ir: ComponentIR): string {
+  return emitSveltePublicTypeModule(ir) + generateSvelteInstanceSource(ir);
+}
+
+function generateSvelteInstanceSource(ir: ComponentIR): string {
   if (ir.messages.length > 0 && (isDisclosureContainer(ir) || isCompoundStateContainer(ir))) {
     throw new Error(`[MESSAGE_UNLOWERED] ${ir.name}: compound-state Svelte components do not resolve contract messages`);
   }
@@ -151,7 +151,7 @@ export function generateSvelteComponentSource(ir: ComponentIR): string {
     blank(),
     ...(typesBody
       ? [
-          { kind: "generated" as const, id: "types", body: typesBody },
+          { kind: "generated" as const, id: "types", body: "" },
           blank(),
           { kind: "custom" as const, id: "types", body: "" },
           blank(),
@@ -179,10 +179,7 @@ export function generateSvelteComponentSource(ir: ComponentIR): string {
 // ---------------------------------------------------------------------------
 
 function generateTypeAliases(ir: ComponentIR): string {
-  return emitNonReactTypeAliases({
-    ...ir,
-    styledProps: ir.styledProps.filter((prop) => !SVELTE_SKIP_PROPS.has(prop.name)),
-  }, { keyword: "type" }).join("\n");
+  return sveltePublicTypeAliases(ir).join("\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -372,24 +369,7 @@ function generateSvelteCompoundStateRootSource(ir: ComponentIR): string {
   ].join("\n");
 
   // Type aliases for variant props
-  const typeLines: string[] = [];
-  const emittedTypes = new Set<string>();
-  for (const p of ir.styledProps) {
-    if (SVELTE_SKIP_PROPS.has(p.name)) continue;
-    for (const ref of p.typeRefs) {
-      if (emittedTypes.has(ref)) continue;
-      const def = ir.definedTypes[ref];
-      if (!def) continue;
-      if (def.kind === "union" && def.values) {
-        typeLines.push(`type ${ref} = ${def.values.map((v) => `"${v}"`).join(" | ")};`);
-        emittedTypes.add(ref);
-      } else if (def.kind === "alias" && def.alias) {
-        typeLines.push(`type ${ref} = ${svelteType(def.alias)};`);
-        emittedTypes.add(ref);
-      }
-    }
-  }
-  const typesBody = typeLines.join("\n");
+  const typesBody = generateTypeAliases(ir);
 
   // Props interface — styledProps already include value/defaultValue/onValueChange/idBase
   // for Tabs, so we just iterate them. Then add class, data-testid, children.
@@ -508,7 +488,7 @@ function generateSvelteCompoundStateRootSource(ir: ComponentIR): string {
     blank(),
     ...(typesBody
       ? [
-          { kind: "generated" as const, id: "types", body: typesBody },
+          { kind: "generated" as const, id: "types", body: "" },
           blank(),
           { kind: "custom" as const, id: "types", body: "" },
           blank(),
@@ -584,26 +564,6 @@ function generateSvelteDisclosureStateRootSource(ir: ComponentIR): string {
     `import { toggleInteractionItem } from "../../primitives/interaction.js";`,
     `import { use${name}, provide${name}Context } from "./use${name}.svelte.js";`,
   ].join("\n");
-
-  // Variant type aliases
-  const typeLines: string[] = [];
-  const emittedTypes = new Set<string>();
-  for (const p of ir.styledProps) {
-    if (SVELTE_SKIP_PROPS.has(p.name)) continue;
-    for (const ref of p.typeRefs) {
-      if (emittedTypes.has(ref)) continue;
-      const def = ir.definedTypes[ref];
-      if (!def) continue;
-      if (def.kind === "union" && def.values) {
-        typeLines.push(`type ${ref} = ${def.values.map((v) => `"${v}"`).join(" | ")};`);
-        emittedTypes.add(ref);
-      } else if (def.kind === "alias" && def.alias) {
-        typeLines.push(`type ${ref} = ${svelteType(def.alias)};`);
-        emittedTypes.add(ref);
-      }
-    }
-  }
-  const typesBody = typeLines.join("\n");
 
   const propsLines: string[] = [`interface Props {`];
   for (const p of ir.styledProps) {
@@ -727,7 +687,7 @@ function generateSvelteDisclosureStateRootSource(ir: ComponentIR): string {
     blank(),
     { kind: "custom", id: "imports", body: "" },
     blank(),
-    { kind: "generated", id: "types", body: [counterPrelude, typesBody].filter((s) => s.length > 0).join("\n\n") },
+    { kind: "generated", id: "types", body: counterPrelude },
     blank(),
     { kind: "custom", id: "types", body: "" },
     blank(),
@@ -1779,7 +1739,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     blank(),
     ...(typesBody
       ? [
-          { kind: "generated" as const, id: "types", body: typesBody },
+          { kind: "generated" as const, id: "types", body: "" },
           blank(),
           { kind: "custom" as const, id: "types", body: "" },
           blank(),

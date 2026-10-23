@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type PaginationPresentation = "indicators" | "pages";
+export type PaginationProgress = "none" | "elapsed";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { usePagination } from "./usePagination.svelte.js";
@@ -10,8 +17,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type PaginationPresentation = "indicators" | "pages";
-type PaginationProgress = "none" | "elapsed";
+
 // @generated:end
 
 // @custom:start types

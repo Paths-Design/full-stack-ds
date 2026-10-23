@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { canActivateInteraction } from "../../primitives/interaction.js";
@@ -11,7 +17,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
+
 // @generated:end
 
 // @custom:start types

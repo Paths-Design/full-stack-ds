@@ -36,6 +36,7 @@ export function generateLitBarrel(
     }
 
     lines.push(`export { ${exports.join(", ")} } from "./${n}/${n}.js";`);
+    lines.push(`export type * from "./${n}/${n}.js";`);
   }
   return lines.join("\n") + "\n";
 }

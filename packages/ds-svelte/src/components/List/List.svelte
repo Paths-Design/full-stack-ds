@@ -1,3 +1,13 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type ListElement = "ul" | "ol" | "dl";
+export type ListVariant = "default" | "unstyled" | "inline" | "divided" | "spaced";
+export type ListMarker = "default" | "none" | "disc" | "circle" | "square" | "decimal" | "alpha" | "roman";
+export type ListSpacing = "none" | "sm" | "md" | "lg";
+export type ListSize = "sm" | "md" | "lg";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,11 +18,7 @@
 // @custom:end
 
 // @generated:start types
-type ListElement = "ul" | "ol" | "dl";
-type ListVariant = "default" | "unstyled" | "inline" | "divided" | "spaced";
-type ListMarker = "default" | "none" | "disc" | "circle" | "square" | "decimal" | "alpha" | "roman";
-type ListSpacing = "none" | "sm" | "md" | "lg";
-type ListSize = "sm" | "md" | "lg";
+
 // @generated:end
 
 // @custom:start types

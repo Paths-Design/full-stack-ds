@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type AlertNoticeStatus = "info" | "success" | "warning" | "error";
+export type AlertNoticeLevel = "page" | "section" | "inline";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useFsdsMessages } from "../../primitives/messages.js";
@@ -8,8 +15,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type AlertNoticeStatus = "info" | "success" | "warning" | "error";
-type AlertNoticeLevel = "page" | "section" | "inline";
+
 // @generated:end
 
 // @custom:start types

@@ -1,3 +1,11 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type BadgeVariant = "default" | "status" | "counter" | "tag";
+export type BadgeIntent = "info" | "success" | "warning" | "danger";
+export type BadgeSize = "sm" | "md" | "lg";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,9 +16,7 @@
 // @custom:end
 
 // @generated:start types
-type BadgeVariant = "default" | "status" | "counter" | "tag";
-type BadgeIntent = "info" | "success" | "warning" | "danger";
-type BadgeSize = "sm" | "md" | "lg";
+
 // @generated:end
 
 // @custom:start types
