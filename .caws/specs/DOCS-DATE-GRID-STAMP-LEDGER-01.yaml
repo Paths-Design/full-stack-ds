@@ -30,3 +30,11 @@ rollback:
   - 'Remove the date-grid.md entry from doc-freshness-baseline.json; docs-claims-check then reports the stale stamp again'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "node scripts/docs-claims-check.mjs at merge 7b6dd5738: exit 0, 'OK — 90 marked claim(s) match derived values; 15 verified stamp(s) fresh or ledgered (6 ledgered stale)'; before the entry it exited 1 naming date-grid.md stale at d77f14dac vs 3b6297be"
+    recorded_at: "2026-10-23T06:03:46.485Z"
+    command: node scripts/docs-claims-check.mjs
+    exit_code: 0
+    commit_sha: "7b6dd5738f860e24d5a41ba5aaeb77e4baf7ad93"
