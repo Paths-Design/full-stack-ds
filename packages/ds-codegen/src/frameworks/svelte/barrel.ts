@@ -14,7 +14,7 @@ type ComponentExport = { name: string; file: string; stylesheet?: string };
 function exportedTypes(source: string): string[] {
   const names: string[] = [];
   for (const script of source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
-    if (!/\bmodule\b|\bcontext\s*=\s*["\']module["\']/.test(script[1])) continue;
+    if (!/\bmodule\b|\bcontext\s*=\s*["']module["']/.test(script[1])) continue;
     const parsed = ts.createSourceFile("component.ts", script[2], ts.ScriptTarget.Latest, true);
     for (const statement of parsed.statements) {
       if ((ts.isTypeAliasDeclaration(statement) || ts.isInterfaceDeclaration(statement))
