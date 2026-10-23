@@ -1,0 +1,32 @@
+id: DOCS-DATE-GRID-STAMP-LEDGER-01
+title: 'Ledger the stale date-grid.md freshness stamp while its refresh waits in npm-release-payload'
+mode: chore
+lifecycle_state: draft
+created_at: '2026-10-23T05:58:05.554Z'
+updated_at: '2026-10-23T05:58:05.554Z'
+created_by_session: '3b29f352-c5e6-433c-901e-4323cd0c34c4'
+blast_radius:
+  modules:
+    - 'docs freshness ledger (doc-freshness-baseline.json, read by scripts/docs-claims-check.mjs)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'doc-freshness-baseline.json'
+  out: []
+invariants:
+  - 'The entry names docs/architecture/date-grid.md at its exact stale stamp d77f14dac; the ledger records known staleness and is not a verification'
+  - 'docs/architecture/date-grid.md is not edited here: it is claimed by npm-release-payload, which already commits the refresh (restamp to 3b6297be8)'
+acceptance:
+  - id: A1
+    given: 'main, where docs/architecture/date-grid.md is stamped d77f14dac and its governed packages/ds-codegen/src/direction/direction.ts changed at 3b6297be8'
+    when: 'node scripts/docs-claims-check.mjs runs'
+    then: 'it exits 0 and reports no freshness violation for date-grid.md'
+  - id: A2
+    given: 'a ledgered stamp whose doc is later refreshed'
+    when: 'docs-claims-check runs'
+    then: 'it fails with ''ledgered as stale but now fresh'' until the entry is removed, so the entry cannot outlive the stale doc (pinned by scripts/docs-claims-freshness.selftest.mjs)'
+rollback:
+  - 'Remove the date-grid.md entry from doc-freshness-baseline.json; docs-claims-check then reports the stale stamp again'
+non_functional: {}
+contracts: []
