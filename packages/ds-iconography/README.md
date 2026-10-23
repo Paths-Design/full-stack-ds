@@ -2,6 +2,27 @@
 
 Governed icon contracts and projection emitters for Full Stack DS.
 
+## Package consumption
+
+```ts
+import { resolveIcon } from '@full-stack-ds/iconography';
+
+const glyph = resolveIcon('alarm', 24);
+// glyph?.viewBox and glyph?.paths describe the selected authored size.
+```
+
+The package exports runtime lookup and glyph types at its root, the schema at
+`@full-stack-ds/iconography/schema`, authored contracts under `icons/*`, and
+target assets under `generated/*`. Framework component packages consume this
+runtime directly; applications can use their `Icon` component. Generated React,
+Svelte, and React Native assets are source files for the consuming framework's
+compiler. Native target assets need their corresponding platform toolchain.
+
+## License
+
+MIT, copyright DesignPaths, LLC. Adapted Lucide and Feather icon geometry keeps
+its upstream notices in THIRD_PARTY_NOTICES.
+
 This package is the source surface for symbolic icon leaves such as
 `fsds.icon.placeholder`. Component contracts and usage-style composition trees
 should reference those leaves by stable name and size. Target emitters decide
@@ -39,15 +60,13 @@ The live route is:
    glyph catalogs from the same icon corpus.
 
 The standalone iconography build also emits React Native components. The
-generated `@full-stack-ds/react-native` Icon component does not currently
-consume them: its emitter clears the `iconGlyph` fact and produces an empty
-inner View. The Figma component descriptor carries Icon props and metadata but
-does not carry vector geometry. Those are named component-realization gaps, not
-evidence that the icon corpus failed to emit its standalone target artifacts.
+`@full-stack-ds/react-native` Icon component uses its glyph primitive to resolve
+this package's paths and render them through `react-native-svg`. The Figma
+component descriptor carries Icon props and metadata without vector geometry.
 
 This integration makes iconography an input to component realization without
 making either corpus a second authority over the other. See the
-[domain realization comparison](../../docs/domain-realization-comparison.md)
+[domain realization comparison](https://github.com/Paths-Design/full-stack-ds/blob/main/docs/domain-realization-comparison.md)
 for the repository-wide authority and residue map.
 
 ## Commands

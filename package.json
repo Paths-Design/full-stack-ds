@@ -130,7 +130,8 @@
     "test:unity": "node scripts/unity-tests.mjs",
     "generate:gpui": "pnpm run generate -- --target=gpui",
     "test:gpui": "node scripts/gpui-pilot.mjs",
-    "dev:gpui": "node scripts/gpui-gallery.mjs"
+    "dev:gpui": "node scripts/gpui-gallery.mjs",
+    "test:package:release": "node scripts/release-package-check/verify.mjs"
   },
   "dependencies": {
     "@full-stack-ds/angular": "workspace:*",
@@ -174,5 +175,7 @@
     "vite": "^8.0.8",
     "vitest": "^3.2.4",
     "vitest-axe": "^0.1.0"
-  }
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC"
 }

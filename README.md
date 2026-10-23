@@ -8,6 +8,23 @@ Start with [`docs/current-implementation-snapshot.md`](docs/current-implementati
 
 Use this README as the orientation surface. Use the snapshot as the freshness index. Use the detailed docs under `docs/` for doctrine and rationale.
 
+## Library packages and licensing
+
+Consumer entrypoints and style imports are described in the package READMEs:
+[React](packages/ds-react/README.md), [Vue](packages/ds-vue/README.md),
+[Svelte](packages/ds-svelte/README.md), [Angular](packages/ds-angular/README.md),
+[Lit](packages/ds-lit/README.md), [React Native](packages/ds-react-native/README.md),
+[tokens](packages/ds-tokens/README.md), and [iconography](packages/ds-iconography/README.md).
+
+Project code is [MIT licensed](LICENSE), copyright DesignPaths, LLC.
+[Third-party notices](THIRD_PARTY_NOTICES) preserve attribution and permissions
+for adapted icon geometry.
+
+`pnpm run test:package:release` packs the libraries through their build hooks,
+checks payloads and strict imports, and runs installed web consumers in Chromium.
+It uses pinned local peers and does not publish packages or establish complete
+component accessibility or native device compatibility.
+
 ## Token theming example
 
 Explore [token-theming](examples/token-theming/README.md): music and pinboard page compositions built from generated React components, with distinct scoped token themes and original artwork. Run `pnpm run dev:token-theming` to open the example, or `pnpm run build:token-theming` to build it. The example pressures appearance controls and local interactions; it does not establish pixel-identical reproduction or cross-framework app parity.

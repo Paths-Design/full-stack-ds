@@ -1,7 +1,6 @@
 {
   "name": "@full-stack-ds/react",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
   "description": "React implementation of Full Stack DS (Stack primitive + generated components)",
   "exports": {
@@ -15,8 +14,14 @@
       "import": "./dist/primitives/index.js",
       "require": "./dist/primitives/index.cjs"
     },
-    "./styles.css": "./dist/index.css",
-    "./primitives/styles.css": "./dist/primitives/index.css"
+    "./styles.css": {
+      "types": "./types/styles-css.d.ts",
+      "default": "./dist/index.css"
+    },
+    "./primitives/styles.css": {
+      "types": "./types/styles-css.d.ts",
+      "default": "./dist/primitives/index.css"
+    }
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -24,7 +29,8 @@
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepack": "pnpm run build"
   },
   "dependencies": {
     "@full-stack-ds/iconography": "workspace:*"
@@ -38,5 +44,26 @@
     "@types/react-dom": "^19.2.3",
     "tsup": "^8.3.0",
     "typescript": "^6.0.2"
-  }
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paths-Design/full-stack-ds.git",
+    "directory": "packages/ds-react"
+  },
+  "homepage": "https://github.com/Paths-Design/full-stack-ds/tree/main/packages/ds-react#readme",
+  "bugs": {
+    "url": "https://github.com/Paths-Design/full-stack-ds/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "types",
+    "LICENSE",
+    "README.md",
+    "THIRD_PARTY_NOTICES"
+  ]
 }

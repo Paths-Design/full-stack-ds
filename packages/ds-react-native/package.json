@@ -1,9 +1,8 @@
 {
   "name": "@full-stack-ds/react-native",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
-  "description": "React Native implementation of Full Stack DS (experimental opt-in target)",
+  "description": "React Native components, Stack primitive, and token provider for Full Stack DS.",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -37,5 +36,28 @@
   },
   "dependencies": {
     "@full-stack-ds/iconography": "workspace:*"
-  }
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paths-Design/full-stack-ds.git",
+    "directory": "packages/ds-react-native"
+  },
+  "homepage": "https://github.com/Paths-Design/full-stack-ds/tree/main/packages/ds-react-native#readme",
+  "bugs": {
+    "url": "https://github.com/Paths-Design/full-stack-ds/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "!src/**/__tests__/**",
+    "!src/**/*.test.*",
+    "!src/test-react-native*.tsx",
+    "LICENSE",
+    "README.md",
+    "THIRD_PARTY_NOTICES"
+  ]
 }
