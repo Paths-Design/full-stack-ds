@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: npm-release-payload
 created_at: '2026-10-23T02:38:16.212Z'
-updated_at: '2026-10-23T03:16:45.106Z'
+updated_at: '2026-10-23T03:18:31.419Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -58,6 +58,7 @@ scope:
     - packages/ds-iconography/emission-ledger.json
     - docs/architecture/date-grid.md
     - packages/ds-lit/tsup.config.ts
+    - packages/ds-react/tsup.config.ts
   out: []
 invariants:
   - 'MIT applies to DesignPaths LLC code while applicable Lucide ISC and Feather MIT notices remain intact in distributed payloads'
