@@ -46,3 +46,11 @@ contracts:
   - name: 'keyboard-direction'
     type: behavior
     path: 'packages/ds-codegen/src/direction/direction.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Candidate 3b6297be8: 8 focused direction tests pass, including mixed-case keywords, invalid inheritance, live CSS changes, shadow ancestry, non-DOM fallback, and six byte-identical runtime copies. Raw red and green logs retained in .caws/state/release-evidence/KEYBOARD-DIRECTION-01/."
+    recorded_at: "2026-10-23T01:31:07.995Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/direction/direction.test.ts
+    exit_code: 0
+    commit_sha: "3b6297be88689c1f5327de6328632c6c85a1aa0f"
