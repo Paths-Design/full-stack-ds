@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type SelectOption = { value: string; label: string; disabled?: boolean };
+export type SelectSize = "sm" | "md" | "lg";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useSelect } from "./useSelect.svelte.js";
@@ -9,8 +16,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type SelectOption = { value: string; label: string; disabled?: boolean };
-type SelectSize = "sm" | "md" | "lg";
+
 // @generated:end
 
 // @custom:start types

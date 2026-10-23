@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type DetailsVariant = "default" | "inline" | "compact";
+export type DetailsIcon = "left" | "right" | "none";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { canActivateInteraction } from "../../primitives/interaction.js";
@@ -10,8 +17,7 @@ import Icon from "../Icon/Icon.svelte";
 // @custom:end
 
 // @generated:start types
-type DetailsVariant = "default" | "inline" | "compact";
-type DetailsIcon = "left" | "right" | "none";
+
 // @generated:end
 
 // @custom:start types

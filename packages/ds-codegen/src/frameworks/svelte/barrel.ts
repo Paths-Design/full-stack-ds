@@ -7,30 +7,56 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import ts from "typescript";
 
-export function generateSvelteBarrel(
-  componentNames: string[],
-  componentsRoot?: string,
-): string {
-  const lines: string[] = [];
-  for (const name of [...componentNames].sort()) {
-    lines.push(
-      `export { default as ${name} } from "./${name}/${name}.svelte";`,
-    );
+type ComponentExport = { name: string; file: string; stylesheet?: string };
 
-    if (!componentsRoot) continue;
-    const dir = path.join(componentsRoot, name);
-    if (!fs.existsSync(dir)) continue;
-    const partFiles = fs
-      .readdirSync(dir)
-      .filter((f) => f.endsWith(".svelte") && f !== `${name}.svelte`)
-      .sort();
-    for (const f of partFiles) {
-      const partName = f.replace(/\.svelte$/, "");
-      lines.push(
-        `export { default as ${partName} } from "./${name}/${partName}.svelte";`,
-      );
+function exportedTypes(source: string): string[] {
+  const names: string[] = [];
+  for (const script of source.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)) {
+    if (!/\bmodule\b|\bcontext\s*=\s*["\']module["\']/.test(script[1])) continue;
+    const parsed = ts.createSourceFile("component.ts", script[2], ts.ScriptTarget.Latest, true);
+    for (const statement of parsed.statements) {
+      if ((ts.isTypeAliasDeclaration(statement) || ts.isInterfaceDeclaration(statement))
+        && statement.modifiers?.some(modifier => modifier.kind === ts.SyntaxKind.ExportKeyword)) {
+        names.push(statement.name.text);
+      }
     }
+  }
+  return names;
+}
+
+export function generateSvelteBarrel(componentNames: string[], componentsRoot?: string): string {
+  const entries: ComponentExport[] = [];
+  for (const name of [...componentNames].sort()) {
+    entries.push({ name, file: `./${name}/${name}.svelte` });
+    if (!componentsRoot) continue;
+    const directory = path.join(componentsRoot, name);
+    if (!fs.existsSync(directory)) continue;
+    for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".svelte") && file !== `${name}.svelte`).sort()) {
+      entries.push({ name: file.replace(/\.svelte$/, ""), file: `./${name}/${file}` });
+    }
+  }
+  const typeSources = new Map<string, string>();
+  if (componentsRoot) {
+    for (const entry of entries) {
+      const file = path.resolve(componentsRoot, entry.file);
+      if (!fs.existsSync(file)) continue;
+      for (const name of exportedTypes(fs.readFileSync(file, "utf8"))) {
+        const previous = typeSources.get(name);
+        if (previous && previous !== entry.file) throw new Error(`Ambiguous public type ${name}: ${previous}, ${entry.file}`);
+        typeSources.set(name, entry.file);
+      }
+    }
+  }
+  const lines: string[] = [];
+  for (const { name, file, stylesheet } of entries) {
+    if (stylesheet) lines.push(`import "${stylesheet}";`);
+    const typeSource = typeSources.get(name);
+    if (typeSource) {
+      lines.push(`import __Fsds${name} from "${file}";`, `export const ${name}: typeof import("${file}").default = __Fsds${name};`, `export type ${name} = import("${typeSource}").${name};`);
+    } else lines.push(`export { default as ${name} } from "${file}";`);
+    lines.push(`export type * from "${file}";`, `export type ${name}Props = import("svelte").ComponentProps<typeof import("${file}").default>;`);
   }
   return lines.join("\n") + "\n";
 }

@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type SpinnerSize = "xs" | "sm" | "md" | "lg";
+export type SpinnerThickness = "hairline" | "regular" | "bold";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,8 +15,7 @@
 // @custom:end
 
 // @generated:start types
-type SpinnerSize = "xs" | "sm" | "md" | "lg";
-type SpinnerThickness = "hairline" | "regular" | "bold";
+
 // @generated:end
 
 // @custom:start types

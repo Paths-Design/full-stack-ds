@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type ProfileFlagData = { id: string; username: string; full_name: string; first_name: string | null; last_name: string | null; avatar_url: string | null; bio: string; occupation: string | null; account_status: string; created_at: string; updated_at: string | null };
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,7 +14,7 @@
 // @custom:end
 
 // @generated:start types
-type ProfileFlagData = { id: string; username: string; full_name: string; first_name: string | null; last_name: string | null; avatar_url: string | null; bio: string; occupation: string | null; account_status: string; created_at: string; updated_at: string | null };
+
 // @generated:end
 
 // @custom:start types

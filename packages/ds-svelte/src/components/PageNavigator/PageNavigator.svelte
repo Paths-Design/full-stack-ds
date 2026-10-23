@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type PageNavigatorPresentation = "indicators" | "pages";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { usePageNavigator } from "./usePageNavigator.svelte.js";
@@ -14,7 +20,7 @@ import { useFsdsMessages, formatFsdsMessage } from "../../primitives/messages.js
 // @custom:end
 
 // @generated:start types
-type PageNavigatorPresentation = "indicators" | "pages";
+
 // @generated:end
 
 // @custom:start types

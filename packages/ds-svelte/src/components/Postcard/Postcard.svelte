@@ -1,3 +1,11 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type PostcardAuthor = { name: string; handle: string; avatar: string };
+export type PostcardStats = { likes: number; replies: number; reposts: number };
+export type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; aspectRatio: { width: number; height: number } };
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,9 +16,7 @@
 // @custom:end
 
 // @generated:start types
-type PostcardAuthor = { name: string; handle: string; avatar: string };
-type PostcardStats = { likes: number; replies: number; reposts: number };
-type PostcardEmbed = { type: 'image' | 'video' | 'audio'; url: string; aspectRatio: { width: number; height: number } };
+
 // @generated:end
 
 // @custom:start types

@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type OTPMode = "numeric" | "alphanumeric";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useOTP } from "./useOTP.svelte.js";
@@ -9,7 +15,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type OTPMode = "numeric" | "alphanumeric";
+
 // @generated:end
 
 // @custom:start types

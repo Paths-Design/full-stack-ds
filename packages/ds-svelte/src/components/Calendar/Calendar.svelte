@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type CalendarMode = "single" | "range";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useCalendar } from "./useCalendar.svelte.js";
@@ -10,7 +16,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type CalendarMode = "single" | "range";
+
 // @generated:end
 
 // @custom:start types

@@ -38,6 +38,7 @@ export function generateAngularBarrel(
     lines.push(
       `export { ${exports.join(", ")} } from "./${n}/${n}.component.js";`,
     );
+    lines.push(`export type * from "./${n}/${n}.component.js";`);
   }
   return lines.join("\n") + "\n";
 }

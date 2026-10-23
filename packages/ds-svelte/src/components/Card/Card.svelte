@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type CardDensity = "default" | "inset";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { Stack } from "../../primitives/index.js";
@@ -8,7 +14,7 @@ import { Stack } from "../../primitives/index.js";
 // @custom:end
 
 // @generated:start types
-type CardDensity = "default" | "inset";
+
 // @generated:end
 
 // @custom:start types

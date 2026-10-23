@@ -1,3 +1,14 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type TextElement = "p" | "span" | "div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type TextVariant = "display" | "headline" | "title" | "body" | "caption" | "overline" | "code";
+export type TextSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
+export type TextWeight = "light" | "normal" | "medium" | "semibold" | "bold";
+export type TextAlign = "left" | "center" | "right" | "justify";
+export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,12 +19,7 @@
 // @custom:end
 
 // @generated:start types
-type TextElement = "p" | "span" | "div" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-type TextVariant = "display" | "headline" | "title" | "body" | "caption" | "overline" | "code";
-type TextSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
-type TextWeight = "light" | "normal" | "medium" | "semibold" | "bold";
-type TextAlign = "left" | "center" | "right" | "justify";
-type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
+
 // @generated:end
 
 // @custom:start types
