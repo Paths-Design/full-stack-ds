@@ -74,3 +74,10 @@ evidence:
     command: "node --test scripts/normalize-package-declarations.test.mjs && node scripts/public-types-consumer/verify.mjs"
     exit_code: 0
     commit_sha: "4a2f09f3e621e78fc545b50c79c6a6d0c4681d6b"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Full root suite passed 5174 tests with one worker and unchanged deadlines; all framework suites passed. Timeout/RPC failure from the earlier concurrent run retained separately. Final lint-only regex escape correction was checked by focused tests, lint, typecheck:all and the full governed rail. Docs claims/links, scope gates and committed generated output check passed. Raw logs retained in .caws/state/release-evidence/PUBLIC-TYPES-NPM-01/. Independent review supplied no actionable defect; direct source, compiler and browser evidence governs these claims. Whole npm release remains unfinished."
+    recorded_at: "2026-10-23T02:33:48.902Z"
+    command: "pnpm test --maxWorkers=1 --minWorkers=1 && pnpm run test:frameworks; pnpm run lint && pnpm run typecheck:all && pnpm run governed:rail"
+    exit_code: 0
+    commit_sha: "4a2f09f3e621e78fc545b50c79c6a6d0c4681d6b"
