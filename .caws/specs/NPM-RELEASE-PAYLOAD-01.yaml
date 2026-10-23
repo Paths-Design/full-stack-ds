@@ -1,0 +1,90 @@
+id: NPM-RELEASE-PAYLOAD-01
+title: 'Prepare licensed and self-contained npm release payloads'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-23T02:38:16.212Z'
+updated_at: '2026-10-23T02:38:16.212Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Eight npm package manifests payloads legal notices and installed consumer verification'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'LICENSE'
+    - 'THIRD_PARTY_NOTICES'
+    - 'README.md'
+    - 'package.json'
+    - 'pnpm-lock.yaml'
+    - 'scripts/release-package-check'
+    - 'docs/specifications/governed-ci.md'
+    - 'packages/ds-react/package.json'
+    - 'packages/ds-react/README.md'
+    - 'packages/ds-react/LICENSE'
+    - 'packages/ds-react/THIRD_PARTY_NOTICES'
+    - 'packages/ds-vue/package.json'
+    - 'packages/ds-vue/README.md'
+    - 'packages/ds-vue/LICENSE'
+    - 'packages/ds-vue/THIRD_PARTY_NOTICES'
+    - 'packages/ds-svelte/package.json'
+    - 'packages/ds-svelte/README.md'
+    - 'packages/ds-svelte/LICENSE'
+    - 'packages/ds-svelte/THIRD_PARTY_NOTICES'
+    - 'packages/ds-angular/package.json'
+    - 'packages/ds-angular/README.md'
+    - 'packages/ds-angular/LICENSE'
+    - 'packages/ds-angular/THIRD_PARTY_NOTICES'
+    - 'packages/ds-lit/package.json'
+    - 'packages/ds-lit/README.md'
+    - 'packages/ds-lit/LICENSE'
+    - 'packages/ds-lit/THIRD_PARTY_NOTICES'
+    - 'packages/ds-react-native/package.json'
+    - 'packages/ds-react-native/README.md'
+    - 'packages/ds-react-native/LICENSE'
+    - 'packages/ds-react-native/THIRD_PARTY_NOTICES'
+    - 'packages/ds-tokens/package.json'
+    - 'packages/ds-tokens/README.md'
+    - 'packages/ds-tokens/LICENSE'
+    - 'packages/ds-iconography/package.json'
+    - 'packages/ds-iconography/README.md'
+    - 'packages/ds-iconography/LICENSE'
+    - 'packages/ds-iconography/THIRD_PARTY_NOTICES'
+    - 'packages/ds-react/styles-css.d.ts'
+    - 'packages/ds-svelte/styles-css.d.ts'
+    - 'packages/ds-tokens/styles-css.d.ts'
+    - 'packages/ds-svelte/scripts/prune-dist.mjs'
+  out: []
+invariants:
+  - 'MIT applies to DesignPaths LLC code while applicable Lucide ISC and Feather MIT notices remain intact in distributed payloads'
+  - 'Package versions and component runtime semantics remain unchanged; this slice does not publish or establish complete component release readiness'
+acceptance:
+  - id: A1
+    given: 'the repository and eight package tarballs'
+    when: 'licensing metadata is inspected'
+    then: 'the MIT license identifies DesignPaths LLC and required third-party notices accompany copied icon payloads'
+  - id: A2
+    given: 'freshly built and packed libraries'
+    when: 'the release payload checker inspects manifests exports and files'
+    then: 'all advertised targets exist and tests mocks scratch outputs and workspace dependency protocols are absent'
+  - id: A3
+    given: 'the eight tarballs installed outside workspace aliases'
+    when: 'strict CSS and JSON type imports and advertised runtime entrypoints are exercised'
+    then: 'supported exports resolve with intended positive and negative diagnostics'
+  - id: A4
+    given: 'installed web package consumers'
+    when: 'browser fixtures render library components icons and tokens'
+    then: 'each web framework renders and consumes packaged styles without source aliases or page errors'
+  - id: A5
+    given: 'the committed release packaging candidate'
+    when: 'focused payload falsifiers required regression gates and documentation checks execute'
+    then: 'checks pass and retained evidence distinguishes packaging qualification from remaining component and native runtime work'
+observability:
+  - 'Retain exact tarballs file inventories compiler diagnostics browser observations and command exit logs'
+rollback:
+  - 'Revert the packaging slice and rebuild tarballs'
+non_functional: {}
+contracts:
+  - name: 'release-payload'
+    type: contract-test
+    path: 'scripts/release-package-check'
