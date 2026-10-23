@@ -67,3 +67,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/frameworks/public-types.test.ts
     exit_code: 0
     commit_sha: "4a2f09f3e621e78fc545b50c79c6a6d0c4681d6b"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Thirty installed-tarball compiler cases passed: all web fixtures use strict checking with skipLibCheck false across Bundler and NodeNext ESM/CJS resolution; native source uses Bundler with dependency declarations excluded. Exact positive and negative diagnostics, tarballs, build/install logs retained in .caws/state/release-evidence/PUBLIC-TYPES-NPM-01/. Three normalizer tests prove consumer diagnostics, idempotence and refusal before writes. External peers use pinned local store; this is not fresh registry dependency or runtime CJS qualification."
+    recorded_at: "2026-10-23T02:33:30.627Z"
+    command: "node --test scripts/normalize-package-declarations.test.mjs && node scripts/public-types-consumer/verify.mjs"
+    exit_code: 0
+    commit_sha: "4a2f09f3e621e78fc545b50c79c6a6d0c4681d6b"
