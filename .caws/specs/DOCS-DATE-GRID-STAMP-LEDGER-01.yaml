@@ -38,3 +38,10 @@ evidence:
     command: node scripts/docs-claims-check.mjs
     exit_code: 0
     commit_sha: "7b6dd5738f860e24d5a41ba5aaeb77e4baf7ad93"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node scripts/docs-claims-freshness.selftest.mjs at 05469209b: exit 0; case 'obsolete-entry' exits 1 with 'ledgered as stale but now fresh ... remove the entry from doc-freshness-baseline.json'. For this entry: 3b6297be8 is the only commit since d77f14dac touching date-grid.md governs, so the npm-release-payload restamp to 3b6297be8 reads fresh and trips that case"
+    recorded_at: "2026-10-23T06:04:09.517Z"
+    command: node scripts/docs-claims-freshness.selftest.mjs
+    exit_code: 0
+    commit_sha: "05469209b"
