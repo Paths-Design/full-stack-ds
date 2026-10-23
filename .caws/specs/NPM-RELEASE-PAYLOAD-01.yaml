@@ -1,9 +1,10 @@
 id: NPM-RELEASE-PAYLOAD-01
 title: 'Prepare licensed and self-contained npm release payloads'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: npm-release-payload
 created_at: '2026-10-23T02:38:16.212Z'
-updated_at: '2026-10-23T02:38:16.212Z'
+updated_at: '2026-10-23T02:38:32.050Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
