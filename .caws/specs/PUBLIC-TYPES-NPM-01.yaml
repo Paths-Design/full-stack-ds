@@ -59,3 +59,11 @@ contracts:
   - name: 'public-type-consumer'
     type: contract-test
     path: 'scripts/public-types-consumer'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Public type exports preserve actual Vue and Svelte component props, compound requiredness, named aliases, and runtime component identity. Eight focused generator tests passed, including generic value/type collisions and ambiguity refusal. Browser verified Select and CodeBlock in Vue and Svelte with all four barrel component identities equal to direct imports; screenshots visually inspected. Raw tests and diagnostics retained in .caws/state/release-evidence/PUBLIC-TYPES-NPM-01/."
+    recorded_at: "2026-10-23T02:33:04.152Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/public-types.test.ts
+    exit_code: 0
+    commit_sha: "4a2f09f3e621e78fc545b50c79c6a6d0c4681d6b"
