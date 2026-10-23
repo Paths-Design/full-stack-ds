@@ -54,3 +54,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/direction/direction.test.ts
     exit_code: 0
     commit_sha: "3b6297be88689c1f5327de6328632c6c85a1aa0f"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Candidate 3b6297be8: Chromium 40 browser cases pass for Calendar in all five web frameworks and existing composed Tabs fixtures, including Lit shadow ancestry; exact focus/selection assertions under live direction changes. Corrected baseline red cases fail intended assertions. Raw logs retained in .caws/state/release-evidence/KEYBOARD-DIRECTION-01/. Calendar and composed Tabs screenshots visually inspected in browser context."
+    recorded_at: "2026-10-23T01:31:16.458Z"
+    command: "PLAYWRIGHT_BASE_URL=http://localhost:5190 pnpm exec playwright test e2e/keyboard-direction.spec.ts --project=chromium --workers=1"
+    exit_code: 0
+    commit_sha: "3b6297be88689c1f5327de6328632c6c85a1aa0f"
