@@ -3554,6 +3554,11 @@
           "$description": "Distance between focused element and ring.",
           "$value": "2px"
         },
+        "offsetInset": {
+          "$type": "dimension",
+          "$description": "Ring painted inside the focused element's own bounds. For focus targets that fill a clipping container (overflow-hidden items in cards, lists, tables) where an outset ring would be cut off by the ancestor.",
+          "$value": "-2px"
+        },
         "color": {
           "$type": "color",
           "$description": "Default focus ring color — theme-aware semantic border-focus (neutral blue). Intent-bearing surfaces should use focus.ring.intent.<intent> so the ring matches the control's intent instead of the generic blue.",
@@ -4318,6 +4323,24 @@
       }
     },
     "surface": {
+      "border": {
+        "subtle": {
+          "$type": "color",
+          "$description": "Container-edge hairline within a surface: separators and inset edges for surface-scoped structure families (Accordion items, Card regions, Table rows, Tabs). Components address the container role rather than a palette step, so brands retune every container edge in one place. Mirrors color.border.subtle by default; override here to retune container edges without moving the raw border scale.",
+          "$value": {
+            "light": "#d0d0d0",
+            "dark": "#474647"
+          }
+        },
+        "strong": {
+          "$type": "color",
+          "$description": "Container-edge border with more presence than subtle: outer container outlines and focus-adjacent edges where the edge itself carries structure. Same role vocabulary as surface.border.subtle — container edges, not control borders (controls use semantic.color.border.*).",
+          "$value": {
+            "light": "#b8b8b8",
+            "dark": "#5c5b5c"
+          }
+        }
+      },
       "size": {
         "padding-block": {
           "$type": "dimension",

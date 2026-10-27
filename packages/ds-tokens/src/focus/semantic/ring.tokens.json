@@ -12,6 +12,11 @@
         "$value": "{core.interaction.focus.ringOffset}",
         "$description": "Distance between focused element and ring."
       },
+      "offsetInset": {
+        "$type": "dimension",
+        "$value": "-2px",
+        "$description": "Ring painted inside the focused element's own bounds. For focus targets that fill a clipping container (overflow-hidden items in cards, lists, tables) where an outset ring would be cut off by the ancestor."
+      },
       "color": {
         "$type": "color",
         "$value": "{semantic.color.border.focus}",
