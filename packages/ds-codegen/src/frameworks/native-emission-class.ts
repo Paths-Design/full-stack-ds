@@ -1075,17 +1075,21 @@ export function orientationEnumValues(ir: ComponentIR): string[] | null {
     : null;
 }
 
+export function expansionChannels(ir: ComponentIR): NormalizedChannelIR[] {
+  return ir.behavior.normalizedChannels.filter(
+    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
+  );
+}
+
 /**
- * The component's expansion channel — the boolean channel whose name draws
- * on the conventional expansion vocabulary (`expanded`, `expand*`). The
- * prefix match is the historical discriminator (Truncate/ShowMore); it is
- * vocabulary, not component identity, and lives here so the expandable
+ * The component's expansion channel — the first boolean channel whose name
+ * draws on the conventional expansion vocabulary (`expanded`, `expand*`).
+ * The prefix match is the historical discriminator (Truncate/ShowMore); it
+ * is vocabulary, not component identity, and lives here so the expandable
  * gates stay honest about what they key on.
  *
  * source fact / applies by / removable when: section header.
  */
 export function expansionChannel(ir: ComponentIR): NormalizedChannelIR | undefined {
-  return ir.behavior.normalizedChannels.find(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  );
+  return expansionChannels(ir)[0];
 }

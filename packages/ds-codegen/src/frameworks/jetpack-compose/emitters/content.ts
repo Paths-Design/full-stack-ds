@@ -2,6 +2,7 @@
  * CODEGEN-NATIVE-EMITTER-SPLIT-01 (verbatim move; generated output
  * byte-identical). See component-source.ts for the dispatch order. */
 import { kotlinEnumName, kotlinParamName, packageSegment, pascalCase } from "../kotlin/naming.js";
+import { PROGRESS_SIZE_PREFIX, PROGRESS_THICKNESS_PREFIX, TYPOGRAPHY_SIZE_INFIX, TYPOGRAPHY_WEIGHT_PREFIX } from "../kotlin/grammar.js";
 import { collectVariantAxes, emitAxisSlotLookup, emitChromeModifier, emitChromeVals, emitThemeHeader, findLayeredSlot, findLayeredSlotAny, findTokenSlot, resolveStaticChrome, tokenConstName } from "../chrome.js";
 import { emitComponentReference, referenceImports, referenceNodes, referenceParameterLines } from "../references.js";
 import type { ComponentIR } from "../../../ir.js";
@@ -45,13 +46,13 @@ export function emitStaticContent(ir: ComponentIR): string {
   // (`text.size.*`) — the same slot evidence the parity ratchet keys on, so
   // this generalizes to any content root without component-name lore.
   const isTypographyRoot = ir.tokenScopes.some((s) =>
-    s.values.some((v) => v.name.includes("text.size.")),
+    s.values.some((v) => v.name.includes(TYPOGRAPHY_SIZE_INFIX)),
   );
   // The typography weight axis: the variant axis whose values name the
   // corpus's `text.typography.fontWeight.<value>` slots.
   const weightAxis = axes.find((a) =>
     ir.tokenScopes.some((s) =>
-      s.values.some((v) => v.name === `text.typography.fontWeight.${a.values[0]}`),
+      s.values.some((v) => v.name === `${TYPOGRAPHY_WEIGHT_PREFIX}${a.values[0]}`),
     ),
   );
   // A TextStyle is emitted only when both typography facts hold: text-size
@@ -740,10 +741,10 @@ export function emitProgressIndicator(ir: ComponentIR): string {
     // the spinner size/thickness slots (Spinner does; Progress's size axis
     // has no dim slots — the substrate default applies instead).
     const hasSpinnerSizeSlots = ir.tokenScopes.some((s) =>
-      s.values.some((v) => v.name.startsWith("spinner.size.")),
+      s.values.some((v) => v.name.startsWith(PROGRESS_SIZE_PREFIX)),
     );
     const hasSpinnerThicknessSlots = ir.tokenScopes.some((s) =>
-      s.values.some((v) => v.name.startsWith("spinner.thickness.")),
+      s.values.some((v) => v.name.startsWith(PROGRESS_THICKNESS_PREFIX)),
     );
     if (sizeAxis && hasSpinnerSizeSlots) {
       emitAxisSlotLookup(lines, "spinnerSize", "spinner.size", sizeAxis, "toFsdsDp");

@@ -45,6 +45,8 @@ import {
   countChildrenLeaves,
   dateGridChrome,
   domGlyph,
+  expansionChannel,
+  expansionChannels,
   hasConventionalProp,
   stringConventionalProp,
   isCountIteratedFieldGroup,
@@ -2999,9 +3001,7 @@ function emitSrcOrFallback(ir: ComponentIR, componentRef: string): string {
 function isExpandableContent(ir: ComponentIR): boolean {
   if (!ir.dom || ir.surface != null) return false;
   if (ir.dom.tag !== "div") return false;
-  const boolChannels = ir.behavior.normalizedChannels.filter(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  );
+  const boolChannels = expansionChannels(ir);
   if (boolChannels.length !== 1) return false;
   let childrenLeaves = 0;
   let hasInstance = false;
@@ -3018,9 +3018,7 @@ function isExpandableContent(ir: ComponentIR): boolean {
 function emitExpandableContent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
-  const channel = ir.behavior.normalizedChannels.find(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  )!;
+  const channel = expansionChannel(ir)!;
   const hasLines = hasConventionalProp(ir, "lines") || hasConventionalProp(ir, "maxLines");
   const linesProp = hasConventionalProp(ir, "lines") ? "lines" : "maxLines";
   const linesDefault =
