@@ -4,7 +4,7 @@ mode: refactor
 lifecycle_state: active
 worktree: codegen-native-emitter-split
 created_at: '2026-10-27T14:53:53.811Z'
-updated_at: '2026-10-27T14:54:03.260Z'
+updated_at: '2026-10-27T15:49:15.262Z'
 created_by_session: 'session-3b603c0e-24b0-437b-a099-83133ad16005'
 blast_radius:
   modules:
@@ -18,6 +18,8 @@ scope:
     - 'packages/ds-codegen/src/frameworks/swift/swiftui/component-source.ts'
     - 'packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts'
   out: []
+  support:
+    - packages/ds-codegen/src/frameworks/swift/swiftui/surface-emit.ts
 invariants:
   - 'Byte-identical output: the refactor changes emitter source structure only. pnpm run generate -- --target=all on a clean tree followed by git diff --exit-code over every generated tree must be empty.'
   - 'No new component-identity branching anywhere; name-keyed state-prop queries (disabled/invalid/decorative/orientation) are centralized exactly once in the shared native substrate with docs/codegen-authority.md classification headers; emitter modules consume the hoisted queries.'
