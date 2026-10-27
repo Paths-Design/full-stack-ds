@@ -67,3 +67,7 @@ evidence:
     status: pass
     evidence_ref: "cargo +1.94.1 build and cargo +1.94.1 test --manifest-path examples/operations-dashboard/gpui/Cargo.toml exit 0 with 16/16 tests (re-run by Lead on the committed tree); standalone crate path-deps full-stack-ds-gpui with gpui/gpui_platform pinned to the package's exact rev a38fc8c8de6e4010fadcfde7dd111d90dfd66845, Cargo.lock committed; Stat/Badge/Checkbox/Text/Divider/Switch/ToggleSwitch realized from package exports, all other regions hand-authored NOT FSDS per examples/operations-dashboard/gpui/README.md at 6e33cae44"
     recorded_at: "2026-10-27T03:33:13.278Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "All ten spec interactions realized as code paths in all three lanes (per-lane README coverage notes); consumer-API gaps recorded as findings 5-12 in examples/operations-dashboard/spec.md at e6f3b5b9c; examples/README.md status row and operations-dashboard/README.md Native-consumer-lanes section updated in the same commit; pnpm run test:examples:data-api 70/70 green in the slice worktree; zero packages/* bytes changed (merge 3689361e5 touches examples/** and .caws only)"
+    recorded_at: "2026-10-27T03:33:13.775Z"
