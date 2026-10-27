@@ -54,8 +54,8 @@ val accordionTokenScopes: ComponentTokenScopes = mapOf(
         "accordion.border.color" to ComponentTokenDefinition(
             name = "accordion.border.color",
             cssVar = "--fsds-accordion-border-color",
-            ref = "semantic.color.border.light",
-            fallback = "#b8b8b8",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
         ),
         "accordion.border.radius" to ComponentTokenDefinition(
             name = "accordion.border.radius",

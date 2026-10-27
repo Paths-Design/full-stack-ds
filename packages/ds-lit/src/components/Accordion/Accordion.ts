@@ -94,7 +94,7 @@ export class AccordionElement extends LitElement {
       --fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-accordion-border-color: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
       --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
@@ -103,12 +103,11 @@ export class AccordionElement extends LitElement {
       --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-      --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
       --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
       --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
     }
 
     @layer components.defaults {
@@ -126,15 +125,21 @@ export class AccordionElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-color: var(--fsds-accordion-design-root-border-color, var(--fsds-accordion-border-color, #b8b8b8));
       border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, 4px));
-      font-size: var(--fsds-accordion-design-root-typography-size, var(--fsds-accordion-text-size-content, 14px));
-      line-height: var(--fsds-accordion-design-root-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+    }
+
+    .accordion__content:not([hidden]) {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+
+    .accordion__content:not([hidden]) .accordion__contentInner {
+      padding-block-end: 0;
     }
 
     .accordion__item {
       background-color: var(--fsds-accordion-design-item-background-fill, transparent);
-      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #b8b8b8));
+      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #d0d0d0));
       border-style: var(--fsds-accordion-design-item-border-style, solid);
       border-width: var(--fsds-accordion-design-item-border-width, 1px);
       border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, 4px));
@@ -163,24 +168,23 @@ export class AccordionElement extends LitElement {
 
     .accordion__trigger:hover:not([aria-disabled="true"]) {
       background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, #f7f7f7));
-      color: var(--fsds-accordion-design-condition-c66924892931-foreground-color, var(--fsds-accordion-color-text-hover, #474647));
     }
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
       outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, -2px));
       outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 8px));
-      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 8px));
+      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 16px));
+      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 16px));
       align-items: center;
       justify-content: center;
-      transition: transform 200ms ease;
+      transition: transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard);
       color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, #727272));
     }
 
@@ -189,15 +193,32 @@ export class AccordionElement extends LitElement {
     }
 
     .accordion__content {
-      display: block;
+      display: grid;
       overflow: hidden;
+      grid-template-rows: 0fr;
+      opacity: var(--fsds-accordion-design-content-appearance-opacity, 0);
+      transition: grid-template-rows var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), opacity var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), display var(--fsds-semantic-motion-interaction-exit-duration) linear allow-discrete;
+    }
+
+    .accordion__content:not([hidden]) {
+      grid-template-rows: 1fr;
+      opacity: var(--fsds-accordion-design-content-open-appearance-opacity, 1);
+      transition: grid-template-rows var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), opacity var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), display var(--fsds-semantic-motion-interaction-enter-duration) linear allow-discrete;
     }
 
     .accordion__contentInner {
-      padding: var(--fsds-accordion-design-content-inner-spacing-padding, var(--fsds-accordion-spacing-padding-y, 8px));
+      min-height: 0;
+      overflow: hidden;
+      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-block-end: var(--fsds-accordion-design-content-inner-spacing-padding-block-end, 0);
+      transition: padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing);
       color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, #474647));
       font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, 14px));
       line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+    }
+
+    .accordion__content:not([hidden]) .accordion__contentInner {
+      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, 8px));
     }
 
     .accordion--disabled {
@@ -208,6 +229,29 @@ export class AccordionElement extends LitElement {
     .accordion__content[hidden]:not([hidden="until-found"]) {
       display: none !important;
     }
+    }
+
+    @layer components.defaults {
+    @starting-style {
+      .accordion__content:not([hidden]) {
+        grid-template-rows: 0fr;
+        opacity: 0;
+      }
+      .accordion__content:not([hidden]) .accordion__contentInner {
+        padding-block-end: 0;
+      }
+    }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .accordion__chevron,
+      .accordion__content,
+      .accordion__content:not([hidden]),
+      .accordion__contentInner {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -366,7 +410,7 @@ export class AccordionItemElement extends LitElement {
       --fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-accordion-border-color: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
       --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
@@ -375,12 +419,11 @@ export class AccordionItemElement extends LitElement {
       --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-      --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
       --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
       --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
     }
 
     @layer components.defaults {
@@ -398,15 +441,21 @@ export class AccordionItemElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-color: var(--fsds-accordion-design-root-border-color, var(--fsds-accordion-border-color, #b8b8b8));
       border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, 4px));
-      font-size: var(--fsds-accordion-design-root-typography-size, var(--fsds-accordion-text-size-content, 14px));
-      line-height: var(--fsds-accordion-design-root-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+    }
+
+    .accordion__content:not([hidden]) {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+
+    .accordion__content:not([hidden]) .accordion__contentInner {
+      padding-block-end: 0;
     }
 
     .accordion__item {
       background-color: var(--fsds-accordion-design-item-background-fill, transparent);
-      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #b8b8b8));
+      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #d0d0d0));
       border-style: var(--fsds-accordion-design-item-border-style, solid);
       border-width: var(--fsds-accordion-design-item-border-width, 1px);
       border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, 4px));
@@ -435,24 +484,23 @@ export class AccordionItemElement extends LitElement {
 
     .accordion__trigger:hover:not([aria-disabled="true"]) {
       background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, #f7f7f7));
-      color: var(--fsds-accordion-design-condition-c66924892931-foreground-color, var(--fsds-accordion-color-text-hover, #474647));
     }
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
       outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, -2px));
       outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 8px));
-      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 8px));
+      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 16px));
+      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 16px));
       align-items: center;
       justify-content: center;
-      transition: transform 200ms ease;
+      transition: transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard);
       color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, #727272));
     }
 
@@ -461,15 +509,32 @@ export class AccordionItemElement extends LitElement {
     }
 
     .accordion__content {
-      display: block;
+      display: grid;
       overflow: hidden;
+      grid-template-rows: 0fr;
+      opacity: var(--fsds-accordion-design-content-appearance-opacity, 0);
+      transition: grid-template-rows var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), opacity var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), display var(--fsds-semantic-motion-interaction-exit-duration) linear allow-discrete;
+    }
+
+    .accordion__content:not([hidden]) {
+      grid-template-rows: 1fr;
+      opacity: var(--fsds-accordion-design-content-open-appearance-opacity, 1);
+      transition: grid-template-rows var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), opacity var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), display var(--fsds-semantic-motion-interaction-enter-duration) linear allow-discrete;
     }
 
     .accordion__contentInner {
-      padding: var(--fsds-accordion-design-content-inner-spacing-padding, var(--fsds-accordion-spacing-padding-y, 8px));
+      min-height: 0;
+      overflow: hidden;
+      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-block-end: var(--fsds-accordion-design-content-inner-spacing-padding-block-end, 0);
+      transition: padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing);
       color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, #474647));
       font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, 14px));
       line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+    }
+
+    .accordion__content:not([hidden]) .accordion__contentInner {
+      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, 8px));
     }
 
     .accordion--disabled {
@@ -480,6 +545,29 @@ export class AccordionItemElement extends LitElement {
     .accordion__content[hidden]:not([hidden="until-found"]) {
       display: none !important;
     }
+    }
+
+    @layer components.defaults {
+    @starting-style {
+      .accordion__content:not([hidden]) {
+        grid-template-rows: 0fr;
+        opacity: 0;
+      }
+      .accordion__content:not([hidden]) .accordion__contentInner {
+        padding-block-end: 0;
+      }
+    }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .accordion__chevron,
+      .accordion__content,
+      .accordion__content:not([hidden]),
+      .accordion__contentInner {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -547,7 +635,7 @@ export class AccordionTriggerElement extends LitElement {
       --fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-accordion-border-color: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
       --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
@@ -556,12 +644,11 @@ export class AccordionTriggerElement extends LitElement {
       --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-      --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
       --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
       --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
     }
 
     @layer components.defaults {
@@ -579,15 +666,21 @@ export class AccordionTriggerElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-color: var(--fsds-accordion-design-root-border-color, var(--fsds-accordion-border-color, #b8b8b8));
       border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, 4px));
-      font-size: var(--fsds-accordion-design-root-typography-size, var(--fsds-accordion-text-size-content, 14px));
-      line-height: var(--fsds-accordion-design-root-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+    }
+
+    .accordion__content:not([hidden]) {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+
+    .accordion__content:not([hidden]) .accordion__contentInner {
+      padding-block-end: 0;
     }
 
     .accordion__item {
       background-color: var(--fsds-accordion-design-item-background-fill, transparent);
-      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #b8b8b8));
+      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #d0d0d0));
       border-style: var(--fsds-accordion-design-item-border-style, solid);
       border-width: var(--fsds-accordion-design-item-border-width, 1px);
       border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, 4px));
@@ -616,24 +709,23 @@ export class AccordionTriggerElement extends LitElement {
 
     .accordion__trigger:hover:not([aria-disabled="true"]) {
       background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, #f7f7f7));
-      color: var(--fsds-accordion-design-condition-c66924892931-foreground-color, var(--fsds-accordion-color-text-hover, #474647));
     }
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
       outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, -2px));
       outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 8px));
-      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 8px));
+      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 16px));
+      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 16px));
       align-items: center;
       justify-content: center;
-      transition: transform 200ms ease;
+      transition: transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard);
       color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, #727272));
     }
 
@@ -642,15 +734,32 @@ export class AccordionTriggerElement extends LitElement {
     }
 
     .accordion__content {
-      display: block;
+      display: grid;
       overflow: hidden;
+      grid-template-rows: 0fr;
+      opacity: var(--fsds-accordion-design-content-appearance-opacity, 0);
+      transition: grid-template-rows var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), opacity var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), display var(--fsds-semantic-motion-interaction-exit-duration) linear allow-discrete;
+    }
+
+    .accordion__content:not([hidden]) {
+      grid-template-rows: 1fr;
+      opacity: var(--fsds-accordion-design-content-open-appearance-opacity, 1);
+      transition: grid-template-rows var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), opacity var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), display var(--fsds-semantic-motion-interaction-enter-duration) linear allow-discrete;
     }
 
     .accordion__contentInner {
-      padding: var(--fsds-accordion-design-content-inner-spacing-padding, var(--fsds-accordion-spacing-padding-y, 8px));
+      min-height: 0;
+      overflow: hidden;
+      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-block-end: var(--fsds-accordion-design-content-inner-spacing-padding-block-end, 0);
+      transition: padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing);
       color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, #474647));
       font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, 14px));
       line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+    }
+
+    .accordion__content:not([hidden]) .accordion__contentInner {
+      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, 8px));
     }
 
     .accordion--disabled {
@@ -661,6 +770,29 @@ export class AccordionTriggerElement extends LitElement {
     .accordion__content[hidden]:not([hidden="until-found"]) {
       display: none !important;
     }
+    }
+
+    @layer components.defaults {
+    @starting-style {
+      .accordion__content:not([hidden]) {
+        grid-template-rows: 0fr;
+        opacity: 0;
+      }
+      .accordion__content:not([hidden]) .accordion__contentInner {
+        padding-block-end: 0;
+      }
+    }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .accordion__chevron,
+      .accordion__content,
+      .accordion__content:not([hidden]),
+      .accordion__contentInner {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -773,7 +905,7 @@ export class AccordionContentElement extends LitElement {
       --fsds-accordion-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
-      --fsds-accordion-border-color: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
       --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
       --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
@@ -782,12 +914,11 @@ export class AccordionContentElement extends LitElement {
       --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
       --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-      --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
+      --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
       --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
       --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+      --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
       --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-      --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
     }
 
     @layer components.defaults {
@@ -805,15 +936,21 @@ export class AccordionContentElement extends LitElement {
       max-height: var(--fsds-box-model-max-height, none);
       display: flex;
       flex-direction: column;
-      border-color: var(--fsds-accordion-design-root-border-color, var(--fsds-accordion-border-color, #b8b8b8));
       border-radius: var(--fsds-accordion-design-root-shape-radius, var(--fsds-accordion-border-radius, 4px));
-      font-size: var(--fsds-accordion-design-root-typography-size, var(--fsds-accordion-text-size-content, 14px));
-      line-height: var(--fsds-accordion-design-root-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+    }
+
+    .accordion__content:not([hidden]) {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+
+    .accordion__content:not([hidden]) .accordion__contentInner {
+      padding-block-end: 0;
     }
 
     .accordion__item {
       background-color: var(--fsds-accordion-design-item-background-fill, transparent);
-      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #b8b8b8));
+      border-color: var(--fsds-accordion-design-item-border-color, var(--fsds-accordion-border-color, #d0d0d0));
       border-style: var(--fsds-accordion-design-item-border-style, solid);
       border-width: var(--fsds-accordion-design-item-border-width, 1px);
       border-radius: var(--fsds-accordion-design-item-shape-radius, var(--fsds-accordion-border-radius, 4px));
@@ -842,24 +979,23 @@ export class AccordionContentElement extends LitElement {
 
     .accordion__trigger:hover:not([aria-disabled="true"]) {
       background-color: var(--fsds-accordion-design-condition-c66924892931-background-fill, var(--fsds-accordion-color-background-hover, #f7f7f7));
-      color: var(--fsds-accordion-design-condition-c66924892931-foreground-color, var(--fsds-accordion-color-text-hover, #474647));
     }
 
     .accordion__trigger:focus-visible:not([aria-disabled="true"]) {
       outline-width: var(--fsds-accordion-design-condition-92aee6ee190f-focus-width, var(--fsds-accordion-focus-width, 2px));
       outline-color: var(--fsds-accordion-design-condition-92aee6ee190f-focus-color, var(--fsds-accordion-focus-color, #0566fe));
-      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, 2px));
+      outline-offset: var(--fsds-accordion-design-condition-92aee6ee190f-focus-offset, var(--fsds-accordion-focus-offset, -2px));
       outline-style: var(--fsds-accordion-design-condition-92aee6ee190f-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
 
     .accordion__chevron {
       display: inline-flex;
       flex-shrink: 0;
-      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 8px));
-      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 8px));
+      width: var(--fsds-accordion-design-chevron-sizing-width, var(--fsds-accordion-icon-size, 16px));
+      height: var(--fsds-accordion-design-chevron-sizing-height, var(--fsds-accordion-icon-size, 16px));
       align-items: center;
       justify-content: center;
-      transition: transform 200ms ease;
+      transition: transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard);
       color: var(--fsds-accordion-design-chevron-foreground-color, var(--fsds-accordion-color-icon, #727272));
     }
 
@@ -868,15 +1004,32 @@ export class AccordionContentElement extends LitElement {
     }
 
     .accordion__content {
-      display: block;
+      display: grid;
       overflow: hidden;
+      grid-template-rows: 0fr;
+      opacity: var(--fsds-accordion-design-content-appearance-opacity, 0);
+      transition: grid-template-rows var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), opacity var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), display var(--fsds-semantic-motion-interaction-exit-duration) linear allow-discrete;
+    }
+
+    .accordion__content:not([hidden]) {
+      grid-template-rows: 1fr;
+      opacity: var(--fsds-accordion-design-content-open-appearance-opacity, 1);
+      transition: grid-template-rows var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), opacity var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), display var(--fsds-semantic-motion-interaction-enter-duration) linear allow-discrete;
     }
 
     .accordion__contentInner {
-      padding: var(--fsds-accordion-design-content-inner-spacing-padding, var(--fsds-accordion-spacing-padding-y, 8px));
+      min-height: 0;
+      overflow: hidden;
+      padding-inline: var(--fsds-accordion-design-content-inner-spacing-padding-inline, var(--fsds-accordion-spacing-padding-y, 8px));
+      padding-block-end: var(--fsds-accordion-design-content-inner-spacing-padding-block-end, 0);
+      transition: padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing);
       color: var(--fsds-accordion-design-content-inner-foreground-color, var(--fsds-accordion-color-text-secondary, #474647));
       font-size: var(--fsds-accordion-design-content-inner-typography-size, var(--fsds-accordion-text-size-content, 14px));
       line-height: var(--fsds-accordion-design-content-inner-typography-line-height, var(--fsds-accordion-text-line-height-content, 1.8));
+    }
+
+    .accordion__content:not([hidden]) .accordion__contentInner {
+      padding-block-end: var(--fsds-accordion-design-content-inner-open-spacing-padding-block-end, var(--fsds-accordion-spacing-padding-y, 8px));
     }
 
     .accordion--disabled {
@@ -887,6 +1040,29 @@ export class AccordionContentElement extends LitElement {
     .accordion__content[hidden]:not([hidden="until-found"]) {
       display: none !important;
     }
+    }
+
+    @layer components.defaults {
+    @starting-style {
+      .accordion__content:not([hidden]) {
+        grid-template-rows: 0fr;
+        opacity: 0;
+      }
+      .accordion__content:not([hidden]) .accordion__contentInner {
+        padding-block-end: 0;
+      }
+    }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .accordion__chevron,
+      .accordion__content,
+      .accordion__content:not([hidden]),
+      .accordion__contentInner {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
