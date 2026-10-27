@@ -83,3 +83,7 @@ evidence:
     status: pass
     evidence_ref: "live browser (CDP) on the merged byte state (identical content to ff9caf4ce): prefers-reduced-motion:reduce emulation yields computed transition-duration 1e-05s and collapse sampled 56.0px -> 0.0px with zero intermediate heights; without emulation expand sampled 31 intermediate heights 0 -> 56 and collapse 20 heights 56 -> 0 across rAF frames"
     recorded_at: "2026-10-27T02:28:31.020Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "canonical run of pnpm run e2e:rail exit 0 — 159 passed, 1 skipped (documented angular-select callback-capture exclusion) at the same byte state as ff9caf4ce; pnpm run test:frameworks exit 0 in worktree (vue 853, lit 618+2s, svelte 753, angular 639, RN 250)"
+    recorded_at: "2026-10-27T02:28:31.533Z"
