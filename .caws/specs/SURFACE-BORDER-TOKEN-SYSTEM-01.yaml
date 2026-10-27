@@ -1,9 +1,11 @@
 id: SURFACE-BORDER-TOKEN-SYSTEM-01
 title: 'Surface container-edge token system and Accordion contract-motion realization'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Surface border role tokens across 25 families, Accordion contract motion realized with inset focus ring and honest hover/presence, ledgered motion debt retired'
 created_at: '2026-10-27T02:10:02.034Z'
-updated_at: '2026-10-27T02:10:59.093Z'
+updated_at: '2026-10-27T02:28:49.975Z'
 created_by_session: 'session-fbc92f2d-ef0e-45a1-93d6-930c1c8f6700'
 blast_radius:
   modules:
