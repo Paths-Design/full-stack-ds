@@ -39,3 +39,8 @@ contracts:
   - name: 'compose-style-lowering'
     type: behavior
     path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Generated Status.kt resolves layeredSlot(\"status.color.border\")/\"status.size.border\" (1.dp fallback) and applies Modifier.border(borderWidth, borderColor, shape); StatusTokens.kt carries the border definitions (previously absent). Verified on the committed tree at f131ff1f8 + merge fe3425abb: 58/58 emitter tests (new FIX-COMPOSE-STATUS-BORDER-01 test pins Status lowering + Skeleton negative + token entries), drift = exactly the 8 border-declaring static components + Tokens files, zero cross-target drift (governed:rail Overall PASS exit 0, twice incl. post-merge-reconcile), compose parity ratchet 52/52 OK, generate:check 55/55, compose example lane clean compileKotlin + test exit 0"
+    recorded_at: "2026-10-27T16:07:04.973Z"
