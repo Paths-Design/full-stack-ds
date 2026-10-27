@@ -1,9 +1,11 @@
 id: FIX-COMPOSE-STATUS-BORDER-01
 title: 'Compose emitter: lower Status root borders on the static-content path'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Compose static-content path now lowers contract root borders (Status + 7 siblings); finding 13 resolved, RN twin gap ledgered for follow-up'
 created_at: '2026-10-27T15:34:39.123Z'
-updated_at: '2026-10-27T15:34:40.714Z'
+updated_at: '2026-10-27T16:07:05.769Z'
 created_by_session: 'session-4fc580e1-df32-41f6-8120-3ad4a9cd6f2d'
 blast_radius:
   modules:
