@@ -56,6 +56,13 @@ import {
   isStaticContent,
   isValueChannelControl,
   isViewportEdgeSurface,
+  expansionChannel,
+  consumerContentProp,
+  conventionalProp,
+  hasBooleanConventionalProp,
+  hasConventionalProp,
+  includesConventionalProp,
+  orientationEnumValues,
   radioGroupFacts,
   soleValueChannel,
 } from "../native-emission-class.js";
@@ -235,9 +242,9 @@ function emitProjectedChildrenAction(ir: ComponentIR): string {
   const sizeAxis = Object.keys(ir.variants).find((axis) => axis === "size");
 
   const prop = (propName: string) => ir.styledProps.find((p) => p.safeName === propName);
-  const hasDisabled = prop("disabled") !== undefined;
-  const hasLoading = prop("loading") !== undefined;
-  const hasAriaLabel = prop("ariaLabel") !== undefined;
+  const hasDisabled = hasConventionalProp(ir, "disabled");
+  const hasLoading = hasConventionalProp(ir, "loading");
+  const hasAriaLabel = hasConventionalProp(ir, "ariaLabel");
   const onClickProp = prop("onClick")?.safeName ?? "onClick";
 
   const size = sizeAxis ? axisFor(sizeAxis) : undefined;
@@ -1032,9 +1039,7 @@ function emitPropTextLeaf(ir: ComponentIR): string {
  *  whenTrue/whenFalse props the contract authors). */
 function isExpandableContent(ir: ComponentIR): boolean {
   if (!ir.dom || ir.surface != null) return false;
-  const expandChannel = ir.behavior.normalizedChannels.find(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  );
+  const expandChannel = expansionChannel(ir);
   if (!expandChannel) return false;
   let childrenLeaves = 0;
   const walk = (node: NonNullable<ComponentIR["dom"]>): void => {
@@ -1068,9 +1073,7 @@ function emitExpandableContent(ir: ComponentIR): string {
   const name = ir.name;
   const segment = packageSegment(name);
   const slots = resolveStaticChrome(ir);
-  const channel = ir.behavior.normalizedChannels.find(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  )!;
+  const channel = expansionChannel(ir)!;
   const valueProp = channel.valueProp;
   const defaultValueProp = channel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = channel.changeHandlerProp;
@@ -1285,9 +1288,9 @@ function emitProgressIndicator(ir: ComponentIR): string {
     .map((a) => `"variant_" + ${kotlinParamName(a.propName)}.name.lowercase()`)
     .join(", ");
   const isBar = ir.root?.effectiveRole === "progressbar";
-  const valueProp = ir.styledProps.find((p) => p.safeName === "value");
-  const labelProp = ir.styledProps.find((p) => p.safeName === "label");
-  const showValueProp = ir.styledProps.find((p) => p.safeName === "showValue");
+  const valueProp = conventionalProp(ir, "value");
+  const labelProp = conventionalProp(ir, "label");
+  const showValueProp = conventionalProp(ir, "showValue");
   const textColorSlot = findLayeredSlot(ir, ["root"], ".color.text.default");
   const trackColorSlot = findLayeredSlot(ir, ["root"], ".color.track.background");
   const fillSlot = findLayeredSlotAny(ir, ["root"], [".color.fill.info", ".color.fill"]);
@@ -1493,9 +1496,7 @@ function emitBooleanControl(ir: ComponentIR, channel: NormalizedChannelIR): stri
     }
   }
 
-  const hasDisabled = ir.styledProps.some(
-    (p) => p.name === "disabled" && p.propType.kind === "boolean",
-  );
+  const hasDisabled = hasBooleanConventionalProp(ir, "disabled");
   const handled = new Set<string>([
     valueProp,
     defaultValueProp,
@@ -1744,22 +1745,8 @@ function emitBooleanControl(ir: ComponentIR, channel: NormalizedChannelIR): stri
 function emitBareRuleLeaf(ir: ComponentIR): string {
   const name = ir.name;
   const segment = packageSegment(name);
-  const orientationProp = ir.styledProps.find(
-    (p) =>
-      p.name === "orientation" &&
-      typeof p.propType === "object" &&
-      "kind" in p.propType &&
-      p.propType.kind === "enum",
-  );
-  const orientationValues =
-    orientationProp && typeof orientationProp.propType === "object" &&
-    "kind" in orientationProp.propType &&
-    orientationProp.propType.kind === "enum"
-      ? (orientationProp.propType as { values: string[] }).values
-      : null;
-  const hasDecorative = ir.styledProps.some(
-    (p) => p.name === "decorative" && p.propType.kind === "boolean",
-  );
+  const orientationValues = orientationEnumValues(ir);
+  const hasDecorative = hasBooleanConventionalProp(ir, "decorative");
   const handled = new Set<string>(["orientation", "decorative", "thickness", "title"]);
   const stringProps = ir.styledProps.filter(
     (p) => p.propType.kind === "string" && !handled.has(p.name),
@@ -2375,9 +2362,7 @@ function emitTextControl(ir: ComponentIR, channel: NormalizedChannelIR): string 
   const defaultValueProp = channel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = channel.changeHandlerProp;
 
-  const hasDisabled = ir.styledProps.some(
-    (p) => p.name === "disabled" && p.propType.kind === "boolean",
-  );
+  const hasDisabled = hasBooleanConventionalProp(ir, "disabled");
   const handled = new Set<string>([
     valueProp,
     defaultValueProp,
@@ -2560,17 +2545,15 @@ function emitTextControl(ir: ComponentIR, channel: NormalizedChannelIR): string 
   lines.push(`        decorationBox = { innerField ->`);
   lines.push(`            Box {`);
   lines.push(`                innerField()`);
-  for (const prop of stringProps) {
-    if (prop.safeName === "placeholder") {
-      lines.push(`                if (resolved${pascalCase(valueProp)}.isEmpty() && !placeholder.isNullOrEmpty()) {`);
-      lines.push(`                    BasicText(`);
-      lines.push(`                        text = placeholder,`);
-      lines.push(
-        `                        style = TextStyle(fontSize = ${fontSizeSlot ? "fieldFontSize ?: 16.sp" : "16.sp"}, color = ${textSlot ? "(fieldText ?: Color.Unspecified).copy(alpha = 0.5f)" : "Color.Unspecified.copy(alpha = 0.5f)"}),`,
-      );
-      lines.push(`                    )`);
-      lines.push(`                }`);
-    }
+  if (includesConventionalProp(stringProps, "placeholder")) {
+    lines.push(`                if (resolved${pascalCase(valueProp)}.isEmpty() && !placeholder.isNullOrEmpty()) {`);
+    lines.push(`                    BasicText(`);
+    lines.push(`                        text = placeholder,`);
+    lines.push(
+      `                        style = TextStyle(fontSize = ${fontSizeSlot ? "fieldFontSize ?: 16.sp" : "16.sp"}, color = ${textSlot ? "(fieldText ?: Color.Unspecified).copy(alpha = 0.5f)" : "Color.Unspecified.copy(alpha = 0.5f)"}),`,
+    );
+    lines.push(`                    )`);
+    lines.push(`                }`);
   }
   lines.push(`            }`);
   lines.push(`        },`);
@@ -2616,10 +2599,8 @@ function emitDisclosureComponent(ir: ComponentIR): string {
   const valueProp = openChannel.valueProp;
   const defaultValueProp = openChannel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = openChannel.changeHandlerProp;
-  const hasSummary = ir.styledProps.some((p) => p.safeName === "summary");
-  const hasDisabled = ir.styledProps.some(
-    (p) => p.name === "disabled" && p.propType.kind === "boolean",
-  );
+  const hasSummary = hasConventionalProp(ir, "summary");
+  const hasDisabled = hasBooleanConventionalProp(ir, "disabled");
 
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary"]);
@@ -3062,7 +3043,7 @@ function emitTransferSurface(ir: ComponentIR): string {
   const valueProp = channel.valueProp;
   const defaultValueProp = channel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = channel.changeHandlerProp;
-  const hasAria = ir.styledProps.some((p) => p.safeName === "ariaLabel");
+  const hasAria = hasConventionalProp(ir, "ariaLabel");
   const listNode = (side: string): DomNodeIR | undefined => {
     const visit = (node: DomNodeIR): DomNodeIR | undefined =>
       node.attrs["data-side"] === side ? node : node.children.map(visit).find(Boolean);
@@ -3280,7 +3261,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
   const changeProp = channel.changeHandlerProp;
   const stateType = isUnion ? "List<String>" : "String";
   const defaultExpr = isUnion ? "emptyList()" : '""';
-  const hasAria = ir.styledProps.some((p) => p.safeName === "ariaLabel");
+  const hasAria = hasConventionalProp(ir, "ariaLabel");
 
   const partNames = new Set<string>();
   const walk = (node: NonNullable<ComponentIR["dom"]>): void => {
@@ -3512,12 +3493,10 @@ function emitCountFieldGroup(ir: ComponentIR): string {
   const valueProp = channel.valueProp;
   const defaultValueProp = channel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = channel.changeHandlerProp;
-  const lengthProp = ir.styledProps.find((p) => p.safeName === "length");
+  const lengthProp = conventionalProp(ir, "length");
   const defaultLength = lengthProp?.defaultExpr?.replace(/^["']|["']$/g, "") ?? "6";
-  const hasDisabled = ir.styledProps.some(
-    (p) => p.name === "disabled" && p.propType.kind === "boolean",
-  );
-  const hasAria = ir.styledProps.some((p) => p.safeName === "ariaLabel");
+  const hasDisabled = hasBooleanConventionalProp(ir, "disabled");
+  const hasAria = hasConventionalProp(ir, "ariaLabel");
 
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary", ".color.text.default"]);
@@ -3674,8 +3653,8 @@ function emitLabeledTextControl(ir: ComponentIR): string {
   const valueProp = channel.valueProp;
   const defaultValueProp = channel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = channel.changeHandlerProp;
-  const hasInvalid = ir.styledProps.some((p) => p.name === "invalid" && p.propType.kind === "boolean");
-  const hasDisabled = ir.styledProps.some((p) => p.name === "disabled" && p.propType.kind === "boolean");
+  const hasInvalid = hasBooleanConventionalProp(ir, "invalid");
+  const hasDisabled = hasBooleanConventionalProp(ir, "disabled");
 
   // Slot regions derive from the DOM parts that own a slot child.
   const slotParts: string[] = [];
@@ -3836,14 +3815,12 @@ function emitSelectionControl(ir: ComponentIR): string {
   const valueProp = unionChannel.valueProp;
   const defaultValueProp = unionChannel.defaultValueProp ?? `${valueProp}Default`;
   const changeProp = unionChannel.changeHandlerProp;
-  const hasMultiple = ir.styledProps.some((p) => p.safeName === "multiple");
-  const hasDisabled = ir.styledProps.some(
-    (p) => p.name === "disabled" && p.propType.kind === "boolean",
-  );
-  const hasPlaceholder = ir.styledProps.some((p) => p.safeName === "placeholder");
-  const hasAria = ir.styledProps.some((p) => p.safeName === "ariaLabel");
+  const hasMultiple = hasConventionalProp(ir, "multiple");
+  const hasDisabled = hasBooleanConventionalProp(ir, "disabled");
+  const hasPlaceholder = hasConventionalProp(ir, "placeholder");
+  const hasAria = hasConventionalProp(ir, "ariaLabel");
 
-  const optionsProp = ir.styledProps.find((p) => p.safeName === "options");
+  const optionsProp = conventionalProp(ir, "options");
   const optionsPropType = optionsProp?.propType as
     | { kind?: string; items?: { kind?: string; to?: string } }
     | undefined;
@@ -3942,7 +3919,7 @@ function emitSelectionControl(ir: ComponentIR): string {
   }
   if (hasDisabled) lines.push(`    enabled: Boolean = true,`);
   if (hasPlaceholder) {
-    const placeholderDefault = kotlinStringDefault(ir, ir.styledProps.find((p) => p.safeName === "placeholder"));
+    const placeholderDefault = kotlinStringDefault(ir, conventionalProp(ir, "placeholder"));
     lines.push(placeholderDefault !== null ? `    placeholder: String = ${placeholderDefault},` : `    placeholder: String? = null,`);
   }
   if (hasAria) lines.push(`    contentDescription: String? = null,`);
@@ -4247,7 +4224,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
     if (fallback) stringDefaults.set(prop.safeName, fallback);
     lines.push(fallback ? `    ${prop.safeName}: String = ${fallback},` : `    ${prop.safeName}: String? = null,`);
   }
-  if (ir.styledProps.some((p) => p.safeName === "previousDisabled")) {
+  if (hasConventionalProp(ir, "previousDisabled")) {
     lines.push(`    previousDisabled: Boolean = false,`);
   }
   for (const callback of ir.styledProps.filter((p) => p.type === "() => void")) {
@@ -5358,8 +5335,8 @@ function emitMediaLeaf(ir: ComponentIR): string {
   const radiusValues = (radii ? ir.variants![radii] : []) ?? [];
   const radiusProp = radii ? ir.styledProps.find((p) => p.safeName === radii) : undefined;
   const radiusEnum = `${name}Radius`;
-  const altProp = ir.styledProps.find((p) => p.safeName === "alt");
-  const showPlaceholderProp = ir.styledProps.find((p) => p.safeName === "showPlaceholder");
+  const altProp = conventionalProp(ir, "alt");
+  const showPlaceholderProp = conventionalProp(ir, "showPlaceholder");
 
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary"]);
@@ -5524,8 +5501,8 @@ function emitReferencedContentComposite(ir: ComponentIR): string {
   const sizeValues = (sizeAxis ? ir.variants![sizeAxis] : []) ?? [];
   const sizeProp = sizeAxis ? ir.styledProps.find((p) => p.safeName === sizeAxis) : undefined;
   const sizeEnum = `${name}${pascalCase(sizeAxis ?? "size")}`;
-  const initialsProp = ir.styledProps.find((p) => p.safeName === "initials");
-  const nameProp = ir.styledProps.find((p) => p.safeName === "name");
+  const initialsProp = conventionalProp(ir, "initials");
+  const nameProp = conventionalProp(ir, "name");
 
   const bgSlot = findLayeredSlotAny(ir, ["root"], [".color.background.default"]);
   const fgSlot = findLayeredSlotAny(ir, ["root"], [".color.foreground.primary"]);
@@ -5699,7 +5676,7 @@ function emitPassiveTreeItem(ir: ComponentIR): string {
   const textProps = headingChildren
     .map((child) => propNameOf(child.content as { kind?: string; prop?: string } | undefined))
     .filter((prop): prop is string => typeof prop === "string");
-  const iconProp = ir.styledProps.find((p) => p.safeName === "icon");
+  const iconProp = conventionalProp(ir, "icon");
   const axisProp = ir.styledProps.find((p) =>
     p.typeRefs?.some((ref) => (ir.definedTypes[ref]?.values?.length ?? 0) > 0),
   );
@@ -6140,7 +6117,7 @@ function emitReferencedActionComposite(ir: ComponentIR): string {
     ir.styledProps.find((p) => p.safeName === safeName && p.type === "boolean");
   const optionalString = (safeName: string) => ir.styledProps.find((p) => p.safeName === safeName);
   const disabledProp = optionalBoolean("disabled");
-  const contentProp = ir.styledProps.find((p) => p.safeName === "content" || p.type === "ReactNode");
+  const contentProp = consumerContentProp(ir);
 
   const lines: string[] = [];
   lines.push(`// @generated by ds-codegen from components/${name}/${name}.contract.json — do not edit by hand.`);
@@ -6340,11 +6317,11 @@ function emitCenteredSurface(ir: ComponentIR): string {
   // and lives in the shared native substrate (`surfaceStringChannel`).
   const stringChannel = surfaceStringChannel(ir);
   const placeholderProp = stringChannel
-    ? ir.styledProps.find((p) => p.safeName === "placeholder")
+    ? conventionalProp(ir, "placeholder")
     : undefined;
-  const hasEscape = ir.styledProps.some((p) => p.safeName === "closeOnEscape");
-  const hasBackdrop = ir.styledProps.some((p) => p.safeName === "closeOnBackdropClick");
-  const hasAriaLabel = ir.styledProps.some((p) => p.safeName === "ariaLabel");
+  const hasEscape = hasConventionalProp(ir, "closeOnEscape");
+  const hasBackdrop = hasConventionalProp(ir, "closeOnBackdropClick");
+  const hasAriaLabel = hasConventionalProp(ir, "ariaLabel");
 
   // Chrome grammar: default-scope suffixes first (Dialog), then the
   // part-scoped grammar later surface contracts use (`command.color.background`).
@@ -6588,8 +6565,8 @@ function emitViewportEdgeSurface(ir: ComponentIR): string {
     ?.placementProp;
   const autoDismissProp = (ir.surface?.timing as { autoDismissProp?: string } | undefined)
     ?.autoDismissProp;
-  const hasEscape = ir.styledProps.some((p) => p.safeName === "closeOnEscape");
-  const hasAriaLabel = ir.styledProps.some((p) => p.safeName === "ariaLabel");
+  const hasEscape = hasConventionalProp(ir, "closeOnEscape");
+  const hasAriaLabel = hasConventionalProp(ir, "ariaLabel");
 
   let sideEnumName: string | null = null;
   let sideValues: string[] = [];
@@ -6910,9 +6887,7 @@ function emitNativeToggleCollapse(
     }
   }
 
-  const hasDisabled = ir.styledProps.some(
-    (p) => p.name === "disabled" && p.propType.kind === "boolean",
-  );
+  const hasDisabled = hasBooleanConventionalProp(ir, "disabled");
   const handled = new Set<string>([
     valueProp,
     defaultValueProp,
