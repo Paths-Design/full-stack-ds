@@ -2,17 +2,21 @@
 
 A consumer-app proving surface at the **assembly** layer. The authority for this
 app shape is [`spec.md`](./spec.md); this README documents the lane-local
-**data / API layer** and the first framework lane (**React**).
+**data / API layer**, the first web lane (**React**), and the three **native
+consumer lanes** (**Swift**, **Compose**, **GPUI**).
 
 > Status: **data/API scaffold landed; React lane builds, typechecks, and renders
-> in a browser (the seam is isomorphic); Vue/Svelte/Angular/Lit lanes not yet
-> implemented.** The `react/` folder is a real Vite + React app composing the
+> in a browser (the seam is isomorphic); three native consumer lanes (`swift/`,
+> `compose/`, `gpui/`) compile with green seam-test suites; Vue/Svelte/Angular/
+> Lit lanes not yet implemented.** The `react/` folder is a real Vite + React app composing the
 > dashboard through public `@full-stack-ds/react` exports and the app-local API
 > barrel. The data/API seam loads fixtures as bundler modules, so it runs
 > unchanged under Node (Vitest) and in the browser (Vite) — the lane renders with
 > the queue/summary/detail regions populated from the API (see Findings → finding
 > 3, resolved). The `vue/`, `svelte/`, `angular/`, `lit/` folders hold only
-> `src/.gitkeep` placeholders.
+> `src/.gitkeep` placeholders. The native lanes are compile + seam-test consumer
+> evidence over the generated native packages — see "Native consumer lanes"
+> below; each owns its own fixture copies and language-native seam port.
 
 ## No backend
 
@@ -195,6 +199,45 @@ assembling the lane, **not** silently worked around:
    declarations. The previous `node` types entry (and `@types/node`) was a
    consequence of the now-fixed node-only adapter and is retractable, though that
    cleanup is not part of this slice.
+
+## Native consumer lanes (`swift/`, `compose/`, `gpui/`)
+
+Three native lanes realize the same spec against the repo's generated native
+packages, each consuming **only that package's public exports** through the
+boundary its ecosystem provides (SwiftPM path dependency, Gradle composite-build
+substitution, Cargo path dependency), and each porting the data/API seam into
+its own language: lane-owned verbatim fixture copies, an adapter as the only
+fixture-shape reader, and a typed async-equivalent API with the same filter
+semantics, error codes (`LOAD_FAILED` / `NOT_FOUND` / `ALREADY_RESOLVED`),
+fixed latency, and explicit failure flag as the TypeScript seam above.
+
+| Lane | Package boundary | Gate (must exit 0) | Seam tests | Run (manual visual) |
+|---|---|---|---|---|
+| `swift/` | `import DsSwiftUI` via `.package(path: "../../../packages/ds-swiftui")` | `swift build --package-path examples/operations-dashboard/swift` | 18 (XCTest) | `swift run --package-path examples/operations-dashboard/swift` |
+| `compose/` | `com.fullstackds.components.*` via `includeBuild("../../../packages/ds-jetpack-compose")` | `./gradlew compileKotlin` (from the lane folder) | 18 (kotlin.test) | `./gradlew run` |
+| `gpui/` | `full_stack_ds_gpui` via Cargo path dep (7-component allowlist; zed renderer pinned to the package's exact rev) | `cargo build --manifest-path examples/operations-dashboard/gpui/Cargo.toml` | 16 (cargo test) | `cargo run --manifest-path examples/operations-dashboard/gpui/Cargo.toml` (macOS) |
+
+All three implement the spec's ten interaction requirements as real code paths
+(live filter narrowing with summary recompute, multi-axis intersection,
+clear-filters restore, selection-driven detail, timeline disclosure, assign
+Sheet, resolve-confirm Dialog with removal + selection clear + Toast, distinct
+empty state, simulated load failure + retry, overlay dismissal through the
+components' default channels). Each lane marks every region its package does not
+cover `NOT FSDS` in source and carries a partial-realization ledger in its own
+README; the consumer-API gaps all three surfaced are recorded in
+[`spec.md`](./spec.md) → findings 5–12 (table anatomy, Table selection across
+all four lanes, native Skeleton placeholders, native Toast posture/variant,
+Swift overlay dismissal posture, the gpui allowlist boundary, and the Compose
+Field/Text parity counterpoint to React finding 1).
+
+**Non-claims for the native lanes.** They are compile + seam-test consumer
+evidence — the native analog of the React lane's build/typecheck rung. No lane
+runs in CI yet (wiring the three gates into CI is separate follow-up), no
+automated visual or interaction proof exists, `swift run` / `./gradlew run` /
+`cargo run` open windows for manual inspection only, and none of this is parity
+evidence across frameworks: the gpui lane in particular realizes most regions
+hand-authored (its target's allowlist is seven components by design). The
+gpui lane is macOS-only, mirroring the target's pinned posture.
 
 ## Intended future use
 
