@@ -48,3 +48,7 @@ evidence:
     status: pass
     evidence_ref: "All four lanes verified on the committed tree at ecea156b7 by the Lead: swift build + swift test exit 0 (26/26, incl. 8 ShellLayoutTests pinning tier thresholds/column invariants); ./gradlew clean compileKotlin test exit 0 (21/21 incl. FilterStateTest); cargo +1.94.1 build/test exit 0 (16/16); react typecheck + build exit 0 plus tmp/responsive-check.mjs — a 16-assertion headless Playwright run over the built lane asserting wide/medium/narrow collapse, filters-apply-while-collapsed, active-count badge, two-column medium grid, single-column narrow stack, and no horizontal overflow at the 720px floor (16/16 PASS)"
     recorded_at: "2026-10-27T15:28:02.315Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Responsive semantics pinned in examples/operations-dashboard/spec.md 'Responsive behavior' section before implementation (commit 64a55c084); cross-lane boundary findings recorded as findings 13-16 in the same findings log (compose Status border emitter gap, no breakpoint concept on native targets, no Table column-priority API on any target, per-lane realization notes); each lane README carries a Responsive behavior section + ledger rows; merge 481f650503cf4bb3366d78c7c3c2617fde0d2cae touches examples/** only"
+    recorded_at: "2026-10-27T15:28:02.841Z"
