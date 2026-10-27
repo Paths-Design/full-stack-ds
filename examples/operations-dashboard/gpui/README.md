@@ -59,9 +59,41 @@ Swift settings lanes:
 | Toast region | hand-authored bottom-right stack with per-toast dismiss | NOT FSDS — no `Toast` on the target |
 | Detail pane (title, description, meta, disclosure, action row) | hybrid: FSDS `Text` title + `Badge` status; hand-authored disclosure, meta, actions | mixed (marked in source) |
 | Page frame (three-pane layout, spacing) | plain gpui flex layout | NOT FSDS — page-frame layout the target's allowlist does not claim |
+| Responsive tier thresholds (wide ≥1280 / medium 900–1279 / narrow <900) | app-computed from `window.viewport_size()` each frame (`Tier::from_viewport_width`) | NOT FSDS — no breakpoint concept exists on the gpui target (recorded finding); tier is derived, never persisted |
+| Responsive Filters toggle (medium/narrow) | hand-authored toggle button + FSDS `Badge` (variant `counter`) showing the active-filter count | mixed: toggle NOT FSDS (no Button); count Badge **FSDS** |
+| Inline filter disclosure (medium/narrow, expanded) | the wide-tier rail controls re-flowed as a wrapping panel above the queue | NOT FSDS — page-frame plumbing; the controls inside are the same FSDS/hand-authored surfaces as the rail |
 
 Every hand-authored region carries a `// NOT FSDS: <reason>` marker (or a
 `// FROM PACKAGE EXPORTS:` marker) in `src/dashboard.rs` / `src/text_input.rs`.
+
+## Responsive behavior
+
+The shell implements the spec's pinned tiers (`spec.md` → "Responsive
+behavior"), measured on the window content width via `window.viewport_size()`
+during render:
+
+- **Wide (≥ 1280px)** — the base layout: header band; filter rail (248px) +
+  queue + detail (380px) in one row.
+- **Medium (900–1279px)** — two regions in the row (queue + detail at 340px);
+  the filter rail collapses behind a persistent **Filters** toggle whose FSDS
+  counter Badge shows the number of active filter constraints. Expanding
+  reveals the same filter controls as an inline wrapping disclosure **above
+  the queue**. While collapsed, filters keep applying, and collapsing never
+  clears filter state.
+- **Narrow (< 900px)** — single column in the spec's pinned order: header
+  band → Filters toggle + collapsed-by-default disclosure → queue → detail as
+  a stacked full-width section **below** the queue (a visible capped-height
+  scrolling section with internal scroll — not a modal).
+
+Cross-tier invariants: the window works down to **720 × 520** with nothing
+clipped or unreachable (header rows and summary tiles wrap; the queue list and
+narrow-tier detail scroll internally); row cells wrap or ellipsis-truncate —
+the lane introduces **no horizontal scrolling**; **no queue column is ever
+dropped** — column widths compress per tier instead (no column-priority
+surface exists on any target to do visibility); and all ten interaction
+semantics are tier-independent (the tier is a pure function of state +
+viewport, so filtering, selection, overlays, and pending states behave
+identically at every tier).
 
 ## Data / API seam (lane-local port)
 
@@ -176,6 +208,25 @@ graph). `Cargo.lock` is committed after a successful resolve, mirroring
    row overflow menu (not implemented; would require a Menu/Popover surface
    that does not exist), pagination and sortable headers (not implemented;
    no Table to own them). All recorded as residuals, not silently dropped.
+9. **Breakpoints.** surface: *responsive tiers* / the gpui target has no
+   breakpoint or responsive-layout concept — no media queries, no
+   container/breakpoint surface; the lane computes tiers itself from
+   `window.viewport_size()` during render (`Tier::from_viewport_width` at the
+   spec's 1280/900 thresholds), pure derived state, never persisted / ledger:
+   "responsive tier thresholds: NOT FSDS — app-computed viewport thresholds."
+10. **Column priority / table geometry.** surface: *narrow-queue columns* / no
+    Table or List exists, so there is no column-visibility/priority API to
+    lean on (the spec names column visibility as a package-level capability
+    no target exposes); the lane never drops a column — tier-aware widths
+    compress the grid and every cell truncates / ledger: "queue columns:
+    compressed per tier, never dropped; no column-priority surface on any
+    target."
+11. **Resize re-render.** surface: *tier transitions* / gpui re-renders on
+    window resize, so the tier re-derives per frame with no resize listener
+    API to consume; the only stored responsive state is the medium/narrow
+    collapse choice (`filters_open`), and collapsing never clears filter
+    state / ledger: "collapse choice app-owned; filters keep applying while
+    collapsed (spec invariant)."
 
 ## Interaction coverage (implemented code paths)
 
@@ -186,8 +237,12 @@ the detail pane, (5) timeline progressive disclosure, (6) assign sheet with
 cancel no-op / complete + toast, (7) resolve confirm dialog with cancel no-op
 / confirm-removes-clears-selection + toast, (8) distinct empty state, (9)
 simulated load failure + retry-with-flag-off, (10) overlay Escape/backdrop
-dismissal with a hand-authored focus trap. **None of these is pinned by an
-automated check** — the seam tests below are the only automated evidence.
+dismissal with a hand-authored focus trap. All ten behave identically at every
+responsive tier — the tier is a pure function of state + viewport (nothing new
+persisted; collapsing the filter disclosure never touches filter state), and
+the overlays are tier-independent by construction. **None of these is pinned
+by an automated check** — the seam tests below are the only automated
+evidence.
 
 ## Tests
 

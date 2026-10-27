@@ -87,3 +87,36 @@ struct FilterRail: View {
         )
     }
 }
+
+/// Collapsed-filters affordance for the medium/narrow responsive tiers: a
+/// persistent "Filters" toggle (FSDS button) paired with a Badge showing the
+/// count of active filters. Expanding reveals the same filter Card inline;
+/// while collapsed the filters keep applying — only their controls are
+/// hidden. (No breakpoint/disclosure container exists on the swiftui target;
+/// the collapse mechanism itself is app shell state — see the lane README
+/// findings.)
+struct FilterToggleRow: View {
+    @Bindable var controller: DashboardController
+    @Binding var expanded: Bool
+
+    var body: some View {
+        Stack(variant: .horizontal, spacing: 8) {
+            FsdsButton(
+                size: .small,
+                variant: .secondary,
+                accessibilityLabel: expanded ? "Hide filters" : "Show filters",
+                onTap: { expanded.toggle() }
+            ) {
+                Text(expanded ? "Hide filters" : "Filters")
+            }
+            // FSDS: counter Badge carries the active-filter count.
+            Badge(
+                variant: .counter,
+                intent: .info,
+                content: { Text("\(controller.filters.activeCount)") }
+            )
+            .accessibilityLabel("\(controller.filters.activeCount) active filters")
+            Spacer(minLength: 0)
+        }
+    }
+}

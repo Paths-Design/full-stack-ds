@@ -43,6 +43,16 @@ data class FilterState(
     /** Whether any filter is active (drives the Clear affordance). */
     val active: Boolean
         get() = search.isNotBlank() || environment.isNotEmpty() || severities.isNotEmpty()
+
+    /**
+     * Number of active filter values: one per severity checkbox plus one per
+     * non-empty search/environment axis. Drives the Filters toggle's count
+     * badge in the collapsed medium/narrow tiers (spec: "Responsive behavior").
+     */
+    val activeCount: Int
+        get() = (if (search.isNotBlank()) 1 else 0) +
+            (if (environment.isNotEmpty()) 1 else 0) +
+            severities.size
 }
 
 /** Load phase for the queue + summary. */
@@ -89,6 +99,14 @@ class DashboardController(
         private set
     var filters by mutableStateOf(FilterState())
     var failLoads by mutableStateOf(false)
+    /**
+     * Collapsed/expanded state of the filter panel in the medium/narrow tiers
+     * (spec: "Responsive behavior" — collapsed by default behind a persistent
+     * Filters toggle). Shell state: collapsing NEVER clears filter state;
+     * filters keep applying while collapsed. Unused at the wide tier (the
+     * rail is permanently visible there).
+     */
+    var filtersOpen by mutableStateOf(false)
     var assignOpen by mutableStateOf(false)
     var assignPending by mutableStateOf(false)
         private set

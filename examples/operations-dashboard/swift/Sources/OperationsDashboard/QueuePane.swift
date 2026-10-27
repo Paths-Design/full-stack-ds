@@ -2,6 +2,12 @@
 // FsdsTable surface plus FSDS loading / empty / error states, with the row
 // grid composed from plain SwiftUI — see the NOT FSDS markers and the lane
 // README findings for why.
+//
+// Responsive: the pane receives its available content width from the shell
+// and distributes it across the seven columns via `QueueColumns.widths(for:)`
+// — floors when space allows, proportional squeeze below them, never a
+// dropped column and never horizontal scrolling (spec cross-tier invariants).
+// The shell owns vertical scrolling; this pane renders at natural height.
 
 import SwiftUI
 import DsSwiftUI
@@ -9,6 +15,9 @@ import OperationsDashboardSeam
 
 struct QueuePane: View {
     @Bindable var controller: DashboardController
+    /// Content width available to the table row, derived by the shell
+    /// (`ShellLayout.queueContentWidth`) for the current tier.
+    let availableWidth: CGFloat
 
     var body: some View {
         switch controller.phase {
@@ -80,54 +89,45 @@ struct QueuePane: View {
         Card(header: {
             Text("Incident queue (\(controller.incidents.count))").font(.headline)
         }, content: {
-            ScrollView {
-                // FSDS: FsdsTable is the queue's root surface.
-                FsdsTable(content: {
-                    // NOT FSDS: FsdsTable exposes a single passive content
-                    // region on the SwiftUI target — no header/column/row
-                    // substructure and no row-selection channel (lane finding
-                    // 2, the Swift analog of the React lane's finding). The
-                    // row grid, header row, and the selected-row indication
-                    // are plain SwiftUI composed inside the FSDS surface.
-                    Stack(variant: .vertical, spacing: 0) {
-                        QueueHeaderRow()
-                        ForEach(controller.incidents) { incident in
-                            QueueRow(
-                                incident: incident,
-                                isSelected: incident.id == controller.selectedId
-                            ) {
-                                controller.selectIncident(incident.id)
-                            }
+            // FSDS: FsdsTable is the queue's root surface.
+            FsdsTable(content: {
+                // NOT FSDS: FsdsTable exposes a single passive content
+                // region on the SwiftUI target — no header/column/row
+                // substructure, no row-selection channel, and no
+                // column-priority/visibility API (lane findings 1–2, 8). The
+                // row grid, header row, the selected-row indication, and the
+                // tier-independent squeeze arithmetic are composed inside the
+                // FSDS surface from plain SwiftUI.
+                let columnWidths = QueueColumns.widths(for: availableWidth)
+                Stack(variant: .vertical, spacing: 0) {
+                    QueueHeaderRow(widths: columnWidths)
+                    ForEach(controller.incidents) { incident in
+                        QueueRow(
+                            incident: incident,
+                            widths: columnWidths,
+                            isSelected: incident.id == controller.selectedId
+                        ) {
+                            controller.selectIncident(incident.id)
                         }
                     }
-                })
-            }
+                }
+            })
         })
     }
 }
 
-/// Shared column metrics so the header row and data rows align.
-private enum QueueColumns {
-    static let id: CGFloat = 96
-    static let title: CGFloat = 232
-    static let service: CGFloat = 148
-    static let severity: CGFloat = 92
-    static let environment: CGFloat = 72
-    static let age: CGFloat = 56
-    static let assignee: CGFloat = 104
-    static let spacing: CGFloat = 12
-}
-
 private struct QueueHeaderRow: View {
+    let widths: [CGFloat]
+
     var body: some View {
         HStack(spacing: QueueColumns.spacing) {
-            headerCell("ID", width: QueueColumns.id)
-            headerCell("Title", width: QueueColumns.title)
-            headerCell("Service", width: QueueColumns.service)
-            headerCell("Severity", width: QueueColumns.severity)
-            headerCell("Env", width: QueueColumns.environment)
-            headerCell("Age", width: QueueColumns.age)
-            headerCell("Assignee", width: QueueColumns.assignee)
+            headerCell("ID", width: widths[0])
+            headerCell("Title", width: widths[1])
+            headerCell("Service", width: widths[2])
+            headerCell("Severity", width: widths[3])
+            headerCell("Env", width: widths[4])
+            headerCell("Age", width: widths[5])
+            headerCell("Assignee", width: widths[6])
         }
         .padding(.vertical, 6)
     }
@@ -136,12 +136,14 @@ private struct QueueHeaderRow: View {
         Text(title)
             .font(.caption.weight(.semibold))
             .foregroundStyle(.secondary)
+            .lineLimit(1)
             .frame(width: width, alignment: .leading)
     }
 }
 
 private struct QueueRow: View {
     let incident: Incident
+    let widths: [CGFloat]
     let isSelected: Bool
     let onSelect: () -> Void
 
@@ -159,23 +161,18 @@ private struct QueueRow: View {
                 onTap: onSelect
             ) {
                 Text(incident.id)
+                    .lineLimit(1)
             }
-            .frame(width: QueueColumns.id, alignment: .leading)
+            .frame(width: widths[0], alignment: .leading)
 
-            cell(incident.title, width: QueueColumns.title)
-            cell(incident.service, width: QueueColumns.service)
+            cell(incident.title, width: widths[1])
+            cell(incident.service, width: widths[2])
 
-            // FSDS: severity is a Badge.
-            Badge(
-                variant: .status,
-                intent: Format.severityBadgeIntent(incident.severity),
-                content: { Text(Format.severityLabel(incident.severity)) }
-            )
-            .frame(width: QueueColumns.severity, alignment: .leading)
+            severityCell(width: widths[3])
 
-            cell(incident.environment.rawValue, width: QueueColumns.environment)
-            cell(Format.age(of: incident.openedAt), width: QueueColumns.age)
-            cell(Format.assigneeText(incident.assignee), width: QueueColumns.assignee)
+            cell(incident.environment.rawValue, width: widths[4])
+            cell(Format.age(of: incident.openedAt), width: widths[5])
+            cell(Format.assigneeText(incident.assignee), width: widths[6])
         }
         .font(.callout)
         .padding(.vertical, 6)
@@ -193,9 +190,26 @@ private struct QueueRow: View {
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
+    /// FSDS severity Badge inside its column. The pill's label truncates
+    /// under squeeze pressure (the Badge has no intrinsic max-width channel,
+    /// so the cap is applied to its content text).
+    private func severityCell(width: CGFloat) -> some View {
+        Badge(
+            variant: .status,
+            intent: Format.severityBadgeIntent(incident.severity),
+            content: {
+                Text(Format.severityLabel(incident.severity))
+                    .lineLimit(1)
+                    .frame(maxWidth: max(0, width - 22), alignment: .leading)
+            }
+        )
+        .frame(width: width, alignment: .leading)
+    }
+
     private func cell(_ text: String, width: CGFloat) -> some View {
         Text(text)
-            .frame(width: width, alignment: .leading)
             .lineLimit(1)
+            .truncationMode(.tail)
+            .frame(width: width, alignment: .leading)
     }
 }

@@ -64,6 +64,33 @@ The UI imports only the `api` package; `domain` types flow through it.
 | Stack layout | Compose `Column`/`Row`/`Box` page frame | NOT FSDS — Stack primitive not ported to this target (same as settings lane) |
 | Density toggle (queue) | — | residual — `Table` exposes no density axis |
 | Row overflow menu | — | residual — no Menu/Popover-composed menu; not required by the ten interactions |
+| Responsive tiers (wide/medium/narrow) | app-computed `BoxWithConstraints` at the spec's 1280/900 breakpoints; three shell layouts | NOT FSDS — no breakpoint concept on the target (finding 7); page-frame plumbing the spec claims for the app |
+| Filters disclosure (medium/narrow) | persistent toggle = FSDS `Button` + FSDS `Badge`(counter, active-filter count); panel = `AnimatedVisibility` hosting the same FSDS filter `Card` | **FSDS** toggle/badge + NOT FSDS disclosure wrapper (plain-Compose shell) |
+| Header wrap at constrained widths | foundation `FlowRow` (page-frame arrangement only) | NOT FSDS — layout plumbing; no package behavior substituted |
+| Column squeeze at constrained widths | per-tier column model: fixed widths at wide, weighted columns at medium/narrow, `maxLines=1` + ellipsis | NOT FSDS — `Table` exposes no column-priority/visibility API (finding 8); no column dropped |
+
+## Responsive behavior
+
+Implemented per the spec's "Responsive behavior" section
+(EXAMPLES-OPS-DASH-RESPONSIVE-01). The tier is computed in-app from the window
+content width via `BoxWithConstraints` (`maxWidth`): **wide ≥ 1280** keeps the
+base three-pane row (300dp rail + queue + detail); **medium 900–1279** shows
+queue + detail with the filter rail collapsed behind a persistent **Filters**
+toggle (FSDS Button + FSDS Badge carrying the active-filter count; expanding
+reveals the same filter `Card` inline above the queue via `AnimatedVisibility`);
+**narrow < 900** stacks a single column in the spec's pinned order — header →
+filters (collapsed by default) → queue → detail as a full-width section below
+the queue in the scroll (not a modal).
+
+Cross-tier invariants: collapsing the filter panel never clears filter state
+(state lives in the controller, not the panel's visibility) and filters keep
+applying while collapsed; the ten interaction semantics are tier-independent
+(selection, overlays, and toasts are shared regions); the header summary tiles
+wrap via `FlowRow`; queue cells truncate to ellipsis (`maxLines = 1`,
+`TextOverflow.Ellipsis`) with weighted columns at constrained widths so nothing
+clips and no column is dropped at the 720×520 invariant size; no horizontal
+scrolling is introduced for the queue. The overlays behave identically at every
+tier (the FSDS Dialog/Sheet/Toast own their surfaces).
 
 ## Commands
 
@@ -126,6 +153,30 @@ the lane, not silently worked around:
    children-string channel, but nothing drops at runtime). No lane action
    needed; recorded for cross-framework parity comparison.
 
+7. **No breakpoint concept on the target.** Nothing in
+   `ds-jetpack-compose` exposes a tier/breakpoint/window-size surface, so the
+   spec's tiers are computed app-side from `BoxWithConstraints.maxWidth` at
+   the pinned 1280/900 values (the lead's direction: no material3-adaptive
+   artifacts). Tier semantics therefore live in the lane, and identical tier
+   behavior across lanes is only provable by comparing lanes, not by any
+   shared package contract. *Gap: responsive tiers are consumer-reimplemented
+   per target; the package owns nothing about them.*
+
+8. **`Table` exposes no column-priority/visibility API.** With finding 1
+   (no row/cell parts) there is no surface on which the package could express
+   column priority or visibility, so the "squeeze, never clip, never drop a
+   column" invariant is met app-side: a per-tier column model (fixed widths at
+   wide; weighted columns at medium/narrow) with `maxLines = 1` +
+   `TextOverflow.Ellipsis` truncation. *Gap: column responsiveness is
+   consumer-owned; the package contributes no table semantics at any tier.*
+
+9. **`FlowRow` is an experimental foundation API.** The header-band wrap uses
+   `androidx.compose.foundation.layout.FlowRow` under
+   `@OptIn(ExperimentalLayoutApi::class)` — a Compose foundation dependency,
+   not a package export, for pure page-frame arrangement (no behavior or state
+   indication). Noted because it is the only non-stable API the lane compiles
+   against.
+
 ## Interaction coverage (the spec's ten)
 
 1. Filter narrows queue — live search over id/title/service, case-insensitive ✓
@@ -146,9 +197,12 @@ the lane, not silently worked around:
 
 This lane proves **compile + seam-test evidence on the JVM rung**: the two
 gates are `./gradlew compileKotlin --no-daemon` and `./gradlew test
---no-daemon` (seam behavior only). `./gradlew run` opens the window for
-manual visual inspection; there are **no runtime UI assertions, no Playwright
-equivalent, and no screenshot baselines** pinning the ten interactions.
+--no-daemon` (seam behavior + the FilterState unit tests; the seam itself is
+untouched by the responsive slice). `./gradlew run` opens the window for
+manual visual inspection — **resizing across the 1280/900 boundaries and down
+to 720×520 is inspectable by hand, but there are no runtime UI assertions, no
+Playwright equivalent, and no screenshot baselines** pinning the tier
+transitions or the ten interactions.
 JVM artifacts are **not** Android artifacts — no Android device/emulator ran,
 and no Android claim follows. The seam is a fixture-backed shape, not a
 backend. This lane is **not** cross-framework parity evidence (the spec's

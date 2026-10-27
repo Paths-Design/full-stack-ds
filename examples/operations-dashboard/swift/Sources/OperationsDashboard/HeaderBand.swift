@@ -8,22 +8,39 @@ import OperationsDashboardSeam
 
 struct HeaderBand: View {
     @Bindable var controller: DashboardController
+    /// Responsive tier — at the narrow tier the title stacks above the
+    /// summary tiles so the band never overflows the column.
+    let tier: ShellTier
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                // NOT FSDS: page-frame title. The DsSwiftUI Text export is a
-                // passive content region without a heading channel, mirroring
-                // the React lane's finding-1 posture (native text for text runs).
-                Text("Operations dashboard")
-                    .font(.title2.weight(.semibold))
-                Spacer()
-                summaryTiles
+        Group {
+            if tier == .narrow {
+                VStack(alignment: .leading, spacing: 12) {
+                    title
+                    summaryTiles
+                    failLoadsToggle
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack(alignment: .firstTextBaseline) {
+                        title
+                        Spacer()
+                        summaryTiles
+                    }
+                    failLoadsToggle
+                }
             }
-            failLoadsToggle
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
+    }
+
+    private var title: some View {
+        // NOT FSDS: page-frame title. The DsSwiftUI Text export is a
+        // passive content region without a heading channel, mirroring
+        // the React lane's finding-1 posture (native text for text runs).
+        Text("Operations dashboard")
+            .font(.title2.weight(.semibold))
     }
 
     private var summaryTiles: some View {
