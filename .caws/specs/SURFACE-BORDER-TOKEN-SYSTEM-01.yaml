@@ -75,3 +75,7 @@ evidence:
     status: pass
     evidence_ref: "worktree rev ff9caf4ce: node scripts/motion-realization-audit/audit.mjs exit 0 — findings=41 ledgered=41 unledgered=0 stale=0 (8 Accordion allowances retired); packages/ds-react/src/components/Accordion/Accordion.css carries grid-template-rows/opacity transitions and the @generated:start starting-style block"
     recorded_at: "2026-10-27T02:28:07.517Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "worktree rev ff9caf4ce: pnpm run governed:rail exit 0, overall=pass — react/vue/svelte/lit/angular/react-native lanes all typecheck=pass lint=pass (+ RN runtime=pass), zero RAIL_* codes; regen after the rail left the 375-file tree unchanged (committed-byte drift empty)"
+    recorded_at: "2026-10-27T02:28:08.052Z"
