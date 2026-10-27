@@ -1,9 +1,10 @@
 id: EXAMPLES-OPS-DASH-NATIVE-LANES-01
 title: 'Operations-dashboard native consumer lanes: SwiftUI, Compose, and GPUI apps over the generated native packages'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: ops-dash-native-lanes
 created_at: '2026-10-27T02:17:18.723Z'
-updated_at: '2026-10-27T02:17:18.723Z'
+updated_at: '2026-10-27T02:21:28.822Z'
 created_by_session: 'session-4fc580e1-df32-41f6-8120-3ad4a9cd6f2d'
 blast_radius:
   modules:
