@@ -1,9 +1,11 @@
 id: CODEGEN-NATIVE-EMITTER-SPLIT-01
 title: 'Split Compose emitter into Kotlin authoring modules; hoist native prop lore into the shared substrate'
 mode: refactor
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Compose emitter split into Kotlin authoring modules (7203->145-line dispatcher), conventional prop/channel vocabulary centralized in the native substrate, swift divergent predicates made visible, and a mechanical emitter-authority guard with a frozen shape-predicate ratchet — byte-identical output throughout.'
 created_at: '2026-10-27T14:53:53.811Z'
-updated_at: '2026-10-27T15:49:15.262Z'
+updated_at: '2026-10-27T15:49:31.598Z'
 created_by_session: 'session-3b603c0e-24b0-437b-a099-83133ad16005'
 blast_radius:
   modules:
