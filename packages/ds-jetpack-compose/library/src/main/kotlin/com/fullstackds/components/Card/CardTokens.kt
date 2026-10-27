@@ -59,8 +59,8 @@ val cardTokenScopes: ComponentTokenScopes = mapOf(
         "card.color.border" to ComponentTokenDefinition(
             name = "card.color.border",
             cssVar = "--fsds-card-color-border",
-            ref = "semantic.color.border.light",
-            fallback = "#b8b8b8",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
         ),
         "card.color.foreground.primary" to ComponentTokenDefinition(
             name = "card.color.foreground.primary",

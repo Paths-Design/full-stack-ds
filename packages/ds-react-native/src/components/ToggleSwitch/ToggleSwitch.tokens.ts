@@ -56,8 +56,8 @@ export const toggleSwitchTokenScopes = {
     "toggle-switch.color.border": {
       name: "toggle-switch.color.border",
       cssVar: "--fsds-toggle-switch-color-border",
-      ref: "semantic.color.border.light",
-      fallback: "#b8b8b8",
+      ref: "semantic.color.border.default",
+      fallback: "#a0a0a1",
     },
     "toggle-switch.border.radius": {
       name: "toggle-switch.border.radius",

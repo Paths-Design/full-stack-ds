@@ -54,8 +54,8 @@ val commandTokenScopes: ComponentTokenScopes = mapOf(
         "command.color.border" to ComponentTokenDefinition(
             name = "command.color.border",
             cssVar = "--fsds-command-color-border",
-            ref = "semantic.color.border.light",
-            fallback = "#b8b8b8",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
         ),
         "command.color.borderLight" to ComponentTokenDefinition(
             name = "command.color.borderLight",

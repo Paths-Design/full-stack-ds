@@ -25,7 +25,7 @@
     "layer": "semantic"
   },
   "nav-tree.color.connector": {
-    "resolvesTo": "semantic.color.border.subtle",
+    "resolvesTo": "semantic.surface.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
   },

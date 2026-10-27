@@ -89,7 +89,7 @@ export class PopoverElement extends LitElement {
       --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-      --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-popover-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-popover-elevation: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
       --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
     }
@@ -139,6 +139,13 @@ export class PopoverElement extends LitElement {
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-popover-content] {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
       }
     }
   `;
@@ -302,7 +309,7 @@ export class PopoverTriggerElement extends LitElement {
       --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-      --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-popover-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-popover-elevation: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
       --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
     }
@@ -352,6 +359,13 @@ export class PopoverTriggerElement extends LitElement {
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-popover-content] {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
       }
     }
   `;
@@ -492,7 +506,7 @@ export class PopoverContentElement extends LitElement {
       --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
       --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-      --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-popover-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-popover-elevation: var(--fsds-semantic-elevation-surface-popover, 0px 8px 10px #0000000a, 0px 20px 25px #0000001a);
       --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
     }
@@ -546,6 +560,14 @@ export class PopoverContentElement extends LitElement {
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-popover-content] {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
       }
     }
   `;

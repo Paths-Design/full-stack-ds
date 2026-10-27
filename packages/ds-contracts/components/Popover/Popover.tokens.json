@@ -50,7 +50,7 @@
     "layer": "semantic"
   },
   "popover.color.border": {
-    "resolvesTo": "semantic.color.border.subtle",
+    "resolvesTo": "semantic.surface.border.subtle",
     "fallback": "#d0d0d0",
     "layer": "semantic"
   },

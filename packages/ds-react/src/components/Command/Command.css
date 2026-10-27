@@ -45,7 +45,7 @@
   max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
   background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
   color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-  border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+  border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
   border-style: var(--fsds-command-design-dialog-border-style, solid);
   border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
   border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));

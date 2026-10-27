@@ -4,7 +4,7 @@
   --fsds-badge-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
   --fsds-badge-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
   --fsds-badge-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-  --fsds-badge-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+  --fsds-badge-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
   --fsds-badge-spacing-gap: var(--fsds-semantic-glyph-badge-size-md-gap, 4px);
   --fsds-badge-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
   --fsds-badge-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);

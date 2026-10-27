@@ -395,7 +395,7 @@
       "cssProperty": "border-color",
       "selectorKey": "dialog",
       "part": "dialog",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "command.color.border",
       "editableTargets": [
         "web"
@@ -1204,7 +1204,7 @@
           "--fsds-box-model-max-height": "none",
           "--fsds-command-color-overlay": "var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64))",
           "--fsds-command-color-background": "var(--fsds-semantic-color-background-primary, #ffffff)",
-          "--fsds-command-color-border": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-command-color-border": "var(--fsds-semantic-surface-border-subtle, #d0d0d0)",
           "--fsds-command-color-border-light": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
           "--fsds-command-color-text": "var(--fsds-semantic-color-foreground-primary, #141414)",
           "--fsds-command-color-text-muted": "var(--fsds-semantic-color-foreground-tertiary, #727272)",
@@ -1267,7 +1267,7 @@
           "max-height": "var(--fsds-command-size-max-height, 400px)",
           "background-color": "var(--fsds-command-color-background, #ffffff)",
           "color": "var(--fsds-command-color-text, #141414)",
-          "border-color": "var(--fsds-command-color-border, #b8b8b8)",
+          "border-color": "var(--fsds-command-color-border, #d0d0d0)",
           "border-style": "solid",
           "border-width": "var(--fsds-command-border-width, 1px)",
           "border-radius": "var(--fsds-command-border-radius, 6px)",

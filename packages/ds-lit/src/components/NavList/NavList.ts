@@ -134,6 +134,14 @@ export class NavListElement extends LitElement {
       color: var(--fsds-nav-list-design-condition-64c35a3ee9a3-foreground-color, var(--fsds-nav-list-color-foreground-current, #141414));
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-list__item {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: String }) orientation?: NavListOrientation = "vertical";
@@ -281,6 +289,14 @@ export class NavListListElement extends LitElement {
       color: var(--fsds-nav-list-design-condition-64c35a3ee9a3-foreground-color, var(--fsds-nav-list-color-foreground-current, #141414));
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-list__item {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   override render() {
@@ -406,6 +422,14 @@ export class NavListItemElement extends LitElement {
       background-color: var(--fsds-nav-list-design-condition-64c35a3ee9a3-background-fill, color-mix(in srgb, currentColor calc(var(--fsds-nav-list-state-layer-selected, 0.08) * 100%), transparent));
       color: var(--fsds-nav-list-design-condition-64c35a3ee9a3-foreground-color, var(--fsds-nav-list-color-foreground-current, #141414));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-list__item {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

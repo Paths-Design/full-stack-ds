@@ -77,7 +77,7 @@ export class CalendarElement extends LitElement {
       --fsds-calendar-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-calendar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-calendar-color-foreground-muted: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-calendar-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-calendar-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-calendar-color-day-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
       --fsds-calendar-color-day-selected-background: var(--fsds-semantic-color-background-accent, #d92d2e);
       --fsds-calendar-color-day-selected-foreground: var(--fsds-semantic-color-foreground-inverse, #fafafa);
@@ -352,7 +352,7 @@ export class CalendarHeaderElement extends LitElement {
       --fsds-calendar-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-calendar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-calendar-color-foreground-muted: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-calendar-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-calendar-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-calendar-color-day-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
       --fsds-calendar-color-day-selected-background: var(--fsds-semantic-color-background-accent, #d92d2e);
       --fsds-calendar-color-day-selected-foreground: var(--fsds-semantic-color-foreground-inverse, #fafafa);

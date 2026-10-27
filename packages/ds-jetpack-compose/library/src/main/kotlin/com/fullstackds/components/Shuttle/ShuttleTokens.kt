@@ -60,8 +60,8 @@ val shuttleTokenScopes: ComponentTokenScopes = mapOf(
         "shuttle.color.border" to ComponentTokenDefinition(
             name = "shuttle.color.border",
             cssVar = "--fsds-shuttle-color-border",
-            ref = "semantic.color.border.light",
-            fallback = "#b8b8b8",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
         ),
         "shuttle.color.list.background" to ComponentTokenDefinition(
             name = "shuttle.color.list.background",

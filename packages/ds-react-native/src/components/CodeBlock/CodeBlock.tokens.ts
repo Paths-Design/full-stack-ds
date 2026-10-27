@@ -54,7 +54,7 @@ export const codeBlockTokenScopes = {
     "code-block.color.border": {
       name: "code-block.color.border",
       cssVar: "--fsds-code-block-color-border",
-      ref: "semantic.color.border.subtle",
+      ref: "semantic.surface.border.subtle",
       fallback: "#d0d0d0",
     },
     "code-block.size.radius": {

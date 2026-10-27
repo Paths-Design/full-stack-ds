@@ -3,7 +3,7 @@
 .postcard {
   --fsds-postcard-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
   --fsds-postcard-color-background-hover: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-  --fsds-postcard-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+  --fsds-postcard-color-border-default: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
   --fsds-postcard-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
   --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
   --fsds-postcard-size-padding: var(--fsds-core-spacing-size-06, 16px);

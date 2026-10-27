@@ -77,7 +77,7 @@ export class NavTreeElement extends LitElement {
       --fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-connector: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
       --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
@@ -224,6 +224,15 @@ export class NavTreeElement extends LitElement {
       outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-tree__headingLink,
+      .nav-tree__item > * {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -333,7 +342,7 @@ export class NavTreeListElement extends LitElement {
       --fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-connector: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
       --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
@@ -480,6 +489,15 @@ export class NavTreeListElement extends LitElement {
       outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-tree__headingLink,
+      .nav-tree__item > * {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -547,7 +565,7 @@ export class NavTreeItemElement extends LitElement {
       --fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
       --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-nav-tree-color-connector: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
       --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
@@ -694,6 +712,15 @@ export class NavTreeItemElement extends LitElement {
       outline-width: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-width, var(--fsds-semantic-focus-ring-width, 2px));
       outline-style: var(--fsds-nav-tree-design-condition-9ee8c188e4b8-focus-style, var(--fsds-semantic-focus-ring-style, solid));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nav-tree__headingLink,
+      .nav-tree__item > * {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

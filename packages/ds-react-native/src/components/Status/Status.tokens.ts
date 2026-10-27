@@ -54,7 +54,7 @@ export const statusTokenScopes = {
     "status.color.border": {
       name: "status.color.border",
       cssVar: "--fsds-status-color-border",
-      ref: "semantic.color.border.subtle",
+      ref: "semantic.surface.border.subtle",
       fallback: "#d0d0d0",
     },
     "status.size.radius": {

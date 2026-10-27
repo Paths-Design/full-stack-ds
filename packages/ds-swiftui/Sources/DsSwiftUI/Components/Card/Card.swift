@@ -18,7 +18,7 @@ enum CardTokens {
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", ref: "semantic.surface.size.padding-inline", fallback: .string("16px")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "card.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-background-default", name: "card.color.background.default", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
-            "card.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-border", name: "card.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "card.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-border", name: "card.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "card.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-card-color-foreground-primary", name: "card.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
             "card.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-card-size-radius", name: "card.size.radius", ref: "semantic.shape.radius.medium", fallback: .string("8px")),
         ],
