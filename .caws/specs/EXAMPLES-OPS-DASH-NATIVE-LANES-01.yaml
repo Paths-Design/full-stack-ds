@@ -63,3 +63,7 @@ evidence:
     status: pass
     evidence_ref: "./gradlew compileKotlin --no-daemon and ./gradlew test --no-daemon exit 0 from examples/operations-dashboard/compose (BUILD SUCCESSFUL, 18/18 JUnit tests, 0 failures; lane-run + Lead re-verification); Gradle composite build includeBuild ../../../packages/ds-jetpack-compose substituting ds-jetpack-compose:library; NOT FSDS ledger + findings in examples/operations-dashboard/compose/README.md at 6e33cae44"
     recorded_at: "2026-10-27T03:33:12.779Z"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "cargo +1.94.1 build and cargo +1.94.1 test --manifest-path examples/operations-dashboard/gpui/Cargo.toml exit 0 with 16/16 tests (re-run by Lead on the committed tree); standalone crate path-deps full-stack-ds-gpui with gpui/gpui_platform pinned to the package's exact rev a38fc8c8de6e4010fadcfde7dd111d90dfd66845, Cargo.lock committed; Stat/Badge/Checkbox/Text/Divider/Switch/ToggleSwitch realized from package exports, all other regions hand-authored NOT FSDS per examples/operations-dashboard/gpui/README.md at 6e33cae44"
+    recorded_at: "2026-10-27T03:33:13.278Z"
