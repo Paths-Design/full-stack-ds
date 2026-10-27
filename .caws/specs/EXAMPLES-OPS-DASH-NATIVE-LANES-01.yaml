@@ -54,3 +54,8 @@ contracts:
   - name: 'operations-dashboard-spec'
     type: behavior
     path: 'examples/operations-dashboard/spec.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "swift build --package-path examples/operations-dashboard/swift exit 0 and swift test exit 0 with 18/18 XCTest passes (re-run by Lead on the committed tree at 6e33cae44); macOS SwiftUI app composes header Stat/Status/Badge band, filter rail (FsdsField+Input/Select/Checkbox), FsdsTable queue, Details timeline disclosure, assign Sheet, resolve Dialog, Toast via DsSwiftUI public exports only (verified imports: SwiftUI/DsSwiftUI/seam); NOT FSDS residuals ledgered in examples/operations-dashboard/swift/README.md"
+    recorded_at: "2026-10-27T03:33:12.271Z"
