@@ -79,3 +79,7 @@ evidence:
     status: pass
     evidence_ref: "worktree rev ff9caf4ce: pnpm run governed:rail exit 0, overall=pass — react/vue/svelte/lit/angular/react-native lanes all typecheck=pass lint=pass (+ RN runtime=pass), zero RAIL_* codes; regen after the rail left the 375-file tree unchanged (committed-byte drift empty)"
     recorded_at: "2026-10-27T02:28:08.052Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "live browser (CDP) on the merged byte state (identical content to ff9caf4ce): prefers-reduced-motion:reduce emulation yields computed transition-duration 1e-05s and collapse sampled 56.0px -> 0.0px with zero intermediate heights; without emulation expand sampled 31 intermediate heights 0 -> 56 and collapse 20 heights 56 -> 0 across rAF frames"
+    recorded_at: "2026-10-27T02:28:31.020Z"
