@@ -54,10 +54,51 @@ export function validateContractStyles(
 
   for (const [selectorKey, block] of Object.entries(styles)) {
     if (!block || typeof block !== "object") continue;
-    for (const [property, entry] of Object.entries(
+    // Reserved `@starting-style` key: a selector→block map, not a block.
+    // Recurse one level so nested selectors get the identical entry
+    // validation (a typo'd resolvesTo in an entry state must fail the same
+    // way one in a resting state does) instead of being read as properties.
+    if (selectorKey === "@starting-style") {
+      for (const [nestedKey, nestedBlock] of Object.entries(
+        block as Record<string, Record<string, StyleEntry>>,
+      )) {
+        if (!nestedBlock || typeof nestedBlock !== "object") continue;
+        collectStyleBlockIssues(contract, cssPrefix, localSlots, boxModelSlots, known, nestedKey, nestedBlock, issues);
+      }
+      continue;
+    }
+    collectStyleBlockIssues(
+      contract,
+      cssPrefix,
+      localSlots,
+      boxModelSlots,
+      known,
+      selectorKey,
       block as Record<string, StyleEntry>,
-    )) {
-      if (!entry || typeof entry !== "object") continue;
+      issues,
+    );
+  }
+
+  return issues;
+}
+
+/**
+ * Validate one selector block's style entries (the shared body of
+ * validateContractStyles). Extracted so the reserved `@starting-style`
+ * nested blocks validate identically to top-level blocks.
+ */
+function collectStyleBlockIssues(
+  contract: ComponentContract,
+  cssPrefix: string,
+  localSlots: ReadonlySet<string>,
+  boxModelSlots: ReadonlySet<string>,
+  known: ReturnType<typeof loadKnownTokenPaths>,
+  selectorKey: string,
+  block: Record<string, StyleEntry>,
+  issues: ValidationIssue[],
+): void {
+  for (const [property, entry] of Object.entries(block)) {
+    if (!entry || typeof entry !== "object") continue;
 
       // Slot-path property key: redefines a CSS custom property at this
       // selector's scope (variant/state redirection). The KEY itself must
@@ -165,9 +206,6 @@ export function validateContractStyles(
         });
       }
     }
-  }
-
-  return issues;
 }
 
 /**
@@ -197,6 +235,10 @@ export function validateStylesSelectorCollisions(
   const issues: ValidationIssue[] = [];
 
   for (const key of Object.keys(styles)) {
+    // Reserved `@starting-style` key is an at-rule wrapper, not a selector;
+    // its nested selectors live in a separate at-rule scope and cannot
+    // collide with top-level keys.
+    if (key === "@starting-style") continue;
     const selector = expandStylesKey(key, cssPrefix, expandOptions);
     const prior = seen.get(selector);
     if (prior !== undefined && prior !== key) {
