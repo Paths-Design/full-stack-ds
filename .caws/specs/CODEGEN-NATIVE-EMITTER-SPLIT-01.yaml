@@ -57,3 +57,7 @@ evidence:
     status: pass
     evidence_ref: "commit:f169610d9 — component-source.ts 7,203->145 lines (dispatcher+re-export); per-family modules under frameworks/jetpack-compose/{kotlin,emitters} + chrome/references/tokens-file; barrel+factory import surface unchanged; pnpm run typecheck clean; codegen vitest 3,255/3,255"
     recorded_at: "2026-10-27T15:47:53.832Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "test-nodeid:packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts > emitter authority guard — scanner self-check (planted violations) > flags a component-identity comparison — plus the 7 sibling self-checks in the same describe block"
+    recorded_at: "2026-10-27T15:47:54.984Z"
