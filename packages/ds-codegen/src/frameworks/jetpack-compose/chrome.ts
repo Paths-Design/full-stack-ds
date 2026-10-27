@@ -94,6 +94,8 @@ export interface StaticChromeSlots {
   bgSlot?: { name: string };
   fgSlot?: { name: string };
   radiusSlot?: { name: string };
+  borderColorSlot?: { name: string };
+  borderWidthSlot?: { name: string };
   paddingInlineStartSlot?: { name: string };
   paddingInlineEndSlot?: { name: string };
   paddingBlockStartSlot?: { name: string };
@@ -109,6 +111,13 @@ export function resolveStaticChrome(ir: ComponentIR): StaticChromeSlots {
   const bgSlot = findLayeredSlotAny(ir, ["root"], CHROME_ROLE_SUFFIXES.background);
   const fgSlot = findLayeredSlotAny(ir, ["root"], CHROME_ROLE_SUFFIXES.foreground);
   const radiusSlot = findLayeredSlotAny(ir, ["root"], CHROME_ROLE_SUFFIXES.radius);
+  // Border role: the same corpus suffix the projected-children chrome path
+  // resolves (`.color.border.default` strips to `color.border`), so a passive
+  // root and a chrome root carrying the same contract declaration resolve the
+  // SAME slot. Width rides `.size.border` with a 1.dp fallback — the default
+  // the chrome path hardcodes when the component carries no width slot.
+  const borderColorSlot = findLayeredSlot(ir, ["root"], "color.border.default");
+  const borderWidthSlot = findLayeredSlot(ir, ["root"], "size.border");
   const paddingInlineStartSlot = findLayeredSlot(ir, ["root"], "box-model.padding-inline-start");
   const paddingInlineEndSlot = findLayeredSlot(ir, ["root"], "box-model.padding-inline-end");
   const paddingBlockStartSlot = findLayeredSlot(ir, ["root"], "box-model.padding-block-start");
@@ -118,12 +127,14 @@ export function resolveStaticChrome(ir: ComponentIR): StaticChromeSlots {
   const anyPaddingSlot = Boolean(
     paddingInlineStartSlot || paddingInlineEndSlot || paddingBlockStartSlot || paddingBlockEndSlot,
   );
-  const usesDims = Boolean(radiusSlot || anyPaddingSlot || minHeightSlot);
-  const needsClip = Boolean(bgSlot || radiusSlot);
+  const usesDims = Boolean(radiusSlot || anyPaddingSlot || minHeightSlot || borderColorSlot);
+  const needsClip = Boolean(bgSlot || radiusSlot || borderColorSlot);
   return {
     bgSlot,
     fgSlot,
     radiusSlot,
+    borderColorSlot,
+    borderWidthSlot,
     paddingInlineStartSlot,
     paddingInlineEndSlot,
     paddingBlockStartSlot,
@@ -174,6 +185,23 @@ export function emitChromeVals(
     lines.push(
       `    val cornerRadius = layeredSlot(${JSON.stringify(slots.radiusSlot.name)})?.toFsdsDp() ?: 0.dp`,
     );
+  } else if (slots.needsClip) {
+    // Border-only root (no radius slot): the shape is still drawn — a
+    // rectangular one. No layeredSlot call: the component carries no radius
+    // slot to look up.
+    lines.push(`    val cornerRadius = 0.dp`);
+  }
+  if (slots.borderColorSlot) {
+    lines.push(
+      `    val borderColor = layeredSlot(${JSON.stringify(slots.borderColorSlot.name)})?.toFsdsColor()`,
+    );
+    lines.push(
+      `    val borderWidth = ${
+        slots.borderWidthSlot
+          ? `layeredSlot(${JSON.stringify(slots.borderWidthSlot.name)})?.toFsdsDp()`
+          : "null"
+      } ?: 1.dp`,
+    );
   }
   const sideVal = (valName: string, slot: { name: string } | undefined): string => {
     if (slot) {
@@ -212,6 +240,11 @@ export function emitChromeModifier(
   if (slots.bgSlot) {
     chromeLines.push(
       `        .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)`,
+    );
+  }
+  if (slots.borderColorSlot) {
+    chromeLines.push(
+      `        .then(if (borderColor != null) Modifier.border(borderWidth, borderColor, shape) else Modifier)`,
     );
   }
   if (slots.anyPaddingSlot) {

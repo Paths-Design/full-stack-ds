@@ -101,6 +101,7 @@ export function emitStaticContent(ir: ComponentIR): string {
   lines.push(``);
   lines.push(`// @generated:start imports`);
   if (slots.usesColors) lines.push(`import androidx.compose.foundation.background`);
+  if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   lines.push(`import androidx.compose.foundation.layout.Box`);
   if (slots.minHeightSlot) lines.push(`import androidx.compose.foundation.layout.height`);
   if (slots.anyPaddingSlot) {
@@ -127,8 +128,10 @@ export function emitStaticContent(ir: ComponentIR): string {
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
     for (const line of referenceImports(ir)) lines.push(line);
-    if (slots.usesColors) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    if (slots.usesDims) lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    if (slots.usesColors || slots.borderColorSlot) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
+    if (slots.radiusSlot || slots.anyPaddingSlot || slots.minHeightSlot || slots.borderWidthSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    }
   }
   if (fgSlot) lines.push(`import com.fullstackds.tokens.LocalFsdsContentColor`);
   if (emitsTextStyle) {
@@ -330,6 +333,7 @@ export function emitPropTextLeaf(ir: ComponentIR): string {
   lines.push(``);
   lines.push(`// @generated:start imports`);
   if (usesColors) lines.push(`import androidx.compose.foundation.background`);
+  if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   lines.push(`import androidx.compose.foundation.text.BasicText`);
   if (textSource.optionalContent) {
     lines.push(`import androidx.compose.foundation.layout.Box`);
@@ -350,8 +354,10 @@ export function emitPropTextLeaf(ir: ComponentIR): string {
   }
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
-    if (usesColors) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    if (slots.usesDims) lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    if (usesColors || slots.borderColorSlot) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
+    if (slots.radiusSlot || slots.anyPaddingSlot || slots.minHeightSlot || slots.borderWidthSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    }
     if (fontSizeSlot) lines.push(`import com.fullstackds.tokens.toFsdsSp`);
   }
   lines.push(`// @generated:end`);
@@ -474,6 +480,7 @@ export function emitExpandableContent(ir: ComponentIR): string {
   lines.push(``);
   lines.push(`// @generated:start imports`);
   if (slots.usesColors) lines.push(`import androidx.compose.foundation.background`);
+  if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   lines.push(`import androidx.compose.foundation.clickable`);
   if (slots.minHeightSlot) lines.push(`import androidx.compose.foundation.layout.height`);
   lines.push(`import androidx.compose.foundation.layout.Arrangement`);
@@ -498,8 +505,10 @@ export function emitExpandableContent(ir: ComponentIR): string {
   }
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
-    if (slots.usesColors) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    if (slots.usesDims) lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    if (slots.usesColors || slots.borderColorSlot) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
+    if (slots.radiusSlot || slots.anyPaddingSlot || slots.minHeightSlot || slots.borderWidthSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    }
   }
   if (slots.fgSlot) lines.push(`import com.fullstackds.tokens.LocalFsdsContentColor`);
   lines.push(`// @generated:end`);
@@ -667,6 +676,7 @@ export function emitProgressIndicator(ir: ComponentIR): string {
   lines.push(``);
   lines.push(`// @generated:start imports`);
   if (slots.usesColors) lines.push(`import androidx.compose.foundation.background`);
+  if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   if (slots.minHeightSlot) lines.push(`import androidx.compose.foundation.layout.height`);
   if (slots.anyPaddingSlot) lines.push(`import androidx.compose.foundation.layout.padding`);
   if (slots.needsClip) lines.push(`import androidx.compose.foundation.shape.RoundedCornerShape`);
@@ -682,8 +692,12 @@ export function emitProgressIndicator(ir: ComponentIR): string {
   lines.push(`import com.fullstackds.components.progress.FsdsProgressIndicator`);
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
-    if (slots.usesColors || usesProgressColors) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    if (slots.usesDims) lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    if (slots.usesColors || usesProgressColors || slots.borderColorSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsColor`);
+    }
+    if (slots.radiusSlot || slots.anyPaddingSlot || slots.minHeightSlot || slots.borderWidthSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    }
     if (durationSlot) lines.push(`import com.fullstackds.tokens.toFsdsMs`);
   }
   if (textColorSlot) lines.push(`import com.fullstackds.tokens.LocalFsdsContentColor`);

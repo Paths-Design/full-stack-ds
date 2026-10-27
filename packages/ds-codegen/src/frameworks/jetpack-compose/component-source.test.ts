@@ -88,6 +88,30 @@ describe("generateJetpackComposeComponentSource — static-content path", () => 
     expect(status).not.toContain('layeredSlot("")');
   });
 
+  it("lowers root border slots on the static-content path (FIX-COMPOSE-STATUS-BORDER-01)", () => {
+    // Status's contract declares the same 1px variant-tinted border Badge's
+    // does; the static chrome path must realize it the way the projected-
+    // children chrome path realizes Badge's — layered color + width val and a
+    // shape-drawn Modifier.border, with the width slot's 1.dp fallback.
+    const status = generateJetpackComposeComponentSource(irFor("Status"));
+    expect(status).toContain('val borderColor = layeredSlot("status.color.border")?.toFsdsColor()');
+    expect(status).toContain(
+      'val borderWidth = layeredSlot("status.size.border")?.toFsdsDp() ?: 1.dp',
+    );
+    expect(status).toContain("Modifier.border(borderWidth, borderColor, shape)");
+    expect(status).toContain("import androidx.compose.foundation.border");
+    // A passive root with no border slots stays exactly as it was: Skeleton
+    // must gain no border machinery from this class-level change.
+    const skeleton = generateJetpackComposeComponentSource(irFor("Skeleton"));
+    expect(skeleton).not.toContain("Modifier.border");
+    expect(skeleton).not.toContain("import androidx.compose.foundation.border");
+    // The realization-driven tokens file now carries the definitions the
+    // source reads — the previous state omitted them entirely.
+    const tokens = generateJetpackComposeTokensFile(irFor("Status"));
+    expect(tokens).toContain('"status.color.border"');
+    expect(tokens).toContain('"status.size.border"');
+  });
+
   it("provides the resolved foreground through LocalFsdsContentColor when a foreground slot exists", () => {
     const text = generateJetpackComposeComponentSource(irFor("Text"));
     expect(text).toContain("import com.fullstackds.tokens.LocalFsdsContentColor");

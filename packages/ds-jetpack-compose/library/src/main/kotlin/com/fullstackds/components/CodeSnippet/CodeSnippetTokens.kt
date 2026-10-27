@@ -50,11 +50,23 @@ val codeSnippetTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
+        "code-snippet.color.border" to ComponentTokenDefinition(
+            name = "code-snippet.color.border",
+            cssVar = "--fsds-code-snippet-color-border",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
+        ),
         "code-snippet.size.radius" to ComponentTokenDefinition(
             name = "code-snippet.size.radius",
             cssVar = "--fsds-code-snippet-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
+        ),
+        "code-snippet.size.border" to ComponentTokenDefinition(
+            name = "code-snippet.size.border",
+            cssVar = "--fsds-code-snippet-size-border",
+            ref = "semantic.shape.control.border.defaultWidth",
+            fallback = "1px",
         ),
         "code-snippet.size.fontSize" to ComponentTokenDefinition(
             name = "code-snippet.size.fontSize",

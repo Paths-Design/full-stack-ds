@@ -44,6 +44,12 @@ val postcardTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
+        "postcard.color.border.default" to ComponentTokenDefinition(
+            name = "postcard.color.border.default",
+            cssVar = "--fsds-postcard-color-border-default",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
+        ),
         "postcard.color.foreground.primary" to ComponentTokenDefinition(
             name = "postcard.color.foreground.primary",
             cssVar = "--fsds-postcard-color-foreground-primary",
@@ -55,6 +61,12 @@ val postcardTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-postcard-size-radius",
             ref = "semantic.shape.control.radius.default",
             fallback = "6px",
+        ),
+        "postcard.size.border" to ComponentTokenDefinition(
+            name = "postcard.size.border",
+            cssVar = "--fsds-postcard-size-border",
+            ref = "semantic.shape.control.border.defaultWidth",
+            fallback = "1px",
         ),
     ),
     "part_handle" to mapOf(

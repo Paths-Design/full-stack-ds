@@ -3,6 +3,7 @@ package com.fullstackds.components.status
 
 // @generated:start imports
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,6 +43,8 @@ fun Status(
     val containerColor = layeredSlot("status.color.background")?.toFsdsColor()
     val contentColor = layeredSlot("status.color.foreground.primary")?.toFsdsColor()
     val cornerRadius = layeredSlot("status.size.radius")?.toFsdsDp() ?: 0.dp
+    val borderColor = layeredSlot("status.color.border")?.toFsdsColor()
+    val borderWidth = layeredSlot("status.size.border")?.toFsdsDp() ?: 1.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
@@ -52,6 +55,7 @@ fun Status(
     val chromeModifier = Modifier
         .clip(shape)
         .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)
+        .then(if (borderColor != null) Modifier.border(borderWidth, borderColor, shape) else Modifier)
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
         .then(if (minHeight != null) Modifier.height(minHeight) else Modifier)
     CompositionLocalProvider(LocalFsdsContentColor provides (contentColor ?: Color.Unspecified)) {
