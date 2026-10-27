@@ -66,3 +66,8 @@ contracts:
   - name: 'motion-realization-rail'
     type: behavior
     path: 'scripts/motion-realization-audit/audit.mjs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "worktree rev ff9caf4ce: pnpm run tokens:build exit 0 (828 leaves resolved); node packages/ds-codegen/dist/cli.js --validate --check-semantics exit 0 (55/55 contracts); composed key semantic.surface.border.subtle and --fsds-semantic-focus-ring-offset-inset present in packages/ds-tokens/generated/tokens.css"
+    recorded_at: "2026-10-27T02:28:06.959Z"
