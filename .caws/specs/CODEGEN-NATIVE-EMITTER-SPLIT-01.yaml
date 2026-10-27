@@ -22,24 +22,24 @@ invariants:
   - 'Byte-identical output: the refactor changes emitter source structure only. pnpm run generate -- --target=all on a clean tree followed by git diff --exit-code over every generated tree must be empty.'
   - 'No new component-identity branching anywhere; name-keyed state-prop queries (disabled/invalid/decorative/orientation) are centralized exactly once in the shared native substrate with docs/codegen-authority.md classification headers; emitter modules consume the hoisted queries.'
   - 'Shape-predicate inventory is frozen by the guard test (ratchet): adding a new singleton shape-proxy predicate to native-emission-class.ts without an explicit, reviewed allowlist edit fails the suite; migrating predicates to declared IR facts shrinks the allowlist.'
-  - 'Public API unchanged: barrel.ts exports and generateJetpackComposeComponentSource signature are identical; swift local duplicate predicates (isMediaLeaf, isCompoundPartComposer) re-export from the shared substrate instead of drifting.'
+  - 'Public API unchanged: barrel.ts exports and generateJetpackComposeComponentSource signature are identical. Swift local predicates that genuinely diverge from the substrate (isMediaLeaf, isCompoundPartComposer — different admitted sets by design per the substrate header) are NOT unified; they are renamed to capability-honest names (isSwiftMediaLeaf, isSwiftCompoundPartComposer) so the divergence is visible at the dispatch site instead of shadowing the shared names. Swift hasConventionalProp moves verbatim to the substrate (same semantics, one vocabulary home).'
 acceptance:
   - id: A1
-    given: 'The spec implementation is complete.'
-    when: 'The acceptance statement is evaluated.'
-    then: 'given the refactored codegen; when pnpm run generate -- --target=all runs on a clean tree; then git diff --exit-code over every generated tree (five web packages, ds-react-native, ds-swiftui, ds-jetpack-compose) is empty — the refactor is byte-identical, and pnpm run generate:check passes'
+    given: 'the refactored codegen'
+    when: 'pnpm run generate -- --target=all runs on a clean tree'
+    then: 'git diff --exit-code over every generated tree (five web packages, ds-react-native, ds-swiftui, ds-jetpack-compose) is empty — the refactor is byte-identical, and pnpm run generate:check passes.'
   - id: A2
-    given: 'The spec implementation is complete.'
-    when: 'The acceptance statement is evaluated.'
-    then: 'given the prop-lore hoist; when emitter sources are grepped for name-keyed state-prop queries (e.g. p.name === "disabled" with a boolean kind check); then zero matches exist outside the shared native substrate, whose query functions are documented with the codegen-authority classification fields, and both swift and compose emitters consume them'
+    given: 'the prop-lore hoist'
+    when: 'the native emitter sources are scanned for name-keyed state-prop queries (e.g. p.name === "disabled" with a boolean kind check)'
+    then: 'zero matches exist outside the shared native substrate, whose query functions are documented with the codegen-authority classification fields, and both swift and compose emitters consume them.'
   - id: A3
-    given: 'The spec implementation is complete.'
-    when: 'The acceptance statement is evaluated.'
-    then: 'given the module split; when the jetpack-compose emitter tree is measured; then component-source.ts is a dispatcher plus shared chrome under ~2500 lines with per-family emitters in modules under frameworks/jetpack-compose/, the package public API (barrel.ts exports, generateJetpackComposeComponentSource signature) is unchanged, and pnpm run typecheck plus the codegen vitest suite pass'
+    given: 'the module split'
+    when: 'the jetpack-compose emitter tree is measured'
+    then: 'component-source.ts is a dispatcher plus shared chrome under ~2500 lines with per-family emitters in modules under frameworks/jetpack-compose/, the package public API (barrel.ts exports, generateJetpackComposeComponentSource signature) is unchanged, and pnpm run typecheck plus the codegen vitest suite pass.'
   - id: A4
-    given: 'The spec implementation is complete.'
-    when: 'The acceptance statement is evaluated.'
-    then: 'given the emitter authority guard; when the guard test runs against the refactored tree; then it passes, and it demonstrably fails on two planted violations — a component-identity comparison (ir.name === "Spinner") and a name-keyed prop query in an emitter module (mutation-style self-check)'
+    given: 'the emitter authority guard'
+    when: 'the guard test runs against the refactored tree'
+    then: 'it passes, and it demonstrably fails on two planted violations — a component-identity comparison (ir.name === "Spinner") and a name-keyed prop query in an emitter module (mutation-style self-check).'
 non_functional: {}
 contracts:
   - name: 'native-emitter-authority'
