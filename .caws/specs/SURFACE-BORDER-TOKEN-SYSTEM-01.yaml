@@ -1,0 +1,68 @@
+id: SURFACE-BORDER-TOKEN-SYSTEM-01
+title: 'Surface container-edge token system and Accordion contract-motion realization'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-27T02:10:02.034Z'
+updated_at: '2026-10-27T02:10:02.034Z'
+created_by_session: 'session-fbc92f2d-ef0e-45a1-93d6-930c1c8f6700'
+blast_radius:
+  modules:
+    - 'ds-tokens token graph (surface border role tokens, focus ring inset offset)'
+    - 'ds-codegen web CSS lowering (@starting-style entry states, lit inline reduced-motion parity)'
+    - 'Accordion contract: motion realization, inset focus ring, hover/presence honesty, usage examples'
+    - 'cross-target generated artifacts (5 web frameworks + RN + figma + natives)'
+    - 'motion-realization ledger (retire Accordion allowances)'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-tokens'
+    - 'packages/ds-contracts'
+    - 'packages/ds-codegen'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-figma-plugin/src/generated'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'packages/ds-gpui'
+    - 'scripts/motion-realization-audit'
+    - 'docs/architecture/tokens-architecture.md'
+  out: []
+invariants:
+  - 'Every contract declaration resolves through the composed token graph; generate:check passes 55/55 contracts'
+  - 'Regenerating all ten emitting targets from contract+codegen reproduces the committed bytes exactly; governed rail passes with zero RAIL_* codes'
+  - 'Contract-declared motion is either realized in emitted CSS or ledgered; the motion ledger never grows, and Accordion allowances retire only together with realization'
+  - 'Disclosure presence and a11y semantics are unchanged: closed panels keep the hidden attribute, aria-expanded/aria-controls/region labelling intact'
+acceptance:
+  - id: A1
+    given: 'the token source files'
+    when: 'tokens:build and generate:check run'
+    then: 'semantic.surface.border.subtle, semantic.surface.border.strong and semantic.focus.ring.offsetInset resolve across all brand instantiations and 55/55 contracts validate'
+  - id: A2
+    given: 'the Accordion contract declares expand/collapse motion on semantic.motion.interaction tokens'
+    when: 'the motion-realization audit runs'
+    then: 'zero Accordion findings remain (refs resolvable, properties realized) and the emitted CSS carries grid-template-rows/opacity transitions with an @starting-style entry block'
+  - id: A3
+    given: '25 component token sidecars migrated to role tokens'
+    when: 'generate --target=all and governed:rail run'
+    then: 'all six framework admission lanes pass with zero RAIL_* codes and the byte drift diff is empty'
+  - id: A4
+    given: 'prefers-reduced-motion: reduce'
+    when: 'an accordion item toggles in a live browser'
+    then: 'the panel snaps between states with zero intermediate heights'
+  - id: A5
+    given: 'the full regeneration across targets'
+    when: 'the Playwright runtime fact rail runs'
+    then: 'all covered component facts pass (159 passed, 1 documented skip)'
+non_functional: {}
+contracts:
+  - name: 'component-styles-schema'
+    type: schema
+    path: 'packages/ds-contracts/component.styles.schema.json'
+  - name: 'motion-realization-rail'
+    type: behavior
+    path: 'scripts/motion-realization-audit/audit.mjs'
