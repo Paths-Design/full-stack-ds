@@ -1,9 +1,10 @@
 id: EXAMPLES-OPS-DASH-RESPONSIVE-01
 title: 'Operations-dashboard responsive shell: pinned tiers across the react and native lanes'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: ops-dash-responsive
 created_at: '2026-10-27T14:23:57.951Z'
-updated_at: '2026-10-27T14:23:57.951Z'
+updated_at: '2026-10-27T14:24:00.271Z'
 created_by_session: 'session-4fc580e1-df32-41f6-8120-3ad4a9cd6f2d'
 blast_radius:
   modules:
