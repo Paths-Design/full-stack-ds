@@ -1,0 +1,41 @@
+id: FIX-COMPOSE-STATUS-BORDER-01
+title: 'Compose emitter: lower Status root borders on the static-content path'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-27T15:34:39.123Z'
+updated_at: '2026-10-27T15:34:39.123Z'
+created_by_session: 'session-4fc580e1-df32-41f6-8120-3ad4a9cd6f2d'
+blast_radius:
+  modules:
+    - 'jetpack-compose emitter static-content chrome'
+    - 'generated ds-jetpack-compose package'
+    - 'operations-dashboard spec findings log'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose'
+    - 'packages/ds-jetpack-compose'
+    - 'examples/operations-dashboard/compose'
+    - 'examples/operations-dashboard/spec.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'The fix is class-level and slot-presence-gated in the compose static-content chrome path (resolveStaticChrome/emitChromeVals/emitChromeModifier): a static root gains a border only when its contract declares border slots, mirroring how background/foreground/radius already lower.'
+  - 'Contract authority: Badge.styles.json and Status.styles.json both declare 1px variant-tinted borders; SwiftUI and web already realize them — the compose emitter must match, not the contracts.'
+  - 'No hand edits to generated Kotlin — the ds-jetpack-compose tree changes only through regeneration; committed-byte drift gates must pass.'
+  - 'The seam, fixtures, and consumer lanes stay untouched except recompiling the compose lane against the regenerated package.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given Status.styles.json declares root border-color/border-width via badge-parallel design slots; when the compose static-content chrome path honors border slots and the package regenerates; then generated Status.kt resolves status.color.border/status.size.border through layeredSlot and applies Modifier.border, StatusTokens.kt includes the border token definitions, unexpected generated drift is zero, generate:check and the compose example lane gates exit 0, and finding 13 in examples/operations-dashboard/spec.md flips to resolved with the evidence recorded'
+observability:
+  - 'gate exit codes + drift diff summary recorded in slice evidence'
+rollback:
+  - 'revert the emitter change and regenerate; generated tree returns to committed state'
+non_functional: {}
+contracts:
+  - name: 'compose-style-lowering'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/jetpack-compose/component-source.ts'
