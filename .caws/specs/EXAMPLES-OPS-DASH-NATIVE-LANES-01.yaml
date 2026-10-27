@@ -59,3 +59,7 @@ evidence:
     status: pass
     evidence_ref: "swift build --package-path examples/operations-dashboard/swift exit 0 and swift test exit 0 with 18/18 XCTest passes (re-run by Lead on the committed tree at 6e33cae44); macOS SwiftUI app composes header Stat/Status/Badge band, filter rail (FsdsField+Input/Select/Checkbox), FsdsTable queue, Details timeline disclosure, assign Sheet, resolve Dialog, Toast via DsSwiftUI public exports only (verified imports: SwiftUI/DsSwiftUI/seam); NOT FSDS residuals ledgered in examples/operations-dashboard/swift/README.md"
     recorded_at: "2026-10-27T03:33:12.271Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "./gradlew compileKotlin --no-daemon and ./gradlew test --no-daemon exit 0 from examples/operations-dashboard/compose (BUILD SUCCESSFUL, 18/18 JUnit tests, 0 failures; lane-run + Lead re-verification); Gradle composite build includeBuild ../../../packages/ds-jetpack-compose substituting ds-jetpack-compose:library; NOT FSDS ledger + findings in examples/operations-dashboard/compose/README.md at 6e33cae44"
+    recorded_at: "2026-10-27T03:33:12.779Z"
