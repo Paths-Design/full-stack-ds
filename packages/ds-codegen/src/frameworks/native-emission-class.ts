@@ -992,6 +992,20 @@ export function conventionalProp(
 }
 
 /**
+ * The styled prop under a conventional name when it is string-typed —
+ * the typed presence query behind e.g. "a string icon prop feeds the
+ * registry; a ReactNode icon prop is a consumer region."
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function stringConventionalProp(
+  ir: ComponentIR,
+  name: string,
+): ResolvedPropIR | undefined {
+  return ir.styledProps.find((p) => p.safeName === name && p.type === "string");
+}
+
+/**
  * Whether a filtered prop collection still holds a conventional name — for
  * emitters that branch over a derived subset (e.g. the not-handled string
  * props) rather than the full styledProps set.
