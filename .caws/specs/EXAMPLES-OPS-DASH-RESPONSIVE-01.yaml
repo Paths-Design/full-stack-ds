@@ -43,3 +43,8 @@ contracts:
   - name: 'operations-dashboard-spec'
     type: behavior
     path: 'examples/operations-dashboard/spec.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "All four lanes verified on the committed tree at ecea156b7 by the Lead: swift build + swift test exit 0 (26/26, incl. 8 ShellLayoutTests pinning tier thresholds/column invariants); ./gradlew clean compileKotlin test exit 0 (21/21 incl. FilterStateTest); cargo +1.94.1 build/test exit 0 (16/16); react typecheck + build exit 0 plus tmp/responsive-check.mjs — a 16-assertion headless Playwright run over the built lane asserting wide/medium/narrow collapse, filters-apply-while-collapsed, active-count badge, two-column medium grid, single-column narrow stack, and no horizontal overflow at the 720px floor (16/16 PASS)"
+    recorded_at: "2026-10-27T15:28:02.315Z"
