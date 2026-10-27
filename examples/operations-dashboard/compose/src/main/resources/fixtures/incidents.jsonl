@@ -1,0 +1,10 @@
+{"id":"INC-1042","title":"Checkout API latency spike","service":"checkout-api","severity":"critical","environment":"prod","openedAt":"2026-06-26T08:12:00.000Z","assignee":"arivera","resolved":false}
+{"id":"INC-1043","title":"Payment webhook retries exhausted","service":"payments-worker","severity":"critical","environment":"prod","openedAt":"2026-06-26T08:40:00.000Z","assignee":null,"resolved":false}
+{"id":"INC-1044","title":"Search results stale on staging","service":"search-index","severity":"high","environment":"staging","openedAt":"2026-06-26T07:55:00.000Z","assignee":"lchen","resolved":false}
+{"id":"INC-1045","title":"Image CDN 5xx in EU region","service":"media-cdn","severity":"high","environment":"prod","openedAt":"2026-06-26T06:30:00.000Z","assignee":null,"resolved":false}
+{"id":"INC-1046","title":"Dev seed job flaky","service":"seed-runner","severity":"low","environment":"dev","openedAt":"2026-06-25T22:10:00.000Z","assignee":"pkumar","resolved":false}
+{"id":"INC-1047","title":"Staging deploy queue backed up","service":"deploy-orchestrator","severity":"high","environment":"staging","openedAt":"2026-06-26T05:05:00.000Z","assignee":null,"resolved":false}
+{"id":"INC-1048","title":"Notification fanout degraded","service":"notify-fanout","severity":"high","environment":"prod","openedAt":"2026-06-26T09:01:00.000Z","assignee":"arivera","resolved":false}
+{"id":"INC-1049","title":"Low disk on dev analytics box","service":"analytics-dev","severity":"low","environment":"dev","openedAt":"2026-06-25T19:45:00.000Z","assignee":null,"resolved":false}
+{"id":"INC-1050","title":"Feature flag service auth errors","service":"flags-api","severity":"critical","environment":"staging","openedAt":"2026-06-26T04:20:00.000Z","assignee":"lchen","resolved":false}
+{"id":"INC-1051","title":"Cron skew on prod scheduler","service":"scheduler","severity":"low","environment":"prod","openedAt":"2026-06-26T03:00:00.000Z","assignee":"pkumar","resolved":false}

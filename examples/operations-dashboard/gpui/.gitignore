@@ -1,0 +1,3 @@
+# Lane-local Rust build products. Source and the dependency lock (Cargo.lock)
+# remain tracked, mirroring packages/ds-gpui's posture in the root .gitignore.
+/target

@@ -1,0 +1,14 @@
+{
+  "services": [
+    { "id": "checkout-api", "name": "Checkout API", "status": "degraded", "environment": "prod" },
+    { "id": "payments-worker", "name": "Payments Worker", "status": "down", "environment": "prod" },
+    { "id": "media-cdn", "name": "Media CDN", "status": "degraded", "environment": "prod" },
+    { "id": "notify-fanout", "name": "Notification Fanout", "status": "degraded", "environment": "prod" },
+    { "id": "scheduler", "name": "Scheduler", "status": "healthy", "environment": "prod" },
+    { "id": "search-index", "name": "Search Index", "status": "degraded", "environment": "staging" },
+    { "id": "deploy-orchestrator", "name": "Deploy Orchestrator", "status": "degraded", "environment": "staging" },
+    { "id": "flags-api", "name": "Feature Flags API", "status": "down", "environment": "staging" },
+    { "id": "seed-runner", "name": "Seed Runner", "status": "healthy", "environment": "dev" },
+    { "id": "analytics-dev", "name": "Analytics (dev)", "status": "healthy", "environment": "dev" }
+  ]
+}

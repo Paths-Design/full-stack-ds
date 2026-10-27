@@ -1,0 +1,17 @@
+{"incidentId":"INC-1042","at":"2026-06-26T08:12:00.000Z","kind":"opened","message":"Latency p99 crossed 2s on checkout-api."}
+{"incidentId":"INC-1042","at":"2026-06-26T08:14:30.000Z","kind":"ack","message":"arivera acknowledged and began triage."}
+{"incidentId":"INC-1042","at":"2026-06-26T08:21:00.000Z","kind":"comment","message":"Upstream payments dependency is timing out; correlating with INC-1043."}
+{"incidentId":"INC-1042","at":"2026-06-26T08:35:00.000Z","kind":"escalated","message":"Paged secondary on-call; customer impact confirmed."}
+{"incidentId":"INC-1043","at":"2026-06-26T08:40:00.000Z","kind":"opened","message":"Payment webhook retry budget exhausted for 3 merchants."}
+{"incidentId":"INC-1043","at":"2026-06-26T08:48:00.000Z","kind":"comment","message":"Dead-letter queue depth climbing; no owner assigned yet."}
+{"incidentId":"INC-1044","at":"2026-06-26T07:55:00.000Z","kind":"opened","message":"Search index lag exceeds 10 minutes on staging."}
+{"incidentId":"INC-1044","at":"2026-06-26T08:05:00.000Z","kind":"ack","message":"lchen acknowledged; reindex job queued."}
+{"incidentId":"INC-1045","at":"2026-06-26T06:30:00.000Z","kind":"opened","message":"media-cdn returning 5xx for EU edge nodes."}
+{"incidentId":"INC-1046","at":"2026-06-25T22:10:00.000Z","kind":"opened","message":"Dev seed job intermittently fails on fresh DB."}
+{"incidentId":"INC-1047","at":"2026-06-26T05:05:00.000Z","kind":"opened","message":"Deploy queue depth at 14 and not draining."}
+{"incidentId":"INC-1048","at":"2026-06-26T09:01:00.000Z","kind":"opened","message":"Notification fanout p95 degraded; backlog forming."}
+{"incidentId":"INC-1048","at":"2026-06-26T09:06:00.000Z","kind":"ack","message":"arivera acknowledged."}
+{"incidentId":"INC-1049","at":"2026-06-25T19:45:00.000Z","kind":"opened","message":"Disk at 91% on analytics-dev."}
+{"incidentId":"INC-1050","at":"2026-06-26T04:20:00.000Z","kind":"opened","message":"flags-api returning 401 for service tokens on staging."}
+{"incidentId":"INC-1050","at":"2026-06-26T04:31:00.000Z","kind":"ack","message":"lchen acknowledged; rotating signing key."}
+{"incidentId":"INC-1051","at":"2026-06-26T03:00:00.000Z","kind":"opened","message":"Scheduler firing jobs ~90s late on prod."}
