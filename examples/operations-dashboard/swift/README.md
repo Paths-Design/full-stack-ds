@@ -42,7 +42,9 @@ API — from public `DsSwiftUI` exports (`Card`, `Stack`, `FsdsField`, `Input`,
 `Details`, `Sheet`, `Dialog`, `Toast`, `Alert`, `AlertNotice`, `Skeleton`,
 `Spinner`, `FsdsDivider`) under `.environment(\.fsdsTheme,
 FsdsTheme(tokens: FsdsSemanticDefaults.light))`, with the lane's own code
-limited to the data seam and page-frame layout.
+limited to the data seam, the responsive page-frame shell (tier computation,
+collapsed-filters disclosure, queue column-squeeze arithmetic), and native
+text runs.
 
 ## Falsifier
 
@@ -59,9 +61,36 @@ From the repository root:
 
 ```bash
 swift build --package-path examples/operations-dashboard/swift   # CI-parity gate
-swift test  --package-path examples/operations-dashboard/swift   # seam suite (18 tests)
+swift test  --package-path examples/operations-dashboard/swift   # 18 seam tests + 8 shell tests
 swift run   --package-path examples/operations-dashboard/swift   # opens the dashboard window (local)
 ```
+
+### Responsive behavior
+
+Realizes the spec's "### Responsive behavior" section. The shell measures the
+window content width with a `GeometryReader` and lowers it to a `ShellTier`
+(`ShellLayout.swift` — pure, unit-tested arithmetic):
+
+- **Wide (≥ 1280pt)** — filter rail (264pt) + queue + detail (360pt) in one
+  row, under the header band. The window minimum is 720×520, so every tier is
+  actually reachable.
+- **Medium (900–1279pt)** — queue + detail row; the rail is collapsed behind a
+  persistent **Filters** toggle (`FsdsButton` + counter `Badge` showing the
+  active-filter count). Expanding reveals the same filter `Card` inline above
+  the row. Collapsed filters keep applying — only the controls are hidden.
+- **Narrow (< 900pt)** — single column in the spec's order: header → filters
+  (collapsed by default behind the same toggle) → queue → detail. The detail
+  pane is a full-width section in the same vertical scroll, never a modal.
+
+Cross-tier invariants: window resizes to 720×520 with no clipped or
+unreachable region; the queue never scrolls horizontally — table columns
+squeeze (floors when space allows, proportional below them, all seven columns
+always present, widths sum exactly to the pane width via
+`QueueColumns.widths(for:)`, cells truncate); filter, selection, and overlay
+semantics are tier-independent (one `DashboardController` drives every shell).
+The tier thresholds, per-tier queue widths, column invariants, and the
+active-filter count are pinned by `ShellLayoutTests` — arithmetic only, not
+rendered layout (see non-claims).
 
 ## Partial-realization ledger
 
@@ -84,7 +113,10 @@ Assign workflow | `Sheet` (title/bodyContent/footer regions) hosting `FsdsField`
 Resolve & close confirm | `Dialog` (title/bodyContent/footer regions); confirm removes the item, clears selection, raises Toast; cancel is a no-op | **FSDS**
 Transient acknowledgement | `Toast` (single surface, dwell auto-dismiss, `Badge` in the item region) | **FSDS** surface, variant conveyed via `Badge` — the Swift `Toast` exposes no variant channel (finding 4)
 Multi-child layout inside regions | `Stack` (vertical/horizontal) | **FSDS**
-Page-frame shell (header row, three-pane body, fixed rail/detail widths) | Plain SwiftUI `VStack`/`HStack` | **NOT FSDS** (allowed page-frame region per spec)
+Responsive tiers (wide/medium/narrow) | App-computed geometry: `GeometryReader` → `ShellTier` → three shells in `OperationsDashboardApp`; thresholds and width arithmetic in `ShellLayout.swift` | **NOT FSDS** (page-frame region the spec claims; no breakpoint concept exists on this target — finding 7)
+Collapsed-filters toggle (medium/narrow) | `FsdsButton` + counter `Badge` (active-filter count) in a `Stack`; expansion shows the same filter `Card` inline; collapse mechanism is app shell state | FSDS controls, **NOT FSDS** disclosure plumbing (finding 7)
+Queue table columns (flexible, never dropped) | `QueueColumns.widths(for:)` distributes the pane width — floors, proportional squeeze, exact sum; cells truncate via `lineLimit(1)`; the severity `Badge` label caps inside its track | **NOT FSDS** arithmetic inside the FSDS `FsdsTable` (no column-priority/visibility API on the target — finding 8)
+Page-frame shell (header row, pane columns per tier, scroll ownership) | Plain SwiftUI `VStack`/`HStack`/`ScrollView` driven by the tier | **NOT FSDS** (allowed page-frame region per spec)
 Density toggle | Not realized — `FsdsTable` exposes no density channel (spec-declared residual, finding 5) | —
 Overlay dismissal | Esc / backdrop click dismissal is the native sheet surface the components present through (`onOpenChange` channel receives it); focus behavior is platform-modal, not component-owned | **FSDS** channels, platform mechanism (finding 6)
 
@@ -129,20 +161,44 @@ the lane, not silently worked around:
    channels, but no component-owned focus trap exists to assert. Ledger text:
    *"Overlay focus/dismissal → platform sheet mechanism behind FSDS open
    channels."*
+7. **No breakpoint / container-size concept on the swiftui target.** Surface:
+   the target as a whole (no component or runtime export answers "how wide am
+   I?" or declares responsive behavior). Missing: anything equivalent to the
+   web targets' container-query/breakpoint story, so tier computation is
+   app-computed `GeometryReader` width in the consumer, and the spec's
+   thresholds live in lane code (`ShellTier`) rather than anywhere
+   package-owned. The collapsed-filters disclosure mechanism is likewise app
+   shell state (only its controls are FSDS). Ledger text: *"Responsive tiers →
+   app-computed GeometryReader width; no breakpoint/container-size concept
+   exists on the swiftui target."*
+8. **`FsdsTable` exposes no column-priority or column-visibility API.**
+   Surface: `FsdsTable`. Missing: any channel to express "drop or deprioritize
+   this column under width pressure," so the spec's never-drop invariant is
+   realized as app arithmetic (`QueueColumns.widths(for:)`: floors when space
+   allows, proportional squeeze below them, exact-width sum so rows can't
+   overflow their pane). Ledger text: *"Table columns squeeze, never drop →
+   app-side width distribution inside FSDS `FsdsTable` (no column
+   priority/visibility API)."*
 
 ## Non-claims
 
-- **Compile + seam tests only.** The gates prove the package graph compiles
-  (`swift build`) and the seam behaves (`swift test`, 18 tests at
-  `latencyMs: 0`). They do not prove UI correctness.
-- **No automated visual or interaction proof.** `swift run` opens the window
-  for manual inspection (queue, filters, selection, detail disclosure, sheet,
-  dialog, toast, error+retry, empty state), but no XCUITest/screenshot rail
-  pins the spec's ten interactions. This matches (and does not exceed) the
-  settings swift lane's evidence class.
+- **Compile + tests only.** The gates prove the package graph compiles
+  (`swift build`) and that the seam behaves (18 tests, `latencyMs: 0`) and the
+  responsive shell arithmetic holds (8 `ShellLayoutTests`: tier thresholds,
+  per-tier queue widths, column never-drop/exact-sum/floor/squeeze invariants,
+  active-filter count). They do not prove UI correctness.
+- **No automated visual, resize, or interaction proof.** `swift run` opens the
+  window for manual inspection (all three tiers by resizing; filters,
+  selection, detail disclosure, sheet, dialog, toast, error+retry, empty
+  state), but no XCUITest/screenshot rail pins the rendered tier layouts or
+  the spec's ten interactions — the shell tests pin the arithmetic, not the
+  rendering. This matches (and does not exceed) the settings swift lane's
+  evidence class.
 - **No parity claim.** This lane does not claim semantic parity with the
-  React/Vue/Svelte/Angular/Lit lanes; cross-framework parity remains the
-  spec's open acceptance item (spec.md → Acceptance 3).
+  React/Vue/Svelte/Angular/Lit lanes — including responsive parity: same tier
+  semantics by construction, not proven by a shared cross-lane check.
+  Cross-framework parity remains the spec's open acceptance item (spec.md →
+  Acceptance 3).
 - **Not a backend.** The seam is a fixture-backed async shape, not a server;
   nothing about real fetching, pagination, or persistence is proven.
 - **Not generated-artifact admission.** Hand-written consumer code outside the

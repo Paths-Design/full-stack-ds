@@ -48,6 +48,15 @@ struct FilterState: Equatable {
             || !severities.isEmpty
     }
 
+    /// Number of active filter constraints (the collapsed-tier Filters
+    /// toggle's Badge count): one for search, one for environment, one per
+    /// selected severity.
+    var activeCount: Int {
+        (search.trimmingCharacters(in: .whitespaces).isEmpty ? 0 : 1)
+            + (environment == nil ? 0 : 1)
+            + severities.count
+    }
+
     /// Translate into the API's filter record (React parity: pass `search`
     /// untrimmed — the API trims; only non-empty axes are sent).
     var asApiFilters: IncidentFilters {

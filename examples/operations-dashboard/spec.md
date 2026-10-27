@@ -38,6 +38,28 @@ Any of these is evidence the claim is false (or the boundary is too weak), to be
 
 One page, no routing. A persistent top region, a left filter rail, a central queue pane, and a right detail pane. Use FSDS components (`Stack`, `Card`, etc.) for component composition and package-owned behavior. Minimal app-shell layout CSS is allowed for page regions the design system does not claim (the two-pane frame, columns, sticky regions, responsive shell), but it must not substitute for component behavior, state indication, density, focus, overlay, or token/styling surfaces — those must come from the package, and a place where app-shell CSS has to supply one of them is a finding.
 
+### Responsive behavior
+
+The shell is responsive: every lane implements the same tier semantics at the
+same thresholds, measured on the app window's content width. The responsive
+shell is app-layer code (the page-structure doctrine above claims the frame,
+columns, and responsive shell for the app); packages owe component behavior
+*within* each region. The React lane's stylesheet collapse is the reference
+realization of the narrow tier.
+
+Tiers (by window content width):
+
+1. **Wide (≥ 1280px)** — the base layout: header band full-width; filter rail, queue pane, and detail pane in one row (rail ≈ 200–300px, queue flexible, detail ≈ 300–420px).
+2. **Medium (900–1279px)** — two regions in the row: queue + detail. The filter rail is collapsed behind a persistent **Filters** toggle affordance; activating it reveals the filter controls (an inline disclosure above the queue, or an equivalent overlay panel — presentation is lane-idiomatic). While collapsed, filters keep applying, and the toggle shows the count of active filters.
+3. **Narrow (< 900px)** — single column, in order: header band → filter controls (collapsed by default behind the same toggle) → queue → detail pane. The detail pane remains a visible section below the queue (stacked flow — the React lane's existing collapse is the reference), not a modal. Overlays (assign sheet, resolve dialog, toasts) behave as at any other tier.
+
+Cross-tier invariants:
+
+- The window resizes down to **720 × 520** with no clipped, truncated-past-recovery, or unreachable region; panes squeeze or reflow, never clip (the pre-responsive swift lane's fixed-frame clipping is the named anti-pattern).
+- Row and cell content wraps or truncates; lanes must not introduce horizontal scrolling to fit the queue.
+- No table column may be dropped at any tier (column visibility/priority is a package-level capability no target exposes — a recorded finding, not a lane-local workaround).
+- Filter, selection, and overlay semantics are tier-independent: the ten interaction requirements behave identically at every tier.
+
 ### Required regions
 
 1. **Header band** — app title, a global status summary expressed as `Stat`/`Status`/`Badge` tiles (e.g. *Healthy: 42*, *Degraded: 3*, *Down: 1*, *Open incidents: 7*). Counts are derived from the current (filtered) queue, not hard-coded.
@@ -150,3 +172,7 @@ Prose detail for the React findings lives in [`README.md`](./README.md) → "Rea
 | 10 | swift | `Dialog`/`Sheet` dismissal | Overlays present via the native sheet mechanism behind the FSDS open channels; Esc/backdrop/focus-exclusion behavior is platform-owned, and there is no component-owned focus trap to assert. Realized through the components' default channels as the spec words it — ledgered, not separately provable. | open — platform-default realization |
 | 11 | gpui | `Table`, `Button`, `Select`, `Dialog`/`Sheet`/`Toast`, `Skeleton`/`Spinner`/`Alert`/`Status`, `Stack`/`Card`, text input | The 7-component allowlist (Switch, ToggleSwitch, Checkbox, Text, Badge, Divider, Stat) covers the summary band, severity filters/badges, and chrome only. Every other dashboard region is hand-authored GPUI marked NOT FSDS — including a minimal text field (gpui 0.2.2 ships no text-input widget) and overlay surfaces with a hand-authored focus trap. The menu/pagination/sortable-header residuals are not implementable on this target at all. | open — allowlist boundary (by design; ledgered per component) |
 | 12 | compose | `Field`, `Text` | Positive contrast with React finding 1: the Compose `Field` takes label/control composable slots and `Text` takes a content lambda — both usable, with no children-drop behavior. Recorded as the parity counterpoint to #1. | recorded — parity note |
+| 13 | compose (vs web, swiftui) | `Status` border realization | Chip borders are inconsistent in the compose lane's summary band (Status chips Healthy/Degraded/Down borderless next to bordered severity/counter `Badge` chips). Authority chain: the contract styles sidecars give **both** components 1px solid variant-tinted borders (`badge.color.border` / `status.color.border` → semantic tokens, per-variant overrides), SwiftUI lowers both, but the generated Compose `Status` carries **no border slots at all** (no `border` in `Status.kt`/`StatusTokens.kt`) while Compose `Badge` keeps `badge.color.border` — the compose emitter drops Status's border surface. The fix belongs in the jetpack-compose emitter (or a contract-level border decision folded into `Status.styles.json`), regenerated across targets — never lane-local CSS. | open — native emitter realization gap |
+| 14 | swift, compose, gpui | responsive tiers (platform) | No breakpoint/container-size concept exists on any native target: tiers are app-computed geometry (SwiftUI `GeometryReader`, Compose `BoxWithConstraints`, GPUI `window.viewport_size()`), and the spec's pinned thresholds live in lane code — nowhere package-owned. Cross-lane tier parity is therefore provable only by comparing lanes; web remains the only target with a platform breakpoint mechanism (CSS media queries). | open — platform gap (by design; ledgered per lane) |
+| 15 | react, swift, compose, gpui | `Table` column priority | No table surface on any target exposes a column-priority/visibility or min-width API, so the responsive invariant "columns squeeze or truncate, never drop" is realized entirely app-side per lane (Swift per-column floors + exact-sum distribution, Compose per-tier fixed→weighted columns, GPUI tier-compressed widths, web via CSS minmax). | open — missing public export |
+| 16 | compose, swift, gpui | minor realization notes | Per-lane notes from the responsive work: the Compose header wrap uses experimental foundation `FlowRow` (page-frame arrangement only); SwiftUI's FSDS `Badge` has no intrinsic max-width channel (squeeze capping applied to its content `Text`); GPUI has no resize-listener API (resize re-renders; the collapse choice is the only stored responsive state). | recorded — realization notes |

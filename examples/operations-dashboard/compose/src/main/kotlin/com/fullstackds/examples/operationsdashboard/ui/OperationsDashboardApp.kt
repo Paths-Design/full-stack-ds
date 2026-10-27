@@ -14,11 +14,15 @@
 
 package com.fullstackds.examples.operationsdashboard.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -42,6 +47,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.fullstackds.components.alert.Alert
@@ -90,6 +96,13 @@ import com.fullstackds.examples.operationsdashboard.domain.IncidentDetail
 import com.fullstackds.examples.operationsdashboard.domain.ServiceStatus
 import com.fullstackds.examples.operationsdashboard.domain.TimelineEvent
 
+/** Responsive tiers, pinned by the spec's "Responsive behavior" section. */
+private enum class ShellTier { Wide, Medium, Narrow }
+
+/** Tier breakpoints on the window content width (spec authority: wide ≥1280, medium 900–1279, narrow <900). */
+private val WIDE_MIN_WIDTH = 1280.dp
+private val MEDIUM_MIN_WIDTH = 900.dp
+
 @Composable
 fun OperationsDashboardApp(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
@@ -101,7 +114,41 @@ fun OperationsDashboardApp(modifier: Modifier = Modifier) {
         dash.load(dash.filters)
     }
 
-    Column(modifier = modifier.fillMaxSize()) {
+    // NOT FSDS: responsive shell. The target exposes no breakpoint concept,
+    // so the tier is app-computed from the window content width via
+    // BoxWithConstraints (no material3-adaptive artifacts). Page-frame
+    // plumbing only — the spec claims the frame/columns/responsive shell for
+    // the app; component behavior within each region stays with the package.
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        val tier = when {
+            maxWidth >= WIDE_MIN_WIDTH -> ShellTier.Wide
+            maxWidth >= MEDIUM_MIN_WIDTH -> ShellTier.Medium
+            else -> ShellTier.Narrow
+        }
+        when (tier) {
+            ShellTier.Wide -> WideShell(dash)
+            ShellTier.Medium -> MediumShell(dash)
+            ShellTier.Narrow -> NarrowShell(dash)
+        }
+    }
+
+    // Overlays: the FSDS Dialog/Sheet/Toast gate their own content on the
+    // controlled `open` channel, so these regions are inert while closed.
+    // Tier-independent by construction (spec cross-tier invariant).
+    AssignSheet(dash)
+    ResolveDialog(dash)
+    ToastRegion(dash)
+}
+
+// --- Shells (one per responsive tier) -------------------------------------------
+
+/**
+ * Wide (≥ 1280): the base layout — header band full-width; filter rail,
+ * queue pane, and detail pane in one row.
+ */
+@Composable
+private fun WideShell(dash: DashboardController) {
+    Column(modifier = Modifier.fillMaxSize()) {
         HeaderBand(dash)
         Row(
             modifier = Modifier
@@ -116,23 +163,118 @@ fun OperationsDashboardApp(modifier: Modifier = Modifier) {
                 FilterRail(dash, Modifier.fillMaxSize())
             }
             Box(Modifier.weight(1.2f).fillMaxHeight().padding(horizontal = 8.dp)) {
-                QueuePane(dash, Modifier.fillMaxSize())
+                QueuePane(dash, Modifier.fillMaxSize(), compact = false)
             }
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 DetailPane(dash, Modifier.fillMaxSize())
             }
         }
     }
+}
 
-    // Overlays: the FSDS Dialog/Sheet/Toast gate their own content on the
-    // controlled `open` channel, so these regions are inert while closed.
-    AssignSheet(dash)
-    ResolveDialog(dash)
-    ToastRegion(dash)
+/**
+ * Medium (900–1279): queue + detail in the row; the filter rail is collapsed
+ * behind a persistent Filters toggle (with the active-filter count), and the
+ * filter Card is revealed as an inline disclosure above the queue. Collapsing
+ * never clears filter state — filters keep applying while collapsed.
+ */
+@Composable
+private fun MediumShell(dash: DashboardController) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        HeaderBand(dash)
+        FilterDisclosureRow(dash, Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
+        FiltersPanel(dash, Modifier.padding(horizontal = 12.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+        ) {
+            Box(Modifier.weight(1.2f).fillMaxHeight().padding(horizontal = 8.dp)) {
+                QueuePane(dash, Modifier.fillMaxSize(), compact = true)
+            }
+            Box(Modifier.weight(1f).fillMaxHeight()) {
+                DetailPane(dash, Modifier.fillMaxSize())
+            }
+        }
+    }
+}
+
+/**
+ * Narrow (< 900): single stacked column in the spec's pinned order — header
+ * band → filter controls (collapsed by default behind the same toggle) →
+ * queue → detail pane as a full-width section below the queue in the scroll
+ * (not a modal).
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun NarrowShell(dash: DashboardController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
+        HeaderBand(dash)
+        FilterDisclosureRow(dash, Modifier.padding(horizontal = 12.dp, vertical = 4.dp))
+        FiltersPanel(dash, Modifier.padding(horizontal = 12.dp))
+        QueuePane(dash, Modifier.fillMaxWidth().padding(horizontal = 12.dp), compact = true)
+        Spacer(Modifier.height(12.dp))
+        DetailPane(dash, Modifier.fillMaxWidth().padding(horizontal = 12.dp))
+        Spacer(Modifier.height(12.dp))
+    }
+}
+
+// --- Filter disclosure (medium + narrow tiers) -------------------------------------
+
+/**
+ * Persistent Filters toggle: FSDS Button + FSDS Badge count of active filter
+ * values. While collapsed, filters keep applying (state lives in the
+ * controller, not in the panel's visibility).
+ */
+@Composable
+private fun FilterDisclosureRow(dash: DashboardController, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        val activeCount = dash.filters.activeCount
+        Button(
+            variant = ButtonVariant.Secondary,
+            accessibilityLabel = if (dash.filtersOpen) "Hide filters" else "Show filters",
+            onClick = { dash.filtersOpen = !dash.filtersOpen },
+        ) {
+            M3Text(
+                if (dash.filtersOpen) "Hide filters" else "Filters",
+                color = contentColor,
+                maxLines = 1,
+            )
+        }
+        // Spec: the toggle shows the count of active filters. Counter badge;
+        // warning-intent when any filter is active, info when none.
+        Badge(
+            variant = BadgeVariant.Counter,
+            intent = if (activeCount > 0) BadgeIntent.Warning else BadgeIntent.Info,
+        ) {
+            M3Text("$activeCount active", maxLines = 1)
+        }
+    }
+}
+
+/**
+ * Inline disclosure hosting the existing filter Card. The panel is
+ * height-bounded and internally scrollable so it can never push the queue
+ * out of reach at the 720×520 invariant size.
+ */
+@Composable
+private fun FiltersPanel(dash: DashboardController, modifier: Modifier = Modifier) {
+    AnimatedVisibility(visible = dash.filtersOpen, modifier = modifier) {
+        FilterRail(dash, Modifier.fillMaxWidth().heightIn(max = 320.dp))
+    }
 }
 
 // --- Region 1: header band ----------------------------------------------------
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun HeaderBand(dash: DashboardController) {
     // Summary counts are derived state: healthy/degraded/down from the loaded
@@ -142,71 +284,80 @@ private fun HeaderBand(dash: DashboardController) {
     val degraded = dash.services.count { it.status == ServiceStatus.Degraded }
     val down = dash.services.count { it.status == ServiceStatus.Down }
 
-    Row(
+    // NOT FSDS: header wrap. Foundation FlowRow wraps the summary tiles onto
+    // additional lines at constrained widths (720×520 invariant) instead of
+    // clipping or scrolling — pure page-frame arrangement.
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         FsdsText(
             variant = TextVariant.Headline,
             `as` = TextElement.H1,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.fillMaxWidth(),
         ) { M3Text("Operations dashboard") }
 
-        SummaryTile(
-            label = "Healthy",
-            statusValue = StatusStatus.Success,
-            trend = StatTrend.Neutral,
-            count = healthy,
-        )
-        SummaryTile(
-            label = "Degraded",
-            statusValue = StatusStatus.Warning,
-            trend = if (degraded > 0) StatTrend.Down else StatTrend.Neutral,
-            count = degraded,
-        )
-        SummaryTile(
-            label = "Down",
-            statusValue = StatusStatus.Danger,
-            trend = if (down > 0) StatTrend.Down else StatTrend.Neutral,
-            count = down,
-        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            SummaryTile(
+                label = "Healthy",
+                statusValue = StatusStatus.Success,
+                trend = StatTrend.Neutral,
+                count = healthy,
+            )
+            SummaryTile(
+                label = "Degraded",
+                statusValue = StatusStatus.Warning,
+                trend = if (degraded > 0) StatTrend.Down else StatTrend.Neutral,
+                count = degraded,
+            )
+            SummaryTile(
+                label = "Down",
+                statusValue = StatusStatus.Danger,
+                trend = if (down > 0) StatTrend.Down else StatTrend.Neutral,
+                count = down,
+            )
 
-        // Open incidents: a Badge tile; the tooltip explains that the count is
-        // filter-scoped (the spec's "secondary affordance" via Tooltip).
-        Card(density = CardDensity.Inset) {
-            Stat(trend = StatTrend.Neutral) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Tooltip(
-                        placement = TooltipPlacement.Bottom,
-                        trigger = {
-                            Badge(variant = BadgeVariant.Counter, intent = BadgeIntent.Info) {
-                                M3Text("Open incidents")
-                            }
-                        },
-                    ) {
-                        M3Text("Counts the current filtered queue, not the full fleet.")
+            // Open incidents: a Badge tile; the tooltip explains that the
+            // count is filter-scoped (the spec's "secondary affordance" via
+            // Tooltip).
+            Card(density = CardDensity.Inset) {
+                Stat(trend = StatTrend.Neutral) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Tooltip(
+                            placement = TooltipPlacement.Bottom,
+                            trigger = {
+                                Badge(variant = BadgeVariant.Counter, intent = BadgeIntent.Info) {
+                                    M3Text("Open incidents", maxLines = 1)
+                                }
+                            },
+                        ) {
+                            M3Text("Counts the current filtered queue, not the full fleet.")
+                        }
+                        M3Text(
+                            text = "${dash.incidents.size}",
+                            style = MaterialTheme.typography.headlineSmall,
+                        )
                     }
-                    M3Text(
-                        text = "${dash.incidents.size}",
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
                 }
             }
-        }
 
-        // Dev affordance: toggle the API's simulated load-failure flag so the
-        // error + retry path is demonstrable from the UI (mirrors React lane).
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(
-                checked = dash.failLoads,
-                onChange = { dash.simulateLoadFailure(it) },
-                contentDescription = "Simulate load failure",
-            )
-            Spacer(Modifier.width(6.dp))
-            M3Text("Simulate load failure", style = MaterialTheme.typography.labelMedium)
+            // Dev affordance: toggle the API's simulated load-failure flag so
+            // the error + retry path is demonstrable from the UI (mirrors the
+            // React lane).
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(
+                    checked = dash.failLoads,
+                    onChange = { dash.simulateLoadFailure(it) },
+                    contentDescription = "Simulate load failure",
+                )
+                Spacer(Modifier.width(6.dp))
+                M3Text("Simulate load failure", style = MaterialTheme.typography.labelMedium)
+            }
         }
     }
 }
@@ -297,15 +448,39 @@ private fun FilterRail(dash: DashboardController, modifier: Modifier = Modifier)
 
 // --- Region 3: queue pane -------------------------------------------------------
 
-private val COLUMN_ID = 96.dp
-private val COLUMN_SERVICE = 112.dp
-private val COLUMN_SEVERITY = 96.dp
-private val COLUMN_ENV = 60.dp
-private val COLUMN_AGE = 48.dp
-private val COLUMN_ASSIGNEE = 84.dp
+/**
+ * Layout rule for one queue column. Wide keeps the roomy fixed widths (title
+ * flexes); medium/narrow share the row width by weight so no column is ever
+ * dropped or clipped at the 720×520 invariant size — cells truncate to
+ * ellipsis instead (spec cross-tier invariants).
+ */
+private data class QueueColumnSpec(val fixed: Dp?, val compactWeight: Float) {
+    /**
+     * Cell modifier for this column in the given tier. [scope] is the Row
+     * scope the cell composes into (`weight` only exists there).
+     */
+    fun cellModifier(compact: Boolean, scope: RowScope): Modifier =
+        if (compact) {
+            with(scope) { Modifier.weight(compactWeight) }
+        } else {
+            fixed?.let { Modifier.width(it) } ?: with(scope) { Modifier.weight(1f) }
+        }
+}
+
+private val COLUMN_ID = QueueColumnSpec(fixed = 96.dp, compactWeight = 1.4f)
+private val COLUMN_TITLE = QueueColumnSpec(fixed = null, compactWeight = 2.4f)
+private val COLUMN_SERVICE = QueueColumnSpec(fixed = 112.dp, compactWeight = 1.6f)
+private val COLUMN_SEVERITY = QueueColumnSpec(fixed = 96.dp, compactWeight = 1.4f)
+private val COLUMN_ENV = QueueColumnSpec(fixed = 60.dp, compactWeight = 1.0f)
+private val COLUMN_AGE = QueueColumnSpec(fixed = 48.dp, compactWeight = 0.9f)
+private val COLUMN_ASSIGNEE = QueueColumnSpec(fixed = 84.dp, compactWeight = 1.4f)
 
 @Composable
-private fun QueuePane(dash: DashboardController, modifier: Modifier = Modifier) {
+private fun QueuePane(
+    dash: DashboardController,
+    modifier: Modifier = Modifier,
+    compact: Boolean,
+) {
     Card(modifier = modifier) {
         Column(
             modifier = Modifier
@@ -317,7 +492,7 @@ private fun QueuePane(dash: DashboardController, modifier: Modifier = Modifier) 
                 LoadPhase.Error -> QueueError(dash)
                 LoadPhase.Loading -> QueueLoading()
                 LoadPhase.Loaded ->
-                    if (dash.incidents.isEmpty()) QueueEmpty() else QueueTable(dash)
+                    if (dash.incidents.isEmpty()) QueueEmpty() else QueueTable(dash, compact)
             }
         }
     }
@@ -375,7 +550,7 @@ private fun QueueEmpty() {
 }
 
 @Composable
-private fun QueueTable(dash: DashboardController) {
+private fun QueueTable(dash: DashboardController, compact: Boolean) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         FsdsText(variant = TextVariant.Title) {
             M3Text("Incident queue (${dash.incidents.size})")
@@ -384,16 +559,19 @@ private fun QueueTable(dash: DashboardController) {
         // only the padded/radius container — it emits no row/cell parts and
         // exposes no row-selection channel (the Compose twin of the React
         // lane's Table finding). Rows below are app-composed; selection state
-        // is app-tracked and the selected-row visual is app-side. Recorded in
-        // the README partial-realization ledger.
+        // is app-tracked and the selected-row visual is app-side. The
+        // compact column model is likewise app-side: the Table exposes no
+        // column-priority/visibility API (README ledger). Recorded in the
+        // README partial-realization ledger.
         Table(modifier = Modifier.fillMaxWidth()) {
             Column {
-                QueueHeaderRow()
+                QueueHeaderRow(compact)
                 dash.incidents.forEach { incident ->
                     QueueRow(
                         incident = incident,
                         isSelected = incident.id == dash.selectedId,
                         nowMs = queueNowMs(),
+                        compact = compact,
                         onSelect = { dash.selectIncident(incident.id) },
                     )
                 }
@@ -410,15 +588,15 @@ private fun QueueTable(dash: DashboardController) {
 private fun queueNowMs(): Long = remember { System.currentTimeMillis() }
 
 @Composable
-private fun QueueHeaderRow() {
+private fun QueueHeaderRow(compact: Boolean) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        QueueCell(width = COLUMN_ID, text = "ID", header = true)
-        QueueCell(width = null, text = "Title", header = true)
-        QueueCell(width = COLUMN_SERVICE, text = "Service", header = true)
-        QueueCell(width = COLUMN_SEVERITY, text = "Severity", header = true)
-        QueueCell(width = COLUMN_ENV, text = "Env", header = true)
-        QueueCell(width = COLUMN_AGE, text = "Age", header = true)
-        QueueCell(width = COLUMN_ASSIGNEE, text = "Assignee", header = true)
+        QueueCell(COLUMN_ID, compact, text = "ID", header = true)
+        QueueCell(COLUMN_TITLE, compact, text = "Title", header = true)
+        QueueCell(COLUMN_SERVICE, compact, text = "Service", header = true)
+        QueueCell(COLUMN_SEVERITY, compact, text = "Severity", header = true)
+        QueueCell(COLUMN_ENV, compact, text = "Env", header = true)
+        QueueCell(COLUMN_AGE, compact, text = "Age", header = true)
+        QueueCell(COLUMN_ASSIGNEE, compact, text = "Assignee", header = true)
     }
 }
 
@@ -427,6 +605,7 @@ private fun QueueRow(
     incident: Incident,
     isSelected: Boolean,
     nowMs: Long,
+    compact: Boolean,
     onSelect: () -> Unit,
 ) {
     Row(
@@ -451,36 +630,51 @@ private fun QueueRow(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         // The id doubles as a package-owned press/focus affordance (the
-        // React lane's in-cell Button posture, ported).
+        // React lane's in-cell Button posture, ported). In compact tiers the
+        // button shares the row by weight and its label truncates.
         Button(
             variant = ButtonVariant.Ghost,
             size = ButtonSize.Small,
             accessibilityLabel = "Select ${incident.id}",
             onClick = onSelect,
+            modifier = if (compact) Modifier.weight(COLUMN_ID.compactWeight) else Modifier,
         ) {
-            M3Text(incident.id, color = contentColor, style = MaterialTheme.typography.labelMedium)
+            M3Text(
+                incident.id,
+                color = contentColor,
+                style = MaterialTheme.typography.labelMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
-        QueueCell(width = null, text = incident.title)
-        QueueCell(width = COLUMN_SERVICE, text = incident.service)
-        Box(Modifier.width(COLUMN_SEVERITY)) {
+        QueueCell(COLUMN_TITLE, compact, text = incident.title)
+        QueueCell(COLUMN_SERVICE, compact, text = incident.service)
+        Box(COLUMN_SEVERITY.cellModifier(compact, this)) {
             Badge(
                 variant = BadgeVariant.Status,
                 intent = severityIntent(incident.severity),
             ) {
-                M3Text(SEVERITY_LABEL[incident.severity] ?: incident.severity.name)
+                M3Text(
+                    SEVERITY_LABEL[incident.severity] ?: incident.severity.name,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
-        QueueCell(width = COLUMN_ENV, text = incident.environment.name.lowercase())
-        QueueCell(width = COLUMN_AGE, text = formatAge(incident.openedAt, nowMs))
-        QueueCell(width = COLUMN_ASSIGNEE, text = incident.assignee ?: "—")
+        QueueCell(COLUMN_ENV, compact, text = incident.environment.name.lowercase())
+        QueueCell(COLUMN_AGE, compact, text = formatAge(incident.openedAt, nowMs))
+        QueueCell(COLUMN_ASSIGNEE, compact, text = incident.assignee ?: "—")
     }
 }
 
 @Composable
-private fun RowScope.QueueCell(width: Dp?, text: String, header: Boolean = false) {
-    Box(
-        modifier = if (width != null) Modifier.width(width) else Modifier.weight(1f),
-    ) {
+private fun RowScope.QueueCell(
+    spec: QueueColumnSpec,
+    compact: Boolean,
+    text: String,
+    header: Boolean = false,
+) {
+    Box(modifier = spec.cellModifier(compact, this)) {
         M3Text(
             text = text,
             style = if (header) {
@@ -490,6 +684,7 @@ private fun RowScope.QueueCell(width: Dp?, text: String, header: Boolean = false
             },
             fontWeight = if (header) FontWeight.SemiBold else null,
             maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

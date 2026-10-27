@@ -107,6 +107,42 @@ body {
   gap: 0.5rem;
 }
 
+/* Responsive tier: collapsed-rail affordance (see spec.md "Responsive
+   behavior"). Hidden at the wide tier — the fixed rail column owns filters
+   there. The toggle is a package Button, the count a package Badge; these
+   rules position them only. */
+.ops-filterbar,
+.ops-rail-inline {
+  display: none;
+}
+
+/* Medium tier (900–1279px): rail column collapses; queue + detail share the
+   row and the filters render behind the toggle as an inline disclosure above
+   the queue. Filters keep applying while collapsed. NOTE: this block must
+   precede the narrow block below so the 900px stack wins the cascade where
+   both media queries match. */
+@media (max-width: 1279px) {
+  .ops-body {
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1.2fr);
+  }
+
+  .ops-rail {
+    display: none;
+  }
+
+  .ops-filterbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-end: 0.75rem;
+  }
+
+  .ops-rail-inline {
+    display: block;
+    margin-block-end: 1rem;
+  }
+}
+
 /* Responsive collapse: stack the three panes on narrow viewports. */
 @media (max-width: 900px) {
   .ops-body {

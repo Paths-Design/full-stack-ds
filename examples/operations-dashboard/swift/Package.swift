@@ -42,7 +42,11 @@ let package = Package(
         .testTarget(
             name: "OperationsDashboardTests",
             dependencies: [
-                "OperationsDashboardSeam"
+                "OperationsDashboardSeam",
+                // The app module too: the responsive shell arithmetic
+                // (ShellTier/ShellLayout/QueueColumns) is spec-pinned and
+                // unit-tested (ShellLayoutTests).
+                "OperationsDashboard"
             ]
         )
     ]

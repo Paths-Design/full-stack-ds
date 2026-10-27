@@ -59,6 +59,79 @@ const LATENCY_MS: u64 = 250;
 /// Deterministic skeleton-line widths for the detail pane placeholders.
 const DETAIL_SKELETON_WIDTHS: [f32; 4] = [220., 340., 300., 160.];
 
+/// Responsive tier (spec: "Responsive behavior"), a pure function of the
+/// window's content width — never persisted. The gpui target has no breakpoint
+/// concept, so the lane computes thresholds from `window.viewport_size()`;
+/// that app-computed shell is page-frame plumbing (allowed) and is a recorded
+/// boundary finding.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Tier {
+    /// < 900px — single column: header → filters (collapsed) → queue → detail.
+    Narrow,
+    /// 900–1279px — queue + detail row; filters collapsed behind a toggle.
+    Medium,
+    /// ≥ 1280px — filter rail + queue + detail in one row (the base layout).
+    Wide,
+}
+
+impl Tier {
+    fn from_viewport_width(width: gpui::Pixels) -> Self {
+        let width = f32::from(width);
+        if width >= 1280. {
+            Tier::Wide
+        } else if width >= 900. {
+            Tier::Medium
+        } else {
+            Tier::Narrow
+        }
+    }
+}
+
+/// Tier-aware fixed widths for the hand-authored queue row grid. No column is
+/// ever dropped at any tier (spec invariant — column visibility/priority is a
+/// package-level capability no target exposes); widths compress instead, and
+/// every cell truncates rather than introducing horizontal scrolling.
+#[derive(Clone, Copy)]
+struct ColumnWidths {
+    id: f32,
+    service: f32,
+    severity: f32,
+    environment: f32,
+    age: f32,
+    assignee: f32,
+}
+
+impl ColumnWidths {
+    fn for_tier(tier: Tier) -> Self {
+        match tier {
+            Tier::Wide => Self {
+                id: 72.,
+                service: 132.,
+                severity: 84.,
+                environment: 64.,
+                age: 48.,
+                assignee: 104.,
+            },
+            Tier::Medium => Self {
+                id: 60.,
+                service: 96.,
+                severity: 72.,
+                environment: 48.,
+                age: 36.,
+                assignee: 84.,
+            },
+            Tier::Narrow => Self {
+                id: 64.,
+                service: 110.,
+                severity: 76.,
+                environment: 52.,
+                age: 40.,
+                assignee: 92.,
+            },
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum LoadPhase {
     Loading,
@@ -162,6 +235,13 @@ pub struct Dashboard {
     divider_queue: Entity<Divider>,
     divider_detail: Entity<Divider>,
 
+    // Responsive shell: the tier is derived per frame from the viewport; the
+    // only stored choice is the medium/narrow collapse, and collapsing never
+    // clears filter state (they keep applying — spec invariant).
+    filters_open: bool,
+    /// FROM PACKAGE EXPORTS: active-filter count (Badge variant "counter").
+    filter_count_badge: Entity<Badge>,
+
     _subscriptions: Vec<Subscription>,
 }
 
@@ -263,6 +343,10 @@ impl Dashboard {
                 .size("sm")
                 .label("Open")
         });
+        // FROM PACKAGE EXPORTS: active-filter counter Badge for the
+        // responsive Filters toggle (medium/narrow tiers).
+        let filter_count_badge =
+            cx.new(|_| Badge::default().variant("counter").size("sm").label("0"));
 
         // FROM PACKAGE EXPORTS: Text + Divider section chrome (retained
         // entities; dynamic strings flow through the mounted `set_label`).
@@ -305,6 +389,8 @@ impl Dashboard {
             resolve_pending: false,
             toasts: Vec::new(),
             toast_seq: 0,
+            filters_open: false,
+            filter_count_badge,
             focus,
             focus_resolve_cancel: cx.focus_handle(),
             focus_resolve_confirm: cx.focus_handle(),
@@ -384,6 +470,8 @@ impl Dashboard {
         self.phase = LoadPhase::Loading;
         self.error_message = None;
         let filters = self.current_filters(cx);
+        // The toggle badge derives from the just-changed filter state.
+        self.update_filter_count_badge(cx);
         let latency = Duration::from_millis(self.api.latency_ms());
         cx.spawn(async move |this, cx| {
             // Simulated latency: a fixed timer from the seam's latency knob.
@@ -648,6 +736,30 @@ impl Dashboard {
         cx.notify();
     }
 
+    /// Number of active filter constraints (search, environment, and each
+    /// selected severity) — shown by the responsive Filters toggle's Badge.
+    fn active_filter_count(&self, cx: &App) -> usize {
+        let filters = self.current_filters(cx);
+        usize::from(filters.search.is_some())
+            + usize::from(filters.environment.is_some())
+            + filters.severities.len()
+    }
+
+    /// FROM PACKAGE EXPORTS: push the count into the retained counter Badge.
+    fn update_filter_count_badge(&self, cx: &mut Context<Self>) {
+        let count = self.active_filter_count(cx);
+        self.filter_count_badge
+            .update(cx, |badge, cx| badge.set_label(count.to_string(), cx));
+    }
+
+    /// Responsive shell (medium/narrow tiers): expand or collapse the filter
+    /// controls. Collapsing never clears filter state — they keep applying
+    /// (spec invariant); the tier itself is derived per frame, never stored.
+    fn toggle_filters(&mut self, cx: &mut Context<Self>) {
+        self.filters_open = !self.filters_open;
+        cx.notify();
+    }
+
     /// Interaction 5: timeline progressive disclosure.
     fn toggle_timeline(&mut self, cx: &mut Context<Self>) {
         self.timeline_expanded = !self.timeline_expanded;
@@ -759,7 +871,10 @@ impl Dashboard {
 }
 
 impl Render for Dashboard {
-    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        // Responsive tier: pure function of state + viewport, re-derived every
+        // frame (resize re-renders); nothing about the tier is persisted.
+        let tier = Tier::from_viewport_width(window.viewport_size().width);
         div()
             .id("dashboard")
             .track_focus(&self.focus)
@@ -781,20 +896,61 @@ impl Render for Dashboard {
             .on_action(cx.listener(|this, _: &DismissOverlay, _, cx| {
                 this.dismiss_topmost_overlay(cx);
             }))
-            // Header band (spec region 1).
+            // Header band (spec region 1) — full-width at every tier.
             .child(self.render_header())
-            // Body: filter rail + queue pane + detail pane (regions 2–4).
-            .child(
-                div()
-                    .flex_1()
-                    .min_h_0()
-                    .flex()
-                    .flex_row()
-                    .child(self.render_filter_rail(cx))
-                    .child(self.render_queue_pane(cx))
-                    .child(self.render_detail_pane(cx)),
-            )
-            // Toast region + overlays (spec region 5).
+            // Body: tier-dependent arrangement of regions 2–4.
+            .child(match tier {
+                Tier::Wide => {
+                    // Base layout: filter rail + queue + detail in one row.
+                    div()
+                        .flex_1()
+                        .min_h_0()
+                        .flex()
+                        .flex_row()
+                        .child(self.render_filter_rail(cx))
+                        .child(self.render_queue_pane(cx, tier))
+                        .child(self.render_detail_pane(cx, tier))
+                        .into_any_element()
+                }
+                Tier::Medium | Tier::Narrow => {
+                    // Filters collapse behind a persistent toggle (collapsed
+                    // by default); expanding reveals the controls inline above
+                    // the queue. Collapsed filters keep applying.
+                    div()
+                        .flex_1()
+                        .min_h_0()
+                        .flex()
+                        .flex_col()
+                        .child(self.render_filters_toggle(cx))
+                        .when(self.filters_open, |column| {
+                            column.child(self.render_filters_panel(cx))
+                        })
+                        .child(if tier == Tier::Medium {
+                            // Two regions in the row: queue + detail.
+                            div()
+                                .flex_1()
+                                .min_h_0()
+                                .flex()
+                                .flex_row()
+                                .child(self.render_queue_pane(cx, tier))
+                                .child(self.render_detail_pane(cx, tier))
+                                .into_any_element()
+                        } else {
+                            // Single column: queue, then detail as a stacked
+                            // full-width section below it (not a modal).
+                            div()
+                                .flex_1()
+                                .min_h_0()
+                                .flex()
+                                .flex_col()
+                                .child(self.render_queue_pane(cx, tier))
+                                .child(self.render_detail_pane(cx, tier))
+                                .into_any_element()
+                        })
+                        .into_any_element()
+                }
+            })
+            // Toast region + overlays (spec region 5) — tier-independent.
             .child(self.render_toasts(cx))
             .when(self.resolve_open, |root| {
                 root.child(self.render_resolve_dialog(cx))
@@ -823,6 +979,7 @@ impl Dashboard {
                 div()
                     .flex()
                     .flex_row()
+                    .flex_wrap()
                     .items_center()
                     .gap_4()
                     .child(self.title_header.clone())
@@ -836,6 +993,7 @@ impl Dashboard {
                 div()
                     .flex()
                     .flex_row()
+                    .flex_wrap()
                     .items_start()
                     .gap_6()
                     .child(self.stat_healthy.clone())
@@ -846,7 +1004,7 @@ impl Dashboard {
             .into_any_element()
     }
 
-    // Filter rail ---------------------------------------------------------
+    // Filter rail (wide tier) ----------------------------------------------
     fn render_filter_rail(&self, cx: &Context<Self>) -> gpui::AnyElement {
         div()
             .w(px(248.))
@@ -860,54 +1018,11 @@ impl Dashboard {
             .border_r_1()
             .border_color(rgb(BORDER))
             .child(self.title_filters.clone())
-            // NOT FSDS: search field — the hand-authored minimal input
-            // (text_input.rs); gpui ships no text-input widget (finding).
-            .child(self.search_field.clone())
+            .child(self.search_control(cx))
             .child(self.divider_rail_search.clone())
-            // NOT FSDS: environment selector — the gpui target emits no
-            // Select; the spec's fallback posture is simple segmented options.
-            .child(
-                div()
-                    .flex()
-                    .flex_col()
-                    .gap_1()
-                    .child(weak_text("Environment", MUTED))
-                    .child(
-                        div().flex().flex_row().gap_1().children(
-                            std::iter::once((None, "all"))
-                                .chain(
-                                    Environment::DISPLAY_ORDER
-                                        .into_iter()
-                                        .map(|env| (Some(env), env.as_str())),
-                                )
-                                .map(|(value, label)| {
-                                    segment_button(
-                                        format!("env-{}", environment_label(value)),
-                                        label,
-                                        self.environment == value,
-                                        cx.listener(move |this, _, _, cx| {
-                                            this.set_environment(value, cx)
-                                        }),
-                                    )
-                                })
-                                .collect::<Vec<_>>(),
-                        ),
-                    ),
-            )
+            .child(self.environment_control(cx))
             .child(self.divider_rail_env.clone())
-            .child(
-                div()
-                    .flex()
-                    .flex_col()
-                    .gap_1()
-                    .child(weak_text("Severity", MUTED))
-                    // FROM PACKAGE EXPORTS: severity Checkbox group.
-                    .children(
-                        self.severity_checkboxes
-                            .iter()
-                            .map(|(_, checkbox)| checkbox.clone()),
-                    ),
-            )
+            .child(self.severity_control(cx))
             // NOT FSDS: Clear-filters button — the gpui target emits no
             // Button; the affordance itself is spec-required.
             .child(button(
@@ -920,13 +1035,130 @@ impl Dashboard {
             .into_any_element()
     }
 
+    // Shared filter controls (rail at wide tier; the medium/narrow inline
+    // disclosure re-lays the same controls out above the queue).
+
+    // NOT FSDS: search field — the hand-authored minimal input
+    // (text_input.rs); gpui ships no text-input widget (finding).
+    fn search_control(&self, _cx: &Context<Self>) -> gpui::AnyElement {
+        div()
+            .flex()
+            .flex_col()
+            .gap_1()
+            .child(self.search_field.clone())
+            .into_any_element()
+    }
+
+    // NOT FSDS: environment selector — the gpui target emits no Select; the
+    // spec's fallback posture is simple segmented options.
+    fn environment_control(&self, cx: &Context<Self>) -> gpui::AnyElement {
+        div()
+            .flex()
+            .flex_col()
+            .gap_1()
+            .child(weak_text("Environment", MUTED))
+            .child(
+                div().flex().flex_row().flex_wrap().gap_1().children(
+                    std::iter::once((None, "all"))
+                        .chain(
+                            Environment::DISPLAY_ORDER
+                                .into_iter()
+                                .map(|env| (Some(env), env.as_str())),
+                        )
+                        .map(|(value, label)| {
+                            segment_button(
+                                format!("env-{}", environment_label(value)),
+                                label,
+                                self.environment == value,
+                                cx.listener(move |this, _, _, cx| this.set_environment(value, cx)),
+                            )
+                        })
+                        .collect::<Vec<_>>(),
+                ),
+            )
+            .into_any_element()
+    }
+
+    // FROM PACKAGE EXPORTS: severity Checkbox group.
+    fn severity_control(&self, _cx: &Context<Self>) -> gpui::AnyElement {
+        div()
+            .flex()
+            .flex_col()
+            .gap_1()
+            .child(weak_text("Severity", MUTED))
+            .children(
+                self.severity_checkboxes
+                    .iter()
+                    .map(|(_, checkbox)| checkbox.clone()),
+            )
+            .into_any_element()
+    }
+
+    // Responsive Filters toggle (medium/narrow tiers) -----------------------
+    // NOT FSDS: persistent toggle — hand-authored button; the active-filter
+    // count beside it IS FSDS (Badge variant "counter").
+    fn render_filters_toggle(&self, cx: &Context<Self>) -> gpui::AnyElement {
+        div()
+            .flex()
+            .flex_row()
+            .flex_wrap()
+            .items_center()
+            .gap_2()
+            .px_3()
+            .pt_2()
+            .child(button(
+                "filters-toggle",
+                format!("{} Filters", if self.filters_open { "▾" } else { "▸" }),
+                ButtonVariant::Ghost,
+                true,
+                cx.listener(|this, _, _, cx| this.toggle_filters(cx)),
+            ))
+            .child(self.filter_count_badge.clone())
+            .when(self.active_filter_count(cx) == 0, |row| {
+                row.child(weak_text("No active filters", MUTED))
+            })
+            .into_any_element()
+    }
+
+    // Inline filter disclosure (medium/narrow tiers, expanded): the same
+    // controls as the wide-tier rail, re-flowed as a wrapping panel above the
+    // queue. Collapsing never clears state; filters keep applying while
+    // collapsed (spec invariants). Page-frame panel is app-owned (NOT FSDS).
+    fn render_filters_panel(&self, cx: &Context<Self>) -> gpui::AnyElement {
+        div()
+            .flex()
+            .flex_row()
+            .flex_wrap()
+            .items_start()
+            .gap_4()
+            .mx_3()
+            .mt_1()
+            .p_3()
+            .rounded(px(6.))
+            .bg(rgb(SURFACE))
+            .border_1()
+            .border_color(rgb(BORDER))
+            .child(self.search_control(cx))
+            .child(self.environment_control(cx))
+            .child(self.severity_control(cx))
+            .child(button(
+                "clear-filters-inline",
+                "Clear filters",
+                ButtonVariant::Ghost,
+                true,
+                cx.listener(|this, _, _, cx| this.clear_filters(cx)),
+            ))
+            .into_any_element()
+    }
+
     // Queue pane ----------------------------------------------------------
-    fn render_queue_pane(&mut self, cx: &mut Context<Self>) -> gpui::AnyElement {
+    fn render_queue_pane(&mut self, cx: &mut Context<Self>, tier: Tier) -> gpui::AnyElement {
         let compact = self.compact;
+        let widths = ColumnWidths::for_tier(tier);
         let mut pane = div()
             .flex_1()
             .min_w_0()
-            .h_full()
+            .min_h_0()
             .flex()
             .flex_col()
             .px_3()
@@ -945,7 +1177,7 @@ impl Dashboard {
             .child(self.divider_queue.clone())
             // NOT FSDS: column headers — the gpui target emits no Table/List;
             // the dense queue row grid is hand-authored (recorded finding).
-            .child(queue_header_row());
+            .child(queue_header_row(widths));
         match self.phase {
             LoadPhase::Loading => {
                 // NOT FSDS: skeleton placeholder rows — no Skeleton/Spinner/
@@ -1021,7 +1253,7 @@ impl Dashboard {
                         .flex_col()
                         .children(incidents.into_iter().map(|incident| {
                             let is_selected = selected_id.as_deref() == Some(incident.id.as_str());
-                            self.render_queue_row(incident, is_selected, compact, cx)
+                            self.render_queue_row(incident, is_selected, compact, widths, cx)
                         })),
                 );
             }
@@ -1035,6 +1267,7 @@ impl Dashboard {
         incident: Incident,
         selected: bool,
         compact: bool,
+        widths: ColumnWidths,
         cx: &Context<Self>,
     ) -> Stateful<gpui::Div> {
         let id = incident.id.clone();
@@ -1086,10 +1319,17 @@ impl Dashboard {
                 }
             })
             .on_click(cx.listener(move |this, _, _, cx| this.select_incident(&id, cx)))
+            // Cells carry min_w_0 + truncation and no flex_shrink_0, so at
+            // compressed tiers they squeeze and ellipsize instead of pushing
+            // the row past the pane (no horizontal scrolling — spec
+            // invariant). No column is ever dropped; widths are tier-aware.
             .child(
                 div()
-                    .w(px(72.))
-                    .flex_shrink_0()
+                    .w(px(widths.id))
+                    .min_w_0()
+                    .whitespace_nowrap()
+                    .text_ellipsis()
+                    .overflow_hidden()
                     .text_color(rgb(if selected { ACCENT } else { MUTED }))
                     .child(incident.id.clone()),
             )
@@ -1104,32 +1344,41 @@ impl Dashboard {
             )
             .child(
                 div()
-                    .w(px(132.))
-                    .flex_shrink_0()
+                    .w(px(widths.service))
+                    .min_w_0()
                     .whitespace_nowrap()
+                    .text_ellipsis()
+                    .overflow_hidden()
                     .child(incident.service.clone()),
             )
             // FROM PACKAGE EXPORTS: severity Badge in each queue row.
-            .child(div().w(px(84.)).flex_shrink_0().children(badge))
+            .child(div().w(px(widths.severity)).min_w_0().children(badge))
             .child(
                 div()
-                    .w(px(64.))
-                    .flex_shrink_0()
+                    .w(px(widths.environment))
+                    .min_w_0()
+                    .whitespace_nowrap()
+                    .text_ellipsis()
+                    .overflow_hidden()
                     .child(incident.environment.as_str()),
             )
             .child(
                 div()
-                    .w(px(48.))
-                    .flex_shrink_0()
+                    .w(px(widths.age))
+                    .min_w_0()
+                    .whitespace_nowrap()
+                    .text_ellipsis()
+                    .overflow_hidden()
                     .text_color(rgb(MUTED))
                     .child(format_age(&incident.opened_at)),
             )
             .child(
                 div()
-                    .w(px(104.))
-                    .flex_shrink_0()
+                    .w(px(widths.assignee))
+                    .min_w_0()
                     .whitespace_nowrap()
                     .text_ellipsis()
+                    .overflow_hidden()
                     .text_color(if incident.assignee.is_some() {
                         rgb(TEXT)
                     } else {
@@ -1140,17 +1389,27 @@ impl Dashboard {
     }
 
     // Detail pane ---------------------------------------------------------
-    fn render_detail_pane(&mut self, cx: &mut Context<Self>) -> gpui::AnyElement {
+    fn render_detail_pane(&mut self, cx: &mut Context<Self>, tier: Tier) -> gpui::AnyElement {
+        // Tier sizing: fixed side pane when rowned with the queue (wide and
+        // medium tiers), a stacked full-width section below the queue at the
+        // narrow tier (visible section, not a modal; capped height with its
+        // own scroll so the queue keeps reachable space at 720×520).
         let mut pane = div()
-            .w(px(380.))
+            .id("detail-pane")
+            .when(tier == Tier::Wide, |pane| pane.w(px(380.)))
+            .when(tier == Tier::Medium, |pane| pane.w(px(340.)))
+            .when(tier == Tier::Narrow, |pane| {
+                pane.w_full().max_h(px(260.)).overflow_y_scroll()
+            })
             .flex_shrink_0()
-            .h_full()
+            .min_h_0()
             .flex()
             .flex_col()
             .gap_2()
             .p_3()
             .bg(rgb(SURFACE))
-            .border_l_1()
+            .when(tier == Tier::Narrow, |pane| pane.border_t_1())
+            .when(tier != Tier::Narrow, |pane| pane.border_l_1())
             .border_color(rgb(BORDER));
         pane = pane
             .child(self.title_detail.clone())
@@ -1561,7 +1820,7 @@ fn weak_text(label: impl Into<SharedString>, color: u32) -> gpui::Div {
     div().text_color(rgb(color)).child(label.into())
 }
 
-fn queue_header_row() -> gpui::Div {
+fn queue_header_row(widths: ColumnWidths) -> gpui::Div {
     div()
         .flex()
         .flex_row()
@@ -1572,11 +1831,59 @@ fn queue_header_row() -> gpui::Div {
         .text_color(rgb(MUTED))
         .border_b_1()
         .border_color(rgb(BORDER))
-        .child(div().w(px(72.)).flex_shrink_0().child("ID"))
+        .child(
+            div()
+                .w(px(widths.id))
+                .min_w_0()
+                .whitespace_nowrap()
+                .text_ellipsis()
+                .overflow_hidden()
+                .child("ID"),
+        )
         .child(div().flex_1().min_w_0().child("Title"))
-        .child(div().w(px(132.)).flex_shrink_0().child("Service"))
-        .child(div().w(px(84.)).flex_shrink_0().child("Severity"))
-        .child(div().w(px(64.)).flex_shrink_0().child("Env"))
-        .child(div().w(px(48.)).flex_shrink_0().child("Age"))
-        .child(div().w(px(104.)).flex_shrink_0().child("Assignee"))
+        .child(
+            div()
+                .w(px(widths.service))
+                .min_w_0()
+                .whitespace_nowrap()
+                .text_ellipsis()
+                .overflow_hidden()
+                .child("Service"),
+        )
+        .child(
+            div()
+                .w(px(widths.severity))
+                .min_w_0()
+                .whitespace_nowrap()
+                .text_ellipsis()
+                .overflow_hidden()
+                .child("Severity"),
+        )
+        .child(
+            div()
+                .w(px(widths.environment))
+                .min_w_0()
+                .whitespace_nowrap()
+                .text_ellipsis()
+                .overflow_hidden()
+                .child("Env"),
+        )
+        .child(
+            div()
+                .w(px(widths.age))
+                .min_w_0()
+                .whitespace_nowrap()
+                .text_ellipsis()
+                .overflow_hidden()
+                .child("Age"),
+        )
+        .child(
+            div()
+                .w(px(widths.assignee))
+                .min_w_0()
+                .whitespace_nowrap()
+                .text_ellipsis()
+                .overflow_hidden()
+                .child("Assignee"),
+        )
 }

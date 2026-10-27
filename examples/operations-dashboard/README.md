@@ -134,6 +134,15 @@ retry via `AlertNotice`, assign pending/success, resolve pending/success that
 removes the item and clears the selection). Filtering and detail are driven off
 the promise-returning API, so every state is a real async transition.
 
+**Responsive behavior** (spec.md tiers): wide ≥1280px is the three-pane grid;
+medium 900–1279px collapses the rail behind a package `Button` "Filters" toggle
+(with a package `Badge` active-filter count) revealing the same filter Card as
+an inline disclosure above the queue — filters keep applying while collapsed;
+narrow <900px stacks header → filters → queue → detail in one column. Realized
+entirely in `app-shell.css` media queries plus the toggle state in `App.tsx`;
+a headless Playwright check (16 assertions across the tiers and the 720px
+floor) pins the collapse semantics.
+
 ### Non-claims
 
 This lane proves *consumer-app composability for the React target only*. It is
@@ -229,6 +238,19 @@ README; the consumer-API gaps all three surfaced are recorded in
 all four lanes, native Skeleton placeholders, native Toast posture/variant,
 Swift overlay dismissal posture, the gpui allowlist boundary, and the Compose
 Field/Text parity counterpoint to React finding 1).
+
+**Responsive behavior** (spec.md tiers): all four lanes implement the same
+pinned tiers — wide ≥1280 (rail + queue + detail row), medium 900–1279 (rail
+collapsed behind a Filters toggle with an active-filter count badge; queue +
+detail row), narrow <900 (single column, detail stacked below the queue), 720
+× 520 floor, no horizontal scrolling, no dropped columns — each through its
+platform idiom (SwiftUI `GeometryReader`, Compose `BoxWithConstraints`, GPUI
+`window.viewport_size()`, CSS media queries on web). Tier behavior is
+hand-inspectable by resizing (`swift run` / `./gradlew run` / `cargo run`);
+the react lane additionally pins its collapse semantics with a headless
+Playwright check, and the swift lane pins its tier/column arithmetic with
+unit tests. Cross-lane findings from this work are recorded in
+[`spec.md`](./spec.md) → findings 13–16.
 
 **Non-claims for the native lanes.** They are compile + seam-test consumer
 evidence — the native analog of the React lane's build/typecheck rung. No lane

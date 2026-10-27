@@ -63,6 +63,12 @@ export function App() {
   const dash = useDashboard();
   const { actions } = dash;
   const [assignee, setAssignee] = useState("");
+  // Collapsed-rail posture for the medium/narrow responsive tiers (spec.md
+  // "Responsive behavior"): the filter rail only renders as a fixed column at
+  // the wide tier; below 1280px it collapses behind this toggle and its
+  // controls appear as an inline disclosure above the queue. Filters keep
+  // applying while collapsed — the controls' state lives in the hook either way.
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Header summary counts are derived from the CURRENT (filtered) queue, plus
   // the fleet service-health roll-up — never hard-coded.
@@ -72,6 +78,13 @@ export function App() {
     const down = dash.services.filter((s) => s.status === "down").length;
     return { healthy, degraded, down, open: dash.incidents.length };
   }, [dash.services, dash.incidents]);
+
+  // Active-filter count for the collapsed-rail toggle badge (spec.md
+  // "Responsive behavior"): one point per non-default filter axis value.
+  const activeFilterCount =
+    (dash.filters.search.trim() !== "" ? 1 : 0) +
+    (dash.filters.environment !== "" ? 1 : 0) +
+    dash.filters.severities.length;
 
   const selected: Incident | null =
     dash.detail ??
@@ -88,6 +101,30 @@ export function App() {
         </aside>
 
         <main className="ops-queue">
+          {/* Medium/narrow tiers: the rail collapses behind this toggle (the
+              fixed rail column is display:none below 1280px). Page-frame
+              region — the toggle is a package Button, the count a package
+              Badge; the disclosure host is plain layout. */}
+          <div className="ops-filterbar">
+            <Button
+              variant="secondary"
+              size="small"
+              ariaExpanded={filtersOpen}
+              onClick={() => setFiltersOpen((open) => !open)}
+            >
+              {filtersOpen ? "Hide filters" : "Filters"}
+            </Button>
+            {activeFilterCount > 0 ? (
+              <Badge variant="counter" intent="info">
+                {activeFilterCount} active
+              </Badge>
+            ) : null}
+          </div>
+          {filtersOpen ? (
+            <div className="ops-rail-inline">
+              <FilterRail dash={dash} />
+            </div>
+          ) : null}
           <QueuePane dash={dash} />
         </main>
 
