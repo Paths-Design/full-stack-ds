@@ -66,7 +66,7 @@ val calendarTokenScopes: ComponentTokenScopes = mapOf(
         "calendar.color.border" to ComponentTokenDefinition(
             name = "calendar.color.border",
             cssVar = "--fsds-calendar-color-border",
-            ref = "semantic.color.border.subtle",
+            ref = "semantic.surface.border.subtle",
             fallback = "#d0d0d0",
         ),
         "calendar.color.day.hover" to ComponentTokenDefinition(

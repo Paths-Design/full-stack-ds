@@ -158,6 +158,14 @@ export class InputElement extends LitElement {
       outline-color: var(--fsds-input-design-condition-8805a1996611-focus-color, var(--fsds-semantic-focus-ring-intent-danger, #b31b1b));
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .input {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: String }) type?: string;

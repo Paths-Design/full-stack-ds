@@ -22,7 +22,7 @@ enum PopoverTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "popover.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-popover-size-radius", name: "popover.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
-            "popover.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-popover-color-border", name: "popover.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "popover.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-popover-color-border", name: "popover.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
         ],
     ]
 }

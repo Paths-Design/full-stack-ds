@@ -16,7 +16,7 @@
   min-height: var(--fsds-box-model-min-height, 0);
   max-height: var(--fsds-box-model-max-height, none);
   background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-  border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+  border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
   color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
   padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
   border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -89,7 +89,7 @@
   gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
   padding-top: var(--fsds-card-size-padding, 16px);
   margin-top: auto;
-  border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+  border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
   border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
   border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
 }

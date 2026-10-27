@@ -21,16 +21,16 @@ function loadContract(name: string): ComponentContract {
 }
 
 describe("motion declaration custody", () => {
-  it("carries a real legacy trigger without interpreting its mismatched state vocabulary", () => {
+  it("carries a real trigger without interpreting its state vocabulary", () => {
     const ir = buildComponentIR(loadContract("Accordion"));
     expect(ir.motion.transitions[0]).toEqual({
       name: "expand",
       trigger: "openness=collapsed→expanded",
       realization: "declaration-only",
       phase: "enter",
-      properties: ["height", "opacity"],
-      durationRef: "accordion.motion.duration",
-      easingRef: "accordion.motion.easing",
+      properties: ["grid-template-rows", "opacity", "padding-block-end"],
+      durationRef: "semantic.motion.interaction.enter.duration",
+      easingRef: "semantic.motion.interaction.enter.easing",
     });
     expect(ir.motion.transitions[1].trigger).toBe("openness=expanded→collapsed");
   });

@@ -50,7 +50,7 @@ export const listTokenScopes = {
     "list.color.border": {
       name: "list.color.border",
       cssVar: "--fsds-list-color-border",
-      ref: "semantic.color.border.subtle",
+      ref: "semantic.surface.border.subtle",
       fallback: "#d0d0d0",
     },
     "list.size.sm": {

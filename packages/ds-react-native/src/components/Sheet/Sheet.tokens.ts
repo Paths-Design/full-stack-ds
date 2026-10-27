@@ -49,8 +49,8 @@ export const sheetTokenScopes = {
     "sheet.color.border": {
       name: "sheet.color.border",
       cssVar: "--fsds-sheet-color-border",
-      ref: "semantic.color.border.light",
-      fallback: "#b8b8b8",
+      ref: "semantic.surface.border.subtle",
+      fallback: "#d0d0d0",
     },
     "sheet.border.width": {
       name: "sheet.border.width",

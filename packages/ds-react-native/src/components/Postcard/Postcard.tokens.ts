@@ -55,8 +55,8 @@ export const postcardTokenScopes = {
     "postcard.color.border.default": {
       name: "postcard.color.border.default",
       cssVar: "--fsds-postcard-color-border-default",
-      ref: "semantic.color.border.light",
-      fallback: "#b8b8b8",
+      ref: "semantic.surface.border.subtle",
+      fallback: "#d0d0d0",
     },
     "postcard.color.foreground.primary": {
       name: "postcard.color.foreground.primary",

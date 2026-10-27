@@ -195,6 +195,14 @@ export class TextFieldElement extends LitElement {
       cursor: not-allowed;
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .text-field__field {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: String }) type?: string;
@@ -428,6 +436,14 @@ export class TextFieldDescriptionElement extends LitElement {
       opacity: var(--fsds-text-field-design-condition-6d2f506c00a2-appearance-opacity, var(--fsds-text-field-opacity-disabled, 0.5));
       cursor: not-allowed;
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .text-field__field {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

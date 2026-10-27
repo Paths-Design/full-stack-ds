@@ -20,7 +20,7 @@ enum CodeSnippetTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.display.size.gap", fallback: .string("4px")),
             "code-snippet.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-background", name: "code-snippet.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "code-snippet.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-foreground-primary", name: "code-snippet.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "code-snippet.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-border", name: "code-snippet.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "code-snippet.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-color-border", name: "code-snippet.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "code-snippet.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-code-snippet-size-radius", name: "code-snippet.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]

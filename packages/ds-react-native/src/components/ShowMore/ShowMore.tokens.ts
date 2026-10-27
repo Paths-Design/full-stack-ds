@@ -56,8 +56,8 @@ export const showMoreTokenScopes = {
     "show-more.color.border": {
       name: "show-more.color.border",
       cssVar: "--fsds-show-more-color-border",
-      ref: "semantic.color.border.light",
-      fallback: "#b8b8b8",
+      ref: "semantic.surface.border.subtle",
+      fallback: "#d0d0d0",
     },
     "show-more.size.radius": {
       name: "show-more.size.radius",

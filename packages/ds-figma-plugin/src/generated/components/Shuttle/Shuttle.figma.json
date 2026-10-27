@@ -269,7 +269,7 @@
       "cssProperty": "border-color",
       "selectorKey": "list",
       "part": "list",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "shuttle.color.border",
       "editableTargets": [
         "web"
@@ -347,7 +347,7 @@
       "cssProperty": "border-block-end-color",
       "selectorKey": "item",
       "part": "item",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "shuttle.color.border",
       "editableTargets": [
         "web"
@@ -549,7 +549,7 @@
       "cssProperty": "border-color",
       "selectorKey": "add",
       "part": "add",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "shuttle.color.border",
       "editableTargets": [
         "web"
@@ -658,7 +658,7 @@
       "cssProperty": "border-color",
       "selectorKey": "remove",
       "part": "remove",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "shuttle.color.border",
       "editableTargets": [
         "web"
@@ -784,7 +784,7 @@
           "--fsds-box-model-max-height": "none",
           "--fsds-shuttle-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "--fsds-shuttle-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-shuttle-color-border": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-shuttle-color-border": "var(--fsds-semantic-surface-border-subtle, #d0d0d0)",
           "--fsds-shuttle-color-border-accent": "var(--fsds-semantic-color-border-accent, #d92d2e)",
           "--fsds-shuttle-color-list-background": "var(--fsds-semantic-color-background-primary, #ffffff)",
           "--fsds-shuttle-color-item-marked-background": "var(--fsds-semantic-color-background-accent, #d92d2e)",
@@ -823,7 +823,7 @@
           "background-color": "var(--fsds-shuttle-color-list-background, #ffffff)",
           "border-style": "solid",
           "border-width": "1px",
-          "border-color": "var(--fsds-shuttle-color-border, #b8b8b8)",
+          "border-color": "var(--fsds-shuttle-color-border, #d0d0d0)",
           "border-radius": "var(--fsds-shuttle-size-radius, 6px)"
         }
       },
@@ -836,7 +836,7 @@
           "color": "var(--fsds-shuttle-color-foreground-primary, #141414)",
           "border-block-end-style": "solid",
           "border-block-end-width": "1px",
-          "border-block-end-color": "var(--fsds-shuttle-color-border, #b8b8b8)",
+          "border-block-end-color": "var(--fsds-shuttle-color-border, #d0d0d0)",
           "cursor": "pointer"
         }
       },
@@ -873,7 +873,7 @@
           "background-color": "var(--fsds-shuttle-color-list-background, #ffffff)",
           "border-style": "solid",
           "border-width": "1px",
-          "border-color": "var(--fsds-shuttle-color-border, #b8b8b8)",
+          "border-color": "var(--fsds-shuttle-color-border, #d0d0d0)",
           "border-radius": "var(--fsds-shuttle-size-radius, 6px)",
           "cursor": "pointer"
         }
@@ -886,7 +886,7 @@
           "background-color": "var(--fsds-shuttle-color-list-background, #ffffff)",
           "border-style": "solid",
           "border-width": "1px",
-          "border-color": "var(--fsds-shuttle-color-border, #b8b8b8)",
+          "border-color": "var(--fsds-shuttle-color-border, #d0d0d0)",
           "border-radius": "var(--fsds-shuttle-size-radius, 6px)",
           "cursor": "pointer"
         }

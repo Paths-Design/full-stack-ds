@@ -391,7 +391,14 @@ function webCssBlocks(ir: ComponentIR): ComponentIR["cssBlocks"] {
   const rootSelector = `.${ir.cssPrefix}`;
   const defaults = ir.cssBlocks.find(block => block.selector === rootSelector)?.declarations ?? {};
   const bindings = ir.designBindings ?? [];
-  return [...ir.cssBlocks, ...loopCss(ir)].map(block => {
+  const blocks: ComponentIR["cssBlocks"] = [...ir.cssBlocks, ...loopCss(ir)];
+  return blocks.map(block => {
+    // Starting states carry verbatim resting values, not overridable surface.
+    // A starting selector usually repeats a resting selector (that is the
+    // point — it is the from-state of the same rule), so applying design
+    // bindings here would var-wrap its literals into the open state's own
+    // resolution and silently erase the from-value the transition needs.
+    if (block.startingStyle) return { ...block };
     const declarations: Record<string, string> = { ...block.declarations };
     if (block.selector === rootSelector) {
       for (const [property, value] of Object.entries(declarations)) {
@@ -434,9 +441,36 @@ export function webTokenConsumption(ir: ComponentIR) {
   ]);
 }
 
+/**
+ * Format the lowered `@starting-style` entry-state blocks as one grouped
+ * at-rule. Starting states declare no transition of their own (the
+ * transition lives on the resting rule), so they are excluded from the
+ * reduced-motion derivation upstream and only need verbatim formatting
+ * here. Blocks arrive already selector-expanded from the IR.
+ */
+export function startingStyleBlock(blocks: ComponentIR["cssBlocks"]): string {
+  const entryBlocks = blocks.filter((block) => block.startingStyle);
+  if (entryBlocks.length === 0) return "";
+  const body = entryBlocks
+    .map(
+      (block) =>
+        `  ${block.selector} {\n` +
+        Object.entries(block.declarations)
+          .map(([name, value]) => `    ${name}: ${value};`)
+          .join("\n") +
+        `\n  }`,
+    )
+    .join("\n");
+  return `@starting-style {\n${body}\n}`;
+}
+
 export function emitCss(ir: ComponentIR): string {
   const rootSelector = `.${ir.cssPrefix}`;
-  const grouped = groupBlocksByRoot(webCssBlocks(ir), rootSelector)
+  const allBlocks = webCssBlocks(ir);
+  const grouped = groupBlocksByRoot(
+    allBlocks.filter((block) => !block.startingStyle),
+    rootSelector,
+  )
     .map((g) => filterGroupedBlock(g, "properties"))
     .map((g) => formatGroupedBlock(g))
     .filter((s) => s.length > 0);
@@ -447,6 +481,7 @@ export function emitCss(ir: ComponentIR): string {
   const importLine = `@import "../../primitives/box-model.css";\n@import "./${ir.name}.tokens.css";`;
   const stylesBody = grouped.join("\n\n").trimEnd();
   const keyframesBody = webKeyframes(ir).map(formatKeyframes).join("\n").trimEnd();
+  const startingStyleBody = startingStyleBlock(allBlocks);
 
   const sections: Section[] = [
     { kind: "between", body: importLine },
@@ -458,6 +493,12 @@ export function emitCss(ir: ComponentIR): string {
   if (keyframesBody) {
     sections.push(
       { kind: "generated", id: "keyframes", body: keyframesBody },
+      { kind: "between", body: "" },
+    );
+  }
+  if (startingStyleBody) {
+    sections.push(
+      { kind: "generated", id: "starting-style", body: startingStyleBody },
       { kind: "between", body: "" },
     );
   }
@@ -614,13 +655,23 @@ export function emitLitInlineCss(ir: ComponentIR): string {
     .filter((s) => s.length > 0);
 
   const keyframesBody = webKeyframes(ir).map(formatKeyframes).join("\n").trimEnd();
+  const startingStyleBody = startingStyleBlock(webCssBlocks(ir));
 
   const parts: string[] = [emitBoxModelBoundaryCss(true)];
   if (tokensGroups.length > 0) parts.push(tokensGroups.join("\n\n"));
   if (propertyGroups.length > 0) parts.push(`@layer components.defaults {\n${propertyGroups.join("\n\n")}\n}`);
+  // Entry states share the resting rules' layer so the cascade treats them
+  // as part of the same block family (mirrors emitCss's section ordering).
+  if (startingStyleBody) parts.push(`@layer components.defaults {\n${startingStyleBody}\n}`);
   if (keyframesBody) parts.push(keyframesBody);
-  // Loop adaptation must live inside the same shadow root as its animation.
-  if (ir.motion.loops.length) parts.push(reducedMotionBlock(ir));
+  // Reduced-motion neutralization must live inside the same shadow root as
+  // whatever it neutralizes — transitions included, not only loops. Gating
+  // on `motion.loops` left every Lit component with a plain transition
+  // (Accordion's chevron, for one) animating unconditionally in the shadow
+  // tree while its .css artifact honored the media query. The block is
+  // derived, so it is empty exactly when nothing animates.
+  const litReducedMotionBody = reducedMotionBlock(ir);
+  if (litReducedMotionBody) parts.push(litReducedMotionBody);
 
   return parts.join("\n\n").trimEnd();
 }

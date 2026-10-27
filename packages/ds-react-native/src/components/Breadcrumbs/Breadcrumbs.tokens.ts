@@ -50,7 +50,7 @@ export const breadcrumbsTokenScopes = {
     "breadcrumbs.color.border.subtle": {
       name: "breadcrumbs.color.border.subtle",
       cssVar: "--fsds-breadcrumbs-color-border-subtle",
-      ref: "semantic.color.border.subtle",
+      ref: "semantic.surface.border.subtle",
       fallback: "#d0d0d0",
     },
     "breadcrumbs.shape.radius.medium": {

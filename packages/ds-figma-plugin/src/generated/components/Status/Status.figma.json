@@ -293,7 +293,7 @@
           "--fsds-box-model-max-height": "none",
           "--fsds-status-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "--fsds-status-color-foreground-primary": "var(--fsds-semantic-color-foreground-secondary, #474647)",
-          "--fsds-status-color-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-status-color-border": "var(--fsds-semantic-surface-border-subtle, #d0d0d0)",
           "--fsds-status-size-radius": "var(--fsds-semantic-shape-control-radius-pill, 9999px)",
           "--fsds-status-size-min-height": "var(--fsds-semantic-glyph-badge-size-md-min-height, 24px)",
           "--fsds-status-size-font-size": "var(--fsds-semantic-glyph-badge-size-md-font-size, 12px)",

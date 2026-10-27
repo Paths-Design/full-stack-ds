@@ -15,8 +15,8 @@
     "layer": "semantic"
   },
   "command.color.border": {
-    "resolvesTo": "semantic.color.border.light",
-    "fallback": "#b8b8b8",
+    "resolvesTo": "semantic.surface.border.subtle",
+    "fallback": "#d0d0d0",
     "layer": "semantic"
   },
   "command.color.borderLight": {

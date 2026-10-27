@@ -72,7 +72,7 @@ export class CardElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -113,7 +113,7 @@ export class CardElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -186,7 +186,7 @@ export class CardElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -215,6 +215,14 @@ export class CardElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -295,7 +303,7 @@ export class CardHeaderElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -336,7 +344,7 @@ export class CardHeaderElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -409,7 +417,7 @@ export class CardHeaderElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -438,6 +446,14 @@ export class CardHeaderElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -502,7 +518,7 @@ export class CardMediaElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -543,7 +559,7 @@ export class CardMediaElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -616,7 +632,7 @@ export class CardMediaElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -645,6 +661,14 @@ export class CardMediaElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -709,7 +733,7 @@ export class CardContentElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -750,7 +774,7 @@ export class CardContentElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -823,7 +847,7 @@ export class CardContentElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -852,6 +876,14 @@ export class CardContentElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -916,7 +948,7 @@ export class CardFooterElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -957,7 +989,7 @@ export class CardFooterElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -1030,7 +1062,7 @@ export class CardFooterElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1059,6 +1091,14 @@ export class CardFooterElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -1123,7 +1163,7 @@ export class CardActionsElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -1164,7 +1204,7 @@ export class CardActionsElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -1237,7 +1277,7 @@ export class CardActionsElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1266,6 +1306,14 @@ export class CardActionsElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -1330,7 +1378,7 @@ export class CardBadgeElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -1371,7 +1419,7 @@ export class CardBadgeElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -1444,7 +1492,7 @@ export class CardBadgeElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1473,6 +1521,14 @@ export class CardBadgeElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -1537,7 +1593,7 @@ export class CardDescriptionElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -1578,7 +1634,7 @@ export class CardDescriptionElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -1651,7 +1707,7 @@ export class CardDescriptionElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1680,6 +1736,14 @@ export class CardDescriptionElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -1744,7 +1808,7 @@ export class CardLinkElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -1785,7 +1849,7 @@ export class CardLinkElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -1858,7 +1922,7 @@ export class CardLinkElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -1887,6 +1951,14 @@ export class CardLinkElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 
@@ -1951,7 +2023,7 @@ export class CardNoteElement extends LitElement {
     .card {
       --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-      --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);
@@ -1992,7 +2064,7 @@ export class CardNoteElement extends LitElement {
       min-height: var(--fsds-box-model-min-height, 0);
       max-height: var(--fsds-box-model-max-height, none);
       background-color: var(--fsds-card-design-root-background-fill, var(--fsds-card-color-background-default, #ffffff));
-      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #b8b8b8));
+      border-color: var(--fsds-card-design-root-border-color, var(--fsds-card-color-border, #d0d0d0));
       color: var(--fsds-card-design-root-foreground-color, var(--fsds-card-color-foreground-primary, #141414));
       padding: var(--fsds-card-design-root-spacing-padding, var(--fsds-card-size-padding, 16px));
       border-radius: var(--fsds-card-design-root-shape-radius, var(--fsds-card-size-radius, 8px));
@@ -2065,7 +2137,7 @@ export class CardNoteElement extends LitElement {
       gap: var(--fsds-card-design-footer-spacing-gap, var(--fsds-card-size-gap, 4px));
       padding-top: var(--fsds-card-size-padding, 16px);
       margin-top: auto;
-      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #b8b8b8));
+      border-top-color: var(--fsds-card-design-footer-border-top-color, var(--fsds-card-color-border, #d0d0d0));
       border-top-style: var(--fsds-card-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-card-design-footer-border-top-width, 1px);
     }
@@ -2094,6 +2166,14 @@ export class CardNoteElement extends LitElement {
       font-size: var(--fsds-card-design-note-typography-size, 0.875em);
       line-height: var(--fsds-card-design-note-typography-line-height, var(--fsds-card-typography-line-height-normal, 1.5));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

@@ -134,7 +134,7 @@
     },
     "border-color": {
       "resolvesTo": "show-more.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
         "slot": "show-more.design.trigger.border.color"

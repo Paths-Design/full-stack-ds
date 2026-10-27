@@ -510,6 +510,7 @@
   --fsds-semantic-feedback-size-gap: var(--fsds-semantic-spacing-gap-component);
   --fsds-semantic-focus-ring-width: var(--fsds-core-interaction-focus-ring-width);
   --fsds-semantic-focus-ring-offset: var(--fsds-core-interaction-focus-ring-offset);
+  --fsds-semantic-focus-ring-offset-inset: -2px;
   --fsds-semantic-focus-ring-style: solid;
   --fsds-semantic-glyph-badge-size-sm-padding-y: var(--fsds-core-spacing-size-02);
   --fsds-semantic-glyph-badge-size-sm-padding-x: var(--fsds-core-spacing-size-03);
@@ -837,6 +838,8 @@
   --fsds-semantic-overlay-scrim-medium: rgba(0,0,0,0.40);
   --fsds-semantic-overlay-scrim-strong: rgba(0,0,0,0.64);
   --fsds-semantic-overlay-scrim-weak: rgba(0,0,0,0.24);
+  --fsds-semantic-surface-border-subtle: var(--fsds-core-color-palette-neutral-100);
+  --fsds-semantic-surface-border-strong: var(--fsds-core-color-palette-neutral-200);
 }
 }
 
@@ -992,6 +995,8 @@
   --fsds-semantic-overlay-scrim-medium: rgba(0,0,0,0.40);
   --fsds-semantic-overlay-scrim-strong: rgba(0,0,0,0.64);
   --fsds-semantic-overlay-scrim-weak: rgba(0,0,0,0.24);
+  --fsds-semantic-surface-border-subtle: var(--fsds-core-color-palette-neutral-100);
+  --fsds-semantic-surface-border-strong: var(--fsds-core-color-palette-neutral-200);
 }
 
   .dark, [data-theme="dark"] {
@@ -1145,6 +1150,8 @@
   --fsds-semantic-overlay-scrim-medium: rgba(0,0,0,0.60);
   --fsds-semantic-overlay-scrim-strong: rgba(0,0,0,0.80);
   --fsds-semantic-overlay-scrim-weak: rgba(0,0,0,0.40);
+  --fsds-semantic-surface-border-subtle: var(--fsds-core-color-palette-neutral-700);
+  --fsds-semantic-surface-border-strong: var(--fsds-core-color-palette-neutral-600);
 }
 
   @media (prefers-color-scheme: dark) {
@@ -1299,6 +1306,8 @@
   --fsds-semantic-overlay-scrim-medium: rgba(0,0,0,0.60);
   --fsds-semantic-overlay-scrim-strong: rgba(0,0,0,0.80);
   --fsds-semantic-overlay-scrim-weak: rgba(0,0,0,0.40);
+  --fsds-semantic-surface-border-subtle: var(--fsds-core-color-palette-neutral-700);
+  --fsds-semantic-surface-border-strong: var(--fsds-core-color-palette-neutral-600);
 }
     .light, [data-theme="light"] {
   --fsds-semantic-color-action-background-primary-default: var(--fsds-core-color-palette-brand-primary-500);
@@ -1451,6 +1460,8 @@
   --fsds-semantic-overlay-scrim-medium: rgba(0,0,0,0.40);
   --fsds-semantic-overlay-scrim-strong: rgba(0,0,0,0.64);
   --fsds-semantic-overlay-scrim-weak: rgba(0,0,0,0.24);
+  --fsds-semantic-surface-border-subtle: var(--fsds-core-color-palette-neutral-100);
+  --fsds-semantic-surface-border-strong: var(--fsds-core-color-palette-neutral-200);
 }
   }
 }

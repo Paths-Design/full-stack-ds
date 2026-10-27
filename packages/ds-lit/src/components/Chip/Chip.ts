@@ -212,6 +212,14 @@ export class ChipElement extends LitElement {
       font-weight: var(--fsds-chip-design-text-typography-weight, var(--fsds-chip-text-weight, 500));
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .chip {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   private readonly fsdsMessages = new FsdsMessagesController(this, "Chip", ChipMessages);

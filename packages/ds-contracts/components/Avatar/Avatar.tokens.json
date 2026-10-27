@@ -45,8 +45,8 @@
     "layer": "semantic"
   },
   "avatar.color.border": {
-    "resolvesTo": "semantic.color.border.light",
-    "fallback": "#b8b8b8",
+    "resolvesTo": "semantic.surface.border.subtle",
+    "fallback": "#d0d0d0",
     "layer": "semantic"
   },
   "avatar.typography.fontWeight.medium": {

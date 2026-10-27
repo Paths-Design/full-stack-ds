@@ -65,8 +65,8 @@ val otpTokenScopes: ComponentTokenScopes = mapOf(
         "otp.color.border" to ComponentTokenDefinition(
             name = "otp.color.border",
             cssVar = "--fsds-otp-color-border",
-            ref = "semantic.color.border.light",
-            fallback = "#b8b8b8",
+            ref = "semantic.color.border.default",
+            fallback = "#a0a0a1",
         ),
         "otp.size.radius" to ComponentTokenDefinition(
             name = "otp.size.radius",

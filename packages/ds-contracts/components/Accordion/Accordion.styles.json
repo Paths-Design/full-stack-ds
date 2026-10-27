@@ -12,14 +12,6 @@
         "web"
       ]
     },
-    "border-color": {
-      "resolvesTo": "accordion.border.color",
-      "fallback": "#b8b8b8",
-      "design": {
-        "property": "border.color",
-        "slot": "accordion.design.root.border.color"
-      }
-    },
     "border-radius": {
       "resolvesTo": "accordion.border.radius",
       "fallback": "4px",
@@ -34,22 +26,6 @@
       "design": {
         "property": "spacing.gap",
         "slot": "accordion.design.root.spacing.gap"
-      }
-    },
-    "font-size": {
-      "resolvesTo": "accordion.text.sizeContent",
-      "fallback": "14px",
-      "design": {
-        "property": "typography.size",
-        "slot": "accordion.design.root.typography.size"
-      }
-    },
-    "line-height": {
-      "resolvesTo": "accordion.text.lineHeightContent",
-      "fallback": "1.8",
-      "design": {
-        "property": "typography.line-height",
-        "slot": "accordion.design.root.typography.line-height"
       }
     }
   },
@@ -66,7 +42,7 @@
     },
     "border-color": {
       "resolvesTo": "accordion.border.color",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
         "slot": "accordion.design.item.border.color"
@@ -217,14 +193,6 @@
         "property": "background.fill",
         "slot": "accordion.design.condition-c66924892931.background.fill"
       }
-    },
-    "color": {
-      "resolvesTo": "accordion.color.textHover",
-      "fallback": "#474647",
-      "design": {
-        "property": "foreground.color",
-        "slot": "accordion.design.condition-c66924892931.foreground.color"
-      }
     }
   },
   ".accordion__trigger:focus-visible": {
@@ -246,7 +214,7 @@
     },
     "outline-offset": {
       "resolvesTo": "accordion.focus.offset",
-      "fallback": "2px",
+      "fallback": "-2px",
       "design": {
         "property": "focus.offset",
         "slot": "accordion.design.condition-92aee6ee190f.focus.offset"
@@ -279,7 +247,7 @@
     },
     "width": {
       "resolvesTo": "accordion.icon.size",
-      "fallback": "8px",
+      "fallback": "16px",
       "design": {
         "property": "sizing.width",
         "slot": "accordion.design.chevron.sizing.width"
@@ -287,7 +255,7 @@
     },
     "height": {
       "resolvesTo": "accordion.icon.size",
-      "fallback": "8px",
+      "fallback": "16px",
       "design": {
         "property": "sizing.height",
         "slot": "accordion.design.chevron.sizing.height"
@@ -306,7 +274,7 @@
       ]
     },
     "transition": {
-      "literal": "transform 200ms ease",
+      "literal": "transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard)",
       "platforms": [
         "web"
       ]
@@ -330,7 +298,7 @@
   },
   "content": {
     "display": {
-      "literal": "block",
+      "literal": "grid",
       "platforms": [
         "web"
       ]
@@ -340,16 +308,90 @@
       "platforms": [
         "web"
       ]
+    },
+    "grid-template-rows": {
+      "literal": "0fr",
+      "platforms": [
+        "web"
+      ]
+    },
+    "opacity": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "appearance.opacity",
+        "slot": "accordion.design.content.appearance.opacity"
+      }
+    },
+    "transition": {
+      "literal": "grid-template-rows var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), opacity var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), display var(--fsds-semantic-motion-interaction-exit-duration) linear allow-discrete",
+      "platforms": [
+        "web"
+      ]
+    }
+  },
+  ".accordion__content:not([hidden])": {
+    "grid-template-rows": {
+      "literal": "1fr",
+      "platforms": [
+        "web"
+      ]
+    },
+    "opacity": {
+      "literal": "1",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "appearance.opacity",
+        "slot": "accordion.design.content-open.appearance.opacity"
+      }
+    },
+    "transition": {
+      "literal": "grid-template-rows var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), opacity var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), display var(--fsds-semantic-motion-interaction-enter-duration) linear allow-discrete",
+      "platforms": [
+        "web"
+      ]
     }
   },
   "contentInner": {
-    "padding": {
+    "min-height": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ]
+    },
+    "overflow": {
+      "literal": "hidden",
+      "platforms": [
+        "web"
+      ]
+    },
+    "padding-inline": {
       "resolvesTo": "accordion.spacing.paddingY",
       "fallback": "8px",
       "design": {
-        "property": "spacing.padding",
-        "slot": "accordion.design.content-inner.spacing.padding"
+        "property": "spacing.padding-inline",
+        "slot": "accordion.design.content-inner.spacing.padding-inline"
       }
+    },
+    "padding-block-end": {
+      "literal": "0",
+      "platforms": [
+        "web"
+      ],
+      "design": {
+        "property": "spacing.padding-block-end",
+        "slot": "accordion.design.content-inner.spacing.padding-block-end"
+      }
+    },
+    "transition": {
+      "literal": "padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing)",
+      "platforms": [
+        "web"
+      ]
     },
     "color": {
       "resolvesTo": "accordion.color.textSecondary",
@@ -373,6 +415,40 @@
       "design": {
         "property": "typography.line-height",
         "slot": "accordion.design.content-inner.typography.line-height"
+      }
+    }
+  },
+  ".accordion__content:not([hidden]) .accordion__contentInner": {
+    "padding-block-end": {
+      "resolvesTo": "accordion.spacing.paddingY",
+      "fallback": "8px",
+      "design": {
+        "property": "spacing.padding-block-end",
+        "slot": "accordion.design.content-inner-open.spacing.padding-block-end"
+      }
+    }
+  },
+  "@starting-style": {
+    ".accordion__content:not([hidden])": {
+      "grid-template-rows": {
+        "literal": "0fr",
+        "platforms": [
+          "web"
+        ]
+      },
+      "opacity": {
+        "literal": "0",
+        "platforms": [
+          "web"
+        ]
+      }
+    },
+    ".accordion__content:not([hidden]) .accordion__contentInner": {
+      "padding-block-end": {
+        "literal": "0",
+        "platforms": [
+          "web"
+        ]
       }
     }
   },

@@ -79,7 +79,7 @@ export class AvatarElement extends LitElement {
       --fsds-avatar-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
       --fsds-avatar-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-avatar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-avatar-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-avatar-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-avatar-typography-font-weight-medium: var(--fsds-core-typography-weight-medium, 500);
       --fsds-avatar-typography-font-family-sans: var(--fsds-core-typography-font-family-sans, "Inter", sans-serif);
     }
@@ -107,7 +107,7 @@ export class AvatarElement extends LitElement {
       border-radius: var(--fsds-avatar-design-root-shape-radius, var(--fsds-avatar-size-radius, 9999px));
       background-color: var(--fsds-avatar-design-root-background-fill, var(--fsds-avatar-color-background, #f7f7f7));
       color: var(--fsds-avatar-design-root-foreground-color, var(--fsds-avatar-color-foreground-primary, #141414));
-      border-color: var(--fsds-avatar-design-root-border-color, var(--fsds-avatar-color-border, #b8b8b8));
+      border-color: var(--fsds-avatar-design-root-border-color, var(--fsds-avatar-color-border, #d0d0d0));
       border-style: var(--fsds-avatar-design-root-border-style, solid);
       border-width: var(--fsds-avatar-design-root-border-width, var(--fsds-avatar-size-border, 1px));
       font-weight: var(--fsds-avatar-design-root-typography-weight, var(--fsds-avatar-typography-font-weight-medium, 500));

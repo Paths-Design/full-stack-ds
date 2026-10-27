@@ -46,7 +46,7 @@
     },
     "border-color": {
       "resolvesTo": "table.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
         "slot": "table.design.container.border.color"
@@ -170,7 +170,7 @@
     },
     "border-bottom-color": {
       "resolvesTo": "table.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.bottom.color",
         "slot": "table.design.header-cell.border.bottom.color"
@@ -224,7 +224,7 @@
     },
     "border-bottom-color": {
       "resolvesTo": "table.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.bottom.color",
         "slot": "table.design.cell.border.bottom.color"
