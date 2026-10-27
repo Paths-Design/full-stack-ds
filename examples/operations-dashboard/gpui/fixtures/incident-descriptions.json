@@ -1,0 +1,12 @@
+{
+  "INC-1042": "Checkout API p99 latency exceeded 2s for ~20 minutes during peak traffic, driven by a slow upstream call to the payments worker. Customers saw spinner stalls at the pay step; no failed charges confirmed.",
+  "INC-1043": "The payment webhook consumer exhausted its retry budget for three merchants after the provider returned sustained 503s. Events are accumulating in the dead-letter queue and require manual replay once upstream recovers.",
+  "INC-1044": "The staging search index fell more than ten minutes behind the write log after a reindex job stalled. Search results on staging are stale but not erroring.",
+  "INC-1045": "media-cdn edge nodes in the EU region began returning 5xx for a subset of image requests following an origin config push. Impact is partial and region-scoped.",
+  "INC-1046": "The dev environment seed job intermittently fails on a fresh database due to a race between migration and seed steps. Low impact; dev-only.",
+  "INC-1047": "The staging deploy orchestrator queue is backed up at 14 pending deploys and is not draining, blocking staging promotions.",
+  "INC-1048": "Notification fanout p95 degraded and a backlog is forming after a downstream provider slowed. No drops yet, but delivery latency is rising.",
+  "INC-1049": "The dev analytics box crossed 91% disk utilization. No service impact yet; cleanup or volume expansion needed before it fills.",
+  "INC-1050": "flags-api began returning 401 for service tokens on staging after a signing key rotation went out of sync. Feature-flag reads are failing closed on staging.",
+  "INC-1051": "The prod scheduler is firing jobs roughly 90 seconds late due to clock skew on the scheduler host. Low impact for tolerant jobs; flagged for follow-up."
+}
