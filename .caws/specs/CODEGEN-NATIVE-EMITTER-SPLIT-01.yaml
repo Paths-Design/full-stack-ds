@@ -1,9 +1,10 @@
 id: CODEGEN-NATIVE-EMITTER-SPLIT-01
 title: 'Split Compose emitter into Kotlin authoring modules; hoist native prop lore into the shared substrate'
 mode: refactor
-lifecycle_state: draft
+lifecycle_state: active
+worktree: codegen-native-emitter-split
 created_at: '2026-10-27T14:53:53.811Z'
-updated_at: '2026-10-27T14:53:53.811Z'
+updated_at: '2026-10-27T14:54:03.260Z'
 created_by_session: 'session-3b603c0e-24b0-437b-a099-83133ad16005'
 blast_radius:
   modules:
