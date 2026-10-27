@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.border
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.TextStyle
@@ -37,6 +38,8 @@ fun CodeSnippet(
     val containerColor = layeredSlot("code-snippet.color.background")?.toFsdsColor()
     val contentColor = layeredSlot("code-snippet.color.foreground.primary")?.toFsdsColor()
     val cornerRadius = layeredSlot("code-snippet.size.radius")?.toFsdsDp() ?: 0.dp
+    val borderColor = layeredSlot("code-snippet.color.border")?.toFsdsColor()
+    val borderWidth = layeredSlot("code-snippet.size.border")?.toFsdsDp() ?: 1.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
@@ -48,6 +51,7 @@ fun CodeSnippet(
     val chromeModifier = Modifier
         .clip(shape)
         .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)
+        .then(if (borderColor != null) Modifier.border(borderWidth, borderColor, shape) else Modifier)
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
         .then(if (minHeight != null) Modifier.height(minHeight) else Modifier)
     val fsdsTextStyle = TextStyle(

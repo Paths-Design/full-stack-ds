@@ -475,6 +475,8 @@ interface StaticChromeSlots {
   bgSlot?: { name: string };
   fgSlot?: { name: string };
   radiusSlot?: { name: string };
+  borderColorSlot?: { name: string };
+  borderWidthSlot?: { name: string };
   paddingInlineStartSlot?: { name: string };
   paddingInlineEndSlot?: { name: string };
   paddingBlockStartSlot?: { name: string };
@@ -490,6 +492,13 @@ function resolveStaticChrome(ir: ComponentIR): StaticChromeSlots {
   const bgSlot = findLayeredSlotAny(ir, ["root"], CHROME_ROLE_SUFFIXES.background);
   const fgSlot = findLayeredSlotAny(ir, ["root"], CHROME_ROLE_SUFFIXES.foreground);
   const radiusSlot = findLayeredSlotAny(ir, ["root"], CHROME_ROLE_SUFFIXES.radius);
+  // Border role: the same corpus suffix the projected-children chrome path
+  // resolves (`.color.border.default` strips to `color.border`), so a passive
+  // root and a chrome root carrying the same contract declaration resolve the
+  // SAME slot. Width rides `.size.border` with a 1.dp fallback — the default
+  // the chrome path hardcodes when the component carries no width slot.
+  const borderColorSlot = findLayeredSlot(ir, ["root"], "color.border.default");
+  const borderWidthSlot = findLayeredSlot(ir, ["root"], "size.border");
   const paddingInlineStartSlot = findLayeredSlot(ir, ["root"], "box-model.padding-inline-start");
   const paddingInlineEndSlot = findLayeredSlot(ir, ["root"], "box-model.padding-inline-end");
   const paddingBlockStartSlot = findLayeredSlot(ir, ["root"], "box-model.padding-block-start");
@@ -499,12 +508,14 @@ function resolveStaticChrome(ir: ComponentIR): StaticChromeSlots {
   const anyPaddingSlot = Boolean(
     paddingInlineStartSlot || paddingInlineEndSlot || paddingBlockStartSlot || paddingBlockEndSlot,
   );
-  const usesDims = Boolean(radiusSlot || anyPaddingSlot || minHeightSlot);
-  const needsClip = Boolean(bgSlot || radiusSlot);
+  const usesDims = Boolean(radiusSlot || anyPaddingSlot || minHeightSlot || borderColorSlot);
+  const needsClip = Boolean(bgSlot || radiusSlot || borderColorSlot);
   return {
     bgSlot,
     fgSlot,
     radiusSlot,
+    borderColorSlot,
+    borderWidthSlot,
     paddingInlineStartSlot,
     paddingInlineEndSlot,
     paddingBlockStartSlot,
@@ -555,6 +566,23 @@ function emitChromeVals(
     lines.push(
       `    val cornerRadius = layeredSlot(${JSON.stringify(slots.radiusSlot.name)})?.toFsdsDp() ?: 0.dp`,
     );
+  } else if (slots.needsClip) {
+    // Border-only root (no radius slot): the shape is still drawn — a
+    // rectangular one. No layeredSlot call: the component carries no radius
+    // slot to look up.
+    lines.push(`    val cornerRadius = 0.dp`);
+  }
+  if (slots.borderColorSlot) {
+    lines.push(
+      `    val borderColor = layeredSlot(${JSON.stringify(slots.borderColorSlot.name)})?.toFsdsColor()`,
+    );
+    lines.push(
+      `    val borderWidth = ${
+        slots.borderWidthSlot
+          ? `layeredSlot(${JSON.stringify(slots.borderWidthSlot.name)})?.toFsdsDp()`
+          : "null"
+      } ?: 1.dp`,
+    );
   }
   const sideVal = (valName: string, slot: { name: string } | undefined): string => {
     if (slot) {
@@ -593,6 +621,11 @@ function emitChromeModifier(
   if (slots.bgSlot) {
     chromeLines.push(
       `        .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)`,
+    );
+  }
+  if (slots.borderColorSlot) {
+    chromeLines.push(
+      `        .then(if (borderColor != null) Modifier.border(borderWidth, borderColor, shape) else Modifier)`,
     );
   }
   if (slots.anyPaddingSlot) {
@@ -700,6 +733,7 @@ function emitStaticContent(ir: ComponentIR): string {
   lines.push(``);
   lines.push(`// @generated:start imports`);
   if (slots.usesColors) lines.push(`import androidx.compose.foundation.background`);
+  if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   lines.push(`import androidx.compose.foundation.layout.Box`);
   if (slots.minHeightSlot) lines.push(`import androidx.compose.foundation.layout.height`);
   if (slots.anyPaddingSlot) {
@@ -726,8 +760,18 @@ function emitStaticContent(ir: ComponentIR): string {
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
     for (const line of referenceImports(ir)) lines.push(line);
-    if (slots.usesColors) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    if (slots.usesDims) lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    if (slots.usesColors || slots.borderColorSlot) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
+    // toFsdsDp is referenced only by slots that resolve a dp val — radius,
+    // padding sides, min-height, and the border width. A border color with no
+    // width slot falls back to the literal `1.dp` (dp import, no toFsdsDp).
+    if (
+      slots.radiusSlot ||
+      slots.anyPaddingSlot ||
+      slots.minHeightSlot ||
+      slots.borderWidthSlot
+    ) {
+      lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    }
   }
   if (fgSlot) lines.push(`import com.fullstackds.tokens.LocalFsdsContentColor`);
   if (emitsTextStyle) {
@@ -957,6 +1001,7 @@ function emitPropTextLeaf(ir: ComponentIR): string {
   lines.push(`import androidx.compose.runtime.Composable`);
   lines.push(`import androidx.compose.ui.Modifier`);
   if (slots.needsClip) lines.push(`import androidx.compose.ui.draw.clip`);
+  if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   if (usesColors || emitsTextStyle) lines.push(`import androidx.compose.ui.graphics.Color`);
   if (slots.usesDims) lines.push(`import androidx.compose.ui.unit.dp`);
   if (emitsTextStyle) {
@@ -965,8 +1010,10 @@ function emitPropTextLeaf(ir: ComponentIR): string {
   }
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
-    if (usesColors) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    if (slots.usesDims) lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    if (usesColors || slots.borderColorSlot) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
+    if (slots.radiusSlot || slots.anyPaddingSlot || slots.minHeightSlot || slots.borderWidthSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    }
     if (fontSizeSlot) lines.push(`import com.fullstackds.tokens.toFsdsSp`);
   }
   lines.push(`// @generated:end`);
@@ -1093,6 +1140,7 @@ function emitExpandableContent(ir: ComponentIR): string {
   lines.push(``);
   lines.push(`// @generated:start imports`);
   if (slots.usesColors) lines.push(`import androidx.compose.foundation.background`);
+  if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   lines.push(`import androidx.compose.foundation.clickable`);
   if (slots.minHeightSlot) lines.push(`import androidx.compose.foundation.layout.height`);
   lines.push(`import androidx.compose.foundation.layout.Arrangement`);
@@ -1117,8 +1165,10 @@ function emitExpandableContent(ir: ComponentIR): string {
   }
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
-    if (slots.usesColors) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    if (slots.usesDims) lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    if (slots.usesColors || slots.borderColorSlot) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
+    if (slots.radiusSlot || slots.anyPaddingSlot || slots.minHeightSlot || slots.borderWidthSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    }
   }
   if (slots.fgSlot) lines.push(`import com.fullstackds.tokens.LocalFsdsContentColor`);
   lines.push(`// @generated:end`);
@@ -1306,6 +1356,7 @@ function emitProgressIndicator(ir: ComponentIR): string {
   lines.push(``);
   lines.push(`// @generated:start imports`);
   if (slots.usesColors) lines.push(`import androidx.compose.foundation.background`);
+  if (slots.borderColorSlot) lines.push(`import androidx.compose.foundation.border`);
   if (slots.minHeightSlot) lines.push(`import androidx.compose.foundation.layout.height`);
   if (slots.anyPaddingSlot) lines.push(`import androidx.compose.foundation.layout.padding`);
   if (slots.needsClip) lines.push(`import androidx.compose.foundation.shape.RoundedCornerShape`);
@@ -1321,8 +1372,12 @@ function emitProgressIndicator(ir: ComponentIR): string {
   lines.push(`import com.fullstackds.components.progress.FsdsProgressIndicator`);
   if (usesTheme) {
     lines.push(`import com.fullstackds.tokens.LocalFsdsTheme`);
-    if (slots.usesColors || usesProgressColors) lines.push(`import com.fullstackds.tokens.toFsdsColor`);
-    if (slots.usesDims) lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    if (slots.usesColors || usesProgressColors || slots.borderColorSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsColor`);
+    }
+    if (slots.radiusSlot || slots.anyPaddingSlot || slots.minHeightSlot || slots.borderWidthSlot) {
+      lines.push(`import com.fullstackds.tokens.toFsdsDp`);
+    }
     if (durationSlot) lines.push(`import com.fullstackds.tokens.toFsdsMs`);
   }
   if (textColorSlot) lines.push(`import com.fullstackds.tokens.LocalFsdsContentColor`);
