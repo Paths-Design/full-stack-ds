@@ -49,3 +49,7 @@ evidence:
     status: pass
     evidence_ref: "commit:f169610d9 — pnpm run generate -- --target=all on clean tree leaves every generated tree at zero diff (verified after each of the four phases); pnpm run generate:check 55/55; pnpm run governed:rail exit 0"
     recorded_at: "2026-10-27T15:47:43.329Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "test-nodeid:packages/ds-codegen/src/frameworks/emitter-authority-guard.test.ts > emitter authority guard > the native emitter trees carry no component-identity or inline name-keyed queries"
+    recorded_at: "2026-10-27T15:47:52.575Z"
