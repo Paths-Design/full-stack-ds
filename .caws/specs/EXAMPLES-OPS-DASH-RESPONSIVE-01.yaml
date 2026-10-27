@@ -1,0 +1,45 @@
+id: EXAMPLES-OPS-DASH-RESPONSIVE-01
+title: 'Operations-dashboard responsive shell: pinned tiers across the react and native lanes'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-27T14:23:57.951Z'
+updated_at: '2026-10-27T14:23:57.951Z'
+created_by_session: 'session-4fc580e1-df32-41f6-8120-3ad4a9cd6f2d'
+blast_radius:
+  modules:
+    - 'operations-dashboard lanes responsive shell (react/swift/compose/gpui)'
+    - 'operations-dashboard spec.md responsive semantics'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/operations-dashboard/swift'
+    - 'examples/operations-dashboard/compose'
+    - 'examples/operations-dashboard/gpui'
+    - 'examples/operations-dashboard/react'
+    - 'examples/operations-dashboard/spec.md'
+    - 'examples/operations-dashboard/README.md'
+  out: []
+invariants:
+  - 'Responsive tiers are pinned in spec.md (Responsive behavior) and every lane implements the same thresholds and collapse semantics; divergence is a finding, not a lane-local choice.'
+  - 'The responsive shell is app-layer code per the spec''s page-structure doctrine — no package, contract, emitter, or generated-tree change under packages/*; boundary gaps surface as findings.'
+  - 'Every lane remains consumable only through its package''s public exports; the seam, fixtures, and API are untouched by this slice.'
+  - 'Each lane compiles (swift build / gradlew compileKotlin / cargo build / react lane build) and its seam tests stay green after the change; no clipped or unreachable region between 720px and wide.'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the pinned Responsive behavior section in spec.md; when each lane is resized across the wide/medium/narrow tiers; then all four lanes collapse identically (wide: rail+queue+detail row; medium: rail collapsed behind a filters toggle with queue+detail row; narrow: single column header→filters→queue→detail), the window resizes to 720px width with no clipped regions, filters keep applying while collapsed, and the change is verified by each lane''s gate commands exiting 0'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the responsive work surfaces boundary gaps; when lanes implement their tiers; then the new findings (no breakpoint concept on native targets, no table column-priority API, collapsed-rail affordance) are recorded in spec.md''s findings log and the lane READMEs'' ledgers, with react lane app-shell/App updated for the medium tier'
+observability:
+  - 'per-lane gate exit codes recorded in slice evidence'
+rollback:
+  - 'revert the responsive commits; lanes return to their landed pre-responsive layout'
+non_functional: {}
+contracts:
+  - name: 'operations-dashboard-spec'
+    type: behavior
+    path: 'examples/operations-dashboard/spec.md'
