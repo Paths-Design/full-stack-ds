@@ -67,3 +67,10 @@ evidence:
     command: pnpm test
     exit_code: 0
     commit_sha: dc0586ca3622c54a68f07fe9dd5718946838ed38
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "echo 'refs/heads/main 981c327f7 refs/heads/main 34ba918d5' | .githooks/pre-push origin <url> under Node 25.9.0 ran all 17 scoped groups over 34ba918d5..981c327f7 and printed 'all selected checks passed; proceeding with push' (exit 0, 273s): lint, typecheck, token gates, generate:check, docs:check-claims/links, root 5191/5191 + vue 853/853, governed:rail with 'committed-tree-check: packages/ matches 981c327f7', and the ten audits. An earlier run at ca2609047 failed docs:check-claims (src-top-level-dir-count 12 vs 13), repaired by 2cf4b1c10"
+    recorded_at: "2026-10-28T09:27:01.898Z"
+    command: ".githooks/pre-push (stdin ref line, Node 25.9.0)"
+    exit_code: 0
+    commit_sha: "981c327f72335d191f51e5b1b228b6ff764c6755"
