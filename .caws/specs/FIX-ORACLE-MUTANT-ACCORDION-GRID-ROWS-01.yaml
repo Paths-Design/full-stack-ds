@@ -1,9 +1,10 @@
 id: FIX-ORACLE-MUTANT-ACCORDION-GRID-ROWS-01
 title: 'Re-anchor the Accordion motion oracle mutant to the contract''s grid-template-rows transition property'
 mode: chore
-lifecycle_state: draft
+lifecycle_state: active
+worktree: oracle-mutant-grid-rows
 created_at: '2026-10-28T00:40:27.015Z'
-updated_at: '2026-10-28T00:40:27.015Z'
+updated_at: '2026-10-28T00:40:51.967Z'
 created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
 blast_radius:
   modules:
