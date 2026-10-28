@@ -1,0 +1,45 @@
+id: FIX-NODE25-JSDOM-STORAGE-01
+title: 'Rebind jsdom Web Storage over Node 25''s own storage globals in the shared test setup'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-28T08:57:56.873Z'
+updated_at: '2026-10-28T08:57:56.873Z'
+created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
+blast_radius:
+  modules:
+    - 'src/test-setup.ts'
+    - 'src/test-support'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'src/test-setup.ts'
+    - 'src/test-support/document-storage.ts'
+    - 'src/test-support/document-storage.test.ts'
+  out: []
+invariants:
+  - 'No application or package source changes; only shared test setup and its helper'
+  - 'On Node 22 the storage globals keep their existing identity: the jsdom document''s Storage instances'
+  - 'Node''s experimental Web Storage getters are never invoked by the setup (no --localstorage-file warning)'
+acceptance:
+  - id: A1
+    given: 'a target whose localStorage and sessionStorage are Node-style configurable accessors'
+    when: 'adoptDocumentStorage runs against a jsdom window'
+    then: 'both globals are that window''s Storage instances and the Node getters were never called'
+  - id: A2
+    given: 'Node 25.9.0 with its Web Storage globals defined'
+    when: 'pnpm test runs'
+    then: 'every root test passes, including the seven showcase tests that failed with localStorage.clear is not a function'
+  - id: A3
+    given: 'Node 22.19.0 (the CI major)'
+    when: 'pnpm test runs'
+    then: 'every root test passes'
+  - id: A4
+    given: 'the landed revision'
+    when: '.githooks/pre-push runs against origin/main under the default Node 25.9.0'
+    then: 'every selected gate passes and the hook reports it is proceeding with push'
+non_functional: {}
+contracts:
+  - name: 'test-environment-storage'
+    type: contract-test
+    path: 'src/test-support/document-storage.test.ts'
