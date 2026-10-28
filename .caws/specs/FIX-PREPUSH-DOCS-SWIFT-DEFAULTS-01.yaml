@@ -1,0 +1,43 @@
+id: FIX-PREPUSH-DOCS-SWIFT-DEFAULTS-01
+title: 'Clear the two remaining pre-push blockers: restamp five stale governed docs and regenerate the SwiftUI semantic defaults table'
+mode: chore
+lifecycle_state: draft
+created_at: '2026-10-28T01:46:19.640Z'
+updated_at: '2026-10-28T01:46:19.640Z'
+created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
+blast_radius:
+  modules:
+    - 'docs/architecture'
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Tokens'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-swiftui/Sources/DsSwiftUI/Tokens/FsdsTheme.swift'
+    - 'docs/architecture/design/box-model-primitive.md'
+    - 'docs/architecture/design/component-design-bindings.md'
+    - 'docs/architecture/design/component-token-consumption.md'
+    - 'docs/architecture/design/component-token-naming.md'
+    - 'docs/architecture/transfer-list.md'
+  out: []
+invariants:
+  - 'FsdsTheme.swift changes only inside the generator-owned semantic-defaults region and only by the generator'
+  - 'Each restamped doc is checked against the governed-path diffs since its prior stamp; claims those diffs falsified are corrected in present tense before the stamp moves'
+  - 'No contract, emitter, token source, or audit ledger changes'
+acceptance:
+  - id: A1
+    given: 'the regenerated FsdsSemanticDefaults.light region'
+    when: 'pnpm run swiftui:semantic-defaults:check runs'
+    then: 'it exits 0 and the region carries semantic.surface.border.subtle and drops the unconsumed semantic.color.border.light'
+  - id: A2
+    given: 'the five restamped docs'
+    when: 'pnpm run docs:check-claims runs'
+    then: 'it exits 0 with zero stale stamps'
+  - id: A3
+    given: 'the landed revision'
+    when: '.githooks/pre-push runs against origin/main under Node 22'
+    then: 'every selected gate passes and the hook reports it is proceeding with push'
+rollback:
+  - 'Revert the two commits; the docs return to stale stamps and the Swift table to its pre-34ba0534c contents'
+non_functional: {}
+contracts: []
