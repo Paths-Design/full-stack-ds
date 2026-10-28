@@ -41,3 +41,11 @@ rollback:
   - 'Revert the two commits; the docs return to stale stamps and the Swift table to its pre-34ba0534c contents'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run swiftui:semantic-defaults:check printed 'swiftui semantic-defaults: up to date' after regeneration at 4612d2e31 and again inside the pre-push hook at 6ee3e5d40 (Node 22.19.0); the regenerated region's only change swaps semantic.color.border.light (#b8b8b8, now emitted by 0 Swift component files) for semantic.surface.border.subtle (#d0d0d0/#474647, emitted by 16)"
+    recorded_at: "2026-10-28T02:30:26.434Z"
+    command: "pnpm run swiftui:semantic-defaults:check"
+    exit_code: 0
+    commit_sha: "4612d2e312e3529270db8d912538437d609b1488"
