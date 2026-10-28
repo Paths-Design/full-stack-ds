@@ -2,6 +2,7 @@ id: FIX-NODE25-JSDOM-STORAGE-01
 title: 'Rebind jsdom Web Storage over Node 25''s own storage globals in the shared test setup'
 mode: fix
 lifecycle_state: active
+worktree: node25-jsdom-storage-docs
 created_at: '2026-10-28T08:57:56.873Z'
 updated_at: '2026-10-28T09:13:10.971Z'
 created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
