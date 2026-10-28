@@ -45,3 +45,11 @@ contracts:
   - name: 'test-environment-storage'
     type: contract-test
     path: 'src/test-support/document-storage.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "src/test-support/document-storage.test.ts 'replaces Node-defined storage accessors with the document window's Storage' builds a target whose localStorage/sessionStorage are configurable getters returning {} (Node 25's shape), calls adoptDocumentStorage with the JSDOM window, asserts both keys are toBe the window's Storage and that the getter-read log is []. Passed at dc0586ca3 under Node 25.9.0 and 22.19.0, and inside the pre-push hook at 981c327f7 under Node 25.9.0. Its sibling env-canary test failed under Node 25 before src/test-setup.ts was wired ('expected {} to be Storage{}') and passed after"
+    recorded_at: "2026-10-28T09:26:40.984Z"
+    command: pnpm exec vitest run src/test-support/document-storage.test.ts
+    exit_code: 0
+    commit_sha: "981c327f72335d191f51e5b1b228b6ff764c6755"
