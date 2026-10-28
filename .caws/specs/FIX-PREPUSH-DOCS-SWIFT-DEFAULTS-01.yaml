@@ -56,3 +56,10 @@ evidence:
     command: "pnpm run docs:check-claims"
     exit_code: 0
     commit_sha: de95fb1650fe348952a76d713c864f6eed591416
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Ran .githooks/pre-push directly (stdin refs/heads/main 6ee3e5d40 -> origin/main 34ba918d5, no push) under Node 22.19.0: range scoped to all 17 groups, attribution guard clean over 73 commits, lint/typecheck/token gates/generate:check/docs OK, root tests 5189/5189 and vue 853/853, governed:rail plus committed-tree-check 'packages/ matches 6ee3e5d40', compose parity, swiftui defaults, all ten realization audits; final line 'all selected checks passed; proceeding with push', exit 0 after 1125s. Not run on local Node 25.9.0, where root tests fail on the localStorage global."
+    recorded_at: "2026-10-28T02:30:28.283Z"
+    command: "printf 'refs/heads/main <HEAD> refs/heads/main <origin/main>' | .githooks/pre-push origin git@github.com:Paths-Design/full-stack-ds.git"
+    exit_code: 0
+    commit_sha: "6ee3e5d4082bef35572352053f8101ddee70ba94"
