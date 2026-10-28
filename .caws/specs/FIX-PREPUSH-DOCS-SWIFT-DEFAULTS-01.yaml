@@ -1,9 +1,11 @@
 id: FIX-PREPUSH-DOCS-SWIFT-DEFAULTS-01
 title: 'Clear the two remaining pre-push blockers: restamp five stale governed docs and regenerate the SwiftUI semantic defaults table'
 mode: chore
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Regenerated the SwiftUI semantic defaults region and re-verified five stale governed docs; the full pre-push hook passes under Node 22'
 created_at: '2026-10-28T01:46:19.640Z'
-updated_at: '2026-10-28T01:46:39.268Z'
+updated_at: '2026-10-28T02:30:58.008Z'
 created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
 blast_radius:
   modules:
