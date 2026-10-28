@@ -60,3 +60,10 @@ evidence:
     command: pnpm test
     exit_code: 0
     commit_sha: "981c327f72335d191f51e5b1b228b6ff764c6755"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Under Node 22.19.0 (CI's major), pnpm test: Test Files 355 passed (355), Tests 5191 passed (5191) at dc0586ca3. The candidate 981c327f7 differs from dc0586ca3 only in README.md, AGENTS.md and .caws lifecycle files. vitest -c vitest.showcase.config.ts --coverage (shares src/test-setup.ts) also passed 58 files / 488 tests with no threshold failure under Node 25 at dc0586ca3"
+    recorded_at: "2026-10-28T09:27:01.206Z"
+    command: pnpm test
+    exit_code: 0
+    commit_sha: dc0586ca3622c54a68f07fe9dd5718946838ed38
