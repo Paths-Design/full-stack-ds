@@ -122,7 +122,7 @@ packages/
   ds-iconography/                # Icon authoring source + emission ledger
   ds-figma-plugin/               # Consumes generated figma descriptors
 
-src/                            # React showcase app (Vite) — <!-- src-top-level-dir-count -->12 top-level dirs
+src/                            # React showcase app (Vite) — <!-- src-top-level-dir-count -->13 top-level dirs
   app.tsx                       # Shell: Header/Sidebar/TracePanel + route switch
   router.tsx                    # <!-- showcase-route-count -->13 hash routes
   views/                        # <!-- src-view-count -->17 top-level view modules + sections/
@@ -131,6 +131,7 @@ src/                            # React showcase app (Vite) — <!-- src-top-lev
   components/                   # App chrome (CommandPalette, CodeViewer) + properties-panel/
   layout/                       # Header, Sidebar, TracePanel
   consumption/                  # Consumption guard tests (package contract, CSS hygiene)
+  test-support/                 # Shared vitest setup helpers (jsdom Web Storage rebind)
   lib/                          # Usage-example projection (render-usage.tsx)
   trace/                        # DeveloperView trace index (buildTraceIndex)
   types/                        # Generated bundle loader
