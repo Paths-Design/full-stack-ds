@@ -53,3 +53,10 @@ evidence:
     command: pnpm exec vitest run src/test-support/document-storage.test.ts
     exit_code: 0
     commit_sha: "981c327f72335d191f51e5b1b228b6ff764c6755"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Under Node 25.9.0, pnpm test: Test Files 355 passed (355), Tests 5191 passed (5191) at dc0586ca3 (slice worktree) and again inside .githooks/pre-push at 981c327f7. Header.test.tsx (1), ChromeT2.surfaces.test.tsx (5) and shell-sections.smoke.test.tsx (6), which failed before with 'localStorage.clear/getItem is not a function', all pass. Node's '--localstorage-file was provided without a valid path' warning no longer appears"
+    recorded_at: "2026-10-28T09:27:00.502Z"
+    command: pnpm test
+    exit_code: 0
+    commit_sha: "981c327f72335d191f51e5b1b228b6ff764c6755"
