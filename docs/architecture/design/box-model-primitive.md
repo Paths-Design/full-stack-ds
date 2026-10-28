@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
-updated: 2026-10-21
-verified_at_commit: 4ef5a4f30
+updated: 2026-10-27
+verified_at_commit: 4612d2e31
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -61,7 +61,7 @@ Padding uses logical axes and sides so it follows writing mode. Margin belongs t
 
 - `box-model.primitive.schema.json` enumerates legal slots and authoring value shapes.
 - `primitives/BoxModel.primitive.json` defines defaults; `box-model.ts` merges them and emits shared controls from the same slot enumeration.
-- `ir.ts` retains default facts for all backends. `css.ts` places concrete fallbacks at Web consumer sites and removes shared override defaults from every component declaration block.
+- `ir.ts` retains default facts for all backends. `css.ts` places concrete fallbacks at Web consumer sites and removes shared override defaults from every component cascade block. `@starting-style` entry blocks pass through verbatim: they hold transition from-values, not box defaults.
 - `box-model.test.ts` verifies default precedence, schema rejection, non-hoisting, and variant defaults at property consumers.
 - `e2e/component-token-consumption.spec.ts` verifies that variant defaults cannot defeat shorthand, axis, and side overrides across Web targets.
 - `e2e/design-bindings.spec.ts` checks actual browser shorthand/side behavior, restoration, nested isolation, and consumer precedence without the global semantic stylesheet.
