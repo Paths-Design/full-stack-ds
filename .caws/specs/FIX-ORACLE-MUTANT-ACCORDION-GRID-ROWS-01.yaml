@@ -30,3 +30,11 @@ rollback:
   - 'Revert the catalog commit; the selfcheck then fails closed on the drifted source value again'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run audit:contract-oracle-mutations:selfcheck at a0a08645d (and again on merged main 4493a48ea) printed 'contract-oracle mutation self-check: PASS (11 one-leaf mutants)'; it previously threw on accordion-motion-height-to-width source drift (from=height, actual=grid-template-rows)"
+    recorded_at: "2026-10-28T01:21:53.891Z"
+    command: "pnpm run audit:contract-oracle-mutations:selfcheck"
+    exit_code: 0
+    commit_sha: a0a08645d61d44f8b809e387e1113822ee7ab7c4
