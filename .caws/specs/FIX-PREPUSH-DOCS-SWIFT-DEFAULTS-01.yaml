@@ -49,3 +49,10 @@ evidence:
     command: "pnpm run swiftui:semantic-defaults:check"
     exit_code: 0
     commit_sha: "4612d2e312e3529270db8d912538437d609b1488"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run docs:check-claims printed 'docs-claims-check: OK ... 15 verified stamp(s) fresh or ledgered' at de95fb165 and inside the pre-push hook at 6ee3e5d40; before the restamp it reported 5 stale stamps (box-model-primitive, component-design-bindings, component-token-consumption, component-token-naming, transfer-list). Three docs carry present-tense corrections for @starting-style lowering and the Accordion inset focus offset; docs:check-links OK (234 links)"
+    recorded_at: "2026-10-28T02:30:27.333Z"
+    command: "pnpm run docs:check-claims"
+    exit_code: 0
+    commit_sha: de95fb1650fe348952a76d713c864f6eed591416
