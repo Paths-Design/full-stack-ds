@@ -1,0 +1,42 @@
+id: FIX-CI-RUNNER-PIN-RN-COVERAGE-01
+title: 'Restore green CI on main: pin Playwright jobs to ubuntu-24.04 and cover React Native PageNavigator interactions'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-28T23:56:46.885Z'
+updated_at: '2026-10-28T23:56:46.885Z'
+created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
+blast_radius:
+  modules:
+    - '.github/workflows'
+    - 'packages/ds-react-native/src/components/PageNavigator'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - '.github/workflows/ci.yml'
+    - '.github/workflows/analytical-browser.yml'
+    - '.github/workflows/contract-oracle-mutations.yml'
+    - 'packages/ds-react-native/src/components/PageNavigator/__tests__/PageNavigator.behavior.test.tsx'
+  out: []
+invariants:
+  - 'No coverage floor in coverage-floors.json is lowered and no coverage include/exclude is narrowed'
+  - 'No generated or production source changes; only a hand-authored behavior test and runner labels'
+  - 'Only jobs that install Playwright Chromium change runner image'
+acceptance:
+  - id: A1
+    given: 'the React Native PageNavigator'
+    when: 'previous, next, and a typed one-based page with Go are used'
+    then: 'the accepted position moves by bounded requests reported through onIndexChange, and out-of-range or non-numeric entries report nothing and restore the field to the accepted ordinal'
+  - id: A2
+    given: 'the React Native coverage suite'
+    when: 'pnpm run test:coverage:react-native runs'
+    then: 'it exits 0 with function coverage at or above the unchanged 89 floor'
+  - id: A3
+    given: 'the three workflow jobs that install Playwright Chromium'
+    when: 'their runs-on is read'
+    then: 'each is ubuntu-24.04, the image their last green runs used, and no other job''s image changes'
+non_functional: {}
+contracts:
+  - name: 'rn-page-navigator-behavior'
+    type: contract-test
+    path: 'packages/ds-react-native/src/components/PageNavigator/__tests__/PageNavigator.behavior.test.tsx'
