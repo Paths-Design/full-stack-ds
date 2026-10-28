@@ -3,7 +3,7 @@ title: 'Rebind jsdom Web Storage over Node 25''s own storage globals in the shar
 mode: fix
 lifecycle_state: active
 created_at: '2026-10-28T08:57:56.873Z'
-updated_at: '2026-10-28T08:58:11.548Z'
+updated_at: '2026-10-28T09:13:10.971Z'
 created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
 blast_radius:
   modules:
@@ -16,6 +16,8 @@ scope:
     - 'src/test-setup.ts'
     - 'src/test-support/document-storage.ts'
     - 'src/test-support/document-storage.test.ts'
+    - README.md
+    - AGENTS.md
   out: []
 invariants:
   - 'No application or package source changes; only shared test setup and its helper'
