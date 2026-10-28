@@ -38,3 +38,10 @@ evidence:
     command: "pnpm run audit:contract-oracle-mutations:selfcheck"
     exit_code: 0
     commit_sha: a0a08645d61d44f8b809e387e1113822ee7ab7c4
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Full-profile runner at a0a08645d under Node 22.19.0 (CI's pinned major): every baseline stage green through render-binding-rail; mutant passed generate-check..audit-custom-regions, first red audit-motion (contract-derived) listing 'Accordion: expand declares width' as unledgered; report: detected 1/1, inconclusive 0, evidence marker found, disposition match. Under local Node 25.9.0 the same runner's baseline root-tests went red (localStorage shadowed by Node webstorage), so no mutant could be credited there."
+    recorded_at: "2026-10-28T01:22:41.436Z"
+    command: "pnpm run audit:contract-oracle-mutations -- --profile=full --only=accordion-motion-grid-rows-to-width --verify-dispositions"
+    exit_code: 0
+    commit_sha: a0a08645d61d44f8b809e387e1113822ee7ab7c4
