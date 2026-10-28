@@ -1,0 +1,32 @@
+id: FIX-ORACLE-MUTANT-ACCORDION-GRID-ROWS-01
+title: 'Re-anchor the Accordion motion oracle mutant to the contract''s grid-template-rows transition property'
+mode: chore
+lifecycle_state: draft
+created_at: '2026-10-28T00:40:27.015Z'
+updated_at: '2026-10-28T00:40:27.015Z'
+created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
+blast_radius:
+  modules:
+    - 'scripts/contract-oracle-mutation'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/contract-oracle-mutation/catalog.mjs'
+  out: []
+invariants:
+  - 'The mutant still mutates exactly one leaf at /motion/transitions/0/properties/0 and keeps its reviewed detected disposition at audit-motion with the contract-derived MOTION_PROPERTY_UNREALIZED marker'
+  - 'No contract, emitter, audit, or ledger changes'
+acceptance:
+  - id: A1
+    given: 'the Accordion contract declares grid-template-rows at /motion/transitions/0/properties/0'
+    when: 'pnpm run audit:contract-oracle-mutations:selfcheck runs'
+    then: 'it exits 0 with no mutant source-value drift'
+  - id: A2
+    given: 'the re-anchored mutant'
+    when: 'the full-profile mutation runner runs it with --verify-dispositions'
+    then: 'the first red stage is audit-motion with marker Accordion::MOTION_PROPERTY_UNREALIZED::expand declares width and the disposition verifies'
+rollback:
+  - 'Revert the catalog commit; the selfcheck then fails closed on the drifted source value again'
+non_functional: {}
+contracts: []
