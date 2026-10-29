@@ -1,0 +1,49 @@
+id: GODOT-COMPOSED-PARTS-PARITY-01
+title: 'Godot contract-derived composed content and part styling'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-29T23:59:33.894Z'
+updated_at: '2026-10-29T23:59:33.894Z'
+created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
+blast_radius:
+  modules:
+    - 'Godot emitter, generated composite scenes, shared content runtime, Editor and exported Player witness'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-godot'
+    - 'scripts/godot-pilot.mjs'
+    - 'fsds.targets.json'
+    - 'docs/architecture/godot-target.md'
+  out: []
+invariants:
+  - 'Composition and part styling derive from normalized IR facts without component-name dispatch'
+  - 'Nested consumer controls retain identity and state when a parent variant or token override changes'
+  - 'Unsupported props and styles are named rather than counted as parity'
+acceptance:
+  - id: A1
+    given: 'a compound-part contract and renamed synthetic equivalent'
+    when: 'the Godot target emits it'
+    then: 'part hosts and style addresses derive from IR, unknown facts fail or appear in capability omissions'
+  - id: A2
+    given: 'a generated composite containing generated Text, Badge and Button'
+    when: 'density, intent and token overrides change'
+    then: 'nested control identity and action state remain stable and changed part styling reaches rendered geometry or pixels'
+  - id: A3
+    given: 'a saved scene, separate Godot Editor reload and fresh macOS export'
+    when: 'composed controls render and act'
+    then: 'part hosts survive serialization, one action reaches the consumer and a changed token paints the expected viewport pixel in both processes'
+  - id: A4
+    given: 'committed generated output'
+    when: 'the focused codegen suite, regeneration and required project gates run'
+    then: 'emitted bytes are stable and no existing target regresses'
+non_functional: {}
+contracts:
+  - name: 'godot-composed-parts'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/godot/factory.test.ts'
+  - name: 'godot-composed-player'
+    type: behavior
+    path: 'packages/ds-godot/verification/main.gd'
