@@ -44,7 +44,7 @@ export function Table({
         style={styles.container}
         accessibilityLabel={ariaLabel}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children}
       </View>
     </View>
   );

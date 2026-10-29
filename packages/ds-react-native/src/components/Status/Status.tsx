@@ -1,5 +1,5 @@
 // @generated:start imports
-import type { StyleProp, ViewStyle } from "react-native";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
 import { useFsdsTheme } from "../../tokens";
@@ -34,6 +34,7 @@ export function Status({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createStatusStyles(fsdsTheme), [fsdsTheme]);
   const variantStyleForStatus = status !== undefined ? ({ "info": styles.root_variant_info, "success": styles.root_variant_success, "warning": styles.root_variant_warning, "danger": styles.root_variant_danger, "error": styles.root_variant_error } as Record<string, ViewStyle | undefined>)[status] : undefined;
+  const textVariantStyleForStatus = status !== undefined ? ({ "info": styles.rootText_variant_info, "success": styles.rootText_variant_success, "warning": styles.rootText_variant_warning, "danger": styles.rootText_variant_danger, "error": styles.rootText_variant_error } as Record<string, TextStyle | undefined>)[status] : undefined;
   return (
     <View
       testID={testID}
@@ -48,7 +49,7 @@ export function Status({
       <View
         style={styles.label}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForStatus]}>{children}</RNText> : children}
       </View>
     </View>
   );
