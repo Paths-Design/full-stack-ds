@@ -146,6 +146,15 @@ func _ready() -> void:
 	check(calls[0] == 2 and action.rendered.disabled, "Disabled action activated")
 	rows.append({"id":"action-content","activations":calls[0],"largePx":18,"tokenColor":"#123456"})
 	action.queue_free()
+	var defaulted_action = make_control("DefaultedAction")
+	add_child(defaulted_action)
+	check(defaulted_action.disabled and defaulted_action.loading, "Authored action defaults did not initialize native state")
+	check(defaulted_action.rendered.disabled and defaulted_action.loading_indicator.visible, "Authored action defaults did not reach rendered control")
+	defaulted_action.disabled = false
+	defaulted_action.loading = false
+	check(not defaulted_action.rendered.disabled and not defaulted_action.loading_indicator.visible, "Explicit consumer values did not override authored defaults")
+	rows.append({"id":"action-defaults","initialDisabled":true,"initialLoading":true,"consumerOverride":true})
+	defaulted_action.queue_free()
 	var column := VBoxContainer.new()
 	column.position = Vector2(24, 24)
 	column.size.x = 580

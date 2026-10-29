@@ -128,7 +128,7 @@ export function createGodotEmitter(): FrameworkEmitter {
       const isStatic = plan.operation === "rule" || plan.operation === "static-text";
       const isAction = plan.operation === "action";
       const config = { ...(isSequence || isStatic || isAction ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
-      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isSequence || isStatic || isAction ? "" : `\tlabel = ${q(ir.name)}\n`}`;
+      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction ? "" : `\tlabel = ${q(ir.name)}\n`}`;
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");
       return [

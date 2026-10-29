@@ -186,11 +186,6 @@
           "token": "box-model.padding-inline-end"
         },
         {
-          "property": "gap",
-          "value": "8px",
-          "token": "box-model.gap"
-        },
-        {
           "property": "min-width",
           "value": "32px",
           "token": "box-model.min-width"
@@ -223,12 +218,6 @@
           "value": "#a0a0a1",
           "token": "button.color.border.default",
           "designSlot": "button.design.root.border.color"
-        },
-        {
-          "property": "gap",
-          "value": "8px",
-          "token": "button.size.gap",
-          "designSlot": "button.design.root.spacing.gap"
         },
         {
           "property": "border-radius",
@@ -667,6 +656,8 @@
     "structure.padding: no Godot action style mapping",
     "structure.padding-block: no Godot action style mapping",
     "structure.padding-inline: no Godot action style mapping",
+    "structure.gap: no Godot action style mapping",
+    "root.gap: no Godot action style mapping",
     "root.transition-duration: no Godot action style mapping",
     "root.transition-timing-function: no Godot action style mapping",
     "--tertiary.button.color.background.default: platform web,ios,android only",

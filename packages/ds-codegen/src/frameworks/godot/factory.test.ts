@@ -53,6 +53,29 @@ describe("Godot bounded lowering", () => {
     ir.dom!.attrs["data-extra"] = "unprojected";
     expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_ACTION_ANATOMY: Button");
   });
+  it("initializes authored action state defaults and refuses an invalid default", () => {
+    const source = styledFixture("Button");
+    const disabled = source.props!.designed!.members!.find(member => member.name === "disabled");
+    if (!disabled) throw new Error("Missing disabled fixture prop");
+    Object.assign(disabled, { default: true });
+    const ir = buildComponentIR(source);
+    expect(ir.styledProps.find(prop => prop.name === "disabled")?.defaultExpr).toBe("true");
+    const script = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" })
+      .find(file => file.relativePath === "Button/Button.gd")?.contents;
+    expect(script).toContain("apply_config_defaults()");
+    Object.assign(disabled, { default: "not-a-boolean" });
+    expect(() => godotPlan(buildComponentIR(source))).toThrow("GODOT_UNSUPPORTED_ACTION_DEFAULT: Button.disabled");
+  });
+  it("names state typography and unused gap instead of crediting their styling", () => {
+    const source = styledFixture("Button");
+    const styles = source.styles as unknown as Record<string, Record<string, unknown>>;
+    styles.hover["font-size"] = { literal: "40px", platforms: ["godot"] };
+    const plan = godotActionPlan(buildComponentIR(source));
+    if (!plan) throw new Error("Action plan was not selected");
+    expect(plan.omissions).toContain("hover.font-size: native state typography and geometry are not lowered");
+    expect(plan.omissions).toContain("root.gap: no Godot action style mapping");
+    expect(plan.styles.find(rule => rule.source === "hover")?.declarations.some(declaration => declaration.property === "font-size")).toBe(false);
+  });
   it.each([["Switch","boolean"],["Accordion","toggle-item"],["Tabs","select"],["Popover","surface"]])("lowers %s after identity substitution", (name,op) => {
     const c=fixture(name); c.name="Renamed";
     expect(godotPlan(buildComponentIR(c)).operation).toBe(op);

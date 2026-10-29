@@ -44,6 +44,17 @@ for(const name of ['Text','Divider']) {
   emitProbe(ir);
  }
 }
+const actionBase=path.join(root,'packages/ds-contracts/components/Button/Button');
+const defaultedAction=JSON.parse(fs.readFileSync(actionBase+'.contract.json','utf8'));
+defaultedAction.name='DefaultedAction';
+defaultedAction.tokens=JSON.parse(fs.readFileSync(actionBase+'.tokens.json','utf8'));
+defaultedAction.styles=JSON.parse(fs.readFileSync(actionBase+'.styles.json','utf8').replaceAll('button.design','defaulted-action.design'));
+for(const name of ['disabled','loading']) {
+ const member=defaultedAction.props.designed.members.find(prop=>prop.name===name);
+ if(!member)throw new Error('Missing action default probe prop: '+name);
+ member.default=true;
+}
+emitProbe(buildComponentIR(defaultedAction));
 
 fs.writeFileSync(path.join(project,'project.godot'),'config_version=5\n[application]\nconfig/name="Full Stack DS Godot Pilot"\nrun/main_scene="res://main.tscn"\n[display]\nwindow/size/viewport_width=640\nwindow/size/viewport_height=800\n[rendering]\nrenderer/rendering_method="gl_compatibility"\ntextures/vram_compression/import_etc2_astc=true\nenvironment/defaults/default_clear_color=Color(0.12,0.14,0.18,1)\n');
 fs.writeFileSync(path.join(project,'main.tscn'),'[gd_scene load_steps=2 format=3]\n[ext_resource type="Script" path="res://main.gd" id="1"]\n[node name="Pilot" type="Control"]\nlayout_mode=3\nanchors_preset=15\nanchor_right=1.0\nanchor_bottom=1.0\nscript=ExtResource("1")\n');

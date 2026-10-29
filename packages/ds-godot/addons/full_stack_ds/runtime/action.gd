@@ -46,6 +46,23 @@ var configuration: Dictionary = {}
 var rendered: Button
 var loading_indicator: ProgressBar
 
+func apply_config_defaults() -> void:
+	var authored: Dictionary = configuration.get("defaults", {})
+	var props: Dictionary = configuration.get("props", {})
+	for entry in [
+		["disabled", "disabled", TYPE_BOOL],
+		["loading", "loading", TYPE_BOOL],
+		["label", "aria_label", TYPE_STRING],
+		["title", "title", TYPE_STRING],
+	]:
+		var source_prop: String = props.get(entry[0], "")
+		if not authored.has(source_prop): continue
+		var parsed = JSON.parse_string(str(authored[source_prop]))
+		if typeof(parsed) != entry[2]:
+			push_error("GODOT_ACTION_INVALID_DEFAULT: " + source_prop)
+			continue
+		set(entry[1], parsed)
+
 func _ready() -> void:
 	rendered = Button.new()
 	rendered.size_flags_horizontal = Control.SIZE_EXPAND_FILL

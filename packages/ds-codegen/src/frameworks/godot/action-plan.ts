@@ -4,9 +4,11 @@ import { isProjectedChildrenAction } from "../native-emission-class.js";
 const ACTION_PROPERTIES = new Set([
   "background-color", "color", "border-color", "border-width", "border-radius",
   "font-size", "font-weight", "padding-block-start", "padding-block-end",
-  "padding-inline-start", "padding-inline-end", "min-height", "min-width", "gap",
+  "padding-inline-start", "padding-inline-end", "min-height", "min-width",
 ]);
 const WEB_ONLY_PROPS = new Set(["type", "ariaExpanded", "ariaPressed"]);
+const BASE_ONLY_PROPERTIES = new Set(["font-size", "font-weight", "min-height", "min-width"]);
+const FOCUS_PROPERTIES = new Set(["color", "border-color", "border-width", "border-radius"]);
 
 function boundProp(node: DomNodeIR, attribute: string): string | undefined {
   const binding = node.bindings[attribute];
@@ -46,12 +48,25 @@ export function godotActionPlan(ir: ComponentIR) {
       throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${prop.name}`);
     }
   }
+  for (const [name, expectedType] of [[disabledProp, "boolean"], [loadingProp, "boolean"], [labelProp, "string"], ["title", "string"]] as const) {
+    const expression = ir.styledProps.find(prop => prop.name === name)?.defaultExpr;
+    if (expression === undefined) continue;
+    let parsed: unknown;
+    try { parsed = JSON.parse(expression); } catch { throw new Error(`GODOT_UNSUPPORTED_ACTION_DEFAULT: ${ir.name}.${name}`); }
+    if (typeof parsed !== expectedType) throw new Error(`GODOT_UNSUPPORTED_ACTION_DEFAULT: ${ir.name}.${name}`);
+  }
   const styleRules = ir.nativeStyleRules;
   if (!styleRules) throw new Error(`GODOT_UNSUPPORTED_ACTION_STYLE: ${ir.name}`);
   const omissions = styleRules.unsupported.map(rule => `${rule.sourceKey}: ${rule.reason}`);
   omissions.push("default children: string content only; native Control composition is not lowered");
   const styles = [];
   for (const rule of styleRules.rules) {
+    const statePredicates = rule.predicates.filter(predicate => predicate.kind !== "variant");
+    const selectorSupported = statePredicates.length <= 1 && statePredicates.every(predicate =>
+      ["hover", "active", "focus", "disabled"].includes(predicate.kind) &&
+      (!predicate.ownerPart || predicate.ownerPart === "root") &&
+      (predicate.kind !== "disabled" || predicate.value === true)
+    );
     const declarations = rule.declarations.filter(declaration => {
       if (declaration.platforms && !declaration.platforms.includes("godot")) {
         if (declaration.property.includes(".") || ACTION_PROPERTIES.has(declaration.property)) {
@@ -59,14 +74,24 @@ export function godotActionPlan(ir: ComponentIR) {
         }
         return false;
       }
-      if (declaration.property.includes(".") || ACTION_PROPERTIES.has(declaration.property)) return true;
+      if (declaration.property.includes(".")) return true;
+      if (ACTION_PROPERTIES.has(declaration.property)) {
+        if (statePredicates.length && BASE_ONLY_PROPERTIES.has(declaration.property)) {
+          omissions.push(`${rule.sourceKey}.${declaration.property}: native state typography and geometry are not lowered`);
+          return false;
+        }
+        if (statePredicates.some(predicate => predicate.kind === "focus") && !FOCUS_PROPERTIES.has(declaration.property)) {
+          omissions.push(`${rule.sourceKey}.${declaration.property}: focus overlay does not lower this property`);
+          return false;
+        }
+        return true;
+      }
       omissions.push(`${rule.sourceKey}.${declaration.property}: no Godot action style mapping`);
       return false;
     });
     if (declarations.length === 0) continue;
-    if (rule.part !== "root" || rule.pseudo || rule.predicates.some(predicate =>
-      predicate.kind === "variant" ? !Object.keys(ir.variants).includes(predicate.axis) :
-      !["hover", "active", "focus", "disabled"].includes(predicate.kind)
+    if (rule.part !== "root" || rule.pseudo || !selectorSupported || rule.predicates.some(predicate =>
+      predicate.kind === "variant" && !Object.keys(ir.variants).includes(predicate.axis)
     )) {
       omissions.push(`${rule.sourceKey}: unsupported action selector`);
       continue;
