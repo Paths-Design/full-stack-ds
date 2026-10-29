@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: radio-controlled-reconciliation
 created_at: '2026-10-29T22:59:28.312Z'
-updated_at: '2026-10-29T23:27:06.515Z'
+updated_at: '2026-10-29T23:47:33.609Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -35,6 +35,7 @@ scope:
     - 'e2e/radio-controlled.spec.ts'
     - 'src/runtime/angular-preview.ts'
     - e2e/fixtures/radio-controlled
+    - docs/codegen-authority.md
   out: []
 invariants:
   - 'Controlled parents own accepted selection; a request sends one callback and preserves native focus'
