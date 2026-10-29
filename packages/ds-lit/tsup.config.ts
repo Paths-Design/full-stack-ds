@@ -10,6 +10,8 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: ["src/index.ts", "src/primitives/index.ts"],
   format: ["esm", "cjs"],
+  // Both public entries must share custom-element constructors and controllers.
+  splitting: true,
   dts: true,
   sourcemap: true,
   clean: true,

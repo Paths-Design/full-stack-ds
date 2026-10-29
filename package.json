@@ -130,7 +130,8 @@
     "test:unity": "node scripts/unity-tests.mjs",
     "generate:gpui": "pnpm run generate -- --target=gpui",
     "test:gpui": "node scripts/gpui-pilot.mjs",
-    "dev:gpui": "node scripts/gpui-gallery.mjs"
+    "dev:gpui": "node scripts/gpui-gallery.mjs",
+    "test:package:release": "node scripts/release-package-check/verify.mjs"
   },
   "dependencies": {
     "@full-stack-ds/angular": "workspace:*",
@@ -154,6 +155,8 @@
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@playwright/test": "^1.60.0",
+    "@react-native/babel-preset": "0.85.3",
+    "@react-native/metro-config": "0.85.3",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -174,5 +177,7 @@
     "vite": "^8.0.8",
     "vitest": "^3.2.4",
     "vitest-axe": "^0.1.0"
-  }
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC"
 }
