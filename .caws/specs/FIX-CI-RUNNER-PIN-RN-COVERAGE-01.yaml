@@ -40,3 +40,11 @@ contracts:
   - name: 'rn-page-navigator-behavior'
     type: contract-test
     path: 'packages/ds-react-native/src/components/PageNavigator/__tests__/PageNavigator.behavior.test.tsx'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "packages/ds-react-native/src/components/PageNavigator/__tests__/PageNavigator.behavior.test.tsx (8 tests) passes at 6a201cb56. It pins one-page steps that stop at both range ends, a controlled index=1 held at field '2' until the parent's index=2 update, typed '3' + Go reporting exactly [2] with nothing reported while typing, rejection of '0','4','two','' with the field restored to '2', and inert edits while disabled. Two review-raised mutants were executed via a temporary usePagedSet mock: edit-commits-eagerly fails at line 60 (spy called 1 time) and controlled-index-ignored fails at line 43 (expected '2', received '1')"
+    recorded_at: "2026-10-29T00:18:47.656Z"
+    command: "pnpm --filter @full-stack-ds/react-native exec vitest run src/components/PageNavigator/__tests__/PageNavigator.behavior.test.tsx"
+    exit_code: 0
+    commit_sha: "6a201cb5694282f9f427abd6e66423b278b9669f"
