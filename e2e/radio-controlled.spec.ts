@@ -6,6 +6,52 @@ const options = [
   { value: "gamma", label: "Gamma" },
 ];
 
+test("svelte: a real parent accepts later updates on the same mounted radio inputs", async ({ page }, info) => {
+  await page.goto("/preview/svelte/RadioGroup");
+  await page.locator("body[data-fsds-ready]").waitFor();
+  await page.evaluate(async () => {
+    const path = "/e2e/fixtures/radio-controlled/consumer.ts";
+    const { mountParent } = await import(path);
+    const host = document.createElement("div");
+    host.id = "same-instance-parent";
+    document.body.append(host);
+    const state = window as unknown as {
+      radioRequests: string[];
+      radioParent: { setValue(value: string): void; setAccepting(value: boolean): void };
+      originalRadio: HTMLInputElement | null;
+    };
+    state.radioRequests = [];
+    state.radioParent = mountParent(host, (value: string) => state.radioRequests.push(value));
+  });
+  const host = page.locator("#same-instance-parent");
+  const alpha = host.getByRole("radio", { name: "Alpha", exact: true });
+  const gamma = host.getByRole("radio", { name: "Gamma", exact: true });
+  await expect(alpha).toBeChecked();
+  await gamma.evaluate(element => {
+    (window as unknown as { originalRadio: Element }).originalRadio = element;
+  });
+  await alpha.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(gamma).toBeFocused();
+  await expect(alpha).toBeChecked();
+  await expect(gamma).not.toBeChecked();
+  await expect.poll(() => requests(page)).toEqual(["gamma"]);
+  await page.evaluate(() => {
+    const parent = (window as unknown as { radioParent: { setValue(value: string): void; setAccepting(value: boolean): void } }).radioParent;
+    parent.setValue("gamma");
+    parent.setAccepting(true);
+  });
+  await expect(gamma).toBeChecked();
+  await expect(gamma).toBeFocused();
+  await alpha.click();
+  await expect(alpha).toBeChecked();
+  await expect(alpha).toBeFocused();
+  await expect(gamma).not.toBeChecked();
+  await expect.poll(() => requests(page)).toEqual(["gamma", "alpha"]);
+  expect(await gamma.evaluate(element => element === (window as unknown as { originalRadio: Element }).originalRadio)).toBe(true);
+  await page.screenshot({ path: info.outputPath("svelte-same-instance-radio.png"), animations: "disabled" });
+});
+
 async function configure(page: Page, value?: string, accept = false) {
   await page.evaluate(({ options, value, accept }) => {
     const state = window as unknown as { radioRequests: string[] };

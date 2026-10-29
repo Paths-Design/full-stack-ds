@@ -5163,6 +5163,7 @@ export function buildCompositeControlIR(
   const nativeRadio = target.node.tag === "input" && target.node.attrs.type === "radio" &&
     control.interactionModel === "collection-selection" && control.commit === "change" &&
     channel.valueType === "string" && update.kind === "channelCall" && checked?.kind === "predicate" && checked.op === "eq" &&
+    JSON.stringify(target.node.bindings.value) === JSON.stringify(update.arg) &&
     ((isAcceptedSelection(checked.left) && JSON.stringify(checked.right) === JSON.stringify(update.arg)) ||
       (isAcceptedSelection(checked.right) && JSON.stringify(checked.left) === JSON.stringify(update.arg)));
   if (nativeRadio) target.node.nativeRadioChannel = channel.name;

@@ -48,12 +48,15 @@ describe("CompositeControlIR", () => {
     }
   });
 
-  it("does not infer accepted radio selection from an unrelated checked binding", () => {
+  it.each([
+    { checked: "literal:true" },
+    { value: "iter:item.label" },
+  ])("does not infer native value identity from unrelated checked or value bindings: %j", binding => {
     const contract = loadContract("RadioGroup");
     const dom = contract.anatomy && !Array.isArray(contract.anatomy) ? contract.anatomy.dom : undefined;
     if (!dom) throw new Error("fixture requires DOM");
     const visit = (node: typeof dom): void => {
-      if (node.part === "option") node.bindings = { ...node.bindings, checked: "literal:true" };
+      if (node.part === "option") node.bindings = { ...node.bindings, ...binding };
       for (const child of node.children ?? []) visit(child);
     };
     visit(dom);
