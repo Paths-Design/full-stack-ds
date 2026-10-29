@@ -33,7 +33,7 @@ enum BadgeTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", ref: "semantic.glyph.size.medium.extent", fallback: .string("16px")),
             "badge.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-background-default", name: "badge.color.background.default", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "badge.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-foreground-primary", name: "badge.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "badge.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border", name: "badge.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "badge.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-color-border", name: "badge.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "badge.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-size-radius", name: "badge.size.radius", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
             "badge.size.border": FsdsComponentTokenDefinition(cssVar: "--fsds-badge-size-border", name: "badge.size.border", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
         ],

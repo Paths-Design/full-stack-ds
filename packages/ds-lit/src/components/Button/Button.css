@@ -25,7 +25,7 @@
   user-select: none;
   background-color: var(--fsds-button-design-root-background-fill, var(--fsds-button-color-background-default, #0566fe));
   color: var(--fsds-button-design-root-foreground-color, var(--fsds-button-color-foreground-default, #fafafa));
-  border-color: var(--fsds-button-design-root-border-color, var(--fsds-button-color-border-default, #b8b8b8));
+  border-color: var(--fsds-button-design-root-border-color, var(--fsds-button-color-border-default, #a0a0a1));
   border-radius: var(--fsds-button-design-root-shape-radius, var(--fsds-button-size-radius, 9999px));
   border-width: var(--fsds-button-design-root-border-width, var(--fsds-button-size-border, 1px));
   font-size: var(--fsds-button-design-root-typography-size, var(--fsds-button-size-font-size-medium, 1rem));

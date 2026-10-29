@@ -195,6 +195,14 @@ export class DetailsElement extends LitElement {
       margin-inline-start: auto;
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .details__icon {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: String }) summary!: string;
@@ -422,6 +430,14 @@ export class DetailsContentElement extends LitElement {
       order: 1;
       margin-inline-start: auto;
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .details__icon {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

@@ -40,8 +40,8 @@
     "layer": "semantic"
   },
   "otp.color.border": {
-    "resolvesTo": "semantic.color.border.light",
-    "fallback": "#b8b8b8",
+    "resolvesTo": "semantic.color.border.default",
+    "fallback": "#a0a0a1",
     "layer": "semantic"
   },
   "otp.size.radius": {

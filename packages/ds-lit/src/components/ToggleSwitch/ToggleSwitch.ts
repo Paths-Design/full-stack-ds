@@ -72,7 +72,7 @@ export class ToggleSwitchElement extends LitElement {
     .toggle-switch {
       --fsds-toggle-switch-color-background-default: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-toggle-switch-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-toggle-switch-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-toggle-switch-color-border: var(--fsds-semantic-color-border-default, #a0a0a1);
       --fsds-toggle-switch-border-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
       --fsds-toggle-switch-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
       --fsds-toggle-switch-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
@@ -101,7 +101,7 @@ export class ToggleSwitchElement extends LitElement {
       align-items: center;
       background-color: var(--fsds-toggle-switch-design-root-background-fill, var(--fsds-toggle-switch-color-background-default, #f7f7f7));
       color: var(--fsds-toggle-switch-design-root-foreground-color, var(--fsds-toggle-switch-color-foreground, #141414));
-      border-color: var(--fsds-toggle-switch-design-root-border-color, var(--fsds-toggle-switch-color-border, #b8b8b8));
+      border-color: var(--fsds-toggle-switch-design-root-border-color, var(--fsds-toggle-switch-color-border, #a0a0a1));
       border-radius: var(--fsds-toggle-switch-design-root-shape-radius, var(--fsds-toggle-switch-border-radius, 9999px));
       transition-duration: var(--fsds-toggle-switch-design-root-motion-duration, var(--fsds-toggle-switch-motion-duration-fast, 150ms));
       border-style: var(--fsds-toggle-switch-design-root-border-style, solid);
@@ -129,6 +129,14 @@ export class ToggleSwitchElement extends LitElement {
         outline-offset: var(--fsds-toggle-switch-design-focus-focus-offset, var(--fsds-toggle-switch-focus-ring-offset, 2px));
       }
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toggle-switch {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

@@ -261,6 +261,15 @@ export class SwitchElement extends LitElement {
       translate: var(--fsds-switch-size-lg-thumb-translate-on, 36px);
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .switch__track,
+      .switch__thumb {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: Boolean }) checked?: boolean;

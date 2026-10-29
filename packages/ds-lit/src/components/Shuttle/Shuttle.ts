@@ -76,7 +76,7 @@ export class ShuttleElement extends LitElement {
     .shuttle {
       --fsds-shuttle-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-shuttle-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-shuttle-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-shuttle-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-shuttle-color-border-accent: var(--fsds-semantic-color-border-accent, #d92d2e);
       --fsds-shuttle-color-list-background: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-shuttle-color-item-marked-background: var(--fsds-semantic-color-background-accent, #d92d2e);
@@ -117,7 +117,7 @@ export class ShuttleElement extends LitElement {
       background-color: var(--fsds-shuttle-design-list-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
       border-style: var(--fsds-shuttle-design-list-border-style, solid);
       border-width: var(--fsds-shuttle-design-list-border-width, 1px);
-      border-color: var(--fsds-shuttle-design-list-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+      border-color: var(--fsds-shuttle-design-list-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
       border-radius: var(--fsds-shuttle-design-list-shape-radius, var(--fsds-shuttle-size-radius, 6px));
     }
 
@@ -128,7 +128,7 @@ export class ShuttleElement extends LitElement {
       color: var(--fsds-shuttle-design-item-foreground-color, var(--fsds-shuttle-color-foreground-primary, #141414));
       border-block-end-style: solid;
       border-block-end-width: var(--fsds-shuttle-design-item-border-block-end-width, 1px);
-      border-block-end-color: var(--fsds-shuttle-design-item-border-block-end-color, var(--fsds-shuttle-color-border, #b8b8b8));
+      border-block-end-color: var(--fsds-shuttle-design-item-border-block-end-color, var(--fsds-shuttle-color-border, #d0d0d0));
       cursor: pointer;
     }
 
@@ -157,7 +157,7 @@ export class ShuttleElement extends LitElement {
       background-color: var(--fsds-shuttle-design-add-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
       border-style: var(--fsds-shuttle-design-add-border-style, solid);
       border-width: var(--fsds-shuttle-design-add-border-width, 1px);
-      border-color: var(--fsds-shuttle-design-add-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+      border-color: var(--fsds-shuttle-design-add-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
       border-radius: var(--fsds-shuttle-design-add-shape-radius, var(--fsds-shuttle-size-radius, 6px));
       cursor: pointer;
     }
@@ -168,7 +168,7 @@ export class ShuttleElement extends LitElement {
       background-color: var(--fsds-shuttle-design-remove-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
       border-style: var(--fsds-shuttle-design-remove-border-style, solid);
       border-width: var(--fsds-shuttle-design-remove-border-width, 1px);
-      border-color: var(--fsds-shuttle-design-remove-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+      border-color: var(--fsds-shuttle-design-remove-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
       border-radius: var(--fsds-shuttle-design-remove-shape-radius, var(--fsds-shuttle-size-radius, 6px));
       cursor: pointer;
     }

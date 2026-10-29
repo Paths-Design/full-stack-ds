@@ -253,7 +253,7 @@
       "cssProperty": "border-color",
       "selectorKey": "field",
       "part": "field",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#a0a0a1",
       "resolvesTo": "otp.color.border",
       "editableTargets": [
         "web"
@@ -515,7 +515,7 @@
           "--fsds-box-model-max-height": "none",
           "--fsds-otp-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "--fsds-otp-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
-          "--fsds-otp-color-border": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-otp-color-border": "var(--fsds-semantic-color-border-default, #a0a0a1)",
           "--fsds-otp-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
           "--fsds-otp-color-border-accent": "var(--fsds-semantic-color-border-accent, #d92d2e)",
           "--fsds-otp-focus-ring-width": "var(--fsds-semantic-focus-ring-width, 2px)",
@@ -557,7 +557,7 @@
           "border-style": "solid",
           "border-width": "1px",
           "border-radius": "var(--fsds-otp-size-radius, 6px)",
-          "border-color": "var(--fsds-otp-color-border, #b8b8b8)",
+          "border-color": "var(--fsds-otp-color-border, #a0a0a1)",
           "background-color": "var(--fsds-otp-color-background, #f7f7f7)",
           "color": "var(--fsds-otp-color-foreground-primary, #141414)"
         }

@@ -1,0 +1,4 @@
+# The default rustup toolchain (1.90) is too old for ds-gpui / gpui 0.2.2.
+# Pin the installed 1.94.1 toolchain for this lane, matching packages/ds-gpui.
+[toolchain]
+channel = "1.94.1"

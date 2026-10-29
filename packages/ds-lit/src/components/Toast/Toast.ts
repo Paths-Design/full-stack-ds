@@ -78,7 +78,7 @@ export class ToastElement extends LitElement {
 
     .toast {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-toast-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-toast-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-toast-surface-shadow: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
       --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);
@@ -362,7 +362,7 @@ export class ToastItemElement extends LitElement {
 
     .toast {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-toast-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-toast-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-toast-surface-shadow: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
       --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);
@@ -567,7 +567,7 @@ export class ToastTitleElement extends LitElement {
 
     .toast {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-toast-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-toast-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-toast-surface-shadow: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
       --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);
@@ -767,7 +767,7 @@ export class ToastDescriptionElement extends LitElement {
 
     .toast {
       --fsds-toast-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-toast-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-toast-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-toast-surface-shadow: var(--fsds-semantic-elevation-surface-overlay, 0px 4px 6px #0000000d, 0px 10px 15px #0000001a);
       --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);

@@ -76,7 +76,7 @@ export class CommandElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -137,7 +137,7 @@ export class CommandElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -428,7 +428,7 @@ export class CommandListElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -489,7 +489,7 @@ export class CommandListElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -689,7 +689,7 @@ export class CommandGroupElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -750,7 +750,7 @@ export class CommandGroupElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -950,7 +950,7 @@ export class CommandGroupHeadingElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -1011,7 +1011,7 @@ export class CommandGroupHeadingElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -1211,7 +1211,7 @@ export class CommandGroupItemsElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -1272,7 +1272,7 @@ export class CommandGroupItemsElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -1472,7 +1472,7 @@ export class CommandItemElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -1533,7 +1533,7 @@ export class CommandItemElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -1738,7 +1738,7 @@ export class CommandItemIconElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -1799,7 +1799,7 @@ export class CommandItemIconElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -1999,7 +1999,7 @@ export class CommandItemContentElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -2060,7 +2060,7 @@ export class CommandItemContentElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -2260,7 +2260,7 @@ export class CommandItemLabelElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -2321,7 +2321,7 @@ export class CommandItemLabelElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));
@@ -2521,7 +2521,7 @@ export class CommandItemDescriptionElement extends LitElement {
     .command {
       --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0,0,0,0.64));
       --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-command-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
       --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
@@ -2582,7 +2582,7 @@ export class CommandItemDescriptionElement extends LitElement {
       max-height: var(--fsds-command-design-dialog-sizing-max-height, var(--fsds-command-size-max-height, 400px));
       background-color: var(--fsds-command-design-dialog-background-fill, var(--fsds-command-color-background, #ffffff));
       color: var(--fsds-command-design-dialog-foreground-color, var(--fsds-command-color-text, #141414));
-      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #b8b8b8));
+      border-color: var(--fsds-command-design-dialog-border-color, var(--fsds-command-color-border, #d0d0d0));
       border-style: var(--fsds-command-design-dialog-border-style, solid);
       border-width: var(--fsds-command-design-dialog-border-width, var(--fsds-command-border-width, 1px));
       border-radius: var(--fsds-command-design-dialog-shape-radius, var(--fsds-command-border-radius, 6px));

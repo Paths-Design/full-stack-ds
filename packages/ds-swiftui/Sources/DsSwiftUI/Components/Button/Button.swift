@@ -33,7 +33,7 @@ enum ButtonTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", ref: "semantic.action.size.medium.min-height", fallback: .string("32px")),
             "button.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-button-color-background-default", name: "button.color.background.default", ref: "semantic.color.action.background.primary.default", fallback: .string("#0566fe")),
             "button.color.foreground.default": FsdsComponentTokenDefinition(cssVar: "--fsds-button-color-foreground-default", name: "button.color.foreground.default", ref: "semantic.color.foreground.inverse", fallback: .adaptive(light: "#fafafa", dark: "#fafafa")),
-            "button.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-button-color-border-default", name: "button.color.border.default", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "button.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-button-color-border-default", name: "button.color.border.default", ref: "semantic.color.border.default", fallback: .adaptive(light: "#a0a0a1", dark: "#5c5b5c")),
             "button.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-button-size-radius", name: "button.size.radius", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
             "button.size.border": FsdsComponentTokenDefinition(cssVar: "--fsds-button-size-border", name: "button.size.border", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
         ],

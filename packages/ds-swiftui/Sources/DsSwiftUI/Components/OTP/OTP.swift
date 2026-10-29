@@ -20,7 +20,7 @@ enum OTPTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", ref: "semantic.input.size.medium.min-height", fallback: .string("32px")),
             "otp.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-otp-color-background", name: "otp.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "otp.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-otp-color-foreground-primary", name: "otp.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "otp.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-otp-color-border", name: "otp.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "otp.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-otp-color-border", name: "otp.color.border", ref: "semantic.color.border.default", fallback: .adaptive(light: "#a0a0a1", dark: "#5c5b5c")),
             "otp.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-otp-size-radius", name: "otp.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]

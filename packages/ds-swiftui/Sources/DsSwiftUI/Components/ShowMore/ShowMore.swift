@@ -16,7 +16,7 @@ enum ShowMoreTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.action.size.medium.gap", fallback: .string("8px")),
             "show-more.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-show-more-color-background", name: "show-more.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "show-more.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-show-more-color-foreground-primary", name: "show-more.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "show-more.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-show-more-color-border", name: "show-more.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "show-more.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-show-more-color-border", name: "show-more.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "show-more.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-show-more-size-radius", name: "show-more.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]

@@ -1,0 +1,25 @@
+{
+  "$schema": "../../../build/w3c/w3c-schema-strict.json",
+  "surface": {
+    "border": {
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.palette.neutral.100}",
+        "$extensions": {
+          "fsds.light": "{color.palette.neutral.100}",
+          "fsds.dark": "{color.palette.neutral.700}"
+        },
+        "$description": "Container-edge hairline within a surface: separators and inset edges for surface-scoped structure families (Accordion items, Card regions, Table rows, Tabs). Components address the container role rather than a palette step, so brands retune every container edge in one place. Mirrors color.border.subtle by default; override here to retune container edges without moving the raw border scale."
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "{color.palette.neutral.200}",
+        "$extensions": {
+          "fsds.light": "{color.palette.neutral.200}",
+          "fsds.dark": "{color.palette.neutral.600}"
+        },
+        "$description": "Container-edge border with more presence than subtle: outer container outlines and focus-adjacent edges where the edge itself carries structure. Same role vocabulary as surface.border.subtle — container edges, not control borders (controls use semantic.color.border.*)."
+      }
+    }
+  }
+}

@@ -30,7 +30,7 @@
     },
     "border-color": {
       "resolvesTo": "toggle-switch.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#a0a0a1",
       "design": {
         "property": "border.color",
         "slot": "toggle-switch.design.root.border.color"

@@ -44,8 +44,8 @@ export const profileFlagTokenScopes = {
     "profile-flag.color.border.default": {
       name: "profile-flag.color.border.default",
       cssVar: "--fsds-profile-flag-color-border-default",
-      ref: "semantic.color.border.light",
-      fallback: "#b8b8b8",
+      ref: "semantic.surface.border.subtle",
+      fallback: "#d0d0d0",
     },
     "profile-flag.color.foreground.primary": {
       name: "profile-flag.color.foreground.primary",

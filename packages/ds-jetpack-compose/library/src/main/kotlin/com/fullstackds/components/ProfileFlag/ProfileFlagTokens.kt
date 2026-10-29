@@ -41,6 +41,12 @@ val profileFlagTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.background.primary",
             fallback = "#ffffff",
         ),
+        "profile-flag.color.border.default" to ComponentTokenDefinition(
+            name = "profile-flag.color.border.default",
+            cssVar = "--fsds-profile-flag-color-border-default",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
+        ),
         "profile-flag.color.foreground.primary" to ComponentTokenDefinition(
             name = "profile-flag.color.foreground.primary",
             cssVar = "--fsds-profile-flag-color-foreground-primary",

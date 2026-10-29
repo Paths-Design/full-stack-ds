@@ -4,7 +4,7 @@ authority: spec
 status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
-updated: 2026-10-22
+updated: 2026-10-29
 verified_at_commit: 4f9aa5c3d
 governs:
   - package.json

@@ -32,7 +32,7 @@
   background-color: var(--fsds-shuttle-design-list-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
   border-style: var(--fsds-shuttle-design-list-border-style, solid);
   border-width: var(--fsds-shuttle-design-list-border-width, 1px);
-  border-color: var(--fsds-shuttle-design-list-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+  border-color: var(--fsds-shuttle-design-list-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
   border-radius: var(--fsds-shuttle-design-list-shape-radius, var(--fsds-shuttle-size-radius, 6px));
 }
 
@@ -43,7 +43,7 @@
   color: var(--fsds-shuttle-design-item-foreground-color, var(--fsds-shuttle-color-foreground-primary, #141414));
   border-block-end-style: solid;
   border-block-end-width: var(--fsds-shuttle-design-item-border-block-end-width, 1px);
-  border-block-end-color: var(--fsds-shuttle-design-item-border-block-end-color, var(--fsds-shuttle-color-border, #b8b8b8));
+  border-block-end-color: var(--fsds-shuttle-design-item-border-block-end-color, var(--fsds-shuttle-color-border, #d0d0d0));
   cursor: pointer;
 }
 
@@ -72,7 +72,7 @@
   background-color: var(--fsds-shuttle-design-add-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
   border-style: var(--fsds-shuttle-design-add-border-style, solid);
   border-width: var(--fsds-shuttle-design-add-border-width, 1px);
-  border-color: var(--fsds-shuttle-design-add-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+  border-color: var(--fsds-shuttle-design-add-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
   border-radius: var(--fsds-shuttle-design-add-shape-radius, var(--fsds-shuttle-size-radius, 6px));
   cursor: pointer;
 }
@@ -83,7 +83,7 @@
   background-color: var(--fsds-shuttle-design-remove-background-fill, var(--fsds-shuttle-color-list-background, #ffffff));
   border-style: var(--fsds-shuttle-design-remove-border-style, solid);
   border-width: var(--fsds-shuttle-design-remove-border-width, 1px);
-  border-color: var(--fsds-shuttle-design-remove-border-color, var(--fsds-shuttle-color-border, #b8b8b8));
+  border-color: var(--fsds-shuttle-design-remove-border-color, var(--fsds-shuttle-color-border, #d0d0d0));
   border-radius: var(--fsds-shuttle-design-remove-shape-radius, var(--fsds-shuttle-size-radius, 6px));
   cursor: pointer;
 }

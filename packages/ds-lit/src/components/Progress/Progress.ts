@@ -139,6 +139,14 @@ export class ProgressElement extends LitElement {
       background-color: var(--fsds-progress-design-condition-fdd1c2c16a8f-background-fill, var(--fsds-progress-color-fill-danger, #d92d2e));
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .progress {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: Number }) value?: number;

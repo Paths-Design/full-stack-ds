@@ -30,8 +30,8 @@
     "layer": "semantic"
   },
   "accordion.border.color": {
-    "resolvesTo": "semantic.color.border.light",
-    "fallback": "#b8b8b8",
+    "resolvesTo": "semantic.surface.border.subtle",
+    "fallback": "#d0d0d0",
     "layer": "semantic"
   },
   "accordion.border.radius": {
@@ -75,9 +75,9 @@
     "layer": "semantic"
   },
   "accordion.icon.size": {
-    "resolvesTo": "core.spacing.size.04",
-    "fallback": "8px",
-    "layer": "core"
+    "resolvesTo": "semantic.glyph.size.medium.extent",
+    "fallback": "16px",
+    "layer": "semantic"
   },
   "accordion.focus.width": {
     "resolvesTo": "semantic.focus.ring.width",
@@ -90,18 +90,13 @@
     "layer": "semantic"
   },
   "accordion.focus.offset": {
-    "resolvesTo": "semantic.focus.ring.offset",
-    "fallback": "2px",
+    "resolvesTo": "semantic.focus.ring.offsetInset",
+    "fallback": "-2px",
     "layer": "semantic"
   },
   "accordion.opacity.disabled": {
     "resolvesTo": "semantic.interaction.disabled.opacity",
     "fallback": "0.5",
-    "layer": "semantic"
-  },
-  "accordion.color.textHover": {
-    "resolvesTo": "semantic.interaction.text.hover",
-    "fallback": "#474647",
     "layer": "semantic"
   }
 }

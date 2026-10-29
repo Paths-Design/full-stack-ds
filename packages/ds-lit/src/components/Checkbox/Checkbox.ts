@@ -178,6 +178,14 @@ export class CheckboxElement extends LitElement {
       border-color: var(--fsds-checkbox-design-condition-c8a599f99e6e-border-color, var(--fsds-checkbox-color-mark, #ffffff));
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .checkbox__indicator {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: String }) size?: CheckboxSize = "md";

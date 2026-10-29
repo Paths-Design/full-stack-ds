@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component token state and variant naming
 owner: "@darianrosebrook"
-updated: 2026-10-21
-verified_at_commit: 4ef5a4f30
+updated: 2026-10-27
+verified_at_commit: 4612d2e31
 governs:
   - packages/ds-contracts/components/**/*.tokens.json
   - packages/ds-codegen/src/component-token-naming.ts
@@ -61,8 +61,10 @@ Existing design binding addresses and variant props retain their identities.
 The rename preserves authored values and semantic references. Separate corrections
 in the same slice route ordinary disclosure/navigation focus through
 `semantic.focus.ring.*` and code typography through
-`semantic.typography.semanticFamily.mono`. NavList deliberately retains its inward
-ring offset to keep the indicator inside its painted item. Native role lookup
+`semantic.typography.semanticFamily.mono`. NavList keeps a literal inward ring
+offset to hold the indicator inside its painted item. Accordion takes its inward
+offset from `semantic.focus.ring.offsetInset`, because its item's
+`overflow: hidden` clips an outset ring. Native role lookup
 selects actual declared base or default-state slots; it never selects hover paint
 as a rest value or manufactures an alias dictionary.
 

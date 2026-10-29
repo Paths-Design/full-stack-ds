@@ -239,28 +239,33 @@
   "motion": {
     "reducedMotion": "respect",
     "reducedMotionStrategy": "Duration set to 0; panels snap between collapsed and expanded states without height animation.",
+    "description": "Panel expand/collapse animates the resolved panel height. Web realization lowers the height fact to the grid row track (grid-template-rows 0fr↔1fr) with an allow-discrete display transition so the hidden-presence toggle still animates; padding-block-end on the content inner syncs so the panel reaches a true zero-height closed state. Native targets map the same height fact to their layout-animator.",
     "transitions": [
       {
         "name": "expand",
+        "description": "Row track opens (resolved panel height grows) while content fades in; the collapse padding returns so text optically continues the trigger line.",
         "trigger": "openness=collapsed→expanded",
         "phase": "enter",
         "properties": [
-          "height",
-          "opacity"
+          "grid-template-rows",
+          "opacity",
+          "padding-block-end"
         ],
-        "duration": "accordion.motion.duration",
-        "easing": "accordion.motion.easing"
+        "duration": "semantic.motion.interaction.enter.duration",
+        "easing": "semantic.motion.interaction.enter.easing"
       },
       {
         "name": "collapse",
+        "description": "Row track closes (resolved panel height shrinks) while content fades out.",
         "trigger": "openness=expanded→collapsed",
         "phase": "exit",
         "properties": [
-          "height",
-          "opacity"
+          "grid-template-rows",
+          "opacity",
+          "padding-block-end"
         ],
-        "duration": "accordion.motion.duration",
-        "easing": "accordion.motion.easing"
+        "duration": "semantic.motion.interaction.exit.duration",
+        "easing": "semantic.motion.interaction.exit.easing"
       }
     ]
   },

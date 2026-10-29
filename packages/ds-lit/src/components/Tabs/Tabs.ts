@@ -241,6 +241,15 @@ export class TabsElement extends LitElement {
       display: none !important;
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tabs__indicator,
+      .tabs--vertical .tabs__indicator {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: String })
@@ -525,6 +534,15 @@ export class TabsListElement extends LitElement {
       display: none !important;
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tabs__indicator,
+      .tabs--vertical .tabs__indicator {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   private _ctx = new ContextConsumerController(this, TABS_CTX);
@@ -794,6 +812,15 @@ export class TabsTabElement extends LitElement {
       display: none !important;
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tabs__indicator,
+      .tabs--vertical .tabs__indicator {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property() value = "";
@@ -1047,6 +1074,15 @@ export class TabsPanelElement extends LitElement {
     .tabs__panel[hidden]:not([hidden="until-found"]) {
       display: none !important;
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tabs__indicator,
+      .tabs--vertical .tabs__indicator {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

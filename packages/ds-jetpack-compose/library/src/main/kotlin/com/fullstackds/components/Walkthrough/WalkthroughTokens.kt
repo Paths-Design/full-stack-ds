@@ -54,7 +54,7 @@ val walkthroughTokenScopes: ComponentTokenScopes = mapOf(
         "walkthrough.surface.border" to ComponentTokenDefinition(
             name = "walkthrough.surface.border",
             cssVar = "--fsds-walkthrough-surface-border",
-            ref = "semantic.color.border.subtle",
+            ref = "semantic.surface.border.subtle",
             fallback = "#d0d0d0",
         ),
         "walkthrough.surface.radius" to ComponentTokenDefinition(

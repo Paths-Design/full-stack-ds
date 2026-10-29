@@ -1302,6 +1302,14 @@ export interface CssBlockIR {
    * the block, after declarations, in stable order.
    */
   comments?: string[];
+  /**
+   * True when this block is a CSS `@starting-style` entry state (lowered
+   * from the styles sidecar's reserved `@starting-style` key). The CSS
+   * formatter wraps these in one `@starting-style { … }` at-rule instead
+   * of emitting them as cascade rules; reduced-motion derivation skips
+   * them because a starting state declares no transition of its own.
+   */
+  startingStyle?: boolean;
 }
 
 export interface KeyframeIR {
@@ -6295,8 +6303,36 @@ export function computeCssBlocks(
   const interactionGuard =
     platformTarget === "web" ? suppressionGuardFor(contract) : undefined;
 
+  // Reserved `@starting-style` key: entry states for enter/exit transition
+  // pairs. The resting declarations of a state live under its regular
+  // selector key; the reserved key maps selectors to what the element should
+  // transition FROM when it first acquires that style (CSS @starting-style).
+  // The lowering lives here — next to every other styles-key lowering —
+  // because hand-authoring this at-rule inside @custom regions is exactly how
+  // the corpus ended up with one framework's Popover.css owning the only
+  // reduced-motion block in the repo (see reducedMotionBlock for that
+  // history). Web only: @starting-style is a CSS at-rule; native style
+  // projections have no entry-state concept and must not see the key.
+  // The cast widens the ambient Record value type by one level for this
+  // reserved key; the sidecar schema owns the shape.
+  const startingStyles = styles["@starting-style"] as unknown as
+    | Record<string, Record<string, StyleEntry>>
+    | undefined;
+  if (
+    platformTarget === "web" &&
+    startingStyles &&
+    typeof startingStyles === "object"
+  ) {
+    for (const [key, rawBlock] of Object.entries(startingStyles)) {
+      const selector = expandStylesKey(key, cssPrefix, expandOptions);
+      const declarations = renderStyleBlock(rawBlock, cssPrefix, platformTarget);
+      if (Object.keys(declarations).length === 0) continue;
+      blocks.push({ selector, declarations, startingStyle: true });
+    }
+  }
+
   for (const [key, rawBlock] of Object.entries(styles)) {
-    if (key === "root") continue;
+    if (key === "root" || key === "@starting-style") continue;
     const selector = guardInteractionSelector(
       expandStylesKey(key, cssPrefix, expandOptions),
       interactionGuard,

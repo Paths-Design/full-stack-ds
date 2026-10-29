@@ -2,6 +2,7 @@
 package com.fullstackds.components.table
 
 // @generated:start imports
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.fullstackds.tokens.LocalFsdsTheme
+import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
 // @generated:end
 
@@ -29,6 +31,8 @@ fun Table(
         return null
     }
     val cornerRadius = layeredSlot("table.size.radius")?.toFsdsDp() ?: 0.dp
+    val borderColor = layeredSlot("table.color.border")?.toFsdsColor()
+    val borderWidth = null ?: 1.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
@@ -38,6 +42,7 @@ fun Table(
     val shape = RoundedCornerShape(cornerRadius)
     val chromeModifier = Modifier
         .clip(shape)
+        .then(if (borderColor != null) Modifier.border(borderWidth, borderColor, shape) else Modifier)
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
         .then(if (minHeight != null) Modifier.height(minHeight) else Modifier)
     Box(modifier.then(chromeModifier)) { content() }

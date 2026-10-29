@@ -40,6 +40,12 @@ val listTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
+        "list.color.border" to ComponentTokenDefinition(
+            name = "list.color.border",
+            cssVar = "--fsds-list-color-border",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
+        ),
     ),
 )
 // @generated:end

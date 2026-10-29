@@ -56,7 +56,7 @@
     },
     "border-color": {
       "resolvesTo": "avatar.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
         "slot": "avatar.design.root.border.color"

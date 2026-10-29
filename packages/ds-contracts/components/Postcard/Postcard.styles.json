@@ -78,7 +78,7 @@
     },
     "border-color": {
       "resolvesTo": "postcard.color.border.default",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
         "slot": "postcard.design.root.border.color"
@@ -296,7 +296,7 @@
     },
     "border-top-color": {
       "resolvesTo": "postcard.color.border.default",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.top.color",
         "slot": "postcard.design.footer.border.top.color"

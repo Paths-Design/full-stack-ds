@@ -73,7 +73,7 @@ export class PostcardElement extends LitElement {
     .postcard {
       --fsds-postcard-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-postcard-color-background-hover: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-postcard-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-postcard-color-border-default: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-postcard-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
       --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-postcard-size-padding: var(--fsds-core-spacing-size-06, 16px);
@@ -127,7 +127,7 @@ export class PostcardElement extends LitElement {
       border-style: var(--fsds-postcard-design-root-border-style, solid);
       border-width: var(--fsds-postcard-design-root-border-width, var(--fsds-postcard-size-border, 1px));
       box-sizing: border-box;
-      border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #b8b8b8));
+      border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       color: var(--fsds-postcard-design-root-foreground-color, var(--fsds-postcard-color-foreground-primary, #141414));
 
       &:hover {
@@ -178,7 +178,7 @@ export class PostcardElement extends LitElement {
       align-items: center;
       gap: var(--fsds-postcard-design-footer-spacing-gap, var(--fsds-postcard-size-gap, 12px));
       padding-top: var(--fsds-postcard-size-padding, 16px);
-      border-top-color: var(--fsds-postcard-design-footer-border-top-color, var(--fsds-postcard-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-postcard-design-footer-border-top-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       border-top-style: var(--fsds-postcard-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-postcard-design-footer-border-top-width, var(--fsds-postcard-size-border, 1px));
       font-size: var(--fsds-postcard-design-footer-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
@@ -295,7 +295,7 @@ export class PostcardHeaderElement extends LitElement {
     .postcard {
       --fsds-postcard-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-postcard-color-background-hover: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-postcard-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-postcard-color-border-default: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-postcard-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
       --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-postcard-size-padding: var(--fsds-core-spacing-size-06, 16px);
@@ -349,7 +349,7 @@ export class PostcardHeaderElement extends LitElement {
       border-style: var(--fsds-postcard-design-root-border-style, solid);
       border-width: var(--fsds-postcard-design-root-border-width, var(--fsds-postcard-size-border, 1px));
       box-sizing: border-box;
-      border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #b8b8b8));
+      border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       color: var(--fsds-postcard-design-root-foreground-color, var(--fsds-postcard-color-foreground-primary, #141414));
 
       &:hover {
@@ -400,7 +400,7 @@ export class PostcardHeaderElement extends LitElement {
       align-items: center;
       gap: var(--fsds-postcard-design-footer-spacing-gap, var(--fsds-postcard-size-gap, 12px));
       padding-top: var(--fsds-postcard-size-padding, 16px);
-      border-top-color: var(--fsds-postcard-design-footer-border-top-color, var(--fsds-postcard-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-postcard-design-footer-border-top-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       border-top-style: var(--fsds-postcard-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-postcard-design-footer-border-top-width, var(--fsds-postcard-size-border, 1px));
       font-size: var(--fsds-postcard-design-footer-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
@@ -481,7 +481,7 @@ export class PostcardContentElement extends LitElement {
     .postcard {
       --fsds-postcard-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-postcard-color-background-hover: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-postcard-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-postcard-color-border-default: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-postcard-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
       --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-postcard-size-padding: var(--fsds-core-spacing-size-06, 16px);
@@ -535,7 +535,7 @@ export class PostcardContentElement extends LitElement {
       border-style: var(--fsds-postcard-design-root-border-style, solid);
       border-width: var(--fsds-postcard-design-root-border-width, var(--fsds-postcard-size-border, 1px));
       box-sizing: border-box;
-      border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #b8b8b8));
+      border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       color: var(--fsds-postcard-design-root-foreground-color, var(--fsds-postcard-color-foreground-primary, #141414));
 
       &:hover {
@@ -586,7 +586,7 @@ export class PostcardContentElement extends LitElement {
       align-items: center;
       gap: var(--fsds-postcard-design-footer-spacing-gap, var(--fsds-postcard-size-gap, 12px));
       padding-top: var(--fsds-postcard-size-padding, 16px);
-      border-top-color: var(--fsds-postcard-design-footer-border-top-color, var(--fsds-postcard-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-postcard-design-footer-border-top-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       border-top-style: var(--fsds-postcard-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-postcard-design-footer-border-top-width, var(--fsds-postcard-size-border, 1px));
       font-size: var(--fsds-postcard-design-footer-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));
@@ -667,7 +667,7 @@ export class PostcardFooterElement extends LitElement {
     .postcard {
       --fsds-postcard-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-postcard-color-background-hover: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-postcard-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-postcard-color-border-default: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-postcard-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
       --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-postcard-size-padding: var(--fsds-core-spacing-size-06, 16px);
@@ -721,7 +721,7 @@ export class PostcardFooterElement extends LitElement {
       border-style: var(--fsds-postcard-design-root-border-style, solid);
       border-width: var(--fsds-postcard-design-root-border-width, var(--fsds-postcard-size-border, 1px));
       box-sizing: border-box;
-      border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #b8b8b8));
+      border-color: var(--fsds-postcard-design-root-border-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       color: var(--fsds-postcard-design-root-foreground-color, var(--fsds-postcard-color-foreground-primary, #141414));
 
       &:hover {
@@ -772,7 +772,7 @@ export class PostcardFooterElement extends LitElement {
       align-items: center;
       gap: var(--fsds-postcard-design-footer-spacing-gap, var(--fsds-postcard-size-gap, 12px));
       padding-top: var(--fsds-postcard-size-padding, 16px);
-      border-top-color: var(--fsds-postcard-design-footer-border-top-color, var(--fsds-postcard-color-border-default, #b8b8b8));
+      border-top-color: var(--fsds-postcard-design-footer-border-top-color, var(--fsds-postcard-color-border-default, #d0d0d0));
       border-top-style: var(--fsds-postcard-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-postcard-design-footer-border-top-width, var(--fsds-postcard-size-border, 1px));
       font-size: var(--fsds-postcard-design-footer-typography-size, var(--fsds-postcard-typography-footer-font-size, 14px));

@@ -50,8 +50,8 @@ export const tableTokenScopes = {
     "table.color.border": {
       name: "table.color.border",
       cssVar: "--fsds-table-color-border",
-      ref: "semantic.color.border.light",
-      fallback: "#b8b8b8",
+      ref: "semantic.surface.border.subtle",
+      fallback: "#d0d0d0",
     },
     "table.border.width": {
       name: "table.border.width",

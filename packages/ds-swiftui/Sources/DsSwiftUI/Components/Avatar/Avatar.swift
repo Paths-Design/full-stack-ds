@@ -17,7 +17,7 @@ enum AvatarTokens {
             "avatar.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-size-radius", name: "avatar.size.radius", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
             "avatar.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-background", name: "avatar.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "avatar.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-foreground-primary", name: "avatar.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "avatar.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-border", name: "avatar.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "avatar.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-avatar-color-border", name: "avatar.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
         ],
     ]
 }

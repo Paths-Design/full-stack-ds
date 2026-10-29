@@ -3,12 +3,15 @@ package com.fullstackds.components.list
 
 // @generated:start imports
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.fullstackds.tokens.LocalFsdsTheme
@@ -52,13 +55,19 @@ fun List(
         return null
     }
     val contentColor = layeredSlot("list.color.foreground.primary")?.toFsdsColor()
+    val cornerRadius = 0.dp
+    val borderColor = layeredSlot("list.color.border")?.toFsdsColor()
+    val borderWidth = null ?: 1.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
     val paddingBlockEnd = layeredSlot("box-model.padding-block-end")?.toFsdsDp() ?: 0.dp
     val minHeight = layeredSlot("box-model.min-height")?.toFsdsDp()
 
+    val shape = RoundedCornerShape(cornerRadius)
     val chromeModifier = Modifier
+        .clip(shape)
+        .then(if (borderColor != null) Modifier.border(borderWidth, borderColor, shape) else Modifier)
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
         .then(if (minHeight != null) Modifier.height(minHeight) else Modifier)
     CompositionLocalProvider(LocalFsdsContentColor provides (contentColor ?: Color.Unspecified)) {

@@ -44,8 +44,8 @@ export const commandTokenScopes = {
     "command.color.border": {
       name: "command.color.border",
       cssVar: "--fsds-command-color-border",
-      ref: "semantic.color.border.light",
-      fallback: "#b8b8b8",
+      ref: "semantic.surface.border.subtle",
+      fallback: "#d0d0d0",
     },
     "command.border.width": {
       name: "command.border.width",

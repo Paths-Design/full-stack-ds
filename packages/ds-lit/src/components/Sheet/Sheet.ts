@@ -77,7 +77,7 @@ export class SheetElement extends LitElement {
     .sheet {
       --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0,0,0,0.40));
       --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-sheet-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);
@@ -133,7 +133,7 @@ export class SheetElement extends LitElement {
       flex-direction: column;
       background-color: var(--fsds-sheet-design-content-background-fill, var(--fsds-sheet-color-background, #ffffff));
       color: var(--fsds-sheet-design-content-foreground-color, var(--fsds-sheet-color-text, #141414));
-      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-style: var(--fsds-sheet-design-content-border-style, solid);
       border-width: var(--fsds-sheet-design-content-border-width, var(--fsds-sheet-border-width, 1px));
       box-shadow: var(--fsds-sheet-design-content-elevation-shadow, var(--fsds-sheet-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
@@ -148,7 +148,7 @@ export class SheetElement extends LitElement {
       display: flex;
       align-items: center;
       padding: var(--fsds-sheet-design-header-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-sheet-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-sheet-design-header-border-bottom-width, 1px);
       gap: var(--fsds-sheet-design-header-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
@@ -181,7 +181,7 @@ export class SheetElement extends LitElement {
       align-items: center;
       gap: var(--fsds-sheet-design-footer-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
       padding: var(--fsds-sheet-design-footer-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-top-style: var(--fsds-sheet-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-sheet-design-footer-border-top-width, 1px);
     }
@@ -398,7 +398,7 @@ export class SheetContentElement extends LitElement {
     .sheet {
       --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0,0,0,0.40));
       --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-sheet-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);
@@ -454,7 +454,7 @@ export class SheetContentElement extends LitElement {
       flex-direction: column;
       background-color: var(--fsds-sheet-design-content-background-fill, var(--fsds-sheet-color-background, #ffffff));
       color: var(--fsds-sheet-design-content-foreground-color, var(--fsds-sheet-color-text, #141414));
-      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-style: var(--fsds-sheet-design-content-border-style, solid);
       border-width: var(--fsds-sheet-design-content-border-width, var(--fsds-sheet-border-width, 1px));
       box-shadow: var(--fsds-sheet-design-content-elevation-shadow, var(--fsds-sheet-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
@@ -469,7 +469,7 @@ export class SheetContentElement extends LitElement {
       display: flex;
       align-items: center;
       padding: var(--fsds-sheet-design-header-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-sheet-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-sheet-design-header-border-bottom-width, 1px);
       gap: var(--fsds-sheet-design-header-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
@@ -502,7 +502,7 @@ export class SheetContentElement extends LitElement {
       align-items: center;
       gap: var(--fsds-sheet-design-footer-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
       padding: var(--fsds-sheet-design-footer-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-top-style: var(--fsds-sheet-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-sheet-design-footer-border-top-width, 1px);
     }
@@ -626,7 +626,7 @@ export class SheetHeaderElement extends LitElement {
     .sheet {
       --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0,0,0,0.40));
       --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-sheet-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);
@@ -682,7 +682,7 @@ export class SheetHeaderElement extends LitElement {
       flex-direction: column;
       background-color: var(--fsds-sheet-design-content-background-fill, var(--fsds-sheet-color-background, #ffffff));
       color: var(--fsds-sheet-design-content-foreground-color, var(--fsds-sheet-color-text, #141414));
-      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-style: var(--fsds-sheet-design-content-border-style, solid);
       border-width: var(--fsds-sheet-design-content-border-width, var(--fsds-sheet-border-width, 1px));
       box-shadow: var(--fsds-sheet-design-content-elevation-shadow, var(--fsds-sheet-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
@@ -697,7 +697,7 @@ export class SheetHeaderElement extends LitElement {
       display: flex;
       align-items: center;
       padding: var(--fsds-sheet-design-header-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-sheet-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-sheet-design-header-border-bottom-width, 1px);
       gap: var(--fsds-sheet-design-header-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
@@ -730,7 +730,7 @@ export class SheetHeaderElement extends LitElement {
       align-items: center;
       gap: var(--fsds-sheet-design-footer-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
       padding: var(--fsds-sheet-design-footer-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-top-style: var(--fsds-sheet-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-sheet-design-footer-border-top-width, 1px);
     }
@@ -854,7 +854,7 @@ export class SheetTitleElement extends LitElement {
     .sheet {
       --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0,0,0,0.40));
       --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-sheet-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);
@@ -910,7 +910,7 @@ export class SheetTitleElement extends LitElement {
       flex-direction: column;
       background-color: var(--fsds-sheet-design-content-background-fill, var(--fsds-sheet-color-background, #ffffff));
       color: var(--fsds-sheet-design-content-foreground-color, var(--fsds-sheet-color-text, #141414));
-      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-style: var(--fsds-sheet-design-content-border-style, solid);
       border-width: var(--fsds-sheet-design-content-border-width, var(--fsds-sheet-border-width, 1px));
       box-shadow: var(--fsds-sheet-design-content-elevation-shadow, var(--fsds-sheet-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
@@ -925,7 +925,7 @@ export class SheetTitleElement extends LitElement {
       display: flex;
       align-items: center;
       padding: var(--fsds-sheet-design-header-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-sheet-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-sheet-design-header-border-bottom-width, 1px);
       gap: var(--fsds-sheet-design-header-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
@@ -958,7 +958,7 @@ export class SheetTitleElement extends LitElement {
       align-items: center;
       gap: var(--fsds-sheet-design-footer-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
       padding: var(--fsds-sheet-design-footer-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-top-style: var(--fsds-sheet-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-sheet-design-footer-border-top-width, 1px);
     }
@@ -1082,7 +1082,7 @@ export class SheetDescriptionElement extends LitElement {
     .sheet {
       --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0,0,0,0.40));
       --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-sheet-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);
@@ -1138,7 +1138,7 @@ export class SheetDescriptionElement extends LitElement {
       flex-direction: column;
       background-color: var(--fsds-sheet-design-content-background-fill, var(--fsds-sheet-color-background, #ffffff));
       color: var(--fsds-sheet-design-content-foreground-color, var(--fsds-sheet-color-text, #141414));
-      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-style: var(--fsds-sheet-design-content-border-style, solid);
       border-width: var(--fsds-sheet-design-content-border-width, var(--fsds-sheet-border-width, 1px));
       box-shadow: var(--fsds-sheet-design-content-elevation-shadow, var(--fsds-sheet-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
@@ -1153,7 +1153,7 @@ export class SheetDescriptionElement extends LitElement {
       display: flex;
       align-items: center;
       padding: var(--fsds-sheet-design-header-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-sheet-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-sheet-design-header-border-bottom-width, 1px);
       gap: var(--fsds-sheet-design-header-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
@@ -1186,7 +1186,7 @@ export class SheetDescriptionElement extends LitElement {
       align-items: center;
       gap: var(--fsds-sheet-design-footer-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
       padding: var(--fsds-sheet-design-footer-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-top-style: var(--fsds-sheet-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-sheet-design-footer-border-top-width, 1px);
     }
@@ -1310,7 +1310,7 @@ export class SheetBodyElement extends LitElement {
     .sheet {
       --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0,0,0,0.40));
       --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-sheet-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);
@@ -1366,7 +1366,7 @@ export class SheetBodyElement extends LitElement {
       flex-direction: column;
       background-color: var(--fsds-sheet-design-content-background-fill, var(--fsds-sheet-color-background, #ffffff));
       color: var(--fsds-sheet-design-content-foreground-color, var(--fsds-sheet-color-text, #141414));
-      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-style: var(--fsds-sheet-design-content-border-style, solid);
       border-width: var(--fsds-sheet-design-content-border-width, var(--fsds-sheet-border-width, 1px));
       box-shadow: var(--fsds-sheet-design-content-elevation-shadow, var(--fsds-sheet-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
@@ -1381,7 +1381,7 @@ export class SheetBodyElement extends LitElement {
       display: flex;
       align-items: center;
       padding: var(--fsds-sheet-design-header-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-sheet-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-sheet-design-header-border-bottom-width, 1px);
       gap: var(--fsds-sheet-design-header-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
@@ -1414,7 +1414,7 @@ export class SheetBodyElement extends LitElement {
       align-items: center;
       gap: var(--fsds-sheet-design-footer-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
       padding: var(--fsds-sheet-design-footer-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-top-style: var(--fsds-sheet-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-sheet-design-footer-border-top-width, 1px);
     }
@@ -1538,7 +1538,7 @@ export class SheetFooterElement extends LitElement {
     .sheet {
       --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0,0,0,0.40));
       --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-      --fsds-sheet-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);
@@ -1594,7 +1594,7 @@ export class SheetFooterElement extends LitElement {
       flex-direction: column;
       background-color: var(--fsds-sheet-design-content-background-fill, var(--fsds-sheet-color-background, #ffffff));
       color: var(--fsds-sheet-design-content-foreground-color, var(--fsds-sheet-color-text, #141414));
-      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-style: var(--fsds-sheet-design-content-border-style, solid);
       border-width: var(--fsds-sheet-design-content-border-width, var(--fsds-sheet-border-width, 1px));
       box-shadow: var(--fsds-sheet-design-content-elevation-shadow, var(--fsds-sheet-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
@@ -1609,7 +1609,7 @@ export class SheetFooterElement extends LitElement {
       display: flex;
       align-items: center;
       padding: var(--fsds-sheet-design-header-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-sheet-design-header-border-bottom-style, solid);
       border-bottom-width: var(--fsds-sheet-design-header-border-bottom-width, 1px);
       gap: var(--fsds-sheet-design-header-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
@@ -1642,7 +1642,7 @@ export class SheetFooterElement extends LitElement {
       align-items: center;
       gap: var(--fsds-sheet-design-footer-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
       padding: var(--fsds-sheet-design-footer-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #b8b8b8));
+      border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #d0d0d0));
       border-top-style: var(--fsds-sheet-design-footer-border-top-style, solid);
       border-top-width: var(--fsds-sheet-design-footer-border-top-width, 1px);
     }

@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component design property bindings
 owner: "@darianrosebrook"
-updated: 2026-10-21
-verified_at_commit: 4ef5a4f30
+updated: 2026-10-27
+verified_at_commit: 4612d2e31
 governs:
   - packages/ds-codegen/src/design-properties.ts
   - packages/ds-codegen/src/validation/component-design-policy.ts
@@ -90,6 +90,14 @@ The override remains independently settable when the prop is absent or present.
 `node scripts/migrate-design-bindings.mjs --write` adds bindings without changing existing values or selectors. Run it after building codegen; without `--write` it reports any remaining mechanical adoption. Existing bindings keep their addresses. Conditional selector addresses are explicitly stored in the sidecar, so subsequent selector edits need not rename public slots.
 
 The mechanical pass exposes common visual properties, existing token-backed sizing, and spacing. Literal intrinsic sizing, layout algorithms, arbitrary transforms, animation triggers, images, and content remain component/composition decisions. Layout registry entries require explicit adoption. Component tokens follow the [consumption contract](component-token-consumption.md): unused declarations are rejected, with no compatibility aliases. Native-only slots remain outside the Web inspector's editable controls.
+
+The styles sidecar's reserved `@starting-style` key is not a selector. It maps
+selectors to Web entry states: the values an element transitions from when it
+first acquires a style. The CSS realization emits those blocks verbatim in one
+`@starting-style` at-rule and applies no design binding to them. A transient
+from-value is not override surface, and wrapping it would resolve it to the open
+state's own value, erasing the transition. Native style projections do not
+receive the key.
 
 `generate:check` enforces that common-property coverage through the same
 `requiresDesignBinding` rule used by the migration script. Removing a binding

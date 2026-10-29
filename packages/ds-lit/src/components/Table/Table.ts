@@ -70,7 +70,7 @@ export class TableElement extends LitElement {
 
     .table {
       --fsds-table-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-table-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-table-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-table-color-background-footer: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-table-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
       --fsds-table-spacing-cell-x: var(--fsds-core-spacing-size-03, 4px);
@@ -115,7 +115,7 @@ export class TableElement extends LitElement {
 
     .table__container {
       border-collapse: collapse;
-      border-color: var(--fsds-table-design-container-border-color, var(--fsds-table-color-border, #b8b8b8));
+      border-color: var(--fsds-table-design-container-border-color, var(--fsds-table-color-border, #d0d0d0));
       border-width: var(--fsds-table-design-container-border-width, var(--fsds-table-border-width, 1px));
       border-radius: var(--fsds-table-design-container-shape-radius, var(--fsds-table-size-radius, 6px));
       width: 100%;
@@ -144,7 +144,7 @@ export class TableElement extends LitElement {
       padding-top: var(--fsds-table-spacing-cell-y, 2px);
       padding-bottom: var(--fsds-table-spacing-cell-y, 2px);
       border-bottom-width: var(--fsds-table-design-header-cell-border-bottom-width, var(--fsds-table-border-width, 1px));
-      border-bottom-color: var(--fsds-table-design-header-cell-border-bottom-color, var(--fsds-table-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-table-design-header-cell-border-bottom-color, var(--fsds-table-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-table-design-header-cell-border-bottom-style, solid);
       text-align: var(--fsds-table-design-header-cell-typography-alignment, start);
     }
@@ -155,7 +155,7 @@ export class TableElement extends LitElement {
       padding-top: var(--fsds-table-spacing-cell-y, 2px);
       padding-bottom: var(--fsds-table-spacing-cell-y, 2px);
       border-bottom-width: var(--fsds-table-design-cell-border-bottom-width, var(--fsds-table-border-width, 1px));
-      border-bottom-color: var(--fsds-table-design-cell-border-bottom-color, var(--fsds-table-color-border, #b8b8b8));
+      border-bottom-color: var(--fsds-table-design-cell-border-bottom-color, var(--fsds-table-color-border, #d0d0d0));
       border-bottom-style: var(--fsds-table-design-cell-border-bottom-style, solid);
     }
     }

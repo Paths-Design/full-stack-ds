@@ -6,6 +6,11 @@ import {fileURLToPath} from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = process.env.FSDS_ENGINE_OUT ?? path.join(root,'tmp/godot-pilot',crypto.randomUUID());
 const runId = process.env.FSDS_ENGINE_RUN ?? crypto.randomUUID();
+const revision = spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'});
+if(revision.status!==0)throw new Error('Cannot identify Godot pilot source revision');
+const sourceRevision = revision.stdout.trim();
+const dirt = spawnSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'});
+if(dirt.status!==0)throw new Error('Cannot identify Godot pilot source tree state');
 const project = path.join(out,'project');
 fs.mkdirSync(project,{recursive:true});
 fs.cpSync(path.join(root,'packages/ds-godot/addons'),path.join(project,'addons'),{recursive:true});
@@ -14,14 +19,30 @@ fs.copyFileSync(path.join(root,'packages/ds-godot/fixtures/traces.json'),path.jo
 // A separate changed-token fixture checks emitted resource values in Godot.
 const {buildComponentIR}=await import('../packages/ds-codegen/dist/ir.js');
 const {createGodotEmitter}=await import('../packages/ds-codegen/dist/frameworks/godot/factory.js');
+function emitProbe(ir) {
+ for(const file of createGodotEmitter().emitComponent(ir,{componentsRoot:'',contractsRoot:''})) {
+  const target=path.join(project,'addons/full_stack_ds/components',file.relativePath);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,file.contents);
+ }
+}
 const contractDir=path.join(root,'packages/ds-contracts/components/Accordion');
 const contract=JSON.parse(fs.readFileSync(path.join(contractDir,'Accordion.contract.json'),'utf8'));
 contract.tokens=JSON.parse(fs.readFileSync(path.join(contractDir,'Accordion.tokens.json'),'utf8'));
 contract.styles=JSON.parse(fs.readFileSync(path.join(contractDir,'Accordion.styles.json'),'utf8'));
 const probe=buildComponentIR(contract); probe.name='TokenProbe';
 for(const fact of probe.tokenFacts) if(fact.rawValue?.match(/^#[0-9a-f]{6}$/i)) fact.rawValue='#123456';
-for(const file of createGodotEmitter().emitComponent(probe,{componentsRoot:'',contractsRoot:''})) {
- const target=path.join(project,'addons/full_stack_ds/components',file.relativePath);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,file.contents);
+emitProbe(probe);
+for(const name of ['Text','Divider']) {
+ const base=path.join(root,'packages/ds-contracts/components',name,name);
+ const source=JSON.parse(fs.readFileSync(base+'.contract.json','utf8'));
+ source.tokens=JSON.parse(fs.readFileSync(base+'.tokens.json','utf8'));
+ source.styles=JSON.parse(fs.readFileSync(base+'.styles.json','utf8'));
+ const ir=buildComponentIR(source);
+ emitProbe(ir);
+ if(name==='Divider') {
+  ir.name='RuleProbe';
+  for(const fact of ir.tokenFacts) if(fact.name==='divider.color') fact.rawValue='#123456';
+  emitProbe(ir);
+ }
 }
 
 fs.writeFileSync(path.join(project,'project.godot'),'config_version=5\n[application]\nconfig/name="Full Stack DS Godot Pilot"\nrun/main_scene="res://main.tscn"\n[display]\nwindow/size/viewport_width=640\nwindow/size/viewport_height=800\n[rendering]\nrenderer/rendering_method="gl_compatibility"\ntextures/vram_compression/import_etc2_astc=true\nenvironment/defaults/default_clear_color=Color(0.12,0.14,0.18,1)\n');
@@ -44,7 +65,7 @@ run([], 'runtime');
 const receipt=JSON.parse(fs.readFileSync(path.join(out,'godot.json'),'utf8'));
 if(receipt.runId!==runId || !receipt.passed) throw new Error('Invalid runtime receipt');
 fs.copyFileSync(path.join(out,'godot.json'),path.join(out,'godot-runtime.json'));
-fs.writeFileSync(path.join(out,'provenance.json'),JSON.stringify({runId,godot,tracesSha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(project,'traces.json'))).digest('hex')},null,2));
+fs.writeFileSync(path.join(out,'provenance.json'),JSON.stringify({runId,godot,sourceRevision,sourceDirty:dirt.stdout.trim().length>0,tracesSha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(project,'traces.json'))).digest('hex')},null,2));
 console.log(JSON.stringify(receipt));
 
 fs.writeFileSync(path.join(project,'export_presets.cfg'), `[preset.0]

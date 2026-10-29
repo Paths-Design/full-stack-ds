@@ -4,14 +4,26 @@
   "title": "Component Styles Sidecar",
   "description": "Consumer-side CSS declarations for a single component. Top-level keys are selectors (anatomy parts like \"root\"/\"track\", state shorthands like \"hover\"/\"checked\", variant modifiers like \"--md\", or compound selectors like \":has(.switch__input:checked) .switch__track\"). Each value is a property-keyed map; the property name is the entry's identity. Entry values are structured resolutions: `resolvesTo` (slot or global token graph), or `literal` with required `platforms` array.",
   "type": "object",
-  "additionalProperties": {
-    "type": "object",
-    "description": "A selector's block: keys are CSS property names; values are styleEntry resolutions.",
-    "additionalProperties": {
-      "$ref": "#/$defs/styleEntry"
+  "properties": {
+    "@starting-style": {
+      "type": "object",
+      "description": "Reserved key (not a selector). CSS @starting-style entry states: maps selectors (same notation as top-level keys) to the declarations an element should transition FROM when it first acquires that style — the entry half of an enter/exit pair whose resting declarations live under the regular selector keys. Web realization only; native targets ignore it. Entries here are resting values, typically literals, and carry no `design` slots — a transient starting state is not brand-tunable surface.",
+      "additionalProperties": {
+        "$ref": "#/$defs/styleBlock"
+      }
     }
   },
+  "additionalProperties": {
+    "$ref": "#/$defs/styleBlock"
+  },
   "$defs": {
+    "styleBlock": {
+      "type": "object",
+      "description": "A selector's block: keys are CSS property names; values are styleEntry resolutions.",
+      "additionalProperties": {
+        "$ref": "#/$defs/styleEntry"
+      }
+    },
     "styleEntry": {
       "type": "object",
       "description": "Resolution for a single CSS declaration. Either `resolvesTo` (slot reference or global token graph) or `literal` (with required `platforms`).",

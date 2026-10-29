@@ -31,7 +31,7 @@
 
 .table__container {
   border-collapse: collapse;
-  border-color: var(--fsds-table-design-container-border-color, var(--fsds-table-color-border, #b8b8b8));
+  border-color: var(--fsds-table-design-container-border-color, var(--fsds-table-color-border, #d0d0d0));
   border-width: var(--fsds-table-design-container-border-width, var(--fsds-table-border-width, 1px));
   border-radius: var(--fsds-table-design-container-shape-radius, var(--fsds-table-size-radius, 6px));
   width: 100%;
@@ -60,7 +60,7 @@
   padding-top: var(--fsds-table-spacing-cell-y, 2px);
   padding-bottom: var(--fsds-table-spacing-cell-y, 2px);
   border-bottom-width: var(--fsds-table-design-header-cell-border-bottom-width, var(--fsds-table-border-width, 1px));
-  border-bottom-color: var(--fsds-table-design-header-cell-border-bottom-color, var(--fsds-table-color-border, #b8b8b8));
+  border-bottom-color: var(--fsds-table-design-header-cell-border-bottom-color, var(--fsds-table-color-border, #d0d0d0));
   border-bottom-style: var(--fsds-table-design-header-cell-border-bottom-style, solid);
   text-align: var(--fsds-table-design-header-cell-typography-alignment, start);
 }
@@ -71,7 +71,7 @@
   padding-top: var(--fsds-table-spacing-cell-y, 2px);
   padding-bottom: var(--fsds-table-spacing-cell-y, 2px);
   border-bottom-width: var(--fsds-table-design-cell-border-bottom-width, var(--fsds-table-border-width, 1px));
-  border-bottom-color: var(--fsds-table-design-cell-border-bottom-color, var(--fsds-table-color-border, #b8b8b8));
+  border-bottom-color: var(--fsds-table-design-cell-border-bottom-color, var(--fsds-table-color-border, #d0d0d0));
   border-bottom-style: var(--fsds-table-design-cell-border-bottom-style, solid);
 }
 /* @generated:end */

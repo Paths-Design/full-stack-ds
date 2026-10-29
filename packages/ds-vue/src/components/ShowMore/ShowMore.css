@@ -42,7 +42,7 @@
   background: none;
   border-style: var(--fsds-show-more-design-trigger-border-style, solid);
   border-width: var(--fsds-show-more-design-trigger-border-width, 1px);
-  border-color: var(--fsds-show-more-design-trigger-border-color, var(--fsds-show-more-color-border, #b8b8b8));
+  border-color: var(--fsds-show-more-design-trigger-border-color, var(--fsds-show-more-color-border, #d0d0d0));
   padding: var(--fsds-show-more-design-trigger-spacing-padding, 0);
   cursor: pointer;
 }

@@ -57,6 +57,12 @@ val showMoreTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.primary",
             fallback = "#141414",
         ),
+        "show-more.color.border" to ComponentTokenDefinition(
+            name = "show-more.color.border",
+            cssVar = "--fsds-show-more-color-border",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
+        ),
         "show-more.size.radius" to ComponentTokenDefinition(
             name = "show-more.size.radius",
             cssVar = "--fsds-show-more-size-radius",

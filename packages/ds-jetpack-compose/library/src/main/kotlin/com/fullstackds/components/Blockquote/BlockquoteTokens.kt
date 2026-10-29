@@ -50,6 +50,12 @@ val blockquoteTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.background.secondary",
             fallback = "#f7f7f7",
         ),
+        "blockquote.color.border" to ComponentTokenDefinition(
+            name = "blockquote.color.border",
+            cssVar = "--fsds-blockquote-color-border",
+            ref = "semantic.color.border.accent",
+            fallback = "#d92d2e",
+        ),
         "blockquote.size.radius" to ComponentTokenDefinition(
             name = "blockquote.size.radius",
             cssVar = "--fsds-blockquote-size-radius",

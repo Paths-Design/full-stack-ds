@@ -48,7 +48,7 @@ enum ListTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.structure.size.gap", fallback: .string("16px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "list.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-list-color-foreground-primary", name: "list.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "list.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-list-color-border", name: "list.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "list.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-list-color-border", name: "list.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
         ],
     ]
 }

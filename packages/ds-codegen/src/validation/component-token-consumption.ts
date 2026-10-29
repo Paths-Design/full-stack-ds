@@ -1,4 +1,4 @@
-import type { ComponentContract } from "../contract.js";
+import type { ComponentContract, StyleEntry } from "../contract.js";
 import { buildComponentIR } from "../ir.js";
 import { webTokenConsumption } from "../css.js";
 import { resolveSurfaceAutoDismiss } from "../semantics.js";
@@ -52,12 +52,25 @@ export function inspectComponentTokenConsumption(contract: ComponentContract, wo
   }
   const pointer = (key: string) => key.replace(/~/g, "~0").replace(/\//g, "~1");
   const declared = new Map<string, string>();
-  for (const name of Object.keys(contract.tokens ?? {})) declared.set(name, `/tokens/${name}`);
-  for (const [selector, block] of Object.entries(contract.styles ?? {})) {
+  const collectDeclared = (selector: string, block: Record<string, StyleEntry>) => {
     for (const [property, entry] of Object.entries(block)) {
       if (property.includes(".")) declared.set(property, `/styles/${pointer(selector)}/${pointer(property)}`);
       if (entry.design) declared.set(entry.design.slot, `/styles/${pointer(selector)}/${pointer(property)}/design`);
     }
+  };
+  for (const name of Object.keys(contract.tokens ?? {})) declared.set(name, `/tokens/${name}`);
+  for (const [selector, block] of Object.entries(contract.styles ?? {})) {
+    // Reserved `@starting-style` key: a selector→block map whose nested keys
+    // are selectors, not dotted slot properties. Recurse with the nested
+    // selector so entry-state design slots still register (and nested
+    // selectors never masquerade as slot names).
+    if (selector === "@starting-style" && block && typeof block === "object") {
+      for (const [nestedSelector, nestedBlock] of Object.entries(block as Record<string, Record<string, StyleEntry>>)) {
+        collectDeclared(nestedSelector, nestedBlock);
+      }
+      continue;
+    }
+    collectDeclared(selector, block as Record<string, StyleEntry>);
   }
   const slots = [...declared].map(([slot, path]) => ({
     slot, path, cssVar: `--${tokenSlug(slot)}`,

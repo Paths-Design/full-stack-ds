@@ -158,6 +158,14 @@ export class LinksElement extends LitElement {
       font-size: var(--fsds-links-design-condition-cbbd2740a3e5-typography-size, var(--fsds-links-size-font-size-medium, 1rem));
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .links {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: String }) href?: string;

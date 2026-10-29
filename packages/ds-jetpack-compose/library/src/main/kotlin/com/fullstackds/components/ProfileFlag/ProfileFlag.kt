@@ -3,6 +3,7 @@ package com.fullstackds.components.profileflag
 
 // @generated:start imports
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,6 +37,8 @@ fun ProfileFlag(
     val containerColor = layeredSlot("profile-flag.color.background")?.toFsdsColor()
     val contentColor = layeredSlot("profile-flag.color.foreground.primary")?.toFsdsColor()
     val cornerRadius = layeredSlot("profile-flag.size.radius")?.toFsdsDp() ?: 0.dp
+    val borderColor = layeredSlot("profile-flag.color.border.default")?.toFsdsColor()
+    val borderWidth = null ?: 1.dp
     val paddingInlineStart = layeredSlot("box-model.padding-inline-start")?.toFsdsDp() ?: 0.dp
     val paddingInlineEnd = layeredSlot("box-model.padding-inline-end")?.toFsdsDp() ?: 0.dp
     val paddingBlockStart = layeredSlot("box-model.padding-block-start")?.toFsdsDp() ?: 0.dp
@@ -46,6 +49,7 @@ fun ProfileFlag(
     val chromeModifier = Modifier
         .clip(shape)
         .then(if (containerColor != null) Modifier.background(containerColor, shape) else Modifier)
+        .then(if (borderColor != null) Modifier.border(borderWidth, borderColor, shape) else Modifier)
         .padding(start = paddingInlineStart, end = paddingInlineEnd, top = paddingBlockStart, bottom = paddingBlockEnd)
         .then(if (minHeight != null) Modifier.height(minHeight) else Modifier)
     CompositionLocalProvider(LocalFsdsContentColor provides (contentColor ?: Color.Unspecified)) {

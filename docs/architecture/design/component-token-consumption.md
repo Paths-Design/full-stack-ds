@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Component token consumption
 owner: "@darianrosebrook"
-updated: 2026-10-01
-verified_at_commit: 395ecdbff
+updated: 2026-10-27
+verified_at_commit: 4612d2e31
 governs:
   - packages/ds-codegen/src/css-token-consumption.ts
   - packages/ds-codegen/src/validation/component-token-consumption.ts
@@ -18,7 +18,7 @@ governs:
 
 Component-scoped tokens are an executable interface. A declared address must reach a supported property or behavior. Unset overrides are valid; unused semantic vocabulary is valid. An unused component declaration is a contract error, with no compatibility alias, debt allowance, or reseed mode.
 
-`generate:check` applies `validateComponentTokenConsumption`. Web roots are actual CSS properties, including keyframes and imported shared box-model consumers. The dependency walk follows `var()` references and nested fallbacks through declarations. A declaration, a disconnected alias chain, a comment, or a quoted example cannot establish consumption. Raw CSS custom-property declarations cannot bypass this rule by avoiding dotted token names. Alias cycles fail validation. The analysis conservatively combines selectors; it does not establish that a selector is reachable in every state.
+`generate:check` applies `validateComponentTokenConsumption`. Web roots are actual CSS properties, including keyframes, `@starting-style` entry states, and imported shared box-model consumers. The styles sidecar's reserved `@starting-style` key maps selectors to blocks, so the declared-slot walk descends into its nested selectors rather than reading them as slot names. The dependency walk follows `var()` references and nested fallbacks through declarations. A declaration, a disconnected alias chain, a comment, or a quoted example cannot establish consumption. Raw CSS custom-property declarations cannot bypass this rule by avoiding dotted token names. Alias cycles fail validation. The analysis conservatively combines selectors; it does not establish that a selector is reachable in every state.
 
 `audit:dead-slots` additionally reads the emitted CSS for every Web target and checks native dictionaries against their actual emitted lookups. It rejects a missing expected property consumer, an unconsumed emitted declaration, or a cycle. Missing artifacts fail the audit. Its report lives in ignored `tmp/component-token-consumption/`; there is no committed findings baseline to expand.
 

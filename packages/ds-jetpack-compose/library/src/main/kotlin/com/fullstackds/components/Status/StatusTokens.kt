@@ -50,11 +50,23 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.secondary",
             fallback = "#474647",
         ),
+        "status.color.border" to ComponentTokenDefinition(
+            name = "status.color.border",
+            cssVar = "--fsds-status-color-border",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
+        ),
         "status.size.radius" to ComponentTokenDefinition(
             name = "status.size.radius",
             cssVar = "--fsds-status-size-radius",
             ref = "semantic.shape.control.radius.pill",
             fallback = "9999px",
+        ),
+        "status.size.border" to ComponentTokenDefinition(
+            name = "status.size.border",
+            cssVar = "--fsds-status-size-border",
+            ref = "semantic.shape.control.border.defaultWidth",
+            fallback = "1px",
         ),
     ),
     "variant_info" to mapOf(
@@ -70,6 +82,12 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.on.info.subtle",
             fallback = "#013ab0",
         ),
+        "status.color.border" to ComponentTokenDefinition(
+            name = "status.color.border",
+            cssVar = "--fsds-status-color-border",
+            ref = "semantic.color.border.info",
+            fallback = "#034fd6",
+        ),
     ),
     "variant_success" to mapOf(
         "status.color.background" to ComponentTokenDefinition(
@@ -83,6 +101,12 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-status-color-foreground-primary",
             ref = "semantic.color.foreground.on.success.subtle",
             fallback = "#2c4f09",
+        ),
+        "status.color.border" to ComponentTokenDefinition(
+            name = "status.color.border",
+            cssVar = "--fsds-status-color-border",
+            ref = "semantic.color.border.success",
+            fallback = "#3a6614",
         ),
     ),
     "variant_warning" to mapOf(
@@ -98,6 +122,12 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.on.warning.subtle",
             fallback = "#6c3a00",
         ),
+        "status.color.border" to ComponentTokenDefinition(
+            name = "status.color.border",
+            cssVar = "--fsds-status-color-border",
+            ref = "semantic.color.border.warning",
+            fallback = "#8b4b00",
+        ),
     ),
     "variant_danger" to mapOf(
         "status.color.background" to ComponentTokenDefinition(
@@ -112,6 +142,12 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.color.foreground.on.danger.subtle",
             fallback = "#900909",
         ),
+        "status.color.border" to ComponentTokenDefinition(
+            name = "status.color.border",
+            cssVar = "--fsds-status-color-border",
+            ref = "semantic.color.border.danger",
+            fallback = "#b31b1b",
+        ),
     ),
     "variant_error" to mapOf(
         "status.color.background" to ComponentTokenDefinition(
@@ -125,6 +161,12 @@ val statusTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-status-color-foreground-primary",
             ref = "semantic.color.foreground.on.danger.subtle",
             fallback = "#900909",
+        ),
+        "status.color.border" to ComponentTokenDefinition(
+            name = "status.color.border",
+            cssVar = "--fsds-status-color-border",
+            ref = "semantic.color.border.danger",
+            fallback = "#b31b1b",
         ),
     ),
 )

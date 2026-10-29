@@ -23,7 +23,7 @@ enum StatusTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "status.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-status-color-background", name: "status.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "status.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-status-color-foreground-primary", name: "status.color.foreground.primary", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
-            "status.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-status-color-border", name: "status.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "status.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-status-color-border", name: "status.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "status.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-status-size-radius", name: "status.size.radius", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
             "status.size.border": FsdsComponentTokenDefinition(cssVar: "--fsds-status-size-border", name: "status.size.border", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
         ],

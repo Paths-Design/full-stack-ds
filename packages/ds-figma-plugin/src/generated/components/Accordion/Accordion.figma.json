@@ -123,22 +123,6 @@
   ],
   "designBindings": [
     {
-      "property": "border.color",
-      "group": "border",
-      "valueType": "color",
-      "slot": "accordion.design.root.border.color",
-      "cssVar": "--fsds-accordion-design-root-border-color",
-      "cssProperty": "border-color",
-      "selectorKey": "root",
-      "part": "root",
-      "defaultValue": "#b8b8b8",
-      "resolvesTo": "accordion.border.color",
-      "editableTargets": [
-        "web"
-      ],
-      "selector": ".accordion"
-    },
-    {
       "property": "shape.radius",
       "group": "shape",
       "valueType": "dimension",
@@ -171,38 +155,6 @@
       "selector": ".accordion"
     },
     {
-      "property": "typography.size",
-      "group": "typography",
-      "valueType": "dimension",
-      "slot": "accordion.design.root.typography.size",
-      "cssVar": "--fsds-accordion-design-root-typography-size",
-      "cssProperty": "font-size",
-      "selectorKey": "root",
-      "part": "root",
-      "defaultValue": "14px",
-      "resolvesTo": "accordion.text.sizeContent",
-      "editableTargets": [
-        "web"
-      ],
-      "selector": ".accordion"
-    },
-    {
-      "property": "typography.line-height",
-      "group": "typography",
-      "valueType": "dimension",
-      "slot": "accordion.design.root.typography.line-height",
-      "cssVar": "--fsds-accordion-design-root-typography-line-height",
-      "cssProperty": "line-height",
-      "selectorKey": "root",
-      "part": "root",
-      "defaultValue": "1.8",
-      "resolvesTo": "accordion.text.lineHeightContent",
-      "editableTargets": [
-        "web"
-      ],
-      "selector": ".accordion"
-    },
-    {
       "property": "background.fill",
       "group": "background",
       "valueType": "color",
@@ -226,7 +178,7 @@
       "cssProperty": "border-color",
       "selectorKey": "item",
       "part": "item",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "accordion.border.color",
       "editableTargets": [
         "web"
@@ -391,22 +343,6 @@
       "selector": ".accordion__trigger:hover:not([aria-disabled=\"true\"])"
     },
     {
-      "property": "foreground.color",
-      "group": "foreground",
-      "valueType": "color",
-      "slot": "accordion.design.condition-c66924892931.foreground.color",
-      "cssVar": "--fsds-accordion-design-condition-c66924892931-foreground-color",
-      "cssProperty": "color",
-      "selectorKey": ".accordion__trigger:hover",
-      "part": null,
-      "defaultValue": "#474647",
-      "resolvesTo": "accordion.color.textHover",
-      "editableTargets": [
-        "web"
-      ],
-      "selector": ".accordion__trigger:hover:not([aria-disabled=\"true\"])"
-    },
-    {
       "property": "focus.width",
       "group": "focus",
       "valueType": "dimension",
@@ -447,7 +383,7 @@
       "cssProperty": "outline-offset",
       "selectorKey": ".accordion__trigger:focus-visible",
       "part": null,
-      "defaultValue": "2px",
+      "defaultValue": "-2px",
       "resolvesTo": "accordion.focus.offset",
       "editableTargets": [
         "web"
@@ -479,7 +415,7 @@
       "cssProperty": "width",
       "selectorKey": "chevron",
       "part": "chevron",
-      "defaultValue": "8px",
+      "defaultValue": "16px",
       "resolvesTo": "accordion.icon.size",
       "editableTargets": [
         "web"
@@ -495,7 +431,7 @@
       "cssProperty": "height",
       "selectorKey": "chevron",
       "part": "chevron",
-      "defaultValue": "8px",
+      "defaultValue": "16px",
       "resolvesTo": "accordion.icon.size",
       "editableTargets": [
         "web"
@@ -519,16 +455,61 @@
       "selector": ".accordion__chevron"
     },
     {
-      "property": "spacing.padding",
+      "property": "appearance.opacity",
+      "group": "appearance",
+      "valueType": "number",
+      "slot": "accordion.design.content.appearance.opacity",
+      "cssVar": "--fsds-accordion-design-content-appearance-opacity",
+      "cssProperty": "opacity",
+      "selectorKey": "content",
+      "part": "content",
+      "defaultValue": "0",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".accordion__content"
+    },
+    {
+      "property": "appearance.opacity",
+      "group": "appearance",
+      "valueType": "number",
+      "slot": "accordion.design.content-open.appearance.opacity",
+      "cssVar": "--fsds-accordion-design-content-open-appearance-opacity",
+      "cssProperty": "opacity",
+      "selectorKey": ".accordion__content:not([hidden])",
+      "part": null,
+      "defaultValue": "1",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".accordion__content:not([hidden])"
+    },
+    {
+      "property": "spacing.padding-inline",
       "group": "spacing",
       "valueType": "dimension",
-      "slot": "accordion.design.content-inner.spacing.padding",
-      "cssVar": "--fsds-accordion-design-content-inner-spacing-padding",
-      "cssProperty": "padding",
+      "slot": "accordion.design.content-inner.spacing.padding-inline",
+      "cssVar": "--fsds-accordion-design-content-inner-spacing-padding-inline",
+      "cssProperty": "padding-inline",
       "selectorKey": "contentInner",
       "part": "contentInner",
       "defaultValue": "8px",
       "resolvesTo": "accordion.spacing.paddingY",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".accordion__contentInner"
+    },
+    {
+      "property": "spacing.padding-block-end",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "accordion.design.content-inner.spacing.padding-block-end",
+      "cssVar": "--fsds-accordion-design-content-inner-spacing-padding-block-end",
+      "cssProperty": "padding-block-end",
+      "selectorKey": "contentInner",
+      "part": "contentInner",
+      "defaultValue": "0",
       "editableTargets": [
         "web"
       ],
@@ -583,6 +564,22 @@
       "selector": ".accordion__contentInner"
     },
     {
+      "property": "spacing.padding-block-end",
+      "group": "spacing",
+      "valueType": "dimension",
+      "slot": "accordion.design.content-inner-open.spacing.padding-block-end",
+      "cssVar": "--fsds-accordion-design-content-inner-open-spacing-padding-block-end",
+      "cssProperty": "padding-block-end",
+      "selectorKey": ".accordion__content:not([hidden]) .accordion__contentInner",
+      "part": null,
+      "defaultValue": "8px",
+      "resolvesTo": "accordion.spacing.paddingY",
+      "editableTargets": [
+        "web"
+      ],
+      "selector": ".accordion__content:not([hidden]) .accordion__contentInner"
+    },
+    {
       "property": "appearance.opacity",
       "group": "appearance",
       "valueType": "number",
@@ -615,11 +612,12 @@
           "realization": "declaration-only",
           "phase": "enter",
           "properties": [
-            "height",
-            "opacity"
+            "grid-template-rows",
+            "opacity",
+            "padding-block-end"
           ],
-          "durationRef": "accordion.motion.duration",
-          "easingRef": "accordion.motion.easing"
+          "durationRef": "semantic.motion.interaction.enter.duration",
+          "easingRef": "semantic.motion.interaction.enter.easing"
         },
         {
           "name": "collapse",
@@ -627,11 +625,12 @@
           "realization": "declaration-only",
           "phase": "exit",
           "properties": [
-            "height",
-            "opacity"
+            "grid-template-rows",
+            "opacity",
+            "padding-block-end"
           ],
-          "durationRef": "accordion.motion.duration",
-          "easingRef": "accordion.motion.easing"
+          "durationRef": "semantic.motion.interaction.exit.duration",
+          "easingRef": "semantic.motion.interaction.exit.easing"
         }
       ]
     }
@@ -773,7 +772,7 @@
           "--fsds-accordion-color-text-secondary": "var(--fsds-semantic-color-foreground-secondary, #474647)",
           "--fsds-accordion-color-icon": "var(--fsds-semantic-color-foreground-tertiary, #727272)",
           "--fsds-accordion-border-width": "var(--fsds-semantic-shape-control-border-default-width, 1px)",
-          "--fsds-accordion-border-color": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-accordion-border-color": "var(--fsds-semantic-surface-border-subtle, #d0d0d0)",
           "--fsds-accordion-border-radius": "var(--fsds-semantic-shape-radius-small, 4px)",
           "--fsds-accordion-spacing-gap": "var(--fsds-core-spacing-size-07, 24px)",
           "--fsds-accordion-spacing-padding-y": "var(--fsds-core-spacing-size-04, 8px)",
@@ -782,12 +781,11 @@
           "--fsds-accordion-text-line-height": "var(--fsds-semantic-typography-line-height-normal, 1.5)",
           "--fsds-accordion-text-size-content": "var(--fsds-semantic-typography-body-03, 14px)",
           "--fsds-accordion-text-line-height-content": "var(--fsds-semantic-typography-line-height-loose, 1.8)",
-          "--fsds-accordion-icon-size": "var(--fsds-core-spacing-size-04, 8px)",
+          "--fsds-accordion-icon-size": "var(--fsds-semantic-glyph-size-medium-extent, 16px)",
           "--fsds-accordion-focus-width": "var(--fsds-semantic-focus-ring-width, 2px)",
           "--fsds-accordion-focus-color": "var(--fsds-semantic-focus-ring-color, #0566fe)",
-          "--fsds-accordion-focus-offset": "var(--fsds-semantic-focus-ring-offset, 2px)",
+          "--fsds-accordion-focus-offset": "var(--fsds-semantic-focus-ring-offset-inset, -2px)",
           "--fsds-accordion-opacity-disabled": "var(--fsds-semantic-interaction-disabled-opacity, 0.5)",
-          "--fsds-accordion-color-text-hover": "var(--fsds-semantic-interaction-text-hover, #474647)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
           "padding-block-end": "var(--fsds-box-model-padding-block-end)",
           "padding-inline-start": "var(--fsds-box-model-padding-inline-start)",
@@ -801,17 +799,29 @@
           "max-height": "var(--fsds-box-model-max-height)",
           "display": "flex",
           "flex-direction": "column",
-          "border-color": "var(--fsds-accordion-border-color, #b8b8b8)",
-          "border-radius": "var(--fsds-accordion-border-radius, 4px)",
-          "font-size": "var(--fsds-accordion-text-size-content, 14px)",
-          "line-height": "var(--fsds-accordion-text-line-height-content, 1.8)"
+          "border-radius": "var(--fsds-accordion-border-radius, 4px)"
         }
+      },
+      {
+        "selector": ".accordion__content:not([hidden])",
+        "declarations": {
+          "grid-template-rows": "0fr",
+          "opacity": "0"
+        },
+        "startingStyle": true
+      },
+      {
+        "selector": ".accordion__content:not([hidden]) .accordion__contentInner",
+        "declarations": {
+          "padding-block-end": "0"
+        },
+        "startingStyle": true
       },
       {
         "selector": ".accordion__item",
         "declarations": {
           "background-color": "transparent",
-          "border-color": "var(--fsds-accordion-border-color, #b8b8b8)",
+          "border-color": "var(--fsds-accordion-border-color, #d0d0d0)",
           "border-style": "solid",
           "border-width": "1px",
           "border-radius": "var(--fsds-accordion-border-radius, 4px)",
@@ -845,8 +855,7 @@
       {
         "selector": ".accordion__trigger:hover:not([aria-disabled=\"true\"])",
         "declarations": {
-          "background-color": "var(--fsds-accordion-color-background-hover, #f7f7f7)",
-          "color": "var(--fsds-accordion-color-text-hover, #474647)"
+          "background-color": "var(--fsds-accordion-color-background-hover, #f7f7f7)"
         }
       },
       {
@@ -854,7 +863,7 @@
         "declarations": {
           "outline-width": "var(--fsds-accordion-focus-width, 2px)",
           "outline-color": "var(--fsds-accordion-focus-color, #0566fe)",
-          "outline-offset": "var(--fsds-accordion-focus-offset, 2px)",
+          "outline-offset": "var(--fsds-accordion-focus-offset, -2px)",
           "outline-style": "var(--fsds-semantic-focus-ring-style, solid)"
         }
       },
@@ -863,11 +872,11 @@
         "declarations": {
           "display": "inline-flex",
           "flex-shrink": "0",
-          "width": "var(--fsds-accordion-icon-size, 8px)",
-          "height": "var(--fsds-accordion-icon-size, 8px)",
+          "width": "var(--fsds-accordion-icon-size, 16px)",
+          "height": "var(--fsds-accordion-icon-size, 16px)",
           "align-items": "center",
           "justify-content": "center",
-          "transition": "transform 200ms ease",
+          "transition": "transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard)",
           "color": "var(--fsds-accordion-color-icon, #727272)"
         }
       },
@@ -880,17 +889,38 @@
       {
         "selector": ".accordion__content",
         "declarations": {
-          "display": "block",
-          "overflow": "hidden"
+          "display": "grid",
+          "overflow": "hidden",
+          "grid-template-rows": "0fr",
+          "opacity": "0",
+          "transition": "grid-template-rows var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), opacity var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing), display var(--fsds-semantic-motion-interaction-exit-duration) linear allow-discrete"
+        }
+      },
+      {
+        "selector": ".accordion__content:not([hidden])",
+        "declarations": {
+          "grid-template-rows": "1fr",
+          "opacity": "1",
+          "transition": "grid-template-rows var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), opacity var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing), display var(--fsds-semantic-motion-interaction-enter-duration) linear allow-discrete"
         }
       },
       {
         "selector": ".accordion__contentInner",
         "declarations": {
-          "padding": "var(--fsds-accordion-spacing-padding-y, 8px)",
+          "min-height": "0",
+          "overflow": "hidden",
+          "padding-inline": "var(--fsds-accordion-spacing-padding-y, 8px)",
+          "padding-block-end": "0",
+          "transition": "padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing)",
           "color": "var(--fsds-accordion-color-text-secondary, #474647)",
           "font-size": "var(--fsds-accordion-text-size-content, 14px)",
           "line-height": "var(--fsds-accordion-text-line-height-content, 1.8)"
+        }
+      },
+      {
+        "selector": ".accordion__content:not([hidden]) .accordion__contentInner",
+        "declarations": {
+          "padding-block-end": "var(--fsds-accordion-spacing-padding-y, 8px)"
         }
       },
       {

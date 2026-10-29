@@ -41,7 +41,7 @@
   flex-direction: column;
   background-color: var(--fsds-sheet-design-content-background-fill, var(--fsds-sheet-color-background, #ffffff));
   color: var(--fsds-sheet-design-content-foreground-color, var(--fsds-sheet-color-text, #141414));
-  border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #b8b8b8));
+  border-color: var(--fsds-sheet-design-content-border-color, var(--fsds-sheet-color-border, #d0d0d0));
   border-style: var(--fsds-sheet-design-content-border-style, solid);
   border-width: var(--fsds-sheet-design-content-border-width, var(--fsds-sheet-border-width, 1px));
   box-shadow: var(--fsds-sheet-design-content-elevation-shadow, var(--fsds-sheet-shadow, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a));
@@ -56,7 +56,7 @@
   display: flex;
   align-items: center;
   padding: var(--fsds-sheet-design-header-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-  border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #b8b8b8));
+  border-bottom-color: var(--fsds-sheet-design-header-border-bottom-color, var(--fsds-sheet-color-border, #d0d0d0));
   border-bottom-style: var(--fsds-sheet-design-header-border-bottom-style, solid);
   border-bottom-width: var(--fsds-sheet-design-header-border-bottom-width, 1px);
   gap: var(--fsds-sheet-design-header-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
@@ -89,7 +89,7 @@
   align-items: center;
   gap: var(--fsds-sheet-design-footer-spacing-gap, var(--fsds-sheet-spacing-gap, 8px));
   padding: var(--fsds-sheet-design-footer-spacing-padding, var(--fsds-sheet-spacing-padding, 16px));
-  border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #b8b8b8));
+  border-top-color: var(--fsds-sheet-design-footer-border-top-color, var(--fsds-sheet-color-border, #d0d0d0));
   border-top-style: var(--fsds-sheet-design-footer-border-top-style, solid);
   border-top-width: var(--fsds-sheet-design-footer-border-top-width, 1px);
 }

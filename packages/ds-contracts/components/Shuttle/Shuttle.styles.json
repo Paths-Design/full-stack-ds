@@ -110,7 +110,7 @@
     },
     "border-color": {
       "resolvesTo": "shuttle.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
         "slot": "shuttle.design.list.border.color"
@@ -174,7 +174,7 @@
     },
     "border-block-end-color": {
       "resolvesTo": "shuttle.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.block-end.color",
         "slot": "shuttle.design.item.border.block-end.color"
@@ -322,7 +322,7 @@
     },
     "border-color": {
       "resolvesTo": "shuttle.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
         "slot": "shuttle.design.add.border.color"
@@ -392,7 +392,7 @@
     },
     "border-color": {
       "resolvesTo": "shuttle.color.border",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.color",
         "slot": "shuttle.design.remove.border.color"

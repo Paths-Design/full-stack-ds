@@ -41,9 +41,14 @@ import { emitSwiftHighlightComponent } from "./highlight-source.js";
 // (FEAT-COMPOSE-ADMISSION-SUBSTRATE-01). This file used to steward them.
 import {
   collectDomSlots,
+  conventionalProp,
   countChildrenLeaves,
   dateGridChrome,
   domGlyph,
+  expansionChannel,
+  expansionChannels,
+  hasConventionalProp,
+  stringConventionalProp,
   isCountIteratedFieldGroup,
   isDateGridSurface,
   isTransferSurface,
@@ -273,7 +278,7 @@ function emitSwiftUIComponentSource(ir: ComponentIR): string {
     return sections.join("\n\n") + "\n";
   }
 
-  if (isMediaLeaf(ir)) {
+  if (isSwiftMediaLeaf(ir)) {
     const sections: string[] = [];
     sections.push(emitImports());
     sections.push(emitTypes(ir));
@@ -322,7 +327,7 @@ function emitSwiftUIComponentSource(ir: ComponentIR): string {
     return sections.join("\n\n") + "\n";
   }
 
-  if (isCompoundPartComposer(ir)) {
+  if (isSwiftCompoundPartComposer(ir)) {
     const sections: string[] = [];
     sections.push(emitImports());
     sections.push(emitTypes(ir));
@@ -617,9 +622,7 @@ function emitLeafComponent(ir: ComponentIR): string {
   );
   // Inline enum props (DividerOrientation) lower to local Swift enums —
   // the contract declares them inline rather than as named types.
-  const orientationProp = ir.styledProps.find(
-    (p) => p.safeName === "orientation",
-  );
+  const orientationProp = conventionalProp(ir, "orientation");
   const orientationEnumValues =
     orientationProp &&
     typeof orientationProp.propType === "object" &&
@@ -845,7 +848,7 @@ function emitSelectionControl(ir: ComponentIR): string {
     );
   }
   // The trigger shows the placeholder when no option matches the selection.
-  const placeholder = ir.styledProps.some((p) => p.safeName === "placeholder")
+  const placeholder = hasConventionalProp(ir, "placeholder")
     ? swiftStringProp(ir, "placeholder", INDENT)
     : null;
   const emptyLabel = placeholder ? (placeholder.accessor.length > 0 ? "placeholder" : `(placeholder ?? "")`) : null;
@@ -952,9 +955,7 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
 
   // A string icon prop feeds the registry; a ReactNode icon prop is a
   // consumer region (corpus fact, not component identity).
-  const iconIsRegistry = ir.styledProps.some(
-    (p) => p.safeName === "icon" && p.type === "string",
-  );
+  const iconIsRegistry = stringConventionalProp(ir, "icon") !== undefined;
 
   const lines: string[] = [];
   lines.push("// @generated:start component");
@@ -1623,7 +1624,7 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
   const navChangeParam = channel.changeHandlerProp;
   const hasLabel = hasConventionalProp(ir, "label");
   const hasDisabled = hasConventionalProp(ir, page.disabledProp ?? "disabled");
-  const presentationProp = ir.styledProps.find((p) => p.safeName === "presentation");
+  const presentationProp = conventionalProp(ir, "presentation");
   const presentationType = presentationProp?.typeRefs.find((ref) => ir.definedTypes[ref]);
   const labelProps = ["pageLabel", "previousLabel", "nextLabel", "commitLabel"]
     .filter((name) => hasConventionalProp(ir, name))
@@ -2588,7 +2589,7 @@ function emitCountFieldGroup(ir: ComponentIR): string {
   const chrome = resolveChrome(ir);
   const hasLength = hasConventionalProp(ir, "length");
   const lengthDefault =
-    ir.styledProps.find((p) => p.safeName === "length")?.defaultExpr ?? "6";
+    conventionalProp(ir, "length")?.defaultExpr ?? "6";
   const hasDisabled = hasConventionalProp(ir, "disabled");
   const hasOnComplete = hasConventionalProp(ir, "onComplete");
 
@@ -2813,8 +2814,14 @@ function emitPropTextLeaf(ir: ComponentIR): string {
   return lines.join("\n");
 }
 
-/** Media leaf: an img root fed by src/alt props (Image). */
-function isMediaLeaf(ir: ComponentIR): boolean {
+/** Media leaf: an img root fed by src/alt props (Image).
+ *
+ * DELIBERATELY LOCAL, not the substrate's isMediaLeaf: swift's class omits
+ * the channel gate and admits an img root with channels where the shared
+ * predicate rejects it. Same name would shadow the shared fact — the
+ * Swift- prefix keeps the capability divergence visible at the dispatch
+ * site (see the substrate header: divergent predicates stay in emitters). */
+function isSwiftMediaLeaf(ir: ComponentIR): boolean {
   if (!ir.dom || ir.surface != null) return false;
   return ir.dom.tag === "img" && (ir.dom.children ?? []).length === 0;
 }
@@ -2994,9 +3001,7 @@ function emitSrcOrFallback(ir: ComponentIR, componentRef: string): string {
 function isExpandableContent(ir: ComponentIR): boolean {
   if (!ir.dom || ir.surface != null) return false;
   if (ir.dom.tag !== "div") return false;
-  const boolChannels = ir.behavior.normalizedChannels.filter(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  );
+  const boolChannels = expansionChannels(ir);
   if (boolChannels.length !== 1) return false;
   let childrenLeaves = 0;
   let hasInstance = false;
@@ -3013,9 +3018,7 @@ function isExpandableContent(ir: ComponentIR): boolean {
 function emitExpandableContent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
-  const channel = ir.behavior.normalizedChannels.find(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  )!;
+  const channel = expansionChannel(ir)!;
   const hasLines = hasConventionalProp(ir, "lines") || hasConventionalProp(ir, "maxLines");
   const linesProp = hasConventionalProp(ir, "lines") ? "lines" : "maxLines";
   const linesDefault =
@@ -3373,8 +3376,14 @@ function emitStaticContentComponent(ir: ComponentIR): string {
  * dom tree, whose content regions are its compound parts. Card is the
  * corpus consumer. Anchored surfaces (Popover/Tooltip) share the shape but
  * carry `ir.surface` and dispatch to the surface path before this point.
+ *
+ * DELIBERATELY LOCAL, not the substrate's isCompoundPartComposer: swift
+ * admits a single compound part and requires a div root element where the
+ * shared predicate requires >= 2 parts and no element gate. Same name would
+ * shadow the shared fact — the Swift- prefix keeps the divergence visible
+ * at the dispatch site.
  */
-function isCompoundPartComposer(ir: ComponentIR): boolean {
+function isSwiftCompoundPartComposer(ir: ComponentIR): boolean {
   return (
     ir.dom === undefined &&
     ir.surface == null &&
@@ -4182,12 +4191,8 @@ export function emitTokenScopesSection(
   return lines;
 }
 
-function hasConventionalProp(ir: ComponentIR, name: string): boolean {
-  return ir.styledProps.some((p) => p.safeName === name);
-}
-
 function findPropDefault(ir: ComponentIR, name: string): string {
-  const prop = ir.styledProps.find((p) => p.safeName === name);
+  const prop = conventionalProp(ir, name);
   const authored = prop?.defaultExpr?.replace(/^["']|["']$/g, "");
   const values = ir.variants[name];
   if (authored && values?.includes(authored)) return authored;
