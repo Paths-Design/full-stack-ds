@@ -2,7 +2,6 @@ id: FIX-CI-RUNNER-PIN-RN-COVERAGE-01
 title: 'Restore green CI on main: pin Playwright jobs to ubuntu-24.04 and cover React Native PageNavigator interactions'
 mode: fix
 lifecycle_state: active
-worktree: ci-runner-rn-coverage-oracle
 created_at: '2026-10-28T23:56:46.885Z'
 updated_at: '2026-10-28T23:57:01.682Z'
 created_by_session: '5c591bb4-7a71-46c1-9052-9b71fcfce7f6'
