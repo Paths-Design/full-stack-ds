@@ -5,7 +5,7 @@ status: implemented
 title: Governed CI and the rail operator workflow
 owner: "@darianrosebrook"
 updated: 2026-10-29
-verified_at_commit: a3029a58f2b161e9d33ee20daa6738a8fe0a7c2c
+verified_at_commit: 15677bb93cffa68d6e1fdbaed35b7c31688700bc
 governs:
   - package.json
   - .github/workflows/ci.yml
@@ -356,6 +356,7 @@ Two invalid use cases:
 | `pnpm run test:frameworks` | yes | no — CI runs the Svelte, Lit and Angular suites only through `test:coverage`; the React Native suite also runs in the gate job as the rail's react-native runtime check (`pnpm --filter @full-stack-ds/react-native run test`) |
 | `pnpm run test:package:angular` | yes — builds and installs Angular and iconography tarballs outside the workspace, checks strict AOT inputs and exercises the production consumer in Chromium; external peers use the pinned local store | no — separate package-consumer check, not part of the admission rail |
 | `pnpm run test:package:types` | yes — installs the six component-library tarballs, checks public type imports and invalid consumer inputs under Bundler and NodeNext resolution (React Native uses Bundler); external peers use the pinned local store | no — separate type-consumer check, not part of the admission rail |
+| `pnpm run test:package:release` | yes — builds and packs the component libraries, tokens, and iconography; checks payload licenses, exports, strict imports, installed web consumers in Chromium, and native Metro bundles for iOS and Android using pinned local peers | no — separate packaging check; does not publish, qualify peer-version ranges, or establish native device behavior |
 
 ## Citing a rail result
 

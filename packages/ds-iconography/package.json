@@ -1,9 +1,8 @@
 {
   "name": "@full-stack-ds/iconography",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
-  "description": "Governed icon contracts and target projection emitters for Full Stack DS.",
+  "description": "Governed icon geometry, runtime lookup, and generated target assets for Full Stack DS.",
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -18,16 +17,34 @@
     "index.d.ts",
     "icon.contract.schema.json",
     "icons",
-    "generated"
+    "generated",
+    "LICENSE",
+    "README.md",
+    "THIRD_PARTY_NOTICES"
   ],
   "scripts": {
     "build": "node build/build.mjs",
     "build:check": "node build/build.mjs && git diff --exit-code -- index.mjs index.d.ts",
     "bundle-probe": "node build/bundle-probe.mjs",
-    "validate": "node build/build.mjs --validate-only"
+    "validate": "node build/build.mjs --validate-only",
+    "prepack": "pnpm run build"
   },
   "devDependencies": {
     "esbuild": "^0.28.0"
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paths-Design/full-stack-ds.git",
+    "directory": "packages/ds-iconography"
+  },
+  "homepage": "https://github.com/Paths-Design/full-stack-ds/tree/main/packages/ds-iconography#readme",
+  "bugs": {
+    "url": "https://github.com/Paths-Design/full-stack-ds/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
 

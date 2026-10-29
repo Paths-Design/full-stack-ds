@@ -4,6 +4,7 @@ import { describe, it, expect } from "vitest";
 import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
 import { createGodotEmitter, godotPlan, themeColor } from "./factory.js";
+import { godotActionPlan } from "./action-plan.js";
 const root = path.resolve(__dirname, "../../../../..");
 function fixture(name: string) { return JSON.parse(fs.readFileSync(path.join(root,`packages/ds-contracts/components/${name}/${name}.contract.json`),"utf8")) as ComponentContract; }
 function styledFixture(name: string) {
@@ -22,6 +23,59 @@ function buildSequenceFixture(c = sequenceFixture()) {
   return buildComponentIR(c, { allContracts: new Map([[c.name, c], ["Pagination", pagination], ["Icon", fixture("Icon")]]) });
 }
 describe("Godot bounded lowering", () => {
+  it("lowers renamed projected actions from anatomy and authored style rules", () => {
+    const source = styledFixture("Button");
+    const renamed = JSON.parse(JSON.stringify(source).replaceAll("onClick", "onActivate")) as ComponentContract;
+    const ir = buildComponentIR(renamed);
+    ir.name = "Pressable";
+    const plan = godotActionPlan(ir);
+    if (!plan) throw new Error("Action plan was not selected");
+    expect(godotPlan(ir).operation).toBe("action");
+    expect(plan.props.action).toBe("onActivate");
+    expect(plan.props.loading).toBe("loading");
+    expect(plan.excluded).toEqual(["type", "ariaExpanded", "ariaPressed"]);
+    expect(plan.styles.find(rule => rule.source === "--secondary")?.declarations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ property: "button.color.background.default", value: "#fafafa" }),
+    ]));
+    expect(plan.omissions).toContain("root.transition-duration: no Godot action style mapping");
+    expect(plan.omissions).toContain("--destructive.button.color.background.default: platform web,ios,android only");
+    const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" });
+    expect(files.find(file => file.relativePath === "Pressable/Pressable.gd")?.contents).toContain("runtime/action.gd");
+    expect(JSON.parse(files.find(file => file.relativePath === "Pressable/capabilities.json")!.contents).excludedProps).toEqual(plan.excluded);
+  });
+  it("rejects new action props instead of treating them as declared exclusions", () => {
+    const source = styledFixture("Button");
+    source.props!.designed!.members!.push({ name: "futureBehavior", propType: { kind: "boolean" } });
+    expect(() => godotPlan(buildComponentIR(source))).toThrow("GODOT_UNSUPPORTED_PROP: Button.futureBehavior");
+  });
+  it("rejects an unlowered action anatomy fact", () => {
+    const ir = buildComponentIR(styledFixture("Button"));
+    ir.dom!.attrs["data-extra"] = "unprojected";
+    expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_ACTION_ANATOMY: Button");
+  });
+  it("initializes authored action state defaults and refuses an invalid default", () => {
+    const source = styledFixture("Button");
+    const disabled = source.props!.designed!.members!.find(member => member.name === "disabled");
+    if (!disabled) throw new Error("Missing disabled fixture prop");
+    Object.assign(disabled, { default: true });
+    const ir = buildComponentIR(source);
+    expect(ir.styledProps.find(prop => prop.name === "disabled")?.defaultExpr).toBe("true");
+    const script = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" })
+      .find(file => file.relativePath === "Button/Button.gd")?.contents;
+    expect(script).toContain("apply_config_defaults()");
+    Object.assign(disabled, { default: "not-a-boolean" });
+    expect(() => godotPlan(buildComponentIR(source))).toThrow("GODOT_UNSUPPORTED_ACTION_DEFAULT: Button.disabled");
+  });
+  it("names state typography and unused gap instead of crediting their styling", () => {
+    const source = styledFixture("Button");
+    const styles = source.styles as unknown as Record<string, Record<string, unknown>>;
+    styles.hover["font-size"] = { literal: "40px", platforms: ["godot"] };
+    const plan = godotActionPlan(buildComponentIR(source));
+    if (!plan) throw new Error("Action plan was not selected");
+    expect(plan.omissions).toContain("hover.font-size: native state typography and geometry are not lowered");
+    expect(plan.omissions).toContain("root.gap: no Godot action style mapping");
+    expect(plan.styles.find(rule => rule.source === "hover")?.declarations.some(declaration => declaration.property === "font-size")).toBe(false);
+  });
   it.each([["Switch","boolean"],["Accordion","toggle-item"],["Tabs","select"],["Popover","surface"]])("lowers %s after identity substitution", (name,op) => {
     const c=fixture(name); c.name="Renamed";
     expect(godotPlan(buildComponentIR(c)).operation).toBe(op);

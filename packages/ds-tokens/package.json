@@ -1,21 +1,21 @@
 {
   "name": "@full-stack-ds/tokens",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
-  "description": "Design-token source (DTCG 1.0) + build pipeline emitting cascade-layered CSS, brand/density variants, and TypeScript types.",
+  "description": "Design tokens as cascade-layered CSS with brand and density variants, plus resolved DTCG JSON.",
   "exports": {
-    "./tokens.css": "./generated/tokens.css",
-    "./generated/*": "./generated/*",
-    "./brands/*": "./generated/brands/*",
-    "./components/*": "./components/*"
+    "./tokens.css": {
+      "types": "./types/styles-css.d.ts",
+      "default": "./generated/tokens.css"
+    },
+    "./generated/resolved.tokens.json": "./generated/resolved.tokens.json"
   },
   "files": [
-    "generated",
-    "components",
-    "core",
-    "brands",
-    "density"
+    "generated/tokens.css",
+    "generated/resolved.tokens.json",
+    "types",
+    "LICENSE",
+    "README.md"
   ],
   "scripts": {
     "build": "tsx build/build.ts --prefix=fsds",
@@ -24,17 +24,30 @@
     "check-usage": "tsx build/runners/usage.ts",
     "check-usage:gate": "tsx build/runners/usage.ts --check-baseline",
     "write-usage-baseline": "tsx build/runners/usage.ts --write-baseline",
-    "check-brand-refs": "tsx build/runners/check-brand-refs.ts"
-  },
-  "dependencies": {
-    "ajv": "^8.18.0",
-    "ajv-formats": "^3.0.1",
-    "glob": "^10.5.0"
+    "check-brand-refs": "tsx build/runners/check-brand-refs.ts",
+    "prepack": "pnpm run build"
   },
   "devDependencies": {
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
+    "glob": "^10.5.0",
     "@adobe/leonardo-contrast-colors": "^1.1.0",
     "@types/node": "^25.5.2",
     "tsx": "^4.7.0",
     "typescript": "^6.0.2"
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paths-Design/full-stack-ds.git",
+    "directory": "packages/ds-tokens"
+  },
+  "homepage": "https://github.com/Paths-Design/full-stack-ds/tree/main/packages/ds-tokens#readme",
+  "bugs": {
+    "url": "https://github.com/Paths-Design/full-stack-ds/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

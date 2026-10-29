@@ -1,24 +1,35 @@
 {
   "name": "@full-stack-ds/react-native",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
-  "description": "React Native implementation of Full Stack DS (experimental opt-in target)",
+  "description": "React Native components, Stack primitive, and token provider for Full Stack DS.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "react-native": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "react-native": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./primitives": {
-      "types": "./src/primitives/index.ts",
-      "import": "./src/primitives/index.ts"
+      "types": "./dist/primitives/index.d.ts",
+      "react-native": "./dist/primitives/index.js",
+      "import": "./dist/primitives/index.js",
+      "default": "./dist/primitives/index.js"
     },
     "./tokens": {
-      "types": "./src/tokens/index.tsx",
-      "import": "./src/tokens/index.tsx"
+      "types": "./dist/tokens/index.d.ts",
+      "react-native": "./dist/tokens/index.js",
+      "import": "./dist/tokens/index.js",
+      "default": "./dist/tokens/index.js"
     }
   },
   "scripts": {
+    "build": "tsup",
+    "prepack": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },
@@ -32,10 +43,31 @@
     "@types/react-test-renderer": "^19.1.0",
     "react-native-svg": "^15.15.5",
     "react-test-renderer": "^19.2.6",
+    "tsup": "^8.3.0",
     "typescript": "^6.0.2",
     "vitest": "^3.2.4"
   },
   "dependencies": {
     "@full-stack-ds/iconography": "workspace:*"
-  }
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paths-Design/full-stack-ds.git",
+    "directory": "packages/ds-react-native"
+  },
+  "homepage": "https://github.com/Paths-Design/full-stack-ds/tree/main/packages/ds-react-native#readme",
+  "bugs": {
+    "url": "https://github.com/Paths-Design/full-stack-ds/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "THIRD_PARTY_NOTICES"
+  ]
 }

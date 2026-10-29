@@ -1,10 +1,11 @@
 id: GODOT-ACTION-CONTENT-PARITY-01
 title: 'Godot contract-derived action content and styling'
 mode: feature
-lifecycle_state: active
-worktree: godot-action-content
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Godot contract-derived Button action slice merged with Editor and Player evidence'
 created_at: '2026-10-29T21:06:18.966Z'
-updated_at: '2026-10-29T21:07:10.598Z'
+updated_at: '2026-10-29T23:37:11.041Z'
 created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
 blast_radius:
   modules:
@@ -47,3 +48,36 @@ contracts:
   - name: 'godot-action-player'
     type: behavior
     path: 'packages/ds-godot/verification/main.gd'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "a97dc9538: renamed Pressable synthetic and unknown-fact rejection in Godot factory suite (19 passed); DefaultedAction defaults observed in Editor and exported Player run cd725717"
+    recorded_at: "2026-10-29T23:35:03.675Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/factory.test.ts
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-godot-action-final-a97dc9538/godot.json"
+    commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "a97dc9538: Godot Editor/export run cd725717 checks content, secondary foreground/background, large 18px/48px geometry, token pixel #123456, and design-slot > property > token override precedence"
+    recorded_at: "2026-10-29T23:35:28.312Z"
+    command: node scripts/godot-pilot.mjs
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-godot-action-final-a97dc9538/godot.json"
+    commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "a97dc9538: run cd725717 Editor and fresh exported macOS Player passed; focused ui_accept emitted one activation, manual pressed signal fired once, disabled/loading suppressed activation, defaults and consumer overrides changed native state"
+    recorded_at: "2026-10-29T23:35:49.041Z"
+    command: node scripts/godot-pilot.mjs
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-godot-action-final-a97dc9538/godot.json"
+    commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "a97dc9538: Godot generation repeated with clean committed output; focused factory suite 19/19 and root 5208 passed; Editor/export pilot passed before and after commit; final provenance sourceDirty=false and sourceRevision=a97dc9538; governed rail passed"
+    recorded_at: "2026-10-29T23:36:19.508Z"
+    command: "pnpm run governed:rail"
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-godot-action-final-a97dc9538/provenance.json"
+    commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0

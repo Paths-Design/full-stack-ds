@@ -124,7 +124,7 @@ pnpm run docs:check-links                      # Every relative .md link in a tr
 
 `build:all` derives package order from workspace dependencies, runs existing
 workspace `build` scripts, and builds the root showcase last. Packages without
-a build script are skipped (e.g. the source-only React Native package).
+a build script are skipped.
 Workspace example lanes that carry a build script — the settings React/Vue
 lanes, the operations-dashboard React lane, spatial-console web, and the
 motion-lab Svelte/Lit GSAP lanes — build inside `build:all` after their

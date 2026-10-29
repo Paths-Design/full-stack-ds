@@ -1,7 +1,6 @@
 {
   "name": "@full-stack-ds/angular",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "Angular implementation of Full Stack DS (Stack primitive + generated components)",
   "main": "./dist/index.js",
@@ -18,13 +17,17 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md",
+    "THIRD_PARTY_NOTICES"
   ],
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:ngc": "ngc -p tsconfig.ngc.json",
     "test": "jest --config jest.config.cjs",
-    "build": "node scripts/build.mjs"
+    "build": "node scripts/build.mjs",
+    "prepack": "pnpm run build"
   },
   "peerDependencies": {
     "@angular/common": "^21.2.13",
@@ -49,5 +52,19 @@
   },
   "dependencies": {
     "@full-stack-ds/iconography": "workspace:*"
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paths-Design/full-stack-ds.git",
+    "directory": "packages/ds-angular"
+  },
+  "homepage": "https://github.com/Paths-Design/full-stack-ds/tree/main/packages/ds-angular#readme",
+  "bugs": {
+    "url": "https://github.com/Paths-Design/full-stack-ds/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

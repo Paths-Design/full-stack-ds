@@ -1,10 +1,11 @@
 id: NPM-RELEASE-PAYLOAD-01
 title: 'Prepare licensed and self-contained npm release payloads'
 mode: fix
-lifecycle_state: active
-worktree: npm-release-payload
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Eight licensed npm payloads qualified with strict installed consumers five web browsers and native Metro bundles; component readiness and native device qualification remain separate obligations.'
 created_at: '2026-10-23T02:38:16.212Z'
-updated_at: '2026-10-29T21:29:17.376Z'
+updated_at: '2026-10-29T23:32:32.663Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -99,3 +100,39 @@ contracts:
   - name: 'release-payload'
     type: contract-test
     path: 'scripts/release-package-check'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "MIT DesignPaths LLC metadata and exact LICENSE in all eight fresh tarballs; applicable complete third-party notices verified by assertReleasePayload; raw integrated-consumer.log and .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/runs/fsds-release-packages-z8oPOD/payloads.json"
+    recorded_at: "2026-10-29T23:29:56.880Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Fresh prepack builds and complete tar inventories/conditional exports/wildcard icon closure passed for all eight payloads; no tests mocks scratch or local protocols; raw integrated-consumer.log and .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/runs/fsds-release-packages-z8oPOD/payloads.json"
+    recorded_at: "2026-10-29T23:29:58.216Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Installed actual eight tgz with no FSDS source aliases; strict CSS/JSON positives and intended TS2882 negatives, 30 public-type positive/negative cases with skipLibCheck false, ESM/CJS entries each format, compiled native Metro ios/android passed; exact observations under .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/runs/fsds-release-packages-z8oPOD/; pinned peers only, no native-device or mixed-format co-load claim"
+    recorded_at: "2026-10-29T23:29:59.464Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Five installed web browser consumers passed Button activation/disabled suppression, Icon exact paths/viewBox/frame, token value and packaged styles; React cross-entry messages and Lit constructor identity; screenshots and browser-*.json in .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/runs/fsds-release-packages-z8oPOD/; no console/page/HTTP errors or FSDS workspace source aliases"
+    recorded_at: "2026-10-29T23:30:00.696Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "38 node payload/Metro-launch falsifiers passed; required rail, lint, all typechecks, docs claims/links, generated drift and icon ledger passed; root5203/357 and all framework suites passed. Raw qualification-lint/types.log, integrated-{consumer,rail,docs,root,frameworks,icon-ledger}.log in .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/; packaging only, broader component repairs and native-device qualification remain open"
+    recorded_at: "2026-10-29T23:30:01.977Z"
+    command: "pnpm run governed:rail && pnpm exec vitest run --maxWorkers=1 && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
