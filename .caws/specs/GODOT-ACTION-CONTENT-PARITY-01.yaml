@@ -56,11 +56,10 @@ evidence:
     commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0
   - criterion_id: A2
     status: pass
-    evidence_ref: "a97dc9538: Godot Editor/export run cd725717 checks content, secondary foreground/background, large 18px/48px geometry, token pixel #123456, and design-slot > property > token override precedence"
-    recorded_at: "2026-10-29T23:35:28.312Z"
+    evidence_ref: "a97dc9538: local ignored receipt tmp/godot-action-final-a97dc9538/godot.json manually inspected; Editor/Player run cd725717 checks content, secondary foreground/background, large 18px/48px geometry, token pixel #123456, and design-slot > property > token precedence"
+    recorded_at: "2026-10-29T23:40:04.720Z"
     command: node scripts/godot-pilot.mjs
     exit_code: 0
-    artifact_path: "/private/tmp/fsds-godot-action-final-a97dc9538/godot.json"
     commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0
   - criterion_id: A3
     status: pass
