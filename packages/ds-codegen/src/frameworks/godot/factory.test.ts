@@ -4,6 +4,7 @@ import { describe, it, expect } from "vitest";
 import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
 import { createGodotEmitter, godotPlan, themeColor } from "./factory.js";
+import { godotActionPlan } from "./action-plan.js";
 const root = path.resolve(__dirname, "../../../../..");
 function fixture(name: string) { return JSON.parse(fs.readFileSync(path.join(root,`packages/ds-contracts/components/${name}/${name}.contract.json`),"utf8")) as ComponentContract; }
 function styledFixture(name: string) {
@@ -22,6 +23,36 @@ function buildSequenceFixture(c = sequenceFixture()) {
   return buildComponentIR(c, { allContracts: new Map([[c.name, c], ["Pagination", pagination], ["Icon", fixture("Icon")]]) });
 }
 describe("Godot bounded lowering", () => {
+  it("lowers renamed projected actions from anatomy and authored style rules", () => {
+    const source = styledFixture("Button");
+    const renamed = JSON.parse(JSON.stringify(source).replaceAll("onClick", "onActivate")) as ComponentContract;
+    const ir = buildComponentIR(renamed);
+    ir.name = "Pressable";
+    const plan = godotActionPlan(ir);
+    if (!plan) throw new Error("Action plan was not selected");
+    expect(godotPlan(ir).operation).toBe("action");
+    expect(plan.props.action).toBe("onActivate");
+    expect(plan.props.loading).toBe("loading");
+    expect(plan.excluded).toEqual(["type", "ariaExpanded", "ariaPressed"]);
+    expect(plan.styles.find(rule => rule.source === "--secondary")?.declarations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ property: "button.color.background.default", value: "#fafafa" }),
+    ]));
+    expect(plan.omissions).toContain("root.transition-duration: no Godot action style mapping");
+    expect(plan.omissions).toContain("--destructive.button.color.background.default: platform web,ios,android only");
+    const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" });
+    expect(files.find(file => file.relativePath === "Pressable/Pressable.gd")?.contents).toContain("runtime/action.gd");
+    expect(JSON.parse(files.find(file => file.relativePath === "Pressable/capabilities.json")!.contents).excludedProps).toEqual(plan.excluded);
+  });
+  it("rejects new action props instead of treating them as declared exclusions", () => {
+    const source = styledFixture("Button");
+    source.props!.designed!.members!.push({ name: "futureBehavior", propType: { kind: "boolean" } });
+    expect(() => godotPlan(buildComponentIR(source))).toThrow("GODOT_UNSUPPORTED_PROP: Button.futureBehavior");
+  });
+  it("rejects an unlowered action anatomy fact", () => {
+    const ir = buildComponentIR(styledFixture("Button"));
+    ir.dom!.attrs["data-extra"] = "unprojected";
+    expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_ACTION_ANATOMY: Button");
+  });
   it.each([["Switch","boolean"],["Accordion","toggle-item"],["Tabs","select"],["Popover","surface"]])("lowers %s after identity substitution", (name,op) => {
     const c=fixture(name); c.name="Renamed";
     expect(godotPlan(buildComponentIR(c)).operation).toBe(op);

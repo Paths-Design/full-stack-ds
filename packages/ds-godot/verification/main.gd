@@ -99,6 +99,53 @@ func _ready() -> void:
 		check(changed_rule.rendered.color.is_equal_approx(Color("#123456")), "Changed token did not reach rendered rule")
 	rows.append({"id":"rule-token","color":"#123456"})
 	changed_rule.queue_free()
+	var action = make_control("Button")
+	add_child(action)
+	action.content = "Activate"
+	action.aria_label = "Activate item"
+	action.title = "Opens the item"
+	var calls := [0]
+	action.activated.connect(func(): calls[0] += 1)
+	check(action.rendered is Button and action.rendered.text == "Activate", "Action text was not rendered")
+	check(action.rendered.accessibility_name == "Activate item", "Action accessible name did not reach Button")
+	check(action.rendered.tooltip_text == "Opens the item", "Action title did not reach Button tooltip")
+	check(action.rendered.get_theme_stylebox("normal") is StyleBoxFlat, "Action style did not reach Button")
+	check(action.rendered.get_theme_stylebox("normal").bg_color.is_equal_approx(Color("#0566fe")), "Action default background mismatch")
+	check(action.rendered.get_theme_stylebox("hover").bg_color.is_equal_approx(Color("#034fd6")), "Action hover token did not reach native state")
+	check(action.rendered.get_theme_stylebox("pressed").bg_color.is_equal_approx(Color("#013ab0")), "Action pressed token did not reach native state")
+	check(action.rendered.get_theme_stylebox("disabled").bg_color.is_equal_approx(Color("#b8b8b8")), "Action disabled token did not reach native state")
+	action.rendered.pressed.emit()
+	check(calls[0] == 1, "Action did not emit exactly one activation")
+	action.rendered.grab_focus()
+	var press := InputEventAction.new()
+	press.action = "ui_accept"
+	press.pressed = true
+	Input.parse_input_event(press)
+	await get_tree().process_frame
+	var release := InputEventAction.new()
+	release.action = "ui_accept"
+	release.pressed = false
+	Input.parse_input_event(release)
+	await get_tree().process_frame
+	check(calls[0] == 2, "Focused action did not activate once from ui_accept")
+	action.variant = "secondary"
+	check(action.rendered.get_theme_stylebox("normal").bg_color.is_equal_approx(Color("#fafafa")), "Action intent did not change background")
+	check(action.rendered.get_theme_color("font_color").is_equal_approx(Color("#141414")), "Action intent did not change foreground")
+	action.size_axis = "large"
+	check(action.rendered.get_theme_font_size("font_size") == 18, "Action size did not change text geometry")
+	check(is_equal_approx(action.rendered.custom_minimum_size.y, 48), "Action size did not change minimum height")
+	action.token_overrides = {"button.color.background.default":"#123456"}
+	check(action.rendered.get_theme_stylebox("normal").bg_color.is_equal_approx(Color("#123456")), "Action token override did not reach rendered Button")
+	action.loading = true
+	check(action.rendered.disabled and action.rendered.text.is_empty() and action.loading_indicator.visible, "Loading did not replace and suppress action")
+	action.rendered.pressed.emit()
+	check(calls[0] == 2, "Loading action activated")
+	action.loading = false
+	action.disabled = true
+	action.rendered.pressed.emit()
+	check(calls[0] == 2 and action.rendered.disabled, "Disabled action activated")
+	rows.append({"id":"action-content","activations":calls[0],"largePx":18,"tokenColor":"#123456"})
+	action.queue_free()
 	var column := VBoxContainer.new()
 	column.position = Vector2(24, 24)
 	column.size.x = 580
@@ -107,7 +154,8 @@ func _ready() -> void:
 	var heading := Label.new()
 	heading.text = "Full Stack DS · Godot comparison"
 	column.add_child(heading)
-	for component in ["Switch", "Accordion", "Tabs", "Popover", "Text", "Divider"]:
+	var action_preview = null
+	for component in ["Switch", "Accordion", "Tabs", "Popover", "Text", "Divider", "Button"]:
 		var control = make_control(component)
 		if component == "Text":
 			var text_panel := PanelContainer.new()
@@ -124,6 +172,10 @@ func _ready() -> void:
 			control.variant = "headline"
 		else:
 			column.add_child(control)
+		if component == "Button":
+			control.content = "Contract-derived action"
+			control.token_overrides = {"button.color.background.default":"#123456"}
+			action_preview = control
 		if component in ["Accordion", "Tabs"]:
 			for key in ["Overview", "Inventory"]:
 				var body := Label.new()
@@ -135,11 +187,21 @@ func _ready() -> void:
 			control.content.add_child(body)
 		var expected := Color(control.configuration.theme_color)
 		check(control.theme.get_color("font_color", "Button").is_equal_approx(expected), "Theme projection mismatch")
+	var loading_preview = make_control("Button")
+	column.add_child(loading_preview)
+	loading_preview.content = "Loading action"
+	loading_preview.loading = true
+	check(loading_preview.loading_indicator.visible, "Loading preview lost its indeterminate affordance")
 	for i in range(5): await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var out := OS.get_environment("FSDS_ENGINE_OUT")
 	if out.is_empty(): return
-	get_viewport().get_texture().get_image().save_png(out.path_join("godot.png"))
+	var frame := get_viewport().get_texture().get_image()
+	var pixel_point: Vector2 = action_preview.rendered.global_position + Vector2(action_preview.rendered.size.x / 2.0, 5)
+	var painted: Color = frame.get_pixelv(Vector2i(pixel_point))
+	check(painted.is_equal_approx(Color("#123456")), "Action token override did not paint expected viewport pixel")
+	rows.append({"id":"action-pixel","color":painted.to_html(false)})
+	frame.save_png(out.path_join("godot.png"))
 	var file := FileAccess.open(out.path_join("godot.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify({"runId":OS.get_environment("FSDS_ENGINE_RUN"),"engine":"godot","version":Engine.get_version_info().string,"exported":OS.has_feature("template"),"passed":not failed,"rows":rows}))
 	file.close()

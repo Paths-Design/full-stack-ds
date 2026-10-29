@@ -189,7 +189,8 @@
         "Popover",
         "Tabs",
         "Text",
-        "Divider"
+        "Divider",
+        "Button"
       ]
     },
     {

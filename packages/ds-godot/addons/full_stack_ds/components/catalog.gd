@@ -1,2 +1,2 @@
 extends RefCounted
-const COMPONENTS = ["Accordion","Divider","Popover","Switch","Tabs","Text"]
+const COMPONENTS = ["Accordion","Button","Divider","Popover","Switch","Tabs","Text"]
