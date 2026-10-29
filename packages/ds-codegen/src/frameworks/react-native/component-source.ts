@@ -1512,11 +1512,14 @@ function rootRendersTextWrapper(ir: ComponentIR): boolean {
   if (!node) return false;
   const component = rnComponentForNode(node);
   if (component === "RNText" || VOID_RN_COMPONENTS.has(component)) return false;
-  if (node.content) return true;
-  if (node.children.length === 0 && node.part === "root") return true;
-  return node.children.some(
-    (child) => child.tag === "children" || child.tag === "slot",
-  );
+  const visit = (candidate: DomNodeIR): boolean => {
+    if (candidate.componentRef) return false;
+    if (candidate.content || candidate.children.length === 0 && candidate.part === "root") return true;
+    return candidate.children.some((child) =>
+      child.tag === "children" || child.tag === "slot" || visit(child),
+    );
+  };
+  return visit(node);
 }
 
 /**
@@ -1918,7 +1921,10 @@ function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): stri
   const sequence = ir.motion.sequence;
   if (sequence && node.part === sequence.viewport) return [`${INDENT.repeat(depth)}<SequenceChildren sequence={sequence} labels={${safePropName(ir, sequence.itemsProp)}} position={fsdsMessages.${sequence.labels.position}} />`];
   if (sequence && node.part === sequence.rotation) return [`${INDENT.repeat(depth)}<RNText>{sequence.playing ? fsdsMessages.${sequence.labels.stop} : fsdsMessages.${sequence.labels.start}}</RNText>`];
-  const textStyleExpr = node === ir.dom ? rootTextStyleExpression(ir) : null;
+  const projectsText = Boolean(node.content) ||
+    node.children.some((child) => child.tag === "children" || child.tag === "slot") ||
+    node.children.length === 0 && node.part === "root";
+  const textStyleExpr = projectsText ? rootTextStyleExpression(ir) : null;
   const textStyleProp = textStyleExpr ? ` style={${textStyleExpr}}` : "";
   if (node.content) {
     // FEAT-CODEBLOCK-HIGHLIGHT-01: a content transform degrades to plain

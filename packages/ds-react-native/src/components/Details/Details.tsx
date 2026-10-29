@@ -77,7 +77,7 @@ export function Details({
           <View
             style={styles.summaryText}
           >
-            <RNText>{summary}</RNText>
+            <RNText style={styles.rootText}>{summary}</RNText>
           </View>
         </View>
       </Pressable>
@@ -85,7 +85,7 @@ export function Details({
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children}
       </View>
       ) : null}
     </View>

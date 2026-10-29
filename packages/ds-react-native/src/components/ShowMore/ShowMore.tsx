@@ -65,7 +65,7 @@ export function ShowMore({
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText numberOfLines={expanded ? undefined : maxLines}>{children}</RNText> : children}
+        {typeof children === "string" ? <RNText numberOfLines={expanded ? undefined : maxLines} style={styles.rootText}>{children}</RNText> : children}
       </View>
       <Pressable
         style={styles.trigger}
@@ -73,7 +73,7 @@ export function ShowMore({
         accessibilityRole="button"
         accessibilityState={{ expanded: String(expanded) === "true" }}
       >
-        <RNText>{(expanded ? showLessLabel : showMoreLabel)}</RNText>
+        <RNText style={styles.rootText}>{(expanded ? showLessLabel : showMoreLabel)}</RNText>
       </Pressable>
     </View>
   );

@@ -41,6 +41,17 @@ enum BlockquoteTokens {
         ],
     ]
 }
+enum BlockquoteNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "blockquote.color.foreground.primary", value: "#474647", token: "semantic.color.foreground.secondary"), .init(property: "blockquote.typography.fontWeight", value: "500", token: "semantic.typography.font.weight.medium"), .init(property: "blockquote.size.fontSize.sm", value: "0.875rem", token: "core.typography.ramp.3"), .init(property: "blockquote.size.fontSize.md", value: "1rem", token: "core.typography.ramp.4"), .init(property: "blockquote.size.fontSize.lg", value: "1.125rem", token: "core.typography.ramp.5")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#474647", token: "blockquote.color.foreground.primary", designSlot: "blockquote.design.root.foreground.color"), .init(property: "font-size", value: "1rem", token: "blockquote.size.fontSize.md", designSlot: "blockquote.design.root.typography.size"), .init(property: "font-weight", value: "500", token: "blockquote.typography.fontWeight", designSlot: "blockquote.design.root.typography.weight")]),
+        .init(part: "root", predicates: [.init(axis: "variant", value: "highlighted")], declarations: [.init(property: "blockquote.color.foreground.primary", value: "#141414", token: "semantic.color.foreground.primary")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "sm")], declarations: [.init(property: "blockquote.size.fontSize.md", value: "0.875rem", token: "blockquote.size.fontSize.sm"), .init(property: "font-size", value: "1rem", token: "blockquote.size.fontSize.md", designSlot: "blockquote.design.condition-24964d7ed3a7.typography.size")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "md")], declarations: [.init(property: "blockquote.size.fontSize.md", value: "1rem", token: "core.typography.ramp.4"), .init(property: "font-size", value: "1rem", token: "blockquote.size.fontSize.md", designSlot: "blockquote.design.condition-dc35d39122c5.typography.size")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "lg")], declarations: [.init(property: "blockquote.size.fontSize.md", value: "1.125rem", token: "blockquote.size.fontSize.lg"), .init(property: "font-size", value: "1rem", token: "blockquote.size.fontSize.md", designSlot: "blockquote.design.condition-72800fd5573d.typography.size")]),
+    ]
+    static let omissions: [String] = []
+}
 
 /// Emitted through the static-content path: passive blockquote root with a single consumer content region.
 public struct Blockquote<Content: View>: View {
@@ -51,6 +62,16 @@ public struct Blockquote<Content: View>: View {
     private let size: BlockquoteSize?
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        if let value = variant { values["variant"] = value.rawValue }
+        if let value = size { values["size"] = value.rawValue }
+        do {
+            return try resolveFsdsNativeTextStyle(BlockquoteNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "root")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         variant: BlockquoteVariant? = nil,
@@ -89,11 +110,13 @@ public struct Blockquote<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .background(background)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end

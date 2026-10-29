@@ -42,6 +42,20 @@ enum AlertTokens {
         ],
     ]
 }
+enum AlertNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "alert.color.foreground.primary", value: "#141414", token: "semantic.color.foreground.primary"), .init(property: "alert.text.size", value: "14px", token: "semantic.typography.body.03"), .init(property: "alert.text.weight", value: "400", token: "semantic.typography.font.weight.regular")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "font-size", value: "14px", token: "alert.text.size", designSlot: "alert.design.root.typography.size"), .init(property: "font-weight", value: "400", token: "alert.text.weight", designSlot: "alert.design.root.typography.weight"), .init(property: "color", value: "#141414", token: "alert.color.foreground.primary", designSlot: "alert.design.root.foreground.color")]),
+        .init(part: "root", predicates: [.init(axis: "intent", value: "info")], declarations: [.init(property: "alert.color.foreground.primary", value: "#013ab0", token: "semantic.color.foreground.on.info.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "intent", value: "success")], declarations: [.init(property: "alert.color.foreground.primary", value: "#2c4f09", token: "semantic.color.foreground.on.success.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "intent", value: "warning")], declarations: [.init(property: "alert.color.foreground.primary", value: "#6c3a00", token: "semantic.color.foreground.on.warning.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "intent", value: "danger")], declarations: [.init(property: "alert.color.foreground.primary", value: "#900909", token: "semantic.color.foreground.on.danger.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "level", value: "inline")], declarations: [.init(property: "alert.text.size", value: "12px", token: "semantic.typography.body.04")]),
+        .init(part: "root", predicates: [.init(axis: "level", value: "section")], declarations: [.init(property: "alert.text.size", value: "14px", token: "semantic.typography.body.03")]),
+        .init(part: "root", predicates: [.init(axis: "level", value: "page")], declarations: [.init(property: "alert.text.size", value: "16px", token: "semantic.typography.body.02")]),
+    ]
+    static let omissions: [String] = []
+}
 
 /// Emitted through the icon-decorated content path: the icon prop feeds the shared GlyphCatalog registry; content is the consumer's single region.
 public struct Alert<IconRegion: View, Content: View>: View {
@@ -53,6 +67,16 @@ public struct Alert<IconRegion: View, Content: View>: View {
     private let level: AlertLevel?
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        if let value = intent { values["intent"] = value.rawValue }
+        if let value = level { values["level"] = value.rawValue }
+        do {
+            return try resolveFsdsNativeTextStyle(AlertNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "root")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         @ViewBuilder icon: () -> IconRegion = { EmptyView() },
@@ -93,6 +117,9 @@ public struct Alert<IconRegion: View, Content: View>: View {
         HStack(spacing: gap) {
             iconRegion
             content
+                .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+                .fontWeight(nativeTextStyle.fontWeight)
+                .foregroundStyle(nativeTextStyle.color ?? foreground)
         }
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)

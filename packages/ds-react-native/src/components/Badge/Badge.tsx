@@ -1,5 +1,5 @@
 // @generated:start imports
-import type { StyleProp, ViewStyle } from "react-native";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
 import { useFsdsTheme } from "../../tokens";
@@ -42,8 +42,11 @@ export function Badge({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createBadgeStyles(fsdsTheme), [fsdsTheme]);
   const variantStyleForVariant = variant !== undefined ? ({ "counter": styles.root_variant_counter, "tag": styles.root_variant_tag } as Record<string, ViewStyle | undefined>)[variant] : undefined;
+  const textVariantStyleForVariant = variant !== undefined ? ({ "counter": styles.rootText_variant_counter } as Record<string, TextStyle | undefined>)[variant] : undefined;
   const variantStyleForIntent = intent !== undefined ? ({ "info": styles.root_variant_info, "success": styles.root_variant_success, "warning": styles.root_variant_warning, "danger": styles.root_variant_danger } as Record<string, ViewStyle | undefined>)[intent] : undefined;
+  const textVariantStyleForIntent = intent !== undefined ? ({ "info": styles.rootText_variant_info, "success": styles.rootText_variant_success, "warning": styles.rootText_variant_warning, "danger": styles.rootText_variant_danger } as Record<string, TextStyle | undefined>)[intent] : undefined;
   const variantStyleForSize = size !== undefined ? ({ "sm": styles.root_variant_sm, "md": styles.root_variant_md, "lg": styles.root_variant_lg } as Record<string, ViewStyle | undefined>)[size] : undefined;
+  const textVariantStyleForSize = size !== undefined ? ({ "sm": styles.rootText_variant_sm, "md": styles.rootText_variant_md, "lg": styles.rootText_variant_lg } as Record<string, TextStyle | undefined>)[size] : undefined;
   const iconStyleForSize = size !== undefined ? ({ "sm": styles.icon_variant_sm, "md": styles.icon_variant_md, "lg": styles.icon_variant_lg } as Record<string, ViewStyle | undefined>)[size] : undefined;
   return (
     <View
@@ -57,13 +60,13 @@ export function Badge({
         style={[styles.icon, iconStyleForSize]}
         accessible={false}
       >
-        <RNText>{icon}</RNText>
+        <RNText style={[styles.rootText, textVariantStyleForVariant, textVariantStyleForIntent, textVariantStyleForSize]}>{icon}</RNText>
       </View>
       ) : null}
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForVariant, textVariantStyleForIntent, textVariantStyleForSize]}>{children}</RNText> : children}
       </View>
     </View>
   );

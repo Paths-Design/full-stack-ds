@@ -1,5 +1,5 @@
 // @generated:start imports
-import type { StyleProp, ViewStyle } from "react-native";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Pressable, Text as RNText, View } from "react-native";
 import { type ReactNode, useMemo } from "react";
 import { useFsdsTheme } from "../../tokens";
@@ -52,7 +52,9 @@ export function Button({
   const fsdsTheme = useFsdsTheme();
   const styles = useMemo(() => createButtonStyles(fsdsTheme), [fsdsTheme]);
   const variantStyleForSize = size !== undefined ? ({ "small": styles.root_variant_small, "medium": styles.root_variant_medium, "large": styles.root_variant_large } as Record<string, ViewStyle | undefined>)[size] : undefined;
+  const textVariantStyleForSize = size !== undefined ? ({ "small": styles.rootText_variant_small, "medium": styles.rootText_variant_medium, "large": styles.rootText_variant_large } as Record<string, TextStyle | undefined>)[size] : undefined;
   const variantStyleForVariant = variant !== undefined ? ({ "primary": styles.root_variant_primary, "secondary": styles.root_variant_secondary, "tertiary": styles.root_variant_tertiary, "ghost": styles.root_variant_ghost, "destructive": styles.root_variant_destructive, "outline": styles.root_variant_outline } as Record<string, ViewStyle | undefined>)[variant] : undefined;
+  const textVariantStyleForVariant = variant !== undefined ? ({ "primary": styles.rootText_variant_primary, "secondary": styles.rootText_variant_secondary, "tertiary": styles.rootText_variant_tertiary, "ghost": styles.rootText_variant_ghost, "destructive": styles.rootText_variant_destructive, "outline": styles.rootText_variant_outline } as Record<string, TextStyle | undefined>)[variant] : undefined;
   const pressedStyleForVariant = variant !== undefined ? ({ "primary": styles.root_variant_primary_pressed, "secondary": styles.root_variant_secondary_pressed, "destructive": styles.root_variant_destructive_pressed } as Record<string, ViewStyle | undefined>)[variant] : undefined;
   const disabledStyleForVariant = variant !== undefined ? ({ "primary": styles.root_variant_primary_disabled, "secondary": styles.root_variant_secondary_disabled, "destructive": styles.root_variant_destructive_disabled } as Record<string, ViewStyle | undefined>)[variant] : undefined;
   return (
@@ -76,7 +78,7 @@ export function Button({
       <View
         style={styles.loadingText}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForSize, textVariantStyleForVariant]}>{children}</RNText> : children}
       </View>
     </Pressable>
   );

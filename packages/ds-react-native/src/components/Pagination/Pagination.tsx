@@ -93,7 +93,7 @@ export function Pagination({
               style={styles.label}
               accessible={false}
             >
-              <RNText>{item}</RNText>
+              <RNText style={styles.rootText}>{item}</RNText>
             </View>
           </Pressable>
         ))}

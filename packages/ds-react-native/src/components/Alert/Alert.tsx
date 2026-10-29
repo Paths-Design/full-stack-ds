@@ -66,7 +66,7 @@ export function Alert({
         style={styles.icon}
         accessible={false}
       >
-        <RNText>{icon}</RNText>
+        <RNText style={[styles.rootText, textVariantStyleForIntent, textVariantStyleForLevel]}>{icon}</RNText>
       </View>
       ) : null}
       {typeof children === "string" ? <RNText style={[styles.rootText, textVariantStyleForIntent, textVariantStyleForLevel]}>{children}</RNText> : children}
