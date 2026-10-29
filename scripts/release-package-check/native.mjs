@@ -76,11 +76,13 @@ export async function verifyNativeBundles({ repo, consumer, evidence }) {
   writeFileSync(babelFile, babelConfig);
   const entry = join(consumer, "native-consumer.tsx");
   writeFileSync(entry, entrySource);
-  const requiredFiles = [
-    "react-native/src/index.ts", "react-native/src/components/Button/Button.tsx", "react-native/src/components/Icon/Icon.tsx",
-    "react-native/src/primitives/index.ts", "react-native/src/primitives/stack.tsx", "react-native/src/primitives/glyph.tsx",
-    "react-native/src/tokens/index.tsx", "iconography/index.mjs",
-  ];
+  const publishedNative = manifestAt(join(consumer, "node_modules/@full-stack-ds/react-native"));
+  const runtimeEntries = [".", "./primitives", "./tokens"].map(key => {
+    const target = publishedNative.exports[key]["react-native"];
+    assert.match(target, /^\.\/dist\/.+\.js$/, key + ": native consumers must receive compiled JavaScript");
+    return "react-native/" + target.slice(2);
+  });
+  const requiredFiles = [...runtimeEntries, "iconography/index.mjs"];
   const requiredPaths = requiredFiles.map(file => slash(join(consumer, "node_modules/@full-stack-ds", file)));
   const observations = [];
   for (const platform of ["ios", "android"]) {
@@ -131,9 +133,10 @@ export async function verifyNativeBundles({ repo, consumer, evidence }) {
       for (const required of requiredPaths) assert.ok(modules.has(required), platform + ": required installed module missing: " + required);
       assert.ok([...modules].some(file => file.startsWith(slash(svgRoot) + "/")), platform + ": real react-native-svg was not compiled");
       assert.ok([...modules].some(file => file.startsWith(slash(nativeRoot) + "/")), platform + ": real React Native was not compiled");
-      for (const file of requiredFiles.filter(file => !file.endsWith("/index.ts"))) {
-        const suffix = "/node_modules/@full-stack-ds/" + file;
-        assert.ok(sources.some(source => ("/" + source).endsWith(suffix)), platform + ": source-map witness missing: " + file);
+      assert.ok([...modules].some(file => file.startsWith(slash(babelRuntimeRoot) + "/")), platform + ": real Babel runtime was not compiled");
+      for (const name of ["react-native", "iconography"]) {
+        const prefix = "/node_modules/@full-stack-ds/" + name + "/";
+        assert.ok(sources.some(source => ("/" + source).includes(prefix)), platform + ": installed package absent from source map: " + name);
       }
       Object.assign(observation, { passed: true, moduleCount: modules.size, sourceCount: sources.length,
         bundleSha256: hash(readFileSync(bundleFile)), mapSha256: hash(readFileSync(mapFile)), modules: [...modules].sort(), sources,

@@ -2,7 +2,7 @@
 
 Full Stack DS components for react-native.
 
-This package ships TypeScript source for a React Native bundler. Install the declared React, React Native, and react-native-svg peers. Web CSS is not part of this target.
+This package ships JavaScript and TypeScript declarations for a React Native bundler. Install the declared React, React Native, and react-native-svg peers. Components, primitives, and the token provider share one runtime context through the package's root, `/primitives`, and `/tokens` exports.
 
 ```tsx
 import { Button } from '@full-stack-ds/react-native';
