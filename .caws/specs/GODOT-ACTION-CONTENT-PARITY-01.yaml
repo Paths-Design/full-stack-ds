@@ -46,3 +46,12 @@ contracts:
   - name: 'godot-action-player'
     type: behavior
     path: 'packages/ds-godot/verification/main.gd'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "a97dc9538: renamed Pressable synthetic and unknown-fact rejection in Godot factory suite (19 passed); DefaultedAction defaults observed in Editor and exported Player run cd725717"
+    recorded_at: "2026-10-29T23:35:03.675Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/factory.test.ts
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-godot-action-final-a97dc9538/godot.json"
+    commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0
