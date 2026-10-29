@@ -65,3 +65,10 @@ evidence:
     command: "pnpm run governed:rail"
     exit_code: 0
     commit_sha: "1be6d367257321c68b199b0e0f5d6035eb5b79d0"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "node scripts/godot-pilot.mjs: run 7483600f-35a0-4efe-8c2e-adefb28aa3df on clean c1fd2b07212292fb502e584853633bb8d39a7708; Editor 9 rows plus exported macOS Player passed; text 12/60 px, vertical rule 4x80 px, rule token #123456; local ignored receipt tmp/godot-pilot/1e473981-c0bc-4623-a0fd-93a240335bc0/provenance.json"
+    recorded_at: "2026-10-29T18:39:28.596Z"
+    command: node scripts/godot-pilot.mjs
+    exit_code: 0
+    commit_sha: c1fd2b07212292fb502e584853633bb8d39a7708
