@@ -2,14 +2,55 @@ import fs from "node:fs";
 import path from "node:path";
 import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR, DomNodeIR } from "../../ir.js";
+import { isBareRuleLeaf, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 import { namedMessage, nodeTextSource } from "../native-messages.js";
 const q = JSON.stringify;
 const handled = new Set(["checked","defaultChecked","onChange","open","defaultOpen","onOpenChange","value","defaultValue","onValueChange","disabled","collapsible","type","orientation","activationMode","loop","unmountInactive","appearance","placement","closeOnEscape","closeOnOutsideClick","closeOnBlur"]);
 // Explicit pilot exclusions are visible in the emitted capability receipt.
 const excluded = new Set(["size", "name", "idBase"]);
+const staticTextProps = new Set(["as", "variant", "size", "weight", "align", "transform", "truncate"]);
+const ruleProps = new Set(["orientation", "decorative", "thickness", "title"]);
+const textStyleProperties = new Set(["color", "font-size", "font-weight", "line-height", "letter-spacing"]);
+const ruleStyleProperties = new Set(["border-top-color", "border-left-color", "border-top-width", "border-left-width", "margin-top", "margin-bottom", "margin-left", "margin-right"]);
+function hasUnloweredStaticNodeFacts(node: DomNodeIR): boolean {
+  return !!(node.activation || node.focusContainer || node.keyboardActions?.length || node.keyboardPanel || node.keyboardAnchor || node.content || node.componentRef || node.iteration || node.ifProp || node.ifSlot || node.cssVarBindings.length || node.iconGlyph || node.generatedIdSlug || node.idRefAttrs.length || Object.keys(node.attrs).length || Object.keys(node.propertyBindings).length || Object.keys(node.events).length);
+}
+function staticPlan(ir: ComponentIR) {
+  const isRule = isBareRuleLeaf(ir);
+  const isText = isStaticContent(ir) && ir.dom?.children.length === 1 && ir.dom.children[0]?.tag === "children";
+  if (!isRule && !isText) return undefined;
+  const root = ir.dom!;
+  const child = isText ? root.children[0]! : undefined;
+  const bindingKeys = Object.keys(root.bindings);
+  const truncateBinding = root.bindings["data-truncate"];
+  const supportedTruncate = truncateBinding?.kind === "conditional" && truncateBinding.condition.kind === "prop" && truncateBinding.condition.prop === "truncate" && truncateBinding.whenTrue.kind === "literal" && truncateBinding.whenTrue.value === "true" && truncateBinding.whenFalse.kind === "literal" && truncateBinding.whenFalse.value === "false";
+  if (root.part !== "root" || hasUnloweredStaticNodeFacts(root) || (isText ? (bindingKeys.length !== 1 || !supportedTruncate || !child || hasUnloweredStaticNodeFacts(child) || Object.keys(child.bindings).length || child.children.length) : bindingKeys.length)) throw new Error(`GODOT_UNSUPPORTED_STATIC_ANATOMY: ${ir.name}`);
+  const allowed = isRule ? ruleProps : staticTextProps;
+  const allowedStyles = isRule ? ruleStyleProperties : textStyleProperties;
+  for (const prop of ir.styledProps) if (!allowed.has(prop.name)) throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${prop.name}`);
+  const rules = ir.nativeStyleRules?.rules ?? [];
+  const styleRules = rules.filter(rule => rule.sourceKey !== "tokens" && rule.sourceKey !== "structure");
+  if (styleRules.some(rule => rule.part !== "root" || rule.pseudo || rule.predicates.some(predicate => predicate.kind !== "variant"))) throw new Error(`GODOT_UNSUPPORTED_STATIC_SELECTOR: ${ir.name}`);
+  const tokenValues = new Map(ir.tokenFacts.map(fact => [fact.name, fact.rawValue]));
+  const styles = styleRules.map(rule => {
+    const localTokens = new Map(rule.declarations.filter(decl => decl.property.includes(".")).map(decl => [decl.property, decl.value]));
+    return {
+      source: rule.sourceKey,
+      predicates: rule.predicates,
+      declarations: rule.declarations.filter(decl => !decl.platforms).filter(decl => allowedStyles.has(decl.property)).map(decl => ({ property: decl.property, value: decl.token ? localTokens.get(decl.token) ?? tokenValues.get(decl.token) ?? decl.value : decl.value, token: decl.token })),
+    };
+  }).filter(rule => rule.declarations.length);
+  const unsupported = styleRules.flatMap(rule => rule.declarations.filter(decl => !decl.property.includes(".") && !decl.platforms && !allowedStyles.has(decl.property)).map(decl => `${rule.sourceKey}.${decl.property}`));
+  if (unsupported.length) throw new Error(`GODOT_UNSUPPORTED_STATIC_STYLE: ${ir.name}.${unsupported.join(",")}`);
+  const excludedSelectors = ir.nativeStyleRules?.unsupported.map(rule => rule.sourceKey) ?? [];
+  if (excludedSelectors.length && !(isText && excludedSelectors.every(selector => selector === `.${ir.cssPrefix}[data-truncate="true"]`))) throw new Error(`GODOT_UNSUPPORTED_STATIC_SELECTOR: ${ir.name}.${excludedSelectors.join(",")}`);
+  return { operation: isRule ? "rule" : "static-text", excluded: isText ? ["as"] : ["decorative"], styles };
+}
 export function godotPlan(ir: ComponentIR) {
   if (ir.motion.sequence) return godotSequencePlan(ir);
+  const staticContent = staticPlan(ir);
+  if (staticContent) return staticContent;
   for (const p of ir.styledProps) if (!handled.has(p.name) && !excluded.has(p.name)) throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${p.name}`);
   let operation: string;
   if (ir.surface) {
@@ -81,15 +122,16 @@ export function createGodotEmitter(): FrameworkEmitter {
       const plan = godotPlan(ir);
       const defaults = Object.fromEntries(ir.styledProps.filter(p=>p.defaultExpr !== undefined).map(p=>[p.name,p.defaultExpr]));
       const isSequence = plan.operation === "sequence";
-      const config = { ...(isSequence ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
-      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isSequence ? "" : `\tlabel = ${q(ir.name)}\n`}`;
+      const isStatic = plan.operation === "rule" || plan.operation === "static-text";
+      const config = { ...(isSequence || isStatic ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
+      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isSequence || isStatic ? "" : `\tlabel = ${q(ir.name)}\n`}`;
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");
       return [
         { relativePath: `${ir.name}/${ir.name}.gd`, contents: script },
         { relativePath: `${ir.name}/${ir.name}.tscn`, contents: `[gd_scene load_steps=3 format=3]\n\n[ext_resource type="Script" path="res://addons/full_stack_ds/components/${ir.name}/${ir.name}.gd" id="1"]\n[ext_resource type="Theme" path="res://addons/full_stack_ds/components/${ir.name}/theme.tres" id="2"]\n\n[node name="${ir.name}" type="VBoxContainer"]\nscript = ExtResource("1")\ntheme = ExtResource("2")\n` },
         { relativePath: `${ir.name}/theme.tres`, contents: `[gd_resource type="Theme" format=3]\n\n[resource]\ndefault_font_size = 16\nButton/colors/font_color = Color(${rgb}, 1)\nLabel/colors/font_color = Color(${rgb}, 1)\n` },
-        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: "unconditional foreground fallback only", otherStyling: "unsupported", excludedProps: plan.excluded, proof: "requires-runtime-witness" },null,2)+"\n" },
+        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isStatic ? "source-bearing static style subset" : "unconditional foreground fallback only", otherStyling: isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : "unsupported", excludedProps: plan.excluded, proof: "requires-runtime-witness" },null,2)+"\n" },
       ];
     },
     emitTests: () => [],

@@ -187,7 +187,9 @@
         "Switch",
         "Accordion",
         "Popover",
-        "Tabs"
+        "Tabs",
+        "Text",
+        "Divider"
       ]
     },
     {
