@@ -110,8 +110,9 @@ public func resolveFsdsNativeTextStyle(
         (rule.part == "root" || rule.part == part) &&
         rule.predicates.allSatisfy { variants[$0.axis] == $0.value }
     }
+    let ordered = active.filter { $0.part == "root" } + (part == "root" ? [] : active.filter { $0.part == part })
     var definitions: [String: FsdsNativeTextDeclaration] = [:]
-    for rule in active {
+    for rule in ordered {
         for declaration in rule.declarations where declaration.property.contains(".") {
             definitions[declaration.property] = declaration
         }
@@ -121,7 +122,9 @@ public func resolveFsdsNativeTextStyle(
         if let slot = declaration.designSlot, let override = theme.tokens[slot] { return override }
         guard let token = declaration.token else { return .string(declaration.value) }
         if let override = theme.tokens[token] { return override }
-        guard let definition = definitions[token] else { return .string(declaration.value) }
+        guard let definition = definitions[token] else {
+            return FsdsSemanticDefaults.light[token] ?? .string(declaration.value)
+        }
         if visiting.contains(token) {
             throw FsdsNativeTextStyleError("FSDS_NATIVE_TEXT_TOKEN_CYCLE", token)
         }
@@ -129,7 +132,6 @@ public func resolveFsdsNativeTextStyle(
     }
 
     var selected: [String: FsdsNativeTextDeclaration] = [:]
-    let ordered = active.filter { $0.part == "root" } + (part == "root" ? [] : active.filter { $0.part == part })
     for rule in ordered {
         for declaration in rule.declarations where ["color", "font-size", "font-weight"].contains(declaration.property) {
             selected[declaration.property] = declaration

@@ -48,6 +48,31 @@ final class NativeTextStyleTests: XCTestCase {
         XCTAssertNotNil(style.color)
     }
 
+    func testPartTokenDefinitionOverridesInheritedRootRegardlessOfSourceOrder() throws {
+        let partFirst = [
+            FsdsNativeTextRule(part: "content", declarations: [
+                .init(property: "text.size", value: "32px"),
+                .init(property: "font-size", value: "16px", token: "text.size"),
+            ]),
+            FsdsNativeTextRule(part: "root", declarations: [.init(property: "text.size", value: "16px")]),
+        ]
+        let style = try resolveFsdsNativeTextStyle(partFirst, theme: FsdsTheme(), variants: [:], part: "content")
+        XCTAssertEqual(style.fontSize, 32)
+    }
+
+    func testGeneratedTextColorRetainsAdaptiveGraphValue() throws {
+        let style = try resolveFsdsNativeTextStyle(
+            TextNativeTextRules.rules, theme: FsdsTheme(), variants: [:], part: "root"
+        )
+        XCTAssertEqual(style.raw["color"], .adaptive(light: "#141414", dark: "#fafafa"))
+
+        let info = try resolveFsdsNativeTextStyle(
+            AlertNoticeNativeTextRules.rules, theme: FsdsTheme(),
+            variants: ["status": "info"], part: "root"
+        )
+        XCTAssertEqual(info.raw["color"], .adaptive(light: "#013ab0", dark: "#00a9fb"))
+    }
+
     func testRejectsInvalidActiveStyleAndTokenCycles() {
         XCTAssertThrowsError(try resolveFsdsNativeTextStyle(
             rules,
@@ -87,5 +112,34 @@ final class NativeTextStyleTests: XCTestCase {
         let alert = AlertNotice(content: { SwiftUI.Text("WIDE") })
         let alertLarge = alert.environment(\.fsdsTheme, FsdsTheme(tokens: ["alert-notice.text.size": .string("40px")]))
         XCTAssertGreaterThan(width(alertLarge), width(alert) + 20)
+    }
+
+    @MainActor
+    func testGeneratedTextPaintsAdaptiveForegroundInBothAppearances() throws {
+        let view = DsSwiftUI.Text(variant: .display) { SwiftUI.Text("MMMM") }
+
+        func hasInk(_ appearance: NSAppearance, expected: (CGFloat, CGFloat, CGFloat)) throws -> Bool {
+            let host = NSHostingView(rootView: view)
+            host.appearance = appearance
+            let size = host.fittingSize
+            host.frame = NSRect(origin: .zero, size: size)
+            host.layoutSubtreeIfNeeded()
+            let bitmap = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
+            host.cacheDisplay(in: host.bounds, to: bitmap)
+            for y in 0..<bitmap.pixelsHigh {
+                for x in 0..<bitmap.pixelsWide {
+                    guard let pixel = bitmap.colorAt(x: x, y: y)?.usingColorSpace(.sRGB) else { continue }
+                    if abs(pixel.redComponent - expected.0) < 0.03 &&
+                        abs(pixel.greenComponent - expected.1) < 0.03 &&
+                        abs(pixel.blueComponent - expected.2) < 0.03 {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+
+        XCTAssertTrue(try hasInk(NSAppearance(named: .aqua)!, expected: (20 / 255, 20 / 255, 20 / 255)))
+        XCTAssertTrue(try hasInk(NSAppearance(named: .darkAqua)!, expected: (250 / 255, 250 / 255, 250 / 255)))
     }
 }
