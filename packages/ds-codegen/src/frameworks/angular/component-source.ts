@@ -1598,6 +1598,7 @@ function generateDomTreeImports(ir: ComponentIR, componentBody: string): string 
     lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   // CODEGEN-EMIT-LINT-HYGIENE-01: compound parts usually host on <fsds-stack>,
   // but native-table composition (Table) renders raw table elements — import
   // StackComponent only when the body actually references it.
@@ -2148,6 +2149,12 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   }
 
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
+  if (ir.compositeControl?.nativeRadio) {
+    const channel = ir.compositeControl.channel.name;
+    lines.push(`  protected requestNativeRadio${capitalizeAngular(channel)}(event: Event, value: string): void {`,
+      `    requestNativeRadioChange(event, () => this.behavior.set${capitalizeAngular(channel)}(value), () => this.behavior.${channel}());`,
+      `  }`);
+  }
 
   if (ir.motion.sequence) {
     const seq = ir.motion.sequence;
@@ -2868,6 +2875,11 @@ function renderAngularDomNode(
   // produces `(click)="behavior.X()"`. Legacy `bindings.onX` is filtered
   // below to avoid double-emit.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
+      const arg = renderAngularBindingValue(expr.arg, ctx);
+      if (arg !== null) attrs.push(`(change)="requestNativeRadio${capitalizeAngular(node.nativeRadioChannel)}($event, ${arg})"`);
+      continue;
+    }
     const activation = eventName === "click" ? node.activation : undefined;
     const disclosure = activation?.channel;
     if (disclosure) {

@@ -865,6 +865,8 @@ export interface CompositeControlIR {
   commit: "input" | "change" | "activation";
   event: "input" | "change" | "click";
   update: Extract<BindingExpression, { kind: "channelCall" | "channelUpdate" }>;
+  /** Native checked state must follow the accepted selection after a request. */
+  nativeRadio?: boolean;
 }
 
 /**
@@ -913,6 +915,8 @@ export interface KeyboardActionIR {
  * its idiomatic representation.
  */
 export interface DomNodeIR {
+  /** Accepted string selection for a native radio change request. */
+  nativeRadioChannel?: string;
   /** Normalized host activation; emitters only lower framework syntax. */
   activation?: ActivationIR;
   /** Bind the rendered content host to the focus-scope behavior. */
@@ -5153,6 +5157,16 @@ export function buildCompositeControlIR(
   }
   target.node.events[event] = update;
 
+  const checked = target.node.bindings.checked;
+  const isAcceptedSelection = (binding: BindingExpression) =>
+    binding.kind === "channel" && binding.channel === channel.name && binding.field === "value" && !binding.path?.length;
+  const nativeRadio = target.node.tag === "input" && target.node.attrs.type === "radio" &&
+    control.interactionModel === "collection-selection" && control.commit === "change" &&
+    channel.valueType === "string" && update.kind === "channelCall" && checked?.kind === "predicate" && checked.op === "eq" &&
+    ((isAcceptedSelection(checked.left) && JSON.stringify(checked.right) === JSON.stringify(update.arg)) ||
+      (isAcceptedSelection(checked.right) && JSON.stringify(checked.left) === JSON.stringify(update.arg)));
+  if (nativeRadio) target.node.nativeRadioChannel = channel.name;
+
   return {
     part,
     channel,
@@ -5160,6 +5174,7 @@ export function buildCompositeControlIR(
     commit: control.commit,
     event,
     update,
+    nativeRadio,
   };
 }
 
