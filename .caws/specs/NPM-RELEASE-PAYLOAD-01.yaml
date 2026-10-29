@@ -106,3 +106,10 @@ evidence:
     command: "pnpm run test:package:release"
     exit_code: 0
     commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Fresh prepack builds and complete tar inventories/conditional exports/wildcard icon closure passed for all eight payloads; no tests mocks scratch or local protocols; raw integrated-consumer.log and .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/runs/fsds-release-packages-z8oPOD/payloads.json"
+    recorded_at: "2026-10-29T23:29:58.216Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
