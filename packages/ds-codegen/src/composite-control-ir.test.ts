@@ -49,14 +49,14 @@ describe("CompositeControlIR", () => {
   });
 
   it.each([
-    { checked: "literal:true" },
-    { value: "iter:item.label" },
-  ])("does not infer native value identity from unrelated checked or value bindings: %j", binding => {
+    ["checked", "literal:true"],
+    ["value", "iter:item.label"],
+  ] as const)("does not infer native value identity from an unrelated %s binding", (key, value) => {
     const contract = loadContract("RadioGroup");
     const dom = contract.anatomy && !Array.isArray(contract.anatomy) ? contract.anatomy.dom : undefined;
     if (!dom) throw new Error("fixture requires DOM");
     const visit = (node: typeof dom): void => {
-      if (node.part === "option") node.bindings = { ...node.bindings, ...binding };
+      if (node.part === "option") node.bindings = { ...node.bindings, [key]: value };
       for (const child of node.children ?? []) visit(child);
     };
     visit(dom);
