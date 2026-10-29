@@ -1,9 +1,10 @@
 id: NATIVE-PART-TEXT-PARITY-01
 title: 'Cross-target part-aware text presentation from native style IR'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: native-part-text
 created_at: '2026-10-29T18:51:42.487Z'
-updated_at: '2026-10-29T18:51:42.487Z'
+updated_at: '2026-10-29T18:52:15.730Z'
 created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
 blast_radius:
   modules:
