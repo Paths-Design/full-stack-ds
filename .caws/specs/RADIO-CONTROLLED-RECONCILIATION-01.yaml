@@ -1,0 +1,66 @@
+id: RADIO-CONTROLLED-RECONCILIATION-01
+title: 'Reconcile native radio state after controlled requests'
+mode: fix
+lifecycle_state: draft
+created_at: '2026-10-29T22:59:28.312Z'
+updated_at: '2026-10-29T22:59:28.312Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Web native radio composite control IR and shared interaction runtime'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/composite-control-ir.test.ts'
+    - 'packages/ds-codegen/src/interaction-runtime.ts'
+    - 'packages/ds-codegen/src/interaction-runtime.test.ts'
+    - 'packages/ds-codegen/src/frameworks/react/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/component-source.ts'
+    - 'packages/ds-react/src/components/RadioGroup'
+    - 'packages/ds-vue/src/components/RadioGroup'
+    - 'packages/ds-svelte/src/components/RadioGroup'
+    - 'packages/ds-angular/src/components/RadioGroup'
+    - 'packages/ds-lit/src/components/RadioGroup'
+    - 'packages/ds-react/src/primitives/interaction.ts'
+    - 'packages/ds-vue/src/primitives/interaction.ts'
+    - 'packages/ds-svelte/src/primitives/interaction.ts'
+    - 'packages/ds-angular/src/primitives/interaction.ts'
+    - 'packages/ds-lit/src/primitives/interaction.ts'
+    - 'e2e/radio-controlled.spec.ts'
+    - 'src/runtime/angular-preview.ts'
+  out: []
+invariants:
+  - 'Controlled parents own accepted selection; a request sends one callback and preserves native focus'
+  - 'Native group identity follows root name and form owner; independent groups remain isolated'
+  - 'Semantics derive from typed native host and channel facts rather than component names'
+acceptance:
+  - id: A1
+    given: 'a parent-controlled native radio group'
+    when: 'trusted pointer or arrow activation requests a refused selection'
+    then: 'checked and aria-checked reflect the accepted value and focus remains on the activated radio across all five web frameworks'
+  - id: A2
+    given: 'uncontrolled and parent-accepted selection'
+    when: 'native activation skips a disabled item'
+    then: 'the requested enabled value is accepted exactly once and later accepted parent updates render correctly'
+  - id: A3
+    given: 'independent native groups and callback exceptions'
+    when: 'reconciliation runs'
+    then: 'only matching root name and form peers change and callback exceptions propagate after restoring accepted state'
+  - id: A4
+    given: 'the committed generic IR runtime and generated candidate'
+    when: 'focused falsifiers browser checks and required regression gates execute'
+    then: 'all pass without component-name dispatch or generated source hand edits'
+observability:
+  - 'Retain trusted input browser observations focused test output and checked source revision'
+rollback:
+  - 'Revert the slice and regenerate native radio realizations'
+non_functional: {}
+contracts:
+  - name: 'radio-ownership'
+    type: behavior
+    path: 'packages/ds-codegen/src/interaction-runtime.ts'
