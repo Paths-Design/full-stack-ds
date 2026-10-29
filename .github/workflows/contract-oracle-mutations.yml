@@ -15,7 +15,8 @@ concurrency:
 jobs:
   measure:
     name: Full contract-oracle mutation measurement
-    runs-on: ubuntu-latest
+    # Playwright 1.60 cannot install Chromium on ubuntu-26.04 (ubuntu-latest).
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
 
     steps:
