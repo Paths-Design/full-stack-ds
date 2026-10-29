@@ -5,6 +5,7 @@ import type { ComponentIR, DomNodeIR } from "../../ir.js";
 import { isBareRuleLeaf, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 import { namedMessage, nodeTextSource } from "../native-messages.js";
+import { godotActionPlan } from "./action-plan.js";
 const q = JSON.stringify;
 const handled = new Set(["checked","defaultChecked","onChange","open","defaultOpen","onOpenChange","value","defaultValue","onValueChange","disabled","collapsible","type","orientation","activationMode","loop","unmountInactive","appearance","placement","closeOnEscape","closeOnOutsideClick","closeOnBlur"]);
 // Explicit pilot exclusions are visible in the emitted capability receipt.
@@ -49,6 +50,8 @@ function staticPlan(ir: ComponentIR) {
 }
 export function godotPlan(ir: ComponentIR) {
   if (ir.motion.sequence) return godotSequencePlan(ir);
+  const action = godotActionPlan(ir);
+  if (action) return action;
   const staticContent = staticPlan(ir);
   if (staticContent) return staticContent;
   for (const p of ir.styledProps) if (!handled.has(p.name) && !excluded.has(p.name)) throw new Error(`GODOT_UNSUPPORTED_PROP: ${ir.name}.${p.name}`);
@@ -123,15 +126,16 @@ export function createGodotEmitter(): FrameworkEmitter {
       const defaults = Object.fromEntries(ir.styledProps.filter(p=>p.defaultExpr !== undefined).map(p=>[p.name,p.defaultExpr]));
       const isSequence = plan.operation === "sequence";
       const isStatic = plan.operation === "rule" || plan.operation === "static-text";
-      const config = { ...(isSequence || isStatic ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
-      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isSequence || isStatic ? "" : `\tlabel = ${q(ir.name)}\n`}`;
+      const isAction = plan.operation === "action";
+      const config = { ...(isSequence || isStatic || isAction ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
+      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction ? "" : `\tlabel = ${q(ir.name)}\n`}`;
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");
       return [
         { relativePath: `${ir.name}/${ir.name}.gd`, contents: script },
         { relativePath: `${ir.name}/${ir.name}.tscn`, contents: `[gd_scene load_steps=3 format=3]\n\n[ext_resource type="Script" path="res://addons/full_stack_ds/components/${ir.name}/${ir.name}.gd" id="1"]\n[ext_resource type="Theme" path="res://addons/full_stack_ds/components/${ir.name}/theme.tres" id="2"]\n\n[node name="${ir.name}" type="VBoxContainer"]\nscript = ExtResource("1")\ntheme = ExtResource("2")\n` },
         { relativePath: `${ir.name}/theme.tres`, contents: `[gd_resource type="Theme" format=3]\n\n[resource]\ndefault_font_size = 16\nButton/colors/font_color = Color(${rgb}, 1)\nLabel/colors/font_color = Color(${rgb}, 1)\n` },
-        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isStatic ? "source-bearing static style subset" : "unconditional foreground fallback only", otherStyling: isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : "unsupported", excludedProps: plan.excluded, proof: "requires-runtime-witness" },null,2)+"\n" },
+        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isStatic ? "source-bearing static style subset" : isAction ? "source-bearing native action style subset" : "unconditional foreground fallback only", otherStyling: isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : isAction ? "unsupported declarations and selectors are listed in omissions; Godot font metrics and loading progress are target approximations" : "unsupported", excludedProps: plan.excluded, proof: "requires-runtime-witness" },null,2)+"\n" },
       ];
     },
     emitTests: () => [],
