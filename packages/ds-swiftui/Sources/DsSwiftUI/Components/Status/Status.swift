@@ -54,6 +54,19 @@ enum StatusTokens {
         ],
     ]
 }
+enum StatusNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "status.color.foreground.primary", value: "#474647", token: "semantic.color.foreground.secondary"), .init(property: "status.size.fontSize", value: "12px", token: "semantic.glyph.badge.size.md.fontSize"), .init(property: "status.text.weight", value: "500", token: "semantic.typography.font.weight.medium")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#474647", token: "status.color.foreground.primary", designSlot: "status.design.root.foreground.color"), .init(property: "font-size", value: "12px", token: "status.size.fontSize", designSlot: "status.design.root.typography.size"), .init(property: "font-weight", value: "500", token: "status.text.weight", designSlot: "status.design.root.typography.weight")]),
+        .init(part: "label", predicates: [], declarations: [.init(property: "color", value: "#474647", token: "status.color.foreground.primary", designSlot: "status.design.label.foreground.color")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "info")], declarations: [.init(property: "status.color.foreground.primary", value: "#013ab0", token: "semantic.color.foreground.on.info.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "success")], declarations: [.init(property: "status.color.foreground.primary", value: "#2c4f09", token: "semantic.color.foreground.on.success.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "warning")], declarations: [.init(property: "status.color.foreground.primary", value: "#6c3a00", token: "semantic.color.foreground.on.warning.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "danger")], declarations: [.init(property: "status.color.foreground.primary", value: "#900909", token: "semantic.color.foreground.on.danger.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "error")], declarations: [.init(property: "status.color.foreground.primary", value: "#900909", token: "semantic.color.foreground.on.danger.subtle")]),
+    ]
+    static let omissions: [String] = []
+}
 
 /// Emitted through the static-content path: passive span root with a single consumer content region.
 public struct Status<Content: View>: View {
@@ -63,6 +76,15 @@ public struct Status<Content: View>: View {
     private let status: StatusIntent?
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        if let value = status { values["status"] = value.rawValue }
+        do {
+            return try resolveFsdsNativeTextStyle(StatusNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "label")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         status: StatusIntent? = nil,
@@ -100,11 +122,13 @@ public struct Status<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .background(background)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end

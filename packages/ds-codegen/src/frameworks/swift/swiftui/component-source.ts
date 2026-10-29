@@ -69,6 +69,7 @@ import {
   soleValueChannel,
 } from "../../native-emission-class.js";
 import { swiftLiteral } from "./icon-glyph.js";
+import { emitSwiftNativeTextRules, nativeTextPart } from "./native-text-rules.js";
 import { swiftMessage, swiftStringProp, withSwiftMessagesEnvironment } from "./messages.js";
 import {
   channelToggledText,
@@ -947,6 +948,8 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
   const axes = collectVariantAxes(ir);
+  const textPart = nativeTextPart(ir);
+  const textRules = textPart ? emitSwiftNativeTextRules(ir, textPart, axes.map((axis) => axis.prop)) : null;
   const layerInfo = emitLayerExpressions(axes);
   const layerArray = ['"root"', ...layerInfo.expressions];
   const layersExpr = layerInfo.needsCompactMap
@@ -960,6 +963,7 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
   const lines: string[] = [];
   lines.push("// @generated:start component");
   if (ir.tokenScopes.length > 0) lines.push(...emitTokenScopesSection(ir));
+  if (textRules?.hasProperties) lines.push(...textRules.lines);
   lines.push("");
   lines.push(
     `/// Emitted through the icon-decorated content path: the icon prop ` +
@@ -994,6 +998,7 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
   }
+  if (textRules?.hasProperties && textPart) lines.push(...emitNativeTextAccessor(ir, axes, textPart));
   lines.push("");
   lines.push(`${INDENT}public init(`);
   const params: string[] = iconIsRegistry
@@ -1058,6 +1063,11 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${INDENT}iconRegion`);
   }
   lines.push(`${INDENT}${INDENT}${INDENT}content`);
+  if (textRules?.hasProperties) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.foregroundStyle(nativeTextStyle.color ?? ${chrome.foreground ? "foreground" : "Color.primary"})`);
+  }
   lines.push(`${INDENT}${INDENT}}`);
   if (chrome.blockPadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`);
   if (chrome.inlinePadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.horizontal, inlinePadding)`);
@@ -3257,6 +3267,8 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
   const axes = collectVariantAxes(ir);
+  const textPart = nativeTextPart(ir);
+  const textRules = textPart ? emitSwiftNativeTextRules(ir, textPart, axes.map((axis) => axis.prop)) : null;
   // An absent consumer region may expose a contract-declared literal source.
   const fallbackSources: string[] = [];
   const collectFallback = (node: DomNodeIR): void => {
@@ -3277,6 +3289,7 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   const lines: string[] = [];
   lines.push("// @generated:start component");
   if (ir.tokenScopes.length > 0) lines.push(...emitTokenScopesSection(ir));
+  if (textRules?.hasProperties) lines.push(...textRules.lines);
   lines.push("");
   lines.push(
     `/// Emitted through the static-content path: passive ` +
@@ -3301,6 +3314,7 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
   }
+  if (textRules?.hasProperties && textPart) lines.push(...emitNativeTextAccessor(ir, axes, textPart));
   lines.push("");
   lines.push(`${INDENT}public init(`);
   const params = axes.map((axis) =>
@@ -3347,14 +3361,19 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   lines.push("");
   lines.push(`${INDENT}public var body: some View {`);
   lines.push(`${INDENT}${INDENT}content`);
+  if (textRules?.hasProperties) {
+    lines.push(`${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
+    lines.push(`${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);
+  }
   if (ir.dom!.tag === "pre") lines.push(`${INDENT}${INDENT}${INDENT}.font(.system(.body, design: .monospaced))`);
   if (ir.tokenScopes.length > 0) {
     if (chrome.blockPadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`);
     if (chrome.inlinePadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.horizontal, inlinePadding)`);
     if (chrome.background) lines.push(`${INDENT}${INDENT}${INDENT}.background(background)`);
     if (chrome.radius) lines.push(`${INDENT}${INDENT}${INDENT}.clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))`);
-    if (chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(foreground)`);
+    if (chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(${textRules?.hasProperties ? "nativeTextStyle.color ?? foreground" : "foreground"})`);
   }
+  if (textRules?.hasProperties && !chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(nativeTextStyle.color ?? Color.primary)`);
   lines.push(`${INDENT}}`);
   lines.push(`}`);
   if (fallbackSources.length === 1) {
@@ -3440,6 +3459,9 @@ function emitActionComponent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
   const has = (concern: SlotConcern) => chrome[concern] !== undefined;
+  const axes = collectVariantAxes(ir);
+  const textPart = nativeTextPart(ir);
+  const textRules = textPart ? emitSwiftNativeTextRules(ir, textPart, axes.map((axis) => axis.prop)) : null;
 
   const lines: string[] = [];
   lines.push("// @generated:start component");
@@ -3472,6 +3494,7 @@ function emitActionComponent(ir: ComponentIR): string {
   }
   lines.push(`${INDENT}]`);
   lines.push(`}`);
+  if (textRules?.hasProperties) lines.push(...textRules.lines);
   lines.push("");
   lines.push(
     `/// Emitted through the projected-children action path: interactive ` +
@@ -3507,6 +3530,7 @@ function emitActionComponent(ir: ComponentIR): string {
   }
   lines.push(`${INDENT}private let label: Label`);
   lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
+  if (textRules?.hasProperties && textPart) lines.push(...emitNativeTextAccessor(ir, axes, textPart));
   lines.push("");
 
   // Initializer — defaults from contract prop defaults.
@@ -3649,6 +3673,11 @@ function emitActionComponent(ir: ComponentIR): string {
     : "label";
   lines.push(`${INDENT}${INDENT}Button(action: ${action}) {`);
   lines.push(`${INDENT}${INDENT}${INDENT}${innerContent}`);
+  if (textRules?.hasProperties) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.foregroundStyle(nativeTextStyle.color ?? ${has("foreground") ? "foreground" : "Color.primary"})`);
+  }
   if (has("blockPadding")) {
     lines.push(
       `${INDENT}${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`,
@@ -3742,6 +3771,28 @@ function collectVariantAxes(ir: ComponentIR): VariantAxis[] {
       };
     })
     .filter((axis): axis is VariantAxis => axis !== null);
+}
+
+function emitNativeTextAccessor(ir: ComponentIR, axes: VariantAxis[], part: string): string[] {
+  const lines = [
+    `${INDENT}private var nativeTextStyle: FsdsResolvedNativeTextStyle {`,
+    `${INDENT}${INDENT}var values: [String: String] = [:]`,
+  ];
+  for (const axis of axes) {
+    const name = escapeSwiftKeyword(axis.prop);
+    if (axis.defaultMember === null) {
+      lines.push(`${INDENT}${INDENT}if let value = ${name} { values[${swiftLiteral(axis.prop)}] = value.rawValue }`);
+    } else {
+      lines.push(`${INDENT}${INDENT}values[${swiftLiteral(axis.prop)}] = ${name}.rawValue`);
+    }
+  }
+  lines.push(`${INDENT}${INDENT}do {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}return try resolveFsdsNativeTextStyle(${ir.name}NativeTextRules.rules, theme: fsdsTheme, variants: values, part: ${swiftLiteral(part)})`);
+  lines.push(`${INDENT}${INDENT}} catch {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}preconditionFailure(String(describing: error))`);
+  lines.push(`${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}}`);
+  return lines;
 }
 
 function findPropDefaultOrNull(ir: ComponentIR, name: string): string | null {

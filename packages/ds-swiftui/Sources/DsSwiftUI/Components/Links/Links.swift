@@ -30,6 +30,16 @@ enum LinksTokens {
         ],
     ]
 }
+enum LinksNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "links.color.foreground.default", value: "#d92d2e", token: "semantic.color.foreground.link"), .init(property: "links.color.foreground.hover", value: "#b31b1b", token: "semantic.color.foreground.linkHover"), .init(property: "links.color.foreground.disabled", value: "#727272", token: "semantic.color.foreground.disabled"), .init(property: "links.size.fontSize.small", value: "0.875rem", token: "core.typography.ramp.3"), .init(property: "links.size.fontSize.medium", value: "1rem", token: "core.typography.ramp.4"), .init(property: "links.size.fontSize.large", value: "1.125rem", token: "core.typography.ramp.5")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#d92d2e", token: "links.color.foreground.default", designSlot: "links.design.root.foreground.color"), .init(property: "font-size", value: "1rem", token: "links.size.fontSize.medium", designSlot: "links.design.root.typography.size")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "small")], declarations: [.init(property: "links.size.fontSize.medium", value: "0.875rem", token: "links.size.fontSize.small"), .init(property: "font-size", value: "1rem", token: "links.size.fontSize.medium", designSlot: "links.design.condition-42b522a9c46e.typography.size")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "medium")], declarations: [.init(property: "links.size.fontSize.medium", value: "1rem", token: "core.typography.ramp.4"), .init(property: "font-size", value: "1rem", token: "links.size.fontSize.medium", designSlot: "links.design.condition-a9821c9eea70.typography.size")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "large")], declarations: [.init(property: "links.size.fontSize.medium", value: "1.125rem", token: "links.size.fontSize.large"), .init(property: "font-size", value: "1rem", token: "links.size.fontSize.medium", designSlot: "links.design.condition-cbbd2740a3e5.typography.size")]),
+    ]
+    static let omissions: [String] = ["visited: selector outside normalized native grammar", "hover: text rule has unsupported predicate or pseudo", "disabled: text rule has unsupported predicate or pseudo"]
+}
 
 /// Emitted through the static-content path: passive a root with a single consumer content region.
 public struct Links<Content: View>: View {
@@ -39,6 +49,15 @@ public struct Links<Content: View>: View {
     private let size: LinkSize?
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        if let value = size { values["size"] = value.rawValue }
+        do {
+            return try resolveFsdsNativeTextStyle(LinksNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "root")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         size: LinkSize? = nil,
@@ -73,10 +92,12 @@ public struct Links<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end

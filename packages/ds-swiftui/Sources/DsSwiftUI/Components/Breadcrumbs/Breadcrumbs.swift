@@ -19,6 +19,13 @@ enum BreadcrumbsTokens {
         ],
     ]
 }
+enum BreadcrumbsNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "breadcrumbs.color.foreground.primary", value: "#141414", token: "semantic.color.foreground.primary")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "breadcrumbs.color.foreground.primary", designSlot: "breadcrumbs.design.root.foreground.color")]),
+    ]
+    static let omissions: [String] = []
+}
 
 /// Emitted through the static-content path: passive nav root with a single consumer content region.
 public struct Breadcrumbs<Content: View>: View {
@@ -27,6 +34,14 @@ public struct Breadcrumbs<Content: View>: View {
     }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        do {
+            return try resolveFsdsNativeTextStyle(BreadcrumbsNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "list")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         @ViewBuilder content: () -> Content
@@ -58,9 +73,11 @@ public struct Breadcrumbs<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end
