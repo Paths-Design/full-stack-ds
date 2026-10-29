@@ -55,3 +55,10 @@ evidence:
     command: "pnpm run test:coverage:react-native"
     exit_code: 0
     commit_sha: "6a201cb5694282f9f427abd6e66423b278b9669f"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At a3029a58f, yq reads runs-on: ci.yml runtime-rail=ubuntu-24.04 (gate, coverage-gate, native-compile-rail stay ubuntu-latest; two macos-latest jobs unchanged), analytical-browser.yml analytical-browser=ubuntu-24.04, contract-oracle-mutations.yml measure=ubuntu-24.04. These are exactly the three jobs with 'playwright install --with-deps chromium' (ci.yml:466, analytical-browser.yml:22, contract-oracle-mutations.yml:41). actionlint exits 0. Last green runs used Image: ubuntu-24.04 (CI 39373458484 on 99d21d67c; analytical 39912639912 on 34ba918d5). Not covered: a CI run with the pin, which needs the push"
+    recorded_at: "2026-10-29T00:18:49.532Z"
+    command: "yq '.jobs[].runs-on' + actionlint over the three workflows"
+    exit_code: 0
+    commit_sha: a3029a58f2b161e9d33ee20daa6738a8fe0a7c2c
