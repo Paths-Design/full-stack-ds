@@ -120,3 +120,10 @@ evidence:
     command: "pnpm run test:package:release"
     exit_code: 0
     commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Five installed web browser consumers passed Button activation/disabled suppression, Icon exact paths/viewBox/frame, token value and packaged styles; React cross-entry messages and Lit constructor identity; screenshots and browser-*.json in .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/runs/fsds-release-packages-z8oPOD/; no console/page/HTTP errors or FSDS workspace source aliases"
+    recorded_at: "2026-10-29T23:30:00.696Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
