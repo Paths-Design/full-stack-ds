@@ -2,7 +2,6 @@ id: GODOT-STATIC-CONTENT-01
 title: 'Godot static content and rule realization from shared IR facts'
 mode: feature
 lifecycle_state: active
-worktree: godot-static-content
 created_at: '2026-10-29T15:48:18.518Z'
 updated_at: '2026-10-29T17:46:15.645Z'
 created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
