@@ -71,3 +71,11 @@ evidence:
     exit_code: 0
     artifact_path: "/private/tmp/fsds-godot-action-final-a97dc9538/godot.json"
     commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "a97dc9538: Godot generation repeated with clean committed output; focused factory suite 19/19 and root 5208 passed; Editor/export pilot passed before and after commit; final provenance sourceDirty=false and sourceRevision=a97dc9538; governed rail passed"
+    recorded_at: "2026-10-29T23:36:19.508Z"
+    command: "pnpm run governed:rail"
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-godot-action-final-a97dc9538/provenance.json"
+    commit_sha: a97dc95386b6bccf7d4154b0ae479a060c44e8b0
