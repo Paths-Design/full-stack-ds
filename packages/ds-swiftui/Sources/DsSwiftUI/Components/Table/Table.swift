@@ -20,6 +20,13 @@ enum TableTokens {
         ],
     ]
 }
+enum TableNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "table.color.text", value: "#141414", token: "semantic.color.foreground.primary"), .init(property: "table.text.size", value: "14px", token: "semantic.typography.body.03")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "table.color.text", designSlot: "table.design.root.foreground.color"), .init(property: "font-size", value: "14px", token: "table.text.size", designSlot: "table.design.root.typography.size")]),
+    ]
+    static let omissions: [String] = ["selected: selector outside normalized native grammar"]
+}
 
 /// Emitted through the static-content path: passive div root with a single consumer content region.
 /// SwiftUI reserves the `Table` type name; this target exports it as `FsdsTable`.
@@ -29,6 +36,14 @@ public struct FsdsTable<Content: View>: View {
     }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        do {
+            return try resolveFsdsNativeTextStyle(TableNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "container")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         @ViewBuilder content: () -> Content
@@ -61,9 +76,12 @@ public struct FsdsTable<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .foregroundStyle(nativeTextStyle.color ?? Color.primary)
     }
 }
 // @generated:end

@@ -32,6 +32,14 @@ enum PostcardTokens {
         ],
     ]
 }
+enum PostcardNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "postcard.color.foreground.primary", value: "#141414", token: "semantic.color.foreground.primary"), .init(property: "postcard.typography.content.fontSize", value: "16px", token: "semantic.typography.body.02")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "postcard.color.foreground.primary", designSlot: "postcard.design.root.foreground.color")]),
+        .init(part: "content", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "postcard.color.foreground.primary", designSlot: "postcard.design.content.foreground.color"), .init(property: "font-size", value: "16px", token: "postcard.typography.content.fontSize", designSlot: "postcard.design.content.typography.size")]),
+    ]
+    static let omissions: [String] = []
+}
 
 /// Emitted through the static-content path: passive article root with a single consumer content region.
 public struct Postcard<Content: View>: View {
@@ -40,6 +48,14 @@ public struct Postcard<Content: View>: View {
     }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        do {
+            return try resolveFsdsNativeTextStyle(PostcardNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "content")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         @ViewBuilder content: () -> Content
@@ -75,11 +91,13 @@ public struct Postcard<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .background(background)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end

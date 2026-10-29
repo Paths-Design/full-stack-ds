@@ -99,14 +99,14 @@ export function Calendar({
           <View
             accessible={false}
           >
-            <RNText>{"‹"}</RNText>
+            <RNText style={styles.rootText}>{"‹"}</RNText>
           </View>
         </Pressable>
         <View
           style={styles.caption}
           accessibilityLiveRegion="polite"
         >
-          <RNText>{dateGrid.state.caption}</RNText>
+          <RNText style={styles.rootText}>{dateGrid.state.caption}</RNText>
         </View>
         <Pressable
           style={styles.nav}
@@ -119,7 +119,7 @@ export function Calendar({
           <View
             accessible={false}
           >
-            <RNText>{"›"}</RNText>
+            <RNText style={styles.rootText}>{"›"}</RNText>
           </View>
         </Pressable>
       </View>
@@ -139,7 +139,7 @@ export function Calendar({
                 >
                   <View
                   >
-                    <RNText>{item.short}</RNText>
+                    <RNText style={styles.rootText}>{item.short}</RNText>
                   </View>
                 </View>
               ))}
@@ -163,7 +163,7 @@ export function Calendar({
                     >
                       <View
                       >
-                        <RNText>{day.label}</RNText>
+                        <RNText style={styles.rootText}>{day.label}</RNText>
                       </View>
                     </Pressable>
                   ))}

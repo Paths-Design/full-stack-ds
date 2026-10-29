@@ -57,24 +57,24 @@ export function Postcard({
           <View
             style={styles.displayName}
           >
-            <RNText>{author.name}</RNText>
+            <RNText style={styles.rootText}>{author.name}</RNText>
           </View>
           <View
             style={styles.handle}
           >
-            <RNText>{author.handle}</RNText>
+            <RNText style={styles.rootText}>{author.handle}</RNText>
           </View>
         </View>
         <View
           style={styles.timestamp}
         >
-          <RNText>{timestamp}</RNText>
+          <RNText style={styles.rootText}>{timestamp}</RNText>
         </View>
       </View>
       <View
         style={styles.content}
       >
-        {typeof children === "string" ? <RNText>{children}</RNText> : children}
+        {typeof children === "string" ? <RNText style={styles.rootText}>{children}</RNText> : children}
       </View>
       <View
         style={styles.footer}
@@ -85,7 +85,7 @@ export function Postcard({
           <View
             style={styles.stat}
           >
-            <RNText>{stats.likes}</RNText>
+            <RNText style={styles.rootText}>{stats.likes}</RNText>
           </View>
         </View>
       </View>

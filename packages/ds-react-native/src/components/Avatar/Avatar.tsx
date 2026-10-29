@@ -57,7 +57,7 @@ export function Avatar({
       <View
         style={styles.initials}
       >
-        <RNText>{initials}</RNText>
+        <RNText style={styles.rootText}>{initials}</RNText>
       </View>
       ) : null}
     </View>
