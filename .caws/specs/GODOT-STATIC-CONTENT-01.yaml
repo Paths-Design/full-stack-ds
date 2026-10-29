@@ -50,3 +50,11 @@ contracts:
   - name: 'godot-runtime-static'
     type: behavior
     path: 'packages/ds-godot/addons/full_stack_ds/runtime/static_content.gd'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "factory.test.ts: 14 focused tests on 3233d939eb14dcc7b4475c89d2469ebc8c4a5de4 exercise renamed IR shape, unsupported prop/style/selector diagnostics, and platform scope; focused Vitest and codegen tsc passed"
+    recorded_at: "2026-10-29T18:38:37.510Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/factory.test.ts
+    exit_code: 0
+    commit_sha: "3233d939eb14dcc7b4475c89d2469ebc8c4a5de4"
