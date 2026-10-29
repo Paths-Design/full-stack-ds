@@ -154,11 +154,20 @@ This inventory was produced as part of CODEGEN-SEMANTIC-AUTHORITY-01. It documen
 | `AnchoredSurfacePolicy` + `resolveAnchoredSurfacePolicy` | Shared `semantics.ts` | Contract `surface.{anchor, positioning, dismissal, content}` | Part-attached anchored capability |
 | `resolveSurfaceAttachment` + `isPartAnchoredSurface` | Shared `semantics.ts` | Contract `surface.{anchor, positioning}` | Attachment and positioning axes |
 | `FormControlIR` + `buildFormControlIR` | Shared `ir.ts` | Contract `formControl` + anatomy + channel | Control part, value model, commit timing |
+| `nativeRadioChannel` + `requestNativeRadioChange` | Shared `ir.ts` + interaction runtime; Vue/Svelte/Angular/Lit syntax lowering | Native radio host, string selection channel, matching checked predicate and native value binding | Native radio change requests whose form value is the selection key |
 | `EventValueStrategy` + `resolveEventValueStrategy` | Shared `semantics.ts` | Host capability + channel valueType + callback kind | Event extraction site |
 | `channelValuePlaceholder(valueType)` | React test emitter | Channel `valueType` | Channel valueType |
 | `requiredProps` + `placeholderForPropType` | Test plan | Contract `prop.required` + `prop.type` + `definedTypes` | Prop type shape |
 | `defaultOpen` conditional emission | Svelte hook emitter | Channel `defaultValueProp` presence | Channel shape |
 | Content-transform lowering (`highlight` → one text-only span per token; declared gate → single plain run) + byte-identical shared-runtime emission | React + Vue + Svelte + Lit + Angular emitters (`isContentTransform` / `collectContentTransforms`); CLI runtime copy (`shipsContentTransformRuntime` flag); React-Native + SwiftUI prop-text degradation | IR `ContentTransformIR` (content directive; closed transform set, schema-enforced) | Content-transform directive — never a component name |
+
+Native radio activation changes the browser's checked group before the value
+request reaches the parent. The shared helper restores that group from the
+accepted channel value after the request, preserving focus and callback errors.
+React relies on its renderer's group restoration. The additional lowering is
+removable when the affected renderer supplies equivalent restoration after a
+refused native change. A different native form value and selection key do not
+receive this IR fact.
 
 ### Healthy but duplicated across substrates
 
