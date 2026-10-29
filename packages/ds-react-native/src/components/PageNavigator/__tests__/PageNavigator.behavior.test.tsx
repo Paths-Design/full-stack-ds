@@ -38,11 +38,15 @@ describe("PageNavigator bounded navigation", () => {
     act(() => renderer.unmount());
   });
 
-  it("reports a request without moving when the parent controls the index", () => {
-    const { renderer, onIndexChange } = mount({ index: 0 });
+  it("keeps a controlled position pinned until the parent acknowledges the request", () => {
+    const { renderer, onIndexChange } = mount({ index: 1 });
+    expect(field(renderer).props.value).toBe("2");
     act(() => button(renderer, "Next page").props.onPress());
-    expect(onIndexChange).toHaveBeenCalledWith(1);
-    expect(field(renderer).props.value).toBe("1");
+    expect(onIndexChange.mock.calls).toEqual([[2]]);
+    expect(field(renderer).props.value).toBe("2");
+    act(() => renderer.update(<PageNavigator pages={pages} index={2} onIndexChange={onIndexChange} />));
+    expect(field(renderer).props.value).toBe("3");
+    expect(button(renderer, "Next page").props.accessibilityState.disabled).toBe(true);
     act(() => renderer.unmount());
   });
 });
@@ -53,6 +57,7 @@ describe("PageNavigator one-based page field", () => {
     expect(field(renderer).props.value).toBe("1");
     act(() => field(renderer).props.onChangeText("3"));
     expect(field(renderer).props.value).toBe("3");
+    expect(onIndexChange).not.toHaveBeenCalled();
     act(() => button(renderer, "Go").props.onPress());
     expect(onIndexChange).toHaveBeenCalledExactlyOnceWith(2);
     expect(field(renderer).props.value).toBe("3");
