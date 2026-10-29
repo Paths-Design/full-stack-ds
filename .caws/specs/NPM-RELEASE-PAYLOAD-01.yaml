@@ -98,3 +98,11 @@ contracts:
   - name: 'release-payload'
     type: contract-test
     path: 'scripts/release-package-check'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "MIT DesignPaths LLC metadata and exact LICENSE in all eight fresh tarballs; applicable complete third-party notices verified by assertReleasePayload; raw integrated-consumer.log and .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/runs/fsds-release-packages-z8oPOD/payloads.json"
+    recorded_at: "2026-10-29T23:29:56.880Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
