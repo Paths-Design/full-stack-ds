@@ -6,6 +6,11 @@ import { buildComponentIR } from "../../ir.js";
 import { createGodotEmitter, godotPlan, themeColor } from "./factory.js";
 const root = path.resolve(__dirname, "../../../../..");
 function fixture(name: string) { return JSON.parse(fs.readFileSync(path.join(root,`packages/ds-contracts/components/${name}/${name}.contract.json`),"utf8")) as ComponentContract; }
+function styledFixture(name: string) {
+  const c = fixture(name);
+  for (const kind of ["tokens", "styles"] as const) c[kind] = JSON.parse(fs.readFileSync(path.join(root, `packages/ds-contracts/components/${name}/${name}.${kind}.json`), "utf8"));
+  return c;
+}
 function sequenceFixture() {
   const c = fixture("Carousel");
   for (const kind of ["tokens", "styles"] as const) c[kind] = JSON.parse(fs.readFileSync(path.join(root, `packages/ds-contracts/components/Carousel/Carousel.${kind}.json`), "utf8"));
@@ -88,5 +93,51 @@ describe("Godot bounded lowering", () => {
     expect(themeColor(ir)).toBe("#123456");
     const files=createGodotEmitter().emitComponent(ir,{componentsRoot:"",contractsRoot:""});
     expect(files.find(f=>f.relativePath.endsWith("theme.tres"))!.contents).toContain("Color(0.07058823529411765, 0.20392156862745098, 0.33725490196078434, 1)");
+  });
+  it("lowers renamed passive text and rule shapes from styled IR", () => {
+    const text = buildComponentIR(styledFixture("Text")); text.name = "Prose";
+    const divider = buildComponentIR(styledFixture("Divider")); divider.name = "RuleLine";
+    const textFiles = createGodotEmitter().emitComponent(text, { componentsRoot: "", contractsRoot: "" });
+    const ruleFiles = createGodotEmitter().emitComponent(divider, { componentsRoot: "", contractsRoot: "" });
+    const configOf = (files: typeof textFiles) => {
+      const script = files.find(file => file.relativePath.endsWith(".gd"))!.contents;
+      const encoded = script.match(/JSON.parse_string\((.+)\)/)![1]!;
+      return JSON.parse(JSON.parse(encoded));
+    };
+    const prose = configOf(textFiles);
+    const rule = configOf(ruleFiles);
+    expect(textFiles.find(file => file.relativePath === "Prose/Prose.gd")!.contents).toContain("runtime/static_content.gd");
+    expect(prose.operation).toBe("static-text");
+    expect(prose.excluded).toEqual(["as"]);
+    expect(prose.styles.find((entry: { source: string }) => entry.source === "--display").declarations).toEqual(expect.arrayContaining([{ property: "font-size", value: "3.75rem", token: "text.size.md" }]));
+    expect(rule.operation).toBe("rule");
+    expect(rule.excluded).toEqual(["decorative"]);
+    expect(rule.styles.find((entry: { source: string }) => entry.source === "root").declarations).toEqual(expect.arrayContaining([{ property: "border-top-color", value: "#d0d0d0", token: "divider.color" }]));
+    expect(rule.styles.find((entry: { source: string }) => entry.source === "--vertical").predicates).toEqual([{ kind: "variant", axis: "orientation", value: "vertical" }]);
+  });
+  it("preserves changed static style facts and rejects unsupported props", () => {
+    const prose = styledFixture("Text");
+    prose.styles!["--display"]!["text.size.md"]!.fallback = "4rem";
+    const plan = godotPlan(buildComponentIR(prose));
+    expect(plan.operation).toBe("static-text");
+    if (!("styles" in plan)) throw new Error("Static plan lost its style projection");
+    expect(plan.styles.find(entry => entry.source === "--display")?.declarations.find(entry => entry.property === "font-size")?.value).toBe("4rem");
+    const divider = styledFixture("Divider");
+    divider.tokens!["divider.color"]!.fallback = "#123456";
+    const rule = godotPlan(buildComponentIR(divider));
+    expect(rule.operation).toBe("rule");
+    if (!("styles" in rule)) throw new Error("Rule plan lost its style projection");
+    expect(rule.styles.find(entry => entry.source === "root")?.declarations.find(entry => entry.property === "border-top-color")?.value).toBe("#123456");
+    prose.props!.designed!.members!.push({ name: "futureBehavior", propType: { kind: "boolean" } });
+    expect(() => godotPlan(buildComponentIR(prose))).toThrow("GODOT_UNSUPPORTED_PROP: Text.futureBehavior");
+  });
+  it("refuses unlowered anatomy and pseudo styling on a passive shape", () => {
+    const ir = buildComponentIR(styledFixture("Text"));
+    ir.dom!.attrs["data-unhandled"] = "true";
+    expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_STATIC_ANATOMY: Text");
+    delete ir.dom!.attrs["data-unhandled"];
+    const rootRule = ir.nativeStyleRules!.rules.find(rule => rule.sourceKey === "root")!;
+    ir.nativeStyleRules!.rules.push({ ...rootRule, sourceKey: "root::before", pseudo: "before" });
+    expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_STATIC_SELECTOR: Text");
   });
 });

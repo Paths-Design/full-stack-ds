@@ -14,14 +14,30 @@ fs.copyFileSync(path.join(root,'packages/ds-godot/fixtures/traces.json'),path.jo
 // A separate changed-token fixture checks emitted resource values in Godot.
 const {buildComponentIR}=await import('../packages/ds-codegen/dist/ir.js');
 const {createGodotEmitter}=await import('../packages/ds-codegen/dist/frameworks/godot/factory.js');
+function emitProbe(ir) {
+ for(const file of createGodotEmitter().emitComponent(ir,{componentsRoot:'',contractsRoot:''})) {
+  const target=path.join(project,'addons/full_stack_ds/components',file.relativePath);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,file.contents);
+ }
+}
 const contractDir=path.join(root,'packages/ds-contracts/components/Accordion');
 const contract=JSON.parse(fs.readFileSync(path.join(contractDir,'Accordion.contract.json'),'utf8'));
 contract.tokens=JSON.parse(fs.readFileSync(path.join(contractDir,'Accordion.tokens.json'),'utf8'));
 contract.styles=JSON.parse(fs.readFileSync(path.join(contractDir,'Accordion.styles.json'),'utf8'));
 const probe=buildComponentIR(contract); probe.name='TokenProbe';
 for(const fact of probe.tokenFacts) if(fact.rawValue?.match(/^#[0-9a-f]{6}$/i)) fact.rawValue='#123456';
-for(const file of createGodotEmitter().emitComponent(probe,{componentsRoot:'',contractsRoot:''})) {
- const target=path.join(project,'addons/full_stack_ds/components',file.relativePath);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,file.contents);
+emitProbe(probe);
+for(const name of ['Text','Divider']) {
+ const base=path.join(root,'packages/ds-contracts/components',name,name);
+ const source=JSON.parse(fs.readFileSync(base+'.contract.json','utf8'));
+ source.tokens=JSON.parse(fs.readFileSync(base+'.tokens.json','utf8'));
+ source.styles=JSON.parse(fs.readFileSync(base+'.styles.json','utf8'));
+ const ir=buildComponentIR(source);
+ emitProbe(ir);
+ if(name==='Divider') {
+  ir.name='RuleProbe';
+  for(const fact of ir.tokenFacts) if(fact.name==='divider.color') fact.rawValue='#123456';
+  emitProbe(ir);
+ }
 }
 
 fs.writeFileSync(path.join(project,'project.godot'),'config_version=5\n[application]\nconfig/name="Full Stack DS Godot Pilot"\nrun/main_scene="res://main.tscn"\n[display]\nwindow/size/viewport_width=640\nwindow/size/viewport_height=800\n[rendering]\nrenderer/rendering_method="gl_compatibility"\ntextures/vram_compression/import_etc2_astc=true\nenvironment/defaults/default_clear_color=Color(0.12,0.14,0.18,1)\n');
