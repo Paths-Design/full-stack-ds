@@ -72,3 +72,10 @@ evidence:
     command: node scripts/godot-pilot.mjs
     exit_code: 0
     commit_sha: c1fd2b07212292fb502e584853633bb8d39a7708
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "3233d939eb14dcc7b4475c89d2469ebc8c4a5de4: generated tree committed-output check, focused factory tests, codegen tsc, root 355 files/5195 tests and framework suites passed; pilot local provenance run 7483600f-35a0-4efe-8c2e-adefb28aa3df records sourceDirty=false and sourceRevision=c1fd2b07212292fb502e584853633bb8d39a7708"
+    recorded_at: "2026-10-29T18:39:40.445Z"
+    command: node scripts/committed-tree-check.mjs generated
+    exit_code: 0
+    commit_sha: "3233d939eb14dcc7b4475c89d2469ebc8c4a5de4"
