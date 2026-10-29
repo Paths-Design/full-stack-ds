@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: godot-static-content
 created_at: '2026-10-29T15:48:18.518Z'
-updated_at: '2026-10-29T17:40:41.577Z'
+updated_at: '2026-10-29T17:46:15.645Z'
 created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
 blast_radius:
   modules:
@@ -20,6 +20,9 @@ scope:
     - 'docs/architecture/godot-target.md'
     - docs/current-implementation-snapshot.md
   out: []
+  support:
+    - README.md
+    - docs/specifications/governed-ci.md
 invariants:
   - 'Static component emission reads normalized anatomy, content, variant and style facts without branching on component identity'
   - 'Unknown or unsupported contract facts fail admission or remain explicitly unadmitted; generation alone never counts as fidelity'
