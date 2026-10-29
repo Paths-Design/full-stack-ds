@@ -113,3 +113,10 @@ evidence:
     command: "pnpm run test:package:release"
     exit_code: 0
     commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Installed actual eight tgz with no FSDS source aliases; strict CSS/JSON positives and intended TS2882 negatives, 30 public-type positive/negative cases with skipLibCheck false, ESM/CJS entries each format, compiled native Metro ios/android passed; exact observations under .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/runs/fsds-release-packages-z8oPOD/; pinned peers only, no native-device or mixed-format co-load claim"
+    recorded_at: "2026-10-29T23:29:59.464Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
