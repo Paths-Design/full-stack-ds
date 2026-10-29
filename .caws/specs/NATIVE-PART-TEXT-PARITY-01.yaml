@@ -1,9 +1,11 @@
 id: NATIVE-PART-TEXT-PARITY-01
 title: 'Cross-target part-aware text presentation from native style IR'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: abandoned
+closure_notes: 'RN and SwiftUI partial text work landed; Compose and full native acceptance remain unmet and are cancelled by the user-directed Unity/Godot pivot'
 created_at: '2026-10-29T18:51:42.487Z'
-updated_at: '2026-10-29T18:52:15.730Z'
+updated_at: '2026-10-29T20:57:50.833Z'
 created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
 blast_radius:
   modules:
