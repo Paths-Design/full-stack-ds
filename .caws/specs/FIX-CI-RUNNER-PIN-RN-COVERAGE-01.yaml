@@ -48,3 +48,10 @@ evidence:
     command: "pnpm --filter @full-stack-ds/react-native exec vitest run src/components/PageNavigator/__tests__/PageNavigator.behavior.test.tsx"
     exit_code: 0
     commit_sha: "6a201cb5694282f9f427abd6e66423b278b9669f"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "pnpm run test:coverage:react-native exits 0 at 6a201cb56: Test Files 101 passed, Tests 258 passed, All files functions 90.55% against the unchanged 89 floor (was 'ERROR: Coverage for functions (88.97%) does not meet global threshold (89%)' locally and in CI run 40666465923 on 1dec06f2e). paging.ts functions 50% -> 91.66% (only the web keyboard path commitOnEnter remains). git diff 1dec06f2e..HEAD -- coverage-floors.json packages/ds-react-native/vitest.config.ts is empty"
+    recorded_at: "2026-10-29T00:18:48.594Z"
+    command: "pnpm run test:coverage:react-native"
+    exit_code: 0
+    commit_sha: "6a201cb5694282f9f427abd6e66423b278b9669f"
