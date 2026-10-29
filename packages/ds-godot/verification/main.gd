@@ -136,6 +136,11 @@ func _ready() -> void:
 	check(is_equal_approx(action.rendered.custom_minimum_size.y, 48), "Action size did not change minimum height")
 	action.token_overrides = {"button.color.background.default":"#123456"}
 	check(action.rendered.get_theme_stylebox("normal").bg_color.is_equal_approx(Color("#123456")), "Action token override did not reach rendered Button")
+	action.token_overrides = {"button.color.background.default":"#123456", "background-color":"#456789"}
+	check(action.rendered.get_theme_stylebox("normal").bg_color.is_equal_approx(Color("#456789")), "Action property override did not outrank token override")
+	action.token_overrides = {"button.color.background.default":"#123456", "background-color":"#456789", "button.design.root.background.fill":"#654321"}
+	check(action.rendered.get_theme_stylebox("normal").bg_color.is_equal_approx(Color("#654321")), "Action design-slot override did not outrank property and token overrides")
+	action.token_overrides = {"button.color.background.default":"#123456"}
 	action.loading = true
 	check(action.rendered.disabled and action.rendered.text.is_empty() and action.loading_indicator.visible, "Loading did not replace and suppress action")
 	action.rendered.pressed.emit()
@@ -144,7 +149,7 @@ func _ready() -> void:
 	action.disabled = true
 	action.rendered.pressed.emit()
 	check(calls[0] == 2 and action.rendered.disabled, "Disabled action activated")
-	rows.append({"id":"action-content","activations":calls[0],"largePx":18,"tokenColor":"#123456"})
+	rows.append({"id":"action-content","activations":calls[0],"largePx":18,"tokenColor":"#123456","precedence":["design-slot","property","token"]})
 	action.queue_free()
 	var defaulted_action = make_control("DefaultedAction")
 	add_child(defaulted_action)
