@@ -127,3 +127,10 @@ evidence:
     command: "pnpm run test:package:release"
     exit_code: 0
     commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "38 node payload/Metro-launch falsifiers passed; required rail, lint, all typechecks, docs claims/links, generated drift and icon ledger passed; root5203/357 and all framework suites passed. Raw qualification-lint/types.log, integrated-{consumer,rail,docs,root,frameworks,icon-ledger}.log in .caws/state/release-evidence/NPM-RELEASE-PAYLOAD-01/; packaging only, broader component repairs and native-device qualification remain open"
+    recorded_at: "2026-10-29T23:30:01.977Z"
+    command: "pnpm run governed:rail && pnpm exec vitest run --maxWorkers=1 && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "0b97c763d4684a270f6ef75c7b359a89430017ae"
