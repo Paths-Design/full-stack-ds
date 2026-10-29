@@ -1,0 +1,49 @@
+id: NATIVE-PART-TEXT-PARITY-01
+title: 'Cross-target part-aware text presentation from native style IR'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-29T18:51:42.487Z'
+updated_at: '2026-10-29T18:51:42.487Z'
+created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
+blast_radius:
+  modules:
+    - 'RN SwiftUI Compose text style lowering, generated components and native consumer tests'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/react-native'
+    - 'packages/ds-codegen/src/frameworks/swift'
+    - 'packages/ds-codegen/src/frameworks/jetpack-compose'
+    - 'packages/ds-react-native'
+    - 'packages/ds-swiftui'
+    - 'packages/ds-jetpack-compose'
+    - 'scripts/fixtures/carousel-native/Generated.tsx'
+  out: []
+invariants:
+  - 'Text presentation is derived from normalized contract style facts with explicit target limitations, not component identity'
+acceptance:
+  - id: A1
+    given: 'Text Button Badge and AlertNotice contracts with part and variant typography'
+    when: 'RN SwiftUI and Compose emitters lower existing native style IR'
+    then: 'color font size and font weight reach their authored text regions without component-name dispatch or silently invented defaults'
+  - id: A2
+    given: 'changed token values and root plus part declarations'
+    when: 'generated components are rendered'
+    then: 'token identity and declaration order determine visible text color and geometry and part rules override inherited root facts'
+  - id: A3
+    given: 'a real consumer on each native target'
+    when: 'variants and content change'
+    then: 'RN SwiftUI and Compose runtime witnesses observe the rendered text facts and preserve existing interaction semantics'
+  - id: A4
+    given: 'committed generated output'
+    when: 'regeneration and focused target checks run'
+    then: 'emitted bytes are stable and all three target test lanes pass with source identity'
+non_functional: {}
+contracts:
+  - name: 'native-text-lowering'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/react-native/component-source.test.ts'
+  - name: 'native-text-consumer'
+    type: behavior
+    path: 'packages/ds-swiftui/Tests/DsSwiftUITests/TokenPaintTests.swift'
