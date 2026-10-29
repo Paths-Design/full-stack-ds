@@ -58,3 +58,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/factory.test.ts
     exit_code: 0
     commit_sha: "3233d939eb14dcc7b4475c89d2469ebc8c4a5de4"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "governed:rail passed 330 groups/1618 files and emitted Godot Text/Divider; generated scripts, theme resources and catalog committed in merge 1be6d367257321c68b199b0e0f5d6035eb5b79d0; Text.as and Divider.decorative explicitly unadmitted"
+    recorded_at: "2026-10-29T18:38:48.667Z"
+    command: "pnpm run governed:rail"
+    exit_code: 0
+    commit_sha: "1be6d367257321c68b199b0e0f5d6035eb5b79d0"
