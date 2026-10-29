@@ -126,9 +126,10 @@ func _refresh() -> void:
 		var side := "border-left-color" if orientation == "vertical" else "border-top-color"
 		rule.color = Color(style.get(side, "#d0d0d0"))
 		var width_side := "border-left-width" if orientation == "vertical" else "border-top-width"
-		var pixels := maxf(1.0, _pixels(thickness if not thickness.is_empty() else style.get(width_side, "1px")))
+		var pixels := maxf(0.0, _pixels(thickness if not thickness.is_empty() else style.get(width_side, "1px")))
 		if orientation == "vertical":
 			rule.custom_minimum_size = Vector2(pixels, 16.0)
+			rule.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 			rule.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		else:
 			rule.custom_minimum_size = Vector2(0.0, pixels)
@@ -137,6 +138,8 @@ func _refresh() -> void:
 		rule.tooltip_text = title
 		rendered = rule
 		var margins := MarginContainer.new()
+		margins.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if orientation == "vertical": margins.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		for edge in ["left", "right", "top", "bottom"]:
 			var margin := 0.0
 			if (orientation == "vertical" and edge in ["left", "right"]) or (orientation == "horizontal" and edge in ["top", "bottom"]):

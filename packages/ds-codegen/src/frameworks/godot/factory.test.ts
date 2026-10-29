@@ -140,4 +140,15 @@ describe("Godot bounded lowering", () => {
     ir.nativeStyleRules!.rules.push({ ...rootRule, sourceKey: "root::before", pseudo: "before" });
     expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_STATIC_SELECTOR: Text");
   });
+  it("does not project another platform's style declaration into Godot", () => {
+    const c = styledFixture("Text");
+    c.styles!.root!.color = { literal: "#ff0000", platforms: ["ios"] };
+    const ir = buildComponentIR(c);
+    const plan = godotPlan(ir);
+    expect(plan.operation).toBe("static-text");
+    if (!("styles" in plan)) throw new Error("Static plan lost its style projection");
+    expect(plan.styles.find(entry => entry.source === "root")?.declarations.find(entry => entry.property === "color")).toBeUndefined();
+    const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" });
+    expect(files.find(file => file.relativePath === "Text/theme.tres")!.contents).not.toContain("Color(1, 0, 0, 1)");
+  });
 });

@@ -38,10 +38,10 @@ function staticPlan(ir: ComponentIR) {
     return {
       source: rule.sourceKey,
       predicates: rule.predicates,
-      declarations: rule.declarations.filter(decl => !decl.platforms || !decl.platforms.includes("web")).filter(decl => allowedStyles.has(decl.property)).map(decl => ({ property: decl.property, value: decl.token ? localTokens.get(decl.token) ?? tokenValues.get(decl.token) ?? decl.value : decl.value, token: decl.token })),
+      declarations: rule.declarations.filter(decl => !decl.platforms).filter(decl => allowedStyles.has(decl.property)).map(decl => ({ property: decl.property, value: decl.token ? localTokens.get(decl.token) ?? tokenValues.get(decl.token) ?? decl.value : decl.value, token: decl.token })),
     };
   }).filter(rule => rule.declarations.length);
-  const unsupported = styleRules.flatMap(rule => rule.declarations.filter(decl => !decl.property.includes(".") && (!decl.platforms || !decl.platforms.includes("web")) && !allowedStyles.has(decl.property)).map(decl => `${rule.sourceKey}.${decl.property}`));
+  const unsupported = styleRules.flatMap(rule => rule.declarations.filter(decl => !decl.property.includes(".") && !decl.platforms && !allowedStyles.has(decl.property)).map(decl => `${rule.sourceKey}.${decl.property}`));
   if (unsupported.length) throw new Error(`GODOT_UNSUPPORTED_STATIC_STYLE: ${ir.name}.${unsupported.join(",")}`);
   const excludedSelectors = ir.nativeStyleRules?.unsupported.map(rule => rule.sourceKey) ?? [];
   if (excludedSelectors.length && !(isText && excludedSelectors.every(selector => selector === `.${ir.cssPrefix}[data-truncate="true"]`))) throw new Error(`GODOT_UNSUPPORTED_STATIC_SELECTOR: ${ir.name}.${excludedSelectors.join(",")}`);

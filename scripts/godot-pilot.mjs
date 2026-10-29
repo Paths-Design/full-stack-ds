@@ -6,6 +6,11 @@ import {fileURLToPath} from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = process.env.FSDS_ENGINE_OUT ?? path.join(root,'tmp/godot-pilot',crypto.randomUUID());
 const runId = process.env.FSDS_ENGINE_RUN ?? crypto.randomUUID();
+const revision = spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'});
+if(revision.status!==0)throw new Error('Cannot identify Godot pilot source revision');
+const sourceRevision = revision.stdout.trim();
+const dirt = spawnSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'});
+if(dirt.status!==0)throw new Error('Cannot identify Godot pilot source tree state');
 const project = path.join(out,'project');
 fs.mkdirSync(project,{recursive:true});
 fs.cpSync(path.join(root,'packages/ds-godot/addons'),path.join(project,'addons'),{recursive:true});
@@ -60,7 +65,7 @@ run([], 'runtime');
 const receipt=JSON.parse(fs.readFileSync(path.join(out,'godot.json'),'utf8'));
 if(receipt.runId!==runId || !receipt.passed) throw new Error('Invalid runtime receipt');
 fs.copyFileSync(path.join(out,'godot.json'),path.join(out,'godot-runtime.json'));
-fs.writeFileSync(path.join(out,'provenance.json'),JSON.stringify({runId,godot,tracesSha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(project,'traces.json'))).digest('hex')},null,2));
+fs.writeFileSync(path.join(out,'provenance.json'),JSON.stringify({runId,godot,sourceRevision,sourceDirty:dirt.stdout.trim().length>0,tracesSha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(project,'traces.json'))).digest('hex')},null,2));
 console.log(JSON.stringify(receipt));
 
 fs.writeFileSync(path.join(project,'export_presets.cfg'), `[preset.0]

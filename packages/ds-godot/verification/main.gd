@@ -48,6 +48,7 @@ func _ready() -> void:
 		var display_font = prose.rendered.get_theme_font("font")
 		check(display_font is FontVariation and display_font.base_font is SystemFont and display_font.base_font.font_weight == 700, "Display font weight did not reach rendered label")
 	prose.variant = "caption"
+	check(prose.rendered is Label, "Text variant update lost its rendered Label")
 	if prose.rendered is Label:
 		check(prose.rendered.get_theme_font_size("font_size") == 12, "Caption typography did not change the rendered size")
 		check(prose.rendered.get_theme_font("font") is SystemFont and prose.rendered.get_theme_font("font").font_weight == 400, "Caption font weight did not reach rendered label")
@@ -63,12 +64,37 @@ func _ready() -> void:
 		check(divider.host is MarginContainer and divider.host.get_theme_constant("margin_top") == 8, "Horizontal rule spacing mismatch")
 	divider.orientation = "vertical"
 	divider.thickness = "4px"
+	check(divider.rendered is ColorRect, "Vertical rule update lost its rendered rectangle")
 	if divider.rendered is ColorRect:
 		check(is_equal_approx(divider.rendered.custom_minimum_size.x, 4.0), "Vertical rule thickness mismatch")
+	divider.thickness = "0.5px"
+	check(divider.rendered is ColorRect, "Fractional rule update lost its rendered rectangle")
+	if divider.rendered is ColorRect:
+		check(is_equal_approx(divider.rendered.custom_minimum_size.x, 0.5), "Fractional rule thickness was clamped")
+	divider.thickness = "0px"
+	check(divider.rendered is ColorRect, "Zero-width rule update lost its rendered rectangle")
+	if divider.rendered is ColorRect:
+		check(is_equal_approx(divider.rendered.custom_minimum_size.x, 0.0), "Zero-width rule thickness was clamped")
 	rows.append({"id":"rule-orientation","verticalPx":4})
 	divider.queue_free()
+	var tall_frame := Control.new()
+	tall_frame.size = Vector2(200, 80)
+	add_child(tall_frame)
+	var tall_rule = make_control("Divider")
+	tall_frame.add_child(tall_rule)
+	tall_rule.size = Vector2(200, 80)
+	tall_rule.orientation = "vertical"
+	tall_rule.thickness = "4px"
+	for i in range(2): await get_tree().process_frame
+	check(tall_rule.rendered is ColorRect, "Sized vertical rule did not create a rendered rectangle")
+	if tall_rule.rendered is ColorRect:
+		check(is_equal_approx(tall_rule.rendered.size.x, 4.0), "Vertical rule stretched across its container")
+		check(is_equal_approx(tall_rule.rendered.size.y, 80.0), "Vertical rule did not stretch along its container")
+	rows.append({"id":"rule-sized-layout","widthPx":tall_rule.rendered.size.x,"heightPx":tall_rule.rendered.size.y})
+	tall_frame.queue_free()
 	var changed_rule = make_control("RuleProbe")
 	add_child(changed_rule)
+	check(changed_rule.rendered is ColorRect, "Changed-token rule did not create a rendered rectangle")
 	if changed_rule.rendered is ColorRect:
 		check(changed_rule.rendered.color.is_equal_approx(Color("#123456")), "Changed token did not reach rendered rule")
 	rows.append({"id":"rule-token","color":"#123456"})
