@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: npm-release-payload
 created_at: '2026-10-23T02:38:16.212Z'
-updated_at: '2026-10-29T20:58:33.434Z'
+updated_at: '2026-10-29T21:29:17.376Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -64,6 +64,7 @@ scope:
     - packages/ds-react-native/tsconfig.build.json
     - AGENTS.md
     - docs/current-implementation-snapshot.md
+    - scripts/public-types-consumer/verify.mjs
   out: []
 invariants:
   - 'MIT applies to DesignPaths LLC code while applicable Lucide ISC and Feather MIT notices remain intact in distributed payloads'
