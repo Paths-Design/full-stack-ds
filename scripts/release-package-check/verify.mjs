@@ -29,7 +29,7 @@ function run(label, command, args, cwd) {
   return result.stdout;
 }
 
-// Pack runs each package's prepack build. Source-only RN has no build step.
+// Pack runs each package's prepack build before checking its emitted payload.
 const names = ["iconography", "tokens", "react", "vue", "svelte", "angular", "lit", "react-native"];
 const sources = Object.fromEntries(names.map(name => [name, JSON.parse(readFileSync(join(repo, `packages/ds-${name}/package.json`), "utf8"))]));
 const licenseText = readFileSync(join(repo, "LICENSE"), "utf8");
