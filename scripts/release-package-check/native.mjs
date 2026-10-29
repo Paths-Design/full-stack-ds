@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 
@@ -34,6 +34,9 @@ const hash = bytes => createHash("sha256").update(bytes).digest("hex");
 
 /** Standard native bundler consumption; does not execute or render a native app. */
 export async function verifyNativeBundles({ repo, consumer, evidence }) {
+  // Metro forks inherit execArgv; eval would recursively execute this launcher.
+  assert.ok(!process.execArgv.some(arg => /^(?:-e|-p|--eval|--print)(?:=|$)/.test(arg)),
+    "NATIVE_METRO_FILE_ENTRY: invoke the saved release verifier file; Metro workers inherit inline evaluation flags");
   repo = realpathSync(repo);
   consumer = realpathSync(consumer);
   const rootRequire = createRequire(join(repo, "package.json"));
@@ -56,6 +59,7 @@ export async function verifyNativeBundles({ repo, consumer, evidence }) {
   const reactRoot = realpathSync(join(consumer, "node_modules/react"));
   const manifestAt = directory => JSON.parse(readFileSync(join(directory, "package.json"), "utf8"));
   const tools = {
+    node: process.version,
     reactNative: manifestAt(nativeRoot).version, react: manifestAt(reactRoot).version,
     reactNativeSvg: manifestAt(svgRoot).version, metro: configRequire("metro/package.json").version,
     metroConfig: rootRequire("@react-native/metro-config/package.json").version,
@@ -81,7 +85,9 @@ export async function verifyNativeBundles({ repo, consumer, evidence }) {
   const observations = [];
   for (const platform of ["ios", "android"]) {
     console.log(`Installed React Native: building production ${platform} Metro bundle`);
-    const events = [];
+    const metroLog = join(evidence, `native-${platform}-metro.log`);
+    writeFileSync(metroLog, "");
+    let progressBucket = -1;
     const modules = new Set();
     const bundleFile = join(evidence, `native-${platform}.bundle.js`);
     const mapFile = join(evidence, `native-${platform}.bundle.map`);
@@ -91,7 +97,15 @@ export async function verifyNativeBundles({ repo, consumer, evidence }) {
       projectRoot: consumer, watchFolders: [consumer, realpathSync(join(repo, "node_modules"))],
       maxWorkers: 2, resetCache: true, resolver: { useWatchman: false },
       reporter: { update(event) {
-        if (event.type !== "transform_progress") events.push({ type: event.type, message: event.message == null ? undefined : String(event.message), error: event.error?.stack ?? event.error?.message });
+        if (event.type === "bundle_transform_progressed") {
+          const bucket = Math.floor(event.transformedFileCount / 100);
+          if (bucket === progressBucket) return;
+          progressBucket = bucket;
+        }
+        appendFileSync(metroLog, JSON.stringify({ time: new Date().toISOString(), type: event.type,
+          transformedFileCount: event.transformedFileCount, totalFileCount: event.totalFileCount,
+          message: event.message ?? event.chunk, error: event.error?.stack ?? event.error?.message,
+        }) + "\n");
       } },
       serializer: { experimentalSerializerHook(graph) {
         for (const file of graph.dependencies.keys()) modules.add(slash(file));
@@ -129,7 +143,6 @@ export async function verifyNativeBundles({ repo, consumer, evidence }) {
     } catch (error) { observation.error = error.stack ?? String(error); throw error; }
     finally {
       writeFileSync(join(evidence, `native-${platform}.json`), JSON.stringify(observation, null, 2));
-      writeFileSync(join(evidence, `native-${platform}-metro.log`), events.map(event => JSON.stringify(event)).join("\n") + "\n");
     }
   }
   assert.equal(observations.length, 2);
