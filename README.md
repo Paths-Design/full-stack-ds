@@ -483,7 +483,7 @@ For an in-repo built-in target, add the emitter under `packages/ds-codegen/src/f
 
 ## Consuming the packages
 
-The `@full-stack-ds/*` packages are **workspace-only** today. They are not published to npm. The monorepo consumes them through `workspace:*`. To consume them outside this repo, publish, link, or vendor the generated output yourself.
+The monorepo consumes `@full-stack-ds/*` through `workspace:*`. The six framework libraries, tokens, and iconography also provide build-backed npm tarballs with explicit public exports. Run `pnpm run test:package:release` to pack and exercise installed consumers; each package README documents its imports and styles. Publication is a separate release action.
 
 ## Downstream consumers
 
@@ -558,8 +558,8 @@ from the workspace manifests; independent packages may build concurrently.
 This includes token/iconography outputs, framework packages, the Figma plugin,
 and web examples such as the spatial console.
 
-Workspaces without a `build` script, including the source-only React Native
-package and example, are skipped. Native and engine lanes outside the pnpm
+Workspaces without a `build` script, including the React Native example,
+are skipped. Native and engine lanes outside the pnpm
 workspace keep their separate commands. `build:all` builds the checked-in
 component sources; use `generate -- --target=all` or `governed:rail` when you
 also need to regenerate components from contracts.
