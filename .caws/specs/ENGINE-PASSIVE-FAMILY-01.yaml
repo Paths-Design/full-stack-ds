@@ -1,9 +1,11 @@
 id: ENGINE-PASSIVE-FAMILY-01
 title: 'Unity and Godot passive component parity foundations'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Bounded Unity and Godot Text/Divider foundation merged with source-bound engine witnesses and classified fidelity gaps'
 created_at: '2026-10-30T07:16:09.868Z'
-updated_at: '2026-10-30T11:23:43.166Z'
+updated_at: '2026-10-30T11:47:07.324Z'
 created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
 blast_radius:
   modules:
