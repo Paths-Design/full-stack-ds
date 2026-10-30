@@ -106,3 +106,9 @@ evidence:
     command: "pnpm run audit:token-resolvability && pnpm run audit:variant-realization"
     exit_code: 0
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A3
+    status: fail
+    evidence_ref: "pnpm run test:unity attempted twice after generated styling changes; Unity 6000.5.3f1 licensing IPC timed out and com.unity.editor.headless was unavailable before EditMode tests; no current results.xml or Player screenshots. Compile-only passed, but does not satisfy this criterion."
+    recorded_at: "2026-10-30T05:47:27.102Z"
+    command: "pnpm run test:unity"
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
