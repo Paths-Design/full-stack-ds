@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type NavListOrientation = "vertical" | "horizontal";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,7 +14,7 @@
 // @custom:end
 
 // @generated:start types
-type NavListOrientation = "vertical" | "horizontal";
+
 // @generated:end
 
 // @custom:start types

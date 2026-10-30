@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type WalkthroughStepSpec = { anchor: string; title: string; description?: string };
+export type WalkthroughPlacement = "top" | "bottom" | "left" | "right" | "auto";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useWalkthrough } from "./useWalkthrough.svelte.js";
@@ -11,8 +18,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type WalkthroughStepSpec = { anchor: string; title: string; description?: string };
-type WalkthroughPlacement = "top" | "bottom" | "left" | "right" | "auto";
+
 // @generated:end
 
 // @custom:start types

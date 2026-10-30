@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type NavTreeIconSize = "sm" | "md";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { resolveIcon } from "@full-stack-ds/iconography";
@@ -8,7 +14,7 @@ import { resolveIcon } from "@full-stack-ds/iconography";
 // @custom:end
 
 // @generated:start types
-type NavTreeIconSize = "sm" | "md";
+
 // @generated:end
 
 // @custom:start types

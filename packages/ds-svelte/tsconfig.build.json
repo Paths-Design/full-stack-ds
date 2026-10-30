@@ -1,0 +1,7 @@
+{
+  // svelte-package's declaration program. Tests stay out: they import
+  // ds-react's shared contracts, and TypeScript writes the declaration of a
+  // file outside rootDir beside its source, inside packages/ds-react/src.
+  "extends": "./tsconfig.json",
+  "exclude": ["dist", "node_modules", "src/**/__tests__/**"]
+}

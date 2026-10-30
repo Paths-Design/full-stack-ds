@@ -21,7 +21,7 @@ governs:
 
 This document is the architectural record for the design-token graph. It exists for the same reason `codegen-authority.md` exists: a contributor a year from now should be able to read one doc and know **where token authority lives, what guarantees are real, and which decisions are load-bearing.** Without that, the workstream's decisions decay into folklore that gets re-litigated every time someone adds a token.
 
-The workstream that produced this surface (`TOKENS-WORKSTREAM-STEP-02` through `STEP-06C`, commits `7c0e4f1` → `c02cfc0`) replaced a single hand-authored 2,948-line `designTokens.css` with a DTCG-1.0-validated graph that composes <!-- token-shard-count -->160 shards into a cascade-layered output. This doc is the entry point.
+The workstream that produced this surface (`TOKENS-WORKSTREAM-STEP-02` through `STEP-06C`, commits `7c0e4f1` → `c02cfc0`) replaced a single hand-authored 2,948-line `designTokens.css` with a DTCG-1.0-validated graph that composes <!-- token-shard-count -->161 shards into a cascade-layered output. This doc is the entry point.
 
 ## What this proves
 
@@ -234,7 +234,7 @@ The graph may add, alias, or rename tokens freely. Contracts may reference any p
 
 The invariant is enforced by:
 
-- `pnpm -F @full-stack-ds/tokens validate` → DTCG strict W3C schema validation on every shard (all <!-- token-shard-count -->160 must pass)
+- `pnpm -F @full-stack-ds/tokens validate` → DTCG strict W3C schema validation on every shard (all <!-- token-shard-count -->161 must pass)
 - `pnpm -F @full-stack-ds/tokens build` → composer normalizes; emitter flattens composites; emission is regenerable
 - `pnpm run generate:check` → `validateContractTokens` per contract, fail-loud per missing path
 

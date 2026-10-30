@@ -36,7 +36,7 @@
     },
     "border-top-color": {
       "resolvesTo": "divider.color",
-      "fallback": "#b8b8b8",
+      "fallback": "#d0d0d0",
       "design": {
         "property": "border.top.color",
         "slot": "divider.design.root.border.top.color"
@@ -102,7 +102,7 @@
     },
     "border-left-color": {
       "resolvesTo": "divider.color",
-      "fallback": "#b8b8b8"
+      "fallback": "#d0d0d0"
     },
     "border-left-style": {
       "literal": "solid",

@@ -16,11 +16,18 @@ enum ProfileFlagTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", literal: .string("0")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", ref: "semantic.glyph.size.medium.extent", fallback: .string("16px")),
             "profile-flag.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-profile-flag-color-background", name: "profile-flag.color.background", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
-            "profile-flag.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-profile-flag-color-border-default", name: "profile-flag.color.border.default", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "profile-flag.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-profile-flag-color-border-default", name: "profile-flag.color.border.default", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "profile-flag.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-profile-flag-color-foreground-primary", name: "profile-flag.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
             "profile-flag.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-profile-flag-size-radius", name: "profile-flag.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]
+}
+enum ProfileFlagNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "profile-flag.color.foreground.primary", value: "#141414", token: "semantic.color.foreground.primary")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "profile-flag.color.foreground.primary", designSlot: "profile-flag.design.root.foreground.color")]),
+    ]
+    static let omissions: [String] = []
 }
 
 /// Emitted through the static-content path: passive div root with a single consumer content region.
@@ -30,6 +37,14 @@ public struct ProfileFlag<Content: View>: View {
     }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        do {
+            return try resolveFsdsNativeTextStyle(ProfileFlagNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "root")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         @ViewBuilder content: () -> Content
@@ -64,11 +79,13 @@ public struct ProfileFlag<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .background(background)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end

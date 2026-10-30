@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach, jest } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { DialogComponent } from "../Dialog.component";
 // @generated:end
 
@@ -81,6 +83,32 @@ describe("Dialog — overlay-click dismissal", () => {
     const overlay = fixture.nativeElement.querySelector('[role="presentation"]') as HTMLElement;
     overlay?.click();
     expect(onOpenChangeSpy).toHaveBeenCalledWith(false);
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [DialogComponent],
+  template: "<fsds-dialog [open]=\"open\"><span slot=\"title\">Test Dialog title</span><span>content</span></fsds-dialog>",
+})
+class DialogAxeHost {
+  readonly open = true;
+}
+
+describe("Dialog — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [DialogAxeHost] });
+    const fixture = TestBed.createComponent(DialogAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = document.body.querySelector<HTMLElement>(".dialog");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

@@ -1,0 +1,78 @@
+id: TOKEN-THEMING-EXAMPLE-01
+title: 'Promote retoken suite to token-theming example'
+mode: refactor
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Moved both themed compositions into examples with discovery links, build support and verified regression coverage'
+created_at: '2026-10-20T03:05:31.093Z'
+updated_at: '2026-10-20T03:23:04.713Z'
+created_by_session: '01a156d3-2809-73b0-970f-b22d29357572'
+blast_radius:
+  modules:
+    - 'Token theming example, browser tests and token audit routing'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'e2e/fixtures/retoken-pages/'
+    - 'examples/token-theming/'
+    - 'examples/README.md'
+    - 'README.md'
+    - 'package.json'
+    - 'scripts/audit-retoken-tokens.mjs'
+    - 'scripts/audit-retoken-tokens.selftest.mjs'
+    - 'scripts/retoken-token-probe.mjs'
+    - 'scripts/prepush-scope.mjs'
+    - 'e2e/retoken-pages.spec.ts'
+    - 'e2e/pinterest-chrome.spec.ts'
+    - 'docs/architecture/design/retoken-page-attempts.md'
+    - 'docs/current-implementation-snapshot.md'
+    - scripts/prepush-scope.test.mjs
+  out: []
+invariants:
+  - 'Both existing page compositions and original artwork retain their behavior and token audit adjudications'
+  - 'Browser test infrastructure stays under e2e while runnable consumer sources live in examples/token-theming'
+acceptance:
+  - id: A1
+    given: 'the committed retoken suite'
+    when: 'the example entry is built and both pages are opened at examples/token-theming'
+    then: 'both pages build and existing desktop and narrow browser flows pass without the old fixture directory'
+  - id: A2
+    given: 'the moved styles and audit baseline'
+    when: 'token audit and scanner selftests run'
+    then: 'audit remains adjudicated and prepush scoping includes the new location'
+  - id: A3
+    given: 'a reader browsing the repository'
+    when: 'they read the root and examples indexes'
+    then: 'token-theming is linked with working run commands and accurate proof limits'
+observability:
+  - 'Scoped Playwright, example production build, audit and docs output'
+rollback:
+  - 'Revert the move commit as a logical unit'
+non_functional: {}
+contracts:
+  - name: 'retoken-page-behavior'
+    type: contract-test
+    path: 'e2e/retoken-pages.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Both moved page compositions passed all 20 desktop/narrow browser flows at committed f8cc993e0 (fresh port 5204); example production build exited 0 and both built page selectors were inspected over HTTP in CUA at port 5205. All nine fixture files moved, old directory absent; artwork/styles/baseline unchanged. Raw executing checks: tmp/token-theming-move/browser.log and build.log with revision/exit metadata. Commit verification below validates source existence only, not browser execution."
+    recorded_at: "2026-10-20T03:21:21.237Z"
+    command: "FSDS_E2E_PORT=5204 pnpm exec playwright test e2e/retoken-pages.spec.ts e2e/pinterest-chrome.spec.ts --workers=2 --max-failures=1"
+    exit_code: 0
+    commit_sha: f8cc993e09af92a8ddda04ba871be22371fa94a8
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Moved token audit retained all adjudications; scanner supplied/unset/ledgered/missing-sheet cases and 58 prepush classifier tests passed, including new example and scanner-selftest paths. Raw execution: tmp/token-theming-move/{audit,audit-selftest,scope}.log with revision/exit metadata. Citation rederivation verifies source existence only."
+    recorded_at: "2026-10-20T03:21:22.911Z"
+    command: "node scripts/audit-retoken-tokens.mjs && node scripts/audit-retoken-tokens.selftest.mjs && node --test scripts/prepush-scope.test.mjs"
+    exit_code: 0
+    commit_sha: f8cc993e09af92a8ddda04ba871be22371fa94a8
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Inspected root README, examples README, example README and detailed requirements: new path and commands linked prominently; source-linked theming is distinguished from package parity; local demonstration limits retained. Docs links passed all 224 tracked references; new build and run entry were exercised. Raw execution tmp/token-theming-move/docs.log. Citation rederivation verifies source existence only."
+    recorded_at: "2026-10-20T03:21:24.553Z"
+    command: "pnpm run docs:check-links"
+    exit_code: 0
+    commit_sha: f8cc993e09af92a8ddda04ba871be22371fa94a8

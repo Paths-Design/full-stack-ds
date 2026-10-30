@@ -36,4 +36,18 @@ describe("angular surface-tests — anchored surfaces", () => {
     const source = generateAngularSurfaceTest(irFor("Popover"));
     expect(source).toContain("@generated:start");
   });
+
+  it("scans each surface closed, and open over document.body once its content rendered", () => {
+    for (const name of ["Tooltip", "Popover"]) {
+      const source = generateAngularSurfaceTest(irFor(name));
+      expect(source, name).toContain(`import axe from "axe-core";`);
+      expect(source, name).toContain(`describe("${name} — accessibility", () => {`);
+      expect(source, name).toContain(
+        `    const fixture = mount();\n    await fixture.whenStable();\n    expect(getAnchor(fixture.nativeElement as HTMLElement, false)).not.toBeNull();\n    const results = await axe.run(fixture.nativeElement as HTMLElement, componentAxeOptions);`,
+      );
+      expect(source, name).toContain(
+        `    expect(getContentEl(fixture.nativeElement as HTMLElement)).not.toBeNull();\n    const results = await axe.run(document.body, componentAxeOptions);`,
+      );
+    }
+  });
 });

@@ -33,7 +33,7 @@ enum ButtonTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", ref: "semantic.action.size.medium.min-height", fallback: .string("32px")),
             "button.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-button-color-background-default", name: "button.color.background.default", ref: "semantic.color.action.background.primary.default", fallback: .string("#0566fe")),
             "button.color.foreground.default": FsdsComponentTokenDefinition(cssVar: "--fsds-button-color-foreground-default", name: "button.color.foreground.default", ref: "semantic.color.foreground.inverse", fallback: .adaptive(light: "#fafafa", dark: "#fafafa")),
-            "button.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-button-color-border-default", name: "button.color.border.default", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "button.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-button-color-border-default", name: "button.color.border.default", ref: "semantic.color.border.default", fallback: .adaptive(light: "#a0a0a1", dark: "#5c5b5c")),
             "button.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-button-size-radius", name: "button.size.radius", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
             "button.size.border": FsdsComponentTokenDefinition(cssVar: "--fsds-button-size-border", name: "button.size.border", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
         ],
@@ -84,6 +84,22 @@ enum ButtonTokens {
         ],
     ]
 }
+enum ButtonNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "button.color.foreground.default", value: "#fafafa", token: "semantic.color.foreground.inverse"), .init(property: "button.color.foreground.disabled", value: "#727272", token: "semantic.color.foreground.disabled"), .init(property: "button.text.weight", value: "500", token: "semantic.typography.font.weight.medium"), .init(property: "button.size.fontSize.medium", value: "1rem", token: "semantic.typography.action.02")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#fafafa", token: "button.color.foreground.default", designSlot: "button.design.root.foreground.color"), .init(property: "font-size", value: "1rem", token: "button.size.fontSize.medium", designSlot: "button.design.root.typography.size"), .init(property: "font-weight", value: "500", token: "button.text.weight", designSlot: "button.design.root.typography.weight")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "small")], declarations: [.init(property: "button.size.fontSize.medium", value: "0.875rem", token: "semantic.typography.action.03")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "medium")], declarations: [.init(property: "button.size.fontSize.medium", value: "1rem", token: "semantic.typography.action.02")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "large")], declarations: [.init(property: "button.size.fontSize.medium", value: "1.125rem", token: "semantic.typography.action.01")]),
+        .init(part: "root", predicates: [.init(axis: "variant", value: "primary")], declarations: [.init(property: "button.color.foreground.default", value: "#fafafa", token: "semantic.color.foreground.inverse")]),
+        .init(part: "root", predicates: [.init(axis: "variant", value: "secondary")], declarations: [.init(property: "button.color.foreground.default", value: "#141414", token: "semantic.color.foreground.primary")]),
+        .init(part: "root", predicates: [.init(axis: "variant", value: "tertiary")], declarations: [.init(property: "button.color.foreground.default", value: "#141414", token: "semantic.color.foreground.primary")]),
+        .init(part: "root", predicates: [.init(axis: "variant", value: "destructive")], declarations: [.init(property: "button.color.foreground.default", value: "#900909", token: "semantic.color.foreground.on.danger.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "variant", value: "ghost")], declarations: [.init(property: "button.color.foreground.default", value: "#141414", token: "semantic.color.foreground.primary")]),
+        .init(part: "root", predicates: [.init(axis: "variant", value: "outline")], declarations: [.init(property: "button.color.foreground.default", value: "#141414", token: "semantic.color.foreground.primary")]),
+    ]
+    static let omissions: [String] = [".button[aria-busy=\"true\"] .button__loadingText: selector outside normalized native grammar", "disabled: text rule has unsupported predicate or pseudo"]
+}
 
 /// Emitted through the projected-children action path: interactive button root with a single consumer content region.
 /// SwiftUI reserves the `Button` type name; this target exports it as `FsdsButton`.
@@ -99,6 +115,16 @@ public struct FsdsButton<Label: View>: View {
     private let onTap: (() -> Void)?
     private let label: Label
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        values["size"] = size.rawValue
+        values["variant"] = variant.rawValue
+        do {
+            return try resolveFsdsNativeTextStyle(ButtonNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "loadingText")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         size: ButtonSize = .medium,
@@ -155,6 +181,9 @@ public struct FsdsButton<Label: View>: View {
     public var body: some View {
         Button(action: { onTap?() }) {
             labelContent
+                .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+                .fontWeight(nativeTextStyle.fontWeight)
+                .foregroundStyle(nativeTextStyle.color ?? foreground)
                 .padding(.vertical, blockPadding)
                 .padding(.horizontal, inlinePadding)
                 .frame(minHeight: minHeight)

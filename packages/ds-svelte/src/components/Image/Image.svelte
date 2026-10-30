@@ -1,3 +1,12 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type ImageAspectRatio = "square" | "video" | "photo" | "wide" | "portrait";
+export type ImageObjectFit = "cover" | "contain" | "fill" | "scale-down" | "none";
+export type ImageLoading = "lazy" | "eager";
+export type ImageRadius = "none" | "sm" | "md" | "lg" | "full";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,10 +17,7 @@
 // @custom:end
 
 // @generated:start types
-type ImageAspectRatio = "square" | "video" | "photo" | "wide" | "portrait";
-type ImageObjectFit = "cover" | "contain" | "fill" | "scale-down" | "none";
-type ImageLoading = "lazy" | "eager";
-type ImageRadius = "none" | "sm" | "md" | "lg" | "full";
+
 // @generated:end
 
 // @custom:start types

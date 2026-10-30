@@ -1,3 +1,12 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type SkeletonVariant = "block" | "text" | "avatar" | "media" | "dataviz" | "actions";
+export type SkeletonAnimate = "shimmer" | "wipe" | "pulse" | "none";
+export type SkeletonDensity = "compact" | "regular" | "spacious";
+export type SkeletonRadius = "sm" | "md" | "lg";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,10 +17,7 @@
 // @custom:end
 
 // @generated:start types
-type SkeletonVariant = "block" | "text" | "avatar" | "media" | "dataviz" | "actions";
-type SkeletonAnimate = "shimmer" | "wipe" | "pulse" | "none";
-type SkeletonDensity = "compact" | "regular" | "spacious";
-type SkeletonRadius = "sm" | "md" | "lg";
+
 // @generated:end
 
 // @custom:start types

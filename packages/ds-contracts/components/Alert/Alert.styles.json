@@ -210,7 +210,7 @@
         "slot": "alert.design.dismiss.spacing.padding"
       }
     },
-    "margin-left": {
+    "margin-inline-start": {
       "literal": "auto",
       "platforms": [
         "web"

@@ -6,6 +6,7 @@ export function generateReactNativeBarrel(
   for (const name of componentNames.sort()) {
     lines.push(`export { ${name} } from "./${name}/${name}";`);
     lines.push(`export type { ${name}Props } from "./${name}/${name}";`);
+    lines.push(`export type * from "./${name}/${name}";`);
   }
   lines.push("");
   return lines.join("\n");

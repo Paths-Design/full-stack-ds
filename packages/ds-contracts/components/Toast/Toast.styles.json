@@ -12,7 +12,7 @@
         "web"
       ]
     },
-    "right": {
+    "inset-inline-end": {
       "literal": "0",
       "platforms": [
         "web"

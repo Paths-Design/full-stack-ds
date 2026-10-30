@@ -46,7 +46,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 // @generated:start hook
 const behavior = useToast({
   open: () => props.open,
-  onOpenChange: props.onOpenChange,
+  onOpenChange: (...args) => props.onOpenChange?.(...args),
 });
 
 const autoDismiss = useAutoDismiss({

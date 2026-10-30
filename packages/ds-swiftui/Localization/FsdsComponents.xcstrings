@@ -421,6 +421,54 @@
         }
       }
     },
+    "Shuttle.add": {
+      "comment": "Button that moves the marked available items to the selected list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        }
+      }
+    },
+    "Shuttle.availableLabel": {
+      "comment": "Accessible name of the list of items that can be added.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Available"
+          }
+        }
+      }
+    },
+    "Shuttle.remove": {
+      "comment": "Button that moves the marked selected items back to the available list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "Shuttle.selectedLabel": {
+      "comment": "Accessible name of the list of items already added.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selected"
+          }
+        }
+      }
+    },
     "Toast.dismiss": {
       "comment": "Accessible name of the button that dismisses a notification.",
       "extractionState": "manual",

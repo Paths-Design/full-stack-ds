@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type CarouselIndicator = "pagination" | "next" | "both";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useCarousel } from "./useCarousel.svelte.js";
@@ -12,7 +18,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type CarouselIndicator = "pagination" | "next" | "both";
+
 // @generated:end
 
 // @custom:start types

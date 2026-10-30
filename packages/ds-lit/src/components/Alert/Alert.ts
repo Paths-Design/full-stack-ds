@@ -181,7 +181,7 @@ export class AlertElement extends LitElement {
       background: transparent;
       border: 0;
       padding: var(--fsds-alert-design-dismiss-spacing-padding, 0);
-      margin-left: auto;
+      margin-inline-start: auto;
       color: var(--fsds-alert-design-dismiss-foreground-color, inherit);
       cursor: pointer;
       font: inherit;
@@ -403,7 +403,7 @@ export class AlertBodyElement extends LitElement {
       background: transparent;
       border: 0;
       padding: var(--fsds-alert-design-dismiss-spacing-padding, 0);
-      margin-left: auto;
+      margin-inline-start: auto;
       color: var(--fsds-alert-design-dismiss-foreground-color, inherit);
       cursor: pointer;
       font: inherit;
@@ -594,7 +594,7 @@ export class AlertTitleElement extends LitElement {
       background: transparent;
       border: 0;
       padding: var(--fsds-alert-design-dismiss-spacing-padding, 0);
-      margin-left: auto;
+      margin-inline-start: auto;
       color: var(--fsds-alert-design-dismiss-foreground-color, inherit);
       cursor: pointer;
       font: inherit;

@@ -5,7 +5,7 @@
     "name": "Calendar",
     "cssPrefix": "calendar",
     "rootElement": "div",
-    "effectiveRole": "application"
+    "effectiveRole": "group"
   },
   "anatomy": [
     {
@@ -72,6 +72,24 @@
       "type": "string",
       "required": false,
       "description": "Caption rendered above the day grid and naming it. Absent, the visible month and year are formatted in the locale.",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "ariaLabel",
+      "safeName": "ariaLabel",
+      "type": "string",
+      "required": false,
+      "description": "Accessible name of the calendar group, such as the field it fills (\"Check-in date\").",
+      "defaultExpr": null,
+      "nodeKind": null
+    },
+    {
+      "name": "ariaLabelledby",
+      "safeName": "ariaLabelledby",
+      "type": "string",
+      "required": false,
+      "description": "Id of the element that names the calendar group.",
       "defaultExpr": null,
       "nodeKind": null
     },
@@ -909,8 +927,8 @@
   },
   "root": {
     "element": "div",
-    "explicitRole": "application",
-    "effectiveRole": "application",
+    "explicitRole": "group",
+    "effectiveRole": "group",
     "labeling": [
       "aria-label",
       "aria-labelledby"
@@ -976,7 +994,7 @@
           "--fsds-calendar-color-background": "var(--fsds-semantic-color-background-primary, #ffffff)",
           "--fsds-calendar-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
           "--fsds-calendar-color-foreground-muted": "var(--fsds-semantic-color-foreground-secondary, #474647)",
-          "--fsds-calendar-color-border": "var(--fsds-semantic-color-border-subtle, #d0d0d0)",
+          "--fsds-calendar-color-border": "var(--fsds-semantic-surface-border-subtle, #d0d0d0)",
           "--fsds-calendar-color-day-hover": "var(--fsds-semantic-interaction-background-hover, #f7f7f7)",
           "--fsds-calendar-color-day-selected-background": "var(--fsds-semantic-color-background-accent, #d92d2e)",
           "--fsds-calendar-color-day-selected-foreground": "var(--fsds-semantic-color-foreground-inverse, #fafafa)",

@@ -29,6 +29,7 @@ import type {
   ComponentIR,
   DomNodeIR,
   NormalizedChannelIR,
+  ResolvedPropIR,
 } from "../ir.js";
 
 /**
@@ -445,30 +446,6 @@ export function radioGroupFacts(ir: ComponentIR): RadioGroupFacts | null {
 }
 
 /**
- * The array-iterated list class: exactly one channel whose value type is
- * an array (excluding Date arrays, which are grids) over a dom tree that
- * contains an array-iteration node. Shuttle is the corpus consumer.
- *
- * Pure structural facts — target-neutral, which is why it lives here
- * rather than in the swift emitter that first needed it
- * (FEAT-COMPOSE-SHUTTLE-ADMISSION-01).
- */
-export function isArrayIteratedList(ir: ComponentIR): boolean {
-  if (!ir.dom || ir.surface != null) return false;
-  const channels = ir.behavior.normalizedChannels;
-  if (channels.length !== 1) return false;
-  const vt = channels[0]!.valueType ?? "";
-  if (!vt.includes("[]")) return false;
-  if (vt.includes("Date")) return false;
-  const walk = (node: DomNodeIR): boolean => {
-    const iteration = (node as { iteration?: { kind?: string } }).iteration;
-    if (iteration?.kind === "array") return true;
-    return (node.children ?? []).some(walk);
-  };
-  return walk(ir.dom);
-}
-
-/**
  * The interactive-composite class: a div root with one scalar channel
  * (a string or a union of string members, excluding Date grids) over an
  * anatomy that carries both a trigger part (`trigger`/`tab`) and a content
@@ -673,15 +650,27 @@ export function isSelectionControl(ir: ComponentIR): boolean {
  * IR has already validated (`buildDateGridIR`). Calendar is the corpus
  * consumer.
  *
- * This is the class the collection predicates already reserve: both
- * `isArrayIteratedList` and `isInteractiveComposite` reject a Date-typed
- * channel outright, because a date grid derives its days from the month
- * rather than carrying an array *channel* or a trigger/content anatomy.
+ * This is the class the collection predicates already reserve:
+ * `isInteractiveComposite` rejects a Date-typed channel outright, because a
+ * date grid derives its days from the month rather than carrying a
+ * trigger/content anatomy.
  *
  * Pure structural facts — target-neutral.
  */
 export function isDateGridSurface(ir: ComponentIR): boolean {
   return !!ir.dom && ir.surface == null && ir.dateGrid !== undefined;
+}
+
+/**
+ * A dual-listbox transfer (Shuttle): two lists partitioning an options prop
+ * by a string-array value channel. Native targets realize it as a dedicated
+ * surface — both lists, a mark per item, add and remove — rather than a
+ * list of the value channel alone.
+ *
+ * Pure structural facts — target-neutral.
+ */
+export function isTransferSurface(ir: ComponentIR): boolean {
+  return !!ir.dom && ir.surface == null && ir.transfer !== undefined;
 }
 
 export type DateGridHeaderItem =
@@ -949,4 +938,158 @@ export function surfaceStringChannel(
     return undefined;
   }
   return ir.behavior.normalizedChannels.find((c) => c.valueType === "string");
+}
+
+// ---------------------------------------------------------------------------
+// Conventional prop / channel vocabulary
+//
+// These queries are the single sanctioned home for name-keyed lookups over
+// the *conventional* vocabulary — prop and channel names whose meaning is
+// corpus-wide ("disabled", "invalid", "orientation", the expansion channel)
+// rather than component-specific authoring. docs/codegen-authority.md
+// forbids emitter rules that branch on "hardcoded prop names that only make
+// sense for one component"; a conventional name is not component-specific,
+// but the lookup still lives exactly once — HERE, in the substrate — so
+// emitters consume a named fact and the authority guard can hold emitters
+// to "no raw name-keyed prop queries."
+//
+// Every function in this section declares, per the classification protocol:
+//
+//   source fact:    contract (designed prop / declared channel drawn from
+//                   the conventional vocabulary)
+//   applies by:     prop/channel name vocabulary (+ propType kind /
+//                   channel valueType where the semantics demand it)
+//   removable when: contracts declare a state/semantics vocabulary the IR
+//                   normalizes (the dateGrid / transfer / surface-kind
+//                   precedent), making these lookups declarative instead
+//                   of name-keyed
+// ---------------------------------------------------------------------------
+
+/**
+ * Whether the component declares a prop under a conventional name, by
+ * safeName. Moved verbatim from the swift emitter that first stewarded it
+ * — presence-only, no type constraint, because swift's call sites ask
+ * "does the contract author this knob at all" (alt, width, label, …).
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function hasConventionalProp(ir: ComponentIR, name: string): boolean {
+  return ir.styledProps.some((p) => p.safeName === name);
+}
+
+/**
+ * The styled prop under a conventional name, by safeName, when the caller
+ * needs the prop object (default, type) rather than presence. Same
+ * vocabulary and matching rule as hasConventionalProp.
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function conventionalProp(
+  ir: ComponentIR,
+  name: string,
+): ResolvedPropIR | undefined {
+  return ir.styledProps.find((p) => p.safeName === name);
+}
+
+/**
+ * The styled prop under a conventional name when it is string-typed —
+ * the typed presence query behind e.g. "a string icon prop feeds the
+ * registry; a ReactNode icon prop is a consumer region."
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function stringConventionalProp(
+  ir: ComponentIR,
+  name: string,
+): ResolvedPropIR | undefined {
+  return ir.styledProps.find((p) => p.safeName === name && p.type === "string");
+}
+
+/**
+ * Whether a filtered prop collection still holds a conventional name — for
+ * emitters that branch over a derived subset (e.g. the not-handled string
+ * props) rather than the full styledProps set.
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function includesConventionalProp(
+  props: readonly ResolvedPropIR[],
+  name: string,
+): boolean {
+  return props.some((p) => p.safeName === name);
+}
+
+/**
+ * The consumer-content prop: the conventional `content` prop, or any
+ * ReactNode-typed prop — first match in contract order either way. The
+ * disjunction is the historical shape (Chip's referenced-action composite);
+ * decomposing it into name-find-then-type-find would change which prop wins
+ * when a ReactNode prop precedes the content prop in contract order.
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function consumerContentProp(ir: ComponentIR): ResolvedPropIR | undefined {
+  return ir.styledProps.find(
+    (p) => p.safeName === "content" || p.type === "ReactNode",
+  );
+}
+
+/**
+ * Whether the component declares a given boolean state prop (disabled,
+ * invalid, decorative). The boolean-kind constraint is load-bearing:
+ * a same-named string prop is not a state surface. The jetpack-compose
+ * emitter lowered this query inline at seven separate sites before the
+ * vocabulary moved here.
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function hasBooleanConventionalProp(
+  ir: ComponentIR,
+  name: "disabled" | "invalid" | "decorative",
+): boolean {
+  return ir.styledProps.some(
+    (p) => p.name === name && p.propType.kind === "boolean",
+  );
+}
+
+/**
+ * The enum values of the conventional `orientation` prop, or null when the
+ * component declares no enum-typed orientation. Moved verbatim from the
+ * compose bare-rule-leaf emitter (Divider), which used the values to emit
+ * the Kotlin orientation enum.
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function orientationEnumValues(ir: ComponentIR): string[] | null {
+  const orientationProp = ir.styledProps.find(
+    (p) =>
+      p.name === "orientation" &&
+      typeof p.propType === "object" &&
+      "kind" in p.propType &&
+      p.propType.kind === "enum",
+  );
+  return orientationProp && typeof orientationProp.propType === "object" &&
+      "kind" in orientationProp.propType &&
+      orientationProp.propType.kind === "enum"
+    ? (orientationProp.propType as { values: string[] }).values
+    : null;
+}
+
+export function expansionChannels(ir: ComponentIR): NormalizedChannelIR[] {
+  return ir.behavior.normalizedChannels.filter(
+    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
+  );
+}
+
+/**
+ * The component's expansion channel — the first boolean channel whose name
+ * draws on the conventional expansion vocabulary (`expanded`, `expand*`).
+ * The prefix match is the historical discriminator (Truncate/ShowMore); it
+ * is vocabulary, not component identity, and lives here so the expandable
+ * gates stay honest about what they key on.
+ *
+ * source fact / applies by / removable when: section header.
+ */
+export function expansionChannel(ir: ComponentIR): NormalizedChannelIR | undefined {
+  return expansionChannels(ir)[0];
 }

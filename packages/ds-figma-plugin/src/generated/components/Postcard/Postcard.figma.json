@@ -257,7 +257,7 @@
       "cssProperty": "border-color",
       "selectorKey": "root",
       "part": "root",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "postcard.color.border.default",
       "editableTargets": [
         "web"
@@ -497,7 +497,7 @@
       "cssProperty": "border-top-color",
       "selectorKey": "footer",
       "part": "footer",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "postcard.color.border.default",
       "editableTargets": [
         "web"
@@ -659,7 +659,7 @@
           "--fsds-box-model-max-height": "none",
           "--fsds-postcard-color-background-default": "var(--fsds-semantic-color-background-primary, #ffffff)",
           "--fsds-postcard-color-background-hover": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
-          "--fsds-postcard-color-border-default": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-postcard-color-border-default": "var(--fsds-semantic-surface-border-subtle, #d0d0d0)",
           "--fsds-postcard-color-border-hover": "var(--fsds-semantic-color-border-bold, #888889)",
           "--fsds-postcard-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
           "--fsds-postcard-size-padding": "var(--fsds-core-spacing-size-06, 16px)",
@@ -692,7 +692,7 @@
           "border-style": "solid",
           "border-width": "var(--fsds-postcard-size-border, 1px)",
           "box-sizing": "border-box",
-          "border-color": "var(--fsds-postcard-color-border-default, #b8b8b8)",
+          "border-color": "var(--fsds-postcard-color-border-default, #d0d0d0)",
           "color": "var(--fsds-postcard-color-foreground-primary, #141414)"
         }
       },
@@ -762,7 +762,7 @@
           "align-items": "center",
           "gap": "var(--fsds-postcard-size-gap, 12px)",
           "padding-top": "var(--fsds-postcard-size-padding, 16px)",
-          "border-top-color": "var(--fsds-postcard-color-border-default, #b8b8b8)",
+          "border-top-color": "var(--fsds-postcard-color-border-default, #d0d0d0)",
           "border-top-style": "solid",
           "border-top-width": "var(--fsds-postcard-size-border, 1px)",
           "font-size": "var(--fsds-postcard-typography-footer-font-size, 14px)"

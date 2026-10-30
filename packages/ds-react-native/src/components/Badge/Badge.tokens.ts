@@ -56,7 +56,7 @@ export const badgeTokenScopes = {
     "badge.color.border": {
       name: "badge.color.border",
       cssVar: "--fsds-badge-color-border",
-      ref: "semantic.color.border.subtle",
+      ref: "semantic.surface.border.subtle",
       fallback: "#d0d0d0",
     },
     "badge.size.radius": {

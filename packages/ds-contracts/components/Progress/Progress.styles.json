@@ -112,7 +112,7 @@
         "slot": "progress.design.value.typography.size"
       }
     },
-    "margin-left": {
+    "margin-inline-start": {
       "resolvesTo": "progress.spacing.gap",
       "fallback": "2px"
     }

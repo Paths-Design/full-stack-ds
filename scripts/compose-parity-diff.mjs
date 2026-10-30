@@ -112,6 +112,9 @@ function emitterPath(ktSource) {
   if (ktSource.includes("FoundationImage(")) return "mediaLeaf";
   if (ktSource.includes("contentDescription = ") && ktSource.includes("avatar")) return "referencedContentComposite";
   if (ktSource.includes("FsdsDateGrid.compute(")) return "dateGrid";
+  // A transfer surface renders its items and controls as text, so its
+  // substrate call is tested before the text-bearing leaf classes.
+  if (ktSource.includes("FsdsTransferList.")) return "transfer";
   // A passive tree item renders a heading with text beside its catalog glyph;
   // the glyph-host class renders the glyph alone.
   if (ktSource.includes("FsdsGlyphIcon(") && ktSource.includes("BasicText(")) return "passiveTree";
@@ -136,7 +139,6 @@ function emitterPath(ktSource) {
   if (ktSource.includes("BasicTextField(")) return "textControl";
   if (ktSource.includes("AnimatedVisibility(")) return "disclosure";
   if (ktSource.includes("Role.RadioButton")) return "radioGroup";
-  if (ktSource.includes("filter { it != item }")) return "arrayList";
   if (ktSource.includes("compositionLocalOf")) return "interactiveComposite";
   if (ktSource.includes("padEnd(length")) return "countField";
   if (ktSource.includes("inputModifier")) return "labeledText";
@@ -168,8 +170,6 @@ function chromeRoleForPath(path) {
   }
   /** Radio-collection path (RadioGroup): the shared box-model surface slots
    *  incl. the group gap (the options really are laid out with it). */
-  /** Array-iterated list path (Shuttle): the shuttle-part chrome plus the
-   *  shared box-model family incl. the list gap. */
   /** Interactive-composite path (Accordion/Tabs): the part-scoped container paint
    *  (accordion border / tabs shape radius) plus the shared box-model family.
    *  Part-scoped typography (`accordion.text.*`) deliberately unclaimed. */
@@ -280,7 +280,9 @@ function chromeRoleForPath(path) {
       ["(?:accordion\\.border|tabs\\.shape)\\.", "box-model\\.(?:gap|padding|min-width|min-height)"].join("|"),
     );
   }
-  if (path === "arrayList") {
+  /** Transfer path (Shuttle): the shuttle-part chrome (surface, list, marked
+   *  item, border, radius, root padding) plus the shared box-model family. */
+  if (path === "transfer") {
     return new RegExp(
       ["shuttle\\.(?:color|size)\\.", "box-model\\.(?:gap|padding|min-width|min-height)"].join("|"),
     );

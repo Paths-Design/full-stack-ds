@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { openness, setOpenness } = useAccordion({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onValueChange: props.onValueChange,
+  onValueChange: (...args) => props.onValueChange?.(...args),
 });
 
 const idBase = props.idBase ?? `accordion-${++_accordionIdCounter}`;

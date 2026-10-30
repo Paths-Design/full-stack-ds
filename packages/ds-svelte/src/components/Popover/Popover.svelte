@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type PopoverPlacement = "top" | "bottom" | "left" | "right" | "auto";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { usePopover, providePopoverContext, providePopoverPlacement } from "./usePopover.svelte.js";
@@ -6,7 +12,7 @@ import { usePopover, providePopoverContext, providePopoverPlacement } from "./us
 
 // @custom:end
 // @generated:start types
-type PopoverPlacement = "top" | "bottom" | "left" | "right" | "auto";
+
 // @generated:end
 // @custom:start types
 

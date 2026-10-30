@@ -131,7 +131,7 @@ describe("Select — keyboard realization (FEAT-A11Y-COMPOSITE-KEYBOARD-01)", ()
 
   it("ArrowDown on the closed trigger opens the panel and moves focus into the listbox", async () => {
     const { getByRole } = renderOpen({ defaultOpen: false });
-    const trigger = getByRole("button", { name: "Select an option" });
+    const trigger = getByRole("combobox", { name: "Select an option" });
     fireEvent.keyDown(trigger, { key: "ArrowDown" });
     const listbox = await waitFor(() => {
       const listbox = getByRole("listbox");

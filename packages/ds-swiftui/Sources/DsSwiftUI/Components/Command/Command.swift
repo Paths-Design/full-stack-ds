@@ -16,7 +16,7 @@ enum CommandTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.structure.size.gap", fallback: .string("16px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "command.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-command-color-background", name: "command.color.background", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
-            "command.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-command-color-border", name: "command.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "command.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-command-color-border", name: "command.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "command.border.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-command-border-radius", name: "command.border.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]

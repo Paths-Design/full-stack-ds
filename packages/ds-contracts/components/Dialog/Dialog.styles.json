@@ -464,7 +464,7 @@
       "resolvesTo": "dialog.spacing.header.paddingTop",
       "fallback": "16px"
     },
-    "right": {
+    "inset-inline-end": {
       "resolvesTo": "dialog.spacing.body.paddingRight",
       "fallback": "24px"
     },

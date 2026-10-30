@@ -77,7 +77,7 @@ export class CalendarElement extends LitElement {
       --fsds-calendar-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-calendar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-calendar-color-foreground-muted: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-calendar-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-calendar-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-calendar-color-day-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
       --fsds-calendar-color-day-selected-background: var(--fsds-semantic-color-background-accent, #d92d2e);
       --fsds-calendar-color-day-selected-foreground: var(--fsds-semantic-color-foreground-inverse, #fafafa);
@@ -214,6 +214,9 @@ export class CalendarElement extends LitElement {
   private readonly fsdsMessages = new FsdsMessagesController(this, "Calendar", CalendarMessages);
 
   @property({ type: String }) caption?: string;
+  @property({ attribute: 'aria-label', reflect: true })
+  override ariaLabel: string | null = null;
+  @property({ type: String }) ariaLabelledby?: string;
   @property({ attribute: false }) month?: Date;
   @property({ attribute: false }) defaultMonth?: Date;
   @property({ attribute: false }) onMonthChange?: (month: Date) => void;
@@ -255,7 +258,7 @@ export class CalendarElement extends LitElement {
   }
 
   override render() {
-    return html`<div class="${this.computeClasses()}" role="application" data-fsds-box="">
+    return html`<div class="${this.computeClasses()}" role="group" aria-label=${ifDefined(this.ariaLabel ?? undefined)} aria-labelledby=${ifDefined(this.ariaLabelledby)} data-fsds-box="">
   <div class=${'calendar__header'}>
     <button class=${'calendar__nav'} type="button" data-calendar-nav="previous" @click=${this.dateGrid.previous} aria-label=${this.fsdsMessages.value.previousMonth} aria-disabled=${this.dateGrid.state.previousDisabled}>
       <span aria-hidden="true">‹</span>
@@ -349,7 +352,7 @@ export class CalendarHeaderElement extends LitElement {
       --fsds-calendar-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
       --fsds-calendar-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
       --fsds-calendar-color-foreground-muted: var(--fsds-semantic-color-foreground-secondary, #474647);
-      --fsds-calendar-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-calendar-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-calendar-color-day-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
       --fsds-calendar-color-day-selected-background: var(--fsds-semantic-color-background-accent, #d92d2e);
       --fsds-calendar-color-day-selected-foreground: var(--fsds-semantic-color-foreground-inverse, #fafafa);

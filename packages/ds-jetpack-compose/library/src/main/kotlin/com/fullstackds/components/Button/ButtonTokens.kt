@@ -84,8 +84,8 @@ val buttonTokenScopes: ComponentTokenScopes = mapOf(
         "button.color.border.default" to ComponentTokenDefinition(
             name = "button.color.border.default",
             cssVar = "--fsds-button-color-border-default",
-            ref = "semantic.color.border.light",
-            fallback = "#b8b8b8",
+            ref = "semantic.color.border.default",
+            fallback = "#a0a0a1",
         ),
         "button.color.border.focus" to ComponentTokenDefinition(
             name = "button.color.border.focus",

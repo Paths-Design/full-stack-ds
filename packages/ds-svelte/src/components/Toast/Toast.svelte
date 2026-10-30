@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type ToastVariant = "info" | "success" | "warning" | "error";
+export type ToastPoliteness = "polite" | "assertive";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useToast } from "./useToast.svelte.js";
@@ -11,8 +18,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type ToastVariant = "info" | "success" | "warning" | "error";
-type ToastPoliteness = "polite" | "assertive";
+
 // @generated:end
 
 // @custom:start types

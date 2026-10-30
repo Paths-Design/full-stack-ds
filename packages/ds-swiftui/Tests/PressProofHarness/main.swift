@@ -79,8 +79,14 @@ final class Counters {
     var calendarUncontrolledAfterPress: [String] = []
     // FEAT-SWIFTUI-COMPOUND-INTERACTIVITY-01 compound proofs.
     var tabsChanges: [String] = []
+    /// The AXSelected tab of the uncontrolled Tabs before and after the press.
+    var tabsSelected: [[String]] = []
+    /// The AXSelected tab of the controlled Tabs at each parent-set value.
+    var controlledTabsSelected: [[String]] = []
     var accordionChanges: [String] = []
     var shuttleChanges: [String] = []
+    /// The AXSelected (marked) Shuttle items at mount and after each press.
+    var shuttleMarked: [[String]] = []
     /// What the controlled Tabs and Accordion show at mount, after the parent
     /// sets each value, and after it sets them back.
     var controlledCompound: [String] = []
@@ -760,18 +766,29 @@ final class HarnessModel: ObservableObject {
                         let content = Self.waitForStaticText("controlled content", attempts: 2) ? "open" : "closed"
                         return "tab \(tab), item \(content)"
                     }
+                    let controlledTabLabels = ["ctab-x", "ctab-y"]
                     self.counters.controlledCompound = [shown()]
+                    self.counters.controlledTabsSelected = [Self.selectedButtons(labeled: controlledTabLabels)]
                     self.controlledTab = "y"
                     self.controlledOpenness = ["c1"]
                     self.schedule(0.8) {
                         self.counters.controlledCompound.append(shown())
+                        self.counters.controlledTabsSelected.append(Self.selectedButtons(labeled: controlledTabLabels))
                         self.controlledTab = "x"
                         self.controlledOpenness = []
                         self.schedule(0.8) {
                             self.counters.controlledCompound.append(shown())
+                            self.counters.controlledTabsSelected.append(Self.selectedButtons(labeled: controlledTabLabels))
                             let expected = ["tab x, item closed", "tab y, item open", "tab x, item closed"]
                             if self.counters.controlledCompound != expected {
                                 self.failures.append("controlled compound: shown \(self.counters.controlledCompound), expected \(expected) as the parent sets Tabs and Accordion")
+                            }
+                            // The tab's isSelected trait reads the channel
+                            // through the environment, so it follows the
+                            // parent with no press.
+                            let expectedSelected = [["ctab-x"], ["ctab-y"], ["ctab-x"]]
+                            if self.counters.controlledTabsSelected != expectedSelected {
+                                self.failures.append("controlled tabs: AXSelected tabs \(self.counters.controlledTabsSelected), expected \(expectedSelected) as the parent sets the active tab")
                             }
                             self.finishCompound()
                         }
@@ -779,32 +796,42 @@ final class HarnessModel: ObservableObject {
                 }
 
                 @MainActor func shuttleStep() {
-                    // -- Shuttle: the contract iterates the SELECTION channel
-                    // (web parity: `(selection ?? []).map`), so rendered rows
-                    // are selected items and press REMOVES. Two removals
-                    // prove press→channel→re-render in both observable
-                    // directions; an "add" press is not contract-modeled in
-                    // any family and is not asserted here.
-                    let rowAlpha = Self.axButtons(labeled: "alpha").first
-                    let rowBeta = Self.axButtons(labeled: "beta").first
-                    guard let alpha = rowAlpha else {
-                        self.failures.append("shuttle: no pressable 'alpha' row (census \(self.counters.compoundCensus.sorted { $0.key < $1.key }))")
-                        return accordionStep()
-                    }
-                    Self.click(at: alpha)
-                    self.schedule(0.8) {
-                        let alphaGone = Self.axButtons(labeled: "alpha").isEmpty
-                        if let beta = rowBeta ?? Self.axButtons(labeled: "beta").first {
-                            Self.click(at: beta)
+                    // -- Shuttle: a press marks an item (the isSelected trait,
+                    // the web options' aria-selected) and moves nothing; Add
+                    // appends the marked available items to the selection
+                    // and Remove takes the marked selected items out. The
+                    // selection starts as [alpha, beta].
+                    let items = ["alpha", "beta", "gamma", "delta", "epsilon"]
+                    @MainActor func press(_ label: String, then next: @escaping @MainActor () -> Void) {
+                        guard let control = Self.axButtons(labeled: label).first else {
+                            self.failures.append("shuttle: no pressable '\(label)' (census \(self.counters.compoundCensus.sorted { $0.key < $1.key }))")
+                            return accordionStep()
                         }
-                        self.schedule(0.8) {
-                            if self.counters.shuttleChanges != ["[\"beta\"]", "[]"] {
-                                self.failures.append("shuttle: selection changes \(self.counters.shuttleChanges), expected [\"[\\\"beta\\\"]\", \"[]\"]")
+                        Self.click(at: control)
+                        self.schedule(0.8) { next() }
+                    }
+                    let markedAtMount = Self.selectedButtons(labeled: items)
+                    press("gamma") {
+                        self.counters.shuttleMarked = [markedAtMount, Self.selectedButtons(labeled: items)]
+                        let markMoved = self.counters.shuttleChanges
+                        press("Add") {
+                            self.counters.shuttleMarked.append(Self.selectedButtons(labeled: items))
+                            press("alpha") {
+                                self.counters.shuttleMarked.append(Self.selectedButtons(labeled: items))
+                                press("Remove") {
+                                    self.counters.shuttleMarked.append(Self.selectedButtons(labeled: items))
+                                    if !markMoved.isEmpty {
+                                        self.failures.append("shuttle: marking 'gamma' changed the selection \(markMoved); a mark moves nothing")
+                                    }
+                                    if self.counters.shuttleChanges != ["[\"alpha\", \"beta\", \"gamma\"]", "[\"beta\", \"gamma\"]"] {
+                                        self.failures.append("shuttle: selection changes \(self.counters.shuttleChanges), expected [alpha, beta, gamma] then [beta, gamma]")
+                                    }
+                                    if self.counters.shuttleMarked != [[], ["gamma"], [], ["alpha"], []] {
+                                        self.failures.append("shuttle: AXSelected items \(self.counters.shuttleMarked), expected [[], [gamma], [], [alpha], []]")
+                                    }
+                                    accordionStep()
+                                }
                             }
-                            if !alphaGone {
-                                self.failures.append("shuttle: pressed row 'alpha' did not leave the rendered selection")
-                            }
-                            accordionStep()
                         }
                     }
                 }
@@ -815,15 +842,23 @@ final class HarnessModel: ObservableObject {
                     self.failures.append("tabs: no pressable 'tabs-b' control (census \(self.counters.compoundCensus.sorted { $0.key < $1.key }))")
                     return shuttleStep()
                 }
+                let tabLabels = ["tabs-a", "tabs-b"]
+                self.counters.tabsSelected = [Self.selectedButtons(labeled: tabLabels)]
                 Self.click(at: tabB)
                 self.schedule(0.8) {
                     let panelB = Self.waitForStaticText("tabs panel b")
                     let panelA = Self.waitForStaticText("tabs panel a", attempts: 2)
+                    self.counters.tabsSelected.append(Self.selectedButtons(labeled: tabLabels))
                     if self.counters.tabsChanges != ["b"] {
                         self.failures.append("tabs: activeTab changes \(self.counters.tabsChanges), expected [\"b\"] exactly once")
                     }
                     if !panelB || panelA {
                         self.failures.append("tabs: panel gating did not swap (panelB=\(panelB) panelA=\(panelA))")
+                    }
+                    // VoiceOver reads the active tab from the isSelected
+                    // trait, in the user's language.
+                    if self.counters.tabsSelected != [["tabs-a"], ["tabs-b"]] {
+                        self.failures.append("tabs: AXSelected tabs \(self.counters.tabsSelected), expected [[\"tabs-a\"], [\"tabs-b\"]] before and after pressing tab b")
                     }
                     shuttleStep()
                 }
@@ -871,9 +906,12 @@ final class HarnessModel: ObservableObject {
             print("calendar.census            : \(counters.calendarCensus.sorted { $0.key < $1.key })")
             print("compound.census            : \(counters.compoundCensus.sorted { $0.key < $1.key })")
             print("tabs.activeTab changes     : \(counters.tabsChanges) [expect [\"b\"]]")
+            print("tabs.AXSelected before/after press: \(counters.tabsSelected) [expect [[\"tabs-a\"], [\"tabs-b\"]]]")
+            print("controlled tabs.AXSelected : \(counters.controlledTabsSelected) [expect [[\"ctab-x\"], [\"ctab-y\"], [\"ctab-x\"]]]")
             print("accordion.openness changes : \(counters.accordionChanges) [expect [\"[\\\"k1\\\"]\", \"[]\"]]")
             print("controlled tabs/accordion  : \(counters.controlledCompound) [expect [\"tab x, item closed\", \"tab y, item open\", \"tab x, item closed\"]]")
-            print("shuttle.selection changes  : \(counters.shuttleChanges) [expect [\"[\\\"beta\\\"]\", \"[]\"]]")
+            print("shuttle.selection changes  : \(counters.shuttleChanges) [expect [\"[\\\"alpha\\\", \\\"beta\\\", \\\"gamma\\\"]\", \"[\\\"beta\\\", \\\"gamma\\\"]\"]]")
+            print("shuttle.AXSelected items   : \(counters.shuttleMarked) [expect [[], [\"gamma\"], [], [\"alpha\"], []]]")
             for limitation in counters.limitations {
                 print("LIMITATION: \(limitation)")
             }
@@ -916,6 +954,11 @@ final class HarnessModel: ObservableObject {
             AXUIElementCopyAttributeValue(element, kAXSelectedAttribute as CFString, &ref) == .success
         else { return false }
         return (ref as? Bool) ?? false
+    }
+
+    /// The labels, in order, whose first matching AXButton reports AXSelected.
+    static func selectedButtons(labeled labels: [String]) -> [String] {
+        labels.filter { label in axButtons(labeled: label).first.map(isSelected) ?? false }
     }
 
     /// A control's numeric AXValue (a toggle's 0/1) as text, or "<none>".
@@ -1393,6 +1436,10 @@ struct PressProofHarnessApp: App {
                             }
                         }
                         Tabs(activeTab: $model.controlledTab) {
+                            HStack {
+                                TabsTab(value: "x", label: "ctab-x")
+                                TabsTab(value: "y", label: "ctab-y")
+                            }
                             TabsPanel(value: "x") { SwiftUI.Text("controlled panel x") }
                             TabsPanel(value: "y") { SwiftUI.Text("controlled panel y") }
                         }

@@ -21,6 +21,8 @@ export type CalendarMode = "single" | "range";
 // @generated:start props
 interface Props {
   caption?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
   month?: Date;
   defaultMonth?: Date;
   onMonthChange?: (month: Date) => void;
@@ -54,10 +56,10 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, {  });
 const behavior = useCalendar({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
   month: () => props.month,
   defaultMonth: props.defaultMonth,
-  onMonthChange: props.onMonthChange,
+  onMonthChange: (...args) => props.onMonthChange?.(...args),
   shouldCloseOnSelect: props.shouldCloseOnSelect,
 });
 const dateGrid = useDateGrid(() => ({ value: behavior.value.value, month: behavior.month.value, mode: props.mode, locale: props.locale, minDate: props.minDate, maxDate: props.maxDate, disabled: props.disabled, caption: props.caption, onValueChange: behavior.setValue, onMonthChange: behavior.setMonth }));
@@ -78,7 +80,7 @@ const classNames = computed(() => [
 </script>
 
 <template>
-  <div :class="classNames" role="application" :data-testid="props.dataTestid" data-fsds-component="calendar" data-fsds-box="">
+  <div :class="classNames" role="group" :aria-label="props.ariaLabel" :aria-labelledby="props.ariaLabelledby" :data-testid="props.dataTestid" data-fsds-component="calendar" data-fsds-box="">
     <div :class="'calendar__header'">
       <button :class="'calendar__nav'" type="button" data-calendar-nav="previous" @click="dateGrid.previous" :aria-label="fsdsMessages.previousMonth" :aria-disabled="dateGrid.state.previousDisabled">
         <span aria-hidden="true">

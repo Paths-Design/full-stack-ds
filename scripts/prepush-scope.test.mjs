@@ -7,6 +7,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { classify } from "./prepush-scope.mjs";
 
+test("token theming sources and audit selftest reach the retoken gate", () => {
+  for (const file of ["examples/token-theming/theme.css", "examples/token-theming/pinterest.tsx", "examples/token-theming/token-audit-baseline.json", "scripts/audit-retoken-tokens.selftest.mjs"]) {
+    assert.equal(classify([file]).RUN_RETOKEN_TOKEN_AUDIT, true, file);
+  }
+  assert.equal(classify(["examples/settings/react/src/App.tsx"]).RUN_RETOKEN_TOKEN_AUDIT, false);
+});
+
 const on = (r, ...k) => k.every((key) => r[key] === true);
 const off = (r, ...k) => k.every((key) => r[key] === false);
 
@@ -57,6 +64,64 @@ test("GPUI Rust source changes reach generation and committed-byte drift gates",
   const flags = classify(["packages/ds-gpui/src/components/Switch/Switch.rs"]);
   assert.equal(flags.RUN_RAIL, true);
   assert.equal(flags.RUN_GENERATE_CHECK, true);
+});
+
+// The committed-output check compares all of packages/ after regeneration, so
+// a hand edit in any package the generator writes into must run the rail that
+// overwrites it. The package set comes from the target registry, so a new
+// target registered without a classifier update fails here.
+test("an edit in any package the target registry writes into runs the rail", () => {
+  const registry = readFileSync(
+    new URL("../packages/ds-codegen/src/registry.ts", import.meta.url),
+    "utf8",
+  );
+  const packages = new Set(
+    [...registry.matchAll(/"packages",\s*"(ds-[\w-]+)"|packages\/(ds-[\w-]+)/g)].map(
+      (match) => match[1] ?? match[2],
+    ),
+  );
+  for (const expected of ["ds-react", "ds-figma-plugin", "ds-unity", "ds-godot", "ds-gpui"]) {
+    assert.ok(packages.has(expected), `registry scan missed ${expected}`);
+  }
+  for (const name of packages) {
+    const flags = classify([`packages/${name}/generated-output.txt`]);
+    assert.ok(on(flags, "RUN_RAIL", "RUN_GENERATE_CHECK"), `${name} edit skips the rail`);
+  }
+});
+
+test("CI and pre-push check generated output with the shared script and keep no root list", () => {
+  for (const [surface, url] of [
+    ["CI", new URL("../.github/workflows/ci.yml", import.meta.url)],
+    ["pre-push", new URL("../.githooks/pre-push", import.meta.url)],
+  ]) {
+    const source = readFileSync(url, "utf8");
+    assert.match(
+      source,
+      /node scripts\/committed-tree-check\.mjs generated/,
+      `${surface} does not run the committed-output check`,
+    );
+    assert.match(
+      source,
+      /node --test scripts\/committed-tree-check\.test\.mjs/,
+      `${surface} does not execute the committed-tree check contract`,
+    );
+    assert.doesNotMatch(
+      source,
+      /git diff --exit-code[^\n]*(\\\n\s*)?packages\/ds-/,
+      `${surface} still diffs a hand-maintained list of generated roots`,
+    );
+  }
+});
+
+test("pre-push refuses a working tree that differs from the pushed commit before any gate", () => {
+  const hook = readFileSync(new URL("../.githooks/pre-push", import.meta.url), "utf8");
+  const treeCheck = hook.indexOf('node scripts/committed-tree-check.mjs pushed "$pushed_tip"');
+  assert.notEqual(treeCheck, -1, "pre-push does not compare the working tree with the pushed commit");
+  for (const gate of ["pnpm install --frozen-lockfile", "pnpm run lint", "pnpm test", "pnpm run governed:rail"]) {
+    const at = hook.indexOf(gate);
+    assert.notEqual(at, -1, `pre-push no longer runs ${gate}`);
+    assert.ok(treeCheck < at, `${gate} runs before the working-tree check`);
+  }
 });
 
 test("generated framework change (.tsx): rail + generate:check + tests + typecheck + lint", () => {

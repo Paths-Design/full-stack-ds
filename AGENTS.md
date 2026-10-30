@@ -124,7 +124,7 @@ pnpm run docs:check-links                      # Every relative .md link in a tr
 
 `build:all` derives package order from workspace dependencies, runs existing
 workspace `build` scripts, and builds the root showcase last. Packages without
-a build script are skipped (e.g. the source-only React Native package).
+a build script are skipped.
 Workspace example lanes that carry a build script — the settings React/Vue
 lanes, the operations-dashboard React lane, spatial-console web, and the
 motion-lab Svelte/Lit GSAP lanes — build inside `build:all` after their
@@ -168,9 +168,11 @@ over writing a bare count.
 
 ### Pre-push hook tracks CI, but is change-scoped — CI is authoritative
 
-`.githooks/pre-push` runs the same gate families as `.github/workflows/ci.yml` — install, lint, typecheck, the token gates, `generate:check`, `docs:check-claims` + `docs:check-links`, tests, `governed:rail` plus the committed-byte drift diff and compose↔RN token parity, the iconography ledger, the SwiftUI semantic-defaults check, the ten realization/ledger audits (behavior, a11y, dead-slots, pseudo-state, state-suppression, token-resolvability, custom-regions, motion-realization, carrier-reachability, variant-realization), and the analytical derived-artifact checks. Activate per-clone with `git config core.hooksPath .githooks` (the `prepare` script attempts this automatically).
+`.githooks/pre-push` runs the same gate families as `.github/workflows/ci.yml` — install, lint, typecheck, the token gates, `generate:check`, `docs:check-claims` + `docs:check-links`, tests, `governed:rail` plus the committed-output check and compose↔RN token parity, the iconography ledger, the SwiftUI semantic-defaults check, the ten realization/ledger audits (behavior, a11y, dead-slots, pseudo-state, state-suppression, token-resolvability, custom-regions, motion-realization, carrier-reachability, variant-realization), and the analytical derived-artifact checks. Activate per-clone with `git config core.hooksPath .githooks` (the `prepare` script attempts this automatically).
 
 It is **not** a step-for-step mirror. `scripts/prepush-scope.mjs` derives a per-push flag set from the changed paths and the hook skips families whose inputs did not change (`PREPUSH_FULL=1` forces the full sequence). The hook's own header states it "can over-skip relative to CI but never silently skips a step whose input changed; CI is authoritative." So a green pre-push means *the lanes your change touched* passed — it is not a proof that CI will pass. Do not `--no-verify` to dodge gate failures — fix the underlying issue.
+
+Before any gate, the hook runs `node scripts/committed-tree-check.mjs pushed <tip>` for every pushed ref and refuses the push when the working tree differs from any pushed commit (a tracked edit, staged or not, or an untracked, non-ignored file): its gates read the working tree, so their verdict would otherwise be about bytes the push does not carry. Commit or remove the listed files, or push from a checkout that matches the commit.
 
 ### CAWS slice lifecycle (spec → worktree → work → merge → evidence → close)
 
@@ -264,7 +266,7 @@ packages/
   ds-iconography/       # Icon authoring source + emission ledger
   ds-figma-plugin/      # Consumes generated figma descriptors
 
-src/                    # React showcase app (Vite) — <!-- src-top-level-dir-count -->12 top-level dirs
+src/                    # React showcase app (Vite) — <!-- src-top-level-dir-count -->13 top-level dirs
   app.tsx               # Shell: Header/Sidebar/TracePanel + route switch
   router.tsx            # <!-- showcase-route-count -->13 hash routes (the Route union)
   views/                # <!-- src-view-count -->17 top-level view modules + sections/ evidence panels
@@ -275,6 +277,7 @@ src/                    # React showcase app (Vite) — <!-- src-top-level-dir-c
                         #   + properties-panel/ (governed by docs/architecture/tokens-architecture.md)
   layout/               # Header, Sidebar, TracePanel
   consumption/          # Consumption guard tests (package contract, CSS hygiene, Stack layout)
+  test-support/         # Shared vitest setup helpers (jsdom Web Storage rebind for Node 25+)
   lib/                  # Usage-example projection (render-usage.tsx, usage-registry.ts)
   trace/                # DeveloperView trace index (buildTraceIndex)
   types/                # Generated bundle loader (bundle.ts, data.ts)
@@ -293,7 +296,7 @@ React Native carries only the subset that has a native meaning — today `create
 
 ### Generated artifact admission rail
 
-The rail binds emitted bytes to four evidence rungs: artifact, contract, codegen-source, environment. `pnpm run governed:rail` regenerates everything and then verifies in required mode; the verifier emits typed `RAIL_*` diagnostic codes when integrity claims drift. CI also runs `git diff --exit-code` after the rail over the six rail-admitted generated `src/` trees (the five web packages plus `packages/ds-react-native/src`) **plus** the registered SwiftUI generated roots and the Jetpack Compose components root — proves the regenerated bytes were already committed. Native drift coverage does not make SwiftUI or Compose members of the admission rail.
+The rail binds emitted bytes to four evidence rungs: artifact, contract, codegen-source, environment. `pnpm run governed:rail` regenerates everything and then verifies in required mode; the verifier emits typed `RAIL_*` diagnostic codes when integrity claims drift. CI then runs `node scripts/committed-tree-check.mjs generated`, which fails when any tracked byte under `packages/` changed or an untracked file appeared there — proving the regenerated bytes of every target (the six rail-admitted packages, SwiftUI, Compose, Figma descriptors, Unity, Godot, GPUI) were already committed. The pre-push hook runs the same script against the pushed tip. Drift coverage does not make the native targets members of the admission rail.
 
 The emission manifest at `packages/ds-codegen/.emission-manifest.json` is **gitignored** runtime state. It is "what the last `generate` run produced on this machine." Schema migrations are regenerate-driven (no data migration) — a stale manifest triggers `RAIL_REQUIRE_MANIFEST_SCHEMA_MISMATCH`, repair is `pnpm run generate -- --target=all`.
 

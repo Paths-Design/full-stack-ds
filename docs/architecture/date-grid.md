@@ -4,16 +4,19 @@ authority: architecture
 status: active
 title: Month date grids
 owner: "@darianrosebrook"
-updated: 2026-10-19
-verified_at_commit: b3546085e
+updated: 2026-10-22
+verified_at_commit: 9cf6a9ec88948acbfcf6cbc690c1930b28381bc4
 governs:
   - packages/ds-codegen/src/date-grid.ts
   - packages/ds-codegen/src/date/date-grid.ts
+  - packages/ds-codegen/src/direction/direction.ts
   - packages/ds-contracts/components/Calendar
   - packages/ds-jetpack-compose/library/src/main/kotlin/com/fullstackds/date/FsdsDateGrid.kt
   - packages/ds-swiftui/Sources/DsSwiftUI/Presence/FsdsDateGrid.swift
 caws_specs:
   - CALENDAR-DATE-GRID-01
+  - RTL-TABS-ARROW-DIRECTION-01
+  - KEYBOARD-DIRECTION-01
 ---
 
 # Month date grids
@@ -57,6 +60,15 @@ several selected gridcells to declare it. Single mode selects at most one
 day: given an array value, such as a range kept after the mode changes, it
 selects the first.
 
+Calendar's root is a `role="group"`, not an application region. The grid
+alone takes over the arrow keys; an application role around it would also
+take screen readers out of browse mode for the caption and the month buttons.
+A group still accepts the `aria-label` or `aria-labelledby` its `a11y.labeling`
+declares, which a generic `div` does not. The `ariaLabel` and `ariaLabelledby`
+props bind them on the group in every web framework, so the name lands on the
+group rather than on a framework host element; React Native maps them to
+`accessibilityLabel` and `accessibilityLabelledBy`.
+
 `buildDateGridIR` (`packages/ds-codegen/src/date-grid.ts`) refuses a contract
 with `DATE_GRID_INVALID` unless:
 
@@ -92,11 +104,21 @@ enabled day. The keyboard moves it:
 
 | Key | Move |
 |---|---|
-| Arrow Left / Right | one day, mirrored when the grid's composed ancestry is `dir="rtl"` |
+| Arrow Left / Right | one day, mirrored when the key handler element's resolved direction is right-to-left |
 | Arrow Up / Down | one week |
 | Home / End | the start or end of the locale's week |
 | Page Up / Down | one month; with Shift, one year (clamped to the target month's length) |
 | Enter, Space | select the focused day (a gridcell has no native activation); the key's default is prevented |
+
+The direction comes from `isRtl` in the shared direction runtime
+(`packages/ds-codegen/src/direction/direction.ts`, copied into each package's
+primitives beside the date-grid core). Each call reads the DOM key handler
+element's live computed CSS direction, covering inherited direction, CSS
+overrides and `dir="auto"`. When computed direction is unavailable, it
+falls back to valid, case-insensitive `dir` keywords along the ancestor
+chain, crossing shadow roots to their hosts and skipping invalid or
+automatic values. Non-DOM targets read as left-to-right. A horizontal tab
+list reads the same function.
 
 A move is clamped to the bounds. A move or a selection into another month
 reports the month through `onMonthChange`, and the nav controls step it. The
@@ -148,6 +170,14 @@ divergences are ledgered in
 [Native target admission](native-target-admission.md#ledgered-divergences-compose).
 
 ## Evidence
+
+- `packages/ds-codegen/src/direction/direction.test.ts` checks mixed-case
+  keywords, invalid attributes, live CSS overrides, shadow ancestry, non-DOM
+  fallback and byte-identical runtime copies. `e2e/keyboard-direction.spec.ts`
+  checks exact Calendar focus changes across all five web frameworks with
+  inherited, automatic and nested direction overrides. Its composed Tabs
+  fixtures cover React, Vue, Svelte and Lit, including a shadow-root
+  composition; they exclude Angular Tabs.
 
 - `packages/ds-codegen/src/date/date-grid.test.ts` pins derivation, tab-stop
   precedence, every key move with both bounds and RTL, range pairing, focus
@@ -214,7 +244,10 @@ divergences are ledgered in
   process that runs it, is not a CI step, and is not iOS evidence.
 - `shouldCloseOnSelect` is declared and not lowered on any target: the grid
   owns no dismissal.
-- The root keeps `role="application"`.
+- The shared tests read the group's `aria-label` and `aria-labelledby`
+  attributes, not a computed accessible name. In Lit the group sits inside the
+  shadow root, where an `aria-labelledby` id cannot reach an element in the
+  page; only `ariaLabel` names it there.
 - A parent that updates a controlled month after the render following a key
   move does not get focus on the moved-to day: that render already refused
   the move.

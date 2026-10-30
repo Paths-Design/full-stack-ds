@@ -187,7 +187,12 @@
         "Switch",
         "Accordion",
         "Popover",
-        "Tabs"
+        "Tabs",
+        "Text",
+        "Divider",
+        "Button",
+        "Badge",
+        "Card"
       ]
     },
     {

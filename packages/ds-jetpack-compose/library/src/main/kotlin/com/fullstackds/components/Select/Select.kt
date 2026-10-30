@@ -91,7 +91,7 @@ fun Select(
         Row(
             modifier
                 .then(chromeModifier)
-                .clickable(enabled = enabled) {
+                .clickable(enabled = enabled, role = Role.DropdownList) {
                     val next = !resolvedOpen
                     if (open == null) { uncontrolledOpen = next }
                     onOpenChange?.invoke(next)

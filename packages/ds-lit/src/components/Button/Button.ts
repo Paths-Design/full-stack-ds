@@ -78,7 +78,7 @@ export class ButtonElement extends LitElement {
       --fsds-button-color-background-disabled: var(--fsds-semantic-color-action-background-primary-disabled, #b8b8b8);
       --fsds-button-color-foreground-default: var(--fsds-semantic-color-foreground-inverse, #fafafa);
       --fsds-button-color-foreground-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
-      --fsds-button-color-border-default: var(--fsds-semantic-color-border-light, #b8b8b8);
+      --fsds-button-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
       --fsds-button-color-border-hover: var(--fsds-semantic-interaction-border-hover, #888889);
       --fsds-button-color-border-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
       --fsds-button-size-gap: var(--fsds-semantic-action-size-medium-gap, 8px);
@@ -173,7 +173,7 @@ export class ButtonElement extends LitElement {
       user-select: none;
       background-color: var(--fsds-button-design-root-background-fill, var(--fsds-button-color-background-default, #0566fe));
       color: var(--fsds-button-design-root-foreground-color, var(--fsds-button-color-foreground-default, #fafafa));
-      border-color: var(--fsds-button-design-root-border-color, var(--fsds-button-color-border-default, #b8b8b8));
+      border-color: var(--fsds-button-design-root-border-color, var(--fsds-button-color-border-default, #a0a0a1));
       border-radius: var(--fsds-button-design-root-shape-radius, var(--fsds-button-size-radius, 9999px));
       border-width: var(--fsds-button-design-root-border-width, var(--fsds-button-size-border, 1px));
       font-size: var(--fsds-button-design-root-typography-size, var(--fsds-button-size-font-size-medium, 1rem));
@@ -249,6 +249,15 @@ export class ButtonElement extends LitElement {
       }
       to {
         transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .button,
+      .button__spinner {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
       }
     }
   `;

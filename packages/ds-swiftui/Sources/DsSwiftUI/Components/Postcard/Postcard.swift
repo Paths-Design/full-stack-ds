@@ -16,7 +16,7 @@ enum PostcardTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "postcard.color.background.default": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-color-background-default", name: "postcard.color.background.default", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
-            "postcard.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-color-border-default", name: "postcard.color.border.default", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "postcard.color.border.default": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-color-border-default", name: "postcard.color.border.default", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "postcard.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-color-foreground-primary", name: "postcard.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
             "postcard.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-size-radius", name: "postcard.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
             "postcard.size.border": FsdsComponentTokenDefinition(cssVar: "--fsds-postcard-size-border", name: "postcard.size.border", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
@@ -32,6 +32,14 @@ enum PostcardTokens {
         ],
     ]
 }
+enum PostcardNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "postcard.color.foreground.primary", value: "#141414", token: "semantic.color.foreground.primary"), .init(property: "postcard.typography.content.fontSize", value: "16px", token: "semantic.typography.body.02")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "postcard.color.foreground.primary", designSlot: "postcard.design.root.foreground.color")]),
+        .init(part: "content", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "postcard.color.foreground.primary", designSlot: "postcard.design.content.foreground.color"), .init(property: "font-size", value: "16px", token: "postcard.typography.content.fontSize", designSlot: "postcard.design.content.typography.size")]),
+    ]
+    static let omissions: [String] = []
+}
 
 /// Emitted through the static-content path: passive article root with a single consumer content region.
 public struct Postcard<Content: View>: View {
@@ -40,6 +48,14 @@ public struct Postcard<Content: View>: View {
     }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        do {
+            return try resolveFsdsNativeTextStyle(PostcardNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "content")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         @ViewBuilder content: () -> Content
@@ -75,11 +91,13 @@ public struct Postcard<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .background(background)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end

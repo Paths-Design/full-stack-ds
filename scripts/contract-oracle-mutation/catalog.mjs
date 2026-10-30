@@ -190,12 +190,12 @@ export const CONTRACT_MUTANTS = Object.freeze([
     },
   },
   {
-    id: "accordion-motion-height-to-width",
+    id: "accordion-motion-grid-rows-to-width",
     fieldClass: "motion-property",
     contractPath:
       "packages/ds-contracts/components/Accordion/Accordion.contract.json",
     pointer: ["motion", "transitions", 0, "properties", 0],
-    from: "height",
+    from: "grid-template-rows",
     to: "width",
     hypothesis:
       "Changing a declared transition property should alter the motion-realization obligation set.",

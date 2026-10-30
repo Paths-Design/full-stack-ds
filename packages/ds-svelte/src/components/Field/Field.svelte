@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type FieldStatus = "idle" | "validating" | "valid" | "invalid";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useField } from "./useField.svelte.js";
@@ -9,7 +15,7 @@ import { provideFieldAssociation } from "../../primitives/index.js";
 // @custom:end
 
 // @generated:start types
-type FieldStatus = "idle" | "validating" | "valid" | "invalid";
+
 // @generated:end
 
 // @custom:start types

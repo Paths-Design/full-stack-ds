@@ -33,15 +33,17 @@ const COMPONENTS_DIR = resolve(REPO, "packages/ds-react/src/components");
 
 /**
  * Families exempt from the full-corpus requirement, each with its blocker.
- * All three share one emitter-composition gap: the contract declares a
- * `children` (or candidate) slot the emitted React component drops, so
- * consumer content cannot compose into the root. Adopt immediately when the
- * emitter forwards what the contract declares (residual backlog).
+ * Text and Command share one emitter-composition gap: the contract declares a
+ * `children` slot the emitted React component drops, so consumer content
+ * cannot compose into the root. Adopt immediately when the emitter forwards
+ * what the contract declares (residual backlog).
  *   Text:    TextProps omits `children` — JSX content is type-illegal.
  *   Command: root renders internal scaffold only; consumer children are
  *            never forwarded, so palette entries cannot compose.
- *   Shuttle: root renders only the current selection; candidate items have
- *            no path in, so a transfer is impossible.
+ *   Shuttle: no emitter gap remains (its options prop and value channel
+ *            drive a full transfer); SettingsView's nav-group picker, the
+ *            consumer prefs.ts names, still uses checkboxes, and swapping
+ *            it is a product decision.
  */
 export const BLOCKED_FAMILIES = ["Command", "Shuttle", "Text"] as const;
 

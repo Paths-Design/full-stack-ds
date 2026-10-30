@@ -303,6 +303,62 @@ describe("Tabs — behavioral", () => {
     wrapper.unmount();
   });
 
+  it("manual activation: repeated arrows move on from the focused tab while the selection stays", async () => {
+    document.documentElement.setAttribute("dir", "rtl");
+    const wrapper = mount(
+      {
+        render() {
+          return h(Tabs as Component, { defaultValue: "a", activationMode: "manual", loop: false }, {
+            default: () => [
+              h(TabsList as Component, {}, {
+                default: () => ["a", "b", "c"].map((value) =>
+                  h(TabsTab as Component, { value }, { default: () => `Tab ${value}` })),
+              }),
+            ],
+          });
+        },
+      },
+      { attachTo: document.body },
+    );
+    try {
+      await wrapper.vm.$nextTick();
+      const press = async (key: string) => {
+        (document.activeElement as HTMLElement).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
+        await wrapper.vm.$nextTick();
+      };
+      (wrapper.find('[role="tab"][data-value="a"]').element as HTMLElement).focus();
+      await press("ArrowLeft");
+      await press("ArrowLeft");
+      expect(document.activeElement?.getAttribute("data-value")).toBe("c");
+      expect(wrapper.find('[role="tab"][data-value="a"]').attributes("aria-selected")).toBe("true");
+      await press("ArrowRight");
+      expect(document.activeElement?.getAttribute("data-value")).toBe("b");
+    } finally {
+      wrapper.unmount();
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
+  it("in a right-to-left page, ArrowLeft moves to the next tab and ArrowRight to the previous", async () => {
+    // Without loop, a physical mapping leaves the first tab selected: ArrowLeft
+    // from the first tab has no previous tab to reach.
+    document.documentElement.setAttribute("dir", "rtl");
+    const wrapper = mountTabs({ defaultValue: "a", loop: false });
+    try {
+      await wrapper.vm.$nextTick();
+      const list = wrapper.find(sel.tabList);
+      await list.trigger("keydown", { key: "ArrowLeft" });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(sel.tabB).attributes("aria-selected")).toBe("true");
+      await list.trigger("keydown", { key: "ArrowRight" });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(sel.tabA).attributes("aria-selected")).toBe("true");
+    } finally {
+      wrapper.unmount();
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
   it("keyboard Home moves focus to first tab", async () => {
     const wrapper = mountTabs({ defaultValue: "b" });
     await wrapper.vm.$nextTick();

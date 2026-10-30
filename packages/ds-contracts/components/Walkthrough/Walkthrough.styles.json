@@ -324,7 +324,7 @@
         "slot": "walkthrough.design.skip.spacing.padding"
       }
     },
-    "margin-right": {
+    "margin-inline-end": {
       "literal": "auto",
       "platforms": [
         "web"

@@ -105,7 +105,7 @@ export class CodeBlockElement extends LitElement {
     .code-block {
       --fsds-code-block-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-code-block-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-code-block-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-code-block-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-code-block-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-code-block-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
       --fsds-code-block-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);

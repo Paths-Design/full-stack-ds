@@ -39,7 +39,7 @@ describe("Calendar — unit", () => {
 
   it("has the correct ARIA role", () => {
     const wrapper = mount(Calendar as Component, { props: {}, attrs: { "data-testid": "calendar" }, slots: { "default": "content" } });
-    expect(wrapper.attributes("role")).toBe("application");
+    expect(wrapper.attributes("role")).toBe("group");
   });
 
   it("applies mode=single variant class", () => {
@@ -55,7 +55,7 @@ describe("Calendar — unit", () => {
 
 describe("Calendar — accessibility", () => {
   it("has no unexpected axe violations with default props", async () => {
-    const wrapper = mount(Calendar as Component, { props: {}, attrs: { "data-testid": "calendar", "aria-label": "Test Calendar" }, slots: { "default": "content" } });
+    const wrapper = mount(Calendar as Component, { props: { "ariaLabel": "Test Calendar" }, attrs: { "data-testid": "calendar" }, slots: { "default": "content" } });
     const results = await axe(wrapper.element, componentAxeOptions);
     expect(results.violations.map((v) => v.id)).toEqual([]);
   });

@@ -195,6 +195,14 @@ export class DetailsElement extends LitElement {
       margin-inline-start: auto;
     }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .details__icon {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
   `;
 
   @property({ type: String }) summary!: string;
@@ -231,7 +239,7 @@ export class DetailsElement extends LitElement {
 
   override render() {
     return html`<details class="${this.computeClasses()}" ?open=${this.behavior.open} data-fsds-box="">
-  <summary class=${'details__summary'} @click=${(e: MouseEvent) => { if (canActivateInteraction(e, true)) this.behavior.setOpen(!this.behavior.open); }} aria-disabled=${ifDefined(this.disabled === undefined ? undefined : (this.disabled ? 'true' : 'false'))} aria-controls=${ifDefined([this.open ? 'details-content' : null].filter(Boolean).join(' ') || undefined)}>
+  <summary class=${'details__summary'} @click=${(e: MouseEvent) => { if (canActivateInteraction(e, true)) this.behavior.setOpen(!this.behavior.open); }} aria-disabled=${ifDefined(this.disabled === undefined ? undefined : (this.disabled ? 'true' : 'false'))} aria-controls=${ifDefined([this.behavior.open ? 'details-content' : null].filter(Boolean).join(' ') || undefined)}>
     <span class=${'details__summaryContent'}>
       <fsds-icon class=${'details__icon'} name="chevron-down" size="sm"></fsds-icon>
       <span class=${'details__summaryText'}>${this.summary}</span>
@@ -422,6 +430,14 @@ export class DetailsContentElement extends LitElement {
       order: 1;
       margin-inline-start: auto;
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .details__icon {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

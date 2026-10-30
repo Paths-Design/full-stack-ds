@@ -1,5 +1,13 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type RadioGroupOption = { value: string; label: string; disabled?: boolean; description?: string };
+export type RadioGroupOrientation = "vertical" | "horizontal";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
+import { requestNativeRadioChange } from "../../primitives/interaction.js";
 import { useRadioGroup } from "./useRadioGroup.svelte.js";
 // @generated:end
 
@@ -8,8 +16,7 @@ import { useRadioGroup } from "./useRadioGroup.svelte.js";
 // @custom:end
 
 // @generated:start types
-type RadioGroupOption = { value: string; label: string; disabled?: boolean; description?: string };
-type RadioGroupOrientation = "vertical" | "horizontal";
+
 // @generated:end
 
 // @custom:start types
@@ -57,7 +64,7 @@ const classes = $derived(
 <fieldset class={classes} role="radiogroup" aria-label={ariaLabel} data-fsds-component="radio-group" data-fsds-box="">
   {#each (options ?? []) as item, index (index)}
   <label class={'radio-group__item'} data-checked={(item.value === behavior.selection)} data-disabled={item.disabled} title={item.description}>
-    <input class={'radio-group__option'} type="radio" onchange={() => behavior.setSelection(item.value)} name={name} value={item.value} checked={(item.value === behavior.selection)} disabled={item.disabled} aria-label={item.label} aria-checked={(item.value === behavior.selection)} />
+    <input class={'radio-group__option'} type="radio" onchange={(e) => requestNativeRadioChange(e, () => behavior.setSelection(item.value), () => behavior.selection)} name={name} value={item.value} checked={(item.value === behavior.selection)} disabled={item.disabled} aria-label={item.label} aria-checked={(item.value === behavior.selection)} />
     <span class={'radio-group__label'}>{item.label}</span>
   </label>
   {/each}

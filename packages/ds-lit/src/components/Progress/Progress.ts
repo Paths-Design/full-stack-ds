@@ -120,7 +120,7 @@ export class ProgressElement extends LitElement {
       display: inline-block;
       color: var(--fsds-progress-design-value-foreground-color, var(--fsds-progress-color-text, #474647));
       font-size: var(--fsds-progress-design-value-typography-size, 0.875em);
-      margin-left: var(--fsds-progress-spacing-gap, 2px);
+      margin-inline-start: var(--fsds-progress-spacing-gap, 2px);
     }
 
     .progress--info .progress__fill {
@@ -138,6 +138,14 @@ export class ProgressElement extends LitElement {
     .progress--danger .progress__fill {
       background-color: var(--fsds-progress-design-condition-fdd1c2c16a8f-background-fill, var(--fsds-progress-color-fill-danger, #d92d2e));
     }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .progress {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
     }
   `;
 

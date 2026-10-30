@@ -1,6 +1,7 @@
 import { buildDesignBindings, type DesignBindingIR } from './design-properties.js';
 import { buildPagedSetIR, PAGED_VALUES, PAGED_ACTIONS, type PagedSetIR, type PagedValue, type PagedAction } from "./paging.js";
 import { buildDateGridIR, parseDateGridBinding, type DateGridIR, type DateGridValue, type DateGridAction } from "./date-grid.js";
+import { buildTransferIR, parseTransferBinding, type TransferIR, type TransferValue, type TransferAction } from "./transfer.js";
 import { buildInteractionIR, type InteractionIR, type ActivationIR } from "./interaction.js";
 /**
  * Component IR: the framework-neutral derivation of a validated contract.
@@ -337,6 +338,7 @@ export function nativeTableAttrsFor(tag: string | undefined): NativeTableAttr[] 
 export type BindingExpression =
   | { kind: "paged"; field?: PagedValue; action?: PagedAction; arg?: BindingExpression }
   | { kind: "dateGrid"; field?: DateGridValue; action?: DateGridAction; arg?: BindingExpression }
+  | { kind: "transfer"; field?: TransferValue; action?: TransferAction; arg?: BindingExpression }
   | { kind: "prop"; prop: string; path?: string[] }
   | { kind: "channel"; channel: string; field: "value" | "onChange" | "defaultValue"; path?: string[]; forwardValue?: "channel" | "sequence" | "pagedSet" }
   | { kind: "literal"; value: string }
@@ -765,6 +767,14 @@ export interface IdRefConditionIR {
   /** Comparison literal — only for op "eq". */
   value?: string;
   negated: boolean;
+  /**
+   * Set when `prop` is a channel's value prop: the gate reads the channel's
+   * effective value, as the target's own `if` guard does. The raw prop is
+   * undefined while the channel runs uncontrolled (Select opened through
+   * `defaultOpen`), so gating on it would drop the reference to a rendered
+   * target.
+   */
+  channel?: string;
 }
 
 /**
@@ -855,6 +865,8 @@ export interface CompositeControlIR {
   commit: "input" | "change" | "activation";
   event: "input" | "change" | "click";
   update: Extract<BindingExpression, { kind: "channelCall" | "channelUpdate" }>;
+  /** Native checked state must follow the accepted selection after a request. */
+  nativeRadio?: boolean;
 }
 
 /**
@@ -903,6 +915,8 @@ export interface KeyboardActionIR {
  * its idiomatic representation.
  */
 export interface DomNodeIR {
+  /** Accepted string selection for a native radio change request. */
+  nativeRadioChannel?: string;
   /** Normalized host activation; emitters only lower framework syntax. */
   activation?: ActivationIR;
   /** Bind the rendered content host to the focus-scope behavior. */
@@ -1292,6 +1306,14 @@ export interface CssBlockIR {
    * the block, after declarations, in stable order.
    */
   comments?: string[];
+  /**
+   * True when this block is a CSS `@starting-style` entry state (lowered
+   * from the styles sidecar's reserved `@starting-style` key). The CSS
+   * formatter wraps these in one `@starting-style { … }` at-rule instead
+   * of emitting them as cascade rules; reduced-motion derivation skips
+   * them because a starting state declares no transition of its own.
+   */
+  startingStyle?: boolean;
 }
 
 export interface KeyframeIR {
@@ -1805,6 +1827,8 @@ export interface ComponentIR {
   pagedSet?: PagedSetIR;
   /** Month-grid date selection owned by a date-grid runtime (see date-grid.ts). */
   dateGrid?: DateGridIR;
+  /** Dual-listbox transfer owned by a transfer-list runtime (see transfer.ts). */
+  transfer?: TransferIR;
 
   /**
    * Typed token facts (FEAT-MOBILE-IR-001). Substrate-neutral projection of
@@ -2127,6 +2151,7 @@ export function buildComponentIR(
   }
   // Domain checks run on a DOM whose bindings and iteration scopes are valid.
   const dateGrid = buildDateGridIR(contract, behavior.normalizedChannels, dom);
+  const transfer = buildTransferIR(contract, behavior.normalizedChannels, dom);
 
   // CODEGEN-RECURSIVE-COMPOSITION-01: resolve componentRef nodes into typed
   // ComponentInstanceIR facts. This is the single place componentRef bindings
@@ -2221,6 +2246,7 @@ export function buildComponentIR(
     motion,
     pagedSet,
     dateGrid,
+    ...(transfer ? { transfer } : {}),
     tokenFacts,
     designBindings,
     tokenScopes,
@@ -2474,11 +2500,11 @@ function validateDomNode(
           `iterates the enclosing item, but the node has no enclosing array iteration.`,
       );
     }
-    if ((source.kind === "dateGrid" || source.kind === "iterationLocal") && (itemType === undefined || itemType.trim() === "")) {
+    if ((source.kind === "dateGrid" || source.kind === "transfer" || source.kind === "iterationLocal") && (itemType === undefined || itemType.trim() === "")) {
       throw new Error(`[${componentName}] DOM iterate.kind="array" requires \`itemType\` to be set.`);
     }
   }
-  if (node.iteration && node.iteration.source.kind !== "dateGrid" && node.iteration.source.kind !== "iterationLocal") {
+  if (node.iteration && node.iteration.source.kind !== "dateGrid" && node.iteration.source.kind !== "transfer" && node.iteration.source.kind !== "iterationLocal") {
     const { sourceProp, kind } = node.iteration;
     if (!knownProps.has(sourceProp)) {
       throw new Error(
@@ -3022,6 +3048,11 @@ function validateBindingAgainstScope(
 ): void {
   if (binding.kind === "dateGrid") {
     if (!!binding.action !== allowChannelCall) throw new Error(`DATE_GRID_BINDING_INVALID: ${siteLabel} requires ${allowChannelCall ? "an action" : "a value"}`);
+    if (binding.arg) validateBindingAgainstScope(binding.arg, siteLabel, knownChannels, knownProps, enclosingIteration, componentName);
+    return;
+  }
+  if (binding.kind === "transfer") {
+    if (!!binding.action !== allowChannelCall) throw new Error(`TRANSFER_BINDING_INVALID: ${siteLabel} requires ${allowChannelCall ? "an action" : "a value"}`);
     if (binding.arg) validateBindingAgainstScope(binding.arg, siteLabel, knownChannels, knownProps, enclosingIteration, componentName);
     return;
   }
@@ -4048,8 +4079,8 @@ function parseIterate(node: ContractDomNode): IterationIR | undefined {
   } else if (source.kind === "channel" && source.field === "value") {
     // The validator resolves the channel to its valueProp.
     sourceProp = "";
-  } else if (source.kind === "dateGrid" || (source.kind === "iterationLocal" && source.local === "item")) {
-    // A runtime collection (`dateGrid:weeks`) or, for nested iteration, an
+  } else if (source.kind === "dateGrid" || source.kind === "transfer" || (source.kind === "iterationLocal" && source.local === "item")) {
+    // A runtime collection (`dateGrid:weeks`, `transfer:available`) or, for nested iteration, an
     // array on the enclosing iteration's item (`iter:item.days`). Neither
     // names a prop; the validator checks them against their own scope.
     if (it.kind !== "array") {
@@ -4198,6 +4229,7 @@ function subtreeHasNamedSlot(node: DomNodeIR, name: string): boolean {
  */
 export function parseBindingExpression(expr: string): BindingExpression {
   if (expr.startsWith("dateGrid:")) return parseDateGridBinding(expr, parseBindingExpression);
+  if (expr.startsWith("transfer:")) return parseTransferBinding(expr, parseBindingExpression);
   if (expr.startsWith("paged:")) {
     const value = expr.slice(6);
     if ((PAGED_VALUES as readonly string[]).includes(value)) return { kind: "paged", field: value as PagedValue };
@@ -5125,6 +5157,17 @@ export function buildCompositeControlIR(
   }
   target.node.events[event] = update;
 
+  const checked = target.node.bindings.checked;
+  const isAcceptedSelection = (binding: BindingExpression) =>
+    binding.kind === "channel" && binding.channel === channel.name && binding.field === "value" && !binding.path?.length;
+  const nativeRadio = target.node.tag === "input" && target.node.attrs.type === "radio" &&
+    control.interactionModel === "collection-selection" && control.commit === "change" &&
+    channel.valueType === "string" && update.kind === "channelCall" && checked?.kind === "predicate" && checked.op === "eq" &&
+    JSON.stringify(target.node.bindings.value) === JSON.stringify(update.arg) &&
+    ((isAcceptedSelection(checked.left) && JSON.stringify(checked.right) === JSON.stringify(update.arg)) ||
+      (isAcceptedSelection(checked.right) && JSON.stringify(checked.left) === JSON.stringify(update.arg)));
+  if (nativeRadio) target.node.nativeRadioChannel = channel.name;
+
   return {
     part,
     channel,
@@ -5132,6 +5175,7 @@ export function buildCompositeControlIR(
     commit: control.commit,
     event,
     update,
+    nativeRadio,
   };
 }
 
@@ -6275,8 +6319,36 @@ export function computeCssBlocks(
   const interactionGuard =
     platformTarget === "web" ? suppressionGuardFor(contract) : undefined;
 
+  // Reserved `@starting-style` key: entry states for enter/exit transition
+  // pairs. The resting declarations of a state live under its regular
+  // selector key; the reserved key maps selectors to what the element should
+  // transition FROM when it first acquires that style (CSS @starting-style).
+  // The lowering lives here — next to every other styles-key lowering —
+  // because hand-authoring this at-rule inside @custom regions is exactly how
+  // the corpus ended up with one framework's Popover.css owning the only
+  // reduced-motion block in the repo (see reducedMotionBlock for that
+  // history). Web only: @starting-style is a CSS at-rule; native style
+  // projections have no entry-state concept and must not see the key.
+  // The cast widens the ambient Record value type by one level for this
+  // reserved key; the sidecar schema owns the shape.
+  const startingStyles = styles["@starting-style"] as unknown as
+    | Record<string, Record<string, StyleEntry>>
+    | undefined;
+  if (
+    platformTarget === "web" &&
+    startingStyles &&
+    typeof startingStyles === "object"
+  ) {
+    for (const [key, rawBlock] of Object.entries(startingStyles)) {
+      const selector = expandStylesKey(key, cssPrefix, expandOptions);
+      const declarations = renderStyleBlock(rawBlock, cssPrefix, platformTarget);
+      if (Object.keys(declarations).length === 0) continue;
+      blocks.push({ selector, declarations, startingStyle: true });
+    }
+  }
+
   for (const [key, rawBlock] of Object.entries(styles)) {
-    if (key === "root") continue;
+    if (key === "root" || key === "@starting-style") continue;
     const selector = guardInteractionSelector(
       expandStylesKey(key, cssPrefix, expandOptions),
       interactionGuard,

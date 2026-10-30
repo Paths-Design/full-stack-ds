@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { ChipComponent } from "../Chip.component";
 // @generated:end
 
@@ -54,6 +56,30 @@ describe("Chip — unit", () => {
     const fixture = TestBed.createComponent(ChipComponent);
     fixture.componentInstance.size = "large";
     expect(classTokens(fixture.componentInstance)).toContain("chip--large");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [ChipComponent],
+  template: "<fsds-chip aria-label=\"Test Chip\"><span>content</span></fsds-chip>",
+})
+class ChipAxeHost {}
+
+describe("Chip — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [ChipAxeHost] });
+    const fixture = TestBed.createComponent(ChipAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".chip");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

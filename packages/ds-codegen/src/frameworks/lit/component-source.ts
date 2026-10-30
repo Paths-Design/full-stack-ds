@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions, transferValueType } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -939,13 +940,22 @@ function generateTabsListClass(ir: ComponentIR): string {
   lines.push(`    try { ctx = this._ctx.value; } catch { return; }`);
   lines.push(`    const tabs = ctx.registeredTabs;`);
   lines.push(`    if (tabs.length === 0) return;`);
-  lines.push(`    const currentIndex = tabs.indexOf(ctx.activeTab);`);
+  // Arrows move on from the focused tab, which manual activation leaves apart
+  // from the selected one. A tab's keydown reaches this host retargeted to the
+  // tab host, which carries role="tab" and data-value.
+  lines.push(`    const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");`);
+  lines.push(`    const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.activeTab);`);
   lines.push(`    const isHorizontal = ctx.orientation !== "vertical";`);
+  // A horizontal list follows the inline direction, read across the shadow
+  // boundary: the arrow pointing toward the inline end moves to the next tab.
+  lines.push(`    const rtl = isRtl(e.currentTarget);`);
+  lines.push(`    const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";`);
+  lines.push(`    const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";`);
   lines.push(`    let nextIndex = currentIndex;`);
-  lines.push(`    if ((isHorizontal && e.key === "ArrowRight") || (!isHorizontal && e.key === "ArrowDown")) {`);
+  lines.push(`    if ((isHorizontal && towardEnd) || (!isHorizontal && e.key === "ArrowDown")) {`);
   lines.push(`      e.preventDefault();`);
   lines.push(`      nextIndex = ctx.loop ? (currentIndex + 1) % tabs.length : Math.min(currentIndex + 1, tabs.length - 1);`);
-  lines.push(`    } else if ((isHorizontal && e.key === "ArrowLeft") || (!isHorizontal && e.key === "ArrowUp")) {`);
+  lines.push(`    } else if ((isHorizontal && towardStart) || (!isHorizontal && e.key === "ArrowUp")) {`);
   lines.push(`      e.preventDefault();`);
   lines.push(`      nextIndex = ctx.loop ? (currentIndex - 1 + tabs.length) % tabs.length : Math.max(currentIndex - 1, 0);`);
   lines.push(`    } else if (e.key === "Home") {`);
@@ -1518,7 +1528,8 @@ function generateDisclosureStateSource(ir: ComponentIR): string {
 }
 
 function generateCompoundStateSource(ir: ComponentIR): string {
-  const importsBody = generateCompoundStateImports(ir);
+  // The tab list's keyboard handler reads the inline direction.
+  const importsBody = `${generateCompoundStateImports(ir)}\nimport { isRtl } from '../../primitives/direction/direction.js';`;
   const typesBody = generateCompoundStateTypes(ir);
   const componentBody = [
     generateCompoundStateRootClass(ir),
@@ -1679,12 +1690,14 @@ function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: 
   if (usesRef) lines.push(`import { ref } from 'lit/directives/ref.js';`);
   if (ir.pagedSet) lines.push(`import { PagedSetController } from "../../primitives/controllers/PagingController.js";`);
   if (ir.dateGrid) lines.push(`import { DateGridController } from "../../primitives/controllers/DateGridController.js";`);
+  if (ir.transfer) lines.push(`import { TransferListController } from "../../primitives/controllers/TransferListController.js";`);
   if (ir.motion.sequence) lines.push(`import { SequenceController } from "../../primitives/controllers/SequenceController.js";`);
   if (ir.messages.length > 0) {
     const names = ["FsdsMessagesController", ...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : [])];
     lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   // Always include `property`; add `state` when the dom tree has a children
   // guard so the private _hasChildren reactive field can be declared.
   const decorators = ["property"];
@@ -1992,6 +2005,11 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     }
     if (ir.dateGrid) {
       lines.push(`  private dateGrid = new DateGridController(this, () => (${dateGridOptions(ir.dateGrid,
+        (prop) => defaultAwareLitPropAccessor(prop, styledByName), (channel) => `this.behavior.${channel}`,
+        (channel) => `(next) => this.behavior.set${capitalizeLit(channel)}(next)`)}));`);
+    }
+    if (ir.transfer) {
+      lines.push(`  private transfer = new TransferListController(this, () => (${transferOptions(ir.transfer,
         (prop) => defaultAwareLitPropAccessor(prop, styledByName), (channel) => `this.behavior.${channel}`,
         (channel) => `(next) => this.behavior.set${capitalizeLit(channel)}(next)`)}));`);
     }
@@ -2566,7 +2584,10 @@ function litIdRefGuardExpr(ref: IdRefIR): string | undefined {
     conds.push(`this.querySelector('[slot="${ref.slotGate}"]') !== null`);
   }
   if (ref.when) {
-    const accessor = propAccessor(ref.when.prop);
+    // A channel gate reads the channel's effective value, as an `if` guard does.
+    const accessor = ref.when.channel
+      ? `this.behavior.${ref.when.channel}`
+      : propAccessor(ref.when.prop);
     if (ref.when.op === "eq") {
       conds.push(
         `${accessor} ${ref.when.negated ? "!==" : "==="} '${ref.when.value}'`,
@@ -2721,6 +2742,11 @@ function renderLitDomNode(
   // callback props. ifDefined() would wrap the listener-producing
   // function itself, breaking listener installation.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
+      const arg = renderLitBindingValue(expr.arg, ctx);
+      if (arg !== null) attrs.push(`@change=\${(e: Event) => requestNativeRadioChange(e, () => this.behavior.set${capitalizeLit(node.nativeRadioChannel)}(${arg}), () => this.behavior.${node.nativeRadioChannel})}`);
+      continue;
+    }
     const activation = eventName === "click" ? node.activation : undefined;
     const disclosure = activation?.channel;
     if (disclosure) {
@@ -3206,6 +3232,14 @@ function renderLitBinding(
     case "paged": return `.${attr}=\${${pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     // Date-grid values are strings and booleans that the attribute renders ("true"/"false").
     case "dateGrid": return `${attr}=\${${dateGridBindingExpression(expr, "this.dateGrid")}}`;
+    case "transfer": {
+      // A boolean runtime value (addDisabled) needs Lit's boolean-attribute
+      // binding: `disabled=${false}` would serialize as disabled="false",
+      // which disables the button. ARIA attributes take the explicit string.
+      const value = transferBindingExpression(expr, "this.transfer");
+      if (transferValueType(expr) !== "boolean") return `${attr}=\${${value}}`;
+      return attr.startsWith("aria-") ? `${attr}=\${${value} ? 'true' : 'false'}` : `?${attr}=\${${value}}`;
+    }
     case "valueMap": {
       const lowered = renderLitBindingValue(expr, ctx);
       if (lowered === null) return null;
@@ -3488,6 +3522,7 @@ function renderLitContent(
   switch (expr.kind) {
     case "paged": return `\${${pagedBindingExpression(expr, "this.pagedSet")}}`;
     case "dateGrid": return `\${${dateGridBindingExpression(expr, "this.dateGrid")}}`;
+    case "transfer": return `\${${transferBindingExpression(expr, "this.transfer")}}`;
     case "prop":
       return `\${${appendPath(litPropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -3579,6 +3614,7 @@ function renderLitBindingValue(
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "dateGrid": return dateGridBindingExpression(expr, "this.dateGrid", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+    case "transfer": return transferBindingExpression(expr, "this.transfer", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(litPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3664,6 +3700,7 @@ function renderLitEvent(
   switch (expr.kind) {
     case "paged": return `@${eventName}=\${${pagedBindingExpression(expr, "this.pagedSet", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "dateGrid": return `@${eventName}=\${${dateGridBindingExpression(expr, "this.dateGrid", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
+    case "transfer": return `@${eventName}=\${${transferBindingExpression(expr, "this.transfer", expr.arg ? renderLitBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `@${eventName}=\${${litPropAccessor(expr.prop, ctx)}}`;
     case "literal":

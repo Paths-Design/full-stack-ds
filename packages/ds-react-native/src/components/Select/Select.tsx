@@ -86,16 +86,15 @@ export function Select({
     <View
       testID={testID}
       style={[styles.root, style]}
-      accessibilityLabel={accessibilityLabel ?? triggerLabel}
+      accessibilityLabel={accessibilityLabel}
       accessibilityLabelledBy={accessibilityLabelledBy}
-      accessibilityState={{ expanded: String(open) === "true", disabled: String(disabled) === "true" }}
     >
       <Pressable
         style={styles.trigger}
         disabled={disabled}
         accessibilityLabel={triggerLabel}
         onPress={() => setOpenValue(!open)}
-        accessibilityRole="button"
+        accessibilityRole="combobox"
         accessibilityState={{ disabled: disabled, expanded: String(open) === "true" }}
       >
         <View
@@ -129,6 +128,7 @@ export function Select({
                 style={styles.option}
                 disabled={item.disabled}
                 onPress={() => setSelectionValue(multiple ? ((Array.isArray(selection) ? selection : selection == null ? [] : [selection]).includes(item.value) ? (Array.isArray(selection) ? selection : selection == null ? [] : [selection]).filter((v) => v !== item.value) : [...(Array.isArray(selection) ? selection : selection == null ? [] : [selection]), item.value]) : item.value)}
+                accessibilityRole="button"
                 accessibilityState={{ selected: String(Array.isArray(selection) ? selection.includes(item.value) : item.value === selection) === "true", disabled: item.disabled }}
               >
                 <View

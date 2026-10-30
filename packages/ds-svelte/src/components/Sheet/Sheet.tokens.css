@@ -3,7 +3,7 @@
 :root {
   --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0,0,0,0.40));
   --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
-  --fsds-sheet-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+  --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
   --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
   --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
   --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);

@@ -1,0 +1,77 @@
+id: MUSIC-ALBUM-DETAIL-01
+title: 'Music library album detail pages'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Album detail and richer music discovery verified in desktop/mobile browser checks, with recorded executed commands and committed-source references; generated logs remain ignored.'
+created_at: '2026-10-20T00:54:45.382Z'
+updated_at: '2026-10-20T01:49:20.909Z'
+created_by_session: '01a156cb-3d22-7082-8bfb-a913ec2f142d'
+blast_radius:
+  modules:
+    - 'Retoken music consumer fixture'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'e2e/fixtures/retoken-pages'
+    - 'e2e/retoken-pages.spec.ts'
+    - scripts/audit-retoken-tokens.mjs
+  out: []
+invariants:
+  - 'Generated DS component source remains unchanged; page appearance uses admitted controls.'
+  - 'Album navigation and playback preview maintain independent state.'
+acceptance:
+  - id: A1
+    given: 'music discovery'
+    when: 'an album cover or title is activated'
+    then: 'a URL-addressable detail page shows matching artwork, maker and tracks, with browser back and Home returning to discovery.'
+  - id: A2
+    given: 'an album detail page'
+    when: 'play, pause, track selection, save and transport controls are used'
+    then: 'the visible preview state updates consistently without claiming audio playback.'
+  - id: A3
+    given: 'desktop and mobile viewports'
+    when: 'the album detail page is rendered'
+    then: 'the hero and track list remain usable without horizontal document overflow and existing retoken page checks pass.'
+  - id: A4
+    given: 'The music discovery fixture with original studio content'
+    when: 'Search suggestions, profile popover, library collapse and card or button hover are exercised'
+    then: >-
+      Popular artists and radio are composed from existing DS components; controls
+      respond to keyboard and pointer, and motion uses shared timing tokens with
+      reduced-motion suppression.
+non_functional: {}
+contracts:
+  - name: 'album-navigation'
+    type: behavior
+    path: 'e2e/retoken-pages.spec.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Primary browser assertions inspected and executed for matching album artwork/maker, direct links, browser Back and Home at 1440/390px. Raw retained ignored log: tmp/music-album-detail/final-music-render.log (4 passed). Commit verification checks source existence/reachability; it does not rerun Playwright."
+    recorded_at: "2026-10-20T01:48:43.451Z"
+    command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --grep \"spotify: composition|Album details\" --workers=1"
+    exit_code: 0
+    commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Primary desktop/mobile browser assertions inspected and executed for exact track titles/durations, preview play/pause, transport, save/remove and browsing-independence; visual-preview label retained. Ignored raw log: tmp/music-album-detail/final-music-render.log (4 passed). Source commit verification is separate from executed behavior evidence."
+    recorded_at: "2026-10-20T01:48:44.507Z"
+    command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --grep \"spotify: composition|Album details\" --workers=1"
+    exit_code: 0
+    commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Primary full retoken run 13/13 passed in ignored tmp/music-album-detail/fsds-album-final-e2e.log; final committed-source desktop/mobile rerun 4/4 passed in final-music-render.log, including overflow/media/icon facts. Screenshots inspected; earlier intermittent logs retained. Commit re-derivation does not rerun tests."
+    recorded_at: "2026-10-20T01:48:45.535Z"
+    command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Primary generated-component source and shared motion-token CSS inspected. Full-suite hover/focus and live reduced-motion assertions passed. Final tooltip/search/profile/collapse and filtered-library-focus run passed 2/2; ignored raw log tmp/music-album-detail/fsds-album-tooltip-focus.log. Six-state override perturbation retained separately. No audio or lab-adapter reuse claim; commit verification alone does not establish runtime behavior."
+    recorded_at: "2026-10-20T01:48:46.620Z"
+    command: "FSDS_E2E_PORT=5186 pnpm exec playwright test e2e/retoken-pages.spec.ts --grep \"Music discovery\" --workers=1"
+    exit_code: 0
+    commit_sha: a7d816e4891e5f564151fa4e0a2400cf55969808

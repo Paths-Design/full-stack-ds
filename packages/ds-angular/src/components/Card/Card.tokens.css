@@ -3,7 +3,7 @@
 .card {
   --fsds-card-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
   --fsds-card-color-background-hover: var(--fsds-semantic-color-background-hover, #f7f7f7);
-  --fsds-card-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+  --fsds-card-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
   --fsds-card-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
   --fsds-card-size-padding: var(--fsds-core-spacing-size-06, 16px);
   --fsds-card-size-padding-inset: var(--fsds-core-spacing-size-04, 8px);

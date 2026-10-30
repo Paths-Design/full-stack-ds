@@ -1,0 +1,68 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://addons/full_stack_ds/components/Card/Card.gd" id="1"]
+[ext_resource type="Theme" path="res://addons/full_stack_ds/components/Card/theme.tres" id="2"]
+
+[node name="Card" type="VBoxContainer"]
+script = ExtResource("1")
+theme = ExtResource("2")
+
+[node name="Chrome" type="PanelContainer" parent="."]
+layout_mode=2
+
+[node name="Body" type="VBoxContainer" parent="Chrome"]
+layout_mode=2
+
+[node name="Part_header" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_header"]
+layout_mode=2
+
+[node name="Part_media" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_media"]
+layout_mode=2
+
+[node name="Part_content" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_content"]
+layout_mode=2
+
+[node name="Part_footer" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_footer"]
+layout_mode=2
+
+[node name="Part_actions" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_actions"]
+layout_mode=2
+
+[node name="Part_badge" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_badge"]
+layout_mode=2
+
+[node name="Part_description" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_description"]
+layout_mode=2
+
+[node name="Part_link" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_link"]
+layout_mode=2
+
+[node name="Part_note" type="PanelContainer" parent="Chrome/Body"]
+layout_mode=2
+
+[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_note"]
+layout_mode=2

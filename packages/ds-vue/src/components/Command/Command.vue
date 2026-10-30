@@ -52,10 +52,10 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { placeholder: "s
 const behavior = useCommand({
   open: () => props.open,
   defaultOpen: props.defaultOpen,
-  onOpenChange: props.onOpenChange,
+  onOpenChange: (...args) => props.onOpenChange?.(...args),
   search: () => props.search,
   defaultSearch: props.defaultSearch,
-  onSearchChange: props.onSearchChange,
+  onSearchChange: (...args) => props.onSearchChange?.(...args),
 });
 // @generated:end
 

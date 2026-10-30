@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { ButtonComponent } from "../Button.component";
 // @generated:end
 
@@ -72,6 +74,32 @@ describe("Button — unit", () => {
     const fixture = TestBed.createComponent(ButtonComponent);
     fixture.componentInstance.variant = "outline";
     expect(classTokens(fixture.componentInstance)).toContain("button--outline");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [ButtonComponent],
+  template: "<fsds-button [ariaLabel]=\"ariaLabel\"><span>content</span></fsds-button>",
+})
+class ButtonAxeHost {
+  readonly ariaLabel = "Test Button";
+}
+
+describe("Button — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [ButtonAxeHost] });
+    const fixture = TestBed.createComponent(ButtonAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".button");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

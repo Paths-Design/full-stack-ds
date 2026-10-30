@@ -1,0 +1,72 @@
+{
+  "operation": "rule",
+  "excluded": [
+    "decorative"
+  ],
+  "styles": [
+    {
+      "source": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "border-top-color",
+          "value": "#d0d0d0",
+          "token": "divider.color"
+        },
+        {
+          "property": "border-top-width",
+          "value": "1px",
+          "token": "divider.size.thickness"
+        },
+        {
+          "property": "margin-top",
+          "value": "8px",
+          "token": "divider.spacing.margin"
+        },
+        {
+          "property": "margin-bottom",
+          "value": "8px",
+          "token": "divider.spacing.margin"
+        }
+      ]
+    },
+    {
+      "source": "--vertical",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "orientation",
+          "value": "vertical"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "border-left-color",
+          "value": "#d0d0d0",
+          "token": "divider.color"
+        },
+        {
+          "property": "border-left-width",
+          "value": "1px",
+          "token": "divider.size.thickness"
+        },
+        {
+          "property": "margin-left",
+          "value": "8px",
+          "token": "divider.spacing.margin"
+        },
+        {
+          "property": "margin-right",
+          "value": "8px",
+          "token": "divider.spacing.margin"
+        }
+      ]
+    }
+  ],
+  "theme": "source-bearing static style subset",
+  "otherStyling": "unlisted declarations fail generation; font metrics and letter spacing are target approximations",
+  "excludedProps": [
+    "decorative"
+  ],
+  "proof": "requires-runtime-witness"
+}

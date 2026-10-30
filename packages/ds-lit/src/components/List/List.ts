@@ -73,7 +73,7 @@ export class ListElement extends LitElement {
 
     .list {
       --fsds-list-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-list-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-list-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-list-size-padding: var(--fsds-core-spacing-size-06, 16px);
       --fsds-list-size-sm: var(--fsds-semantic-typography-body-03, 14px);
       --fsds-list-size-md: var(--fsds-semantic-typography-body-02, 16px);

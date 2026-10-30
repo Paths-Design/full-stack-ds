@@ -3,7 +3,7 @@
 .otp {
   --fsds-otp-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
   --fsds-otp-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-  --fsds-otp-color-border: var(--fsds-semantic-color-border-light, #b8b8b8);
+  --fsds-otp-color-border: var(--fsds-semantic-color-border-default, #a0a0a1);
   --fsds-otp-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
   --fsds-otp-color-border-accent: var(--fsds-semantic-color-border-accent, #d92d2e);
   --fsds-otp-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);

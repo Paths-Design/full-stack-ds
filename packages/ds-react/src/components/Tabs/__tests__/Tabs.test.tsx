@@ -240,6 +240,47 @@ describe("Tabs — behavioral", () => {
     expect(screen.getByTestId("tab-a")).toHaveAttribute("aria-selected", "true");
   });
 
+  it("in a right-to-left page, ArrowLeft moves to the next tab and ArrowRight to the previous", async () => {
+    // Without loop, a physical mapping leaves the first tab selected: ArrowLeft
+    // from the first tab has no previous tab to reach.
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      const user = userEvent.setup();
+      renderTabs({ defaultValue: "a", loop: false });
+      await user.click(screen.getByTestId("tab-a"));
+      await user.keyboard("{ArrowLeft}");
+      expect(screen.getByTestId("tab-b")).toHaveAttribute("aria-selected", "true");
+      await user.keyboard("{ArrowRight}");
+      expect(screen.getByTestId("tab-a")).toHaveAttribute("aria-selected", "true");
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
+  it("manual activation: repeated arrows move on from the focused tab while the selection stays", async () => {
+    document.documentElement.setAttribute("dir", "rtl");
+    try {
+      const user = userEvent.setup();
+      render(
+        <Tabs defaultValue="a" activationMode="manual" loop={false}>
+          <TabsList>
+            <TabsTab value="a" data-testid="tab-a">Tab A</TabsTab>
+            <TabsTab value="b" data-testid="tab-b">Tab B</TabsTab>
+            <TabsTab value="c" data-testid="tab-c">Tab C</TabsTab>
+          </TabsList>
+        </Tabs>,
+      );
+      await user.click(screen.getByTestId("tab-a"));
+      await user.keyboard("{ArrowLeft}{ArrowLeft}");
+      expect(screen.getByTestId("tab-c")).toHaveFocus();
+      expect(screen.getByTestId("tab-a")).toHaveAttribute("aria-selected", "true");
+      await user.keyboard("{ArrowRight}");
+      expect(screen.getByTestId("tab-b")).toHaveFocus();
+    } finally {
+      document.documentElement.removeAttribute("dir");
+    }
+  });
+
   it("keyboard Home moves focus to first tab", async () => {
     const user = userEvent.setup();
     renderTabs({ defaultValue: "b" });

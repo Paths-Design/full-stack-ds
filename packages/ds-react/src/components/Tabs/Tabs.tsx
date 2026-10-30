@@ -3,6 +3,7 @@ import { InteractionHost, type InteractionHostProps } from "../../primitives/Int
 import { type HTMLAttributes, type KeyboardEvent, type ReactNode, useCallback, useEffect, useRef } from "react";
 import { useTabs } from "./useTabs";
 import { createCompoundContext } from "../../primitives/hooks";
+import { isRtl } from "../../primitives/direction/direction";
 import "./Tabs.css";
 // @generated:end
 
@@ -75,11 +76,15 @@ export function TabsList({
     (e: KeyboardEvent<HTMLDivElement>) => {
       const tabs = ctx.registeredTabs;
       if (tabs.length === 0) return;
-      const currentIndex = tabs.indexOf(ctx.activeTab);
+      const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");
+      const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.activeTab);
       const isHorizontal = ctx.orientation !== "vertical";
+      const rtl = isRtl(e.currentTarget);
+      const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";
+      const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";
       let nextIndex = currentIndex;
       if (
-        (isHorizontal && e.key === "ArrowRight") ||
+        (isHorizontal && towardEnd) ||
         (!isHorizontal && e.key === "ArrowDown")
       ) {
         e.preventDefault();
@@ -87,7 +92,7 @@ export function TabsList({
           ? (currentIndex + 1) % tabs.length
           : Math.min(currentIndex + 1, tabs.length - 1);
       } else if (
-        (isHorizontal && e.key === "ArrowLeft") ||
+        (isHorizontal && towardStart) ||
         (!isHorizontal && e.key === "ArrowUp")
       ) {
         e.preventDefault();

@@ -1,3 +1,11 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type TabsOrientation = "horizontal" | "vertical";
+export type TabsAppearance = "underline" | "pills";
+export type TabsActivationMode = "automatic" | "manual";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useTabs, provideTabsContext } from "./useTabs.svelte.js";
@@ -8,9 +16,7 @@ import { useTabs, provideTabsContext } from "./useTabs.svelte.js";
 // @custom:end
 
 // @generated:start types
-type TabsOrientation = "horizontal" | "vertical";
-type TabsAppearance = "underline" | "pills";
-type TabsActivationMode = "automatic" | "manual";
+
 // @generated:end
 
 // @custom:start types

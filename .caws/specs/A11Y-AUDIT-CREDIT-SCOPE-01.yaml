@@ -1,0 +1,88 @@
+id: A11Y-AUDIT-CREDIT-SCOPE-01
+title: 'A11y audit credits a keyboard primitive only for the key it compares and only when invoked'
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Key primitives credit only the key they compare and only where the source runs them with a live callback; part-scoped keyboard bindings are distinct obligations credited from emitted carriers. Walkthrough Escape on four web families is now honestly unrealized and ledgered. Gates pass at b266093f4. Limits: named onDismiss callbacks, string-literal call text, bindings without a part.'
+created_at: '2026-10-21T12:23:13.507Z'
+updated_at: '2026-10-21T13:39:54.378Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'scripts/a11y-realization-audit'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'scripts/a11y-realization-audit/audit.mjs'
+    - 'scripts/a11y-realization-audit/selfcheck.mjs'
+    - 'scripts/a11y-realization-audit/known-gaps.json'
+    - 'docs/internal/a11y-realization-audit/a11y-matrix.json'
+    - 'docs/internal/a11y-realization-audit/a11y-matrix.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'A keyboard obligation is credited to a focus-trap or dismissal primitive only for a key that primitive compares: Tab for the trap, Escape for dismissal'
+  - 'A newly detected unrealized obligation is ledgered under a named owner, never suppressed by loosening a check'
+acceptance:
+  - id: A1
+    given: 'a Tab obligation in a component whose source uses only a dismissal primitive, or an Escape obligation whose source uses only a focus trap'
+    when: 'the audit classifies it'
+    then: 'it is unrealized, and selfcheck pins both directions'
+  - id: A2
+    given: >-
+      a component source that names a focus-trap or dismissal primitive without
+      running it: an import, a comment (call-shaped or not), or a dismissal whose
+      own onDismiss argument is an inline no-op arrow (empty, void 0, undefined or a
+      bare return), on one line or several
+    when: 'the audit classifies the key that primitive carries'
+    then: >-
+      it is unrealized, an onDismiss outside the dismissal call does not lend it a
+      live callback, and selfcheck pins each case
+  - id: A3
+    given: 'a keyboard entry whose when field names an anatomy part'
+    when: 'native-element credit is considered'
+    then: >-
+      credit requires the emitted source to render, on that part or a part inside
+      it, a native interactive element (the InteractionHost primitive renders its
+      literal as element, default button, unless a literal asChild adopts the child)
+      or, for Tab only, a host that writes a tabindex; one key declared on two parts
+      is two obligations with distinct ledger identities; entries whose when is a
+      state or absent keep component-wide native credit as a documented limit
+  - id: A4
+    given: 'the corpus after the change'
+    when: 'the audit, selfcheck, rail and suites run'
+    then: 'every newly unrealized obligation is ledgered with an owner and reason, no ledger entry is stale, the snapshot ledger row states the new credit rules, and all pass'
+rollback:
+  - 'Revert the merge commit; the ledger rows added by it revert with the audit'
+non_functional: {}
+contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At b266093f4 scripts/a11y-realization-audit/selfcheck.mjs passes with pins: a focus trap does not carry Escape; a dismissal does not carry Tab; a running focus trap carries Shift+Tab; a running dismissal whose onDismiss closes something carries Escape. The cross-credit line is gone from classify. Corpus effect in the audit run: Command Tab (five web families) moves from the removed cross-credit to native credit from its input; no other key changed for this rule."
+    recorded_at: "2026-10-21T13:38:03.288Z"
+    command: node scripts/a11y-realization-audit/selfcheck.mjs
+    exit_code: 0
+    commit_sha: b266093f4
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At b266093f4 selfcheck pins: an imported dismissal that never runs, a focus trap named only in an import or a call-shaped line comment, and an anchor toggle in a call-shaped block comment carry nothing; a dismissal with onDismiss () => void 0, () => { void 0; }, an empty body across lines, () => { return; } or () => { return undefined; } carries no Escape; an onDismiss outside the dismissal call lends nothing; a multi-line live body carries Escape. Corpus effect: Walkthrough Escape on Vue, Svelte, Lit and Angular (dismissal with a no-op onDismiss) is unrealized and ledgered under WALKTHROUGH-ESCAPE-DISMISS-01. Not claimed: a named onDismiss is credited without resolving it (pinned as a limit); call-shaped text inside a string literal still credits."
+    recorded_at: "2026-10-21T13:38:13.301Z"
+    command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
+    exit_code: 0
+    commit_sha: b266093f4
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At b266093f4 selfcheck pins: a when naming a part scopes the obligation to that part and its inner parts, a state when does not; one key on two parts stays two obligations in either order with distinct ledger identities; native credit comes from the emitted carrier (a div-rendered part the contract calls a button earns nothing, a native element on another part lends nothing, a tab list reaches its tabs); InteractionHost renders button by default, its literal as, nothing for a computed as or a literal asChild, and keeps button for a forwarded asChild; Tab only is credited from a carrier that writes a tabindex, not one that mentions the word. Corpus: obligations 164 to 167 (Select Enter, Space, ArrowDown on two parts each), every part-scoped row keeps its pre-slice verdict, OTP ArrowLeft/ArrowRight ledger rows gained part field. Not claimed: bindings whose when is a state or absent keep component-wide native credit; a part rendered through another component reads as non-native."
+    recorded_at: "2026-10-21T13:38:23.098Z"
+    command: "node scripts/a11y-realization-audit/selfcheck.mjs && node scripts/a11y-realization-audit/audit.mjs"
+    exit_code: 0
+    commit_sha: b266093f4
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At b266093f4 (lane merged with main) with a clean tree: audit:a11y-realization passes (selfcheck all pass; 167 obligations, 1336 checks, 695 realized, 137 unrealized all ledgered, no stale entry; the four new Walkthrough Escape rows carry owner WALKTHROUGH-ESCAPE-DISMISS-01 and a note naming the no-op onDismiss); the snapshot ledger row states the credit rules and their limits and docs:check-claims passes; governed:rail overall pass, committed-tree check clean, typecheck:all, lint, the other nine audits, the root suite (349 files, 5110 tests) and the framework suites (Vue 842, Lit 608 with 2 skipped, Svelte 743, Angular 629, React Native 247) pass."
+    recorded_at: "2026-10-21T13:38:33.580Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run typecheck:all && pnpm run lint && pnpm run docs:check-claims && pnpm run audit:a11y-realization && pnpm run audit:dead-slots && pnpm run audit:pseudo-state && pnpm run audit:state-suppression && pnpm run audit:token-resolvability && pnpm run audit:custom-regions && pnpm run audit:motion-realization && pnpm run audit:carrier-reachability && pnpm run audit:variant-realization && pnpm run audit:behavior-realization && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: b266093f4

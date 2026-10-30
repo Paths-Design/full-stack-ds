@@ -8,6 +8,12 @@
     "outDir": "dist",
     "rootDir": "src"
   },
+  "angularCompilerOptions": {
+    "compilationMode": "partial",
+    "strictTemplates": true,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
+  },
   "include": ["src/**/*.ts"],
   "exclude": [
     "dist",

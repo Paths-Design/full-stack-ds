@@ -17,6 +17,8 @@ interface Props {
   loop?: boolean;
   unmountInactive?: boolean;
   orientation?: "horizontal" | "vertical";
+  /** One tab and panel per value, labelled "Tab A" / "Panel A content". */
+  values?: string[];
 }
 
 let {
@@ -27,6 +29,7 @@ let {
   loop,
   unmountInactive,
   orientation,
+  values = ["a", "b"],
 }: Props = $props();
 </script>
 
@@ -40,9 +43,11 @@ let {
   {orientation}
 >
   <TabsList>
-    <TabsTab value="a">Tab A</TabsTab>
-    <TabsTab value="b">Tab B</TabsTab>
+    {#each values as tab (tab)}
+      <TabsTab value={tab}>Tab {tab.toUpperCase()}</TabsTab>
+    {/each}
   </TabsList>
-  <TabsPanel value="a">Panel A content</TabsPanel>
-  <TabsPanel value="b">Panel B content</TabsPanel>
+  {#each values as tab (tab)}
+    <TabsPanel value={tab}>Panel {tab.toUpperCase()} content</TabsPanel>
+  {/each}
 </Tabs>

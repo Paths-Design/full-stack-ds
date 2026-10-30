@@ -333,7 +333,7 @@ describe("${name} — directive-based host adoption", () => {
     portalsToBody,
     openExpr:
       'getAnchor(fixture.nativeElement as HTMLElement, false).dispatchEvent(new PointerEvent("pointerenter", { bubbles: true }))',
-  })}`;
+  })}${emitSurfaceAxeTests(name)}`;
 
   // CODEGEN-EMIT-LINT-HYGIENE-01: the @jest/globals specifier set derives
   // from the emitted test body — both surface suites reference every API
@@ -343,6 +343,7 @@ describe("${name} — directive-based host adoption", () => {
     jestGlobalsImportLine(testsBody),
     `import { Component } from "@angular/core";`,
     `import { TestBed } from "@angular/core/testing";`,
+    `import axe from "axe-core";`,
     `import { ${name}Component } from "../${name}.component";`,
     `import { ${name}TriggerComponent } from "../${name}Trigger.component";`,
     `import { ${name}TriggerDirective } from "../${name}Trigger.directive";`,
@@ -721,7 +722,7 @@ describe("${name} — directive-based host adoption", () => {
     portalsToBody,
     openExpr:
       'getAnchor(fixture.nativeElement as HTMLElement, false).dispatchEvent(new MouseEvent("click", { bubbles: true }))',
-  })}`;
+  })}${emitSurfaceAxeTests(name)}`;
 
   // CODEGEN-EMIT-LINT-HYGIENE-01: the @jest/globals specifier set derives
   // from the emitted test body (see the Tooltip emitter's note).
@@ -729,6 +730,7 @@ describe("${name} — directive-based host adoption", () => {
     jestGlobalsImportLine(testsBody),
     `import { Component } from "@angular/core";`,
     `import { TestBed } from "@angular/core/testing";`,
+    `import axe from "axe-core";`,
     `import { ${name}Component } from "../${name}.component";`,
     `import { ${name}TriggerComponent } from "../${name}Trigger.component";`,
     `import { ${name}TriggerDirective } from "../${name}Trigger.directive";`,
@@ -803,6 +805,39 @@ interface PositioningAndPortalTestsArgs {
   portalsToBody: boolean;
   /** JS expression (string) that dispatches the default-host open-trigger event. */
   openExpr: string;
+}
+
+/**
+ * The closed and open axe scans the other web frameworks run on a surface.
+ * The closed scan first proves the trigger rendered; open content is
+ * portalled into document.body, so the open scan covers the body after
+ * proving the content rendered.
+ */
+function emitSurfaceAxeTests(name: string): string {
+  return `
+
+describe("${name} — accessibility", () => {
+  // \`region\` asks whether all page content is landmark-contained, a page
+  // question; a single component under test cannot answer it.
+  const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+  it("has no unexpected axe violations when closed", async () => {
+    const fixture = mount();
+    await fixture.whenStable();
+    expect(getAnchor(fixture.nativeElement as HTMLElement, false)).not.toBeNull();
+    const results = await axe.run(fixture.nativeElement as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
+  });
+
+  it("has no unexpected axe violations when open", async () => {
+    const fixture = mount((c) => { c.defaultOpen = true; });
+    await settle();
+    fixture.detectChanges();
+    expect(getContentEl(fixture.nativeElement as HTMLElement)).not.toBeNull();
+    const results = await axe.run(document.body, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
+  });
+});`;
 }
 
 /**

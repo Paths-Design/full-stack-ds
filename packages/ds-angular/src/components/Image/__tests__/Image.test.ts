@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { ImageComponent } from "../Image.component";
 // @generated:end
 
@@ -90,6 +92,32 @@ describe("Image — unit", () => {
     const fixture = createFixture();
     fixture.componentInstance.radius = "full";
     expect(classTokens(fixture.componentInstance)).toContain("image--radius-full");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [ImageComponent],
+  template: "<fsds-image [alt]=\"alt\" aria-label=\"Test Image\"></fsds-image>",
+})
+class ImageAxeHost {
+  readonly alt = "placeholder";
+}
+
+describe("Image — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [ImageAxeHost] });
+    const fixture = TestBed.createComponent(ImageAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".image");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

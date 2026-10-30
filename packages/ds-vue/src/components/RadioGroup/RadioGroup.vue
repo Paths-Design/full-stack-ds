@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed } from "vue";
 import { useRadioGroup } from "./useRadioGroup.js";
+import { requestNativeRadioChange } from "../../primitives/interaction.js";
 // @generated:end
 
 // @custom:start imports
@@ -42,7 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
 const behavior = useRadioGroup({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
 });
 // @generated:end
 
@@ -62,7 +63,7 @@ const classNames = computed(() => [
 <template>
   <fieldset :class="classNames" role="radiogroup" :aria-label="props.ariaLabel" :data-testid="props.dataTestid" data-fsds-component="radio-group" data-fsds-box="">
     <label v-for="(item, index) in (props.options ?? [])" :key="index" :class="'radio-group__item'" :data-checked="(item.value === behavior.selection.value)" :data-disabled="item.disabled" :title="item.description">
-      <input :class="'radio-group__option'" type="radio" @change="() => behavior.setSelection(item.value)" :name="props.name" :value="item.value" :checked="(item.value === behavior.selection.value)" :disabled="item.disabled" :aria-label="item.label" :aria-checked="(item.value === behavior.selection.value)" />
+      <input :class="'radio-group__option'" type="radio" @change="(e) => requestNativeRadioChange(e, () => behavior.setSelection(item.value), () => behavior.selection.value)" :name="props.name" :value="item.value" :checked="(item.value === behavior.selection.value)" :disabled="item.disabled" :aria-label="item.label" :aria-checked="(item.value === behavior.selection.value)" />
       <span :class="'radio-group__label'">
         {{ item.label }}
       </span>

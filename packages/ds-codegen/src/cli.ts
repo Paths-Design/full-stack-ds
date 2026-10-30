@@ -1577,6 +1577,16 @@ function writeContentTransformRuntime(binding: TargetBinding): void {
       file: "date-grid.ts",
       label: "date-grid core",
     },
+    {
+      dir: "transfer",
+      file: "transfer-list.ts",
+      label: "transfer-list core",
+    },
+    {
+      dir: "direction",
+      file: "direction.ts",
+      label: "inline direction",
+    },
   ];
   for (const runtime of runtimes) {
     const sourcePath = path.join(
@@ -1600,6 +1610,8 @@ function writeNativeSourceRuntime(binding: TargetBinding): void {
   for (const runtime of [
     { dir: "highlight", file: "source-model.ts", label: "source line model" },
     { dir: "date", file: "date-grid.ts", label: "date-grid core" },
+    { dir: "transfer", file: "transfer-list.ts", label: "transfer-list core" },
+    { dir: "direction", file: "direction.ts", label: "inline direction" },
   ]) {
     const sourcePath = path.join(cwd, "packages/ds-codegen/src", runtime.dir, runtime.file);
     const absolutePath = path.join(binding.componentsRoot, "..", "primitives", runtime.dir, runtime.file);

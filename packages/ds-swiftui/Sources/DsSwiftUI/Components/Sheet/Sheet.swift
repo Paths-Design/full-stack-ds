@@ -21,7 +21,7 @@ enum SheetTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.surface.size.gap", fallback: .string("8px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "sheet.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-sheet-color-background", name: "sheet.color.background", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
-            "sheet.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-sheet-color-border", name: "sheet.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "sheet.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-sheet-color-border", name: "sheet.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "sheet.border.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-sheet-border-radius", name: "sheet.border.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]

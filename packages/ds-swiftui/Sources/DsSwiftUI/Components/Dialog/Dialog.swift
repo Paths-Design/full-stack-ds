@@ -23,7 +23,7 @@ enum DialogTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "dialog.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-background", name: "dialog.color.background", ref: "semantic.color.background.primary", fallback: .adaptive(light: "#ffffff", dark: "#000000")),
             "dialog.color.foreground": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-foreground", name: "dialog.color.foreground", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "dialog.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-border", name: "dialog.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "dialog.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-border", name: "dialog.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "dialog.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-size-radius", name: "dialog.size.radius", ref: "semantic.shape.radius.large", fallback: .string("16px")),
         ],
         "part_backdrop": [

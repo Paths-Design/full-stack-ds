@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type SwitchSize = "sm" | "md" | "lg";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useSwitch } from "./useSwitch.svelte.js";
@@ -9,7 +15,7 @@ import { useFieldAssociation } from "../../primitives/index.js";
 // @custom:end
 
 // @generated:start types
-type SwitchSize = "sm" | "md" | "lg";
+
 // @generated:end
 
 // @custom:start types

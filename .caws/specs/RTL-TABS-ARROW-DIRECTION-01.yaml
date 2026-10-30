@@ -1,0 +1,106 @@
+id: RTL-TABS-ARROW-DIRECTION-01
+title: 'Tabs arrow keys follow the inline direction in every web framework'
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Tabs arrow keys follow the inline direction and move from the focused tab in all five web frameworks, with one shared isRtl runtime'
+created_at: '2026-10-21T09:56:04.722Z'
+updated_at: '2026-10-21T11:13:04.426Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-codegen/src/frameworks'
+    - 'packages/ds-codegen/src/direction'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/direction'
+    - 'packages/ds-codegen/src/date/date-grid.ts'
+    - 'packages/ds-codegen/src/cli.ts'
+    - 'packages/ds-codegen/src/frameworks/react/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/component-source.ts'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src/primitives'
+    - 'e2e/runtime-rail.spec.ts'
+    - 'docs/architecture/date-grid.md'
+    - e2e/fixtures/rtl-tabs.tsx
+    - e2e/rtl-direction.spec.ts
+    - docs/architecture/design/box-model-primitive.md
+    - docs/architecture/localization.md
+  out: []
+invariants:
+  - 'In a horizontal tab list, the arrow key that points toward the inline end moves to the next tab, whatever the inline direction'
+  - 'One isRtl implementation serves the date grid and Tabs, copied byte-identical into each package'
+acceptance:
+  - id: A1
+    given: 'a horizontal Tabs in each of the five web frameworks inside a dir=rtl ancestor'
+    when: 'ArrowLeft or ArrowRight is pressed on the focused tab, in automatic or manual activation'
+    then: >-
+      ArrowLeft moves to the next tab and ArrowRight to the previous, counted from
+      the focused tab, left-to-right and vertical lists are unchanged, and the unit
+      tests fail under the physical mapping and under selection-based indexing
+  - id: A2
+    given: >-
+      two-tab lists without loop for React, Vue, Svelte and Lit mounted in Chromium
+      inside a dir=rtl region, plus a Lit composition inside an enclosing shadow
+      root whose host sits in that region
+    when: 'the first tab is focused and ArrowLeft is pressed, then ArrowRight'
+    then: >-
+      ArrowLeft selects the second tab and ArrowRight the first again in every case,
+      the shadow-root case failing when the direction read stops at the shadow root;
+      Angular is proven in jsdom only, because its browser preview needs the JIT
+      pipeline
+  - id: A3
+    given: 'the date-grid core and the Tabs lists'
+    when: 'the web targets and React Native are generated'
+    then: 'both read one exported isRtl copied byte-identical into every package, and the date-grid right-to-left tests still pass'
+  - id: A4
+    given: 'the regenerated tree'
+    when: 'the rail, committed-output check and every framework suite run'
+    then: 'all pass'
+rollback:
+  - 'Revert the merge commit and regenerate the web targets'
+non_functional: {}
+contracts:
+  - name: 'tabs-inline-direction'
+    type: behavior
+    path: 'packages/ds-codegen/src/direction/direction.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "At 1dae1ebf4 each framework's Tabs tests include a right-to-left case (ArrowLeft selects the next tab, ArrowRight the previous) and a three-tab manual-activation case (two ArrowLefts from A move focus to C while A stays selected, ArrowRight returns to B); existing left-to-right and vertical cases still pass (React 32, Vue 32, Svelte 31, Lit 31, Angular 51). With the Tabs files swapped to e23936fac the five right-to-left cases fail; swapped to 1e5d3117b the five manual cases fail."
+    recorded_at: "2026-10-21T11:11:40.291Z"
+    command: "pnpm exec vitest run packages/ds-react/src/components/Tabs; pnpm --filter @full-stack-ds/{vue,svelte,lit} exec vitest run src/components/Tabs; pnpm --filter @full-stack-ds/angular exec jest --config jest.config.cjs src/components/Tabs"
+    exit_code: 0
+    commit_sha: "1dae1ebf4"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At 1dae1ebf4 bytes the five Chromium cases pass (react, vue, svelte, lit, lit-in-shadow-root). With the Tabs files swapped to e23936fac (physical mapping) the four framework cases fail; with the Lit direction copy stopping at shadow roots only lit-in-shadow-root fails. Angular is proven in jsdom only."
+    recorded_at: "2026-10-21T11:11:51.154Z"
+    test_nodeid: e2e/rtl-direction.spec.ts
+    command: "FSDS_E2E_PORT=<warm dev server port> pnpm exec playwright test e2e/rtl-direction.spec.ts"
+    exit_code: 0
+    commit_sha: "1dae1ebf4"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At 1dae1ebf4 direction.test.ts pins isRtl (no dir, nearest dir wins, crossing a shadow root, no DOM ancestry) and asserts the six package copies (react, vue, svelte, angular, lit, react-native) equal the source byte for byte; date-grid.ts imports isRtl from ../direction/direction.js and the date-grid right-to-left tests pass (58 tests across the three files)."
+    recorded_at: "2026-10-21T11:12:01.702Z"
+    test_nodeid: packages/ds-codegen/src/direction/direction.test.ts
+    command: pnpm exec vitest run packages/ds-codegen/src/direction packages/ds-codegen/src/date
+    exit_code: 0
+    commit_sha: "1dae1ebf4"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At 1dae1ebf4 governed:rail, the committed-tree check and typecheck:all pass; at fc3bf0e18 (differing only by two casts in the Lit Tabs test, rerun 31/31 and linted) lint, doc claims, the a11y audit (no unledgered or stale entries), the root suite (349 files, 5110 tests) and the framework suites (Vue 842, Lit 608, Svelte 743, Angular 629, React Native 247) pass."
+    recorded_at: "2026-10-21T11:12:12.448Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run typecheck:all && pnpm run lint && pnpm run docs:check-claims && pnpm run audit:a11y-realization && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "1dae1ebf4"

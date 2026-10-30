@@ -1,0 +1,80 @@
+id: GODOT-COMPOSED-PARTS-PARITY-01
+title: 'Godot contract-derived composed content and part styling'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Contract-derived Godot composite parts and saved-scene witness merged with four acceptance criteria verified.'
+created_at: '2026-10-29T23:59:33.894Z'
+updated_at: '2026-10-30T03:43:44.497Z'
+created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
+blast_radius:
+  modules:
+    - 'Godot emitter, generated composite scenes, shared content runtime, Editor and exported Player witness'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-godot'
+    - 'scripts/godot-pilot.mjs'
+    - 'fsds.targets.json'
+    - 'docs/architecture/godot-target.md'
+  out: []
+invariants:
+  - 'Composition and part styling derive from normalized IR facts without component-name dispatch'
+  - 'Nested consumer controls retain identity and state when a parent variant or token override changes'
+  - 'Unsupported props and styles are named rather than counted as parity'
+acceptance:
+  - id: A1
+    given: 'a compound-part contract and renamed synthetic equivalent'
+    when: 'the Godot target emits it'
+    then: 'part hosts and style addresses derive from IR, unknown facts fail or appear in capability omissions'
+  - id: A2
+    given: 'a generated composite containing generated Text, Badge and Button'
+    when: 'density, intent and token overrides change'
+    then: 'nested control identity and action state remain stable and changed part styling reaches rendered geometry or pixels'
+  - id: A3
+    given: 'a saved scene, separate Godot Editor reload and fresh macOS export'
+    when: 'composed controls render and act'
+    then: 'part hosts survive serialization, one action reaches the consumer and a changed token paints the expected viewport pixel in both processes'
+  - id: A4
+    given: 'committed generated output'
+    when: 'the focused codegen suite, regeneration and required project gates run'
+    then: 'emitted bytes are stable and no existing target regresses'
+non_functional: {}
+contracts:
+  - name: 'godot-composed-parts'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/godot/factory.test.ts'
+  - name: 'godot-composed-player'
+    type: behavior
+    path: 'packages/ds-godot/verification/main.gd'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Renamed Card and Badge IR fixtures in factory.test.ts: 22/22 passed; emitted part hosts/style addresses and explicit capability omissions inspected at 89b51fd39."
+    recorded_at: "2026-10-30T03:41:41.031Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/factory.test.ts
+    exit_code: 0
+    commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Godot 4.7.2 Editor and exported Player run a21bac6b: composed-parts identity/action/geometry, optional-part-layout two visible parts and 4px gap, composite and Badge pixels; raw receipts /private/tmp/fsds-godot-composed-committed-89b51fd."
+    recorded_at: "2026-10-30T03:42:16.747Z"
+    command: "FSDS_ENGINE_OUT=/private/tmp/fsds-godot-composed-committed-89b51fd node scripts/godot-pilot.mjs"
+    exit_code: 0
+    commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Separate Editor write/read, runtime and fresh macOS export in run a21bac6b; sourceDirty=false at 89b51fd39, saved-composed actionCalls=1/iconRetained=true and saved-composed-pixel=334455 in both Editor and Player receipts at /private/tmp/fsds-godot-composed-committed-89b51fd."
+    recorded_at: "2026-10-30T03:42:41.187Z"
+    command: "FSDS_ENGINE_OUT=/private/tmp/fsds-godot-composed-committed-89b51fd node scripts/godot-pilot.mjs"
+    exit_code: 0
+    commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At committed 89b51fd39: focused Godot 22/22; governed:rail required-mode pass; generated tree matches HEAD; all five framework suites pass; full root Vitest selection 357 files/5221 tests passes with --maxWorkers=2; default worker run had one unrelated 5s timeout, same file passes alone."
+    recorded_at: "2026-10-30T03:43:01.432Z"
+    command: "pnpm run governed:rail && pnpm run test:frameworks && pnpm exec vitest run --maxWorkers=2 && node scripts/committed-tree-check.mjs generated"
+    exit_code: 0
+    commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"

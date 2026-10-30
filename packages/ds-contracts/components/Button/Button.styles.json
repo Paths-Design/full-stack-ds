@@ -70,7 +70,7 @@
     },
     "border-color": {
       "resolvesTo": "button.color.border.default",
-      "fallback": "#b8b8b8",
+      "fallback": "#a0a0a1",
       "design": {
         "property": "border.color",
         "slot": "button.design.root.border.color"

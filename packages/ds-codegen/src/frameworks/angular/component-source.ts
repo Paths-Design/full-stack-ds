@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -920,12 +921,20 @@ export function generateAngularCompoundStateParts(
     `  handleKeyDown(e: KeyboardEvent): void {`,
     `    const tabs = this.ctx.registeredTabs();`,
     `    if (tabs.length === 0) return;`,
-    `    const currentIndex = tabs.indexOf(this.ctx.${channelName}());`,
+    `    // Arrows move on from the focused tab, which manual activation leaves`,
+    `    // apart from the selected one.`,
+    `    const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");`,
+    `    const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : this.ctx.${channelName}());`,
     `    const isHorizontal = this.ctx.orientation() !== "vertical";`,
+    `    // A horizontal list follows the inline direction: the arrow pointing`,
+    `    // toward the inline end moves to the next tab.`,
+    `    const rtl = isRtl(e.currentTarget);`,
+    `    const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";`,
+    `    const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";`,
     `    let nextIndex = currentIndex;`,
     ``,
     `    if (`,
-    `      (isHorizontal && e.key === "ArrowRight") ||`,
+    `      (isHorizontal && towardEnd) ||`,
     `      (!isHorizontal && e.key === "ArrowDown")`,
     `    ) {`,
     `      e.preventDefault();`,
@@ -933,7 +942,7 @@ export function generateAngularCompoundStateParts(
     `        ? (currentIndex + 1) % tabs.length`,
     `        : Math.min(currentIndex + 1, tabs.length - 1);`,
     `    } else if (`,
-    `      (isHorizontal && e.key === "ArrowLeft") ||`,
+    `      (isHorizontal && towardStart) ||`,
     `      (!isHorizontal && e.key === "ArrowUp")`,
     `    ) {`,
     `      e.preventDefault();`,
@@ -977,6 +986,7 @@ export function generateAngularCompoundStateParts(
     `// @generated:start imports`,
     angularCoreImportLine(["Component", "Input", "ElementRef", "inject", "ChangeDetectionStrategy"], listBody.join("\n")),
     `import { NgClass } from "@angular/common";`,
+    `import { isRtl } from "../../primitives/direction/direction.js";`,
     `import { use${name}Context } from "./use${name}.js";`,
     `// @generated:end`,
     ``,
@@ -1581,12 +1591,14 @@ function generateDomTreeImports(ir: ComponentIR, componentBody: string): string 
   ];
   if (ir.pagedSet) lines.push(`import { createReactivePagedSet } from "../../primitives/paging-signal.js";`);
   if (ir.dateGrid) lines.push(`import { createReactiveDateGrid } from "../../primitives/date-grid-signal.js";`);
+  if (ir.transfer) lines.push(`import { createReactiveTransferList } from "../../primitives/transfer-list-signal.js";`);
   if (ir.motion.sequence) lines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
   if (ir.messages.length > 0) {
     const names = [...(usesMessageFormatting(ir) ? ["formatFsdsMessage"] : []), "injectFsdsMessages"];
     lines.push(`import { ${names.join(", ")} } from "../../primitives/messages.js";`);
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   // CODEGEN-EMIT-LINT-HYGIENE-01: compound parts usually host on <fsds-stack>,
   // but native-table composition (Table) renders raw table elements — import
   // StackComponent only when the body actually references it.
@@ -1973,10 +1985,11 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     if (ANGULAR_RESERVED.has(p.name)) continue;
     const propLine = generateInputProp(p);
     const sequencePresentationProp = ir.motion.sequence?.progress.some(binding => binding.when?.axis === p.name);
-    // Inputs a date-grid computed reads are signal-backed so the grid
-    // recomputes when they change, and keep their contract defaults.
-    const dateGridProp = ir.dateGrid !== undefined && [ir.dateGrid.modeProp, ir.dateGrid.localeProp, ir.dateGrid.minProp,
-      ir.dateGrid.maxProp, ir.dateGrid.disabledProp, ir.dateGrid.captionProp].includes(p.name);
+    // Inputs a date-grid or transfer-list computed reads are signal-backed so
+    // the runtime recomputes when they change, and keep their contract defaults.
+    const dateGridProp = (ir.dateGrid !== undefined && [ir.dateGrid.modeProp, ir.dateGrid.localeProp, ir.dateGrid.minProp,
+      ir.dateGrid.maxProp, ir.dateGrid.disabledProp, ir.dateGrid.captionProp].includes(p.name)) ||
+      ir.transfer?.optionsProp === p.name;
     if (dateGridProp) {
       const type = lowerAngularPropType(p.propType);
       const fallback = p.defaultExpr !== undefined ? ` ?? ${p.defaultExpr}` : "";
@@ -2136,6 +2149,12 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   }
 
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
+  if (ir.compositeControl?.nativeRadio) {
+    const channel = ir.compositeControl.channel.name;
+    lines.push(`  protected requestNativeRadio${capitalizeAngular(channel)}(event: Event, value: string): void {`,
+      `    requestNativeRadioChange(event, () => this.behavior.set${capitalizeAngular(channel)}(value), () => this.behavior.${channel}());`,
+      `  }`);
+  }
 
   if (ir.motion.sequence) {
     const seq = ir.motion.sequence;
@@ -2161,9 +2180,17 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     const safe = (name: string) => ir.styledProps.find((prop) => prop.name === name)?.safeName ?? name;
     lines.push(`  protected dateGrid = createReactiveDateGrid(() => (${dateGridOptions(ir.dateGrid, (prop) => `this.${safe(prop)}`,
       (channel) => `this.behavior.${channel}()`, (channel) => `(next) => this.behavior.set${capitalizeAngular(channel)}(next)`)}));`,
-      `  private dateGridCleanup = this.destroyRef.onDestroy(() => this.dateGrid.destroy());`,
-      `  ngAfterViewChecked(): void { this.dateGrid.afterRender(); }`);
+      `  private dateGridCleanup = this.destroyRef.onDestroy(() => this.dateGrid.destroy());`);
   }
+  if (ir.transfer) {
+    const safe = (name: string) => ir.styledProps.find((prop) => prop.name === name)?.safeName ?? name;
+    lines.push(`  protected transfer = createReactiveTransferList(() => (${transferOptions(ir.transfer, (prop) => `this.${safe(prop)}`,
+      (channel) => `this.behavior.${channel}()`, (channel) => `(next) => this.behavior.set${capitalizeAngular(channel)}(next)`)}));`,
+      `  private transferCleanup = this.destroyRef.onDestroy(() => this.transfer.destroy());`);
+  }
+  // Focus follows a key press once the view reflects it.
+  const afterRender = [ir.dateGrid && "this.dateGrid.afterRender();", ir.transfer && "this.transfer.afterRender();"].filter(Boolean);
+  if (afterRender.length > 0) lines.push(`  ngAfterViewChecked(): void { ${afterRender.join(" ")} }`);
   // classes computed
   lines.push(``);
   lines.push(...generateDomTreeClassesComputed(ir));
@@ -2848,6 +2875,11 @@ function renderAngularDomNode(
   // produces `(click)="behavior.X()"`. Legacy `bindings.onX` is filtered
   // below to avoid double-emit.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
+      const arg = renderAngularBindingValue(expr.arg, ctx);
+      if (arg !== null) attrs.push(`(change)="requestNativeRadio${capitalizeAngular(node.nativeRadioChannel)}($event, ${arg})"`);
+      continue;
+    }
     const activation = eventName === "click" ? node.activation : undefined;
     const disclosure = activation?.channel;
     if (disclosure) {
@@ -3581,6 +3613,7 @@ function renderAngularBinding(
   switch (expr.kind) {
     case "paged": return `[${attr}]="${pagedBindingExpression(expr, "pagedSet")}"`;
     case "dateGrid": return `${angularAttrBinding(attr, tag, refBinding)}="${dateGridBindingExpression(expr, "dateGrid")}"`;
+    case "transfer": return `${angularAttrBinding(attr, tag, refBinding)}="${transferBindingExpression(expr, "transfer")}"`;
     case "prop":
       return `${angularAttrBinding(attr, tag, refBinding)}="${appendPath(angularPropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
@@ -3700,6 +3733,7 @@ function renderAngularBindingValue(
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet");
     case "dateGrid": return dateGridBindingExpression(expr, "dateGrid");
+    case "transfer": return transferBindingExpression(expr, "transfer");
     case "prop":
       return appendPath(angularPropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3822,6 +3856,7 @@ function renderAngularEvent(
     case "paged": return `(${eventName})="pagedSet.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : expr.action === "commitOnEnter" ? "$event" : ""})"`;
     // Angular event bindings are statements: call the action with its item, or the event for keydown.
     case "dateGrid": return `(${eventName})="dateGrid.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : expr.action === "keydown" ? "$event" : ""})"`;
+    case "transfer": return `(${eventName})="transfer.${expr.action}(${expr.arg ? renderAngularBindingValue(expr.arg, ctx) : "$event"})"`;
     case "prop":
       return `(${eventName})="${angularPropAccessor(expr.prop, ctx)} && ${angularPropAccessor(expr.prop, ctx)}()"`;
     case "literal":

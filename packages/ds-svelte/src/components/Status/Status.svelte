@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type StatusIntent = "info" | "success" | "warning" | "danger" | "error";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import Icon from "../Icon/Icon.svelte";
@@ -8,7 +14,7 @@ import Icon from "../Icon/Icon.svelte";
 // @custom:end
 
 // @generated:start types
-type StatusIntent = "info" | "success" | "warning" | "danger" | "error";
+
 // @generated:end
 
 // @custom:start types

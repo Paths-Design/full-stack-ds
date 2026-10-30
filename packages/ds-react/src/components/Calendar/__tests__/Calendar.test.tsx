@@ -41,7 +41,7 @@ describe("Calendar — unit", () => {
 
   it("has the correct ARIA role", () => {
     render(<Calendar data-testid="calendar" />);
-    expect(screen.getByTestId("calendar")).toHaveAttribute("role", "application");
+    expect(screen.getByTestId("calendar")).toHaveAttribute("role", "group");
   });
 
   it("applies mode=single variant class", () => {
@@ -67,7 +67,7 @@ describe("Calendar — unit", () => {
 
 describe("Calendar — accessibility", () => {
   it("has no unexpected axe violations with default props", async () => {
-    const { baseElement } = render(<><Calendar aria-label="Test Calendar" /></>);
+    const { baseElement } = render(<><Calendar ariaLabel="Test Calendar" /></>);
     const component = baseElement.querySelector('[data-fsds-component="calendar"]');
     expect(component).not.toBeNull();
     const results = await axe(component!, componentAxeOptions) as unknown as { violations: Array<{ id: string }> };

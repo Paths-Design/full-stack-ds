@@ -18,6 +18,13 @@ enum LabelTokens {
         ],
     ]
 }
+enum LabelNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "label.color.text", value: "#141414", token: "semantic.color.foreground.primary")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "label.color.text", designSlot: "label.design.root.foreground.color")]),
+    ]
+    static let omissions: [String] = []
+}
 
 /// Emitted through the static-content path: passive label root with a single consumer content region.
 /// SwiftUI reserves the `Label` type name; this target exports it as `FsdsLabel`.
@@ -27,6 +34,14 @@ public struct FsdsLabel<Content: View>: View {
     }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        do {
+            return try resolveFsdsNativeTextStyle(LabelNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "root")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         @ViewBuilder content: () -> Content
@@ -57,8 +72,11 @@ public struct FsdsLabel<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
+            .foregroundStyle(nativeTextStyle.color ?? Color.primary)
     }
 }
 // @generated:end

@@ -1,0 +1,80 @@
+id: TEXT-CONTROLLED-RECONCILIATION-01
+title: 'Reconcile native text values after controlled requests'
+mode: fix
+lifecycle_state: active
+worktree: text-controlled-reconciliation
+created_at: '2026-10-30T01:54:48.793Z'
+updated_at: '2026-10-30T02:40:12.408Z'
+created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
+blast_radius:
+  modules:
+    - 'Web native value channel IR and shared interaction runtime'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/ir.ts'
+    - 'packages/ds-codegen/src/native-text-control-ir.test.ts'
+    - 'packages/ds-codegen/src/interaction-runtime.ts'
+    - 'packages/ds-codegen/src/interaction-runtime.test.ts'
+    - 'packages/ds-codegen/src/frameworks/vue/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/svelte/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/angular/component-source.ts'
+    - 'packages/ds-codegen/src/frameworks/lit/component-source.ts'
+    - 'packages/ds-react/src/primitives/interaction.ts'
+    - 'packages/ds-vue/src/primitives/interaction.ts'
+    - 'packages/ds-svelte/src/primitives/interaction.ts'
+    - 'packages/ds-angular/src/primitives/interaction.ts'
+    - 'packages/ds-lit/src/primitives/interaction.ts'
+    - 'packages/ds-react/src/components/Input'
+    - 'packages/ds-vue/src/components/Input'
+    - 'packages/ds-svelte/src/components/Input'
+    - 'packages/ds-angular/src/components/Input'
+    - 'packages/ds-lit/src/components/Input'
+    - 'packages/ds-react/src/components/TextField'
+    - 'packages/ds-vue/src/components/TextField'
+    - 'packages/ds-svelte/src/components/TextField'
+    - 'packages/ds-angular/src/components/TextField'
+    - 'packages/ds-lit/src/components/TextField'
+    - 'e2e/text-controlled.spec.ts'
+    - 'e2e/fixtures/text-controlled'
+    - 'docs/codegen-authority.md'
+    - 'docs/architecture/design/box-model-primitive.md'
+    - packages/ds-codegen/src/frameworks/react/component-source.ts
+    - packages/ds-react/src/primitives/useNativeTextValue.ts
+    - src/consumption/native-text-value.test.tsx
+    - packages/ds-react/src/components/Command
+    - packages/ds-vue/src/components/Command
+    - packages/ds-svelte/src/components/Command
+    - packages/ds-angular/src/components/Command
+    - packages/ds-lit/src/components/Command
+  out: []
+invariants:
+  - 'Accepted channel state owns displayed committed text with one callback per native edit'
+  - 'Reconciliation preserves focus and composing drafts and derives from host and binding facts'
+acceptance:
+  - id: A1
+    given: 'controlled Input and TextField'
+    when: 'trusted native input is refused'
+    then: 'accepted text is restored with one request and retained focus in all five web frameworks'
+  - id: A2
+    given: 'accepted and uncontrolled edits and an active composition'
+    when: 'native text changes commit'
+    then: 'accepted text renders without redundant writes or cancellation of the composing draft'
+  - id: A3
+    given: 'callback errors unrelated controls and later parent updates'
+    when: 'reconciliation executes'
+    then: 'errors propagate after restoration unrelated values remain unchanged and the same mounted control accepts later parent state'
+  - id: A4
+    given: 'generic native host and channel facts'
+    when: 'focused falsifiers browser checks and regression gates execute'
+    then: 'all pass without component-name dispatch or generated source hand edits'
+observability:
+  - 'Retain browser events screenshots source revision and focused and regression logs'
+rollback:
+  - 'Revert the slice and regenerate affected text realizations'
+non_functional: {}
+contracts:
+  - name: 'text-ownership'
+    type: behavior
+    path: 'packages/ds-codegen/src/interaction-runtime.ts'

@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName } from "../../messages.js";
 import { nativeMotionImports, nativeMotionInstance, nativeMotionPart, nativeMotionRoot } from "./motion-parts.js";
 import { matchesTokenRole } from "../token-role.js";
@@ -571,6 +572,7 @@ function emitImports(ir: ComponentIR, component: string): string {
       .join(", ")} } from "react";`,
     ir.pagedSet ? `import { usePagedSet } from "../../primitives/hooks/usePaging";` : "",
     ir.dateGrid ? `import { useDateGrid } from "../../primitives/hooks/useDateGrid";` : "",
+    ir.transfer ? `import { useTransferList } from "../../primitives/hooks/useTransferList";` : "",
     nativeMotionImports(component),
     component.includes("<NativeGlyph") ? `import { NativeGlyph } from "../../primitives/glyph";` : "",
     `import { useFsdsTheme } from "../../tokens";`,
@@ -782,6 +784,12 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
       if (name) usage.props.add(safePropName(ir, name));
     }
   }
+  if (ir.transfer) {
+    usage.channels.add(ir.transfer.valueChannel);
+    usage.channelValues.add(ir.transfer.valueChannel);
+    usage.channelSetters.add(ir.transfer.valueChannel);
+    usage.props.add(safePropName(ir, ir.transfer.optionsProp));
+  }
   if (rootPressableAcceptsOnPress(ir)) usage.props.add("onPress");
   if (ir.motion.sequence) {
     const sequence = ir.motion.sequence;
@@ -961,6 +969,7 @@ function collectBindingRuntimeUsage(
 ): void {
   if (binding.kind === "paged") { if (binding.arg) collectBindingRuntimeUsage(binding.arg, ir, usage); return; }
   if (binding.kind === "dateGrid") return;
+  if (binding.kind === "transfer") return;
   if (binding.kind === "prop") {
     const safeName = safePropName(ir, binding.prop);
     usage.props.add(safeName);
@@ -1077,6 +1086,10 @@ function emitComponent(ir: ComponentIR): string {
   }
   if (ir.dateGrid) {
     lines.push(`  const dateGrid = useDateGrid(${dateGridOptions(ir.dateGrid, (prop) => safePropName(ir, prop), (channel) => channel,
+      (channel) => `set${capitalize(channel)}Value`)});`);
+  }
+  if (ir.transfer) {
+    lines.push(`  const transfer = useTransferList(${transferOptions(ir.transfer, (prop) => safePropName(ir, prop), (channel) => channel,
       (channel) => `set${capitalize(channel)}Value`)});`);
   }
   const autoDismiss = rnAutoDismiss(ir);
@@ -1499,11 +1512,14 @@ function rootRendersTextWrapper(ir: ComponentIR): boolean {
   if (!node) return false;
   const component = rnComponentForNode(node);
   if (component === "RNText" || VOID_RN_COMPONENTS.has(component)) return false;
-  if (node.content) return true;
-  if (node.children.length === 0 && node.part === "root") return true;
-  return node.children.some(
-    (child) => child.tag === "children" || child.tag === "slot",
-  );
+  const visit = (candidate: DomNodeIR): boolean => {
+    if (candidate.componentRef) return false;
+    if (candidate.content || candidate.children.length === 0 && candidate.part === "root") return true;
+    return candidate.children.some((child) =>
+      child.tag === "children" || child.tag === "slot" || visit(child),
+    );
+  };
+  return visit(node);
 }
 
 /**
@@ -1905,7 +1921,10 @@ function emitNodeChildren(node: DomNodeIR, ir: ComponentIR, depth: number): stri
   const sequence = ir.motion.sequence;
   if (sequence && node.part === sequence.viewport) return [`${INDENT.repeat(depth)}<SequenceChildren sequence={sequence} labels={${safePropName(ir, sequence.itemsProp)}} position={fsdsMessages.${sequence.labels.position}} />`];
   if (sequence && node.part === sequence.rotation) return [`${INDENT.repeat(depth)}<RNText>{sequence.playing ? fsdsMessages.${sequence.labels.stop} : fsdsMessages.${sequence.labels.start}}</RNText>`];
-  const textStyleExpr = node === ir.dom ? rootTextStyleExpression(ir) : null;
+  const projectsText = Boolean(node.content) ||
+    node.children.some((child) => child.tag === "children" || child.tag === "slot") ||
+    node.children.length === 0 && node.part === "root";
+  const textStyleExpr = projectsText ? rootTextStyleExpression(ir) : null;
   const textStyleProp = textStyleExpr ? ` style={${textStyleExpr}}` : "";
   if (node.content) {
     // FEAT-CODEBLOCK-HIGHLIGHT-01: a content transform degrades to plain
@@ -2382,9 +2401,16 @@ function rnAccessibilityRole(
   if (role === "menu") return "menu";
   if (role === "menuitem") return "menuitem";
   if (role === "alert") return "alert";
+  // A pressable that opens a list of choices (Select's trigger). A combobox
+  // TextInput keeps its native text-field semantics instead: the platform
+  // role would describe a picker, not the editable field it is.
+  if (role === "combobox" && component === "Pressable") return "combobox";
   // Mobile platforms have no gridcell role. An activatable cell is announced
   // as a button, as the SwiftUI and Compose targets realize a date-grid day.
   if (role === "gridcell" && component === "Pressable") return "button";
+  // Nor an option role: an activatable option is a button whose selected
+  // accessibility state carries its aria-selected.
+  if (role === "option" && component === "Pressable") return "button";
   return undefined;
 }
 
@@ -2439,6 +2465,7 @@ function eventHandlerExpr(
   }
   if (binding.kind === "paged") return pagedBindingExpression(binding, "pagedSet", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
   if (binding.kind === "dateGrid") return dateGridBindingExpression(binding, "dateGrid", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
+  if (binding.kind === "transfer") return transferBindingExpression(binding, "transfer", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
   if (binding.kind === "prop") {
     const propName = safePropName(ir, binding.prop);
     return `() => ${propName}?.()`;
@@ -2498,6 +2525,7 @@ function eventHandlerExpr(
 function bindingExpr(binding: BindingExpression, ir: ComponentIR): string {
   if (binding.kind === "paged") return pagedBindingExpression(binding, "pagedSet", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
   if (binding.kind === "dateGrid") return dateGridBindingExpression(binding, "dateGrid", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
+  if (binding.kind === "transfer") return transferBindingExpression(binding, "transfer", binding.arg ? bindingExpr(binding.arg, ir) : undefined);
   if (binding.kind === "prop") {
     const propName = safePropName(ir, binding.prop);
     return pathExpr(propName, binding.path);

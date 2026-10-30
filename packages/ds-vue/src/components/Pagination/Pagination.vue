@@ -51,7 +51,7 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { label: "navigat
 const behavior = usePagination({
   index: () => props.index,
   defaultIndex: props.defaultIndex,
-  onIndexChange: props.onIndexChange,
+  onIndexChange: (...args) => props.onIndexChange?.(...args),
 });
 const pagedSet = usePagedSet(() => ({ index: behavior.page.value, items: props.pages,
   count: undefined, disabled: props.disabled, onIndexChange: behavior.setPage }));

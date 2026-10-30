@@ -35,6 +35,36 @@ function findPartOrNull(
 }
 
 describe("CompositeControlIR", () => {
+  it("derives native radio reconciliation from host and accepted-selection facts after renaming", () => {
+    const contract = loadContract("RadioGroup");
+    contract.name = "ChoiceSet";
+    const ir = buildComponentIR(contract);
+    expect(ir.compositeControl?.nativeRadio).toBe(true);
+    expect(findPart(ir.dom, "option").nativeRadioChannel).toBe("selection");
+    for (const name of ["Select", "OTP"]) {
+      const other = buildComponentIR(loadContract(name));
+      expect(other.compositeControl?.nativeRadio).toBe(false);
+      expect(findPart(other.dom, other.compositeControl!.part.name).nativeRadioChannel).toBeUndefined();
+    }
+  });
+
+  it.each([
+    ["checked", "literal:true"],
+    ["value", "iter:item.label"],
+  ] as const)("does not infer native value identity from an unrelated %s binding", (key, value) => {
+    const contract = loadContract("RadioGroup");
+    const dom = contract.anatomy && !Array.isArray(contract.anatomy) ? contract.anatomy.dom : undefined;
+    if (!dom) throw new Error("fixture requires DOM");
+    const visit = (node: typeof dom): void => {
+      if (node.part === "option") node.bindings = { ...node.bindings, [key]: value };
+      for (const child of node.children ?? []) visit(child);
+    };
+    visit(dom);
+    const ir = buildComponentIR(contract);
+    expect(ir.compositeControl?.nativeRadio).toBe(false);
+    expect(findPart(ir.dom, "option").nativeRadioChannel).toBeUndefined();
+  });
+
   it.each([
     ["Select", "option", "selection", "collection-selection", "activation", "click", "channelUpdate"],
     ["RadioGroup", "option", "selection", "collection-selection", "change", "change", "channelCall"],

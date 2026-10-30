@@ -43,7 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
 const behavior = useToggleSwitch({
   checked: () => props.checked,
   defaultChecked: props.defaultChecked,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
 });
 // @generated:end
 

@@ -170,7 +170,7 @@ export class AlertNoticeElement extends LitElement {
       background: transparent;
       border: 0;
       padding: var(--fsds-alert-notice-design-dismiss-spacing-padding, 0);
-      margin-left: auto;
+      margin-inline-start: auto;
       color: var(--fsds-alert-notice-design-dismiss-foreground-color, inherit);
       cursor: pointer;
       font: inherit;
@@ -405,7 +405,7 @@ export class AlertNoticeBodyElement extends LitElement {
       background: transparent;
       border: 0;
       padding: var(--fsds-alert-notice-design-dismiss-spacing-padding, 0);
-      margin-left: auto;
+      margin-inline-start: auto;
       color: var(--fsds-alert-notice-design-dismiss-foreground-color, inherit);
       cursor: pointer;
       font: inherit;
@@ -609,7 +609,7 @@ export class AlertNoticeTitleElement extends LitElement {
       background: transparent;
       border: 0;
       padding: var(--fsds-alert-notice-design-dismiss-spacing-padding, 0);
-      margin-left: auto;
+      margin-inline-start: auto;
       color: var(--fsds-alert-notice-design-dismiss-foreground-color, inherit);
       cursor: pointer;
       font: inherit;

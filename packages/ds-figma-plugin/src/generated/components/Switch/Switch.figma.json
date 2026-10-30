@@ -848,6 +848,12 @@
         }
       },
       {
+        "selector": ".switch:dir(rtl) .switch__track",
+        "declarations": {
+          "scale": "-1 1"
+        }
+      },
+      {
         "selector": ".switch--sm",
         "declarations": {
           "--fsds-box-model-padding-block-start": "var(--fsds-semantic-action-size-small-padding-block, 2px)",

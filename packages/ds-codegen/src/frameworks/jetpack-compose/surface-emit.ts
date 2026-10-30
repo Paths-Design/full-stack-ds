@@ -28,6 +28,7 @@ import { matchesTokenRole } from '../token-role.js';
  */
 import type { ComponentIR } from "../../ir.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
+import { conventionalProp, hasBooleanConventionalProp } from "../native-emission-class.js";
 import { generateJetpackComposeTokensFile } from "./component-source.js";
 import { withKotlinMessages } from "./messages.js";
 
@@ -70,16 +71,14 @@ function emitJetpackComposeSurfaceFiles(
   const triggers = ir.surface?.openTriggers ?? [];
   const isClick = triggers.includes("click");
   const isHover = triggers.includes("hover") || triggers.includes("focus");
-  const placementProp = ir.styledProps.find((p) => p.safeName === "placement");
+  const placementProp = conventionalProp(ir, "placement");
   const placementRef = placementProp?.typeRefs?.find(
     (r) => (ir.definedTypes[r]?.values?.length ?? 0) > 0,
   );
   const placementValues = placementRef ? ir.definedTypes[placementRef]!.values! : [];
   const placementDefault =
     placementProp?.defaultExpr?.replace(/^["']|["']$/g, "") ?? placementValues[0] ?? "bottom";
-  const hasDisabled = ir.styledProps.some(
-    (p) => p.name === "disabled" && p.propType.kind === "boolean",
-  );
+  const hasDisabled = hasBooleanConventionalProp(ir, "disabled");
 
   const bgSlot = slot(ir, ".color.background.default");
   const borderSlot = slot(ir, ".color.border.default");
@@ -126,6 +125,7 @@ function emitJetpackComposeSurfaceFiles(
   lines.push(`import androidx.compose.ui.Modifier`);
   lines.push(`import androidx.compose.ui.draw.clip`);
   lines.push(`import androidx.compose.ui.layout.onGloballyPositioned`);
+  if (isClick) lines.push(`import androidx.compose.ui.semantics.Role`);
   lines.push(`import androidx.compose.ui.unit.IntOffset`);
   lines.push(`import androidx.compose.ui.unit.dp`);
   lines.push(`import androidx.compose.ui.window.Popup`);
@@ -218,8 +218,8 @@ function emitJetpackComposeSurfaceFiles(
   ];
   if (isClick) {
     anchorModifier.push(hasDisabled
-      ? `            .clickable(enabled = enabled) { setOpen(!${resolved}) }`
-      : `            .clickable { setOpen(!${resolved}) }`);
+      ? `            .clickable(enabled = enabled, role = Role.Button) { setOpen(!${resolved}) }`
+      : `            .clickable(role = Role.Button) { setOpen(!${resolved}) }`);
   }
   if (isHover) {
     anchorModifier.push(`            .hoverable(interactionSource = interactionSource)`);

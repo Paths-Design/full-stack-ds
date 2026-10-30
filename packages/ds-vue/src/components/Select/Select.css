@@ -26,7 +26,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-align: var(--fsds-select-design-text-typography-alignment, left);
+  text-align: var(--fsds-select-design-text-typography-alignment, start);
 }
 
 .select__trigger {

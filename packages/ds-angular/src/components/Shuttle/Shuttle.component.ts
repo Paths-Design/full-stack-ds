@@ -1,7 +1,8 @@
 // @generated:start imports
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass, NgFor } from "@angular/common";
-import { StackComponent } from "../../primitives/index.js";
+import { createReactiveTransferList } from "../../primitives/transfer-list-signal.js";
+import { injectFsdsMessages } from "../../primitives/messages.js";
 import { useShuttle } from "./useShuttle.js";
 // @generated:end
 
@@ -18,28 +19,53 @@ import { useShuttle } from "./useShuttle.js";
 // @custom:end
 
 // @generated:start component
+const ShuttleMessages = { availableLabel: "Available", selectedLabel: "Selected", add: "Add", remove: "Remove" };
+
 @Component({
   selector: "fsds-shuttle",
   standalone: true,
   imports: [NgClass, NgFor],
   host: { "data-fsds-component": "shuttle" },
-  template: `<ul [ngClass]="classes()" role="listbox" [attr.aria-label]="ariaLabel" data-fsds-box="">
-  <ng-container *ngFor="let item of (behavior.selection() ?? []); let index = index; trackBy: trackByIndex">
-    <li [ngClass]="'shuttle__item'" role="option" aria-selected="true">
-      <span>
-        {{ item }}
-      </span>
-    </li>
-  </ng-container>
-</ul>`,
+  template: `<div [ngClass]="classes()" role="group" [attr.aria-label]="ariaLabel" data-fsds-box="">
+  <ul [ngClass]="'shuttle__list'" role="listbox" aria-multiselectable="true" data-side="available" (keydown)="transfer.keydown($event)" [attr.aria-label]="fsdsMessages().availableLabel">
+    <ng-container *ngFor="let item of (transfer.state.available ?? []); let index = index; trackBy: trackByIndex">
+      <li [ngClass]="'shuttle__item'" role="option" (click)="transfer.toggle(item)" [attr.aria-selected]="item.marked" [tabindex]="item.tabIndex" [attr.data-value]="item.key">
+        <span>
+          {{ item.label }}
+        </span>
+      </li>
+    </ng-container>
+  </ul>
+  <div [ngClass]="'shuttle__controls'">
+    <button [ngClass]="'shuttle__add'" type="button" (click)="transfer.add($event)" [disabled]="transfer.state.addDisabled">
+      {{ fsdsMessages().add }}
+    </button>
+    <button [ngClass]="'shuttle__remove'" type="button" (click)="transfer.remove($event)" [disabled]="transfer.state.removeDisabled">
+      {{ fsdsMessages().remove }}
+    </button>
+  </div>
+  <ul [ngClass]="'shuttle__list'" role="listbox" aria-multiselectable="true" data-side="selected" (keydown)="transfer.keydown($event)" [attr.aria-label]="fsdsMessages().selectedLabel">
+    <ng-container *ngFor="let item of (transfer.state.selected ?? []); let index = index; trackBy: trackByIndex">
+      <li [ngClass]="'shuttle__item'" role="option" (click)="transfer.toggle(item)" [attr.aria-selected]="item.marked" [tabindex]="item.tabIndex" [attr.data-value]="item.key">
+        <span>
+          {{ item.label }}
+        </span>
+      </li>
+    </ng-container>
+  </ul>
+</div>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShuttleComponent {
+  protected readonly fsdsMessages = injectFsdsMessages("Shuttle", ShuttleMessages);
   @Input() ariaLabel?: string;
+  private readonly inputOptions = signal<string[] | undefined>(undefined);
+  @Input() get options(): string[] | undefined { return this.inputOptions() ?? ["alpha","beta","gamma","delta","epsilon"]; }
+  set options(value: string[] | undefined) { this.inputOptions.set(value); }
   private readonly inputValue = signal<string[] | undefined>(undefined);
   @Input() get value(): string[] | undefined { return this.inputValue(); }
   set value(value: string[] | undefined) { this.inputValue.set(value); }
-  @Input() defaultValue?: string[] = ["alpha","beta","gamma"];
+  @Input() defaultValue?: string[] = [];
   @Input() onValueChange?: (value: string[]) => void;
   @Input() class?: string;
 
@@ -54,6 +80,9 @@ export class ShuttleComponent {
     destroyRef: this.destroyRef,
   })));
   }
+  protected transfer = createReactiveTransferList(() => ({ options: this.options, value: this.behavior.selection(), onValueChange: (next) => this.behavior.setSelection(next) }));
+  private transferCleanup = this.destroyRef.onDestroy(() => this.transfer.destroy());
+  ngAfterViewChecked(): void { this.transfer.afterRender(); }
 
   classes(): string {
     return [
@@ -63,22 +92,6 @@ export class ShuttleComponent {
   }
 
   protected readonly trackByIndex = (index: number): number => index;
-}
-
-@Component({
-  selector: "fsds-shuttle-item",
-  standalone: true,
-  imports: [NgClass, StackComponent],
-  template: `<fsds-stack as="li" [ngClass]="classes()"><ng-content /></fsds-stack>`,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class ShuttleItemComponent {
-  @Input() class?: string;
-  @Input() dataTestid?: string;
-
-  classes(): string {
-    return ["shuttle__item", this.class].filter(Boolean).join(" ");
-  }
 }
 // @generated:end
 

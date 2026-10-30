@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type ToggleSwitchSize = "small" | "medium" | "large";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useToggleSwitch } from "./useToggleSwitch.svelte.js";
@@ -8,7 +14,7 @@ import { useToggleSwitch } from "./useToggleSwitch.svelte.js";
 // @custom:end
 
 // @generated:start types
-type ToggleSwitchSize = "small" | "medium" | "large";
+
 // @generated:end
 
 // @custom:start types

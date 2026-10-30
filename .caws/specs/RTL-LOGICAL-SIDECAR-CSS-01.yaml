@@ -1,0 +1,92 @@
+id: RTL-LOGICAL-SIDECAR-CSS-01
+title: 'Direction-dependent sidecar CSS uses logical properties'
+mode: fix
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Direction-dependent sidecar CSS names the inline start or end in 11 components plus a web-only dir=rtl Switch track mirror; mirrored-gap probes pass in five web frameworks and fail on the reverted bytes; gates pass at 99c95db22. Non-claims: vertical writing, CSS-only direction for the Switch mirror, Sheet side and placement API values.'
+created_at: '2026-10-21T11:14:52.848Z'
+updated_at: '2026-10-21T12:19:22.908Z'
+created_by_session: 'cc2e39ec-43fe-4267-a6f5-92f59dfe759b'
+blast_radius:
+  modules:
+    - 'packages/ds-contracts/components'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-contracts/components/Toast/Toast.styles.json'
+    - 'packages/ds-contracts/components/Switch/Switch.styles.json'
+    - 'packages/ds-contracts/components/Dialog/Dialog.styles.json'
+    - 'packages/ds-contracts/components/Sheet/Sheet.styles.json'
+    - 'packages/ds-contracts/components/Alert/Alert.styles.json'
+    - 'packages/ds-contracts/components/AlertNotice/AlertNotice.styles.json'
+    - 'packages/ds-contracts/components/Progress/Progress.styles.json'
+    - 'packages/ds-contracts/components/Walkthrough/Walkthrough.styles.json'
+    - 'packages/ds-contracts/components/Tabs/Tabs.styles.json'
+    - 'packages/ds-contracts/components/Accordion/Accordion.styles.json'
+    - 'packages/ds-contracts/components/Select/Select.styles.json'
+    - 'packages/ds-react/src'
+    - 'packages/ds-vue/src'
+    - 'packages/ds-svelte/src'
+    - 'packages/ds-angular/src'
+    - 'packages/ds-lit/src'
+    - 'packages/ds-react-native/src'
+    - 'packages/ds-figma-plugin'
+    - 'packages/ds-codegen/generated'
+    - 'e2e/rtl-direction.spec.ts'
+    - docs/architecture/design/component-design-bindings.md
+  out: []
+invariants:
+  - 'Physical side values that a component exposes as API (Sheet side, Tooltip and Popover placement, Text align) stay physical until the user decides their meaning'
+  - 'A declaration whose side depends on reading direction names the inline start or end, so horizontal left-to-right rendering is unchanged and right-to-left mirrors it'
+acceptance:
+  - id: A1
+    given: 'Toast, Switch, Dialog, Sheet, Alert, AlertNotice, Progress, Walkthrough, vertical Tabs, Accordion and Select sidecars'
+    when: 'they are generated'
+    then: >-
+      each direction-dependent declaration names the inline start or end with the
+      value of the physical property it replaces (or, for the Switch track, adds a
+      web-only dir=rtl mirror), so in horizontal left-to-right writing it resolves
+      to the same physical side as before; vertical writing modes are not claimed
+  - id: A2
+    given: >-
+      the Toast, checked Switch, open Dialog and dismissible Alert previews in
+      Chromium for each of the five web frameworks
+    when: 'each is measured under dir=ltr and then under dir=rtl on the document element'
+    then: >-
+      the toast sits on the right viewport edge in ltr and the left edge in rtl, and
+      the thumb, dialog close button and alert dismiss sit within a small gap of the
+      inline end in ltr and at that same gap, within 1px, from the opposite edge in
+      rtl
+  - id: A3
+    given: 'the regenerated tree'
+    when: 'the rail, committed-output check, styling audits and every framework suite run'
+    then: 'all pass'
+rollback:
+  - 'Revert the merge commit and regenerate every target'
+non_functional: {}
+contracts:
+  - name: 'logical-sidecar-css'
+    type: behavior
+    path: 'e2e/rtl-direction.spec.ts'
+evidence:
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "At 99c95db22 the 20 geometry cases in e2e/rtl-direction.spec.ts pass in Chromium for react, vue, svelte, angular and lit. Each renders the preview, measures under dir=ltr, flips the document element to dir=rtl and measures again; annotated values in every framework: switch thumb gap 6 and 6 px, alert dismiss 17 and 17, dialog close 25 and 25, toast 1108..1280 in ltr and 0..172 in rtl of a 1280 viewport. Falsifier: with the generated web source of 2a6d4c262 reversed by git apply -R (served preview CSS checked physical in all five frameworks before and after the run) all 20 fail on the mirror assertion with ltr gaps unchanged (rtl gaps 26, 551, 443 px; toast left 1108). Not covered: a fresh mount under rtl rather than a live flip, CSS-only direction, mixed-direction subtrees, other browsers."
+    recorded_at: "2026-10-21T12:17:17.538Z"
+    test_nodeid: e2e/rtl-direction.spec.ts
+    command: pnpm exec playwright test e2e/rtl-direction.spec.ts
+    exit_code: 0
+    commit_sha: "99c95db22"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "At 99c95db22 (lane merged with main) with a clean tree: governed:rail overall pass, committed-tree check clean, typecheck:all, lint and docs:check-claims pass, the ten styling and realization audits pass (a11y rail: 164 obligations, 133 unrealized all ledgered, no stale entries), the root suite passes (349 files, 5110 tests) and the framework suites pass (Vue 842, Lit 608 with 2 skipped, Svelte 743, Angular 629, React Native 247)."
+    recorded_at: "2026-10-21T12:17:27.699Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm run typecheck:all && pnpm run lint && pnpm run docs:check-claims && pnpm run audit:a11y-realization && pnpm run audit:dead-slots && pnpm run audit:pseudo-state && pnpm run audit:state-suppression && pnpm run audit:token-resolvability && pnpm run audit:custom-regions && pnpm run audit:motion-realization && pnpm run audit:carrier-reachability && pnpm run audit:variant-realization && pnpm run audit:behavior-realization && pnpm test && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "99c95db22"
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Source argument over commit 2a6d4c262 (parent c3645e1e8): in its sidecar changes every edit is a key rename with its value body untouched (right to inset-inline-end in Toast, Dialog, Sheet and the vertical Tabs indicator; left to inset-inline-start in Tabs; margin-left to margin-inline-start in Alert, AlertNotice and Progress; margin-right to margin-inline-end in Walkthrough), a text-align literal left to start (Accordion, Select), or a Switch block matching only under :dir(rtl) with platforms web. In horizontal-tb ltr, inline-start is left, inline-end is right and text-align start is left. The commit changes no file under ds-react-native, ds-swiftui, ds-compose, ds-unity or ds-codegen/generated; the Figma plugin (plugin.ts 495-530) materializes no positional, margin or text-align key. For Toast, Switch, Dialog and Alert the ltr geometry is also measured identical with and without the change (e2e/rtl-direction.spec.ts annotations: gaps 6, 17, 25 px, toast 1108..1280). Sheet, AlertNotice, Progress, Walkthrough, vertical Tabs, Accordion and Select rest on the source argument alone. Not claimed: vertical writing modes; a direction set by CSS direction without a dir attribute leaves the Switch track unmirrored, as before."
+    recorded_at: "2026-10-21T12:17:48.069Z"
+    commit_sha: "2a6d4c262"

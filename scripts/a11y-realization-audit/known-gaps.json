@@ -49,6 +49,7 @@
       "family": "react",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -56,34 +57,7 @@
       "family": "react",
       "class": "keyboard",
       "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react",
-      "class": "focus",
-      "key": "roving",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -187,6 +161,7 @@
       "family": "vue",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -194,34 +169,7 @@
       "family": "vue",
       "class": "keyboard",
       "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "vue",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "vue",
-      "class": "focus",
-      "key": "roving",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -325,6 +273,7 @@
       "family": "svelte",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -332,34 +281,7 @@
       "family": "svelte",
       "class": "keyboard",
       "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "svelte",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "svelte",
-      "class": "focus",
-      "key": "roving",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -473,6 +395,7 @@
       "family": "lit",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -480,34 +403,7 @@
       "family": "lit",
       "class": "keyboard",
       "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "lit",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "lit",
-      "class": "focus",
-      "key": "roving",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -611,6 +507,7 @@
       "family": "angular",
       "class": "keyboard",
       "key": "ArrowLeft",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -618,34 +515,7 @@
       "family": "angular",
       "class": "keyboard",
       "key": "ArrowRight",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "Space",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "ArrowUp|ArrowDown",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "angular",
-      "class": "keyboard",
-      "key": "Enter",
-      "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "angular",
-      "class": "focus",
-      "key": "roving",
+      "part": "field",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
     },
     {
@@ -758,20 +628,6 @@
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
-      "component": "Select",
-      "family": "react-native",
-      "class": "interactive-role",
-      "key": "activation",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Shuttle",
-      "family": "react-native",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "SHUTTLE-DUAL-LISTBOX-01"
-    },
-    {
       "component": "Table",
       "family": "react-native",
       "class": "state-attribute",
@@ -835,25 +691,11 @@
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
-      "component": "Shuttle",
-      "family": "swiftui",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "SHUTTLE-DUAL-LISTBOX-01"
-    },
-    {
       "component": "Table",
       "family": "swiftui",
       "class": "state-attribute",
       "key": "aria-selected",
       "spec": "TABLE-SELECTION-STATE-01"
-    },
-    {
-      "component": "Tabs",
-      "family": "swiftui",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
       "component": "Truncate",
@@ -912,24 +754,10 @@
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
-      "component": "Popover",
-      "family": "jetpack-compose",
-      "class": "interactive-role",
-      "key": "activation",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
       "component": "Select",
       "family": "jetpack-compose",
       "class": "state-attribute",
       "key": "aria-expanded",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Select",
-      "family": "jetpack-compose",
-      "class": "interactive-role",
-      "key": "activation",
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
@@ -940,13 +768,6 @@
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
-      "component": "Shuttle",
-      "family": "jetpack-compose",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "SHUTTLE-DUAL-LISTBOX-01"
-    },
-    {
       "component": "Table",
       "family": "jetpack-compose",
       "class": "state-attribute",
@@ -954,31 +775,10 @@
       "spec": "TABLE-SELECTION-STATE-01"
     },
     {
-      "component": "Tabs",
-      "family": "jetpack-compose",
-      "class": "state-attribute",
-      "key": "aria-selected",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Tabs",
-      "family": "jetpack-compose",
-      "class": "interactive-role",
-      "key": "activation",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
       "component": "Truncate",
       "family": "jetpack-compose",
       "class": "state-attribute",
       "key": "aria-expanded",
-      "spec": "NATIVE-A11Y-SEMANTICS-01"
-    },
-    {
-      "component": "Walkthrough",
-      "family": "jetpack-compose",
-      "class": "interactive-role",
-      "key": "activation",
       "spec": "NATIVE-A11Y-SEMANTICS-01"
     },
     {
@@ -994,6 +794,38 @@
       "class": "keyboard",
       "key": "Escape",
       "spec": "WALKTHROUGH-ESCAPE-DISMISS-01"
+    },
+    {
+      "component": "Walkthrough",
+      "family": "vue",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => void 0 and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "svelte",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "lit",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
+    },
+    {
+      "component": "Walkthrough",
+      "family": "angular",
+      "class": "keyboard",
+      "key": "Escape",
+      "spec": "WALKTHROUGH-ESCAPE-DISMISS-01",
+      "note": "The dismissal primitive runs with a no-op onDismiss: Walkthrough has no disclosure channel for Escape to close, so the hook-source lowering passes () => { void 0; } and the key is heard and ignored."
     }
   ]
 }

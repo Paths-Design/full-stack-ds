@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type BlockquoteVariant = "default" | "bordered" | "highlighted";
+export type BlockquoteSize = "sm" | "md" | "lg";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,8 +15,7 @@
 // @custom:end
 
 // @generated:start types
-type BlockquoteVariant = "default" | "bordered" | "highlighted";
-type BlockquoteSize = "sm" | "md" | "lg";
+
 // @generated:end
 
 // @custom:start types

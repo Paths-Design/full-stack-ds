@@ -2,6 +2,7 @@
 import { describe, expect, it, beforeEach, afterEach, jest } from "@jest/globals";
 import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { TooltipComponent } from "../Tooltip.component";
 import { TooltipTriggerComponent } from "../TooltipTrigger.component";
 import { TooltipTriggerDirective } from "../TooltipTrigger.directive";
@@ -407,6 +408,29 @@ describe("Tooltip — anchored positioning + portal (FEAT-ANCHORED-SURFACE-XFW-0
     const contentAfterDestroy = document.body.querySelector("[data-testid='content']") as HTMLElement | null;
     expect(contentAfterDestroy).not.toBeNull();
     expect(contentAfterDestroy!.parentElement).not.toBe(document.body);
+  });
+});
+
+describe("Tooltip — accessibility", () => {
+  // `region` asks whether all page content is landmark-contained, a page
+  // question; a single component under test cannot answer it.
+  const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+  it("has no unexpected axe violations when closed", async () => {
+    const fixture = mount();
+    await fixture.whenStable();
+    expect(getAnchor(fixture.nativeElement as HTMLElement, false)).not.toBeNull();
+    const results = await axe.run(fixture.nativeElement as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
+  });
+
+  it("has no unexpected axe violations when open", async () => {
+    const fixture = mount((c) => { c.defaultOpen = true; });
+    await settle();
+    fixture.detectChanges();
+    expect(getContentEl(fixture.nativeElement as HTMLElement)).not.toBeNull();
+    const results = await axe.run(document.body, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 // @generated:end

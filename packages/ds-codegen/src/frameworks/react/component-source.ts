@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions, dateGridValueType } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions, transferValueType } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName } from "../../messages.js";
 /**
@@ -452,6 +453,9 @@ export function generateReactComponentSource(
   if (isCompound) {
     importLines.push(`import { createCompoundContext } from "../../primitives/hooks";`);
   }
+  if (/\bisRtl\(/.test(bodyHaystack)) {
+    importLines.push(`import { isRtl } from "../../primitives/direction/direction";`);
+  }
   // FEAT-A11Y-LABEL-ID-ASSOCIATION-01: field-association primitive imports,
   // body-scan driven like the react-hook imports above.
   const fieldAssocImports: string[] = [];
@@ -468,6 +472,7 @@ export function generateReactComponentSource(
   }
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.dateGrid) importLines.push(`import { useDateGrid } from "../../primitives/hooks/useDateGrid.js";`);
+  if (ir.transfer) importLines.push(`import { useTransferList } from "../../primitives/hooks/useTransferList.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   if (ir.messages.length > 0) {
     const messageImports = ["useFsdsMessages", ...(bodyHaystack.includes("formatFsdsMessage(") ? ["formatFsdsMessage"] : [])];
@@ -1065,11 +1070,19 @@ function generateCompoundStateSubcomponents(ir: ComponentIR): string {
   lines.push(`    (e: KeyboardEvent<HTMLDivElement>) => {`);
   lines.push(`      const tabs = ctx.registeredTabs;`);
   lines.push(`      if (tabs.length === 0) return;`);
-  lines.push(`      const currentIndex = tabs.indexOf(ctx.${channelName});`);
+  // Arrows move on from the focused tab, which manual activation leaves
+  // apart from the selected one.
+  lines.push(`      const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");`);
+  lines.push(`      const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.${channelName});`);
   lines.push(`      const isHorizontal = ctx.${orientation} !== "vertical";`);
+  // A horizontal list follows the inline direction: the arrow pointing toward
+  // the inline end moves to the next tab.
+  lines.push(`      const rtl = isRtl(e.currentTarget);`);
+  lines.push(`      const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";`);
+  lines.push(`      const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";`);
   lines.push(`      let nextIndex = currentIndex;`);
   lines.push(`      if (`);
-  lines.push(`        (isHorizontal && e.key === "ArrowRight") ||`);
+  lines.push(`        (isHorizontal && towardEnd) ||`);
   lines.push(`        (!isHorizontal && e.key === "ArrowDown")`);
   lines.push(`      ) {`);
   lines.push(`        e.preventDefault();`);
@@ -1077,7 +1090,7 @@ function generateCompoundStateSubcomponents(ir: ComponentIR): string {
   lines.push(`          ? (currentIndex + 1) % tabs.length`);
   lines.push(`          : Math.min(currentIndex + 1, tabs.length - 1);`);
   lines.push(`      } else if (`);
-  lines.push(`        (isHorizontal && e.key === "ArrowLeft") ||`);
+  lines.push(`        (isHorizontal && towardStart) ||`);
   lines.push(`        (!isHorizontal && e.key === "ArrowUp")`);
   lines.push(`      ) {`);
   lines.push(`        e.preventDefault();`);
@@ -2299,6 +2312,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
       `    count: ${page.countProp ?? "undefined"}, disabled: ${page.disabledProp ?? "false"}, onIndexChange: set${capitalize(page.channel)} });`);
   }
   if (ir.dateGrid) lines.push(`  const dateGrid = useDateGrid(${dateGridOptions(ir.dateGrid, (prop) => prop.includes("-") ? toCamelCase(prop) : prop, (channel) => channel, (channel) => `set${capitalize(channel)}`)});`);
+  if (ir.transfer) lines.push(`  const transfer = useTransferList(${transferOptions(ir.transfer, (prop) => prop.includes("-") ? toCamelCase(prop) : prop, (channel) => channel, (channel) => `set${capitalize(channel)}`)});`);
   // Ephemeral-surface auto-dismiss: the presence budget flows from the
   // *.timing.auto-dismiss token (generation-resolved default) with the
   // contract's duration prop as the consumer override; pause props land on
@@ -3433,6 +3447,7 @@ function inferBindingValueType(
   }
   if (expr.kind === "valueMap") return "string";
   if (expr.kind === "dateGrid") return dateGridValueType(expr);
+  if (expr.kind === "transfer") return transferValueType(expr);
   return undefined;
 }
 
@@ -3453,6 +3468,7 @@ function renderReactBinding(
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
     case "dateGrid": return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
+    case "transfer": return transferBindingExpression(expr, "transfer", expr.arg ? renderReactBinding(attr, expr.arg, ctx) ?? "undefined" : undefined);
     case "prop": {
       const base = expr.prop.includes("-") ? toCamelCase(expr.prop) : expr.prop;
       return appendPath(base, expr.path);

@@ -545,7 +545,7 @@
           "background": "transparent",
           "border": "0",
           "padding": "0",
-          "margin-left": "auto",
+          "margin-inline-start": "auto",
           "color": "inherit",
           "cursor": "pointer",
           "font": "inherit",

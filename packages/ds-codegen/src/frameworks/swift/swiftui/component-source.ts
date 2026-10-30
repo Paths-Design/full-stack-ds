@@ -41,12 +41,17 @@ import { emitSwiftHighlightComponent } from "./highlight-source.js";
 // (FEAT-COMPOSE-ADMISSION-SUBSTRATE-01). This file used to steward them.
 import {
   collectDomSlots,
+  conventionalProp,
   countChildrenLeaves,
   dateGridChrome,
   domGlyph,
+  expansionChannel,
+  expansionChannels,
+  hasConventionalProp,
+  stringConventionalProp,
   isCountIteratedFieldGroup,
-  isArrayIteratedList,
   isDateGridSurface,
+  isTransferSurface,
   isBareRuleLeaf,
   isGlyphHost,
   isIconDecoratedContent,
@@ -64,6 +69,7 @@ import {
   soleValueChannel,
 } from "../../native-emission-class.js";
 import { swiftLiteral } from "./icon-glyph.js";
+import { emitSwiftNativeTextRules, nativeTextPart } from "./native-text-rules.js";
 import { swiftMessage, swiftStringProp, withSwiftMessagesEnvironment } from "./messages.js";
 import {
   channelToggledText,
@@ -182,11 +188,11 @@ function emitSwiftUIComponentSource(ir: ComponentIR): string {
     return sections.join("\n\n") + "\n";
   }
 
-  if (isArrayIteratedList(ir)) {
+  if (isTransferSurface(ir)) {
     const sections: string[] = [];
     sections.push(emitImports());
     sections.push(emitTypes(ir));
-    sections.push(emitArrayIteratedList(ir));
+    sections.push(emitTransferSurface(ir));
     return sections.join("\n\n") + "\n";
   }
 
@@ -273,7 +279,7 @@ function emitSwiftUIComponentSource(ir: ComponentIR): string {
     return sections.join("\n\n") + "\n";
   }
 
-  if (isMediaLeaf(ir)) {
+  if (isSwiftMediaLeaf(ir)) {
     const sections: string[] = [];
     sections.push(emitImports());
     sections.push(emitTypes(ir));
@@ -322,7 +328,7 @@ function emitSwiftUIComponentSource(ir: ComponentIR): string {
     return sections.join("\n\n") + "\n";
   }
 
-  if (isCompoundPartComposer(ir)) {
+  if (isSwiftCompoundPartComposer(ir)) {
     const sections: string[] = [];
     sections.push(emitImports());
     sections.push(emitTypes(ir));
@@ -617,9 +623,7 @@ function emitLeafComponent(ir: ComponentIR): string {
   );
   // Inline enum props (DividerOrientation) lower to local Swift enums —
   // the contract declares them inline rather than as named types.
-  const orientationProp = ir.styledProps.find(
-    (p) => p.safeName === "orientation",
-  );
+  const orientationProp = conventionalProp(ir, "orientation");
   const orientationEnumValues =
     orientationProp &&
     typeof orientationProp.propType === "object" &&
@@ -845,7 +849,7 @@ function emitSelectionControl(ir: ComponentIR): string {
     );
   }
   // The trigger shows the placeholder when no option matches the selection.
-  const placeholder = ir.styledProps.some((p) => p.safeName === "placeholder")
+  const placeholder = hasConventionalProp(ir, "placeholder")
     ? swiftStringProp(ir, "placeholder", INDENT)
     : null;
   const emptyLabel = placeholder ? (placeholder.accessor.length > 0 ? "placeholder" : `(placeholder ?? "")`) : null;
@@ -944,6 +948,8 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
   const axes = collectVariantAxes(ir);
+  const textPart = nativeTextPart(ir);
+  const textRules = textPart ? emitSwiftNativeTextRules(ir, textPart, axes.map((axis) => axis.prop)) : null;
   const layerInfo = emitLayerExpressions(axes);
   const layerArray = ['"root"', ...layerInfo.expressions];
   const layersExpr = layerInfo.needsCompactMap
@@ -952,13 +958,12 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
 
   // A string icon prop feeds the registry; a ReactNode icon prop is a
   // consumer region (corpus fact, not component identity).
-  const iconIsRegistry = ir.styledProps.some(
-    (p) => p.safeName === "icon" && p.type === "string",
-  );
+  const iconIsRegistry = stringConventionalProp(ir, "icon") !== undefined;
 
   const lines: string[] = [];
   lines.push("// @generated:start component");
   if (ir.tokenScopes.length > 0) lines.push(...emitTokenScopesSection(ir));
+  if (textRules?.hasProperties) lines.push(...textRules.lines);
   lines.push("");
   lines.push(
     `/// Emitted through the icon-decorated content path: the icon prop ` +
@@ -993,6 +998,7 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
   }
+  if (textRules?.hasProperties && textPart) lines.push(...emitNativeTextAccessor(ir, axes, textPart));
   lines.push("");
   lines.push(`${INDENT}public init(`);
   const params: string[] = iconIsRegistry
@@ -1057,6 +1063,11 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
     lines.push(`${INDENT}${INDENT}${INDENT}iconRegion`);
   }
   lines.push(`${INDENT}${INDENT}${INDENT}content`);
+  if (textRules?.hasProperties) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.foregroundStyle(nativeTextStyle.color ?? ${chrome.foreground ? "foreground" : "Color.primary"})`);
+  }
   lines.push(`${INDENT}${INDENT}}`);
   if (chrome.blockPadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`);
   if (chrome.inlinePadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.horizontal, inlinePadding)`);
@@ -1073,84 +1084,166 @@ function emitIconDecoratedContent(ir: ComponentIR): string {
   return lines.join("\n");
 }
 
-// The array-iterated list predicate is shared substrate
-// (native-emission-class.ts): one array channel over an array-iteration
-// node. The channel rides ControllableValue<[String]>; ForEach realizes
-// the iteration.
-
-function emitArrayIteratedList(ir: ComponentIR): string {
+/**
+ * A dual-listbox transfer (`ir.transfer`): the options outside the value
+ * channel and the value itself, each item marked by a tap (announced through
+ * the isSelected trait, as the web options' aria-selected) and moved by the
+ * add and remove buttons. Arrow-key focus belongs to the platform here; the
+ * lists are VoiceOver containers named from the catalog.
+ */
+function emitTransferSurface(ir: ComponentIR): string {
+  const transfer = ir.transfer;
+  if (!transfer) throw new Error(`emitTransferSurface: ${ir.name} declares no transfer fact`);
   const exportName = swiftExportName(ir.name);
-  const chrome = resolveChrome(ir);
-  const channel = ir.behavior.normalizedChannels[0]!;
+  const channel = ir.behavior.normalizedChannels.find((c) => c.name === transfer.valueChannel);
+  if (!channel) throw new Error(`emitTransferSurface: ${ir.name} declares no channel '${transfer.valueChannel}'`);
+  const optionsProp = ir.styledProps.find((p) => p.name === transfer.optionsProp);
+  if (!optionsProp) throw new Error(`emitTransferSurface: ${ir.name} declares no prop '${transfer.optionsProp}'`);
+  let optionsDefault: string[] = [];
+  try {
+    const parsed = optionsProp.defaultExpr ? JSON.parse(optionsProp.defaultExpr) : [];
+    if (Array.isArray(parsed)) optionsDefault = parsed.map(String);
+  } catch { /* a non-literal default leaves the options empty */ }
   const hasAria = hasConventionalProp(ir, "ariaLabel");
+  const listNode = (side: string): DomNodeIR | undefined => {
+    const visit = (node: DomNodeIR): DomNodeIR | undefined =>
+      node.attrs["data-side"] === side ? node : node.children.map(visit).find(Boolean);
+    return ir.dom ? visit(ir.dom) : undefined;
+  };
+  const label = (node: DomNodeIR | undefined, attribute: string): string => {
+    const source = nodeTextSource(ir, node, attribute);
+    if (source?.kind !== "message") throw new Error(`emitTransferSurface: ${ir.name} names its ${node?.part ?? "?"} ${attribute} through no catalog message`);
+    return swiftMessage(ir, source.ref.message);
+  };
+  const buttonText = (part: string): string => {
+    const ref = partMessage(ir, part, "content");
+    if (!ref) throw new Error(`emitTransferSurface: ${ir.name} names its ${part} button through no catalog message`);
+    return swiftMessage(ir, ref.message);
+  };
+  const local = escapeSwiftKeyword(channel.name);
+  const suffix = swiftCase(capitalize(channel.name));
+  const i1 = INDENT;
+  const i2 = INDENT.repeat(2);
+  const i3 = INDENT.repeat(3);
+  const i4 = INDENT.repeat(4);
+  const i5 = INDENT.repeat(5);
   const lines: string[] = [];
   lines.push("// @generated:start component");
   if (ir.tokenScopes.length > 0) lines.push(...emitTokenScopesSection(ir));
   lines.push("");
-  lines.push(
-    `/// Emitted through the array-iterated list path: the ` +
-      `${channel.name} channel rides ControllableValue<[String]>; ForEach ` +
-      `renders each item.`,
-  );
-  if (exportName !== ir.name) {
-    lines.push(`/// SwiftUI reserves \`${ir.name}\`; exported as \`${exportName}\`.`);
-  }
+  lines.push(`/// A dual-listbox transfer: the ${transfer.optionsProp} outside the ${channel.name} channel, and the ${channel.name} itself.`);
+  lines.push(`/// A tap marks an item (the isSelected trait); add and remove move the marked items.`);
   lines.push(`public struct ${exportName}: View {`);
   if (ir.tokenScopes.length > 0) {
-    lines.push(`${INDENT}private var fsdsScopes: FsdsComponentTokenScopes {`);
-    lines.push(`${INDENT}${INDENT}${ir.name}Tokens.scopes`);
-    lines.push(`${INDENT}}`);
+    lines.push(`${i1}private var fsdsScopes: FsdsComponentTokenScopes {`);
+    lines.push(`${i2}${ir.name}Tokens.scopes`);
+    lines.push(`${i1}}`);
   }
-  lines.push(`${INDENT}@ControllableState private var ${channel.name}: ControllableValue<[String]>`);
-  if (hasAria) lines.push(`${INDENT}private let accessibilityLabel: String?`);
+  lines.push(`${i1}@ControllableState private var ${local}: ControllableValue<[String]>`);
+  lines.push(`${i1}private let ${optionsProp.safeName}: [String]`);
+  if (hasAria) lines.push(`${i1}private let accessibilityLabel: String?`);
+  lines.push(`${i1}@State private var markedAvailable: Set<String> = []`);
+  lines.push(`${i1}@State private var markedSelected: Set<String> = []`);
+  if (ir.tokenScopes.length > 0) lines.push(`${i1}@Environment(\\.fsdsTheme) private var fsdsTheme`);
+  lines.push("");
+  lines.push(`${i1}public init(`);
+  const params = [
+    `${optionsProp.safeName}: [String] = [${optionsDefault.map(swiftLiteral).join(", ")}],`,
+    `${local}: Binding<[String]>? = nil,`,
+    `default${suffix}: [String] = [],`,
+    `on${suffix}Change: (([String]) -> Void)? = nil,`,
+  ];
+  if (hasAria) params.push("accessibilityLabel: String? = nil,");
+  params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
+  for (const param of params) lines.push(`${i2}${param}`);
+  lines.push(`${i1}) {`);
+  lines.push(`${i2}self.${optionsProp.safeName} = ${optionsProp.safeName}`);
+  lines.push(`${i2}self._${local} = ControllableState(controlled: ${local}, defaultValue: default${suffix}, onChange: on${suffix}Change)`);
+  if (hasAria) lines.push(`${i2}self.accessibilityLabel = accessibilityLabel`);
+  lines.push(`${i1}}`);
+  lines.push("");
   if (ir.tokenScopes.length > 0) {
-    lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
+    lines.push(`${i1}private var layered: [String: FsdsTokenValue?] {`);
+    lines.push(`${i2}resolveFsdsLayeredTokens(fsdsScopes, fsdsTheme, layers: ["root"])`);
+    lines.push(`${i1}}`);
+    lines.push(`${i1}private func colorSlot(_ suffix: String) -> Color? {`);
+    lines.push(`${i2}layered.first { $0.key.hasSuffix(suffix) }?.value?.color`);
+    lines.push(`${i1}}`);
+    lines.push(`${i1}private func pxSlot(_ suffix: String) -> CGFloat? {`);
+    lines.push(`${i2}layered.first { $0.key.hasSuffix(suffix) }?.value?.px`);
+    lines.push(`${i1}}`);
+    lines.push(`${i1}private var background: Color { colorSlot("color.background") ?? .clear }`);
+    lines.push(`${i1}private var foreground: Color { colorSlot("color.foreground.primary") ?? .primary }`);
+    lines.push(`${i1}private var borderColor: Color { colorSlot("color.border") ?? .secondary }`);
+    lines.push(`${i1}private var listBackground: Color { colorSlot("color.list.background") ?? .clear }`);
+    lines.push(`${i1}private var markedBackground: Color { colorSlot("color.item.marked.background") ?? .accentColor }`);
+    lines.push(`${i1}private var markedForeground: Color { colorSlot("color.item.marked.foreground") ?? .white }`);
+    lines.push(`${i1}private var radius: CGFloat { pxSlot("size.radius") ?? 6 }`);
+    lines.push(`${i1}private var padding: CGFloat { pxSlot("size.padding") ?? 0 }`);
+    lines.push(`${i1}private var gap: CGFloat { pxSlot("box-model.gap") ?? 16 }`);
+  } else {
+    lines.push(`${i1}private let background = Color.clear, foreground = Color.primary, borderColor = Color.secondary`);
+    lines.push(`${i1}private let listBackground = Color.clear, markedBackground = Color.accentColor, markedForeground = Color.white`);
+    lines.push(`${i1}private let radius: CGFloat = 6, padding: CGFloat = 0, gap: CGFloat = 16`);
   }
   lines.push("");
-  lines.push(`${INDENT}public init(`);
-  const params = [`${channel.name}: Binding<[String]>? = nil,`, `default${swiftCase(capitalize(channel.name))}: [String] = [],`, `on${swiftCase(capitalize(channel.name))}Change: (([String]) -> Void)? = nil,`];
-  if (hasAria) params.push("accessibilityLabel: String? = nil");
-  params[params.length - 1] = params[params.length - 1]!.replace(/,$/, "");
-  for (const param of params) lines.push(`${INDENT}${INDENT}${param}`);
-  lines.push(`${INDENT}) {`);
-  lines.push(`${INDENT}${INDENT}self._${channel.name} = ControllableState(controlled: ${channel.name}, defaultValue: default${swiftCase(capitalize(channel.name))}, onChange: on${swiftCase(capitalize(channel.name))}Change)`);
-  if (hasAria) lines.push(`${INDENT}${INDENT}self.accessibilityLabel = accessibilityLabel`);
-  lines.push(`${INDENT}}`);
-  if (ir.tokenScopes.length > 0) {
-    lines.push("");
-    lines.push(`${INDENT}private var layered: [String: FsdsTokenValue?] {`);
-    lines.push(`${INDENT}${INDENT}resolveFsdsLayeredTokens(`);
-    lines.push(`${INDENT}${INDENT}${INDENT}fsdsScopes,`);
-    lines.push(`${INDENT}${INDENT}${INDENT}fsdsTheme,`);
-    lines.push(`${INDENT}${INDENT}${INDENT}layers: ["root"]`);
-    lines.push(`${INDENT}${INDENT})`);
-    lines.push(`${INDENT}}`);
-    lines.push("");
-    lines.push(`${INDENT}private func colorSlot(_ suffix: String) -> Color? {`);
-    lines.push(`${INDENT}${INDENT}layered.first { $0.key.hasSuffix(suffix) }?.value?.color`);
-    lines.push(`${INDENT}}`);
-    lines.push("");
-    lines.push(`${INDENT}private func pxSlot(_ suffix: String) -> CGFloat? {`);
-    lines.push(`${INDENT}${INDENT}layered.first { $0.key.hasSuffix(suffix) }?.value?.px`);
-    lines.push(`${INDENT}}`);
-    lines.push("");
-    lines.push(...emitChromeAccessorLines(chrome, ["background","foreground","borderColor","radius","blockPadding","inlinePadding","gap"]));
-    lines.push("");
-  }
-  lines.push(`${INDENT}public var body: some View {`);
-  lines.push(`${INDENT}${INDENT}VStack(spacing: ${chrome.gap ? "gap" : "4"}) {`);
-  lines.push(`${INDENT}${INDENT}${INDENT}ForEach(${channel.name}.value, id: \\.self) { item in`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}Button {`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}${channel.name}.set(${channel.name}.value.filter { $0 != item })`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}} label: {`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}SwiftUI.Text(item)`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}}`);
-  lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
-  lines.push(`${INDENT}${INDENT}${INDENT}}`);
-  lines.push(`${INDENT}${INDENT}}`);
-  if (hasAria) lines.push(`${INDENT}${INDENT}${INDENT}.fsdsAccessibilityLabel(accessibilityLabel)`);
-  if (chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(foreground)`);
-  lines.push(`${INDENT}}`);
+  lines.push(`${i1}/// The ${transfer.optionsProp} outside the ${channel.name}, in ${transfer.optionsProp} order (FsdsTransferList).`);
+  lines.push(`${i1}private var available: [String] { FsdsTransferList.available(options: ${optionsProp.safeName}, value: ${local}.value) }`);
+  lines.push(`${i1}/// The ${channel.name}, in the order items were moved into it.`);
+  lines.push(`${i1}private var selected: [String] { FsdsTransferList.selected(value: ${local}.value) }`);
+  lines.push("");
+  lines.push(`${i1}private func add() {`);
+  lines.push(`${i2}guard let next = FsdsTransferList.adding(markedAvailable, options: ${optionsProp.safeName}, value: ${local}.value) else { return }`);
+  lines.push(`${i2}markedAvailable.removeAll()`);
+  lines.push(`${i2}${local}.set(next)`);
+  lines.push(`${i1}}`);
+  lines.push(`${i1}private func remove() {`);
+  lines.push(`${i2}guard let next = FsdsTransferList.removing(markedSelected, value: ${local}.value) else { return }`);
+  lines.push(`${i2}markedSelected.removeAll()`);
+  lines.push(`${i2}${local}.set(next)`);
+  lines.push(`${i1}}`);
+  lines.push("");
+  lines.push(`${i1}private func list(_ items: [String], marked: Binding<Set<String>>, label: String) -> some View {`);
+  lines.push(`${i2}VStack(alignment: .leading, spacing: 0) {`);
+  lines.push(`${i3}ForEach(items, id: \\.self) { item in`);
+  lines.push(`${i4}let isMarked = marked.wrappedValue.contains(item)`);
+  lines.push(`${i4}Button {`);
+  lines.push(`${i5}if isMarked { marked.wrappedValue.remove(item) } else { marked.wrappedValue.insert(item) }`);
+  lines.push(`${i4}} label: {`);
+  lines.push(`${i5}SwiftUI.Text(item)`);
+  lines.push(`${i5}${INDENT}.frame(maxWidth: .infinity, alignment: .leading)`);
+  lines.push(`${i5}${INDENT}.padding(.horizontal, 8)`);
+  lines.push(`${i5}${INDENT}.padding(.vertical, 4)`);
+  lines.push(`${i5}${INDENT}.foregroundStyle(isMarked ? markedForeground : foreground)`);
+  lines.push(`${i5}${INDENT}.background(isMarked ? markedBackground : Color.clear)`);
+  lines.push(`${i4}}`);
+  lines.push(`${i4}.buttonStyle(.plain)`);
+  lines.push(`${i4}.accessibilityAddTraits(isMarked ? [.isSelected] : [])`);
+  lines.push(`${i3}}`);
+  lines.push(`${i2}}`);
+  lines.push(`${i2}.frame(minWidth: 120, minHeight: 96, alignment: .top)`);
+  lines.push(`${i2}.background(listBackground)`);
+  lines.push(`${i2}.overlay(RoundedRectangle(cornerRadius: radius).stroke(borderColor, lineWidth: 1))`);
+  lines.push(`${i2}.accessibilityElement(children: .contain)`);
+  lines.push(`${i2}.accessibilityLabel(label)`);
+  lines.push(`${i1}}`);
+  lines.push("");
+  lines.push(`${i1}public var body: some View {`);
+  lines.push(`${i2}HStack(alignment: .top, spacing: gap) {`);
+  lines.push(`${i3}list(available, marked: $markedAvailable, label: ${label(listNode("available"), "aria-label")})`);
+  lines.push(`${i3}VStack(spacing: 8) {`);
+  lines.push(`${i4}Button(${buttonText("add")}) { add() }`);
+  lines.push(`${i5}.disabled(FsdsTransferList.adding(markedAvailable, options: ${optionsProp.safeName}, value: ${local}.value) == nil)`);
+  lines.push(`${i4}Button(${buttonText("remove")}) { remove() }`);
+  lines.push(`${i5}.disabled(FsdsTransferList.removing(markedSelected, value: ${local}.value) == nil)`);
+  lines.push(`${i3}}`);
+  lines.push(`${i3}list(selected, marked: $markedSelected, label: ${label(listNode("selected"), "aria-label")})`);
+  lines.push(`${i2}}`);
+  lines.push(`${i2}.padding(padding)`);
+  lines.push(`${i2}.background(background)`);
+  lines.push(`${i2}.accessibilityElement(children: .contain)`);
+  if (hasAria) lines.push(`${i2}.fsdsAccessibilityLabel(accessibilityLabel)`);
+  lines.push(`${i1}}`);
   lines.push(`}`);
   lines.push("// @generated:end");
   return lines.join("\n");
@@ -1286,6 +1379,7 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`/// Press-wired tab: sets the \`${channel.name}\` channel to \`value\`.`);
     lines.push(`public struct ${exportName}Tab: View {`);
     lines.push(`${INDENT}@EnvironmentObject var ${channel.name}: ControllableValue<String>`);
+    lines.push(`${INDENT}@Environment(\\.fsdsChannelValues) private var fsdsChannelValues`);
     lines.push(`${INDENT}private let value: String`);
     lines.push(`${INDENT}private let label: String`);
     lines.push(`${INDENT}public init(value: String, label: String) {`);
@@ -1295,6 +1389,9 @@ function emitInteractiveComposite(ir: ComponentIR): string {
     lines.push(`${INDENT}public var body: some View {`);
     lines.push(`${INDENT}${INDENT}Button(label) { ${channel.name}.set(value) }`);
     lines.push(`${INDENT}${INDENT}${INDENT}.buttonStyle(.plain)`);
+    // The selected trait reads the value the root hands down through the
+    // environment, as the panels do, so a parent-set tab is current.
+    lines.push(`${INDENT}${INDENT}${INDENT}.accessibilityAddTraits(${channel.name}.value(in: fsdsChannelValues) == value ? [.isSelected] : [])`);
     lines.push(`${INDENT}}`);
     lines.push(`}`);
     lines.push("");
@@ -1537,7 +1634,7 @@ function emitPagedNavigatorComposite(ir: ComponentIR): string {
   const navChangeParam = channel.changeHandlerProp;
   const hasLabel = hasConventionalProp(ir, "label");
   const hasDisabled = hasConventionalProp(ir, page.disabledProp ?? "disabled");
-  const presentationProp = ir.styledProps.find((p) => p.safeName === "presentation");
+  const presentationProp = conventionalProp(ir, "presentation");
   const presentationType = presentationProp?.typeRefs.find((ref) => ir.definedTypes[ref]);
   const labelProps = ["pageLabel", "previousLabel", "nextLabel", "commitLabel"]
     .filter((name) => hasConventionalProp(ir, name))
@@ -2502,7 +2599,7 @@ function emitCountFieldGroup(ir: ComponentIR): string {
   const chrome = resolveChrome(ir);
   const hasLength = hasConventionalProp(ir, "length");
   const lengthDefault =
-    ir.styledProps.find((p) => p.safeName === "length")?.defaultExpr ?? "6";
+    conventionalProp(ir, "length")?.defaultExpr ?? "6";
   const hasDisabled = hasConventionalProp(ir, "disabled");
   const hasOnComplete = hasConventionalProp(ir, "onComplete");
 
@@ -2727,8 +2824,14 @@ function emitPropTextLeaf(ir: ComponentIR): string {
   return lines.join("\n");
 }
 
-/** Media leaf: an img root fed by src/alt props (Image). */
-function isMediaLeaf(ir: ComponentIR): boolean {
+/** Media leaf: an img root fed by src/alt props (Image).
+ *
+ * DELIBERATELY LOCAL, not the substrate's isMediaLeaf: swift's class omits
+ * the channel gate and admits an img root with channels where the shared
+ * predicate rejects it. Same name would shadow the shared fact — the
+ * Swift- prefix keeps the capability divergence visible at the dispatch
+ * site (see the substrate header: divergent predicates stay in emitters). */
+function isSwiftMediaLeaf(ir: ComponentIR): boolean {
   if (!ir.dom || ir.surface != null) return false;
   return ir.dom.tag === "img" && (ir.dom.children ?? []).length === 0;
 }
@@ -2908,9 +3011,7 @@ function emitSrcOrFallback(ir: ComponentIR, componentRef: string): string {
 function isExpandableContent(ir: ComponentIR): boolean {
   if (!ir.dom || ir.surface != null) return false;
   if (ir.dom.tag !== "div") return false;
-  const boolChannels = ir.behavior.normalizedChannels.filter(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  );
+  const boolChannels = expansionChannels(ir);
   if (boolChannels.length !== 1) return false;
   let childrenLeaves = 0;
   let hasInstance = false;
@@ -2927,9 +3028,7 @@ function isExpandableContent(ir: ComponentIR): boolean {
 function emitExpandableContent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
-  const channel = ir.behavior.normalizedChannels.find(
-    (c) => c.valueType === "boolean" && c.name.startsWith("expand"),
-  )!;
+  const channel = expansionChannel(ir)!;
   const hasLines = hasConventionalProp(ir, "lines") || hasConventionalProp(ir, "maxLines");
   const linesProp = hasConventionalProp(ir, "lines") ? "lines" : "maxLines";
   const linesDefault =
@@ -3168,6 +3267,8 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
   const axes = collectVariantAxes(ir);
+  const textPart = nativeTextPart(ir);
+  const textRules = textPart ? emitSwiftNativeTextRules(ir, textPart, axes.map((axis) => axis.prop)) : null;
   // An absent consumer region may expose a contract-declared literal source.
   const fallbackSources: string[] = [];
   const collectFallback = (node: DomNodeIR): void => {
@@ -3188,6 +3289,7 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   const lines: string[] = [];
   lines.push("// @generated:start component");
   if (ir.tokenScopes.length > 0) lines.push(...emitTokenScopesSection(ir));
+  if (textRules?.hasProperties) lines.push(...textRules.lines);
   lines.push("");
   lines.push(
     `/// Emitted through the static-content path: passive ` +
@@ -3212,6 +3314,7 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   if (ir.tokenScopes.length > 0) {
     lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
   }
+  if (textRules?.hasProperties && textPart) lines.push(...emitNativeTextAccessor(ir, axes, textPart));
   lines.push("");
   lines.push(`${INDENT}public init(`);
   const params = axes.map((axis) =>
@@ -3258,14 +3361,19 @@ function emitStaticContentComponent(ir: ComponentIR): string {
   lines.push("");
   lines.push(`${INDENT}public var body: some View {`);
   lines.push(`${INDENT}${INDENT}content`);
+  if (textRules?.hasProperties) {
+    lines.push(`${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
+    lines.push(`${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);
+  }
   if (ir.dom!.tag === "pre") lines.push(`${INDENT}${INDENT}${INDENT}.font(.system(.body, design: .monospaced))`);
   if (ir.tokenScopes.length > 0) {
     if (chrome.blockPadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`);
     if (chrome.inlinePadding) lines.push(`${INDENT}${INDENT}${INDENT}.padding(.horizontal, inlinePadding)`);
     if (chrome.background) lines.push(`${INDENT}${INDENT}${INDENT}.background(background)`);
     if (chrome.radius) lines.push(`${INDENT}${INDENT}${INDENT}.clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))`);
-    if (chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(foreground)`);
+    if (chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(${textRules?.hasProperties ? "nativeTextStyle.color ?? foreground" : "foreground"})`);
   }
+  if (textRules?.hasProperties && !chrome.foreground) lines.push(`${INDENT}${INDENT}${INDENT}.foregroundStyle(nativeTextStyle.color ?? Color.primary)`);
   lines.push(`${INDENT}}`);
   lines.push(`}`);
   if (fallbackSources.length === 1) {
@@ -3287,8 +3395,14 @@ function emitStaticContentComponent(ir: ComponentIR): string {
  * dom tree, whose content regions are its compound parts. Card is the
  * corpus consumer. Anchored surfaces (Popover/Tooltip) share the shape but
  * carry `ir.surface` and dispatch to the surface path before this point.
+ *
+ * DELIBERATELY LOCAL, not the substrate's isCompoundPartComposer: swift
+ * admits a single compound part and requires a div root element where the
+ * shared predicate requires >= 2 parts and no element gate. Same name would
+ * shadow the shared fact — the Swift- prefix keeps the divergence visible
+ * at the dispatch site.
  */
-function isCompoundPartComposer(ir: ComponentIR): boolean {
+function isSwiftCompoundPartComposer(ir: ComponentIR): boolean {
   return (
     ir.dom === undefined &&
     ir.surface == null &&
@@ -3345,6 +3459,9 @@ function emitActionComponent(ir: ComponentIR): string {
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
   const has = (concern: SlotConcern) => chrome[concern] !== undefined;
+  const axes = collectVariantAxes(ir);
+  const textPart = nativeTextPart(ir);
+  const textRules = textPart ? emitSwiftNativeTextRules(ir, textPart, axes.map((axis) => axis.prop)) : null;
 
   const lines: string[] = [];
   lines.push("// @generated:start component");
@@ -3377,6 +3494,7 @@ function emitActionComponent(ir: ComponentIR): string {
   }
   lines.push(`${INDENT}]`);
   lines.push(`}`);
+  if (textRules?.hasProperties) lines.push(...textRules.lines);
   lines.push("");
   lines.push(
     `/// Emitted through the projected-children action path: interactive ` +
@@ -3412,6 +3530,7 @@ function emitActionComponent(ir: ComponentIR): string {
   }
   lines.push(`${INDENT}private let label: Label`);
   lines.push(`${INDENT}@Environment(\\.fsdsTheme) private var fsdsTheme`);
+  if (textRules?.hasProperties && textPart) lines.push(...emitNativeTextAccessor(ir, axes, textPart));
   lines.push("");
 
   // Initializer — defaults from contract prop defaults.
@@ -3554,6 +3673,11 @@ function emitActionComponent(ir: ComponentIR): string {
     : "label";
   lines.push(`${INDENT}${INDENT}Button(action: ${action}) {`);
   lines.push(`${INDENT}${INDENT}${INDENT}${innerContent}`);
+  if (textRules?.hasProperties) {
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.font(nativeTextStyle.fontSize.map { Font.system(size: $0) })`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.fontWeight(nativeTextStyle.fontWeight)`);
+    lines.push(`${INDENT}${INDENT}${INDENT}${INDENT}.foregroundStyle(nativeTextStyle.color ?? ${has("foreground") ? "foreground" : "Color.primary"})`);
+  }
   if (has("blockPadding")) {
     lines.push(
       `${INDENT}${INDENT}${INDENT}${INDENT}.padding(.vertical, blockPadding)`,
@@ -3647,6 +3771,28 @@ function collectVariantAxes(ir: ComponentIR): VariantAxis[] {
       };
     })
     .filter((axis): axis is VariantAxis => axis !== null);
+}
+
+function emitNativeTextAccessor(ir: ComponentIR, axes: VariantAxis[], part: string): string[] {
+  const lines = [
+    `${INDENT}private var nativeTextStyle: FsdsResolvedNativeTextStyle {`,
+    `${INDENT}${INDENT}var values: [String: String] = [:]`,
+  ];
+  for (const axis of axes) {
+    const name = escapeSwiftKeyword(axis.prop);
+    if (axis.defaultMember === null) {
+      lines.push(`${INDENT}${INDENT}if let value = ${name} { values[${swiftLiteral(axis.prop)}] = value.rawValue }`);
+    } else {
+      lines.push(`${INDENT}${INDENT}values[${swiftLiteral(axis.prop)}] = ${name}.rawValue`);
+    }
+  }
+  lines.push(`${INDENT}${INDENT}do {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}return try resolveFsdsNativeTextStyle(${ir.name}NativeTextRules.rules, theme: fsdsTheme, variants: values, part: ${swiftLiteral(part)})`);
+  lines.push(`${INDENT}${INDENT}} catch {`);
+  lines.push(`${INDENT}${INDENT}${INDENT}preconditionFailure(String(describing: error))`);
+  lines.push(`${INDENT}${INDENT}}`);
+  lines.push(`${INDENT}}`);
+  return lines;
 }
 
 function findPropDefaultOrNull(ir: ComponentIR, name: string): string | null {
@@ -4096,12 +4242,8 @@ export function emitTokenScopesSection(
   return lines;
 }
 
-function hasConventionalProp(ir: ComponentIR, name: string): boolean {
-  return ir.styledProps.some((p) => p.safeName === name);
-}
-
 function findPropDefault(ir: ComponentIR, name: string): string {
-  const prop = ir.styledProps.find((p) => p.safeName === name);
+  const prop = conventionalProp(ir, name);
   const authored = prop?.defaultExpr?.replace(/^["']|["']$/g, "");
   const values = ir.variants[name];
   if (authored && values?.includes(authored)) return authored;

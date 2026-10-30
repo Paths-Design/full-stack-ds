@@ -113,6 +113,26 @@ test('the date-grid chrome role is satisfiable, so the divergence above is not a
   }), []);
 });
 
+/** A transfer fixture: the committed transfer-list substrate is the class
+ *  marker; its items render as BasicText, which would otherwise classify it as
+ *  a prop-text leaf whose role leaves this key unchecked. */
+const transferFixture = (body) => fixture({
+  component: `fun Example(modifier: Modifier = Modifier) { val items = FsdsTransferList.available(emptyList(), emptyList()); BasicText(text = ""); ${body}; val x = exampleTokenScopes["root"]?.get("example.width") }`,
+  rnStyles: 'tokens.root?.["box-model.padding-inline-start"];',
+});
+
+test('a transfer surface is classified by its substrate call, not as a text-bearing leaf', () => {
+  assert.deepEqual(inspectComposeTokens(transferFixture('')), [
+    'USAGE DIVERGENCE transfer: box-model.padding-inline-start',
+  ]);
+});
+test('the transfer chrome role is satisfiable, so the divergence above is not an artifact', () => {
+  assert.deepEqual(inspectComposeTokens({
+    ...transferFixture('layeredSlot("box-model.padding-inline-start")'),
+    tokens: definition('example.width') + definition('box-model.padding-inline-start'),
+  }), []);
+});
+
 test('a named-slot composer is classified by its region signature, not as a text leaf', () => {
   const slot = (name) => `${name}: (@Composable () -> Unit)? = null`;
   const input = fixture({

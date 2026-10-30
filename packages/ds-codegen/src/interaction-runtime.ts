@@ -31,6 +31,27 @@ export function requestInteractionChange<T>(controlled: T | undefined, next: T, 
   notify?.(next);
 }
 
+/** Native activation changes checked state before requesting a controlled value.
+ * Restore the entire native group from the accepted value without changing focus. */
+export function requestNativeRadioChange(event: { currentTarget: EventTarget | null }, request: () => void, readAccepted: () => string | undefined): void {
+  const target = event.currentTarget as HTMLInputElement | null;
+  if (!target || target.tagName?.toLowerCase() !== "input" || target.type !== "radio") {
+    request();
+    return;
+  }
+  const root = target.getRootNode() as Document | ShadowRoot | DocumentFragment;
+  const peers = target.name
+    ? Array.from(root.querySelectorAll<HTMLInputElement>('input[type="radio"]')).filter(radio => radio.name === target.name && radio.form === target.form)
+    : [];
+  if (!peers.includes(target)) peers.push(target);
+  try {
+    request();
+  } finally {
+    const accepted = readAccepted();
+    for (const radio of peers) radio.checked = radio.value === accepted;
+  }
+}
+
 /** Bind one behavior's events without replacing other bindings on the host.
  * The owner disposes this registration before replacing or unmounting it. */
 export function bindInteractionEvents(host: HTMLElement, handlers: Record<string, ((event: Event) => void) | undefined>): () => void {

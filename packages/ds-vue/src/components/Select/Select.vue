@@ -63,10 +63,10 @@ const props = withFsdsMessageDefaults(fsdsProps, fsdsMessages, { triggerLabel: "
 const behavior = useSelect({
   value: () => props.value,
   defaultValue: props.defaultValue,
-  onChange: props.onChange,
+  onChange: (...args) => props.onChange?.(...args),
   open: () => props.open,
   defaultOpen: props.defaultOpen,
-  onOpenChange: props.onOpenChange,
+  onOpenChange: (...args) => props.onOpenChange?.(...args),
   multiple: () => props.multiple,
 });
 function bindInteractionAnchor(element: unknown): void { behavior.anchorRef.value = element instanceof HTMLElement ? element : null; }
@@ -94,8 +94,8 @@ const instanceId = useId();
 </script>
 
 <template>
-  <div :class="classNames" role="combobox" aria-haspopup="listbox" :aria-label="props.triggerLabel" :aria-expanded="behavior.open.value" :aria-disabled="props.disabled" :aria-controls="props.open ? `${instanceId}-content` : undefined" :data-testid="props.dataTestid" data-fsds-component="select" data-fsds-box="">
-    <button :class="'select__trigger'" :ref="bindInteractionAnchor" type="button" @click="() => behavior.setOpen(!behavior.open.value)" @keydown="behavior.handleTriggerKeydown" :disabled="props.disabled" :aria-label="props.triggerLabel" :aria-expanded="behavior.open.value" :aria-controls="props.open ? `${instanceId}-content` : undefined">
+  <div :class="classNames" :data-testid="props.dataTestid" data-fsds-component="select" data-fsds-box="">
+    <button :class="'select__trigger'" :ref="bindInteractionAnchor" type="button" role="combobox" aria-haspopup="listbox" @click="() => behavior.setOpen(!behavior.open.value)" @keydown="behavior.handleTriggerKeydown" :disabled="props.disabled" :aria-label="props.triggerLabel" :aria-expanded="behavior.open.value" :aria-controls="behavior.open.value ? `${instanceId}-content` : undefined">
       <span :class="'select__text'">
         {{ ((props.options || []).filter(option => (Array.isArray(behavior.selection.value) ? behavior.selection.value : [behavior.selection.value]).includes(option.value)).map(option => option.label).join(', ') || props.placeholder) }}
       </span>

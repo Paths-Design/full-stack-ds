@@ -44,8 +44,8 @@ export const shuttleTokenScopes = {
     "shuttle.color.border": {
       name: "shuttle.color.border",
       cssVar: "--fsds-shuttle-color-border",
-      ref: "semantic.color.border.light",
-      fallback: "#b8b8b8",
+      ref: "semantic.surface.border.subtle",
+      fallback: "#d0d0d0",
     },
     "shuttle.size.radius": {
       name: "shuttle.size.radius",

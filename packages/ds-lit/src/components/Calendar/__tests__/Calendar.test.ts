@@ -40,7 +40,7 @@ describe("Calendar — unit", () => {
 
 describe("Calendar — accessibility", () => {
   it("has no unexpected axe violations with default props", async () => {
-    const { element } = await renderElement("fsds-calendar", { "aria-label": "Test Calendar" });
+    const { element } = await renderElement("fsds-calendar", { "ariaLabel": "Test Calendar" });
     const results = await axe(element, componentAxeOptions);
     expect(results.violations.map((v) => v.id)).toEqual([]);
   });

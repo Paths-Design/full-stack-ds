@@ -227,7 +227,7 @@
       "cssProperty": "border-color",
       "selectorKey": "trigger",
       "part": "trigger",
-      "defaultValue": "#b8b8b8",
+      "defaultValue": "#d0d0d0",
       "resolvesTo": "show-more.color.border",
       "editableTargets": [
         "web"
@@ -345,7 +345,7 @@
           "--fsds-show-more-color-background": "var(--fsds-semantic-color-background-secondary, #f7f7f7)",
           "--fsds-show-more-color-foreground-primary": "var(--fsds-semantic-color-foreground-primary, #141414)",
           "--fsds-show-more-color-foreground-secondary": "var(--fsds-semantic-color-foreground-secondary, #474647)",
-          "--fsds-show-more-color-border": "var(--fsds-semantic-color-border-light, #b8b8b8)",
+          "--fsds-show-more-color-border": "var(--fsds-semantic-surface-border-subtle, #d0d0d0)",
           "--fsds-show-more-size-padding": "var(--fsds-core-spacing-size-07, 24px)",
           "--fsds-show-more-size-radius": "var(--fsds-semantic-shape-control-radius-default, 6px)",
           "padding-block-start": "var(--fsds-box-model-padding-block-start)",
@@ -392,7 +392,7 @@
           "background": "none",
           "border-style": "solid",
           "border-width": "1px",
-          "border-color": "var(--fsds-show-more-color-border, #b8b8b8)",
+          "border-color": "var(--fsds-show-more-color-border, #d0d0d0)",
           "padding": "0",
           "cursor": "pointer"
         }

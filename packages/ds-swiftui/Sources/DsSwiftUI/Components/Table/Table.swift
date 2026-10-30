@@ -15,10 +15,17 @@ enum TableTokens {
             "box-model.padding-inline-start": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-padding-inline-start", name: "box-model.padding-inline-start", literal: .string("0")),
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.structure.size.gap", fallback: .string("16px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
-            "table.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-table-color-border", name: "table.color.border", ref: "semantic.color.border.light", fallback: .adaptive(light: "#b8b8b8", dark: "#474647")),
+            "table.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-table-color-border", name: "table.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "table.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-table-size-radius", name: "table.size.radius", ref: "semantic.shape.control.radius.default", fallback: .string("6px")),
         ],
     ]
+}
+enum TableNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "table.color.text", value: "#141414", token: "semantic.color.foreground.primary"), .init(property: "table.text.size", value: "14px", token: "semantic.typography.body.03")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "table.color.text", designSlot: "table.design.root.foreground.color"), .init(property: "font-size", value: "14px", token: "table.text.size", designSlot: "table.design.root.typography.size")]),
+    ]
+    static let omissions: [String] = ["selected: selector outside normalized native grammar"]
 }
 
 /// Emitted through the static-content path: passive div root with a single consumer content region.
@@ -29,6 +36,14 @@ public struct FsdsTable<Content: View>: View {
     }
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        do {
+            return try resolveFsdsNativeTextStyle(TableNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "container")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         @ViewBuilder content: () -> Content
@@ -61,9 +76,12 @@ public struct FsdsTable<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .foregroundStyle(nativeTextStyle.color ?? Color.primary)
     }
 }
 // @generated:end

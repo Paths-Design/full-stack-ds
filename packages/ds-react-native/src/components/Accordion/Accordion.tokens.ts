@@ -53,12 +53,6 @@ export const accordionTokenScopes = {
       ref: "semantic.shape.radius.small",
       fallback: 4,
     },
-    "accordion.text.sizeContent": {
-      name: "accordion.text.sizeContent",
-      cssVar: "--fsds-accordion-text-size-content",
-      ref: "semantic.typography.body.03",
-      fallback: 14,
-    },
   },
 } satisfies ComponentTokenScopes;
 

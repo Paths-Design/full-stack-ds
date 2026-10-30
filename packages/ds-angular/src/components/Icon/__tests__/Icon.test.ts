@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { IconComponent } from "../Icon.component";
 // @generated:end
 
@@ -48,6 +50,34 @@ describe("Icon — unit", () => {
     const fixture = createFixture();
     fixture.componentInstance.size = "xl";
     expect(classTokens(fixture.componentInstance)).toContain("icon--xl");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [IconComponent],
+  template: "<fsds-icon [name]=\"name\" [decorative]=\"decorative\" [ariaLabel]=\"ariaLabel\"></fsds-icon>",
+})
+class IconAxeHost {
+  readonly name = "placeholder";
+  readonly decorative = false;
+  readonly ariaLabel = "Test Icon";
+}
+
+describe("Icon — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [IconAxeHost] });
+    const fixture = TestBed.createComponent(IconAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".icon");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type CalendarMode = "single" | "range";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useCalendar } from "./useCalendar.svelte.js";
@@ -10,7 +16,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type CalendarMode = "single" | "range";
+
 // @generated:end
 
 // @custom:start types
@@ -20,6 +26,8 @@ type CalendarMode = "single" | "range";
 // @generated:start props
 interface Props {
   caption?: string;
+  ariaLabel?: string;
+  ariaLabelledby?: string;
   month?: Date;
   defaultMonth?: Date;
   onMonthChange?: (month: Date) => void;
@@ -35,7 +43,7 @@ interface Props {
   class?: string;
 }
 
-let { caption, month, defaultMonth, onMonthChange, value, defaultValue, onChange, mode = "single", disabled, minDate, maxDate, locale = "en-US", shouldCloseOnSelect = true, class: className }: Props = $props();
+let { caption, ariaLabel, ariaLabelledby, month, defaultMonth, onMonthChange, value, defaultValue, onChange, mode = "single", disabled, minDate, maxDate, locale = "en-US", shouldCloseOnSelect = true, class: className }: Props = $props();
 const CalendarMessages = { previousMonth: "Previous month", nextMonth: "Next month" };
 const fsdsMessages = useFsdsMessages("Calendar", CalendarMessages);
 // @generated:end
@@ -69,7 +77,7 @@ const classes = $derived(
 // @custom:end
 </script>
 
-<div class={classes} role="application" data-fsds-component="calendar" data-fsds-box="">
+<div class={classes} role="group" aria-label={ariaLabel} aria-labelledby={ariaLabelledby} data-fsds-component="calendar" data-fsds-box="">
   <div class={'calendar__header'}>
     <button class={'calendar__nav'} type="button" data-calendar-nav="previous" onclick={dateGrid.previous} aria-label={fsdsMessages.current.previousMonth} aria-disabled={dateGrid.state.previousDisabled}>
       <span aria-hidden="true">‹</span>

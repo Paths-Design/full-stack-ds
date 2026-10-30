@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type StatSize = "sm" | "md" | "lg";
+export type StatTrend = "up" | "down" | "neutral";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,8 +15,7 @@
 // @custom:end
 
 // @generated:start types
-type StatSize = "sm" | "md" | "lg";
-type StatTrend = "up" | "down" | "neutral";
+
 // @generated:end
 
 // @custom:start types

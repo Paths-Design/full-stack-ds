@@ -424,7 +424,7 @@
           "display": "inline-block",
           "color": "var(--fsds-progress-color-text, #474647)",
           "font-size": "0.875em",
-          "margin-left": "var(--fsds-progress-spacing-gap, 2px)"
+          "margin-inline-start": "var(--fsds-progress-spacing-gap, 2px)"
         }
       },
       {

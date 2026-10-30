@@ -48,9 +48,19 @@ enum ListTokens {
             "box-model.gap": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-gap", name: "box-model.gap", ref: "semantic.structure.size.gap", fallback: .string("16px")),
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "list.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-list-color-foreground-primary", name: "list.color.foreground.primary", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
-            "list.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-list-color-border", name: "list.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "list.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-list-color-border", name: "list.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
         ],
     ]
+}
+enum ListNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "list.color.foreground.primary", value: "#141414", token: "semantic.color.foreground.primary"), .init(property: "list.size.sm", value: "14px", token: "semantic.typography.body.03"), .init(property: "list.size.md", value: "16px", token: "semantic.typography.body.02"), .init(property: "list.size.lg", value: "18px", token: "semantic.typography.body.01")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#141414", token: "list.color.foreground.primary", designSlot: "list.design.root.foreground.color")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "sm")], declarations: [.init(property: "font-size", value: "14px", token: "list.size.sm", designSlot: "list.design.condition-f14e3fae918a.typography.size")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "md")], declarations: [.init(property: "font-size", value: "16px", token: "list.size.md", designSlot: "list.design.condition-8791efdf7f0f.typography.size")]),
+        .init(part: "root", predicates: [.init(axis: "size", value: "lg")], declarations: [.init(property: "font-size", value: "18px", token: "list.size.lg", designSlot: "list.design.condition-b1a65b7b2e57.typography.size")]),
+    ]
+    static let omissions: [String] = [".list--spacing-none > * + *: selector outside normalized native grammar", ".list--spacing-sm > * + *: selector outside normalized native grammar", ".list--spacing-md > * + *: selector outside normalized native grammar", ".list--spacing-lg > * + *: selector outside normalized native grammar", ".list--variant-divided > * + *: selector outside normalized native grammar", ".list--variant-spaced > *: selector outside normalized native grammar"]
 }
 
 /// Emitted through the static-content path: passive ul root with a single consumer content region.
@@ -66,6 +76,19 @@ public struct FsdsList<Content: View>: View {
     private let size: ListSize?
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        if let value = `as` { values["as"] = value.rawValue }
+        values["variant"] = variant.rawValue
+        values["marker"] = marker.rawValue
+        if let value = spacing { values["spacing"] = value.rawValue }
+        if let value = size { values["size"] = value.rawValue }
+        do {
+            return try resolveFsdsNativeTextStyle(ListNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "root")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         as: ListElement? = nil,
@@ -108,9 +131,11 @@ public struct FsdsList<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end

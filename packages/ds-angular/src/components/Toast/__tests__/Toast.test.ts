@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach, jest } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { ToastComponent } from "../Toast.component";
 // @generated:end
 
@@ -73,6 +75,32 @@ describe("Toast — Escape dismissal", () => {
   });
 });
 
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [ToastComponent],
+  template: "<fsds-toast [open]=\"open\" aria-label=\"Test Toast\"><span>content</span></fsds-toast>",
+})
+class ToastAxeHost {
+  readonly open = true;
+}
+
+describe("Toast — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [ToastAxeHost] });
+    const fixture = TestBed.createComponent(ToastAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = document.body.querySelector<HTMLElement>(".toast");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
+  });
+});
+
 function classTokens(component: { classes: () => string }): string[] {
   return component.classes().split(/\s+/).filter(Boolean);
 }
@@ -81,7 +109,6 @@ function classTokens(component: { classes: () => string }): string[] {
 // @custom:start tests
 
 import { afterEach } from "@jest/globals";
-import { Component } from "@angular/core";
 
 // Host that projects real `[slot=action]` content, mirroring the
 // Popover/Tooltip fixture-component idiom above: Angular's *ngIf can't

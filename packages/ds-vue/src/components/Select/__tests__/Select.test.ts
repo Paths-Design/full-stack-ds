@@ -110,8 +110,10 @@ describe("Select — uncontrolled defaultOpen first-render", () => {
     const wrapper = mount(Select as Component, {
       props: { defaultOpen: true },
     });
-    // The combobox root's aria-expanded reads `behavior.open.value`.
-    expect(wrapper.attributes("aria-expanded")).toBe("true");
+    // The combobox is the trigger: its aria-expanded reads `behavior.open.value`,
+    // and the wrapper carries no combobox state of its own.
+    expect(wrapper.find(".select__trigger").attributes("aria-expanded")).toBe("true");
+    expect(wrapper.attributes("aria-expanded")).toBeUndefined();
   });
 
   it("renders three default options on first mount with defaultOpen=true", () => {

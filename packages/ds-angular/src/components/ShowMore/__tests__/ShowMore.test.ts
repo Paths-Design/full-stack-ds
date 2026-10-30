@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { ShowMoreComponent } from "../ShowMore.component";
 // @generated:end
 
@@ -28,6 +30,30 @@ describe("ShowMore — unit", () => {
     const host = fixture.nativeElement.querySelector(".show-more__trigger") as HTMLElement;
     host.click();
     expect(seen).toEqual([true]);
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [ShowMoreComponent],
+  template: "<fsds-show-more><span>content</span></fsds-show-more>",
+})
+class ShowMoreAxeHost {}
+
+describe("ShowMore — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [ShowMoreAxeHost] });
+    const fixture = TestBed.createComponent(ShowMoreAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".show-more");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

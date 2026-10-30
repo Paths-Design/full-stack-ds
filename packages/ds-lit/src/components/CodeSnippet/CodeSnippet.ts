@@ -70,7 +70,7 @@ export class CodeSnippetElement extends LitElement {
     .code-snippet {
       --fsds-code-snippet-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
       --fsds-code-snippet-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
-      --fsds-code-snippet-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-code-snippet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-code-snippet-size-padding-inline: var(--fsds-core-spacing-size-02, 2px);
       --fsds-code-snippet-size-padding-block: var(--fsds-core-spacing-size-01, 1px);
       --fsds-code-snippet-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);

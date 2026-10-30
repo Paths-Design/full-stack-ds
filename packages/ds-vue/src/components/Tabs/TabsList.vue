@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // @generated:start imports
 import { ref, computed } from "vue";
+import { isRtl } from "../../primitives/direction/direction.js";
 import { useTabsContext } from "./useTabs.js";
 // @generated:end
 
@@ -31,12 +32,20 @@ const listRef = ref<HTMLElement | null>(null);
 function handleKeyDown(e: KeyboardEvent): void {
   const tabs = ctx.registeredTabs.value;
   if (tabs.length === 0) return;
-  const currentIndex = tabs.indexOf(ctx.activeTab.value);
+  // Arrows move on from the focused tab, which manual activation leaves
+  // apart from the selected one.
+  const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");
+  const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.activeTab.value);
   const isHorizontal = ctx.orientation !== "vertical";
+  // A horizontal list follows the inline direction: the arrow pointing
+  // toward the inline end moves to the next tab.
+  const rtl = isRtl(e.currentTarget);
+  const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";
+  const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";
   let nextIndex = currentIndex;
 
   if (
-    (isHorizontal && e.key === "ArrowRight") ||
+    (isHorizontal && towardEnd) ||
     (!isHorizontal && e.key === "ArrowDown")
   ) {
     e.preventDefault();
@@ -44,7 +53,7 @@ function handleKeyDown(e: KeyboardEvent): void {
       ? (currentIndex + 1) % tabs.length
       : Math.min(currentIndex + 1, tabs.length - 1);
   } else if (
-    (isHorizontal && e.key === "ArrowLeft") ||
+    (isHorizontal && towardStart) ||
     (!isHorizontal && e.key === "ArrowUp")
   ) {
     e.preventDefault();

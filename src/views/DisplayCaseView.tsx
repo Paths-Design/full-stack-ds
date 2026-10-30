@@ -262,7 +262,8 @@ function renderRichSample(name: string, props: Record<string, unknown>): ReactNo
         <DS.Shuttle
           {...props}
           ariaLabel="Assign reviewers"
-          defaultValue={["Design lead", "Accessibility reviewer", "Platform owner"]}
+          options={["Design lead", "Accessibility reviewer", "Platform owner", "Content designer", "Research partner"]}
+          defaultValue={["Design lead", "Accessibility reviewer"]}
         />
       );
     case "Tabs":

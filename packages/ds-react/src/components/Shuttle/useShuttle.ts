@@ -30,7 +30,7 @@ export interface UseShuttleResult {
 export function useShuttle(options: UseShuttleOptions = {}): UseShuttleResult {
   const [selection, setSelection] = useControllableState<string[]>({
     controlled: options.value,
-    defaultValue: options.defaultValue ?? ["alpha","beta","gamma"],
+    defaultValue: options.defaultValue ?? [],
     onChange: options.onValueChange,
   });
 

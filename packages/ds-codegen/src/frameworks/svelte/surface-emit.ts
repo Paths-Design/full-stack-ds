@@ -39,6 +39,7 @@
  * entirely — this is forward-facing replacement, not augmentation.
  */
 import type { ComponentIR, SurfaceIR } from "../../ir.js";
+import { emitSveltePublicTypeModule } from "./public-types.js";
 import {
   anchoredPortalsContentToBody,
   isPartAnchoredSurface,
@@ -67,7 +68,7 @@ export function generateSvelteSurfaceFiles(ir: ComponentIR): SvelteSurfaceFiles 
   }
   const policy = resolveAnchoredSurfacePolicy(surface);
   return {
-    rootSfc: emitRootSfc(ir, surface, policy),
+    rootSfc: emitSveltePublicTypeModule(ir) + emitRootSfc(ir, surface, policy),
     triggerSfc: emitTriggerSfc(ir, surface),
     contentSfc: emitContentSfc(ir, surface, policy),
     composable: emitComposable(ir, surface, policy),
@@ -82,9 +83,6 @@ function emitRootSfc(
   const name = ir.name;
   const cssPrefix = ir.cssPrefix;
   const placementValues = ir.variants["placement"];
-  const placementTypeAlias = placementValues
-    ? `type ${name}Placement = ${placementValues.map((v) => `"${v}"`).join(" | ")};\n`
-    : "";
   const positioningEnabled = surface.positioning?.strategy === "anchored";
 
   // Policy-derived consumer-facing dismissal-mode flags
@@ -112,7 +110,7 @@ function emitRootSfc(
     `// @custom:end`,
     ``,
     `// @generated:start types`,
-    placementTypeAlias.trimEnd(),
+    "",
     `// @generated:end`,
     ``,
     `// @custom:start types`,

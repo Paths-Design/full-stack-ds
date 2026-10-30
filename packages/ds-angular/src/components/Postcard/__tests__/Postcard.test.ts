@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { PostcardComponent } from "../Postcard.component";
 // @generated:end
 
@@ -45,6 +47,35 @@ describe("Postcard — unit", () => {
     const fixture = createFixture();
     fixture.componentInstance.type = "audio";
     expect(classTokens(fixture.componentInstance)).toContain("postcard--audio");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [PostcardComponent],
+  template: "<fsds-postcard [postId]=\"postId\" [author]=\"author\" [timestamp]=\"timestamp\" [stats]=\"stats\" aria-label=\"Test Postcard\"><span>content</span></fsds-postcard>",
+})
+class PostcardAxeHost {
+  readonly postId = "placeholder";
+  readonly author = {};
+  readonly timestamp = "placeholder";
+  readonly stats = {};
+}
+
+describe("Postcard — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [PostcardAxeHost] });
+    const fixture = TestBed.createComponent(PostcardAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".postcard");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

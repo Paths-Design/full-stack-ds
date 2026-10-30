@@ -23,7 +23,7 @@ enum StatusTokens {
             "box-model.min-height": FsdsComponentTokenDefinition(cssVar: "--fsds-box-model-min-height", name: "box-model.min-height", literal: .string("0")),
             "status.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-status-color-background", name: "status.color.background", ref: "semantic.color.background.secondary", fallback: .adaptive(light: "#f7f7f7", dark: "#313131")),
             "status.color.foreground.primary": FsdsComponentTokenDefinition(cssVar: "--fsds-status-color-foreground-primary", name: "status.color.foreground.primary", ref: "semantic.color.foreground.secondary", fallback: .adaptive(light: "#474647", dark: "#a0a0a1")),
-            "status.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-status-color-border", name: "status.color.border", ref: "semantic.color.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
+            "status.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-status-color-border", name: "status.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "status.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-status-size-radius", name: "status.size.radius", ref: "semantic.shape.control.radius.pill", fallback: .string("9999px")),
             "status.size.border": FsdsComponentTokenDefinition(cssVar: "--fsds-status-size-border", name: "status.size.border", ref: "semantic.shape.control.border.defaultWidth", fallback: .string("1px")),
         ],
@@ -54,6 +54,19 @@ enum StatusTokens {
         ],
     ]
 }
+enum StatusNativeTextRules {
+    static let rules: [FsdsNativeTextRule] = [
+        .init(part: "root", predicates: [], declarations: [.init(property: "status.color.foreground.primary", value: "#474647", token: "semantic.color.foreground.secondary"), .init(property: "status.size.fontSize", value: "12px", token: "semantic.glyph.badge.size.md.fontSize"), .init(property: "status.text.weight", value: "500", token: "semantic.typography.font.weight.medium")]),
+        .init(part: "root", predicates: [], declarations: [.init(property: "color", value: "#474647", token: "status.color.foreground.primary", designSlot: "status.design.root.foreground.color"), .init(property: "font-size", value: "12px", token: "status.size.fontSize", designSlot: "status.design.root.typography.size"), .init(property: "font-weight", value: "500", token: "status.text.weight", designSlot: "status.design.root.typography.weight")]),
+        .init(part: "label", predicates: [], declarations: [.init(property: "color", value: "#474647", token: "status.color.foreground.primary", designSlot: "status.design.label.foreground.color")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "info")], declarations: [.init(property: "status.color.foreground.primary", value: "#013ab0", token: "semantic.color.foreground.on.info.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "success")], declarations: [.init(property: "status.color.foreground.primary", value: "#2c4f09", token: "semantic.color.foreground.on.success.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "warning")], declarations: [.init(property: "status.color.foreground.primary", value: "#6c3a00", token: "semantic.color.foreground.on.warning.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "danger")], declarations: [.init(property: "status.color.foreground.primary", value: "#900909", token: "semantic.color.foreground.on.danger.subtle")]),
+        .init(part: "root", predicates: [.init(axis: "status", value: "error")], declarations: [.init(property: "status.color.foreground.primary", value: "#900909", token: "semantic.color.foreground.on.danger.subtle")]),
+    ]
+    static let omissions: [String] = []
+}
 
 /// Emitted through the static-content path: passive span root with a single consumer content region.
 public struct Status<Content: View>: View {
@@ -63,6 +76,15 @@ public struct Status<Content: View>: View {
     private let status: StatusIntent?
     private let content: Content
     @Environment(\.fsdsTheme) private var fsdsTheme
+    private var nativeTextStyle: FsdsResolvedNativeTextStyle {
+        var values: [String: String] = [:]
+        if let value = status { values["status"] = value.rawValue }
+        do {
+            return try resolveFsdsNativeTextStyle(StatusNativeTextRules.rules, theme: fsdsTheme, variants: values, part: "label")
+        } catch {
+            preconditionFailure(String(describing: error))
+        }
+    }
 
     public init(
         status: StatusIntent? = nil,
@@ -100,11 +122,13 @@ public struct Status<Content: View>: View {
 
     public var body: some View {
         content
+            .font(nativeTextStyle.fontSize.map { Font.system(size: $0) })
+            .fontWeight(nativeTextStyle.fontWeight)
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)
             .background(background)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .foregroundStyle(foreground)
+            .foregroundStyle(nativeTextStyle.color ?? foreground)
     }
 }
 // @generated:end

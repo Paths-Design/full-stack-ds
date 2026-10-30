@@ -394,13 +394,13 @@
         "web"
       ]
     },
-    "right": {
+    "inset-inline-end": {
       "literal": "-1px",
       "platforms": [
         "web"
       ]
     },
-    "left": {
+    "inset-inline-start": {
       "literal": "auto",
       "platforms": [
         "web"

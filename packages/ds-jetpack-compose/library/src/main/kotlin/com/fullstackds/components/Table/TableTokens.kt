@@ -34,6 +34,12 @@ val tableTokenScopes: ComponentTokenScopes = mapOf(
             cssVar = "--fsds-box-model-min-height",
             literal = "0",
         ),
+        "table.color.border" to ComponentTokenDefinition(
+            name = "table.color.border",
+            cssVar = "--fsds-table-color-border",
+            ref = "semantic.surface.border.subtle",
+            fallback = "#d0d0d0",
+        ),
         "table.size.radius" to ComponentTokenDefinition(
             name = "table.size.radius",
             cssVar = "--fsds-table-size-radius",

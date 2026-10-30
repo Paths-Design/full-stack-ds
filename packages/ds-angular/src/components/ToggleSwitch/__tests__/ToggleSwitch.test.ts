@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { ToggleSwitchComponent } from "../ToggleSwitch.component";
 // @generated:end
 
@@ -46,6 +48,32 @@ describe("ToggleSwitch — unit", () => {
     const fixture = TestBed.createComponent(ToggleSwitchComponent);
     fixture.componentInstance.size = "large";
     expect(classTokens(fixture.componentInstance)).toContain("toggle-switch--large");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [ToggleSwitchComponent],
+  template: "<fsds-toggle-switch [ariaLabel]=\"ariaLabel\"></fsds-toggle-switch>",
+})
+class ToggleSwitchAxeHost {
+  readonly ariaLabel = "Test ToggleSwitch";
+}
+
+describe("ToggleSwitch — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [ToggleSwitchAxeHost] });
+    const fixture = TestBed.createComponent(ToggleSwitchAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".toggle-switch");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

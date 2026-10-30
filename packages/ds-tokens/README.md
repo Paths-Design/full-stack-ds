@@ -1,8 +1,28 @@
 # @full-stack-ds/tokens
 
-Design-token source and build pipeline for the Full Stack Design System.
+Design tokens as CSS custom properties and resolved DTCG JSON.
 
-## What this package owns
+## Package consumption
+
+```ts
+import '@full-stack-ds/tokens/tokens.css';
+import tokens from '@full-stack-ds/tokens/generated/resolved.tokens.json' with { type: 'json' };
+```
+
+The stylesheet includes brand and density variants selected with `data-brand`
+and `data-density`. Framework component styles are separate imports from the
+component package. CSS imports carry a side-effect declaration for strict
+TypeScript consumers. JSON imports require JSON module support in the consumer.
+
+The npm payload contains the stylesheet and resolved JSON; token source and
+build tools belong to the repository. It exposes no package-root JavaScript
+module, component stylesheet directory, or separate brand files.
+
+## License
+
+MIT, copyright DesignPaths, LLC. See LICENSE.
+
+## Repository authoring
 
 - **DTCG 1.0 token sources** under `src/` — semantic-domain shards (`color/`, `motion/`, `spacing/`, …) plus `brands/` and `density/` variant sources. The authored input.
 - **Build pipeline** under `build/` — validates the shards against the W3C DTCG schema, composes the graph, and emits CSS.
@@ -30,11 +50,7 @@ The emitted `generated/tokens.css` declares cascade layers in this order:
 
 Brand variants are emitted as `@layer brand [data-brand="<name>"] { ... }`. Density variants as `@layer density [data-density="<name>"] { ... }`. Brand-add cost is O(1): one file in `brands/`, nothing else changes.
 
-## Plan
-
-The doctrinal architecture stance lives at [`docs/architecture/tokens-architecture.md`](../../docs/architecture/tokens-architecture.md).
-
-The original seven-step rollout plan and its falsification conditions are in `docs/internal/tokens-workstream-plan.md` — **machine-local** (`docs/internal/` is gitignored, per-contributor), so that path is absent in a fresh clone and is not a substitute for the architecture doc above.
+The architecture is documented in the [repository token guide](https://github.com/Paths-Design/full-stack-ds/blob/main/docs/architecture/tokens-architecture.md).
 
 ## Relationship to other packages
 

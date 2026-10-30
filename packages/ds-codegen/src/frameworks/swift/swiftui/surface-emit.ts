@@ -16,6 +16,7 @@ import { resolveSurfaceAutoDismiss } from "../../../semantics.js";
  * The component path refuses every surface kind; all surfaces route here.
  */
 import type { ComponentIR } from "../../../ir.js";
+import { conventionalProp, hasConventionalProp } from "../../native-emission-class.js";
 import { partTextSource, type NativeTextSource } from "../../native-messages.js";
 import { swiftMessage, swiftStringProp, withSwiftMessagesEnvironment, type SwiftStringProp } from "./messages.js";
 import {
@@ -91,7 +92,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   );
   // The search prompt is the placeholder prop: an explicit value, then its
   // message (catalog-resolved) or authored literal; with no prop, no prompt.
-  const placeholder = searchChannel && ir.styledProps.some((p) => p.safeName === "placeholder")
+  const placeholder = searchChannel && hasConventionalProp(ir, "placeholder")
     ? swiftStringProp(ir, "placeholder", INDENT)
     : null;
   const searchPrompt = placeholder
@@ -307,13 +308,13 @@ function emitAnchoredSurface(ir: ComponentIR): string {
 
   const exportName = swiftExportName(ir.name);
   const chrome = resolveChrome(ir);
-  const placementType = ir.styledProps.find((p) => p.safeName === "placement")
+  const placementType = conventionalProp(ir, "placement")
     ?.typeRefs[0];
   const placementValues = placementType
     ? (ir.definedTypes[placementType]?.values ?? [])
     : [];
   const defaultPlacement =
-    ir.styledProps.find((p) => p.safeName === "placement")?.defaultExpr
+    conventionalProp(ir, "placement")?.defaultExpr
       ?.replace(/^["']|["']$/g, "") ?? placementValues[0];
   for (const value of placementValues) {
     if (!PLACEMENT_EDGE[value]) {
@@ -323,7 +324,7 @@ function emitAnchoredSurface(ir: ComponentIR): string {
       );
     }
   }
-  const hasDisabled = ir.styledProps.some((p) => p.safeName === "disabled");
+  const hasDisabled = hasConventionalProp(ir, "disabled");
   const opensOnClick = ir.surface?.openTriggers.includes("click") ?? false;
   const opensOnHover = ir.surface?.openTriggers.includes("hover") ?? false;
   if (!opensOnClick && !opensOnHover) {
@@ -630,7 +631,7 @@ function emitCoachmarkSurface(ir: ComponentIR): string {
   const hasOnComplete = hasConventionalPropEmit(ir, "onComplete");
   // Step count from the contract's authored steps default (array length);
   // completion is reaching the LAST index, not a hardcoded threshold.
-  const stepsProp = ir.styledProps.find((p) => p.safeName === "steps");
+  const stepsProp = conventionalProp(ir, "steps");
   const authoredStepCount = Array.isArray(stepsProp?.defaultExpr)
     ? (stepsProp!.defaultExpr as unknown[]).length
     : typeof stepsProp?.defaultExpr === "string"
@@ -805,7 +806,7 @@ function domSlotNamesEmit(ir: ComponentIR): string[] {
 }
 
 function hasConventionalPropEmit(ir: ComponentIR, name: string): boolean {
-  return ir.styledProps.some((p) => p.safeName === name);
+  return hasConventionalProp(ir, name);
 }
 
 function capitalize(value: string): string {

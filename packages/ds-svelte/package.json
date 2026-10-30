@@ -1,7 +1,6 @@
 {
   "name": "@full-stack-ds/svelte",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "description": "Svelte 5 implementation of Full Stack DS (Stack component + generated components)",
   "svelte": "./dist/index.js",
@@ -17,17 +16,28 @@
       "svelte": "./dist/primitives/index.js",
       "default": "./dist/primitives/index.js"
     },
-    "./styles.css": "./dist/svelte.css"
+    "./styles.css": {
+      "types": "./types/styles-css.d.ts",
+      "default": "./dist/svelte.css"
+    }
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/__tests__/**",
+    "!dist/**/*.test.*",
+    "!dist/**/*.spec.*",
+    "types",
+    "LICENSE",
+    "README.md",
+    "THIRD_PARTY_NOTICES"
   ],
   "scripts": {
     "typecheck": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run -c vitest.config.ts",
     "test:watch": "vitest -c vitest.config.ts",
-    "build": "svelte-package -i src -o dist && node scripts/build-styles.mjs",
-    "build:watch": "svelte-package -i src -o dist -w"
+    "build": "svelte-package -i src -o dist --tsconfig ./tsconfig.build.json && node ../../scripts/normalize-package-declarations.mjs . && node scripts/build-styles.mjs",
+    "build:watch": "svelte-package -i src -o dist --tsconfig ./tsconfig.build.json -w",
+    "prepack": "pnpm run build"
   },
   "peerDependencies": {
     "svelte": ">=5.0.0"
@@ -44,5 +54,19 @@
   },
   "dependencies": {
     "@full-stack-ds/iconography": "workspace:*"
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paths-Design/full-stack-ds.git",
+    "directory": "packages/ds-svelte"
+  },
+  "homepage": "https://github.com/Paths-Design/full-stack-ds/tree/main/packages/ds-svelte#readme",
+  "bugs": {
+    "url": "https://github.com/Paths-Design/full-stack-ds/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

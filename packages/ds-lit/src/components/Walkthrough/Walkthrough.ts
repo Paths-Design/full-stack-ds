@@ -76,7 +76,7 @@ export class WalkthroughElement extends LitElement {
 
     .walkthrough {
       --fsds-walkthrough-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-walkthrough-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-walkthrough-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-walkthrough-surface-radius: var(--fsds-semantic-shape-radius-large, 16px);
       --fsds-walkthrough-surface-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
       --fsds-walkthrough-surface-padding: var(--fsds-core-spacing-size-08, 32px);
@@ -165,7 +165,7 @@ export class WalkthroughElement extends LitElement {
       color: var(--fsds-walkthrough-design-skip-foreground-color, var(--fsds-walkthrough-button-secondary-color, #474647));
       cursor: pointer;
       padding: var(--fsds-walkthrough-design-skip-spacing-padding, 0);
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .walkthrough__prev {
@@ -396,7 +396,7 @@ export class WalkthroughContentElement extends LitElement {
 
     .walkthrough {
       --fsds-walkthrough-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-walkthrough-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-walkthrough-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-walkthrough-surface-radius: var(--fsds-semantic-shape-radius-large, 16px);
       --fsds-walkthrough-surface-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
       --fsds-walkthrough-surface-padding: var(--fsds-core-spacing-size-08, 32px);
@@ -485,7 +485,7 @@ export class WalkthroughContentElement extends LitElement {
       color: var(--fsds-walkthrough-design-skip-foreground-color, var(--fsds-walkthrough-button-secondary-color, #474647));
       cursor: pointer;
       padding: var(--fsds-walkthrough-design-skip-spacing-padding, 0);
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .walkthrough__prev {
@@ -592,7 +592,7 @@ export class WalkthroughTitleElement extends LitElement {
 
     .walkthrough {
       --fsds-walkthrough-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-walkthrough-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-walkthrough-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-walkthrough-surface-radius: var(--fsds-semantic-shape-radius-large, 16px);
       --fsds-walkthrough-surface-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
       --fsds-walkthrough-surface-padding: var(--fsds-core-spacing-size-08, 32px);
@@ -681,7 +681,7 @@ export class WalkthroughTitleElement extends LitElement {
       color: var(--fsds-walkthrough-design-skip-foreground-color, var(--fsds-walkthrough-button-secondary-color, #474647));
       cursor: pointer;
       padding: var(--fsds-walkthrough-design-skip-spacing-padding, 0);
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .walkthrough__prev {
@@ -788,7 +788,7 @@ export class WalkthroughDescriptionElement extends LitElement {
 
     .walkthrough {
       --fsds-walkthrough-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
-      --fsds-walkthrough-surface-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+      --fsds-walkthrough-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
       --fsds-walkthrough-surface-radius: var(--fsds-semantic-shape-radius-large, 16px);
       --fsds-walkthrough-surface-shadow: var(--fsds-semantic-elevation-surface-floating, 0px 2px 4px #0000000f, 0px 4px 8px #0000001a);
       --fsds-walkthrough-surface-padding: var(--fsds-core-spacing-size-08, 32px);
@@ -877,7 +877,7 @@ export class WalkthroughDescriptionElement extends LitElement {
       color: var(--fsds-walkthrough-design-skip-foreground-color, var(--fsds-walkthrough-button-secondary-color, #474647));
       cursor: pointer;
       padding: var(--fsds-walkthrough-design-skip-spacing-padding, 0);
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .walkthrough__prev {

@@ -1,3 +1,9 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type TooltipPlacement = "top" | "bottom" | "left" | "right" | "auto";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import { useTooltip, provideTooltipContext, provideTooltipPlacement } from "./useTooltip.svelte.js";
@@ -6,7 +12,7 @@ import { useTooltip, provideTooltipContext, provideTooltipPlacement } from "./us
 
 // @custom:end
 // @generated:start types
-type TooltipPlacement = "top" | "bottom" | "left" | "right" | "auto";
+
 // @generated:end
 // @custom:start types
 

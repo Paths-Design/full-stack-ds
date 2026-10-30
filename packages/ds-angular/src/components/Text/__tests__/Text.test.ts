@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { TextComponent } from "../Text.component";
 // @generated:end
 
@@ -180,6 +182,30 @@ describe("Text — unit", () => {
     const fixture = TestBed.createComponent(TextComponent);
     fixture.componentInstance.transform = "capitalize";
     expect(classTokens(fixture.componentInstance)).toContain("text--capitalize");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [TextComponent],
+  template: "<fsds-text><span>content</span></fsds-text>",
+})
+class TextAxeHost {}
+
+describe("Text — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [TextAxeHost] });
+    const fixture = TestBed.createComponent(TextAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".text");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

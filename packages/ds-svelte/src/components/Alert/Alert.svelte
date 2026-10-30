@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type AlertIntent = "info" | "success" | "warning" | "danger";
+export type AlertLevel = "inline" | "section" | "page";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import Button from "../Button/Button.svelte";
@@ -9,8 +16,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type AlertIntent = "info" | "success" | "warning" | "danger";
-type AlertLevel = "inline" | "section" | "page";
+
 // @generated:end
 
 // @custom:start types

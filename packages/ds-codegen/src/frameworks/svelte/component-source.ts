@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -83,7 +84,8 @@ function svelteTableAttrBinding(attr: NativeTableAttr): string {
       return `{${attr}}`; // id, style, scope
   }
 }
-import { emitNonReactTypeAliases, translateNonReactType } from "../../non-react-types.js";
+import { translateNonReactType } from "../../non-react-types.js";
+import { SVELTE_SKIP_PROPS, sveltePublicTypeAliases, emitSveltePublicTypeModule } from "./public-types.js";
 import { resolveComponentRefImports } from "../component-ref-imports.js";
 import { renderSections, type Section } from "../../preserve.js";
 import {
@@ -110,17 +112,16 @@ import {
   iconGlyphSizeHintsLiteral,
 } from "../icon-glyph.js";
 
-// Props the Svelte emitter handles natively: `class` via `class: className`
-// destructuring, `children` via `import('svelte').Snippet`, `style` passthrough.
-// `className` is the React convention for `class`; we translate it to `class`.
-const SVELTE_SKIP_PROPS = new Set(["class", "style", "className", "children"]);
-
 /**
  * Emit a Svelte 5 Single File Component for a `ComponentIR`. The script
  * block is partitioned into the same marker regions React and Vue use
  * (imports/types/props/classes/trailing); template is a simple block.
  */
 export function generateSvelteComponentSource(ir: ComponentIR): string {
+  return emitSveltePublicTypeModule(ir) + generateSvelteInstanceSource(ir);
+}
+
+function generateSvelteInstanceSource(ir: ComponentIR): string {
   if (ir.messages.length > 0 && (isDisclosureContainer(ir) || isCompoundStateContainer(ir))) {
     throw new Error(`[MESSAGE_UNLOWERED] ${ir.name}: compound-state Svelte components do not resolve contract messages`);
   }
@@ -150,7 +151,7 @@ export function generateSvelteComponentSource(ir: ComponentIR): string {
     blank(),
     ...(typesBody
       ? [
-          { kind: "generated" as const, id: "types", body: typesBody },
+          { kind: "generated" as const, id: "types", body: "" },
           blank(),
           { kind: "custom" as const, id: "types", body: "" },
           blank(),
@@ -178,10 +179,7 @@ export function generateSvelteComponentSource(ir: ComponentIR): string {
 // ---------------------------------------------------------------------------
 
 function generateTypeAliases(ir: ComponentIR): string {
-  return emitNonReactTypeAliases({
-    ...ir,
-    styledProps: ir.styledProps.filter((prop) => !SVELTE_SKIP_PROPS.has(prop.name)),
-  }, { keyword: "type" }).join("\n");
+  return sveltePublicTypeAliases(ir).join("\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -371,24 +369,7 @@ function generateSvelteCompoundStateRootSource(ir: ComponentIR): string {
   ].join("\n");
 
   // Type aliases for variant props
-  const typeLines: string[] = [];
-  const emittedTypes = new Set<string>();
-  for (const p of ir.styledProps) {
-    if (SVELTE_SKIP_PROPS.has(p.name)) continue;
-    for (const ref of p.typeRefs) {
-      if (emittedTypes.has(ref)) continue;
-      const def = ir.definedTypes[ref];
-      if (!def) continue;
-      if (def.kind === "union" && def.values) {
-        typeLines.push(`type ${ref} = ${def.values.map((v) => `"${v}"`).join(" | ")};`);
-        emittedTypes.add(ref);
-      } else if (def.kind === "alias" && def.alias) {
-        typeLines.push(`type ${ref} = ${svelteType(def.alias)};`);
-        emittedTypes.add(ref);
-      }
-    }
-  }
-  const typesBody = typeLines.join("\n");
+  const typesBody = generateTypeAliases(ir);
 
   // Props interface — styledProps already include value/defaultValue/onValueChange/idBase
   // for Tabs, so we just iterate them. Then add class, data-testid, children.
@@ -507,7 +488,7 @@ function generateSvelteCompoundStateRootSource(ir: ComponentIR): string {
     blank(),
     ...(typesBody
       ? [
-          { kind: "generated" as const, id: "types", body: typesBody },
+          { kind: "generated" as const, id: "types", body: "" },
           blank(),
           { kind: "custom" as const, id: "types", body: "" },
           blank(),
@@ -583,26 +564,6 @@ function generateSvelteDisclosureStateRootSource(ir: ComponentIR): string {
     `import { toggleInteractionItem } from "../../primitives/interaction.js";`,
     `import { use${name}, provide${name}Context } from "./use${name}.svelte.js";`,
   ].join("\n");
-
-  // Variant type aliases
-  const typeLines: string[] = [];
-  const emittedTypes = new Set<string>();
-  for (const p of ir.styledProps) {
-    if (SVELTE_SKIP_PROPS.has(p.name)) continue;
-    for (const ref of p.typeRefs) {
-      if (emittedTypes.has(ref)) continue;
-      const def = ir.definedTypes[ref];
-      if (!def) continue;
-      if (def.kind === "union" && def.values) {
-        typeLines.push(`type ${ref} = ${def.values.map((v) => `"${v}"`).join(" | ")};`);
-        emittedTypes.add(ref);
-      } else if (def.kind === "alias" && def.alias) {
-        typeLines.push(`type ${ref} = ${svelteType(def.alias)};`);
-        emittedTypes.add(ref);
-      }
-    }
-  }
-  const typesBody = typeLines.join("\n");
 
   const propsLines: string[] = [`interface Props {`];
   for (const p of ir.styledProps) {
@@ -726,7 +687,7 @@ function generateSvelteDisclosureStateRootSource(ir: ComponentIR): string {
     blank(),
     { kind: "custom", id: "imports", body: "" },
     blank(),
-    { kind: "generated", id: "types", body: [counterPrelude, typesBody].filter((s) => s.length > 0).join("\n\n") },
+    { kind: "generated", id: "types", body: counterPrelude },
     blank(),
     { kind: "custom", id: "types", body: "" },
     blank(),
@@ -1002,6 +963,7 @@ export function generateSvelteCompoundStateParts(
   const listSource = [
     `<script lang="ts">`,
     `// @generated:start imports`,
+    `import { isRtl } from "../../primitives/direction/direction.js";`,
     `import { use${name}Context } from "./use${name}.svelte.js";`,
     `// @generated:end`,
     ``,
@@ -1031,12 +993,20 @@ export function generateSvelteCompoundStateParts(
     `function handleKeyDown(e: KeyboardEvent): void {`,
     `  const tabs = ctx.registeredTabs;`,
     `  if (tabs.length === 0) return;`,
-    `  const currentIndex = tabs.indexOf(ctx.${channelName});`,
+    `  // Arrows move on from the focused tab, which manual activation leaves`,
+    `  // apart from the selected one.`,
+    `  const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");`,
+    `  const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.${channelName});`,
     `  const isHorizontal = ctx.orientation !== "vertical";`,
+    `  // A horizontal list follows the inline direction: the arrow pointing`,
+    `  // toward the inline end moves to the next tab.`,
+    `  const rtl = isRtl(e.currentTarget);`,
+    `  const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";`,
+    `  const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";`,
     `  let nextIndex = currentIndex;`,
     ``,
     `  if (`,
-    `    (isHorizontal && e.key === "ArrowRight") ||`,
+    `    (isHorizontal && towardEnd) ||`,
     `    (!isHorizontal && e.key === "ArrowDown")`,
     `  ) {`,
     `    e.preventDefault();`,
@@ -1044,7 +1014,7 @@ export function generateSvelteCompoundStateParts(
     `      ? (currentIndex + 1) % tabs.length`,
     `      : Math.min(currentIndex + 1, tabs.length - 1);`,
     `  } else if (`,
-    `    (isHorizontal && e.key === "ArrowLeft") ||`,
+    `    (isHorizontal && towardStart) ||`,
     `    (!isHorizontal && e.key === "ArrowUp")`,
     `  ) {`,
     `    e.preventDefault();`,
@@ -1426,6 +1396,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
 
   const importLines: string[] = [];
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (ir.compositeControl?.nativeRadio) importLines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (hasHook) {
     importLines.push(`import { use${ir.name} } from "./use${ir.name}.svelte.js";`);
   }
@@ -1500,6 +1471,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
   }
   if (ir.pagedSet) importLines.push(`import { createReactivePagedSet } from "../../primitives/paging.svelte.js";`);
   if (ir.dateGrid) importLines.push(`import { createReactiveDateGrid } from "../../primitives/date-grid.svelte.js";`);
+  if (ir.transfer) importLines.push(`import { createReactiveTransferList } from "../../primitives/transfer-list.svelte.js";`);
   if (ir.motion.sequence) importLines.push(`import { createSequenceBudget } from "../../primitives/sequence-budget.js";`);
   importLines.push(...svelteMessageImports(ir));
   const importsBody = importLines.join("\n");
@@ -1620,6 +1592,9 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
       `  count: ${page.countProp ? jsAccessorFor(page.countProp) : "undefined"}, disabled: ${page.disabledProp ? jsAccessorFor(page.disabledProp) : "false"}, onIndexChange: ${hookVar}.set${capitalizeSvelte(page.channel)} }); });`,
       `$effect(() => () => pagedSet.destroy());`);
   }
+  if (ir.transfer) {
+    hookLines.push(`const transfer = createReactiveTransferList(() => (${transferOptions(ir.transfer, jsAccessorFor, (channel) => `${hookVar}.${channel}`, (channel) => `${hookVar}.set${capitalizeSvelte(channel)}`)}));`);
+  }
   if (ir.dateGrid) {
     hookLines.push(`const dateGrid = createReactiveDateGrid(() => (${dateGridOptions(ir.dateGrid, jsAccessorFor, (channel) => `${hookVar}.${channel}`, (channel) => `${hookVar}.set${capitalizeSvelte(channel)}`)}));`);
   }
@@ -1713,7 +1688,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     fieldAssocLines.push(
       `const fieldAssociationValue = $derived({`,
       `  controlId: ${svelteGeneratedIdExpr(assocProvides.controlSlug)},`,
-      `  describedBy: ${svelteIdRefListExpr(assocProvides.describedBy, undefined)},`,
+      `  describedBy: ${svelteIdRefListExpr(assocProvides.describedBy, undefined, hookVar)},`,
       `});`,
       `provideFieldAssociation(() => fieldAssociationValue);`,
     );
@@ -1765,7 +1740,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     blank(),
     ...(typesBody
       ? [
-          { kind: "generated" as const, id: "types", body: typesBody },
+          { kind: "generated" as const, id: "types", body: "" },
           blank(),
           { kind: "custom" as const, id: "types", body: "" },
           blank(),
@@ -1900,11 +1875,14 @@ function svelteGeneratedIdExpr(slug: string): string {
   return `\`\${instanceId}-${slug}\``;
 }
 
-function svelteIdRefGuardExpr(ref: IdRefIR): string | undefined {
+function svelteIdRefGuardExpr(ref: IdRefIR, hookVar: string): string | undefined {
   const conds: string[] = [];
   if (ref.slotGate) conds.push(jsAccessorFor(ref.slotGate));
   if (ref.when) {
-    const accessor = jsAccessorFor(ref.when.prop);
+    // A channel gate reads the channel's effective value, as an `if` guard does.
+    const accessor = ref.when.channel
+      ? `${hookVar}.${ref.when.channel}`
+      : jsAccessorFor(ref.when.prop);
     if (ref.when.op === "eq") {
       conds.push(
         `${accessor} ${ref.when.negated ? "!==" : "==="} '${ref.when.value}'`,
@@ -1919,15 +1897,16 @@ function svelteIdRefGuardExpr(ref: IdRefIR): string | undefined {
 function svelteIdRefListExpr(
   refs: IdRefIR[],
   passthroughProp: string | undefined,
+  hookVar: string,
 ): string {
   if (refs.length === 0 && !passthroughProp) return "undefined";
   if (refs.length === 1 && !passthroughProp) {
-    const guard = svelteIdRefGuardExpr(refs[0]);
+    const guard = svelteIdRefGuardExpr(refs[0], hookVar);
     const id = svelteGeneratedIdExpr(refs[0].slug);
     return guard ? `${guard} ? ${id} : undefined` : id;
   }
   const parts = refs.map((ref) => {
-    const guard = svelteIdRefGuardExpr(ref);
+    const guard = svelteIdRefGuardExpr(ref, hookVar);
     const id = svelteGeneratedIdExpr(ref.slug);
     return guard ? `${guard} ? ${id} : null` : id;
   });
@@ -2077,6 +2056,11 @@ function renderSvelteDomNode(
     (node.componentInstance?.events ?? []).map((e) => [e.name, e]),
   );
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
+      const arg = renderSvelteBindingValue(expr.arg, ctx);
+      if (arg !== null) attrs.push(`onchange={(e) => requestNativeRadioChange(e, () => ${ctx.hookVar}.set${capitalizeSvelte(node.nativeRadioChannel)}(${arg}), () => ${ctx.hookVar}.${node.nativeRadioChannel})}`);
+      continue;
+    }
     const activation = eventName === "click" ? node.activation : undefined;
     const disclosure = activation?.channel;
     if (disclosure) {
@@ -2151,7 +2135,7 @@ function renderSvelteDomNode(
   }
   for (const refAttr of node.idRefAttrs) {
     attrs.push(
-      `${refAttr.attribute}={${svelteIdRefListExpr(refAttr.refs, refAttr.passthroughProp)}}`,
+      `${refAttr.attribute}={${svelteIdRefListExpr(refAttr.refs, refAttr.passthroughProp, ctx.hookVar)}}`,
     );
   }
 
@@ -2540,6 +2524,7 @@ function renderSvelteTextChildExpression(
   switch (expr.kind) {
     case "paged": return `{${pagedBindingExpression(expr, "pagedSet")}}`;
     case "dateGrid": return `{${dateGridBindingExpression(expr, "dateGrid")}}`;
+    case "transfer": return `{${transferBindingExpression(expr, "transfer")}}`;
     case "prop":
       return `{${appendPath(sveltePropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -2605,6 +2590,7 @@ function renderSvelteBindingValue(
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "dateGrid": return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+    case "transfer": return transferBindingExpression(expr, "transfer", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(sveltePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -2692,6 +2678,7 @@ function renderSvelteBinding(
   switch (expr.kind) {
     case "paged": return `${attr}={${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "dateGrid": return `${attr}={${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
+    case "transfer": return `${attr}={${transferBindingExpression(expr, "transfer", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `${attr}={${appendPath(sveltePropAccessor(expr.prop, ctx), expr.path)}}`;
     case "literal":
@@ -2865,6 +2852,7 @@ function renderSvelteEventHandlerExpr(
 ): string | null {
   if (expr.kind === "paged") return pagedBindingExpression(expr, "pagedSet");
   if (expr.kind === "dateGrid") return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+  if (expr.kind === "transfer") return transferBindingExpression(expr, "transfer", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
   if (expr.kind === "prop") return sveltePropAccessor(expr.prop, ctx);
   if (expr.kind === "channel" && expr.forwardValue) {
     const channel = ctx.channelByName.get(expr.channel);
@@ -2886,6 +2874,7 @@ function renderSvelteEvent(
   switch (expr.kind) {
     case "paged": return `${svelteEventAttr}={${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "dateGrid": return `${svelteEventAttr}={${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
+    case "transfer": return `${svelteEventAttr}={${transferBindingExpression(expr, "transfer", expr.arg ? renderSvelteBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}}`;
     case "prop":
       return `${svelteEventAttr}={${sveltePropAccessor(expr.prop, ctx)}}`;
     case "literal":

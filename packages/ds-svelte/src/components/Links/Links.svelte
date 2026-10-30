@@ -1,3 +1,10 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type LinkTarget = "_self" | "_blank" | "_parent" | "_top";
+export type LinkSize = "small" | "medium" | "large";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 
@@ -8,8 +15,7 @@
 // @custom:end
 
 // @generated:start types
-type LinkTarget = "_self" | "_blank" | "_parent" | "_top";
-type LinkSize = "small" | "medium" | "large";
+
 // @generated:end
 
 // @custom:start types

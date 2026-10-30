@@ -1,5 +1,6 @@
 import { pagedBindingExpression } from "../../paging.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
+import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName, usesMessageFormatting } from "../../messages.js";
 /**
@@ -656,7 +657,7 @@ function generateVueCompoundStateRootSource(ir: ComponentIR): string {
     if (channel.defaultValueProp) {
       hookLines.push(`  ${channel.defaultValueProp}: props.${propAccess(channel.defaultValueProp)},`);
     }
-    hookLines.push(`  ${channel.changeHandlerProp}: props.${propAccess(channel.changeHandlerProp)},`);
+    hookLines.push(`  ${channel.changeHandlerProp}: (...args) => props.${propAccess(channel.changeHandlerProp)}?.(...args),`);
   }
   hookLines.push(`  idBase: props.idBase,`);
   hookLines.push(`});`);
@@ -820,7 +821,7 @@ function generateVueDisclosureStateRootSource(ir: ComponentIR): string {
     if (channel.defaultValueProp) {
       hookLines.push(`  ${channel.defaultValueProp}: props.${propAccess(channel.defaultValueProp)},`);
     }
-    hookLines.push(`  ${channel.changeHandlerProp}: props.${propAccess(channel.changeHandlerProp)},`);
+    hookLines.push(`  ${channel.changeHandlerProp}: (...args) => props.${propAccess(channel.changeHandlerProp)}?.(...args),`);
   }
   hookLines.push(`});`);
   hookLines.push(``);
@@ -1196,6 +1197,7 @@ export function generateVueCompoundStateParts(
     `<script setup lang="ts">`,
     `// @generated:start imports`,
     `import { ref, computed } from "vue";`,
+    `import { isRtl } from "../../primitives/direction/direction.js";`,
     `import { use${name}Context } from "./use${name}.js";`,
     `// @generated:end`,
     ``,
@@ -1226,12 +1228,20 @@ export function generateVueCompoundStateParts(
     `function handleKeyDown(e: KeyboardEvent): void {`,
     `  const tabs = ctx.registeredTabs.value;`,
     `  if (tabs.length === 0) return;`,
-    `  const currentIndex = tabs.indexOf(ctx.${channelName}.value);`,
+    `  // Arrows move on from the focused tab, which manual activation leaves`,
+    `  // apart from the selected one.`,
+    `  const focused = (e.target as Element | null)?.closest?.('[role="tab"]')?.getAttribute("data-value");`,
+    `  const currentIndex = tabs.indexOf(focused && tabs.includes(focused) ? focused : ctx.${channelName}.value);`,
     `  const isHorizontal = ctx.orientation !== "vertical";`,
+    `  // A horizontal list follows the inline direction: the arrow pointing`,
+    `  // toward the inline end moves to the next tab.`,
+    `  const rtl = isRtl(e.currentTarget);`,
+    `  const towardEnd = rtl ? e.key === "ArrowLeft" : e.key === "ArrowRight";`,
+    `  const towardStart = rtl ? e.key === "ArrowRight" : e.key === "ArrowLeft";`,
     `  let nextIndex = currentIndex;`,
     ``,
     `  if (`,
-    `    (isHorizontal && e.key === "ArrowRight") ||`,
+    `    (isHorizontal && towardEnd) ||`,
     `    (!isHorizontal && e.key === "ArrowDown")`,
     `  ) {`,
     `    e.preventDefault();`,
@@ -1239,7 +1249,7 @@ export function generateVueCompoundStateParts(
     `      ? (currentIndex + 1) % tabs.length`,
     `      : Math.min(currentIndex + 1, tabs.length - 1);`,
     `  } else if (`,
-    `    (isHorizontal && e.key === "ArrowLeft") ||`,
+    `    (isHorizontal && towardStart) ||`,
     `    (!isHorizontal && e.key === "ArrowUp")`,
     `  ) {`,
     `    e.preventDefault();`,
@@ -1663,8 +1673,10 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     importLines.push(`import { h, Fragment, defineComponent, type VNode } from "vue";`);
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (ir.compositeControl?.nativeRadio) importLines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.dateGrid) importLines.push(`import { useDateGrid } from "../../primitives/hooks/useDateGrid.js";`);
+  if (ir.transfer) importLines.push(`import { useTransferList } from "../../primitives/hooks/useTransferList.js";`);
   if (ir.motion.sequence) importLines.push(`import { useSequence } from "../../primitives/hooks/useSequence.js";`);
   importLines.push(...vueMessageImports(ir));
   const importsBody = importLines.join("\n");
@@ -1689,7 +1701,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       if (ch.defaultValueProp) {
         hookLines.push(`  ${ch.defaultValueProp}: props.${propAccess(ch.defaultValueProp)},`);
       }
-      hookLines.push(`  ${ch.changeHandlerProp}: props.${propAccess(ch.changeHandlerProp)},`);
+      hookLines.push(`  ${ch.changeHandlerProp}: (...args) => props.${propAccess(ch.changeHandlerProp)}?.(...args),`);
     }
     for (const trigger of ir.behavior.normalizedDismissalTriggers) {
       if (!trigger.enabledByProp) continue;
@@ -1738,6 +1750,9 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
     const page = ir.pagedSet;
     hookLines.push(`const pagedSet = usePagedSet(() => ({ index: behavior.${page.channel}.value, items: props.${page.itemsProp},`,
       `  count: ${page.countProp ? `props.${page.countProp}` : "undefined"}, disabled: ${page.disabledProp ? `props.${page.disabledProp}` : "false"}, onIndexChange: behavior.set${capitalize(page.channel)} }));`);
+  }
+  if (ir.transfer) {
+    hookLines.push(`const transfer = useTransferList(() => (${transferOptions(ir.transfer, (prop) => `props.${prop}`, (channel) => `behavior.${channel}.value`, (channel) => `behavior.set${capitalize(channel)}`)}));`);
   }
   if (ir.dateGrid) {
     hookLines.push(`const dateGrid = useDateGrid(() => (${dateGridOptions(ir.dateGrid, (prop) => `props.${prop}`, (channel) => `behavior.${channel}.value`, (channel) => `behavior.set${capitalize(channel)}`)}));`);
@@ -2131,7 +2146,10 @@ function vueIdRefGuardExpr(
     );
   }
   if (ref.when) {
-    const accessor = `props.${propAccess(ref.when.prop)}`;
+    // A channel gate reads the channel's effective value, as a `v-if` guard does.
+    const accessor = ref.when.channel
+      ? `behavior.${ref.when.channel}.value`
+      : `props.${propAccess(ref.when.prop)}`;
     if (ref.when.op === "eq") {
       conds.push(
         `${accessor} ${ref.when.negated ? "!==" : "==="} '${ref.when.value}'`,
@@ -2303,6 +2321,11 @@ function renderVueDomNode(
   // no-op when undefined. Channel events delegate to the existing
   // channel-handler logic.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
+      const arg = renderVueBindingValue(expr.arg, ctx);
+      if (arg !== null) attrs.push(`@change="(e) => requestNativeRadioChange(e, () => behavior.set${capitalize(node.nativeRadioChannel)}(${arg}), () => behavior.${node.nativeRadioChannel}.value)"`);
+      continue;
+    }
     const activation = eventName === "click" ? node.activation : undefined;
     const disclosure = activation?.channel;
     if (disclosure) {
@@ -2768,6 +2791,7 @@ function renderVueTextContent(
   switch (expr.kind) {
     case "paged": return `{{ ${pagedBindingExpression(expr, "pagedSet")} }}`;
     case "dateGrid": return `{{ ${dateGridBindingExpression(expr, "dateGrid")} }}`;
+    case "transfer": return `{{ ${transferBindingExpression(expr, "transfer")} }}`;
     case "prop":
       return `{{ ${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)} }}`;
     case "literal":
@@ -2855,6 +2879,7 @@ function renderVueBinding(
   switch (expr.kind) {
     case "paged": return `:${attr}="${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "dateGrid": return `:${attr}="${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
+    case "transfer": return `:${attr}="${transferBindingExpression(expr, "transfer", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "prop":
       return `:${attr}="${appendPath(vuePropAccessor(expr.prop, ctx), expr.path)}"`;
     case "literal":
@@ -3014,6 +3039,7 @@ function renderVueBindingValue(
   switch (expr.kind) {
     case "paged": return pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "dateGrid": return dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
+    case "transfer": return transferBindingExpression(expr, "transfer", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined);
     case "prop":
       return appendPath(vuePropAccessor(expr.prop, ctx), expr.path);
     case "literal":
@@ -3098,6 +3124,7 @@ function renderVueEvent(
   switch (expr.kind) {
     case "paged": return `@${eventName}="${pagedBindingExpression(expr, "pagedSet", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "dateGrid": return `@${eventName}="${dateGridBindingExpression(expr, "dateGrid", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
+    case "transfer": return `@${eventName}="${transferBindingExpression(expr, "transfer", expr.arg ? renderVueBindingValue(expr.arg, ctx) ?? "undefined" : undefined)}"`;
     case "prop":
       return `@${eventName}="${vuePropAccessor(expr.prop, ctx)}?.()"`;
     case "literal":

@@ -1,3 +1,11 @@
+<script module lang="ts">
+// @generated:start publicTypes
+export type ChipType = "button" | "submit" | "reset";
+export type ChipVariant = "default" | "selected" | "dismissible";
+export type ChipSize = "small" | "medium" | "large";
+// @generated:end
+</script>
+
 <script lang="ts">
 // @generated:start imports
 import Button from "../Button/Button.svelte";
@@ -9,9 +17,7 @@ import { useFsdsMessages } from "../../primitives/messages.js";
 // @custom:end
 
 // @generated:start types
-type ChipType = "button" | "submit" | "reset";
-type ChipVariant = "default" | "selected" | "dismissible";
-type ChipSize = "small" | "medium" | "large";
+
 // @generated:end
 
 // @custom:start types

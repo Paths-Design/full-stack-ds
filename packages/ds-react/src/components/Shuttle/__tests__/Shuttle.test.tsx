@@ -39,6 +39,11 @@ describe("Shuttle — unit", () => {
     expect(screen.getByTestId("shuttle")).toHaveClass("shuttle", "custom");
   });
 
+  it("has the correct ARIA role", () => {
+    render(<Shuttle data-testid="shuttle" />);
+    expect(screen.getByTestId("shuttle")).toHaveAttribute("role", "group");
+  });
+
   it("calls onValueChange when selection changes", async () => {
     const onValueChangeSpy = vi.fn();
     expect(() => render(<Shuttle data-testid="shuttle" value={[]} onValueChange={onValueChangeSpy} />)).not.toThrow();

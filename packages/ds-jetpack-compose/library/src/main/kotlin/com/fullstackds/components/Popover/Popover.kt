@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -83,7 +84,7 @@ fun Popover(
                 anchorWidth = coords.size.width
                 anchorHeight = coords.size.height
             }
-            .clickable { setOpen(!resolvedOpen) }
+            .clickable(role = Role.Button) { setOpen(!resolvedOpen) }
         Box(anchorModifier) { trigger() }
         if (resolvedOpen) {
             Popup(

@@ -1,6 +1,8 @@
 // @generated:start imports
 import { describe, expect, it, beforeEach } from "@jest/globals";
+import { Component } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import axe from "axe-core";
 import { SwitchComponent } from "../Switch.component";
 // @generated:end
 
@@ -36,6 +38,30 @@ describe("Switch — unit", () => {
     const fixture = TestBed.createComponent(SwitchComponent);
     fixture.componentInstance.size = "lg";
     expect(classTokens(fixture.componentInstance)).toContain("switch--lg");
+  });
+});
+
+// `region` asks whether all page content is landmark-contained, a page
+// question; a single component under test cannot answer it.
+const componentAxeOptions = { rules: { region: { enabled: false } } };
+
+@Component({
+  standalone: true,
+  imports: [SwitchComponent],
+  template: "<fsds-switch aria-label=\"Test Switch\"><span>content</span></fsds-switch>",
+})
+class SwitchAxeHost {}
+
+describe("Switch — accessibility", () => {
+  it("has no unexpected axe violations with default props", async () => {
+    TestBed.configureTestingModule({ imports: [SwitchAxeHost] });
+    const fixture = TestBed.createComponent(SwitchAxeHost);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const root = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(".switch");
+    expect(root).not.toBeNull();
+    const results = await axe.run(root as HTMLElement, componentAxeOptions);
+    expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 });
 

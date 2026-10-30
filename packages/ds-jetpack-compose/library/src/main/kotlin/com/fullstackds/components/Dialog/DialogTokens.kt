@@ -59,7 +59,7 @@ val dialogTokenScopes: ComponentTokenScopes = mapOf(
         "dialog.color.border" to ComponentTokenDefinition(
             name = "dialog.color.border",
             cssVar = "--fsds-dialog-color-border",
-            ref = "semantic.color.border.subtle",
+            ref = "semantic.surface.border.subtle",
             fallback = "#d0d0d0",
         ),
         "dialog.size.radius" to ComponentTokenDefinition(

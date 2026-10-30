@@ -10,6 +10,8 @@
     "worktree:install": "node scripts/worktree-install.mjs",
     "worktree:check": "node scripts/worktree-install.mjs --check",
     "dev": "vite",
+    "dev:token-theming": "vite --open /examples/token-theming/index.html",
+    "build:token-theming": "vite build --config examples/token-theming/vite.config.ts",
     "build": "vite build",
     "build:all": "pnpm --recursive --sort --filter '!full-stack-design-system' run build && pnpm run build",
     "fixtures:sync": "node scripts/sync-analytical-fixtures.mjs",
@@ -88,6 +90,8 @@
     "typecheck": "tsc --noEmit && pnpm --filter @full-stack-ds/codegen run typecheck",
     "typecheck:vue": "pnpm --filter @full-stack-ds/vue run typecheck",
     "typecheck:angular": "pnpm --filter @full-stack-ds/angular run typecheck",
+    "test:package:angular": "node scripts/angular-package-consumer/verify.mjs",
+    "test:package:types": "node --test scripts/normalize-package-declarations.test.mjs && node scripts/public-types-consumer/verify.mjs",
     "typecheck:lit": "pnpm --filter @full-stack-ds/lit run typecheck",
     "typecheck:svelte": "pnpm --filter @full-stack-ds/svelte run typecheck",
     "typecheck:react-native": "pnpm --filter @full-stack-ds/react-native run typecheck",
@@ -126,7 +130,8 @@
     "test:unity": "node scripts/unity-tests.mjs",
     "generate:gpui": "pnpm run generate -- --target=gpui",
     "test:gpui": "node scripts/gpui-pilot.mjs",
-    "dev:gpui": "node scripts/gpui-gallery.mjs"
+    "dev:gpui": "node scripts/gpui-gallery.mjs",
+    "test:package:release": "node scripts/release-package-check/verify.mjs"
   },
   "dependencies": {
     "@full-stack-ds/angular": "workspace:*",
@@ -150,6 +155,8 @@
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@playwright/test": "^1.60.0",
+    "@react-native/babel-preset": "0.85.3",
+    "@react-native/metro-config": "0.85.3",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -170,5 +177,7 @@
     "vite": "^8.0.8",
     "vitest": "^3.2.4",
     "vitest-axe": "^0.1.0"
-  }
+  },
+  "license": "MIT",
+  "author": "DesignPaths, LLC"
 }

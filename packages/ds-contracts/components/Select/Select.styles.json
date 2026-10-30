@@ -51,7 +51,7 @@
       ]
     },
     "text-align": {
-      "literal": "left",
+      "literal": "start",
       "platforms": [
         "web"
       ],
