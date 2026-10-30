@@ -20,7 +20,10 @@ func _ready() -> void:
 	host.theme = inherited
 	add_child(host)
 	var icon = load("res://addons/full_stack_ds/components/Icon/Icon.tscn").instantiate()
+	icon.decorative = false
+	icon.aria_label = "Pre-attached check"
 	host.add_child(icon)
+	check(not icon.decorative and icon.rendered.accessibility_name == "Pre-attached check", "Pre-attached informative state was overwritten by the authored default")
 	icon.set_contract_prop("name", "check")
 	check(icon.rendered.texture != null, "Named glyph is blank")
 	if icon.rendered.texture == null:
@@ -50,6 +53,25 @@ func _ready() -> void:
 		var screen = get_viewport().get_texture().get_image()
 		var screen_color: Color = screen.get_pixelv(Vector2i(icon.rendered.global_position) + ink)
 		check(screen_color.b > 0.7 and screen_color.r < 0.1, "Rasterized blue glyph did not reach viewport pixel")
+	inherited.set_color("font_color", "Label", Color(0.0, 0.4, 0.8, 0.25))
+	await get_tree().process_frame
+	var translucent_ink: Image = icon.rendered.texture.get_image()
+	var alpha_peak := 0.0
+	for y in range(translucent_ink.get_height()):
+		for x in range(translucent_ink.get_width()): alpha_peak = maxf(alpha_peak, translucent_ink.get_pixel(x, y).a)
+	check(alpha_peak > 0.15 and alpha_peak < 0.35, "Inherited foreground alpha was not preserved")
+	var no_fill := Image.new()
+	var source_without_path_fill := {"viewBox":"0 0 16 16", "paths":[{"d":"M0 0H16V16H0Z"}]}
+	check(no_fill.load_svg_from_string(icon._svg(source_without_path_fill, Color.WHITE)) == OK and no_fill.is_invisible(), "Authored SVG root fill did not reach a path without fill")
+	var defaulted = load("res://addons/full_stack_ds/runtime/glyph.gd").new()
+	defaulted.configuration = icon.configuration.duplicate(true)
+	defaulted.configuration.defaults["name"] = '"check"'
+	defaulted.configuration.defaults["decorative"] = "false"
+	defaulted.configuration.defaults["ariaLabel"] = '"Default check"'
+	host.add_child(defaulted)
+	check(defaulted.glyph_name == "check" and not defaulted.decorative and defaulted.aria_label == "Default check", "Authored glyph defaults did not initialize native state")
+	check(defaulted.rendered.texture != null and defaulted.rendered.accessibility_name == "Default check", "Authored glyph defaults did not reach rendering and name")
+	defaulted.queue_free()
 	icon.decorative = false
 	icon.aria_label = "Confirmed"
 	check(icon.rendered.accessibility_name == "Confirmed", "Informative name was not projected")

@@ -22,6 +22,7 @@ describe("Godot glyph plan", () => {
     const ir = iconIr();
     expect(godotGlyphPlan(ir)).toEqual({
       operation: "glyph", nameProp: "name", sizeProp: "size", decorativeProp: "decorative", labelProp: "ariaLabel",
+      svgFill: "none",
       sizeHints: { sm: 16, md: 20, lg: 24, xl: 32 },
       sizeStyles: { sm: { width: "16px", height: "16px" }, md: { width: "20px", height: "20px" },
         lg: { width: "24px", height: "24px" }, xl: { width: "32px", height: "32px" } },
@@ -62,9 +63,28 @@ describe("Godot glyph plan", () => {
     const extraAnatomy = iconIr();
     extraAnatomy.dom!.children[0]!.attrs.fill = "currentColor";
     expect(() => godotGlyphPlan(extraAnatomy)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: unsupported host or SVG vocabulary");
+    const childFocus = iconIr();
+    childFocus.dom!.children[0]!.focusContainer = true;
+    expect(() => godotGlyphPlan(childFocus)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: unlowered anatomy fact");
+    const childActivation = iconIr();
+    childActivation.dom!.children[0]!.activation = {} as never;
+    expect(() => godotGlyphPlan(childActivation)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: unlowered anatomy fact");
+    const keyboard = iconIr();
+    keyboard.dom!.keyboardPanel = true;
+    expect(() => godotGlyphPlan(keyboard)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: unlowered anatomy fact");
+    const nativeChannel = iconIr();
+    nativeChannel.dom!.children[0]!.nativeTextChannel = "value";
+    expect(() => godotGlyphPlan(nativeChannel)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: unlowered anatomy fact");
     const badDefault = iconIr();
     badDefault.styledProps.find(prop => prop.name === "size")!.defaultExpr = '"huge"';
     expect(() => godotGlyphPlan(badDefault)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: invalid size default");
+    const defaulted = iconIr();
+    defaulted.styledProps.find(prop => prop.name === "name")!.defaultExpr = '"check"';
+    defaulted.styledProps.find(prop => prop.name === "ariaLabel")!.defaultExpr = '"Default check"';
+    expect(godotGlyphPlan(defaulted)).toMatchObject({ nameProp: "name", labelProp: "ariaLabel" });
+    const invalidNameDefault = iconIr();
+    invalidNameDefault.styledProps.find(prop => prop.name === "name")!.defaultExpr = "42";
+    expect(() => godotGlyphPlan(invalidNameDefault)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: invalid glyph name default");
     const unrenderedSelector = iconIr();
     unrenderedSelector.nativeStyleRules!.unsupported.push({ sourceKey: "future-state", selector: ".future-state", reason: "test" } as never);
     expect(() => godotGlyphPlan(unrenderedSelector)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: unsupported native style selector");

@@ -61,6 +61,10 @@ func _initialize() -> void:
 		var icon = load("res://glyph-roundtrip.tscn").instantiate()
 		assert(icon.glyph_name == "check" and icon.size_axis == "xl")
 		assert(not icon.decorative and icon.aria_label == "Saved check")
+		get_root().add_child(icon)
+		await process_frame
+		assert(not icon.decorative and icon.rendered.accessibility_name == "Saved check")
+		get_root().remove_child(icon)
 		icon.free()
 	print("FSDS_ROUNDTRIP_OK")
 	quit()

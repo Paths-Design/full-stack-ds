@@ -4,6 +4,7 @@
   "sizeProp": "size",
   "decorativeProp": "decorative",
   "labelProp": "ariaLabel",
+  "svgFill": "none",
   "sizeHints": {
     "sm": 16,
     "md": 20,

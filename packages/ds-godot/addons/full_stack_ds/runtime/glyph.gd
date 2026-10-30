@@ -5,21 +5,29 @@ extends VBoxContainer
 # generated plan supplies prop identities and sizes; the generated catalog
 # supplies exact authored paths. No component identity is read here.
 var configuration: Dictionary = {}
+var _name_explicit := false
+var _size_explicit := false
+var _decorative_explicit := false
+var _label_explicit := false
 @export var glyph_name: String = "":
 	set(next):
 		glyph_name = next
+		_name_explicit = true
 		_refresh()
 @export var size_axis: String = "":
 	set(next):
 		size_axis = next
+		_size_explicit = true
 		_refresh()
 @export var decorative: bool = true:
 	set(next):
 		decorative = next
+		_decorative_explicit = true
 		_refresh()
 @export var aria_label: String = "":
 	set(next):
 		aria_label = next
+		_label_explicit = true
 		_refresh()
 
 var rendered: TextureRect
@@ -37,10 +45,14 @@ func _ready() -> void:
 	var parsed = JSON.parse_string(raw)
 	if parsed is Dictionary: _catalog = parsed
 	var defaults: Dictionary = configuration.get("defaults", {})
+	var name_prop: String = configuration.get("nameProp", "")
 	var size_prop: String = configuration.get("sizeProp", "")
 	var decoration_prop: String = configuration.get("decorativeProp", "")
-	if size_axis.is_empty() and defaults.has(size_prop): size_axis = str(JSON.parse_string(defaults[size_prop]))
-	if defaults.has(decoration_prop): decorative = bool(JSON.parse_string(defaults[decoration_prop]))
+	var label_prop: String = configuration.get("labelProp", "")
+	if not _name_explicit and defaults.has(name_prop): glyph_name = str(JSON.parse_string(defaults[name_prop]))
+	if not _size_explicit and defaults.has(size_prop): size_axis = str(JSON.parse_string(defaults[size_prop]))
+	if not _decorative_explicit and defaults.has(decoration_prop): decorative = bool(JSON.parse_string(defaults[decoration_prop]))
+	if not _label_explicit and defaults.has(label_prop): aria_label = str(JSON.parse_string(defaults[label_prop]))
 	_refresh()
 
 func _notification(what: int) -> void:
@@ -66,15 +78,20 @@ func get_contract_prop(prop: String) -> Variant:
 func _xml(value: Variant) -> String:
 	return str(value).xml_escape()
 
-func _svg(variant: Dictionary, foreground: String) -> String:
+func _svg(variant: Dictionary, foreground: Color) -> String:
 	var parts: Array[String] = []
 	var attributes := {"d":"d", "fill":"fill", "stroke":"stroke", "strokeWidth":"stroke-width", "strokeLineCap":"stroke-linecap", "strokeLineJoin":"stroke-linejoin", "strokeDasharray":"stroke-dasharray", "fillRule":"fill-rule", "clipRule":"clip-rule"}
 	for glyph_path in variant.get("paths", []):
 		var attrs: Array[String] = []
 		for key in attributes:
-			if glyph_path.has(key): attrs.append('%s="%s"' % [attributes[key], _xml(str(glyph_path[key]).replace("currentColor", foreground))])
+			if not glyph_path.has(key): continue
+			var value := str(glyph_path[key])
+			if value == "currentColor":
+				value = "#" + foreground.to_html(false)
+				if key == "stroke" or key == "fill": attrs.append('%s-opacity="%s"' % [key, _xml(foreground.a)])
+			attrs.append('%s="%s"' % [attributes[key], _xml(value)])
 		parts.append("<path %s/>" % " ".join(attrs))
-	return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="%s">%s</svg>' % [_xml(variant.get("viewBox", "")), "".join(parts)]
+	return '<svg xmlns="http://www.w3.org/2000/svg" fill="%s" viewBox="%s">%s</svg>' % [_xml(configuration.get("svgFill", "none")), _xml(variant.get("viewBox", "")), "".join(parts)]
 
 func _refresh() -> void:
 	if not is_inside_tree() or not is_instance_valid(rendered): return
@@ -106,9 +123,8 @@ func _refresh() -> void:
 	for grid in grids:
 		if grid <= frame: selected_grid = grid
 	var variant: Dictionary = variants[str(selected_grid)]
-	var color := "#" + get_theme_color("font_color", "Label").to_html(false)
 	var image := Image.new()
-	if image.load_svg_from_string(_svg(variant, color), width / float(selected_grid)) != OK:
+	if image.load_svg_from_string(_svg(variant, get_theme_color("font_color", "Label")), width / float(selected_grid)) != OK:
 		rendered.texture = null
 		push_error("Glyph SVG failed to rasterize: " + glyph_name)
 		return

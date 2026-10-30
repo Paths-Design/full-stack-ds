@@ -1,4 +1,4 @@
-import type { ComponentIR } from "../../ir.js";
+import type { ComponentIR, DomNodeIR } from "../../ir.js";
 import { collectIconGlyphNodes } from "../icon-glyph.js";
 
 export interface GodotGlyphPlan {
@@ -7,6 +7,7 @@ export interface GodotGlyphPlan {
   sizeProp: string;
   decorativeProp: string;
   labelProp: string;
+  svgFill: string;
   sizeHints: Record<string, number>;
   sizeStyles: Record<string, { width: string; height: string }>;
   excluded: string[];
@@ -14,6 +15,11 @@ export interface GodotGlyphPlan {
 
 const literal = (node: { kind: string; value?: string } | undefined, value: string): boolean => node?.kind === "literal" && node.value === value;
 function unsupported(name: string, reason: string): never { throw new Error(`GODOT_UNSUPPORTED_GLYPH: ${name}: ${reason}`); }
+function hasUnloweredNodeFact(node: DomNodeIR): boolean {
+  return !!(node.nativeTextChannel || node.nativeRadioChannel || node.activation || node.focusContainer || node.keyboardActions?.length ||
+    node.keyboardPanel || node.keyboardAnchor || node.componentInstance || node.slotName || node.ifNegated ||
+    node.generatedIdSlug || node.idRefAttrs.length);
+}
 
 /** A single glyph-bearing passive wrapper. Every emitted knob is traced to a
  * binding or style fact; authored facts this path cannot render reject it. */
@@ -24,7 +30,8 @@ export function godotGlyphPlan(ir: ComponentIR): GodotGlyphPlan | undefined {
   if (!root || entries.length !== 1 || root.children.length !== 1 || root.children[0] !== entries[0]!.node) unsupported(ir.name, "expected one direct glyph child");
   if (ir.behavior.normalizedChannels.length || ir.interaction || ir.formControl || ir.surface || ir.compoundParts.length || ir.motion.sequence) unsupported(ir.name, "interactive or compound anatomy");
   const glyphNode = entries[0]!.node;
-  if (root.content || root.componentRef || root.iteration || root.ifProp || root.ifSlot || root.activation || root.focusContainer ||
+  if (hasUnloweredNodeFact(root) || hasUnloweredNodeFact(glyphNode) || glyphNode.part ||
+      root.content || root.componentRef || root.iteration || root.ifProp || root.ifSlot ||
       Object.keys(root.attrs).length || Object.keys(root.events).length || Object.keys(root.propertyBindings).length || root.cssVarBindings.length ||
       glyphNode.content || glyphNode.componentRef || glyphNode.children.length || glyphNode.iteration || glyphNode.ifProp || glyphNode.ifSlot ||
       Object.keys(glyphNode.bindings).length || Object.keys(glyphNode.events).length || Object.keys(glyphNode.propertyBindings).length || glyphNode.cssVarBindings.length) unsupported(ir.name, "unlowered anatomy fact");
@@ -56,8 +63,12 @@ export function godotGlyphPlan(ir: ComponentIR): GodotGlyphPlan | undefined {
       Object.keys(sizeHints).length !== sizeValues.length) unsupported(ir.name, "unbound prop or size hint");
   const sizeDefault = sizeProp.defaultExpr === undefined ? undefined : JSON.parse(sizeProp.defaultExpr) as unknown;
   const decorativeDefault = decorativeProp.defaultExpr === undefined ? undefined : JSON.parse(decorativeProp.defaultExpr) as unknown;
+  const nameDefault = nameProp.defaultExpr === undefined ? undefined : JSON.parse(nameProp.defaultExpr) as unknown;
+  const labelDefault = labelProp.defaultExpr === undefined ? undefined : JSON.parse(labelProp.defaultExpr) as unknown;
   if (sizeDefault !== undefined && (typeof sizeDefault !== "string" || !sizeValues.includes(sizeDefault))) unsupported(ir.name, "invalid size default");
   if (decorativeDefault !== undefined && typeof decorativeDefault !== "boolean") unsupported(ir.name, "invalid decorative default");
+  if (nameDefault !== undefined && typeof nameDefault !== "string") unsupported(ir.name, "invalid glyph name default");
+  if (labelDefault !== undefined && typeof labelDefault !== "string") unsupported(ir.name, "invalid glyph label default");
   const tokenValues = new Map(ir.tokenFacts.map(fact => [fact.name, fact.rawValue]));
   if (ir.nativeStyleRules?.unsupported.length) unsupported(ir.name, "unsupported native style selector");
   const sizeStyles: GodotGlyphPlan["sizeStyles"] = {};
@@ -77,6 +88,6 @@ export function godotGlyphPlan(ir: ComponentIR): GodotGlyphPlan | undefined {
     sizeStyles[variant.value] = { width: declarations.width, height: declarations.height };
   }
   if (Object.keys(sizeStyles).sort().join() !== sizeValues.slice().sort().join()) unsupported(ir.name, "missing size style carrier");
-  return { operation: "glyph", nameProp: nameProp.name, sizeProp: sizeProp.name, decorativeProp: decorativeProp.name, labelProp: labelProp.name,
+  return { operation: "glyph", nameProp: nameProp.name, sizeProp: sizeProp.name, decorativeProp: decorativeProp.name, labelProp: labelProp.name, svgFill: glyphNode.attrs.fill,
     sizeHints, sizeStyles, excluded: [] };
 }
