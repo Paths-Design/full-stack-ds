@@ -38,7 +38,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #d92d2e;
-    --fsds-semantic-color-border-light: #b8b8b8;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -48,17 +47,20 @@
     --fsds-semantic-color-foreground-tertiary: #727272;
     --fsds-semantic-focus-ring-color: #0566fe;
     --fsds-semantic-focus-ring-offset: 2px;
+    --fsds-semantic-focus-ring-offset-inset: -2px;
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
+    --fsds-semantic-glyph-size-medium-extent: 16px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.5;
-    --fsds-semantic-interaction-text-hover: #474647;
+    --fsds-semantic-motion-interaction-exit-duration: 167ms;
     --fsds-semantic-motion-interaction-press-duration: 100ms;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-control-radius-pill: 9999px;
     --fsds-semantic-shape-radius-small: 4px;
     --fsds-semantic-structure-size-gap: 16px;
+    --fsds-semantic-surface-border-subtle: #d0d0d0;
     --fsds-semantic-surface-size-gap: 8px;
     --fsds-semantic-surface-size-min-width: 64px;
     --fsds-semantic-surface-size-padding-block: 16px;
@@ -79,7 +81,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #e55b5a;
-    --fsds-semantic-color-border-light: #474647;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -89,7 +90,7 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #0566fe;
     --fsds-semantic-interaction-background-hover: #313131;
-    --fsds-semantic-interaction-text-hover: #a0a0a1;
+    --fsds-semantic-surface-border-subtle: #474647;
 }
 
 /* Brand canary */
@@ -101,7 +102,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #755600;
-    --fsds-semantic-color-border-light: #fcca30;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #755600;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -115,7 +115,6 @@
     --fsds-semantic-focus-ring-width: 3px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 10px;
     --fsds-semantic-shape-radius-small: 4px;
@@ -129,7 +128,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #b28000;
-    --fsds-semantic-color-border-light: #412e00;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #d39500;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -139,7 +137,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #b28000;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand corporate */
@@ -151,7 +148,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #034fd6;
-    --fsds-semantic-color-border-light: #95dafb;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #034fd6;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -165,7 +161,6 @@
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.16;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 4px;
     --fsds-semantic-shape-radius-small: 4px;
@@ -179,7 +174,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #0566fe;
-    --fsds-semantic-color-border-light: #013ab0;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #0089fe;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -189,7 +183,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #0089fe;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand default */
@@ -201,7 +194,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #d92d2e;
-    --fsds-semantic-color-border-light: #b8b8b8;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -215,7 +207,6 @@
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.16;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 8px;
     --fsds-semantic-shape-radius-small: 4px;
@@ -229,7 +220,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #e55b5a;
-    --fsds-semantic-color-border-light: #474647;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -239,7 +229,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #e55b5a;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand developer */
@@ -251,7 +240,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #4548d0;
-    --fsds-semantic-color-border-light: #d0d0d0;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #4548d0;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -265,7 +253,6 @@
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-radius-small: 2px;
@@ -279,7 +266,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #797dec;
-    --fsds-semantic-color-border-light: #313131;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #797dec;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -289,7 +275,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #797dec;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand fintech */
@@ -301,7 +286,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #0a6847;
-    --fsds-semantic-color-border-light: #d0d0d0;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #005134;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -315,7 +299,6 @@
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.16;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-radius-small: 2px;
@@ -329,7 +312,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #0f9c6a;
-    --fsds-semantic-color-border-light: #313131;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #0f9c6a;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -339,7 +321,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #0f9c6a;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand forest */
@@ -351,7 +332,6 @@
     --fsds-semantic-color-background-secondary: #ccf3e2;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #497f21;
-    --fsds-semantic-color-border-light: #badc83;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #3a6614;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -365,7 +345,6 @@
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.16;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 12px;
     --fsds-semantic-shape-radius-small: 8px;
@@ -379,7 +358,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #0f9c6a;
-    --fsds-semantic-color-border-light: #1e3703;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #0f9c6a;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -389,7 +367,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #5b973c;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand marketplace */
@@ -401,7 +378,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #087b9e;
-    --fsds-semantic-color-border-light: #b8b8b8;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #07637f;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -415,7 +391,6 @@
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 4px;
     --fsds-semantic-shape-radius-small: 8px;
@@ -429,7 +404,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #1a94ba;
-    --fsds-semantic-color-border-light: #474647;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #1a94ba;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -439,7 +413,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #1a94ba;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand monochrome */
@@ -451,7 +424,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #474647;
-    --fsds-semantic-color-border-light: #b8b8b8;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #474647;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -465,7 +437,6 @@
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 0px;
     --fsds-semantic-shape-radius-small: 2px;
@@ -479,7 +450,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #888889;
-    --fsds-semantic-color-border-light: #474647;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #a0a0a1;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -489,7 +459,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #888889;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand quickserve */
@@ -501,7 +470,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #8b4b00;
-    --fsds-semantic-color-border-light: #d0d0d0;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #8b4b00;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -515,7 +483,6 @@
     --fsds-semantic-focus-ring-width: 3px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 12px;
     --fsds-semantic-shape-radius-small: 16px;
@@ -529,7 +496,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #cc7201;
-    --fsds-semantic-color-border-light: #313131;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #ec8802;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -539,7 +505,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #cc7201;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Brand streaming */
@@ -551,7 +516,6 @@
     --fsds-semantic-color-background-secondary: #f7f7f7;
     --fsds-semantic-color-background-tertiary: #d0d0d0;
     --fsds-semantic-color-border-accent: #446416;
-    --fsds-semantic-color-border-light: #d0d0d0;
     --fsds-semantic-color-border-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-accent: #446416;
     --fsds-semantic-color-foreground-disabled: #727272;
@@ -565,7 +529,6 @@
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
-    --fsds-semantic-interaction-text-hover: #474647;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 8px;
     --fsds-semantic-shape-radius-small: 8px;
@@ -579,7 +542,6 @@
     --fsds-semantic-color-background-secondary: #313131;
     --fsds-semantic-color-background-tertiary: #474647;
     --fsds-semantic-color-border-accent: #69952c;
-    --fsds-semantic-color-border-light: #313131;
     --fsds-semantic-color-border-subtle: #474647;
     --fsds-semantic-color-foreground-accent: #82ae47;
     --fsds-semantic-color-foreground-disabled: #888889;
@@ -589,7 +551,6 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #69952c;
     --fsds-semantic-interaction-background-hover: #474647;
-    --fsds-semantic-interaction-text-hover: #b8b8b8;
 }
 
 /* Switch (.switch) */
@@ -822,7 +783,7 @@
     --fsds-accordion-color-text-secondary: var(--fsds-semantic-color-foreground-secondary, #474647);
     --fsds-accordion-color-icon: var(--fsds-semantic-color-foreground-tertiary, #727272);
     --fsds-accordion-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
-    --fsds-accordion-border-color: var(--fsds-semantic-color-border-light, #b8b8b8);
+    --fsds-accordion-border-color: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
     --fsds-accordion-border-radius: var(--fsds-semantic-shape-radius-small, 4px);
     --fsds-accordion-spacing-gap: var(--fsds-core-spacing-size-07, 24px);
     --fsds-accordion-spacing-padding-y: var(--fsds-core-spacing-size-04, 8px);
@@ -831,12 +792,11 @@
     --fsds-accordion-text-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
     --fsds-accordion-text-size-content: var(--fsds-semantic-typography-body-03, 14px);
     --fsds-accordion-text-line-height-content: var(--fsds-semantic-typography-line-height-loose, 1.8);
-    --fsds-accordion-icon-size: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-accordion-icon-size: var(--fsds-semantic-glyph-size-medium-extent, 16px);
     --fsds-accordion-focus-width: var(--fsds-semantic-focus-ring-width, 2px);
     --fsds-accordion-focus-color: var(--fsds-semantic-focus-ring-color, #0566fe);
-    --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+    --fsds-accordion-focus-offset: var(--fsds-semantic-focus-ring-offset-inset, -2px);
     --fsds-accordion-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
-    --fsds-accordion-color-text-hover: var(--fsds-semantic-interaction-text-hover, #474647);
 }
 
 .accordion {
@@ -857,15 +817,13 @@
 .accordion {
     display: flex;
     flex-direction: column;
-    border-color: var(--fsds-accordion-border-color, #b8b8b8);
     border-radius: var(--fsds-accordion-border-radius, 4px);
     --fsds-gap: var(--fsds-accordion-spacing-gap, 24px);
-    font-size: var(--fsds-accordion-text-size-content, 14px);
 }
 
 .accordion__item {
     background-color: rgba(0, 0, 0, 0);
-    border-color: var(--fsds-accordion-border-color, #b8b8b8);
+    border-color: var(--fsds-accordion-border-color, #d0d0d0);
     border-width: 1px;
     border-radius: var(--fsds-accordion-border-radius, 4px);
     overflow: hidden;
@@ -897,7 +855,6 @@
 
 .accordion__trigger:hover {
     background-color: var(--fsds-accordion-color-background-hover, #f7f7f7);
-    color: var(--fsds-accordion-color-text-hover, #474647);
 }
 
 .accordion__trigger:focus {
@@ -909,21 +866,27 @@
     display: flex;
     flex-direction: row;
     flex-shrink: 0;
-    width: var(--fsds-accordion-icon-size, 8px);
-    height: var(--fsds-accordion-icon-size, 8px);
+    width: var(--fsds-accordion-icon-size, 16px);
+    height: var(--fsds-accordion-icon-size, 16px);
     align-items: center;
     justify-content: center;
     color: var(--fsds-accordion-color-icon, #727272);
 }
 
 .accordion__content {
-    display: flex;
-    flex-direction: column;
     overflow: hidden;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: var(--fsds-semantic-motion-interaction-exit-duration);
+    transition-timing-function: ease;
 }
 
 .accordion__contentInner {
-    padding: var(--fsds-accordion-spacing-padding-y, 8px);
+    min-height: 0;
+    overflow: hidden;
+    padding-left: var(--fsds-accordion-spacing-padding-y, 8px);
+    padding-right: var(--fsds-accordion-spacing-padding-y, 8px);
+    padding-bottom: 0;
     color: var(--fsds-accordion-color-text-secondary, #474647);
     font-size: var(--fsds-accordion-text-size-content, 14px);
 }
@@ -952,7 +915,7 @@
     --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
     --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
     --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-    --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+    --fsds-popover-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
     --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
 }
 
@@ -1014,7 +977,7 @@
     --fsds-popover-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
     --fsds-popover-size-gap: var(--fsds-core-spacing-size-04, 8px);
     --fsds-popover-color-background-content: var(--fsds-semantic-color-background-elevated, #ffffff);
-    --fsds-popover-color-border: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+    --fsds-popover-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
     --fsds-popover-layer-content: var(--fsds-core-layer-dropdown, 1000);
 }
 

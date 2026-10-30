@@ -407,6 +407,22 @@ describe("Unity USS projection: keyword-valued token declarations", () => {
 });
 
 describe("Unity USS projection: token section", () => {
+  it("defines a graph token read by an emitted literal declaration", () => {
+    const contract = knobWith({ glow: { transition: web("opacity var(--fsds-semantic-motion-interaction-exit-duration) ease") } });
+    const tokens: TokenSources = {
+      graph: { semantic: { motion: { interaction: { exit: { duration: { $value: "167ms" } } } } } },
+      brands: [],
+    };
+    const { uss, ledger } = projectStylesheet([irOf(contract)], tokens);
+    expect(rule(uss, ".knob__glow")).toEqual([
+      "transition-property: opacity;",
+      "transition-duration: var(--fsds-semantic-motion-interaction-exit-duration);",
+      "transition-timing-function: ease;",
+    ]);
+    expect(rule(uss, ".fsds-theme")).toEqual(["--fsds-semantic-motion-interaction-exit-duration: 167ms;"]);
+    expect(ledger.entries).toEqual([]);
+  });
+
   it("names tokens with the kebab-case slug and projects light, dark and brand scopes from the graph and brand layer", () => {
     const contract = knobWith(
       { glow: { color: { resolvesTo: "semantic.inkWell", fallback: "#222222" }, "border-width": { resolvesTo: "knob.glowSize", fallback: "1px" } } },

@@ -678,6 +678,21 @@
       "reason": "Sequence and paged-set position policies need their own runtime behavior."
     },
     {
+      "id": "styles-grid-display",
+      "match": ["styles:/*/display/**"],
+      "declaration": {
+        "valuePattern": "^\\s*(?:grid|inline-grid)\\s*$"
+      },
+      "disposition": "refused",
+      "reason": "UI Toolkit has no CSS grid layout; uss.ts lists a grid display declaration as uss-scalar instead of treating it as a flexbox equivalent."
+    },
+    {
+      "id": "styles-grid-template-rows",
+      "match": ["styles:/*/grid-template-rows/**"],
+      "disposition": "refused",
+      "reason": "USS has no grid-template-rows or animated grid track sizing; uss.ts lists the declaration as uss-property."
+    },
+    {
       "id": "styles-uss-absent-property",
       "match": ["styles:/*/box-shadow/**", "styles:/*/line-height/**", "styles:/*/animation/**", "styles:/*/contain/**", "styles:/*/clip/**", "styles:/*/z-index/**", "styles:/*/pointer-events/**", "styles:/*/text-align/**"],
       "disposition": "refused",

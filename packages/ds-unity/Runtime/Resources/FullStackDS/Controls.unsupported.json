@@ -17,15 +17,39 @@
     },
     {
       "component": "Accordion",
+      "sourceKey": ".accordion__content:not([hidden])",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": ".accordion__content:not([hidden]) .accordion__contentInner",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Accordion",
       "sourceKey": ".accordion__trigger:focus-visible",
       "part": "trigger",
       "property": "outline-offset",
-      "value": "2px",
+      "value": "-2px",
       "reason": "uss-property"
     },
     {
       "component": "Accordion",
       "sourceKey": ".accordion__trigger[aria-expanded=\"true\"] .accordion__chevron",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "@starting-style",
       "part": "",
       "property": "",
       "value": "selector outside normalized native grammar",
@@ -196,9 +220,52 @@
       "sourceKey": "chevron",
       "part": "chevron",
       "property": "transition",
-      "value": "transform 200ms ease",
+      "value": "transform var(--fsds-core-motion-duration-short) var(--fsds-core-motion-easing-standard)",
       "reason": "uss-property",
       "longhand": "transition-property"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "display",
+      "value": "grid",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "grid-template-rows",
+      "value": "0fr",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "transition",
+      "value": "display var(--fsds-semantic-motion-interaction-exit-duration) linear allow-discrete",
+      "reason": "uss-property",
+      "longhand": "transition-property"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "transition",
+      "value": "grid-template-rows var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing)",
+      "reason": "uss-property",
+      "longhand": "transition-property"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "transition",
+      "value": "var(--fsds-semantic-motion-interaction-exit-easing)",
+      "reason": "uss-scalar",
+      "longhand": "transition-timing-function"
     },
     {
       "component": "Accordion",
@@ -210,11 +277,12 @@
     },
     {
       "component": "Accordion",
-      "sourceKey": "root",
-      "part": "root",
-      "property": "line-height",
-      "value": "1.8",
-      "reason": "uss-property"
+      "sourceKey": "contentInner",
+      "part": "contentInner",
+      "property": "transition",
+      "value": "padding-block-end var(--fsds-semantic-motion-interaction-exit-duration) var(--fsds-semantic-motion-interaction-exit-easing)",
+      "reason": "uss-property",
+      "longhand": "transition-property"
     },
     {
       "component": "Accordion",
@@ -245,7 +313,7 @@
       "sourceKey": "trigger",
       "part": "trigger",
       "property": "text-align",
-      "value": "left",
+      "value": "start",
       "reason": "uss-property"
     },
     {
@@ -623,6 +691,14 @@
       "property": "cursor",
       "value": "pointer",
       "reason": "uss-scalar"
+    },
+    {
+      "component": "Switch",
+      "sourceKey": ".switch:dir(rtl) .switch__track",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
     },
     {
       "component": "Switch",

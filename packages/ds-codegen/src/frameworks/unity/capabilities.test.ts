@@ -74,6 +74,7 @@ describe("Unity capability accounting", () => {
     const notLowered = (kind: "tokens" | "styles", depth: number) => [...new Set(result.sidecarObligations[kind]
       .filter(o => o.disposition !== "lowered").map(o => `${o.pointer.split("/").slice(1, 1 + depth).join("/")} ${o.disposition}:${o.rule}`))].sort();
     expect(notLowered("styles", 2)).toEqual([
+      ".switch:dir(rtl) .switch__track/scale pending:styles-outside-native-grammar",
       ".switch:has(.switch__input:focus-visible) .switch__track/outline-offset refused:styles-outline-offset",
       "input/clip refused:styles-uss-absent-property",
       "root/cursor refused:styles-cursor",
@@ -104,7 +105,12 @@ describe("Unity capability accounting", () => {
       "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
     ]);
     expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
-      'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)', "ledger Tabs --pills __tab--active (uss-selector)", "ledger Tabs tab--active (uss-selector)",
+      "ledger Accordion .accordion__content:not([hidden]) (uss-selector)",
+      "ledger Accordion .accordion__content:not([hidden]) .accordion__contentInner (uss-selector)",
+      'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)',
+      "ledger Accordion @starting-style (uss-selector)",
+      "ledger Switch .switch:dir(rtl) .switch__track (uss-selector)",
+      "ledger Tabs --pills __tab--active (uss-selector)", "ledger Tabs tab--active (uss-selector)",
     ]);
   }, CORPUS_TIMEOUT_MS);
   it("counts a ledger entry no sidecar leaf backs as a violation, and skips brand design-slot and token-section rows", () => {

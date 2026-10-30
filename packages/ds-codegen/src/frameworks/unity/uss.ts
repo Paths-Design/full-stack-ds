@@ -1175,7 +1175,13 @@ export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hos
   };
   const components = irs.map(ir => projectComponent(ir, unityLowering(ir), hostsOf(ir), scopeValues));
   const entries: UnsupportedEntry[] = components.flatMap(c => c.unsupported);
-  const closure = [...new Set(components.flatMap(c => [...c.graphTokens]))].sort((a, b) => cssVar(a).localeCompare(cssVar(b)));
+  // A sidecar may contain a literal var() in a USS declaration without a
+  // resolvesTo fact (for example a transition duration). Include graph reads
+  // from the emitted rules as well as the IR-backed references. Refused and
+  // substituted declarations are absent from those rules and add no closure.
+  const literalReads = components.flatMap(component => component.rules.flatMap(rule =>
+    rule.declarations.flatMap(([, value]) => [...value.matchAll(VAR_READ)].map(match => index.get(match[1]!)).filter((token): token is string => token !== undefined))));
+  const closure = [...new Set([...components.flatMap(c => [...c.graphTokens]), ...literalReads])].sort((a, b) => cssVar(a).localeCompare(cssVar(b)));
   const light: [string, string][] = [], dark: [string, string][] = [];
   const emitted = new Set<string>();
   for (const tokenPath of closure) {
