@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: unity-styling-closure
 created_at: '2026-10-19T08:10:00.925Z'
-updated_at: '2026-10-30T11:53:04.692Z'
+updated_at: '2026-10-30T11:57:41.387Z'
 created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
 blast_radius:
   modules:
@@ -32,6 +32,8 @@ scope:
     - packages/ds-codegen/src/frameworks/gpui
     - scripts/engine-comparison.mjs
     - scripts/unity-player.mjs
+    - scripts/engine-comparison-rows.mjs
+    - scripts/engine-comparison-rows.test.mjs
   out: []
   support:
     - docs/architecture/design/box-model-primitive.md
