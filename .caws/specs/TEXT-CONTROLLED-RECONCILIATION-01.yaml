@@ -1,11 +1,9 @@
 id: TEXT-CONTROLLED-RECONCILIATION-01
 title: 'Reconcile native text values after controlled requests'
 mode: fix
-lifecycle_state: closed
-resolution: completed
-closure_notes: 'Accepted native text reconciles after parent rendering with stable caret; five-framework composition and synchronous disposal verified.'
+lifecycle_state: active
 created_at: '2026-10-30T01:54:48.793Z'
-updated_at: '2026-10-30T05:04:22.301Z'
+updated_at: '2026-10-30T05:10:42.241Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
