@@ -1396,6 +1396,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
 
   const importLines: string[] = [];
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
+  if (ir.compositeControl?.nativeRadio) importLines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (hasHook) {
     importLines.push(`import { use${ir.name} } from "./use${ir.name}.svelte.js";`);
   }
@@ -2055,6 +2056,11 @@ function renderSvelteDomNode(
     (node.componentInstance?.events ?? []).map((e) => [e.name, e]),
   );
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
+      const arg = renderSvelteBindingValue(expr.arg, ctx);
+      if (arg !== null) attrs.push(`onchange={(e) => requestNativeRadioChange(e, () => ${ctx.hookVar}.set${capitalizeSvelte(node.nativeRadioChannel)}(${arg}), () => ${ctx.hookVar}.${node.nativeRadioChannel})}`);
+      continue;
+    }
     const activation = eventName === "click" ? node.activation : undefined;
     const disclosure = activation?.channel;
     if (disclosure) {
