@@ -118,3 +118,10 @@ evidence:
     command: Playwright Dialog controlled-parent scenarios and React Native Dialog.dismissal.test.tsx
     exit_code: 0
     commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Renamed Lit referenced-prop fixture preserves enum/string property identity and host attributes, parses escaped quotes/backticks/interpolation text, and IR rejects Boolean/number string attrs. Producer test checks actual helper SHA in every admitted source set; required-mode drift tests and mapped-icon fixture .caws/state/dialog-provenance-focused.log107pass. Browser10affectedLitconsumers plus Dialog45cases .caws/state/dialog-final-browser.log55pass. Final .caws/state/dialog-release-rail.log pass330groups/150sources, root5337/366 and all framework suites pass, lint/docs/generated-byte checks clean. Native reference/token parity52pass, Kotlin compile and Swift85tests6skipped; no native platform-dismissal parity claim."
+    recorded_at: "2026-10-30T17:03:59.533Z"
+    command: "Focused source-provenance and typed-reference tests; governed:rail; full root/framework suites; browser consumer matrix; native compilation/parity"
+    exit_code: 0
+    commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
