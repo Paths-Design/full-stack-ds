@@ -5,7 +5,7 @@ status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
 updated: 2026-10-29
-verified_at_commit: dfb79e83725abc04d369ecc738fd94c6807055b5
+verified_at_commit: 08d3764407a792ea38fe6e3127f98d3c44947e42
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
