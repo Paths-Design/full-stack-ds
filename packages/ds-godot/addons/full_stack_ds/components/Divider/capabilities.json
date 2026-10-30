@@ -3,6 +3,10 @@
   "excluded": [
     "decorative"
   ],
+  "fidelityGaps": [
+    "decorative: semantic separator versus presentation has no native accessibility mapping",
+    "layout: parent-constrained Godot container geometry is not CSS flow/flex layout parity"
+  ],
   "styles": [
     {
       "source": "root",
