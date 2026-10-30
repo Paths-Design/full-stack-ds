@@ -39,3 +39,11 @@ contracts:
   - name: 'native-button-host'
     type: behavior
     path: 'packages/ds-contracts/components/Accordion/Accordion.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Chromium e2e/lit-compound-sizing.spec.ts native-sizing cases at 320px and 160px; retained .caws/state/lit-host-width-before and .caws/state/lit-host-after computed-boxes.json/screenshots plus lit-host-after.log. Trigger content width158 at160px, icon16 fully inside item; library bytes identical at merged3bde0ba4."
+    recorded_at: "2026-10-30T17:50:11.970Z"
+    command: "FSDS_E2E_PORT=5202 /Users/darianrosebrook/.nvm/versions/node/v22.19.0/bin/node node_modules/@playwright/test/cli.js test e2e/lit-compound-sizing.spec.ts --workers=1 --output=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-host-after"
+    exit_code: 0
+    commit_sha: "20818dc64144e820b639949aba6766fc8e153dfc"
