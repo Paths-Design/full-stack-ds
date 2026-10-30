@@ -1,0 +1,47 @@
+id: ENGINE-PASSIVE-FAMILY-01
+title: 'Unity and Godot passive component parity foundations'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-30T07:16:09.868Z'
+updated_at: '2026-10-30T07:16:09.868Z'
+created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
+blast_radius:
+  modules:
+    - 'Unity and Godot passive content lowering, generated packages, registry, runtime proof'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-unity'
+    - 'packages/ds-godot'
+    - 'fsds.targets.json'
+    - 'scripts/unity-tests.mjs'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'package.json'
+  out: []
+invariants:
+  - 'Passive controls are dispatched from framework-neutral IR facts, never component identity; no unused channel API is emitted.'
+  - 'Admitted contract facts either reach an engine runtime consumer or remain explicitly classified as gaps; generation never silently claims full fidelity.'
+acceptance:
+  - id: A1
+    given: 'Text and Divider contracts'
+    when: 'the Unity and Godot targets generate'
+    then: 'both targets emit reusable passive content controls derived from IR facts without component-name dispatch and the registry admits them.'
+  - id: A2
+    given: 'the generated controls'
+    when: 'target-specific runtime witnesses run'
+    then: 'consumer composition, typography, orientation and token-backed styling are checked in Unity Editor and Godot editor/runtime/export with source-bound receipts.'
+  - id: A3
+    given: 'the expanded family'
+    when: 'the boundary and generation gates run'
+    then: 'unsupported facts and fidelity gaps are classified, target outputs regenerate cleanly, and no existing interaction behavior regresses.'
+non_functional: {}
+contracts:
+  - name: 'passive-family'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/unity/walker.test.ts'
