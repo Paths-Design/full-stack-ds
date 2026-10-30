@@ -21,8 +21,8 @@ export function nativeCloseActions(ir: ComponentIR, channel: NormalizedChannelIR
   const visit = (node: DomNodeIR): void => {
     if (node.activation?.operation === "close" && node.activation.channel.name === channel.name && node.children.some(child => child.componentRef)) {
       const label = nodeTextSource(ir, node, "aria-label");
-      if (node.tag !== "button" || label?.kind !== "message" || node.children.some(child => !child.componentRef)) {
-        throw new Error("Native referenced close actions require a button, catalog label and referenced children");
+      if (node.tag !== "button" || label?.kind !== "message" || node.children.length !== 1 || node.children.some(child => !child.componentRef)) {
+        throw new Error("Native referenced close actions require a button, catalog label and one referenced child");
       }
       const disabledNames = new Set<string>();
       if (node.activation.disabledProp) disabledNames.add(node.activation.disabledProp);

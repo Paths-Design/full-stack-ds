@@ -36,6 +36,7 @@ describe("native referenced close actions", () => {
     expect(swift).toContain('SwiftUI.Button(action: { open.set(false) })');
     expect(swift).toContain('.frame(width: fsdsTheme.tokens["dialog.design.close-button.sizing.width"]?.px ?? pxSlot("dialog.size.closeButton.size") ?? 32, height: fsdsTheme.tokens["dialog.design.close-button.sizing.height"]?.px ?? pxSlot("dialog.size.closeButton.size") ?? 32)');
     expect(swift).toContain('fsdsMessages.string("Dialog.close"');
+    expect(swift).toMatch(/accessibilityHidden\(true\)\s+\.frame\([^\n]+\)\s+\.contentShape\(Rectangle\(\)\)\s+}\s+\.buttonStyle/);
   });
 
   it("uses normalized names and excludes wrong-channel or non-close activations", () => {

@@ -3,8 +3,35 @@ import TestRenderer, { act, type ReactTestRenderer } from "react-test-renderer";
 import { Modal } from "react-native";
 import { Dialog } from "../Dialog";
 import { Icon } from "../../Icon/Icon";
+import { FsdsMessagesProvider } from "../../../primitives/messages";
 
 describe("Dialog dismissal policy", () => {
+  it("labels visible close chrome from the catalog and lets a controlled owner refuse", () => {
+    const seen: boolean[] = [];
+    let renderer!: ReactTestRenderer;
+    act(() => { renderer = TestRenderer.create(<FsdsMessagesProvider messages={{ Dialog: { close: "Fermer la fenêtre" } }}><Dialog open onOpenChange={value => seen.push(value)}>Body</Dialog></FsdsMessagesProvider>); });
+    const icon = renderer.root.findByType(Icon);
+    expect(icon.props).toMatchObject({ name: "x", size: "sm" });
+    const button = renderer.root.findAll(node => typeof node.type === "string" && node.props.accessibilityRole === "button" && node.props.accessibilityLabel === "Fermer la fenêtre");
+    expect(button).toHaveLength(1);
+    act(() => button[0].props.onPress());
+    expect(seen).toEqual([false]);
+    expect(renderer.root.findByType(Modal).props.visible).toBe(true);
+    act(() => renderer.unmount());
+  });
+
+  it("closes uncontrolled state through the same visible action", () => {
+    const seen: boolean[] = [];
+    let renderer!: ReactTestRenderer;
+    act(() => { renderer = TestRenderer.create(<Dialog defaultOpen onOpenChange={value => seen.push(value)}>Body</Dialog>); });
+    expect(renderer.root.findByType(Modal).props.visible).toBe(true);
+    const button = renderer.root.findAll(node => typeof node.type === "string" && node.props.accessibilityRole === "button" && node.props.accessibilityLabel === "Close dialog");
+    expect(button).toHaveLength(1);
+    act(() => button[0].props.onPress());
+    expect(seen).toEqual([false]);
+    expect(renderer.root.findByType(Modal).props.visible).toBe(false);
+    act(() => renderer.unmount());
+  });
   it.each([[false, false], [false, true], [true, false], [true, true]] as const)("gates backdrop requests with dismissible=%s and closeOnBackdropClick=%s", (dismissible, closeOnBackdropClick) => {
     const seen: boolean[] = [];
     let renderer!: ReactTestRenderer;

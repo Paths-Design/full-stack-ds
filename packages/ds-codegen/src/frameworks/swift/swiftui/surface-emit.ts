@@ -244,11 +244,12 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
     const inner = action.guard ? `${pad}${INDENT}` : pad;
     lines.push(`${inner}SwiftUI.Button(action: { open.set(false) }) {`);
     for (const child of action.references) lines.push(`${inner}${INDENT}${swiftSurfaceReference(child)}.accessibilityHidden(true)`);
-    lines.push(`${inner}}`);
     if (Object.keys(action.dimensions).length) {
       const dimensions = Object.entries(action.dimensions).map(([property, dimension]) => `${property}: ${dimension.designSlot ? `fsdsTheme.tokens[${JSON.stringify(dimension.designSlot)}]?.px ?? ` : ""}${dimension.token ? `pxSlot(${JSON.stringify(dimension.token)}) ?? ` : ""}${dimension.pixels}`).join(", ");
-      lines.push(`${inner}.frame(${dimensions})`);
+      lines.push(`${inner}${INDENT}.frame(${dimensions})`);
     }
+    lines.push(`${inner}${INDENT}.contentShape(Rectangle())`);
+    lines.push(`${inner}}`);
     lines.push(`${inner}.buttonStyle(.plain)`);
     lines.push(`${inner}.accessibilityLabel(SwiftUI.Text(${swiftMessage(ir, action.label.message)}))`);
     if (action.disabled.length) lines.push(`${inner}.disabled(${action.disabled.map(prop => swiftCaseRef(prop.safeName)).join(" || ")})`);

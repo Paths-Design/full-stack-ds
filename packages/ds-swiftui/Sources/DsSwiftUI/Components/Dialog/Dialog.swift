@@ -110,8 +110,9 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
             if (dismissible) {
                 SwiftUI.Button(action: { open.set(false) }) {
                     DsSwiftUI.Icon(name: "x", size: .sm).accessibilityHidden(true)
+                    .frame(width: fsdsTheme.tokens["dialog.design.close-button.sizing.width"]?.px ?? pxSlot("dialog.size.closeButton.size") ?? 32, height: fsdsTheme.tokens["dialog.design.close-button.sizing.height"]?.px ?? pxSlot("dialog.size.closeButton.size") ?? 32)
+                    .contentShape(Rectangle())
                 }
-                .frame(width: fsdsTheme.tokens["dialog.design.close-button.sizing.width"]?.px ?? pxSlot("dialog.size.closeButton.size") ?? 32, height: fsdsTheme.tokens["dialog.design.close-button.sizing.height"]?.px ?? pxSlot("dialog.size.closeButton.size") ?? 32)
                 .buttonStyle(.plain)
                 .accessibilityLabel(SwiftUI.Text(fsdsMessages.string("Dialog.close", default: "Close dialog")))
             }
