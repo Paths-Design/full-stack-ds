@@ -75,3 +75,10 @@ evidence:
     command: "FSDS_E2E_PORT=5196 pnpm exec playwright test e2e/radio-controlled.spec.ts --workers=1"
     exit_code: 0
     commit_sha: "95833ba904f706e251898f51cae3042859069920"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "All eleven Chromium cases passed: uncontrolled pointer/arrows commit once and skip disabled beta, later accepted parent updates render; real Svelte parent retains identical input node and focus on later and callback acceptance; .caws/state/radio-browser.log plus e2e/fixtures/radio-controlled"
+    recorded_at: "2026-10-30T00:11:52.974Z"
+    command: "FSDS_E2E_PORT=5196 pnpm exec playwright test e2e/radio-controlled.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: "95833ba904f706e251898f51cae3042859069920"
