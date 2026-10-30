@@ -46,8 +46,8 @@ invariants:
   - 'Every USS rule is derived from IR facts (ir.nativeStyleRules, ir.tokenScopes, ir.tokenFacts, ir.classRecipe, ir.states, the selected behavior''s state-class placement) and the token graph; no selector, property or value is authored per component, and no emitter branch names a component, part, channel or class literal beyond the HTML/CSS/USS platform vocabulary'
   - 'A CSS fact USS cannot realise is recorded in a machine-readable unsupported ledger emitted beside the stylesheet and classified refused or pending in the support boundary; it is never silently dropped and never approximated by hand-authored USS'
   - 'packages/ds-unity ships no hand-authored theme palette after this slice: Runtime/Resources/FullStackDS/Controls.uss is generated, sample-only styling lives under Samples~ and is not package theme authority'
-  - 'Behavior semantics are unchanged: the 26 EditMode interaction cases and the frozen engine traces pass before and after; the allowlist stays Switch, Accordion, Popover, Tabs'
   - 'Token names in USS follow the web token build''s kebab-case --fsds-* naming so the same resolvability question is asked of both surfaces'
+  - 'Styling preserves Switch, Accordion, Popover and Tabs behavior: the 26 EditMode interaction cases and frozen engine traces pass. Text and Divider were admitted in the separate passive-family slice, outside this styling acceptance.'
 acceptance:
   - id: A1
     given: 'the four allowlisted contracts, their sidecars and the built token graph'
