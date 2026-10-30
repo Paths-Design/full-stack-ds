@@ -88,3 +88,11 @@ evidence:
     exit_code: 0
     artifact_path: ".caws/state/text-fixture-browser.log"
     commit_sha: fb194d944c9c1a821a24b939b2476f3807c5dcf9
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "All five actual mounted parents accept later state and mid-string X/Y edits with caret3/4 on the identical input, and accepted Japanese composition commits exactly two native input requests. All five refusal composition cases retain the draft and restore committed accepted state. Raw40-case browser log and per-framework composition JSON; CDP Chromium witness, no OS IME or cross-browser claim."
+    recorded_at: "2026-10-30T04:56:54.830Z"
+    command: "FSDS_E2E_PORT=5198 node node_modules/@playwright/test/cli.js test e2e/text-controlled.spec.ts --workers=1"
+    exit_code: 0
+    artifact_path: ".caws/state/text-fixture-browser.log"
+    commit_sha: fb194d944c9c1a821a24b939b2476f3807c5dcf9
