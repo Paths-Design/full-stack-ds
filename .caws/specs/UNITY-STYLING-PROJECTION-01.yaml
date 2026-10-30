@@ -111,10 +111,8 @@ evidence:
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
   - criterion_id: A3
     status: fail
-    evidence_ref: "pnpm run test:unity attempted twice after generated styling changes; Unity 6000.5.3f1 licensing IPC timed out and com.unity.editor.headless was unavailable before EditMode tests; no current results.xml or Player screenshots. Compile-only passed, but does not satisfy this criterion."
-    recorded_at: "2026-10-30T05:47:27.102Z"
-    command: "pnpm run test:unity"
-    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+    evidence_ref: "Merged source 708d1f1dd: Unity 6000.5.3f1 test:unity passed 42/42 EditMode including generated USS import, token geometry/state assertions and six Player-context PNGs (f85a48f16 XML start 2026-10-30 06:28:44Z). The separate frozen engine-comparison runner was blocked before execution by CAWS bash-write-guard unavailable-native-context for relative tmp/engine-comparison; retained older trace receipt and unchanged behavior classes do not prove a fresh trace run at this source. Standalone Player was not rerun."
+    recorded_at: "2026-10-30T07:10:39.722Z"
   - criterion_id: A4
     status: pass
     evidence_ref: "audit:unity-boundary: lowered 12323, pending 2664 all P4, refused 2509, unclassified 0; zero P3 pending and zero violations; unsupported ledger entries joined to refused or pending sidecar leaves"
