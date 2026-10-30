@@ -63,3 +63,7 @@ evidence:
     status: pass
     evidence_ref: "3210fc8c2; Godot 4.7.2 Editor FSDS_ROUNDTRIP=write/read: FSDS_ROUNDTRIP_OK; graphics runtime FSDS_GLYPH_RESULT passed true; fresh macOS export and Player FSDS_GLYPH_RESULT exported true, failures []; saved defaults/overrides, raster pixels and inherited color checked"
     recorded_at: "2026-10-30T10:08:31.185Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "3210fc8c2; pnpm run governed:rail exit 0, pnpm test 362 files/5303 tests pass with tsx local-pipe permission, pnpm run test:frameworks exit 0, docs:check-claims and docs:check-links pass, committed-tree-check generated pass; Godot fidelity gaps documented"
+    recorded_at: "2026-10-30T10:08:46.147Z"
