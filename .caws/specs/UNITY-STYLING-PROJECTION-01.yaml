@@ -90,3 +90,12 @@ contracts:
   - name: 'unity-support-boundary'
     type: schema
     path: 'packages/ds-codegen/src/frameworks/unity/support-boundary.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run generate:unity emitted 4/4 allowlisted C# components, generated Controls.uss and Controls.unsupported.json; uss.test.ts synthetic projection cases passed"
+    recorded_at: "2026-10-30T05:46:30.181Z"
+    command: "pnpm run generate:unity"
+    exit_code: 0
+    artifact_path: packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
