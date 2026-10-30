@@ -115,9 +115,12 @@ evidence:
     exit_code: 0
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
   - criterion_id: A3
-    status: fail
-    evidence_ref: "Merged source 708d1f1dd: Unity 6000.5.3f1 test:unity passed 42/42 EditMode including generated USS import, token geometry/state assertions and six Player-context PNGs (f85a48f16 XML start 2026-10-30 06:28:44Z). The separate frozen engine-comparison runner was blocked before execution by CAWS bash-write-guard unavailable-native-context for relative tmp/engine-comparison; retained older trace receipt and unchanged behavior classes do not prove a fresh trace run at this source. Standalone Player was not rerun."
-    recorded_at: "2026-10-30T07:10:39.722Z"
+    status: pass
+    evidence_ref: "At clean source 63fee12cf, Unity 6000.5.3f1 EditMode XML tmp/unity-pilot/results.xml passed 43/43, including USS import warnings/errors checks, token-backed styling and 26 interaction cases; six Editor Play-context PNGs recorded. Frozen five-row Unity Editor versus Godot runtime/export comparison passed at tmp/engine-comparison/ae1a20cf-d123-4db8-966c-bfe561adff5a/comparison.json. Fresh OSXPlayer run tmp/unity-player/52337abb-74a0-44df-9b09-7bbdbd9f868d/result.json passed 12/12, with inspected screenshot and opaque sample/Switch style checks. These ignored local receipts were inspected directly; commit verification checks reachability only."
+    recorded_at: "2026-10-30T16:30:02.772Z"
+    command: "pnpm run test:unity && pnpm run test:engine-comparison && pnpm run test:unity-player"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
   - criterion_id: A4
     status: pass
     evidence_ref: "audit:unity-boundary: lowered 12323, pending 2664 all P4, refused 2509, unclassified 0; zero P3 pending and zero violations; unsupported ledger entries joined to refused or pending sidecar leaves"
