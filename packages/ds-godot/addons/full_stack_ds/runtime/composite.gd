@@ -57,6 +57,11 @@ func _ready() -> void:
 			content_label = Label.new()
 			content_label.name = "ProjectedContent"
 			slot.add_child(content_label)
+	for part in configuration.get("parts", []):
+		var slot := get_part(part)
+		if slot != null:
+			slot.child_entered_tree.connect(func(_child): _refresh())
+			slot.child_exiting_tree.connect(func(_child): _refresh.call_deferred())
 	_refresh()
 
 func get_part(part: String) -> Control:
@@ -159,6 +164,12 @@ func _stylebox(style: Dictionary) -> StyleBoxFlat:
 	box.content_margin_right = inline
 	return box
 
+func _has_visible_content(slot: Control) -> bool:
+	for child in slot.get_children():
+		if child is CanvasItem and child.visible:
+			return true
+	return false
+
 func _refresh() -> void:
 	if not is_inside_tree() or not is_instance_valid(chrome) or not is_instance_valid(body): return
 	var active := _active_rules()
@@ -166,6 +177,9 @@ func _refresh() -> void:
 	chrome.add_theme_stylebox_override("panel", _stylebox(root_style))
 	chrome.custom_minimum_size.y = _pixels(root_style.get("min-height", "0px"))
 	body.add_theme_constant_override("separation", maxi(0, roundi(_pixels(root_style.get("gap", "0px")))))
+	if is_instance_valid(content_label):
+		content_label.text = content
+		content_label.visible = not content.is_empty()
 	for part in configuration.get("parts", []):
 		var panel := get_node_or_null("Chrome/Body/Part_%s" % part) as PanelContainer
 		var slot := get_part(part) as BoxContainer
@@ -174,9 +188,8 @@ func _refresh() -> void:
 		panel.add_theme_stylebox_override("panel", _stylebox(style))
 		panel.custom_minimum_size.y = _pixels(style.get("min-height", "0px"))
 		slot.add_theme_constant_override("separation", maxi(0, roundi(_pixels(style.get("gap", "0px")))))
+		panel.visible = _has_visible_content(slot)
 	if is_instance_valid(content_label):
-		content_label.text = content
-		content_label.visible = not content.is_empty()
 		var text_style := _properties(configuration.get("contentPart", ""), active)
 		content_label.add_theme_color_override("font_color", Color(text_style.get("color", root_style.get("color", "#141414"))))
 		content_label.add_theme_font_size_override("font_size", roundi(_pixels(text_style.get("font-size", root_style.get("font-size", "16px")))))
