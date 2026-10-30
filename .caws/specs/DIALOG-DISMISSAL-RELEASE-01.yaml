@@ -104,3 +104,10 @@ evidence:
     command: "FSDS_E2E_PORT=5201 node node_modules/@playwright/test/cli.js test e2e/dialog-dismissal.spec.ts e2e/lit-instance-props.spec.ts --workers=1"
     exit_code: 0
     commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Direct browser55-pass log .caws/state/dialog-final-browser.log covers all four backdrop flag combinations, close-button absence when dismissible=false, independent Escape true/false and same-mounted-parent policy updates in both directions across every web framework. Before-repair .caws/state/dialog-policy-before.log reproduces stale Escape in Vue/Angular/Lit; after .caws/state/dialog-policy-after.log12pass. Native host policy matrix in .caws/state/dialog-rn-dismissal.log8pass. Verified library-byte identity from7b540ac8e to merged342455ef8."
+    recorded_at: "2026-10-30T17:03:58.022Z"
+    command: "Playwright Dialog dismissal matrix and pnpm --filter @full-stack-ds/react-native exec vitest run src/components/Dialog/__tests__/Dialog.dismissal.test.tsx"
+    exit_code: 0
+    commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
