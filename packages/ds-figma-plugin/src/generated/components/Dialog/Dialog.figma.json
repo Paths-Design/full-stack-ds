@@ -1157,7 +1157,10 @@
       },
       {
         "event": "overlayClick",
-        "enabledByProp": "closeOnBackdropClick",
+        "enabledByProps": [
+          "dismissible",
+          "closeOnBackdropClick"
+        ],
         "defaultEnabled": true,
         "targetPart": "backdrop"
       }

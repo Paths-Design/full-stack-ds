@@ -2642,6 +2642,10 @@
     },
     "dismissalTrigger": {
       "type": "object",
+      "allOf": [
+        { "not": { "required": ["enabledBy", "enabledByAll"] } },
+        { "if": { "required": ["enabledByAll"] }, "then": { "properties": { "event": { "const": "overlayClick" } } } }
+      ],
       "required": [
         "event"
       ],
@@ -2662,6 +2666,13 @@
         },
         "enabledBy": {
           "type": "string"
+        },
+        "enabledByAll": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "All named boolean props must enable overlay-click dismissal. Mutually exclusive with enabledBy; other trigger families do not admit conjunctions."
         },
         "defaultEnabled": {
           "type": "boolean"

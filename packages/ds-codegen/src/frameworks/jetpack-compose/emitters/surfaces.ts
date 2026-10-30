@@ -9,6 +9,8 @@ import { kotlinMessage, kotlinStringDefault, kotlinStringLiteral } from "../mess
 import { nodeTextSource, partMessage, partTextSource } from "../../native-messages.js";
 import type { NativeTextSource } from "../../native-messages.js";
 import { collectDomSlots, conventionalProp, dateGridChrome, hasConventionalProp, surfaceStringChannel } from "../../native-emission-class.js";
+import { dismissalGateProps } from "../../../dismissal-gates.js";
+import { nativeCloseActions } from "../../native-surface-actions.js";
 
 /**
  * A dual-listbox transfer (`ir.transfer`): the options outside the value
@@ -993,8 +995,17 @@ export function emitCenteredSurface(ir: ComponentIR): string {
   const placeholderProp = stringChannel
     ? conventionalProp(ir, "placeholder")
     : undefined;
-  const hasEscape = hasConventionalProp(ir, "closeOnEscape");
-  const hasBackdrop = hasConventionalProp(ir, "closeOnBackdropClick");
+  const escapeTrigger = ir.behavior.normalizedDismissalTriggers.find(trigger => trigger.event === "escape");
+  const backdropTrigger = ir.behavior.normalizedDismissalTriggers.find(trigger => trigger.event === "overlayClick");
+  const closeActions = nativeCloseActions(ir, openChannel, "android");
+  const booleanParams = new Set([
+    ...dismissalGateProps(escapeTrigger), ...dismissalGateProps(backdropTrigger),
+    ...closeActions.flatMap(action => [...(action.guard ? [action.guard.name] : []), ...action.disabled.map(prop => prop.name)]),
+  ]);
+  const gate = (trigger: typeof escapeTrigger): string => {
+    const props = dismissalGateProps(trigger);
+    return props.length ? props.map(kotlinParamName).join(" && ") : String(trigger?.defaultEnabled ?? true);
+  };
   const hasAriaLabel = hasConventionalProp(ir, "ariaLabel");
 
   // Chrome grammar: default-scope suffixes first (Dialog), then the
@@ -1032,11 +1043,20 @@ export function emitCenteredSurface(ir: ComponentIR): string {
   if (bgSlot || dividerSlot) lines.push(`import androidx.compose.foundation.background`);
   if (borderSlot) lines.push(`import androidx.compose.foundation.border`);
   lines.push(`import androidx.compose.foundation.layout.Arrangement`);
-  if (dividerSlot) lines.push(`import androidx.compose.foundation.layout.Box`);
+  if (dividerSlot || closeActions.length) lines.push(`import androidx.compose.foundation.layout.Box`);
+  if (closeActions.length) {
+    lines.push(`import androidx.compose.foundation.clickable`);
+    lines.push(`import androidx.compose.ui.semantics.Role`);
+    lines.push(`import androidx.compose.ui.semantics.semantics`);
+    lines.push(`import androidx.compose.ui.semantics.contentDescription`);
+    lines.push(`import androidx.compose.ui.semantics.clearAndSetSemantics`);
+    lines.push(`import androidx.compose.ui.Alignment`);
+    if (closeActions.some(action => action.dimensions.width)) lines.push(`import androidx.compose.foundation.layout.width`);
+  }
   lines.push(`import androidx.compose.foundation.layout.Column`);
   lines.push(`import androidx.compose.foundation.layout.PaddingValues`);
   if (dividerSlot) lines.push(`import androidx.compose.foundation.layout.fillMaxWidth`);
-  if (dividerSlot) lines.push(`import androidx.compose.foundation.layout.height`);
+  if (dividerSlot || closeActions.some(action => action.dimensions.height)) lines.push(`import androidx.compose.foundation.layout.height`);
   lines.push(`import androidx.compose.foundation.layout.padding`);
   lines.push(`import androidx.compose.foundation.layout.requiredSizeIn`);
   lines.push(`import androidx.compose.foundation.shape.RoundedCornerShape`);
@@ -1085,8 +1105,11 @@ export function emitCenteredSurface(ir: ComponentIR): string {
       lines.push(`    placeholder: String = "",`);
     }
   }
-  if (hasEscape) lines.push(`    closeOnEscape: Boolean = true,`);
-  if (hasBackdrop) lines.push(`    closeOnBackdropClick: Boolean = true,`);
+  for (const name of booleanParams) {
+    const prop = ir.styledProps.find(prop => prop.name === name && prop.type === "boolean");
+    if (!prop) throw new Error(`Centered surface boolean prop '${name}' is not declared`);
+    lines.push(`    ${kotlinParamName(name)}: Boolean = ${prop.defaultExpr ?? "false"},`);
+  }
   if (hasAriaLabel) lines.push(`    ariaLabel: String? = null,`);
   lines.push(`    content: @Composable () -> Unit,`);
   lines.push(`) {`);
@@ -1135,8 +1158,8 @@ export function emitCenteredSurface(ir: ComponentIR): string {
   lines.push(`    ComposeDialog(`);
   lines.push(`        onDismissRequest = { dismiss() },`);
   lines.push(`        properties = DialogProperties(`);
-  lines.push(`            dismissOnBackPress = ${hasEscape ? "closeOnEscape" : "true"},`);
-  lines.push(`            dismissOnClickOutside = ${hasBackdrop ? "closeOnBackdropClick" : "true"},`);
+  lines.push(`            dismissOnBackPress = ${gate(escapeTrigger)},`);
+  lines.push(`            dismissOnClickOutside = ${gate(backdropTrigger)},`);
   lines.push(`            usePlatformDefaultWidth = false,`);
   lines.push(`        ),`);
   lines.push(`    ) {`);
@@ -1199,6 +1222,17 @@ export function emitCenteredSurface(ir: ComponentIR): string {
       lines.push(`${inner}    Box(Modifier.fillMaxWidth().height(1.dp).background(panelDivider))`);
       lines.push(`${inner}}`);
     }
+  }
+  for (const action of closeActions) {
+    const inner = `${pad}    `;
+    if (action.guard) lines.push(`${inner}if (${action.node.ifNegated ? "!" : ""}${kotlinParamName(action.guard.name)}) {`);
+    const actionPad = action.guard ? `${inner}    ` : inner;
+    const enabled = action.disabled.length ? action.disabled.map(prop => `!${kotlinParamName(prop.name)}`).join(" && ") : "true";
+    const dimensions = Object.entries(action.dimensions).map(([property, dimension]) => `.${property}(${dimension.designSlot ? `fsdsTheme.tokens[${JSON.stringify(dimension.designSlot)}]?.toFsdsDp() ?: ` : ""}${dimension.token ? `layeredSlot(${JSON.stringify(dimension.token)})?.toFsdsDp() ?: ` : ""}${dimension.pixels}.dp)`).join("");
+    lines.push(`${actionPad}Box(Modifier${dimensions}.clickable(enabled = ${enabled}, role = Role.Button) { dismiss() }.semantics(mergeDescendants = true) { contentDescription = ${kotlinMessage(ir, action.label.message)} }, contentAlignment = Alignment.Center) {`);
+    for (const child of action.references) lines.push(...emitComponentReference(ir, child, `${actionPad}    `, ["Modifier.clearAndSetSemantics { }"]));
+    lines.push(`${actionPad}}`);
+    if (action.guard) lines.push(`${inner}}`);
   }
   lines.push(`${pad}    content()`);
   lines.push(`${pad}}`);

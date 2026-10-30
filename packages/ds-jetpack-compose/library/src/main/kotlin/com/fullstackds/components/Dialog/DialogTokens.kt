@@ -68,6 +68,12 @@ val dialogTokenScopes: ComponentTokenScopes = mapOf(
             ref = "semantic.shape.radius.large",
             fallback = "16px",
         ),
+        "dialog.size.closeButton.size" to ComponentTokenDefinition(
+            name = "dialog.size.closeButton.size",
+            cssVar = "--fsds-dialog-size-close-button-size",
+            ref = "core.spacing.size.08",
+            fallback = "32px",
+        ),
     ),
     "part_backdrop" to mapOf(
         "dialog.color.background" to ComponentTokenDefinition(

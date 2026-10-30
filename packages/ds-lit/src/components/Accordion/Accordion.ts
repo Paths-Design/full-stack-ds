@@ -843,7 +843,7 @@ export class AccordionTriggerElement extends LitElement {
     } catch { /* no context yet */ }
     this._updateHostAttrs(isOpen, idBase, disabled);
     this.className = ["accordion__trigger", isOpen ? "accordion__trigger--open" : ""].filter(Boolean).join(" ");
-    return html`<slot></slot><fsds-icon class=${'accordion__chevron'} name="chevron-down" size="sm"></fsds-icon>`;
+    return html`<slot></slot><fsds-icon class=${'accordion__chevron'} .name=${"chevron-down"} .size=${"sm"}></fsds-icon>`;
   }
 }
 

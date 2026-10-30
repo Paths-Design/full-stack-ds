@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dismissalGateExpression, dismissalGateProps } from "../../dismissal-gates.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
@@ -1879,6 +1880,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       ? {
           overlayClickSetter: `set${capitalizeAngular(booleanChannel.name)}`,
           overlayClickEnabledProp: overlayClickTrigger.enabledByProp,
+          overlayClickEnabledGate: overlayClickTrigger.enabledByProps ? dismissalGateExpression(overlayClickTrigger, name => name) : undefined,
           overlayClickTargetPart: overlayClickTrigger.targetPart,
         }
       : {}),
@@ -2096,10 +2098,9 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       );
     }
     // Forward dismissal-trigger enabledBy props.
-    for (const trigger of ir.behavior.normalizedDismissalTriggers) {
-      if (!trigger.enabledByProp) continue;
+    for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
       lines.push(
-        `    ${trigger.enabledByProp}: this.${trigger.enabledByProp},`,
+        `    ${prop}: this.${prop},`,
       );
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: forward the mode gates the keyboard
@@ -2725,6 +2726,7 @@ interface AngularRenderContext {
   countdownPart?: string;
   overlayClickSetter?: string;
   overlayClickEnabledProp?: string;
+  overlayClickEnabledGate?: string;
   overlayClickTargetPart?: string;
   /**
    * Identifier names introduced by enclosing `*ngFor` iterations. After
@@ -3045,7 +3047,9 @@ function renderAngularDomNode(
     // FIX-OVERLAY-CLICK-DISMISSAL-BINDING-01: the part is the contract's
     // declared dismissal `targetPart` (an IR fact), not a hardcoded
     // overlay/backdrop name guess.
-    const guardExpr = ctx.overlayClickEnabledProp
+    const guardExpr = ctx.overlayClickEnabledGate
+      ? `${ctx.overlayClickEnabledGate} && behavior.${ctx.overlayClickSetter}(false)`
+      : ctx.overlayClickEnabledProp
       ? `${ctx.overlayClickEnabledProp} !== false && behavior.${ctx.overlayClickSetter}(false)`
       : `behavior.${ctx.overlayClickSetter}(false)`;
     attrs.push(`role="presentation"`);

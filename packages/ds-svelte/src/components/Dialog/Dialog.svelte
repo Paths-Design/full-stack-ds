@@ -9,6 +9,7 @@ export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { useDialog } from "./useDialog.svelte.js";
 import { portal } from "../../primitives/index.js";
+import Icon from "../Icon/Icon.svelte";
 import { useFsdsMessages } from "../../primitives/messages.js";
 // @generated:end
 
@@ -56,6 +57,7 @@ const behavior = useDialog({
   defaultOpen: () => defaultOpen,
   onOpenChange: () => onOpenChange,
   closeOnEscape: () => closeOnEscape,
+  dismissible: () => dismissible,
   closeOnBackdropClick: () => closeOnBackdropClick,
   initialFocus: () => initialFocus,
   returnFocus: () => returnFocus,
@@ -84,7 +86,7 @@ const instanceId = $props.id();
 
 <div class={classes} data-fsds-component="dialog" data-fsds-box="" use:portal={{ enabled: true }}>
   {#if behavior.openness}
-  <div class={'dialog__backdrop'} aria-hidden="true" onclick={(e) => { if (e.target === e.currentTarget) { closeOnBackdropClick !== false && behavior.setOpenness(false); } }}></div>
+  <div class={'dialog__backdrop'} aria-hidden="true" onclick={(e) => { if (e.target === e.currentTarget) { (dismissible ?? true) && (closeOnBackdropClick ?? true) && behavior.setOpenness(false); } }}></div>
   {/if}
   {#if behavior.openness}
   <div class={'dialog__modal'} bind:this={behavior.panelRef.el} role="dialog" aria-modal={modal} aria-label={ariaLabel} aria-labelledby={[title && !ariaLabel ? `${instanceId}-title` : null, ariaLabelledby].filter(Boolean).join(' ') || undefined} aria-describedby={[`${instanceId}-body`, ariaDescribedby].filter(Boolean).join(' ') || undefined}>
@@ -92,7 +94,11 @@ const instanceId = $props.id();
       <h2 class={'dialog__title'} id={`${instanceId}-title`}>
         {@render title?.()}
       </h2>
-      <button class={'dialog__closeButton'} type="button" onclick={(e) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }} aria-label={fsdsMessages.current.close}></button>
+      {#if dismissible}
+      <button class={'dialog__closeButton'} type="button" onclick={(e) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }} aria-label={fsdsMessages.current.close}>
+        <Icon name="x" size="sm" />
+      </button>
+      {/if}
     </div>
     <div class={'dialog__body'} id={`${instanceId}-body`}>
       {@render children?.()}

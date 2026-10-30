@@ -4,6 +4,7 @@ import { ref } from 'lit/directives/ref.js';
 import { FsdsMessagesController } from "../../primitives/messages.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
+import '../Icon/Icon.js';
 import { DialogBehavior } from './DialogBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
@@ -282,6 +283,7 @@ export class DialogElement extends LitElement {
     defaultOpen: this.defaultOpen,
     onOpenChange: (v) => this.onOpenChange?.(v),
     closeOnEscape: this.closeOnEscape,
+    dismissible: this.dismissible,
     closeOnBackdropClick: this.closeOnBackdropClick,
     initialFocus: () => this.initialFocus,
     returnFocus: () => this.returnFocus,
@@ -290,7 +292,7 @@ export class DialogElement extends LitElement {
   }
 
   private _handleOverlayClick = (): void => {
-    if (this.closeOnBackdropClick !== false) {
+    if ((this.dismissible ?? true) && (this.closeOnBackdropClick ?? true)) {
       this.behavior.setOpenness(false);
     }
   };
@@ -345,7 +347,11 @@ export class DialogElement extends LitElement {
       <h2 class=${'dialog__title'} id="dialog-title">
         <slot name="title" @slotchange=${() => this.requestUpdate()}></slot>
       </h2>
-      <button class=${'dialog__closeButton'} type="button" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setOpenness(false); }} aria-label=${this.fsdsMessages.value.close}></button>
+      ${this.dismissible ? html`
+      <button class=${'dialog__closeButton'} type="button" @click=${(e: MouseEvent) => { if (canActivateInteraction(e, false)) this.behavior.setOpenness(false); }} aria-label=${this.fsdsMessages.value.close}>
+        <fsds-icon .name=${"x"} .size=${"sm"}></fsds-icon>
+      </button>
+      ` : nothing}
     </div>
     <div class=${'dialog__body'} id="dialog-body">
       <slot></slot>

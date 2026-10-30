@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dismissalGateExpression, dismissalGateProps } from "../../dismissal-gates.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
@@ -1494,10 +1495,9 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
     }
     // Forward dismissal-trigger enabledBy props so the hook's createDismissal
     // call sees them. Forwarded as getters so prop updates flow through.
-    for (const trigger of ir.behavior.normalizedDismissalTriggers) {
-      if (!trigger.enabledByProp) continue;
-      const accessor = jsAccessorFor(trigger.enabledByProp);
-      hookLines.push(`  ${trigger.enabledByProp}: () => ${accessor},`);
+    for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+      const accessor = jsAccessorFor(prop);
+      hookLines.push(`  ${prop}: () => ${accessor},`);
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: forward mode gates the keyboard
     // select behavior reads. Getter-shaped like every prop the hook takes.
@@ -1725,6 +1725,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
       ? {
           overlayClickSetter: `${hookVar}.set${capitalizeSvelte(booleanChannel.name)}`,
           overlayClickEnabledProp: overlayClickTrigger.enabledByProp,
+          overlayClickEnabledGate: overlayClickTrigger.enabledByProps ? dismissalGateExpression(overlayClickTrigger, jsAccessorFor) : undefined,
           overlayClickTargetPart: overlayClickTrigger.targetPart,
         }
       : {}),
@@ -1832,6 +1833,7 @@ interface SvelteRenderContext {
   };
   overlayClickSetter?: string;
   overlayClickEnabledProp?: string;
+  overlayClickEnabledGate?: string;
   overlayClickTargetPart?: string;
   /**
    * Local identifiers for nodes carrying `iconGlyph`
@@ -2182,7 +2184,9 @@ function renderSvelteDomNode(
     const enabledVar = ctx.overlayClickEnabledProp
       ? jsAccessorFor(ctx.overlayClickEnabledProp)
       : null;
-    const guardExpr = enabledVar
+    const guardExpr = ctx.overlayClickEnabledGate
+      ? `${ctx.overlayClickEnabledGate} && ${ctx.overlayClickSetter}(false)`
+      : enabledVar
       ? `${enabledVar} !== false && ${ctx.overlayClickSetter}(false)`
       : `${ctx.overlayClickSetter}(false)`;
     attrs.push(

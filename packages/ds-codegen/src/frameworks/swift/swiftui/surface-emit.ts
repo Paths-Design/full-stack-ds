@@ -1,4 +1,6 @@
 import { nativeSlotArguments, nativeTokenScopes } from "../../native-token-consumption.js";
+import { nativeCloseActions } from "../../native-surface-actions.js";
+import { swiftSurfaceReference } from "./reference-call.js";
 import { resolveSurfaceAutoDismiss } from "../../../semantics.js";
 /**
  * SwiftUI surface emission.
@@ -7,8 +9,8 @@ import { resolveSurfaceAutoDismiss } from "../../../semantics.js";
  *
  * - Centered modal (`dialog`, blocking modality): presented as a SwiftUI
  *   `.sheet` whose dismissal drives the openness channel back through the
- *   controllable-state projection (native Esc/overlay dismissal realizes
- *   the contract's escape/overlayClick triggers). FEAT-SWIFTUI-DIALOG-SURFACE-01.
+ *   controllable-state projection. Platform sheet gestures do not implement
+ *   independent escape/overlayClick policy flags. FEAT-SWIFTUI-DIALOG-SURFACE-01.
  * - Anchored tooltip: the trigger region hosts consumer content; hover
  *   drives the open channel and presents the content region in a popover
  *   (FEAT-SWIFTUI-TOOLTIP-ANCHOR-01). Anchored popovers still throw.
@@ -22,6 +24,7 @@ import { swiftMessage, swiftStringProp, withSwiftMessagesEnvironment, type Swift
 import {
   emitTypes,
   swiftCase,
+  swiftCaseRef,
   swiftExportName,
   resolveChrome,
   emitChromeAccessorLines,
@@ -108,6 +111,8 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   }
 
   const exportName = swiftExportName(ir.name);
+  const closeActions = nativeCloseActions(ir, openness, "ios");
+  const actionProps = [...new Map(closeActions.flatMap(action => [...(action.guard ? [action.guard] : []), ...action.disabled]).map(prop => [prop.name, prop])).values()];
   const chrome = resolveChrome(ir);
   const regions = ir.compoundParts.map((part) => regionPropertyName(part.name));
   const lines: string[] = [];
@@ -121,9 +126,8 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   lines.push("");
   lines.push(
     `/// Emitted through the centered-modal surface path: presented as a ` +
-      `sheet whose native dismissal (Esc, overlay click) drives the ` +
-      `openness channel back through onOpenChange — the contract's ` +
-      `escape/overlayClick dismissal triggers realized by the platform.`,
+    `sheet whose native dismissal drives the openness channel through ` +
+      `onOpenChange. Independent platform-dismissal policy flags are omitted.`,
   );
   if (exportName !== ir.name) {
     lines.push(
@@ -147,6 +151,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   lines.push(`${INDENT}@ControllableState private var search: ControllableValue<String>`);
   }
   if (placeholder) lines.push(placeholder.stored);
+  for (const prop of actionProps) lines.push(`${INDENT}private let ${swiftCaseRef(prop.safeName)}: Bool`);
   for (const region of regions) {
     lines.push(`${INDENT}private let ${region}: ${swiftCase(capitalize(region))}`);
   }
@@ -164,6 +169,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
     params.push("onSearchChange: ((String) -> Void)? = nil,");
   }
   if (placeholder) params.push(placeholder.param);
+  for (const prop of actionProps) params.push(`${swiftCaseRef(prop.safeName)}: Bool = ${prop.defaultExpr ?? "false"},`);
   for (const region of regions) {
     params.push(
       `@ViewBuilder ${region}: () -> ${swiftCase(capitalize(region))} = { EmptyView() }${region === regions[regions.length - 1] ? "" : ","}`,
@@ -176,6 +182,7 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   lines.push(`${INDENT}${INDENT}self._search = ControllableState(controlled: search, defaultValue: defaultSearch, onChange: onSearchChange)`);
   }
   if (placeholder) lines.push(placeholder.assign);
+  for (const prop of actionProps) lines.push(`${INDENT}${INDENT}self.${swiftCaseRef(prop.safeName)} = ${swiftCaseRef(prop.safeName)}`);
   for (const region of regions) {
     lines.push(`${INDENT}${INDENT}self.${region} = ${region}()`);
   }
@@ -230,6 +237,22 @@ export function generateSwiftUISurfaceFiles(ir: ComponentIR): SwiftUISurfaceFile
   }
   for (const region of regions) {
     lines.push(`${INDENT}${INDENT}${INDENT}${region}`);
+  }
+  for (const action of closeActions) {
+    const pad = `${INDENT}${INDENT}${INDENT}`;
+    if (action.guard) lines.push(`${pad}if (${action.node.ifNegated ? "!" : ""}${swiftCaseRef(action.guard.safeName)}) {`);
+    const inner = action.guard ? `${pad}${INDENT}` : pad;
+    lines.push(`${inner}SwiftUI.Button(action: { open.set(false) }) {`);
+    for (const child of action.references) lines.push(`${inner}${INDENT}${swiftSurfaceReference(child)}.accessibilityHidden(true)`);
+    lines.push(`${inner}}`);
+    if (Object.keys(action.dimensions).length) {
+      const dimensions = Object.entries(action.dimensions).map(([property, dimension]) => `${property}: ${dimension.designSlot ? `fsdsTheme.tokens[${JSON.stringify(dimension.designSlot)}]?.px ?? ` : ""}${dimension.token ? `pxSlot(${JSON.stringify(dimension.token)}) ?? ` : ""}${dimension.pixels}`).join(", ");
+      lines.push(`${inner}.frame(${dimensions})`);
+    }
+    lines.push(`${inner}.buttonStyle(.plain)`);
+    lines.push(`${inner}.accessibilityLabel(SwiftUI.Text(${swiftMessage(ir, action.label.message)}))`);
+    if (action.disabled.length) lines.push(`${inner}.disabled(${action.disabled.map(prop => swiftCaseRef(prop.safeName)).join(" || ")})`);
+    if (action.guard) lines.push(`${pad}}`);
   }
   lines.push(`${INDENT}${INDENT}}`);
   if (chrome.blockPadding) {

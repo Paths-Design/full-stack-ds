@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dismissalGateExpression, dismissalGateProps } from "../../dismissal-gates.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
@@ -1703,9 +1704,8 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       }
       hookLines.push(`  ${ch.changeHandlerProp}: (...args) => props.${propAccess(ch.changeHandlerProp)}?.(...args),`);
     }
-    for (const trigger of ir.behavior.normalizedDismissalTriggers) {
-      if (!trigger.enabledByProp) continue;
-      hookLines.push(`  ${trigger.enabledByProp}: props.${propAccess(trigger.enabledByProp)},`);
+    for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+      hookLines.push(`  ${prop}: props.${propAccess(prop)},`);
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: forward the mode gates the keyboard
     // select behavior reads, getter-shaped like every other option.
@@ -1945,6 +1945,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       ? {
           overlayClickSetter: `behavior.set${capitalize(booleanChannel.name)}`,
           overlayClickEnabledProp: overlayClickTrigger.enabledByProp,
+          overlayClickEnabledGate: overlayClickTrigger.enabledByProps ? dismissalGateExpression(overlayClickTrigger, name => `props.${propAccess(name)}`) : undefined,
           overlayClickTargetPart: overlayClickTrigger.targetPart,
         }
       : {}),
@@ -2064,6 +2065,7 @@ interface VueRenderContext {
   countdownPart?: string;
   overlayClickSetter?: string;
   overlayClickEnabledProp?: string;
+  overlayClickEnabledGate?: string;
   overlayClickTargetPart?: string;
   /**
    * Effective ARIA role to emit on the root unless the dom tree already
@@ -2485,7 +2487,9 @@ function renderVueDomNode(
     node.part !== undefined &&
     node.part === ctx.overlayClickTargetPart
   ) {
-    const guardExpr = ctx.overlayClickEnabledProp
+    const guardExpr = ctx.overlayClickEnabledGate
+      ? `${ctx.overlayClickEnabledGate} && ${ctx.overlayClickSetter}(false)`
+      : ctx.overlayClickEnabledProp
       ? `props.${propAccess(ctx.overlayClickEnabledProp)} !== false && ${ctx.overlayClickSetter}(false)`
       : `${ctx.overlayClickSetter}(false)`;
     attrs.push(`@click.self="${guardExpr}"`);

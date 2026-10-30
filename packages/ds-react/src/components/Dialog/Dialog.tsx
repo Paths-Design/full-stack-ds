@@ -2,6 +2,7 @@
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { type HTMLAttributes, type ReactNode, useId } from "react";
 import { Stack } from "../../primitives";
+import { Icon } from "../Icon/Icon";
 import { useDialog } from "./useDialog";
 import { useFsdsMessages } from "../../primitives/messages";
 import "./Dialog.css";
@@ -134,7 +135,7 @@ export function Dialog({
   "data-testid": testId,
   children,
   modal = true,
-  dismissible: _dismissible = true,
+  dismissible = true,
   closeOnEscape = true,
   closeOnBackdropClick = true,
   initialFocus,
@@ -154,6 +155,7 @@ export function Dialog({
     returnFocus,
     modal,
     closeOnEscape,
+    dismissible,
     closeOnBackdropClick,
   });
 
@@ -171,7 +173,7 @@ export function Dialog({
     renderInPortal(
     <Stack layout="native" className={`${classNames}`} data-testid={testId} data-fsds-component="dialog" data-fsds-box="" {...rest}>
       {openness ? (
-        <div className="dialog__backdrop" aria-hidden="true" onClick={closeOnBackdropClick ? (e) => { if (e.target === e.currentTarget) setOpenness(false); } : undefined} />
+        <div className="dialog__backdrop" aria-hidden="true" onClick={(dismissible ?? true) && (closeOnBackdropClick ?? true) ? (e) => { if (e.target === e.currentTarget) setOpenness(false); } : undefined} />
       ) : null}
       {openness ? (
         <div className="dialog__modal" role="dialog" aria-modal={modal} aria-label={ariaLabel} ref={panelRef} aria-labelledby={[slots?.title && !ariaLabel ? `${instanceId}-title` : null, ariaLabelledby].filter(Boolean).join(" ") || undefined} aria-describedby={[`${instanceId}-body`, ariaDescribedby].filter(Boolean).join(" ") || undefined}>
@@ -179,7 +181,11 @@ export function Dialog({
             <h2 className="dialog__title" id={`${instanceId}-title`}>
               {slots?.title}
             </h2>
-            <button className="dialog__closeButton" type="button" onClick={(e) => { if (canActivateInteraction(e, false)) setOpenness(false); }} aria-label={fsdsMessages.close} />
+            {dismissible ? (
+              <button className="dialog__closeButton" type="button" onClick={(e) => { if (canActivateInteraction(e, false)) setOpenness(false); }} aria-label={fsdsMessages.close}>
+                <Icon name="x" size="sm" />
+              </button>
+            ) : null}
           </div>
           <div className="dialog__body" id={`${instanceId}-body`}>
             {children}

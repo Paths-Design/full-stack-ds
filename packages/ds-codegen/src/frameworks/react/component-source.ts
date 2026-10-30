@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dismissalGateExpression, dismissalGateProps } from "../../dismissal-gates.js";
 import { dateGridBindingExpression, dateGridOptions, dateGridValueType } from "../../date-grid.js";
 import { transferBindingExpression, transferOptions, transferValueType } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
@@ -2234,15 +2235,14 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
   }
   // Forward dismissal-trigger enabledBy props (closeOnEscape, etc.) to the
   // generated hook so its useDismissal call sees the user's settings.
-  for (const trigger of ir.behavior.normalizedDismissalTriggers) {
-    if (!trigger.enabledByProp) continue;
-    if (!handled.has(trigger.enabledByProp)) {
+  for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+    if (!handled.has(prop)) {
       // Destructure the prop too if not already done.
-      const aliased = trigger.enabledByProp;
+      const aliased = prop;
       destructured.push(aliased);
       handled.add(aliased);
     }
-    hookOptionsLines.push(`    ${trigger.enabledByProp}`);
+    hookOptionsLines.push(`    ${prop}`);
   }
 
   // ICON-CATALOG-RUNTIME-DELIVERY-01: glyph nodes get module-scope size-hint
@@ -2476,6 +2476,7 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     autoDismissPause: Boolean(autoDismissPolicy && autoDismissChannel),
     overlayClickSetter,
     overlayClickEnabledProp: overlayClickTrigger?.enabledByProp,
+    overlayClickEnabledGate: overlayClickTrigger?.enabledByProps ? dismissalGateExpression(overlayClickTrigger, name => name) : undefined,
     overlayClickTargetPart: overlayClickTrigger?.targetPart,
     rootRole: ir.root.rootRole,
     rootTagOverride,
@@ -2577,6 +2578,7 @@ interface ReactRenderContext {
   overlayClickSetter?: string;
   /** Prop name that controls whether overlay click dismissal is enabled. */
   overlayClickEnabledProp?: string;
+  overlayClickEnabledGate?: string;
   /**
    * Anatomy part carrying the overlay-click dismissal handler. The root is
    * pointer-events:none under a full-cover overlay and can never be the hit
@@ -3101,10 +3103,11 @@ function renderReactDomNode(
     node.part !== undefined &&
     node.part === ctx.overlayClickTargetPart
   ) {
-    const guard = ctx.overlayClickEnabledProp
-      ? `${ctx.overlayClickEnabledProp} ? `
+    const gate = ctx.overlayClickEnabledGate ?? ctx.overlayClickEnabledProp;
+    const guard = gate
+      ? `${gate} ? `
       : "";
-    const tail = ctx.overlayClickEnabledProp ? " : undefined" : "";
+    const tail = gate ? " : undefined" : "";
     attrs.push(
       `onClick={${guard}(e) => { if (e.target === e.currentTarget) ${ctx.overlayClickSetter}(false); }${tail}}`,
     );

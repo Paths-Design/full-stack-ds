@@ -150,18 +150,18 @@ export class PageNavigatorElement extends LitElement {
 
   override render() {
     return html`<div class="${this.computeClasses()}" role="group" aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.groupLabel))} data-fsds-box="">
-  <fsds-button class=${'page-navigator__previous'} type="button" .onClick=${this.pagedSet.previous} .disabled=${this.pagedSet.state.previousDisabled} .ariaLabel=${(this.previousLabel ?? this.fsdsMessages.value.previousPage)}>
-    <fsds-icon class=${'page-navigator__previousIcon'} name="arrow-left" size="sm"></fsds-icon>
+  <fsds-button class=${'page-navigator__previous'} .type=${"button"} .onClick=${this.pagedSet.previous} .disabled=${this.pagedSet.state.previousDisabled} .ariaLabel=${(this.previousLabel ?? this.fsdsMessages.value.previousPage)}>
+    <fsds-icon class=${'page-navigator__previousIcon'} .name=${"arrow-left"} .size=${"sm"}></fsds-icon>
   </fsds-button>
   <div class=${'page-navigator__field'} @keydown=${this.pagedSet.commitOnEnter} @focusout=${this.pagedSet.commit}>
-    <fsds-input class=${'page-navigator__input'} type="number" .onChange=${this.pagedSet.edit} .value=${this.pagedSet.state.draft} .disabled=${this.pagedSet.state.disabled} .ariaLabel=${(this.pageLabel ?? this.fsdsMessages.value.pageLabel)}></fsds-input>
+    <fsds-input class=${'page-navigator__input'} .type=${"number"} .onChange=${this.pagedSet.edit} .value=${this.pagedSet.state.draft} .disabled=${this.pagedSet.state.disabled} .ariaLabel=${(this.pageLabel ?? this.fsdsMessages.value.pageLabel)}></fsds-input>
   </div>
   <span class=${'page-navigator__context'}>${formatFsdsMessage(this.fsdsMessages.value.pageCount, { count: this.pagedSet.state.count })}</span>
-  <fsds-button class=${'page-navigator__commit'} type="button" .onClick=${this.pagedSet.commit} .disabled=${this.pagedSet.state.disabled} .ariaLabel=${(this.commitLabel ?? this.fsdsMessages.value.commit)}>
+  <fsds-button class=${'page-navigator__commit'} .type=${"button"} .onClick=${this.pagedSet.commit} .disabled=${this.pagedSet.state.disabled} .ariaLabel=${(this.commitLabel ?? this.fsdsMessages.value.commit)}>
     <span>${(this.commitLabel ?? this.fsdsMessages.value.commit)}</span>
   </fsds-button>
-  <fsds-button class=${'page-navigator__next'} type="button" .onClick=${this.pagedSet.next} .disabled=${this.pagedSet.state.nextDisabled} .ariaLabel=${(this.nextLabel ?? this.fsdsMessages.value.nextPage)}>
-    <fsds-icon class=${'page-navigator__nextIcon'} name="arrow-right" size="sm"></fsds-icon>
+  <fsds-button class=${'page-navigator__next'} .type=${"button"} .onClick=${this.pagedSet.next} .disabled=${this.pagedSet.state.nextDisabled} .ariaLabel=${(this.nextLabel ?? this.fsdsMessages.value.nextPage)}>
+    <fsds-icon class=${'page-navigator__nextIcon'} .name=${"arrow-right"} .size=${"sm"}></fsds-icon>
   </fsds-button>
   ${this.showChoices ? html`
   <fsds-pagination class=${'page-navigator__choices'} .onIndexChange=${this.pagedSet.request} .pages=${(this.pages ?? [])} .index=${this.behavior.page} .presentation=${(this.presentation ?? "indicators")} .label=${(this.label ?? this.fsdsMessages.value.groupLabel)} .disabled=${this.pagedSet.state.disabled}></fsds-pagination>

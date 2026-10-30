@@ -5,8 +5,17 @@ package com.fullstackds.components.dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,9 +30,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog as ComposeDialog
 import androidx.compose.ui.window.DialogProperties
+import com.fullstackds.messages.LocalFsdsMessages
 import com.fullstackds.tokens.LocalFsdsTheme
 import com.fullstackds.tokens.toFsdsColor
 import com.fullstackds.tokens.toFsdsDp
+import com.fullstackds.components.icon.Icon
+import com.fullstackds.components.icon.IconSize
 // @generated:end
 
 // @generated:start component
@@ -34,10 +46,12 @@ fun Dialog(
     defaultOpen: Boolean = false,
     onOpenChange: ((Boolean) -> Unit)? = null,
     closeOnEscape: Boolean = true,
+    dismissible: Boolean = true,
     closeOnBackdropClick: Boolean = true,
     ariaLabel: String? = null,
     content: @Composable () -> Unit,
 ) {
+    val fsdsMessages = LocalFsdsMessages.current
     var uncontrolledOpen by remember { mutableStateOf(defaultOpen) }
     val resolvedOpen = open ?: uncontrolledOpen
     val fsdsTheme = LocalFsdsTheme.current
@@ -63,7 +77,7 @@ fun Dialog(
         onDismissRequest = { dismiss() },
         properties = DialogProperties(
             dismissOnBackPress = closeOnEscape,
-            dismissOnClickOutside = closeOnBackdropClick,
+            dismissOnClickOutside = dismissible && closeOnBackdropClick,
             usePlatformDefaultWidth = false,
         ),
     ) {
@@ -77,6 +91,15 @@ fun Dialog(
 ,
             verticalArrangement = Arrangement.spacedBy(panelGap),
         ) {
+            if (dismissible) {
+                Box(Modifier.width(fsdsTheme.tokens["dialog.design.close-button.sizing.width"]?.toFsdsDp() ?: layeredSlot("dialog.size.closeButton.size")?.toFsdsDp() ?: 32.dp).height(fsdsTheme.tokens["dialog.design.close-button.sizing.height"]?.toFsdsDp() ?: layeredSlot("dialog.size.closeButton.size")?.toFsdsDp() ?: 32.dp).clickable(enabled = true, role = Role.Button) { dismiss() }.semantics(mergeDescendants = true) { contentDescription = fsdsMessages.string("Dialog.close", "Close dialog") }, contentAlignment = Alignment.Center) {
+                    Icon(
+                        name = "x",
+                        size = IconSize.Sm,
+                        modifier = Modifier.clearAndSetSemantics { },
+                    )
+                }
+            }
             content()
         }
     }

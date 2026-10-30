@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dismissalGateExpression, dismissalGateProps } from "../../dismissal-gates.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { transferBindingExpression, transferOptions, transferValueType } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
@@ -1967,10 +1968,9 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
       );
     }
     // Forward dismissal-trigger enabledBy props.
-    for (const trigger of ir.behavior.normalizedDismissalTriggers) {
-      if (!trigger.enabledByProp) continue;
+    for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
       lines.push(
-        `    ${trigger.enabledByProp}: this.${trigger.enabledByProp},`,
+        `    ${prop}: this.${prop},`,
       );
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: getter-shaped mode gates so the
@@ -2096,7 +2096,11 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     const enabledProp = overlayClickTrigger?.enabledByProp;
     lines.push(``);
     lines.push(`  private _handleOverlayClick = (): void => {`);
-    if (enabledProp) {
+    if (overlayClickTrigger?.enabledByProps) {
+      lines.push(`    if (${dismissalGateExpression(overlayClickTrigger, name => `this.${name}`)}) {`);
+      lines.push(`      this.behavior.${setter}(false);`);
+      lines.push(`    }`);
+    } else if (enabledProp) {
       lines.push(`    if (this.${enabledProp} !== false) {`);
       lines.push(`      this.behavior.${setter}(false);`);
       lines.push(`    }`);
@@ -2687,12 +2691,22 @@ function renderLitDomNode(
   if (ctx.countdownPart && node.part === ctx.countdownPart) attrs.push(`\${ref(this.autoDismiss.bindProgress)}`);
   if (node.part) classParts.push(`'${ctx.classRecipe}__${node.part}'`);
 
+  const litRefAttrByName = new Map(
+    (node.componentInstance?.attrs ?? []).map(attr => [attr.sourceAttr, attr]),
+  );
   for (const [key, value] of Object.entries(node.attrs)) {
     if (key === "class" || key === "className") {
       classParts.push(`'${value}'`);
       continue;
     }
-    attrs.push(`${key}="${value.replace(/"/g, "&quot;")}"`);
+    const classified = litRefAttrByName.get(key);
+    if (classified?.kind === "prop") {
+      const expr: BindingExpression = { kind: "literal", value };
+      const rendered = renderLitBinding(key, expr, ctx, node.tag, classified);
+      if (rendered !== null) attrs.push(rendered);
+    } else {
+      attrs.push(`${key}="${value.replace(/"/g, "&quot;")}"`);
+    }
   }
 
   // ICON-CATALOG-RUNTIME-DELIVERY-01: a glyph node's svg surface comes
@@ -3374,7 +3388,9 @@ function renderLitBinding(
       return `${attr}=\${ifDefined(${acc})}`;
     }
     case "literal":
-      return `${attr}="${expr.value.replace(/"/g, "&quot;")}"`;
+      return refBinding?.kind === "prop"
+        ? `.${refBinding.targetProp}=\${${JSON.stringify(expr.value)}}`
+        : `${attr}="${expr.value.replace(/"/g, "&quot;")}"`;
     case "message": {
       const lowered = renderLitBindingValue(expr, ctx);
       if (lowered === null) return null;

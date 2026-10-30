@@ -13,6 +13,7 @@ export interface UseDialogOptions {
   defaultOpen?: boolean;
   onOpenChange?: (value: boolean) => void;
   closeOnEscape?: boolean;
+  dismissible?: boolean;
   closeOnBackdropClick?: boolean;
   initialFocus?: () => string | undefined;
   returnFocus?: () => string | undefined;

@@ -236,12 +236,12 @@ export class CarouselElement extends LitElement {
   </div>
   <div class=${'carousel__controls'}>
     <button class=${'carousel__previous'} type="button" aria-label=${this.fsdsMessages.value.previousSlide}>
-      <fsds-icon name="arrow-left" size="sm"></fsds-icon>
+      <fsds-icon .name=${"arrow-left"} .size=${"sm"}></fsds-icon>
     </button>
-    <fsds-pagination class=${'carousel__pagination'} presentation="indicators" .onIndexChange=${this.sequence.requestIndex} .label=${this.fsdsMessages.value.chooseSlide} .pages=${(this.slides ?? [])} .index=${this.behavior.slide} .progress=${((this.indicator ?? "pagination") === "pagination" ? "elapsed" : ((this.indicator ?? "pagination") === "next" ? "none" : "elapsed"))}></fsds-pagination>
+    <fsds-pagination class=${'carousel__pagination'} .presentation=${"indicators"} .onIndexChange=${this.sequence.requestIndex} .label=${this.fsdsMessages.value.chooseSlide} .pages=${(this.slides ?? [])} .index=${this.behavior.slide} .progress=${((this.indicator ?? "pagination") === "pagination" ? "elapsed" : ((this.indicator ?? "pagination") === "next" ? "none" : "elapsed"))}></fsds-pagination>
     <button class=${'carousel__next'} type="button" aria-label=${this.fsdsMessages.value.nextSlide}>
       <span class=${'carousel__ring'} aria-hidden="true"></span>
-      <fsds-icon name="arrow-right" size="sm"></fsds-icon>
+      <fsds-icon .name=${"arrow-right"} .size=${"sm"}></fsds-icon>
     </button>
   </div>
 </section>`;
