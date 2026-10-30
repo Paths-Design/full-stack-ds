@@ -130,11 +130,11 @@ evidence:
     commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
   - criterion_id: A5
     status: pass
-    evidence_ref: "Second regeneration through governed:rail passed 330 groups/1618 files, six rail targets; generated packages match HEAD by committed-tree-check; Unity emitter and CLI focused suites passed including synthetic contract projection"
-    recorded_at: "2026-10-30T05:48:29.697Z"
-    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
+    evidence_ref: "On clean candidate 84b7fbb04 merged at d40e7527b, governed:rail regenerated 330 groups/1618 files and six rail-admitted targets passed; committed-tree-check generated found packages matching HEAD. Host-access root test passed 363 files/5321 tests and framework suites passed Vue 853, Lit 618 with two skips, Svelte 753, Angular 639, RN 260. The rail binds bytes and sources, not full Unity visual fidelity."
+    recorded_at: "2026-10-30T16:32:41.356Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated && pnpm test && pnpm run test:frameworks"
     exit_code: 0
-    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
   - criterion_id: A6
     status: pass
     evidence_ref: "At source 63fee12cf and merged d40e7527b, docs/architecture/unity-target.md records Unity 6000.5.3f1 EditMode 43/43, six Editor Play-context frames, standalone OSXPlayer run 52337abb with 12/12 and explicit proof limits. docs:check-claims and docs:check-links passed on the committed document at 84b7fbb04."
