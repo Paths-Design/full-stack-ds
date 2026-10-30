@@ -14,7 +14,11 @@ if(dirt.status!==0)throw new Error('Cannot identify Godot pilot source tree stat
 const project = path.join(out,'project');
 fs.mkdirSync(project,{recursive:true});
 fs.cpSync(path.join(root,'packages/ds-godot/addons'),path.join(project,'addons'),{recursive:true});
-for(const name of ['main.gd','roundtrip.gd']) fs.copyFileSync(path.join(root,'packages/ds-godot/verification',name),path.join(project,name));
+const verification = path.join(root,'packages/ds-godot/verification');
+for(const name of ['main.gd','roundtrip.gd']) fs.copyFileSync(path.join(verification,name),path.join(project,name));
+// Roundtrip fixtures may load sibling verification scripts by res:// path.
+fs.mkdirSync(path.join(project,'verification'),{recursive:true});
+for(const name of fs.readdirSync(verification).filter(name=>name.endsWith('.gd'))) fs.copyFileSync(path.join(verification,name),path.join(project,'verification',name));
 fs.copyFileSync(path.join(root,'packages/ds-godot/fixtures/traces.json'),path.join(project,'traces.json'));
 // A separate changed-token fixture checks emitted resource values in Godot.
 const {buildComponentIR}=await import('../packages/ds-codegen/dist/ir.js');
