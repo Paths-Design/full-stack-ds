@@ -64,3 +64,11 @@ evidence:
     exit_code: 0
     artifact_path: "/private/tmp/fsds-godot-passive-main-built-20261030/provenance.json"
     commit_sha: bb5de67bd0adfb3feafcd8fdcf2ce3ccd90f5745
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "pnpm run audit:unity-boundary: 0 unclassified/no dead rules/no lowered contradictions; pnpm run audit:variant-realization: 59/59 ledgered, 0 stale; governed:rail + committed-tree-check generated pass; pnpm test: 363 files/5321 tests; pnpm run test:frameworks: Vue 853, Lit 618 with 2 skips, Svelte 753, Angular 639, RN 260 passed; Godot runtime/export interaction rows passed. Logs /private/tmp/fsds-passive-root-test.log and /private/tmp/fsds-passive-framework-test.log"
+    recorded_at: "2026-10-30T11:46:36.250Z"
+    command: "pnpm run audit:unity-boundary; pnpm run audit:variant-realization; pnpm run governed:rail; pnpm test; pnpm run test:frameworks"
+    exit_code: 0
+    artifact_path: "/private/tmp/fsds-passive-root-test.log"
+    commit_sha: "01971c080d2b42100579b2ba684c1f75df09e470"
