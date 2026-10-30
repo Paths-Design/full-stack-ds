@@ -1,9 +1,11 @@
 id: GODOT-GLYPH-PARITY-01
 title: 'Godot contract-derived icon glyph rendering'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Godot Icon glyph projection, native consumer proof and four acceptance records merged to main'
 created_at: '2026-10-30T07:51:07.554Z'
-updated_at: '2026-10-30T08:53:02.898Z'
+updated_at: '2026-10-30T10:09:47.353Z'
 created_by_session: '01a18bc6-4e02-7bd2-986c-84f0ba8fcd6b'
 blast_radius:
   modules:
