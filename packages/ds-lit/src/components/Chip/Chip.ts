@@ -256,7 +256,7 @@ export class ChipElement extends LitElement {
 
   override render() {
     return html`<span class="${this.computeClasses()}" data-fsds-box="">
-  <fsds-button class=${'chip__action'} variant="ghost" @click=${this.onClick} .type=${this.type} ?disabled=${this.disabled ?? false} .ariaLabel=${this.ariaLabel ?? undefined} ?ariaExpanded=${this.ariaExpanded ?? false} ?ariaPressed=${this.ariaPressed ?? false}>
+  <fsds-button class=${'chip__action'} .variant=${"ghost"} @click=${this.onClick} .type=${this.type} ?disabled=${this.disabled ?? false} .ariaLabel=${this.ariaLabel ?? undefined} ?ariaExpanded=${this.ariaExpanded ?? false} ?ariaPressed=${this.ariaPressed ?? false}>
     ${this.icon ? html`
     <span class=${'chip__icon'} aria-hidden="true">${this.icon}</span>
     ` : nothing}
@@ -265,7 +265,7 @@ export class ChipElement extends LitElement {
     </span>
   </fsds-button>
   ${this.dismissible ? html`
-  <fsds-button class=${'chip__dismiss'} type="button" variant="ghost" @click=${this.onDismiss} ?disabled=${this.disabled ?? false} .ariaLabel=${(this.dismissLabel ?? this.fsdsMessages.value.dismiss)}></fsds-button>
+  <fsds-button class=${'chip__dismiss'} .type=${"button"} .variant=${"ghost"} @click=${this.onDismiss} ?disabled=${this.disabled ?? false} .ariaLabel=${(this.dismissLabel ?? this.fsdsMessages.value.dismiss)}></fsds-button>
   ` : nothing}
 </span>`;
   }

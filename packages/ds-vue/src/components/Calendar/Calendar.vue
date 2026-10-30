@@ -60,7 +60,7 @@ const behavior = useCalendar({
   month: () => props.month,
   defaultMonth: props.defaultMonth,
   onMonthChange: (...args) => props.onMonthChange?.(...args),
-  shouldCloseOnSelect: props.shouldCloseOnSelect,
+  get shouldCloseOnSelect() { return props.shouldCloseOnSelect; },
 });
 const dateGrid = useDateGrid(() => ({ value: behavior.value.value, month: behavior.month.value, mode: props.mode, locale: props.locale, minDate: props.minDate, maxDate: props.maxDate, disabled: props.disabled, caption: props.caption, onValueChange: behavior.setValue, onMonthChange: behavior.setMonth }));
 // @generated:end

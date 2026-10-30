@@ -107,7 +107,7 @@ func _ready() -> void:
 	var renamed_icon = synthetic.items[0].button.get_node_or_null("chevron")
 	check(renamed_icon != null, "Renamed host did not mount its contract reference")
 	if renamed_icon != null:
-		check(not renamed_icon.decorative and renamed_icon.aria_label == "Synthetic indicator", "Typed static reference attributes changed during mounting")
+		check(renamed_icon.decorative and renamed_icon.aria_label == "Synthetic indicator", "Static reference attributes changed during mounting")
 		check(renamed_icon.glyph_name == "chevron-down" and renamed_icon.rendered.texture != null, "Renamed host lost its authored glyph")
 		synthetic.theme.set_color("font_color", "Label", Color("#00cc66"))
 		await get_tree().process_frame

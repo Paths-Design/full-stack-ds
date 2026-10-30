@@ -164,7 +164,7 @@ export class AvatarElement extends LitElement {
   override render() {
     return html`<div class="${this.computeClasses()}" role="img" aria-label=${ifDefined(this.name)} data-fsds-box="">
   ${this.src ? html`
-  <fsds-image class=${'avatar__image'} .src=${this.src} alt=""></fsds-image>
+  <fsds-image class=${'avatar__image'} .src=${this.src} .alt=${""}></fsds-image>
   ` : nothing}
   ${this.initials ? html`
   <span class=${'avatar__initials'}>${this.initials}</span>

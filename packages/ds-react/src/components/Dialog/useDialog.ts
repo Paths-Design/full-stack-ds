@@ -18,6 +18,8 @@ export interface UseDialogOptions {
   /** Whether "escape" dismissal is enabled. */
   closeOnEscape?: boolean;
   /** Whether "overlayClick" dismissal is enabled. */
+  dismissible?: boolean;
+  /** Whether "overlayClick" dismissal is enabled. */
   closeOnBackdropClick?: boolean;
   /** When false the surface is non-blocking: no focus trap, no scroll lock. */
   modal?: boolean;

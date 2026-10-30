@@ -832,7 +832,7 @@ describe("generateJetpackComposeComponentSource — centered surface (FEAT-COMPO
     expect(src).toContain("ComposeDialog(");
     expect(src).toContain("onDismissRequest = { dismiss() }");
     expect(src).toContain("dismissOnBackPress = closeOnEscape,");
-    expect(src).toContain("dismissOnClickOutside = closeOnBackdropClick,");
+    expect(src).toContain("dismissOnClickOutside = dismissible && closeOnBackdropClick,");
     expect(src).toContain("if (!resolvedOpen) return");
     expect(src).toContain('layeredSlot("dialog.color.background")');
     expect(src).toContain('layeredSlot("dialog.size.radius")');

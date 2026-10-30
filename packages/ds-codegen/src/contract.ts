@@ -728,6 +728,8 @@ export interface ContractDismissalTrigger {
   event: DismissalEvent;
   /** Prop whose truthy value enables this trigger; absent means always-on. */
   enabledBy?: string;
+  /** Conjunction of boolean props for overlayClick; exclusive with enabledBy. */
+  enabledByAll?: string[];
   defaultEnabled?: boolean;
   /**
    * Anatomy part that owns this trigger's interaction. Required for

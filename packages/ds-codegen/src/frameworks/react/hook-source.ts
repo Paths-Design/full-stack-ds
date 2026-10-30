@@ -1,4 +1,5 @@
 import { selectionChangeHandler } from "../selection-dismissal.js";
+import { dismissalGateProps } from "../../dismissal-gates.js";
 /**
  * React behavior hook emitter.
  *
@@ -368,11 +369,12 @@ function generateOptionsInterface(
   }
 
   for (const t of ir.behavior.normalizedDismissalTriggers) {
-    if (!t.enabledByProp) continue;
+    for (const prop of dismissalGateProps(t)) {
     lines.push(
       `  /** ${t.description ?? `Whether "${t.event}" dismissal is enabled.`} */`,
     );
-    lines.push(`  ${t.enabledByProp}?: boolean;`);
+    lines.push(`  ${prop}?: boolean;`);
+    }
   }
 
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: the keyboard select handler evaluates

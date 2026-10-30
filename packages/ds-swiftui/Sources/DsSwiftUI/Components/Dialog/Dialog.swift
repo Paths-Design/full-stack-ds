@@ -25,6 +25,7 @@ enum DialogTokens {
             "dialog.color.foreground": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-foreground", name: "dialog.color.foreground", ref: "semantic.color.foreground.primary", fallback: .adaptive(light: "#141414", dark: "#fafafa")),
             "dialog.color.border": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-border", name: "dialog.color.border", ref: "semantic.surface.border.subtle", fallback: .adaptive(light: "#d0d0d0", dark: "#474647")),
             "dialog.size.radius": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-size-radius", name: "dialog.size.radius", ref: "semantic.shape.radius.large", fallback: .string("16px")),
+            "dialog.size.closeButton.size": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-size-close-button-size", name: "dialog.size.closeButton.size", ref: "core.spacing.size.08", fallback: .string("32px")),
         ],
         "part_backdrop": [
             "dialog.color.background": FsdsComponentTokenDefinition(cssVar: "--fsds-dialog-color-background", name: "dialog.color.background", ref: "semantic.color.overlay.scrim", fallback: .string("#00000066")),
@@ -41,12 +42,14 @@ enum DialogTokens {
     ]
 }
 
-/// Emitted through the centered-modal surface path: presented as a sheet whose native dismissal (Esc, overlay click) drives the openness channel back through onOpenChange — the contract's escape/overlayClick dismissal triggers realized by the platform.
+/// Emitted through the centered-modal surface path: presented as a sheet whose native dismissal drives the openness channel through onOpenChange. Independent platform-dismissal policy flags are omitted.
 public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>: View {
+    @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
         DialogTokens.scopes
     }
     @ControllableState private var open: ControllableValue<Bool>
+    private let dismissible: Bool
     private let header: Header
     private let title: Title
     private let bodyContent: BodyContent
@@ -57,12 +60,14 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
         open: Binding<Bool>? = nil,
         defaultOpen: Bool = false,
         onOpenChange: ((Bool) -> Void)? = nil,
+        dismissible: Bool = true,
         @ViewBuilder header: () -> Header = { EmptyView() },
         @ViewBuilder title: () -> Title = { EmptyView() },
         @ViewBuilder bodyContent: () -> BodyContent = { EmptyView() },
         @ViewBuilder footer: () -> Footer = { EmptyView() }
     ) {
         self._open = ControllableState(controlled: open, defaultValue: defaultOpen, onChange: onOpenChange)
+        self.dismissible = dismissible
         self.header = header()
         self.title = title()
         self.bodyContent = bodyContent()
@@ -102,6 +107,15 @@ public struct Dialog<Header: View, Title: View, BodyContent: View, Footer: View>
             title
             bodyContent
             footer
+            if (dismissible) {
+                SwiftUI.Button(action: { open.set(false) }) {
+                    DsSwiftUI.Icon(name: "x", size: .sm).accessibilityHidden(true)
+                    .frame(width: fsdsTheme.tokens["dialog.design.close-button.sizing.width"]?.px ?? pxSlot("dialog.size.closeButton.size") ?? 32, height: fsdsTheme.tokens["dialog.design.close-button.sizing.height"]?.px ?? pxSlot("dialog.size.closeButton.size") ?? 32)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(SwiftUI.Text(fsdsMessages.string("Dialog.close", default: "Close dialog")))
+            }
         }
             .padding(.vertical, blockPadding)
             .padding(.horizontal, inlinePadding)

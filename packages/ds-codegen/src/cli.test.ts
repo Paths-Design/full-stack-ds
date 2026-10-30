@@ -12,6 +12,7 @@ import { mergeBoxModelDefaults } from "./box-model.js";
 import type { ComponentContract, TokenResolution } from "./contract.js";
 import type { FrameworkEmitter, TargetId } from "./emitter.js";
 import type { RegistryOptions, TargetBinding, TargetRegistry } from "./registry.js";
+import { ADMITTED_FRAMEWORKS } from "./validation/admission-descriptor.js";
 
 // Every case resets the module registry and re-imports cli.ts against the real
 // contracts corpus, so the import graph is rebuilt per test rather than shared:
@@ -493,7 +494,16 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     expect(fs.readFileSync(path.join(root, "Runtime/Resources/Sheet.ledger.json"), "utf8")).toBe("{}\n");
     const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
       groups: { framework: string; component: string; contract: { path: string; sha256: string }; files: { path: string; sha256: string }[] }[];
+      emitterSourceSets: Record<string, { sources: { path: string; sha256: string }[] }>;
     };
+    const helperPath = "packages/ds-codegen/src/dismissal-gates.ts";
+    expect(Object.keys(manifest.emitterSourceSets).sort()).toEqual([...ADMITTED_FRAMEWORKS].sort());
+    for (const framework of ADMITTED_FRAMEWORKS) {
+      expect(manifest.emitterSourceSets[framework].sources.find(source => source.path === helperPath)).toEqual({
+        path: helperPath,
+        sha256: sha256(fs.readFileSync(path.join(process.cwd(), helperPath))),
+      });
+    }
     const rel = path.relative(process.cwd(), root).split(path.sep).join("/");
     expect(manifest.groups.filter((g) => g.component === "(target-assets)")).toEqual([
       {

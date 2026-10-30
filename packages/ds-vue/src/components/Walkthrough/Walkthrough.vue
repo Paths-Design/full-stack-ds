@@ -61,7 +61,7 @@ const behavior = useWalkthrough({
   index: () => props.index,
   defaultIndex: props.defaultIndex,
   onStepChange: (...args) => props.onStepChange?.(...args),
-  closeOnOutsideClick: props.closeOnOutsideClick,
+  get closeOnOutsideClick() { return props.closeOnOutsideClick; },
 });
 // @generated:end
 

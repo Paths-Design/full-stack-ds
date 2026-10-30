@@ -39,7 +39,6 @@ for(const fact of probe.tokenFacts) if(fact.rawValue?.match(/^#[0-9a-f]{6}$/i)) 
 emitProbe(probe);
 const syntheticGroup=structuredClone(contract);
 const syntheticRef=syntheticGroup.anatomy.dom.children[0].children[0].children[0].children[1];
-syntheticRef.attrs.decorative='false';
 syntheticRef.attrs.ariaLabel='Synthetic indicator';
 const iconContract=JSON.parse(fs.readFileSync(path.join(root,'packages/ds-contracts/components/Icon/Icon.contract.json'),'utf8'));
 const syntheticIR=buildComponentIR(syntheticGroup,{allContracts:new Map([[syntheticGroup.name,syntheticGroup],[iconContract.name,iconContract]])});

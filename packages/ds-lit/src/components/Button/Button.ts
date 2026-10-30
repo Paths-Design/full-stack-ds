@@ -292,7 +292,7 @@ export class ButtonElement extends LitElement {
   override render() {
     return html`<button class="${this.computeClasses()}" @click=${this.onClick} type=${ifDefined((this.type ?? "button"))} ?disabled=${this.disabled ?? false} aria-label=${ifDefined(this.ariaLabel ?? undefined)} aria-expanded=${ifDefined(this.ariaExpanded === undefined ? undefined : (this.ariaExpanded ? 'true' : 'false'))} aria-pressed=${ifDefined(this.ariaPressed === undefined ? undefined : (this.ariaPressed ? 'true' : 'false'))} aria-busy=${ifDefined(this.loading === undefined ? undefined : (this.loading ? 'true' : 'false'))} data-fsds-box="">
   ${this.loading ? html`
-  <fsds-spinner class=${'button__spinner'} size="sm" ?inline=${this.loading ?? false} ?ariaHidden=${this.loading ?? false}></fsds-spinner>
+  <fsds-spinner class=${'button__spinner'} .size=${"sm"} ?inline=${this.loading ?? false} ?ariaHidden=${this.loading ?? false}></fsds-spinner>
   ` : nothing}
   <span class=${'button__loadingText'}>
     <slot></slot>

@@ -27,7 +27,7 @@ enum SheetTokens {
     ]
 }
 
-/// Emitted through the centered-modal surface path: presented as a sheet whose native dismissal (Esc, overlay click) drives the openness channel back through onOpenChange — the contract's escape/overlayClick dismissal triggers realized by the platform.
+/// Emitted through the centered-modal surface path: presented as a sheet whose native dismissal drives the openness channel through onOpenChange. Independent platform-dismissal policy flags are omitted.
 public struct Sheet<Content: View, Header: View, Title: View, Description: View, BodyContent: View, Footer: View>: View {
     private var fsdsScopes: FsdsComponentTokenScopes {
         SheetTokens.scopes

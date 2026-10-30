@@ -41,17 +41,17 @@ describe("Godot bounded lowering", () => {
     expect(() => createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") }))
       .toThrow("GODOT_UNSUPPORTED_REF: RenamedGroup Unadmitted has no admitted glyph mount capability");
   });
-  it("types glyph literals and refuses a referenced runtime without a glyph setter", () => {
+  it("rejects untyped glyph literals and a referenced runtime without a glyph setter", () => {
     const source = fixture("Accordion");
     const ref = (source.anatomy as { dom: { children: any[] } }).dom.children[0].children[0].children[0].children[1];
     ref.attrs.decorative = "false";
     const icon = fixture("Icon");
-    const iconIR = buildComponentIR(source, { allContracts: new Map([[source.name, source], [icon.name, icon]]) });
-    const iconPlan = godotPlan(iconIR);
-    expect(iconPlan).toMatchObject({ itemButtonRefs: [{ attrs: { decorative: false } }] });
-    ref.attrs.decorative = "not-a-boolean";
+    expect(() => buildComponentIR(source, { allContracts: new Map([[source.name, source], [icon.name, icon]]) }))
+      .toThrow("static attrs carry strings, so use a typed prop binding");
+    delete ref.attrs.decorative;
+    ref.attrs.size = "not-a-size";
     const invalidIR = buildComponentIR(source, { allContracts: new Map([[source.name, source], [icon.name, icon]]) });
-    expect(() => godotPlan(invalidIR)).toThrow("needs a boolean literal");
+    expect(() => godotPlan(invalidIR)).toThrow("has an invalid enum literal");
     ref.componentRef = "fsds.Button";
     ref.attrs = { variant: "primary" };
     (source.anatomy as { details: Record<string, { componentRef: string }> }).details.chevron.componentRef = "fsds.Button";
