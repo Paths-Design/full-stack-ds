@@ -9,6 +9,7 @@ created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
     - 'Lit native table composition and public template helpers'
+    - 'Web native Table header associations and language direction metadata'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -36,7 +37,7 @@ scope:
   out: []
 invariants:
   - 'Native table section row and cell semantics remain contract-owned without component-name emitter branches or autonomous native-part elements'
-  - 'Flow-content consumer slots and other framework output remain unchanged'
+  - 'Flow-content consumer slots and non-Table generated components remain unchanged'
 acceptance:
   - id: A1
     given: 'a composed Lit table with caption column and row headers cells and footer'
@@ -50,6 +51,12 @@ acceptance:
     given: 'ordinary flow-content slots and generated Table tests'
     when: 'all targets regenerate and required checks run'
     then: 'the held Table cases are replaced by executed composition assertions and unrelated consumer slot lowering remains intact'
+  - id: A4
+    given: >-
+      composed native web Table headers and cells with explicit associations sort
+      metadata and language direction
+    when: 'strict public consumers and browser compositions render and update each web framework'
+    then: 'typed attributes reach native nodes with valid metadata and native node identity is preserved'
 observability:
   - 'Retain raw browser DOM geometry accessibility snapshots screenshots strict public type and packed-consumer logs under canonical ignored CAWS state'
 rollback:
