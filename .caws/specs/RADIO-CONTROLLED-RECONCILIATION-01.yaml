@@ -89,3 +89,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/composite-control-ir.test.ts packages/ds-codegen/src/interaction-runtime.test.ts
     exit_code: 0
     commit_sha: "95833ba904f706e251898f51cae3042859069920"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "25 focused cases, renamed-contract/value-identity falsifiers, eleven browser cases, root5213/357 and all framework suites passed; final test typing rechecked by tsc and focused25. Fresh integrated rail all six, lint, docs claims/links and generated drift passed; policy evaluated actual22-file lane after caws claim. Raw .caws/state/radio-{focused,types,root,frameworks,integrated-rail,integrated-lint,integrated-docs}.log; generic normalized facts and generated sources, no publication/native-device/whole-library readiness claim"
+    recorded_at: "2026-10-30T00:11:59.472Z"
+    command: "pnpm run governed:rail && pnpm run lint && pnpm exec vitest run --maxWorkers=1 && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "95833ba904f706e251898f51cae3042859069920"
