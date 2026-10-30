@@ -99,3 +99,10 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "audit:token-resolvability: 0 findings including Unity; audit:variant-realization: 50 findings all ledgered, 0 unledgered/stale, Unity 7 ledgered nondefault gaps"
+    recorded_at: "2026-10-30T05:46:46.896Z"
+    command: "pnpm run audit:token-resolvability && pnpm run audit:variant-realization"
+    exit_code: 0
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
