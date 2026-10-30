@@ -6,6 +6,7 @@ import { MotionPart, MotionPartScope } from "../../primitives/motion-parts";
 import { useFsdsTheme } from "../../tokens";
 import { createDialogStyles } from "./Dialog.styles";
 import { useFsdsMessages } from "../../primitives/messages";
+import { Icon } from "../Icon/Icon";
 // @generated:end
 
 // @generated:start types
@@ -45,6 +46,7 @@ const DialogMessages = { close: "Close dialog" };
 export function Dialog({
   open: controlledOpenness,
   modal = true,
+  dismissible = true,
   closeOnEscape = true,
   closeOnBackdropClick = true,
   ariaLabel,
@@ -89,7 +91,7 @@ export function Dialog({
 <MotionPart projection={motionParts["backdrop"]} style={styles.backdrop}>
       <Pressable
         style={styles.backdrop}
-        onPress={() => { if (closeOnBackdropClick ?? true) setOpennessValue(false); }}
+        onPress={() => { if ((dismissible ?? true) && (closeOnBackdropClick ?? true)) setOpennessValue(false); }}
         accessible={false}
       />
 </MotionPart>
@@ -107,12 +109,19 @@ export function Dialog({
           >
             {slots?.title}
           </View>
+          {dismissible ? (
           <Pressable
             style={styles.closeButton}
             accessibilityLabel={fsdsMessages.close}
             onPress={() => setOpennessValue(false)}
             accessibilityRole="button"
-          />
+          >
+            <Icon
+              name="x"
+              size="sm"
+            />
+          </Pressable>
+          ) : null}
         </View>
         <View
           style={styles.body}

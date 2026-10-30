@@ -170,7 +170,7 @@ export class StatusElement extends LitElement {
 
   override render() {
     return html`<span class="${this.computeClasses()}" data-fsds-box="">
-  <fsds-icon class=${'status__icon'} size="sm" .name=${(this.status === "info" ? "info" : (this.status === "success" ? "check" : (this.status === "warning" ? "triangle-alert" : (this.status === "danger" ? "triangle-alert" : "triangle-alert"))))}></fsds-icon>
+  <fsds-icon class=${'status__icon'} .size=${"sm"} .name=${(this.status === "info" ? "info" : (this.status === "success" ? "check" : (this.status === "warning" ? "triangle-alert" : (this.status === "danger" ? "triangle-alert" : "triangle-alert"))))}></fsds-icon>
   <span class=${'status__label'}>
     <slot></slot>
   </span>

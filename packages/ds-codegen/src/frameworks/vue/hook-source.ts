@@ -1,4 +1,5 @@
 import { selectionChangeHandler } from "../selection-dismissal.js";
+import { dismissalGateProps } from "../../dismissal-gates.js";
 /**
  * Vue 3 composable emitter — the framework-equivalent of
  * `frameworks/react/hook-source.ts`. Produces a `useX.ts` file that
@@ -185,9 +186,8 @@ function generateOptionsInterface(
     lines.push(`  ${ch.changeHandlerProp}?: (value: ${t}) => void;`);
   }
 
-  for (const t of ir.behavior.normalizedDismissalTriggers) {
-    if (!t.enabledByProp) continue;
-    lines.push(`  ${t.enabledByProp}?: boolean;`);
+  for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+    lines.push(`  ${prop}?: boolean;`);
   }
 
   if (bindings.usePortal) {

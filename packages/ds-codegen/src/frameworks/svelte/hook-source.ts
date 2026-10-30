@@ -1,4 +1,5 @@
 import { selectionChangeHandler } from "../selection-dismissal.js";
+import { dismissalGateProps } from "../../dismissal-gates.js";
 /**
  * Svelte 5 behavior file emitter — the framework-equivalent of
  * `frameworks/vue/hook-source.ts`. Produces a `use<Name>.svelte.ts` file
@@ -173,9 +174,8 @@ function generateOptionsInterface(
     );
   }
 
-  for (const t of ir.behavior.normalizedDismissalTriggers) {
-    if (!t.enabledByProp) continue;
-    lines.push(`  ${t.enabledByProp}?: () => boolean | undefined;`);
+  for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+    lines.push(`  ${prop}?: () => boolean | undefined;`);
   }
 
   if (bindings.usePortal) {

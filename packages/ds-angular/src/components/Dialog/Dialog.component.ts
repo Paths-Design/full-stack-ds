@@ -4,6 +4,7 @@ import { NgClass, NgIf } from "@angular/common";
 import { injectFsdsMessages } from "../../primitives/messages.js";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { StackComponent } from "../../primitives/index.js";
+import { IconComponent } from "../Icon/Icon.component.js";
 import { useDialog } from "./useDialog.js";
 // @generated:end
 
@@ -27,11 +28,11 @@ const DialogMessages = { close: "Close dialog" };
 @Component({
   selector: "fsds-dialog",
   standalone: true,
-  imports: [NgClass, NgIf],
+  imports: [NgClass, NgIf, IconComponent],
   host: { "data-fsds-component": "dialog" },
   template: `<div [ngClass]="classes()" data-fsds-box="">
   <ng-container *ngIf="behavior.openness()">
-    <div [ngClass]="'dialog__backdrop'" aria-hidden="true" role="presentation" (click)="closeOnBackdropClick !== false && behavior.setOpenness(false)"></div>
+    <div [ngClass]="'dialog__backdrop'" aria-hidden="true" role="presentation" (click)="(dismissible ?? true) && (closeOnBackdropClick ?? true) && behavior.setOpenness(false)"></div>
   </ng-container>
   <ng-container *ngIf="behavior.openness()">
     <div [ngClass]="'dialog__modal'" #interactionPanel role="dialog" [attr.aria-modal]="(modal ?? true)" [attr.aria-label]="ariaLabel" [attr.aria-labelledby]="modalAriaLabelledby" [attr.aria-describedby]="modalAriaDescribedby">
@@ -39,7 +40,11 @@ const DialogMessages = { close: "Close dialog" };
         <h2 [ngClass]="'dialog__title'" [attr.id]="instanceId + '-title'">
           <ng-content select="[slot=title]" />
         </h2>
-        <button [ngClass]="'dialog__closeButton'" type="button" (click)="canActivateInteraction($event, false) && behavior.setOpenness(false)" [attr.aria-label]="fsdsMessages().close"></button>
+        <ng-container *ngIf="dismissible">
+          <button [ngClass]="'dialog__closeButton'" type="button" (click)="canActivateInteraction($event, false) && behavior.setOpenness(false)" [attr.aria-label]="fsdsMessages().close">
+            <fsds-icon name="x" size="sm"></fsds-icon>
+          </button>
+        </ng-container>
       </div>
       <div [ngClass]="'dialog__body'" [attr.id]="instanceId + '-body'">
         <ng-content />
@@ -80,17 +85,23 @@ export class DialogComponent implements OnInit, OnDestroy {
   private injector = inject(Injector);
   private initializedBehavior?: ReturnType<typeof useDialog>;
   protected get behavior(): ReturnType<typeof useDialog> {
-    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => useDialog({
+    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => {
+      const readDismissalCloseOnEscape = () => this.closeOnEscape;
+      const readDismissalDismissible = () => this.dismissible;
+      const readDismissalCloseOnBackdropClick = () => this.closeOnBackdropClick;
+      return useDialog({
     open: () => this.open,
     defaultOpen: this.defaultOpen,
     onOpenChange: (v) => this.onOpenChange?.(v),
-    closeOnEscape: this.closeOnEscape,
-    closeOnBackdropClick: this.closeOnBackdropClick,
+    get closeOnEscape() { return readDismissalCloseOnEscape(); },
+    get dismissible() { return readDismissalDismissible(); },
+    get closeOnBackdropClick() { return readDismissalCloseOnBackdropClick(); },
     initialFocus: () => this.initialFocus,
     returnFocus: () => this.returnFocus,
     modal: () => this.modal,
     destroyRef: this.destroyRef,
-  })));
+  });
+    }));
   }
   protected canActivateInteraction = canActivateInteraction;
 

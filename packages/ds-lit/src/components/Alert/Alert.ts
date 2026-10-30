@@ -234,7 +234,7 @@ export class AlertElement extends LitElement {
   ` : nothing}
   <slot></slot>
   ${this.dismissible ? html`
-  <fsds-button class=${'alert__dismiss'} type="button" @click=${this.onDismiss} .ariaLabel=${(this.dismissLabel ?? this.fsdsMessages.value.dismiss)}></fsds-button>
+  <fsds-button class=${'alert__dismiss'} .type=${"button"} @click=${this.onDismiss} .ariaLabel=${(this.dismissLabel ?? this.fsdsMessages.value.dismiss)}></fsds-button>
   ` : nothing}
 </div>`;
   }

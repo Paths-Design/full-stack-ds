@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dismissalGateExpression, dismissalGateProps } from "../../dismissal-gates.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { sequenceConfig, sequenceMessages, sequencePresentation } from "../../sequence.js";
@@ -1881,6 +1882,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       ? {
           overlayClickSetter: `set${capitalizeAngular(booleanChannel.name)}`,
           overlayClickEnabledProp: overlayClickTrigger.enabledByProp,
+          overlayClickEnabledGate: overlayClickTrigger.enabledByProps ? dismissalGateExpression(overlayClickTrigger, name => name) : undefined,
           overlayClickTargetPart: overlayClickTrigger.targetPart,
         }
       : {}),
@@ -2077,6 +2079,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     lines.push(`  }`);
   }
   if (hasHook) {
+    const liveDismissalOptions = ir.behavior.normalizedDismissalTriggers.some(trigger => dismissalGateProps(trigger).length);
     lines.push(``);
     lines.push(`  private destroyRef = inject(DestroyRef);`);
     // Build the hook call
@@ -2084,9 +2087,25 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       lines.push(`  private injector = inject(Injector);`);
       lines.push(`  private initializedBehavior?: ReturnType<typeof use${ir.name}>;`);
       lines.push(`  protected get behavior(): ReturnType<typeof use${ir.name}> {`);
-      lines.push(`    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => use${ir.name}({`);
+      if (liveDismissalOptions) {
+        lines.push(`    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => {`);
+        for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+          lines.push(`      const readDismissal${capitalizeAngular(prop)} = () => this.${prop};`);
+        }
+        lines.push(`      return use${ir.name}({`);
+      } else {
+        lines.push(`    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => use${ir.name}({`);
+      }
     } else {
-      lines.push(`  protected behavior = use${ir.name}({`);
+      if (liveDismissalOptions) {
+        lines.push(`  protected behavior = (() => {`);
+        for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+          lines.push(`    const readDismissal${capitalizeAngular(prop)} = () => this.${prop};`);
+        }
+        lines.push(`    return use${ir.name}({`);
+      } else {
+        lines.push(`  protected behavior = use${ir.name}({`);
+      }
     }
     for (const ch of channels) {
       lines.push(`    ${ch.valueProp}: () => this.${ch.valueProp},`);
@@ -2098,10 +2117,9 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       );
     }
     // Forward dismissal-trigger enabledBy props.
-    for (const trigger of ir.behavior.normalizedDismissalTriggers) {
-      if (!trigger.enabledByProp) continue;
+    for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
       lines.push(
-        `    ${trigger.enabledByProp}: this.${trigger.enabledByProp},`,
+        `    get ${prop}() { return readDismissal${capitalizeAngular(prop)}(); },`,
       );
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: forward the mode gates the keyboard
@@ -2120,8 +2138,11 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     lines.push(`    destroyRef: this.destroyRef,`);
     lines.push(`  });`);
     if (controlledChannels.size > 0) {
-      lines[lines.length - 1] = `  })));`;
+      if (liveDismissalOptions) lines.push(`    }));`);
+      else lines[lines.length - 1] = `  })));`;
       lines.push(`  }`);
+    } else if (liveDismissalOptions) {
+      lines.push(`  })();`);
     }
     // Ephemeral-surface auto-dismiss (WCAG 2.2.1). The effect tracks the
     // behavior's open signal; sync() restarts/clears the timer; pause
@@ -2732,6 +2753,7 @@ interface AngularRenderContext {
   countdownPart?: string;
   overlayClickSetter?: string;
   overlayClickEnabledProp?: string;
+  overlayClickEnabledGate?: string;
   overlayClickTargetPart?: string;
   /**
    * Identifier names introduced by enclosing `*ngFor` iterations. After
@@ -3056,7 +3078,9 @@ function renderAngularDomNode(
     // FIX-OVERLAY-CLICK-DISMISSAL-BINDING-01: the part is the contract's
     // declared dismissal `targetPart` (an IR fact), not a hardcoded
     // overlay/backdrop name guess.
-    const guardExpr = ctx.overlayClickEnabledProp
+    const guardExpr = ctx.overlayClickEnabledGate
+      ? `${ctx.overlayClickEnabledGate} && behavior.${ctx.overlayClickSetter}(false)`
+      : ctx.overlayClickEnabledProp
       ? `${ctx.overlayClickEnabledProp} !== false && behavior.${ctx.overlayClickSetter}(false)`
       : `behavior.${ctx.overlayClickSetter}(false)`;
     attrs.push(`role="presentation"`);

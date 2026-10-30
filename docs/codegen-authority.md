@@ -154,6 +154,7 @@ This inventory was produced as part of CODEGEN-SEMANTIC-AUTHORITY-01. It documen
 | `AnchoredSurfacePolicy` + `resolveAnchoredSurfacePolicy` | Shared `semantics.ts` | Contract `surface.{anchor, positioning, dismissal, content}` | Part-attached anchored capability |
 | `resolveSurfaceAttachment` + `isPartAnchoredSurface` | Shared `semantics.ts` | Contract `surface.{anchor, positioning}` | Attachment and positioning axes |
 | `FormControlIR` + `buildFormControlIR` | Shared `ir.ts` | Contract `formControl` + anatomy + channel | Control part, value model, commit timing |
+| Static referenced-component props | Lit component emitter | IR `ComponentInstanceIR.attrs` prop/attribute classification | Declared target props use property binding; host attributes retain attribute binding |
 | `nativeRadioChannel` + `requestNativeRadioChange` | Shared `ir.ts` + interaction runtime; Vue/Svelte/Angular/Lit syntax lowering | Native radio host, string selection channel, matching checked predicate and native value binding | Native radio change requests whose form value is the selection key |
 | `nativeTextChannel` + `requestNativeTextChange` / `useNativeTextValue` | Shared `ir.ts` + interaction runtime; React host adapter and Vue/Svelte/Angular/Lit syntax lowering | Native input/textarea value and input/change request bound to the same string channel | Native text ownership, with composition drafts retained until commit |
 | `EventValueStrategy` + `resolveEventValueStrategy` | Shared `semantics.ts` | Host capability + channel valueType + callback kind | Event extraction site |
@@ -182,6 +183,12 @@ renderer's committed-value restoration. This lowering is removable
 when the affected renderer supplies equivalent accepted-value restoration.
 
 ### Healthy but duplicated across substrates
+
+Lit static referenced props share the dynamic property-binding path because a
+declared variant can disable attribute observation. Passing its literal value as
+an HTML attribute leaves the component's default active. This lowering is
+removable if every declared target property can be initialized equivalently
+through attribute conversion.
 
 | Rule | Lives in | Duplication source | Should live |
 |---|---|---|---|
@@ -221,6 +228,8 @@ These patterns encode product semantics inside a framework emitter. They are rej
 Distinct from fabrication: real framework realization law (Svelte grammar rejects `textContent` as an attribute) and generic host-capability facts (event-value extraction, Booleanish coercion) are legitimate emitter knowledge. Where such a fact currently lives in one emitter but is generic, it stands as a temporary exception under the exception protocol, with its promotion target listed in the smells table above.
 
 ## How to use this document
+
+Dismissal conjunctions are contract facts: `enabledByAll` names boolean props and is admitted only for overlay clicks. The IR validates the closed grammar and normalizes the names once; `dismissal-gates.ts` owns gate collection and JavaScript default semantics, while backends supply property syntax. Persistent behaviors read live policy properties rather than mount-time snapshots. Static reference attrs carry strings; Boolean and numeric props require typed bindings, and the IR rejects string attrs targeting those types. Native referenced close actions consume normalized close activation, catalog labels, render guards and source-bearing part dimensions through `native-surface-actions.ts`. These rules apply by capability and part/property facts, without component-name checks; they are removable when those facts leave the contract vocabulary. Native reference lowering rejects unsupported inputs rather than accepting inert props.
 
 When adding a new emitter rule, fill in the classification fields. If the rule branches on component identity, do not commit; promote upstream first or mark as a temporary exception with a removal task.
 

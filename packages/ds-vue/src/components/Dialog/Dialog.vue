@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed, useId } from "vue";
 import { useDialog } from "./useDialog.js";
+import Icon from "../Icon/Icon.vue";
 import { canActivateInteraction } from "../../primitives/interaction.js";
 import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
@@ -58,8 +59,9 @@ const behavior = useDialog({
   open: () => props.open,
   defaultOpen: props.defaultOpen,
   onOpenChange: (...args) => props.onOpenChange?.(...args),
-  closeOnEscape: props.closeOnEscape,
-  closeOnBackdropClick: props.closeOnBackdropClick,
+  get closeOnEscape() { return props.closeOnEscape; },
+  get dismissible() { return props.dismissible; },
+  get closeOnBackdropClick() { return props.closeOnBackdropClick; },
   initialFocus: () => props.initialFocus,
   returnFocus: () => props.returnFocus,
   modal: () => props.modal,
@@ -87,13 +89,15 @@ const instanceId = useId();
 <template>
   <Teleport to="body">
     <div :class="classNames" :data-testid="props.dataTestid" data-fsds-component="dialog" data-fsds-box="">
-      <div v-if="behavior.openness.value" :class="'dialog__backdrop'" aria-hidden="true" @click.self="props.closeOnBackdropClick !== false && behavior.setOpenness(false)"></div>
+      <div v-if="behavior.openness.value" :class="'dialog__backdrop'" aria-hidden="true" @click.self="(props.dismissible ?? true) && (props.closeOnBackdropClick ?? true) && behavior.setOpenness(false)"></div>
       <div v-if="behavior.openness.value" :class="'dialog__modal'" :ref="bindInteractionPanel" role="dialog" :aria-modal="props.modal" :aria-label="props.ariaLabel" :aria-labelledby="[$slots.title && !props.ariaLabel ? `${instanceId}-title` : null, props.ariaLabelledby].filter(Boolean).join(' ') || undefined" :aria-describedby="[`${instanceId}-body`, props.ariaDescribedby].filter(Boolean).join(' ') || undefined">
         <div :class="'dialog__header'">
           <h2 :class="'dialog__title'" :id="`${instanceId}-title`">
             <slot name="title" />
           </h2>
-          <button :class="'dialog__closeButton'" type="button" @click="(e: MouseEvent) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }" :aria-label="fsdsMessages.close"></button>
+          <button v-if="props.dismissible" :class="'dialog__closeButton'" type="button" @click="(e: MouseEvent) => { if (canActivateInteraction(e, false)) behavior.setOpenness(false); }" :aria-label="fsdsMessages.close">
+            <Icon name="x" size="sm" />
+          </button>
         </div>
         <div :class="'dialog__body'" :id="`${instanceId}-body`">
           <slot />

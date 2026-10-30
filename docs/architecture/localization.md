@@ -4,8 +4,8 @@ authority: architecture
 status: active
 title: Component message catalogs
 owner: "@darianrosebrook"
-updated: 2026-10-21
-verified_at_commit: 4ef5a4f30
+updated: 2026-10-30
+verified_at_commit: f8ccd3c9555b06f33345bb7a536dc5ee79a49510
 governs:
   - packages/ds-contracts/component.contract.schema.json
   - packages/ds-codegen/src/messages.ts
@@ -158,6 +158,10 @@ Compose has none on the JVM and does not announce it.
 
 ## Evidence
 
+- `e2e/dialog-dismissal.spec.ts` checks supplied localized close names with
+  pointer and keyboard activation in the web families. React Native's
+  `Dialog.dismissal.test.tsx` checks the supplied name on the rendered host
+  control, alongside controlled refusal and uncontrolled close requests.
 - `packages/ds-codegen/src/messages.test.ts`: IR message facts, each
   `MESSAGE_INVALID` refusal by exact diagnostic, and the rotation control's
   single text writer. `validation/ir-build.test.ts` pins that the corpus builds

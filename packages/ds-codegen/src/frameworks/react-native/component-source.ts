@@ -1,4 +1,5 @@
 import { pagedBindingExpression } from "../../paging.js";
+import { dismissalGateExpression, dismissalGateProps } from "../../dismissal-gates.js";
 import { dateGridBindingExpression, dateGridOptions } from "../../date-grid.js";
 import { transferBindingExpression, transferOptions } from "../../transfer.js";
 import { composeMessageExpression, messageDefaultsLiteral, messageDefaultsName } from "../../messages.js";
@@ -837,8 +838,8 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
     if (anchored.escapeDeclared && anchored.escapeTrigger?.enabledByProp) {
       addPropIfPresent(ir, usage, anchored.escapeTrigger.enabledByProp);
     }
-    if (anchored.backdropDismiss && anchored.backdropTrigger?.enabledByProp) {
-      addPropIfPresent(ir, usage, anchored.backdropTrigger.enabledByProp);
+    if (anchored.backdropDismiss) {
+      for (const prop of dismissalGateProps(anchored.backdropTrigger)) addPropIfPresent(ir, usage, prop);
     }
     return usage;
   }
@@ -877,8 +878,8 @@ function collectRuntimeUsage(ir: ComponentIR): RuntimeUsage {
       if (lowering.escapeDeclared && lowering.escapeTrigger?.enabledByProp) {
         addPropIfPresent(ir, usage, lowering.escapeTrigger.enabledByProp);
       }
-      if (lowering.outsideDeclared && lowering.outsideTrigger?.enabledByProp) {
-        addPropIfPresent(ir, usage, lowering.outsideTrigger.enabledByProp);
+      if (lowering.outsideDeclared) {
+        for (const prop of dismissalGateProps(lowering.outsideTrigger)) addPropIfPresent(ir, usage, prop);
       }
     }
   }
@@ -1284,6 +1285,9 @@ function surfaceDismissHandlerExpr(
   trigger: NormalizedDismissalTriggerIR | undefined,
 ): string {
   const setter = `set${capitalize(lowering.openChannel!.name)}Value`;
+  if (trigger?.enabledByProps) {
+    return `() => { if (${dismissalGateExpression(trigger, name => safePropName(ir, name))}) ${setter}(false); }`;
+  }
   if (trigger?.enabledByProp) {
     return `() => { if (${safePropName(ir, trigger.enabledByProp)} ?? ${trigger.defaultEnabled}) ${setter}(false); }`;
   }
@@ -1635,7 +1639,9 @@ function emitAnchoredSurfaceReturn(
       : `() => ${setter}(false)`
     : undefined;
   const backdropHandler = lowering.backdropDismiss
-    ? lowering.backdropTrigger?.enabledByProp
+    ? lowering.backdropTrigger?.enabledByProps
+      ? `() => { if (${dismissalGateExpression(lowering.backdropTrigger, name => safePropName(ir, name))}) ${setter}(false); }`
+      : lowering.backdropTrigger?.enabledByProp
       ? `() => { if (${safePropName(ir, lowering.backdropTrigger.enabledByProp)} ?? ${lowering.backdropTrigger.defaultEnabled}) ${setter}(false); }`
       : `() => ${setter}(false)`
     : undefined;

@@ -18,7 +18,7 @@ function fixture(): ReturnType<typeof buildComponentIR> {
         members: [
           { name: "name", propType: { kind: "string" }, required: true },
           { name: "size", propType: { kind: "string" } },
-          { name: "decorative", propType: { kind: "boolean" } },
+          { name: "decorative", propType: { kind: "boolean" }, default: true },
         ],
       },
     },
@@ -42,7 +42,7 @@ function fixture(): ReturnType<typeof buildComponentIR> {
           {
             componentRef: "fsds.Icon",
             part: "icon",
-            attrs: { size: "sm", decorative: "true" },
+            attrs: { size: "sm" },
             bindings: {
               name: {
                 kind: "map",

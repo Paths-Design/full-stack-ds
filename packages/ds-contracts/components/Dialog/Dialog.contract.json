@@ -115,12 +115,22 @@
                 {
                   "tag": "button",
                   "part": "closeButton",
+                  "if": "dismissible",
                   "attrs": {
                     "type": "button"
                   },
                   "bindings": {
                     "aria-label": "message:close"
-                  }
+                  },
+                  "children": [
+                    {
+                      "componentRef": "fsds.Icon",
+                      "attrs": {
+                        "name": "x",
+                        "size": "sm"
+                      }
+                    }
+                  ]
                 }
               ]
             },
@@ -443,7 +453,7 @@
       },
       {
         "event": "overlayClick",
-        "enabledBy": "closeOnBackdropClick",
+        "enabledByAll": ["dismissible", "closeOnBackdropClick"],
         "targetPart": "backdrop"
       }
     ]

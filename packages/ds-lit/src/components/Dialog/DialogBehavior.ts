@@ -13,6 +13,7 @@ export interface DialogBehaviorOptions {
   defaultOpen?: boolean;
   onOpenChange?: (value: boolean) => void;
   closeOnEscape?: boolean;
+  dismissible?: boolean;
   closeOnBackdropClick?: boolean;
   containerEl?: HTMLElement;
   initialFocus?: () => string | undefined;

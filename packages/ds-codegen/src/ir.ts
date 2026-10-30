@@ -1619,6 +1619,8 @@ export interface NormalizedDismissalTriggerIR {
   event: ContractDismissalTrigger["event"];
   /** Prop name controlling whether the trigger is active. */
   enabledByProp?: string;
+  /** Validated conjunction, admitted only for overlayClick. */
+  enabledByProps?: string[];
   defaultEnabled: boolean;
   /**
    * Anatomy part that owns this trigger's interaction. Required for
@@ -3518,7 +3520,15 @@ function resolveComponentInstances(
       },
     );
     const attrs: ResolvedRefAttr[] = Object.entries(node.attrs).map(
-      ([sourceAttr, value]) => ({ ...classify(sourceAttr), sourceAttr, value }),
+      ([sourceAttr, value]) => {
+        const classified = classify(sourceAttr);
+        const prop = getPropMembers(target).find(prop => prop.name === sourceAttr);
+        const kind = prop?.propType?.kind ?? prop?.type;
+        if (classified.kind === "prop" && (kind === "boolean" || kind === "number")) {
+          throw new Error(`${host.name}: componentRef ${ref}.${sourceAttr} targets ${kind}; static attrs carry strings, so use a typed prop binding`);
+        }
+        return { ...classified, sourceAttr, value };
+      },
     );
     const events: ResolvedRefEvent[] = Object.entries(node.events).map(
       ([name, expr]) => {
@@ -4797,7 +4807,7 @@ function buildBehaviorIR(
     primaryDisclosureChannel: pickPrimaryDisclosureChannel(
       normalizedChannelsForBuild,
     ),
-    normalizedDismissalTriggers: buildDismissalTriggersIR(contract.dismissal),
+    normalizedDismissalTriggers: buildDismissalTriggersIR(contract.dismissal, styledProps),
     normalizedEvents: buildEventsIR(contract.events),
   };
 }
@@ -5661,11 +5671,28 @@ export function pickPrimaryDisclosureChannel(
 
 function buildDismissalTriggersIR(
   dismissal: ContractDismissal | undefined,
+  styledProps: ResolvedPropIR[],
 ): NormalizedDismissalTriggerIR[] {
   if (!dismissal?.triggers) return [];
+  for (const trigger of dismissal.triggers) {
+    const gates = trigger.enabledByAll;
+    if (gates === undefined) continue;
+    if (trigger.enabledBy !== undefined || trigger.event !== "overlayClick") {
+      throw new Error("dismissal enabledByAll is exclusive with enabledBy and only admitted for overlayClick");
+    }
+    if (gates.length === 0 || new Set(gates).size !== gates.length) {
+      throw new Error("dismissal enabledByAll requires nonempty unique boolean prop names");
+    }
+    for (const name of gates) {
+      if (!styledProps.some(prop => prop.name === name && prop.type === "boolean")) {
+        throw new Error(`dismissal enabledByAll prop '${name}' must name a declared boolean prop`);
+      }
+    }
+  }
   return dismissal.triggers.map((t) => ({
     event: t.event,
     enabledByProp: t.enabledBy,
+    ...(t.enabledByAll ? { enabledByProps: [...t.enabledByAll] } : {}),
     defaultEnabled: t.defaultEnabled !== false,
     targetPart: t.targetPart,
     description: t.description,

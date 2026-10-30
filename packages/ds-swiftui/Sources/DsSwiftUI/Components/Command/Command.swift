@@ -22,7 +22,7 @@ enum CommandTokens {
     ]
 }
 
-/// Emitted through the centered-modal surface path: presented as a sheet whose native dismissal (Esc, overlay click) drives the openness channel back through onOpenChange — the contract's escape/overlayClick dismissal triggers realized by the platform.
+/// Emitted through the centered-modal surface path: presented as a sheet whose native dismissal drives the openness channel through onOpenChange. Independent platform-dismissal policy flags are omitted.
 public struct Command<List: View, Group: View, GroupHeading: View, GroupItems: View, Item: View, ItemIcon: View, ItemContent: View, ItemLabel: View, ItemDescription: View>: View {
     @Environment(\.fsdsMessages) private var fsdsMessages
     private var fsdsScopes: FsdsComponentTokenScopes {
