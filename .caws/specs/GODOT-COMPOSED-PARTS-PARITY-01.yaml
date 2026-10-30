@@ -47,3 +47,11 @@ contracts:
   - name: 'godot-composed-player'
     type: behavior
     path: 'packages/ds-godot/verification/main.gd'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Renamed Card and Badge IR fixtures in factory.test.ts: 22/22 passed; emitted part hosts/style addresses and explicit capability omissions inspected at 89b51fd39."
+    recorded_at: "2026-10-30T03:41:41.031Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/factory.test.ts
+    exit_code: 0
+    commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
