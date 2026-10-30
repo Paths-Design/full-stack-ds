@@ -68,3 +68,9 @@ contracts:
   - name: 'unity-glyph-runtime'
     type: behavior
     path: 'packages/ds-unity/Tests/Editor/GlyphTests.cs'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "85abce44c: pnpm run governed:rail pass; node scripts/committed-tree-check.mjs generated pass on merged main; native-glyph-catalog and Unity Icon generated package committed"
+    recorded_at: "2026-10-30T20:02:50.935Z"
+    commit_sha: "85abce44c7ac899109245c7965f2f21621e4c421"
