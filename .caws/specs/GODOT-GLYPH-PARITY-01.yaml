@@ -50,3 +50,8 @@ contracts:
   - name: 'glyph-runtime'
     type: behavior
     path: 'packages/ds-godot/addons/full_stack_ds/runtime/glyph.gd'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "3210fc8c2; pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/glyph-plan.test.ts packages/ds-codegen/src/frameworks/godot/glyph-catalog.test.ts packages/ds-codegen/src/frameworks/godot/factory.test.ts: 3 files, 27 tests pass; renamed bindings and unlowered-fact refusals inspected"
+    recorded_at: "2026-10-30T10:08:04.561Z"
