@@ -1,5 +1,6 @@
 // @generated:start imports
 import { type HTMLAttributes, type ReactNode, useId } from "react";
+import { useNativeTextValue } from "../../primitives/useNativeTextValue";
 import { Stack } from "../../primitives";
 import { useTextField } from "./useTextField";
 import "./TextField.css";
@@ -81,6 +82,7 @@ export function TextField({
     onChange,
   });
 
+  const nativeTextValue = useNativeTextValue(value, setValue);
   const classNames = [
     "text-field",
     invalid && "text-field--invalid",
@@ -97,7 +99,7 @@ export function TextField({
     <label className="text-field__label" id={`${instanceId}-label`}>
       {slots?.label}
     </label>
-    <input className="text-field__field" onChange={(e) => setValue((e.currentTarget as HTMLInputElement).value)} type={type} value={value} disabled={disabled} name={name} required={required} aria-invalid={invalid} aria-labelledby={slots?.label ? `${instanceId}-label` : undefined} aria-describedby={[slots?.description ? `${instanceId}-description` : null, slots?.error && invalid ? `${instanceId}-error` : null, ariaDescribedby].filter(Boolean).join(" ") || undefined} />
+    <input className="text-field__field" onChange={nativeTextValue.onChange} type={type} value={nativeTextValue.value} disabled={disabled} name={name} required={required} aria-invalid={invalid} aria-labelledby={slots?.label ? `${instanceId}-label` : undefined} aria-describedby={[slots?.description ? `${instanceId}-description` : null, slots?.error && invalid ? `${instanceId}-error` : null, ariaDescribedby].filter(Boolean).join(" ") || undefined} />
     <span className="text-field__description" id={`${instanceId}-description`}>
       {slots?.description}
     </span>

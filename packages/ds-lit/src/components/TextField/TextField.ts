@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
 import { TextFieldBehavior } from './TextFieldBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -224,10 +225,6 @@ export class TextFieldElement extends LitElement {
   });
   }
 
-  private handleValueChange(event: Event): void {
-    this.behavior.setValue((event.target as HTMLInputElement).value);
-  }
-
   override connectedCallback(): void {
     super.connectedCallback();
     this.setAttribute("data-fsds-component", "text-field");
@@ -246,7 +243,7 @@ export class TextFieldElement extends LitElement {
   <label class=${'text-field__label'} id="text-field-label">
     <slot name="label" @slotchange=${() => this.requestUpdate()}></slot>
   </label>
-  <input class=${'text-field__field'} @input=${(e: Event) => this.handleValueChange(e)} type=${ifDefined(this.type)} .value=${this.behavior.value} ?disabled=${this.disabled ?? false} name=${ifDefined(this.name)} ?required=${this.required ?? false} aria-invalid=${ifDefined(this.invalid === undefined ? undefined : (this.invalid ? 'true' : 'false'))} aria-labelledby=${ifDefined([this.querySelector('[slot="label"]') !== null ? 'text-field-label' : null].filter(Boolean).join(' ') || undefined)} aria-describedby=${ifDefined([this.querySelector('[slot="description"]') !== null ? 'text-field-description' : null, this.querySelector('[slot="error"]') !== null && this.invalid ? 'text-field-error' : null, this.ariaDescribedby].filter(Boolean).join(' ') || undefined)} />
+  <input class=${'text-field__field'} @input=${(e: Event) => requestNativeTextChange(e, () => this.behavior.setValue((e.currentTarget as HTMLInputElement).value), () => this.behavior.value)} type=${ifDefined(this.type)} .value=${this.behavior.value} ?disabled=${this.disabled ?? false} name=${ifDefined(this.name)} ?required=${this.required ?? false} aria-invalid=${ifDefined(this.invalid === undefined ? undefined : (this.invalid ? 'true' : 'false'))} aria-labelledby=${ifDefined([this.querySelector('[slot="label"]') !== null ? 'text-field-label' : null].filter(Boolean).join(' ') || undefined)} aria-describedby=${ifDefined([this.querySelector('[slot="description"]') !== null ? 'text-field-description' : null, this.querySelector('[slot="error"]') !== null && this.invalid ? 'text-field-error' : null, this.ariaDescribedby].filter(Boolean).join(' ') || undefined)} />
   <span class=${'text-field__description'} id="text-field-description">
     <slot name="description" @slotchange=${() => this.requestUpdate()}></slot>
   </span>

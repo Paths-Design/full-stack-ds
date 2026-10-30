@@ -2,6 +2,8 @@
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, ElementRef, Injector, runInInjectionContext, untracked, type OnInit, type OnDestroy } from "@angular/core";
 import { NgClass, NgIf } from "@angular/common";
 import { injectFsdsMessages } from "../../primitives/messages.js";
+import { requestNativeTextChange } from "../../primitives/interaction.js";
+import { afterNextRender } from "@angular/core";
 import { StackComponent } from "../../primitives/index.js";
 import { IconComponent } from "../Icon/Icon.component.js";
 import { useCommand } from "./useCommand.js";
@@ -37,7 +39,7 @@ const CommandMessages = { searchPlaceholder: "Search...", searchLabel: "Search c
     <div [ngClass]="'command__dialog'" role="dialog" aria-modal="true" [attr.aria-label]="(label ?? fsdsMessages().dialogLabel)">
       <div [ngClass]="'command__inputWrapper'">
         <fsds-icon [ngClass]="'command__searchIcon'" name="search" size="sm"></fsds-icon>
-        <input [ngClass]="'command__input'" type="search" role="combobox" aria-autocomplete="list" (input)="handleSearchChange($event)" [attr.aria-expanded]="behavior.open()" [attr.aria-label]="(searchLabel ?? fsdsMessages().searchLabel)" [placeholder]="(placeholder ?? fsdsMessages().searchPlaceholder)" [value]="behavior.search()" [attr.id]="instanceId + '-input'" [attr.aria-controls]="instanceId + '-list'" />
+        <input [ngClass]="'command__input'" type="search" role="combobox" aria-autocomplete="list" (input)="requestNativeTextSearch($event)" [attr.aria-expanded]="behavior.open()" [attr.aria-label]="(searchLabel ?? fsdsMessages().searchLabel)" [placeholder]="(placeholder ?? fsdsMessages().searchPlaceholder)" [value]="behavior.search()" [attr.id]="instanceId + '-input'" [attr.aria-controls]="instanceId + '-list'" />
       </div>
       <div [ngClass]="'command__list'" role="listbox" [attr.id]="instanceId + '-list'" [attr.aria-labelledby]="instanceId + '-input'">
         <div [ngClass]="'command__empty'"></div>
@@ -84,6 +86,9 @@ export class CommandComponent implements OnInit, OnDestroy {
     onSearchChange: (v) => this.onSearchChange?.(v),
     destroyRef: this.destroyRef,
   })));
+  }
+  protected requestNativeTextSearch(event: Event): void {
+    requestNativeTextChange(event, () => this.behavior.setSearch((event.currentTarget as HTMLInputElement).value), () => this.behavior.search(), restore => { if (!this.destroyRef.destroyed) afterNextRender(restore, { injector: this.injector }); });
   }
 
   classes(): string {
