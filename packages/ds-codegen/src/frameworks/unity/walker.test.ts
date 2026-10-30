@@ -35,7 +35,8 @@ describe("Unity passive anatomy path", () => {
     ir.styledProps = ir.styledProps.filter(prop => prop.name === "variant" || prop.name === "weight");
     ir.dom!.bindings = {};
     const output = emit(ir);
-    expect(output).toContain("public partial class UnrelatedContent : VisualElement");
+    expect(output).toContain("public partial class UnrelatedContent : TextElement");
+    expect(output).toContain("public UnrelatedContent()");
     expect(output).not.toContain("ChannelName");
     expect(output).not.toMatch(/(?:BooleanControl|ItemGroup|AnchoredSurface)\.Attach\(this/);
     expect(output).not.toContain("INotifyValueChanged");

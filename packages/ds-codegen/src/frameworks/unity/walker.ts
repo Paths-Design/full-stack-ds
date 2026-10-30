@@ -207,7 +207,11 @@ function planClasses(ctx: Context): ClassPlan[] {
   const classes: ClassPlan[] = [];
   if (ir.dom) {
     assertRenderable(ctx, ir.dom);
-    const root = newClass(name, "VisualElement", true, rootIdentity(ctx, ir.dom.part));
+    // A passive text host paints consumer string content itself; a generic
+    // VisualElement has no text surface. Child elements remain composable.
+    const passiveText = ctx.lowering.behavior === "Passive" && TEXT_LEAF_TAGS.has(ir.dom.tag) &&
+      ir.dom.children.length === 1 && isInsertion(ir.dom.children[0]!);
+    const root = newClass(name, passiveText ? "TextElement" : "VisualElement", true, rootIdentity(ctx, ir.dom.part));
     walkChildren(ctx, root, root.root, ir.dom.children, { count: 0 });
     classes.push(root);
   } else {
