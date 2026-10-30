@@ -130,7 +130,7 @@
     "test:unity": "node scripts/unity-tests.mjs",
     "test:unity-player": "node scripts/unity-player.mjs",
     "test:godot": "node scripts/godot-pilot.mjs",
-    "test:engine-comparison": "pnpm --filter @full-stack-ds/codegen build && node scripts/engine-comparison.mjs",
+    "test:engine-comparison": "node --test scripts/engine-comparison-rows.test.mjs && pnpm --filter @full-stack-ds/codegen build && node scripts/engine-comparison.mjs",
     "generate:gpui": "pnpm run generate -- --target=gpui",
     "test:gpui": "node scripts/gpui-pilot.mjs",
     "dev:gpui": "node scripts/gpui-gallery.mjs",
