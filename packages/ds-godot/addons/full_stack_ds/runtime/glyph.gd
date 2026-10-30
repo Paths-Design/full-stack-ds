@@ -51,10 +51,10 @@ func _ready() -> void:
 	var decoration_prop: String = configuration.get("decorativeProp", "")
 	var label_prop: String = configuration.get("labelProp", "")
 	_applying_defaults = true
-	if not explicit_props.has("name") and defaults.has(name_prop): glyph_name = str(JSON.parse_string(defaults[name_prop]))
-	if not explicit_props.has("size") and defaults.has(size_prop): size_axis = str(JSON.parse_string(defaults[size_prop]))
-	if not explicit_props.has("decorative") and defaults.has(decoration_prop): decorative = bool(JSON.parse_string(defaults[decoration_prop]))
-	if not explicit_props.has("label") and defaults.has(label_prop): aria_label = str(JSON.parse_string(defaults[label_prop]))
+	if not explicit_props.has("name"): glyph_name = str(JSON.parse_string(defaults[name_prop])) if defaults.has(name_prop) else ""
+	if not explicit_props.has("size"): size_axis = str(JSON.parse_string(defaults[size_prop])) if defaults.has(size_prop) else ""
+	if not explicit_props.has("decorative"): decorative = bool(JSON.parse_string(defaults[decoration_prop])) if defaults.has(decoration_prop) else true
+	if not explicit_props.has("label"): aria_label = str(JSON.parse_string(defaults[label_prop])) if defaults.has(label_prop) else ""
 	_applying_defaults = false
 	_refresh()
 
