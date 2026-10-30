@@ -8,6 +8,7 @@
   let accepting = $state(false);
   export function setOpen(value: boolean) { state.open = value; }
   export function setAccepting(value: boolean) { accepting = value; }
+  export function setOptions(options: DialogOptions) { Object.assign(state, options); }
 </script>
 {#snippet title()}Release dialog{/snippet}
 <Dialog {...state} {title} onOpenChange={next => { onRequest(next); if (accepting) state.open = next; }}>Dialog body</Dialog>

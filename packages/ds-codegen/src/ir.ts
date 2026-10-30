@@ -3520,7 +3520,15 @@ function resolveComponentInstances(
       },
     );
     const attrs: ResolvedRefAttr[] = Object.entries(node.attrs).map(
-      ([sourceAttr, value]) => ({ ...classify(sourceAttr), sourceAttr, value }),
+      ([sourceAttr, value]) => {
+        const classified = classify(sourceAttr);
+        const prop = getPropMembers(target).find(prop => prop.name === sourceAttr);
+        const kind = prop?.propType?.kind ?? prop?.type;
+        if (classified.kind === "prop" && (kind === "boolean" || kind === "number")) {
+          throw new Error(`${host.name}: componentRef ${ref}.${sourceAttr} targets ${kind}; static attrs carry strings, so use a typed prop binding`);
+        }
+        return { ...classified, sourceAttr, value };
+      },
     );
     const events: ResolvedRefEvent[] = Object.entries(node.events).map(
       ([name, expr]) => {

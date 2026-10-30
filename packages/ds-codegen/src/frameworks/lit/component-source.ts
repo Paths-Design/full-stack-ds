@@ -1955,7 +1955,7 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     lines.push(``);
     lines.push(`  private initializedBehavior?: ${ir.name}Behavior;`);
     lines.push(`  private get behavior(): ${ir.name}Behavior {`);
-    if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir)) lines.push(`    const host = this;`);
+    if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir) || ir.behavior.normalizedDismissalTriggers.some(trigger => dismissalGateProps(trigger).length)) lines.push(`    const host = this;`);
     lines.push(`    return this.initializedBehavior ??= new ${ir.name}Behavior(this, {`);
     if (ir.interaction?.focusContainer || domHasKeyboardPanel(ir)) lines.push(`    get containerEl() { return host.interactionPanel; },`);
     if (domHasKeyboardPanel(ir)) lines.push(`    get anchorEl() { return host.interactionAnchor; },`);
@@ -1971,7 +1971,7 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
     // Forward dismissal-trigger enabledBy props.
     for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
       lines.push(
-        `    ${prop}: this.${prop},`,
+        `    get ${prop}() { return host.${prop}; },`,
       );
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: getter-shaped mode gates so the

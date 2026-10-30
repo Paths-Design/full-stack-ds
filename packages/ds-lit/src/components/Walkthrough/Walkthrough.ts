@@ -233,11 +233,12 @@ export class WalkthroughElement extends LitElement {
 
   private initializedBehavior?: WalkthroughBehavior;
   private get behavior(): WalkthroughBehavior {
+    const host = this;
     return this.initializedBehavior ??= new WalkthroughBehavior(this, {
     index: () => this.index,
     defaultIndex: this.defaultIndex,
     onStepChange: (v) => this.onStepChange?.(v),
-    closeOnOutsideClick: this.closeOnOutsideClick,
+    get closeOnOutsideClick() { return host.closeOnOutsideClick; },
   });
   }
 

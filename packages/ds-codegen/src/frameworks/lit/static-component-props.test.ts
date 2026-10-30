@@ -5,6 +5,11 @@ import { buildComponentIR } from "../../ir.js";
 import { generateLitComponentSource } from "./component-source.js";
 
 describe("Lit static component-instance props", () => {
+  it.each(["boolean", "number"] as const)("rejects string attrs targeting %s props instead of bypassing native value types", kind => {
+    const leaf: ComponentContract = { name: "TypedLeaf", layer: "primitive", props: { designed: { members: [{ name: "value", propType: { kind } }] } } };
+    const owner: ComponentContract = { name: "TypedOwner", layer: "composer", anatomy: { parts: ["root"], dom: { componentRef: "fsds.TypedLeaf", part: "root", attrs: { value: kind === "boolean" ? "false" : "3" } } } };
+    expect(() => buildComponentIR(owner, { allContracts: new Map([[leaf.name, leaf], [owner.name, owner]]) })).toThrow(`targets ${kind}; static attrs carry strings`);
+  });
   it("uses the normalized property classification for renamed enum and string props while preserving host attributes", () => {
     const caption = 'Quoted "text" with ${braces} and `ticks`';
     const leaf: ComponentContract = {

@@ -1706,7 +1706,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
       hookLines.push(`  ${ch.changeHandlerProp}: (...args) => props.${propAccess(ch.changeHandlerProp)}?.(...args),`);
     }
     for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
-      hookLines.push(`  ${prop}: props.${propAccess(prop)},`);
+      hookLines.push(`  get ${prop}() { return props.${propAccess(prop)}; },`);
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: forward the mode gates the keyboard
     // select behavior reads, getter-shaped like every other option.

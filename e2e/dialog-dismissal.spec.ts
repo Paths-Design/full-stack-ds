@@ -31,6 +31,30 @@ async function backdropClick(page: Page) {
 }
 
 for (const framework of ["react", "vue", "svelte", "angular", "lit"]) {
+  test(`${framework}: mounted policy updates govern Escape and backdrop independently`, async ({ page }) => {
+    await mount(page, framework, { dismissible: true, closeOnEscape: true, closeOnBackdropClick: true });
+    const update = (options: DialogOptions) => page.evaluate(async options => {
+      (window as unknown as { dialogParent: { setOptions(options: DialogOptions): void } }).dialogParent.setOptions(options);
+      await new Promise(requestAnimationFrame); await new Promise(requestAnimationFrame);
+    }, options);
+    await page.getByRole("dialog").focus();
+    await page.keyboard.press("Escape"); expect(await requests(page)).toEqual([false]);
+    await update({ closeOnEscape: false });
+    await page.keyboard.press("Escape"); expect(await requests(page)).toEqual([false]);
+    await update({ closeOnEscape: true });
+    await page.keyboard.press("Escape"); expect(await requests(page)).toEqual([false, false]);
+    await update({ dismissible: false });
+    await expect(page.getByRole("button", { name: closeLabel, exact: true })).toHaveCount(0);
+    await backdropClick(page); expect(await requests(page)).toEqual([false, false]);
+    await page.getByRole("dialog").focus();
+    await page.keyboard.press("Escape"); expect(await requests(page)).toEqual([false, false, false]);
+    await update({ dismissible: true, closeOnBackdropClick: false });
+    await expect(page.getByRole("button", { name: closeLabel, exact: true })).toHaveCount(1);
+    await backdropClick(page); expect(await requests(page)).toEqual([false, false, false]);
+    await update({ closeOnBackdropClick: true });
+    await backdropClick(page); expect(await requests(page)).toEqual([false, false, false, false]);
+    await expect(page.getByRole("dialog")).toBeVisible();
+  });
   test(`${framework}: localized close glyph handles pointer and keyboard while the owner refuses`, async ({ page }, info) => {
     const errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
     await mount(page, framework);

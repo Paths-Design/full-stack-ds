@@ -111,6 +111,7 @@ export class CalendarComponent {
   private injector = inject(Injector);
   private initializedBehavior?: ReturnType<typeof useCalendar>;
   protected get behavior(): ReturnType<typeof useCalendar> {
+    const host = this;
     return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => useCalendar({
     value: () => this.value,
     defaultValue: this.defaultValue,
@@ -118,7 +119,7 @@ export class CalendarComponent {
     month: () => this.month,
     defaultMonth: this.defaultMonth,
     onMonthChange: (v) => this.onMonthChange?.(v),
-    shouldCloseOnSelect: this.shouldCloseOnSelect,
+    get shouldCloseOnSelect() { return host.shouldCloseOnSelect; },
     destroyRef: this.destroyRef,
   })));
   }

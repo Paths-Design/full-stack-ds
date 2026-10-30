@@ -18,6 +18,7 @@ export async function mountParent(target: HTMLElement, options: DialogOptions, o
     onOpenChange = (next: boolean) => { onRequest(next); if (this.accepting) this.setOpen(next); };
     setOpen(open: boolean) { this.state.update((current: DialogState) => ({ ...current, open })); }
     setAccepting(value: boolean) { this.accepting = value; }
+    setOptions(options: DialogOptions) { this.state.update((current: DialogState) => ({ ...current, ...options })); }
   }
   const flags = (["dismissible", "closeOnBackdropClick", "closeOnEscape"] as const)
     .filter(key => options[key] !== undefined).map(key => `[${key}]="state().${key}"`).join(" ");

@@ -18,6 +18,14 @@ for (const sample of cases) {
     await page.goto(`/preview/lit/${sample.component}`);
     await page.locator("body[data-fsds-ready]").waitFor();
     await page.evaluate(props => window.postMessage({ type: "fsds:config", props, tokenCss: "" }, "*"), sample.props);
+    if (sample.component === "Accordion") await page.evaluate(() => {
+      const root = document.querySelector("fsds-accordion");
+      if (!root) throw new Error("Accordion public host is absent");
+      const item = document.createElement("fsds-accordion-item"); Object.assign(item, { value: "release" });
+      const trigger = document.createElement("fsds-accordion-trigger"); trigger.textContent = "Release section";
+      const content = document.createElement("fsds-accordion-content"); content.textContent = "Release content";
+      item.append(trigger, content); root.replaceChildren(item);
+    });
     const target = page.locator(sample.target).first();
     await expect(target).toHaveJSProperty(sample.property, sample.value);
     if ("glyph" in sample) {
@@ -27,7 +35,11 @@ for (const sample of cases) {
       expect(box?.width).toBe(16); expect(box?.height).toBe(16);
       expect(await svg.locator("path[d]").count()).toBeGreaterThan(0);
     }
-    if (sample.component === "Chip") await expect(target.locator("button")).toHaveClass(/button--ghost/);
+    if (sample.component === "Chip") {
+      await expect(target.locator("button")).toHaveClass(/button--ghost/);
+      await expect(page.locator(".chip__dismiss")).toHaveJSProperty("variant", "ghost");
+      await expect(page.locator(".chip__dismiss")).toHaveJSProperty("type", "button");
+    }
     if (sample.component === "PageNavigator") {
       const input = page.getByRole("spinbutton", { name: "Current page" });
       await expect(input).toHaveValue("1");

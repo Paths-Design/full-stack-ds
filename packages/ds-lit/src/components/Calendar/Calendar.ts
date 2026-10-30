@@ -232,6 +232,7 @@ export class CalendarElement extends LitElement {
 
   private initializedBehavior?: CalendarBehavior;
   private get behavior(): CalendarBehavior {
+    const host = this;
     return this.initializedBehavior ??= new CalendarBehavior(this, {
     value: () => this.value,
     defaultValue: this.defaultValue,
@@ -239,7 +240,7 @@ export class CalendarElement extends LitElement {
     month: () => this.month,
     defaultMonth: this.defaultMonth,
     onMonthChange: (v) => this.onMonthChange?.(v),
-    shouldCloseOnSelect: this.shouldCloseOnSelect,
+    get shouldCloseOnSelect() { return host.shouldCloseOnSelect; },
   });
   }
   private dateGrid = new DateGridController(this, () => ({ value: this.behavior.value, month: this.behavior.month, mode: (this.mode ?? "single"), locale: (this.locale ?? "en-US"), minDate: this.minDate, maxDate: this.maxDate, disabled: this.disabled, caption: this.caption, onValueChange: (next) => this.behavior.setValue(next), onMonthChange: (next) => this.behavior.setMonth(next) }));

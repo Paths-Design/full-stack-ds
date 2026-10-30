@@ -10,5 +10,5 @@ export function mountParent(target: HTMLElement, options: DialogOptions, onReque
   dialog.append(title, "Dialog body");
   dialog.onOpenChange = next => { onRequest(next); if (accepting) dialog.open = next; };
   target.append(dialog);
-  return { setAccepting(value: boolean) { accepting = value; }, setOpen(value: boolean) { dialog.open = value; } };
+  return { setAccepting(value: boolean) { accepting = value; }, setOpen(value: boolean) { dialog.open = value; }, setOptions(options: DialogOptions) { Object.assign(dialog, options); } };
 }

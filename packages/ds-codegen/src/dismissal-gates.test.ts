@@ -4,12 +4,25 @@ import { describe, expect, it } from "vitest";
 import type { ComponentContract, ContractDismissalTrigger } from "./contract.js";
 import { buildComponentIR } from "./ir.js";
 import { dismissalGateExpression, dismissalGateProps } from "./dismissal-gates.js";
+import { generateVueComponentSource } from "./frameworks/vue/component-source.js";
+import { generateAngularComponentSource } from "./frameworks/angular/component-source.js";
+import { generateLitComponentSource } from "./frameworks/lit/component-source.js";
 
 function fixture(): ComponentContract {
   return JSON.parse(readFileSync(resolve(__dirname, "../../ds-contracts/components/Dialog/Dialog.contract.json"), "utf8"));
 }
 
 describe("dismissal conjunction", () => {
+  it("forwards renamed dismissal policies as live properties to persistent behaviors", () => {
+    const contract = fixture();
+    contract.name = "PolicyProbe";
+    contract.props!.styled!.members!.find(prop => prop.name === "closeOnEscape")!.name = "allowExit";
+    contract.dismissal!.triggers![0].enabledBy = "allowExit";
+    const ir = buildComponentIR(contract);
+    expect(generateVueComponentSource(ir)).toContain("get allowExit() { return props.allowExit; }");
+    expect(generateAngularComponentSource(ir)).toContain("get allowExit() { return host.allowExit; }");
+    expect(generateLitComponentSource(ir)).toContain("get allowExit() { return host.allowExit; }");
+  });
   it("normalizes renamed boolean gates and requires both, including defaulted omissions", () => {
     const contract = fixture();
     const members = contract.props!.styled!.members!;

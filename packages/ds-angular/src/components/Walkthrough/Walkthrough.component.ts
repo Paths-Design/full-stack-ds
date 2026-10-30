@@ -92,11 +92,12 @@ export class WalkthroughComponent implements OnInit, OnDestroy {
   private injector = inject(Injector);
   private initializedBehavior?: ReturnType<typeof useWalkthrough>;
   protected get behavior(): ReturnType<typeof useWalkthrough> {
+    const host = this;
     return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => useWalkthrough({
     index: () => this.index,
     defaultIndex: this.defaultIndex,
     onStepChange: (v) => this.onStepChange?.(v),
-    closeOnOutsideClick: this.closeOnOutsideClick,
+    get closeOnOutsideClick() { return host.closeOnOutsideClick; },
     destroyRef: this.destroyRef,
   })));
   }

@@ -2079,6 +2079,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     lines.push(`  }`);
   }
   if (hasHook) {
+    const liveDismissalOptions = ir.behavior.normalizedDismissalTriggers.some(trigger => dismissalGateProps(trigger).length);
     lines.push(``);
     lines.push(`  private destroyRef = inject(DestroyRef);`);
     // Build the hook call
@@ -2086,9 +2087,16 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       lines.push(`  private injector = inject(Injector);`);
       lines.push(`  private initializedBehavior?: ReturnType<typeof use${ir.name}>;`);
       lines.push(`  protected get behavior(): ReturnType<typeof use${ir.name}> {`);
+      if (liveDismissalOptions) lines.push(`    const host = this;`);
       lines.push(`    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => use${ir.name}({`);
     } else {
-      lines.push(`  protected behavior = use${ir.name}({`);
+      if (liveDismissalOptions) {
+        lines.push(`  protected behavior = (() => {`);
+        lines.push(`    const host = this;`);
+        lines.push(`    return use${ir.name}({`);
+      } else {
+        lines.push(`  protected behavior = use${ir.name}({`);
+      }
     }
     for (const ch of channels) {
       lines.push(`    ${ch.valueProp}: () => this.${ch.valueProp},`);
@@ -2102,7 +2110,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     // Forward dismissal-trigger enabledBy props.
     for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
       lines.push(
-        `    ${prop}: this.${prop},`,
+        `    get ${prop}() { return host.${prop}; },`,
       );
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: forward the mode gates the keyboard
@@ -2123,6 +2131,8 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     if (controlledChannels.size > 0) {
       lines[lines.length - 1] = `  })));`;
       lines.push(`  }`);
+    } else if (liveDismissalOptions) {
+      lines.push(`  })();`);
     }
     // Ephemeral-surface auto-dismiss (WCAG 2.2.1). The effect tracks the
     // behavior's open signal; sync() restarts/clears the timer; pause
