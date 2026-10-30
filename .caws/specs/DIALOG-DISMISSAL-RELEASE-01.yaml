@@ -96,3 +96,11 @@ contracts:
   - name: 'dialog-dismissal'
     type: behavior
     path: 'packages/ds-contracts/components/Dialog/Dialog.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Browser candidate7b540ac8e has identical six-library bytes at merge342455ef84ba3bc9ad468e8110340edbd8ad2054. Playwright e2e/dialog-dismissal.spec.ts plus lit-instance-props.spec.ts: 55 passed; all web Dialogs show a nonempty16px close glyph with French catalog name and exactly one pointer/Enter/Space request. Raw .caws/state/dialog-final-browser.log and screenshots under .caws/state/dialog-final-browser; React Native localized host/action cases8 passed in .caws/state/dialog-rn-dismissal.log."
+    recorded_at: "2026-10-30T17:03:57.313Z"
+    command: "FSDS_E2E_PORT=5201 node node_modules/@playwright/test/cli.js test e2e/dialog-dismissal.spec.ts e2e/lit-instance-props.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
