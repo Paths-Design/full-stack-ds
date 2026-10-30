@@ -62,3 +62,10 @@ evidence:
     command: "FSDS_ENGINE_OUT=/private/tmp/fsds-godot-composed-committed-89b51fd node scripts/godot-pilot.mjs"
     exit_code: 0
     commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Separate Editor write/read, runtime and fresh macOS export in run a21bac6b; sourceDirty=false at 89b51fd39, saved-composed actionCalls=1/iconRetained=true and saved-composed-pixel=334455 in both Editor and Player receipts at /private/tmp/fsds-godot-composed-committed-89b51fd."
+    recorded_at: "2026-10-30T03:42:41.187Z"
+    command: "FSDS_ENGINE_OUT=/private/tmp/fsds-godot-composed-committed-89b51fd node scripts/godot-pilot.mjs"
+    exit_code: 0
+    commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
