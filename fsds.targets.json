@@ -190,7 +190,9 @@
         "Tabs",
         "Text",
         "Divider",
-        "Button"
+        "Button",
+        "Badge",
+        "Card"
       ]
     },
     {
