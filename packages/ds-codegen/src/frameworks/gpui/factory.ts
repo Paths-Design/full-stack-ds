@@ -111,7 +111,13 @@ function validScalar(decl: NativeStyleDeclarationIR, pseudo: boolean): boolean {
 export function gpuiStylePlan(ir: ComponentIR) {
  if (!ir.nativeStyleRules) throw new Error(`GPUI_MISSING_STYLE_FACTS: ${ir.name}`);
  const omissions: Array<{ sourceKey:string; property?:string; reason:string }> = ir.nativeStyleRules.unsupported.slice();
- const rules: NativeStyleRuleIR[] = ir.nativeStyleRules.rules.map(rule => ({ ...rule, declarations:rule.declarations.flatMap(decl => {
+ const admittedPredicates = new Set(['variant','checked','disabled','indeterminate','hover','active','focus']);
+ const rules: NativeStyleRuleIR[] = ir.nativeStyleRules.rules.filter(rule => {
+  const unsupported = rule.predicates.find(predicate => !admittedPredicates.has(predicate.kind));
+  if (!unsupported) return true;
+  for (const declaration of rule.declarations) omissions.push({sourceKey:rule.sourceKey,property:declaration.property,reason:`predicate ${unsupported.kind} has no admitted GPUI state carrier`});
+  return false;
+ }).map(rule => ({ ...rule, declarations:rule.declarations.flatMap(decl => {
   if (rule.predicates.some(predicate => 'ownerPart' in predicate && predicate.ownerPart && !['root',ir.formControl?.part.name].includes(predicate.ownerPart))) { omissions.push({sourceKey:rule.sourceKey,property:decl.property,reason:'predicate owner has no admitted native event carrier'}); return []; }
   if (decl.property.includes('.')) return [decl];
   if (!supported.has(decl.property)) { omissions.push({sourceKey:rule.sourceKey,property:decl.property,reason:'property outside GPUI admitted style vocabulary'}); return []; }

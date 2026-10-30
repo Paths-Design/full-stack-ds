@@ -23,6 +23,17 @@ const emitter = createGpuiEmitter();
 const options = { componentsRoot: "", contractsRoot };
 
 describe("GPUI native style and control lowering", () => {
+  it("omits a presence predicate without emitting a nonexistent Rust condition", () => {
+    const contract = fixture("Text");
+    contract.styles = { ...contract.styles, ".text:not([hidden])": { opacity: { literal: "0.5", platforms: ["web"] } } };
+    const ir = buildComponentIR(contract);
+    const plan = gpuiStylePlan(ir);
+    expect(plan.omissions).toContainEqual({
+      sourceKey: ".text:not([hidden])", property: "opacity", reason: "predicate present has no admitted GPUI state carrier",
+    });
+    expect(plan.rules.some(rule => rule.sourceKey === ".text:not([hidden])")).toBe(false);
+    expect(emitter.emitComponent(ir, options)[0]!.contents).not.toContain("StyleCondition::Present");
+  });
   it.each(["Switch", "ToggleSwitch"])("lowers %s independently of its identity", name => {
     const contract = fixture(name);
     contract.name = "UnrelatedControl";
