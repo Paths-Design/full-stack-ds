@@ -96,11 +96,10 @@ evidence:
     commit_sha: fb194d944c9c1a821a24b939b2476f3807c5dcf9
   - criterion_id: A3
     status: pass
-    evidence_ref: "Shared DOM tests prove unrelated controls unchanged, original callback failure propagates after connected-host restoration, disposed getters and scheduling are skipped, queued requests do not overwrite a newer composition. React cleanup and actual Angular synchronous app destruction are exercised. Focused57 and final40 browser cases passed; actual Angular parent uses the mounted child constructor without NG0912 duplication."
-    recorded_at: "2026-10-30T04:56:55.695Z"
+    evidence_ref: "Focused57 passed in retained .caws/state/text-reviewed-focused.log: unrelated controls, callback failure propagation, disposed getter/scheduler suppression, composition interference and React cleanup. Final40 browser cases include Angular synchronous owner destruction without pageerror and actual mounted child constructor without NG0912 duplication. Ignored logs are execution references, not tracked artifact citations."
+    recorded_at: "2026-10-30T05:18:29.636Z"
     command: pnpm exec vitest run packages/ds-codegen/src/interaction-runtime.test.ts packages/ds-codegen/src/native-text-control-ir.test.ts src/consumption/native-text-value.test.tsx packages/ds-codegen/src/form-control-ir.test.ts packages/ds-codegen/src/frameworks/vue-change-event-timing.test.ts
     exit_code: 0
-    artifact_path: ".caws/state/text-reviewed-focused.log"
     commit_sha: "7704f9faec87841dc698998bb7bdba3026c01664"
   - criterion_id: A4
     status: pass
