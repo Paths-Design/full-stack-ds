@@ -177,6 +177,14 @@
       "reason": "Dynamic roles and ARIA attributes have no runtime consumer: UI Toolkit exposes no assistive-technology tree."
     },
     {
+      "id": "anatomy-conditional-data-binding",
+      "match": ["contract:/anatomy/dom/bindings/data-*", "contract:/anatomy/dom/**/children/*/bindings/data-*"],
+      "valuePattern": "^conditional:prop:[A-Za-z_$][\\w$-]*\\|literal:true\\|literal:false$",
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A conditional DOM data attribute is not a UI Toolkit property. The passive walker checks its syntax and omits it; a target behavior must consume the prop before the attribute can affect rendering."
+    },
+    {
       "id": "anatomy-bindings",
       "match": ["contract:/anatomy/dom/bindings/**", "contract:/anatomy/dom/**/children/*/bindings/**", "contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
       "disposition": "pending",
@@ -307,10 +315,44 @@
       "via": "[UxmlAttribute] Placement on the generated root, validated against its variant axis, drives the attached AnchoredSurface; floating content flips and shifts at panel edges."
     },
     {
+      "id": "prop-passive-style-axis",
+      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**"],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
+    },
+    {
+      "id": "prop-polymorphic-tag",
+      "match": ["contract:/props/*/members/plain:as/**"],
+      "disposition": "refused",
+      "reason": "A UI Toolkit control cannot change its underlying semantic element tag; the native type is fixed by the generated class."
+    },
+    {
+      "id": "prop-passive-text-layout",
+      "match": ["contract:/props/*/members/plain:align/**", "contract:/props/*/members/plain:transform/**", "contract:/props/*/members/plain:truncate/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Text alignment, case transformation and measured ellipsis need a native TextElement consumer. The current class has no corresponding attribute or style behavior."
+    },
+    {
+      "id": "prop-passive-rule-override",
+      "match": ["contract:/props/*/members/plain:thickness/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "An authored rule-thickness override needs a validated native length and orientation-aware border update; token-backed default thickness is separate."
+    },
+    {
+      "id": "prop-passive-semantic-options",
+      "match": ["contract:/props/*/members/plain:decorative/**", "contract:/props/*/members/plain:title/**"],
+      "disposition": "refused",
+      "reason": "Decorative role and title describe DOM accessibility/tooltip semantics without an equivalent UI Toolkit runtime consumer on the supported desktop witness."
+    },
+    {
       "id": "prop-size",
       "match": ["contract:/props/*/members/plain:size/**"],
       "disposition": "lowered",
-      "via": "walker.ts (S6) emits [UxmlAttribute] Size as the class-recipe modifier (<cssPrefix>--<value>) when the USS projection emits a carrier for the axis; uss.ts lowers the size-predicated native style rules onto those carriers."
+      "realizes": "emitted-property",
+      "via": "walker.ts (S6) emits [UxmlAttribute] Size as the class-recipe modifier (<cssPrefix>--<value>) only when the USS projection emits a carrier for the axis; uss.ts lowers size-predicated native style rules onto those carriers."
     },
     {
       "id": "prop-id-base",
@@ -694,9 +736,9 @@
     },
     {
       "id": "styles-uss-absent-property",
-      "match": ["styles:/*/box-shadow/**", "styles:/*/line-height/**", "styles:/*/animation/**", "styles:/*/contain/**", "styles:/*/clip/**", "styles:/*/z-index/**", "styles:/*/pointer-events/**", "styles:/*/text-align/**"],
+      "match": ["styles:/*/box-shadow/**", "styles:/*/line-height/**", "styles:/*/animation/**", "styles:/*/contain/**", "styles:/*/clip/**", "styles:/*/z-index/**", "styles:/*/pointer-events/**", "styles:/*/text-align/**", "styles:/*/text-transform/**", "styles:/*/font-family/**"],
       "disposition": "refused",
-      "reason": "The USS property table (uss.ts) has no lowering for these CSS properties: USS (Unity 6000.5) has no box-shadow, line-height, keyframe animation, contain or clip; draw order is visual-tree order, not z-index; picking is VisualElement.pickingMode, set from C#, not pointer-events; and -unity-text-align couples the horizontal and vertical axes where CSS text-align gives only the horizontal one. Each declaration is listed uss-property in Controls.unsupported.json."
+      "reason": "The USS property table (uss.ts) has no lowering for these CSS properties: USS (Unity 6000.5) has no box-shadow, line-height, keyframe animation, contain, clip or CSS text-transform; draw order is visual-tree order, not z-index; picking is VisualElement.pickingMode, set from C#, not pointer-events; -unity-text-align couples both axes where CSS text-align controls only the horizontal axis; a CSS font-family list has no source-bound native font asset. Each declaration is listed uss-property in Controls.unsupported.json."
     },
     {
       "id": "styles-cursor",
@@ -741,13 +783,22 @@
       "reason": "USS lengths are px or % literals; calc() has no USS form and uss.ts does not evaluate it. Each declaration is listed uss-scalar."
     },
     {
+      "id": "styles-relative-em",
+      "match": ["styles:/*/*/**"],
+      "declaration": {
+        "valuePattern": "^\\s*-?(?:\\d+|\\d*\\.\\d+)em\\s*$"
+      },
+      "disposition": "refused",
+      "reason": "An em length depends on the computed font size of its parent; the fixed-root rem conversion cannot preserve that relative value. The USS projection lists it uss-scalar."
+    },
+    {
       "id": "tokens-non-scalar",
       "match": ["tokens:/**"],
       "declaration": {
-        "valuePattern": "^(?!(?:var|rgba?)\\([\\s\\S]*\\)$)[\\s\\S]*[\\s,]|\\d(?:r?em|ch|[ds]?v[hw]|vmin|vmax)$"
+        "valuePattern": "^(?!(?:var|rgba?)\\([\\s\\S]*\\)$)[\\s\\S]*[\\s,]|\\d(?:em|ch|[ds]?v[hw]|vmin|vmax)$"
       },
       "disposition": "refused",
-      "reason": "A component slot is defined only with one USS scalar (length, percentage, number, time, angle, colour, keyword, or a var() with a scalar fallback). A multi-component value (shadow list, two-value padding, font-family list), an easing function or a relative unit (rem, em, ch, vw, vh) has no USS custom-property form uss.ts emits; each definition is listed uss-scalar."
+      "reason": "A component slot is defined only with one USS scalar (length, percentage, number, time, angle, colour, keyword, a rem value resolved against the fixed 16px native root, or a var() with a scalar fallback). A multi-component value (shadow list, two-value padding, font-family list), an easing function or an unresolved relative unit (em, ch, vw, vh) has no USS custom-property form uss.ts emits; each definition is listed uss-scalar."
     },
     {
       "id": "styles-outside-native-grammar",

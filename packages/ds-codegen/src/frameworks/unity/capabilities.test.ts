@@ -16,7 +16,9 @@ describe("Unity capability accounting", () => {
   it("accounts for the actual corpus and keeps unadmitted shapes distinct", () => {
     const rows = inventory(root);
     expect(rows.map(r => r.component)).toEqual(listComponentContracts(path.join(root, "packages/ds-contracts")).map(e => e.name));
-    expect(rows.find(r => r.component === "Text")!.status).toBe("unsupported-shape");
+    expect(rows.find(r => r.component === "Text")!.status).toBe("pilot-partial");
+    expect(rows.find(r => r.component === "Divider")!.status).toBe("pilot-partial");
+    expect(rows.find(r => r.component === "Dialog")!.status).toBe("unsupported-shape");
     expect(rows.find(r => r.component === "Switch")!.status).toBe("pilot-partial");
     expect(rows.every(r => r.proof === "source-accounting-only")).toBe(true);
     // Every leaf of every component, sidecars included, carries a boundary rule.
@@ -27,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Popover", null], ["Switch", null], ["Tabs", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Divider", null], ["Popover", null], ["Switch", null], ["Tabs", null], ["Text", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -85,6 +87,18 @@ describe("Unity capability accounting", () => {
     expect(notLowered("tokens", 1)).toEqual(["switch.color.thumb.shadow refused:tokens-non-scalar", "switch.motion.easing refused:tokens-non-scalar"]);
     expect(result.sidecarObligations.styles.filter(o => o.disposition === "lowered").every(o => o.rule === "styles")).toBe(true);
   });
+  it("keeps passive style carriers separate from omitted semantic and behavior props", () => {
+    const text = accountComponent(fixture("Text"), true);
+    const divider = accountComponent(fixture("Divider"), true);
+    const prop = (row: typeof text, name: string) => row.props.find(p => p.name === name)!;
+    expect(prop(text, "size")).toMatchObject({ disposition: "emitted-api", boundary: { disposition: "lowered", rule: "prop-size" } });
+    expect(prop(text, "variant")).toMatchObject({ disposition: "emitted-api", boundary: { disposition: "lowered", rule: "prop-passive-style-axis" } });
+    expect(prop(text, "as")).toMatchObject({ disposition: "not-emitted", boundary: { disposition: "refused", rule: "prop-polymorphic-tag" } });
+    expect(prop(text, "truncate")).toMatchObject({ disposition: "not-emitted", boundary: { disposition: "pending", rule: "prop-passive-text-layout" } });
+    expect(prop(divider, "orientation")).toMatchObject({ disposition: "emitted-api", boundary: { disposition: "lowered", rule: "prop-item-group-options" } });
+    expect(prop(divider, "decorative")).toMatchObject({ disposition: "not-emitted", boundary: { disposition: "refused", rule: "prop-passive-semantic-options" } });
+    expect(prop(divider, "thickness")).toMatchObject({ disposition: "not-emitted", boundary: { disposition: "pending", rule: "prop-passive-rule-override" } });
+  });
   it("finds no ledgered declaration behind a lowered leaf, and names the entry when a rule claims one", () => {
     const ledger = JSON.parse(fs.readFileSync(unsupportedLedgerPath(root), "utf8")) as { entries: { reason: string }[] };
     expect(ledger.entries.filter(e => e.reason !== "uss-design-slot").length).toBeGreaterThan(20);
@@ -109,6 +123,7 @@ describe("Unity capability accounting", () => {
       "ledger Accordion @starting-style (uss-selector)",
       "ledger Switch .switch:dir(rtl) .switch__track (uss-selector)",
       "ledger Tabs --pills __tab--active (uss-selector)", "ledger Tabs tab--active (uss-selector)",
+      'ledger Text .text[data-truncate="true"] (uss-selector)',
     ]);
   }, CORPUS_TIMEOUT_MS);
   it("counts a ledger entry no sidecar leaf backs as a violation, and skips brand design-slot and token-section rows", () => {

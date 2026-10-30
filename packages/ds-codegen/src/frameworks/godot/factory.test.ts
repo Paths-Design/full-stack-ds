@@ -217,6 +217,22 @@ describe("Godot bounded lowering", () => {
     expect(rule.excluded).toEqual(["decorative"]);
     expect(rule.styles.find((entry: { source: string }) => entry.source === "root").declarations).toEqual(expect.arrayContaining([{ property: "border-top-color", value: "#d0d0d0", token: "divider.color" }]));
     expect(rule.styles.find((entry: { source: string }) => entry.source === "--vertical").predicates).toEqual([{ kind: "variant", axis: "orientation", value: "vertical" }]);
+    const textReceipt = JSON.parse(textFiles.find(file => file.relativePath === "Prose/capabilities.json")!.contents);
+    expect(textReceipt.excludedProps).toEqual(["as"]);
+    expect(textReceipt.fidelityGaps).toEqual([
+      "children.node-ref: content is String-only; retained inline node composition is not realized",
+      "as: DOM element and heading semantics have no native mapping",
+      "typography.font-family: SystemFont fallback does not preserve the authored Web font family",
+      "typography.line-height: integer line_spacing approximates CSS line boxes",
+      "typography.letter-spacing: integer glyph spacing rounds fractional tracking",
+      "transform.capitalize: Godot String.capitalize word normalization differs from CSS text-transform",
+    ]);
+    const ruleReceipt = JSON.parse(ruleFiles.find(file => file.relativePath === "RuleLine/capabilities.json")!.contents);
+    expect(ruleReceipt.excludedProps).toEqual(["decorative"]);
+    expect(ruleReceipt.fidelityGaps).toEqual([
+      "decorative: semantic separator versus presentation has no native accessibility mapping",
+      "layout: parent-constrained Godot container geometry is not CSS flow/flex layout parity",
+    ]);
   });
   it("preserves changed static style facts and rejects unsupported props", () => {
     const prose = styledFixture("Text");

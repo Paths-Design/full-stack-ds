@@ -75,7 +75,7 @@ export type UssReason =
 /** What each reason means; emitted beside the entries that use it. */
 export const REASON_NOTES: Readonly<Record<UssReason, string>> = {
   "uss-property": "The CSS property has no USS counterpart (or only one this projection does not map); the declaration is not realised.",
-  "uss-scalar": "The value is not a USS scalar (composite shadow, cubic-bezier easing, calc(), rem/em, a keyword USS lacks, or a weight USS cannot express); it is not emitted.",
+  "uss-scalar": "The value is not a supported USS scalar (composite shadow, cubic-bezier easing, calc(), em or other relative units, rem outside the typography projection, a keyword USS lacks, or a weight USS cannot express); it is not emitted.",
   "uss-pseudo": "USS has no pseudo-class for this state (indeterminate).",
   "uss-pseudo-element": "USS has no ::before / ::after pseudo-elements.",
   "uss-selector": "The selector has no USS realisation: either the IR's native selector grammar refused the styles key (attribute selectors such as [aria-expanded] and web-template classes such as <part>--<state> are not contract state facts; promoting a11y-attribute selectors to IR state predicates is deferred to the IR-facts spec that follows P3), or the rule needs a negated state or a modifier class no Unity runtime sets.",
@@ -172,12 +172,26 @@ export function splitTop(value: string, separator: " " | ","): string[] {
 
 const NUMBER = /^-?(?:\d+|\d*\.\d+)$/;
 const PX = /^-?(?:\d+|\d*\.\d+)px$/;
+const REM = /^-?(?:\d+|\d*\.\d+)rem$/;
 const PERCENT = /^-?(?:\d+|\d*\.\d+)%$/;
 const TIME = /^(?:\d+|\d*\.\d+)(?:ms|s)$/;
 const ANGLE = /^-?(?:\d+|\d*\.\d+)(?:deg|rad|grad|turn)$/;
 const VAR = /^var\(\s*(--[A-Za-z0-9_-]+)\s*(?:,\s*([\s\S]*))?\)$/;
 
 type Scalar = (value: string) => string | undefined;
+
+/**
+ * Unity has no CSS root font-size. This projection fixes 1rem at 16 USS px;
+ * it does not follow a consumer's browser root size or the element's font.
+ * Source fact: CSS rem length; applies by: value unit / typography property;
+ * removable when: the target carries a configurable root-length context.
+ */
+export const REM_BASELINE_PX = 16;
+const remPixels: Scalar = value => {
+  if (!REM.test(value)) return undefined;
+  const pixels = Number(value.slice(0, -3)) * REM_BASELINE_PX;
+  return Number.isFinite(pixels) ? `${pixels}px` : undefined;
+};
 
 /** `var(--x[, fallback])` with the fallback validated by `inner`. */
 function varOf(value: string, inner: Scalar): string | undefined {
@@ -215,12 +229,13 @@ export const color: Scalar = value => {
   return undefined;
 };
 
-interface LengthOptions { percent?: boolean; keywords?: readonly string[] }
+interface LengthOptions { percent?: boolean; rem?: boolean; keywords?: readonly string[] }
 const length = (options: LengthOptions = {}): Scalar => {
   const self: Scalar = value => {
     const v = value.trim();
     if (v.startsWith("var(")) return varOf(v, self);
     if (v === "0" || PX.test(v)) return v;
+    if (options.rem && REM.test(v)) return remPixels(v);
     if (options.percent && PERCENT.test(v)) return v;
     if (options.keywords?.includes(v)) return v;
     return undefined;
@@ -255,11 +270,13 @@ const many = (kind: Scalar, max: number): Scalar => value => {
  * A token value as a USS scalar, independent of the consuming property: a
  * colour, length, percentage, time, angle, unitless number or bare keyword.
  * Composite values (JSON-serialised shadows, multi-part shadows, functions
- * other than rgb/rgba, quoted font stacks, rem/em) are not scalars.
+ * other than rgb/rgba, quoted font stacks, em) are not scalars. Rem tokens
+ * use the same fixed baseline as typography consumers, including scope values.
  */
 export const tokenScalar: Scalar = value => {
   const v = value.trim();
   if (v.startsWith("var(")) return varOf(v, tokenScalar);
+  if (REM.test(v)) return remPixels(v);
   if (v.startsWith("#") || /^rgba?\(/i.test(v) || v === "transparent") return color(v);
   if (v === "0" || PX.test(v) || PERCENT.test(v) || TIME.test(v) || ANGLE.test(v) || NUMBER.test(v)) return v;
   if (/^[a-z][a-z-]*$/.test(v)) return v;
@@ -303,6 +320,7 @@ const realise = (uss: string, kind: Scalar): Handler => d => {
 const same = (kind: Scalar): ((property: string) => Handler) => property => realise(property, kind);
 
 const PX_ONLY = length();
+const TYPOGRAPHY_LENGTH = length({ rem: true });
 const PX_AUTO = length({ keywords: ["auto"] });
 const PX_PERCENT_AUTO = length({ percent: true, keywords: ["auto"] });
 const PX_NONE = length({ keywords: ["none"] });
@@ -515,8 +533,8 @@ export const HANDLERS: Readonly<Record<string, Handler>> = (() => {
   table["outline"] = d => (d.focus ? borderShorthand(d) : { reason: "uss-property" });
   table["outline-offset"] = d => (d.focus && d.value.trim() === "0" ? { noop: true } : { reason: "uss-property" });
   // Typography.
-  table["font-size"] = same(PX_ONLY)("font-size");
-  table["letter-spacing"] = same(PX_ONLY)("letter-spacing");
+  table["font-size"] = same(TYPOGRAPHY_LENGTH)("font-size");
+  table["letter-spacing"] = same(TYPOGRAPHY_LENGTH)("letter-spacing");
   // -unity-font-style takes keywords, so a token-backed weight cannot stay a
   // var(): it is resolved across scopes and the resolved value is mapped.
   table["font-weight"] = d => {
@@ -692,6 +710,7 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
   // defines: BooleanControl and AnchoredSurface toggle it on the host,
   // ItemGroup on its paired trigger/content parts.
   const placeState = (owner: string | undefined): UssReason | undefined => {
+    if (lowering.behavior === "Passive") return "uss-selector";
     const stateClass = `.${lowering.stateClass}`;
     if (lowering.behavior === "ItemGroup") {
       const paired = owner !== undefined && (owner === lowering.trigger.name || owner === lowering.content.name);
@@ -708,7 +727,7 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
     let failure: UssReason | undefined;
     switch (predicate.kind) {
       case "variant": {
-        if (predicate.value === "true" && predicate.axis === lowering.channel.valueProp) { failure = placeState(undefined); break; }
+        if (lowering.behavior !== "Passive" && predicate.value === "true" && predicate.axis === lowering.channel.valueProp) { failure = placeState(undefined); break; }
         if (predicate.value === "true" && predicate.axis === ctx.disabledProp) { failure = atOwner(undefined, ":disabled", hostPseudo); break; }
         const modifier = ctx.ir.classRecipe.valueModifiers.find(m => m.propName === predicate.axis);
         // The walker refuses a prefixed (colliding) axis, so it has no carrier.
@@ -1220,6 +1239,7 @@ export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hos
     "/* @generated:start unity-uss — generated by packages/ds-codegen (frameworks/unity/uss.ts); do not edit. Regenerate with pnpm run generate:unity. */",
     `/* Sources: ${TOKEN_SOURCES.graph}, ${TOKEN_SOURCES.brandLayer} (@layer brand), and each admitted component's contract and sidecars. Declarations USS cannot realise are listed in Controls.unsupported.json. */`,
     `/* Brands: ${sources.brands.map(b => b.id).join(", ")} */`,
+    `/* Rem projection: 1rem = ${REM_BASELINE_PX}px; fixed CSS root baseline, independent of consumer font size. */`,
     block(".fsds-theme", light, "Token graph, light (resolved.tokens.json)"),
   ];
   if (dark.length) sections.push(block(".fsds-theme.fsds-theme--dark", dark, "Token graph, dark"));

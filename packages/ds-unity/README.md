@@ -1,6 +1,6 @@
 # Full Stack DS for Unity UI Toolkit
 
-A local UPM package with contract-generated Switch, Accordion, Popover and Tabs controls. Unity 6 is the API baseline. Generated controls carry `[UxmlElement]` and are usable from C#, UXML and UI Builder; the same runtime assembly serves Editor windows and `UIDocument` panels.
+A local UPM package with contract-generated Switch, Accordion, Popover, Tabs, Text and Divider controls. Unity 6 is the API baseline. Generated controls carry `[UxmlElement]` and are usable from C#, UXML and UI Builder; the same runtime assembly serves Editor windows and `UIDocument` panels.
 
 ## Import
 
@@ -85,7 +85,9 @@ pnpm run test:unity
 
 `audit:unity-boundary` checks that every contract and sidecar leaf in the corpus resolves to a support-boundary rule, that no allowlisted component relies on a catch-all rule and that every rule matches at least one live leaf; it prints counts per disposition and pending counts per parity phase.
 
-`test:unity` copies the package and sample into `tmp/unity-pilot/project`, then runs real Unity EditMode tests. It needs an activated Editor license and a graphics device for the live Editor panels. Set `UNITY_EDITOR` to the Editor executable when using a different installation. Logs and NUnit XML stay in `tmp/unity-pilot`. Styling tests enter Play mode, render a real Player panel into a texture, and save PNG witnesses under `tmp/unity-pilot/screenshots`; Editor typography, spacing and focus are checked through resolved styles and geometry.
+`Text` is a `TextElement`: assign `text` for string content, compose child elements through `Add`, and select `Variant`, `Size` and `Weight` from the generated USS carriers. `Divider` is a `VisualElement` with `Orientation` (`horizontal` or `vertical`); its border and spacing come from the token-backed sheet. A fixed native root of 16px converts authored `rem` typography to USS pixels. The boundary omits Text's semantic `as`, `align`, `transform` and `truncate`, and Divider's `decorative`, `thickness` and `title`; the generated attributes make no claim for them. Intermediate font weights, line-height, relative `em` geometry and native screen-reader semantics also remain gaps.
+
+`test:unity` copies the package and sample into `tmp/unity-pilot/project`, then runs real Unity EditMode tests. It needs an activated Editor license and a graphics device for the live Editor panels. Set `UNITY_EDITOR` to the Editor executable when using a different installation. Logs, NUnit XML and a source-revision/results digest receipt stay in `tmp/unity-pilot`. Styling tests enter Play mode, render a real Player panel into a texture, and save PNG witnesses under `tmp/unity-pilot/screenshots`; Editor typography, spacing and focus are checked through resolved styles and geometry.
 
 The generated styling candidate at source `f85a48f16` passed 42/42 EditMode cases on Unity 6000.5.3f1, with zero failures or skips (test-run start `2026-10-30 06:28:44Z`). Its six local PNG witnesses cover light, dark and narrow Player-context panels inside the Editor. The separate standalone Player lane below has its own source and receipt.
 

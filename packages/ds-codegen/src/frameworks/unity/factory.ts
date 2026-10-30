@@ -38,7 +38,8 @@ function domNodeKey(keyed: string, ir: ComponentIR): string | undefined {
  */
 export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, classified: ClassifiedLeaf[]): void {
   const { lowering, source } = walkComponent(ir);
-  const { behavior, channel } = lowering;
+  const { behavior } = lowering;
+  const channel = lowering.behavior === "Passive" ? undefined : lowering.channel;
   const emitted = rootPublicMembers(source, ir.name);
   const triggers = triggerParts(ir);
   const rules = new Map(loadBoundary().rules.map(r => [r.id, r]));
@@ -59,15 +60,15 @@ export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, 
       case "emitted-property":
         ok = member !== undefined && emitted.has(pascal(member)); subject = `prop ${member}`; break;
       case "selected-channel-member":
-        ok = member !== undefined && [channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp].includes(member); subject = `prop ${member}`; break;
+        ok = member !== undefined && channel !== undefined && [channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp].includes(member); subject = `prop ${member}`; break;
       case "selected-channel":
-        ok = channelKey === channel.name; subject = `channel ${channelKey}`; break;
+        ok = channel !== undefined && channelKey === channel.name; subject = `channel ${channelKey}`; break;
       case "channel-change-event":
-        ok = eventKey !== undefined && (events[eventKey]?.emittedVia ?? []).includes(channel.changeHandlerProp); subject = `event ${eventKey}`; break;
+        ok = channel !== undefined && eventKey !== undefined && (events[eventKey]?.emittedVia ?? []).includes(channel.changeHandlerProp); subject = `event ${eventKey}`; break;
       case "selected-channel-binding":
         // The behavior's state class realises a binding to the selected
         // channel's value only on a trigger part it owns.
-        ok = binding === `channel:${channel.name}.value` && node !== undefined && triggers.has(node); subject = `binding ${leaf.keyed}`; break;
+        ok = channel !== undefined && binding === `channel:${channel.name}.value` && node !== undefined && triggers.has(node); subject = `binding ${leaf.keyed}`; break;
       case "bound-prop-property":
         ok = binding.startsWith("prop:") && node !== undefined && triggers.has(node) && emitted.has(pascal(binding.slice(5))); subject = `binding ${leaf.keyed}`; break;
     }

@@ -4,7 +4,8 @@ import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const out = process.env.FSDS_ENGINE_OUT ?? path.join(root,'tmp/godot-pilot',crypto.randomUUID());
+const out = process.env.FSDS_ENGINE_OUT ?? path.resolve(root,'tmp','godot-pilot',crypto.randomUUID());
+if (!path.isAbsolute(out)) throw new Error('FSDS_ENGINE_OUT must be an absolute path');
 const runId = process.env.FSDS_ENGINE_RUN ?? crypto.randomUUID();
 const revision = spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'});
 if(revision.status!==0)throw new Error('Cannot identify Godot pilot source revision');
@@ -14,7 +15,11 @@ if(dirt.status!==0)throw new Error('Cannot identify Godot pilot source tree stat
 const project = path.join(out,'project');
 fs.mkdirSync(project,{recursive:true});
 fs.cpSync(path.join(root,'packages/ds-godot/addons'),path.join(project,'addons'),{recursive:true});
-for(const name of ['main.gd','roundtrip.gd']) fs.copyFileSync(path.join(root,'packages/ds-godot/verification',name),path.join(project,name));
+const verification = path.join(root,'packages/ds-godot/verification');
+for(const name of ['main.gd','roundtrip.gd']) fs.copyFileSync(path.join(verification,name),path.join(project,name));
+// Roundtrip fixtures may load sibling verification scripts by res:// path.
+fs.mkdirSync(path.join(project,'verification'),{recursive:true});
+for(const name of fs.readdirSync(verification).filter(name=>name.endsWith('.gd'))) fs.copyFileSync(path.join(verification,name),path.join(project,'verification',name));
 fs.copyFileSync(path.join(root,'packages/ds-godot/fixtures/traces.json'),path.join(project,'traces.json'));
 // A separate changed-token fixture checks emitted resource values in Godot.
 const {buildComponentIR}=await import('../packages/ds-codegen/dist/ir.js');
@@ -32,12 +37,17 @@ const probe=buildComponentIR(contract); probe.name='TokenProbe';
 for(const fact of probe.tokenFacts) if(fact.rawValue?.match(/^#[0-9a-f]{6}$/i)) fact.rawValue='#123456';
 emitProbe(probe);
 for(const name of ['Text','Divider']) {
+ // Exercise the copied package artifacts; probe emission must not replace them.
+ const componentDir=path.join(project,'addons/full_stack_ds/components',name);
+ for(const file of [`${name}.gd`,`${name}.tscn`,'theme.tres','capabilities.json']) {
+  const artifact=path.join(componentDir,file);
+  if(!fs.existsSync(artifact)) throw new Error(`Missing packaged ${name} artifact: ${artifact}`);
+ }
  const base=path.join(root,'packages/ds-contracts/components',name,name);
  const source=JSON.parse(fs.readFileSync(base+'.contract.json','utf8'));
  source.tokens=JSON.parse(fs.readFileSync(base+'.tokens.json','utf8'));
  source.styles=JSON.parse(fs.readFileSync(base+'.styles.json','utf8'));
  const ir=buildComponentIR(source);
- emitProbe(ir);
  if(name==='Divider') {
   ir.name='RuleProbe';
   for(const fact of ir.tokenFacts) if(fact.name==='divider.color') fact.rawValue='#123456';

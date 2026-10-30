@@ -4,7 +4,7 @@
  * Lowers `ir.dom` — or, for parts-only contracts, a tree synthesized from
  * `ir.parts` — into UI Toolkit C#: one `[UxmlElement]` class for the
  * component root and one per `ir.compoundParts` entry. Element types, part
- * identity, insertion points, channel API, props and the behavior the
+ * identity, insertion points, optional channel API, props and any behavior the
  * constructor attaches all derive from IR facts. Nothing here branches on a
  * component, part, channel or class name; the only name table is the
  * item-group option vocabulary, applied only when the ItemGroup behavior was
@@ -207,7 +207,11 @@ function planClasses(ctx: Context): ClassPlan[] {
   const classes: ClassPlan[] = [];
   if (ir.dom) {
     assertRenderable(ctx, ir.dom);
-    const root = newClass(name, "VisualElement", true, rootIdentity(ctx, ir.dom.part));
+    // A passive text host paints consumer string content itself; a generic
+    // VisualElement has no text surface. Child elements remain composable.
+    const passiveText = ctx.lowering.behavior === "Passive" && TEXT_LEAF_TAGS.has(ir.dom.tag) &&
+      ir.dom.children.length === 1 && isInsertion(ir.dom.children[0]!);
+    const root = newClass(name, passiveText ? "TextElement" : "VisualElement", true, rootIdentity(ctx, ir.dom.part));
     walkChildren(ctx, root, root.root, ir.dom.children, { count: 0 });
     classes.push(root);
   } else {
@@ -267,9 +271,48 @@ function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], k
   return `        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${args}); set { Variants.Set(this, ${quote(ctx.ir.classRecipe.base)}, value, ${values.map(quote).join(", ")});${knob ? ` ${knob} = value;` : ""} } }`;
 }
 
+/** A passive host has no channel or behavior to attach. Only variant axes
+ * with an actual USS carrier become public attributes. Admission must classify
+ * every omitted prop as pending/refused; a lowered prop must pass the
+ * emitted-property realization check in the boundary. */
+function passiveRootApi(ctx: Context): RootApi {
+  const members: string[] = [];
+  const defaults: string[] = [];
+  for (const prop of ctx.ir.styledProps) {
+    const values = ctx.ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ctx.ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach: [], defaults };
+}
+
+function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined): void {
+  if (!node) return;
+  // A conditional data attribute is DOM metadata, not a UI Toolkit API. The
+  // admission boundary must explicitly classify it pending before generation.
+  const unsupportedBindings = Object.entries(node.bindings).some(([attribute, value]) => {
+    if (!/^data-[a-z][a-z0-9-]*$/.test(attribute) || value.kind !== "conditional" || value.condition.kind !== "prop") return true;
+    const sourceProp = value.condition.prop;
+    return !ir.styledProps.some(prop => prop.name === sourceProp) ||
+      value.whenTrue.kind !== "literal" || value.whenTrue.value !== "true" ||
+      value.whenFalse.kind !== "literal" || value.whenFalse.value !== "false";
+  });
+  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || Object.keys(node.attrs).length ||
+    node.componentRef !== undefined || node.iconGlyph !== undefined || node.activation !== undefined || node.focusContainer === true ||
+    !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
+    node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||
+    (node.content !== undefined && (node === ir.dom || (node.part !== undefined && ir.compoundParts.some(part => part.name === node.part)) ||
+      !("kind" in node.content && node.content.kind === "literal")));
+  if (unhandled) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
+  for (const child of node.children) assertPassiveAnatomy(ir, child);
+}
+
 /** R6–R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
+  if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];
   const members: string[] = [`        public ${lowering.behavior} ${behavior} { get; }`];
@@ -415,12 +458,11 @@ function assertUniqueMembers(ctx: Context, cls: ClassPlan, members: string[]): v
 }
 
 function emitClass(ctx: Context, cls: ClassPlan, api: RootApi | undefined): string {
-  const { channel } = ctx.lowering;
   const interfaces = cls.isRoot
-    ? (channel.valueType === "boolean" ? ", INotifyValueChanged<bool>" : "")
+    ? (ctx.lowering.behavior !== "Passive" && ctx.lowering.channel.valueType === "boolean" ? ", INotifyValueChanged<bool>" : "")
     : (keyedRole(ctx, cls.part).keyed ? `, ${KEYED_PART_INTERFACE}` : "");
   const members: string[] = [];
-  if (cls.isRoot) members.push(`        public const string ChannelName = ${quote(channel.name)};`, `        public const string ChangeHandler = ${quote(channel.changeHandlerProp)};`);
+  if (cls.isRoot && ctx.lowering.behavior !== "Passive") members.push(`        public const string ChannelName = ${quote(ctx.lowering.channel.name)};`, `        public const string ChangeHandler = ${quote(ctx.lowering.channel.changeHandlerProp)};`);
   // Public part properties (document order) precede the private insertion host.
   members.push(...cls.members.filter(m => m.declaration === "property").map(declaration), ...cls.members.filter(m => m.declaration === "private").map(declaration));
   if (cls.contentContainer) members.push(`        public override VisualElement contentContainer => ${cls.contentContainer};`);
@@ -465,6 +507,7 @@ export interface UnityComponentSource {
 /** The generated C# for one component: root class plus one class per compound part. */
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
+  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom);
   const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [] };
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);

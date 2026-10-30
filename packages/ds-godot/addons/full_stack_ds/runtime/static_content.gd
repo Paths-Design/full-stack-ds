@@ -135,9 +135,10 @@ func _refresh() -> void:
 			rule.custom_minimum_size = Vector2(0.0, pixels)
 			rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		rule.tooltip_text = title
 		rendered = rule
 		var margins := MarginContainer.new()
+		margins.mouse_filter = Control.MOUSE_FILTER_PASS if not title.is_empty() else Control.MOUSE_FILTER_IGNORE
+		margins.tooltip_text = title
 		margins.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		if orientation == "vertical": margins.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		for edge in ["left", "right", "top", "bottom"]:

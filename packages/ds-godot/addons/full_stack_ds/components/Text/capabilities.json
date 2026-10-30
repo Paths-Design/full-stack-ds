@@ -3,6 +3,14 @@
   "excluded": [
     "as"
   ],
+  "fidelityGaps": [
+    "children.node-ref: content is String-only; retained inline node composition is not realized",
+    "as: DOM element and heading semantics have no native mapping",
+    "typography.font-family: SystemFont fallback does not preserve the authored Web font family",
+    "typography.line-height: integer line_spacing approximates CSS line boxes",
+    "typography.letter-spacing: integer glyph spacing rounds fractional tracking",
+    "transform.capitalize: Godot String.capitalize word normalization differs from CSS text-transform"
+  ],
   "styles": [
     {
       "source": "root",

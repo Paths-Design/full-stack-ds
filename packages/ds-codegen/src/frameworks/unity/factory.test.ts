@@ -13,6 +13,7 @@ const contractsRoot = path.join(root, "packages/ds-contracts");
 function fixture(name: string) {
   return JSON.parse(fs.readFileSync(path.join(contractsRoot, `components/${name}/${name}.contract.json`), "utf8")) as ComponentContract;
 }
+const completeFixture = (name: string) => loadContractWithSidecars(root, name) as ComponentContract;
 const emit = (contract: ComponentContract) => createUnityEmitter().emitComponent(buildComponentIR(contract), { componentsRoot: "", contractsRoot })[0]!.contents;
 
 describe("Unity capability lowering", () => {
@@ -29,8 +30,9 @@ describe("Unity capability lowering", () => {
     expect(source).toContain(` = ${expected}.Attach(this, `);
     expect(source).not.toMatch(/: (?:BooleanControl|ItemGroup|AnchoredSurface)\b/);
   });
-  it("refuses unsupported static and modal surfaces instead of emitting inert controls", () => {
-    expect(() => emit(fixture("Text"))).toThrow("UNITY_UNSUPPORTED_INTERACTION");
+  it("routes channel-free content and rule leaves through a passive host while refusing modal surfaces", () => {
+    expect(unityLowering(buildComponentIR(fixture("Text"))).behavior).toBe("Passive");
+    expect(unityLowering(buildComponentIR(fixture("Divider"))).behavior).toBe("Passive");
     expect(() => emit(fixture("Dialog"))).toThrow("UNITY_UNSUPPORTED_SURFACE");
   });
   it("carries channel and anatomy names rather than assuming checked/input", () => {
@@ -111,7 +113,7 @@ describe("Unity capability lowering", () => {
   it("refuses a lowered family the emitted control does not realise", () => {
     const emitter = createUnityEmitter();
     // `orientation` is a lowered ItemGroup option family, but BooleanControl emits no Orientation.
-    const sw = fixture("Switch");
+    const sw = completeFixture("Switch");
     sw.props!.designed!.members!.push({ name: "orientation", propType: { kind: "string" }, default: "horizontal" });
     expect(() => emitter.admitContract!(sw, { admitted: true })).toThrow("UNITY_BOUNDARY_UNREALIZED: Switch on BooleanControl does not realise prop orientation (rule prop-item-group-options claims emitted-property)");
     // A second channel is not the one the dispatcher selects.
@@ -128,22 +130,22 @@ describe("Unity capability lowering", () => {
   });
   it("gates generation on the support boundary before lowering", () => {
     const emitter = createUnityEmitter();
-    for (const name of ["Switch", "Accordion", "Popover", "Tabs"]) {
-      expect(() => emitter.admitContract!(fixture(name), { admitted: true })).not.toThrow();
+    for (const name of ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider"]) {
+      expect(() => emitter.admitContract!(completeFixture(name), { admitted: true })).not.toThrow();
     }
     const unclassified = fixture("Switch") as ComponentContract & { futureBlock?: unknown };
     unclassified.futureBlock = { enabled: true };
     expect(() => emitter.admitContract!(unclassified, { admitted: false })).toThrow("UNITY_BOUNDARY_UNCLASSIFIED: Switch: contract:/futureBlock/enabled");
-    const unadjudicated = fixture("Switch");
+    const unadjudicated = completeFixture("Switch");
     unadjudicated.props!.designed!.members!.push({ name: "futureBehavior", propType: { kind: "boolean" } });
     expect(() => emitter.admitContract!(unadjudicated, { admitted: true })).toThrow("UNITY_BOUNDARY_UNADJUDICATED");
     expect(() => emitter.admitContract!(unadjudicated, { admitted: false })).not.toThrow();
   });
-  it("registers the four-component pilot without claiming TypeScript rail admission", () => {
+  it("registers passive and interactive controls without claiming TypeScript rail admission", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
