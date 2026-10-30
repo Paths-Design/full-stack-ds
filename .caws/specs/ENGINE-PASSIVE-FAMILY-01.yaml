@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: engine-passive-family
 created_at: '2026-10-30T07:16:09.868Z'
-updated_at: '2026-10-30T11:14:20.776Z'
+updated_at: '2026-10-30T11:23:43.166Z'
 created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
 blast_radius:
   modules:
@@ -26,6 +26,7 @@ scope:
     - 'package.json'
     - docs/specifications/governed-ci.md
     - packages/ds-codegen/src/cli.test.ts
+    - scripts/variant-style-audit/known-unrealized.json
   out: []
 invariants:
   - 'Passive controls are dispatched from framework-neutral IR facts, never component identity; no unused channel API is emitted.'
