@@ -9,6 +9,7 @@ created_by_session: '01a18ad4-df4e-7622-8458-a0bc41c3f87d'
 blast_radius:
   modules:
     - 'Dialog contract and generated target components'
+    - 'Typed component-instance literal props and dismissal guards'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -33,6 +34,7 @@ scope:
 invariants:
   - 'Semantics are declared through generic contract facts without component-name emitter special cases'
   - 'Authored dismissal labels remain localized and controlled owners may refuse close requests'
+  - 'Literal component props use normalized target-property classification and host attributes retain their attribute semantics'
 acceptance:
   - id: A1
     given: 'an open dismissible Dialog in each web framework'
@@ -46,6 +48,12 @@ acceptance:
     given: 'controlled Dialog open remains true'
     when: 'a dismissal request occurs'
     then: 'the callback is emitted and the dialog remains open'
+  - id: A4
+    given: 'renamed referenced components with static props and host attributes'
+    when: 'Lit lowers the normalized instance and the Dialog close glyph renders'
+    then: >-
+      declared props reach component properties including non-reflecting variants
+      and host attributes remain attributes without component-name special cases
 observability:
   - 'Retain focused tests and real browser logs and screenshots under ignored canonical release evidence'
 rollback:
