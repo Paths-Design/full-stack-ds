@@ -37,12 +37,17 @@ const probe=buildComponentIR(contract); probe.name='TokenProbe';
 for(const fact of probe.tokenFacts) if(fact.rawValue?.match(/^#[0-9a-f]{6}$/i)) fact.rawValue='#123456';
 emitProbe(probe);
 for(const name of ['Text','Divider']) {
+ // Exercise the copied package artifacts; probe emission must not replace them.
+ const componentDir=path.join(project,'addons/full_stack_ds/components',name);
+ for(const file of [`${name}.gd`,`${name}.tscn`,'theme.tres','capabilities.json']) {
+  const artifact=path.join(componentDir,file);
+  if(!fs.existsSync(artifact)) throw new Error(`Missing packaged ${name} artifact: ${artifact}`);
+ }
  const base=path.join(root,'packages/ds-contracts/components',name,name);
  const source=JSON.parse(fs.readFileSync(base+'.contract.json','utf8'));
  source.tokens=JSON.parse(fs.readFileSync(base+'.tokens.json','utf8'));
  source.styles=JSON.parse(fs.readFileSync(base+'.styles.json','utf8'));
  const ir=buildComponentIR(source);
- emitProbe(ir);
  if(name==='Divider') {
   ir.name='RuleProbe';
   for(const fact of ir.tokenFacts) if(fact.name==='divider.color') fact.rawValue='#123456';
