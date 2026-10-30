@@ -1,0 +1,9 @@
+/.godot/
+*.gd.uid
+/roundtrip.tscn
+/composed-roundtrip.tscn
+/glyph-roundtrip.tscn
+/glyph-default-roundtrip.tscn
+/glyph-authored-default-roundtrip.tscn
+/verification/glyph-export.zip
+/verification/glyph-exported/

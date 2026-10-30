@@ -1,9 +1,10 @@
 id: ENGINE-PASSIVE-FAMILY-01
 title: 'Unity and Godot passive component parity foundations'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: engine-passive-family
 created_at: '2026-10-30T07:16:09.868Z'
-updated_at: '2026-10-30T07:16:09.868Z'
+updated_at: '2026-10-30T07:16:50.987Z'
 created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
 blast_radius:
   modules:
