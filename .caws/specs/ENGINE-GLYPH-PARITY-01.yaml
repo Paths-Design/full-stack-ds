@@ -79,3 +79,8 @@ evidence:
     evidence_ref: "source 862bdcfc4 clean: pnpm run test:unity 48/48 (tmp/unity-pilot/provenance.json); pnpm run test:unity-player 25/25, run 11ec1f3c-b235-4c05-9dd1-8992fe7f98c9; authored variants, pixels, color, unknown clearing, UXML reload"
     recorded_at: "2026-10-30T20:03:00.777Z"
     commit_sha: "85abce44c7ac899109245c7965f2f21621e4c421"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "source 862bdcfc4 clean: Godot 4.7.2 runtime+fresh macOS export run 34ca1952-91c3-4e28-876d-993df4032530, glyph receipts passed failures=[]; Unity 6000.5.3f1 OSXPlayer run 11ec1f3c-b235-4c05-9dd1-8992fe7f98c9 passed; target a11y limits in docs"
+    recorded_at: "2026-10-30T20:03:10.663Z"
+    commit_sha: "85abce44c7ac899109245c7965f2f21621e4c421"
