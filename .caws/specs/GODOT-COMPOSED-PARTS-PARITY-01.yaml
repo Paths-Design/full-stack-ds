@@ -55,3 +55,10 @@ evidence:
     command: pnpm exec vitest run packages/ds-codegen/src/frameworks/godot/factory.test.ts
     exit_code: 0
     commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Godot 4.7.2 Editor and exported Player run a21bac6b: composed-parts identity/action/geometry, optional-part-layout two visible parts and 4px gap, composite and Badge pixels; raw receipts /private/tmp/fsds-godot-composed-committed-89b51fd."
+    recorded_at: "2026-10-30T03:42:16.747Z"
+    command: "FSDS_ENGINE_OUT=/private/tmp/fsds-godot-composed-committed-89b51fd node scripts/godot-pilot.mjs"
+    exit_code: 0
+    commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
