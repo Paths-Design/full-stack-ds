@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: engine-form-foundation
 created_at: '2026-10-30T17:35:38.724Z'
-updated_at: '2026-10-30T17:36:13.567Z'
+updated_at: '2026-10-30T17:40:51.794Z'
 created_by_session: '01a18dd8-804f-7111-a019-5b9055d34125'
 blast_radius:
   modules:
@@ -25,6 +25,8 @@ scope:
     - 'docs/architecture/unity-target.md'
     - 'docs/architecture/godot-target.md'
     - 'docs/current-implementation-snapshot.md'
+    - packages/ds-codegen/src/frameworks/native-form-plan.ts
+    - packages/ds-codegen/src/frameworks/native-form-plan.test.ts
   out: []
 invariants:
   - 'Component semantics derive from normalized form-control, binding and style facts without component-name dispatch.'
