@@ -1,10 +1,11 @@
 id: RADIO-CONTROLLED-RECONCILIATION-01
 title: 'Reconcile native radio state after controlled requests'
 mode: fix
-lifecycle_state: active
-worktree: radio-controlled-reconciliation
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Native radio changes reconcile to accepted state with one request and stable focus; five-framework browsers real Svelte parent and scoped regressions verified.'
 created_at: '2026-10-29T22:59:28.312Z'
-updated_at: '2026-10-29T23:59:51.316Z'
+updated_at: '2026-10-30T00:16:30.723Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -68,3 +69,32 @@ contracts:
   - name: 'radio-ownership'
     type: behavior
     path: 'packages/ds-codegen/src/interaction-runtime.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Trusted Chromium pointer and native ArrowRight refusal cases passed in all five web frameworks; accepted alpha remains checked and aria-checked true, gamma remains focused and unchecked, one request per activation; .caws/state/radio-browser.log and retained screenshots; e2e/radio-controlled.spec.ts"
+    recorded_at: "2026-10-30T00:11:50.263Z"
+    command: "FSDS_E2E_PORT=5196 pnpm exec playwright test e2e/radio-controlled.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: "95833ba904f706e251898f51cae3042859069920"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "All eleven Chromium cases passed: uncontrolled pointer/arrows commit once and skip disabled beta, later accepted parent updates render; real Svelte parent retains identical input node and focus on later and callback acceptance; .caws/state/radio-browser.log plus e2e/fixtures/radio-controlled"
+    recorded_at: "2026-10-30T00:11:52.974Z"
+    command: "FSDS_E2E_PORT=5196 pnpm exec playwright test e2e/radio-controlled.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: "95833ba904f706e251898f51cae3042859069920"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Shared runtime tests execute actual DOM controls and verify accepted/refused state, original exception propagation after restoration, focus, punctuated names, external form owners, separate forms/shadow roots and detached/empty-name controls; 17 runtime tests in .caws/state/radio-focused.log"
+    recorded_at: "2026-10-30T00:11:56.747Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/composite-control-ir.test.ts packages/ds-codegen/src/interaction-runtime.test.ts
+    exit_code: 0
+    commit_sha: "95833ba904f706e251898f51cae3042859069920"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "25 focused cases, renamed-contract/value-identity falsifiers, eleven browser cases, root5213/357 and all framework suites passed; final test typing rechecked by tsc and focused25. Fresh integrated rail all six, lint, docs claims/links and generated drift passed; policy evaluated actual22-file lane after caws claim. Raw .caws/state/radio-{focused,types,root,frameworks,integrated-rail,integrated-lint,integrated-docs}.log; generic normalized facts and generated sources, no publication/native-device/whole-library readiness claim"
+    recorded_at: "2026-10-30T00:11:59.472Z"
+    command: "pnpm run governed:rail && pnpm run lint && pnpm exec vitest run --maxWorkers=1 && pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "95833ba904f706e251898f51cae3042859069920"
