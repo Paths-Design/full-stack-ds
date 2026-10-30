@@ -67,3 +67,11 @@ contracts:
   - name: 'radio-ownership'
     type: behavior
     path: 'packages/ds-codegen/src/interaction-runtime.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Trusted Chromium pointer and native ArrowRight refusal cases passed in all five web frameworks; accepted alpha remains checked and aria-checked true, gamma remains focused and unchecked, one request per activation; .caws/state/radio-browser.log and retained screenshots; e2e/radio-controlled.spec.ts"
+    recorded_at: "2026-10-30T00:11:50.263Z"
+    command: "FSDS_E2E_PORT=5196 pnpm exec playwright test e2e/radio-controlled.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: "95833ba904f706e251898f51cae3042859069920"
