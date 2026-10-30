@@ -19,6 +19,7 @@ fs.writeFileSync(path.join(project, 'Packages/manifest.json'), JSON.stringify({ 
 fs.copyFileSync(path.join(pkg, 'Tests/Player~/Build.cs'), path.join(project, 'Assets/Editor/Build.cs'));
 fs.copyFileSync(path.join(pkg, 'Tests/Player~/PlayerWitness.cs'), path.join(project, 'Assets/PlayerWitness.cs'));
 fs.copyFileSync(path.join(pkg, 'Samples~/InteractiveControls/Controls.uxml'), path.join(project, 'Assets/Resources/Controls.uxml'));
+fs.copyFileSync(path.join(pkg, 'Samples~/InteractiveControls/Sample.uss'), path.join(project, 'Assets/Resources/Sample.uss'));
 fs.writeFileSync(path.join(project, 'Assets/Resources/RuntimeTheme.tss'), '@import url("unity-theme://default");\n');
 const app = path.join(out, 'Witness.app');
 const env = { ...process.env, FSDS_PLAYER_APP: app, FSDS_PLAYER_RUN: runId, FSDS_PLAYER_EVIDENCE: out };
@@ -33,6 +34,6 @@ const binaries = fs.readdirSync(path.join(app,'Contents/MacOS'));
 if(binaries.length !== 1) throw new Error('Ambiguous Player executable');
 run(path.join(app,'Contents/MacOS',binaries[0]), ['-screen-fullscreen','0','-screen-width','640','-screen-height','800','-logFile',path.join(out,'player.log')], 120000);
 const result = JSON.parse(fs.readFileSync(path.join(out,'result.json'),'utf8'));
-const expected = ['standalone-process', 'packaged-panel-and-uxml', 'player-panel', 'generated-switch-initial-state', 'submit-delivers-one-switch-change', 'packaged-stylesheet-resolves', 'accordion-selection', 'tabs-selection', 'popover-panel-root', 'popover-layout', 'popover-escape'];
+const expected = ['standalone-process', 'packaged-panel-and-uxml', 'player-panel', 'generated-switch-initial-state', 'sample-stylesheet-resolves', 'packaged-stylesheet-resolves', 'submit-delivers-one-switch-change', 'accordion-selection', 'tabs-selection', 'popover-panel-root', 'popover-layout', 'popover-escape'];
 if(result.runId !== runId || result.editor !== false || result.platform !== 'OSXPlayer' || result.passed !== true || JSON.stringify(result.checks) !== JSON.stringify(expected) || !fs.existsSync(path.join(out,'player.png'))) throw new Error('Missing, mismatched or failed Player witness');
 console.log(JSON.stringify(result,null,2));

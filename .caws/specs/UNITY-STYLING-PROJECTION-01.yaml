@@ -2,7 +2,6 @@ id: UNITY-STYLING-PROJECTION-01
 title: 'Unity styling projection: generate Controls.uss from the token graph and IR style facts; retire the hand-authored palette'
 mode: feature
 lifecycle_state: active
-worktree: unity-styling-closure
 created_at: '2026-10-19T08:10:00.925Z'
 updated_at: '2026-10-30T12:06:33.944Z'
 created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
@@ -46,8 +45,8 @@ invariants:
   - 'Every USS rule is derived from IR facts (ir.nativeStyleRules, ir.tokenScopes, ir.tokenFacts, ir.classRecipe, ir.states, the selected behavior''s state-class placement) and the token graph; no selector, property or value is authored per component, and no emitter branch names a component, part, channel or class literal beyond the HTML/CSS/USS platform vocabulary'
   - 'A CSS fact USS cannot realise is recorded in a machine-readable unsupported ledger emitted beside the stylesheet and classified refused or pending in the support boundary; it is never silently dropped and never approximated by hand-authored USS'
   - 'packages/ds-unity ships no hand-authored theme palette after this slice: Runtime/Resources/FullStackDS/Controls.uss is generated, sample-only styling lives under Samples~ and is not package theme authority'
-  - 'Behavior semantics are unchanged: the 26 EditMode interaction cases and the frozen engine traces pass before and after; the allowlist stays Switch, Accordion, Popover, Tabs'
   - 'Token names in USS follow the web token build''s kebab-case --fsds-* naming so the same resolvability question is asked of both surfaces'
+  - 'Styling preserves Switch, Accordion, Popover and Tabs behavior: the 26 EditMode interaction cases and frozen engine traces pass. Text and Divider were admitted in the separate passive-family slice, outside this styling acceptance.'
 acceptance:
   - id: A1
     given: 'the four allowlisted contracts, their sidecars and the built token graph'
@@ -110,15 +109,18 @@ evidence:
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
   - criterion_id: A2
     status: pass
-    evidence_ref: "audit:token-resolvability: 0 findings including Unity; audit:variant-realization: 50 findings all ledgered, 0 unledgered/stale, Unity 7 ledgered nondefault gaps"
-    recorded_at: "2026-10-30T05:46:46.896Z"
+    evidence_ref: "On merged source d40e7527b, token-resolvability and variant-realization audits passed; Unity six-component surface has 16 unrealized non-default values, all ledgered, with zero unledgered or stale findings. The ledgered gaps are explicit, not parity claims."
+    recorded_at: "2026-10-30T16:31:07.361Z"
     command: "pnpm run audit:token-resolvability && pnpm run audit:variant-realization"
     exit_code: 0
-    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
   - criterion_id: A3
-    status: fail
-    evidence_ref: "Merged source 708d1f1dd: Unity 6000.5.3f1 test:unity passed 42/42 EditMode including generated USS import, token geometry/state assertions and six Player-context PNGs (f85a48f16 XML start 2026-10-30 06:28:44Z). The separate frozen engine-comparison runner was blocked before execution by CAWS bash-write-guard unavailable-native-context for relative tmp/engine-comparison; retained older trace receipt and unchanged behavior classes do not prove a fresh trace run at this source. Standalone Player was not rerun."
-    recorded_at: "2026-10-30T07:10:39.722Z"
+    status: pass
+    evidence_ref: "At clean source 63fee12cf, Unity 6000.5.3f1 EditMode XML tmp/unity-pilot/results.xml passed 43/43, including USS import warnings/errors checks, token-backed styling and 26 interaction cases; six Editor Play-context PNGs recorded. Frozen five-row Unity Editor versus Godot runtime/export comparison passed at tmp/engine-comparison/ae1a20cf-d123-4db8-966c-bfe561adff5a/comparison.json. Fresh OSXPlayer run tmp/unity-player/52337abb-74a0-44df-9b09-7bbdbd9f868d/result.json passed 12/12, with inspected screenshot and opaque sample/Switch style checks. These ignored local receipts were inspected directly; commit verification checks reachability only."
+    recorded_at: "2026-10-30T16:30:02.772Z"
+    command: "pnpm run test:unity && pnpm run test:engine-comparison && pnpm run test:unity-player"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
   - criterion_id: A4
     status: pass
     evidence_ref: "audit:unity-boundary: lowered 12323, pending 2664 all P4, refused 2509, unclassified 0; zero P3 pending and zero violations; unsupported ledger entries joined to refused or pending sidecar leaves"
@@ -135,5 +137,8 @@ evidence:
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
   - criterion_id: A6
     status: pass
-    evidence_ref: "At merged source 708d1f1dd, docs/architecture/unity-target.md and packages/ds-unity/README.md record Unity 6000.5.3f1 EditMode run f85a48f16 (42/42, zero skipped; XML/log and six local PNGs); docs:check-claims and docs:check-links passed on the committed source."
-    recorded_at: "2026-10-30T07:09:01.606Z"
+    evidence_ref: "At source 63fee12cf and merged d40e7527b, docs/architecture/unity-target.md records Unity 6000.5.3f1 EditMode 43/43, six Editor Play-context frames, standalone OSXPlayer run 52337abb with 12/12 and explicit proof limits. docs:check-claims and docs:check-links passed on the committed document at 84b7fbb04."
+    recorded_at: "2026-10-30T16:30:46.408Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
