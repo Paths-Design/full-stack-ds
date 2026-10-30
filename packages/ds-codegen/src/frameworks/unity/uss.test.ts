@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
 import { createUnityEmitter } from "./factory.js";
-import { cssVar, projectComponent, projectStylesheet, type TokenSources } from "./uss.js";
+import { cssVar, loadTokenSources, projectComponent, projectStylesheet, tokenScalar, type TokenSources } from "./uss.js";
 import { walkComponent } from "./walker.js";
 
 const root = path.resolve(__dirname, "../../../../..");
@@ -253,6 +253,84 @@ const disableable = (c: Record<string, any>) => {
 };
 const contractsRoot = path.join(root, "packages/ds-contracts");
 const irOf = (c: Record<string, any>) => buildComponentIR(c as unknown as ComponentContract);
+
+describe("Unity USS projection: fixed-root rem typography", () => {
+  it.each([
+    ["1rem", "16px"], ["0.75rem", "12px"], ["3.75rem", "60px"],
+    ["-0.018rem", "-0.288px"], ["0rem", "0px"],
+    ["var(--size, 1.25rem)", "var(--size, 20px)"],
+    ["1em", undefined], ["1vw", undefined], ["calc(1rem + 2px)", undefined],
+  ] as const)("projects token %s against a fixed 16px CSS root", (input, expected) => {
+    expect(tokenScalar(input)).toBe(expected);
+  });
+
+  it("refuses rem values whose pixel conversion overflows", () => {
+    expect(tokenScalar(`${"9".repeat(400)}rem`)).toBeUndefined();
+  });
+
+  it("converts typography literals, fallbacks, graph themes and brand overrides consistently", () => {
+    const contract = knobWith({
+      shell: { "font-size": { resolvesTo: "knob.size", fallback: "1rem" }, "letter-spacing": web("-0.018rem") },
+      "--sm": { "knob.size": { resolvesTo: "core.typography.size", fallback: "0.75rem" }, "font-size": web("var(--fsds-knob-size, 0.75rem)") },
+      tail: { "font-size": web("var(--fsds-core-typography-size)") },
+    }, { "knob.size": { resolvesTo: "core.typography.size", fallback: "1rem" } }, sized);
+    const tokens: TokenSources = {
+      graph: { core: { typography: { size: { $value: { light: "1rem", dark: "1.25rem" } } } } },
+      brands: [{ id: "large", light: new Map([[cssVar("core.typography.size"), "1.5rem"]]), dark: new Map([[cssVar("core.typography.size"), "2rem"]]) }],
+    };
+    const { uss, ledger, components } = projectStylesheet([irOf(contract)], tokens);
+    expect(rule(uss, ".knob")).toEqual(expect.arrayContaining([
+      "--fsds-knob-size: var(--fsds-core-typography-size, 16px);",
+      "font-size: var(--fsds-knob-size, 16px);", "letter-spacing: -0.288px;",
+    ]));
+    expect(rule(uss, ".knob.knob--sm")).toEqual([
+      "--fsds-knob-size: var(--fsds-core-typography-size, 12px);", "font-size: var(--fsds-knob-size, 12px);",
+    ]);
+    expect(rule(uss, ".knob__tail")).toEqual(["font-size: var(--fsds-core-typography-size, 16px);"]);
+    expect(rule(uss, ".fsds-theme")).toEqual(["--fsds-core-typography-size: 16px;"]);
+    expect(rule(uss, ".fsds-theme.fsds-theme--dark")).toEqual(["--fsds-core-typography-size: 20px;"]);
+    expect(rule(uss, ".fsds-theme.fsds-brand-large")).toEqual(["--fsds-core-typography-size: 24px;"]);
+    expect(rule(uss, ".fsds-theme.fsds-brand-large.fsds-theme--dark")).toEqual(["--fsds-core-typography-size: 32px;"]);
+    expect([...components[0]!.carrierAxes]).toEqual(["size"]);
+    expect(uss).toContain("Rem projection: 1rem = 16px; fixed CSS root baseline");
+    expect(ledger.entries).toEqual([]);
+  });
+
+  it("retains unsupported relative typography, relative tokens and non-typography rem literals in the ledger", () => {
+    const { uss, ledger, components } = sheetOf(knobWith({
+      shell: { "font-size": web("1em"), "letter-spacing": web("calc(1rem + 1px)"), margin: web("1rem") },
+      "--sm": { "font-size": web("2em"), "knob.tracking": web("0.1em") },
+    }, {}, sized));
+    expect(consumers(uss)).toEqual([]);
+    expect([...components[0]!.carrierAxes]).toEqual([]);
+    expect(ledger.entries.map(e => [e.sourceKey, e.property, e.reason])).toEqual([
+      ["--sm", "font-size", "uss-scalar"], ["--sm", "knob.tracking", "uss-scalar"],
+      ["shell", "font-size", "uss-scalar"], ["shell", "letter-spacing", "uss-scalar"], ["shell", "margin", "uss-scalar"],
+    ]);
+  });
+
+  it("emits Text size/style carriers and typography declarations while retaining unsupported typography facts", () => {
+    const directory = path.join(contractsRoot, "components/Text");
+    const contract = JSON.parse(fs.readFileSync(path.join(directory, "Text.contract.json"), "utf8"));
+    contract.tokens = JSON.parse(fs.readFileSync(path.join(directory, "Text.tokens.json"), "utf8"));
+    contract.styles = JSON.parse(fs.readFileSync(path.join(directory, "Text.styles.json"), "utf8"));
+    const { uss, ledger, components } = projectStylesheet([irOf(contract)], loadTokenSources(contractsRoot));
+    expect([...components[0]!.carrierAxes]).toEqual(expect.arrayContaining(["variant", "size"]));
+    for (const [size, pixels] of [["xs", 12], ["sm", 14], ["md", 16], ["lg", 18], ["xl", 20], ["2xl", 24], ["3xl", 32]] as const) {
+      expect(rule(uss, `.text.text--${size}`)).toContain("font-size: var(--fsds-text-size-md, 16px);");
+      expect(rule(uss, `.text.text--${size}`)).toContainEqual(expect.stringMatching(new RegExp(`^--fsds-text-size-md: var\\(--[^,]+, ${pixels}px\\);$`)));
+    }
+    expect(rule(uss, ".text.text--display")).toContain("--fsds-text-size-md: var(--fsds-core-typography-ramp-11, 60px);");
+    expect(rule(uss, ".text.text--headline")).toContain("letter-spacing: var(--fsds-text-typography-letter-spacing-tight, -0.288px);");
+    expect(rule(uss, ".text.text--overline")).toContain("letter-spacing: var(--fsds-text-typography-letter-spacing-wide, 0.288px);");
+    expect(ledger.entries.filter(e => e.reason === "uss-scalar" && /rem$/.test(e.value))).toEqual([]);
+    expect(ledger.entries).toEqual(expect.arrayContaining([
+      expect.objectContaining({ property: "line-height", reason: "uss-property" }),
+      expect.objectContaining({ property: "font-weight", value: "300", reason: "uss-scalar" }),
+      expect.objectContaining({ property: "text-transform", reason: "uss-property" }),
+    ]));
+  });
+});
 
 describe("Unity USS projection: selectors", () => {
   it("lowers variant, state and pseudo predicates in variant, state, pseudo order", () => {
