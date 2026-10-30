@@ -47,3 +47,10 @@ evidence:
     command: "FSDS_E2E_PORT=5202 /Users/darianrosebrook/.nvm/versions/node/v22.19.0/bin/node node_modules/@playwright/test/cli.js test e2e/lit-compound-sizing.spec.ts --workers=1 --output=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-host-after"
     exit_code: 0
     commit_sha: "20818dc64144e820b639949aba6766fc8e153dfc"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Chromium lit-compound-sizing controlled-refusal/uncontrolled pointer Enter Space cases assert exact callbacks focus aria-expanded; disabled case asserts tab exclusion, no requests and re-enable. Raw lit-host-after.log five passed; lit-host-root.log5337pass, lit-host-frameworks.log all5scripts pass, rail/typecheck/lint/docs/policy/generated pass. Does not establish controlled acknowledgement or whole-component AT qualification."
+    recorded_at: "2026-10-30T17:50:12.836Z"
+    command: "FSDS_E2E_PORT=5202 /Users/darianrosebrook/.nvm/versions/node/v22.19.0/bin/node node_modules/@playwright/test/cli.js test e2e/lit-compound-sizing.spec.ts --workers=1 --output=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-host-after"
+    exit_code: 0
+    commit_sha: "20818dc64144e820b639949aba6766fc8e153dfc"
