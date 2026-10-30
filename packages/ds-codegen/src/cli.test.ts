@@ -315,6 +315,7 @@ describe("cli main — emitter admitContract seam", () => {
     expect(admits.map((e) => e.component).sort()).toEqual([
       "Accordion",
       "Divider",
+      "Icon",
       "Popover",
       "Switch",
       "Tabs",
@@ -439,7 +440,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     await import("./cli.js");
     expect(exit).not.toHaveBeenCalled();
     // fsds.targets.json lists the unity allowlist in this order; the corpus loads alphabetically.
-    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider"], afterEmits: 6 }]);
+    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon"], afterEmits: 7 }]);
     const lines = log.mock.calls.map((call) => String(call[0]));
     // Resolved against the package root: the components root minus the pack's Runtime/Components.
     expect(lines).toContain("  DRY RUN  target assets (unity)");
@@ -507,7 +508,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     ]);
     // Component groups keep their own contract provenance beside the asset group.
     const components = manifest.groups.filter((g) => g.component !== "(target-assets)");
-    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Divider", "Popover", "Switch", "Tabs", "Text"]);
+    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Divider", "Icon", "Popover", "Switch", "Tabs", "Text"]);
     expect(components.every((g) => g.contract.path.startsWith("packages/ds-contracts/components/"))).toBe(true);
   });
 

@@ -195,9 +195,15 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       ? { ref: identifier(pascal(node.part)), declaration: "property", type, identity: identityFor(ctx, node.part), part: node.part, children: [] }
       : { ref: `node${++cls.locals}`, declaration: "local", type, children: [] };
     if (text !== undefined) element.text = text;
-    if (node.componentRef !== undefined)
-      element.refAttrs = (node.componentInstance?.attrs ?? Object.entries(node.attrs).map(([sourceAttr, value]) => ({ sourceAttr, targetProp: sourceAttr, value, kind: "prop" as const })))
-        .map(attr => ({ prop: identifier(pascal(attr.targetProp ?? attr.sourceAttr)), value: attr.value }));
+    if (node.componentRef !== undefined) {
+      const instance = node.componentInstance;
+      if (instance && (instance.ref !== node.componentRef || !instance.targetGlyph))
+        throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} ${node.componentRef} has no admitted glyph mount capability`);
+      const attrs = instance?.attrs ?? Object.entries(node.attrs).map(([sourceAttr, value]) => ({ sourceAttr, targetProp: sourceAttr, value, kind: "prop" as const }));
+      if (instance && attrs.some(attr => ![instance.targetGlyph!.namePropName, instance.targetGlyph!.sizePropName].includes(attr.targetProp)))
+        throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} ${node.componentRef} has a prop without a Unity glyph API`);
+      element.refAttrs = attrs.map(attr => ({ prop: identifier(pascal(attr.targetProp ?? attr.sourceAttr)), value: attr.value }));
+    }
     parent.children.push(element);
     if (element.declaration !== "local") cls.members.push(element);
     // A component instance owns its own anatomy; do not recurse into it.
@@ -308,7 +314,7 @@ function passiveRootApi(ctx: Context): RootApi {
     const literal = defaultLiteral(ctx.ir, prop, values);
     if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
   }
-  return { members, attach: [], defaults };
+  return { members, attach: ["Theme.AddStyleSheet(this);"], defaults };
 }
 
 function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan): void {

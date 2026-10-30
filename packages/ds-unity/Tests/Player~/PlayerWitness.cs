@@ -122,7 +122,6 @@ public class PlayerWitness : MonoBehaviour
                 glyphScope.style.width = 48;
                 glyphScope.style.height = 48;
                 glyphScope.style.color = new Color(1, 0, 1, 1);
-                Theme.Attach(glyphScope);
                 doc.rootVisualElement.Add(glyphScope);
                 icon = new Icon { Name = "check", Size = "xl" };
                 glyphScope.Add(icon);
@@ -164,6 +163,28 @@ public class PlayerWitness : MonoBehaviour
                 Check(glyph.HasGlyph && glyph.SelectedViewBox.width == 16 && glyph.PixelSize == 16 &&
                     CapturePixelsIn(glyph.worldBound, c => c.r > .6f && c.g > .6f && c.b < .2f && c.a > .9f) > 5, "icon-recovery-and-size");
             } catch (Exception e) { result.error = e.ToString(); }
+        }
+        VisualTreeAsset glyphAsset = null;
+        if (result.error == null) {
+            try { glyphAsset = Resources.Load<VisualTreeAsset>("Glyph"); Check(glyphAsset != null, "icon-uxml-resource"); }
+            catch (Exception e) { result.error = e.ToString(); }
+        }
+        for (int reload = 1; reload <= 2 && result.error == null; reload++) {
+            try { glyphScope.Clear(); glyphAsset.CloneTree(glyphScope); }
+            catch (Exception e) { result.error = e.ToString(); }
+            for (int i = 0; i < 12 && result.error == null; i++) yield return null;
+            yield return new WaitForEndOfFrame();
+            if (result.error == null) {
+                try {
+                    var reloaded = glyphScope.Q<Icon>();
+                    var painted = reloaded?.Q<GlyphElement>();
+                    Check(reloaded != null && reloaded.Name == "check" && reloaded.Size == "xl" &&
+                        reloaded.styleSheets.count == 1 && painted != null && painted.HasGlyph &&
+                        painted.SelectedViewBox.width == 24 &&
+                        CapturePixelsIn(painted.worldBound, c => c.r > .6f && c.g > .6f && c.b < .2f && c.a > .9f) > 10,
+                        "icon-uxml-reload-" + reload);
+                } catch (Exception e) { result.error = e.ToString(); }
+            }
         }
         yield return new WaitForEndOfFrame();
         var pixels = ScreenCapture.CaptureScreenshotAsTexture();

@@ -1089,6 +1089,8 @@ export interface ResolvedRefAttr {
   targetProp?: string;
   sourceAttr: string;
   value: string;
+  /** Normalized target type for literal lowering by non-DOM backends. */
+  propType?: PropTypeIR;
 }
 
 /** An event handler bound on a componentRef node. The IR resolves the event
@@ -1118,6 +1120,8 @@ export interface ComponentInstanceIR {
   ref: string;
   /** Resolved layer of the target, from its contract (as-declared). */
   targetLayer: ComponentContract["layer"];
+  /** A source-neutral glyph fact on the referenced root's sole visual child. */
+  targetGlyph?: IconGlyphIR;
   /** Dynamic bindings, each classified against the target's prop surface. */
   bindings: ResolvedRefBinding[];
   /** Static attrs, each classified against the target's prop surface. */
@@ -3485,7 +3489,11 @@ function resolveComponentInstances(
           `primitive < compound < composer < assembly.`,
       );
     }
-    const targetProps = new Set(getPropMembers(target).map((p) => p.name));
+    const targetMembers = getPropMembers(target);
+    const targetProps = new Set(targetMembers.map((p) => p.name));
+    const targetDom = target.anatomy && !Array.isArray(target.anatomy) ? target.anatomy.dom : undefined;
+    const targetGlyphNode = targetDom?.children?.length === 1 ? targetDom.children[0] : undefined;
+    const targetGlyph = targetGlyphNode?.iconGlyph ? parseIconGlyph(targetGlyphNode) : undefined;
 
     const classify = (
       sourceAttr: string,
@@ -3517,9 +3525,11 @@ function resolveComponentInstances(
         return { ...classified, sourceAttr, expr };
       },
     );
-    const attrs: ResolvedRefAttr[] = Object.entries(node.attrs).map(
-      ([sourceAttr, value]) => ({ ...classify(sourceAttr), sourceAttr, value }),
-    );
+    const attrs: ResolvedRefAttr[] = Object.entries(node.attrs).map(([sourceAttr, value]) => {
+      const classified = classify(sourceAttr);
+      const member = classified.targetProp ? targetMembers.find(prop => prop.name === classified.targetProp) : undefined;
+      return { ...classified, sourceAttr, value, ...(member ? { propType: normalizePropType(member) } : {}) };
+    });
     const events: ResolvedRefEvent[] = Object.entries(node.events).map(
       ([name, expr]) => {
         // Resolve the event to the target's handler prop when declared
@@ -3550,6 +3560,7 @@ function resolveComponentInstances(
     node.componentInstance = {
       ref,
       targetLayer: target.layer,
+      targetGlyph,
       bindings,
       attrs,
       events,

@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { FrameworkEmitter } from "../../emitter.js";
-import type { ComponentIR, DomNodeIR } from "../../ir.js";
+import type { ComponentIR, DomNodeIR, PropTypeIR } from "../../ir.js";
 import { isBareRuleLeaf, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 import { namedMessage, nodeTextSource } from "../native-messages.js";
@@ -20,7 +20,23 @@ const staticTextProps = new Set(["as", "variant", "size", "weight", "align", "tr
 const ruleProps = new Set(["orientation", "decorative", "thickness", "title"]);
 const textStyleProperties = new Set(["color", "font-size", "font-weight", "line-height", "letter-spacing"]);
 const ruleStyleProperties = new Set(["border-top-color", "border-left-color", "border-top-width", "border-left-width", "margin-top", "margin-bottom", "margin-left", "margin-right"]);
-interface ItemButtonRef { ref: string; part: string; attrs: Record<string, string> }
+interface ItemButtonRef { ref: string; part: string; attrs: Record<string, string | number | boolean> }
+function staticRefValue(value: string, propType: PropTypeIR | undefined, where: string): string | number | boolean {
+  const kind = propType?.kind;
+  if (kind === "boolean") {
+    if (value !== "true" && value !== "false") throw new Error(`GODOT_UNSUPPORTED_REF: ${where} needs a boolean literal`);
+    return value === "true";
+  }
+  if (kind === "number") {
+    const parsed = Number(value);
+    if (!value.trim() || !Number.isFinite(parsed)) throw new Error(`GODOT_UNSUPPORTED_REF: ${where} needs a finite numeric literal`);
+    return parsed;
+  }
+  if (kind === "enum" && !propType.values.includes(value))
+    throw new Error(`GODOT_UNSUPPORTED_REF: ${where} has an invalid enum literal`);
+  if (kind && kind !== "string" && kind !== "enum") throw new Error(`GODOT_UNSUPPORTED_REF: ${where} has unsupported literal type ${kind}`);
+  return value;
+}
 /** Static component instances under an item trigger are carried as native
  * children. The IR owns the target prop mapping; the runtime owns mounting. */
 function itemButtonRefs(ir: ComponentIR): ItemButtonRef[] {
@@ -33,8 +49,10 @@ function itemButtonRefs(ir: ComponentIR): ItemButtonRef[] {
           Object.keys(node.bindings).length || Object.keys(node.events).length || Object.keys(node.propertyBindings).length ||
           node.componentInstance?.attrs.some(attr => attr.kind !== "prop"))
         throw new Error(`GODOT_UNSUPPORTED_REF: ${ir.name} ${node.componentRef} has unlowered placement or facts`);
+      if (node.componentInstance && (node.componentInstance.ref !== node.componentRef || !node.componentInstance.targetGlyph))
+        throw new Error(`GODOT_UNSUPPORTED_REF: ${ir.name} ${node.componentRef} has no admitted glyph mount capability`);
       const attrs = node.componentInstance?.attrs ?? Object.entries(node.attrs).map(([sourceAttr, value]) => ({ sourceAttr, targetProp: sourceAttr, value, kind: "prop" as const }));
-      refs.push({ ref: node.componentRef, part: node.part, attrs: Object.fromEntries(attrs.map(attr => [attr.targetProp!, attr.value])) });
+      refs.push({ ref: node.componentRef, part: node.part, attrs: Object.fromEntries(attrs.map(attr => [attr.targetProp!, staticRefValue(attr.value, "propType" in attr ? attr.propType : undefined, `${ir.name}.${node.componentRef}.${attr.targetProp}`)])) });
       return;
     }
     node.children.forEach(child => visit(child, inside));

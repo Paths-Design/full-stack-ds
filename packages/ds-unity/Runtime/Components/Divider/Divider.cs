@@ -13,6 +13,7 @@ namespace FullStackDS
             name = "root";
             AddToClassList("divider");
             Gap.Attach(this);
+            Theme.AddStyleSheet(this);
         }
     }
 }

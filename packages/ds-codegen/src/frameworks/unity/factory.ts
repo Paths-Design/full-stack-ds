@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
 import { buildComponentIR } from "../../ir.js";
@@ -17,7 +18,10 @@ export { unityLowering } from "./behaviors.js";
 export const STYLESHEET_RESOURCE = "Runtime/Resources/FullStackDS/Controls";
 
 function assertAdmittedRefs(ir: ComponentIR, contractsRoot: string): void {
-  const admitted = new Set(unityAllowlist(path.resolve(contractsRoot, "../..")));
+  const workspaceRoot = contractsRoot
+    ? path.resolve(contractsRoot, "../..")
+    : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../..");
+  const admitted = new Set(unityAllowlist(workspaceRoot));
   const visit = (node: NonNullable<ComponentIR["dom"]>): void => {
     if (node.componentRef && !admitted.has(node.componentRef))
       throw new Error(`UNITY_UNSUPPORTED_REF: ${ir.name} references unadmitted ${node.componentRef}`);

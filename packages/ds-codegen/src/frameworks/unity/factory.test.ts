@@ -33,6 +33,7 @@ describe("Unity capability lowering", () => {
   it("routes channel-free content and rule leaves through a passive host while refusing modal surfaces", () => {
     expect(unityLowering(buildComponentIR(fixture("Text"))).behavior).toBe("Passive");
     expect(unityLowering(buildComponentIR(fixture("Divider"))).behavior).toBe("Passive");
+    for (const name of ["Text", "Divider", "Icon"]) expect(emit(fixture(name))).toContain("Theme.AddStyleSheet(this);");
     expect(() => emit(fixture("Dialog"))).toThrow("UNITY_UNSUPPORTED_SURFACE");
   });
   it("carries channel and anatomy names rather than assuming checked/input", () => {
@@ -529,6 +530,19 @@ describe("Unity walker dispositions for non-lowered node kinds (R5)", () => {
     expect(renamedSource).toContain('Chevron.Name = "chevron-down";');
     const leaves = classifyContract(loadContractWithSidecars(root, "Accordion")).filter(l => l.keyed.includes("/ref:chevron/"));
     expect(new Set(leaves.map(l => `${l.rule}:${l.disposition}`))).toEqual(new Set(["anatomy-component-ref-identity:lowered", "anatomy-component-ref:lowered"]));
+  });
+
+  it("refuses admitted references whose target has no Unity glyph mount capability", () => {
+    const source = fixture("Accordion");
+    const anatomy = source.anatomy as { details: Record<string, { componentRef: string }>; dom: { children: any[] } };
+    const ref = anatomy.dom.children[0].children[0].children[0].children[1];
+    ref.componentRef = "fsds.Switch";
+    ref.attrs = { size: "sm" };
+    anatomy.details.chevron.componentRef = "fsds.Switch";
+    const target = fixture("Switch");
+    const ir = buildComponentIR(source, { allContracts: new Map([[source.name, source], [target.name, target]]) });
+    expect(() => createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot }))
+      .toThrow("has no admitted glyph mount capability");
   });
 
   it("emits nothing for refused static attrs and form bindings, which the boundary refuses", () => {

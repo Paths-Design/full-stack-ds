@@ -1,6 +1,6 @@
 /** Real Unity package-import + EditMode lane. No mock Unity assemblies.
  * UNITY_EDITOR selects the editor binary; generated project, logs and results
- * stay under tmp/unity-pilot and are never package source. */
+ * stay under the ignored scratch directory and are never package source. */
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -10,8 +10,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const revision = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' });
 const dirt = spawnSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' });
 if (revision.status !== 0 || dirt.status !== 0) throw new Error('Cannot identify Unity pilot source state');
-const project = path.join(root, 'tmp/unity-pilot/project');
-const evidence = path.join(root, 'tmp/unity-pilot');
+const evidence = path.resolve(root, 'tmp', 'unity-pilot');
+const project = path.join(evidence, 'project');
 const provenance = path.join(evidence, 'provenance.json');
 fs.rmSync(provenance, { force: true });
 const editor = process.env.UNITY_EDITOR ?? '/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity';
@@ -58,6 +58,30 @@ fs.writeFileSync(path.join(project, 'Packages/manifest.json'), JSON.stringify({
 const destination = path.join(project, 'Packages/com.fullstackds.ui');
 fs.rmSync(destination, { recursive: true, force: true });
 fs.cpSync(path.join(root, 'packages/ds-unity'), destination, { recursive: true });
+// Compile a renamed contract host into the imported package and mount it from
+// UXML. This is a consumer probe, not a committed generated target artifact.
+const { buildComponentIR } = await import('../packages/ds-codegen/dist/ir.js');
+const { createUnityEmitter } = await import('../packages/ds-codegen/dist/frameworks/unity/factory.js');
+const accordion = JSON.parse(fs.readFileSync(path.join(root, 'packages/ds-contracts/components/Accordion/Accordion.contract.json'), 'utf8'));
+const iconContract = JSON.parse(fs.readFileSync(path.join(root, 'packages/ds-contracts/components/Icon/Icon.contract.json'), 'utf8'));
+const synthetic = buildComponentIR(accordion, { allContracts: new Map([[accordion.name, accordion], [iconContract.name, iconContract]]) });
+synthetic.name = 'SyntheticGroup';
+for (const file of createUnityEmitter().emitComponent(synthetic, { componentsRoot: '', contractsRoot: path.join(root, 'packages/ds-contracts') })) {
+  const target = path.join(destination, 'Runtime/Components', file.relativePath);
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.writeFileSync(target, file.contents);
+}
+fs.writeFileSync(path.join(project, 'Assets/GlyphFixture.uxml'), `<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ds="FullStackDS">
+  <ui:VisualElement>
+    <ds:Icon name="check" size="xl" />
+    <ds:SyntheticGroup>
+      <ds:SyntheticGroupItem>
+        <ds:SyntheticGroupHeader><ds:SyntheticGroupTrigger value="item" text="Synthetic" /></ds:SyntheticGroupHeader>
+        <ds:SyntheticGroupContent value="item" />
+      </ds:SyntheticGroupItem>
+    </ds:SyntheticGroup>
+  </ui:VisualElement>
+</ui:UXML>\n`);
 // Import the sample as an actual consumer, not just ignored Samples~ bytes.
 fs.cpSync(path.join(root, 'packages/ds-unity/Samples~/InteractiveControls'), path.join(project, 'Assets/InteractiveControls'), { recursive: true });
 const results = path.join(evidence, 'results.xml');

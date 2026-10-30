@@ -100,6 +100,21 @@ func _ready() -> void:
 			check(composed_pixel.g > 0.7 and composed_pixel.r < 0.1, "Nested Icon did not paint inherited foreground in the viewport")
 		composed.set_contract_prop("name", "absent")
 		check(composed.rendered.texture == null, "Nested unknown Icon retained stale pixels")
+	var synthetic = load("res://addons/full_stack_ds/components/SyntheticGroup/SyntheticGroup.tscn").instantiate()
+	synthetic.position = Vector2(96, 220)
+	add_child(synthetic)
+	synthetic.add_item("item", "Synthetic", Label.new())
+	var renamed_icon = synthetic.items[0].button.get_node_or_null("chevron")
+	check(renamed_icon != null, "Renamed host did not mount its contract reference")
+	if renamed_icon != null:
+		check(not renamed_icon.decorative and renamed_icon.aria_label == "Synthetic indicator", "Typed static reference attributes changed during mounting")
+		check(renamed_icon.glyph_name == "chevron-down" and renamed_icon.rendered.texture != null, "Renamed host lost its authored glyph")
+		synthetic.theme.set_color("font_color", "Label", Color("#00cc66"))
+		await get_tree().process_frame
+		var renamed_ink: Vector2i = solid_pixel(renamed_icon.rendered.texture.get_image())
+		if renamed_ink.x >= 0:
+			var renamed_color: Color = renamed_icon.rendered.texture.get_image().get_pixelv(renamed_ink)
+			check(renamed_color.g > 0.7 and renamed_color.r < 0.1, "Renamed host did not inherit foreground")
 	_finish()
 
 func _finish() -> void:

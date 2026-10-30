@@ -16,6 +16,7 @@ namespace FullStackDS
             AddToClassList("icon");
             hierarchy.Add(glyphElement);
             Gap.Attach(this);
+            Theme.AddStyleSheet(this);
             Size = "md";
         }
     }

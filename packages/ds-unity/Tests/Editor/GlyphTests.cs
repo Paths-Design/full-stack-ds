@@ -54,6 +54,46 @@ namespace FullStackDS.Tests
             Assert.That(glyph.PixelSize, Is.EqualTo(20));
         }
 
+        [UnityTest] public IEnumerator StandaloneIconLoadsStylesWithoutThemeScope()
+        {
+            yield return new EnterPlayMode();
+            var root = Runtime();
+            var icon = new Icon { Name = "check" };
+            root.Add(icon);
+            yield return Frames();
+            Assert.That(icon.styleSheets.count, Is.EqualTo(1));
+            Assert.That(icon.layout.width, Is.EqualTo(20).Within(.01));
+            Assert.That(icon.layout.height, Is.EqualTo(20).Within(.01));
+            Assert.That(icon.Q<GlyphElement>().HasGlyph, Is.True);
+        }
+
+        [UnityTest] public IEnumerator UxmlIconAndRenamedReferenceSurviveReload()
+        {
+            yield return new EnterPlayMode();
+            var root = Runtime();
+            var asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/GlyphFixture.uxml");
+            Assert.That(asset, Is.Not.Null);
+            for (int reload = 0; reload < 2; reload++) {
+                root.Clear();
+                asset.CloneTree(root);
+                yield return Frames();
+                var direct = root.Q<Icon>();
+                Assert.That(direct, Is.Not.Null);
+                Assert.That(direct.Name, Is.EqualTo("check"));
+                Assert.That(direct.Size, Is.EqualTo("xl"));
+                Assert.That(direct.Q<GlyphElement>().HasGlyph, Is.True);
+                var synthetic = root.Q(className: "accordion");
+                Assert.That(synthetic, Is.Not.Null);
+                var nested = synthetic.Q<Icon>();
+                Assert.That(nested, Is.Not.Null);
+                Assert.That(nested.Name, Is.EqualTo("chevron-down"));
+                Assert.That(nested.Q<GlyphElement>().HasGlyph, Is.True);
+                nested.style.color = Color.magenta;
+                yield return Frames();
+                Assert.That(nested.Q<GlyphElement>().resolvedStyle.color, Is.EqualTo(Color.magenta));
+            }
+        }
+
         private VisualElement Runtime()
         {
             texture = new RenderTexture(64, 64, 24);

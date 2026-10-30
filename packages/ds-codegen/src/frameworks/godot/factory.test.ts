@@ -39,7 +39,25 @@ describe("Godot bounded lowering", () => {
     delete ref.bindings["name"];
     ref.componentRef = "Unadmitted";
     expect(() => createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") }))
-      .toThrow("GODOT_UNSUPPORTED_REF: RenamedGroup references unadmitted Unadmitted");
+      .toThrow("GODOT_UNSUPPORTED_REF: RenamedGroup Unadmitted has no admitted glyph mount capability");
+  });
+  it("types glyph literals and refuses a referenced runtime without a glyph setter", () => {
+    const source = fixture("Accordion");
+    const ref = (source.anatomy as { dom: { children: any[] } }).dom.children[0].children[0].children[0].children[1];
+    ref.attrs.decorative = "false";
+    const icon = fixture("Icon");
+    const iconIR = buildComponentIR(source, { allContracts: new Map([[source.name, source], [icon.name, icon]]) });
+    const iconPlan = godotPlan(iconIR);
+    expect(iconPlan).toMatchObject({ itemButtonRefs: [{ attrs: { decorative: false } }] });
+    ref.attrs.decorative = "not-a-boolean";
+    const invalidIR = buildComponentIR(source, { allContracts: new Map([[source.name, source], [icon.name, icon]]) });
+    expect(() => godotPlan(invalidIR)).toThrow("needs a boolean literal");
+    ref.componentRef = "fsds.Button";
+    ref.attrs = { variant: "primary" };
+    (source.anatomy as { details: Record<string, { componentRef: string }> }).details.chevron.componentRef = "fsds.Button";
+    const button = fixture("Button");
+    const buttonIR = buildComponentIR(source, { allContracts: new Map([[source.name, source], [button.name, button]]) });
+    expect(() => godotPlan(buttonIR)).toThrow("has no admitted glyph mount capability");
   });
   it("emits renamed compound parts as persistent scene hosts with source-addressed styling", () => {
     const source = styledFixture("Card");

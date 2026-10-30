@@ -39,6 +39,7 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   row: "CSS flex-direction keyword (uss.ts display lowering and flex-direction vocabulary)",
   overflow: "CSS property name keyed in the uss.ts CSS-to-USS property table",
   checked: "NativeStylePredicateIR kind enum (uss.ts predicate lowering)",
+  fill: "SVG path fill attribute in the authored iconography catalog parser",
 };
 
 const DECLARED_ITEM_GROUP_VOCABULARY = ["type", "collapsible", "loop", "unmountInactive", "orientation", "activationMode", "appearance"];
@@ -182,7 +183,7 @@ describe("Unity emitter lowers facts, not names (R11)", () => {
 
   it("the unity emitter sources compare no part, channel, prop or slot identity to a corpus literal", () => {
     expect(names.size).toBeGreaterThan(100);
-    expect(sourceFiles.map(f => f.name).sort()).toEqual(["behaviors.ts", "boundary.ts", "capabilities.ts", "factory.ts", "uss.ts", "walker.ts"]);
+    expect(sourceFiles.map(f => f.name).sort()).toEqual(["behaviors.ts", "boundary.ts", "capabilities.ts", "factory.ts", "glyph-catalog.ts", "glyph-path.ts", "glyph-plan.ts", "uss.ts", "walker.ts"]);
     const findings = sourceFiles.flatMap(f => identityPredicates(f.name, f.text, names));
     expect(findings).toEqual([]);
   });
