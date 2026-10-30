@@ -1,0 +1,50 @@
+id: GODOT-GLYPH-PARITY-01
+title: 'Godot contract-derived icon glyph rendering'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-30T07:51:07.554Z'
+updated_at: '2026-10-30T07:51:07.554Z'
+created_by_session: '01a18bc6-4e02-7bd2-986c-84f0ba8fcd6b'
+blast_radius:
+  modules:
+    - 'Godot glyph plan, catalog target asset, runtime renderer and consumer witness'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-godot'
+    - 'fsds.targets.json'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Glyph dispatch and prop binding derive from IconGlyphIR and anatomy bindings, never component identity.'
+  - 'The iconography corpus is glyph authority; nearest authored grid selection and unknown-name disappearance match the shared glyph contract.'
+  - 'Capabilities identify unsupported facts and proof boundaries; rendered pixels do not establish screen-reader adequacy.'
+acceptance:
+  - id: A1
+    given: 'a glyph-bearing IR with renamed component and props'
+    when: 'Godot code generation runs'
+    then: 'the generated plan carries name/size bindings, exact size hints, defaults and accessibility source facts without identity dispatch, and rejects unlowered anatomy or prop facts.'
+  - id: A2
+    given: 'the canonical iconography corpus'
+    when: 'Godot target assets generate twice'
+    then: 'a shared catalog preserves every authored variant/path attribute and generated package bytes are stable.'
+  - id: A3
+    given: 'a generated glyph consumer'
+    when: 'Godot editor serialization, live runtime and fresh macOS export run'
+    then: 'named glyphs paint distinct source-bound pixels, size selection and inherited color changes reach rendering, unknown names paint no glyph, and saved properties reload.'
+  - id: A4
+    given: 'the committed candidate'
+    when: 'targeted tests, typechecking, regeneration and documentation gates run'
+    then: 'existing Godot output remains valid and fidelity gaps are explicit before registry admission.'
+non_functional: {}
+contracts:
+  - name: 'glyph-plan-tests'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/godot/glyph-plan.test.ts'
+  - name: 'glyph-runtime'
+    type: behavior
+    path: 'packages/ds-godot/addons/full_stack_ds/runtime/glyph.gd'
