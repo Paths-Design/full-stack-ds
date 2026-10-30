@@ -1,9 +1,11 @@
 id: RADIO-CONTROLLED-RECONCILIATION-01
 title: 'Reconcile native radio state after controlled requests'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Native radio changes reconcile to accepted state with one request and stable focus; five-framework browsers real Svelte parent and scoped regressions verified.'
 created_at: '2026-10-29T22:59:28.312Z'
-updated_at: '2026-10-29T23:59:51.316Z'
+updated_at: '2026-10-30T00:16:30.723Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
