@@ -47,7 +47,20 @@ function staticPlan(ir: ComponentIR) {
   if (unsupported.length) throw new Error(`GODOT_UNSUPPORTED_STATIC_STYLE: ${ir.name}.${unsupported.join(",")}`);
   const excludedSelectors = ir.nativeStyleRules?.unsupported.map(rule => rule.sourceKey) ?? [];
   if (excludedSelectors.length && !(isText && excludedSelectors.every(selector => selector === `.${ir.cssPrefix}[data-truncate="true"]`))) throw new Error(`GODOT_UNSUPPORTED_STATIC_SELECTOR: ${ir.name}.${excludedSelectors.join(",")}`);
-  return { operation: isRule ? "rule" : "static-text", excluded: isText ? ["as"] : ["decorative"], styles };
+  // Source fact: static content/rule anatomy plus native style declarations.
+  // Applies by: passive shape. Remove each gap when its native consumer exists.
+  const fidelityGaps = isText ? [
+    "children.node-ref: content is String-only; retained inline node composition is not realized",
+    "as: DOM element and heading semantics have no native mapping",
+    "typography.font-family: SystemFont fallback does not preserve the authored Web font family",
+    "typography.line-height: integer line_spacing approximates CSS line boxes",
+    "typography.letter-spacing: integer glyph spacing rounds fractional tracking",
+    "transform.capitalize: Godot String.capitalize word normalization differs from CSS text-transform",
+  ] : [
+    "decorative: semantic separator versus presentation has no native accessibility mapping",
+    "layout: parent-constrained Godot container geometry is not CSS flow/flex layout parity",
+  ];
+  return { operation: isRule ? "rule" : "static-text", excluded: isText ? ["as"] : ["decorative"], fidelityGaps, styles };
 }
 export function godotPlan(ir: ComponentIR) {
   if (ir.motion.sequence) return godotSequencePlan(ir);

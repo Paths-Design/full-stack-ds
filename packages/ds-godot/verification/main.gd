@@ -268,6 +268,39 @@ func _ready() -> void:
 	saved_card.token_overrides = {"card.color.background.default":"#334455"}
 	check(saved_card.chrome.get_theme_stylebox("panel").bg_color.is_equal_approx(Color("#334455")), "Reloaded Card token override did not reach native stylebox")
 	rows.append({"id":"saved-composed","actionCalls":saved_calls[0],"iconRetained":saved_glyph != null})
+	var passive = load("res://passive-roundtrip.tscn").instantiate()
+	passive.position = Vector2(650, 640)
+	add_child(passive)
+	check(load("res://verification/passive.gd").serialized_settings_match(passive), "Passive nondefault settings did not survive scene save/load")
+	var saved_text = passive.get_node("SavedText")
+	for i in range(3): await get_tree().process_frame
+	check(saved_text.rendered is Label, "Reloaded Text did not create a Label")
+	check(saved_text.rendered.text == "SAVED MIXED CASE SENTENCE TOO LONG FOR ONE NARROW LINE", "Reloaded uppercase transform did not render")
+	check(saved_text.rendered.horizontal_alignment == HORIZONTAL_ALIGNMENT_RIGHT, "Reloaded Text alignment did not reach Label")
+	check(saved_text.rendered.get_theme_font_size("font_size") == 18, "Reloaded size axis did not override headline typography")
+	var saved_font = saved_text.rendered.get_theme_font("font")
+	check(saved_font is FontVariation and saved_font.base_font.font_weight == 600, "Reloaded weight axis did not override headline typography")
+	check(saved_text.rendered.autowrap_mode == TextServer.AUTOWRAP_OFF and saved_text.rendered.text_overrun_behavior == TextServer.OVERRUN_TRIM_ELLIPSIS, "Reloaded truncation settings did not reach Label")
+	var natural_width: float = saved_font.get_string_size(saved_text.rendered.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x
+	check(natural_width > 220 and saved_text.rendered.size.x <= 220 and saved_text.rendered.get_line_count() == 1, "Truncated Text did not retain one constrained line shorter than its natural width")
+	saved_text.align = "center"
+	saved_text.transform = "lowercase"
+	saved_text.truncate = false
+	check(saved_text.rendered.text == "saved mixed case sentence too long for one narrow line" and saved_text.rendered.horizontal_alignment == HORIZONTAL_ALIGNMENT_CENTER, "Live Text transform/alignment update did not reach Label")
+	check(saved_text.rendered.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART and saved_text.rendered.text_overrun_behavior == TextServer.OVERRUN_NO_TRIMMING, "Disabling truncation retained one-line ellipsis settings")
+	saved_text.transform = "none"
+	check(saved_text.rendered.text == saved_text.content, "Clearing transform did not restore retained source content")
+	saved_text.transform = "uppercase"
+	saved_text.truncate = true
+	var saved_horizontal = passive.get_node("SavedHorizontal")
+	var saved_vertical = passive.get_node("SavedVertical")
+	for i in range(3): await get_tree().process_frame
+	check(saved_horizontal.rendered.size.is_equal_approx(Vector2(220, 4)), "Reloaded horizontal Divider did not fill width at custom thickness")
+	check(saved_vertical.rendered.size.is_equal_approx(Vector2(4, 48)), "Reloaded vertical Divider did not fill height at custom thickness")
+	check(saved_horizontal.host.get_theme_constant("margin_top") == 8 and saved_horizontal.host.get_theme_constant("margin_left") == 0, "Horizontal Divider spacing reached the wrong axis")
+	check(saved_vertical.host.get_theme_constant("margin_left") == 8 and saved_vertical.host.get_theme_constant("margin_top") == 0, "Vertical Divider spacing reached the wrong axis")
+	check(saved_horizontal.rendered.tooltip_text == "Saved horizontal separator" and saved_vertical.rendered.tooltip_text == "Saved vertical separator", "Reloaded Divider title did not reach native tooltip")
+	rows.append({"id":"saved-passive","textNaturalWidth":natural_width,"textWidth":saved_text.rendered.size.x,"horizontalSize":[saved_horizontal.rendered.size.x,saved_horizontal.rendered.size.y],"verticalSize":[saved_vertical.rendered.size.x,saved_vertical.rendered.size.y]})
 	var column := VBoxContainer.new()
 	column.position = Vector2(24, 24)
 	column.size.x = 580
@@ -319,6 +352,13 @@ func _ready() -> void:
 	var out := OS.get_environment("FSDS_ENGINE_OUT")
 	if out.is_empty(): return
 	var frame := get_viewport().get_texture().get_image()
+	for rule in [saved_horizontal, saved_vertical]:
+		var inside: Vector2 = rule.rendered.global_position + rule.rendered.size / 2.0
+		var outside: Vector2 = inside + (Vector2(0, 5) if rule.orientation == "horizontal" else Vector2(5, 0))
+		var rule_pixel: Color = frame.get_pixelv(Vector2i(inside))
+		check(rule_pixel.is_equal_approx(Color("#d0d0d0")), "Reloaded " + rule.orientation + " Divider did not paint its token color")
+		check(not frame.get_pixelv(Vector2i(outside)).is_equal_approx(Color("#d0d0d0")), "Reloaded " + rule.orientation + " Divider paint exceeded its custom thickness")
+		rows.append({"id":"saved-rule-pixel-" + rule.orientation,"color":rule_pixel.to_html(false)})
 	var pixel_point: Vector2 = action_preview.rendered.global_position + Vector2(action_preview.rendered.size.x / 2.0, 5)
 	var painted: Color = frame.get_pixelv(Vector2i(pixel_point))
 	check(painted.is_equal_approx(Color("#123456")), "Action token override did not paint expected viewport pixel")
