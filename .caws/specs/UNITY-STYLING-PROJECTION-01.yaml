@@ -119,3 +119,10 @@ evidence:
     command: "pnpm run audit:unity-boundary"
     exit_code: 0
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Second regeneration through governed:rail passed 330 groups/1618 files, six rail targets; generated packages match HEAD by committed-tree-check; Unity emitter and CLI focused suites passed including synthetic contract projection"
+    recorded_at: "2026-10-30T05:48:29.697Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
+    exit_code: 0
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
