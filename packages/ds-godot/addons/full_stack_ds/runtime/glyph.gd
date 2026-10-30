@@ -5,7 +5,6 @@ extends VBoxContainer
 # generated plan supplies prop identities and sizes; the generated catalog
 # supplies exact authored paths. No component identity is read here.
 var configuration: Dictionary = {}
-@export_storage var explicit_props: PackedStringArray = []
 var _applying_defaults := false
 func _mark_explicit(prop: String) -> void:
 	if _applying_defaults: return
@@ -30,6 +29,7 @@ func _mark_explicit(prop: String) -> void:
 		aria_label = next
 		_mark_explicit("label")
 		_refresh()
+@export_storage var explicit_props: PackedStringArray = []
 
 var rendered: TextureRect
 var selected_grid := 0

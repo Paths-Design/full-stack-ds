@@ -50,6 +50,16 @@ func _initialize() -> void:
 		assert(alternate_scene.pack(alternate) == OK)
 		assert(ResourceSaver.save(alternate_scene, "res://glyph-default-roundtrip.tscn") == OK)
 		alternate.free()
+		var defaulted = load("res://verification/glyph_default_fixture.gd").new()
+		defaulted.name = "DefaultedGlyph"
+		get_root().add_child(defaulted)
+		await process_frame
+		assert(defaulted.explicit_props.is_empty())
+		var defaulted_scene := PackedScene.new()
+		assert(defaulted_scene.pack(defaulted) == OK)
+		assert(ResourceSaver.save(defaulted_scene, "res://glyph-authored-default-roundtrip.tscn") == OK)
+		get_root().remove_child(defaulted)
+		defaulted.free()
 	else:
 		var node = load(path).instantiate()
 		assert(node.label == "Saved in editor")
@@ -83,5 +93,20 @@ func _initialize() -> void:
 		assert(alternate.rendered.texture == null)
 		get_root().remove_child(alternate)
 		alternate.free()
+		var defaulted = load("res://glyph-authored-default-roundtrip.tscn").instantiate()
+		defaulted.configuration.defaults["name"] = '"minus"'
+		get_root().add_child(defaulted)
+		await process_frame
+		assert(defaulted.glyph_name == "minus" and not defaulted.decorative and defaulted.aria_label == "Default check")
+		assert(defaulted.explicit_props.is_empty())
+		get_root().remove_child(defaulted)
+		defaulted.free()
+		var preattached = load("res://glyph-authored-default-roundtrip.tscn").instantiate()
+		preattached.aria_label = "Consumer before attach"
+		get_root().add_child(preattached)
+		await process_frame
+		assert(preattached.aria_label == "Consumer before attach" and preattached.explicit_props.has("label"))
+		get_root().remove_child(preattached)
+		preattached.free()
 	print("FSDS_ROUNDTRIP_OK")
 	quit()
