@@ -123,11 +123,11 @@ evidence:
     commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
   - criterion_id: A4
     status: pass
-    evidence_ref: "audit:unity-boundary: lowered 12323, pending 2664 all P4, refused 2509, unclassified 0; zero P3 pending and zero violations; unsupported ledger entries joined to refused or pending sidecar leaves"
-    recorded_at: "2026-10-30T05:47:57.426Z"
+    evidence_ref: "At merged source d40e7527b, audit:unity-boundary reports 12343 lowered, 2581 pending all P4, 2572 refused, zero unclassified, no dead rules, no allowlisted catch-all reliance, and no ledgered declaration classified lowered across the six-component allowlist."
+    recorded_at: "2026-10-30T16:31:23.234Z"
     command: "pnpm run audit:unity-boundary"
     exit_code: 0
-    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
   - criterion_id: A5
     status: pass
     evidence_ref: "Second regeneration through governed:rail passed 330 groups/1618 files, six rail targets; generated packages match HEAD by committed-tree-check; Unity emitter and CLI focused suites passed including synthetic contract projection"
