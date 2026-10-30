@@ -3,10 +3,14 @@ export async function mountParent(target: HTMLElement, onRequest: (value: string
   // the same Angular runtime. Only this test parent is JIT-compiled.
   const corePath = "@angular/core";
   const platformPath = "@angular/platform-browser";
-  const inputPath = "/preview/angular/src/components/Input/Input.component.js";
-  const { Component, signal, provideZonelessChangeDetection } = await import(/* @vite-ignore */ corePath);
+  const { Component, signal, provideZonelessChangeDetection, getDebugNode } = await import(/* @vite-ignore */ corePath);
   const { bootstrapApplication } = await import(/* @vite-ignore */ platformPath);
-  const { InputComponent } = await import(/* @vite-ignore */ inputPath);
+  // The preview cache-busts module URLs; reuse its mounted constructor rather
+  // than importing a second class with the same Angular component identity.
+  const host = document.querySelector("fsds-input");
+  const child = host && getDebugNode(host)?.componentInstance;
+  if (!child) throw new Error("preview must mount the generated Input before its parent fixture");
+  const InputComponent = child.constructor;
   let destroyOwner = () => {};
   class Parent {
     value = signal("alpha");

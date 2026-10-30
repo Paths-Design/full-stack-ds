@@ -7,7 +7,9 @@ async function configure(page: Page, controlled: boolean, value = "alpha", type 
     state.textRequests = [];
     const channel = component === "Command" ? "search" : "value";
     const callback = component === "Command" ? "onSearchChange" : "onChange";
-    const props = { type, ariaLabel: "Release text", open: true,
+    const naming = component === "Command" ? { label: "Release commands", searchLabel: "Release text" }
+      : component === "Input" ? { type, ariaLabel: "Release text" } : { type };
+    const props = { ...naming, ...(component === "Command" ? { open: true } : {}),
       ...(controlled ? { [channel]: value } : { [component === "Command" ? "defaultSearch" : "defaultValue"]: value }),
       [callback](next: string) { state.textRequests.push(next); },
     };
@@ -114,4 +116,5 @@ for (const framework of ["svelte", "vue", "lit", "react", "angular"]) test(`${fr
     expect(await requests(page)).toEqual(["refused", "accepted", "alXpha", "alXYpha", "に", "日本", "unmount"]);
   }
   expect(errors).toEqual([]);
+  expect(warnings.filter(message => message.includes("NG0912"))).toEqual([]);
 });
