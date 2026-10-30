@@ -66,3 +66,12 @@ contracts:
   - name: 'native-table-composition'
     type: behavior
     path: 'packages/ds-contracts/components/Table/Table.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Executed native Lit template/control and public helper composition in Chromium: table rows/cells, aligned columns, token padding, native AX descendants, stable-update focus, keyed-node identity, keyboard activation and empty-row update. Raw DOM/AX/geometry/screenshots in .caws/state/lit-table-integrated-browser. Reorder focus policy remains consumer-owned."
+    recorded_at: "2026-10-30T20:12:48.700Z"
+    command: "FSDS_E2E_PORT=5197 pnpm exec playwright test e2e/lit-table-composition.spec.ts e2e/lit-compound-sizing.spec.ts --workers=1"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-table-integrated-browser.log"
+    commit_sha: "5962cd303"
