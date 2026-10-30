@@ -103,9 +103,8 @@ evidence:
     commit_sha: "7704f9faec87841dc698998bb7bdba3026c01664"
   - criterion_id: A4
     status: pass
-    evidence_ref: "Merged root suite5247/359 passed at d317079c with stable source HEAD; all framework suites passed and published surfaces are byte-identical across main reconciliation. Final integrated all-six rail, docs claims81/stamps15/links240, lint, generated drift and scoped policy43 files passed; new Godot factory22 passed after reconciliation. Raw text-landed-root, text-reviewed-frameworks, text-integrated-rail/docs/godot, text-reviewed-lint, text-final-policy logs. Renamed native contracts and path/event-callback negatives guard generic authority; no component-name dispatch or generated hand edits. Does not establish full-library release readiness."
-    recorded_at: "2026-10-30T04:56:56.765Z"
+    evidence_ref: "Merged root5247/359 passed at stable d317079c; all framework suites, integrated six-target rail, lint, docs81 claims/15 stamps/240 links, generated drift and policy43 files passed. Raw ignored execution logs: .caws/state/text-landed-root.log, text-reviewed-frameworks.log, text-integrated-rail/docs/godot.log, text-reviewed-lint.log and text-final-policy.log. Published surfaces unchanged across main reconciliation; new Godot factory22 also passed. Generic renamed/path/callback falsifiers and source review support authority; no full-library readiness claim. Commit verification checks citation existence, not execution; execution was directly observed."
+    recorded_at: "2026-10-30T05:18:34.092Z"
     command: "pnpm exec vitest run --maxWorkers=4"
     exit_code: 0
-    artifact_path: ".caws/state/text-landed-root.log"
     commit_sha: d317079c881e1f5aa8b3882f813c6486cee4bea8
