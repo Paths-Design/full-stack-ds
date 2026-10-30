@@ -293,7 +293,8 @@ function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined): voi
     node.componentRef !== undefined || node.iconGlyph !== undefined || node.activation !== undefined || node.focusContainer === true ||
     !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
     node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||
-    (node.content !== undefined && (node === ir.dom || !("kind" in node.content && node.content.kind === "literal")));
+    (node.content !== undefined && (node === ir.dom || (node.part !== undefined && ir.compoundParts.some(part => part.name === node.part)) ||
+      !("kind" in node.content && node.content.kind === "literal")));
   if (unhandled) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
   for (const child of node.children) assertPassiveAnatomy(ir, child);
 }

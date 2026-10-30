@@ -47,5 +47,13 @@ describe("Unity passive anatomy path", () => {
     const rootContent = irFor("Divider", "UnrelatedRule");
     rootContent.dom!.content = { kind: "literal", value: "Hidden" };
     expect(() => emit(rootContent)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: UnrelatedRule root has unlowered authored facts");
+    const compoundContent = irFor("Text", "UnrelatedContent");
+    compoundContent.styledProps = [];
+    compoundContent.dom!.bindings = {};
+    const caption = { ...compoundContent.parts[0]!, name: "caption", nativeTag: "span", isCompound: true, isRootOnly: false };
+    compoundContent.parts.push(caption);
+    compoundContent.compoundParts.push(caption);
+    compoundContent.dom!.children = [{ ...compoundContent.dom!, tag: "span", part: "caption", content: { kind: "literal", value: "VISIBLE" }, children: [] }];
+    expect(() => emit(compoundContent)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: UnrelatedContent caption has unlowered authored facts");
   });
 });
