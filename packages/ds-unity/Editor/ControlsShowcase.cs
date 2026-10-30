@@ -5,8 +5,17 @@ namespace FullStackDS.Editor
 {
     public class ControlsShowcase : EditorWindow
     {
+        // Samples~/InteractiveControls/Sample.uss: consumer styling for the showcase layout. Samples~ is not
+        // imported with the package, so the sheet is found by its committed GUID once the sample is imported;
+        // without it the showcase shows the generated stylesheet over the Editor theme only.
+        public const string SampleStyleSheetGuid = "8887ee4823614395b423f7b80cfff37a";
         [MenuItem("Window/Full Stack DS/Interactive Controls")]
         public static void Open() => GetWindow<ControlsShowcase>("Full Stack DS");
+        public static StyleSheet SampleStyleSheet()
+        {
+            var path = AssetDatabase.GUIDToAssetPath(SampleStyleSheetGuid);
+            return string.IsNullOrEmpty(path) ? null : AssetDatabase.LoadAssetAtPath<StyleSheet>(path);
+        }
         // Compound parts compose as sub-elements paired by Value, mirroring the web compound API.
         private static void Section(Accordion accordion, string value, string title, params VisualElement[] body)
         {
@@ -27,6 +36,9 @@ namespace FullStackDS.Editor
         }
         public void CreateGUI()
         {
+            // The consumer sheet goes first so the generated sheet outranks it at equal specificity.
+            var sample = SampleStyleSheet();
+            if (sample != null) rootVisualElement.styleSheets.Add(sample);
             Theme.Attach(rootVisualElement);
             rootVisualElement.AddToClassList("fsds-sample");
             minSize = new UnityEngine.Vector2(320, 480);
@@ -40,8 +52,12 @@ namespace FullStackDS.Editor
             var popover = new Popover();
             popover.Add(new PopoverTrigger { text = "About these controls" });
             var content = new PopoverContent();
+            // Open content floats to the panel root, outside this window's tree, so it carries the sample sheet itself.
+            if (sample != null) content.styleSheets.Add(sample);
             content.Add(new Label("Generated from the same contracts as the web packages."));
-            content.Add(new Button(() => popover.Open = false) { text = "Close" });
+            var close = new Button(() => popover.Open = false) { text = "Close" };
+            close.AddToClassList("fsds-sample-content-action");
+            content.Add(close);
             popover.Add(content);
             var title = new Label("Your experience"); title.AddToClassList("fsds-sample-title");
             rootVisualElement.Add(title);

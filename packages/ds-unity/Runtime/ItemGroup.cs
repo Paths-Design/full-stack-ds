@@ -43,7 +43,7 @@ namespace FullStackDS
             this.triggerClass = triggerClass; this.contentClass = contentClass; this.stateClass = stateClass;
             select = operation == "select"; roving = focus == "roving"; allowMultiple = multiple;
             Orientation = orientation; Loop = wrap;
-            Theme.Attach(host);
+            Theme.AddStyleSheet(host);
             PartDiscovery.Claim(host, triggerClass, contentClass);
             host.RegisterCallback<AttachToPanelEvent>(_ => Synchronize());
             host.RegisterCallback<GeometryChangedEvent>(_ => Synchronize());

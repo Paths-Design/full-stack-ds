@@ -4,8 +4,8 @@ authority: architecture
 status: implemented
 title: Box-Model Primitive Slot Pool
 owner: "@darianrosebrook"
-updated: 2026-10-27
-verified_at_commit: 47b9990e9a0cc0301f5a476790e8be4e425f199b
+updated: 2026-10-29
+verified_at_commit: ecf7ec2b39126d7a1ee9ad398dc2731a63e0bdb5
 governs:
   - packages/ds-contracts/box-model.primitive.schema.json
   - packages/ds-contracts/primitives/BoxModel.primitive.json
@@ -99,6 +99,16 @@ Web boundary emission. Native projections read the receiving part's geometry;
 the binding supplies elapsed time without defining a new box override API.
 The box-model unit suite passed with this IR addition. Native Carousel styling
 and rendered progress integration remain separate verification obligations.
+
+## Unity styling projection reconciliation
+
+The CLI's `emitTargetAssets` seam lets a target emit package-level assets after
+a full-corpus run; it passes the already-built IRs through and reads no box
+facts of its own. The Unity USS projection consumes the same
+`NativeStyleRulesIR` facts GPUI reads, in the same primitive < morphology <
+sidecar order, and lowers them to physical sides. The box schema, primitive
+defaults, IR merge, Web reset and CSS consumer rules are unchanged; the
+box-model unit suite is the witness.
 
 ## GPUI style reconciliation
 

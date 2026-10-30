@@ -22,7 +22,8 @@ namespace FullStackDS
             Host = host ?? throw new ArgumentNullException(nameof(host));
             Control = control ?? throw new ArgumentNullException(nameof(control));
             this.stateClass = stateClass;
-            Theme.Attach(host);
+            Theme.AddStyleSheet(host);
+            MirrorInteractionState(host, control);
             control.clicked += () => RequestValue(!current);
             // HTML label semantics: a click inside the label host but outside the
             // control activates the control. Clicks on the control itself already
@@ -36,6 +37,32 @@ namespace FullStackDS
 
         public static BooleanControl Attach(VisualElement host, Button control, string stateClass, VisualElement labelHost)
             => new BooleanControl(host, control, stateClass, labelHost);
+
+        public const string HoverClass = "is-hover";
+        public const string ActiveClass = "is-active";
+        public const string FocusClass = "is-focus";
+
+        /// <summary>The contract styles sibling parts (the track) from the form control's
+        /// pointer and focus state; USS cannot select a sibling, so the control's state is
+        /// mirrored onto host classes the generated sheet selects as
+        /// <c>.&lt;prefix&gt;.is-focus .&lt;prefix&gt;__&lt;part&gt;</c>. Pointer-down and -up are
+        /// observed in the trickle-down phase, ahead of the Button's own pointer handling.
+        /// <c>is-focus</c> follows UI Toolkit focus (pointer focus included; there is no
+        /// focus-visible distinction in UI Toolkit).</summary>
+        private static void MirrorInteractionState(VisualElement host, Button control)
+        {
+            control.RegisterCallback<PointerEnterEvent>(_ => host.AddToClassList(HoverClass));
+            control.RegisterCallback<PointerLeaveEvent>(_ => { host.RemoveFromClassList(HoverClass); host.RemoveFromClassList(ActiveClass); });
+            control.RegisterCallback<PointerDownEvent>(_ => host.AddToClassList(ActiveClass), TrickleDown.TrickleDown);
+            control.RegisterCallback<PointerUpEvent>(_ => host.RemoveFromClassList(ActiveClass), TrickleDown.TrickleDown);
+            control.RegisterCallback<PointerCancelEvent>(_ => host.RemoveFromClassList(ActiveClass));
+            control.RegisterCallback<PointerCaptureOutEvent>(_ => host.RemoveFromClassList(ActiveClass));
+            control.RegisterCallback<FocusEvent>(_ => host.AddToClassList(FocusClass));
+            control.RegisterCallback<BlurEvent>(_ => host.RemoveFromClassList(FocusClass));
+            control.RegisterCallback<DetachFromPanelEvent>(_ => {
+                host.RemoveFromClassList(HoverClass); host.RemoveFromClassList(ActiveClass); host.RemoveFromClassList(FocusClass);
+            });
+        }
 
         public bool Value
         {

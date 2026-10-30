@@ -24,6 +24,7 @@ namespace FullStackDS
         {
             name = "root";
             AddToClassList("tabs");
+            Gap.Attach(this);
             Group = ItemGroup.Attach(this, triggerClass: "tabs__tab", contentClass: "tabs__panel", operation: "select", stateClass: "is-selected", multiple: false, focus: "roving", orientation: "horizontal", wrap: true);
             Orientation = "horizontal";
             Appearance = "underline";
@@ -48,6 +49,8 @@ namespace FullStackDS
             Indicator.name = "indicator";
             Indicator.AddToClassList("tabs__indicator");
             hierarchy.Add(Indicator);
+            Gap.Attach(this);
+            Gap.Attach(children);
         }
     }
 

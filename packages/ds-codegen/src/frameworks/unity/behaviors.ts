@@ -15,7 +15,7 @@
  * refusals are what let the support boundary call the matching families
  * `lowered`.
  */
-import type { ComponentIR, NormalizedChannelIR, PartIR } from "../../ir.js";
+import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, PartIR } from "../../ir.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
 export type UnityBehavior = "BooleanControl" | "ItemGroup" | "AnchoredSurface";
@@ -119,6 +119,31 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     };
   }
   throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name}`);
+}
+
+/** Source: HTML attribute vocabulary as `DomNodeIR.bindings` carries it. */
+const DISABLED_ATTRIBUTE = "disabled";
+
+/** The anatomy node rendering `part`, depth-first. */
+export function findNode(node: DomNodeIR | undefined, part: string): DomNodeIR | undefined {
+  if (!node) return undefined;
+  if (node.part === part) return node;
+  for (const child of node.children) {
+    const found = findNode(child, part);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+/** The disabled prop (R6): the interaction's disabledProp, else a
+ * `disabled=prop:<p>` binding on the form-control part. Its generated
+ * property drives SetEnabled on the root, so the USS projection reads the
+ * same fact to lower a `<prefix>--<disabledProp>` modifier as `:disabled`. */
+export function disabledProp(ir: ComponentIR): string | undefined {
+  if (ir.interaction?.disabledProp) return ir.interaction.disabledProp;
+  const control = ir.formControl && findNode(ir.dom, ir.formControl.part.name);
+  const binding: BindingExpression | undefined = control?.bindings[DISABLED_ATTRIBUTE];
+  return binding?.kind === "prop" ? binding.prop : undefined;
 }
 
 /** Trigger parts (R1): the form control part, every interaction trigger part

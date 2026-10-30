@@ -10,9 +10,10 @@
  * item-group option vocabulary, applied only when the ItemGroup behavior was
  * selected by fact.
  */
-import type { BindingExpression, ComponentIR, DomNodeIR, PartIR, ResolvedPropIR } from "../../ir.js";
+import type { ComponentIR, DomNodeIR, PartIR, ResolvedPropIR } from "../../ir.js";
 import { resolveAnchoredSurfacePolicy } from "../../semantics.js";
-import { triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
+import { disabledProp, findNode, triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
+import { projectComponent, type ComponentProjection, type ContentHost } from "./uss.js";
 
 const quote = (s: string): string => JSON.stringify(s);
 export const pascal = (s: string): string => s.replace(/(^|[-_])([a-z])/g, (_, _sep: string, c: string) => c.toUpperCase());
@@ -44,16 +45,8 @@ const SLOT_TAG = "slot";
 const BUTTON_TAG = "button";
 const LABEL_TAG = "label";
 const TEXT_LEAF_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", LABEL_TAG]);
-const DISABLED_ATTRIBUTE = "disabled";
 /** Source: `ContractPartDetails.role` enum value naming the component root part. */
 const ROOT_ROLE = "root";
-
-/** Source: token path geometry suffixes (R10); `size` sets both axes. */
-const GEOMETRY_SUFFIXES: Readonly<Record<string, readonly ("width" | "height")[]>> = {
-  width: ["width"],
-  height: ["height"],
-  size: ["width", "height"],
-};
 
 type ElementType = "VisualElement" | "Button" | "Label";
 
@@ -68,6 +61,8 @@ interface ElementPlan {
   text?: string;
   part?: string;
   children: ElementPlan[];
+  /** The private composed-content host (R3), owned by its parent element. */
+  insertion?: true;
 }
 
 interface ClassPlan {
@@ -78,7 +73,6 @@ interface ClassPlan {
   root: ElementPlan;
   /** Accessor that becomes `contentContainer`; undefined keeps the default. */
   contentContainer?: string;
-  geometry: string[];
   /** Declared members, in document order (properties, fields). */
   members: ElementPlan[];
   locals: number;
@@ -90,6 +84,10 @@ interface Context {
   compound: Map<string, PartIR>;
   triggers: Set<string>;
   prefix: string;
+  /** USS projection facts the generated classes depend on (uss.ts). */
+  projection: Pick<ComponentProjection, "carrierAxes" | "gapClasses">;
+  /** Composed-content hosts planned so far (owner and host class names). */
+  hosts: ContentHost[];
 }
 
 const isInsertion = (node: DomNodeIR): boolean => node.tag === INSERTION_TAG || (node.tag === SLOT_TAG && !node.slotName);
@@ -135,7 +133,8 @@ function identityFor(ctx: Context, part: string): { name: string; className: str
  * class's contentContainer; a class has at most one insertion point. */
 function insertionHost(ctx: Context, cls: ClassPlan, parent: ElementPlan, holes: { count: number }): void {
   if (++holes.count > 1) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} ${cls.name} declares more than one children insertion point`);
-  const host: ElementPlan = { ref: INSERTION_TAG, declaration: "private", type: "VisualElement", identity: identityFor(ctx, INSERTION_TAG), children: [] };
+  const host: ElementPlan = { ref: INSERTION_TAG, declaration: "private", type: "VisualElement", identity: identityFor(ctx, INSERTION_TAG), children: [], insertion: true };
+  if (parent.identity) ctx.hosts.push({ owner: parent.identity.className, host: host.identity!.className });
   parent.children.push(host);
   cls.members.push(host);
   cls.contentContainer = host.ref;
@@ -194,17 +193,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
 }
 
 function newClass(name: string, base: string, isRoot: boolean, identity: ElementPlan["identity"], part?: PartIR): ClassPlan {
-  return { name, base, isRoot, part, root: { ref: "this", declaration: "self", type: "VisualElement", identity, children: [] }, geometry: [], members: [], locals: 0 };
-}
-
-function findNode(node: DomNodeIR | undefined, part: string): DomNodeIR | undefined {
-  if (!node) return undefined;
-  if (node.part === part) return node;
-  for (const child of node.children) {
-    const found = findNode(child, part);
-    if (found) return found;
-  }
-  return undefined;
+  return { name, base, isRoot, part, root: { ref: "this", declaration: "self", type: "VisualElement", identity, children: [] }, members: [], locals: 0 };
 }
 
 function rootIdentity(ctx: Context, part: string | undefined): { name: string; className: string } {
@@ -245,66 +234,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     }
     classes.push(cls);
   }
-  planGeometry(ctx, classes);
   return classes;
-}
-
-/** R10: default-variant geometry token facts become inline sizes. A fact
- * `<prefix>.<axis>.<value>.<part>.<width|height|size>` applies when `<axis>`
- * is a variant axis whose declared default is `<value>`, the part is rendered
- * and the raw value is `<n>px`. Explicit width/height win over `size`. */
-function planGeometry(ctx: Context, classes: ClassPlan[]): void {
-  const sizes = new Map<string, Map<"width" | "height", { value: number; explicit: boolean }>>();
-  for (const fact of ctx.ir.tokenFacts) {
-    const segments = fact.name.split(".");
-    if (segments.length !== 5 || segments[0] !== ctx.prefix || segments[1] !== fact.category) continue;
-    const [, axis, value, part, suffix] = segments as [string, string, string, string, string];
-    const axes = GEOMETRY_SUFFIXES[suffix];
-    if (!axes || ctx.ir.variants[axis] === undefined || axisDefault(ctx.ir, axis) !== value) continue;
-    const match = fact.rawValue?.match(/^(\d+(?:\.\d+)?)px$/);
-    if (!match) continue;
-    const entry = sizes.get(part) ?? new Map();
-    for (const dimension of axes) {
-      const explicit = axes.length === 1;
-      const existing = entry.get(dimension);
-      if (!existing || (!existing.explicit && explicit)) entry.set(dimension, { value: Number(match[1]), explicit });
-    }
-    sizes.set(part, entry);
-  }
-  for (const [part, entry] of sizes) {
-    const located = locate(classes, part);
-    if (!located) continue;
-    const target = located.element.ref === "this" ? "" : `${located.element.ref}.`;
-    for (const dimension of ["width", "height"] as const) {
-      const size = entry.get(dimension);
-      if (size) located.cls.geometry.push(`${target}style.${dimension} = ${size.value}f;`);
-    }
-  }
-}
-
-function locate(classes: ClassPlan[], part: string): { cls: ClassPlan; element: ElementPlan } | undefined {
-  for (const cls of classes) {
-    if (cls.part?.name === part || (cls.isRoot && cls.root.identity?.name === part)) return { cls, element: cls.root };
-    const element = cls.members.find(m => m.part === part);
-    if (element) return { cls, element };
-  }
-  return undefined;
-}
-
-function axisDefault(ir: ComponentIR, axis: string): string | undefined {
-  const expr = ir.styledProps.find(p => p.name === axis)?.defaultExpr;
-  if (expr === undefined) return undefined;
-  const value: unknown = JSON.parse(expr);
-  return typeof value === "string" ? value : undefined;
-}
-
-/** The disabled prop (R6): the interaction's disabledProp, else a
- * `disabled=prop:<p>` binding on the form-control part. */
-function disabledProp(ir: ComponentIR): string | undefined {
-  if (ir.interaction?.disabledProp) return ir.interaction.disabledProp;
-  const control = ir.formControl && findNode(ir.dom, ir.formControl.part.name);
-  const binding: BindingExpression | undefined = control?.bindings[DISABLED_ATTRIBUTE];
-  return binding?.kind === "prop" ? binding.prop : undefined;
 }
 
 const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface" } as const;
@@ -386,6 +316,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const declaredDismissal = lowering.behavior === "AnchoredSurface" ? resolveAnchoredSurfacePolicy(ir.surface!).publicDismissalProps.map(d => d.prop) : [];
   const placement = lowering.behavior === "AnchoredSurface" ? ir.surface?.positioning?.placementProp : undefined;
   const channelProps = new Set([channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp]);
+  const carriers = ctx.projection.carrierAxes;
   for (const prop of ir.styledProps) {
     if (channelProps.has(prop.name)) continue;
     const name = identifier(pascal(prop.name));
@@ -410,10 +341,11 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
       continue;
     }
     const knob = option ? (option.knob ? `${behavior}.${option.knob}` : undefined) : prop.name === placement ? `${behavior}.Placement` : undefined;
-    // A variant axis emits only when the attached behavior consumes it (the
-    // item-group vocabulary, the surface placement prop); every other axis is
-    // a styling axis whose class modifier and geometry P3 projects.
-    if (values && (option || prop.name === placement)) {
+    // A variant axis emits when the attached behavior consumes it (the
+    // item-group vocabulary, the surface placement prop) or when the USS
+    // projection emits a `<prefix>--<value>` carrier for it (S6); an axis with
+    // neither would be an attribute that changes nothing.
+    if (values && (option || prop.name === placement || carriers.has(prop.name))) {
       members.push(variantProperty(ctx, prop, values, knob));
       const literal = defaultLiteral(ir, prop, values);
       if (literal !== undefined) defaults.push(`${name} = ${literal};`);
@@ -451,6 +383,11 @@ function declaration(element: ElementPlan): string {
   return element.declaration === "private"
     ? `        private readonly ${element.type} ${element.ref} = new ${element.type}();`
     : `        public ${element.type} ${element.ref} { get; } = new ${element.type}();`;
+}
+
+/** Every element under `parent`, depth-first, paired with its parent. */
+function descendants(parent: ElementPlan): [ElementPlan, ElementPlan][] {
+  return parent.children.flatMap(child => [[child, parent] as [ElementPlan, ElementPlan], ...descendants(child)]);
 }
 
 function constructorTree(parent: ElementPlan, out: string[]): void {
@@ -493,7 +430,15 @@ function emitClass(ctx: Context, cls: ClassPlan, api: RootApi | undefined): stri
   if (cls.root.identity?.name) body.push(`name = ${quote(cls.root.identity.name)};`);
   if (cls.root.identity) body.push(`AddToClassList(${quote(cls.root.identity.className)});`);
   constructorTree(cls.root, body);
-  body.push(...cls.geometry);
+  // USS has no `gap`: the projection lowers it to --fsds-gap and the runtime
+  // Gap helper spaces the children of every element carrying that fact, and
+  // of a composed-content host whose owner carries it (the host restates the
+  // owner's container facts, A4).
+  const gapped = (element: ElementPlan | undefined): boolean => !!element?.identity && ctx.projection.gapClasses.has(element.identity.className);
+  if (gapped(cls.root)) body.push(`Gap.Attach(${cls.root.ref});`);
+  for (const [element, parent] of descendants(cls.root)) {
+    if (gapped(element) || (element.insertion && gapped(parent))) body.push(`Gap.Attach(${element.ref});`);
+  }
   if (api) body.push(...api.attach, ...api.defaults);
   return [
     "    [UxmlElement]",
@@ -512,18 +457,20 @@ export interface UnityComponentSource {
   lowering: UnityLowering;
   /** Generated class names, root first. */
   classes: string[];
+  /** Composed-content hosts the classes create (the USS projection restates their owners' container facts). */
+  hosts: ContentHost[];
   source: string;
 }
 
 /** The generated C# for one component: root class plus one class per compound part. */
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
-  const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix };
+  const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [] };
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);
   const blocks = classes.map((cls, index) => emitClass(ctx, cls, index === 0 ? api : undefined));
   const source = `// Generated from ComponentIR. Regenerate with pnpm run generate:unity.\nusing System;\nusing UnityEngine.UIElements;\n\nnamespace FullStackDS\n{\n${blocks.join("\n\n")}\n}\n`;
-  return { lowering, classes: classes.map(c => c.name), source };
+  return { lowering, classes: classes.map(c => c.name), hosts: ctx.hosts, source };
 }
 
 /** Public members (`public [new] bool|string X {`) the ROOT class declares;

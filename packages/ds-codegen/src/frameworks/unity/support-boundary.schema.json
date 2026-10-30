@@ -44,6 +44,16 @@
             "format": "regex",
             "description": "Restrict the rule to string leaves whose value matches this regular expression (e.g. a binding expression shape such as ^channel:<name>.value$)."
           },
+          "declaration": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 1,
+            "description": "tokens:/styles: patterns only. Restrict the rule to leaves of sidecar declarations (one token entry, or one property of one styles block) that satisfy every condition, so all leaves of a declaration classify alike.",
+            "properties": {
+              "valuePattern": { "type": "string", "minLength": 1, "format": "regex", "description": "The declaration's value (literal, else fallback, as a string) matches this regular expression." },
+              "nativeGrammar": { "type": "boolean", "description": "styles: patterns only. Whether the IR's native style grammar admits the block's selector key (false: the IR emits no native style rule for it)." }
+            }
+          },
           "catchAll": { "type": "boolean", "description": "A family-level fallback an allowlisted component may not rely on." },
           "realizes": {
             "enum": ["emitted-property", "selected-channel", "selected-channel-member", "channel-change-event", "selected-channel-binding", "bound-prop-property"],

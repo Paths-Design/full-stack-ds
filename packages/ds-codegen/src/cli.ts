@@ -102,6 +102,8 @@ import {
   type OrphanGroup,
   type OrphanRemovalReport,
 } from "./prune/orphans.js";
+import { isGeneratedFile } from "./markers.js";
+import { TARGET_REGISTRY_CONFIG_FILENAME } from "./target-packs/config.js";
 
 /**
  * Static declaration of the BOUNDED MATERIAL SOURCE SET per
@@ -712,6 +714,7 @@ function main(): void {
 
   let totalGenerated = 0;
   const allGroups: EmittedArtifactGroup[] = [];
+  const plannedAssets: PlannedTargetAssets[] = [];
   for (const targetId of requestedTargets) {
     const binding = registry.get(targetId);
     // Declared admission: full-corpus runs (no explicit component names)
@@ -724,9 +727,15 @@ function main(): void {
             binding.admittedComponents!.includes(input.ir.name),
           )
         : irInputs;
-    const { processed, groups } = emitForTarget(binding, targetInputs, args);
+    // Target-level assets aggregate every admitted component, so only a
+    // full-corpus run may (re)write them; a name-filtered run would replace
+    // the complete asset with one derived from the filtered subset.
+    const { processed, groups, assets } = emitForTarget(binding, targetInputs, args, {
+      targetAssets: args.names.length === 0 && !args.testsOnly,
+    });
     totalGenerated += processed;
     allGroups.push(...groups);
+    if (assets) plannedAssets.push(assets);
   }
 
   console.log(
@@ -758,7 +767,7 @@ function main(): void {
   // before this run". --dry-run prints what would be removed
   // without touching disk.
   if (args.prune !== "off" && previousManifest) {
-    runPruneStep(args, previousManifest, registry, requestedTargets);
+    runPruneStep(args, previousManifest, registry, requestedTargets, plannedAssets);
   }
 
   if (args.watch) {
@@ -794,6 +803,12 @@ function explicitBuiltinTargets(rawTargetArg: string | undefined): BuiltinTarget
  * hook sees the validated contract. A refusal throws and fails generation
  * exactly like an emitter error — in `--dry-run` too, since a refused
  * contract is a generation failure whether or not bytes would be written.
+ *
+ * With `options.targetAssets`, the emitter's optional `emitTargetAssets`
+ * runs once after every component, over the admitted IRs in allowlist order
+ * (see writeTargetAssets). `assets` reports the workspace-relative paths the
+ * run planned for a rail target, in `--dry-run` too, so the prune pass can
+ * tell a no-longer-emitted asset from a current one.
  */
 function emitForTarget(
   binding: TargetBinding,
@@ -803,7 +818,8 @@ function emitForTarget(
     contract: ComponentContract;
   }[],
   args: CliArgs,
-): { processed: number; groups: EmittedArtifactGroup[] } {
+  options: { targetAssets: boolean },
+): { processed: number; groups: EmittedArtifactGroup[]; assets?: PlannedTargetAssets } {
   const { emitter, componentsRoot } = binding;
   console.log(`\n[${emitter.id}] components root: ${path.relative(cwd, componentsRoot)}`);
   if (binding.admittedComponents) {
@@ -832,6 +848,36 @@ function emitForTarget(
     }
   }
 
+  let assets: PlannedTargetAssets | undefined;
+  if (options.targetAssets) {
+    const order = binding.admittedComponents;
+    const irs = irInputs.map((input) => input.ir);
+    if (order) irs.sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
+    const { planned, written } = writeTargetAssets(binding, irs, args);
+    if (binding.railFrameworkId) {
+      assets = { framework: binding.railFrameworkId, paths: planned };
+      const provenance = targetRegistryProvenance();
+      if (written.length > 0 && provenance) {
+        groups.push({
+          framework: binding.railFrameworkId,
+          component: TARGET_ASSETS_GROUP,
+          contract: provenance,
+          files: written,
+        });
+      } else if (written.length > 0) {
+        console.warn(
+          `  WARN  ${binding.id} target assets are not recorded in the emission manifest: ` +
+            `there is no ${TARGET_REGISTRY_CONFIG_FILENAME} to bind them to.`,
+        );
+      }
+    }
+  } else if (binding.emitter.emitTargetAssets) {
+    console.log(
+      `  TARGET ASSETS skipped for ${binding.id} (name-filtered, tests-only or watch run; ` +
+        "they aggregate every admitted component, so only a full-corpus run rewrites them)",
+    );
+  }
+
   if (!args.dryRun) {
     if (binding.id === "figma") {
       writeFigmaStackPrimitiveDescriptor(binding);
@@ -847,7 +893,142 @@ function emitForTarget(
     writeBarrel(binding);
   }
 
-  return { processed: irInputs.length, groups };
+  return { processed: irInputs.length, groups, ...(assets ? { assets } : {}) };
+}
+
+/**
+ * Manifest `component` key of a target's asset group. Target assets are not
+ * owned by one component, so they get their own group per rail framework;
+ * the parentheses keep the key out of the component-name space.
+ */
+const TARGET_ASSETS_GROUP = "(target-assets)";
+
+/** The workspace-relative asset paths a full-corpus run planned for one rail framework. */
+interface PlannedTargetAssets {
+  framework: FrameworkId;
+  paths: string[];
+}
+
+/**
+ * Provenance a target-asset group binds to. Assets aggregate every admitted
+ * component, so no single contract owns them; they bind to the target
+ * registry that decides the admitted set (its allowlists), while each
+ * contributing contract stays bound through its own component group. Null
+ * when the workspace has no registry file (the builtin fallback set).
+ */
+function targetRegistryProvenance(): ContractProvenance | null {
+  const abs = path.join(cwd, TARGET_REGISTRY_CONFIG_FILENAME);
+  if (!fs.existsSync(abs)) return null;
+  return { path: toPosixRel(abs), sha256: sha256FromDisk(abs) };
+}
+
+/**
+ * Absolute target package root: the binding's components root minus the
+ * target pack's declared `outputs.componentsRoot` (which the manifest schema
+ * defines as relative to the package root). Fails loudly when the two
+ * disagree — a target-asset path must never be resolved against a guess.
+ */
+function targetPackageRoot(binding: Pick<TargetBinding, "id" | "componentsRoot" | "targetPack">): string {
+  const declared = binding.targetPack.outputs.componentsRoot.split(/[\\/]/).filter(Boolean);
+  const actual = path.resolve(binding.componentsRoot).split(path.sep);
+  const tail = actual.slice(actual.length - declared.length);
+  if (declared.length === 0 || declared.length >= actual.length || tail.join("/") !== declared.join("/")) {
+    throw new Error(
+      `Target ${binding.id}: components root ${path.relative(cwd, binding.componentsRoot)} does not end with ` +
+        `the target pack's outputs.componentsRoot "${binding.targetPack.outputs.componentsRoot}"; cannot derive the package root for target assets.`,
+    );
+  }
+  return actual.slice(0, actual.length - declared.length).join(path.sep);
+}
+
+/**
+ * Emit, preview or write a target's package-level assets. Paths are relative
+ * to the target package root and may not escape it. Returns the planned
+ * workspace-relative paths (also under `--dry-run`) and, when written, one
+ * EmittedArtifactFile per file with its on-disk digest.
+ */
+function writeTargetAssets(
+  binding: TargetBinding,
+  irs: ComponentIR[],
+  args: CliArgs,
+): { planned: string[]; written: EmittedArtifactFile[] } {
+  const emit = binding.emitter.emitTargetAssets;
+  if (!emit) return { planned: [], written: [] };
+  const packageRoot = targetPackageRoot(binding);
+  const files = emit.call(binding.emitter, irs, {
+    componentsRoot: binding.componentsRoot,
+    contractsRoot: CONTRACTS_DIR,
+  });
+  const resolved = files.map((file) => {
+    const absPath = path.resolve(packageRoot, file.relativePath);
+    const inside = path.relative(packageRoot, absPath);
+    if (path.isAbsolute(file.relativePath) || inside.startsWith("..") || inside === "") {
+      throw new Error(
+        `Target ${binding.id}: target asset path "${file.relativePath}" escapes the package root ${path.relative(cwd, packageRoot)}.`,
+      );
+    }
+    return { file, absPath };
+  });
+  const planned = resolved.map(({ absPath }) => toPosixRel(absPath));
+  if (args.dryRun) {
+    console.log(`  DRY RUN  target assets (${binding.id})`);
+    for (const rel of planned) console.log(`    → ${rel}`);
+    return { planned, written: [] };
+  }
+  const written: EmittedArtifactFile[] = [];
+  for (const { file, absPath } of resolved) {
+    fs.mkdirSync(path.dirname(absPath), { recursive: true });
+    const result = resolveWriteContents(file, absPath, args);
+    if (result.kind === "skipped") {
+      console.log(`  SKIPPED  ${toPosixRel(absPath)} (${result.reason})`);
+      continue;
+    }
+    if (result.kind === "migrated") {
+      fs.writeFileSync(result.legacyAbsPath, result.legacyContents);
+      console.log(`  LEGACY   ${path.relative(cwd, result.legacyAbsPath)} (snapshot)`);
+    }
+    fs.writeFileSync(absPath, result.contents);
+    written.push({ path: toPosixRel(absPath), sha256: sha256FromDisk(absPath) });
+  }
+  console.log(`  TARGET ASSETS  ${binding.id} (${written.length} file(s))`);
+  return { planned, written };
+}
+
+/**
+ * Target assets a previous run recorded that this full-corpus run no longer
+ * plans. Contract-based orphan detection cannot see them — their group binds
+ * to the target registry, which still exists — so they are diffed against
+ * the run's plan, per rail framework, and classified exactly like contract
+ * orphans so the same --prune policy applies. A framework this run did not
+ * plan for (not requested) contributes nothing.
+ */
+function detectTargetAssetOrphans(
+  previous: EmissionManifest,
+  planned: readonly PlannedTargetAssets[],
+): OrphanGroup[] {
+  const orphans: OrphanGroup[] = [];
+  for (const group of previous.groups) {
+    if (group.component !== TARGET_ASSETS_GROUP) continue;
+    const plan = planned.find((p) => p.framework === group.framework);
+    if (!plan) continue;
+    const stale = group.files.filter((f) => !plan.paths.includes(f.path));
+    if (stale.length === 0) continue;
+    orphans.push({
+      framework: group.framework,
+      component: group.component,
+      contractPath: group.contract.path,
+      files: stale.map((f) => {
+        const absPath = path.join(cwd, f.path);
+        const kind: OrphanGroup["files"][number]["kind"] = !fs.existsSync(absPath)
+          ? "missing"
+          : isGeneratedFile(absPath)
+            ? "generated"
+            : "hand_edited";
+        return { path: f.path, absPath, kind };
+      }),
+    });
+  }
+  return orphans;
 }
 
 /**
@@ -1023,10 +1204,14 @@ function runPruneStep(
   previousManifest: EmissionManifest,
   registry: TargetRegistry,
   requestedTargets: TargetId[],
+  plannedAssets: readonly PlannedTargetAssets[] = [],
 ): void {
   const policy = args.prune;
   if (policy === "off") return;
-  const orphans = detectOrphans(previousManifest, cwd);
+  const orphans = [
+    ...detectOrphans(previousManifest, cwd),
+    ...detectTargetAssetOrphans(previousManifest, plannedAssets),
+  ];
   if (orphans.length === 0) {
     console.log("\n  PRUNE  no orphan components found.");
     return;
@@ -1612,11 +1797,14 @@ function startWatch(
         // Watch builds IR and admission input from the bare contract: no
         // sidecar tokens/styles merge and no allowlist filter, so a hook
         // sees what this dev path lowers, not what a full `generate` does.
+        // One changed component is a partial set, so target assets are
+        // left to the next full-corpus run.
         for (const targetId of initialTargets) {
           emitForTarget(
             registry.get(targetId),
             [{ ir, provenance, contract: result.value }],
             args,
+            { targetAssets: false },
           );
         }
       } catch (err) {

@@ -34,6 +34,34 @@ describe('typed native style rules', () => {
   expect(rules[1]!.declarations).toContainEqual({property:'padding-inline-start',value:'8px',token:'box-model.padding-inline-start'});
   expect(rules.find(rule => rule.sourceKey==='--sm')!.declarations).toContainEqual({property:'box-model.min-height',value:'24px',token:'semantic.action.size.small.min-height'});
  });
+ it('normalizes the styles.json `--<modifier> __<part>` shorthand to the modifier ancestor of the part', () => {
+  const facts = buildComponentIR(fixture('Tabs')).nativeStyleRules!;
+  const list = facts.rules.find(rule => rule.sourceKey === '--underline __list')!;
+  expect(list.part).toBe('list');
+  expect(list.predicates).toEqual([{kind:'variant',axis:'appearance',value:'underline'}]);
+  expect(list.declarations).toContainEqual({property:'border-bottom-color',value:'#d92d2e',token:'tabs.color.underline.active',designSlot:'tabs.design.condition-eb5f7091f8d8.border.bottom.color'});
+  expect(facts.rules.find(rule => rule.sourceKey === '--vertical __indicator')).toMatchObject({part:'indicator',predicates:[{kind:'variant',axis:'orientation',value:'vertical'}]});
+  expect(facts.rules.find(rule => rule.sourceKey === '--pills __tab')).toMatchObject({part:'tab',predicates:[{kind:'variant',axis:'appearance',value:'pills'}]});
+  // A web-template state class on the part is not a contract state fact and stays refused.
+  expect(facts.unsupported.map(u => u.sourceKey).sort()).toEqual(['--pills __tab--active', 'tab--active']);
+ });
+ it('retains visible content and its descendant as presence predicates', () => {
+  const facts = buildComponentIR(fixture('Accordion')).nativeStyleRules!;
+  expect(facts.rules.find(rule => rule.sourceKey === '.accordion__content:not([hidden])')).toMatchObject({
+   part: 'content', predicates: [{kind:'present',ownerPart:'content'}],
+  });
+  expect(facts.rules.find(rule => rule.sourceKey === '.accordion__content:not([hidden]) .accordion__contentInner')).toMatchObject({
+   part: 'contentInner', predicates: [{kind:'present',ownerPart:'content'}],
+  });
+ });
+ it('normalizes a bare `__<part>` key to the part and leaves unknown parts refused', () => {
+  const contract = fixture('Tabs');
+  contract.styles!['__panel'] = {'opacity':{literal:'0.5',platforms:['web']}};
+  contract.styles!['--vertical __missing'] = {'opacity':{literal:'0',platforms:['web']}};
+  const facts = buildComponentIR(contract).nativeStyleRules!;
+  expect(facts.rules.find(rule => rule.sourceKey === '__panel')).toEqual({sourceKey:'__panel',part:'panel',predicates:[],declarations:[{property:'opacity',value:'0.5',platforms:['web']}]});
+  expect(facts.unsupported).toContainEqual({sourceKey:'--vertical __missing',reason:'selector outside normalized native grammar'});
+ });
  it('retains unknown selectors as diagnostics instead of guessing unconditional style', () => {
   const contract = fixture('Switch'); contract.styles!['.switch > .other:future'] = {'opacity':{literal:'0',platforms:['web']}};
   const facts = buildComponentIR(contract).nativeStyleRules!;

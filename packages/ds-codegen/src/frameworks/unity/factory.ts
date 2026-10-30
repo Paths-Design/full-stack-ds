@@ -5,9 +5,14 @@ import type { ComponentIR } from "../../ir.js";
 import { buildComponentIR } from "../../ir.js";
 import { admitContract, loadBoundary, type ClassifiedLeaf, type ContractWithSidecars } from "./boundary.js";
 import { triggerParts } from "./behaviors.js";
+import { loadTokenSources, projectStylesheet } from "./uss.js";
 import { identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
 
 export { unityLowering } from "./behaviors.js";
+
+/** Package-relative path (without extension) of the generated stylesheet; the
+ * runtime's `Resources.Load<StyleSheet>("FullStackDS/Controls")` names it. */
+export const STYLESHEET_RESOURCE = "Runtime/Resources/FullStackDS/Controls";
 export type { UnityBehavior, UnityLowering } from "./behaviors.js";
 
 const quote = (s: string): string => JSON.stringify(s);
@@ -85,6 +90,16 @@ export function createUnityEmitter(): FrameworkEmitter {
     },
     emitComponent: ir => [{ relativePath: `${identifier(ir.name)}/${ir.name}.cs`, contents: walkComponent(ir).source }],
     emitTests: () => [], // Independent Unity EditMode oracles live outside generated source.
+    // S1/S6: the package stylesheet and its unsupported ledger, projected from
+    // every admitted component at once (uss.ts). `Theme.Attach` loads the
+    // sheet as the Resources asset `FullStackDS/Controls`.
+    emitTargetAssets: (irs, opts) => {
+      const { uss, ledger } = projectStylesheet(irs, loadTokenSources(opts.contractsRoot), ir => walkComponent(ir).hosts);
+      return [
+        { relativePath: `${STYLESHEET_RESOURCE}.uss`, contents: uss },
+        { relativePath: `${STYLESHEET_RESOURCE}.unsupported.json`, contents: `${JSON.stringify(ledger, null, 2)}\n` },
+      ];
+    },
     emitBarrel: names => `// Generated component catalog.\nnamespace FullStackDS\n{\n    public static class ComponentCatalog\n    {\n        public static readonly string[] Names = { ${names.sort().map(quote).join(", ")} };\n    }\n}\n`,
     discoverComponentIds: root => fs.existsSync(root) ? fs.readdirSync(root).filter(n => fs.existsSync(path.join(root, n, `${n}.cs`))).sort() : [],
   };

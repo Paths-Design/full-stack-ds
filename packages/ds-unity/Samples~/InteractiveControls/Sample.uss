@@ -1,0 +1,57 @@
+/* Consumer-owned styling for the Interactive controls sample and the Editor showcase.
+   This is not package theme authority: component parts are styled only by the generated
+   Runtime/Resources/FullStackDS/Controls.uss. This sheet styles the sample's own layout
+   classes (.fsds-sample*) and gives Unity's built-in element classes (.unity-text-element,
+   .unity-button, scrollers) a skin in place of Unity's default theme, reading the generated
+   token variables with literal light fallbacks so it follows Theme.SetDark / SetBrand.
+   Built-in classes are selected at single-class specificity and the sheet is attached
+   before Controls.uss, so any property a generated part rule sets outranks it. */
+.fsds-sample {
+    height: 100%;
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-width: 0;
+    padding: 24px;
+    background-color: var(--fsds-semantic-color-background-primary, #ffffff);
+}
+.fsds-sample-body { max-width: 640px; align-self: stretch; min-width: 0; }
+.fsds-sample-section { margin-top: 20px; }
+
+.unity-text-element {
+    color: var(--fsds-semantic-color-foreground-primary, #141414);
+    font-size: 16px;
+    -unity-font-style: normal;
+    white-space: normal;
+    min-width: 0;
+}
+.unity-label { margin: 0; padding: 0; flex-shrink: 1; }
+.unity-button {
+    background-color: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+    background-image: none;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 8px 12px;
+    border-width: 1px;
+    border-color: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+    border-radius: 6px;
+    -unity-text-align: middle-left;
+}
+.unity-button:hover { background-color: var(--fsds-semantic-color-background-hover, #f7f7f7); }
+.unity-button:active { background-color: var(--fsds-semantic-color-background-tertiary, #d0d0d0); }
+.unity-button:focus { border-color: var(--fsds-semantic-focus-ring-color, #0566fe); }
+.unity-button:disabled { opacity: 0.5; }
+
+.fsds-sample-title { font-size: 24px; -unity-font-style: bold; margin-bottom: 8px; }
+.fsds-sample-description { color: var(--fsds-semantic-color-foreground-secondary, #474647); margin-bottom: 24px; }
+.fsds-sample-content-action { margin-top: 12px; }
+
+.fsds-sample .unity-scroller { background-color: var(--fsds-semantic-color-background-primary, #ffffff); }
+.fsds-sample .unity-base-slider__tracker { background-color: var(--fsds-semantic-color-background-secondary, #f7f7f7); }
+.fsds-sample .unity-base-slider__dragger {
+    background-color: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+    border-width: 0;
+    border-radius: 6px;
+}
+.fsds-sample .unity-scroller__low-button, .fsds-sample .unity-scroller__high-button {
+    background-color: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+}
