@@ -82,11 +82,10 @@ contracts:
 evidence:
   - criterion_id: A1
     status: pass
-    evidence_ref: "Trusted Chromium edits restore accepted text once and retain focus for Input and TextField in React Vue Svelte Angular and Lit; Command search exercises the same normalized capability. Final40 cases passed; screenshots and source tests retained; this is interaction evidence, not whole-component accessibility conformance."
-    recorded_at: "2026-10-30T04:56:53.780Z"
+    evidence_ref: "Trusted Chromium edits restore accepted text once and retain focus for Input and TextField in all five web frameworks; Command search exercises the same normalized capability. Final40 cases passed; raw .caws/state/text-fixture-browser.log and screenshots are retained ignored execution evidence, not tracked artifacts. Interaction proof only, not whole-component accessibility conformance."
+    recorded_at: "2026-10-30T05:10:44.648Z"
     command: "FSDS_E2E_PORT=5198 node node_modules/@playwright/test/cli.js test e2e/text-controlled.spec.ts --workers=1"
     exit_code: 0
-    artifact_path: ".caws/state/text-fixture-browser.log"
     commit_sha: fb194d944c9c1a821a24b939b2476f3807c5dcf9
   - criterion_id: A2
     status: pass
