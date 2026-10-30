@@ -89,3 +89,8 @@ evidence:
     evidence_ref: "source 862bdcfc4 clean: Unity Editor synthetic UXML host clones and Player accordion contract Icon ref checks passed; Godot runtime+export synthetic renamed host static string ref and inherited foreground pixel checks passed"
     recorded_at: "2026-10-30T20:03:20.216Z"
     commit_sha: "85abce44c7ac899109245c7965f2f21621e4c421"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "85abce44c merged; governed:rail overall pass; pnpm test 369 files/5366 tests pass; test:frameworks Vue 853 Lit 618+2 skip Svelte 753 Angular 639 RN 268; Unity boundary 0 unclassified, token audit 0 unresolved, variant audit 59 ledgered/0 unledgered; docs claims 81/16 and links 240 pass"
+    recorded_at: "2026-10-30T20:03:29.715Z"
+    commit_sha: "85abce44c7ac899109245c7965f2f21621e4c421"
