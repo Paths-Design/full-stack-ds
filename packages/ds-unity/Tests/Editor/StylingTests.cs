@@ -176,7 +176,7 @@ namespace FullStackDS.Tests
             ColorIs(trigger.resolvedStyle.color, "#141414", "accordion trigger text"); // semantic.color.foreground.primary (light)
             Assert.That(trigger.resolvedStyle.paddingLeft, Is.EqualTo(8)); // core.spacing.size.04 (accordion.spacing.paddingY)
             Assert.That(trigger.Chevron.layout.xMin, Is.GreaterThanOrEqualTo(trigger.contentContainer.layout.xMax));
-            Assert.That(trigger.Chevron.layout.width, Is.EqualTo(8)); // core.spacing.size.04 (accordion.icon.size)
+            Assert.That(trigger.Chevron.layout.width, Is.EqualTo(16)); // semantic.glyph.size.medium.extent (accordion.icon.size)
             // The hidden form control's focus is drawn on the track from the focus-ring tokens (host is-focus).
             control.Trigger.Focus(); yield return Frames(2);
             Assert.That(control.ClassListContains("is-focus"), Is.True);
