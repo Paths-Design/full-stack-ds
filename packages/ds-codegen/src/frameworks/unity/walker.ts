@@ -14,6 +14,7 @@ import type { ComponentIR, DomNodeIR, PartIR, ResolvedPropIR } from "../../ir.js
 import { resolveAnchoredSurfacePolicy } from "../../semantics.js";
 import { disabledProp, findNode, triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
 import { projectComponent, type ComponentProjection, type ContentHost } from "./uss.js";
+import { unityGlyphPlan, type UnityGlyphPlan } from "./glyph-plan.js";
 
 const quote = (s: string): string => JSON.stringify(s);
 export const pascal = (s: string): string => s.replace(/(^|[-_])([a-z])/g, (_, _sep: string, c: string) => c.toUpperCase());
@@ -48,7 +49,7 @@ const TEXT_LEAF_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "span",
 /** Source: `ContractPartDetails.role` enum value naming the component root part. */
 const ROOT_ROLE = "root";
 
-type ElementType = "VisualElement" | "Button" | "Label";
+type ElementType = string;
 
 interface ElementPlan {
   /** C# accessor in the constructor; `this` for the class root. */
@@ -63,6 +64,8 @@ interface ElementPlan {
   children: ElementPlan[];
   /** The private composed-content host (R3), owned by its parent element. */
   insertion?: true;
+  glyph?: true;
+  refAttrs?: { prop: string; value: string }[];
 }
 
 interface ClassPlan {
@@ -88,6 +91,7 @@ interface Context {
   projection: Pick<ComponentProjection, "carrierAxes" | "gapClasses">;
   /** Composed-content hosts planned so far (owner and host class names). */
   hosts: ContentHost[];
+  glyph?: UnityGlyphPlan;
 }
 
 const isInsertion = (node: DomNodeIR): boolean => node.tag === INSERTION_TAG || (node.tag === SLOT_TAG && !node.slotName);
@@ -95,7 +99,8 @@ const isNamedSlot = (node: DomNodeIR): boolean => node.tag === SLOT_TAG && !!nod
 
 /** R1/R2: the element type of a rendered node. */
 function elementType(ctx: Context, node: DomNodeIR): ElementType {
-  if (node.componentRef !== undefined) return "VisualElement";
+  if (node.iconGlyph !== undefined) return "GlyphElement";
+  if (node.componentRef !== undefined) return identifier(node.componentRef);
   if ((node.part && ctx.triggers.has(node.part)) || node.tag === BUTTON_TAG) return "Button";
   if (!node.children.length && TEXT_LEAF_TAGS.has(node.tag) && node.content !== undefined) return "Label";
   return "VisualElement";
@@ -178,16 +183,24 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       continue;
     }
     const type = elementType(ctx, node);
+    if (node.componentRef !== undefined &&
+        (Object.keys(node.bindings).length || Object.keys(node.events).length || node.children.length ||
+         Object.keys(node.propertyBindings).length || node.componentInstance?.attrs.some(attr => attr.kind !== "prop")))
+      throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} ${node.componentRef} carries unlowered bindings, events or children`);
     const text = literalContent(node);
     if (text !== undefined && type === "VisualElement") throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} <${node.tag}> carries literal content but lowers to no text element`);
-    const element: ElementPlan = node.part
+    const element: ElementPlan = ctx.glyph?.node === node
+      ? { ref: "glyphElement", declaration: "private", type: "GlyphElement", children: [], glyph: true }
+      : node.part
       ? { ref: identifier(pascal(node.part)), declaration: "property", type, identity: identityFor(ctx, node.part), part: node.part, children: [] }
       : { ref: `node${++cls.locals}`, declaration: "local", type, children: [] };
     if (text !== undefined) element.text = text;
+    if (node.componentRef !== undefined)
+      element.refAttrs = (node.componentInstance?.attrs ?? Object.entries(node.attrs).map(([sourceAttr, value]) => ({ sourceAttr, targetProp: sourceAttr, value, kind: "prop" as const })))
+        .map(attr => ({ prop: identifier(pascal(attr.targetProp ?? attr.sourceAttr)), value: attr.value }));
     parent.children.push(element);
     if (element.declaration !== "local") cls.members.push(element);
-    // componentRef nodes are identity-only placeholders (R5); iconGlyph and
-    // cssVarBindings stay pending P4 and contribute no members.
+    // A component instance owns its own anatomy; do not recurse into it.
     if (node.componentRef === undefined) walkChildren(ctx, cls, element, node.children, holes);
   }
 }
@@ -278,35 +291,47 @@ function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], k
 function passiveRootApi(ctx: Context): RootApi {
   const members: string[] = [];
   const defaults: string[] = [];
+  const glyph = ctx.glyph;
+  if (glyph) {
+    const name = identifier(pascal(glyph.nameProp));
+    members.push(`        [UxmlAttribute] public string ${name} { get => glyphElement.GlyphName; set => glyphElement.GlyphName = value; }`);
+  }
   for (const prop of ctx.ir.styledProps) {
     const values = ctx.ir.variants[prop.name];
     if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
-    members.push(variantProperty(ctx, prop, values, undefined));
+    if (glyph?.sizeProp === prop.name) {
+      const name = identifier(pascal(prop.name));
+      const args = values.map(quote).join(", ");
+      const px = values.map(value => `value == ${quote(value)} ? ${glyph.sizeHints[value]}`).join(" : ");
+      members.push(`        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${quote(ctx.ir.classRecipe.base)}, ${args}); set { Variants.Set(this, ${quote(ctx.ir.classRecipe.base)}, value, ${args}); glyphElement.PixelSize = ${px} : 0; } }`);
+    } else members.push(variantProperty(ctx, prop, values, undefined));
     const literal = defaultLiteral(ctx.ir, prop, values);
     if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
   }
   return { members, attach: [], defaults };
 }
 
-function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined): void {
+function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan): void {
   if (!node) return;
   // A conditional data attribute is DOM metadata, not a UI Toolkit API. The
   // admission boundary must explicitly classify it pending before generation.
   const unsupportedBindings = Object.entries(node.bindings).some(([attribute, value]) => {
+    if (glyph && node === ir.dom && (attribute === "role" || attribute.startsWith("aria-"))) return false;
     if (!/^data-[a-z][a-z0-9-]*$/.test(attribute) || value.kind !== "conditional" || value.condition.kind !== "prop") return true;
     const sourceProp = value.condition.prop;
     return !ir.styledProps.some(prop => prop.name === sourceProp) ||
       value.whenTrue.kind !== "literal" || value.whenTrue.value !== "true" ||
       value.whenFalse.kind !== "literal" || value.whenFalse.value !== "false";
   });
-  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || Object.keys(node.attrs).length ||
-    node.componentRef !== undefined || node.iconGlyph !== undefined || node.activation !== undefined || node.focusContainer === true ||
+  const glyphNode = glyph?.node === node;
+  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || (Object.keys(node.attrs).length && !glyphNode) ||
+    node.componentRef !== undefined || (node.iconGlyph !== undefined && !glyphNode) || node.activation !== undefined || node.focusContainer === true ||
     !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
     node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||
     (node.content !== undefined && (node === ir.dom || (node.part !== undefined && ir.compoundParts.some(part => part.name === node.part)) ||
       !("kind" in node.content && node.content.kind === "literal")));
   if (unhandled) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
-  for (const child of node.children) assertPassiveAnatomy(ir, child);
+  for (const child of node.children) assertPassiveAnatomy(ir, child, glyph);
 }
 
 /** R6–R8: the root's behavior, channel API and props. */
@@ -438,6 +463,7 @@ function constructorTree(parent: ElementPlan, out: string[]): void {
     if (child.declaration === "local") out.push(`var ${child.ref} = new ${child.type}();`);
     if (child.identity) out.push(`${child.ref}.name = ${quote(child.identity.name)};`, `${child.ref}.AddToClassList(${quote(child.identity.className)});`);
     if (child.text !== undefined) out.push(`${child.ref}.text = ${quote(child.text)};`);
+    for (const attr of child.refAttrs ?? []) out.push(`${child.ref}.${attr.prop} = ${quote(attr.value)};`);
     // Generated anatomy belongs to the element's own hierarchy, never to its
     // contentContainer (which is reserved for consumer-composed content).
     const add = parent.ref === "this" ? "hierarchy.Add" : `${parent.ref}.Add`;
@@ -507,8 +533,9 @@ export interface UnityComponentSource {
 /** The generated C# for one component: root class plus one class per compound part. */
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
-  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom);
-  const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [] };
+  const glyph = unityGlyphPlan(ir);
+  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom, glyph);
+  const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [], glyph };
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);
   const blocks = classes.map((cls, index) => emitClass(ctx, cls, index === 0 ? api : undefined));

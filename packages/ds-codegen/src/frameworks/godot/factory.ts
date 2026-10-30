@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR, DomNodeIR } from "../../ir.js";
 import { isBareRuleLeaf, isStaticContent } from "../native-emission-class.js";
@@ -10,6 +11,7 @@ import { godotCompositePlan } from "./composite-plan.js";
 import { godotGlyphPlan } from "./glyph-plan.js";
 import { godotGlyphCatalog } from "./glyph-catalog.js";
 import { collectIconGlyphNodes } from "../icon-glyph.js";
+import { loadTargetRegistryConfigV1 } from "../../target-packs/config.js";
 const q = JSON.stringify;
 const handled = new Set(["checked","defaultChecked","onChange","open","defaultOpen","onOpenChange","value","defaultValue","onValueChange","disabled","collapsible","type","orientation","activationMode","loop","unmountInactive","appearance","placement","closeOnEscape","closeOnOutsideClick","closeOnBlur"]);
 // Explicit pilot exclusions are visible in the emitted capability receipt.
@@ -18,6 +20,28 @@ const staticTextProps = new Set(["as", "variant", "size", "weight", "align", "tr
 const ruleProps = new Set(["orientation", "decorative", "thickness", "title"]);
 const textStyleProperties = new Set(["color", "font-size", "font-weight", "line-height", "letter-spacing"]);
 const ruleStyleProperties = new Set(["border-top-color", "border-left-color", "border-top-width", "border-left-width", "margin-top", "margin-bottom", "margin-left", "margin-right"]);
+interface ItemButtonRef { ref: string; part: string; attrs: Record<string, string> }
+/** Static component instances under an item trigger are carried as native
+ * children. The IR owns the target prop mapping; the runtime owns mounting. */
+function itemButtonRefs(ir: ComponentIR): ItemButtonRef[] {
+  const trigger = ir.interaction?.triggers[0]?.part.name;
+  const refs: ItemButtonRef[] = [];
+  const visit = (node: DomNodeIR, underTrigger: boolean): void => {
+    const inside = underTrigger || node.part === trigger;
+    if (node.componentRef) {
+      if (!inside || !node.part || node.children.length || node.ifProp || node.ifSlot || node.iteration ||
+          Object.keys(node.bindings).length || Object.keys(node.events).length || Object.keys(node.propertyBindings).length ||
+          node.componentInstance?.attrs.some(attr => attr.kind !== "prop"))
+        throw new Error(`GODOT_UNSUPPORTED_REF: ${ir.name} ${node.componentRef} has unlowered placement or facts`);
+      const attrs = node.componentInstance?.attrs ?? Object.entries(node.attrs).map(([sourceAttr, value]) => ({ sourceAttr, targetProp: sourceAttr, value, kind: "prop" as const }));
+      refs.push({ ref: node.componentRef, part: node.part, attrs: Object.fromEntries(attrs.map(attr => [attr.targetProp!, attr.value])) });
+      return;
+    }
+    node.children.forEach(child => visit(child, inside));
+  };
+  if (ir.dom) visit(ir.dom, false);
+  return refs;
+}
 function hasUnloweredStaticNodeFacts(node: DomNodeIR): boolean {
   return !!(node.activation || node.focusContainer || node.keyboardActions?.length || node.keyboardPanel || node.keyboardAnchor || node.content || node.componentRef || node.iteration || node.ifProp || node.ifSlot || node.cssVarBindings.length || node.iconGlyph || node.generatedIdSlug || node.idRefAttrs.length || Object.keys(node.attrs).length || Object.keys(node.propertyBindings).length || Object.keys(node.events).length);
 }
@@ -84,7 +108,9 @@ export function godotPlan(ir: ComponentIR) {
   else if (ir.interaction?.triggers.length === 1 && ["select","toggle-item"].includes(ir.interaction.triggers[0]!.operation)) operation = ir.interaction.triggers[0]!.operation;
   else throw new Error(`GODOT_UNSUPPORTED_SHAPE: ${ir.name}`);
   const realized = new Set(["checked", "open", "value", "disabled", "collapsible", "onChange", "onValueChange", "onOpenChange"]);
-  return { operation, excluded: ir.styledProps.filter(p => !realized.has(p.name) || (ir.formControl && p.name === "value")).map(p=>p.name) };
+  const refs = itemButtonRefs(ir);
+  if (refs.length && !["select", "toggle-item"].includes(operation)) throw new Error(`GODOT_UNSUPPORTED_REF: ${ir.name} has no item button host`);
+  return { operation, excluded: ir.styledProps.filter(p => !realized.has(p.name) || (ir.formControl && p.name === "value")).map(p=>p.name), ...(refs.length ? { itemButtonRefs: refs } : {}) };
 }
 /** Source fact: normalized sequence, channel and label bindings.
  * Applies by: numeric sequence capability. Removable when: its IR is retired.
@@ -142,8 +168,15 @@ export function createGodotEmitter(): FrameworkEmitter {
   return {
     id: "godot",
     discoverComponentIds: root => fs.existsSync(root) ? fs.readdirSync(root).filter(n => fs.existsSync(path.join(root,n,`${n}.gd`))).sort() : [],
-    emitComponent(ir) {
+    emitComponent(ir, opts) {
       const plan = godotPlan(ir);
+      const controlRefs = "itemButtonRefs" in plan ? plan.itemButtonRefs ?? [] : [];
+      if (controlRefs.length) {
+        const workspaceRoot = opts.contractsRoot ? path.resolve(opts.contractsRoot, "../..") : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../..");
+        const declared = loadTargetRegistryConfigV1(workspaceRoot).config.targets.find(target => target.id === "godot")?.components ?? [];
+        for (const ref of controlRefs)
+          if (!declared.includes(ref.ref)) throw new Error(`GODOT_UNSUPPORTED_REF: ${ir.name} references unadmitted ${ref.ref}`);
+      }
       const defaults = Object.fromEntries(ir.styledProps.filter(p=>p.defaultExpr !== undefined).map(p=>[p.name,p.defaultExpr]));
       const isSequence = plan.operation === "sequence";
       const isStatic = plan.operation === "rule" || plan.operation === "static-text";
@@ -151,7 +184,7 @@ export function createGodotEmitter(): FrameworkEmitter {
       const isComposite = plan.operation === "composite";
       const isGlyph = plan.operation === "glyph";
       const compositePlan = isComposite ? plan as NonNullable<ReturnType<typeof godotCompositePlan>> : undefined;
-      const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
+      const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph ? plan : { operation: plan.operation, ...(controlRefs.length ? { itemButtonRefs: controlRefs } : {}) }), defaults, theme_color: themeColor(ir) };
       const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : isComposite ? "composite" : isGlyph ? "glyph" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction || isComposite || isGlyph ? "" : `\tlabel = ${q(ir.name)}\n`}`;
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");

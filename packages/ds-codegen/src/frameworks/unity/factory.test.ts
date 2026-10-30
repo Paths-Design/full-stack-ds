@@ -145,7 +145,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -510,19 +510,25 @@ describe("Unity anatomy walker on synthetic contracts", () => {
 });
 
 describe("Unity walker dispositions for non-lowered node kinds (R5)", () => {
-  it("renders a componentRef node as an identity-only placeholder and leaves its realization to the pending boundary rule", () => {
+  it("renders an admitted componentRef with static props and part identity", () => {
     const source = emit(fixture("Accordion"));
-    expect(source).toContain("        public VisualElement Chevron { get; } = new VisualElement();\n");
+    expect(source).toContain("        public Icon Chevron { get; } = new Icon();\n");
     expect(source.split("\n").filter(l => l.includes("Chevron"))).toEqual([
-      "        public VisualElement Chevron { get; } = new VisualElement();",
+      "        public Icon Chevron { get; } = new Icon();",
       '            Chevron.name = "chevron";',
       '            Chevron.AddToClassList("accordion__chevron");',
+      '            Chevron.Name = "chevron-down";',
+      '            Chevron.Size = "sm";',
       "            hierarchy.Add(Chevron);",
     ]);
-    // Nothing of the referenced component (Icon, its name/size attrs) reaches the output.
-    expect(source).not.toMatch(/Icon|chevron-down|"sm"/);
+    const renamed = fixture("Accordion");
+    renamed.name = "SyntheticGroup";
+    const renamedSource = emit(renamed);
+    expect(renamedSource).toContain("partial class SyntheticGroup : VisualElement");
+    expect(renamedSource).toContain("public Icon Chevron { get; } = new Icon();");
+    expect(renamedSource).toContain('Chevron.Name = "chevron-down";');
     const leaves = classifyContract(loadContractWithSidecars(root, "Accordion")).filter(l => l.keyed.includes("/ref:chevron/"));
-    expect(new Set(leaves.map(l => `${l.rule}:${l.disposition}`))).toEqual(new Set(["anatomy-component-ref-identity:lowered", "anatomy-component-ref:pending"]));
+    expect(new Set(leaves.map(l => `${l.rule}:${l.disposition}`))).toEqual(new Set(["anatomy-component-ref-identity:lowered", "anatomy-component-ref:lowered"]));
   });
 
   it("emits nothing for refused static attrs and form bindings, which the boundary refuses", () => {

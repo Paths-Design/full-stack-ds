@@ -59,7 +59,7 @@ export function godotGlyphPlan(ir: ComponentIR): GodotGlyphPlan | undefined {
   if (!nameProp || nameProp.propType.kind !== "string" || !sizeProp || sizeProp.propType.kind !== "enum" ||
       !decorativeProp || decorativeProp.propType.kind !== "boolean" || !labelProp || labelProp.propType.kind !== "string") unsupported(ir.name, "bound prop types are unsupported");
   const sizeValues = sizeProp.propType.values;
-  if (ir.styledProps.length !== 4 || !sizeValues.every(value => Object.hasOwn(sizeHints, value)) ||
+  if (ir.styledProps.length !== 4 || !sizeValues.every(value => Object.prototype.hasOwnProperty.call(sizeHints, value)) ||
       Object.keys(sizeHints).length !== sizeValues.length) unsupported(ir.name, "unbound prop or size hint");
   const sizeDefault = sizeProp.defaultExpr === undefined ? undefined : JSON.parse(sizeProp.defaultExpr) as unknown;
   const decorativeDefault = decorativeProp.defaultExpr === undefined ? undefined : JSON.parse(decorativeProp.defaultExpr) as unknown;

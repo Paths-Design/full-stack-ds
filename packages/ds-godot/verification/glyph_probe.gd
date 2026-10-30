@@ -78,8 +78,30 @@ func _ready() -> void:
 	check(icon.rendered.accessibility_name == "Confirmed", "Informative name was not projected")
 	icon.glyph_name = "absent"
 	check(icon.rendered.texture == null and icon.selected_grid == 0, "Unknown glyph did not disappear")
+	var group = load("res://addons/full_stack_ds/components/Accordion/Accordion.tscn").instantiate()
+	group.position = Vector2(96, 120)
+	group.custom_minimum_size = Vector2(240, 48)
+	add_child(group)
+	group.add_item("settings", "Settings", Label.new())
+	var composed = group.items[0].button.get_node_or_null("chevron")
+	check(composed != null, "Nested componentRef did not mount on the trigger")
+	if composed != null:
+		check(composed.glyph_name == "chevron-down" and composed.size_axis == "sm" and composed.selected_grid == 16, "Nested Icon lost contract attributes or catalog selection")
+		check(composed.rendered.texture != null and solid_pixel(composed.rendered.texture.get_image()).x >= 0, "Nested Icon did not rasterize authored geometry")
+		group.theme.set_color("font_color", "Label", Color("#00cc66"))
+		await get_tree().process_frame
+		var composed_ink: Vector2i = solid_pixel(composed.rendered.texture.get_image())
+		if composed_ink.x >= 0:
+			var composed_color: Color = composed.rendered.texture.get_image().get_pixelv(composed_ink)
+			check(composed_color.g > 0.7 and composed_color.r < 0.1, "Nested Icon ignored inherited foreground")
+			await RenderingServer.frame_post_draw
+			var composed_frame: Image = get_viewport().get_texture().get_image()
+			var composed_pixel: Color = composed_frame.get_pixelv(Vector2i(composed.rendered.global_position) + composed_ink)
+			check(composed_pixel.g > 0.7 and composed_pixel.r < 0.1, "Nested Icon did not paint inherited foreground in the viewport")
+		composed.set_contract_prop("name", "absent")
+		check(composed.rendered.texture == null, "Nested unknown Icon retained stale pixels")
 	_finish()
 
 func _finish() -> void:
-	print("FSDS_GLYPH_RESULT " + JSON.stringify({"passed":failures.is_empty(),"failures":failures,"exported":OS.has_feature("template"),"version":Engine.get_version_info().string}))
+	print("FSDS_GLYPH_RESULT " + JSON.stringify({"runId":OS.get_environment("FSDS_ENGINE_RUN"),"passed":failures.is_empty(),"failures":failures,"exported":OS.has_feature("template"),"version":Engine.get_version_info().string}))
 	get_tree().quit(0 if failures.is_empty() else 1)

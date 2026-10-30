@@ -62,7 +62,8 @@ func _refresh() -> void:
 		item.button.disabled = disabled or item.disabled
 		item.button.button_pressed = value == item.key
 		item.body.visible = value == item.key
-		item.button.text = item.label + ("  −" if value == item.key else "  +") if operation == "toggle-item" else item.label
+		var has_indicator: bool = not configuration.get("itemButtonRefs", []).is_empty()
+		item.button.text = item.label if has_indicator or operation != "toggle-item" else item.label + ("  −" if value == item.key else "  +")
 	if operation == "surface":
 		if value == "true" and not disabled: _show_surface()
 		elif is_instance_valid(overlay):
@@ -95,6 +96,18 @@ func add_item(key: String, text: String, body: Control, locked := false) -> void
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if operation == "select": strip.add_child(button)
 	else: content.add_child(button)
+	for reference in configuration.get("itemButtonRefs", []):
+		var target: String = reference.get("ref", "")
+		var part: String = reference.get("part", "")
+		var scene_path := "res://addons/full_stack_ds/components/%s/%s.tscn" % [target, target]
+		var scene = load(scene_path)
+		assert(scene is PackedScene, "Missing admitted componentRef scene: " + scene_path)
+		var child: Control = scene.instantiate()
+		child.name = part
+		child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		button.add_child(child)
+		for prop in reference.get("attrs", {}): child.set_contract_prop(prop, reference.attrs[prop])
+		child.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT, Control.PRESET_MODE_MINSIZE, 8)
 	var panel := PanelContainer.new()
 	content.add_child(panel)
 	panel.add_child(body)

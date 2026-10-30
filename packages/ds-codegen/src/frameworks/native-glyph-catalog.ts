@@ -18,7 +18,7 @@ export function loadNativeGlyphCatalog(contractsRoot: string): NativeGlyphCatalo
     const file = path.join(iconRoot, entry, `${entry}.icon.json`);
     if (!fs.existsSync(file)) continue;
     const icon = JSON.parse(fs.readFileSync(file, "utf8")) as SourceIcon;
-    if (!icon.name || !icon.variants || Object.hasOwn(catalog, icon.name)) throw new Error(`NATIVE_GLYPH_CATALOG_INVALID: ${file}`);
+    if (!icon.name || !icon.variants || Object.prototype.hasOwnProperty.call(catalog, icon.name)) throw new Error(`NATIVE_GLYPH_CATALOG_INVALID: ${file}`);
     const sizes: Record<string, NativeGlyphVariant> = {};
     for (const size of Object.keys(icon.variants).sort((a, b) => Number(a) - Number(b))) {
       const variant = icon.variants[size]!;
