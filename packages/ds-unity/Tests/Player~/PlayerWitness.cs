@@ -17,7 +17,7 @@ public class PlayerWitness : MonoBehaviour
     private void Check(bool value, string name) { if (!value) throw new Exception(name); checks.Add(name); Debug.Log("FSDS witness: " + name); }
     private static bool ColorIs(Color actual, string hex) {
         if (!ColorUtility.TryParseHtmlString(hex, out var expected)) return false;
-        return Mathf.Abs(actual.r - expected.r) < .01f && Mathf.Abs(actual.g - expected.g) < .01f && Mathf.Abs(actual.b - expected.b) < .01f;
+        return Mathf.Abs(actual.r - expected.r) < .01f && Mathf.Abs(actual.g - expected.g) < .01f && Mathf.Abs(actual.b - expected.b) < .01f && Mathf.Abs(actual.a - expected.a) < .01f;
     }
     private static void Submit(Button button) { using (var e = NavigationSubmitEvent.GetPooled()) { e.target = button; button.SendEvent(e); } }
     private IEnumerator Start()
