@@ -1,0 +1,54 @@
+id: ENGINE-FORM-FOUNDATION-01
+title: 'Label association and text-input realization for Unity and Godot'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-30T17:35:38.724Z'
+updated_at: '2026-10-30T17:35:38.724Z'
+created_by_session: '01a18dd8-804f-7111-a019-5b9055d34125'
+blast_radius:
+  modules:
+    - 'Unity text input and associated-label lowering/runtime'
+    - 'Godot text input and associated-label lowering/runtime'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-unity'
+    - 'packages/ds-godot'
+    - 'fsds.targets.json'
+    - 'scripts/unity-tests.mjs'
+    - 'scripts/unity-player.mjs'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+  out: []
+invariants:
+  - 'Component semantics derive from normalized form-control, binding and style facts without component-name dispatch.'
+  - 'Unsupported HTML form ownership, input-type validation and assistive-technology semantics remain explicit target limitations.'
+  - 'Existing admitted engine components retain their generated and runtime behavior.'
+acceptance:
+  - id: A1
+    given: 'Label and Input contracts or renamed fact-equivalent fixtures'
+    when: 'emitted for Unity and Godot'
+    then: 'native text controls and associated-label APIs derive from typed facts, supported styling is source-bearing and unsupported facts are explicit'
+  - id: A2
+    given: 'an uncontrolled or controlled text input paired with a label'
+    when: 'text is edited, accepted or refused, disabled and focused'
+    then: 'current text and callbacks follow ownership semantics, disabled edits are suppressed, and label activation focuses its associated control'
+  - id: A3
+    given: 'fresh generated engine packages'
+    when: 'focused codegen and real Unity/Godot checks run'
+    then: 'supported default and updated values, placeholder, invalid styling and label association have concrete runtime evidence without claiming unsupported native-form or screen-reader fidelity'
+rollback:
+  - 'Revert the slice commits and regenerate the affected engine targets.'
+non_functional: {}
+contracts:
+  - name: 'text-input'
+    type: behavior
+    path: 'packages/ds-contracts/components/Input/Input.contract.json'
+  - name: 'associated-label'
+    type: behavior
+    path: 'packages/ds-contracts/components/Label/Label.contract.json'
