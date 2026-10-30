@@ -111,3 +111,10 @@ evidence:
     command: "Playwright Dialog dismissal matrix and pnpm --filter @full-stack-ds/react-native exec vitest run src/components/Dialog/__tests__/Dialog.dismissal.test.tsx"
     exit_code: 0
     commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Actual framework parent fixtures keep open=true while pointer/keyboard/backdrop/Escape requests emit false; accepted close hides the Dialog and returns caller focus. All web cases in .caws/state/dialog-final-browser.log55pass; RN controlled refusal and uncontrolled close in .caws/state/dialog-rn-dismissal.log8pass. Same published-library source bytes at tested7b540ac8e and merge342455ef8; no device or assistive-technology parity claim."
+    recorded_at: "2026-10-30T17:03:58.771Z"
+    command: Playwright Dialog controlled-parent scenarios and React Native Dialog.dismissal.test.tsx
+    exit_code: 0
+    commit_sha: "342455ef84ba3bc9ad468e8110340edbd8ad2054"
