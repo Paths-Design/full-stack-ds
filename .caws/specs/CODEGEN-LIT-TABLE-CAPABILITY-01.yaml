@@ -1,9 +1,11 @@
 id: CODEGEN-LIT-TABLE-CAPABILITY-01
 title: 'Realize composed Lit tables with native template content'
 mode: fix
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Native Lit table composition and typed web header/language metadata are merged with strict packed consumers, five-framework Chromium evidence and integrated checks; responsive scrolling and broader release acceptance remain owed.'
 created_at: '2026-10-30T17:55:49.113Z'
-updated_at: '2026-10-30T19:57:01.115Z'
+updated_at: '2026-10-30T20:13:50.138Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
