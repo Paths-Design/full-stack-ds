@@ -2153,7 +2153,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
   for (const channel of ir.nativeTextChannels ?? []) {
     lines.push(`  protected requestNativeText${capitalizeAngular(channel)}(event: Event): void {`,
-      `    requestNativeTextChange(event, () => this.behavior.set${capitalizeAngular(channel)}((event.currentTarget as HTMLInputElement).value), () => this.behavior.${channel}(), restore => { afterNextRender(restore, { injector: this.injector }); });`,
+      `    requestNativeTextChange(event, () => this.behavior.set${capitalizeAngular(channel)}((event.currentTarget as HTMLInputElement).value), () => this.behavior.${channel}(), restore => { if (!this.destroyRef.destroyed) afterNextRender(restore, { injector: this.injector }); });`,
       `  }`);
   }
   if (ir.compositeControl?.nativeRadio) {

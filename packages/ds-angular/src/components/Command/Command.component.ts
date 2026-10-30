@@ -88,7 +88,7 @@ export class CommandComponent implements OnInit, OnDestroy {
   })));
   }
   protected requestNativeTextSearch(event: Event): void {
-    requestNativeTextChange(event, () => this.behavior.setSearch((event.currentTarget as HTMLInputElement).value), () => this.behavior.search(), restore => { afterNextRender(restore, { injector: this.injector }); });
+    requestNativeTextChange(event, () => this.behavior.setSearch((event.currentTarget as HTMLInputElement).value), () => this.behavior.search(), restore => { if (!this.destroyRef.destroyed) afterNextRender(restore, { injector: this.injector }); });
   }
 
   classes(): string {

@@ -107,5 +107,11 @@ for (const framework of ["svelte", "vue", "lit", "react", "angular"]) test(`${fr
   await cdp.detach();
   expect(await input.evaluate((element, original) => element === original, original)).toBe(true);
   expect(await requests(page)).toEqual(["refused", "accepted", "alXpha", "alXYpha", "に", "日本"]);
+  if (framework === "angular") {
+    await page.evaluate(() => (window as unknown as { textParent: { setDestroying(value: boolean): void } }).textParent.setDestroying(true));
+    await input.fill("unmount");
+    await expect(input).toHaveCount(0);
+    expect(await requests(page)).toEqual(["refused", "accepted", "alXpha", "alXYpha", "に", "日本", "unmount"]);
+  }
   expect(errors).toEqual([]);
 });

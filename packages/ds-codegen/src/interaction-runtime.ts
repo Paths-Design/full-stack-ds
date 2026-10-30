@@ -105,10 +105,10 @@ export function requestNativeTextChange(event: { currentTarget: EventTarget | nu
       if (pending) textCompositions.delete(target);
       // Parent props can propagate after the event callback. Read after that
       // render rather than briefly restoring old text and moving the caret.
-      if (completed) afterRequest(() => {
+      if (completed && target.isConnected) afterRequest(() => {
         if (target.isConnected && !textCompositions.has(target)) restoreNativeText(target, readAccepted);
       });
-      else restoreNativeText(target, readAccepted);
+      else if (!completed && target.isConnected) restoreNativeText(target, readAccepted);
     }
   }
 }

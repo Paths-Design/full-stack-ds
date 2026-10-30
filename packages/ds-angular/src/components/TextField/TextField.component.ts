@@ -69,7 +69,7 @@ export class TextFieldComponent {
   })));
   }
   protected requestNativeTextValue(event: Event): void {
-    requestNativeTextChange(event, () => this.behavior.setValue((event.currentTarget as HTMLInputElement).value), () => this.behavior.value(), restore => { afterNextRender(restore, { injector: this.injector }); });
+    requestNativeTextChange(event, () => this.behavior.setValue((event.currentTarget as HTMLInputElement).value), () => this.behavior.value(), restore => { if (!this.destroyRef.destroyed) afterNextRender(restore, { injector: this.injector }); });
   }
 
   classes(): string {

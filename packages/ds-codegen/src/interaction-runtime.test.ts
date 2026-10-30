@@ -98,6 +98,18 @@ describe("native text ownership", () => {
     expect(target.value).toBe("edited"); accepted = "after-render"; finish();
     expect(target.value).toBe("after-render");
   });
+  it("does not schedule or read a host disposed by its request", () => {
+    const target = input(); const schedule = vi.fn(); const read = vi.fn(() => "accepted");
+    runtime.requestNativeTextChange({ currentTarget: target }, () => target.remove(), read, schedule);
+    expect(schedule).not.toHaveBeenCalled(); expect(read).not.toHaveBeenCalled();
+    expect(target.isConnected).toBe(false);
+  });
+  it("preserves the callback error when it also disposes the host", () => {
+    const target = input(); const read = vi.fn(() => { throw new Error("disposed getter"); });
+    const failure = new Error("consumer failed");
+    expect(() => runtime.requestNativeTextChange({ currentTarget: target }, () => { target.remove(); throw failure; }, read)).toThrow(failure);
+    expect(read).not.toHaveBeenCalled();
+  });
   it("does not overwrite a new composing draft with an older queued request", async () => {
     const target = input();
     runtime.requestNativeTextChange({ currentTarget: target }, () => {}, () => "old");
