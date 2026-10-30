@@ -82,3 +82,10 @@ evidence:
     command: "FSDS_E2E_PORT=5196 pnpm exec playwright test e2e/radio-controlled.spec.ts --workers=1"
     exit_code: 0
     commit_sha: "95833ba904f706e251898f51cae3042859069920"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Shared runtime tests execute actual DOM controls and verify accepted/refused state, original exception propagation after restoration, focus, punctuated names, external form owners, separate forms/shadow roots and detached/empty-name controls; 17 runtime tests in .caws/state/radio-focused.log"
+    recorded_at: "2026-10-30T00:11:56.747Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/composite-control-ir.test.ts packages/ds-codegen/src/interaction-runtime.test.ts
+    exit_code: 0
+    commit_sha: "95833ba904f706e251898f51cae3042859069920"
