@@ -3,6 +3,7 @@
 import { computed } from "vue";
 import { useFieldAssociation } from "../../primitives/index.js";
 import { useInput } from "./useInput.js";
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 // @generated:end
 
 // @custom:start imports
@@ -70,5 +71,5 @@ const fieldAssociation = useFieldAssociation();
 </script>
 
 <template>
-  <input :class="classNames" @input="(e) => behavior.setValue((e.target as HTMLInputElement).value)" :type="props.type" :value="behavior.value.value" :disabled="props.disabled" :aria-invalid="props.invalid" :placeholder="props.placeholder" :name="props.name" :required="props.required" :aria-label="props.ariaLabel" :aria-labelledby="props.ariaLabelledby" :id="fieldAssociation?.controlId" :aria-describedby="fieldAssociation?.describedBy" :data-testid="props.dataTestid" data-fsds-component="input" data-fsds-box="" />
+  <input :class="classNames" @input="(e) => requestNativeTextChange(e, () => behavior.setValue((e.currentTarget as HTMLInputElement).value), () => behavior.value.value)" :type="props.type" :value="behavior.value.value" :disabled="props.disabled" :aria-invalid="props.invalid" :placeholder="props.placeholder" :name="props.name" :required="props.required" :aria-label="props.ariaLabel" :aria-labelledby="props.ariaLabelledby" :id="fieldAssociation?.controlId" :aria-describedby="fieldAssociation?.describedBy" :data-testid="props.dataTestid" data-fsds-component="input" data-fsds-box="" />
 </template>

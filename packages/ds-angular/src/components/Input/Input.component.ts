@@ -1,6 +1,7 @@
 // @generated:start imports
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass } from "@angular/common";
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 import { useInput } from "./useInput.js";
 import { FieldAssociationService } from "../../primitives/index.js";
 // @generated:end
@@ -23,7 +24,7 @@ import { FieldAssociationService } from "../../primitives/index.js";
   standalone: true,
   imports: [NgClass],
   host: { "data-fsds-component": "input" },
-  template: `<input [ngClass]="classes()" (input)="handleValueChange($event)" [type]="type" [value]="behavior.value()" [disabled]="disabled" [attr.aria-invalid]="invalid" [placeholder]="placeholder" [name]="name" [required]="required" [attr.aria-label]="ariaLabel" [attr.aria-labelledby]="ariaLabelledby" [attr.id]="fieldAssociation?.current?.controlId" [attr.aria-describedby]="fieldAssociation?.current?.describedBy" data-fsds-box="" />`,
+  template: `<input [ngClass]="classes()" (input)="requestNativeTextValue($event)" [type]="type" [value]="behavior.value()" [disabled]="disabled" [attr.aria-invalid]="invalid" [placeholder]="placeholder" [name]="name" [required]="required" [attr.aria-label]="ariaLabel" [attr.aria-labelledby]="ariaLabelledby" [attr.id]="fieldAssociation?.current?.controlId" [attr.aria-describedby]="fieldAssociation?.current?.describedBy" data-fsds-box="" />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent {
@@ -53,6 +54,9 @@ export class InputComponent {
     onChange: (v) => this.onChange?.(v),
     destroyRef: this.destroyRef,
   })));
+  }
+  protected requestNativeTextValue(event: Event): void {
+    requestNativeTextChange(event, () => this.behavior.setValue((event.currentTarget as HTMLInputElement).value), () => this.behavior.value());
   }
 
   classes(): string {

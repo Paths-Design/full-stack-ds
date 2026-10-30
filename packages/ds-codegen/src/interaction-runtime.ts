@@ -52,6 +52,60 @@ export function requestNativeRadioChange(event: { currentTarget: EventTarget | n
   }
 }
 
+type NativeTextHost = HTMLInputElement | HTMLTextAreaElement;
+type TextComposition = { readAccepted: () => string | undefined; end: () => void; composing: boolean };
+const textCompositions = new WeakMap<NativeTextHost, TextComposition>();
+
+function restoreNativeText(target: NativeTextHost, readAccepted: () => string | undefined): void {
+  const accepted = readAccepted() ?? "";
+  // Avoid redundant writes: assigning even the same text can move the caret.
+  if (target.value !== accepted) target.value = accepted;
+}
+
+/** Native text mutates before the value request. Retain IME drafts until the
+ * composition commits; then reconcile without an additional value request. */
+export function requestNativeTextChange(event: { currentTarget: EventTarget | null; isComposing?: boolean }, request: () => void, readAccepted: () => string | undefined): void {
+  const target = event.currentTarget as NativeTextHost | null;
+  if (!target || !["input", "textarea"].includes(target.tagName?.toLowerCase()) ||
+      target.tagName.toLowerCase() === "input" && target.type === "file") {
+    request();
+    return;
+  }
+  try {
+    request();
+  } finally {
+    let pending = textCompositions.get(target);
+    if (event.isComposing) {
+      if (!pending || !pending.composing) {
+        if (pending) target.removeEventListener("compositionend", pending.end);
+        const record: TextComposition = { readAccepted, composing: true, end: () => {
+          record.composing = false;
+          target.removeEventListener("compositionend", record.end);
+          const finish = () => {
+            if (textCompositions.get(target) !== record || record.composing) return;
+            textCompositions.delete(target);
+            if (target.isConnected) restoreNativeText(target, record.readAccepted);
+          };
+          // A final non-composing input can follow compositionend in the same
+          // task. Read the accepted value after that event and its parent render.
+          const view = target.ownerDocument.defaultView;
+          if (view?.requestAnimationFrame) view.requestAnimationFrame(finish);
+          else queueMicrotask(finish);
+        } };
+        textCompositions.set(target, record);
+        target.addEventListener("compositionend", record.end);
+        pending = record;
+      }
+      pending.readAccepted = readAccepted;
+    } else if (pending?.composing) {
+      pending.readAccepted = readAccepted;
+    } else {
+      if (pending) textCompositions.delete(target);
+      restoreNativeText(target, readAccepted);
+    }
+  }
+}
+
 /** Bind one behavior's events without replacing other bindings on the host.
  * The owner disposes this registration before replacing or unmounting it. */
 export function bindInteractionEvents(host: HTMLElement, handlers: Record<string, ((event: Event) => void) | undefined>): () => void {

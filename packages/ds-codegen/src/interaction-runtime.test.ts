@@ -14,10 +14,81 @@ type Runtime = {
   toggleInteractionItem(value: string | string[], item: string, multiple: boolean, collapsible: boolean): string | string[];
   requestInteractionChange<T>(controlled: T | undefined, next: T, commit: (value: T) => void, notify: (value: T) => void): void;
   requestNativeRadioChange(event: { currentTarget: EventTarget | null }, request: () => void, readAccepted: () => string | undefined): void;
+  requestNativeTextChange(event: { currentTarget: EventTarget | null; isComposing?: boolean }, request: () => void, readAccepted: () => string | undefined): void;
 };
 const runtime = {} as Runtime;
 new Function("exports", ts.transpileModule(INTERACTION_RUNTIME_SOURCE, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(runtime);
 afterEach(() => document.body.replaceChildren());
+
+describe("native text ownership", () => {
+  function input(tag = "input") {
+    const target = document.createElement(tag) as HTMLInputElement | HTMLTextAreaElement;
+    target.value = "edited"; document.body.append(target); target.focus(); return target;
+  }
+  it.each(["input", "textarea"])("restores refused %s text once with focus and isolation", tag => {
+    const target = input(tag); const other = input(); target.focus(); const request = vi.fn();
+    runtime.requestNativeTextChange({ currentTarget: target }, request, () => "accepted");
+    expect(target.value).toBe("accepted"); expect(other.value).toBe("edited");
+    expect(request).toHaveBeenCalledTimes(1); expect(document.activeElement).toBe(target);
+  });
+  it("reads after the request without equal-value writes or caret reset", () => {
+    const target = input(); target.setSelectionRange(2, 2);
+    const setter = vi.spyOn(target, "value", "set"); let accepted = "before";
+    const request = vi.fn(() => { accepted = "edited"; });
+    runtime.requestNativeTextChange({ currentTarget: target }, request, () => accepted);
+    expect(target.value).toBe("edited"); expect(target.selectionStart).toBe(2);
+    expect(setter).not.toHaveBeenCalled(); expect(request).toHaveBeenCalledTimes(1);
+  });
+  it("restores before propagating a callback exception and clears undefined", () => {
+    const target = input(); const failure = new Error("consumer failed");
+    expect(() => runtime.requestNativeTextChange({ currentTarget: target }, () => { throw failure; }, () => undefined)).toThrow(failure);
+    expect(target.value).toBe(""); expect(document.activeElement).toBe(target);
+  });
+  it("ignores absent unrelated and file hosts", () => {
+    const request = vi.fn(); const read = vi.fn(() => "accepted");
+    const file = input() as HTMLInputElement; file.type = "file";
+    for (const target of [null, document.createElement("div"), file]) runtime.requestNativeTextChange({ currentTarget: target }, request, read);
+    expect(request).toHaveBeenCalledTimes(3); expect(read).not.toHaveBeenCalled(); expect(file.value).toBe("");
+  });
+  it("retains a composing draft until compositionend then reads latest accepted state", () => {
+    const target = input(); const frames: FrameRequestCallback[] = [];
+    const frame = vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => { frames.push(callback); return frames.length; });
+    let accepted = "before"; const request = vi.fn();
+    try {
+      runtime.requestNativeTextChange({ currentTarget: target, isComposing: true }, request, () => accepted);
+      target.value = "編集中";
+      runtime.requestNativeTextChange({ currentTarget: target, isComposing: true }, request, () => accepted);
+      expect(target.value).toBe("編集中"); expect(frames).toHaveLength(0);
+      target.dispatchEvent(new CompositionEvent("compositionend"));
+      expect(frames).toHaveLength(1); expect(target.value).toBe("編集中");
+      accepted = "accepted later"; frames[0](0);
+      expect(target.value).toBe("accepted later"); expect(request).toHaveBeenCalledTimes(2);
+      expect(document.activeElement).toBe(target);
+    } finally { frame.mockRestore(); }
+  });
+  it("lets final input reconcile and rejects a stale frame during a new composition", () => {
+    const target = input(); const frames: FrameRequestCallback[] = [];
+    const frame = vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => { frames.push(callback); return frames.length; });
+    try {
+      runtime.requestNativeTextChange({ currentTarget: target, isComposing: true }, () => {}, () => "old");
+      target.dispatchEvent(new CompositionEvent("compositionend"));
+      runtime.requestNativeTextChange({ currentTarget: target }, () => {}, () => "final");
+      expect(target.value).toBe("final"); target.value = "新";
+      runtime.requestNativeTextChange({ currentTarget: target, isComposing: true }, () => {}, () => "new");
+      frames[0](0); expect(target.value).toBe("新");
+    } finally { frame.mockRestore(); }
+  });
+  it("does not read a disposed composing control after removal", () => {
+    const target = input(); let finish: FrameRequestCallback = () => { throw new Error("frame missing"); };
+    const frame = vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => { finish = callback; return 1; });
+    const read = vi.fn(() => "accepted");
+    try {
+      runtime.requestNativeTextChange({ currentTarget: target, isComposing: true }, () => {}, read);
+      target.dispatchEvent(new CompositionEvent("compositionend")); target.remove(); finish(0);
+      expect(read).not.toHaveBeenCalled(); expect(target.value).toBe("edited");
+    } finally { frame.mockRestore(); }
+  });
+});
 
 function radio(parent: Element | DocumentFragment, name: string, value: string, checked = false) {
   const input = document.createElement("input");
