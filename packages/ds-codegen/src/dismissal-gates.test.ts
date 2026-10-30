@@ -20,7 +20,10 @@ describe("dismissal conjunction", () => {
     contract.dismissal!.triggers![0].enabledBy = "allowExit";
     const ir = buildComponentIR(contract);
     expect(generateVueComponentSource(ir)).toContain("get allowExit() { return props.allowExit; }");
-    expect(generateAngularComponentSource(ir)).toContain("get allowExit() { return host.allowExit; }");
+    const angular = generateAngularComponentSource(ir);
+    expect(angular).toContain("const readDismissalAllowExit = () => this.allowExit;");
+    expect(angular).toContain("get allowExit() { return readDismissalAllowExit(); }");
+    expect(angular).not.toContain("const host = this;");
     expect(generateLitComponentSource(ir)).toContain("get allowExit() { return host.allowExit; }");
   });
   it("normalizes renamed boolean gates and requires both, including defaulted omissions", () => {

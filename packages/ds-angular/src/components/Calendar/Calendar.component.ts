@@ -111,17 +111,19 @@ export class CalendarComponent {
   private injector = inject(Injector);
   private initializedBehavior?: ReturnType<typeof useCalendar>;
   protected get behavior(): ReturnType<typeof useCalendar> {
-    const host = this;
-    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => useCalendar({
+    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => {
+      const readDismissalShouldCloseOnSelect = () => this.shouldCloseOnSelect;
+      return useCalendar({
     value: () => this.value,
     defaultValue: this.defaultValue,
     onChange: (v) => this.onChange?.(v),
     month: () => this.month,
     defaultMonth: this.defaultMonth,
     onMonthChange: (v) => this.onMonthChange?.(v),
-    get shouldCloseOnSelect() { return host.shouldCloseOnSelect; },
+    get shouldCloseOnSelect() { return readDismissalShouldCloseOnSelect(); },
     destroyRef: this.destroyRef,
-  })));
+  });
+    }));
   }
   protected dateGrid = createReactiveDateGrid(() => ({ value: this.behavior.value(), month: this.behavior.month(), mode: this.mode, locale: this.locale, minDate: this.minDate, maxDate: this.maxDate, disabled: this.disabled, caption: this.caption, onValueChange: (next) => this.behavior.setValue(next), onMonthChange: (next) => this.behavior.setMonth(next) }));
   private dateGridCleanup = this.destroyRef.onDestroy(() => this.dateGrid.destroy());

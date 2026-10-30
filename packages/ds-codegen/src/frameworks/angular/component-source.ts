@@ -2087,12 +2087,21 @@ function generateDomTreeComponent(ir: ComponentIR): string {
       lines.push(`  private injector = inject(Injector);`);
       lines.push(`  private initializedBehavior?: ReturnType<typeof use${ir.name}>;`);
       lines.push(`  protected get behavior(): ReturnType<typeof use${ir.name}> {`);
-      if (liveDismissalOptions) lines.push(`    const host = this;`);
-      lines.push(`    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => use${ir.name}({`);
+      if (liveDismissalOptions) {
+        lines.push(`    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => {`);
+        for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+          lines.push(`      const readDismissal${capitalizeAngular(prop)} = () => this.${prop};`);
+        }
+        lines.push(`      return use${ir.name}({`);
+      } else {
+        lines.push(`    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => use${ir.name}({`);
+      }
     } else {
       if (liveDismissalOptions) {
         lines.push(`  protected behavior = (() => {`);
-        lines.push(`    const host = this;`);
+        for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
+          lines.push(`    const readDismissal${capitalizeAngular(prop)} = () => this.${prop};`);
+        }
         lines.push(`    return use${ir.name}({`);
       } else {
         lines.push(`  protected behavior = use${ir.name}({`);
@@ -2110,7 +2119,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     // Forward dismissal-trigger enabledBy props.
     for (const prop of ir.behavior.normalizedDismissalTriggers.flatMap(dismissalGateProps)) {
       lines.push(
-        `    get ${prop}() { return host.${prop}; },`,
+        `    get ${prop}() { return readDismissal${capitalizeAngular(prop)}(); },`,
       );
     }
     // FEAT-A11Y-COMPOSITE-KEYBOARD-01: forward the mode gates the keyboard
@@ -2129,7 +2138,8 @@ function generateDomTreeComponent(ir: ComponentIR): string {
     lines.push(`    destroyRef: this.destroyRef,`);
     lines.push(`  });`);
     if (controlledChannels.size > 0) {
-      lines[lines.length - 1] = `  })));`;
+      if (liveDismissalOptions) lines.push(`    }));`);
+      else lines[lines.length - 1] = `  })));`;
       lines.push(`  }`);
     } else if (liveDismissalOptions) {
       lines.push(`  })();`);

@@ -85,19 +85,23 @@ export class DialogComponent implements OnInit, OnDestroy {
   private injector = inject(Injector);
   private initializedBehavior?: ReturnType<typeof useDialog>;
   protected get behavior(): ReturnType<typeof useDialog> {
-    const host = this;
-    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => useDialog({
+    return this.initializedBehavior ??= untracked(() => runInInjectionContext(this.injector, () => {
+      const readDismissalCloseOnEscape = () => this.closeOnEscape;
+      const readDismissalDismissible = () => this.dismissible;
+      const readDismissalCloseOnBackdropClick = () => this.closeOnBackdropClick;
+      return useDialog({
     open: () => this.open,
     defaultOpen: this.defaultOpen,
     onOpenChange: (v) => this.onOpenChange?.(v),
-    get closeOnEscape() { return host.closeOnEscape; },
-    get dismissible() { return host.dismissible; },
-    get closeOnBackdropClick() { return host.closeOnBackdropClick; },
+    get closeOnEscape() { return readDismissalCloseOnEscape(); },
+    get dismissible() { return readDismissalDismissible(); },
+    get closeOnBackdropClick() { return readDismissalCloseOnBackdropClick(); },
     initialFocus: () => this.initialFocus,
     returnFocus: () => this.returnFocus,
     modal: () => this.modal,
     destroyRef: this.destroyRef,
-  })));
+  });
+    }));
   }
   protected canActivateInteraction = canActivateInteraction;
 
