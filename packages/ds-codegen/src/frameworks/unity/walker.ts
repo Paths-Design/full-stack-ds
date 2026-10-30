@@ -272,28 +272,34 @@ function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], k
 }
 
 /** A passive host has no channel or behavior to attach. Only variant axes
- * with an actual USS carrier become public attributes; the boundary judges
- * any other authored prop before a component is admitted. */
+ * with an actual USS carrier become public attributes. Admission must classify
+ * every omitted prop as pending/refused; a lowered prop must pass the
+ * emitted-property realization check in the boundary. */
 function passiveRootApi(ctx: Context): RootApi {
   const members: string[] = [];
   const defaults: string[] = [];
-  const consumed = new Set<string>();
   for (const prop of ctx.ir.styledProps) {
     const values = ctx.ir.variants[prop.name];
     if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
-    consumed.add(prop.name);
     members.push(variantProperty(ctx, prop, values, undefined));
     const literal = defaultLiteral(ctx.ir, prop, values);
     if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
   }
-  const unhandled = ctx.ir.styledProps.filter(prop => !consumed.has(prop.name));
-  if (unhandled.length) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_PROP: ${ctx.ir.name} does not realise ${unhandled.map(prop => prop.name).join(", ")}`);
   return { members, attach: [], defaults };
 }
 
 function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined): void {
   if (!node) return;
-  const unhandled = Object.keys(node.bindings).length || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || Object.keys(node.attrs).length ||
+  // A conditional data attribute is DOM metadata, not a UI Toolkit API. The
+  // admission boundary must explicitly classify it pending before generation.
+  const unsupportedBindings = Object.entries(node.bindings).some(([attribute, value]) => {
+    if (!/^data-[a-z][a-z0-9-]*$/.test(attribute) || value.kind !== "conditional" || value.condition.kind !== "prop") return true;
+    const sourceProp = value.condition.prop;
+    return !ir.styledProps.some(prop => prop.name === sourceProp) ||
+      value.whenTrue.kind !== "literal" || value.whenTrue.value !== "true" ||
+      value.whenFalse.kind !== "literal" || value.whenFalse.value !== "false";
+  });
+  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || Object.keys(node.attrs).length ||
     node.componentRef !== undefined || node.iconGlyph !== undefined || node.activation !== undefined || node.focusContainer === true ||
     !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
     node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||

@@ -42,12 +42,23 @@ describe("Unity passive anatomy path", () => {
     expect(output).not.toContain("INotifyValueChanged");
   });
 
-  it("refuses the current contracts until their authored props and anatomy are realised", () => {
-    expect(() => emit(irFor("Divider", "UnrelatedRule"))).toThrow("UNITY_UNSUPPORTED_PASSIVE_PROP: UnrelatedRule does not realise decorative, thickness, title");
-    expect(() => emit(irFor("Text", "UnrelatedContent"))).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: UnrelatedContent root has unlowered authored facts");
+  it("emits bounded passive roots while leaving unprojected props out of their API", () => {
+    const rule = emit(irFor("Divider", "UnrelatedRule"));
+    expect(rule).toContain("public partial class UnrelatedRule : VisualElement");
+    expect(rule).toContain("public string Orientation");
+    expect(rule).not.toMatch(/public (?:bool|string) (?:Decorative|Thickness|Title) \{/);
+    const text = emit(irFor("Text", "UnrelatedContent"));
+    expect(text).toContain("public partial class UnrelatedContent : TextElement");
+    expect(text).not.toMatch(/public (?:bool|string) (?:As|Align|Transform|Truncate) \{/);
+  });
+
+  it("refuses authored passive anatomy that a native host would silently drop", () => {
     const rootContent = irFor("Divider", "UnrelatedRule");
     rootContent.dom!.content = { kind: "literal", value: "Hidden" };
     expect(() => emit(rootContent)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: UnrelatedRule root has unlowered authored facts");
+    const arbitraryDataBinding = irFor("Text", "UnrelatedContent");
+    arbitraryDataBinding.dom!.bindings["data-truncate"] = { kind: "prop", prop: "truncate" };
+    expect(() => emit(arbitraryDataBinding)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: UnrelatedContent root has unlowered authored facts");
     const compoundContent = irFor("Text", "UnrelatedContent");
     compoundContent.styledProps = [];
     compoundContent.dom!.bindings = {};

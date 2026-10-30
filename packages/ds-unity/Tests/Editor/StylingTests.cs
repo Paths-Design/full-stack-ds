@@ -84,6 +84,41 @@ namespace FullStackDS.Tests
             Assert.That(sheet.importedWithWarnings, Is.False);
         }
 
+        [UnityTest] public IEnumerator PassiveTextAndRuleComposeWithTokenBackedStyles()
+        {
+            var root = EditorRoot();
+            var scope = new VisualElement(); Theme.Attach(scope); root.Add(scope);
+            var text = new Text { text = "Menu settings", Variant = "caption" };
+            var composed = new Label("Composed child"); text.Add(composed);
+            var horizontal = new Divider();
+            scope.Add(text); scope.Add(horizontal);
+            var row = new VisualElement { style = { flexDirection = FlexDirection.Row, height = 80 } };
+            var vertical = new Divider { Orientation = "vertical" };
+            row.Add(new Label("Left")); row.Add(vertical); row.Add(new Label("Right")); scope.Add(row);
+            yield return Settle();
+            Assert.That(text.text, Is.EqualTo("Menu settings"));
+            Assert.That(composed.parent, Is.EqualTo(text.contentContainer));
+            Assert.That(text.resolvedStyle.fontSize, Is.EqualTo(12).Within(.01)); // core.typography.ramp.2
+            ColorIs(text.resolvedStyle.color, "#141414", "light text");
+            Assert.That(horizontal.resolvedStyle.borderTopWidth, Is.EqualTo(1)); // semantic.shape.control.border.default.width
+            ColorIs(horizontal.resolvedStyle.borderTopColor, "#d0d0d0", "light rule");
+            Assert.That(vertical.ClassListContains("divider--vertical"), Is.True);
+            Assert.That(vertical.resolvedStyle.borderTopWidth, Is.EqualTo(0));
+            Assert.That(vertical.resolvedStyle.borderLeftWidth, Is.EqualTo(1));
+            Assert.That(vertical.resolvedStyle.marginLeft, Is.EqualTo(8)); // core.spacing.size.04
+            Assert.That(vertical.layout.height, Is.GreaterThan(60), "vertical rule stretches in a row");
+
+            text.Variant = "display"; text.Size = "xl"; text.Weight = "bold";
+            Theme.SetDark(scope, true); yield return Settle();
+            Assert.That(text.ClassListContains("text--display"), Is.True);
+            Assert.That(text.ClassListContains("text--xl"), Is.True);
+            Assert.That(text.resolvedStyle.fontSize, Is.EqualTo(20).Within(.01)); // text.size.xl
+            Assert.That(text.resolvedStyle.unityFontStyleAndWeight, Is.EqualTo(FontStyle.Bold));
+            ColorIs(text.resolvedStyle.color, "#fafafa", "dark text");
+            ColorIs(horizontal.resolvedStyle.borderTopColor, "#474647", "dark rule");
+            ColorIs(vertical.resolvedStyle.borderLeftColor, "#474647", "dark vertical rule");
+        }
+
         [UnityTest] public IEnumerator ThemeScopeSelectsTheTokenValuesOfTheControlsInsideIt()
         {
             var root = EditorRoot();
