@@ -156,6 +156,7 @@ This inventory was produced as part of CODEGEN-SEMANTIC-AUTHORITY-01. It documen
 | `FormControlIR` + `buildFormControlIR` | Shared `ir.ts` | Contract `formControl` + anatomy + channel | Control part, value model, commit timing |
 | Static referenced-component props | Lit component emitter | IR `ComponentInstanceIR.attrs` prop/attribute classification | Declared target props use property binding; host attributes retain attribute binding |
 | Compound disclosure button hosts | Lit component emitter | Normalized disclosure interaction and contract trigger anatomy | Custom-element button host retains native border-box sizing; a declared disabled prop guards the root activation boundary |
+| Native table template content | Lit component emitter and `native-template-content.ts` | HTML insertion modes plus IR native part tags, classes and forwarded attributes | Table/section/row consumer insertions use a reactive `renderContent` callback; native template helpers preserve tags and part styling |
 | `nativeRadioChannel` + `requestNativeRadioChange` | Shared `ir.ts` + interaction runtime; Vue/Svelte/Angular/Lit syntax lowering | Native radio host, string selection channel, matching checked predicate and native value binding | Native radio change requests whose form value is the selection key |
 | `nativeTextChannel` + `requestNativeTextChange` / `useNativeTextValue` | Shared `ir.ts` + interaction runtime; React host adapter and Vue/Svelte/Angular/Lit syntax lowering | Native input/textarea value and input/change request bound to the same string channel | Native text ownership, with composition drafts retained until commit |
 | `EventValueStrategy` + `resolveEventValueStrategy` | Shared `semantics.ts` | Host capability + channel valueType + callback kind | Event extraction site |
@@ -163,6 +164,13 @@ This inventory was produced as part of CODEGEN-SEMANTIC-AUTHORITY-01. It documen
 | `requiredProps` + `placeholderForPropType` | Test plan | Contract `prop.required` + `prop.type` + `definedTypes` | Prop type shape |
 | `defaultOpen` conditional emission | Svelte hook emitter | Channel `defaultValueProp` presence | Channel shape |
 | Content-transform lowering (`highlight` → one text-only span per token; declared gate → single plain run) + byte-identical shared-runtime emission | React + Vue + Svelte + Lit + Angular emitters (`isContentTransform` / `collectContentTransforms`); CLI runtime copy (`shipsContentTransformRuntime` flag); React-Native + SwiftUI prop-text degradation | IR `ContentTransformIR` (content directive; closed transform set, schema-enforced) | Content-transform directive — never a component name |
+
+Native table template insertion applies where HTML forbids slot elements:
+`table`, `thead`, `tbody`, `tfoot` and `tr`. Slots inside cells and captions
+retain ordinary flow-content lowering. Named insertion points pass their name
+to the callback. Part helpers derive their native tag, class and attributes
+from the existing IR. This Lit realization is removable if shadow-slot table
+composition supplies equivalent native ancestry, layout and styling.
 
 Lit compound disclosure triggers replace a native button with a custom-element
 host. Their border-box sizing preserves the native button's width and padding

@@ -185,8 +185,8 @@ export const TABLE_COMPOSITION_TAGS: ReadonlySet<string> = new Set([
  * tag, never by component name: no per-component emitter lore. The other two
  * targets satisfy the same consumer capability *structurally* and so consult no
  * prop list — Angular's attribute directive sits on the consumer's own `<td>`
- * (native attrs pass through), and Lit's consumer authors raw light-DOM cells
- * projected through the shadow `<slot>`.
+ * (native attrs pass through). Lit consults this fact for native template
+ * helpers rendered inside the root's shadow table.
  *
  * Names are the JSX/camelCase spelling (`colSpan`, `rowSpan`); template emitters
  * map to the lowercase HTML attribute (`colspan`, `rowspan`) at the bind site.

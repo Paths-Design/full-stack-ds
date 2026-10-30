@@ -71,7 +71,7 @@ enableProdMode();
 bootstrapApplication(PackedConsumer, { providers: [provideZonelessChangeDetection()] }).catch(error => { console.error(error); throw error; });
 `;
 const lit = `${imports("lit")}
-import { ButtonElement, IconElement, StackElement as RootStack } from "@full-stack-ds/lit";
+import { ButtonElement, IconElement, StackElement as RootStack, TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell } from "@full-stack-ds/lit";
 import { StackElement } from "@full-stack-ds/lit/primitives";
 if (StackElement !== RootStack) throw new Error("Public entries have different Stack constructors");
 const stack = new StackElement();
@@ -90,6 +90,22 @@ toggle.textContent = "Toggle disabled";
 toggle.onclick = () => { button.disabled = !button.disabled; };
 stack.textContent = "Packed stack";
 document.getElementById("app")!.append(stack, button, icon, toggle, count);
+const table = new TableElement();
+table.ariaLabel = "Packed table";
+table.style.setProperty("--fsds-core-spacing-size-03", "11px");
+const tableCount = document.createElement("output");
+tableCount.id = "table-count";
+tableCount.textContent = "0";
+const edit = document.createElement("button");
+edit.textContent = "Packed table action";
+edit.onclick = () => { tableCount.textContent = String(Number(tableCount.textContent) + 1); };
+table.renderContent = () => [
+  tableCaption("Orders"),
+  tableHead(tableRow([tableHeaderCell("Team", { scope: "col" }), tableHeaderCell("Seats", { scope: "col" })])),
+  tableBody(tableRow([tableHeaderCell("Team A", { scope: "row" }), tableCell(edit)])),
+  tableFooter(tableRow(tableCell("One team", { colSpan: 2 }))),
+];
+document.getElementById("app")!.append(table, tableCount);
 `;
 
 /** FSDS packages are installed tarballs; external tools/peers use the pinned store. */
@@ -200,6 +216,19 @@ export async function verifyBrowsers({ repo, consumer, evidence }) {
         if (framework === "lit") {
           await expect(page.locator("#packed-stack")).toBeVisible();
           assert.equal(await page.locator("#packed-stack").evaluate(element => getComputedStyle(element).display), "flex");
+          const table = page.getByRole("table", { name: "Packed table", exact: true });
+          await expect(table.getByRole("columnheader")).toHaveText(["Team", "Seats"]);
+          await expect(table.getByRole("rowheader")).toHaveText("Team A");
+          observation.table = await table.evaluate(element => ({
+            rows: element.rows.length,
+            cells: Array.from(element.rows, row => row.cells.length),
+            padding: getComputedStyle(element.tBodies[0].rows[0].cells[1]).paddingLeft,
+            span: element.tFoot.rows[0].cells[0].colSpan,
+          }));
+          assert.deepEqual(observation.table, { rows: 3, cells: [2, 2, 1], padding: "11px", span: 2 });
+          await table.getByRole("button", { name: "Packed table action" }).focus();
+          await page.keyboard.press("Enter");
+          await expect(page.locator("#table-count")).toHaveText("1");
         }
         await page.mouse.move(0, 0);
         observation.buttonStyle = await button.evaluate(element => { const style = getComputedStyle(element); return { display: style.display, background: style.backgroundColor, minHeight: style.minHeight }; });

@@ -1,5 +1,27 @@
 export const webCases = [
   {
+    name: "lit-native-table",
+    source: `
+import { TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell, type TableCellAttributes, type TableHeaderCellAttributes } from "@full-stack-ds/lit";
+const cell: TableCellAttributes = { id: "total", style: "color: red", colSpan: 2, rowSpan: 1, class: "consumer-cell", "data-testid": "total" };
+const header: TableHeaderCellAttributes = { scope: "col", colSpan: 2 };
+const table = new TableElement();
+table.renderContent = slot => [tableCaption(slot ?? "Orders"), tableHead(tableRow(tableHeaderCell("Name", header))), tableBody(tableRow(tableCell("Ada", cell))), tableFooter(tableRow(tableCell("Total")))];
+`
+  },
+  {
+    name: "lit-invalid-table-span", error: 2322, count: 1, fragment: "string",
+    source: `import { tableCell } from "@full-stack-ds/lit"; tableCell("Total", { colSpan: "wide" });`
+  },
+  {
+    name: "lit-invalid-table-scope", error: 2322, count: 1, fragment: "diagonal",
+    source: `import { tableHeaderCell } from "@full-stack-ds/lit"; tableHeaderCell("Name", { scope: "diagonal" });`
+  },
+  {
+    name: "lit-invalid-table-content", error: 2322, count: 1, fragment: "number",
+    source: `import { TableElement } from "@full-stack-ds/lit"; new TableElement().renderContent = 42;`
+  },
+  {
     name: "collided-values-and-types",
     source: `
 import { SelectOption as VueOptionComponent, CodeBlockToken as VueTokenComponent, type SelectOption as VOption, type CodeBlockToken as VToken } from "@full-stack-ds/vue";

@@ -1,6 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
+import { type TemplateResult } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
 // @generated:end
 
@@ -161,6 +162,9 @@ export class TableElement extends LitElement {
     }
   `;
 
+  /** Native template children for insertion contexts that cannot contain slots. */
+  @property({ attribute: false }) renderContent?: (slotName?: string) => unknown;
+
   @property({ type: Boolean }) responsive?: boolean;
   @property({ attribute: 'aria-label', reflect: true })
   override ariaLabel: string | null = null;
@@ -179,13 +183,70 @@ export class TableElement extends LitElement {
   override render() {
     return html`<div class="${this.computeClasses()}" data-fsds-box="">
   <table class=${'table__container'} aria-label=${ifDefined(this.ariaLabel ?? undefined)}>
-    <slot></slot>
+    ${this.renderContent?.()}
   </table>
 </div>`;
   }
 }
 
 customElements.define('fsds-table', TableElement);
+
+
+export interface TablePartAttributes {
+  class?: string;
+  "data-testid"?: string;
+  id?: string;
+  style?: string;
+}
+
+export type TableCaptionAttributes = TablePartAttributes;
+
+export function tableCaption(content: unknown, attrs: TableCaptionAttributes = {}): TemplateResult {
+  return html`<caption class=${["table__caption", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</caption>`;
+}
+
+export type TableHeadAttributes = TablePartAttributes;
+
+export function tableHead(content: unknown, attrs: TableHeadAttributes = {}): TemplateResult {
+  return html`<thead class=${["table__head", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</thead>`;
+}
+
+export type TableBodyAttributes = TablePartAttributes;
+
+export function tableBody(content: unknown, attrs: TableBodyAttributes = {}): TemplateResult {
+  return html`<tbody class=${["table__body", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</tbody>`;
+}
+
+export type TableFooterAttributes = TablePartAttributes;
+
+export function tableFooter(content: unknown, attrs: TableFooterAttributes = {}): TemplateResult {
+  return html`<tfoot class=${["table__footer", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</tfoot>`;
+}
+
+export type TableRowAttributes = TablePartAttributes;
+
+export function tableRow(content: unknown, attrs: TableRowAttributes = {}): TemplateResult {
+  return html`<tr class=${["table__row", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</tr>`;
+}
+
+export interface TableHeaderCellAttributes extends TablePartAttributes {
+  colSpan?: number;
+  rowSpan?: number;
+  scope?: "col" | "row" | "colgroup" | "rowgroup";
+}
+
+export function tableHeaderCell(content: unknown, attrs: TableHeaderCellAttributes = {}): TemplateResult {
+  return html`<th class=${["table__headerCell", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} colspan=${ifDefined(attrs.colSpan)} rowspan=${ifDefined(attrs.rowSpan)} scope=${ifDefined(attrs.scope)}>${content}</th>`;
+}
+
+export interface TableCellAttributes extends TablePartAttributes {
+  colSpan?: number;
+  rowSpan?: number;
+}
+
+export function tableCell(content: unknown, attrs: TableCellAttributes = {}): TemplateResult {
+  return html`<td class=${["table__cell", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} colspan=${ifDefined(attrs.colSpan)} rowspan=${ifDefined(attrs.rowSpan)}>${content}</td>`;
+}
 
 // @generated:end
 

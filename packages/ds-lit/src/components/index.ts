@@ -90,7 +90,7 @@ export { StatusElement } from "./Status/Status.js";
 export type * from "./Status/Status.js";
 export { SwitchElement } from "./Switch/Switch.js";
 export type * from "./Switch/Switch.js";
-export { TableElement } from "./Table/Table.js";
+export { TableElement, tableBody, tableCaption, tableCell, tableFooter, tableHead, tableHeaderCell, tableRow } from "./Table/Table.js";
 export type * from "./Table/Table.js";
 export { TabsElement, TabsListElement, TabsPanelElement, TabsTabElement } from "./Tabs/Tabs.js";
 export type * from "./Tabs/Tabs.js";

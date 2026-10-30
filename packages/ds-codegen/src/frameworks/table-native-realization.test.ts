@@ -314,9 +314,13 @@ describe("Table cell-attribute forwarding", () => {
       const cellClass = angularSrc.match(/export class TableCellComponent \{[\s\S]*?\n\}/)![0];
       expect(cellClass).not.toMatch(/colSpan|colspan/i);
     });
-    it("Lit registers no per-cell custom element — consumer authors raw <td>", () => {
+    it("Lit exposes native cell templates without per-cell custom elements", () => {
       const litSrc = generateLitComponentSource(ir);
       expect(litSrc).not.toMatch(/customElements\.define\(['"]fsds-table-cell/);
+      expect(litSrc).toContain("export function tableCell(content: unknown");
+      expect(litSrc).toContain("colspan=${ifDefined(attrs.colSpan)}");
+      expect(litSrc).toContain("rowspan=${ifDefined(attrs.rowSpan)}");
+      expect(litSrc).toContain("scope=${ifDefined(attrs.scope)}");
     });
   });
 });

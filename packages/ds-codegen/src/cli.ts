@@ -193,6 +193,7 @@ const FRAMEWORK_EMITTER_SOURCES: Record<FrameworkId, readonly string[]> = {
     "packages/ds-codegen/src/frameworks/lit/component-source.ts",
     "packages/ds-codegen/src/frameworks/lit/factory.ts",
     "packages/ds-codegen/src/frameworks/lit/hook-source.ts",
+    "packages/ds-codegen/src/frameworks/lit/native-template-content.ts",
     "packages/ds-codegen/src/frameworks/lit/surface-emit.ts",
     "packages/ds-codegen/src/frameworks/lit/surface-tests.ts",
     "packages/ds-codegen/src/frameworks/lit/tests.ts",

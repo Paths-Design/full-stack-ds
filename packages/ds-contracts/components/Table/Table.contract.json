@@ -1,7 +1,7 @@
 {
   "$schema": "../../component.contract.schema.json",
   "name": "Table",
-  "description": "Data table with sortable columns, row selection, and pagination support.",
+  "description": "Data table with consumer-composed sections, rows, headers, and cells.",
   "layer": "compound",
   "category": "structure",
   "anatomy": {
