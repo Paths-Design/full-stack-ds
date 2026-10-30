@@ -69,3 +69,10 @@ evidence:
     command: "FSDS_ENGINE_OUT=/private/tmp/fsds-godot-composed-committed-89b51fd node scripts/godot-pilot.mjs"
     exit_code: 0
     commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "At committed 89b51fd39: focused Godot 22/22; governed:rail required-mode pass; generated tree matches HEAD; all five framework suites pass; full root Vitest selection 357 files/5221 tests passes with --maxWorkers=2; default worker run had one unrelated 5s timeout, same file passes alone."
+    recorded_at: "2026-10-30T03:43:01.432Z"
+    command: "pnpm run governed:rail && pnpm run test:frameworks && pnpm exec vitest run --maxWorkers=2 && node scripts/committed-tree-check.mjs generated"
+    exit_code: 0
+    commit_sha: "89b51fd39f5d13df02ef7bd0075485a3eb6597bf"
