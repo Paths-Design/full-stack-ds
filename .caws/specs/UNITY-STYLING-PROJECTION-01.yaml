@@ -126,3 +126,10 @@ evidence:
     command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
     exit_code: 0
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A6
+    status: fail
+    evidence_ref: "docs:check-claims and docs:check-links pass; architecture and package docs describe the projection, but the documented Unity 6000.5.3f1 EditMode result predates this generated-styling candidate, and licensing prevented a current recorded run. Documentation criterion remains unsatisfied."
+    recorded_at: "2026-10-30T05:48:52.785Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
