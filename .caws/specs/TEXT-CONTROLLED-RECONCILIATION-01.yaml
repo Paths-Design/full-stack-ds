@@ -3,7 +3,7 @@ title: 'Reconcile native text values after controlled requests'
 mode: fix
 lifecycle_state: active
 created_at: '2026-10-30T01:54:48.793Z'
-updated_at: '2026-10-30T03:48:10.136Z'
+updated_at: '2026-10-30T05:10:42.241Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -79,3 +79,35 @@ contracts:
   - name: 'text-ownership'
     type: behavior
     path: 'packages/ds-codegen/src/interaction-runtime.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Trusted Chromium edits restore accepted text once and retain focus for Input and TextField in all five web frameworks; Command search exercises the same normalized capability. Final40 cases passed; raw .caws/state/text-fixture-browser.log and screenshots are retained ignored execution evidence, not tracked artifacts. Interaction proof only, not whole-component accessibility conformance."
+    recorded_at: "2026-10-30T05:10:44.648Z"
+    command: "FSDS_E2E_PORT=5198 node node_modules/@playwright/test/cli.js test e2e/text-controlled.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: fb194d944c9c1a821a24b939b2476f3807c5dcf9
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "All five actual mounted parents accept later state and mid-string X/Y edits with caret3/4 on the identical input, and accepted Japanese composition commits exactly two native input requests. All five refusal composition cases retain the draft and restore committed accepted state. Raw40-case browser log and per-framework composition JSON; CDP Chromium witness, no OS IME or cross-browser claim."
+    recorded_at: "2026-10-30T04:56:54.830Z"
+    command: "FSDS_E2E_PORT=5198 node node_modules/@playwright/test/cli.js test e2e/text-controlled.spec.ts --workers=1"
+    exit_code: 0
+    artifact_path: ".caws/state/text-fixture-browser.log"
+    commit_sha: fb194d944c9c1a821a24b939b2476f3807c5dcf9
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Shared DOM tests prove unrelated controls unchanged, original callback failure propagates after connected-host restoration, disposed getters and scheduling are skipped, queued requests do not overwrite a newer composition. React cleanup and actual Angular synchronous app destruction are exercised. Focused57 and final40 browser cases passed; actual Angular parent uses the mounted child constructor without NG0912 duplication."
+    recorded_at: "2026-10-30T04:56:55.695Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/interaction-runtime.test.ts packages/ds-codegen/src/native-text-control-ir.test.ts src/consumption/native-text-value.test.tsx packages/ds-codegen/src/form-control-ir.test.ts packages/ds-codegen/src/frameworks/vue-change-event-timing.test.ts
+    exit_code: 0
+    artifact_path: ".caws/state/text-reviewed-focused.log"
+    commit_sha: "7704f9faec87841dc698998bb7bdba3026c01664"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Merged root suite5247/359 passed at d317079c with stable source HEAD; all framework suites passed and published surfaces are byte-identical across main reconciliation. Final integrated all-six rail, docs claims81/stamps15/links240, lint, generated drift and scoped policy43 files passed; new Godot factory22 passed after reconciliation. Raw text-landed-root, text-reviewed-frameworks, text-integrated-rail/docs/godot, text-reviewed-lint, text-final-policy logs. Renamed native contracts and path/event-callback negatives guard generic authority; no component-name dispatch or generated hand edits. Does not establish full-library release readiness."
+    recorded_at: "2026-10-30T04:56:56.765Z"
+    command: "pnpm exec vitest run --maxWorkers=4"
+    exit_code: 0
+    artifact_path: ".caws/state/text-landed-root.log"
+    commit_sha: d317079c881e1f5aa8b3882f813c6486cee4bea8
