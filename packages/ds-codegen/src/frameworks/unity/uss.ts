@@ -22,7 +22,7 @@
  *
  * Token section (S2): `.fsds-theme` defines every graph token the admitted
  * components reference, `.fsds-theme.fsds-theme--dark` the theme-aware ones,
- * `.fsds-theme.fsds-brand-<id>` (and `…​.fsds-theme--dark`) each brand's
+ * `.fsds-theme.fsds-brand-<id>` (and the dark variant) each brand's
  * overrides of those tokens. Equal specificity plus source order reproduces
  * the web cascade, where `@layer brand` outranks `@layer theme`. Names use
  * `tokenSlug`, the single kebab-case authority the web token build shares.

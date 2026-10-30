@@ -15,6 +15,10 @@ public class PlayerWitness : MonoBehaviour
     }
     private readonly List<string> checks = new List<string>();
     private void Check(bool value, string name) { if (!value) throw new Exception(name); checks.Add(name); Debug.Log("FSDS witness: " + name); }
+    private static bool ColorIs(Color actual, string hex) {
+        if (!ColorUtility.TryParseHtmlString(hex, out var expected)) return false;
+        return Mathf.Abs(actual.r - expected.r) < .01f && Mathf.Abs(actual.g - expected.g) < .01f && Mathf.Abs(actual.b - expected.b) < .01f && Mathf.Abs(actual.a - expected.a) < .01f;
+    }
     private static void Submit(Button button) { using (var e = NavigationSubmitEvent.GetPooled()) { e.target = button; button.SendEvent(e); } }
     private IEnumerator Start()
     {
@@ -36,10 +40,12 @@ public class PlayerWitness : MonoBehaviour
             Check(root.panel.contextType == ContextType.Player, "player-panel");
             var sound = root.Q<Switch>("sound");
             Check(sound != null && sound.Checked, "generated-switch-initial-state");
+            var scope = root.Q<ScrollView>(className: Theme.ScopeClass);
+            Check(scope != null && ColorIs(scope.resolvedStyle.backgroundColor, "#ffffff"), "sample-stylesheet-resolves");
+            Check(ColorIs(sound.Track.resolvedStyle.backgroundColor, "#d92d2e"), "packaged-stylesheet-resolves");
             int changes = 0; sound.RegisterValueChangedCallback(_ => changes++);
             Submit(sound.Trigger);
             Check(!sound.Checked && changes == 1, "submit-delivers-one-switch-change");
-            Check(sound.Trigger.resolvedStyle.fontSize == 16 && sound.Trigger.resolvedStyle.color.r > .9f, "packaged-stylesheet-resolves");
             var accordion = root.Q<Accordion>("settings"); Submit(accordion.Group.Triggers[1]);
             Check(accordion.Value == "audio", "accordion-selection");
             var tabs = root.Q<Tabs>("pages"); Submit(tabs.Group.Triggers[1]);
