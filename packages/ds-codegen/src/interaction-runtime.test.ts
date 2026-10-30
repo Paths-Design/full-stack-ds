@@ -14,7 +14,7 @@ type Runtime = {
   toggleInteractionItem(value: string | string[], item: string, multiple: boolean, collapsible: boolean): string | string[];
   requestInteractionChange<T>(controlled: T | undefined, next: T, commit: (value: T) => void, notify: (value: T) => void): void;
   requestNativeRadioChange(event: { currentTarget: EventTarget | null }, request: () => void, readAccepted: () => string | undefined): void;
-  requestNativeTextChange(event: { currentTarget: EventTarget | null; isComposing?: boolean }, request: () => void, readAccepted: () => string | undefined): void;
+  requestNativeTextChange(event: { currentTarget: EventTarget | null; isComposing?: boolean }, request: () => void, readAccepted: () => string | undefined, afterRequest?: (restore: () => void) => void): void;
 };
 const runtime = {} as Runtime;
 new Function("exports", ts.transpileModule(INTERACTION_RUNTIME_SOURCE, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(runtime);
@@ -25,17 +25,19 @@ describe("native text ownership", () => {
     const target = document.createElement(tag) as HTMLInputElement | HTMLTextAreaElement;
     target.value = "edited"; document.body.append(target); target.focus(); return target;
   }
-  it.each(["input", "textarea"])("restores refused %s text once with focus and isolation", tag => {
+  it.each(["input", "textarea"])("restores refused %s text once with focus and isolation", async tag => {
     const target = input(tag); const other = input(); target.focus(); const request = vi.fn();
     runtime.requestNativeTextChange({ currentTarget: target }, request, () => "accepted");
+    await Promise.resolve();
     expect(target.value).toBe("accepted"); expect(other.value).toBe("edited");
     expect(request).toHaveBeenCalledTimes(1); expect(document.activeElement).toBe(target);
   });
-  it("reads after the request without equal-value writes or caret reset", () => {
+  it("reads after the request without equal-value writes or caret reset", async () => {
     const target = input(); target.setSelectionRange(2, 2);
     const setter = vi.spyOn(target, "value", "set"); let accepted = "before";
     const request = vi.fn(() => { accepted = "edited"; });
     runtime.requestNativeTextChange({ currentTarget: target }, request, () => accepted);
+    await Promise.resolve();
     expect(target.value).toBe("edited"); expect(target.selectionStart).toBe(2);
     expect(setter).not.toHaveBeenCalled(); expect(request).toHaveBeenCalledTimes(1);
   });
@@ -66,17 +68,42 @@ describe("native text ownership", () => {
       expect(document.activeElement).toBe(target);
     } finally { frame.mockRestore(); }
   });
-  it("lets final input reconcile and rejects a stale frame during a new composition", () => {
+  it("lets final input reconcile and rejects a stale frame during a new composition", async () => {
     const target = input(); const frames: FrameRequestCallback[] = [];
     const frame = vi.spyOn(window, "requestAnimationFrame").mockImplementation(callback => { frames.push(callback); return frames.length; });
     try {
       runtime.requestNativeTextChange({ currentTarget: target, isComposing: true }, () => {}, () => "old");
       target.dispatchEvent(new CompositionEvent("compositionend"));
       runtime.requestNativeTextChange({ currentTarget: target }, () => {}, () => "final");
+      await Promise.resolve();
       expect(target.value).toBe("final"); target.value = "新";
       runtime.requestNativeTextChange({ currentTarget: target, isComposing: true }, () => {}, () => "new");
       frames[0](0); expect(target.value).toBe("新");
     } finally { frame.mockRestore(); }
+  });
+  it("waits for queued parent propagation without writing old text", async () => {
+    const target = input(); target.setSelectionRange(2, 2);
+    const setter = vi.spyOn(target, "value", "set"); let accepted = "before";
+    runtime.requestNativeTextChange({ currentTarget: target }, () => {
+      queueMicrotask(() => { accepted = "edited"; });
+    }, () => accepted);
+    await Promise.resolve();
+    expect(target.value).toBe("edited"); expect(target.selectionStart).toBe(2);
+    expect(setter).not.toHaveBeenCalled();
+  });
+  it("uses the supplied renderer flush before reading accepted state", () => {
+    const target = input(); let finish: () => void = () => { throw new Error("flush missing"); };
+    let accepted = "before";
+    runtime.requestNativeTextChange({ currentTarget: target }, () => {}, () => accepted, restore => { finish = restore; });
+    expect(target.value).toBe("edited"); accepted = "after-render"; finish();
+    expect(target.value).toBe("after-render");
+  });
+  it("does not overwrite a new composing draft with an older queued request", async () => {
+    const target = input();
+    runtime.requestNativeTextChange({ currentTarget: target }, () => {}, () => "old");
+    target.value = "新";
+    runtime.requestNativeTextChange({ currentTarget: target, isComposing: true }, () => {}, () => "old");
+    await Promise.resolve(); expect(target.value).toBe("新");
   });
   it("does not read a disposed composing control after removal", () => {
     const target = input(); let finish: FrameRequestCallback = () => { throw new Error("frame missing"); };

@@ -170,8 +170,11 @@ removable when the affected renderer supplies equivalent restoration after a
 refused native change. A different native form value and selection key do not
 receive this IR fact.
 
-Native text reconciliation reads accepted state after requesting a change and
-avoids equal-value writes that can move the caret. Composition drafts survive
+Native text reconciliation reads accepted state after parent propagation and
+avoids equal-value writes that can move the caret. Ordinary successful requests
+wait a microtask; Angular uses its afterNextRender boundary because zoneless
+parent propagation can occur in a later render task. Callback errors restore
+accepted text synchronously before propagating. Composition drafts survive
 until compositionend and its final input event; a pending frame reads the latest
 accepted state without another callback. File inputs retain their native write
 restrictions. React retains composition drafts in a host adapter and uses its

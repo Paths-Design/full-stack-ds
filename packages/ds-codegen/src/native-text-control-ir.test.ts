@@ -8,11 +8,11 @@ function marked(node: DomNodeIR | undefined): string[] {
   return node ? [...(node.nativeTextChannel ? [node.nativeTextChannel] : []), ...node.children.flatMap(marked)] : [];
 }
 describe("native text ownership facts", () => {
-  it.each(["Input", "TextField"])("derives %s after renaming from matching native value and event", name => {
+  it.each([["Input", "value"], ["TextField", "value"], ["Command", "search"]])("derives %s after renaming from matching native value and event", (name, channel) => {
     const contract = load(name); contract.name = "RenamedControl";
     const ir = buildComponentIR(contract);
-    expect(ir.nativeTextChannels).toEqual(["value"]);
-    expect(marked(ir.dom)).toEqual(["value"]);
+    expect(ir.nativeTextChannels).toEqual([channel]);
+    expect(marked(ir.dom)).toEqual([channel]);
   });
   it("supports an authored textarea event without formControl", () => {
     const contract = load("Input"); delete contract.formControl; delete contract.fieldAssociation;
@@ -24,14 +24,16 @@ describe("native text ownership facts", () => {
     expect(ir.nativeTextChannels).toEqual(["value"]);
     expect(marked(ir.dom)).toEqual(["value"]);
   });
-  it.each(["value", "event", "host", "type"])("rejects unrelated %s facts", mismatch => {
+  it.each(["value", "path", "event", "host", "type", "callback"])("rejects unrelated %s facts", mismatch => {
     const contract = load("Input"); delete contract.formControl; delete contract.fieldAssociation;
     if (!contract.anatomy || Array.isArray(contract.anatomy) || !contract.anatomy.dom) throw new Error("fixture requires native DOM");
     const node = contract.anatomy.dom; node.events = { input: "channel:value.onChange" };
     if (mismatch === "value") node.bindings = { ...node.bindings, value: "prop:value" };
+    if (mismatch === "path") node.bindings = { ...node.bindings, value: "channel:value.value.length" };
     if (mismatch === "event") node.events = { blur: "channel:value.onChange" };
     if (mismatch === "host") { node.tag = "div"; contract.anatomy.details!.root.tag = "div"; }
     if (mismatch === "type") contract.channels!.value.valueType = "number";
+    if (mismatch === "callback") contract.channels!.value.callbackKind = "event";
     const ir = buildComponentIR(contract);
     expect(ir.nativeTextChannels).toEqual([]); expect(marked(ir.dom)).toEqual([]);
   });

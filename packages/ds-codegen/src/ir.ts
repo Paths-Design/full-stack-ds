@@ -4968,8 +4968,8 @@ function attachNativeTextChannels(dom: DomNodeIR | undefined, channels: Normaliz
   const visit = (node: DomNodeIR): void => {
     const value = node.bindings.value;
     if (!node.componentRef && (node.tag === "input" || node.tag === "textarea") &&
-        value?.kind === "channel" && value.field === "value" &&
-        channels.some(channel => channel.name === value.channel && channel.valueType === "string") &&
+        value?.kind === "channel" && value.field === "value" && !value.path?.length &&
+        channels.some(channel => channel.name === value.channel && channel.valueType === "string" && channel.callbackKind === "value") &&
         Object.entries(node.events).some(([event, binding]) =>
           (event === "input" || event === "change") && binding.kind === "channel" &&
           binding.channel === value.channel && binding.field === "onChange")) {

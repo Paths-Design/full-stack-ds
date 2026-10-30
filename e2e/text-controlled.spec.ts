@@ -1,25 +1,28 @@
 import { expect, test, type Page } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
 
-async function configure(page: Page, controlled: boolean, value = "alpha", type = "text") {
-  await page.evaluate(({ controlled, value, type }) => {
+async function configure(page: Page, controlled: boolean, value = "alpha", type = "text", component = "Input") {
+  await page.evaluate(({ controlled, value, type, component }) => {
     const state = window as unknown as { textRequests: string[] };
     state.textRequests = [];
-    const props = { type, ariaLabel: "Release text", ...(controlled ? { value } : { defaultValue: value }),
-      onChange(next: string) { state.textRequests.push(next); },
+    const channel = component === "Command" ? "search" : "value";
+    const callback = component === "Command" ? "onSearchChange" : "onChange";
+    const props = { type, ariaLabel: "Release text", open: true,
+      ...(controlled ? { [channel]: value } : { [component === "Command" ? "defaultSearch" : "defaultValue"]: value }),
+      [callback](next: string) { state.textRequests.push(next); },
     };
     window.dispatchEvent(new MessageEvent("message", { data: { type: "fsds:config", props } }));
-  }, { controlled, value, type });
+  }, { controlled, value, type, component });
 }
 const requests = (page: Page) => page.evaluate(() => (window as unknown as { textRequests: string[] }).textRequests);
 
 for (const framework of ["react", "vue", "svelte", "angular", "lit"]) {
-  for (const component of ["Input", "TextField"]) {
+  for (const component of ["Input", "TextField", "Command"]) {
     test(`${framework} ${component}: refusal restores accepted text once and retains focus`, async ({ page }, info) => {
       const errors: string[] = []; page.on("pageerror", error => errors.push(error.message));
       await page.goto(`/preview/${framework}/${component}`);
       await page.locator("body[data-fsds-ready]").waitFor();
-      await configure(page, true);
+      await configure(page, true, "alpha", "text", component);
       const input = page.locator("input");
       await expect(input).toHaveValue("alpha");
       await input.fill("changed");
@@ -31,7 +34,7 @@ for (const framework of ["react", "vue", "svelte", "angular", "lit"]) {
     test(`${framework} ${component}: uncontrolled edits retain native caret and commit once`, async ({ page }) => {
       await page.goto(`/preview/${framework}/${component}`);
       await page.locator("body[data-fsds-ready]").waitFor();
-      await configure(page, false, "");
+      await configure(page, false, "", "text", component);
       const input = page.locator("input"); await expect(input).toHaveValue("");
       await input.fill("alpha"); await expect(input).toHaveValue("alpha");
       await input.focus(); await input.evaluate((element: HTMLInputElement) => element.setSelectionRange(2, 2));
@@ -67,21 +70,42 @@ for (const framework of ["react", "vue", "svelte", "angular", "lit"]) {
   });
 }
 
-test("svelte: a real parent accepts edits and later state on the identical mounted input", async ({ page }) => {
-  await page.goto("/preview/svelte/Input"); await page.locator("body[data-fsds-ready]").waitFor();
-  await page.evaluate(async () => {
-    const path = "/e2e/fixtures/text-controlled/consumer.ts"; const { mountParent } = await import(path);
+for (const framework of ["svelte", "vue", "lit", "react", "angular"]) test(`${framework}: a real parent accepts edits and later state on the identical mounted input`, async ({ page }, info) => {
+  const errors: string[] = []; const warnings: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  page.on("console", message => { if (message.type() === "warn" || message.type() === "error") warnings.push(message.text()); });
+  await page.goto(`/preview/${framework}/Input`); await page.locator("body[data-fsds-ready]").waitFor();
+  await page.evaluate(async framework => {
+    const path = `/e2e/fixtures/text-controlled/${framework === "svelte" ? "consumer" : `${framework}-consumer`}.${framework === "react" ? "tsx" : "ts"}`; const { mountParent } = await import(path);
     const host = document.createElement("div"); host.id = "same-input-parent"; document.body.append(host);
     const state = window as unknown as { textRequests: string[]; textParent: { setValue(value: string): void; setAccepting(value: boolean): void } };
-    state.textRequests = []; state.textParent = mountParent(host, (value: string) => state.textRequests.push(value));
-  });
+    state.textRequests = []; state.textParent = await mountParent(host, (value: string) => state.textRequests.push(value));
+  }, framework);
+  await writeFile(info.outputPath("parent-mount.json"), JSON.stringify({ errors, warnings,
+    host: await page.locator("#same-input-parent").evaluate(element => element.outerHTML) }, null, 2));
   const input = page.locator("#same-input-parent input"); await expect(input).toHaveValue("alpha");
   const original = await input.elementHandle();
   await input.fill("refused"); await expect(input).toHaveValue("alpha"); await expect(input).toBeFocused();
   await page.evaluate(() => (window as unknown as { textParent: { setAccepting(value: boolean): void } }).textParent.setAccepting(true));
   await input.fill("accepted"); await expect(input).toHaveValue("accepted"); await expect(input).toBeFocused();
+  await page.evaluate(() => (window as unknown as { textParent: { setValue(value: string): void } }).textParent.setValue("alpha"));
+  await expect(input).toHaveValue("alpha");
+  await input.evaluate((element: HTMLInputElement) => element.setSelectionRange(2, 2));
+  await page.keyboard.type("X"); await expect(input).toHaveValue("alXpha");
+  expect(await input.evaluate((element: HTMLInputElement) => element.selectionStart)).toBe(3);
+  await page.keyboard.type("Y"); await expect(input).toHaveValue("alXYpha");
+  expect(await input.evaluate((element: HTMLInputElement) => element.selectionStart)).toBe(4);
   await page.evaluate(() => (window as unknown as { textParent: { setValue(value: string): void } }).textParent.setValue("later"));
   await expect(input).toHaveValue("later"); await expect(input).toBeFocused();
+  await page.evaluate(() => (window as unknown as { textParent: { setValue(value: string): void } }).textParent.setValue(""));
+  await expect(input).toHaveValue("");
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("Input.imeSetComposition", { text: "に", selectionStart: 1, selectionEnd: 1 });
+  await expect(input).toHaveValue("に"); await expect(input).toBeFocused();
+  await cdp.send("Input.insertText", { text: "日本" });
+  await expect(input).toHaveValue("日本"); await expect(input).toBeFocused();
+  await cdp.detach();
   expect(await input.evaluate((element, original) => element === original, original)).toBe(true);
-  expect(await requests(page)).toEqual(["refused", "accepted"]);
+  expect(await requests(page)).toEqual(["refused", "accepted", "alXpha", "alXYpha", "に", "日本"]);
+  expect(errors).toEqual([]);
 });

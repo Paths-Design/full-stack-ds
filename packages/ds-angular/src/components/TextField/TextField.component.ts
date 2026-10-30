@@ -2,6 +2,7 @@
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass } from "@angular/common";
 import { requestNativeTextChange } from "../../primitives/interaction.js";
+import { afterNextRender } from "@angular/core";
 import { StackComponent } from "../../primitives/index.js";
 import { useTextField } from "./useTextField.js";
 // @generated:end
@@ -68,7 +69,7 @@ export class TextFieldComponent {
   })));
   }
   protected requestNativeTextValue(event: Event): void {
-    requestNativeTextChange(event, () => this.behavior.setValue((event.currentTarget as HTMLInputElement).value), () => this.behavior.value());
+    requestNativeTextChange(event, () => this.behavior.setValue((event.currentTarget as HTMLInputElement).value), () => this.behavior.value(), restore => { afterNextRender(restore, { injector: this.injector }); });
   }
 
   classes(): string {

@@ -1600,6 +1600,7 @@ function generateDomTreeImports(ir: ComponentIR, componentBody: string): string 
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
   if (ir.nativeTextChannels?.length) lines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
+  if (ir.nativeTextChannels?.length) lines.push(`import { afterNextRender } from "@angular/core";`);
   // CODEGEN-EMIT-LINT-HYGIENE-01: compound parts usually host on <fsds-stack>,
   // but native-table composition (Table) renders raw table elements — import
   // StackComponent only when the body actually references it.
@@ -2152,7 +2153,7 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
   for (const channel of ir.nativeTextChannels ?? []) {
     lines.push(`  protected requestNativeText${capitalizeAngular(channel)}(event: Event): void {`,
-      `    requestNativeTextChange(event, () => this.behavior.set${capitalizeAngular(channel)}((event.currentTarget as HTMLInputElement).value), () => this.behavior.${channel}());`,
+      `    requestNativeTextChange(event, () => this.behavior.set${capitalizeAngular(channel)}((event.currentTarget as HTMLInputElement).value), () => this.behavior.${channel}(), restore => { afterNextRender(restore, { injector: this.injector }); });`,
       `  }`);
   }
   if (ir.compositeControl?.nativeRadio) {

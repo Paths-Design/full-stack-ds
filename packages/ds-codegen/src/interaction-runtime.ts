@@ -64,15 +64,17 @@ function restoreNativeText(target: NativeTextHost, readAccepted: () => string | 
 
 /** Native text mutates before the value request. Retain IME drafts until the
  * composition commits; then reconcile without an additional value request. */
-export function requestNativeTextChange(event: { currentTarget: EventTarget | null; isComposing?: boolean }, request: () => void, readAccepted: () => string | undefined): void {
+export function requestNativeTextChange(event: { currentTarget: EventTarget | null; isComposing?: boolean }, request: () => void, readAccepted: () => string | undefined, afterRequest: (restore: () => void) => void = queueMicrotask): void {
   const target = event.currentTarget as NativeTextHost | null;
   if (!target || !["input", "textarea"].includes(target.tagName?.toLowerCase()) ||
       target.tagName.toLowerCase() === "input" && target.type === "file") {
     request();
     return;
   }
+  let completed = false;
   try {
     request();
+    completed = true;
   } finally {
     let pending = textCompositions.get(target);
     if (event.isComposing) {
@@ -101,7 +103,12 @@ export function requestNativeTextChange(event: { currentTarget: EventTarget | nu
       pending.readAccepted = readAccepted;
     } else {
       if (pending) textCompositions.delete(target);
-      restoreNativeText(target, readAccepted);
+      // Parent props can propagate after the event callback. Read after that
+      // render rather than briefly restoring old text and moving the caret.
+      if (completed) afterRequest(() => {
+        if (target.isConnected && !textCompositions.has(target)) restoreNativeText(target, readAccepted);
+      });
+      else restoreNativeText(target, readAccepted);
     }
   }
 }

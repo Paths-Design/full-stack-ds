@@ -3,6 +3,7 @@
 import { computed, useId } from "vue";
 import { useCommand } from "./useCommand.js";
 import Icon from "../Icon/Icon.vue";
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 import { useFsdsMessages, withFsdsMessageDefaults } from "../../primitives/messages.js";
 // @generated:end
 
@@ -82,7 +83,7 @@ const instanceId = useId();
       <div v-if="behavior.open.value" :class="'command__dialog'" role="dialog" aria-modal="true" :aria-label="props.label">
         <div :class="'command__inputWrapper'">
           <Icon :class="'command__searchIcon'" name="search" size="sm" />
-          <input :class="'command__input'" type="search" role="combobox" aria-autocomplete="list" @input="(e) => behavior.setSearch((e.target as HTMLInputElement).value)" :aria-expanded="behavior.open.value" :aria-label="props.searchLabel" :placeholder="props.placeholder" :value="behavior.search.value" :id="`${instanceId}-input`" :aria-controls="`${instanceId}-list`" />
+          <input :class="'command__input'" type="search" role="combobox" aria-autocomplete="list" @input="(e) => requestNativeTextChange(e, () => behavior.setSearch((e.currentTarget as HTMLInputElement).value), () => behavior.search.value)" :aria-expanded="behavior.open.value" :aria-label="props.searchLabel" :placeholder="props.placeholder" :value="behavior.search.value" :id="`${instanceId}-input`" :aria-controls="`${instanceId}-list`" />
         </div>
         <div :class="'command__list'" role="listbox" :id="`${instanceId}-list`" :aria-labelledby="`${instanceId}-input`">
           <div :class="'command__empty'"></div>
