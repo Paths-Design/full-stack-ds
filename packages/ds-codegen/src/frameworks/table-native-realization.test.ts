@@ -249,21 +249,27 @@ describe("Table realization — Lit", () => {
 // consume it. Runtime DOM proofs live in each package's generated Table test.
 describe("Table cell-attribute forwarding", () => {
   describe("IR fact: nativeTableAttrsFor (single policy source)", () => {
-    it("td forwards the global id/style + cell-spanning colSpan/rowSpan, no scope", () => {
-      expect(nativeTableAttrsFor("td")).toEqual(["id", "style", "colSpan", "rowSpan"]);
+    it("td forwards global language attributes plus spans and header associations", () => {
+      expect(nativeTableAttrsFor("td")).toEqual(["id", "style", "lang", "dir", "title", "colSpan", "rowSpan", "headers"]);
     });
     it("th additionally forwards scope (header association direction)", () => {
       expect(nativeTableAttrsFor("th")).toEqual([
         "id",
         "style",
+        "lang",
+        "dir",
+        "title",
         "colSpan",
         "rowSpan",
+        "headers",
         "scope",
+        "abbr",
+        "ariaSort",
       ]);
     });
-    it("structural rows/sections forward only the global id, style", () => {
+    it("structural rows and sections forward the global attributes", () => {
       for (const tag of ["tr", "thead", "tbody", "tfoot", "caption"]) {
-        expect(nativeTableAttrsFor(tag)).toEqual(["id", "style"]);
+        expect(nativeTableAttrsFor(tag)).toEqual(["id", "style", "lang", "dir", "title"]);
       }
     });
     it("returns [] for non-table tags (no leakage to other native leaves)", () => {

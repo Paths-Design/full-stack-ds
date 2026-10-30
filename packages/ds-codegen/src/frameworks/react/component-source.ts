@@ -35,6 +35,9 @@ import {
   hasChildrenPlaceholder,
   TABLE_COMPOSITION_TAGS,
   nativeTableAttrsFor,
+  nativeTableAttributeType,
+  nativeTableAttributeHtmlName,
+  canonicalTsType,
   composeBindingProjectionExpression,
   composeChannelUpdateExpression,
   composeValueMapExpression,
@@ -895,17 +898,7 @@ function collectReactNamedSlots(ir: ComponentIR): string[] {
  * import when this identifier appears); the others are their HTML-native shapes.
  */
 function reactTableAttrType(attr: NativeTableAttr): string {
-  switch (attr) {
-    case "id":
-      return "string";
-    case "style":
-      return "CSSProperties";
-    case "colSpan":
-    case "rowSpan":
-      return "number";
-    case "scope":
-      return '"col" | "row" | "colgroup" | "rowgroup"';
-  }
+  return attr === "style" ? "CSSProperties" : canonicalTsType(nativeTableAttributeType(attr));
 }
 
 function generateSubComponentProps(name: string, part: PartIR): string {
@@ -949,13 +942,12 @@ function generateSubComponent(
       `  "data-testid": testId,`,
       ...attrs.map((a) => `  ${a},`),
     ];
-    // JSX attribute names equal the IR names; React drops any whose value is
-    // undefined, so forwarding all of them is safe even when the consumer set
-    // none.
+    // React retains JSX span spelling and uses the HTML spelling for ARIA.
+    // Undefined values omit the native attribute.
     const jsxAttrs = [
       `className={classNames}`,
       `data-testid={testId}`,
-      ...attrs.map((a) => `${a}={${a}}`),
+      ...attrs.map((a) => `${a === "ariaSort" ? nativeTableAttributeHtmlName(a) : a}={${a}}`),
     ].join(" ");
     return [
       `export function ${subName}({`,

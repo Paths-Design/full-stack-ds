@@ -14,12 +14,18 @@ interface Props {
   children?: import('svelte').Snippet;
   id?: string;
   style?: string;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
   colSpan?: number;
   rowSpan?: number;
+  headers?: string;
   scope?: "col" | "row" | "colgroup" | "rowgroup";
+  abbr?: string;
+  ariaSort?: "none" | "ascending" | "descending" | "other";
 }
 
-let { class: className, "data-testid": dataTestid, children, id, style, colSpan, rowSpan, scope }: Props = $props();
+let { class: className, "data-testid": dataTestid, children, id, style, lang, dir, title, colSpan, rowSpan, headers, scope, abbr, ariaSort }: Props = $props();
 // @generated:end
 
 // @generated:start classes
@@ -31,6 +37,6 @@ const classes = $derived(["table__headerCell", className].filter(Boolean).join("
 // @custom:end
 </script>
 
-<th class={classes} data-testid={dataTestid} {id} {style} colspan={colSpan} rowspan={rowSpan} {scope}>
+<th class={classes} data-testid={dataTestid} {id} {style} {lang} {dir} {title} colspan={colSpan} rowspan={rowSpan} {headers} {scope} {abbr} aria-sort={ariaSort}>
   {@render children?.()}
 </th>

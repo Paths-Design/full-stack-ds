@@ -35,8 +35,11 @@ document.querySelector('#app')!.append(table);
 ```
 
 Helpers accept Lit content, including templates, arrays, directives and DOM
-nodes. Attributes include `class`, `id`, `style` and `data-testid`; cells also
-accept numeric `colSpan` and `rowSpan`, and headers accept `scope`.
+nodes. Attributes include `class`, `id`, `style`, `data-testid`, `lang`, `dir`
+and `title`. Cells accept numeric `colSpan`/`rowSpan` and a `headers` string
+of header IDs. Headers also accept `scope`, `abbr` and `ariaSort`;
+`ariaSort` renders the native `aria-sort` attribute with `none`, `ascending`,
+`descending` or `other`. Consumers own sort state and supply unique header IDs.
 `tableFooter` supplies a native footer section. Replace the callback to update
 content, or use a reactive Lit parent's `.renderContent` property binding.
 Keyed row updates can use Lit's `repeat` directive to retain native element

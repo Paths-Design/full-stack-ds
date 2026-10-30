@@ -1,4 +1,4 @@
-import { nativeTableAttrsFor, TABLE_COMPOSITION_TAGS, type ComponentIR, type DomNodeIR } from "../../ir.js";
+import { canonicalTsType, nativeTableAttrsFor, nativeTableAttributeType, nativeTableAttributeHtmlName, TABLE_COMPOSITION_TAGS, type ComponentIR, type DomNodeIR } from "../../ir.js";
 
 // HTML table insertion modes exclude slot elements. Cells and captions accept
 // flow content, so their ordinary slots must remain slots.
@@ -27,24 +27,24 @@ export function generateNativeTemplateHelpers(ir: ComponentIR): string {
   if (parts.length === 0) return "";
   const helperNames = nativeTemplateHelperNames(ir);
   const baseType = `${ir.name}PartAttributes`;
+  const globalAttrs = nativeTableAttrsFor("table");
   const lines = [
     `export interface ${baseType} {`,
     `  class?: string;`,
     `  "data-testid"?: string;`,
-    `  id?: string;`,
-    `  style?: string;`,
+    ...globalAttrs.map(attr => `  ${attr}?: ${canonicalTsType(nativeTableAttributeType(attr))};`),
     `}`, ``,
   ];
   parts.forEach((part, index) => {
     const attrs = nativeTableAttrsFor(part.nativeTag);
-    const specificAttrs = attrs.filter(attr => attr !== "id" && attr !== "style");
+    const specificAttrs = attrs.filter(attr => !globalAttrs.includes(attr));
     const typeName = `${ir.name}${part.name[0].toUpperCase() + part.name.slice(1)}Attributes`;
     if (specificAttrs.length === 0) {
       lines.push(`export type ${typeName} = ${baseType};`, ``);
     } else {
       lines.push(`export interface ${typeName} extends ${baseType} {`);
       for (const attr of specificAttrs) {
-        lines.push(`  ${attr}?: ${attr === "scope" ? '"col" | "row" | "colgroup" | "rowgroup"' : "number"};`);
+        lines.push(`  ${attr}?: ${canonicalTsType(nativeTableAttributeType(attr))};`);
       }
       lines.push(`}`, ``);
     }
@@ -52,7 +52,7 @@ export function generateNativeTemplateHelpers(ir: ComponentIR): string {
     const bindings = [
       `class=\${[${JSON.stringify(`${ir.classRecipe.base}__${part.name}`)}, attrs.class].filter(Boolean).join(" ")}`,
       `data-testid=\${ifDefined(attrs["data-testid"])}`,
-      ...attrs.map(attr => `${attr.toLowerCase()}=\${ifDefined(attrs.${attr})}`),
+      ...attrs.map(attr => `${nativeTableAttributeHtmlName(attr)}=\${ifDefined(attrs.${attr})}`),
     ];
     lines.push(`  return html\`<${part.nativeTag} ${bindings.join(" ")}>\${content}</${part.nativeTag}>\`;`, `}`, ``);
   });

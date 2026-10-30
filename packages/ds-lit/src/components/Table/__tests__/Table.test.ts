@@ -93,8 +93,8 @@ describe("Table — native template composition", () => {
     host.ariaLabel = "Orders";
     host.renderContent = () => [
       tableCaption("Orders"),
-      tableHead(tableRow(tableHeaderCell("Team", { scope: "col", colSpan: 2 }))),
-      tableBody(tableRow([tableHeaderCell("Team A", { scope: "row", rowSpan: 1 }), tableCell("12", { id: "seats", style: "color: red" })], { class: "consumer-row", "data-testid": "team-a" })),
+      tableHead(tableRow(tableHeaderCell("Team", { id: "header", scope: "col", colSpan: 2, abbr: "T.", ariaSort: "ascending", lang: "fr", dir: "ltr" }))),
+      tableBody(tableRow([tableHeaderCell("Team A", { scope: "row", rowSpan: 1 }), tableCell("١٢", { id: "seats", headers: "header", lang: "ar", dir: "rtl", title: "المقاعد", style: "color: red" })], { class: "consumer-row", "data-testid": "team-a" })),
       tableFooter(tableRow(tableCell("Total", { colSpan: 2 }))),
     ];
     document.body.append(host);
@@ -107,9 +107,17 @@ describe("Table — native template composition", () => {
       expect(Array.from(table.rows, row => row.cells.length)).toEqual([1, 2, 1]);
       expect(table.caption!.textContent).toBe("Orders");
       expect(table.tHead!.rows[0].cells[0].scope).toBe("col");
+      expect(table.tHead!.rows[0].cells[0].getAttribute("aria-sort")).toBe("ascending");
+      expect(table.tHead!.rows[0].cells[0].abbr).toBe("T.");
+      expect(table.tHead!.rows[0].cells[0].lang).toBe("fr");
       expect(table.tBodies[0].rows[0].cells[0].scope).toBe("row");
       expect(table.tFoot!.rows[0].cells[0].colSpan).toBe(2);
       expect(table.querySelector("#seats")!.getAttribute("style")).toBe("color: red");
+      const seats = table.querySelector<HTMLTableCellElement>("#seats")!;
+      expect(seats.headers).toBe("header");
+      expect(seats.lang).toBe("ar");
+      expect(seats.dir).toBe("rtl");
+      expect(seats.title).toBe("المقاعد");
       expect(table.querySelector('[data-testid="team-a"]')!.className).toBe("table__row consumer-row");
       expect(table.querySelectorAll("slot")).toHaveLength(0);
       expect(host.childElementCount).toBe(0);

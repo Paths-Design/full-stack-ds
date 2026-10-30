@@ -197,55 +197,62 @@ export interface TablePartAttributes {
   "data-testid"?: string;
   id?: string;
   style?: string;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
 }
 
 export type TableCaptionAttributes = TablePartAttributes;
 
 export function tableCaption(content: unknown, attrs: TableCaptionAttributes = {}): TemplateResult {
-  return html`<caption class=${["table__caption", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</caption>`;
+  return html`<caption class=${["table__caption", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} lang=${ifDefined(attrs.lang)} dir=${ifDefined(attrs.dir)} title=${ifDefined(attrs.title)}>${content}</caption>`;
 }
 
 export type TableHeadAttributes = TablePartAttributes;
 
 export function tableHead(content: unknown, attrs: TableHeadAttributes = {}): TemplateResult {
-  return html`<thead class=${["table__head", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</thead>`;
+  return html`<thead class=${["table__head", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} lang=${ifDefined(attrs.lang)} dir=${ifDefined(attrs.dir)} title=${ifDefined(attrs.title)}>${content}</thead>`;
 }
 
 export type TableBodyAttributes = TablePartAttributes;
 
 export function tableBody(content: unknown, attrs: TableBodyAttributes = {}): TemplateResult {
-  return html`<tbody class=${["table__body", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</tbody>`;
+  return html`<tbody class=${["table__body", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} lang=${ifDefined(attrs.lang)} dir=${ifDefined(attrs.dir)} title=${ifDefined(attrs.title)}>${content}</tbody>`;
 }
 
 export type TableFooterAttributes = TablePartAttributes;
 
 export function tableFooter(content: unknown, attrs: TableFooterAttributes = {}): TemplateResult {
-  return html`<tfoot class=${["table__footer", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</tfoot>`;
+  return html`<tfoot class=${["table__footer", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} lang=${ifDefined(attrs.lang)} dir=${ifDefined(attrs.dir)} title=${ifDefined(attrs.title)}>${content}</tfoot>`;
 }
 
 export type TableRowAttributes = TablePartAttributes;
 
 export function tableRow(content: unknown, attrs: TableRowAttributes = {}): TemplateResult {
-  return html`<tr class=${["table__row", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)}>${content}</tr>`;
+  return html`<tr class=${["table__row", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} lang=${ifDefined(attrs.lang)} dir=${ifDefined(attrs.dir)} title=${ifDefined(attrs.title)}>${content}</tr>`;
 }
 
 export interface TableHeaderCellAttributes extends TablePartAttributes {
   colSpan?: number;
   rowSpan?: number;
+  headers?: string;
   scope?: "col" | "row" | "colgroup" | "rowgroup";
+  abbr?: string;
+  ariaSort?: "none" | "ascending" | "descending" | "other";
 }
 
 export function tableHeaderCell(content: unknown, attrs: TableHeaderCellAttributes = {}): TemplateResult {
-  return html`<th class=${["table__headerCell", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} colspan=${ifDefined(attrs.colSpan)} rowspan=${ifDefined(attrs.rowSpan)} scope=${ifDefined(attrs.scope)}>${content}</th>`;
+  return html`<th class=${["table__headerCell", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} lang=${ifDefined(attrs.lang)} dir=${ifDefined(attrs.dir)} title=${ifDefined(attrs.title)} colspan=${ifDefined(attrs.colSpan)} rowspan=${ifDefined(attrs.rowSpan)} headers=${ifDefined(attrs.headers)} scope=${ifDefined(attrs.scope)} abbr=${ifDefined(attrs.abbr)} aria-sort=${ifDefined(attrs.ariaSort)}>${content}</th>`;
 }
 
 export interface TableCellAttributes extends TablePartAttributes {
   colSpan?: number;
   rowSpan?: number;
+  headers?: string;
 }
 
 export function tableCell(content: unknown, attrs: TableCellAttributes = {}): TemplateResult {
-  return html`<td class=${["table__cell", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} colspan=${ifDefined(attrs.colSpan)} rowspan=${ifDefined(attrs.rowSpan)}>${content}</td>`;
+  return html`<td class=${["table__cell", attrs.class].filter(Boolean).join(" ")} data-testid=${ifDefined(attrs["data-testid"])} id=${ifDefined(attrs.id)} style=${ifDefined(attrs.style)} lang=${ifDefined(attrs.lang)} dir=${ifDefined(attrs.dir)} title=${ifDefined(attrs.title)} colspan=${ifDefined(attrs.colSpan)} rowspan=${ifDefined(attrs.rowSpan)} headers=${ifDefined(attrs.headers)}>${content}</td>`;
 }
 
 // @generated:end

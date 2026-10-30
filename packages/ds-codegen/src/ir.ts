@@ -173,11 +173,12 @@ export const TABLE_COMPOSITION_TAGS: ReadonlySet<string> = new Set([
  * back to raw `<table>` markup — the exact regression CODEGEN-TABLE-CELL-
  * ATTRIBUTES-01 / SHOWCASE-CONSUMPTION-03 close. Two families:
  *
- *   - Global (every table tag): `id`, `style`. `id` carries the CSS `:target`
+ *   - Global (every table tag): `id`, `style`, `lang`, `dir`, `title`.
+ *     Language and direction preserve mixed-language cell content. `id` carries the CSS `:target`
  *     and aria anchoring a row needs (the TokensView token explorer highlights
  *     `tr:target`); `style` is the CSSOM escape hatch every HTML element takes.
- *   - Cell content-model: `th`/`td` carry `colSpan`/`rowSpan` (spanning); `th`
- *     additionally carries `scope` (header→cell association direction).
+ *   - Cell content-model: `th`/`td` carry spans and `headers` ID references;
+ *     `th` also carries `scope`, `abbr` and `ariaSort` metadata.
  *
  * The IR owns WHICH attributes a tag forwards (the durable HTML fact). Each
  * emitter lowers them to idiomatic prop names + types — React `colSpan?: number`
@@ -188,19 +189,36 @@ export const TABLE_COMPOSITION_TAGS: ReadonlySet<string> = new Set([
  * (native attrs pass through). Lit consults this fact for native template
  * helpers rendered inside the root's shadow table.
  *
- * Names are the JSX/camelCase spelling (`colSpan`, `rowSpan`); template emitters
- * map to the lowercase HTML attribute (`colspan`, `rowspan`) at the bind site.
+ * Names use DOM camelCase (`colSpan`, `rowSpan`, `ariaSort`). Emitters lower
+ * their HTML spelling, including `aria-sort`; React retains JSX span names.
  *
  * Source fact: HTML5 table content model + global HTML attributes.
  * Applies by: tag. Removable when: never (HTML spec constant).
  */
-export type NativeTableAttr = "id" | "style" | "colSpan" | "rowSpan" | "scope";
+export type NativeTableAttr = "id" | "style" | "lang" | "dir" | "title" | "colSpan" | "rowSpan" | "headers" | "scope" | "abbr" | "ariaSort";
+
+/**
+ * HTML table/global attribute types and WAI-ARIA sort tokens:
+ * https://html.spec.whatwg.org/multipage/tables.html#attr-tdth-headers
+ * https://www.w3.org/TR/wai-aria-1.2/#aria-sort
+ */
+export function nativeTableAttributeType(attr: NativeTableAttr): PropTypeIR {
+  if (attr === "colSpan" || attr === "rowSpan") return { kind: "number" };
+  if (attr === "scope") return { kind: "enum", values: ["col", "row", "colgroup", "rowgroup"] };
+  if (attr === "dir") return { kind: "enum", values: ["ltr", "rtl", "auto"] };
+  if (attr === "ariaSort") return { kind: "enum", values: ["none", "ascending", "descending", "other"] };
+  return { kind: "string" };
+}
+
+export function nativeTableAttributeHtmlName(attr: NativeTableAttr): string {
+  return attr === "ariaSort" ? "aria-sort" : attr.toLowerCase();
+}
 
 export function nativeTableAttrsFor(tag: string | undefined): NativeTableAttr[] {
   if (tag === undefined || !TABLE_COMPOSITION_TAGS.has(tag)) return [];
-  const attrs: NativeTableAttr[] = ["id", "style"];
-  if (tag === "th" || tag === "td") attrs.push("colSpan", "rowSpan");
-  if (tag === "th") attrs.push("scope");
+  const attrs: NativeTableAttr[] = ["id", "style", "lang", "dir", "title"];
+  if (tag === "th" || tag === "td") attrs.push("colSpan", "rowSpan", "headers");
+  if (tag === "th") attrs.push("scope", "abbr", "ariaSort");
   return attrs;
 }
 
