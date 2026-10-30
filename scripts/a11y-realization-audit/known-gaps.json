@@ -72,15 +72,6 @@
     {
       "component": "Table",
       "family": "react",
-      "class": "relationship",
-      "key": "aria-sort",
-      "from": "headerCell",
-      "to": "cell",
-      "spec": "FEAT-A11Y-TABLE-SEMANTICS-01"
-    },
-    {
-      "component": "Table",
-      "family": "react",
       "class": "keyboard",
       "key": "Tab",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
@@ -184,15 +175,6 @@
     {
       "component": "Table",
       "family": "vue",
-      "class": "relationship",
-      "key": "aria-sort",
-      "from": "headerCell",
-      "to": "cell",
-      "spec": "FEAT-A11Y-TABLE-SEMANTICS-01"
-    },
-    {
-      "component": "Table",
-      "family": "vue",
       "class": "keyboard",
       "key": "Tab",
       "spec": "FEAT-A11Y-COMPOSITE-KEYBOARD-01"
@@ -291,15 +273,6 @@
       "key": "aria-labelledby",
       "from": "container",
       "to": "caption",
-      "spec": "FEAT-A11Y-TABLE-SEMANTICS-01"
-    },
-    {
-      "component": "Table",
-      "family": "svelte",
-      "class": "relationship",
-      "key": "aria-sort",
-      "from": "headerCell",
-      "to": "cell",
       "spec": "FEAT-A11Y-TABLE-SEMANTICS-01"
     },
     {
@@ -413,15 +386,6 @@
       "key": "aria-labelledby",
       "from": "container",
       "to": "caption",
-      "spec": "FEAT-A11Y-TABLE-SEMANTICS-01"
-    },
-    {
-      "component": "Table",
-      "family": "lit",
-      "class": "relationship",
-      "key": "aria-sort",
-      "from": "headerCell",
-      "to": "cell",
       "spec": "FEAT-A11Y-TABLE-SEMANTICS-01"
     },
     {
