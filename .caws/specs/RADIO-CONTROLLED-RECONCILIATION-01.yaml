@@ -2,7 +2,6 @@ id: RADIO-CONTROLLED-RECONCILIATION-01
 title: 'Reconcile native radio state after controlled requests'
 mode: fix
 lifecycle_state: active
-worktree: radio-controlled-reconciliation
 created_at: '2026-10-29T22:59:28.312Z'
 updated_at: '2026-10-29T23:59:51.316Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
