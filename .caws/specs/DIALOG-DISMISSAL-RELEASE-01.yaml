@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: dialog-dismissal-release
 created_at: '2026-10-30T03:24:58.110Z'
-updated_at: '2026-10-30T15:57:30.406Z'
+updated_at: '2026-10-30T16:03:38.500Z'
 created_by_session: '01a18ad4-df4e-7622-8458-a0bc41c3f87d'
 blast_radius:
   modules:
@@ -58,6 +58,9 @@ scope:
     - packages/ds-swiftui/Sources/DsSwiftUI/Components/Sheet/
     - e2e/lit-instance-props.spec.ts
     - packages/ds-codegen/src/frameworks/unity/uss.ts
+    - packages/ds-vue/src/components
+    - packages/ds-angular/src/components
+    - packages/ds-codegen/src/frameworks/native-message-reach.test.ts
   out: []
 invariants:
   - 'Semantics are declared through generic contract facts without component-name emitter special cases'
