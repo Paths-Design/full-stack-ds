@@ -112,3 +112,10 @@ evidence:
     recorded_at: "2026-10-30T05:47:27.102Z"
     command: "pnpm run test:unity"
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "audit:unity-boundary: lowered 12323, pending 2664 all P4, refused 2509, unclassified 0; zero P3 pending and zero violations; unsupported ledger entries joined to refused or pending sidecar leaves"
+    recorded_at: "2026-10-30T05:47:57.426Z"
+    command: "pnpm run audit:unity-boundary"
+    exit_code: 0
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
