@@ -48,3 +48,11 @@ contracts:
   - name: 'passive-family'
     type: behavior
     path: 'packages/ds-codegen/src/frameworks/unity/walker.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "fsds.targets.json admits Text and Divider in Unity/Godot; pnpm run governed:rail generated Unity 6/6 and Godot 10/10 at 5f4dda88; node scripts/committed-tree-check.mjs generated passed; focused Unity/Godot factory and walker tests passed in pnpm test"
+    recorded_at: "2026-10-30T11:46:01.714Z"
+    command: "pnpm run governed:rail"
+    exit_code: 0
+    commit_sha: "01971c080d2b42100579b2ba684c1f75df09e470"
