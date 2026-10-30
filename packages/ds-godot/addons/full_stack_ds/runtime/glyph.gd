@@ -5,29 +5,30 @@ extends VBoxContainer
 # generated plan supplies prop identities and sizes; the generated catalog
 # supplies exact authored paths. No component identity is read here.
 var configuration: Dictionary = {}
-var _name_explicit := false
-var _size_explicit := false
-var _decorative_explicit := false
-var _label_explicit := false
+@export_storage var explicit_props: PackedStringArray = []
+var _applying_defaults := false
+func _mark_explicit(prop: String) -> void:
+	if _applying_defaults: return
+	if not explicit_props.has(prop): explicit_props.append(prop)
 @export var glyph_name: String = "":
 	set(next):
 		glyph_name = next
-		_name_explicit = true
+		_mark_explicit("name")
 		_refresh()
 @export var size_axis: String = "":
 	set(next):
 		size_axis = next
-		_size_explicit = true
+		_mark_explicit("size")
 		_refresh()
 @export var decorative: bool = true:
 	set(next):
 		decorative = next
-		_decorative_explicit = true
+		_mark_explicit("decorative")
 		_refresh()
 @export var aria_label: String = "":
 	set(next):
 		aria_label = next
-		_label_explicit = true
+		_mark_explicit("label")
 		_refresh()
 
 var rendered: TextureRect
@@ -49,10 +50,12 @@ func _ready() -> void:
 	var size_prop: String = configuration.get("sizeProp", "")
 	var decoration_prop: String = configuration.get("decorativeProp", "")
 	var label_prop: String = configuration.get("labelProp", "")
-	if not _name_explicit and defaults.has(name_prop): glyph_name = str(JSON.parse_string(defaults[name_prop]))
-	if not _size_explicit and defaults.has(size_prop): size_axis = str(JSON.parse_string(defaults[size_prop]))
-	if not _decorative_explicit and defaults.has(decoration_prop): decorative = bool(JSON.parse_string(defaults[decoration_prop]))
-	if not _label_explicit and defaults.has(label_prop): aria_label = str(JSON.parse_string(defaults[label_prop]))
+	_applying_defaults = true
+	if not explicit_props.has("name") and defaults.has(name_prop): glyph_name = str(JSON.parse_string(defaults[name_prop]))
+	if not explicit_props.has("size") and defaults.has(size_prop): size_axis = str(JSON.parse_string(defaults[size_prop]))
+	if not explicit_props.has("decorative") and defaults.has(decoration_prop): decorative = bool(JSON.parse_string(defaults[decoration_prop]))
+	if not explicit_props.has("label") and defaults.has(label_prop): aria_label = str(JSON.parse_string(defaults[label_prop]))
+	_applying_defaults = false
 	_refresh()
 
 func _notification(what: int) -> void:

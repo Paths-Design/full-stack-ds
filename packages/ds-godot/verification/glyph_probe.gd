@@ -70,6 +70,7 @@ func _ready() -> void:
 	defaulted.configuration.defaults["ariaLabel"] = '"Default check"'
 	host.add_child(defaulted)
 	check(defaulted.glyph_name == "check" and not defaulted.decorative and defaulted.aria_label == "Default check", "Authored glyph defaults did not initialize native state")
+	check(defaulted.explicit_props.is_empty(), "Authored defaults were mistaken for consumer overrides")
 	check(defaulted.rendered.texture != null and defaulted.rendered.accessibility_name == "Default check", "Authored glyph defaults did not reach rendering and name")
 	defaulted.queue_free()
 	icon.decorative = false

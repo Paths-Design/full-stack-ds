@@ -94,6 +94,9 @@ describe("Godot glyph plan", () => {
     const unrenderedDimension = iconIr();
     unrenderedDimension.tokenFacts.find(fact => fact.name === "icon.size.md")!.rawValue = "calc(1rem + 1px)";
     expect(() => godotGlyphPlan(unrenderedDimension)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: unsupported glyph dimension --md");
+    const rectangularDimension = iconIr();
+    rectangularDimension.nativeStyleRules!.rules.find(rule => rule.sourceKey === "--md")!.declarations.find(decl => decl.property === "height")!.token = "icon.size.lg";
+    expect(() => godotGlyphPlan(rectangularDimension)).toThrow("GODOT_UNSUPPORTED_GLYPH: UnrelatedGlyph: non-square glyph dimension --md");
   });
 
   it("selects the shared glyph runtime and catalog from an IR fact, without an identity branch", () => {

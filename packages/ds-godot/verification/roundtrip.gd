@@ -41,6 +41,15 @@ func _initialize() -> void:
 		assert(icon_scene.pack(icon) == OK)
 		assert(ResourceSaver.save(icon_scene, "res://glyph-roundtrip.tscn") == OK)
 		icon.free()
+		var alternate = load("res://verification/glyph_default_fixture.gd").new()
+		alternate.name = "AlternateGlyph"
+		alternate.glyph_name = ""
+		alternate.decorative = true
+		alternate.aria_label = ""
+		var alternate_scene := PackedScene.new()
+		assert(alternate_scene.pack(alternate) == OK)
+		assert(ResourceSaver.save(alternate_scene, "res://glyph-default-roundtrip.tscn") == OK)
+		alternate.free()
 	else:
 		var node = load(path).instantiate()
 		assert(node.label == "Saved in editor")
@@ -66,5 +75,13 @@ func _initialize() -> void:
 		assert(not icon.decorative and icon.rendered.accessibility_name == "Saved check")
 		get_root().remove_child(icon)
 		icon.free()
+		var alternate = load("res://glyph-default-roundtrip.tscn").instantiate()
+		get_root().add_child(alternate)
+		await process_frame
+		assert(alternate.glyph_name == "" and alternate.decorative and alternate.aria_label == "")
+		assert(alternate.explicit_props.has("name") and alternate.explicit_props.has("decorative") and alternate.explicit_props.has("label"))
+		assert(alternate.rendered.texture == null)
+		get_root().remove_child(alternate)
+		alternate.free()
 	print("FSDS_ROUNDTRIP_OK")
 	quit()

@@ -85,6 +85,7 @@ export function godotGlyphPlan(ir: ComponentIR): GodotGlyphPlan | undefined {
     const declarations = Object.fromEntries(applicable.filter(decl => !decl.property.includes(".")).map(decl => [decl.property, decl.token ? localTokens.get(decl.token) ?? tokenValues.get(decl.token) ?? decl.value : decl.value]));
     if (Object.keys(declarations).sort().join() !== "height,width") unsupported(ir.name, `unsupported style declaration ${rule.sourceKey}`);
     if (!/^\d+(?:\.\d+)?px$/.test(declarations.width) || !/^\d+(?:\.\d+)?px$/.test(declarations.height)) unsupported(ir.name, `unsupported glyph dimension ${rule.sourceKey}`);
+    if (Number.parseFloat(declarations.width) !== Number.parseFloat(declarations.height)) unsupported(ir.name, `non-square glyph dimension ${rule.sourceKey}`);
     sizeStyles[variant.value] = { width: declarations.width, height: declarations.height };
   }
   if (Object.keys(sizeStyles).sort().join() !== sizeValues.slice().sort().join()) unsupported(ir.name, "missing size style carrier");
