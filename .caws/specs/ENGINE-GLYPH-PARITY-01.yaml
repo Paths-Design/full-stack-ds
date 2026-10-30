@@ -74,3 +74,8 @@ evidence:
     evidence_ref: "85abce44c: pnpm run governed:rail pass; node scripts/committed-tree-check.mjs generated pass on merged main; native-glyph-catalog and Unity Icon generated package committed"
     recorded_at: "2026-10-30T20:02:50.935Z"
     commit_sha: "85abce44c7ac899109245c7965f2f21621e4c421"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "source 862bdcfc4 clean: pnpm run test:unity 48/48 (tmp/unity-pilot/provenance.json); pnpm run test:unity-player 25/25, run 11ec1f3c-b235-4c05-9dd1-8992fe7f98c9; authored variants, pixels, color, unknown clearing, UXML reload"
+    recorded_at: "2026-10-30T20:03:00.777Z"
+    commit_sha: "85abce44c7ac899109245c7965f2f21621e4c421"
