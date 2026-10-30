@@ -13,9 +13,15 @@ interface Props {
   dataTestid?: string;
   id?: string;
   style?: string;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
   colSpan?: number;
   rowSpan?: number;
+  headers?: string;
   scope?: "col" | "row" | "colgroup" | "rowgroup";
+  abbr?: string;
+  ariaSort?: "none" | "ascending" | "descending" | "other";
 }
 
 const props = defineProps<Props>();
@@ -33,7 +39,7 @@ const classNames = computed(() =>
 </script>
 
 <template>
-  <th :class="classNames" :data-testid="props.dataTestid" :id="props.id" :style="props.style" :colspan="props.colSpan" :rowspan="props.rowSpan" :scope="props.scope">
+  <th :class="classNames" :data-testid="props.dataTestid" :id="props.id" :style="props.style" :lang="props.lang" :dir="props.dir" :title="props.title" :colspan="props.colSpan" :rowspan="props.rowSpan" :headers="props.headers" :scope="props.scope" :abbr="props.abbr" :aria-sort="props.ariaSort">
     <slot />
   </th>
 </template>

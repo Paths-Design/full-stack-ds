@@ -6,12 +6,14 @@
  * (e.g. `ModalHeaderElement`, `ModalBodyElement`) are co-emitted into
  * the parent's root `.ts` file; the barrel scans that file for any
  * additional `export class XxxElement` declarations and re-exports
- * them as named exports.
+ * them as named exports. Native-part template helpers are exported beside
+ * the root class because those parts cannot use autonomous custom elements.
  */
 import fs from "node:fs";
 import path from "node:path";
 
 const COMPOUND_EXPORT_RE = /^export class (\w+Element)/gm;
+const NATIVE_TEMPLATE_EXPORT_RE = /^export function (\w+)\(content: unknown, attrs: \w+Attributes = \{\}\): TemplateResult/gm;
 
 export function generateLitBarrel(
   componentNames: string[],
@@ -29,6 +31,7 @@ export function generateLitBarrel(
         for (const m of contents.matchAll(COMPOUND_EXPORT_RE)) {
           found.add(m[1]);
         }
+        for (const m of contents.matchAll(NATIVE_TEMPLATE_EXPORT_RE)) found.add(m[1]);
         for (const cls of [...found].sort()) {
           if (cls !== `${n}Element`) exports.push(cls);
         }

@@ -40,6 +40,8 @@ import {
   TABLE_COMPOSITION_TAGS,
   NATIVE_FOCUSABLE_TAGS,
   nativeTableAttrsFor,
+  nativeTableAttributeType,
+  nativeTableAttributeHtmlName,
   canonicalTsType,
   composeBindingProjectionExpression,
   composeChannelUpdateExpression,
@@ -57,28 +59,12 @@ import {
 
 /** Vue prop TS type for a forwarded native table attribute (template `style` is a string). */
 function vueTableAttrType(attr: NativeTableAttr): string {
-  switch (attr) {
-    case "id":
-    case "style":
-      return "string";
-    case "colSpan":
-    case "rowSpan":
-      return "number";
-    case "scope":
-      return '"col" | "row" | "colgroup" | "rowgroup"';
-  }
+  return canonicalTsType(nativeTableAttributeType(attr));
 }
 
 /** Lowercase HTML attribute spelling used at the Vue template bind site. */
 function vueTableAttrHtmlName(attr: NativeTableAttr): string {
-  switch (attr) {
-    case "colSpan":
-      return "colspan";
-    case "rowSpan":
-      return "rowspan";
-    default:
-      return attr; // id, style, scope
-  }
+  return nativeTableAttributeHtmlName(attr);
 }
 import {
   emitNonReactTypeAliases,

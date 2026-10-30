@@ -40,6 +40,8 @@ import {
   hasChildrenPlaceholder,
   TABLE_COMPOSITION_TAGS,
   nativeTableAttrsFor,
+  nativeTableAttributeType,
+  nativeTableAttributeHtmlName,
   canonicalTsType,
   composeBindingProjectionExpression,
   composeChannelUpdateExpression,
@@ -58,16 +60,7 @@ import {
 
 /** Svelte prop TS type for a forwarded native table attribute (template `style` is a string). */
 function svelteTableAttrType(attr: NativeTableAttr): string {
-  switch (attr) {
-    case "id":
-    case "style":
-      return "string";
-    case "colSpan":
-    case "rowSpan":
-      return "number";
-    case "scope":
-      return '"col" | "row" | "colgroup" | "rowgroup"';
-  }
+  return canonicalTsType(nativeTableAttributeType(attr));
 }
 
 /**
@@ -76,14 +69,8 @@ function svelteTableAttrType(attr: NativeTableAttr): string {
  * `colSpan`/`rowSpan` bind the lowercase HTML attribute to the camelCase var.
  */
 function svelteTableAttrBinding(attr: NativeTableAttr): string {
-  switch (attr) {
-    case "colSpan":
-      return "colspan={colSpan}";
-    case "rowSpan":
-      return "rowspan={rowSpan}";
-    default:
-      return `{${attr}}`; // id, style, scope
-  }
+  const htmlName = nativeTableAttributeHtmlName(attr);
+  return htmlName === attr ? `{${attr}}` : `${htmlName}={${attr}}`;
 }
 import { translateNonReactType } from "../../non-react-types.js";
 import { SVELTE_SKIP_PROPS, sveltePublicTypeAliases, emitSveltePublicTypeModule } from "./public-types.js";

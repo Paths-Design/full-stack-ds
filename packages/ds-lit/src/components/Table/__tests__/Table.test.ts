@@ -84,77 +84,78 @@ async function renderElement(tagName: string, props: Record<string, unknown> = {
 // @generated:end
 
 // @custom:start tests
-//
-// CODEGEN-TABLE-COMPOUND-PARTS-REALIZATION-01 — Lit gating outcome.
-//
-// Doctrine: Lit Table does not expose table-section / table-row /
-// table-cell custom elements. The root <fsds-table> shadow template
-// owns the native <table> structure.
-//
-// Gating result (Commit 2): the slot model FAILS in the HTML parser.
-// The parser hoists `<slot>` out of `<table>` because `<slot>` is
-// not a valid table child element. Probe in jsdom shows the shadow
-// tree as:
-//
-//   <div class="table">
-//     <slot>                      ← hoisted OUT of <table>
-//     <table class="table__container">
-//       (empty — slot is gone)
-//     </table>
-//   </div>
-//
-// Consumer composition therefore CANNOT enter the shadow <table>
-// via slots. This is the browser HTML parser behavior, not a jsdom
-// quirk — jsdom matches the WHATWG HTML spec table content model.
-//
-// Lit Table is HELD at source-level correctness only:
-//   ✓ No fsds-table-row / fsds-table-cell / etc. custom elements
-//     are registered (avoiding the OTHER semantic falsehood —
-//     autonomous custom elements as table children).
-//   ✓ The shadow template DOES contain a native <table class=
-//     "table__container"> with a native <div class="table"> wrapper.
-//   ✗ Consumer composition via slots does NOT compose into the
-//     shadow <table>. Lit Table cannot be used to render data
-//     tables today.
-//
-// Follow-up: CODEGEN-LIT-TABLE-CAPABILITY-01 — explore alternative
-// composition models (no shadow root + light-DOM rendering, or
-// explicit programmatic table construction via API). Until that
-// slice lands, Lit Table support is documented as held.
-describe.skip("Table — Lit gating (HELD: CODEGEN-LIT-TABLE-CAPABILITY-01)", () => {
-  // These tests are skipped intentionally. The Lit slot model does not
-  // compose consumer-provided table sections into the shadow <table>
-  // because the HTML parser hoists <slot> out of <table>. Probe
-  // evidence is documented in the block comment above and in the
-  // Commit 2 commit body. Filing CODEGEN-LIT-TABLE-CAPABILITY-01 is
-  // the path to un-holding Lit Table.
+import { html } from "lit";
+import { TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell } from "../Table";
 
-  it("(held) shadow root contains <div class=\"table\"> > <table class=\"table__container\"> > <slot>", async () => {
-    const { element } = await renderElement("fsds-table");
-    const wrapper = element.shadowRoot?.querySelector("div.table");
-    expect(wrapper).not.toBeNull();
-    const table = wrapper?.querySelector("table.table__container");
-    expect(table).not.toBeNull();
-    const slot = table?.querySelector("slot");
-    expect(slot).not.toBeNull();
+describe("Table — native template composition", () => {
+  it("keeps sections rows cells and forwarded attributes inside its native table", async () => {
+    const host = new TableElement();
+    host.ariaLabel = "Orders";
+    host.renderContent = () => [
+      tableCaption("Orders"),
+      tableHead(tableRow(tableHeaderCell("Team", { id: "header", scope: "col", colSpan: 2, abbr: "T.", ariaSort: "ascending", lang: "fr", dir: "ltr" }))),
+      tableBody(tableRow([tableHeaderCell("Team A", { scope: "row", rowSpan: 1 }), tableCell("١٢", { id: "seats", headers: "header", lang: "ar", dir: "rtl", title: "المقاعد", style: "color: red" })], { class: "consumer-row", "data-testid": "team-a" })),
+      tableFooter(tableRow(tableCell("Total", { colSpan: 2 }))),
+    ];
+    document.body.append(host);
+    try {
+      await host.updateComplete;
+      const table = host.shadowRoot!.querySelector("table")!;
+      expect(table.parentElement!.className).toBe("table");
+      expect(table.getAttribute("aria-label")).toBe("Orders");
+      expect(table.rows.length).toBe(3);
+      expect(Array.from(table.rows, row => row.cells.length)).toEqual([1, 2, 1]);
+      expect(table.caption!.textContent).toBe("Orders");
+      expect(table.tHead!.rows[0].cells[0].scope).toBe("col");
+      expect(table.tHead!.rows[0].cells[0].getAttribute("aria-sort")).toBe("ascending");
+      expect(table.tHead!.rows[0].cells[0].abbr).toBe("T.");
+      expect(table.tHead!.rows[0].cells[0].lang).toBe("fr");
+      expect(table.tBodies[0].rows[0].cells[0].scope).toBe("row");
+      expect(table.tFoot!.rows[0].cells[0].colSpan).toBe(2);
+      expect(table.querySelector("#seats")!.getAttribute("style")).toBe("color: red");
+      const seats = table.querySelector<HTMLTableCellElement>("#seats")!;
+      expect(seats.headers).toBe("header");
+      expect(seats.lang).toBe("ar");
+      expect(seats.dir).toBe("rtl");
+      expect(seats.title).toBe("المقاعد");
+      expect(table.querySelector('[data-testid="team-a"]')!.className).toBe("table__row consumer-row");
+      expect(table.querySelectorAll("slot")).toHaveLength(0);
+      expect(host.childElementCount).toBe(0);
+    } finally { host.remove(); }
   });
 
-  it("(held) light-DOM <thead>/<tbody>/<tr> children are assigned to the default slot", () => {
-    const host = document.createElement("fsds-table");
-    document.body.appendChild(host);
+  it("updates native content and delivers a cell button event once", async () => {
+    const host = new TableElement();
+    let clicks = 0;
+    host.renderContent = () => tableBody(tableRow(tableCell(html`<button @click=${() => { clicks++; }}>Edit</button>`)));
+    document.body.append(host);
     try {
-      const slot = host.shadowRoot?.querySelector("slot");
-      expect(slot).not.toBeNull();
-    } finally {
-      host.remove();
-    }
+      await host.updateComplete;
+      host.shadowRoot!.querySelector("button")!.click();
+      expect(clicks).toBe(1);
+      host.renderContent = () => tableBody(tableRow(tableCell("Replacement")));
+      await host.updateComplete;
+      const table = host.shadowRoot!.querySelector("table")!;
+      expect(table.rows.length).toBe(1);
+      expect(table.rows[0].cells[0].textContent).toBe("Replacement");
+      expect(table.querySelector("button")).toBeNull();
+    } finally { host.remove(); }
+  });
+
+  it("escapes text and attribute strings in native helpers", async () => {
+    const host = new TableElement();
+    const text = '<img src="x" onerror="alert(1)">';
+    const id = 'cell" onfocus="alert(1)';
+    host.renderContent = () => tableBody(tableRow(tableCell(text, { id })));
+    document.body.append(host);
+    try {
+      await host.updateComplete;
+      const cell = host.shadowRoot!.querySelector("td")!;
+      expect(cell.textContent).toBe(text);
+      expect(cell.id).toBe(id);
+      expect(cell.getAttribute("onfocus")).toBeNull();
+      expect(cell.querySelector("img")).toBeNull();
+    } finally { host.remove(); }
   });
 });
-
-// Layer 1 source-level correctness for Lit Table is enforced by
-// `packages/ds-codegen/src/frameworks/table-native-realization.test.ts`.
-// That file asserts the root <fsds-table> shadow template contains a
-// native <table class="table__container"> and that no Table-part
-// custom elements are registered. Those claims ARE earned by this
-// slice.
 // @custom:end

@@ -89,6 +89,7 @@ import {
   iconGlyphSizeHintsLiteral,
 } from "../icon-glyph.js";
 import { templateExpressionCode } from "./template-expressions.js";
+import { generateNativeTemplateHelpers, hasNativeTemplateContent, requiresNativeTemplateContent } from "./native-template-content.js";
 
 /**
  * Build the `static override styles = css\`…\`;` line(s) for a Lit
@@ -1592,9 +1593,8 @@ export function generateLitComponentSource(ir: ComponentIR): string {
   // inside <table>/<thead>/<tbody>/<tfoot>. Shipping
   // `customElements.define('fsds-table-row', ...)` would encode an
   // invalid table semantic. Instead, the root <fsds-table> shadow
-  // template owns the full native table structure via anatomy.dom +
-  // slots; consumers compose by placing native <tr>/<td>/<th>
-  // elements into named slots.
+  // template owns the native table via anatomy.dom. Consumers supply native
+  // template content through renderContent, with class-bearing part helpers.
   //
   // Doctrine: this filter is intentionally Lit-only. React/Vue/Svelte
   // emit native subcomponents (no custom-element constraint); Angular
@@ -1607,12 +1607,14 @@ export function generateLitComponentSource(ir: ComponentIR): string {
     )
     .map((part) => generateCompoundPartClass(ir, part))
     .join("\n\n");
+  const nativeTemplateHelpers = generateNativeTemplateHelpers(ir);
   const highlightCandidate = ir.dom ? collectContentTransforms(ir.dom).find(isHighlightTransform) : undefined;
   const highlight = highlightCandidate?.linePart && highlightCandidate.gutterPart ? highlightCandidate : undefined;
   const componentBody =
     (highlight ? litHighlightParts(ir, highlight) + "\n\n" : "") +
     (ir.dom ? generateDomTreeClassBody(ir) : generateClassBody(ir)) +
-    (compoundClasses ? "\n\n" + compoundClasses : "");
+    (compoundClasses ? "\n\n" + compoundClasses : "") +
+    (nativeTemplateHelpers ? "\n\n" + nativeTemplateHelpers : "");
 
   // Imports depend on what the rendered class body actually references.
   // We conditionally emit directive imports only when at least one
@@ -1628,7 +1630,7 @@ export function generateLitComponentSource(ir: ComponentIR): string {
   const usesNothing = /\bnothing\b/.test(componentBody);
   const usesRef = /\bref\(/.test(componentBody);
   const baseImports = ir.dom
-    ? generateDomTreeImports(ir, usesNothing, usesRef)
+    ? generateDomTreeImports(ir, usesNothing, usesRef, Boolean(nativeTemplateHelpers))
     : generateImports(ir);
   const directiveImports: string[] = [];
   if (usesIfDefined) {
@@ -1663,7 +1665,7 @@ export function generateLitComponentSource(ir: ComponentIR): string {
 // DOM-tree-driven component (B.2c)
 // ---------------------------------------------------------------------------
 
-function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: boolean): string {
+function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: boolean, usesNativeTemplates = false): string {
   // Import sets derive from emitted-body facts, never per-component lore:
   // `nothing` is referenced only by conditional-hole emissions
   // (`${cond ? html`…` : nothing}`), so the caller — which renders the
@@ -1744,6 +1746,8 @@ function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: 
     lines.push(
       `import { parseMarkdown, type MarkdownBlock, type MarkdownMark } from '../../primitives/markdown/markdown.js';`,
     );
+  }
+  if (usesNativeTemplates || (ir.dom && collectContentTransforms(ir.dom).some(isMarkdownTransform))) {
     lines.push(`import { type TemplateResult } from 'lit';`);
   }
   // Selector-anchored root portal (coachmark tour): the whole panel is
@@ -1892,6 +1896,10 @@ function generateDomTreeClassBody(ir: ComponentIR): string {
   }
 
   // Property declarations for every styled prop
+  if (hasNativeTemplateContent(ir.dom)) {
+    lines.push(`  /** Native template children for insertion contexts that cannot contain slots. */`);
+    lines.push(`  @property({ attribute: false }) renderContent?: (slotName?: string) => unknown;`, ``);
+  }
   const declared = new Set<string>();
   const rename = litAliasRename(ir);
   for (const p of ir.styledProps) {
@@ -2491,6 +2499,8 @@ function generateLitDomTreePropertyDecl(
 }
 
 interface LitRenderContext {
+  /** Immediate native parent determines HTML insertion-mode restrictions. */
+  nativeParentTag?: string;
   /** Ancestor pre elements preserve template formatting as literal text. */
   preformatted?: boolean;
   classRecipe: string;
@@ -2655,6 +2665,9 @@ function renderLitDomNode(
   const pad = " ".repeat(indent);
 
   if (node.tag === "slot" || node.tag === "children") {
+    if (requiresNativeTemplateContent(ctx.nativeParentTag)) {
+      return `${pad}\${this.renderContent?.(${node.slotName ? JSON.stringify(node.slotName) : ""})}`;
+    }
     if (node.slotName) {
       // A slot whose presence gates a generated idref re-renders the host
       // on assignment changes so the runtime querySelector guard
@@ -2973,7 +2986,7 @@ function renderLitDomNode(
     attrs.push(`@click=\${(e: Event) => e.stopPropagation()}`);
   }
 
-  const childCtx: LitRenderContext = { ...ctx, isRoot: false, preformatted: compact };
+  const childCtx: LitRenderContext = { ...ctx, isRoot: false, preformatted: compact, nativeParentTag: node.tag };
   const renderedChildren = node.children.map((c) =>
     renderLitDomNode(c, childCtx, childIndent),
   );

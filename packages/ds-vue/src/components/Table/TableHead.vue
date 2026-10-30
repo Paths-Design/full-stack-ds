@@ -13,6 +13,9 @@ interface Props {
   dataTestid?: string;
   id?: string;
   style?: string;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
 }
 
 const props = defineProps<Props>();
@@ -30,7 +33,7 @@ const classNames = computed(() =>
 </script>
 
 <template>
-  <thead :class="classNames" :data-testid="props.dataTestid" :id="props.id" :style="props.style">
+  <thead :class="classNames" :data-testid="props.dataTestid" :id="props.id" :style="props.style" :lang="props.lang" :dir="props.dir" :title="props.title">
     <slot />
   </thead>
 </template>

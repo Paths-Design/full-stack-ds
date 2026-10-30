@@ -1,7 +1,7 @@
 {
   "$schema": "../../component.contract.schema.json",
   "name": "Table",
-  "description": "Data table with sortable columns, row selection, and pagination support.",
+  "description": "Data table with consumer-composed sections, rows, headers, and cells.",
   "layer": "compound",
   "category": "structure",
   "anatomy": {
@@ -198,7 +198,7 @@
       "from": "headerCell",
       "to": "cell",
       "attribute": "aria-sort",
-      "description": "Sorted column's <th> carries aria-sort; associated <td> cells are in the same column. Cell-to-header association is derived from native <thead>/<tbody> structure, not authored explicitly."
+      "description": "Authors supply aria-sort on the sorted column header. Cells use native scope and optional headers/id associations for complex headers."
     }
   ],
   "a11y": {

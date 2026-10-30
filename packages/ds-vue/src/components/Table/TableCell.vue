@@ -13,8 +13,12 @@ interface Props {
   dataTestid?: string;
   id?: string;
   style?: string;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
   colSpan?: number;
   rowSpan?: number;
+  headers?: string;
 }
 
 const props = defineProps<Props>();
@@ -32,7 +36,7 @@ const classNames = computed(() =>
 </script>
 
 <template>
-  <td :class="classNames" :data-testid="props.dataTestid" :id="props.id" :style="props.style" :colspan="props.colSpan" :rowspan="props.rowSpan">
+  <td :class="classNames" :data-testid="props.dataTestid" :id="props.id" :style="props.style" :lang="props.lang" :dir="props.dir" :title="props.title" :colspan="props.colSpan" :rowspan="props.rowSpan" :headers="props.headers">
     <slot />
   </td>
 </template>

@@ -14,9 +14,12 @@ interface Props {
   children?: import('svelte').Snippet;
   id?: string;
   style?: string;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
 }
 
-let { class: className, "data-testid": dataTestid, children, id, style }: Props = $props();
+let { class: className, "data-testid": dataTestid, children, id, style, lang, dir, title }: Props = $props();
 // @generated:end
 
 // @generated:start classes
@@ -28,6 +31,6 @@ const classes = $derived(["table__head", className].filter(Boolean).join(" "));
 // @custom:end
 </script>
 
-<thead class={classes} data-testid={dataTestid} {id} {style}>
+<thead class={classes} data-testid={dataTestid} {id} {style} {lang} {dir} {title}>
   {@render children?.()}
 </thead>

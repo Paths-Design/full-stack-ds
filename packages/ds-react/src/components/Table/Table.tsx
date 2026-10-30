@@ -32,6 +32,9 @@ export interface TableCaptionProps {
   "data-testid"?: string;
   id?: string;
   style?: CSSProperties;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
 }
 
 export function TableCaption({
@@ -40,10 +43,13 @@ export function TableCaption({
   "data-testid": testId,
   id,
   style,
+  lang,
+  dir,
+  title,
 }: TableCaptionProps) {
   const classNames = ["table__caption", className].filter(Boolean).join(" ");
   return (
-    <caption className={classNames} data-testid={testId} id={id} style={style}>
+    <caption className={classNames} data-testid={testId} id={id} style={style} lang={lang} dir={dir} title={title}>
       {children}
     </caption>
   );
@@ -55,6 +61,9 @@ export interface TableHeadProps {
   "data-testid"?: string;
   id?: string;
   style?: CSSProperties;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
 }
 
 export function TableHead({
@@ -63,10 +72,13 @@ export function TableHead({
   "data-testid": testId,
   id,
   style,
+  lang,
+  dir,
+  title,
 }: TableHeadProps) {
   const classNames = ["table__head", className].filter(Boolean).join(" ");
   return (
-    <thead className={classNames} data-testid={testId} id={id} style={style}>
+    <thead className={classNames} data-testid={testId} id={id} style={style} lang={lang} dir={dir} title={title}>
       {children}
     </thead>
   );
@@ -78,6 +90,9 @@ export interface TableBodyProps {
   "data-testid"?: string;
   id?: string;
   style?: CSSProperties;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
 }
 
 export function TableBody({
@@ -86,10 +101,13 @@ export function TableBody({
   "data-testid": testId,
   id,
   style,
+  lang,
+  dir,
+  title,
 }: TableBodyProps) {
   const classNames = ["table__body", className].filter(Boolean).join(" ");
   return (
-    <tbody className={classNames} data-testid={testId} id={id} style={style}>
+    <tbody className={classNames} data-testid={testId} id={id} style={style} lang={lang} dir={dir} title={title}>
       {children}
     </tbody>
   );
@@ -101,6 +119,9 @@ export interface TableFooterProps {
   "data-testid"?: string;
   id?: string;
   style?: CSSProperties;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
 }
 
 export function TableFooter({
@@ -109,10 +130,13 @@ export function TableFooter({
   "data-testid": testId,
   id,
   style,
+  lang,
+  dir,
+  title,
 }: TableFooterProps) {
   const classNames = ["table__footer", className].filter(Boolean).join(" ");
   return (
-    <tfoot className={classNames} data-testid={testId} id={id} style={style}>
+    <tfoot className={classNames} data-testid={testId} id={id} style={style} lang={lang} dir={dir} title={title}>
       {children}
     </tfoot>
   );
@@ -124,6 +148,9 @@ export interface TableRowProps {
   "data-testid"?: string;
   id?: string;
   style?: CSSProperties;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
 }
 
 export function TableRow({
@@ -132,10 +159,13 @@ export function TableRow({
   "data-testid": testId,
   id,
   style,
+  lang,
+  dir,
+  title,
 }: TableRowProps) {
   const classNames = ["table__row", className].filter(Boolean).join(" ");
   return (
-    <tr className={classNames} data-testid={testId} id={id} style={style}>
+    <tr className={classNames} data-testid={testId} id={id} style={style} lang={lang} dir={dir} title={title}>
       {children}
     </tr>
   );
@@ -147,9 +177,15 @@ export interface TableHeaderCellProps {
   "data-testid"?: string;
   id?: string;
   style?: CSSProperties;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
   colSpan?: number;
   rowSpan?: number;
+  headers?: string;
   scope?: "col" | "row" | "colgroup" | "rowgroup";
+  abbr?: string;
+  ariaSort?: "none" | "ascending" | "descending" | "other";
 }
 
 export function TableHeaderCell({
@@ -158,13 +194,19 @@ export function TableHeaderCell({
   "data-testid": testId,
   id,
   style,
+  lang,
+  dir,
+  title,
   colSpan,
   rowSpan,
+  headers,
   scope,
+  abbr,
+  ariaSort,
 }: TableHeaderCellProps) {
   const classNames = ["table__headerCell", className].filter(Boolean).join(" ");
   return (
-    <th className={classNames} data-testid={testId} id={id} style={style} colSpan={colSpan} rowSpan={rowSpan} scope={scope}>
+    <th className={classNames} data-testid={testId} id={id} style={style} lang={lang} dir={dir} title={title} colSpan={colSpan} rowSpan={rowSpan} headers={headers} scope={scope} abbr={abbr} aria-sort={ariaSort}>
       {children}
     </th>
   );
@@ -176,8 +218,12 @@ export interface TableCellProps {
   "data-testid"?: string;
   id?: string;
   style?: CSSProperties;
+  lang?: string;
+  dir?: "ltr" | "rtl" | "auto";
+  title?: string;
   colSpan?: number;
   rowSpan?: number;
+  headers?: string;
 }
 
 export function TableCell({
@@ -186,12 +232,16 @@ export function TableCell({
   "data-testid": testId,
   id,
   style,
+  lang,
+  dir,
+  title,
   colSpan,
   rowSpan,
+  headers,
 }: TableCellProps) {
   const classNames = ["table__cell", className].filter(Boolean).join(" ");
   return (
-    <td className={classNames} data-testid={testId} id={id} style={style} colSpan={colSpan} rowSpan={rowSpan}>
+    <td className={classNames} data-testid={testId} id={id} style={style} lang={lang} dir={dir} title={title} colSpan={colSpan} rowSpan={rowSpan} headers={headers}>
       {children}
     </td>
   );

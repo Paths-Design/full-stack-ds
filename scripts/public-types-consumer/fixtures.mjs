@@ -1,5 +1,68 @@
 export const webCases = [
   {
+    name: "native-table-accessibility-attributes",
+    source: `
+import type { TableHeaderCellProps as R } from "@full-stack-ds/react";
+import type { TableHeaderCellProps as V } from "@full-stack-ds/vue";
+import type { TableHeaderCellProps as S } from "@full-stack-ds/svelte";
+import type { TableHeaderCellAttributes as L } from "@full-stack-ds/lit";
+const attributes = { headers: "group", abbr: "Pl.", ariaSort: "ascending", lang: "fr", dir: "ltr", title: "Nombre de places" } as const;
+const r: R = attributes; const v: V = attributes; const s: S = attributes; const l: L = attributes;
+`
+  },
+  {
+    name: "invalid-table-sort", error: 2322, count: 4, fragment: "random",
+    source: `
+import type { TableHeaderCellProps as R } from "@full-stack-ds/react";
+import type { TableHeaderCellProps as V } from "@full-stack-ds/vue";
+import type { TableHeaderCellProps as S } from "@full-stack-ds/svelte";
+import type { TableHeaderCellAttributes as L } from "@full-stack-ds/lit";
+const r: R = { ariaSort: "random" }; const v: V = { ariaSort: "random" }; const s: S = { ariaSort: "random" }; const l: L = { ariaSort: "random" };
+`
+  },
+  {
+    name: "invalid-table-direction", error: 2322, count: 4, fragment: "backwards",
+    source: `
+import type { TableHeaderCellProps as R } from "@full-stack-ds/react";
+import type { TableHeaderCellProps as V } from "@full-stack-ds/vue";
+import type { TableHeaderCellProps as S } from "@full-stack-ds/svelte";
+import type { TableHeaderCellAttributes as L } from "@full-stack-ds/lit";
+const r: R = { dir: "backwards" }; const v: V = { dir: "backwards" }; const s: S = { dir: "backwards" }; const l: L = { dir: "backwards" };
+`
+  },
+  {
+    name: "invalid-table-headers", error: 2322, count: 4, fragment: "number",
+    source: `
+import type { TableCellProps as R } from "@full-stack-ds/react";
+import type { TableCellProps as V } from "@full-stack-ds/vue";
+import type { TableCellProps as S } from "@full-stack-ds/svelte";
+import type { TableCellAttributes as L } from "@full-stack-ds/lit";
+const r: R = { headers: 42 }; const v: V = { headers: 42 }; const s: S = { headers: 42 }; const l: L = { headers: 42 };
+`
+  },
+  {
+    name: "lit-native-table",
+    source: `
+import { TableElement, tableCaption, tableHead, tableBody, tableFooter, tableRow, tableHeaderCell, tableCell, type TableCellAttributes, type TableHeaderCellAttributes } from "@full-stack-ds/lit";
+const cell: TableCellAttributes = { id: "total", style: "color: red", colSpan: 2, rowSpan: 1, class: "consumer-cell", "data-testid": "total" };
+const header: TableHeaderCellAttributes = { scope: "col", colSpan: 2 };
+const table = new TableElement();
+table.renderContent = slot => [tableCaption(slot ?? "Orders"), tableHead(tableRow(tableHeaderCell("Name", header))), tableBody(tableRow(tableCell("Ada", cell))), tableFooter(tableRow(tableCell("Total")))];
+`
+  },
+  {
+    name: "lit-invalid-table-span", error: 2322, count: 1, fragment: "string",
+    source: `import { tableCell } from "@full-stack-ds/lit"; tableCell("Total", { colSpan: "wide" });`
+  },
+  {
+    name: "lit-invalid-table-scope", error: 2322, count: 1, fragment: "diagonal",
+    source: `import { tableHeaderCell } from "@full-stack-ds/lit"; tableHeaderCell("Name", { scope: "diagonal" });`
+  },
+  {
+    name: "lit-invalid-table-content", error: 2322, count: 1, fragment: "number",
+    source: `import { TableElement } from "@full-stack-ds/lit"; new TableElement().renderContent = 42;`
+  },
+  {
     name: "collided-values-and-types",
     source: `
 import { SelectOption as VueOptionComponent, CodeBlockToken as VueTokenComponent, type SelectOption as VOption, type CodeBlockToken as VToken } from "@full-stack-ds/vue";
