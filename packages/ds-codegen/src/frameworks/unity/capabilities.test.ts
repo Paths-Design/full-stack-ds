@@ -105,8 +105,6 @@ describe("Unity capability accounting", () => {
       "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
     ]);
     expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
-      "ledger Accordion .accordion__content:not([hidden]) (uss-selector)",
-      "ledger Accordion .accordion__content:not([hidden]) .accordion__contentInner (uss-selector)",
       'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)',
       "ledger Accordion @starting-style (uss-selector)",
       "ledger Switch .switch:dir(rtl) .switch__track (uss-selector)",

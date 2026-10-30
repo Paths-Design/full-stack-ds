@@ -584,6 +584,7 @@ export const isComposite = (value: string): boolean => value.includes("var(") &&
 export type ScopeValues = (name: string) => (string | undefined)[] | undefined;
 
 const VAR_READ = /var\(\s*(--[A-Za-z0-9_-]+)/g;
+const GRAPH_VAR_NO_FALLBACK = /var\(\s*(--[A-Za-z0-9_-]+)\s*\)/g;
 
 // ---------------------------------------------------------------------------
 // Component section (S3, S4)
@@ -659,7 +660,7 @@ function isAncestor(ctx: Context, ancestor: string, part: string): boolean {
 interface Lowered { selector: string; carriers: string[]; hostQualified: boolean }
 
 const PREDICATE_ORDER: Readonly<Record<NativeStylePredicateIR["kind"], number>> = {
-  variant: 0, checked: 1, indeterminate: 1, disabled: 2, hover: 2, active: 2, focus: 2,
+  variant: 0, checked: 1, present: 1, indeterminate: 1, disabled: 2, hover: 2, active: 2, focus: 2,
 };
 
 /**
@@ -718,6 +719,10 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
       }
       case "checked":
         failure = predicate.value ? placeState(predicate.ownerPart) : "uss-selector";
+        break;
+      case "present":
+        failure = lowering.behavior === "ItemGroup" && predicate.ownerPart === lowering.content.name
+          ? placeState(predicate.ownerPart) : "uss-selector";
         break;
       case "indeterminate":
         failure = "uss-pseudo";
@@ -1174,6 +1179,17 @@ export function projectStylesheet(irs: ComponentIR[], sources: TokenSources, hos
     return tokenPath === undefined ? undefined : scopes.map(scope => scopeValue(sources, index, tokenPath, scope));
   };
   const components = irs.map(ir => projectComponent(ir, unityLowering(ir), hostsOf(ir), scopeValues));
+  // Theme.Attach is optional. A literal graph var() in an emitted declaration
+  // therefore needs the graph's light value as its standalone fallback, just
+  // as a resolvesTo declaration carries its authored fallback.
+  for (const component of components) for (const rule of component.rules) {
+    rule.declarations = rule.declarations.map(([property, value]): [string, string] => [property, value.replace(GRAPH_VAR_NO_FALLBACK, (original, name: string) => {
+      const tokenPath = index.get(name);
+      const light = tokenPath && graphValue(sources.graph, tokenPath, "light");
+      const fallback = light && tokenScalar(light);
+      return fallback === undefined ? original : `var(${name}, ${fallback})`;
+    })]);
+  }
   const entries: UnsupportedEntry[] = components.flatMap(c => c.unsupported);
   // A sidecar may contain a literal var() in a USS declaration without a
   // resolvesTo fact (for example a transition duration). Include graph reads

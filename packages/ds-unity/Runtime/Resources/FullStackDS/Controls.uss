@@ -53,6 +53,7 @@
     --fsds-semantic-glyph-size-medium-extent: 16px;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-disabled-opacity: 0.5;
+    --fsds-semantic-motion-interaction-enter-duration: 250ms;
     --fsds-semantic-motion-interaction-exit-duration: 167ms;
     --fsds-semantic-motion-interaction-press-duration: 100ms;
     --fsds-semantic-shape-control-border-default-width: 1px;
@@ -877,7 +878,14 @@
     overflow: hidden;
     opacity: 0;
     transition-property: opacity;
-    transition-duration: var(--fsds-semantic-motion-interaction-exit-duration);
+    transition-duration: var(--fsds-semantic-motion-interaction-exit-duration, 167ms);
+    transition-timing-function: ease;
+}
+
+.accordion__content.is-open {
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: var(--fsds-semantic-motion-interaction-enter-duration, 250ms);
     transition-timing-function: ease;
 }
 
@@ -889,6 +897,10 @@
     padding-bottom: 0;
     color: var(--fsds-accordion-color-text-secondary, #474647);
     font-size: var(--fsds-accordion-text-size-content, 14px);
+}
+
+.accordion__content.is-open .accordion__contentInner {
+    padding-bottom: var(--fsds-accordion-spacing-padding-y, 8px);
 }
 
 .accordion:disabled {

@@ -45,6 +45,15 @@ describe('typed native style rules', () => {
   // A web-template state class on the part is not a contract state fact and stays refused.
   expect(facts.unsupported.map(u => u.sourceKey).sort()).toEqual(['--pills __tab--active', 'tab--active']);
  });
+ it('retains visible content and its descendant as presence predicates', () => {
+  const facts = buildComponentIR(fixture('Accordion')).nativeStyleRules!;
+  expect(facts.rules.find(rule => rule.sourceKey === '.accordion__content:not([hidden])')).toMatchObject({
+   part: 'content', predicates: [{kind:'present',ownerPart:'content'}],
+  });
+  expect(facts.rules.find(rule => rule.sourceKey === '.accordion__content:not([hidden]) .accordion__contentInner')).toMatchObject({
+   part: 'contentInner', predicates: [{kind:'present',ownerPart:'content'}],
+  });
+ });
  it('normalizes a bare `__<part>` key to the part and leaves unknown parts refused', () => {
   const contract = fixture('Tabs');
   contract.styles!['__panel'] = {'opacity':{literal:'0.5',platforms:['web']}};

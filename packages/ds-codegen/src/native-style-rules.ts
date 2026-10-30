@@ -6,6 +6,7 @@ import { resolveStyleProfile } from './box-model.js';
 export type NativeStylePredicateIR =
  | { kind: 'variant'; axis: string; value: string }
  | { kind: 'checked' | 'disabled' | 'indeterminate'; value: boolean; ownerPart?: string }
+ | { kind: 'present'; ownerPart?: string }
  | { kind: 'hover' | 'active' | 'focus'; ownerPart?: string };
 export interface NativeStyleDeclarationIR { property: string; value: string; token?: string; designSlot?: string; platforms?: readonly string[] }
 export interface NativeStyleRuleIR { sourceKey: string; part: string; pseudo?: 'before' | 'after'; predicates: NativeStylePredicateIR[]; declarations: NativeStyleDeclarationIR[] }
@@ -35,6 +36,10 @@ function selectorPlan(key: string, prefix: string, parts: string[], recipe: Clas
  let pseudo: 'before' | 'after' | undefined;
  selector = selector.replace(/::(before|after)$/, (_all, value: 'before' | 'after') => { pseudo = value; return ''; });
  selector = selector.replace(/\[aria-checked=["']?(true|false)["']?\]/g, (_all, value: string) => { predicates.push({ kind: 'checked', value: value === 'true' }); return ''; });
+ selector = selector.replace(/:not\(\[hidden\]\)/g, (_all, offset: number) => {
+  const ownerPart = new RegExp(`\\.${stem}__([A-Za-z0-9_-]+)$`).exec(selector.slice(0, offset))?.[1] ?? 'root';
+  predicates.push({ kind: 'present', ownerPart }); return '';
+ });
  selector = selector.replace(/:(hover|active|focus-visible|focus|disabled|checked|indeterminate)\b/g, (_all, state: string, offset: number) => {
   const ownerPart = new RegExp(`\\.${stem}__([A-Za-z0-9_-]+)$`).exec(selector.slice(0, offset))?.[1] ?? 'root';
   if (['hover', 'active', 'focus', 'focus-visible'].includes(state)) predicates.push({ kind: state.startsWith('focus') ? 'focus' : state as 'hover' | 'active', ownerPart });
@@ -49,7 +54,11 @@ function selectorPlan(key: string, prefix: string, parts: string[], recipe: Clas
  });
  if (invalid || /[:[>,]/.test(selector)) return undefined;
  const nodes = selector.trim().split(/\s+/);
- if (nodes.length > 2 || nodes.some((node, i) => i < nodes.length - 1 && node !== `.${prefix}`)) return undefined;
+ if (nodes.length > 2 || nodes.some((node, i) => {
+  if (i === nodes.length - 1 || node === `.${prefix}`) return false;
+  const owner = node.startsWith(`.${prefix}__`) ? node.slice(prefix.length + 3) : '';
+  return !parts.includes(owner) || !predicates.some(predicate => predicate.kind === 'present' && predicate.ownerPart === owner);
+ })) return undefined;
  const target = nodes[nodes.length - 1];
  let part: string;
  if (target === `.${prefix}`) part = 'root';

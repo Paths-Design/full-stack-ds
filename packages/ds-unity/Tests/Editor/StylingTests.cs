@@ -110,6 +110,26 @@ namespace FullStackDS.Tests
             ColorIs(control.Track.resolvedStyle.backgroundColor, "#d92d2e", "unscoped checked track"); // semantic.color.foreground.accent (light)
         }
 
+        [UnityTest] public IEnumerator AccordionContentBecomesOpaqueWhenOpenedWithoutAThemeScope()
+        {
+            var root = EditorRoot();
+            var accordion = new Accordion();
+            var item = new AccordionItem(); var header = new AccordionHeader();
+            var trigger = new AccordionTrigger { Value = "one", text = "One" };
+            var content = new AccordionContent { Value = "one" };
+            content.Add(new Label("Visible body")); header.Add(trigger); item.Add(header); item.Add(content); accordion.Add(item); root.Add(accordion);
+            yield return Settle();
+            Assert.That(content.resolvedStyle.opacity, Is.EqualTo(0).Within(.01));
+            var duration = content.resolvedStyle.transitionDuration.First();
+            Assert.That(duration.unit == TimeUnit.Second ? duration.value * 1000 : duration.value, Is.EqualTo(167).Within(.01));
+            accordion.Values = new[] { "one" }; yield return Settle();
+            Assert.That(content.ClassListContains("is-open"), Is.True);
+            Assert.That(content.resolvedStyle.display, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(content.resolvedStyle.opacity, Is.EqualTo(1).Within(.01));
+            accordion.Values = Array.Empty<string>(); yield return Settle();
+            Assert.That(content.resolvedStyle.opacity, Is.EqualTo(0).Within(.01));
+        }
+
         [UnityTest] public IEnumerator FloatingContentResolvesTheScopeItsPopoverSitsIn()
         {
             var root = EditorRoot();

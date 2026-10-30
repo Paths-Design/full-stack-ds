@@ -18,18 +18,37 @@
     {
       "component": "Accordion",
       "sourceKey": ".accordion__content:not([hidden])",
-      "part": "",
-      "property": "",
-      "value": "selector outside normalized native grammar",
-      "reason": "uss-selector"
+      "part": "content",
+      "property": "grid-template-rows",
+      "value": "1fr",
+      "reason": "uss-property"
     },
     {
       "component": "Accordion",
-      "sourceKey": ".accordion__content:not([hidden]) .accordion__contentInner",
-      "part": "",
-      "property": "",
-      "value": "selector outside normalized native grammar",
-      "reason": "uss-selector"
+      "sourceKey": ".accordion__content:not([hidden])",
+      "part": "content",
+      "property": "transition",
+      "value": "display var(--fsds-semantic-motion-interaction-enter-duration) linear allow-discrete",
+      "reason": "uss-property",
+      "longhand": "transition-property"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": ".accordion__content:not([hidden])",
+      "part": "content",
+      "property": "transition",
+      "value": "grid-template-rows var(--fsds-semantic-motion-interaction-enter-duration) var(--fsds-semantic-motion-interaction-enter-easing)",
+      "reason": "uss-property",
+      "longhand": "transition-property"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": ".accordion__content:not([hidden])",
+      "part": "content",
+      "property": "transition",
+      "value": "var(--fsds-semantic-motion-interaction-enter-easing)",
+      "reason": "uss-scalar",
+      "longhand": "transition-timing-function"
     },
     {
       "component": "Accordion",

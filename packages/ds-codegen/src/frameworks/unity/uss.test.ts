@@ -416,7 +416,7 @@ describe("Unity USS projection: token section", () => {
     const { uss, ledger } = projectStylesheet([irOf(contract)], tokens);
     expect(rule(uss, ".knob__glow")).toEqual([
       "transition-property: opacity;",
-      "transition-duration: var(--fsds-semantic-motion-interaction-exit-duration);",
+      "transition-duration: var(--fsds-semantic-motion-interaction-exit-duration, 167ms);",
       "transition-timing-function: ease;",
     ]);
     expect(rule(uss, ".fsds-theme")).toEqual(["--fsds-semantic-motion-interaction-exit-duration: 167ms;"]);
@@ -454,6 +454,21 @@ describe("Unity USS projection: token section", () => {
     expect(uss).not.toContain("--fsds-core-hue");
     // Equal specificity, source order: the brand blocks follow the theme blocks.
     expect(uss.indexOf(".fsds-theme.fsds-brand-bold {")).toBeGreaterThan(uss.indexOf(".fsds-theme.fsds-theme--dark {"));
+  });
+});
+
+describe("Unity USS projection: hidden item-group content", () => {
+  it("restores visible opacity on the content state class", () => {
+    const directory = path.join(contractsRoot, "components/Accordion");
+    const contract = JSON.parse(fs.readFileSync(path.join(directory, "Accordion.contract.json"), "utf8")) as Record<string, any>;
+    contract.tokens = JSON.parse(fs.readFileSync(path.join(directory, "Accordion.tokens.json"), "utf8"));
+    const styles = JSON.parse(fs.readFileSync(path.join(directory, "Accordion.styles.json"), "utf8")) as Record<string, unknown>;
+    contract.styles = styles;
+    const { uss, ledger } = sheetOf(contract);
+    expect(rule(uss, ".accordion__content")).toContain("opacity: 0;");
+    expect(rule(uss, ".accordion__content.is-open")).toContain("opacity: 1;");
+    expect(rule(uss, ".accordion__content.is-open .accordion__contentInner")).toContain("padding-bottom: var(--fsds-accordion-spacing-padding-y, 8px);");
+    expect(ledger.entries.some(entry => entry.sourceKey === ".accordion__content:not([hidden])" && entry.reason === "uss-selector")).toBe(false);
   });
 });
 
