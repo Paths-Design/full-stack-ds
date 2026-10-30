@@ -1599,6 +1599,8 @@ function generateDomTreeImports(ir: ComponentIR, componentBody: string): string 
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
+  if (ir.nativeTextChannels?.length) lines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
+  if (ir.nativeTextChannels?.length) lines.push(`import { afterNextRender } from "@angular/core";`);
   // CODEGEN-EMIT-LINT-HYGIENE-01: compound parts usually host on <fsds-stack>,
   // but native-table composition (Table) renders raw table elements — import
   // StackComponent only when the body actually references it.
@@ -2149,6 +2151,11 @@ function generateDomTreeComponent(ir: ComponentIR): string {
   }
 
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`  protected canActivateInteraction = canActivateInteraction;`);
+  for (const channel of ir.nativeTextChannels ?? []) {
+    lines.push(`  protected requestNativeText${capitalizeAngular(channel)}(event: Event): void {`,
+      `    requestNativeTextChange(event, () => this.behavior.set${capitalizeAngular(channel)}((event.currentTarget as HTMLInputElement).value), () => this.behavior.${channel}(), restore => { if (!this.destroyRef.destroyed) afterNextRender(restore, { injector: this.injector }); });`,
+      `  }`);
+  }
   if (ir.compositeControl?.nativeRadio) {
     const channel = ir.compositeControl.channel.name;
     lines.push(`  protected requestNativeRadio${capitalizeAngular(channel)}(event: Event, value: string): void {`,
@@ -2875,6 +2882,10 @@ function renderAngularDomNode(
   // produces `(click)="behavior.X()"`. Legacy `bindings.onX` is filtered
   // below to avoid double-emit.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
+      attrs.push(`(${eventName})="requestNativeText${capitalizeAngular(node.nativeTextChannel)}($event)"`);
+      continue;
+    }
     if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
       const arg = renderAngularBindingValue(expr.arg, ctx);
       if (arg !== null) attrs.push(`(change)="requestNativeRadio${capitalizeAngular(node.nativeRadioChannel)}($event, ${arg})"`);

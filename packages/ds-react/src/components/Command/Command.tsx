@@ -1,5 +1,6 @@
 // @generated:start imports
 import { type HTMLAttributes, type ReactNode, useId } from "react";
+import { useNativeTextValue } from "../../primitives/useNativeTextValue";
 import { Stack } from "../../primitives";
 import { Icon } from "../Icon/Icon";
 import { useCommand } from "./useCommand";
@@ -248,6 +249,7 @@ export function Command({
     onSearchChange,
   });
 
+  const nativeTextSearch = useNativeTextValue(search, setSearch);
   const classNames = [
     "command",
     className,
@@ -267,7 +269,7 @@ export function Command({
         <div className="command__dialog" role="dialog" aria-modal="true" aria-label={label}>
           <div className="command__inputWrapper">
             <Icon className="command__searchIcon" name="search" size="sm" />
-            <input className="command__input" type="search" role="combobox" aria-autocomplete="list" onChange={(e) => setSearch((e.currentTarget as HTMLInputElement).value)} aria-expanded={open} aria-label={searchLabel} placeholder={placeholder} value={search} id={`${instanceId}-input`} aria-controls={`${instanceId}-list`} />
+            <input className="command__input" type="search" role="combobox" aria-autocomplete="list" onChange={nativeTextSearch.onChange} aria-expanded={open} aria-label={searchLabel} placeholder={placeholder} value={nativeTextSearch.value} id={`${instanceId}-input`} aria-controls={`${instanceId}-list`} />
           </div>
           <div className="command__list" role="listbox" id={`${instanceId}-list`} aria-labelledby={`${instanceId}-input`}>
             <div className="command__empty" />

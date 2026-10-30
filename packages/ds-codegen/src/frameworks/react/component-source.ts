@@ -411,6 +411,7 @@ export function generateReactComponentSource(
     !isCompound &&
     (reactDomRootUsesStack(ir) ||
       (!allCompoundPartsNative && (!ir.dom || ir.compoundParts.length > 0)));
+  if (ir.nativeTextChannels?.length) importLines.push(`import { useNativeTextValue } from "../../primitives/useNativeTextValue";`);
   if (needsStackImport) {
     importLines.push(`import { Stack } from "${stackImportPath}";`);
   }
@@ -2271,6 +2272,9 @@ function generateDomTreeRootComponent(ir: ComponentIR): string {
     lines.push(`  });`);
     lines.push(``);
   }
+  for (const channel of ir.nativeTextChannels ?? []) {
+    lines.push(`  const nativeText${capitalize(channel)} = useNativeTextValue(${channel}, set${capitalize(channel)});`);
+  }
   // Selector-anchored root panel: resolve the active element from the
   // indexed selector prop, then position the (portaled) root against it.
   // The anchor element lives outside the component's tree, so it is
@@ -2929,7 +2933,10 @@ function renderReactDomNode(
         : eventName;
     const jsxEventProp = ({ keydown: "onKeyDown", keyup: "onKeyUp", focusin: "onFocus", focusout: "onBlur" } as Record<string, string>)[reactEventName]
       ?? "on" + reactEventName.charAt(0).toUpperCase() + reactEventName.slice(1);
-    const valueExpr = renderReactBinding(jsxEventProp, expr, ctx);
+    const valueExpr = node.nativeTextChannel && (eventName === "input" || eventName === "change") &&
+      expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel
+      ? `nativeText${capitalize(node.nativeTextChannel)}.onChange`
+      : renderReactBinding(jsxEventProp, expr, ctx);
     if (valueExpr === null) continue;
     attrs.push(`${jsxEventProp}={${valueExpr}}`);
   }
@@ -2977,7 +2984,9 @@ function renderReactDomNode(
       const eventName = key.slice(2).toLowerCase();
       if (node.events[eventName]) continue;
     }
-    const valueExpr = renderReactBinding(key, expr, ctx);
+    const valueExpr = key === "value" && node.nativeTextChannel
+      ? `nativeText${capitalize(node.nativeTextChannel)}.value`
+      : renderReactBinding(key, expr, ctx);
     if (valueExpr === null) continue; // skip unsupported
     if (key === "textContent" || key === "children") {
       // Dual-pathway retention: if the new `content` field is already set,

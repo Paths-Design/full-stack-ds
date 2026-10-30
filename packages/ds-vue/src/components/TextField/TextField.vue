@@ -2,6 +2,7 @@
 // @generated:start imports
 import { computed, useId } from "vue";
 import { useTextField } from "./useTextField.js";
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 // @generated:end
 
 // @custom:start imports
@@ -71,7 +72,7 @@ const instanceId = useId();
     <label :class="'text-field__label'" :id="`${instanceId}-label`">
       <slot name="label" />
     </label>
-    <input :class="'text-field__field'" @input="(e) => behavior.setValue((e.target as HTMLInputElement).value)" :type="props.type" :value="behavior.value.value" :disabled="props.disabled" :name="props.name" :required="props.required" :aria-invalid="props.invalid" :aria-labelledby="$slots.label ? `${instanceId}-label` : undefined" :aria-describedby="[$slots.description ? `${instanceId}-description` : null, $slots.error && props.invalid ? `${instanceId}-error` : null, props.ariaDescribedby].filter(Boolean).join(' ') || undefined" />
+    <input :class="'text-field__field'" @input="(e) => requestNativeTextChange(e, () => behavior.setValue((e.currentTarget as HTMLInputElement).value), () => behavior.value.value)" :type="props.type" :value="behavior.value.value" :disabled="props.disabled" :name="props.name" :required="props.required" :aria-invalid="props.invalid" :aria-labelledby="$slots.label ? `${instanceId}-label` : undefined" :aria-describedby="[$slots.description ? `${instanceId}-description` : null, $slots.error && props.invalid ? `${instanceId}-error` : null, props.ariaDescribedby].filter(Boolean).join(' ') || undefined" />
     <span :class="'text-field__description'" :id="`${instanceId}-description`">
       <slot name="description" />
     </span>

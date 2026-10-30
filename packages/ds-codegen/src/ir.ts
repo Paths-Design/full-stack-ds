@@ -915,6 +915,8 @@ export interface KeyboardActionIR {
  * its idiomatic representation.
  */
 export interface DomNodeIR {
+  /** Accepted string channel directly bound to this native value host. */
+  nativeTextChannel?: string;
   /** Accepted string selection for a native radio change request. */
   nativeRadioChannel?: string;
   /** Normalized host activation; emitters only lower framework syntax. */
@@ -1862,6 +1864,8 @@ export interface ComponentIR {
   interaction?: InteractionIR;
   /** Interactive control capability, independent of native form submission. */
   formControl: FormControlIR | undefined;
+  /** Native text channels whose input/change requests require DOM readback. */
+  nativeTextChannels?: string[];
 
   /** Repeated-item interaction capability with iteration-aware updates. */
   compositeControl: CompositeControlIR | undefined;
@@ -2099,6 +2103,7 @@ export function buildComponentIR(
     behavior.normalizedChannels,
     dom,
   );
+  const nativeTextChannels = attachNativeTextChannels(dom, behavior.normalizedChannels);
   // FEAT-A11Y-COMPOSITE-KEYBOARD-01: lower realized keyboard interactions
   // after compositeControl (validation needs it) and attach onto the DOM
   // nodes whose parts host the keydown bindings.
@@ -2255,6 +2260,7 @@ export function buildComponentIR(
     surface,
     interaction,
     formControl,
+    nativeTextChannels,
     compositeControl,
     keyboardActions,
     textOverflow,
@@ -4954,11 +4960,30 @@ export function buildSurfaceIR(
 }
 
 /**
- * Lower the form-control capability and inject its one authoritative channel
- * commit onto the declared DOM part. The contract's DOM tree remains
- * structural; framework event spelling and timing are selected from this
- * semantic fact instead of being repeated in every emitter or DOM node.
+ * Native value identity is a host/channel fact shared by authored event
+ * bindings and form-control-derived events.
  */
+function attachNativeTextChannels(dom: DomNodeIR | undefined, channels: NormalizedChannelIR[]): string[] {
+  const found = new Set<string>();
+  const visit = (node: DomNodeIR): void => {
+    const value = node.bindings.value;
+    if (!node.componentRef && (node.tag === "input" || node.tag === "textarea") &&
+        value?.kind === "channel" && value.field === "value" && !value.path?.length &&
+        channels.some(channel => channel.name === value.channel && channel.valueType === "string" && channel.callbackKind === "value") &&
+        Object.entries(node.events).some(([event, binding]) =>
+          (event === "input" || event === "change") && binding.kind === "channel" &&
+          binding.channel === value.channel && binding.field === "onChange")) {
+      node.nativeTextChannel = value.channel;
+      found.add(value.channel);
+    }
+    for (const child of node.children) visit(child);
+  };
+  if (dom) visit(dom);
+  return [...found];
+}
+
+/** Lower the form-control capability and inject its authoritative channel
+ * commit onto the declared DOM part before native ownership is derived. */
 export function buildFormControlIR(
   contract: ComponentContract,
   parts: PartIR[],

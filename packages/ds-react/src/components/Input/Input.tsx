@@ -1,5 +1,6 @@
 // @generated:start imports
 import { type InputHTMLAttributes } from "react";
+import { useNativeTextValue } from "../../primitives/useNativeTextValue";
 import { Stack } from "../../primitives";
 import { useInput } from "./useInput";
 import { useFieldAssociation } from "../../primitives/hooks";
@@ -63,6 +64,7 @@ export function Input({
     onChange,
   });
 
+  const nativeTextValue = useNativeTextValue(value, setValue);
   const classNames = [
     "input",
     disabled && "input--disabled",
@@ -75,7 +77,7 @@ export function Input({
   const fieldAssociation = useFieldAssociation();
 
   return (
-  <Stack layout="native" as="input" className={`${classNames}`} onChange={(e) => setValue((e.currentTarget as HTMLInputElement).value)} type={type} value={value} disabled={disabled} aria-invalid={invalid} placeholder={placeholder} name={name} required={required} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} id={fieldAssociation?.controlId} aria-describedby={fieldAssociation?.describedBy} data-testid={testId} data-fsds-component="input" data-fsds-box="" {...rest} />
+  <Stack layout="native" as="input" className={`${classNames}`} onChange={nativeTextValue.onChange} type={type} value={nativeTextValue.value} disabled={disabled} aria-invalid={invalid} placeholder={placeholder} name={name} required={required} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} id={fieldAssociation?.controlId} aria-describedby={fieldAssociation?.describedBy} data-testid={testId} data-fsds-component="input" data-fsds-box="" {...rest} />
   );
 }
 // @generated:end

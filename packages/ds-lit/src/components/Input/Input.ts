@@ -1,5 +1,6 @@
 // @generated:start imports
 import { LitElement, html, css } from 'lit';
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
 import { InputBehavior } from './InputBehavior.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -190,10 +191,6 @@ export class InputElement extends LitElement {
   });
   }
 
-  private handleValueChange(event: Event): void {
-    this.behavior.setValue((event.target as HTMLInputElement).value);
-  }
-
   override connectedCallback(): void {
     super.connectedCallback();
     this.setAttribute("data-fsds-component", "input");
@@ -208,7 +205,7 @@ export class InputElement extends LitElement {
   }
 
   override render() {
-    return html`<input class="${this.computeClasses()}" @input=${(e: Event) => this.handleValueChange(e)} type=${ifDefined(this.type)} .value=${this.behavior.value} ?disabled=${this.disabled ?? false} aria-invalid=${ifDefined(this.invalid === undefined ? undefined : (this.invalid ? 'true' : 'false'))} placeholder=${ifDefined(this.placeholder)} name=${ifDefined(this.name)} ?required=${this.required ?? false} aria-label=${ifDefined(this.ariaLabel ?? undefined)} aria-labelledby=${ifDefined(this.ariaLabelledby)} data-fsds-box="" />`;
+    return html`<input class="${this.computeClasses()}" @input=${(e: Event) => requestNativeTextChange(e, () => this.behavior.setValue((e.currentTarget as HTMLInputElement).value), () => this.behavior.value)} type=${ifDefined(this.type)} .value=${this.behavior.value} ?disabled=${this.disabled ?? false} aria-invalid=${ifDefined(this.invalid === undefined ? undefined : (this.invalid ? 'true' : 'false'))} placeholder=${ifDefined(this.placeholder)} name=${ifDefined(this.name)} ?required=${this.required ?? false} aria-label=${ifDefined(this.ariaLabel ?? undefined)} aria-labelledby=${ifDefined(this.ariaLabelledby)} data-fsds-box="" />`;
   }
 }
 

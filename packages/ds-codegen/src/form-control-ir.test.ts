@@ -87,14 +87,16 @@ describe("form-control emitter consumption", () => {
 
     // React's synthetic onChange is its idiomatic per-input text event; the
     // other targets spell the same semantic commit as the native input event.
-    expect(react).toContain(
-      "onChange={(e) => setValue((e.currentTarget as HTMLInputElement).value)}",
-    );
-    expect(react).not.toContain("onInput={(e) => setValue(");
-    expect(vue).toContain('@input="(e) => behavior.setValue((e.target as HTMLInputElement).value)"');
-    expect(svelte).toContain("oninput={(e) => behavior.setValue((e.currentTarget as HTMLInputElement).value)}");
-    expect(angular).toContain('(input)="handleValueChange($event)"');
-    expect(lit).toContain("@input=${(e: Event) => this.handleValueChange(e)}");
+    expect(react).toMatch(/as="input"[^>]*onChange=/);
+    expect(react).not.toMatch(/onInput=/);
+    expect(vue).toMatch(/<input\b[^>]*@input=/);
+    expect(vue).not.toMatch(/@change=/);
+    expect(svelte).toMatch(/<input\b[^>]*oninput=/);
+    expect(svelte).not.toMatch(/onchange=/);
+    expect(angular).toMatch(/<input\b[^>]*\(input\)=/);
+    expect(angular).not.toMatch(/\(change\)=/);
+    expect(lit).toMatch(/<input\b[^>]*@input=/);
+    expect(lit).not.toMatch(/@change=/);
   });
 
   it("binds Field association to a nested control part, not its wrapper", () => {
