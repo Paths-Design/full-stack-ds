@@ -4,13 +4,14 @@
 // via the rejection instead of killing the test runner. The suite runs
 // from the repo root (the codegen cwd contract), against the real
 // contracts corpus; generation paths use --dry-run so nothing is written.
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { mergeBoxModelDefaults } from "./box-model.js";
 import type { ComponentContract, TokenResolution } from "./contract.js";
 import type { FrameworkEmitter, TargetId } from "./emitter.js";
-import type { RegistryOptions, TargetRegistry } from "./registry.js";
+import type { RegistryOptions, TargetBinding, TargetRegistry } from "./registry.js";
 
 // Every case resets the module registry and re-imports cli.ts against the real
 // contracts corpus, so the import graph is rebuilt per test rather than shared:
@@ -313,9 +314,11 @@ describe("cli main — emitter admitContract seam", () => {
     const admits = events.filter((e) => e.kind === "admit");
     expect(admits.map((e) => e.component).sort()).toEqual([
       "Accordion",
+      "Divider",
       "Popover",
       "Switch",
       "Tabs",
+      "Text",
     ]);
     expect(admits.every((e) => e.admitted === true)).toBe(true);
   });
@@ -341,5 +344,202 @@ describe("cli main — emitter admitContract seam", () => {
     expect(lines.some((l) => l.includes("DRY RUN  Badge"))).toBe(true);
     expect(lines.some((l) => l.includes("DRY RUN  Button"))).toBe(false);
     expect(lines.some((l) => l.startsWith("\nDone."))).toBe(false);
+  });
+});
+
+type AssetCall = { target: TargetId; components: string[]; afterEmits: number };
+
+/**
+ * prepare() plus a registry whose emitters count emitComponent calls and
+ * replace emitTargetAssets with a recorder returning `assets()` (re-read per
+ * call, so a second run can emit a different set). `binding` rewrites the
+ * binding (a temp package root, a rail framework id), `available` narrows the
+ * executable set so `--target=all` stays one target, and `manifestPath`
+ * redirects the emission manifest. The recorder stands in for any target's
+ * assets: these cases pin the CLI seam (when it runs, over what, where files
+ * land, what the manifest and prune pass record), not Unity's stylesheet.
+ */
+function prepareWithAssetRecorder(
+  args: string[],
+  options: {
+    assets: () => { relativePath: string; contents: string }[];
+    binding?: (binding: TargetBinding) => TargetBinding;
+    available?: TargetId[];
+    manifestPath?: string;
+  },
+) {
+  const handles = prepare(args);
+  const calls: AssetCall[] = [];
+  let emits = 0;
+  vi.doMock("./registry.js", async (importOriginal) => {
+    const actual = await importOriginal<{
+      createDefaultRegistry: (opts: RegistryOptions) => TargetRegistry;
+    }>();
+    return {
+      ...actual,
+      createDefaultRegistry: (opts: RegistryOptions): TargetRegistry => {
+        const registry = actual.createDefaultRegistry(opts);
+        return {
+          ...registry,
+          available: () => options.available ?? registry.available(),
+          get: (id: TargetId) => {
+            const binding = registry.get(id);
+            const base = binding.emitter;
+            const emitter: FrameworkEmitter = Object.create(base);
+            emitter.emitComponent = (ir, emitOpts) => {
+              emits += 1;
+              return base.emitComponent(ir, emitOpts);
+            };
+            emitter.emitTargetAssets = (irs) => {
+              calls.push({ target: id, components: irs.map((ir) => ir.name), afterEmits: emits });
+              return options.assets();
+            };
+            const rebound = { ...binding, emitter };
+            return options.binding ? options.binding(rebound) : rebound;
+          },
+        };
+      },
+    };
+  });
+  if (options.manifestPath) {
+    const manifestPath = options.manifestPath;
+    vi.doMock("./validation/emission-manifest-path.js", () => ({
+      EMISSION_MANIFEST_RELATIVE_PATH: path.relative(process.cwd(), manifestPath),
+      emissionManifestAbsolutePath: () => manifestPath,
+    }));
+  }
+  return { ...handles, calls };
+}
+
+const sha256 = (bytes: string | Buffer) => crypto.createHash("sha256").update(bytes).digest("hex");
+
+describe("cli main — emitter emitTargetAssets seam", () => {
+  const scratch: string[] = [];
+  /** A temp package root inside the gitignored repo tmp/, so manifest paths stay workspace-relative. */
+  const tempPackage = () => {
+    fs.mkdirSync(path.join(process.cwd(), "tmp"), { recursive: true });
+    const dir = fs.mkdtempSync(path.join(process.cwd(), "tmp", "cli-asset-seam-"));
+    scratch.push(dir);
+    return dir;
+  };
+  const unmock = () => {
+    vi.doUnmock("./registry.js");
+    vi.doUnmock("./validation/emission-manifest-path.js");
+  };
+  afterEach(() => {
+    unmock();
+    for (const dir of scratch.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("runs once per target after every admitted component, in allowlist order, and only previews under --dry-run", async () => {
+    const sentinel = "Runtime/Resources/cli-seam-sentinel.txt";
+    const { exit, log, calls } = prepareWithAssetRecorder(["--dry-run", "--target=unity"], {
+      assets: () => [{ relativePath: sentinel, contents: "sentinel\n" }],
+    });
+    await import("./cli.js");
+    expect(exit).not.toHaveBeenCalled();
+    // fsds.targets.json lists the unity allowlist in this order; the corpus loads alphabetically.
+    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider"], afterEmits: 6 }]);
+    const lines = log.mock.calls.map((call) => String(call[0]));
+    // Resolved against the package root: the components root minus the pack's Runtime/Components.
+    expect(lines).toContain("  DRY RUN  target assets (unity)");
+    expect(lines).toContain(`    → packages/ds-unity/${sentinel}`);
+    expect(fs.existsSync(path.join(process.cwd(), "packages/ds-unity", sentinel))).toBe(false);
+  });
+
+  it("skips it on a name-filtered run, which would replace the full asset with one built from the subset", async () => {
+    const { exit, log, calls } = prepareWithAssetRecorder(["--dry-run", "--target=unity", "Switch"], {
+      assets: () => [{ relativePath: "never.txt", contents: "" }],
+    });
+    await import("./cli.js");
+    expect(exit).not.toHaveBeenCalled();
+    expect(calls).toEqual([]);
+    expect(log.mock.calls.some((call) => String(call[0]).startsWith("  TARGET ASSETS skipped for unity"))).toBe(true);
+  });
+
+  it("refuses an asset path that escapes the package root", async () => {
+    prepareWithAssetRecorder(["--dry-run", "--target=unity"], {
+      assets: () => [{ relativePath: "../outside.txt", contents: "" }],
+    });
+    await expect(import("./cli.js")).rejects.toThrow('Target unity: target asset path "../outside.txt" escapes the package root packages/ds-unity.');
+  });
+
+  it("refuses to guess a package root the binding's components root does not end in", async () => {
+    const root = tempPackage();
+    prepareWithAssetRecorder(["--dry-run", "--target=unity"], {
+      assets: () => [{ relativePath: "a.txt", contents: "" }],
+      binding: (binding) => ({ ...binding, componentsRoot: path.join(root, "Elsewhere") }),
+    });
+    await expect(import("./cli.js")).rejects.toThrow('does not end with the target pack\'s outputs.componentsRoot "Runtime/Components"');
+  });
+
+  it("writes the assets under the package root and records them for a rail target, bound to the target registry", async () => {
+    const root = tempPackage();
+    const manifestPath = path.join(root, "manifest.json");
+    const { exit } = prepareWithAssetRecorder(["--target=unity"], {
+      assets: () => [
+        { relativePath: "Runtime/Resources/Sheet.txt", contents: "sheet\n" },
+        { relativePath: "Runtime/Resources/Sheet.ledger.json", contents: "{}\n" },
+      ],
+      // A rail framework id puts the target's groups in the manifest; the real
+      // unity binding has none, so this drives the rail branch of the seam.
+      binding: (binding) => ({ ...binding, componentsRoot: path.join(root, "Runtime", "Components"), railFrameworkId: "react" }),
+      manifestPath,
+    });
+    await import("./cli.js");
+    expect(exit).not.toHaveBeenCalled();
+    expect(fs.readFileSync(path.join(root, "Runtime/Resources/Sheet.txt"), "utf8")).toBe("sheet\n");
+    expect(fs.readFileSync(path.join(root, "Runtime/Resources/Sheet.ledger.json"), "utf8")).toBe("{}\n");
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
+      groups: { framework: string; component: string; contract: { path: string; sha256: string }; files: { path: string; sha256: string }[] }[];
+    };
+    const rel = path.relative(process.cwd(), root).split(path.sep).join("/");
+    expect(manifest.groups.filter((g) => g.component === "(target-assets)")).toEqual([
+      {
+        framework: "react",
+        component: "(target-assets)",
+        contract: { path: "fsds.targets.json", sha256: sha256(fs.readFileSync(path.join(process.cwd(), "fsds.targets.json"))) },
+        files: [
+          { path: `${rel}/Runtime/Resources/Sheet.txt`, sha256: sha256("sheet\n") },
+          { path: `${rel}/Runtime/Resources/Sheet.ledger.json`, sha256: sha256("{}\n") },
+        ],
+      },
+    ]);
+    // Component groups keep their own contract provenance beside the asset group.
+    const components = manifest.groups.filter((g) => g.component !== "(target-assets)");
+    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Divider", "Popover", "Switch", "Tabs", "Text"]);
+    expect(components.every((g) => g.contract.path.startsWith("packages/ds-contracts/components/"))).toBe(true);
+  });
+
+  it("prunes an asset the previous run recorded and this full run no longer emits, under the hand-edit policy", async () => {
+    const root = tempPackage();
+    const manifestPath = path.join(root, "manifest.json");
+    const binding = (b: TargetBinding): TargetBinding => ({ ...b, componentsRoot: path.join(root, "Runtime", "Components"), railFrameworkId: "react" });
+    const kept = { relativePath: "Kept.txt", contents: "/* @generated:start kept */\n" };
+    const dropped = { relativePath: "Dropped.txt", contents: "/* @generated:start dropped */\n" };
+    const handEdited = { relativePath: "HandEdited.txt", contents: "no marker\n" };
+    let emitted = [kept, dropped, handEdited];
+    prepareWithAssetRecorder(["--target=unity"], { assets: () => emitted, binding, manifestPath });
+    await import("./cli.js");
+    for (const file of emitted) expect(fs.existsSync(path.join(root, file.relativePath)), file.relativePath).toBe(true);
+    vi.restoreAllMocks();
+    unmock();
+
+    emitted = [kept];
+    const { exit, log } = prepareWithAssetRecorder(["--target=all", "--prune"], { assets: () => emitted, binding, manifestPath, available: ["unity"] });
+    await import("./cli.js");
+    expect(exit).not.toHaveBeenCalled();
+    // The still-emitted asset survives; the dropped generated one is removed;
+    // the dropped hand-edited one stays under the default (skip) policy.
+    expect(fs.existsSync(path.join(root, "Kept.txt"))).toBe(true);
+    expect(fs.existsSync(path.join(root, "Dropped.txt"))).toBe(false);
+    expect(fs.existsSync(path.join(root, "HandEdited.txt"))).toBe(true);
+    const lines = log.mock.calls.map((call) => String(call[0]));
+    expect(lines).toContain("\n  PRUNE  1 orphan group(s) across 1 component(s):");
+    expect(lines).toContain("    deleted:     1 file(s)");
+    // The new manifest records only what this run wrote.
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as { groups: { component: string; files: { path: string }[] }[] };
+    const rel = path.relative(process.cwd(), root).split(path.sep).join("/");
+    expect(manifest.groups.find((g) => g.component === "(target-assets)")!.files.map((f) => f.path)).toEqual([`${rel}/Kept.txt`]);
   });
 });

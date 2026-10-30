@@ -22,6 +22,7 @@ namespace FullStackDS
         {
             name = "root";
             AddToClassList("accordion");
+            Gap.Attach(this);
             Group = ItemGroup.Attach(this, triggerClass: "accordion__trigger", contentClass: "accordion__content", operation: "toggle-item", stateClass: "is-open", multiple: true, focus: "manual", orientation: "vertical", wrap: true);
             Type = "single";
             Collapsible = false;

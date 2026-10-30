@@ -1,5 +1,6 @@
 <script lang="ts">
 // @generated:start imports
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 import { useCommand } from "./useCommand.svelte.js";
 import { portal } from "../../primitives/index.js";
 import Icon from "../Icon/Icon.svelte";
@@ -74,7 +75,7 @@ const instanceId = $props.id();
   <div class={'command__dialog'} role="dialog" aria-modal="true" aria-label={label}>
     <div class={'command__inputWrapper'}>
       <Icon class={'command__searchIcon'} name="search" size="sm" />
-      <input class={'command__input'} type="search" role="combobox" aria-autocomplete="list" oninput={(e) => behavior.setSearch((e.currentTarget as HTMLInputElement).value)} aria-expanded={behavior.open} aria-label={searchLabel} placeholder={placeholder} value={behavior.search} id={`${instanceId}-input`} aria-controls={`${instanceId}-list`} />
+      <input class={'command__input'} type="search" role="combobox" aria-autocomplete="list" oninput={(e) => requestNativeTextChange(e, () => behavior.setSearch((e.currentTarget as HTMLInputElement).value), () => behavior.search)} aria-expanded={behavior.open} aria-label={searchLabel} placeholder={placeholder} value={behavior.search} id={`${instanceId}-input`} aria-controls={`${instanceId}-list`} />
     </div>
     <div class={'command__list'} role="listbox" id={`${instanceId}-list`} aria-labelledby={`${instanceId}-input`}>
       <div class={'command__empty'}></div>

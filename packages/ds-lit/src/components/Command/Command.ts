@@ -1,6 +1,7 @@
 // @generated:start imports
 import { LitElement, html, css, nothing } from 'lit';
 import { FsdsMessagesController } from "../../primitives/messages.js";
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 import { property } from 'lit/decorators.js';
 import '../Icon/Icon.js';
 import { CommandBehavior } from './CommandBehavior.js';
@@ -303,10 +304,6 @@ export class CommandElement extends LitElement {
   });
   }
 
-  private handleSearchChange(event: Event): void {
-    this.behavior.setSearch((event.target as HTMLInputElement).value);
-  }
-
   private _handleOverlayClick = (): void => {
     this.behavior.setOpen(false);
   };
@@ -358,7 +355,7 @@ export class CommandElement extends LitElement {
   <div class=${'command__dialog'} role="dialog" aria-modal="true" aria-label=${ifDefined((this.label ?? this.fsdsMessages.value.dialogLabel))} data-fsds-channel-renders="open" @click=${(e: Event) => e.stopPropagation()}>
     <div class=${'command__inputWrapper'}>
       <fsds-icon class=${'command__searchIcon'} .name=${"search"} .size=${"sm"}></fsds-icon>
-      <input class=${'command__input'} type="search" role="combobox" aria-autocomplete="list" @input=${(e: Event) => this.handleSearchChange(e)} aria-expanded=${this.behavior.open ? 'true' : 'false'} aria-label=${ifDefined((this.searchLabel ?? this.fsdsMessages.value.searchLabel))} placeholder=${ifDefined((this.placeholder ?? this.fsdsMessages.value.searchPlaceholder))} .value=${this.behavior.search} id="command-input" aria-controls="command-list" />
+      <input class=${'command__input'} type="search" role="combobox" aria-autocomplete="list" @input=${(e: Event) => requestNativeTextChange(e, () => this.behavior.setSearch((e.currentTarget as HTMLInputElement).value), () => this.behavior.search)} aria-expanded=${this.behavior.open ? 'true' : 'false'} aria-label=${ifDefined((this.searchLabel ?? this.fsdsMessages.value.searchLabel))} placeholder=${ifDefined((this.placeholder ?? this.fsdsMessages.value.searchPlaceholder))} .value=${this.behavior.search} id="command-input" aria-controls="command-list" />
     </div>
     <div class=${'command__list'} role="listbox" id="command-list" aria-labelledby="command-input">
       <div class=${'command__empty'}></div>

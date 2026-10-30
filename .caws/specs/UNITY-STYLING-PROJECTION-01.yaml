@@ -2,9 +2,9 @@ id: UNITY-STYLING-PROJECTION-01
 title: 'Unity styling projection: generate Controls.uss from the token graph and IR style facts; retire the hand-authored palette'
 mode: feature
 lifecycle_state: active
-worktree: unity-styling-projection
+worktree: unity-styling-closure
 created_at: '2026-10-19T08:10:00.925Z'
-updated_at: '2026-10-19T10:57:05.961Z'
+updated_at: '2026-10-30T12:06:33.944Z'
 created_by_session: '555870a8-7108-4e0a-8e43-85bd9f491739'
 blast_radius:
   modules:
@@ -29,9 +29,19 @@ scope:
     - 'package.json'
     - packages/ds-codegen/src/native-style-rules.ts
     - packages/ds-codegen/src/native-style-rules.test.ts
+    - packages/ds-codegen/src/frameworks/gpui
+    - scripts/engine-comparison.mjs
+    - scripts/unity-player.mjs
+    - scripts/engine-comparison-rows.mjs
+    - scripts/engine-comparison-rows.test.mjs
+    - docs/specifications/governed-ci.md
   out: []
   support:
     - docs/architecture/design/box-model-primitive.md
+    - README.md
+    - tmp/engine-comparison
+    - tmp/godot-pilot
+    - tmp/unity-player
 invariants:
   - 'Every USS rule is derived from IR facts (ir.nativeStyleRules, ir.tokenScopes, ir.tokenFacts, ir.classRecipe, ir.states, the selected behavior''s state-class placement) and the token graph; no selector, property or value is authored per component, and no emitter branch names a component, part, channel or class literal beyond the HTML/CSS/USS platform vocabulary'
   - 'A CSS fact USS cannot realise is recorded in a machine-readable unsupported ledger emitted beside the stylesheet and classified refused or pending in the support boundary; it is never silently dropped and never approximated by hand-authored USS'
@@ -89,3 +99,41 @@ contracts:
   - name: 'unity-support-boundary'
     type: schema
     path: 'packages/ds-codegen/src/frameworks/unity/support-boundary.schema.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "pnpm run generate:unity emitted 4/4 allowlisted C# components, generated Controls.uss and Controls.unsupported.json; uss.test.ts synthetic projection cases passed"
+    recorded_at: "2026-10-30T05:46:30.181Z"
+    command: "pnpm run generate:unity"
+    exit_code: 0
+    artifact_path: packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "audit:token-resolvability: 0 findings including Unity; audit:variant-realization: 50 findings all ledgered, 0 unledgered/stale, Unity 7 ledgered nondefault gaps"
+    recorded_at: "2026-10-30T05:46:46.896Z"
+    command: "pnpm run audit:token-resolvability && pnpm run audit:variant-realization"
+    exit_code: 0
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A3
+    status: fail
+    evidence_ref: "Merged source 708d1f1dd: Unity 6000.5.3f1 test:unity passed 42/42 EditMode including generated USS import, token geometry/state assertions and six Player-context PNGs (f85a48f16 XML start 2026-10-30 06:28:44Z). The separate frozen engine-comparison runner was blocked before execution by CAWS bash-write-guard unavailable-native-context for relative tmp/engine-comparison; retained older trace receipt and unchanged behavior classes do not prove a fresh trace run at this source. Standalone Player was not rerun."
+    recorded_at: "2026-10-30T07:10:39.722Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "audit:unity-boundary: lowered 12323, pending 2664 all P4, refused 2509, unclassified 0; zero P3 pending and zero violations; unsupported ledger entries joined to refused or pending sidecar leaves"
+    recorded_at: "2026-10-30T05:47:57.426Z"
+    command: "pnpm run audit:unity-boundary"
+    exit_code: 0
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "Second regeneration through governed:rail passed 330 groups/1618 files, six rail targets; generated packages match HEAD by committed-tree-check; Unity emitter and CLI focused suites passed including synthetic contract projection"
+    recorded_at: "2026-10-30T05:48:29.697Z"
+    command: "pnpm run governed:rail && node scripts/committed-tree-check.mjs generated"
+    exit_code: 0
+    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "At merged source 708d1f1dd, docs/architecture/unity-target.md and packages/ds-unity/README.md record Unity 6000.5.3f1 EditMode run f85a48f16 (42/42, zero skipped; XML/log and six local PNGs); docs:check-claims and docs:check-links passed on the committed source."
+    recorded_at: "2026-10-30T07:09:01.606Z"

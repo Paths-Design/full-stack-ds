@@ -22,7 +22,9 @@ const LEDGER = resolve(HERE, "known-unrealized.json");
 /**
  * Keyed `Component.axis`, or `Component.axis.value` when one value in an axis
  * adjudicates differently from its peers. `only` narrows an axis rule to a
- * subset of its values.
+ * subset of its values. A row of another target surface (`target: "unity"`)
+ * is keyed `<target>:Component.axis`: its evidence is about that target's
+ * realization, so a web rule must never stamp it.
  */
 const RULES = {
   "Checkbox.size": {
@@ -149,6 +151,24 @@ const RULES = {
     remedy:
       "Either give Progress a per-variant anatomy (a contract change, and the honest fix) or retire circular.",
   },
+  "unity:Accordion.type": {
+    adjudication: "structural-behavioral",
+    evidence:
+      "The generated Type attribute toggles the carrier and sets ItemGroup.SelectionType (single vs multiple open panels); selection cardinality, not appearance.",
+    remedy: "None.",
+  },
+  "unity:Popover.placement": {
+    adjudication: "structural-behavioral",
+    evidence:
+      "The generated Placement attribute toggles the carrier and sets AnchoredSurface.Placement, which positions the floating content at runtime; the contract declares no styles keyed on a placement value, so Controls.uss has nothing to select.",
+    remedy: "None. A USS modifier would assert a side the runtime positioning owns.",
+  },
+  "unity:Tabs.activationMode": {
+    adjudication: "structural-behavioral",
+    evidence:
+      "The generated ActivationMode attribute toggles the carrier and sets ItemGroup.ActivationMode (keyboard activation semantics); not appearance.",
+    remedy: "None.",
+  },
   "Select.position": {
     adjudication: "unresolved-contract-semantics",
     evidence:
@@ -162,8 +182,9 @@ const ledger = JSON.parse(readFileSync(LEDGER, "utf8"));
 
 let stamped = 0;
 for (const gap of ledger.gaps) {
-  const byValue = RULES[`${gap.component}.${gap.axis}.${gap.value}`];
-  const byAxis = RULES[`${gap.component}.${gap.axis}`];
+  const key = `${gap.target ? `${gap.target}:` : ""}${gap.component}.${gap.axis}`;
+  const byValue = RULES[`${key}.${gap.value}`];
+  const byAxis = RULES[key];
   const rule =
     byValue ??
     (byAxis && (!byAxis.only || byAxis.only.includes(gap.value))
@@ -171,7 +192,7 @@ for (const gap of ledger.gaps) {
       : undefined);
   if (!rule) {
     throw new Error(
-      `apply-adjudication: no rule for ${gap.component}.${gap.axis}=${gap.value}. ` +
+      `apply-adjudication: no rule for ${key}=${gap.value}. ` +
         `A newly censused finding must be adjudicated, not left blank.`,
     );
   }

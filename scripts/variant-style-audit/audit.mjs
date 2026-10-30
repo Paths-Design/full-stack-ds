@@ -20,6 +20,15 @@ import { getCssPrefix } from "../../packages/ds-codegen/dist/contract.js";
  * realized by the base `.<prefix>` rule and needs no per-value selector. Only a
  * NON-DEFAULT value with no consuming selector is a genuine gap.
  *
+ * Unity surface (UNITY-STYLING-PROJECTION-01, S8). The Unity target ships one
+ * generated stylesheet, `packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss`
+ * (frameworks/unity/uss.ts). For each component in fsds.targets.json's unity
+ * allowlist, a non-default variant value is realized there iff the same
+ * IR-derived carrier selector `.<prefix>--<value>` exists in that sheet, with
+ * the same default-awareness. Unity rows carry `target: "unity"` and their own
+ * ledger identity, so a web realization never clears a Unity gap or the
+ * reverse.
+ *
  * Out of scope: pseudo-state styling (:hover/:focus/disabled/invalid/checked) —
  * that is the separate state/pseudo-styling rail. This audit covers `variants`.
  *
@@ -38,6 +47,9 @@ const REPO = resolve(HERE, "../..");
 const CONTRACTS = resolve(REPO, "packages/ds-contracts/components");
 const REACT = resolve(REPO, "packages/ds-react/src/components");
 const OUT_DIR = resolve(REPO, "docs/internal/variant-style-audit");
+const TARGET_REGISTRY = resolve(REPO, "fsds.targets.json");
+const UNITY_SHEET = resolve(REPO, "packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss");
+export const UNITY_TARGET = "unity";
 
 const readJSON = (p) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null);
 const readText = (p) => (existsSync(p) ? readFileSync(p, "utf8") : "");
@@ -107,7 +119,7 @@ const INVERSE_LEDGER_COMMENT =
 
 /** Ledger identity for an unrealized variant value. */
 export function unrealizedId(row) {
-  return `${row.component}.${row.axis}=${row.value}`;
+  return `${row.target ? `${row.target}:` : ""}${row.component}.${row.axis}=${row.value}`;
 }
 
 /** Values shared by two or more axes, for the collision table in the report. */
@@ -128,13 +140,41 @@ export function collisionsOf(variants) {
   return collisions;
 }
 
-export function classify(component) {
+/**
+ * The unity allowlist declared in fsds.targets.json, in declared order; empty
+ * when the registry declares no unity target or no allowlist for it.
+ */
+export function unityAllowlist(registry = readJSON(TARGET_REGISTRY)) {
+  return registry?.targets?.find((t) => t.id === UNITY_TARGET)?.components ?? [];
+}
+
+/**
+ * The Unity surface: the allowlist and the generated sheet it is checked
+ * against. Null when no unity components are allowlisted. A declared allowlist
+ * with no generated sheet is an error, not an empty census: every value would
+ * otherwise read as a gap for a reason that has nothing to do with styling.
+ */
+export function unitySurface() {
+  const allowlist = unityAllowlist();
+  if (allowlist.length === 0) return null;
+  if (!existsSync(UNITY_SHEET)) {
+    throw new Error(`${UNITY_SHEET} is missing for the allowlisted unity components; run pnpm run generate:unity first.`);
+  }
+  return { allowlist, css: readFileSync(UNITY_SHEET, "utf8") };
+}
+
+/**
+ * Classify one component's variant axes against a stylesheet surface. Without
+ * `surface` the surface is the component's generated React CSS; with
+ * `{ target, css }` it is that target's stylesheet text (the Unity sheet).
+ */
+export function classify(component, surface) {
   const contract = readJSON(resolve(CONTRACTS, component, `${component}.contract.json`)) ?? {};
   const variants = contract.variants ?? {};
   const prefix = cssPrefix(component);
   const css = readText(resolve(REACT, component, `${component}.css`));
   const tokensCss = readText(resolve(REACT, component, `${component}.tokens.css`));
-  const both = css + "\n" + tokensCss;
+  const both = surface ? surface.css : css + "\n" + tokensCss;
 
   // Styling-intent inputs: component token-key path segments + styles.json
   // variant-selector names. An axis "should be CSS-realized" only when its
@@ -199,11 +239,13 @@ export function classify(component) {
       // The carrier must be one the IR says this component produces. If it is
       // not, the audit is asking about a class nothing ever carries, and the
       // finding would be about its own arithmetic rather than the corpus.
-      const carrierProduced = carriers.classes.has(carrier);
+      // The web DOM carrier set is a web fact; on another surface the row
+      // records only whether that surface's stylesheet selects the carrier.
+      const carrierProduced = surface ? undefined : carriers.classes.has(carrier);
       return {
         value: v,
         class: carrier,
-        carrierProduced,
+        ...(carrierProduced === undefined ? {} : { carrierProduced }),
         realized,
         isDefault,
         gap,
@@ -227,13 +269,38 @@ export function classify(component) {
       ...(ambiguous.length ? { ambiguousRealizations: ambiguous.map((r) => r.value) } : {}),
     });
   }
-  return { component, prefix, dims, collisions, taintedAxes: [...taintedAxes].sort() };
+  return { component, prefix, dims, collisions, taintedAxes: [...taintedAxes].sort(), ...(surface ? { target: surface.target } : {}) };
+}
+
+/** Gap rows (one per unrealized non-default value) for the ledger. */
+export function gapRowsOf(components) {
+  const rows = [];
+  for (const c of components) {
+    for (const d of c.dims) {
+      for (const row of d.values) {
+        if (!row.gap) continue;
+        rows.push({
+          ...(c.target ? { target: c.target } : {}),
+          component: c.component,
+          axis: d.dim,
+          value: row.value,
+          carrier: row.class,
+          disposition: row.disposition,
+        });
+      }
+    }
+  }
+  return rows;
 }
 
 // ---- run (only when executed directly; importable for the locked test) ----
 const RUN_DIRECTLY = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (RUN_DIRECTLY) {
-  const components = ALL_COMPONENTS().map(classify).filter((c) => c.dims.length > 0);
+  const components = ALL_COMPONENTS().map((c) => classify(c)).filter((c) => c.dims.length > 0);
+  const unity = unitySurface();
+  const unityComponents = unity
+    ? unity.allowlist.map((c) => classify(c, { target: UNITY_TARGET, css: unity.css })).filter((c) => c.dims.length > 0)
+    : [];
 
   const failing = []; // { component, dim, gaps, fullyUnrealized, default }
   for (const c of components) {
@@ -276,6 +343,12 @@ if (RUN_DIRECTLY) {
     collidingComponents,
     ambiguousRealizations: ambiguousFindings,
     components,
+    unity: {
+      sheet: "packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss",
+      allowlist: unity?.allowlist ?? [],
+      gaps: gapRowsOf(unityComponents),
+      components: unityComponents,
+    },
   };
   writeFileSync(resolve(OUT_DIR, "variant-style-matrix.json"), JSON.stringify(json, null, 2) + "\n");
 
@@ -340,6 +413,21 @@ if (RUN_DIRECTLY) {
     }
     md.push("");
   }
+  md.push("## Unity surface (target: unity)");
+  md.push("");
+  md.push("Each component in fsds.targets.json's unity allowlist, checked against the generated `Controls.uss`: a non-default value is realized iff its `.<prefix>--<value>` carrier is selected there.");
+  md.push("");
+  if (unityComponents.length) {
+    md.push("| component | axis | default | values (✓ realized · ✗ gap · ·default) |");
+    md.push("|---|---|---|---|");
+    for (const c of unityComponents) {
+      for (const d of c.dims) {
+        const cells = d.values.map((v) => `${v.value}${v.realized ? "✓" : v.isDefault ? "·(default)" : "✗"}`).join(" ");
+        md.push(`| ${c.component} | \`${d.dim}\` | ${d.default ?? "—"} | ${cells} |`);
+      }
+    }
+  } else md.push("_no allowlisted unity component declares a variant axis_");
+  md.push("");
   writeFileSync(resolve(OUT_DIR, "variant-style-matrix.md"), md.join("\n") + "\n");
 
   console.log(`\nVARIANT-STYLE-REALIZATION-AUDIT-01 — ${components.length} components with variants, ${totalAxes} axes, ${totalValues} values`);
@@ -353,6 +441,9 @@ if (RUN_DIRECTLY) {
     console.log(`\n⚠ Ambiguous realizations (colliding axis via bare selector): ${ambiguousFindings.length}`);
     for (const f of ambiguousFindings) console.log(`  - ${f.component}.${f.dim}: ${f.values.join(", ")}`);
   }
+  const unityGaps = gapRowsOf(unityComponents);
+  console.log(`\nUnity surface (${unity?.allowlist.length ?? 0} allowlisted): ${unityGaps.length} unrealized non-default value(s)`);
+  for (const g of unityGaps) console.log(`  - ${g.component}.${g.axis}=${g.value} (.${g.carrier})`);
   console.log(`\nReport: ${resolve(OUT_DIR, "variant-style-matrix.md")}`);
 
   // --- inverse ledger (RAIL-WEB-STYLE-CARRIER-REACHABILITY-01) --------------
@@ -362,21 +453,7 @@ if (RUN_DIRECTLY) {
   // rides along as triage — `no-styling-intent` marks the values most likely to
   // be structural/behavioral (placement, `as`, politeness) rather than visual
   // debt — and it decides NOTHING about whether the row exists.
-  const gapRows = [];
-  for (const c of components) {
-    for (const d of c.dims) {
-      for (const row of d.values) {
-        if (!row.gap) continue;
-        gapRows.push({
-          component: c.component,
-          axis: d.dim,
-          value: row.value,
-          carrier: row.class,
-          disposition: row.disposition,
-        });
-      }
-    }
-  }
+  const gapRows = [...gapRowsOf(components), ...unityGaps];
 
   if (process.argv.includes("--reseed")) {
     const prior = existsSync(LEDGER_PATH)
@@ -393,7 +470,7 @@ if (RUN_DIRECTLY) {
             const p = prior.get(unrealizedId(r));
             return {
               ...r,
-              spec: p?.spec ?? "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01",
+              spec: p?.spec ?? (r.target === UNITY_TARGET ? "UNITY-STYLING-PROJECTION-01" : "RAIL-WEB-STYLE-CARRIER-REACHABILITY-01"),
               note:
                 p?.note ??
                 "Censused at the predicate change; not yet adjudicated. Paint it, or establish that the axis is structural/behavioral and retire the visual claim.",

@@ -5,9 +5,14 @@ import type { ComponentIR } from "../../ir.js";
 import { buildComponentIR } from "../../ir.js";
 import { admitContract, loadBoundary, type ClassifiedLeaf, type ContractWithSidecars } from "./boundary.js";
 import { triggerParts } from "./behaviors.js";
+import { loadTokenSources, projectStylesheet } from "./uss.js";
 import { identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
 
 export { unityLowering } from "./behaviors.js";
+
+/** Package-relative path (without extension) of the generated stylesheet; the
+ * runtime's `Resources.Load<StyleSheet>("FullStackDS/Controls")` names it. */
+export const STYLESHEET_RESOURCE = "Runtime/Resources/FullStackDS/Controls";
 export type { UnityBehavior, UnityLowering } from "./behaviors.js";
 
 const quote = (s: string): string => JSON.stringify(s);
@@ -33,7 +38,8 @@ function domNodeKey(keyed: string, ir: ComponentIR): string | undefined {
  */
 export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, classified: ClassifiedLeaf[]): void {
   const { lowering, source } = walkComponent(ir);
-  const { behavior, channel } = lowering;
+  const { behavior } = lowering;
+  const channel = lowering.behavior === "Passive" ? undefined : lowering.channel;
   const emitted = rootPublicMembers(source, ir.name);
   const triggers = triggerParts(ir);
   const rules = new Map(loadBoundary().rules.map(r => [r.id, r]));
@@ -54,15 +60,15 @@ export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, 
       case "emitted-property":
         ok = member !== undefined && emitted.has(pascal(member)); subject = `prop ${member}`; break;
       case "selected-channel-member":
-        ok = member !== undefined && [channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp].includes(member); subject = `prop ${member}`; break;
+        ok = member !== undefined && channel !== undefined && [channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp].includes(member); subject = `prop ${member}`; break;
       case "selected-channel":
-        ok = channelKey === channel.name; subject = `channel ${channelKey}`; break;
+        ok = channel !== undefined && channelKey === channel.name; subject = `channel ${channelKey}`; break;
       case "channel-change-event":
-        ok = eventKey !== undefined && (events[eventKey]?.emittedVia ?? []).includes(channel.changeHandlerProp); subject = `event ${eventKey}`; break;
+        ok = channel !== undefined && eventKey !== undefined && (events[eventKey]?.emittedVia ?? []).includes(channel.changeHandlerProp); subject = `event ${eventKey}`; break;
       case "selected-channel-binding":
         // The behavior's state class realises a binding to the selected
         // channel's value only on a trigger part it owns.
-        ok = binding === `channel:${channel.name}.value` && node !== undefined && triggers.has(node); subject = `binding ${leaf.keyed}`; break;
+        ok = channel !== undefined && binding === `channel:${channel.name}.value` && node !== undefined && triggers.has(node); subject = `binding ${leaf.keyed}`; break;
       case "bound-prop-property":
         ok = binding.startsWith("prop:") && node !== undefined && triggers.has(node) && emitted.has(pascal(binding.slice(5))); subject = `binding ${leaf.keyed}`; break;
     }
@@ -85,6 +91,16 @@ export function createUnityEmitter(): FrameworkEmitter {
     },
     emitComponent: ir => [{ relativePath: `${identifier(ir.name)}/${ir.name}.cs`, contents: walkComponent(ir).source }],
     emitTests: () => [], // Independent Unity EditMode oracles live outside generated source.
+    // S1/S6: the package stylesheet and its unsupported ledger, projected from
+    // every admitted component at once (uss.ts). `Theme.Attach` loads the
+    // sheet as the Resources asset `FullStackDS/Controls`.
+    emitTargetAssets: (irs, opts) => {
+      const { uss, ledger } = projectStylesheet(irs, loadTokenSources(opts.contractsRoot), ir => walkComponent(ir).hosts);
+      return [
+        { relativePath: `${STYLESHEET_RESOURCE}.uss`, contents: uss },
+        { relativePath: `${STYLESHEET_RESOURCE}.unsupported.json`, contents: `${JSON.stringify(ledger, null, 2)}\n` },
+      ];
+    },
     emitBarrel: names => `// Generated component catalog.\nnamespace FullStackDS\n{\n    public static class ComponentCatalog\n    {\n        public static readonly string[] Names = { ${names.sort().map(quote).join(", ")} };\n    }\n}\n`,
     discoverComponentIds: root => fs.existsSync(root) ? fs.readdirSync(root).filter(n => fs.existsSync(path.join(root, n, `${n}.cs`))).sort() : [],
   };

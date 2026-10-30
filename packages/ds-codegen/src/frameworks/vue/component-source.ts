@@ -1675,6 +1675,7 @@ function generateVueDomTreeComponentSource(ir: ComponentIR): string {
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) importLines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
+  if (ir.nativeTextChannels?.length) importLines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   if (ir.pagedSet) importLines.push(`import { usePagedSet } from "../../primitives/hooks/usePaging.js";`);
   if (ir.dateGrid) importLines.push(`import { useDateGrid } from "../../primitives/hooks/useDateGrid.js";`);
   if (ir.transfer) importLines.push(`import { useTransferList } from "../../primitives/hooks/useTransferList.js";`);
@@ -2323,6 +2324,11 @@ function renderVueDomNode(
   // no-op when undefined. Channel events delegate to the existing
   // channel-handler logic.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
+      const channel = node.nativeTextChannel;
+      attrs.push(`@${eventName}="(e) => requestNativeTextChange(e, () => behavior.set${capitalize(channel)}((e.currentTarget as HTMLInputElement).value), () => behavior.${channel}.value)"`);
+      continue;
+    }
     if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
       const arg = renderVueBindingValue(expr.arg, ctx);
       if (arg !== null) attrs.push(`@change="(e) => requestNativeRadioChange(e, () => behavior.set${capitalize(node.nativeRadioChannel)}(${arg}), () => behavior.${node.nativeRadioChannel}.value)"`);

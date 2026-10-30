@@ -3,11 +3,17 @@
  * stay under tmp/unity-pilot and are never package source. */
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const revision = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' });
+const dirt = spawnSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' });
+if (revision.status !== 0 || dirt.status !== 0) throw new Error('Cannot identify Unity pilot source state');
 const project = path.join(root, 'tmp/unity-pilot/project');
 const evidence = path.join(root, 'tmp/unity-pilot');
+const provenance = path.join(evidence, 'provenance.json');
+fs.rmSync(provenance, { force: true });
 const editor = process.env.UNITY_EDITOR ?? '/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity';
 if (!fs.existsSync(editor)) throw new Error('Set UNITY_EDITOR to an installed Unity 6 Editor executable.');
 // Optional compiler-only diagnostic. It cannot stand in for Editor execution.
@@ -68,4 +74,11 @@ if (!fs.existsSync(results)) {
 const xml = fs.readFileSync(results, 'utf8');
 const summary = xml.match(/<test-run\b[^>]*>/)?.[0];
 console.log(summary);
+fs.writeFileSync(provenance, JSON.stringify({
+  editor,
+  sourceRevision: revision.stdout.trim(),
+  sourceDirty: dirt.stdout.trim().length > 0,
+  resultsSha256: crypto.createHash('sha256').update(xml).digest('hex'),
+  summary,
+}, null, 2));
 if (run.status !== 0 || !summary?.includes('result="Passed"') || !/passed="[1-9]\d*"/.test(summary)) process.exit(1);

@@ -1,4 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:ds="FullStackDS">
+    <!-- The consumer sample sheet comes first so every generated rule in Controls.uss outranks it at equal specificity. -->
+    <Style src="Sample.uss" />
     <Style src="/Packages/com.fullstackds.ui/Runtime/Resources/FullStackDS/Controls.uss" />
     <ui:ScrollView class="fsds-theme fsds-sample">
         <ui:VisualElement class="fsds-sample-body">
@@ -33,8 +35,10 @@
             <ds:Popover name="help" placement="bottom" class="fsds-sample-section">
                 <ds:PopoverTrigger text="About these controls" />
                 <ds:PopoverContent>
+                    <!-- Open content floats to the panel root, outside this tree, so it carries the sample sheet itself. -->
+                    <Style src="Sample.uss" />
                     <ui:Label text="Contract-generated UI Toolkit components. These controls share one interaction contract across the Editor and your game." />
-                    <ui:Button text="Focusable content" />
+                    <ui:Button text="Focusable content" class="fsds-sample-content-action" />
                 </ds:PopoverContent>
             </ds:Popover>
         </ui:VisualElement>

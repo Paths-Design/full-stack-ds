@@ -1,10 +1,11 @@
 id: TEXT-CONTROLLED-RECONCILIATION-01
 title: 'Reconcile native text values after controlled requests'
 mode: fix
-lifecycle_state: active
-worktree: text-controlled-reconciliation
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Accepted text caret composition and disposal are verified in five web frameworks; corrected committed-source citations preserve ignored execution logs.'
 created_at: '2026-10-30T01:54:48.793Z'
-updated_at: '2026-10-30T02:40:12.408Z'
+updated_at: '2026-10-30T05:27:57.324Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -48,6 +49,8 @@ scope:
     - packages/ds-svelte/src/components/Command
     - packages/ds-angular/src/components/Command
     - packages/ds-lit/src/components/Command
+    - packages/ds-codegen/src/form-control-ir.test.ts
+    - packages/ds-codegen/src/frameworks/vue-change-event-timing.test.ts
   out: []
 invariants:
   - 'Accepted channel state owns displayed committed text with one callback per native edit'
@@ -78,3 +81,32 @@ contracts:
   - name: 'text-ownership'
     type: behavior
     path: 'packages/ds-codegen/src/interaction-runtime.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Trusted Chromium edits restore accepted text once and retain focus for Input and TextField in all five web frameworks; Command search exercises the same normalized capability. Final40 cases passed; raw .caws/state/text-fixture-browser.log and screenshots are retained ignored execution evidence, not tracked artifacts. Interaction proof only, not whole-component accessibility conformance."
+    recorded_at: "2026-10-30T05:10:44.648Z"
+    command: "FSDS_E2E_PORT=5198 node node_modules/@playwright/test/cli.js test e2e/text-controlled.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: fb194d944c9c1a821a24b939b2476f3807c5dcf9
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Final40 browser cases and retained .caws/state/text-fixture-browser.log plus composition JSON prove five actual parents accept mid-string X/Y edits with caret3/4, later state and identity-accepted Japanese composition on the identical input. Refusal retains draft then restores accepted text. Logs are ignored execution evidence referenced here; CDP Chromium only, no OS IME or cross-browser claim."
+    recorded_at: "2026-10-30T05:18:24.616Z"
+    command: "FSDS_E2E_PORT=5198 node node_modules/@playwright/test/cli.js test e2e/text-controlled.spec.ts --workers=1"
+    exit_code: 0
+    commit_sha: fb194d944c9c1a821a24b939b2476f3807c5dcf9
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Focused57 passed in retained .caws/state/text-reviewed-focused.log: unrelated controls, callback failure propagation, disposed getter/scheduler suppression, composition interference and React cleanup. Final40 browser cases include Angular synchronous owner destruction without pageerror and actual mounted child constructor without NG0912 duplication. Ignored logs are execution references, not tracked artifact citations."
+    recorded_at: "2026-10-30T05:18:29.636Z"
+    command: pnpm exec vitest run packages/ds-codegen/src/interaction-runtime.test.ts packages/ds-codegen/src/native-text-control-ir.test.ts src/consumption/native-text-value.test.tsx packages/ds-codegen/src/form-control-ir.test.ts packages/ds-codegen/src/frameworks/vue-change-event-timing.test.ts
+    exit_code: 0
+    commit_sha: "7704f9faec87841dc698998bb7bdba3026c01664"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Merged root5247/359 passed at stable d317079c; all framework suites, integrated six-target rail, lint, docs81 claims/15 stamps/240 links, generated drift and policy43 files passed. Raw ignored execution logs: .caws/state/text-landed-root.log, text-reviewed-frameworks.log, text-integrated-rail/docs/godot.log, text-reviewed-lint.log and text-final-policy.log. Published surfaces unchanged across main reconciliation; new Godot factory22 also passed. Generic renamed/path/callback falsifiers and source review support authority; no full-library readiness claim. Commit verification checks citation existence, not execution; execution was directly observed."
+    recorded_at: "2026-10-30T05:18:34.092Z"
+    command: "pnpm exec vitest run --maxWorkers=4"
+    exit_code: 0
+    commit_sha: d317079c881e1f5aa8b3882f813c6486cee4bea8

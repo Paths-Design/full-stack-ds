@@ -1,0 +1,74 @@
+id: ENGINE-PASSIVE-FAMILY-01
+title: 'Unity and Godot passive component parity foundations'
+mode: feature
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Bounded Unity and Godot Text/Divider foundation merged with inspected engine receipts and classified fidelity gaps'
+created_at: '2026-10-30T07:16:09.868Z'
+updated_at: '2026-10-30T11:48:46.802Z'
+created_by_session: '01a1883a-a922-7551-aca0-c7ed2d6e3ac8'
+blast_radius:
+  modules:
+    - 'Unity and Godot passive content lowering, generated packages, registry, runtime proof'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-unity'
+    - 'packages/ds-godot'
+    - 'fsds.targets.json'
+    - 'scripts/unity-tests.mjs'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'package.json'
+    - docs/specifications/governed-ci.md
+    - packages/ds-codegen/src/cli.test.ts
+    - scripts/variant-style-audit/known-unrealized.json
+  out: []
+invariants:
+  - 'Passive controls are dispatched from framework-neutral IR facts, never component identity; no unused channel API is emitted.'
+  - 'Admitted contract facts either reach an engine runtime consumer or remain explicitly classified as gaps; generation never silently claims full fidelity.'
+acceptance:
+  - id: A1
+    given: 'Text and Divider contracts'
+    when: 'the Unity and Godot targets generate'
+    then: 'both targets emit reusable passive content controls derived from IR facts without component-name dispatch and the registry admits them.'
+  - id: A2
+    given: 'the generated controls'
+    when: 'target-specific runtime witnesses run'
+    then: 'consumer composition, typography, orientation and token-backed styling are checked in Unity Editor and Godot editor/runtime/export with source-bound receipts.'
+  - id: A3
+    given: 'the expanded family'
+    when: 'the boundary and generation gates run'
+    then: 'unsupported facts and fidelity gaps are classified, target outputs regenerate cleanly, and no existing interaction behavior regresses.'
+non_functional: {}
+contracts:
+  - name: 'passive-family'
+    type: behavior
+    path: 'packages/ds-codegen/src/frameworks/unity/walker.test.ts'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "fsds.targets.json admits Text and Divider in Unity/Godot; pnpm run governed:rail generated Unity 6/6 and Godot 10/10 at 5f4dda88; node scripts/committed-tree-check.mjs generated passed; focused Unity/Godot factory and walker tests passed in pnpm test"
+    recorded_at: "2026-10-30T11:46:01.714Z"
+    command: "pnpm run governed:rail"
+    exit_code: 0
+    commit_sha: "01971c080d2b42100579b2ba684c1f75df09e470"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Clean-source Unity EditMode 43/43: tmp/unity-pilot/provenance.json + results.xml (sourceRevision bb5de67); Godot editor serialization, runtime and fresh macOS export: /private/tmp/fsds-godot-passive-main-built-20261030/provenance.json + godot-runtime.json + godot.json (sourceRevision bb5de67, matching runId 67e99c40); passive rows cover composition, typography, orientation and token-backed rule pixels. Runtime receipts are ignored local output; the CAWS verifier checks only the reachable commit, while the agent inspected the receipts."
+    recorded_at: "2026-10-30T11:48:14.898Z"
+    command: "pnpm run test:unity; pnpm run test:godot"
+    exit_code: 0
+    commit_sha: bb5de67bd0adfb3feafcd8fdcf2ce3ccd90f5745
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Unity boundary audit: 0 unclassified/no dead rules/no lowered contradictions; variant realization: 59/59 ledgered, 0 stale; governed:rail plus committed-tree-check generated passed; pnpm test: 363 files/5321 tests; framework suites: Vue 853, Lit 618 with 2 skips, Svelte 753, Angular 639, RN 260 passed; Godot interaction rows passed in runtime/export. Local logs /private/tmp/fsds-passive-root-test.log and /private/tmp/fsds-passive-framework-test.log were inspected; CAWS verifies the reachable merge commit, not these ignored logs."
+    recorded_at: "2026-10-30T11:48:31.180Z"
+    command: "pnpm run audit:unity-boundary; pnpm run audit:variant-realization; pnpm run governed:rail; pnpm test; pnpm run test:frameworks"
+    exit_code: 0
+    commit_sha: "01971c080d2b42100579b2ba684c1f75df09e470"

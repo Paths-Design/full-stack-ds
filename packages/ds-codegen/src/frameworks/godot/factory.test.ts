@@ -5,6 +5,7 @@ import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
 import { createGodotEmitter, godotPlan, themeColor } from "./factory.js";
 import { godotActionPlan } from "./action-plan.js";
+import { godotCompositePlan } from "./composite-plan.js";
 const root = path.resolve(__dirname, "../../../../..");
 function fixture(name: string) { return JSON.parse(fs.readFileSync(path.join(root,`packages/ds-contracts/components/${name}/${name}.contract.json`),"utf8")) as ComponentContract; }
 function styledFixture(name: string) {
@@ -23,6 +24,54 @@ function buildSequenceFixture(c = sequenceFixture()) {
   return buildComponentIR(c, { allContracts: new Map([[c.name, c], ["Pagination", pagination], ["Icon", fixture("Icon")]]) });
 }
 describe("Godot bounded lowering", () => {
+  it("emits renamed compound parts as persistent scene hosts with source-addressed styling", () => {
+    const source = styledFixture("Card");
+    const ir = buildComponentIR(source);
+    ir.name = "ArticleSurface";
+    const plan = godotCompositePlan(ir);
+    if (!plan) throw new Error("Compound plan was not selected");
+    expect(plan.operation).toBe("composite");
+    expect(plan.parts).toEqual(["header", "media", "content", "footer", "actions", "badge", "description", "link", "note"]);
+    expect(plan.styles.find(rule => rule.source === "root")?.declarations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ property: "background-color", token: "card.color.background.default", designSlot: "card.design.root.background.fill" }),
+      expect.objectContaining({ property: "padding", token: "card.size.padding" }),
+    ]));
+    expect(plan.styles.find(rule => rule.source === "--inset")?.predicates).toEqual([{ kind: "variant", axis: "density", value: "inset" }]);
+    const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: "" });
+    const scene = files.find(file => file.relativePath === "ArticleSurface/ArticleSurface.tscn")!.contents;
+    expect(scene).toContain('parent="Chrome/Body/Part_content"');
+    expect(scene).toContain('parent="Chrome/Body/Part_actions"');
+    expect(files.find(file => file.relativePath === "ArticleSurface/ArticleSurface.gd")!.contents).toContain("runtime/composite.gd");
+    const capabilities = JSON.parse(files.find(file => file.relativePath.endsWith("capabilities.json"))!.contents);
+    expect(capabilities.omissions).toContain("root.box-shadow: no Godot composite style mapping");
+  });
+  it("projects decorated content into icon and content hosts without inventing a default glyph", () => {
+    const ir = buildComponentIR(styledFixture("Badge"));
+    ir.name = "Marker";
+    const plan = godotCompositePlan(ir);
+    if (!plan) throw new Error("Decorated plan was not selected");
+    expect(plan.layout).toBe("inline");
+    expect(plan.parts).toEqual(["icon", "content"]);
+    expect(plan.contentPart).toBe("content");
+    expect(plan.excluded).toEqual(["showStatusIcon"]);
+    expect(plan.omissions).toContain("showStatusIcon: no executable native composition fact");
+    expect(plan.styles.find(rule => rule.source === "--danger")?.declarations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ property: "badge.color.background.default", value: "#fac2c2" }),
+    ]));
+  });
+  it("names new composite props as excluded and refuses changed decorated anatomy", () => {
+    const card = styledFixture("Card");
+    card.props!.designed!.members!.push({ name: "futureBehavior", propType: { kind: "boolean" } });
+    const plan = godotCompositePlan(buildComponentIR(card));
+    expect(plan?.excluded).toContain("futureBehavior");
+    expect(plan?.omissions).toContain("futureBehavior: no executable native composition fact");
+    const badge = buildComponentIR(styledFixture("Badge"));
+    badge.dom!.children[0]!.ifProp = "showStatusIcon";
+    expect(() => godotPlan(badge)).toThrow("GODOT_UNSUPPORTED_COMPOSITE_ANATOMY: Badge");
+    badge.dom!.children[0]!.ifProp = "icon";
+    badge.dom!.children[1]!.events.click = { kind: "prop", prop: "icon" };
+    expect(() => godotPlan(badge)).toThrow("GODOT_UNSUPPORTED_COMPOSITE_ANATOMY: Badge");
+  });
   it("lowers renamed projected actions from anatomy and authored style rules", () => {
     const source = styledFixture("Button");
     const renamed = JSON.parse(JSON.stringify(source).replaceAll("onClick", "onActivate")) as ComponentContract;
@@ -168,6 +217,22 @@ describe("Godot bounded lowering", () => {
     expect(rule.excluded).toEqual(["decorative"]);
     expect(rule.styles.find((entry: { source: string }) => entry.source === "root").declarations).toEqual(expect.arrayContaining([{ property: "border-top-color", value: "#d0d0d0", token: "divider.color" }]));
     expect(rule.styles.find((entry: { source: string }) => entry.source === "--vertical").predicates).toEqual([{ kind: "variant", axis: "orientation", value: "vertical" }]);
+    const textReceipt = JSON.parse(textFiles.find(file => file.relativePath === "Prose/capabilities.json")!.contents);
+    expect(textReceipt.excludedProps).toEqual(["as"]);
+    expect(textReceipt.fidelityGaps).toEqual([
+      "children.node-ref: content is String-only; retained inline node composition is not realized",
+      "as: DOM element and heading semantics have no native mapping",
+      "typography.font-family: SystemFont fallback does not preserve the authored Web font family",
+      "typography.line-height: integer line_spacing approximates CSS line boxes",
+      "typography.letter-spacing: integer glyph spacing rounds fractional tracking",
+      "transform.capitalize: Godot String.capitalize word normalization differs from CSS text-transform",
+    ]);
+    const ruleReceipt = JSON.parse(ruleFiles.find(file => file.relativePath === "RuleLine/capabilities.json")!.contents);
+    expect(ruleReceipt.excludedProps).toEqual(["decorative"]);
+    expect(ruleReceipt.fidelityGaps).toEqual([
+      "decorative: semantic separator versus presentation has no native accessibility mapping",
+      "layout: parent-constrained Godot container geometry is not CSS flow/flex layout parity",
+    ]);
   });
   it("preserves changed static style facts and rejects unsupported props", () => {
     const prose = styledFixture("Text");

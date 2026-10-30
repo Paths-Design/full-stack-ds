@@ -1,10 +1,11 @@
 /**
  * Unity behavior dispatcher (brief rule R7).
  *
- * The three runtime behaviors (`BooleanControl`, `ItemGroup`,
+ * The interactive runtime behaviors (`BooleanControl`, `ItemGroup`,
  * `AnchoredSurface`) are plain C# classes the generated constructor attaches
- * to the tree the anatomy walker built. Which one attaches, and with which
- * options, is decided here from IR facts only: value model, interaction
+ * to the tree the anatomy walker built. Passive content and rule shapes need
+ * no interaction attachment. Which path applies is decided from IR facts:
+ * value model, interaction
  * operation and presence, surface attachment, and state dimensions. No
  * component, part, channel or class name is consulted.
  *
@@ -15,10 +16,11 @@
  * refusals are what let the support boundary call the matching families
  * `lowered`.
  */
-import type { ComponentIR, NormalizedChannelIR, PartIR } from "../../ir.js";
+import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, PartIR } from "../../ir.js";
+import { isBareRuleLeaf, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "BooleanControl" | "ItemGroup" | "AnchoredSurface";
+export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -48,7 +50,10 @@ export interface AnchoredSurfaceLowering extends LoweringBase {
   trigger: PartIR;
   content: PartIR;
 }
-export type UnityLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering;
+export interface PassiveLowering {
+  behavior: "Passive";
+}
+export type UnityLowering = PassiveLowering | BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering;
 
 /**
  * Source: `ir.states.dimensions`. The dimension a behavior projects is the
@@ -90,6 +95,10 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     return { behavior: "AnchoredSurface", channel: ir.interaction.channel, trigger: ir.surface.anchor!.part, content: ir.surface.content.part, stateClass: stateClassOf(ir) };
   }
   if (portal) throw new Error(`UNITY_UNSUPPORTED_PORTAL: ${ir.name} enables a portal but only anchored surfaces reparent content`);
+  if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir))) {
+    if (focus !== undefined && focus !== "none") throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which Passive does not realise`);
+    return { behavior: "Passive" };
+  }
   if (ir.formControl?.valueModel === "boolean") {
     if (focus !== undefined && focus !== "auto") refuseFocus("BooleanControl");
     return { behavior: "BooleanControl", channel: ir.formControl.channel, control: ir.formControl.part, stateClass: stateClassOf(ir) };
@@ -119,6 +128,31 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     };
   }
   throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name}`);
+}
+
+/** Source: HTML attribute vocabulary as `DomNodeIR.bindings` carries it. */
+const DISABLED_ATTRIBUTE = "disabled";
+
+/** The anatomy node rendering `part`, depth-first. */
+export function findNode(node: DomNodeIR | undefined, part: string): DomNodeIR | undefined {
+  if (!node) return undefined;
+  if (node.part === part) return node;
+  for (const child of node.children) {
+    const found = findNode(child, part);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+/** The disabled prop (R6): the interaction's disabledProp, else a
+ * `disabled=prop:<p>` binding on the form-control part. Its generated
+ * property drives SetEnabled on the root, so the USS projection reads the
+ * same fact to lower a `<prefix>--<disabledProp>` modifier as `:disabled`. */
+export function disabledProp(ir: ComponentIR): string | undefined {
+  if (ir.interaction?.disabledProp) return ir.interaction.disabledProp;
+  const control = ir.formControl && findNode(ir.dom, ir.formControl.part.name);
+  const binding: BindingExpression | undefined = control?.bindings[DISABLED_ATTRIBUTE];
+  return binding?.kind === "prop" ? binding.prop : undefined;
 }
 
 /** Trigger parts (R1): the form control part, every interaction trigger part

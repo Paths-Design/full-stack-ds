@@ -1398,6 +1398,7 @@ function generateSvelteDomTreeComponentSource(ir: ComponentIR): string {
   const importLines: string[] = [];
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) importLines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) importLines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
+  if (ir.nativeTextChannels?.length) importLines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   if (hasHook) {
     importLines.push(`import { use${ir.name} } from "./use${ir.name}.svelte.js";`);
   }
@@ -2058,6 +2059,11 @@ function renderSvelteDomNode(
     (node.componentInstance?.events ?? []).map((e) => [e.name, e]),
   );
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
+      const channel = node.nativeTextChannel;
+      attrs.push(`on${eventName}={(e) => requestNativeTextChange(e, () => ${ctx.hookVar}.set${capitalizeSvelte(channel)}((e.currentTarget as HTMLInputElement).value), () => ${ctx.hookVar}.${channel})}`);
+      continue;
+    }
     if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
       const arg = renderSvelteBindingValue(expr.arg, ctx);
       if (arg !== null) attrs.push(`onchange={(e) => requestNativeRadioChange(e, () => ${ctx.hookVar}.set${capitalizeSvelte(node.nativeRadioChannel)}(${arg}), () => ${ctx.hookVar}.${node.nativeRadioChannel})}`);

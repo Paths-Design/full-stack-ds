@@ -31,7 +31,7 @@ namespace FullStackDS
         {
             this.host = host ?? throw new ArgumentNullException(nameof(host));
             this.triggerClass = triggerClass; this.contentClass = contentClass; this.stateClass = stateClass;
-            Theme.Attach(host);
+            Theme.AddStyleSheet(host);
             PartDiscovery.Claim(host, triggerClass, contentClass);
             host.RegisterCallback<AttachToPanelEvent>(OnAttach);
             host.RegisterCallback<DetachFromPanelEvent>(OnDetach);
@@ -89,7 +89,8 @@ namespace FullStackDS
                 content = PartDiscovery.Find(host, contentClass).FirstOrDefault();
                 if (content != null) {
                     PartDiscovery.Hold(content, this);
-                    Theme.Attach(content);
+                    // Floating content leaves the tree that carries the consumer's theme scope.
+                    Theme.Follow(content, host);
                     content.style.position = Position.Absolute;
                     content.focusable = true;
                     content.RegisterCallback<GeometryChangedEvent>(AnchorGeometry);
@@ -163,6 +164,8 @@ namespace FullStackDS
             if (current) tracking?.Resume(); else tracking?.Pause();
             if (content == null) return;
             if (current && host.enabledInHierarchy) {
+                // The host's theme scope may have changed (or the host moved) since the last open.
+                Theme.Mirror(content, host);
                 if (content.hierarchy.parent != panelRoot) {
                     panelRoot.Add(content); content.BringToFront();
                     content.schedule.Execute(Reposition);

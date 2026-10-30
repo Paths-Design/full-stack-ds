@@ -1699,6 +1699,7 @@ function generateDomTreeImports(ir: ComponentIR, usesNothing: boolean, usesRef: 
   }
   if (ir.interaction && ir.dom && ir.interaction.triggers.some(t => t.operation !== "select" && t.operation !== "toggle-item")) lines.push(`import { canActivateInteraction } from "../../primitives/interaction.js";`);
   if (ir.compositeControl?.nativeRadio) lines.push(`import { requestNativeRadioChange } from "../../primitives/interaction.js";`);
+  if (ir.nativeTextChannels?.length) lines.push(`import { requestNativeTextChange } from "../../primitives/interaction.js";`);
   // Always include `property`; add `state` when the dom tree has a children
   // guard so the private _hasChildren reactive field can be declared.
   const decorators = ["property"];
@@ -2756,6 +2757,11 @@ function renderLitDomNode(
   // callback props. ifDefined() would wrap the listener-producing
   // function itself, breaking listener installation.
   for (const [eventName, expr] of Object.entries(node.events)) {
+    if (node.nativeTextChannel && (eventName === "input" || eventName === "change") && expr.kind === "channel" && expr.field === "onChange" && expr.channel === node.nativeTextChannel) {
+      const channel = node.nativeTextChannel;
+      attrs.push(`@${eventName}=\${(e: Event) => requestNativeTextChange(e, () => this.behavior.set${capitalizeLit(channel)}((e.currentTarget as HTMLInputElement).value), () => this.behavior.${channel})}`);
+      continue;
+    }
     if (node.nativeRadioChannel && eventName === "change" && expr.kind === "channelCall") {
       const arg = renderLitBindingValue(expr.arg, ctx);
       if (arg !== null) attrs.push(`@change=\${(e: Event) => requestNativeRadioChange(e, () => this.behavior.set${capitalizeLit(node.nativeRadioChannel)}(${arg}), () => this.behavior.${node.nativeRadioChannel})}`);

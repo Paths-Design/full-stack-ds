@@ -41,16 +41,14 @@
     {
       "id": "rtl",
       "match": ["contract:/rtl/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Icon flipping and row reversal are expressible as generated USS (flex-direction, scale) once styling projection exists; nothing honours rtl today."
+      "disposition": "refused",
+      "reason": "USS has no logical properties and no layout direction: the USS projection (uss.ts) lowers logical sides as LTR physical sides, so icon flipping and row reversal are not realised."
     },
     {
       "id": "morphology",
       "match": ["contract:/morphology/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "The box-model geometry profile projects into generated USS slot defaults."
+      "disposition": "lowered",
+      "via": "uss.ts (S3): the box-model geometry profile reaches ir.nativeStyleRules as box-model.* slot definitions and structure consumers, which project into the generated Controls.uss."
     },
     {
       "id": "anatomy-parts",
@@ -179,6 +177,14 @@
       "reason": "Dynamic roles and ARIA attributes have no runtime consumer: UI Toolkit exposes no assistive-technology tree."
     },
     {
+      "id": "anatomy-conditional-data-binding",
+      "match": ["contract:/anatomy/dom/bindings/data-*", "contract:/anatomy/dom/**/children/*/bindings/data-*"],
+      "valuePattern": "^conditional:prop:[A-Za-z_$][\\w$-]*\\|literal:true\\|literal:false$",
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A conditional DOM data attribute is not a UI Toolkit property. The passive walker checks its syntax and omits it; a target behavior must consume the prop before the attribute can affect rendering."
+    },
+    {
       "id": "anatomy-bindings",
       "match": ["contract:/anatomy/dom/bindings/**", "contract:/anatomy/dom/**/children/*/bindings/**", "contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
       "disposition": "pending",
@@ -288,7 +294,7 @@
       "match": ["contract:/props/*/members/plain:appearance/**"],
       "disposition": "lowered",
       "realizes": "emitted-property",
-      "via": "walker.ts item-group vocabulary (R6): [UxmlAttribute] Appearance validated against its variant axis toggles the root's class-recipe modifier (<cssPrefix>--<value>), which the shipped stylesheet keys; P3 moves that styling into generated USS."
+      "via": "walker.ts item-group vocabulary (R6): [UxmlAttribute] Appearance validated against its variant axis toggles the root's class-recipe modifier (<cssPrefix>--<value>), which the generated USS keys (uss.ts)."
     },
     {
       "id": "prop-surface-dismissal-options",
@@ -309,11 +315,44 @@
       "via": "[UxmlAttribute] Placement on the generated root, validated against its variant axis, drives the attached AnchoredSurface; floating content flips and shifts at panel edges."
     },
     {
+      "id": "prop-passive-style-axis",
+      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**"],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
+    },
+    {
+      "id": "prop-polymorphic-tag",
+      "match": ["contract:/props/*/members/plain:as/**"],
+      "disposition": "refused",
+      "reason": "A UI Toolkit control cannot change its underlying semantic element tag; the native type is fixed by the generated class."
+    },
+    {
+      "id": "prop-passive-text-layout",
+      "match": ["contract:/props/*/members/plain:align/**", "contract:/props/*/members/plain:transform/**", "contract:/props/*/members/plain:truncate/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Text alignment, case transformation and measured ellipsis need a native TextElement consumer. The current class has no corresponding attribute or style behavior."
+    },
+    {
+      "id": "prop-passive-rule-override",
+      "match": ["contract:/props/*/members/plain:thickness/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "An authored rule-thickness override needs a validated native length and orientation-aware border update; token-backed default thickness is separate."
+    },
+    {
+      "id": "prop-passive-semantic-options",
+      "match": ["contract:/props/*/members/plain:decorative/**", "contract:/props/*/members/plain:title/**"],
+      "disposition": "refused",
+      "reason": "Decorative role and title describe DOM accessibility/tooltip semantics without an equivalent UI Toolkit runtime consumer on the supported desktop witness."
+    },
+    {
       "id": "prop-size",
       "match": ["contract:/props/*/members/plain:size/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Variant axis with no behavior knob; P3 projects its class modifier and geometry from the token graph. Only the declared default's geometry is lowered now, by token-default-geometry."
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (S6) emits [UxmlAttribute] Size as the class-recipe modifier (<cssPrefix>--<value>) only when the USS projection emits a carrier for the axis; uss.ts lowers size-predicated native style rules onto those carriers."
     },
     {
       "id": "prop-id-base",
@@ -352,16 +391,14 @@
     {
       "id": "variants",
       "match": ["contract:/variants/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Variant axes project into generated USS modifier classes; no variant styling is generated today."
+      "disposition": "lowered",
+      "via": "uss.ts (S4): a variant predicate lowers to the class-recipe modifier carrier .<cssPrefix>--<value> on the root or as the part's ancestor; the walker emits the axis as a [UxmlAttribute] when a behavior knob consumes it or a carrier exists. A modifier with no Unity carrier is listed uss-selector in Controls.unsupported.json."
     },
     {
       "id": "states",
       "match": ["contract:/states/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Only the behavior's is-<value> state class is derived (from the channel-effect or selection dimension, R7); generic state dimensions and their styling arrive with USS projection."
+      "disposition": "lowered",
+      "via": "uss.ts (S4): a state predicate lowers to the behavior's state class at its placement (host for BooleanControl and AnchoredSurface, paired parts for ItemGroup), to native :hover/:active/:focus/:disabled, or to BooleanControl's mirrored is-hover/is-active/is-focus host classes; what USS cannot select is listed in Controls.unsupported.json (uss-pseudo, uss-owner-mismatch, uss-floating-scope)."
     },
     {
       "id": "keyframes",
@@ -544,9 +581,8 @@
     {
       "id": "portal-layering",
       "match": ["contract:/portal/layering"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Floating content is only brought to the front of the panel root; named layers need a generated z-order policy."
+      "disposition": "refused",
+      "reason": "USS has no z-index: UI Toolkit orders siblings by hierarchy and AnchoredSurface brings floating content to the front of the panel root, so named layers have no USS realisation."
     },
     {
       "id": "portal",
@@ -684,24 +720,107 @@
       "reason": "Sequence and paged-set position policies need their own runtime behavior."
     },
     {
-      "id": "token-default-geometry",
-      "match": ["tokens:/*.size.md.*.width/fallback", "tokens:/*.size.md.*.height/fallback", "tokens:/*.size.md.*.size/fallback"],
-      "disposition": "lowered",
-      "via": "walker.ts (R10): typed px fallback facts <prefix>.<axis>.<default>.<part>.<width|height|size> for a variant axis at its declared default set the rendered part's inline style.width / style.height in the generated constructor (size sets both). The pattern names md because the boundary cannot read a default; the walker applies the declared one."
+      "id": "styles-grid-display",
+      "match": ["styles:/*/display/**"],
+      "declaration": {
+        "valuePattern": "^\\s*(?:grid|inline-grid)\\s*$"
+      },
+      "disposition": "refused",
+      "reason": "UI Toolkit has no CSS grid layout; uss.ts lists a grid display declaration as uss-scalar instead of treating it as a flexbox equivalent."
+    },
+    {
+      "id": "styles-grid-template-rows",
+      "match": ["styles:/*/grid-template-rows/**"],
+      "disposition": "refused",
+      "reason": "USS has no grid-template-rows or animated grid track sizing; uss.ts lists the declaration as uss-property."
+    },
+    {
+      "id": "styles-uss-absent-property",
+      "match": ["styles:/*/box-shadow/**", "styles:/*/line-height/**", "styles:/*/animation/**", "styles:/*/contain/**", "styles:/*/clip/**", "styles:/*/z-index/**", "styles:/*/pointer-events/**", "styles:/*/text-align/**", "styles:/*/text-transform/**", "styles:/*/font-family/**"],
+      "disposition": "refused",
+      "reason": "The USS property table (uss.ts) has no lowering for these CSS properties: USS (Unity 6000.5) has no box-shadow, line-height, keyframe animation, contain, clip or CSS text-transform; draw order is visual-tree order, not z-index; picking is VisualElement.pickingMode, set from C#, not pointer-events; -unity-text-align couples both axes where CSS text-align controls only the horizontal axis; a CSS font-family list has no source-bound native font asset. Each declaration is listed uss-property in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-cursor",
+      "match": ["styles:/*/cursor/**"],
+      "disposition": "refused",
+      "reason": "uss.ts maps no CSS cursor keyword: a runtime USS cursor is a texture with a hotspot, which the contract does not carry (USS's named cursors apply in the Editor only). Each declaration is listed uss-scalar."
+    },
+    {
+      "id": "styles-outline-offset",
+      "match": ["styles:/*/outline-offset/**"],
+      "declaration": {
+        "valuePattern": "^(?!\\s*0\\s*$)"
+      },
+      "disposition": "refused",
+      "reason": "uss.ts paints a focus outline as the element's own border, which cannot stand off the box; only a zero offset is realised. Each other offset is listed uss-property."
+    },
+    {
+      "id": "styles-font-weight-unmapped",
+      "match": ["styles:/*/font-weight/**"],
+      "declaration": {
+        "valuePattern": "^(?!\\s*(?:bold|bolder|normal|400|[6-9]\\d\\d(?:\\.\\d+)?|1000)\\s*$)"
+      },
+      "disposition": "refused",
+      "reason": "-unity-font-style carries bold and normal only; an intermediate weight (100-300, 500) needs a font asset per weight, which the token graph does not carry. Classified by the declared value; uss.ts decides a token-fed weight by the token's value in every theme and brand scope, and Controls.unsupported.json records that outcome (uss-scalar, or uss-var-composite when the scopes disagree)."
+    },
+    {
+      "id": "styles-transition-unrealised",
+      "match": ["styles:/*/transition/**"],
+      "declaration": {
+        "valuePattern": "(?:^|,)\\s*transform\\s|(?:cubic-bezier|steps)\\(|(?:\\d+m?s|var\\([^()]*\\))\\s+var\\("
+      },
+      "disposition": "refused",
+      "reason": "A USS transition names USS properties and a keyword easing: a transition of transform (USS splits it into translate, rotate and scale) or with a cubic-bezier, steps or token-fed easing does not carry its CSS meaning. uss.ts keeps the realisable parts (properties, durations, ease) and lists the rest under the transition's longhand in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-calc",
+      "match": ["styles:/*/*/**"],
+      "declaration": {
+        "valuePattern": "calc\\("
+      },
+      "disposition": "refused",
+      "reason": "USS lengths are px or % literals; calc() has no USS form and uss.ts does not evaluate it. Each declaration is listed uss-scalar."
+    },
+    {
+      "id": "styles-relative-em",
+      "match": ["styles:/*/*/**"],
+      "declaration": {
+        "valuePattern": "^\\s*-?(?:\\d+|\\d*\\.\\d+)em\\s*$"
+      },
+      "disposition": "refused",
+      "reason": "An em length depends on the computed font size of its parent; the fixed-root rem conversion cannot preserve that relative value. The USS projection lists it uss-scalar."
+    },
+    {
+      "id": "tokens-non-scalar",
+      "match": ["tokens:/**"],
+      "declaration": {
+        "valuePattern": "^(?!(?:var|rgba?)\\([\\s\\S]*\\)$)[\\s\\S]*[\\s,]|\\d(?:em|ch|[ds]?v[hw]|vmin|vmax)$"
+      },
+      "disposition": "refused",
+      "reason": "A component slot is defined only with one USS scalar (length, percentage, number, time, angle, colour, keyword, a rem value resolved against the fixed 16px native root, or a var() with a scalar fallback). A multi-component value (shadow list, two-value padding, font-family list), an easing function or an unresolved relative unit (em, ch, vw, vh) has no USS custom-property form uss.ts emits; each definition is listed uss-scalar."
+    },
+    {
+      "id": "styles-outside-native-grammar",
+      "match": ["styles:/**"],
+      "declaration": {
+        "nativeGrammar": false
+      },
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The IR's native style grammar refuses the selector key (an attribute or ARIA state such as [aria-expanded], a web-template state class such as <part>--active, a combinator, or a structural pseudo-class), so no native style rule exists for USS to lower and uss.ts lists the key uss-selector. The IR-facts spec that carries these states as contract state predicates precedes P4, which lowers them."
     },
     {
       "id": "tokens",
       "match": ["tokens:/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Token bindings project into generated USS variables; today only the default-size geometry fallbacks are read."
+      "disposition": "lowered",
+      "via": "uss.ts (S2/S3): token bindings become component custom properties var(--fsds-<graph path>, <fallback>) over a generated token section (.fsds-theme light, .fsds-theme--dark, .fsds-brand-<id>) projected from resolved.tokens.json and the token build's @layer brand."
     },
     {
       "id": "styles",
       "match": ["styles:/**"],
-      "disposition": "pending",
-      "phase": "P3",
-      "reason": "Style declarations project into generated USS; the shipped stylesheet is hand-authored."
+      "disposition": "lowered",
+      "via": "uss.ts (S3-S5): each native style rule becomes one USS rule through the CSS-to-USS property table (gap lowers to --fsds-gap, realised by the runtime Gap helper; a composed-content host restates its owner's container declarations); a declaration USS cannot realise is listed with its reason in Controls.unsupported.json, generated beside Controls.uss."
     }
   ]
 }

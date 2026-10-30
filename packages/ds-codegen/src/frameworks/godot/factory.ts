@@ -6,6 +6,10 @@ import { isBareRuleLeaf, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 import { namedMessage, nodeTextSource } from "../native-messages.js";
 import { godotActionPlan } from "./action-plan.js";
+import { godotCompositePlan } from "./composite-plan.js";
+import { godotGlyphPlan } from "./glyph-plan.js";
+import { godotGlyphCatalog } from "./glyph-catalog.js";
+import { collectIconGlyphNodes } from "../icon-glyph.js";
 const q = JSON.stringify;
 const handled = new Set(["checked","defaultChecked","onChange","open","defaultOpen","onOpenChange","value","defaultValue","onValueChange","disabled","collapsible","type","orientation","activationMode","loop","unmountInactive","appearance","placement","closeOnEscape","closeOnOutsideClick","closeOnBlur"]);
 // Explicit pilot exclusions are visible in the emitted capability receipt.
@@ -46,10 +50,27 @@ function staticPlan(ir: ComponentIR) {
   if (unsupported.length) throw new Error(`GODOT_UNSUPPORTED_STATIC_STYLE: ${ir.name}.${unsupported.join(",")}`);
   const excludedSelectors = ir.nativeStyleRules?.unsupported.map(rule => rule.sourceKey) ?? [];
   if (excludedSelectors.length && !(isText && excludedSelectors.every(selector => selector === `.${ir.cssPrefix}[data-truncate="true"]`))) throw new Error(`GODOT_UNSUPPORTED_STATIC_SELECTOR: ${ir.name}.${excludedSelectors.join(",")}`);
-  return { operation: isRule ? "rule" : "static-text", excluded: isText ? ["as"] : ["decorative"], styles };
+  // Source fact: static content/rule anatomy plus native style declarations.
+  // Applies by: passive shape. Remove each gap when its native consumer exists.
+  const fidelityGaps = isText ? [
+    "children.node-ref: content is String-only; retained inline node composition is not realized",
+    "as: DOM element and heading semantics have no native mapping",
+    "typography.font-family: SystemFont fallback does not preserve the authored Web font family",
+    "typography.line-height: integer line_spacing approximates CSS line boxes",
+    "typography.letter-spacing: integer glyph spacing rounds fractional tracking",
+    "transform.capitalize: Godot String.capitalize word normalization differs from CSS text-transform",
+  ] : [
+    "decorative: semantic separator versus presentation has no native accessibility mapping",
+    "layout: parent-constrained Godot container geometry is not CSS flow/flex layout parity",
+  ];
+  return { operation: isRule ? "rule" : "static-text", excluded: isText ? ["as"] : ["decorative"], fidelityGaps, styles };
 }
 export function godotPlan(ir: ComponentIR) {
   if (ir.motion.sequence) return godotSequencePlan(ir);
+  const glyph = godotGlyphPlan(ir);
+  if (glyph) return glyph;
+  const composite = godotCompositePlan(ir);
+  if (composite) return composite;
   const action = godotActionPlan(ir);
   if (action) return action;
   const staticContent = staticPlan(ir);
@@ -127,18 +148,23 @@ export function createGodotEmitter(): FrameworkEmitter {
       const isSequence = plan.operation === "sequence";
       const isStatic = plan.operation === "rule" || plan.operation === "static-text";
       const isAction = plan.operation === "action";
-      const config = { ...(isSequence || isStatic || isAction ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
-      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction ? "" : `\tlabel = ${q(ir.name)}\n`}`;
+      const isComposite = plan.operation === "composite";
+      const isGlyph = plan.operation === "glyph";
+      const compositePlan = isComposite ? plan as NonNullable<ReturnType<typeof godotCompositePlan>> : undefined;
+      const config = { ...(isSequence || isStatic || isAction || isComposite || isGlyph ? plan : { operation: plan.operation }), defaults, theme_color: themeColor(ir) };
+      const script = `${isSequence ? "" : "@tool\n"}class_name DS${ir.name}\nextends "res://addons/full_stack_ds/runtime/${isSequence ? "sequence" : isStatic ? "static_content" : isAction ? "action" : isComposite ? "composite" : isGlyph ? "glyph" : "control"}.gd"\n\nfunc _init() -> void:\n\tconfiguration = JSON.parse_string(${q(JSON.stringify(config))})\n${isAction ? "\tapply_config_defaults()\n" : ""}${isSequence || isStatic || isAction || isComposite || isGlyph ? "" : `\tlabel = ${q(ir.name)}\n`}`;
       const hex = themeColor(ir).slice(1);
       const rgb = [0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)/255).join(", ");
+      const compositeNodes = compositePlan ? `\n[node name="Chrome" type="PanelContainer" parent="."]\nlayout_mode=2\n\n[node name="Body" type="${compositePlan.layout === "inline" ? "HBoxContainer" : "VBoxContainer"}" parent="Chrome"]\nlayout_mode=2\n${compositePlan.parts.map(part => `\n[node name="Part_${part}" type="PanelContainer" parent="Chrome/Body"]\nlayout_mode=2\n\n[node name="Slot" type="VBoxContainer" parent="Chrome/Body/Part_${part}"]\nlayout_mode=2\n`).join("")}` : "";
       return [
         { relativePath: `${ir.name}/${ir.name}.gd`, contents: script },
-        { relativePath: `${ir.name}/${ir.name}.tscn`, contents: `[gd_scene load_steps=3 format=3]\n\n[ext_resource type="Script" path="res://addons/full_stack_ds/components/${ir.name}/${ir.name}.gd" id="1"]\n[ext_resource type="Theme" path="res://addons/full_stack_ds/components/${ir.name}/theme.tres" id="2"]\n\n[node name="${ir.name}" type="VBoxContainer"]\nscript = ExtResource("1")\ntheme = ExtResource("2")\n` },
+        { relativePath: `${ir.name}/${ir.name}.tscn`, contents: `[gd_scene load_steps=${isGlyph ? 2 : 3} format=3]\n\n[ext_resource type="Script" path="res://addons/full_stack_ds/components/${ir.name}/${ir.name}.gd" id="1"]\n${isGlyph ? "" : `[ext_resource type="Theme" path="res://addons/full_stack_ds/components/${ir.name}/theme.tres" id="2"]\n`}\n[node name="${ir.name}" type="VBoxContainer"]\nscript = ExtResource("1")\n${isGlyph ? "" : `theme = ExtResource("2")\n`}${compositeNodes}` },
         { relativePath: `${ir.name}/theme.tres`, contents: `[gd_resource type="Theme" format=3]\n\n[resource]\ndefault_font_size = 16\nButton/colors/font_color = Color(${rgb}, 1)\nLabel/colors/font_color = Color(${rgb}, 1)\n` },
-        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isStatic ? "source-bearing static style subset" : isAction ? "source-bearing native action style subset" : "unconditional foreground fallback only", otherStyling: isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : isAction ? "unsupported declarations and selectors are listed in omissions; Godot font metrics and loading progress are target approximations" : "unsupported", excludedProps: plan.excluded, proof: "requires-runtime-witness" },null,2)+"\n" },
+        { relativePath: `${ir.name}/capabilities.json`, contents: JSON.stringify({ ...plan, theme: isGlyph ? "inherited Label font_color at render time" : isStatic ? "source-bearing static style subset" : isAction ? "source-bearing native action style subset" : isComposite ? "source-bearing native composite style subset" : "unconditional foreground fallback only", otherStyling: isGlyph ? "contract size tokens and authored iconography SVG; screen-reader exposure requires separate proof" : isStatic ? "unlisted declarations fail generation; font metrics and letter spacing are target approximations" : isAction ? "unsupported declarations and selectors are listed in omissions; Godot font metrics and loading progress are target approximations" : isComposite ? "omissions list unsupported selectors and declarations; part text inheritance and motion are unproven" : "unsupported", excludedProps: plan.excluded, proof: "requires-runtime-witness" },null,2)+"\n" },
       ];
     },
     emitTests: () => [],
+    emitTargetAssets: (irs, opts) => irs.some(ir => collectIconGlyphNodes(ir.dom).length) ? [godotGlyphCatalog(opts)] : [],
     emitBarrel: names => `extends RefCounted\nconst COMPONENTS = ${q(names.sort())}\n`,
   };
 }

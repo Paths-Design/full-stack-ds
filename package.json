@@ -128,6 +128,7 @@
     "parity:compose-tokens": "pnpm --filter @full-stack-ds/codegen build && node --test scripts/compose-parity-diff.test.mjs && node scripts/compose-parity-diff.mjs",
     "generate:unity": "pnpm run generate -- --target=unity",
     "test:unity": "node scripts/unity-tests.mjs",
+    "test:godot": "node scripts/godot-pilot.mjs",
     "generate:gpui": "pnpm run generate -- --target=gpui",
     "test:gpui": "node scripts/gpui-pilot.mjs",
     "dev:gpui": "node scripts/gpui-gallery.mjs",

@@ -27,6 +27,7 @@ namespace FullStackDS
         {
             name = "root";
             AddToClassList("popover");
+            Gap.Attach(this);
             Surface = AnchoredSurface.Attach(this, triggerClass: "popover__trigger", contentClass: "popover__content", stateClass: "is-open");
             CloseOnEscape = true;
             CloseOnOutsideClick = true;
@@ -52,6 +53,7 @@ namespace FullStackDS
         {
             name = "content";
             AddToClassList("popover__content");
+            Gap.Attach(this);
         }
     }
 }

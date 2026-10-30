@@ -62,8 +62,8 @@ describe("Vue form-control commit timing", () => {
     const ir = buildComponentIR(inputLikeContract("string", "input"), { allContracts: new Map() });
     const src = generateVueComponentSource(ir);
     // The value channel setter fires on @input, not the blur-timed @change.
-    expect(src).toMatch(/@input="\(e\) => behavior\.setValue\(/);
-    expect(src).not.toMatch(/@change="\(e\) => behavior\.setValue\(/);
+    expect(src).toMatch(/<input\b[^>]*@input=/);
+    expect(src).not.toMatch(/@change=/);
   });
 
   it("lowers a boolean control's change commit to @change", () => {
@@ -78,7 +78,7 @@ describe("Vue form-control commit timing", () => {
   it("does not override an explicit text change commit from value-type lore", () => {
     const ir = buildComponentIR(inputLikeContract("string", "change"), { allContracts: new Map() });
     const src = generateVueComponentSource(ir);
-    expect(src).toMatch(/@change="\(e\) => behavior\.setValue\(/);
+    expect(src).toMatch(/<input\b[^>]*@change=/);
     expect(src).not.toMatch(/@input=/);
   });
 });

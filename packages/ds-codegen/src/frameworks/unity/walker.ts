@@ -4,15 +4,16 @@
  * Lowers `ir.dom` — or, for parts-only contracts, a tree synthesized from
  * `ir.parts` — into UI Toolkit C#: one `[UxmlElement]` class for the
  * component root and one per `ir.compoundParts` entry. Element types, part
- * identity, insertion points, channel API, props and the behavior the
+ * identity, insertion points, optional channel API, props and any behavior the
  * constructor attaches all derive from IR facts. Nothing here branches on a
  * component, part, channel or class name; the only name table is the
  * item-group option vocabulary, applied only when the ItemGroup behavior was
  * selected by fact.
  */
-import type { BindingExpression, ComponentIR, DomNodeIR, PartIR, ResolvedPropIR } from "../../ir.js";
+import type { ComponentIR, DomNodeIR, PartIR, ResolvedPropIR } from "../../ir.js";
 import { resolveAnchoredSurfacePolicy } from "../../semantics.js";
-import { triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
+import { disabledProp, findNode, triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
+import { projectComponent, type ComponentProjection, type ContentHost } from "./uss.js";
 
 const quote = (s: string): string => JSON.stringify(s);
 export const pascal = (s: string): string => s.replace(/(^|[-_])([a-z])/g, (_, _sep: string, c: string) => c.toUpperCase());
@@ -44,16 +45,8 @@ const SLOT_TAG = "slot";
 const BUTTON_TAG = "button";
 const LABEL_TAG = "label";
 const TEXT_LEAF_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", LABEL_TAG]);
-const DISABLED_ATTRIBUTE = "disabled";
 /** Source: `ContractPartDetails.role` enum value naming the component root part. */
 const ROOT_ROLE = "root";
-
-/** Source: token path geometry suffixes (R10); `size` sets both axes. */
-const GEOMETRY_SUFFIXES: Readonly<Record<string, readonly ("width" | "height")[]>> = {
-  width: ["width"],
-  height: ["height"],
-  size: ["width", "height"],
-};
 
 type ElementType = "VisualElement" | "Button" | "Label";
 
@@ -68,6 +61,8 @@ interface ElementPlan {
   text?: string;
   part?: string;
   children: ElementPlan[];
+  /** The private composed-content host (R3), owned by its parent element. */
+  insertion?: true;
 }
 
 interface ClassPlan {
@@ -78,7 +73,6 @@ interface ClassPlan {
   root: ElementPlan;
   /** Accessor that becomes `contentContainer`; undefined keeps the default. */
   contentContainer?: string;
-  geometry: string[];
   /** Declared members, in document order (properties, fields). */
   members: ElementPlan[];
   locals: number;
@@ -90,6 +84,10 @@ interface Context {
   compound: Map<string, PartIR>;
   triggers: Set<string>;
   prefix: string;
+  /** USS projection facts the generated classes depend on (uss.ts). */
+  projection: Pick<ComponentProjection, "carrierAxes" | "gapClasses">;
+  /** Composed-content hosts planned so far (owner and host class names). */
+  hosts: ContentHost[];
 }
 
 const isInsertion = (node: DomNodeIR): boolean => node.tag === INSERTION_TAG || (node.tag === SLOT_TAG && !node.slotName);
@@ -135,7 +133,8 @@ function identityFor(ctx: Context, part: string): { name: string; className: str
  * class's contentContainer; a class has at most one insertion point. */
 function insertionHost(ctx: Context, cls: ClassPlan, parent: ElementPlan, holes: { count: number }): void {
   if (++holes.count > 1) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} ${cls.name} declares more than one children insertion point`);
-  const host: ElementPlan = { ref: INSERTION_TAG, declaration: "private", type: "VisualElement", identity: identityFor(ctx, INSERTION_TAG), children: [] };
+  const host: ElementPlan = { ref: INSERTION_TAG, declaration: "private", type: "VisualElement", identity: identityFor(ctx, INSERTION_TAG), children: [], insertion: true };
+  if (parent.identity) ctx.hosts.push({ owner: parent.identity.className, host: host.identity!.className });
   parent.children.push(host);
   cls.members.push(host);
   cls.contentContainer = host.ref;
@@ -194,17 +193,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
 }
 
 function newClass(name: string, base: string, isRoot: boolean, identity: ElementPlan["identity"], part?: PartIR): ClassPlan {
-  return { name, base, isRoot, part, root: { ref: "this", declaration: "self", type: "VisualElement", identity, children: [] }, geometry: [], members: [], locals: 0 };
-}
-
-function findNode(node: DomNodeIR | undefined, part: string): DomNodeIR | undefined {
-  if (!node) return undefined;
-  if (node.part === part) return node;
-  for (const child of node.children) {
-    const found = findNode(child, part);
-    if (found) return found;
-  }
-  return undefined;
+  return { name, base, isRoot, part, root: { ref: "this", declaration: "self", type: "VisualElement", identity, children: [] }, members: [], locals: 0 };
 }
 
 function rootIdentity(ctx: Context, part: string | undefined): { name: string; className: string } {
@@ -218,7 +207,11 @@ function planClasses(ctx: Context): ClassPlan[] {
   const classes: ClassPlan[] = [];
   if (ir.dom) {
     assertRenderable(ctx, ir.dom);
-    const root = newClass(name, "VisualElement", true, rootIdentity(ctx, ir.dom.part));
+    // A passive text host paints consumer string content itself; a generic
+    // VisualElement has no text surface. Child elements remain composable.
+    const passiveText = ctx.lowering.behavior === "Passive" && TEXT_LEAF_TAGS.has(ir.dom.tag) &&
+      ir.dom.children.length === 1 && isInsertion(ir.dom.children[0]!);
+    const root = newClass(name, passiveText ? "TextElement" : "VisualElement", true, rootIdentity(ctx, ir.dom.part));
     walkChildren(ctx, root, root.root, ir.dom.children, { count: 0 });
     classes.push(root);
   } else {
@@ -245,66 +238,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     }
     classes.push(cls);
   }
-  planGeometry(ctx, classes);
   return classes;
-}
-
-/** R10: default-variant geometry token facts become inline sizes. A fact
- * `<prefix>.<axis>.<value>.<part>.<width|height|size>` applies when `<axis>`
- * is a variant axis whose declared default is `<value>`, the part is rendered
- * and the raw value is `<n>px`. Explicit width/height win over `size`. */
-function planGeometry(ctx: Context, classes: ClassPlan[]): void {
-  const sizes = new Map<string, Map<"width" | "height", { value: number; explicit: boolean }>>();
-  for (const fact of ctx.ir.tokenFacts) {
-    const segments = fact.name.split(".");
-    if (segments.length !== 5 || segments[0] !== ctx.prefix || segments[1] !== fact.category) continue;
-    const [, axis, value, part, suffix] = segments as [string, string, string, string, string];
-    const axes = GEOMETRY_SUFFIXES[suffix];
-    if (!axes || ctx.ir.variants[axis] === undefined || axisDefault(ctx.ir, axis) !== value) continue;
-    const match = fact.rawValue?.match(/^(\d+(?:\.\d+)?)px$/);
-    if (!match) continue;
-    const entry = sizes.get(part) ?? new Map();
-    for (const dimension of axes) {
-      const explicit = axes.length === 1;
-      const existing = entry.get(dimension);
-      if (!existing || (!existing.explicit && explicit)) entry.set(dimension, { value: Number(match[1]), explicit });
-    }
-    sizes.set(part, entry);
-  }
-  for (const [part, entry] of sizes) {
-    const located = locate(classes, part);
-    if (!located) continue;
-    const target = located.element.ref === "this" ? "" : `${located.element.ref}.`;
-    for (const dimension of ["width", "height"] as const) {
-      const size = entry.get(dimension);
-      if (size) located.cls.geometry.push(`${target}style.${dimension} = ${size.value}f;`);
-    }
-  }
-}
-
-function locate(classes: ClassPlan[], part: string): { cls: ClassPlan; element: ElementPlan } | undefined {
-  for (const cls of classes) {
-    if (cls.part?.name === part || (cls.isRoot && cls.root.identity?.name === part)) return { cls, element: cls.root };
-    const element = cls.members.find(m => m.part === part);
-    if (element) return { cls, element };
-  }
-  return undefined;
-}
-
-function axisDefault(ir: ComponentIR, axis: string): string | undefined {
-  const expr = ir.styledProps.find(p => p.name === axis)?.defaultExpr;
-  if (expr === undefined) return undefined;
-  const value: unknown = JSON.parse(expr);
-  return typeof value === "string" ? value : undefined;
-}
-
-/** The disabled prop (R6): the interaction's disabledProp, else a
- * `disabled=prop:<p>` binding on the form-control part. */
-function disabledProp(ir: ComponentIR): string | undefined {
-  if (ir.interaction?.disabledProp) return ir.interaction.disabledProp;
-  const control = ir.formControl && findNode(ir.dom, ir.formControl.part.name);
-  const binding: BindingExpression | undefined = control?.bindings[DISABLED_ATTRIBUTE];
-  return binding?.kind === "prop" ? binding.prop : undefined;
 }
 
 const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface" } as const;
@@ -337,9 +271,48 @@ function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], k
   return `        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${args}); set { Variants.Set(this, ${quote(ctx.ir.classRecipe.base)}, value, ${values.map(quote).join(", ")});${knob ? ` ${knob} = value;` : ""} } }`;
 }
 
+/** A passive host has no channel or behavior to attach. Only variant axes
+ * with an actual USS carrier become public attributes. Admission must classify
+ * every omitted prop as pending/refused; a lowered prop must pass the
+ * emitted-property realization check in the boundary. */
+function passiveRootApi(ctx: Context): RootApi {
+  const members: string[] = [];
+  const defaults: string[] = [];
+  for (const prop of ctx.ir.styledProps) {
+    const values = ctx.ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ctx.ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach: [], defaults };
+}
+
+function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined): void {
+  if (!node) return;
+  // A conditional data attribute is DOM metadata, not a UI Toolkit API. The
+  // admission boundary must explicitly classify it pending before generation.
+  const unsupportedBindings = Object.entries(node.bindings).some(([attribute, value]) => {
+    if (!/^data-[a-z][a-z0-9-]*$/.test(attribute) || value.kind !== "conditional" || value.condition.kind !== "prop") return true;
+    const sourceProp = value.condition.prop;
+    return !ir.styledProps.some(prop => prop.name === sourceProp) ||
+      value.whenTrue.kind !== "literal" || value.whenTrue.value !== "true" ||
+      value.whenFalse.kind !== "literal" || value.whenFalse.value !== "false";
+  });
+  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || Object.keys(node.attrs).length ||
+    node.componentRef !== undefined || node.iconGlyph !== undefined || node.activation !== undefined || node.focusContainer === true ||
+    !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
+    node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||
+    (node.content !== undefined && (node === ir.dom || (node.part !== undefined && ir.compoundParts.some(part => part.name === node.part)) ||
+      !("kind" in node.content && node.content.kind === "literal")));
+  if (unhandled) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
+  for (const child of node.children) assertPassiveAnatomy(ir, child);
+}
+
 /** R6–R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
+  if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];
   const members: string[] = [`        public ${lowering.behavior} ${behavior} { get; }`];
@@ -386,6 +359,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const declaredDismissal = lowering.behavior === "AnchoredSurface" ? resolveAnchoredSurfacePolicy(ir.surface!).publicDismissalProps.map(d => d.prop) : [];
   const placement = lowering.behavior === "AnchoredSurface" ? ir.surface?.positioning?.placementProp : undefined;
   const channelProps = new Set([channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp]);
+  const carriers = ctx.projection.carrierAxes;
   for (const prop of ir.styledProps) {
     if (channelProps.has(prop.name)) continue;
     const name = identifier(pascal(prop.name));
@@ -410,10 +384,11 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
       continue;
     }
     const knob = option ? (option.knob ? `${behavior}.${option.knob}` : undefined) : prop.name === placement ? `${behavior}.Placement` : undefined;
-    // A variant axis emits only when the attached behavior consumes it (the
-    // item-group vocabulary, the surface placement prop); every other axis is
-    // a styling axis whose class modifier and geometry P3 projects.
-    if (values && (option || prop.name === placement)) {
+    // A variant axis emits when the attached behavior consumes it (the
+    // item-group vocabulary, the surface placement prop) or when the USS
+    // projection emits a `<prefix>--<value>` carrier for it (S6); an axis with
+    // neither would be an attribute that changes nothing.
+    if (values && (option || prop.name === placement || carriers.has(prop.name))) {
       members.push(variantProperty(ctx, prop, values, knob));
       const literal = defaultLiteral(ir, prop, values);
       if (literal !== undefined) defaults.push(`${name} = ${literal};`);
@@ -453,6 +428,11 @@ function declaration(element: ElementPlan): string {
     : `        public ${element.type} ${element.ref} { get; } = new ${element.type}();`;
 }
 
+/** Every element under `parent`, depth-first, paired with its parent. */
+function descendants(parent: ElementPlan): [ElementPlan, ElementPlan][] {
+  return parent.children.flatMap(child => [[child, parent] as [ElementPlan, ElementPlan], ...descendants(child)]);
+}
+
 function constructorTree(parent: ElementPlan, out: string[]): void {
   for (const child of parent.children) {
     if (child.declaration === "local") out.push(`var ${child.ref} = new ${child.type}();`);
@@ -478,12 +458,11 @@ function assertUniqueMembers(ctx: Context, cls: ClassPlan, members: string[]): v
 }
 
 function emitClass(ctx: Context, cls: ClassPlan, api: RootApi | undefined): string {
-  const { channel } = ctx.lowering;
   const interfaces = cls.isRoot
-    ? (channel.valueType === "boolean" ? ", INotifyValueChanged<bool>" : "")
+    ? (ctx.lowering.behavior !== "Passive" && ctx.lowering.channel.valueType === "boolean" ? ", INotifyValueChanged<bool>" : "")
     : (keyedRole(ctx, cls.part).keyed ? `, ${KEYED_PART_INTERFACE}` : "");
   const members: string[] = [];
-  if (cls.isRoot) members.push(`        public const string ChannelName = ${quote(channel.name)};`, `        public const string ChangeHandler = ${quote(channel.changeHandlerProp)};`);
+  if (cls.isRoot && ctx.lowering.behavior !== "Passive") members.push(`        public const string ChannelName = ${quote(ctx.lowering.channel.name)};`, `        public const string ChangeHandler = ${quote(ctx.lowering.channel.changeHandlerProp)};`);
   // Public part properties (document order) precede the private insertion host.
   members.push(...cls.members.filter(m => m.declaration === "property").map(declaration), ...cls.members.filter(m => m.declaration === "private").map(declaration));
   if (cls.contentContainer) members.push(`        public override VisualElement contentContainer => ${cls.contentContainer};`);
@@ -493,7 +472,15 @@ function emitClass(ctx: Context, cls: ClassPlan, api: RootApi | undefined): stri
   if (cls.root.identity?.name) body.push(`name = ${quote(cls.root.identity.name)};`);
   if (cls.root.identity) body.push(`AddToClassList(${quote(cls.root.identity.className)});`);
   constructorTree(cls.root, body);
-  body.push(...cls.geometry);
+  // USS has no `gap`: the projection lowers it to --fsds-gap and the runtime
+  // Gap helper spaces the children of every element carrying that fact, and
+  // of a composed-content host whose owner carries it (the host restates the
+  // owner's container facts, A4).
+  const gapped = (element: ElementPlan | undefined): boolean => !!element?.identity && ctx.projection.gapClasses.has(element.identity.className);
+  if (gapped(cls.root)) body.push(`Gap.Attach(${cls.root.ref});`);
+  for (const [element, parent] of descendants(cls.root)) {
+    if (gapped(element) || (element.insertion && gapped(parent))) body.push(`Gap.Attach(${element.ref});`);
+  }
   if (api) body.push(...api.attach, ...api.defaults);
   return [
     "    [UxmlElement]",
@@ -512,18 +499,21 @@ export interface UnityComponentSource {
   lowering: UnityLowering;
   /** Generated class names, root first. */
   classes: string[];
+  /** Composed-content hosts the classes create (the USS projection restates their owners' container facts). */
+  hosts: ContentHost[];
   source: string;
 }
 
 /** The generated C# for one component: root class plus one class per compound part. */
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
-  const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix };
+  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom);
+  const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [] };
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);
   const blocks = classes.map((cls, index) => emitClass(ctx, cls, index === 0 ? api : undefined));
   const source = `// Generated from ComponentIR. Regenerate with pnpm run generate:unity.\nusing System;\nusing UnityEngine.UIElements;\n\nnamespace FullStackDS\n{\n${blocks.join("\n\n")}\n}\n`;
-  return { lowering, classes: classes.map(c => c.name), source };
+  return { lowering, classes: classes.map(c => c.name), hosts: ctx.hosts, source };
 }
 
 /** Public members (`public [new] bool|string X {`) the ROOT class declares;

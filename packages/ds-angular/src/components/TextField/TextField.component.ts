@@ -1,6 +1,8 @@
 // @generated:start imports
 import { Component, Input, DestroyRef, inject, ChangeDetectionStrategy, signal, Injector, runInInjectionContext, untracked } from "@angular/core";
 import { NgClass } from "@angular/common";
+import { requestNativeTextChange } from "../../primitives/interaction.js";
+import { afterNextRender } from "@angular/core";
 import { StackComponent } from "../../primitives/index.js";
 import { useTextField } from "./useTextField.js";
 // @generated:end
@@ -29,7 +31,7 @@ let nextInstanceId = 0;
   <label [ngClass]="'text-field__label'" [attr.id]="instanceId + '-label'">
     <ng-content select="[slot=label]" />
   </label>
-  <input [ngClass]="'text-field__field'" (input)="handleValueChange($event)" [type]="type" [value]="behavior.value()" [disabled]="disabled" [name]="name" [required]="required" [attr.aria-invalid]="invalid" [attr.aria-labelledby]="instanceId + '-label'" [attr.aria-describedby]="fieldAriaDescribedby" />
+  <input [ngClass]="'text-field__field'" (input)="requestNativeTextValue($event)" [type]="type" [value]="behavior.value()" [disabled]="disabled" [name]="name" [required]="required" [attr.aria-invalid]="invalid" [attr.aria-labelledby]="instanceId + '-label'" [attr.aria-describedby]="fieldAriaDescribedby" />
   <span [ngClass]="'text-field__description'" [attr.id]="instanceId + '-description'">
     <ng-content select="[slot=description]" />
   </span>
@@ -65,6 +67,9 @@ export class TextFieldComponent {
     onChange: (v) => this.onChange?.(v),
     destroyRef: this.destroyRef,
   })));
+  }
+  protected requestNativeTextValue(event: Event): void {
+    requestNativeTextChange(event, () => this.behavior.setValue((event.currentTarget as HTMLInputElement).value), () => this.behavior.value(), restore => { if (!this.destroyRef.destroyed) afterNextRender(restore, { injector: this.injector }); });
   }
 
   classes(): string {

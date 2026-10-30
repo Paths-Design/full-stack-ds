@@ -156,6 +156,7 @@ This inventory was produced as part of CODEGEN-SEMANTIC-AUTHORITY-01. It documen
 | `FormControlIR` + `buildFormControlIR` | Shared `ir.ts` | Contract `formControl` + anatomy + channel | Control part, value model, commit timing |
 | Static referenced-component props | Lit component emitter | IR `ComponentInstanceIR.attrs` prop/attribute classification | Declared target props use property binding; host attributes retain attribute binding |
 | `nativeRadioChannel` + `requestNativeRadioChange` | Shared `ir.ts` + interaction runtime; Vue/Svelte/Angular/Lit syntax lowering | Native radio host, string selection channel, matching checked predicate and native value binding | Native radio change requests whose form value is the selection key |
+| `nativeTextChannel` + `requestNativeTextChange` / `useNativeTextValue` | Shared `ir.ts` + interaction runtime; React host adapter and Vue/Svelte/Angular/Lit syntax lowering | Native input/textarea value and input/change request bound to the same string channel | Native text ownership, with composition drafts retained until commit |
 | `EventValueStrategy` + `resolveEventValueStrategy` | Shared `semantics.ts` | Host capability + channel valueType + callback kind | Event extraction site |
 | `channelValuePlaceholder(valueType)` | React test emitter | Channel `valueType` | Channel valueType |
 | `requiredProps` + `placeholderForPropType` | Test plan | Contract `prop.required` + `prop.type` + `definedTypes` | Prop type shape |
@@ -169,6 +170,17 @@ React relies on its renderer's group restoration. The additional lowering is
 removable when the affected renderer supplies equivalent restoration after a
 refused native change. A different native form value and selection key do not
 receive this IR fact.
+
+Native text reconciliation reads accepted state after parent propagation and
+avoids equal-value writes that can move the caret. Ordinary successful requests
+wait a microtask; Angular uses its afterNextRender boundary because zoneless
+parent propagation can occur in a later render task. Callback errors restore
+accepted text synchronously before propagating. Composition drafts survive
+until compositionend and its final input event; a pending frame reads the latest
+accepted state without another callback. File inputs retain their native write
+restrictions. React retains composition drafts in a host adapter and uses its
+renderer's committed-value restoration. This lowering is removable
+when the affected renderer supplies equivalent accepted-value restoration.
 
 ### Healthy but duplicated across substrates
 

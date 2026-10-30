@@ -1,5 +1,6 @@
 <script lang="ts">
 // @generated:start imports
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 import { useInput } from "./useInput.svelte.js";
 import { useFieldAssociation } from "../../primitives/index.js";
 // @generated:end
@@ -55,4 +56,4 @@ const fieldAssociation = useFieldAssociation();
 // @custom:end
 </script>
 
-<input class={classes} oninput={(e) => behavior.setValue((e.currentTarget as HTMLInputElement).value)} type={type} value={behavior.value} disabled={disabled} aria-invalid={invalid} placeholder={placeholder} name={name} required={required} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} id={fieldAssociation?.().controlId} aria-describedby={fieldAssociation?.().describedBy} data-fsds-component="input" data-fsds-box="" />
+<input class={classes} oninput={(e) => requestNativeTextChange(e, () => behavior.setValue((e.currentTarget as HTMLInputElement).value), () => behavior.value)} type={type} value={behavior.value} disabled={disabled} aria-invalid={invalid} placeholder={placeholder} name={name} required={required} aria-label={ariaLabel} aria-labelledby={ariaLabelledby} id={fieldAssociation?.().controlId} aria-describedby={fieldAssociation?.().describedBy} data-fsds-component="input" data-fsds-box="" />

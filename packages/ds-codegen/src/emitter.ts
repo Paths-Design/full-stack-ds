@@ -124,6 +124,24 @@ export interface FrameworkEmitter {
   emitHook?(ir: ComponentIR, opts: EmitOptions): GeneratedFile[];
 
   /**
+   * Target-level assets derived from every admitted component at once (a
+   * generated stylesheet, a support ledger). Optional. The CLI calls it once
+   * per target after every admitted component was emitted, only on a
+   * full-corpus run: a name-filtered or watch run would see a partial
+   * component set and overwrite the complete asset with a partial one, so it
+   * skips the call. `irs` are the admitted components in the target's
+   * declared allowlist order when it declares one, else corpus order.
+   *
+   * Paths are relative to the target PACKAGE root, which the CLI derives from
+   * the binding (`componentsRoot` minus the target pack's declared
+   * `outputs.componentsRoot`), not to the components root. Files are written
+   * verbatim (no preserve-merge unless `preservable`), previewed under
+   * `--dry-run`, recorded in the emission manifest when the target is a rail
+   * framework, and pruned when a later full run stops emitting them.
+   */
+  emitTargetAssets?(irs: ComponentIR[], opts: EmitOptions): GeneratedFile[];
+
+  /**
    * Body of the components barrel file given a list of component names.
    * Optionally receives the absolute components root so emitters that need
    * to enumerate per-component sub-files (e.g. Vue compound-part SFCs that

@@ -1,5 +1,6 @@
 <script lang="ts">
 // @generated:start imports
+import { requestNativeTextChange } from "../../primitives/interaction.js";
 import { useTextField } from "./useTextField.svelte.js";
 // @generated:end
 
@@ -59,7 +60,7 @@ const instanceId = $props.id();
   <label class={'text-field__label'} id={`${instanceId}-label`}>
     {@render label?.()}
   </label>
-  <input class={'text-field__field'} oninput={(e) => behavior.setValue((e.currentTarget as HTMLInputElement).value)} type={type} value={behavior.value} disabled={disabled} name={name} required={required} aria-invalid={invalid} aria-labelledby={label ? `${instanceId}-label` : undefined} aria-describedby={[description ? `${instanceId}-description` : null, error && invalid ? `${instanceId}-error` : null, ariaDescribedby].filter(Boolean).join(' ') || undefined} />
+  <input class={'text-field__field'} oninput={(e) => requestNativeTextChange(e, () => behavior.setValue((e.currentTarget as HTMLInputElement).value), () => behavior.value)} type={type} value={behavior.value} disabled={disabled} name={name} required={required} aria-invalid={invalid} aria-labelledby={label ? `${instanceId}-label` : undefined} aria-describedby={[description ? `${instanceId}-description` : null, error && invalid ? `${instanceId}-error` : null, ariaDescribedby].filter(Boolean).join(' ') || undefined} />
   <span class={'text-field__description'} id={`${instanceId}-description`}>
     {@render description?.()}
   </span>
