@@ -87,6 +87,8 @@ pnpm run test:unity
 
 `test:unity` copies the package and sample into `tmp/unity-pilot/project`, then runs real Unity EditMode tests. It needs an activated Editor license and a graphics device for the live Editor panels. Set `UNITY_EDITOR` to the Editor executable when using a different installation. Logs and NUnit XML stay in `tmp/unity-pilot`. Styling tests enter Play mode, render a real Player panel into a texture, and save PNG witnesses under `tmp/unity-pilot/screenshots`; Editor typography, spacing and focus are checked through resolved styles and geometry.
 
+The generated styling candidate at source `f85a48f16` passed 42/42 EditMode cases on Unity 6000.5.3f1, with zero failures or skips (test-run start `2026-10-30 06:28:44Z`). Its six local PNG witnesses cover light, dark and narrow Player-context panels inside the Editor. The separate standalone Player lane below has its own source and receipt.
+
 `node scripts/unity-player.mjs` builds and launches a fresh standalone macOS consumer, writes source-bound evidence under `tmp/unity-player/<run-id>`, and rejects absent/mismatched results. Its synthetic UI events prove bounded in-Player behavior, not input-device integration. The recorded environment is Unity 6000.5.3f1 with Metal; the declared 6000.0 minimum and other platforms remain unverified.
 
 `node scripts/unity-tests.mjs --compile-only` is a separate diagnostic using the installed macOS Unity SDK, real Unity assemblies and Unity's UXML source generator. It checks runtime, Editor showcase and sample compilation; it does **not** run Unity, import UXML or execute tests.

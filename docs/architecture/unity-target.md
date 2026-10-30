@@ -5,7 +5,7 @@ status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
 updated: 2026-10-29
-verified_at_commit: ecf7ec2b39126d7a1ee9ad398dc2731a63e0bdb5
+verified_at_commit: f85a48f16
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -45,6 +45,8 @@ The runtime selects scopes rather than values: behaviors attach the sheet withou
 The normalized `:not([hidden])` selector becomes a presence predicate. For an ItemGroup with hidden content, Unity selects it through the state class the runtime applies to the paired content part; this restores open content opacity and padding. Other owners remain refused. Literal graph variables emitted without an authored fallback receive the graph's light scalar as a `var()` fallback so an unscoped control retains its default transition timing.
 
 Witnesses: `uss.test.ts` pins the projection on synthetic contracts outside the corpus, including the composite rule, the focus and display lowering, the floating restatement and the brand carry-over; `cli.test.ts` pins the seam. `audit:token-resolvability` and `audit:variant-realization` each scan the generated sheet as a `unity` surface. In the package, `StylingTests.cs` asserts the stylesheet imports with no errors or warnings, resolves token values in light and dark scope, checks Switch geometry at every size including the thumb's translate, and renders Player panels at 640×800 and 320×600 into screenshot witnesses beside the runner logs; `GapTests.cs` pins the gap realization including the ScrollView case. These bounded checks do not establish arbitrary-resolution visual parity, brand design-slot overrides (ledgered as `uss-design-slot`), the Accordion chevron glyph (a `componentRef` placeholder until P4), or the a11y-attribute and web-template state selectors (`[aria-expanded]`, `tab--active`), which stay ledgered as `uss-selector` until the IR carries them as state facts.
+
+At source `f85a48f16`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 42/42 EditMode cases (test-run start `2026-10-30 06:28:44Z`, zero failed or skipped). The run imported the generated stylesheet without errors or warnings, checked its token-backed geometry and state changes, and captured six light, dark and narrow PNG frames under `tmp/unity-pilot/screenshots/`. These frames come from Player-context panels during Editor Play mode; they do not establish a standalone Player run at this source. The NUnit XML and Editor log are under `tmp/unity-pilot/` in the run checkout and are ignored, reproducible local evidence.
 
 ## Anatomy walker
 
