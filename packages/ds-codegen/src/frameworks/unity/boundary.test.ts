@@ -74,11 +74,10 @@ describe("Unity support boundary", () => {
     expect(of("Switch", "/anatomy/dom/children/input/attrs/role")).toEqual({ rule: "anatomy-static-attrs-refused", disposition: "refused" });
     expect(of("Switch", "/anatomy/dom/children/input/attrs/type")).toEqual({ rule: "anatomy-static-attrs-refused", disposition: "refused" });
     expect(of("Tabs", "/anatomy/dom/children/list/children/indicator/attrs/aria-hidden")).toEqual({ rule: "anatomy-static-attrs-refused", disposition: "refused" });
-    // A componentRef node keeps its identity; everything else about it is P4,
-    // including attrs that would otherwise read as native element attributes.
+    // Static references to admitted components forward their props and part identity.
     expect(of("Accordion", `${trigger}/children/ref:chevron/part`)).toEqual({ rule: "anatomy-component-ref-identity", disposition: "lowered" });
-    expect(of("Accordion", `${trigger}/children/ref:chevron/componentRef`)).toEqual({ rule: "anatomy-component-ref", disposition: "pending" });
-    expect(of("Accordion", `${trigger}/children/ref:chevron/attrs/name`)).toEqual({ rule: "anatomy-component-ref", disposition: "pending" });
+    expect(of("Accordion", `${trigger}/children/ref:chevron/componentRef`)).toEqual({ rule: "anatomy-component-ref", disposition: "lowered" });
+    expect(of("Accordion", `${trigger}/children/ref:chevron/attrs/name`)).toEqual({ rule: "anatomy-component-ref", disposition: "lowered" });
     // Slot anchors are part identity.
     expect(of("Popover", "/slots/content/selector")).toEqual({ rule: "slots", disposition: "lowered" });
     // Kinds the allowlist does not use classify by pointer shape alone.
@@ -90,7 +89,7 @@ describe("Unity support boundary", () => {
     expect(shape("/anatomy/dom/children/x/if", "icon")).toEqual({ rule: "anatomy-guards", disposition: "pending", phase: "P4" });
     expect(shape("/anatomy/dom/children/x/iterate/source", "prop:items")).toEqual({ rule: "anatomy-iteration", disposition: "pending", phase: "P4" });
     expect(shape("/anatomy/dom/children/x/cssVariableBindings/--fsds-x-y", "prop:y")).toEqual({ rule: "anatomy-css-var-bindings", disposition: "pending", phase: "P4" });
-    expect(shape("/anatomy/dom/children/x/iconGlyph/nameFrom", "prop:icon")).toEqual({ rule: "anatomy-icon-glyph", disposition: "pending", phase: "P4" });
+    expect(shape("/anatomy/dom/children/x/iconGlyph/nameFrom", "prop:icon")).toEqual({ rule: "anatomy-icon-glyph", disposition: "lowered", phase: undefined });
     expect(shape("/anatomy/dom/children/x/content", "prop:label")).toEqual({ rule: "anatomy-content", disposition: "pending", phase: "P4" });
     // A part named like a dom field is still a part: `content` the part is not `content` the binding.
     expect(shape("/anatomy/dom/children/item/children/content/tag", "div")).toEqual({ rule: "anatomy-tags", disposition: "lowered", phase: undefined });
@@ -119,6 +118,7 @@ describe("Unity support boundary", () => {
     expect(propRoles(load("Tabs")).get("value")).toBe("channel-value");
     // Avatar's `name` is a plain prop: no form block, no channel.
     expect(propRoles(load("Avatar")).has("name")).toBe(false);
+    expect(propRoles(load("Icon")).get("name")).toBe("glyph-name");
     const avatarName = classifyContract(load("Avatar")).find(l => l.keyed === "/props/designed/members/plain:name/name");
     expect(avatarName?.rule).toBe("props-unadjudicated");
     const switchName = classifyContract(load("Switch")).find(l => l.keyed === "/props/designed/members/form-field:name/name");

@@ -4,6 +4,16 @@
     "type",
     "defaultValue"
   ],
+  "itemButtonRefs": [
+    {
+      "ref": "Icon",
+      "part": "chevron",
+      "attrs": {
+        "name": "chevron-down",
+        "size": "sm"
+      }
+    }
+  ],
   "theme": "unconditional foreground fallback only",
   "otherStyling": "unsupported",
   "excludedProps": [

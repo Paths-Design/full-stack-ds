@@ -42,7 +42,7 @@ namespace FullStackDS
     [UxmlElement]
     public partial class AccordionTrigger : Button, IKeyedPart
     {
-        public VisualElement Chevron { get; } = new VisualElement();
+        public Icon Chevron { get; } = new Icon();
         private readonly VisualElement children = new VisualElement();
         public override VisualElement contentContainer => children;
         [UxmlAttribute] public string Value { get; set; }
@@ -56,6 +56,8 @@ namespace FullStackDS
             hierarchy.Add(children);
             Chevron.name = "chevron";
             Chevron.AddToClassList("accordion__chevron");
+            Chevron.Name = "chevron-down";
+            Chevron.Size = "sm";
             hierarchy.Add(Chevron);
         }
     }

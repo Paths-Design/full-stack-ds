@@ -112,14 +112,20 @@
       "id": "anatomy-component-ref-identity",
       "match": ["contract:/anatomy/dom/**/children/ref:*/part"],
       "disposition": "lowered",
-      "via": "walker.ts (R5): a componentRef node renders as a placeholder VisualElement carrying part identity and nothing else."
+      "via": "walker.ts: a componentRef node renders the admitted generated component class and carries its part identity on that instance."
+    },
+    {
+      "id": "anatomy-component-ref-dynamic",
+      "match": ["contract:/anatomy/dom/**/children/ref:*/bindings/**", "contract:/anatomy/dom/**/children/ref:*/events/**", "contract:/anatomy/dom/**/children/ref:*/if", "contract:/anatomy/dom/**/children/ref:*/children/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Dynamic prop forwarding, event callbacks, guarded instance presence and nested instance content have no native component-ref lowering."
     },
     {
       "id": "anatomy-component-ref",
       "match": ["contract:/anatomy/details/*/componentRef", "contract:/anatomy/dom/**/children/ref:*/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "reason": "By-reference composition is not lowered: the referenced component, its attrs, bindings and events are not realised; the walker emits an identity-only placeholder."
+      "disposition": "lowered",
+      "via": "walker.ts instantiates the referenced generated class and forwards static prop attrs. References outside the target allowlist refuse generation."
     },
     {
       "id": "anatomy-elements",
@@ -132,6 +138,13 @@
       "match": ["contract:/anatomy/dom/**/children/*/name"],
       "disposition": "lowered",
       "via": "walker.ts (R3): a named slot lowers to a public VisualElement <Name>Slot host at its position, named for the slot with class <cssPrefix>__<slot>."
+    },
+    {
+      "id": "anatomy-glyph-svg-attrs",
+      "match": ["contract:/anatomy/dom/**/children/*/attrs/fill", "contract:/anatomy/dom/**/children/*/attrs/xmlns"],
+      "valueIn": ["none", "http://www.w3.org/2000/svg"],
+      "disposition": "lowered",
+      "via": "The glyph anatomy plan validates the SVG presentation vocabulary; GlyphElement paints the authored catalog paths."
     },
     {
       "id": "anatomy-static-attrs-refused",
@@ -231,9 +244,8 @@
     {
       "id": "anatomy-icon-glyph",
       "match": ["contract:/anatomy/dom/iconGlyph/**", "contract:/anatomy/dom/**/children/*/iconGlyph/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "reason": "Icon-catalog glyph rendering is not lowered; the icon node renders as an identity-only VisualElement."
+      "disposition": "lowered",
+      "via": "The glyph anatomy plan binds name and size hints to GlyphElement; its generated catalog paints the authored paths."
     },
     {
       "id": "slots",
@@ -340,6 +352,19 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "An authored rule-thickness override needs a validated native length and orientation-aware border update; token-backed default thickness is separate."
+    },
+    {
+      "id": "prop-glyph-name",
+      "match": ["contract:/props/*/members/glyph-name:*/**"],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "The normalized iconGlyph.nameFrom prop becomes a generated UXML property that drives GlyphElement catalog lookup."
+    },
+    {
+      "id": "prop-glyph-aria-label",
+      "match": ["contract:/props/*/members/plain:ariaLabel/**"],
+      "disposition": "refused",
+      "reason": "UI Toolkit exposes no assistive-technology tree for the icon's ARIA label."
     },
     {
       "id": "prop-passive-semantic-options",
@@ -790,6 +815,15 @@
       },
       "disposition": "refused",
       "reason": "An em length depends on the computed font size of its parent; the fixed-root rem conversion cannot preserve that relative value. The USS projection lists it uss-scalar."
+    },
+    {
+      "id": "styles-current-color",
+      "match": ["styles:/*/color/**"],
+      "declaration": {
+        "valuePattern": "^\\s*currentColor\\s*$"
+      },
+      "disposition": "refused",
+      "reason": "USS does not accept currentColor as a color scalar. The glyph renderer inherits its host's resolved foreground instead; uss.ts records the authored declaration as uss-scalar."
     },
     {
       "id": "tokens-non-scalar",

@@ -33,6 +33,7 @@ describe("Unity capability lowering", () => {
   it("routes channel-free content and rule leaves through a passive host while refusing modal surfaces", () => {
     expect(unityLowering(buildComponentIR(fixture("Text"))).behavior).toBe("Passive");
     expect(unityLowering(buildComponentIR(fixture("Divider"))).behavior).toBe("Passive");
+    for (const name of ["Text", "Divider", "Icon"]) expect(emit(fixture(name))).toContain("Theme.AddStyleSheet(this);");
     expect(() => emit(fixture("Dialog"))).toThrow("UNITY_UNSUPPORTED_SURFACE");
   });
   it("carries channel and anatomy names rather than assuming checked/input", () => {
@@ -145,7 +146,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -510,19 +511,38 @@ describe("Unity anatomy walker on synthetic contracts", () => {
 });
 
 describe("Unity walker dispositions for non-lowered node kinds (R5)", () => {
-  it("renders a componentRef node as an identity-only placeholder and leaves its realization to the pending boundary rule", () => {
+  it("renders an admitted componentRef with static props and part identity", () => {
     const source = emit(fixture("Accordion"));
-    expect(source).toContain("        public VisualElement Chevron { get; } = new VisualElement();\n");
+    expect(source).toContain("        public Icon Chevron { get; } = new Icon();\n");
     expect(source.split("\n").filter(l => l.includes("Chevron"))).toEqual([
-      "        public VisualElement Chevron { get; } = new VisualElement();",
+      "        public Icon Chevron { get; } = new Icon();",
       '            Chevron.name = "chevron";',
       '            Chevron.AddToClassList("accordion__chevron");',
+      '            Chevron.Name = "chevron-down";',
+      '            Chevron.Size = "sm";',
       "            hierarchy.Add(Chevron);",
     ]);
-    // Nothing of the referenced component (Icon, its name/size attrs) reaches the output.
-    expect(source).not.toMatch(/Icon|chevron-down|"sm"/);
+    const renamed = fixture("Accordion");
+    renamed.name = "SyntheticGroup";
+    const renamedSource = emit(renamed);
+    expect(renamedSource).toContain("partial class SyntheticGroup : VisualElement");
+    expect(renamedSource).toContain("public Icon Chevron { get; } = new Icon();");
+    expect(renamedSource).toContain('Chevron.Name = "chevron-down";');
     const leaves = classifyContract(loadContractWithSidecars(root, "Accordion")).filter(l => l.keyed.includes("/ref:chevron/"));
-    expect(new Set(leaves.map(l => `${l.rule}:${l.disposition}`))).toEqual(new Set(["anatomy-component-ref-identity:lowered", "anatomy-component-ref:pending"]));
+    expect(new Set(leaves.map(l => `${l.rule}:${l.disposition}`))).toEqual(new Set(["anatomy-component-ref-identity:lowered", "anatomy-component-ref:lowered"]));
+  });
+
+  it("refuses admitted references whose target has no Unity glyph mount capability", () => {
+    const source = fixture("Accordion");
+    const anatomy = source.anatomy as { details: Record<string, { componentRef: string }>; dom: { children: any[] } };
+    const ref = anatomy.dom.children[0].children[0].children[0].children[1];
+    ref.componentRef = "fsds.Switch";
+    ref.attrs = { size: "sm" };
+    anatomy.details.chevron.componentRef = "fsds.Switch";
+    const target = fixture("Switch");
+    const ir = buildComponentIR(source, { allContracts: new Map([[source.name, source], [target.name, target]]) });
+    expect(() => createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot }))
+      .toThrow("has no admitted glyph mount capability");
   });
 
   it("emits nothing for refused static attrs and form bindings, which the boundary refuses", () => {

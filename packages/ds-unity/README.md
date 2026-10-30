@@ -1,6 +1,6 @@
 # Full Stack DS for Unity UI Toolkit
 
-A local UPM package with contract-generated Switch, Accordion, Popover, Tabs, Text and Divider controls. Unity 6 is the API baseline. Generated controls carry `[UxmlElement]` and are usable from C#, UXML and UI Builder; the same runtime assembly serves Editor windows and `UIDocument` panels.
+A local UPM package with contract-generated Switch, Accordion, Popover, Tabs, Text, Divider and Icon controls. Unity 6 is the API baseline. Generated controls carry `[UxmlElement]` and are usable from C#, UXML and UI Builder; the same runtime assembly serves Editor windows and `UIDocument` panels.
 
 ## Import
 
@@ -54,7 +54,7 @@ An ItemGroup's hidden-content presence fact lowers `:not([hidden])` onto its con
 
 Three visible gaps follow from facts this projection does not carry:
 
-- The Accordion chevron is the contract's `componentRef: fsds.Icon` (`chevron-down`). Component references render as identity-only placeholder elements and icon-glyph rendering is pending P4 in the support boundary, so the chevron draws nothing.
+- The Accordion chevron is the contract's static `componentRef: fsds.Icon` (`chevron-down`). The walker constructs the admitted Icon, forwards its authored name and size, and paints catalog geometry through `GlyphElement`. Dynamic reference bindings and references to unadmitted targets fail generation.
 - The chevron's rotation while expanded (`[aria-expanded="true"]`) and the selected-tab styling (`tab--active`) use selectors outside the native style grammar; they are `uss-selector` ledger entries until the IR carries them as state predicates.
 - Brand overrides of component design slots are `uss-design-slot` ledger entries; brands reach the controls through the token variables only.
 
@@ -87,6 +87,8 @@ pnpm run test:unity
 
 `Text` is a `TextElement`: assign `text` for string content, compose child elements through `Add`, and select `Variant`, `Size` and `Weight` from the generated USS carriers. `Divider` is a `VisualElement` with `Orientation` (`horizontal` or `vertical`); its border and spacing come from the token-backed sheet. A fixed native root of 16px converts authored `rem` typography to USS pixels. The boundary omits Text's semantic `as`, `align`, `transform` and `truncate`, and Divider's `decorative`, `thickness` and `title`; the generated attributes make no claim for them. Intermediate font weights, line-height, relative `em` geometry and native screen-reader semantics also remain gaps.
 
+`Icon` exposes `Name` and `Size` (`sm`, `md`, `lg`, `xl`). The generated wrapper loads its stylesheet, resolves the name through the authored iconography catalog and paints with `Painter2D` in its USS-sized frame. Unknown names clear the glyph. Its foreground follows the resolved UI Toolkit color; a host can change that color live. A static admitted glyph reference, such as Accordion's chevron, constructs the same Icon and forwards its literal name and size; other referenced target capabilities or props fail generation. Editor and Player probes clone an Icon from UXML and check its state after reloading; the Editor also mounts a generated renamed host with a nested Icon. Decorative and accessible-name semantics have no Unity assistive-technology consumer in this package.
+
 `test:unity` copies the package and sample into `tmp/unity-pilot/project`, then runs real Unity EditMode tests. It needs an activated Editor license and a graphics device for the live Editor panels. Set `UNITY_EDITOR` to the Editor executable when using a different installation. Logs, NUnit XML and a source-revision/results digest receipt stay in `tmp/unity-pilot`. Styling tests enter Play mode, render a real Player panel into a texture, and save PNG witnesses under `tmp/unity-pilot/screenshots`; Editor typography, spacing and focus are checked through resolved styles and geometry.
 
 The generated styling candidate at source `f85a48f16` passed 42/42 EditMode cases on Unity 6000.5.3f1, with zero failures or skips (test-run start `2026-10-30 06:28:44Z`). Its six local PNG witnesses cover light, dark and narrow Player-context panels inside the Editor. The separate standalone Player lane below has its own source and receipt.
@@ -101,4 +103,4 @@ The allowlist is in the repository's `fsds.targets.json`. The Unity backend is s
 
 [`support-boundary.json`](../ds-codegen/src/frameworks/unity/support-boundary.json) is the machine-readable statement of what the Unity target lowers, leaves pending for a named parity phase, or refuses, with the mechanism or reason for each rule. Generation fails when a contract carries a fact no rule classifies, when an allowlisted component relies on a catch-all rule, or when a lowered claim is not realised by the control a component gets; see [Support boundary](../../docs/architecture/unity-target.md#support-boundary).
 
-This slice implements the interactions above. It does not claim full framework parity, screen-reader integration, controller/gamepad navigation, cross-platform player-build admission, or full visual parity. Styling is the generated projection described above; what it does not realise is listed in `Controls.unsupported.json`. Transitions keep their properties and durations, but a non-keyword easing is reduced to `ease`. The Accordion chevron is an identity-only placeholder for its Icon componentRef (glyph rendering pending P4). Browser form props and DOM IDs are not ported. Tabs keeps an inactive panel's object state even when detached.
+This slice implements the interactions above. It does not claim full framework parity, screen-reader integration, controller/gamepad navigation, cross-platform player-build admission, or full visual parity. Styling is the generated projection described above; what it does not realise is listed in `Controls.unsupported.json`. Transitions keep their properties and durations, but a non-keyword easing is reduced to `ease`. The Accordion chevron paints its Icon componentRef; expanded-state rotation remains an unsupported selector. Browser form props and DOM IDs are not ported. Tabs keeps an inactive panel's object state even when detached.
