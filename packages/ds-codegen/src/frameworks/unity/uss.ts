@@ -692,6 +692,7 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
   // defines: BooleanControl and AnchoredSurface toggle it on the host,
   // ItemGroup on its paired trigger/content parts.
   const placeState = (owner: string | undefined): UssReason | undefined => {
+    if (lowering.behavior === "Passive") return "uss-selector";
     const stateClass = `.${lowering.stateClass}`;
     if (lowering.behavior === "ItemGroup") {
       const paired = owner !== undefined && (owner === lowering.trigger.name || owner === lowering.content.name);
@@ -708,7 +709,7 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
     let failure: UssReason | undefined;
     switch (predicate.kind) {
       case "variant": {
-        if (predicate.value === "true" && predicate.axis === lowering.channel.valueProp) { failure = placeState(undefined); break; }
+        if (lowering.behavior !== "Passive" && predicate.value === "true" && predicate.axis === lowering.channel.valueProp) { failure = placeState(undefined); break; }
         if (predicate.value === "true" && predicate.axis === ctx.disabledProp) { failure = atOwner(undefined, ":disabled", hostPseudo); break; }
         const modifier = ctx.ir.classRecipe.valueModifiers.find(m => m.propName === predicate.axis);
         // The walker refuses a prefixed (colliding) axis, so it has no carrier.

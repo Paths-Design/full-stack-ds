@@ -29,8 +29,9 @@ describe("Unity capability lowering", () => {
     expect(source).toContain(` = ${expected}.Attach(this, `);
     expect(source).not.toMatch(/: (?:BooleanControl|ItemGroup|AnchoredSurface)\b/);
   });
-  it("refuses unsupported static and modal surfaces instead of emitting inert controls", () => {
-    expect(() => emit(fixture("Text"))).toThrow("UNITY_UNSUPPORTED_INTERACTION");
+  it("routes channel-free content and rule leaves through a passive host while refusing modal surfaces", () => {
+    expect(unityLowering(buildComponentIR(fixture("Text"))).behavior).toBe("Passive");
+    expect(unityLowering(buildComponentIR(fixture("Divider"))).behavior).toBe("Passive");
     expect(() => emit(fixture("Dialog"))).toThrow("UNITY_UNSUPPORTED_SURFACE");
   });
   it("carries channel and anatomy names rather than assuming checked/input", () => {

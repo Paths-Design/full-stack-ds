@@ -267,9 +267,26 @@ function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], k
   return `        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${args}); set { Variants.Set(this, ${quote(ctx.ir.classRecipe.base)}, value, ${values.map(quote).join(", ")});${knob ? ` ${knob} = value;` : ""} } }`;
 }
 
+/** A passive host has no channel or behavior to attach. Only variant axes
+ * with an actual USS carrier become public attributes; the boundary judges
+ * any other authored prop before a component is admitted. */
+function passiveRootApi(ctx: Context): RootApi {
+  const members: string[] = [];
+  const defaults: string[] = [];
+  for (const prop of ctx.ir.styledProps) {
+    const values = ctx.ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ctx.ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach: [], defaults };
+}
+
 /** R6–R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
+  if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];
   const members: string[] = [`        public ${lowering.behavior} ${behavior} { get; }`];
@@ -415,12 +432,11 @@ function assertUniqueMembers(ctx: Context, cls: ClassPlan, members: string[]): v
 }
 
 function emitClass(ctx: Context, cls: ClassPlan, api: RootApi | undefined): string {
-  const { channel } = ctx.lowering;
   const interfaces = cls.isRoot
-    ? (channel.valueType === "boolean" ? ", INotifyValueChanged<bool>" : "")
+    ? (ctx.lowering.behavior !== "Passive" && ctx.lowering.channel.valueType === "boolean" ? ", INotifyValueChanged<bool>" : "")
     : (keyedRole(ctx, cls.part).keyed ? `, ${KEYED_PART_INTERFACE}` : "");
   const members: string[] = [];
-  if (cls.isRoot) members.push(`        public const string ChannelName = ${quote(channel.name)};`, `        public const string ChangeHandler = ${quote(channel.changeHandlerProp)};`);
+  if (cls.isRoot && ctx.lowering.behavior !== "Passive") members.push(`        public const string ChannelName = ${quote(ctx.lowering.channel.name)};`, `        public const string ChangeHandler = ${quote(ctx.lowering.channel.changeHandlerProp)};`);
   // Public part properties (document order) precede the private insertion host.
   members.push(...cls.members.filter(m => m.declaration === "property").map(declaration), ...cls.members.filter(m => m.declaration === "private").map(declaration));
   if (cls.contentContainer) members.push(`        public override VisualElement contentContainer => ${cls.contentContainer};`);
