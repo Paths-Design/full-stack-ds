@@ -58,11 +58,10 @@ evidence:
     commit_sha: "01971c080d2b42100579b2ba684c1f75df09e470"
   - criterion_id: A2
     status: pass
-    evidence_ref: "Unity EditMode 43/43 at merged source bb5de67, tmp/unity-pilot/provenance.json + results.xml; Godot editor serialization, runtime and fresh macOS export passed at the same clean source, /private/tmp/fsds-godot-passive-main-built-20261030/provenance.json + godot-runtime.json + godot.json; passive rows cover typography, saved composition, orientation and token-backed rule pixels"
-    recorded_at: "2026-10-30T11:46:18.214Z"
+    evidence_ref: "Clean-source Unity EditMode 43/43: tmp/unity-pilot/provenance.json + results.xml (sourceRevision bb5de67); Godot editor serialization, runtime and fresh macOS export: /private/tmp/fsds-godot-passive-main-built-20261030/provenance.json + godot-runtime.json + godot.json (sourceRevision bb5de67, matching runId 67e99c40); passive rows cover composition, typography, orientation and token-backed rule pixels. Runtime receipts are ignored local output; the CAWS verifier checks only the reachable commit, while the agent inspected the receipts."
+    recorded_at: "2026-10-30T11:48:14.898Z"
     command: "pnpm run test:unity; pnpm run test:godot"
     exit_code: 0
-    artifact_path: "/private/tmp/fsds-godot-passive-main-built-20261030/provenance.json"
     commit_sha: bb5de67bd0adfb3feafcd8fdcf2ce3ccd90f5745
   - criterion_id: A3
     status: pass
