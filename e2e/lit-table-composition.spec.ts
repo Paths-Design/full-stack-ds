@@ -76,6 +76,12 @@ for (const mode of ["template", "library"] as const) {
       }
     }
     await expect(table.getByRole("button", { name: "Edit A" })).toBeFocused();
+    await page.evaluate(async mode => {
+      const fixture = await import("/e2e/fixtures/lit-table-consumer.ts");
+      if (mode === "library") await fixture.updateLibrary(["a", "b"]);
+      else fixture.updateTemplateProbe(["a", "b"]);
+    }, mode);
+    await expect(table.getByRole("button", { name: "Edit A" })).toBeFocused();
     await table.getByRole("button", { name: "Edit A" }).evaluate(button => {
       (window as unknown as { focusedCell: Element }).focusedCell = button;
     });
