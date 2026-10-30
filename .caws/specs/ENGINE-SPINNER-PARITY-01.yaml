@@ -1,0 +1,63 @@
+id: ENGINE-SPINNER-PARITY-01
+title: 'Spinner motion and style realization for Unity and Godot'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-30T17:35:33.515Z'
+updated_at: '2026-10-30T17:35:33.515Z'
+created_by_session: '01a18dd7-e8c5-75b1-a31c-92fd96d4e82f'
+blast_radius:
+  modules:
+    - 'Unity UI Toolkit generation and runtime'
+    - 'Godot Control generation and runtime'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'packages/ds-codegen/src/frameworks/unity'
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'packages/ds-codegen/src/frameworks/native-loop-visual.ts'
+    - 'packages/ds-codegen/src/frameworks/native-loop-visual.test.ts'
+    - 'packages/ds-codegen/src/motion-loops.ts'
+    - 'packages/ds-codegen/src/motion-loops.test.ts'
+    - 'packages/ds-unity'
+    - 'packages/ds-godot'
+    - 'fsds.targets.json'
+    - 'scripts/unity-tests.mjs'
+    - 'scripts/unity-player.mjs'
+    - 'scripts/godot-pilot.mjs'
+    - 'docs/architecture/unity-target.md'
+    - 'docs/architecture/godot-target.md'
+  out: []
+invariants:
+  - 'Normalized loop, target part, variant and native style facts determine emitted behavior without component-name dispatch.'
+  - 'Web packages and contracts remain unchanged; ignored inline/showAfterMs behavior remains an explicit contract gap.'
+  - 'Reduced motion has an explicit native preference input and authored static value; no OS preference integration is claimed.'
+acceptance:
+  - id: A1
+    given: 'Spinner and an identity-substituted contract with normalized loop and style facts'
+    when: 'Unity and Godot generate'
+    then: 'loop target, period, keyframes, size and thickness variants reach native source and unsupported facts fail closed'
+  - id: A2
+    given: 'generated Unity Spinner in a real panel'
+    when: 'sizes, thicknesses, colors, time and reduced-motion preference change'
+    then: 'geometry and rendered pixels follow carried facts and reduced motion holds the authored static value'
+  - id: A3
+    given: 'generated Godot Spinner'
+    when: 'runtime scenarios and a fresh macOS export run'
+    then: 'source-bound geometry and rendered pixels follow the loop and style facts'
+  - id: A4
+    given: 'the committed candidate'
+    when: 'focused codegen and engine lanes and applicable checks run'
+    then: 'evidence and documentation distinguish realized motion/style from delay, inline, accessibility and OS-preference gaps'
+observability:
+  - 'Engine probes retain source revision, package digest, geometry, loop angle and pixel witnesses.'
+rollback:
+  - 'Revert the slice merge and regenerate the original target allowlists.'
+non_functional: {}
+contracts:
+  - name: 'spinner-loop'
+    type: behavior
+    path: 'packages/ds-contracts/components/Spinner/Spinner.contract.json'
+  - name: 'native-loop-plan'
+    type: contract-test
+    path: 'packages/ds-codegen/src/frameworks/native-loop-visual.test.ts'
