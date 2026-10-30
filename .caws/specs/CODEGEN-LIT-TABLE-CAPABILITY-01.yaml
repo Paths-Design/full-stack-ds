@@ -91,3 +91,11 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/lit-table-integrated-rail.log"
     commit_sha: "5962cd303"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected all five packed browser JSON/AX records and driver assertions: typed headers/abbr/ariaSort/lang/dir/title reach native TH/TD, IDREFs resolve, Arabic RTL computed direction, actual sort button changes ascending to descending while preserving TH identity/focus and one sorted header. Strict negative direction/sort/header types fail as expected. No screen-reader announcement or responsive scrolling claim."
+    recorded_at: "2026-10-30T20:13:10.667Z"
+    command: "pnpm run test:package:release"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/.caws/state/release-evidence/CODEGEN-LIT-TABLE-CAPABILITY-01/runs/fsds-release-packages-HRlkY6/browser-lit.json"
+    commit_sha: c2247e2e
