@@ -1,13 +1,15 @@
 id: CODEGEN-LIT-TABLE-CAPABILITY-01
 title: 'Realize composed Lit tables with native template content'
 mode: fix
-lifecycle_state: draft
+lifecycle_state: active
+worktree: lit-table-capability
 created_at: '2026-10-30T17:55:49.113Z'
-updated_at: '2026-10-30T17:55:49.113Z'
+updated_at: '2026-10-30T19:57:01.115Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
     - 'Lit native table composition and public template helpers'
+    - 'Web native Table header associations and language direction metadata'
   data_migration: false
 operational_rollback_slo: 5m
 scope:
@@ -23,10 +25,20 @@ scope:
     - 'scripts/public-types-consumer/fixtures.mjs'
     - 'scripts/release-package-check/browser.mjs'
     - 'docs/codegen-authority.md'
+    - packages/ds-codegen/src/ir.ts
+    - packages/ds-contracts/components/Table/Table.contract.json
+    - docs/architecture/design/box-model-primitive.md
+    - packages/ds-codegen/src/frameworks/react/component-source.ts
+    - packages/ds-codegen/src/frameworks/vue/component-source.ts
+    - packages/ds-codegen/src/frameworks/svelte/component-source.ts
+    - packages/ds-react/src/components/Table/
+    - packages/ds-vue/src/components/Table/
+    - packages/ds-svelte/src/components/Table/
+    - scripts/a11y-realization-audit/known-gaps.json
   out: []
 invariants:
   - 'Native table section row and cell semantics remain contract-owned without component-name emitter branches or autonomous native-part elements'
-  - 'Flow-content consumer slots and other framework output remain unchanged'
+  - 'Flow-content consumer slots and non-Table generated components remain unchanged'
 acceptance:
   - id: A1
     given: 'a composed Lit table with caption column and row headers cells and footer'
@@ -40,6 +52,12 @@ acceptance:
     given: 'ordinary flow-content slots and generated Table tests'
     when: 'all targets regenerate and required checks run'
     then: 'the held Table cases are replaced by executed composition assertions and unrelated consumer slot lowering remains intact'
+  - id: A4
+    given: >-
+      composed native web Table headers and cells with explicit associations sort
+      metadata and language direction
+    when: 'strict public consumers and browser compositions render and update each web framework'
+    then: 'typed attributes reach native nodes with valid metadata and native node identity is preserved'
 observability:
   - 'Retain raw browser DOM geometry accessibility snapshots screenshots strict public type and packed-consumer logs under canonical ignored CAWS state'
 rollback:

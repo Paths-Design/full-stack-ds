@@ -344,6 +344,14 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Icon",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "color",
+      "value": "currentColor",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Popover",
       "sourceKey": "brand:canary",
       "part": "content",

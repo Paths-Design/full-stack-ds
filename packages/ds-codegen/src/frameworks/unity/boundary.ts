@@ -136,6 +136,16 @@ export function propRoles(contract: ComponentContract): Map<string, string> {
     const explicit = [form.name?.prop, form.serialization?.valueSource?.startsWith("prop:") ? form.serialization.valueSource.slice(5) : undefined];
     for (const prop of [...explicit, "name", "value"]) if (prop && !roles.has(prop)) roles.set(prop, "form-field");
   }
+  // A glyph lookup's name prop is a distinct role from form serialization.
+  // Derive it from authored anatomy so a plain `name` on another component
+  // does not acquire glyph support by spelling alone.
+  type GlyphNode = { iconGlyph?: { nameFrom?: string }; children?: GlyphNode[] };
+  const visit = (node: GlyphNode | undefined): void => {
+    const match = /^prop:([A-Za-z_$][\w$-]*)$/.exec(node?.iconGlyph?.nameFrom ?? "");
+    if (match && !roles.has(match[1]!)) roles.set(match[1]!, "glyph-name");
+    for (const child of node?.children ?? []) visit(child);
+  };
+  visit((contract as { anatomy?: { dom?: GlyphNode } }).anatomy?.dom);
   return roles;
 }
 

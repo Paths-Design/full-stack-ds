@@ -24,6 +24,41 @@ function buildSequenceFixture(c = sequenceFixture()) {
   return buildComponentIR(c, { allContracts: new Map([[c.name, c], ["Pagination", pagination], ["Icon", fixture("Icon")]]) });
 }
 describe("Godot bounded lowering", () => {
+  it("projects a static nested componentRef from renamed item anatomy", () => {
+    const source = fixture("Accordion");
+    const ir = buildComponentIR(source, { allContracts: new Map([["Accordion", source], ["Icon", fixture("Icon")]]) });
+    ir.name = "RenamedGroup";
+    const files = createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") });
+    const script = files.find(file => file.relativePath === "RenamedGroup/RenamedGroup.gd")!.contents;
+    const encoded = script.match(/JSON.parse_string\((.+)\)/)![1]!;
+    const config = JSON.parse(JSON.parse(encoded));
+    expect(config.itemButtonRefs).toEqual([{ ref: "Icon", part: "chevron", attrs: { name: "chevron-down", size: "sm" } }]);
+    const ref = ir.dom!.children[0]!.children[0]!.children[0]!.children[1]!;
+    ref.bindings["name"] = { kind: "prop", prop: "unused" };
+    expect(() => godotPlan(ir)).toThrow("GODOT_UNSUPPORTED_REF: RenamedGroup");
+    delete ref.bindings["name"];
+    ref.componentRef = "Unadmitted";
+    expect(() => createGodotEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot: path.join(root, "packages/ds-contracts") }))
+      .toThrow("GODOT_UNSUPPORTED_REF: RenamedGroup Unadmitted has no admitted glyph mount capability");
+  });
+  it("rejects untyped glyph literals and a referenced runtime without a glyph setter", () => {
+    const source = fixture("Accordion");
+    const ref = (source.anatomy as { dom: { children: any[] } }).dom.children[0].children[0].children[0].children[1];
+    ref.attrs.decorative = "false";
+    const icon = fixture("Icon");
+    expect(() => buildComponentIR(source, { allContracts: new Map([[source.name, source], [icon.name, icon]]) }))
+      .toThrow("static attrs carry strings, so use a typed prop binding");
+    delete ref.attrs.decorative;
+    ref.attrs.size = "not-a-size";
+    const invalidIR = buildComponentIR(source, { allContracts: new Map([[source.name, source], [icon.name, icon]]) });
+    expect(() => godotPlan(invalidIR)).toThrow("has an invalid enum literal");
+    ref.componentRef = "fsds.Button";
+    ref.attrs = { variant: "primary" };
+    (source.anatomy as { details: Record<string, { componentRef: string }> }).details.chevron.componentRef = "fsds.Button";
+    const button = fixture("Button");
+    const buttonIR = buildComponentIR(source, { allContracts: new Map([[source.name, source], [button.name, button]]) });
+    expect(() => godotPlan(buttonIR)).toThrow("has no admitted glyph mount capability");
+  });
   it("emits renamed compound parts as persistent scene hosts with source-addressed styling", () => {
     const source = styledFixture("Card");
     const ir = buildComponentIR(source);

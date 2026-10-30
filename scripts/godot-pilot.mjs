@@ -20,6 +20,7 @@ for(const name of ['main.gd','roundtrip.gd']) fs.copyFileSync(path.join(verifica
 // Roundtrip fixtures may load sibling verification scripts by res:// path.
 fs.mkdirSync(path.join(project,'verification'),{recursive:true});
 for(const name of fs.readdirSync(verification).filter(name=>name.endsWith('.gd'))) fs.copyFileSync(path.join(verification,name),path.join(project,'verification',name));
+fs.copyFileSync(path.join(verification,'glyph_main.tscn'),path.join(project,'verification/glyph_main.tscn'));
 fs.copyFileSync(path.join(root,'packages/ds-godot/fixtures/traces.json'),path.join(project,'traces.json'));
 // A separate changed-token fixture checks emitted resource values in Godot.
 const {buildComponentIR}=await import('../packages/ds-codegen/dist/ir.js');
@@ -36,6 +37,13 @@ contract.styles=JSON.parse(fs.readFileSync(path.join(contractDir,'Accordion.styl
 const probe=buildComponentIR(contract); probe.name='TokenProbe';
 for(const fact of probe.tokenFacts) if(fact.rawValue?.match(/^#[0-9a-f]{6}$/i)) fact.rawValue='#123456';
 emitProbe(probe);
+const syntheticGroup=structuredClone(contract);
+const syntheticRef=syntheticGroup.anatomy.dom.children[0].children[0].children[0].children[1];
+syntheticRef.attrs.ariaLabel='Synthetic indicator';
+const iconContract=JSON.parse(fs.readFileSync(path.join(root,'packages/ds-contracts/components/Icon/Icon.contract.json'),'utf8'));
+const syntheticIR=buildComponentIR(syntheticGroup,{allContracts:new Map([[syntheticGroup.name,syntheticGroup],[iconContract.name,iconContract]])});
+syntheticIR.name='SyntheticGroup';
+emitProbe(syntheticIR);
 for(const name of ['Text','Divider']) {
  // Exercise the copied package artifacts; probe emission must not replace them.
  const componentDir=path.join(project,'addons/full_stack_ds/components',name);
@@ -76,6 +84,14 @@ function run(args, tag, extra={}) {
  if(r.error || r.status !== 0 || /SCRIPT ERROR|Parse Error|Assertion failed/.test(log)) throw new Error(`${tag} failed: ${log.slice(-4000)}`);
  return log;
 }
+function glyphReceipt(log, exported) {
+ const line=log.split(/\r?\n/).find(line=>line.startsWith('FSDS_GLYPH_RESULT '));
+ if(!line)throw new Error('Missing executed glyph probe');
+ const receipt=JSON.parse(line.slice('FSDS_GLYPH_RESULT '.length));
+ if(receipt.runId!==runId||receipt.passed!==true||receipt.exported!==exported||receipt.failures.length)
+  throw new Error('Failed or mismatched glyph probe: '+JSON.stringify(receipt));
+ return receipt;
+}
 console.log('Evidence:',out);
 run(['--headless','--editor','--import'],'import');
 for(const mode of ['write','read']) {
@@ -83,6 +99,7 @@ for(const mode of ['write','read']) {
  if(!log.includes('FSDS_ROUNDTRIP_OK')) throw new Error('Missing scene roundtrip witness');
 }
 run([], 'runtime');
+glyphReceipt(run(['res://verification/glyph_main.tscn'],'glyph-runtime'), false);
 const receipt=JSON.parse(fs.readFileSync(path.join(out,'godot.json'),'utf8'));
 if(receipt.runId!==runId || !receipt.passed) throw new Error('Invalid runtime receipt');
 fs.copyFileSync(path.join(out,'godot.json'),path.join(out,'godot-runtime.json'));
@@ -115,4 +132,23 @@ fs.writeFileSync(path.join(out,'exported.log'),(player.stdout??'')+(player.stder
 if(player.error||player.status!==0)throw new Error('Exported Player failed');
 const final=JSON.parse(fs.readFileSync(path.join(out,'godot.json'),'utf8'));
 if(final.runId!==runId||!final.passed||!final.exported)throw new Error('Exported receipt mismatch');
+// Re-export the same copied package with the dedicated glyph scene as the
+// entry point. The ordinary trace and glyph pixels each execute in a fresh
+// macOS Player instead of inheriting the other's assertions.
+fs.writeFileSync(path.join(project,'project.godot'),fs.readFileSync(path.join(project,'project.godot'),'utf8').replace(
+ 'run/main_scene="res://main.tscn"','run/main_scene="res://verification/glyph_main.tscn"'));
+const glyphZip=path.join(out,'GlyphPilot.zip');
+run(['--headless','--export-debug','macOS',glyphZip],'glyph-export');
+const glyphUnzip=spawnSync('unzip',['-q',glyphZip,'-d',path.join(out,'glyph-exported')],{encoding:'utf8'});
+if(glyphUnzip.status!==0)throw new Error('Cannot extract glyph exported app');
+const glyphApp=fs.readdirSync(path.join(out,'glyph-exported')).find(n=>n.endsWith('.app'));
+if(!glyphApp)throw new Error('Missing glyph exported application');
+const glyphBinDir=path.join(out,'glyph-exported',glyphApp,'Contents/MacOS');
+const glyphExecutable=path.join(glyphBinDir,fs.readdirSync(glyphBinDir)[0]);
+const glyphPlayer=spawnSync(glyphExecutable,[],{env,encoding:'utf8',timeout:180000});
+const glyphPlayerLog=(glyphPlayer.stdout??'')+(glyphPlayer.stderr??'');
+fs.writeFileSync(path.join(out,'glyph-exported.log'),glyphPlayerLog);
+if(glyphPlayer.error||glyphPlayer.status!==0||/SCRIPT ERROR|Parse Error|Assertion failed/.test(glyphPlayerLog))
+ throw new Error('Exported glyph Player failed: '+glyphPlayerLog.slice(-4000));
+glyphReceipt(glyphPlayerLog,true);
 console.log('Exported Player passed.');

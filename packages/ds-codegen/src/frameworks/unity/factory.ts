@@ -1,18 +1,34 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
 import { buildComponentIR } from "../../ir.js";
-import { admitContract, loadBoundary, type ClassifiedLeaf, type ContractWithSidecars } from "./boundary.js";
+import { admitContract, loadBoundary, unityAllowlist, type ClassifiedLeaf, type ContractWithSidecars } from "./boundary.js";
 import { triggerParts } from "./behaviors.js";
 import { loadTokenSources, projectStylesheet } from "./uss.js";
 import { identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
+import { collectIconGlyphNodes } from "../icon-glyph.js";
+import { unityGlyphCatalog } from "./glyph-catalog.js";
 
 export { unityLowering } from "./behaviors.js";
 
 /** Package-relative path (without extension) of the generated stylesheet; the
  * runtime's `Resources.Load<StyleSheet>("FullStackDS/Controls")` names it. */
 export const STYLESHEET_RESOURCE = "Runtime/Resources/FullStackDS/Controls";
+
+function assertAdmittedRefs(ir: ComponentIR, contractsRoot: string): void {
+  const workspaceRoot = contractsRoot
+    ? path.resolve(contractsRoot, "../..")
+    : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../..");
+  const admitted = new Set(unityAllowlist(workspaceRoot));
+  const visit = (node: NonNullable<ComponentIR["dom"]>): void => {
+    if (node.componentRef && !admitted.has(node.componentRef))
+      throw new Error(`UNITY_UNSUPPORTED_REF: ${ir.name} references unadmitted ${node.componentRef}`);
+    node.children.forEach(visit);
+  };
+  if (ir.dom) visit(ir.dom);
+}
 export type { UnityBehavior, UnityLowering } from "./behaviors.js";
 
 const quote = (s: string): string => JSON.stringify(s);
@@ -89,7 +105,10 @@ export function createUnityEmitter(): FrameworkEmitter {
       const classified = admitContract(contract, context);
       assertRealized(contract, buildComponentIR(contract), classified);
     },
-    emitComponent: ir => [{ relativePath: `${identifier(ir.name)}/${ir.name}.cs`, contents: walkComponent(ir).source }],
+    emitComponent: (ir, opts) => {
+      assertAdmittedRefs(ir, opts.contractsRoot);
+      return [{ relativePath: `${identifier(ir.name)}/${ir.name}.cs`, contents: walkComponent(ir).source }];
+    },
     emitTests: () => [], // Independent Unity EditMode oracles live outside generated source.
     // S1/S6: the package stylesheet and its unsupported ledger, projected from
     // every admitted component at once (uss.ts). `Theme.Attach` loads the
@@ -99,6 +118,7 @@ export function createUnityEmitter(): FrameworkEmitter {
       return [
         { relativePath: `${STYLESHEET_RESOURCE}.uss`, contents: uss },
         { relativePath: `${STYLESHEET_RESOURCE}.unsupported.json`, contents: `${JSON.stringify(ledger, null, 2)}\n` },
+        ...(irs.some(ir => collectIconGlyphNodes(ir.dom).length) ? [unityGlyphCatalog(opts)] : []),
       ];
     },
     emitBarrel: names => `// Generated component catalog.\nnamespace FullStackDS\n{\n    public static class ComponentCatalog\n    {\n        public static readonly string[] Names = { ${names.sort().map(quote).join(", ")} };\n    }\n}\n`,

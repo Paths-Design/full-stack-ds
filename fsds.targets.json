@@ -177,7 +177,8 @@
         "Popover",
         "Tabs",
         "Text",
-        "Divider"
+        "Divider",
+        "Icon"
       ]
     },
     {

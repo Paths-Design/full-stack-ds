@@ -8,6 +8,10 @@
 
 /* Token graph, light (resolved.tokens.json) */
 .fsds-theme {
+    --fsds-core-icon-size-lg: 24px;
+    --fsds-core-icon-size-md: 20px;
+    --fsds-core-icon-size-sm: 16px;
+    --fsds-core-icon-size-xl: 32px;
     --fsds-core-layer-dropdown: 1000;
     --fsds-core-motion-duration-short: 150ms;
     --fsds-core-spacing-size-01: 1px;
@@ -1432,4 +1436,68 @@
     margin-bottom: 0;
     margin-left: var(--fsds-divider-spacing-margin, 8px);
     margin-right: var(--fsds-divider-spacing-margin, 8px);
+}
+
+/* Icon (.icon) */
+.icon {
+    --fsds-box-model-width: var(--fsds-semantic-glyph-size-medium-extent, 16px);
+    --fsds-box-model-height: var(--fsds-semantic-glyph-size-medium-extent, 16px);
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: 0;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-icon-size-sm: var(--fsds-core-icon-size-sm, 16px);
+    --fsds-icon-size-md: var(--fsds-core-icon-size-md, 20px);
+    --fsds-icon-size-lg: var(--fsds-core-icon-size-lg, 24px);
+    --fsds-icon-size-xl: var(--fsds-core-icon-size-xl, 32px);
+}
+
+.icon {
+    width: var(--fsds-box-model-width, 16px);
+    height: var(--fsds-box-model-height, 16px);
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 0);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.icon.icon--sm {
+    width: var(--fsds-icon-size-sm, 16px);
+    height: var(--fsds-icon-size-sm, 16px);
+}
+
+.icon.icon--md {
+    width: var(--fsds-icon-size-md, 20px);
+    height: var(--fsds-icon-size-md, 20px);
+}
+
+.icon.icon--lg {
+    width: var(--fsds-icon-size-lg, 24px);
+    height: var(--fsds-icon-size-lg, 24px);
+}
+
+.icon.icon--xl {
+    width: var(--fsds-icon-size-xl, 32px);
+    height: var(--fsds-icon-size-xl, 32px);
 }
