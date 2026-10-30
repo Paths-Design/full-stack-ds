@@ -109,11 +109,11 @@ evidence:
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
   - criterion_id: A2
     status: pass
-    evidence_ref: "audit:token-resolvability: 0 findings including Unity; audit:variant-realization: 50 findings all ledgered, 0 unledgered/stale, Unity 7 ledgered nondefault gaps"
-    recorded_at: "2026-10-30T05:46:46.896Z"
+    evidence_ref: "On merged source d40e7527b, token-resolvability and variant-realization audits passed; Unity six-component surface has 16 unrealized non-default values, all ledgered, with zero unledgered or stale findings. The ledgered gaps are explicit, not parity claims."
+    recorded_at: "2026-10-30T16:31:07.361Z"
     command: "pnpm run audit:token-resolvability && pnpm run audit:variant-realization"
     exit_code: 0
-    commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
   - criterion_id: A3
     status: pass
     evidence_ref: "At clean source 63fee12cf, Unity 6000.5.3f1 EditMode XML tmp/unity-pilot/results.xml passed 43/43, including USS import warnings/errors checks, token-backed styling and 26 interaction cases; six Editor Play-context PNGs recorded. Frozen five-row Unity Editor versus Godot runtime/export comparison passed at tmp/engine-comparison/ae1a20cf-d123-4db8-966c-bfe561adff5a/comparison.json. Fresh OSXPlayer run tmp/unity-player/52337abb-74a0-44df-9b09-7bbdbd9f868d/result.json passed 12/12, with inspected screenshot and opaque sample/Switch style checks. These ignored local receipts were inspected directly; commit verification checks reachability only."
