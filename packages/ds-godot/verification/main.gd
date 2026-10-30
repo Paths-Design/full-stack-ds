@@ -160,6 +160,63 @@ func _ready() -> void:
 	check(not defaulted_action.rendered.disabled and not defaulted_action.loading_indicator.visible, "Explicit consumer values did not override authored defaults")
 	rows.append({"id":"action-defaults","initialDisabled":true,"initialLoading":true,"consumerOverride":true})
 	defaulted_action.queue_free()
+	var card_preview = make_control("Card")
+	card_preview.position = Vector2(650, 24)
+	card_preview.custom_minimum_size.x = 250
+	add_child(card_preview)
+	var composed_title = make_control("Text")
+	card_preview.get_part("header").add_child(composed_title)
+	composed_title.content = "Composed heading"
+	composed_title.variant = "headline"
+	var composed_body = make_control("Text")
+	card_preview.get_part("content").add_child(composed_body)
+	composed_body.content = "Retained native content"
+	var composed_badge = make_control("Badge")
+	card_preview.get_part("badge").add_child(composed_badge)
+	composed_badge.content = "Ready"
+	composed_badge.intent = "danger"
+	composed_badge.size_axis = "lg"
+	var glyph := ColorRect.new()
+	glyph.color = Color("#123456")
+	glyph.custom_minimum_size = Vector2(10, 10)
+	composed_badge.get_part("icon").add_child(glyph)
+	var composed_action = make_control("Button")
+	card_preview.get_part("actions").add_child(composed_action)
+	composed_action.content = "Use item"
+	var composed_calls := [0]
+	composed_action.activated.connect(func(): composed_calls[0] += 1)
+	var title_id = composed_title.get_instance_id()
+	var badge_id = composed_badge.get_instance_id()
+	var action_id = composed_action.get_instance_id()
+	var glyph_id = glyph.get_instance_id()
+	check(card_preview.chrome.get_theme_stylebox("panel").content_margin_left == 16, "Card default padding did not reach native stylebox")
+	card_preview.density = "inset"
+	check(card_preview.chrome.get_theme_stylebox("panel").content_margin_left == 8, "Card density did not change native padding")
+	check(card_preview._properties("root", card_preview._active_rules()).color == "#141414", "A child-part token override leaked into Card root color")
+	card_preview.token_overrides = {"card.color.background.default":"#123456"}
+	check(card_preview.chrome.get_theme_stylebox("panel").bg_color.is_equal_approx(Color("#123456")), "Card token override did not reach native stylebox")
+	card_preview.token_overrides = {"card.color.background.default":"#123456", "background-color":"#456789"}
+	check(card_preview.chrome.get_theme_stylebox("panel").bg_color.is_equal_approx(Color("#456789")), "Card property override did not outrank token override")
+	card_preview.token_overrides = {"card.color.background.default":"#123456", "background-color":"#456789", "card.design.root.background.fill":"#654321"}
+	check(card_preview.chrome.get_theme_stylebox("panel").bg_color.is_equal_approx(Color("#654321")), "Card design slot did not outrank property and token overrides")
+	card_preview.token_overrides = {"card.color.background.default":"#123456"}
+	check(card_preview.get_part("header").get_child(0).get_instance_id() == title_id, "Card restyle replaced title content")
+	check(card_preview.get_part("badge").get_child(0).get_instance_id() == badge_id, "Card restyle replaced Badge")
+	check(card_preview.get_part("actions").get_child(0).get_instance_id() == action_id, "Card restyle replaced action")
+	check(composed_badge.get_part("icon").get_child(0).get_instance_id() == glyph_id, "Badge restyle replaced composed icon")
+	check(composed_badge.chrome.get_theme_stylebox("panel").bg_color.is_equal_approx(Color("#fac2c2")), "Badge danger intent did not change native background")
+	composed_badge.intent = "success"
+	check(composed_badge.chrome.get_theme_stylebox("panel").bg_color.is_equal_approx(Color("#b3dba7")), "Badge intent update did not change native background")
+	composed_badge.intent = "danger"
+	check(composed_badge.get_part("icon").get_child(0).get_instance_id() == glyph_id, "Badge intent update replaced composed icon")
+	check(composed_badge.content_label.text == "Ready" and composed_badge.content_label.get_theme_font_size("font_size") == 14, "Badge content or large typography did not render")
+	check(is_equal_approx(composed_badge.chrome.custom_minimum_size.y, 32), "Badge large minimum height did not render")
+	composed_badge.token_overrides = {"badge.color.background.default":"#654321"}
+	check(composed_badge.chrome.get_theme_stylebox("panel").bg_color.is_equal_approx(Color("#654321")), "Badge token override did not reach native background")
+	composed_action.rendered.pressed.emit()
+	check(composed_calls[0] == 1, "Nested action did not reach consumer exactly once")
+	check(composed_title.content == "Composed heading" and composed_body.content == "Retained native content", "Card restyle lost nested Text state")
+	rows.append({"id":"composed-parts","titleRetained":true,"badgeRetained":true,"actionRetained":true,"actionCalls":composed_calls[0],"insetPadding":8,"badgeLargePx":14,"precedence":["design-slot","property","token"]})
 	var column := VBoxContainer.new()
 	column.position = Vector2(24, 24)
 	column.size.x = 580
@@ -215,6 +272,13 @@ func _ready() -> void:
 	var painted: Color = frame.get_pixelv(Vector2i(pixel_point))
 	check(painted.is_equal_approx(Color("#123456")), "Action token override did not paint expected viewport pixel")
 	rows.append({"id":"action-pixel","color":painted.to_html(false)})
+	var card_pixel: Color = frame.get_pixelv(Vector2i(card_preview.chrome.global_position + Vector2(5, 5)))
+	check(card_pixel.is_equal_approx(Color("#123456")), "Card token override did not paint expected viewport pixel")
+	rows.append({"id":"composite-pixel","color":card_pixel.to_html(false)})
+	var badge_point: Vector2 = composed_badge.chrome.global_position + Vector2(composed_badge.chrome.size.x - 12, composed_badge.chrome.size.y / 2.0)
+	var badge_pixel: Color = frame.get_pixelv(Vector2i(badge_point))
+	check(badge_pixel.is_equal_approx(Color("#654321")), "Badge token override did not paint expected viewport pixel")
+	rows.append({"id":"badge-pixel","color":badge_pixel.to_html(false)})
 	frame.save_png(out.path_join("godot.png"))
 	var file := FileAccess.open(out.path_join("godot.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify({"runId":OS.get_environment("FSDS_ENGINE_RUN"),"engine":"godot","version":Engine.get_version_info().string,"exported":OS.has_feature("template"),"passed":not failed,"rows":rows}))

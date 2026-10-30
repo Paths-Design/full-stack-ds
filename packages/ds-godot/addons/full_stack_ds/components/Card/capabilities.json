@@ -1,0 +1,450 @@
+{
+  "operation": "composite",
+  "layout": "column",
+  "parts": [
+    "header",
+    "media",
+    "content",
+    "footer",
+    "actions",
+    "badge",
+    "description",
+    "link",
+    "note"
+  ],
+  "axes": [
+    "density"
+  ],
+  "styles": [
+    {
+      "source": "tokens",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "box-model.padding",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-block-start",
+          "value": "16px",
+          "token": "semantic.surface.size.padding-block"
+        },
+        {
+          "property": "box-model.padding-block-end",
+          "value": "16px",
+          "token": "semantic.surface.size.padding-block"
+        },
+        {
+          "property": "box-model.padding-inline",
+          "value": "0"
+        },
+        {
+          "property": "box-model.padding-inline-start",
+          "value": "16px",
+          "token": "semantic.surface.size.padding-inline"
+        },
+        {
+          "property": "box-model.padding-inline-end",
+          "value": "16px",
+          "token": "semantic.surface.size.padding-inline"
+        },
+        {
+          "property": "box-model.gap",
+          "value": "8px",
+          "token": "semantic.surface.size.gap"
+        },
+        {
+          "property": "box-model.width",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.min-width",
+          "value": "64px",
+          "token": "semantic.surface.size.min-width"
+        },
+        {
+          "property": "box-model.max-width",
+          "value": "none"
+        },
+        {
+          "property": "box-model.height",
+          "value": "auto"
+        },
+        {
+          "property": "box-model.min-height",
+          "value": "0"
+        },
+        {
+          "property": "box-model.max-height",
+          "value": "none"
+        },
+        {
+          "property": "card.color.background.default",
+          "value": "#ffffff",
+          "token": "semantic.color.background.primary"
+        },
+        {
+          "property": "card.color.background.hover",
+          "value": "#f7f7f7",
+          "token": "semantic.color.background.hover"
+        },
+        {
+          "property": "card.color.border",
+          "value": "#d0d0d0",
+          "token": "semantic.surface.border.subtle"
+        },
+        {
+          "property": "card.color.foreground.primary",
+          "value": "#141414",
+          "token": "semantic.color.foreground.primary"
+        },
+        {
+          "property": "card.size.padding",
+          "value": "16px",
+          "token": "core.spacing.size.06"
+        },
+        {
+          "property": "card.size.padding.inset",
+          "value": "8px",
+          "token": "core.spacing.size.04"
+        },
+        {
+          "property": "card.size.radius",
+          "value": "8px",
+          "token": "semantic.shape.radius.medium"
+        },
+        {
+          "property": "card.size.gap",
+          "value": "4px",
+          "token": "core.spacing.size.03"
+        },
+        {
+          "property": "card.typography.lineHeight.heading",
+          "value": "1",
+          "token": "semantic.typography.line.height.heading"
+        },
+        {
+          "property": "card.typography.lineHeight.normal",
+          "value": "1.5",
+          "token": "semantic.typography.line.height.normal"
+        },
+        {
+          "property": "card.elevation.resting",
+          "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+          "token": "semantic.elevation.surface.raised"
+        },
+        {
+          "property": "card.elevation.raised",
+          "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+          "token": "semantic.elevation.surface.floating"
+        },
+        {
+          "property": "card.color.focus.ring",
+          "value": "#0566fe",
+          "token": "semantic.focus.ring.color"
+        },
+        {
+          "property": "card.focus.ring.width",
+          "value": "2px",
+          "token": "semantic.focus.ring.width"
+        },
+        {
+          "property": "card.focus.ring.offset",
+          "value": "2px",
+          "token": "semantic.focus.ring.offset"
+        }
+      ]
+    },
+    {
+      "source": "structure",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "0",
+          "token": "box-model.padding"
+        },
+        {
+          "property": "padding-block",
+          "value": "0",
+          "token": "box-model.padding-block"
+        },
+        {
+          "property": "padding-inline",
+          "value": "0",
+          "token": "box-model.padding-inline"
+        },
+        {
+          "property": "gap",
+          "value": "8px",
+          "token": "box-model.gap"
+        },
+        {
+          "property": "min-height",
+          "value": "0",
+          "token": "box-model.min-height"
+        }
+      ]
+    },
+    {
+      "source": "root",
+      "part": "root",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "#ffffff",
+          "token": "card.color.background.default",
+          "designSlot": "card.design.root.background.fill"
+        },
+        {
+          "property": "border-color",
+          "value": "#d0d0d0",
+          "token": "card.color.border",
+          "designSlot": "card.design.root.border.color"
+        },
+        {
+          "property": "color",
+          "value": "#141414",
+          "token": "card.color.foreground.primary",
+          "designSlot": "card.design.root.foreground.color"
+        },
+        {
+          "property": "padding",
+          "value": "16px",
+          "token": "card.size.padding",
+          "designSlot": "card.design.root.spacing.padding"
+        },
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "card.size.radius",
+          "designSlot": "card.design.root.shape.radius"
+        },
+        {
+          "property": "gap",
+          "value": "4px",
+          "token": "card.size.gap",
+          "designSlot": "card.design.root.spacing.gap"
+        }
+      ]
+    },
+    {
+      "source": ".card--interactive:hover",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "hover",
+          "ownerPart": "root"
+        },
+        {
+          "kind": "variant",
+          "axis": "interactive",
+          "value": "true"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "background-color",
+          "value": "#f7f7f7",
+          "token": "card.color.background.hover",
+          "designSlot": "card.design.condition-0e2417fefe62.background.fill"
+        }
+      ]
+    },
+    {
+      "source": "--inset",
+      "part": "root",
+      "predicates": [
+        {
+          "kind": "variant",
+          "axis": "density",
+          "value": "inset"
+        }
+      ],
+      "declarations": [
+        {
+          "property": "padding",
+          "value": "8px",
+          "token": "card.size.padding.inset",
+          "designSlot": "card.design.condition-6f2ce0f02c89.spacing.padding"
+        }
+      ]
+    },
+    {
+      "source": "header",
+      "part": "header",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "gap",
+          "value": "4px",
+          "token": "card.size.gap",
+          "designSlot": "card.design.header.spacing.gap"
+        },
+        {
+          "property": "color",
+          "value": "#141414",
+          "token": "card.color.foreground.primary",
+          "designSlot": "card.design.header.foreground.color"
+        }
+      ]
+    },
+    {
+      "source": "media",
+      "part": "media",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "border-radius",
+          "value": "8px",
+          "token": "card.size.radius",
+          "designSlot": "card.design.media.shape.radius"
+        }
+      ]
+    },
+    {
+      "source": "content",
+      "part": "content",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "gap",
+          "value": "4px",
+          "token": "card.size.gap",
+          "designSlot": "card.design.content.spacing.gap"
+        },
+        {
+          "property": "color",
+          "value": "#141414",
+          "token": "card.color.foreground.primary",
+          "designSlot": "card.design.content.foreground.color"
+        }
+      ]
+    },
+    {
+      "source": "description",
+      "part": "description",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "card.color.foreground.primary",
+          "value": "#474647",
+          "token": "semantic.color.foreground.secondary"
+        }
+      ]
+    },
+    {
+      "source": "footer",
+      "part": "footer",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "gap",
+          "value": "4px",
+          "token": "card.size.gap",
+          "designSlot": "card.design.footer.spacing.gap"
+        }
+      ]
+    },
+    {
+      "source": "actions",
+      "part": "actions",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "gap",
+          "value": "4px",
+          "token": "card.size.gap",
+          "designSlot": "card.design.actions.spacing.gap"
+        }
+      ]
+    },
+    {
+      "source": "link",
+      "part": "link",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "card.color.foreground.primary",
+          "value": "#d92d2e",
+          "token": "semantic.color.foreground.link"
+        }
+      ]
+    },
+    {
+      "source": "note",
+      "part": "note",
+      "predicates": [],
+      "declarations": [
+        {
+          "property": "card.color.foreground.primary",
+          "value": "#474647",
+          "token": "semantic.color.foreground.secondary"
+        }
+      ]
+    }
+  ],
+  "excluded": [],
+  "omissions": [
+    "root accessibility role and labeling: native projection unverified",
+    "link: native part activation and focus semantics unlowered",
+    "structure.padding-block-start: no Godot composite style mapping",
+    "structure.padding-block-end: no Godot composite style mapping",
+    "structure.padding-inline-start: no Godot composite style mapping",
+    "structure.padding-inline-end: no Godot composite style mapping",
+    "structure.min-width: no Godot composite style mapping",
+    "root.line-height: no Godot composite style mapping",
+    "root.display: platform web only",
+    "root.flex-direction: platform web only",
+    "root.border-style: platform web only",
+    "root.border-width: platform web,ios,android only",
+    "root.box-sizing: platform web only",
+    "root.box-shadow: no Godot composite style mapping",
+    "root.transition-property: platform web only",
+    "root.transition-duration: platform web only",
+    "root.transition-timing-function: platform web only",
+    ".card--interactive:hover.box-shadow: no Godot composite style mapping",
+    ".card--interactive:hover.transform: platform web only",
+    ".card--interactive:active: unsupported composite selector",
+    "focus: unsupported composite selector",
+    "header.display: platform web only",
+    "header.align-items: platform web only",
+    "header.justify-content: platform web only",
+    "header.line-height: no Godot composite style mapping",
+    "media.display: platform web only",
+    "media.width: platform web only",
+    "media.overflow: platform web only",
+    "content.display: platform web only",
+    "content.flex-direction: platform web only",
+    "content.flex: platform web only",
+    "description.margin: platform web only",
+    "footer.display: platform web only",
+    "footer.align-items: platform web only",
+    "footer.justify-content: platform web only",
+    "footer.padding-top: no Godot composite style mapping",
+    "footer.margin-top: platform web only",
+    "footer.border-top-color: no Godot composite style mapping",
+    "footer.border-top-style: platform web only",
+    "footer.border-top-width: platform web,ios,android only",
+    "actions.display: platform web only",
+    "actions.align-items: platform web only",
+    "badge.display: platform web only",
+    "badge.align-items: platform web only",
+    "badge.align-self: platform web only",
+    "link.text-decoration: platform web only",
+    ".card__link:hover: unsupported composite selector",
+    "note.font-size: platform web only",
+    "note.line-height: no Godot composite style mapping"
+  ],
+  "theme": "source-bearing native composite style subset",
+  "otherStyling": "omissions list unsupported selectors and declarations; part text inheritance and motion are unproven",
+  "excludedProps": [],
+  "proof": "requires-runtime-witness"
+}
