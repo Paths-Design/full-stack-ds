@@ -155,6 +155,7 @@ This inventory was produced as part of CODEGEN-SEMANTIC-AUTHORITY-01. It documen
 | `resolveSurfaceAttachment` + `isPartAnchoredSurface` | Shared `semantics.ts` | Contract `surface.{anchor, positioning}` | Attachment and positioning axes |
 | `FormControlIR` + `buildFormControlIR` | Shared `ir.ts` | Contract `formControl` + anatomy + channel | Control part, value model, commit timing |
 | Static referenced-component props | Lit component emitter | IR `ComponentInstanceIR.attrs` prop/attribute classification | Declared target props use property binding; host attributes retain attribute binding |
+| Compound disclosure button hosts | Lit component emitter | Normalized disclosure interaction and contract trigger anatomy | Custom-element button host retains native border-box sizing; a declared disabled prop guards the root activation boundary |
 | `nativeRadioChannel` + `requestNativeRadioChange` | Shared `ir.ts` + interaction runtime; Vue/Svelte/Angular/Lit syntax lowering | Native radio host, string selection channel, matching checked predicate and native value binding | Native radio change requests whose form value is the selection key |
 | `nativeTextChannel` + `requestNativeTextChange` / `useNativeTextValue` | Shared `ir.ts` + interaction runtime; React host adapter and Vue/Svelte/Angular/Lit syntax lowering | Native input/textarea value and input/change request bound to the same string channel | Native text ownership, with composition drafts retained until commit |
 | `EventValueStrategy` + `resolveEventValueStrategy` | Shared `semantics.ts` | Host capability + channel valueType + callback kind | Event extraction site |
@@ -162,6 +163,12 @@ This inventory was produced as part of CODEGEN-SEMANTIC-AUTHORITY-01. It documen
 | `requiredProps` + `placeholderForPropType` | Test plan | Contract `prop.required` + `prop.type` + `definedTypes` | Prop type shape |
 | `defaultOpen` conditional emission | Svelte hook emitter | Channel `defaultValueProp` presence | Channel shape |
 | Content-transform lowering (`highlight` → one text-only span per token; declared gate → single plain run) + byte-identical shared-runtime emission | React + Vue + Svelte + Lit + Angular emitters (`isContentTransform` / `collectContentTransforms`); CLI runtime copy (`shipsContentTransformRuntime` flag); React-Native + SwiftUI prop-text degradation | IR `ContentTransformIR` (content directive; closed transform set, schema-enforced) | Content-transform directive — never a component name |
+
+Lit compound disclosure triggers replace a native button with a custom-element
+host. Their border-box sizing preserves the native button's width and padding
+boundary. A declared disabled prop guards the root activation method, including
+programmatic events. These realization rules are removable when the trigger
+uses a native button that supplies equivalent sizing and activation suppression.
 
 Native radio activation changes the browser's checked group before the value
 request reaches the parent. The shared helper restores that group from the

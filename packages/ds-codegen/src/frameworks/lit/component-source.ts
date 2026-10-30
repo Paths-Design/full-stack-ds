@@ -1263,6 +1263,7 @@ function generateDisclosureRootClass(ir: ComponentIR): string {
   lines.push(`  }`);
   lines.push(``);
   lines.push(`  toggleItem(itemValue: string): void {`);
+  if (hasDisabled) lines.push(`    if (this.disabled) return;`);
   lines.push(`    const v = this.behavior.${channelName};`);
   lines.push(`    this.behavior.${setterName}(toggleInteractionItem(v, itemValue, (this.type ?? "single") === "multiple", ${hasCollapsible ? "Boolean(this.collapsible)" : "false"}));`);
   lines.push(`    this._provideCtx();`);
@@ -1373,7 +1374,7 @@ function generateDisclosureTriggerClass(ir: ComponentIR, itemName: string, chevr
   lines.push(
     ...litStaticStylesLine(
       ir,
-      ":host { display: block; cursor: pointer; }",
+      ":host { display: block; box-sizing: border-box; cursor: pointer; }",
       ':host([aria-disabled="true"]) { cursor: not-allowed; pointer-events: none; }',
     ),
   );
