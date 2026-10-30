@@ -4,7 +4,7 @@ mode: fix
 lifecycle_state: active
 worktree: lit-table-capability
 created_at: '2026-10-30T17:55:49.113Z'
-updated_at: '2026-10-30T17:55:51.291Z'
+updated_at: '2026-10-30T18:05:14.582Z'
 created_by_session: '01a1657d-8f2b-7202-8d26-b1d0cec2342d'
 blast_radius:
   modules:
@@ -24,6 +24,7 @@ scope:
     - 'scripts/public-types-consumer/fixtures.mjs'
     - 'scripts/release-package-check/browser.mjs'
     - 'docs/codegen-authority.md'
+    - packages/ds-codegen/src/ir.ts
   out: []
 invariants:
   - 'Native table section row and cell semantics remain contract-owned without component-name emitter branches or autonomous native-part elements'
