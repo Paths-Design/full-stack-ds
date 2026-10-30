@@ -4,7 +4,7 @@
  * Lowers `ir.dom` — or, for parts-only contracts, a tree synthesized from
  * `ir.parts` — into UI Toolkit C#: one `[UxmlElement]` class for the
  * component root and one per `ir.compoundParts` entry. Element types, part
- * identity, insertion points, channel API, props and the behavior the
+ * identity, insertion points, optional channel API, props and any behavior the
  * constructor attaches all derive from IR facts. Nothing here branches on a
  * component, part, channel or class name; the only name table is the
  * item-group option vocabulary, applied only when the ItemGroup behavior was
@@ -273,14 +273,29 @@ function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], k
 function passiveRootApi(ctx: Context): RootApi {
   const members: string[] = [];
   const defaults: string[] = [];
+  const consumed = new Set<string>();
   for (const prop of ctx.ir.styledProps) {
     const values = ctx.ir.variants[prop.name];
     if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    consumed.add(prop.name);
     members.push(variantProperty(ctx, prop, values, undefined));
     const literal = defaultLiteral(ctx.ir, prop, values);
     if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
   }
+  const unhandled = ctx.ir.styledProps.filter(prop => !consumed.has(prop.name));
+  if (unhandled.length) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_PROP: ${ctx.ir.name} does not realise ${unhandled.map(prop => prop.name).join(", ")}`);
   return { members, attach: [], defaults };
+}
+
+function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined): void {
+  if (!node) return;
+  const unhandled = Object.keys(node.bindings).length || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || Object.keys(node.attrs).length ||
+    node.componentRef !== undefined || node.iconGlyph !== undefined || node.activation !== undefined || node.focusContainer === true ||
+    !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
+    node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||
+    (node.content !== undefined && (node === ir.dom || !("kind" in node.content && node.content.kind === "literal")));
+  if (unhandled) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
+  for (const child of node.children) assertPassiveAnatomy(ir, child);
 }
 
 /** R6–R8: the root's behavior, channel API and props. */
@@ -481,6 +496,7 @@ export interface UnityComponentSource {
 /** The generated C# for one component: root class plus one class per compound part. */
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
+  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom);
   const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [] };
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);

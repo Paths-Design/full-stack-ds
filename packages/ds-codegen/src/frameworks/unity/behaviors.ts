@@ -1,10 +1,11 @@
 /**
  * Unity behavior dispatcher (brief rule R7).
  *
- * The three runtime behaviors (`BooleanControl`, `ItemGroup`,
+ * The interactive runtime behaviors (`BooleanControl`, `ItemGroup`,
  * `AnchoredSurface`) are plain C# classes the generated constructor attaches
- * to the tree the anatomy walker built. Which one attaches, and with which
- * options, is decided here from IR facts only: value model, interaction
+ * to the tree the anatomy walker built. Passive content and rule shapes need
+ * no interaction attachment. Which path applies is decided from IR facts:
+ * value model, interaction
  * operation and presence, surface attachment, and state dimensions. No
  * component, part, channel or class name is consulted.
  *
