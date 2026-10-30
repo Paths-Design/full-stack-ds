@@ -32,6 +32,15 @@ func _initialize() -> void:
 		assert(composed.pack(card) == OK)
 		assert(ResourceSaver.save(composed, "res://composed-roundtrip.tscn") == OK)
 		card.free()
+		var icon = load("res://addons/full_stack_ds/components/Icon/Icon.tscn").instantiate()
+		icon.glyph_name = "check"
+		icon.size_axis = "xl"
+		icon.decorative = false
+		icon.aria_label = "Saved check"
+		var icon_scene := PackedScene.new()
+		assert(icon_scene.pack(icon) == OK)
+		assert(ResourceSaver.save(icon_scene, "res://glyph-roundtrip.tscn") == OK)
+		icon.free()
 	else:
 		var node = load(path).instantiate()
 		assert(node.label == "Saved in editor")
@@ -49,5 +58,9 @@ func _initialize() -> void:
 		assert(saved_glyph.color.is_equal_approx(Color("#123456")))
 		assert(card.get_part("actions").get_node("Button").content == "Saved action")
 		card.free()
+		var icon = load("res://glyph-roundtrip.tscn").instantiate()
+		assert(icon.glyph_name == "check" and icon.size_axis == "xl")
+		assert(not icon.decorative and icon.aria_label == "Saved check")
+		icon.free()
 	print("FSDS_ROUNDTRIP_OK")
 	quit()

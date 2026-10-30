@@ -1,0 +1,36 @@
+{
+  "operation": "glyph",
+  "nameProp": "name",
+  "sizeProp": "size",
+  "decorativeProp": "decorative",
+  "labelProp": "ariaLabel",
+  "sizeHints": {
+    "sm": 16,
+    "md": 20,
+    "lg": 24,
+    "xl": 32
+  },
+  "sizeStyles": {
+    "sm": {
+      "width": "16px",
+      "height": "16px"
+    },
+    "md": {
+      "width": "20px",
+      "height": "20px"
+    },
+    "lg": {
+      "width": "24px",
+      "height": "24px"
+    },
+    "xl": {
+      "width": "32px",
+      "height": "32px"
+    }
+  },
+  "excluded": [],
+  "theme": "inherited Label font_color at render time",
+  "otherStyling": "contract size tokens and authored iconography SVG; screen-reader exposure requires separate proof",
+  "excludedProps": [],
+  "proof": "requires-runtime-witness"
+}
