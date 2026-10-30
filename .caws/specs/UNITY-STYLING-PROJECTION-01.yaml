@@ -137,5 +137,8 @@ evidence:
     commit_sha: "48ea8adb4a19ad8356a5a48a706a7e019f3b2bf1"
   - criterion_id: A6
     status: pass
-    evidence_ref: "At merged source 708d1f1dd, docs/architecture/unity-target.md and packages/ds-unity/README.md record Unity 6000.5.3f1 EditMode run f85a48f16 (42/42, zero skipped; XML/log and six local PNGs); docs:check-claims and docs:check-links passed on the committed source."
-    recorded_at: "2026-10-30T07:09:01.606Z"
+    evidence_ref: "At source 63fee12cf and merged d40e7527b, docs/architecture/unity-target.md records Unity 6000.5.3f1 EditMode 43/43, six Editor Play-context frames, standalone OSXPlayer run 52337abb with 12/12 and explicit proof limits. docs:check-claims and docs:check-links passed on the committed document at 84b7fbb04."
+    recorded_at: "2026-10-30T16:30:46.408Z"
+    command: "pnpm run docs:check-claims && pnpm run docs:check-links"
+    exit_code: 0
+    commit_sha: d40e7527b58b0bcbefd7f8f2e0f8e3e5649f9cfe
