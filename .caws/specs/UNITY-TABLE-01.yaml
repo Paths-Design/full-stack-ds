@@ -71,3 +71,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Table/Table.cs
     commit_sha: "70358eb8de8a3385fa33b5621efc3f2c7501aec9"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 91b556c37 (sourceDirty false): 65/65 passed, zero failed/skipped (test-run start 2026-10-31 11:43:58Z; resultsSha256 f4996ad68c17c302cbc5bb356b6ed8d364bb6a69f88cee8481203b39ebd5f20d). The added case composes a row and cell through the table region and asserts the absent Responsive/AriaLabel API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T11:44:41.003Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.TableComposesRowsAndCellsInsideItsRegion
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: "91b556c3705a0b3c18e824a0974027676ac93c5d"
