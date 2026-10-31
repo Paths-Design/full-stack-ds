@@ -1408,6 +1408,24 @@ function commandRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/** R6-R8 for the motion loop: the declared full-turn rotation period and the
+ * explicit reduced-motion preference input. No channels or delay/inline API. */
+function motionLoopRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "MotionLoop") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a motion-loop lowering`);
+  const target = classes[0]!.members.find(member => member.part === lowering.targetPart);
+  if (!target) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its loop target outside the root class`);
+  const easing = lowering.easing ?? [0, 0, 1, 1];
+  const members: string[] = [
+    "        public MotionLoopControl Control { get; }",
+    "        [UxmlAttribute] public bool ReducedMotion { get => Control.ReducedMotion; set => Control.ReducedMotion = value; }",
+  ];
+  const attach: string[] = [
+    `Control = MotionLoopControl.Attach(this, target: ${target.ref}, durationMs: ${lowering.durationMs}, multiplier: ${lowering.multiplier}, easing: new float[] { ${easing.map(value => value.toFixed(3)).join(", ")} }, reducedValue: ${lowering.reducedValue});`,
+  ];
+  return { members, attach, defaults: [] };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1431,6 +1449,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Sequence") return sequenceRootApi(ctx, classes);
   if (lowering.behavior === "DateGrid") return dateGridRootApi(ctx);
   if (lowering.behavior === "Command") return commandRootApi(ctx);
+  if (lowering.behavior === "MotionLoop") return motionLoopRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

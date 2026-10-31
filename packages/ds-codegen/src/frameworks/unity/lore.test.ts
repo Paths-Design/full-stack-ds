@@ -54,6 +54,7 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   previous: "Declared paged-set action (contract pagedSet block) for bounded backward navigation",
   next: "Declared paged-set action (contract pagedSet block) for bounded forward navigation",
   commit: "Declared paged-set action (contract pagedSet block) for committing the one-based draft",
+  rotation: "Declared motion-loop effect kind (contract motion.loops effect.kind) carried to the native rotation runtime",
   value: "HTML form field attribute the boundary's propRoles assigns to participating forms",
   row: "CSS flex-direction keyword (uss.ts display lowering and flex-direction vocabulary)",
   overflow: "CSS property name keyed in the uss.ts CSS-to-USS property table",
