@@ -1,0 +1,36 @@
+# Unity generated / import caches — never commit.
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Generated screenshot witnesses for the lane (reported to the Lead, never committed).
+/evidence/
+
+# Generated IDE / solution files.
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+.vs/
+.idea/
+.vscode/
+
+# OS / editor noise.
+.DS_Store
+Thumbs.db
+*.log
