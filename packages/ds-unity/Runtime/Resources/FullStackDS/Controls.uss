@@ -21,6 +21,7 @@
     --fsds-core-motion-duration-extra-long1: 1500ms;
     --fsds-core-motion-duration-long: 400ms;
     --fsds-core-motion-duration-short: 150ms;
+    --fsds-core-shape-radius-full: 9999px;
     --fsds-core-spacing-size-00: 0px;
     --fsds-core-spacing-size-01: 1px;
     --fsds-core-spacing-size-02: 2px;
@@ -6544,4 +6545,104 @@
     font-size: var(--fsds-postcard-typography-footer-font-size, 14px);
     --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
     --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
+}
+
+/* Pagination (.pagination) */
+.pagination {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: 0;
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-pagination-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-pagination-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+    --fsds-pagination-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-pagination-size-dot-size: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-pagination-size-active-size: var(--fsds-core-spacing-size-08, 32px);
+    --fsds-pagination-size-radius: var(--fsds-core-shape-radius-full, 9999px);
+    --fsds-pagination-color-on-current: var(--fsds-semantic-color-foreground-inverse, #fafafa);
+    --fsds-pagination-color-current: var(--fsds-semantic-color-action-background-primary-default, #0566fe);
+}
+
+.pagination {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 0);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.pagination {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    --fsds-gap: var(--fsds-pagination-spacing-gap, 8px);
+    color: var(--fsds-pagination-color-foreground, #141414);
+}
+
+.pagination__item {
+    position: relative;
+    padding: 0;
+    border-width: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.pagination__marker {
+    width: var(--fsds-pagination-size-dot-size, 8px);
+    height: var(--fsds-pagination-size-dot-size, 8px);
+    border-radius: var(--fsds-pagination-size-radius, 9999px);
+    overflow: hidden;
+    background-color: var(--fsds-pagination-color-track, #d0d0d0);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.pagination__fill {
+    position: absolute;
+    background-color: var(--fsds-pagination-color-foreground, #141414);
+    transform-origin: left center;
+    display: none;
+}
+
+.pagination__label {
+    display: none;
+}
+
+.pagination--pages .pagination__marker {
+    display: none;
+}
+
+.pagination--elapsed .pagination__fill {
+    display: flex;
+    flex-direction: column;
+}
+
+.pagination--pages .pagination__item {
+    width: auto;
+    min-width: 24px;
+    padding: 4px 8px;
+    border-radius: 4px;
 }

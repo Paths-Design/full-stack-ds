@@ -391,6 +391,42 @@
       "via": "walker.ts (Coachmark): the previous control's disabled binding becomes a generated bool attribute driving that native button's enabled state."
     },
     {
+      "id": "anatomy-pagestrip-disabled-binding-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/disabled"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (PageStrip)/PageStripControl: the disabled prop drives every runtime-built page button's enabled state."
+    },
+    {
+      "id": "anatomy-pagestrip-iteration-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/iterate/**", "contract:/anatomy/dom/**/children/*/events/click", "contract:/anatomy/dom/**/children/*/children/*/children/*/content", "contract:/pagedSet/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (PageStrip)/PageStripControl: the runtime builds one native button per declared page label with the authored item/marker/fill/label classes, wires each button's activation to an index request, and reads the page sequence from the paged-set declaration."
+    },
+    {
+      "id": "anatomy-pagestrip-data-current-refused",
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/data-current"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "refused",
+      "reason": "The authored current-position selectors key on a data attribute USS cannot set; the runtime tracks the index but the active styling is withheld rather than faked with an un-authored class."
+    },
+    {
+      "id": "anatomy-pagestrip-messages-pending",
+      "match": ["contract:/messages/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The accessible navigation label is a message-catalog string with no UI Toolkit assistive consumer; it waits on the P4 message/a11y family and the visible labels remain consumer-authored page strings."
+    },
+    {
+      "id": "anatomy-pagestrip-types-lowered",
+      "match": ["contract:/types/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (PageStrip): the presentation/progress union vocabularies back the generated carrier attributes and their authored classes."
+    },
+    {
       "id": "anatomy-disabled-binding",
       "match": ["contract:/anatomy/dom/bindings/disabled", "contract:/anatomy/dom/**/children/*/bindings/disabled"],
       "valuePattern": "^prop:[A-Za-z_$][\\w$-]*$",
@@ -1166,6 +1202,28 @@
       "reason": "Object-valued author/stats/embed data and the post id cannot be carried by UXML attributes; only the declared string leaves are projected and the object props are withheld rather than serialised."
     },
     {
+      "id": "prop-pagestrip-lowered",
+      "match": ["contract:/props/*/members/plain:presentation/**", "contract:/props/*/members/plain:progress/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (PageStrip): the presentation/progress axes become generated carrier properties."
+    },
+    {
+      "id": "prop-pagestrip-pages-lowered",
+      "match": ["contract:/props/*/members/plain:pages/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (PageStrip): the page labels become the generated Pages API the runtime builds one native button per label from."
+    },
+    {
+      "id": "prop-pagestrip-label-refused",
+      "match": ["contract:/props/*/members/plain:label/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "refused",
+      "reason": "The navigation label only feeds aria-label, which UI Toolkit does not populate; the page strip withholds it while the visible page labels stay consumer-authored."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -1737,6 +1795,14 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }, { "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
       "disposition": "refused",
       "reason": "USS has no object-fit/object-position; the native Image element exposes only low-level scale/source-rect primitives that the generated media API does not claim."
+    },
+    {
+      "id": "styles-pagestrip-presentation-label-refused",
+      "match": ["styles:/**"],
+      "declaration": { "keyPattern": "^[.]pagination--" },
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
+      "disposition": "refused",
+      "reason": "The presentation-modifier descendant selectors pair a carrier class with a runtime-built item class, which the authored-selector projection does not compose; the declarations are withheld from the stylesheet rather than emitted partially."
     },
     {
       "id": "styles-modifier-height-refused",

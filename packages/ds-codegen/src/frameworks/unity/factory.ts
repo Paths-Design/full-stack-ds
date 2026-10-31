@@ -5,7 +5,7 @@ import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
 import { buildComponentIR } from "../../ir.js";
 import { admitContract, loadBoundary, unityAllowlist, type ClassifiedLeaf, type ContractWithSidecars } from "./boundary.js";
-import { hasChannel, triggerParts, unityLowering } from "./behaviors.js";
+import { triggerParts, unityLowering } from "./behaviors.js";
 import { loadTokenSources, projectStylesheet } from "./uss.js";
 import { classMemberName, identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
 import { collectIconGlyphNodes } from "../icon-glyph.js";
@@ -63,7 +63,7 @@ function domNodeKey(keyed: string, ir: ComponentIR): string | undefined {
 export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, classified: ClassifiedLeaf[]): void {
   const { lowering, source } = walkComponent(ir);
   const { behavior } = lowering;
-  const channel = hasChannel(lowering) ? lowering.channel : undefined;
+  const channel = "channel" in lowering ? lowering.channel : undefined;
   const emitted = rootPublicMembers(source, ir.name);
   const triggers = triggerParts(ir);
   const rules = new Map(loadBoundary().rules.map(r => [r.id, r]));

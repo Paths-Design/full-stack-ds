@@ -1002,5 +1002,36 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Author", "PostId", "Embed", "Datetime", "AriaLabelledby" })
                 Assert.That(typeof(FullStackDS.Postcard).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void PaginationBuildsItsStripFromLabelsAndCommitsTheIndex()
+        {
+            var pages = Mount(new FullStackDS.Pagination());
+            pages.DefaultIndex = 1;
+            pages.Pages = new[] { "1", "2", "3" };
+            Assert.That(pages.Index, Is.EqualTo(1));
+            Assert.That(pages.childCount, Is.EqualTo(3));
+            var buttons = pages.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(buttons.Count, Is.EqualTo(3));
+            Assert.That(buttons[0].ClassListContains("pagination__item"), Is.True);
+            Assert.That(buttons[0].Q<Label>().ClassListContains("pagination__label"), Is.True);
+            Assert.That(buttons[0].Q<Label>(className: "pagination__label").text, Is.EqualTo("1"));
+            Assert.That(buttons[0].Q<VisualElement>(className: "pagination__marker"), Is.Not.Null);
+            int changed = -1, requested = -1;
+            pages.OnIndexChange += value => changed = value;
+            pages.PageRequested += value => requested = value;
+            Submit(buttons[2]);
+            Assert.That(pages.Index, Is.EqualTo(2));
+            Assert.That(changed, Is.EqualTo(2));
+            pages.Controlled = true;
+            Submit(buttons[0]);
+            Assert.That(requested, Is.EqualTo(0));
+            Assert.That(pages.Index, Is.EqualTo(2));
+            pages.Disabled = true;
+            Submit(buttons[1]);
+            Assert.That(pages.Index, Is.EqualTo(2));
+            pages.Presentation = "pages";
+            Assert.That(pages.ClassListContains("pagination--pages"), Is.True);
+            foreach (var prop in new[] { "Label", "AriaLabel", "Current", "DataCurrent" })
+                Assert.That(typeof(FullStackDS.Pagination).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

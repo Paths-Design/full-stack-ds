@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -230,6 +230,23 @@ export interface TreeLowering {
 export interface ProjectedTextLowering {
   behavior: "ProjectedText";
 }
+/**
+ * A numeric page strip: the declared page labels are turned into runtime-built
+ * native buttons; the numeric index channel is exposed with an uncontrolled
+ * commit event and a controlled request, and the presentation/progress axes
+ * project carrier classes. Current-position styling is not realised because the
+ * authored selectors key on a data attribute USS cannot set.
+ */
+export interface PageStripLowering {
+  behavior: "PageStrip";
+  channel: NormalizedChannelIR;
+  pagesProp: string;
+  disabledProp?: string;
+  itemPart: string;
+  markerPart: string;
+  fillPart: string;
+  labelPart: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -243,7 +260,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -569,6 +586,36 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A numeric page strip: one numeric channel and one iterated item whose
+  // activation requests the iteration index. The runtime builds the item
+  // buttons from the declared label list.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.dom !== undefined &&
+      ir.behavior.normalizedChannels.length === 1 && ir.behavior.normalizedChannels[0]!.valueType === "number") {
+    const iterated = (node: DomNodeIR): DomNodeIR | undefined =>
+      node.iteration !== undefined ? node : node.children.map(iterated).find(Boolean);
+    const item = iterated(ir.dom);
+    const click = item?.events.click;
+    const source = item?.iteration?.source;
+    const pagesProp = source?.kind === "prop" && !source.path?.length ? source.prop : undefined;
+    if (item?.part !== undefined && click?.kind === "paged" && click.action === "request" && pagesProp !== undefined) {
+      const marker = item.children.find(child => child.part !== undefined && child.children.some(grand => grand.part !== undefined));
+      const fill = marker?.children.find(child => child.part !== undefined);
+      const label = item.children.find(child => child.part !== undefined && child.content !== undefined && "kind" in child.content && child.content.kind === "iterationLocal");
+      if (marker?.part !== undefined && fill?.part !== undefined && label?.part !== undefined) {
+        const disabled = item.bindings.disabled;
+        return {
+          behavior: "PageStrip",
+          channel: ir.behavior.normalizedChannels[0]!,
+          pagesProp,
+          ...(disabled?.kind === "prop" && !disabled.path?.length ? { disabledProp: disabled.prop } : {}),
+          itemPart: item.part,
+          markerPart: marker.part,
+          fillPart: fill.part,
+          labelPart: label.part,
+        };
+      }
+    }
   }
   // A static projection host: nested-property text leaves with no interaction,
   // channel, surface or form control. The projection paints those leaves as
