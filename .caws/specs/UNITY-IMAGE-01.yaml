@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T14:52:58.868Z"
     artifact_path: packages/ds-unity/Runtime/Components/Image/Image.cs
     commit_sha: "8d7829cb6db0d43021aaffd61bd1567c5285e2e4"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 96d9cdeab (sourceDirty false): 80/80 passed, zero failed/skipped (test-run start 2026-10-31 14:52:22Z; resultsSha256 cc449ab8b07c514d60d3b98b6ab045e102f7c9121cb92e33c5729b3815b69f95). The added case checks the native Image base, that setting an unresolvable source and then clearing it leaves the host image null, the radius carrier class, and that the alt/sizing/loading/fallback API is absent. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T14:52:59.400Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.ImageLoadsItsResourcesSourceAndProjectsCarriers
+    exit_code: 0
+    commit_sha: "96d9cdeabba952c0830bfced5f6c2fadd65df202"
