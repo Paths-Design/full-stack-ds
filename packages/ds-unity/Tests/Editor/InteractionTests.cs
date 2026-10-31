@@ -386,5 +386,43 @@ namespace FullStackDS.Tests
             Assert.That(button.ClassListContains("button--large"), Is.True);
             Assert.That(button.enabledSelf, Is.True);
         }
+        [Test] public void CheckboxActivatesThroughItsNativeControlAndItsLabelHostOnce()
+        {
+            var checkbox = Mount(new FullStackDS.Checkbox());
+            var changes = 0;
+            checkbox.RegisterValueChangedCallback(_ => changes++);
+            Submit(checkbox.Trigger);
+            Assert.That(checkbox.Checked, Is.True);
+            Assert.That(changes, Is.EqualTo(1));
+            // The label host is the root: a click outside the native control toggles once.
+            Click(checkbox);
+            Assert.That(checkbox.Checked, Is.False);
+            Assert.That(changes, Is.EqualTo(2));
+            checkbox.Disabled = true;
+            Submit(checkbox.Trigger);
+            Assert.That(checkbox.Checked, Is.False, "disabled activation is suppressed");
+        }
+        [Test] public void CheckboxExposesNoIndeterminateOrSizeApi()
+        {
+            Assert.That(typeof(FullStackDS.Checkbox).GetProperty("Indeterminate"), Is.Null);
+            Assert.That(typeof(FullStackDS.Checkbox).GetProperty("Size"), Is.Null);
+        }
+        [Test] public void ToggleSwitchRootIsItsOwnTriggerAndTogglesOncePerActivation()
+        {
+            var toggle = Mount(new FullStackDS.ToggleSwitch());
+            var changes = 0;
+            INotifyValueChanged<bool> channel = toggle;
+            channel.RegisterValueChangedCallback(_ => changes++);
+            Assert.That(toggle.Trigger, Is.SameAs(toggle));
+            Submit(toggle);
+            Assert.That(toggle.Checked, Is.True);
+            Assert.That(changes, Is.EqualTo(1));
+            Submit(toggle);
+            Assert.That(toggle.Checked, Is.False);
+            Assert.That(changes, Is.EqualTo(2));
+            toggle.Disabled = true;
+            Submit(toggle);
+            Assert.That(toggle.Checked, Is.False, "disabled activation is suppressed");
+        }
     }
 }

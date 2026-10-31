@@ -227,6 +227,12 @@
       "reason": "The root's type binding selects native form submission; UI Toolkit has no form element to serialise into, so the native action root does not lower it."
     },
     {
+      "id": "anatomy-dom-properties-refused",
+      "match": ["contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
+      "disposition": "refused",
+      "reason": "DOM element properties (for example a checkbox's indeterminate flag) have no UI Toolkit consumer: BooleanControl realises the checked channel and SetEnabled only, and the generated control exposes no DOM property."
+    },
+    {
       "id": "anatomy-bindings",
       "match": ["contract:/anatomy/dom/bindings/**", "contract:/anatomy/dom/**/children/*/bindings/**", "contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
       "disposition": "pending",
@@ -438,6 +444,26 @@
       "reason": "Decorative role and title describe DOM accessibility/tooltip semantics without an equivalent UI Toolkit runtime consumer on the supported desktop witness."
     },
     {
+      "id": "prop-size-boolean-unstyled",
+      "match": ["contract:/props/*/members/plain:size/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:size/propType/to"], "valueIn": ["CheckboxSize", "ToggleSwitchSize"] }],
+      "disposition": "pending",
+      "phase": "P3",
+      "reason": "These contracts declare a size variant axis but their styles sidecars carry no size-predicated rules, so the USS projection has no class carrier and the generated control withholds Size. Adding size style rules lowers the axis without an emitter change."
+    },
+    {
+      "id": "prop-indeterminate-refused",
+      "match": ["contract:/props/*/members/plain:indeterminate/**"],
+      "disposition": "refused",
+      "reason": "The web indeterminate (mixed) checkbox state has no BooleanControl realisation: the shared behavior carries one boolean channel, so the generated control exposes no Indeterminate property."
+    },
+    {
+      "id": "prop-aria-relationship-refused",
+      "match": ["contract:/props/*/members/plain:ariaLabelledby/**", "contract:/props/*/members/plain:ariaDescribedby/**", "contract:/props/*/members/plain:ariaDescribedBy/**"],
+      "disposition": "refused",
+      "reason": "ARIA labelling and description relationships have no UI Toolkit consumer: the runtime exposes no assistive-technology tree, so the generated control does not emit these props."
+    },
+    {
       "id": "prop-size",
       "match": ["contract:/props/*/members/plain:size/**"],
       "disposition": "lowered",
@@ -542,6 +568,13 @@
       "valueIn": ["change"],
       "disposition": "lowered",
       "via": "BooleanControl commits on trigger activation, which is the change moment of a boolean control; there is no intermediate input phase to defer."
+    },
+    {
+      "id": "form-control-commit-activation",
+      "match": ["contract:/formControl/commit"],
+      "valueIn": ["activation"],
+      "disposition": "lowered",
+      "via": "BooleanControl.Attach binds the control's native Button.clicked event, which is the activation commit the contract declares; no separate change event is emitted."
     },
     {
       "id": "form-control",
@@ -916,11 +949,24 @@
       "via": "uss.ts (S2/S3): token bindings become component custom properties var(--fsds-<graph path>, <fallback>) over a generated token section (.fsds-theme light, .fsds-theme--dark, .fsds-brand-<id>) projected from resolved.tokens.json and the token build's @layer brand."
     },
     {
-      "id": "styles-action-unsupported-declaration",
+      "id": "styles-unhandled-property",
       "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**"],
-      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
       "disposition": "refused",
-      "reason": "The action control's declarations here are not realised: the USS projection has no transition-duration/transition-timing-function handler and USS has no user-select property. The projection lists each declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function handler and USS has no user-select property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-pseudo-element",
+      "match": ["styles:/**"],
+      "declaration": { "keyPattern": "::(?:after|before|placeholder|selection|first-line|first-letter)\\b" },
+      "disposition": "refused",
+      "reason": "USS has no pseudo-elements; the projection lists every declaration of such a selector key uss-pseudo-element."
+    },
+    {
+      "id": "styles-indeterminate-pseudo",
+      "match": ["styles:/**"],
+      "declaration": { "keyPattern": ":indeterminate\\b" },
+      "disposition": "refused",
+      "reason": "The web indeterminate (mixed) pseudo-class has no Unity state; the projection lists its declarations uss-pseudo."
     },
     {
       "id": "styles",

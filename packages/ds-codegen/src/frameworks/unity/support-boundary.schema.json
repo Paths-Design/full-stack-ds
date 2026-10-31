@@ -51,7 +51,8 @@
             "description": "tokens:/styles: patterns only. Restrict the rule to leaves of sidecar declarations (one token entry, or one property of one styles block) that satisfy every condition, so all leaves of a declaration classify alike.",
             "properties": {
               "valuePattern": { "type": "string", "minLength": 1, "format": "regex", "description": "The declaration's value (literal, else fallback, as a string) matches this regular expression." },
-              "nativeGrammar": { "type": "boolean", "description": "styles: patterns only. Whether the IR's native style grammar admits the block's selector key (false: the IR emits no native style rule for it)." }
+              "nativeGrammar": { "type": "boolean", "description": "styles: patterns only. Whether the IR's native style grammar admits the block's selector key (false: the IR emits no native style rule for it)." },
+              "keyPattern": { "type": "string", "minLength": 1, "format": "regex", "description": "styles: patterns only. The block's selector key matches this regular expression (for example a pseudo-element or a web-only pseudo-class)." }
             }
           },
           "requiresAny": {

@@ -91,6 +91,8 @@ export interface DeclarationCondition {
   valuePattern?: string;
   /** styles only: whether the IR's native style grammar admits the block's selector key. */
   nativeGrammar?: boolean;
+  /** styles only: the block's selector key matches this regular expression. */
+  keyPattern?: string;
 }
 
 /** One contract-level precondition for a rule's `requiresAny` list. */
@@ -281,9 +283,10 @@ function ruleMatches(rule: BoundaryRule, leaf: Leaf, contractLeaves?: readonly L
   if (rule.declaration) {
     const declaration = leaf.declaration;
     if (!declaration) return false;
-    const { valuePattern, nativeGrammar } = rule.declaration;
+    const { valuePattern, nativeGrammar, keyPattern } = rule.declaration;
     if (valuePattern !== undefined && (declaration.value === undefined || !new RegExp(valuePattern).test(declaration.value))) return false;
     if (nativeGrammar !== undefined && declaration.nativeGrammar !== nativeGrammar) return false;
+    if (keyPattern !== undefined && !new RegExp(keyPattern).test(declaration.key)) return false;
   }
   return rule.match.some(pattern => patternMatches(pattern, leaf));
 }
@@ -346,7 +349,7 @@ export function validateBoundary(boundary: unknown): Boundary {
       const condition = rule.declaration as Record<string, unknown> | null;
       if (!condition || typeof condition !== "object" || Array.isArray(condition)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration must be an object`);
       const keys = Object.keys(condition);
-      if (!keys.length || keys.some(k => k !== "valuePattern" && k !== "nativeGrammar")) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration takes valuePattern and/or nativeGrammar`);
+      if (!keys.length || keys.some(k => k !== "valuePattern" && k !== "nativeGrammar" && k !== "keyPattern")) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration takes valuePattern, nativeGrammar and keyPattern`);
       if (rule.match.some(m => !m.startsWith("tokens:") && !m.startsWith("styles:"))) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration conditions apply to tokens: and styles: patterns only`);
       if (condition.valuePattern !== undefined) {
         if (typeof condition.valuePattern !== "string" || !condition.valuePattern) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.valuePattern must be a non-empty regular expression`);
@@ -355,6 +358,11 @@ export function validateBoundary(boundary: unknown): Boundary {
       if (condition.nativeGrammar !== undefined) {
         if (typeof condition.nativeGrammar !== "boolean") throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.nativeGrammar must be a boolean`);
         if (rule.match.some(m => !m.startsWith("styles:"))) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.nativeGrammar applies to styles: patterns only`);
+      }
+      if (condition.keyPattern !== undefined) {
+        if (typeof condition.keyPattern !== "string" || !condition.keyPattern) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.keyPattern must be a non-empty regular expression`);
+        try { new RegExp(condition.keyPattern); } catch { throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.keyPattern ${JSON.stringify(condition.keyPattern)} is not a valid regular expression`); }
+        if (rule.match.some(m => !m.startsWith("styles:"))) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration.keyPattern applies to styles: patterns only`);
       }
     }
     if (rule.realizes !== undefined) {

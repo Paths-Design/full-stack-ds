@@ -3,6 +3,8 @@
   "reasons": {
     "uss-design-slot": "A brand overrides a component design slot. Projecting it needs a nested var() fallback (design slot, then token slot), which this projection does not emit; follow-up in P4.",
     "uss-property": "The CSS property has no USS counterpart (or only one this projection does not map); the declaration is not realised.",
+    "uss-pseudo": "USS has no pseudo-class for this state (indeterminate).",
+    "uss-pseudo-element": "USS has no ::before / ::after pseudo-elements.",
     "uss-scalar": "The value is not a supported USS scalar (composite shadow, cubic-bezier easing, calc(), em or other relative units, rem outside the typography projection, a keyword USS lacks, or a weight USS cannot express); it is not emitted.",
     "uss-selector": "The selector has no USS realisation: either the IR's native selector grammar refused the styles key (attribute selectors such as [aria-expanded] and web-template classes such as <part>--<state> are not contract state facts; promoting a11y-attribute selectors to IR state predicates is deferred to the IR-facts spec that follows P3), or the rule needs a negated state or a modifier class no Unity runtime sets."
   },
@@ -573,6 +575,198 @@
       "part": "root",
       "property": "button.motion.easing.standard",
       "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "border-style",
+      "value": "solid",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "border-width",
+      "value": "0 2px 2px 0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "height",
+      "value": "9px",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "opacity",
+      "value": "1",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "transform",
+      "value": "translate(-50%, -65%) rotate(45deg)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "width",
+      "value": "5px",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:focus-visible) .checkbox__indicator",
+      "part": "indicator",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator",
+      "part": "indicator",
+      "property": "checkbox.color.background",
+      "value": "#0566fe",
+      "reason": "uss-pseudo"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "background-color",
+      "value": "#ffffff",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "border-width",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "height",
+      "value": "2px",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "opacity",
+      "value": "1",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "transform",
+      "value": "translate(-50%, -50%)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "width",
+      "value": "8px",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "border-color",
+      "value": "#ffffff",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "box-sizing",
+      "value": "border-box",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "content",
+      "value": "\"\"",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "left",
+      "value": "50%",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "opacity",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "position",
+      "value": "absolute",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "top",
+      "value": "50%",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": "indicator",
+      "part": "indicator",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": "input",
+      "part": "input",
+      "property": "clip",
+      "value": "rect(0, 0, 0, 0)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "cursor",
+      "value": "pointer",
       "reason": "uss-scalar"
     },
     {
@@ -1361,6 +1555,38 @@
       "part": "root",
       "property": "line-height",
       "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ToggleSwitch",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ToggleSwitch",
+      "sourceKey": "focus",
+      "part": "root",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ToggleSwitch",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ToggleSwitch",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
       "reason": "uss-property"
     }
   ]

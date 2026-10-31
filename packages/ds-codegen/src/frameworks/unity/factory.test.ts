@@ -146,7 +146,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -682,5 +682,26 @@ describe("Unity behavior selection refusals", () => {
     delete contract.anatomy.dom.events.click;
     expect(() => unityLowering(buildComponentIR(contract as unknown as ComponentContract)))
       .toThrow("UNITY_UNSUPPORTED_INTERACTION: Button action root declares no click prop binding");
+  });
+
+  it("lowers a root form-control part to a native Button boolean control", () => {
+    const contract = fixture("ToggleSwitch") as unknown as ComponentContract;
+    contract.name = "UnrelatedToggle";
+    const ir = buildComponentIR(contract);
+    expect(unityLowering(ir).behavior).toBe("BooleanControl");
+    const source = emit(contract);
+    expect(source).toMatch(/partial class UnrelatedToggle : UnityEngine\.UIElements\.Button, INotifyValueChanged<bool>/);
+    expect(source).toContain("public UnityEngine.UIElements.Button Trigger => this;");
+    expect(source).toContain('Control = BooleanControl.Attach(this, control: this, stateClass: "is-checked", labelHost: null);');
+  });
+
+  it("lowers a label-host checkbox with its native control child and no withheld axis", () => {
+    const contract = fixture("Checkbox") as unknown as ComponentContract;
+    contract.name = "UnrelatedCheck";
+    const source = emit(contract);
+    expect(source).toContain("public UnityEngine.UIElements.Button Input { get; } = new UnityEngine.UIElements.Button();");
+    expect(source).toContain('Control = BooleanControl.Attach(this, control: Input, stateClass: "is-checked", labelHost: this);');
+    // indeterminate and the size axis are not realised: no emitted API for either.
+    expect(source).not.toMatch(/Indeterminate|public string Size/);
   });
 });
