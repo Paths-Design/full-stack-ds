@@ -60,3 +60,9 @@ evidence:
     evidence_ref: "Codegen and boundary at commit c97182700a20e40b1527be8c74784e01c6453484 plus the deadline-hardening commit: focused unity codegen + cli seam 246/246 pass, including the TextSource lowering from the declared content-transform facts (no channels, transform + sourceProp + no DOM children), the native TextElement class painting the Content attribute, and the adjudicated/a11y/style families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. Boundary correction: the last corpus leaf made props-unadjudicated dead, so the audit now treats a catch-all as a synthetic-contract safety net while keeping allowlisted reliance fatal; Markdown's own prop family is adjudicated by a scoped lowered rule."
     recorded_at: "2026-10-31T21:36:26.493Z"
     commit_sha: c97182700a20e40b1527be8c74784e01c6453484
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Package on main: after merging with the peer USS pill-radius clamp, 'pnpm run generate -- --target=unity' leaves the generated tree byte-stable and git-clean; generate:check 55/55; commit c97182700a20e40b1527be8c74784e01c6453484 carries Markdown.cs (TextElement + Content) and the fifty-five-name catalog, abb46d4d53d70af35d8663b409b4abe6e957ee98 carries the docs byte-stably; the post-merge sheet retains the peer clamp (.switch--lg .switch__track border-radius 16px) and the committed uss suite passes 42/42."
+    recorded_at: "2026-10-31T21:36:28.354Z"
+    artifact_path: packages/ds-unity/Runtime/Components/Markdown/Markdown.cs
+    commit_sha: c97182700a20e40b1527be8c74784e01c6453484
