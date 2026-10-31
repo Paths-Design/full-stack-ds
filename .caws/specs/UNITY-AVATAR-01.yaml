@@ -54,3 +54,11 @@ contracts:
   - name: 'avatar-guarded-media'
     type: behavior
     path: 'packages/ds-contracts/components/Avatar/Avatar.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen, boundary and lore at commits 7d8fa002c and 237fac78a: focused unity codegen + cli seam 232/232 pass, including the generic guarded-composition lowering selection (referenced child with a source binding plus a guarded string-prop text fallback — no component-name predicate; the root no-component-name-lore test passes after 237fac78a), the composed admitted Image child, the renamed painted accessor for the Initials API, AvatarControl presence wiring, the refused name/priority/alt/aria-label families, the emitted carrier axis without a designed prop and the widened object-fit refusal; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. The unadmitted-request CLI pin moved to Calendar."
+    recorded_at: "2026-10-31T15:06:35.114Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > composes the admitted image child and initials fallback for Avatar"
+    exit_code: 0
+    commit_sha: "237fac78a4b5f39d591f378d96a95b65d162fa66"
