@@ -2,7 +2,6 @@ id: UNITY-PASSIVE-CONTAINERS-01
 title: 'Admit Blockquote, Stat and ProfileFlag passive containers to the Unity UI Toolkit target and package'
 mode: feature
 lifecycle_state: active
-worktree: unity-passive-containers
 created_at: '2026-10-31T09:09:39.181Z'
 updated_at: '2026-10-31T09:18:35.938Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
