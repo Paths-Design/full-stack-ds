@@ -64,3 +64,7 @@ evidence:
     status: pass
     evidence_ref: "examples/game-pause-menu/unity/README.md (36/36 EditMode in merged worktree, 8 captures), examples/game-pause-menu/godot/README.md (201/201 headless in merged worktree, 8 captures), examples/game-pause-menu/gpui/README.md (67 pass / 70 with capture, 8 captures)"
     recorded_at: "2026-10-31T21:20:44.108Z"
+  - criterion_id: A5
+    status: pass
+    evidence_ref: "examples/game-pause-menu/README.md parity-pass section (authority, switch root causes, icon art, permitted differences, non-claims) + examples/README.md portfolio row; non-claims limited to font rasterisation/AA/letter-spacing"
+    recorded_at: "2026-10-31T21:20:45.920Z"
