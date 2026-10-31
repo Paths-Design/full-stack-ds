@@ -553,10 +553,10 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
       node.bindings.src?.kind === "prop" && node.ifProp !== undefined);
     const fallback = ir.dom.children.find(node => node.content !== undefined && "kind" in node.content &&
       node.content.kind === "prop" && node.ifProp === node.content.prop && node.part !== undefined);
-    if (imageNode?.componentRef === "Image" && imageNode.bindings.src?.kind === "prop" && imageNode.ifProp !== undefined &&
+    if (imageNode?.componentRef !== undefined && imageNode.bindings.src?.kind === "prop" && imageNode.ifProp !== undefined &&
         fallback !== undefined && fallback.part !== undefined) {
       if (imageNode.part === undefined) throw new Error(`UNITY_UNSUPPORTED_REF: ${ir.name} image reference carries no part`);
-      return { behavior: "Avatar", srcProp: imageNode.bindings.src.prop, initialsProp: fallback.ifProp!, imageRef: "Image", imagePart: imageNode.part };
+      return { behavior: "Avatar", srcProp: imageNode.bindings.src.prop, initialsProp: fallback.ifProp!, imageRef: imageNode.componentRef, imagePart: imageNode.part };
     }
   }
   // A native media element: an `<img>` root with a prop-bound source. The host
