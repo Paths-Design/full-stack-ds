@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.NavTreeSwitchesItsHeadingPairAndComposesChildItems
     exit_code: 0
     commit_sha: "8fcb69d463b8f8332d374888d0578cea1395baa0"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 8fcb69d46: packages/ds-unity/README.md admits NavTree with its href/label heading polarities, activation request, child-list composition, generated item class and the omitted glyph icon/current-page non-claims, and records the 82/82 lane; docs/architecture/unity-target.md records the Tree dispatcher mode, NavTreeControl runtime, inline child list and glyph-plan gate with the 82/82 lane; docs/current-implementation-snapshot.md records the forty-first admitted control with those facts."
+    recorded_at: "2026-10-31T15:19:46.628Z"
+    commit_sha: "8fcb69d463b8f8332d374888d0578cea1395baa0"
