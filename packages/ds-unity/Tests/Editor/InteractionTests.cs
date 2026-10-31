@@ -19,7 +19,7 @@ namespace FullStackDS.Tests
         }
         [TearDown] public void Teardown() => window.Close();
         private T Mount<T>(T element) where T : VisualElement { window.rootVisualElement.Add(element); return element; }
-        private static void Submit(Button button)
+        private static void Submit(UnityEngine.UIElements.Button button)
         {
             using (var evt = NavigationSubmitEvent.GetPooled()) { evt.target = button; button.SendEvent(evt); }
         }
@@ -96,7 +96,7 @@ namespace FullStackDS.Tests
             int count = 0; control.RegisterValueChangedCallback(_ => count++);
             Click(caption);
             Assert.That(control.Checked, Is.True); Assert.That(count, Is.EqualTo(1));
-            // A click whose target is the control itself arrives through Button.clicked; the label host must not add a second toggle.
+            // A click whose target is the control itself arrives through UnityEngine.UIElements.Button.clicked; the label host must not add a second toggle.
             Click(control.Input);
             Assert.That(control.Checked, Is.True); Assert.That(count, Is.EqualTo(1));
             control.Disabled = true; Click(caption);
@@ -159,7 +159,7 @@ namespace FullStackDS.Tests
             var list = root.Q<TabsList>();
             Assert.That(a.tab.hierarchy.parent, Is.EqualTo(list.contentContainer)); Assert.That(list.contentContainer.ClassListContains("tabs__children"), Is.True);
             Assert.That(list.hierarchy.Children().Select(c => c.name).ToArray(), Is.EqualTo(new[] { "children", "indicator" }));
-            Assert.That(root.Group.Triggers, Is.EqualTo(new Button[] { a.tab, b.tab }));
+            Assert.That(root.Group.Triggers, Is.EqualTo(new UnityEngine.UIElements.Button[] { a.tab, b.tab }));
             Assert.Throws<ArgumentException>(() => root.Values = new[] { "a", "b" });
             var duplicate = new TabsTab { Value = "b", text = "b" }; root.Q<TabsList>().Add(duplicate);
             Assert.Throws<ArgumentException>(() => root.Group.Synchronize());
@@ -313,8 +313,8 @@ namespace FullStackDS.Tests
         [Test] public void PopoverPointerBoundaryExcludesItsOwnContent()
         {
             // Isolate pointer dismissal; pointer focus changes independently exercise blur.
-            var popover = new Popover { CloseOnBlur = false }; var parts = Compose(popover); var inner = new Button(); parts.content.Add(inner);
-            Mount(popover); var outside = Mount(new Button()); popover.Open = true;
+            var popover = new Popover { CloseOnBlur = false }; var parts = Compose(popover); var inner = new UnityEngine.UIElements.Button(); parts.content.Add(inner);
+            Mount(popover); var outside = Mount(new UnityEngine.UIElements.Button()); popover.Open = true;
             using (var evt = PointerDownEvent.GetPooled()) { evt.target = inner; inner.SendEvent(evt); }
             Assert.That(popover.Open, Is.True);
             popover.CloseOnOutsideClick = false;
@@ -326,8 +326,8 @@ namespace FullStackDS.Tests
         }
         [UnityTest] public IEnumerator PopoverBlurTracksAnchorAndContentUnion()
         {
-            var popover = new Popover(); var parts = Compose(popover); var inner = new Button(); parts.content.Add(inner);
-            Mount(popover); var outside = Mount(new Button());
+            var popover = new Popover(); var parts = Compose(popover); var inner = new UnityEngine.UIElements.Button(); parts.content.Add(inner);
+            Mount(popover); var outside = Mount(new UnityEngine.UIElements.Button());
             popover.Open = true; popover.Trigger.Focus(); yield return null;
             inner.Focus(); yield return null; Assert.That(popover.Open, Is.True);
             outside.Focus(); yield return null; Assert.That(popover.Open, Is.False);
@@ -355,8 +355,36 @@ namespace FullStackDS.Tests
             Assert.That(tabs.Value, Is.EqualTo("inventory"));
             Assert.That(tabs.Group.Triggers[2].enabledSelf, Is.False);
             var popover = window.rootVisualElement.Q<Popover>("help"); Submit(popover.Trigger);
-            Assert.That(popover.Open, Is.True); Assert.That(popover.Content.Q<Button>(), Is.Not.Null);
+            Assert.That(popover.Open, Is.True); Assert.That(popover.Content.Q<UnityEngine.UIElements.Button>(), Is.Not.Null);
             Assert.That(popover.Content.parent, Is.EqualTo(window.rootVisualElement.panel.visualTree));
+        }
+        [Test] public void ActionButtonFiresOncePerActivationAndSuppressesDisabled()
+        {
+            var fired = 0;
+            var button = Mount(new FullStackDS.Button());
+            button.OnClick = () => fired++;
+            Submit(button);
+            Assert.That(fired, Is.EqualTo(1));
+            button.Disabled = true;
+            Submit(button);
+            Assert.That(fired, Is.EqualTo(1), "a disabled action control suppresses activation");
+        }
+        [Test] public void ActionButtonRoutesConsumerChildrenIntoItsContentHost()
+        {
+            var button = Mount(new FullStackDS.Button());
+            var label = new Label("Resume");
+            button.Add(label);
+            Assert.That(button.contentContainer, Is.SameAs(button));
+            Assert.That(label.parent, Is.SameAs(button));
+            Assert.That(button.ClassListContains("button"), Is.True);
+            Assert.That(button.ClassListContains("button--primary"), Is.True);
+        }
+        [Test] public void ActionButtonVariantAndSizeSetClassCarriers()
+        {
+            var button = Mount(new FullStackDS.Button { Variant = "ghost", Size = "large" });
+            Assert.That(button.ClassListContains("button--ghost"), Is.True);
+            Assert.That(button.ClassListContains("button--large"), Is.True);
+            Assert.That(button.enabledSelf, Is.True);
         }
     }
 }

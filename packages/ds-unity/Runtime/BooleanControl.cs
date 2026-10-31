@@ -13,11 +13,11 @@ namespace FullStackDS
         private bool current;
         private readonly string stateClass;
         public VisualElement Host { get; }
-        public Button Control { get; }
+        public UnityEngine.UIElements.Button Control { get; }
         public bool Controlled { get; set; }
         public event Action<bool> ValueRequested;
 
-        private BooleanControl(VisualElement host, Button control, string stateClass, VisualElement labelHost)
+        private BooleanControl(VisualElement host, UnityEngine.UIElements.Button control, string stateClass, VisualElement labelHost)
         {
             Host = host ?? throw new ArgumentNullException(nameof(host));
             Control = control ?? throw new ArgumentNullException(nameof(control));
@@ -35,7 +35,7 @@ namespace FullStackDS
             SetValueWithoutNotify(false);
         }
 
-        public static BooleanControl Attach(VisualElement host, Button control, string stateClass, VisualElement labelHost)
+        public static BooleanControl Attach(VisualElement host, UnityEngine.UIElements.Button control, string stateClass, VisualElement labelHost)
             => new BooleanControl(host, control, stateClass, labelHost);
 
         public const string HoverClass = "is-hover";
@@ -49,7 +49,7 @@ namespace FullStackDS
         /// observed in the trickle-down phase, ahead of the Button's own pointer handling.
         /// <c>is-focus</c> follows UI Toolkit focus (pointer focus included; there is no
         /// focus-visible distinction in UI Toolkit).</summary>
-        private static void MirrorInteractionState(VisualElement host, Button control)
+        private static void MirrorInteractionState(VisualElement host, UnityEngine.UIElements.Button control)
         {
             control.RegisterCallback<PointerEnterEvent>(_ => host.AddToClassList(HoverClass));
             control.RegisterCallback<PointerLeaveEvent>(_ => { host.RemoveFromClassList(HoverClass); host.RemoveFromClassList(ActiveClass); });

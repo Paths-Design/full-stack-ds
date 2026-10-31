@@ -15,7 +15,7 @@ namespace FullStackDS
     {
         private readonly VisualElement host;
         private readonly string triggerClass, contentClass, stateClass;
-        private Button trigger;
+        private UnityEngine.UIElements.Button trigger;
         private VisualElement content;
         private bool current;
         private VisualElement panelRoot;
@@ -45,7 +45,7 @@ namespace FullStackDS
         public static AnchoredSurface Attach(VisualElement host, string triggerClass, string contentClass, string stateClass)
             => new AnchoredSurface(host, triggerClass, contentClass, stateClass);
 
-        public Button Trigger { get { Discover(); return trigger; } }
+        public UnityEngine.UIElements.Button Trigger { get { Discover(); return trigger; } }
         public VisualElement Content { get { Discover(); return content; } }
         public string Placement
         {
@@ -72,7 +72,7 @@ namespace FullStackDS
         private void Discover()
         {
             bool changed = false;
-            var nextTrigger = PartDiscovery.Find(host, triggerClass).OfType<Button>().FirstOrDefault();
+            var nextTrigger = PartDiscovery.Find(host, triggerClass).OfType<UnityEngine.UIElements.Button>().FirstOrDefault();
             if (nextTrigger != trigger) {
                 if (trigger != null) { trigger.clicked -= Toggle; trigger.UnregisterCallback<GeometryChangedEvent>(AnchorGeometry); }
                 trigger = nextTrigger;

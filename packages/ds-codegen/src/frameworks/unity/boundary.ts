@@ -74,6 +74,12 @@ export interface BoundaryRule {
   valuePattern?: string;
   /** tokens/styles only: conditions on the declaration the leaf belongs to. */
   declaration?: DeclarationCondition;
+  /**
+   * Applies only when the contract declares a leaf satisfying one of these
+   * conditions. Disambiguates prop families the keyed pointer alone cannot
+   * separate, without naming a component.
+   */
+  requiresAny?: RequirementCondition[];
   /** A family-level fallback; an allowlisted component may not rely on it. */
   catchAll?: boolean;
   /** lowered: how the claim is checked against the emitted control. */
@@ -85,6 +91,16 @@ export interface DeclarationCondition {
   valuePattern?: string;
   /** styles only: whether the IR's native style grammar admits the block's selector key. */
   nativeGrammar?: boolean;
+}
+
+/** One contract-level precondition for a rule's `requiresAny` list. */
+export interface RequirementCondition {
+  /** Patterns `<source>:<keyed pointer>` evaluated against the whole contract. */
+  match: string[];
+  /** Only candidate leaves whose value is one of these satisfy the condition. */
+  valueIn?: (string | number | boolean | null)[];
+  /** Only string candidate leaves whose value matches this regular expression satisfy the condition. */
+  valuePattern?: string;
 }
 
 export interface Boundary {
@@ -229,17 +245,39 @@ export function patternMatches(pattern: string, leaf: Pick<Leaf, "source" | "key
   return segmentsMatch(segments, leaf.keyed.slice(1).split("/"));
 }
 
-function ruleMatches(rule: BoundaryRule, leaf: Leaf): boolean {
-  if (rule.valueIn && !rule.valueIn.some(v => Object.is(v, leaf.value))) return false;
-  if (rule.valuePattern !== undefined) {
+/** The scalar value tests a rule or a requirement condition declares. */
+function valueTest(condition: { valueIn?: (string | number | boolean | null)[]; valuePattern?: string }, leaf: Leaf): boolean {
+  if (condition.valueIn && !condition.valueIn.some(v => Object.is(v, leaf.value))) return false;
+  if (condition.valuePattern !== undefined) {
     if (typeof leaf.value !== "string") return false;
-    let re = valuePatterns.get(rule.valuePattern);
+    let re = valuePatterns.get(condition.valuePattern);
     if (!re) {
-      re = new RegExp(rule.valuePattern);
-      valuePatterns.set(rule.valuePattern, re);
+      re = new RegExp(condition.valuePattern);
+      valuePatterns.set(condition.valuePattern, re);
     }
     if (!re.test(leaf.value)) return false;
   }
+  return true;
+}
+
+/**
+ * A rule applies when its pointer family matches AND, when it declares
+ * `requiresAny`, some contract leaf satisfies one listed precondition. The
+ * precondition is evaluated against the whole contract so a family rule can
+ * distinguish facts the identity-keyed pointer collapses (a DOM button
+ * `type` versus an item group selection `type`) without component identity.
+ */
+function ruleMatches(rule: BoundaryRule, leaf: Leaf, contractLeaves?: readonly Leaf[]): boolean {
+  // Cheap pointer test first: a precondition scan is only worth doing for the
+  // leaves this rule's family can match.
+  if (!rule.match.some(pattern => patternMatches(pattern, leaf))) return false;
+  if (rule.requiresAny) {
+    const leaves = contractLeaves ?? [];
+    const applies = rule.requiresAny.some(condition =>
+      leaves.some(candidate => condition.match.some(pattern => patternMatches(pattern, candidate)) && valueTest(condition, candidate)));
+    if (!applies) return false;
+  }
+  if (!valueTest(rule, leaf)) return false;
   if (rule.declaration) {
     const declaration = leaf.declaration;
     if (!declaration) return false;
@@ -285,6 +323,25 @@ export function validateBoundary(boundary: unknown): Boundary {
       if (typeof rule.valuePattern !== "string" || !rule.valuePattern) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: valuePattern must be a non-empty regular expression`);
       try { new RegExp(rule.valuePattern); } catch { throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: valuePattern ${JSON.stringify(rule.valuePattern)} is not a valid regular expression`); }
     }
+    if (rule.requiresAny !== undefined) {
+      if (!Array.isArray(rule.requiresAny) || rule.requiresAny.length === 0) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: requiresAny must be a non-empty array`);
+      for (const raw of rule.requiresAny as unknown[]) {
+        if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: requiresAny entries must be objects`);
+        const condition = raw as Partial<RequirementCondition> & Record<string, unknown>;
+        const keys = Object.keys(condition);
+        if (keys.some(k => k !== "match" && k !== "valueIn" && k !== "valuePattern")) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: requiresAny takes match, valueIn and valuePattern`);
+        const patterns = condition.match;
+        if (!Array.isArray(patterns) || patterns.length === 0 || patterns.some(m => typeof m !== "string" || !m.startsWith("contract:/")))
+          throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: requiresAny.match must be a non-empty contract:/ pattern array`);
+        for (const pattern of patterns) patternMatches(pattern, { source: "contract", keyed: "/" });
+        if (condition.valueIn !== undefined && (!Array.isArray(condition.valueIn) || condition.valueIn.length === 0))
+          throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: requiresAny.valueIn must be a non-empty array`);
+        if (condition.valuePattern !== undefined) {
+          if (typeof condition.valuePattern !== "string" || !condition.valuePattern) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: requiresAny.valuePattern must be a non-empty regular expression`);
+          try { new RegExp(condition.valuePattern); } catch { throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: requiresAny.valuePattern ${JSON.stringify(condition.valuePattern)} is not a valid regular expression`); }
+        }
+      }
+    }
     if (rule.declaration !== undefined) {
       const condition = rule.declaration as Record<string, unknown> | null;
       if (!condition || typeof condition !== "object" || Array.isArray(condition)) throw new Error(`UNITY_BOUNDARY_INVALID: ${where}: declaration must be an object`);
@@ -315,8 +372,8 @@ export function loadBoundary(): Boundary {
 }
 
 /** First matching rule wins; rule order in the file is authoritative. */
-export function classifyLeaf(leaf: Leaf, boundary: Boundary = loadBoundary()): ClassifiedLeaf {
-  const rule = boundary.rules.find(r => ruleMatches(r, leaf));
+export function classifyLeaf(leaf: Leaf, boundary: Boundary = loadBoundary(), contractLeaves?: readonly Leaf[]): ClassifiedLeaf {
+  const rule = boundary.rules.find(r => ruleMatches(r, leaf, contractLeaves));
   return rule
     ? { ...leaf, rule: rule.id, disposition: rule.disposition, catchAll: rule.catchAll === true }
     : { ...leaf, rule: null, disposition: "unclassified", catchAll: false };
@@ -368,7 +425,8 @@ export function contractLeaves(contract: ContractWithSidecars): Leaf[] {
 }
 
 export function classifyContract(contract: ContractWithSidecars, boundary: Boundary = loadBoundary()): ClassifiedLeaf[] {
-  return contractLeaves(contract).map(leaf => classifyLeaf(leaf, boundary));
+  const leaves = contractLeaves(contract);
+  return leaves.map(leaf => classifyLeaf(leaf, boundary, leaves));
 }
 
 const describe = (leaves: ClassifiedLeaf[]): string =>

@@ -9,13 +9,13 @@ namespace FullStackDS
     {
         public const string ChannelName = "checked";
         public const string ChangeHandler = "onChange";
-        public Button Input { get; } = new Button();
+        public UnityEngine.UIElements.Button Input { get; } = new UnityEngine.UIElements.Button();
         public VisualElement Track { get; } = new VisualElement();
         public VisualElement Thumb { get; } = new VisualElement();
         private readonly VisualElement children = new VisualElement();
         public override VisualElement contentContainer => children;
         public BooleanControl Control { get; }
-        public Button Trigger => Input;
+        public UnityEngine.UIElements.Button Trigger => Input;
         [UxmlAttribute] public bool Checked { get => Control.Value; set => Control.Value = value; }
         public bool value { get => Control.Value; set => Control.Value = value; }
         public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }
