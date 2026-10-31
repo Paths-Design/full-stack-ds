@@ -54,3 +54,11 @@ contracts:
   - name: 'chip-actions'
     type: behavior
     path: 'packages/ds-contracts/components/Chip/Chip.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 49fc0c3a2: focused unity codegen + cli seam 221/221 pass, including the composed-action dispatcher predicate (unguarded trigger required), native action-chrome rendering, callback/guard/enabled API, composed-ref boundary families and the lore vocabulary allowance; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T12:47:58.241Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders composed triggers as native action chrome for Chip"
+    exit_code: 0
+    commit_sha: "49fc0c3a2e6745ba7d160e6a7f69384497844275"
