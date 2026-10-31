@@ -1,9 +1,11 @@
 id: UNITY-PAGINATION-01
 title: 'Admit Pagination to the Unity target as a runtime-built page strip'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Pagination admitted to the Unity target/package (forty-third allowlisted control) as a runtime-built page strip: the numeric index channel selects PageStrip, PageStripControl builds one native button per declared page label with the authored item/marker/fill/label classes, owns index/default-index and commit/request/disabled semantics, and the presentation/progress carriers project; iterated markup is omitted from the class and rebuilt at runtime; current-position data styling and the navigation message are refused/pending; codegen+cli 235/235, boundary audit clean, root 5417/5417, real Unity EditMode 84/84, package sheet regenerated'
 created_at: '2026-10-31T15:31:08.213Z'
-updated_at: '2026-10-31T15:42:38.469Z'
+updated_at: '2026-10-31T15:43:01.966Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
