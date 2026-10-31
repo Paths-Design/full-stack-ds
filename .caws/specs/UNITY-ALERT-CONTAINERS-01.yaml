@@ -83,3 +83,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: d49b5f041c1885f9d3cff0ae15076575c8b0d82a
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at d49b5f041: packages/ds-unity/README.md admits Alert and AlertNotice with their carrier axes, composed body/title parts and the refused icon/dismissal non-claims, and records the 58/58 lane; docs/architecture/unity-target.md records the guarded passive chrome omission, boundary rules and the 58/58 lane; docs/current-implementation-snapshot.md records the sixteenth and seventeenth admitted controls with those facts and lane evidence."
+    recorded_at: "2026-10-31T10:09:16.466Z"
+    commit_sha: d49b5f041c1885f9d3cff0ae15076575c8b0d82a
