@@ -75,3 +75,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Alert/Alert.cs
     commit_sha: e13bcb88bc318815de76b9bd75dd45a1da562b6b
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source d49b5f041 (sourceDirty false): 58/58 passed, zero failed/skipped (test-run start 2026-10-31 10:08:29Z; resultsSha256 d4ea56a0c45c5e7f7cdb7d9189fb68aec90f6b502a3e05073477e5431ab56bfb). The added case composes content into Alert and AlertNotice, checks alert--warning/alert--section and alert-notice--error/alert-notice--page carriers, and asserts the absent Icon/Dismissible/OnDismiss/DismissLabel API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T10:09:15.601Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.AlertContainersCarryAxesAndOmitGuardedChrome
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: d49b5f041c1885f9d3cff0ae15076575c8b0d82a
