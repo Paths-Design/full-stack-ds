@@ -54,3 +54,11 @@ contracts:
   - name: 'pagination-page-strip'
     type: behavior
     path: 'packages/ds-contracts/components/Pagination/Pagination.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit a1d5e4485: focused unity codegen + cli seam 235/235 pass, including the PageStrip lowering predicate (numeric channel over an iterated item whose activation requests the index), the runtime item projection with authored item/marker/fill/label classes, the generated index/default-index/pages/callback API and presentation/progress carriers, the skip of the iterated subtree, and the iteration/paged-set/current-state/message/type boundary families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. The generic realization helper now derives a channel from any lowering that carries one."
+    recorded_at: "2026-10-31T15:42:59.074Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a runtime-built page strip for Pagination"
+    exit_code: 0
+    commit_sha: a1d5e44859e63389051fc8d6b38201111e0ba893
