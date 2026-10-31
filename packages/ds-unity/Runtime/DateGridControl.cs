@@ -22,7 +22,7 @@ namespace FullStackDS
         private readonly string weekdayClass;
         private readonly string dayClass;
         private DateTime month;
-        private DateTime value;
+        private DateTime selected;
         private bool hasValue;
         private DateTime? minDate;
         private DateTime? maxDate;
@@ -48,7 +48,7 @@ namespace FullStackDS
             header.AddToClassList($"{prefix}__{headerPart}");
             previousButton = new UnityEngine.UIElements.Button { text = "\u2039" };
             previousButton.AddToClassList($"{prefix}__{navPart}");
-            caption = new Label();
+            caption = new UnityEngine.UIElements.Label();
             caption.AddToClassList($"{prefix}__{captionPart}");
             nextButton = new UnityEngine.UIElements.Button { text = "\u203A" };
             nextButton.AddToClassList($"{prefix}__{navPart}");
@@ -71,12 +71,12 @@ namespace FullStackDS
 
         public string Value
         {
-            get => hasValue ? value.ToString(IsoFormat, CultureInfo.InvariantCulture) : "";
+            get => hasValue ? selected.ToString(IsoFormat, CultureInfo.InvariantCulture) : "";
             set
             {
                 valueExplicit = true;
                 hasValue = TryParse(value, out var parsed);
-                if (hasValue) { value = parsed; month = new DateTime(parsed.Year, parsed.Month, 1); }
+                if (hasValue) { selected = parsed; month = new DateTime(parsed.Year, parsed.Month, 1); }
                 Apply();
             }
         }
@@ -88,7 +88,7 @@ namespace FullStackDS
             {
                 if (valueExplicit) return;
                 hasValue = TryParse(value, out var parsed);
-                if (hasValue) { value = parsed; month = new DateTime(parsed.Year, parsed.Month, 1); }
+                if (hasValue) { selected = parsed; month = new DateTime(parsed.Year, parsed.Month, 1); }
                 Apply();
             }
         }
@@ -197,7 +197,7 @@ namespace FullStackDS
                 ValueRequested?.Invoke(date.ToString(IsoFormat, CultureInfo.InvariantCulture));
                 return;
             }
-            value = date;
+            selected = date;
             hasValue = true;
             valueExplicit = true;
             month = new DateTime(date.Year, date.Month, 1);
@@ -219,7 +219,7 @@ namespace FullStackDS
             var weekdayRow = new VisualElement();
             for (var i = 0; i < 7; i++)
             {
-                var label = new Label(CultureInfo.InvariantCulture.DateTimeFormat.AbbreviatedDayNames[i]);
+                var label = new UnityEngine.UIElements.Label(CultureInfo.InvariantCulture.DateTimeFormat.AbbreviatedDayNames[i]);
                 label.AddToClassList(weekdayClass);
                 weekdayRow.Add(label);
             }
