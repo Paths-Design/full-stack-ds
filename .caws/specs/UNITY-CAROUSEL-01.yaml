@@ -73,3 +73,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.CarouselSwitchesItsSlideAndWrapsNavigation
     exit_code: 0
     commit_sha: bd72e13c08206357100e94298648c8db90bc76e4
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 9172eff28a72d66c20cb53ad2e6a4cf2c2dbb702: packages/ds-unity/README.md admits Carousel with the viewport/channel/autoplay/label API and the withheld picker/indicator/transition/authored-shell facts, and records the 93/93 lane; docs/architecture/unity-target.md records the Sequence dispatcher mode, runtime controls and the 93/93 lane; docs/current-implementation-snapshot.md records the fifty-first admitted control with those facts."
+    recorded_at: "2026-10-31T18:38:16.453Z"
+    commit_sha: "9172eff28a72d66c20cb53ad2e6a4cf2c2dbb702"
