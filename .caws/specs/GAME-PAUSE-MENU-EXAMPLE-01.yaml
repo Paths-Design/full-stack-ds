@@ -72,3 +72,11 @@ evidence:
     recorded_at: "2026-10-31T17:45:08.585Z"
     artifact_path: examples/game-pause-menu/spec.md
     commit_sha: cf8aea80f0291c31c8579591696b3bd65687a35f
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "GPUI lane on its own branch/worktree: cargo +1.94.1 build --locked exit 0 with 0 warnings; cargo test --locked 51 pass (2 lib + 49 seam); --features capture 54 pass; 10 x 1280x800 frames rendered by Window::render_to_image including required map/progress/abilities/settings; lane README ledgers the 5/7 admitted components used and every NOT FSDS fallback; commit 6b4c17b03 merged into parent"
+    recorded_at: "2026-10-31T17:45:21.456Z"
+    command: "cargo +1.94.1 build --locked && cargo +1.94.1 test --locked"
+    exit_code: 0
+    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/gpui/capture-manifest.json"
+    commit_sha: "6b4c17b03"
