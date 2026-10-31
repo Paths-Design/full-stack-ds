@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.SelectBuildsItsListboxAndOwnsBothChannels
     exit_code: 0
     commit_sha: "60e2560eb7312c22c76ff49b191dbf458283d883"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 60e2560eb: packages/ds-unity/README.md admits Select with its nested option type, two-channel listbox runtime, trigger label projection, option construction and the withheld multi-select/search/empty/keyboard/aria facts, and records the 87/87 lane; docs/architecture/unity-target.md records the Select dispatcher mode, omitted subtree and 87/87 lane; docs/current-implementation-snapshot.md records the forty-sixth admitted control with those facts."
+    recorded_at: "2026-10-31T16:27:18.553Z"
+    commit_sha: "60e2560eb7312c22c76ff49b191dbf458283d883"
