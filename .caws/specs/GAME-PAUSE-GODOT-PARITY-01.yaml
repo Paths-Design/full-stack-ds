@@ -1,9 +1,10 @@
 id: GAME-PAUSE-GODOT-PARITY-01
 title: 'Pause menu godot lane parity rework'
 mode: refactor
-lifecycle_state: draft
+lifecycle_state: active
+worktree: game-pause-godot-parity
 created_at: '2026-10-31T19:18:55.982Z'
-updated_at: '2026-10-31T19:18:55.982Z'
+updated_at: '2026-10-31T19:20:11.665Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
