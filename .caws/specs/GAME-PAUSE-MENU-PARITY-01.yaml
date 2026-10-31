@@ -60,3 +60,7 @@ evidence:
     status: pass
     evidence_ref: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity/uss.test.ts: 42/42 pass incl committed Switch rect/lg md sm radii; packages/ds-unity/Runtime/Resources/FullStackDS/Controls.uss .switch--lg .switch__track border-radius 16px; gpui/unity/godot lane READMEs carry switch root causes and 64x32/24px geometry"
     recorded_at: "2026-10-31T21:20:42.217Z"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "examples/game-pause-menu/unity/README.md (36/36 EditMode in merged worktree, 8 captures), examples/game-pause-menu/godot/README.md (201/201 headless in merged worktree, 8 captures), examples/game-pause-menu/gpui/README.md (67 pass / 70 with capture, 8 captures)"
+    recorded_at: "2026-10-31T21:20:44.108Z"
