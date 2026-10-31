@@ -28,10 +28,14 @@ namespace FullStackDS
         public bool Controlled { get; set; }
         public Action<int> IndexChanged;
         public Action<int> IndexRequested;
-        public string StartLabel = "";
-        public string StopLabel = "";
-        public string PreviousLabel = "";
-        public string NextLabel = "";
+        private string startLabel = "";
+        private string stopLabel = "";
+        private string previousLabel = "";
+        private string nextLabel = "";
+        public string StartLabel { get => startLabel; set { startLabel = value ?? ""; ApplyLabel(); } }
+        public string StopLabel { get => stopLabel; set { stopLabel = value ?? ""; ApplyLabel(); } }
+        public string PreviousLabel { get => previousLabel; set { previousLabel = value ?? ""; ApplyLabel(); } }
+        public string NextLabel { get => nextLabel; set { nextLabel = value ?? ""; ApplyLabel(); } }
 
         private SequenceControl(VisualElement host, VisualElement viewport, string prefix)
         {
@@ -174,9 +178,9 @@ namespace FullStackDS
 
         private void ApplyLabel()
         {
-            rotationButton.text = playing ? StopLabel : StartLabel;
-            previousButton.text = PreviousLabel;
-            nextButton.text = NextLabel;
+            rotationButton.text = playing ? stopLabel : startLabel;
+            previousButton.text = previousLabel;
+            nextButton.text = nextLabel;
         }
     }
 }
