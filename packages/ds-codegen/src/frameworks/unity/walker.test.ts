@@ -475,6 +475,25 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/public string Name |AriaLabel|data-checked/);
   });
 
+  it("renders a two-channel listbox with runtime options for Select", () => {
+    const contract = loadContractWithSidecars(root, "Select") as ComponentContract;
+    const selectIr = buildComponentIR(contract);
+    selectIr.name = "UnrelatedSelect";
+    const source = createUnityEmitter().emitComponent(selectIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedSelect : VisualElement");
+    expect(source).toContain("public SelectControl Control { get; }");
+    expect(source).toContain("public readonly struct SelectOption");
+    expect(source).toContain("public SelectOption[] Options");
+    expect(source).toContain("public UnityEngine.UIElements.Button Trigger { get; } = new UnityEngine.UIElements.Button();");
+    expect(source).toContain("public Label Text { get; } = new Label();");
+    expect(source).toContain("public VisualElement OptionsControl { get; } = new VisualElement();");
+    expect(source).toContain("[UxmlAttribute] public bool Open { get => Control.Open; set => Control.Open = value; }");
+    expect(source).toContain("public Action<bool> OnOpenChange");
+    expect(source).toContain("public bool OpenControlled");
+    expect(source).toContain("SelectControl.Attach(this, trigger: Trigger, text: Text, content: Content, optionsHost: OptionsControl, prefix: \"select\", stateClass: \"select--open\");");
+    expect(source).not.toMatch(/Searchable|SearchInput|TriggerLabel|AriaExpanded/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);
