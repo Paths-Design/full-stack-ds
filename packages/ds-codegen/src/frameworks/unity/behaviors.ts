@@ -16,11 +16,11 @@
  * refusals are what let the support boundary call the matching families
  * `lowered`.
  */
-import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, PartIR } from "../../ir.js";
+import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, PartIR, ResolvedPropIR } from "../../ir.js";
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action";
+export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -102,11 +102,28 @@ export interface ActionLowering {
   /** The pending-state prop bound to aria-busy; its decoration is pending P4. */
   loading?: string;
 }
+/**
+ * A composed trigger: a component reference declaring a trigger role and a
+ * direct click callback binding lowers to native action chrome — a `Button`
+ * carrying the part identity, whose click forwards to the generated callback
+ * property. A guarded reference's presence follows a generated boolean flag.
+ * The referenced component's own visual composition is not claimed.
+ */
+export interface ComposedActionTrigger {
+  part: PartIR;
+  guardProp?: string;
+  callbackProp: string;
+}
+export interface ComposedActionLowering {
+  behavior: "ComposedAction";
+  triggers: ComposedActionTrigger[];
+  disabledProp?: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
 }
 export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering;
-export type UnityLowering = PassiveLowering | ActionLowering | ProgressLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -158,6 +175,41 @@ function isUnityStaticContainer(ir: ComponentIR): boolean {
   };
   (ir.dom.children ?? []).forEach(walk);
   return !essential;
+}
+
+function declaredProp(ir: ComponentIR, name: string): ResolvedPropIR | undefined {
+  return ir.styledProps.find(candidate => candidate.name === name);
+}
+function propIsBoolean(ir: ComponentIR, name: string): boolean {
+  const prop = declaredProp(ir, name);
+  return prop !== undefined && (prop.propType.kind === "boolean" || (prop.propType.kind === "fallback" && prop.propType.raw === "boolean"));
+}
+
+/**
+ * A composed trigger shape: a component reference with trigger role and a
+ * direct click callback binding, in a contract with no channel, form control,
+ * interaction or surface. Selection is by role, binding and guard facts.
+ */
+function composedActionLowering(ir: ComponentIR): ComposedActionLowering | undefined {
+  if (!ir.dom || ir.surface || ir.formControl || ir.interaction || ir.behavior.normalizedChannels.length > 0) return undefined;
+  const triggers: ComposedActionTrigger[] = [];
+  let disabledProp: string | undefined;
+  const walk = (node: DomNodeIR): void => {
+    if (node.componentRef !== undefined && node.part !== undefined) {
+      const part = ir.parts.find(candidate => candidate.name === node.part);
+      const click = node.events.click;
+      if (part?.details?.role === "trigger" && click?.kind === "prop" && !click.path?.length) {
+        const guardProp = node.ifProp !== undefined && !node.ifNegated && propIsBoolean(ir, node.ifProp) ? node.ifProp : undefined;
+        triggers.push({ part, ...(guardProp === undefined ? {} : { guardProp }), callbackProp: click.prop });
+        const disabled = node.bindings["disabled"];
+        if (disabledProp === undefined && disabled?.kind === "prop" && !disabled.path?.length) disabledProp = disabled.prop;
+      }
+    }
+    node.children.forEach(walk);
+  };
+  walk(ir.dom);
+  if (triggers.length === 0 || !triggers.some(trigger => trigger.guardProp === undefined)) return undefined;
+  return { behavior: "ComposedAction", triggers, ...(disabledProp === undefined ? {} : { disabledProp }) };
 }
 
 /**
@@ -277,6 +329,8 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
   if (!ir.interaction && !ir.formControl && ir.behavior.normalizedChannels.length === 0) {
     const progress = valueFillLowering(ir);
     if (progress) return progress;
+    const composed = composedActionLowering(ir);
+    if (composed) return composed;
   }
   if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir) || isPartsOnlyContainer(ir))) {
     if (focus !== undefined && focus !== "none") throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which Passive does not realise`);

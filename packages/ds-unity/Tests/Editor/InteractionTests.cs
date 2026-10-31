@@ -652,5 +652,32 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "FormatValue", "Label" })
                 Assert.That(typeof(FullStackDS.Progress).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void ChipForwardsComposedActionAndDismissAndGuardsDismissPresence()
+        {
+            var chip = Mount(new FullStackDS.Chip());
+            chip.contentContainer.Add(new UnityEngine.UIElements.Label("Filter"));
+            int clicks = 0; int dismisses = 0;
+            chip.OnClick = () => clicks++;
+            chip.OnDismiss = () => dismisses++;
+            Assert.That(chip.ClassListContains("chip"), Is.True);
+            Assert.That(chip.Action.ClassListContains("chip__action"), Is.True);
+            Assert.That(chip.Dismiss.ClassListContains("chip__dismiss"), Is.True);
+            Assert.That(chip.contentContainer, Is.SameAs(chip.Text));
+            Assert.That(chip.Dismissible, Is.False);
+            Assert.That(chip.Dismiss.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Submit(chip.Action);
+            Assert.That(clicks, Is.EqualTo(1));
+            chip.Dismissible = true;
+            Assert.That(chip.Dismiss.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Submit(chip.Dismiss);
+            Assert.That(dismisses, Is.EqualTo(1));
+            chip.Disabled = true;
+            Submit(chip.Action);
+            Submit(chip.Dismiss);
+            Assert.That(clicks, Is.EqualTo(1));
+            Assert.That(dismisses, Is.EqualTo(1));
+            foreach (var prop in new[] { "AriaLabel", "AriaExpanded", "AriaPressed", "Type" })
+                Assert.That(typeof(FullStackDS.Chip).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

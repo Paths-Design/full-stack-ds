@@ -190,6 +190,27 @@
       "via": "walker.ts: a componentRef node renders the admitted generated component class and carries its part identity on that instance."
     },
     {
+      "id": "anatomy-composed-action-ref",
+      "match": ["contract:/anatomy/dom/**/children/ref:*/componentRef"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valuePattern": "^prop:" }],
+      "disposition": "lowered",
+      "via": "walker.ts (composed chrome): a trigger component reference with a direct click callback binding lowers to native action chrome — a Button carrying the part identity — instead of instantiating the referenced component; the referenced component's own visuals are not claimed."
+    },
+    {
+      "id": "anatomy-composed-styling-refused",
+      "match": ["contract:/anatomy/dom/**/children/ref:*/attrs/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valuePattern": "^prop:" }],
+      "disposition": "refused",
+      "reason": "The referenced component's own styling attributes are not composed for native action chrome; the generated control renders a plain Button carrying the part identity and ignores them."
+    },
+    {
+      "id": "anatomy-composed-action-dynamic",
+      "match": ["contract:/anatomy/dom/**/children/ref:*/bindings/**", "contract:/anatomy/dom/**/children/ref:*/events/**", "contract:/anatomy/dom/**/children/ref:*/if", "contract:/anatomy/dom/**/children/ref:*/children/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valuePattern": "^prop:" }],
+      "disposition": "lowered",
+      "via": "walker.ts (composed chrome): the reference's click callback forwards to a generated Action property, a guarded reference's presence follows a generated boolean flag, its disabled binding maps to the generated root's enabled state, and its non-decoration children render inside the native action chrome; a11y, HTML form/type and unknown prop bindings are withheld rather than forwarded."
+    },
+    {
       "id": "anatomy-component-ref-dynamic",
       "match": ["contract:/anatomy/dom/**/children/ref:*/bindings/**", "contract:/anatomy/dom/**/children/ref:*/events/**", "contract:/anatomy/dom/**/children/ref:*/if", "contract:/anatomy/dom/**/children/ref:*/children/**"],
       "disposition": "pending",
@@ -450,6 +471,13 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "A legacy styled orientation prop on a passive container has no USS layout carrier in its style sidecar, so the generated control withholds the axis until one exists."
+    },
+    {
+      "id": "prop-composed-form-type-refused",
+      "match": ["contract:/props/*/members/plain:type/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valuePattern": "^prop:" }],
+      "disposition": "refused",
+      "reason": "The composed trigger's HTML form type has no UI Toolkit counterpart; the native action chrome is a plain Button and the generated control withholds the type prop."
     },
     {
       "id": "prop-item-group-options",
@@ -739,6 +767,29 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "A value formatter needs a generated text target and a typed callback declaration; the behavior-owned label renders consumer content, so the formatter stays pending P4."
+    },
+    {
+      "id": "prop-composed-aria-state-refused",
+      "match": ["contract:/props/*/members/plain:ariaExpanded/**", "contract:/props/*/members/plain:ariaPressed/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valuePattern": "^prop:" }],
+      "disposition": "refused",
+      "reason": "The composed native action chrome cannot mirror an expanded/pressed ARIA state into a UI Toolkit accessibility tree; the generated control withholds these props and exposes no ARIA state."
+    },
+    {
+      "id": "prop-composed-callback-lowered",
+      "match": ["contract:/props/*/members/plain:onClick/**", "contract:/props/*/members/plain:onDismiss/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valuePattern": "^prop:" }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (composed chrome): a composed trigger's click callback becomes a generated Action property the native button's click forwards to."
+    },
+    {
+      "id": "prop-composed-guard-lowered",
+      "match": ["contract:/props/*/members/plain:dismissible/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/if"], "valueIn": ["dismissible"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (composed chrome): a guarded composed trigger's presence flag becomes a generated boolean attribute that hides or shows the native chrome."
     },
     {
       "id": "prop-text-content-lowered",

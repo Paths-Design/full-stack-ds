@@ -1802,6 +1802,150 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Chip",
+      "sourceKey": ".chip__action.button",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": ".chip__dismiss.button",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "user-select",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "text",
+      "part": "text",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "CodeBlock",
       "sourceKey": ".code-block[data-line-numbers=\"true\"] .code-block__gutter",
       "part": "",

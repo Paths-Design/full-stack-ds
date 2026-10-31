@@ -205,6 +205,15 @@ function isStringProp(prop: ResolvedPropIR): boolean {
   return prop.propType.kind === "string" || (prop.propType.kind === "fallback" && prop.propType.raw === "string");
 }
 
+/** A decoration whose content is a dynamic node prop has no static
+ * projection; every lowering omits it (the node-content prop stays pending). */
+function isOmittedNodeContentDecoration(ir: ComponentIR, node: DomNodeIR): boolean {
+  const content = node.content;
+  if (content === undefined || !("kind" in content) || content.kind !== "prop") return false;
+  const prop = ir.styledProps.find(candidate => candidate.name === content.prop);
+  return prop?.nodeKind === "node-ref";
+}
+
 function literalContent(node: DomNodeIR): string | undefined {
   const content = node.content;
   return content && "kind" in content && content.kind === "literal" ? content.value : undefined;
@@ -245,9 +254,27 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
     if (isOmittedActionChrome(ctx, node)) continue;
+    if (isOmittedNodeContentDecoration(ctx.ir, node)) continue;
     if (isOmittedPassiveDecoration(ctx.ir, ctx.lowering, node)) continue;
     if (isCompound(node)) {
       if (composedHost && index === firstCompound) insertionHost(ctx, cls, parent, holes);
+      continue;
+    }
+    const composed = ctx.lowering.behavior === "ComposedAction"
+      ? ctx.lowering.triggers.find(trigger => trigger.part.name === node.part)
+      : undefined;
+    if (composed !== undefined) {
+      if (node.componentRef === undefined) throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} composed trigger ${node.part} carries no component reference`);
+      // The referenced component's own styling attributes are not composed; the
+      // boundary refuses them. A11y/form bindings are DOM metadata, and only the
+      // disabled binding is adapted onto the generated root's enabled state.
+      if (Object.keys(node.propertyBindings).length) throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} composed ${node.componentRef} carries DOM property bindings`);
+      for (const event of Object.keys(node.events)) if (event !== "click") throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} composed ${node.componentRef} carries event ${event}`);
+      if (node.ifProp !== undefined && node.ifProp !== composed.guardProp) throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} composed ${node.componentRef} declares an unowned guard`);
+      const element: ElementPlan = { ref: identifier(pascal(node.part!)), declaration: "property", type: NATIVE_BUTTON, identity: identityFor(ctx, node.part!), part: node.part!, children: [] };
+      parent.children.push(element);
+      cls.members.push(element);
+      walkChildren(ctx, cls, element, node.children.filter(child => !isOmittedNodeContentDecoration(ctx.ir, child)), holes);
       continue;
     }
     assertRenderable(ctx, node);
@@ -545,12 +572,56 @@ function progressRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6–R8 for composed action chrome: each trigger's click forwards to a
+ * generated Action property, a guarded trigger's presence follows a generated
+ * boolean flag, a declared disabled prop drives the root's enabled state, and
+ * carrier-backed axes emit as modifier attributes. The referenced component's
+ * own visuals are not composed, so no target props are forwarded.
+ */
+function composedActionRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "ComposedAction") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a composed action lowering`);
+  const members: string[] = [];
+  const attach: string[] = [];
+  const defaults: string[] = [];
+  const root = classes[0]!;
+  const byPart = new Map(root.members.filter(member => member.part !== undefined).map(member => [member.part!, member]));
+  for (const trigger of lowering.triggers) {
+    const element = byPart.get(trigger.part.name);
+    if (!element) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its composed trigger ${trigger.part.name} outside the root class`);
+    const callback = identifier(pascal(trigger.callbackProp));
+    members.push(`        public Action ${callback} { get; set; }`);
+    attach.push(`${element.ref}.clicked += () => ${callback}?.Invoke();`);
+    if (trigger.guardProp !== undefined) {
+      const guard = identifier(pascal(trigger.guardProp));
+      members.push(`        [UxmlAttribute] public bool ${guard} { get => ${element.ref}.style.display.value == DisplayStyle.Flex; set { ${element.ref}.style.display = value ? DisplayStyle.Flex : DisplayStyle.None; } }`);
+      attach.push(`${guard} = false;`);
+    }
+  }
+  if (lowering.disabledProp !== undefined) {
+    const disabled = identifier(pascal(lowering.disabledProp));
+    members.push(`        [UxmlAttribute] public bool ${disabled} { get => !enabledSelf; set => SetEnabled(!value); }`);
+  }
+  for (const prop of ir.styledProps) {
+    if (prop.name === lowering.disabledProp) continue;
+    if (lowering.triggers.some(trigger => trigger.guardProp === prop.name || trigger.callbackProp === prop.name)) continue;
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6–R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
   if (lowering.behavior === "Action") return actionRootApi(ctx);
   if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   if (lowering.behavior === "Progress") return progressRootApi(ctx, classes);
+  if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];
   // The runtime control type and the member name differ for the disclosure

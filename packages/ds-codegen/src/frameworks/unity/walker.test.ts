@@ -233,4 +233,22 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain("public override VisualElement contentContainer => ValueControl;");
     expect(source).not.toMatch(/FormatValue|public string Label/);
   });
+
+  it("renders composed triggers as native action chrome for Chip", () => {
+    const contract = loadContractWithSidecars(root, "Chip") as ComponentContract;
+    const chipIr = buildComponentIR(contract);
+    chipIr.name = "UnrelatedTag";
+    const source = createUnityEmitter().emitComponent(chipIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedTag : VisualElement");
+    expect(source).toContain("public UnityEngine.UIElements.Button Action { get; } = new UnityEngine.UIElements.Button();");
+    expect(source).toContain("public UnityEngine.UIElements.Button Dismiss { get; } = new UnityEngine.UIElements.Button();");
+    expect(source).toContain("public Action OnClick { get; set; }");
+    expect(source).toContain("public Action OnDismiss { get; set; }");
+    expect(source).toContain("Action.clicked += () => OnClick?.Invoke();");
+    expect(source).toContain("Dismiss.clicked += () => OnDismiss?.Invoke();");
+    expect(source).toContain("public bool Dismissible {");
+    expect(source).toContain("Dismissible = false;");
+    expect(source).toContain("public override VisualElement contentContainer => Text;");
+    expect(source).not.toMatch(/AriaLabel|AriaExpanded|AriaPressed/);
+  });
 });
