@@ -66,3 +66,10 @@ evidence:
     recorded_at: "2026-10-31T18:38:14.541Z"
     artifact_path: packages/ds-unity/Runtime/Components/Carousel/Carousel.cs
     commit_sha: "5eac6d1be0360af13ec63064c5dc546d23ab0be6"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source bd72e13c08206357100e94298648c8db90bc76e4 (sourceDirty false): 93/93 passed, zero failed/skipped (test-run start 2026-10-31 18:37:32Z; resultsSha256 2eddc3342b264b1467f18bb7afa0a2e4c167fe4dc23dbdbec11b25f527f22006). The added cases assert viewport slide switching, wrapped previous/next navigation, channel change/callback/request semantics, the rotation label toggle and the declared autoplay dwell advancing the index. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T18:38:15.311Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.CarouselSwitchesItsSlideAndWrapsNavigation
+    exit_code: 0
+    commit_sha: bd72e13c08206357100e94298648c8db90bc76e4
