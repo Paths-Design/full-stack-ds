@@ -679,5 +679,18 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "AriaLabel", "AriaExpanded", "AriaPressed", "Type" })
                 Assert.That(typeof(FullStackDS.Chip).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void CodeSnippetPaintsItsTextAttributeAndCarriesTheAsModifier()
+        {
+            var snippet = Mount(new FullStackDS.CodeSnippet());
+            Assert.That(snippet, Is.InstanceOf<TextElement>());
+            Assert.That(snippet.ClassListContains("code-snippet"), Is.True);
+            snippet.Text = "git status";
+            Assert.That(snippet.text, Is.EqualTo("git status"));
+            snippet.As = "kbd";
+            Assert.That(snippet.ClassListContains("code-snippet--kbd"), Is.True);
+            Assert.That(snippet.ClassListContains("code-snippet--code"), Is.False);
+            snippet.As = "samp";
+            Assert.That(snippet.ClassListContains("code-snippet--samp"), Is.True);
+        }
     }
 }

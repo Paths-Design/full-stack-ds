@@ -4778,3 +4778,65 @@
     --fsds-chip-size-gap: var(--fsds-semantic-glyph-badge-size-lg-gap, 4px);
     --fsds-chip-size-min-height: var(--fsds-semantic-glyph-badge-size-lg-min-height, 32px);
 }
+
+/* CodeSnippet (.code-snippet) */
+.code-snippet {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-block-end: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-padding-inline-end: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-gap: var(--fsds-semantic-display-size-gap, 4px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-code-snippet-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+    --fsds-code-snippet-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-code-snippet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+    --fsds-code-snippet-size-padding-inline: var(--fsds-core-spacing-size-02, 2px);
+    --fsds-code-snippet-size-padding-block: var(--fsds-core-spacing-size-01, 1px);
+    --fsds-code-snippet-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-code-snippet-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+    --fsds-code-snippet-size-font-size: var(--fsds-core-typography-ramp-3, 14px);
+    --fsds-code-snippet-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+}
+
+.code-snippet {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 16px);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 16px);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 16px);
+    padding-right: var(--fsds-box-model-padding-inline-end, 16px);
+    --fsds-gap: var(--fsds-box-model-gap, 4px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.code-snippet {
+    background-color: var(--fsds-code-snippet-color-background, #f7f7f7);
+    border-color: var(--fsds-code-snippet-color-border, #d0d0d0);
+    border-width: var(--fsds-code-snippet-size-border, 1px);
+    border-radius: var(--fsds-code-snippet-size-radius, 6px);
+    color: var(--fsds-code-snippet-color-foreground-primary, #141414);
+    font-size: var(--fsds-code-snippet-size-font-size, 14px);
+    margin: 0;
+    padding-top: var(--fsds-code-snippet-size-padding-block, 1px);
+    padding-bottom: var(--fsds-code-snippet-size-padding-block, 1px);
+    padding-left: var(--fsds-code-snippet-size-padding-inline, 2px);
+    padding-right: var(--fsds-code-snippet-size-padding-inline, 2px);
+    white-space: nowrap;
+}
+
+.code-snippet.code-snippet--samp {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0);
+}

@@ -121,6 +121,8 @@ export interface ComposedActionLowering {
 }
 export interface PassiveLowering {
   behavior: "Passive";
+  /** A declared string prop the text-host root paints through `TextElement.text`. */
+  textProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering;
 export type UnityLowering = PassiveLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
@@ -183,6 +185,23 @@ function declaredProp(ir: ComponentIR, name: string): ResolvedPropIR | undefined
 function propIsBoolean(ir: ComponentIR, name: string): boolean {
   const prop = declaredProp(ir, name);
   return prop !== undefined && (prop.propType.kind === "boolean" || (prop.propType.kind === "fallback" && prop.propType.raw === "boolean"));
+}
+
+/**
+ * A passive text-content host: a non-interactive root whose only content is a
+ * direct binding to a declared string prop. The root derives `TextElement` and
+ * the prop becomes a generated text attribute; selection is by tag/binding and
+ * prop-type facts, never by name.
+ */
+function textContentProp(ir: ComponentIR): string | undefined {
+  if (!ir.dom || ir.dom.componentRef !== undefined) return undefined;
+  if (["button", "input", "img"].includes(ir.dom.tag)) return undefined;
+  const content = ir.dom.content;
+  if (content === undefined || !("kind" in content) || content.kind !== "prop" || content.path?.length) return undefined;
+  const prop = ir.styledProps.find(candidate => candidate.name === content.prop);
+  if (!prop) return undefined;
+  const stringProp = prop.propType.kind === "string" || (prop.propType.kind === "fallback" && prop.propType.raw === "string");
+  return stringProp ? content.prop : undefined;
 }
 
 /**
@@ -332,9 +351,10 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     const composed = composedActionLowering(ir);
     if (composed) return composed;
   }
-  if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir) || isPartsOnlyContainer(ir))) {
+  const textProp = textContentProp(ir);
+  if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir) || isPartsOnlyContainer(ir) || textProp !== undefined)) {
     if (focus !== undefined && focus !== "none") throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which Passive does not realise`);
-    return { behavior: "Passive" };
+    return { behavior: "Passive", ...(textProp === undefined ? {} : { textProp }) };
   }
   if (ir.formControl?.valueModel === "boolean") {
     if (focus !== undefined && focus !== "auto") refuseFocus("BooleanControl");

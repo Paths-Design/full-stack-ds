@@ -251,4 +251,15 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain("public override VisualElement contentContainer => Text;");
     expect(source).not.toMatch(/AriaLabel|AriaExpanded|AriaPressed/);
   });
+
+  it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
+    const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
+    const snippetIr = buildComponentIR(contract);
+    snippetIr.name = "UnrelatedSnippet";
+    const source = createUnityEmitter().emitComponent(snippetIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedSnippet : TextElement");
+    expect(source).toContain('public string As { get => Variants.Get(this, "code-snippet", "code", "kbd", "samp");');
+    expect(source).toContain('public string Text { get => this.text; set => this.text = value ?? ""; }');
+    expect(source).not.toMatch(/public string As .*\n.*Text.*\{ get; \}/);
+  });
 });

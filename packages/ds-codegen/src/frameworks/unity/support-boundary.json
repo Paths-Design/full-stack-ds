@@ -350,10 +350,10 @@
     },
     {
       "id": "anatomy-content-string-prop-lowered",
-      "match": ["contract:/anatomy/dom/**/children/*/content", "contract:/anatomy/dom/**/children/*/content/**"],
+      "match": ["contract:/anatomy/dom/content", "contract:/anatomy/dom/content/**", "contract:/anatomy/dom/**/children/*/content", "contract:/anatomy/dom/**/children/*/content/**"],
       "requiresAny": [{ "match": ["contract:/props/*/members/*/propType/kind"], "valueIn": ["string"] }],
       "disposition": "lowered",
-      "via": "walker.ts (R5b): a text leaf bound to a declared string prop lowers the element to a Label plus a root string UxmlAttribute that paints its text; the walker asserts the bound prop is a declared string, and a non-string or non-text-leaf binding is refused at generation. Only literal and string-property content lower; transforms and node-content props are adjudicated by the rules above."
+      "via": "walker.ts (R5b): a text leaf bound to a declared string prop lowers the element to a Label plus a root string UxmlAttribute that paints its text; a text-host root lowers to TextElement with the same attribute on its own text. The walker asserts the bound prop is a declared string, and a non-string or non-text-host binding is refused at generation. Only literal and string-property content lower; transforms and node-content props are adjudicated by the rules above."
     },
     {
       "id": "anatomy-content",
@@ -613,6 +613,13 @@
       "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
     },
     {
+      "id": "prop-carried-tag-axis",
+      "match": ["contract:/props/*/members/plain:as/**"],
+      "requiresAny": [{ "match": ["contract:/variants/as/*"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (S6): a polymorphic element axis with a styled modifier carrier emits a modifier attribute; the underlying native element stays fixed and the tag switch itself is not realised."
+    },
+    {
       "id": "prop-polymorphic-tag",
       "match": ["contract:/props/*/members/plain:as/**"],
       "disposition": "refused",
@@ -790,6 +797,14 @@
       "disposition": "lowered",
       "realizes": "emitted-property",
       "via": "walker.ts (composed chrome): a guarded composed trigger's presence flag becomes a generated boolean attribute that hides or shows the native chrome."
+    },
+    {
+      "id": "prop-text-host-string-lowered",
+      "match": ["contract:/props/*/members/plain:text/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/content"], "valuePattern": "^prop:text$" }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (R5b passive text host): a non-interactive text-host root with a declared string content prop derives TextElement and emits a generated string attribute that paints its text."
     },
     {
       "id": "prop-text-content-lowered",

@@ -200,7 +200,8 @@
         "CodeBlock",
         "Details",
         "Progress",
-        "Chip"
+        "Chip",
+        "CodeSnippet"
       ]
     },
     {
