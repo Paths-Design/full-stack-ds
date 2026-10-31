@@ -437,7 +437,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     // is the control's own contentContainer.
     const action = ctx.lowering.behavior === "Action";
     const sequenceViewport = ctx.lowering.behavior === "Sequence" ? ctx.lowering.viewportPart : undefined;
-    const children = ctx.lowering.behavior === "Transfer" || ctx.lowering.behavior === "PagedSet" || ctx.lowering.behavior === "DateGrid" ? [] : ctx.lowering.behavior === "Sequence"
+    const children = ctx.lowering.behavior === "Transfer" || ctx.lowering.behavior === "PagedSet" || ctx.lowering.behavior === "DateGrid" || ctx.lowering.behavior === "Command" ? [] : ctx.lowering.behavior === "Sequence"
       ? ir.dom.children.filter(node => node.part === sequenceViewport)
       : action
       ? ir.dom.children
@@ -464,7 +464,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   for (const part of ir.compoundParts) {
     if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots" || ctx.lowering.behavior === "Coachmark") continue;
     if (ctx.lowering.behavior === "Tree" && part.name === ctx.lowering.listPart) continue;
-    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "Select" || ctx.lowering.behavior === "Expansion" || ctx.lowering.behavior === "DateGrid") continue;
+    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "Select" || ctx.lowering.behavior === "Expansion" || ctx.lowering.behavior === "DateGrid" || ctx.lowering.behavior === "Command") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -1376,6 +1376,56 @@ function dateGridRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/** R6-R8 for the command palette: both declared channels, placeholder and the
+ * consumer results host. Filtering, empty state, dismissal, keyboard and a11y
+ * are withheld. */
+function commandRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Command") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a command lowering`);
+  const open = lowering.openChannel;
+  const search = lowering.searchChannel;
+  const members: string[] = [
+    "        public CommandControl Control { get; }",
+    `        [UxmlAttribute] public bool ${identifier(pascal(open.valueProp))} { get => Control.Open; set => Control.Open = value; }`,
+    `        [UxmlAttribute] public string ${identifier(pascal(search.valueProp))} { get => Control.Search; set => Control.Search = value; }`,
+    "        public VisualElement Results { get => Control.ResultsSlot; }",
+  ];
+  const attach: string[] = [
+    `Control = CommandControl.Attach(this, prefix: ${quote(ctx.prefix!)}, overlayPart: ${quote(lowering.overlayPart)}, dialogPart: ${quote(lowering.dialogPart)}, listPart: ${quote(lowering.listPart)}, inputPart: ${quote(lowering.inputPart)});`,
+  ];
+  const defaults: string[] = [];
+  if (open.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(open.defaultValueProp))} { get => Control.DefaultOpen; set => Control.DefaultOpen = value; }`);
+  if (search.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(search.defaultValueProp))} { get => Control.DefaultSearch; set => Control.DefaultSearch = value; }`);
+  if (lowering.placeholderProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.placeholderProp))} { get => Control.Placeholder; set => Control.Placeholder = value; }`);
+  const openHandler = open.changeHandlerProp ?? `${open.valueProp}Changed`;
+  const searchHandler = search.changeHandlerProp ?? `${search.valueProp}Changed`;
+  members.push(`        public Action<bool> ${identifier(pascal(openHandler))} { get => Control.OpenChanged; set => Control.OpenChanged = value; }`);
+  members.push(`        public Action<string> ${identifier(pascal(searchHandler))} { get => Control.SearchChanged; set => Control.SearchChanged = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<bool> OpenRequested { get => Control.OpenRequested; set => Control.OpenRequested = value; }");
+  members.push("        public bool SearchControlled { get => Control.SearchControlled; set => Control.SearchControlled = value; }");
+  members.push("        public Action<string> SearchRequested { get => Control.SearchRequested; set => Control.SearchRequested = value; }");
+  return { members, attach, defaults };
+}
+
+/** R6-R8 for the motion loop: the declared full-turn rotation period and the
+ * explicit reduced-motion preference input. No channels or delay/inline API. */
+function motionLoopRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "MotionLoop") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a motion-loop lowering`);
+  const target = classes[0]!.members.find(member => member.part === lowering.targetPart);
+  if (!target) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its loop target outside the root class`);
+  const easing = lowering.easing ?? [0, 0, 1, 1];
+  const members: string[] = [
+    "        public MotionLoopControl Control { get; }",
+    "        [UxmlAttribute] public bool ReducedMotion { get => Control.ReducedMotion; set => Control.ReducedMotion = value; }",
+  ];
+  const attach: string[] = [
+    `Control = MotionLoopControl.Attach(this, target: ${target.ref}, durationMs: ${lowering.durationMs}, multiplier: ${lowering.multiplier}, easing: new float[] { ${easing.map(value => `${value.toFixed(3)}f`).join(", ")} }, reducedValue: ${lowering.reducedValue});`,
+  ];
+  return { members, attach, defaults: [] };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1398,6 +1448,8 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "PagedSet") return pagedSetRootApi(ctx);
   if (lowering.behavior === "Sequence") return sequenceRootApi(ctx, classes);
   if (lowering.behavior === "DateGrid") return dateGridRootApi(ctx);
+  if (lowering.behavior === "Command") return commandRootApi(ctx);
+  if (lowering.behavior === "MotionLoop") return motionLoopRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

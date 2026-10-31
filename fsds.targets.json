@@ -223,7 +223,9 @@
         "Truncate",
         "PageNavigator",
         "Carousel",
-        "Calendar"
+        "Calendar",
+        "Command",
+        "Spinner"
       ]
     },
     {

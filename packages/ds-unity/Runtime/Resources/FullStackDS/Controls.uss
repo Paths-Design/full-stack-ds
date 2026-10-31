@@ -170,6 +170,7 @@
     --fsds-semantic-glyph-badge-size-sm-padding-x: 4px;
     --fsds-semantic-glyph-badge-size-sm-padding-y: 2px;
     --fsds-semantic-glyph-size-medium-extent: 16px;
+    --fsds-semantic-glyph-size-small-extent: 12px;
     --fsds-semantic-input-size-medium-gap: 8px;
     --fsds-semantic-input-size-medium-min-height: 32px;
     --fsds-semantic-input-size-medium-padding-block: 4px;
@@ -186,6 +187,7 @@
     --fsds-semantic-motion-interaction-exit-duration: 167ms;
     --fsds-semantic-motion-interaction-press-duration: 100ms;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.40);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.64);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-control-radius-pill: 9999px;
@@ -318,6 +320,7 @@
     --fsds-semantic-interaction-background-hover: #313131;
     --fsds-semantic-interaction-border-hover: #727272;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.60);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.80);
     --fsds-semantic-surface-border-subtle: #474647;
 }
 
@@ -402,6 +405,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.6);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.8);
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 10px;
     --fsds-semantic-shape-radius-large: 16px;
@@ -566,6 +570,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.639);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 4px;
     --fsds-semantic-shape-radius-large: 8px;
@@ -733,6 +738,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.639);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 8px;
     --fsds-semantic-shape-radius-large: 16px;
@@ -897,6 +903,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.08;
     --fsds-semantic-interaction-state-layer-selected: 0.12;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.639);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-radius-large: 8px;
@@ -1061,6 +1068,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.502);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.722);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-radius-large: 8px;
@@ -1226,6 +1234,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.639);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 12px;
     --fsds-semantic-shape-radius-large: 16px;
@@ -1391,6 +1400,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.639);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 4px;
     --fsds-semantic-shape-radius-large: 32px;
@@ -1555,6 +1565,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.6);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.8);
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 0px;
     --fsds-semantic-shape-radius-large: 4px;
@@ -1726,6 +1737,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.639);
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 0px;
     --fsds-semantic-shape-radius-large: 0px;
@@ -1889,6 +1901,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.639);
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 12px;
     --fsds-semantic-shape-radius-large: 32px;
@@ -2053,6 +2066,7 @@
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.6);
+    --fsds-semantic-overlay-scrim-strong: rgba(0, 0, 0, 0.8);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 8px;
     --fsds-semantic-shape-radius-large: 32px;
@@ -7692,4 +7706,287 @@
 .calendar__day:focus {
     border-width: var(--fsds-calendar-focus-ring-width, 2px);
     border-color: var(--fsds-calendar-color-focus-ring, #0566fe);
+}
+
+/* Command (.command) */
+.command {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: var(--fsds-semantic-structure-size-gap, 16px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-command-color-overlay: var(--fsds-semantic-overlay-scrim-strong, rgba(0, 0, 0, 0.64));
+    --fsds-command-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+    --fsds-command-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+    --fsds-command-color-border-light: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+    --fsds-command-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-command-color-text-muted: var(--fsds-semantic-color-foreground-tertiary, #727272);
+    --fsds-command-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+    --fsds-command-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-command-size-max-width: 640px;
+    --fsds-command-size-max-height: 400px;
+    --fsds-command-size-icon: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-command-spacing-dialog-padding: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-command-text-size: var(--fsds-semantic-typography-body-02, 16px);
+    --fsds-command-text-size-small: var(--fsds-semantic-typography-body-04, 12px);
+    --fsds-command-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+    --fsds-command-color-background-hover: var(--fsds-semantic-interaction-background-hover, #f7f7f7);
+}
+
+.command {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 16px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.command:disabled {
+    opacity: var(--fsds-command-opacity-disabled, 0.5);
+}
+
+.command {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.command__overlay {
+    position: absolute;
+    background-color: var(--fsds-command-color-overlay, rgba(0, 0, 0, 0.64));
+}
+
+.command__dialog {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--fsds-command-size-max-width, 640px);
+    max-height: var(--fsds-command-size-max-height, 400px);
+    background-color: var(--fsds-command-color-background, #ffffff);
+    color: var(--fsds-command-color-text, #141414);
+    border-color: var(--fsds-command-color-border, #d0d0d0);
+    border-width: var(--fsds-command-border-width, 1px);
+    border-radius: var(--fsds-command-border-radius, 6px);
+    overflow: hidden;
+}
+
+.command__inputWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    --fsds-gap: 8px;
+    padding: var(--fsds-command-spacing-dialog-padding, 8px);
+    border-bottom-color: var(--fsds-command-color-border-light, #d0d0d0);
+    border-bottom-width: 1px;
+}
+
+.command__searchIcon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--fsds-command-size-icon, 8px);
+    height: var(--fsds-command-size-icon, 8px);
+    color: var(--fsds-command-color-text-muted, #727272);
+}
+
+.command__input {
+    flex: 1 1 auto;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    padding: 0;
+    color: var(--fsds-command-color-text, #141414);
+    font-size: var(--fsds-command-text-size, 16px);
+}
+
+.command__list {
+    flex: 1 1 auto;
+    padding: 4px 0;
+    margin: 0;
+}
+
+.command__empty {
+    display: flex;
+    flex-direction: column;
+    padding: var(--fsds-command-spacing-dialog-padding, 8px);
+    color: var(--fsds-command-color-text-muted, #727272);
+    font-size: var(--fsds-command-text-size-small, 12px);
+}
+
+.command__group {
+    display: flex;
+    flex-direction: column;
+}
+
+.command__groupHeading {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 12px 4px;
+    color: var(--fsds-command-color-text-muted, #727272);
+    font-size: var(--fsds-command-text-size-small, 12px);
+    -unity-font-style: bold;
+}
+
+.command__groupItems {
+    display: flex;
+    flex-direction: column;
+}
+
+.command__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    --fsds-gap: 8px;
+    padding: 8px 12px;
+    color: var(--fsds-command-color-text, #141414);
+    border-radius: var(--fsds-command-border-radius, 6px);
+}
+
+.command__item:hover {
+    background-color: var(--fsds-command-color-background-hover, #f7f7f7);
+}
+
+.command__itemIcon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: var(--fsds-command-size-icon, 8px);
+    height: var(--fsds-command-size-icon, 8px);
+    color: var(--fsds-command-color-text-muted, #727272);
+}
+
+.command__itemContent {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.command__itemLabel {
+    display: flex;
+    flex-direction: column;
+    color: var(--fsds-command-color-text, #141414);
+    font-size: var(--fsds-command-text-size, 16px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.command__itemDescription {
+    display: flex;
+    flex-direction: column;
+    color: var(--fsds-command-color-text-muted, #727272);
+    font-size: var(--fsds-command-text-size-small, 12px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.command__separator {
+    display: flex;
+    flex-direction: column;
+    height: 1px;
+    margin: 4px 8px;
+    background-color: var(--fsds-command-color-border-light, #d0d0d0);
+}
+
+/* Spinner (.spinner) */
+.spinner {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: 0;
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-spinner-size-xs: var(--fsds-semantic-glyph-size-small-extent, 12px);
+    --fsds-spinner-size-sm: var(--fsds-core-icon-size-sm, 16px);
+    --fsds-spinner-size-md: var(--fsds-core-icon-size-md, 20px);
+    --fsds-spinner-size-lg: var(--fsds-core-icon-size-lg, 24px);
+    --fsds-spinner-thickness-hairline: 2px;
+    --fsds-spinner-thickness-regular: 3px;
+    --fsds-spinner-thickness-bold: 4px;
+    --fsds-spinner-color-accent: var(--fsds-semantic-color-background-accent, #d92d2e);
+    --fsds-spinner-color-track: var(--fsds-semantic-color-border-subtle, #d0d0d0);
+    --fsds-spinner-anim-duration: 800ms;
+}
+
+.spinner {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 0);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.spinner__visual {
+    display: flex;
+    flex-direction: column;
+    border-radius: 50%;
+    border-width: var(--fsds-spinner-thickness-regular, 3px);
+    border-color: var(--fsds-spinner-color-track, #d0d0d0);
+    border-top-color: var(--fsds-spinner-color-accent, #d92d2e);
+}
+
+.spinner.spinner--xs {
+    font-size: var(--fsds-spinner-size-xs, 12px);
+}
+
+.spinner.spinner--sm {
+    font-size: var(--fsds-spinner-size-sm, 16px);
+}
+
+.spinner.spinner--md {
+    font-size: var(--fsds-spinner-size-md, 20px);
+}
+
+.spinner.spinner--lg {
+    font-size: var(--fsds-spinner-size-lg, 24px);
+}
+
+.spinner--hairline .spinner__visual {
+    border-width: var(--fsds-spinner-thickness-hairline, 2px);
+}
+
+.spinner--regular .spinner__visual {
+    border-width: var(--fsds-spinner-thickness-regular, 3px);
+}
+
+.spinner--bold .spinner__visual {
+    border-width: var(--fsds-spinner-thickness-bold, 4px);
 }

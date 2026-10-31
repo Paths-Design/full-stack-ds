@@ -1412,5 +1412,71 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Mode", "Locale", "ShouldCloseOnSelect", "AriaLabel" })
                 Assert.That(typeof(FullStackDS.Calendar).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void CommandTogglesItsPaletteAndForwardsBothChannels()
+        {
+            var command = Mount(new FullStackDS.Command());
+            command.Placeholder = "Search commands";
+            Assert.That(command.childCount, Is.EqualTo(2));
+            var search = command.Query<UnityEngine.UIElements.TextField>().First();
+            Assert.That(search.textEdition.placeholder, Is.EqualTo("Search commands"));
+            Assert.That(command.childCount, Is.EqualTo(2));
+            var overlay = command.hierarchy[0];
+            var dialog = command.hierarchy[1];
+            Assert.That(overlay.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(dialog.style.display.value, Is.EqualTo(DisplayStyle.None));
+            bool? opened = null;
+            command.OnOpenChange += value => opened = value;
+            command.Open = true;
+            Assert.That(opened, Is.Null);
+            Assert.That(overlay.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(dialog.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            string changed = null;
+            command.OnSearchChange += value => changed = value;
+            search.value = "jump";
+            Assert.That(command.Search, Is.EqualTo("jump"));
+            Assert.That(changed, Is.EqualTo("jump"));
+            command.DefaultOpen = true;
+            Assert.That(command.Open, Is.True);
+            command.Controlled = true;
+            bool? requested = null;
+            command.OpenRequested += value => requested = value;
+            command.Open = false;
+            Assert.That(requested, Is.Null);
+            command.SearchControlled = true;
+            string requestedSearch = null;
+            command.SearchRequested += value => requestedSearch = value;
+            search.value = "map";
+            Assert.That(requestedSearch, Is.EqualTo("map"));
+            Assert.That(command.Search, Is.EqualTo("jump"));
+            command.Results.Add(new Label { text = "Jump to base" });
+            Assert.That(command.Results.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "ShouldFilter", "Filter", "EmptyMessage", "SearchLabel", "Label" })
+                Assert.That(typeof(FullStackDS.Command).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void SpinnerHoldsTheAuthoredStaticValueWhenReducedMotionIsRequested()
+        {
+            var spinner = Mount(new FullStackDS.Spinner());
+            Assert.That(spinner.childCount, Is.EqualTo(1));
+            Assert.That(spinner.Visual.ClassListContains("spinner__visual"), Is.True);
+            spinner.ReducedMotion = true;
+            var angle = spinner.Visual.style.rotate.value.angle.value;
+            Assert.That(angle, Is.EqualTo(0f).Within(0.001f));
+            foreach (var prop in new[] { "Size", "Thickness", "ShowAfterMs", "Inline", "AriaHidden" })
+                Assert.That(typeof(FullStackDS.Spinner).GetProperty(prop), Is.Null, prop);
+        }
+        [UnityTest] public System.Collections.IEnumerator SpinnerRotatesOnTheDeclaredLoop()
+        {
+            var spinner = Mount(new FullStackDS.Spinner());
+            var deadline = UnityEngine.Time.realtimeSinceStartup + 2f;
+            var moved = false;
+            while (UnityEngine.Time.realtimeSinceStartup < deadline)
+            {
+                if (Math.Abs(spinner.Visual.style.rotate.value.angle.value) > 1f) { moved = true; break; }
+                yield return null;
+            }
+            Assert.That(moved, Is.True);
+            spinner.ReducedMotion = true;
+            Assert.That(Math.Abs(spinner.Visual.style.rotate.value.angle.value), Is.LessThan(0.001f));
+        }
     }
 }

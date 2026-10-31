@@ -2826,6 +2826,166 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Command",
+      "sourceKey": ".command__item[aria-selected=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "dialog",
+      "part": "dialog",
+      "property": "box-shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "dialog",
+      "part": "dialog",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "empty",
+      "part": "empty",
+      "property": "text-align",
+      "value": "center",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "groupHeading",
+      "part": "groupHeading",
+      "property": "letter-spacing",
+      "value": "0.04em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "groupHeading",
+      "part": "groupHeading",
+      "property": "text-transform",
+      "value": "uppercase",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "input",
+      "part": "input",
+      "property": "font-family",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "input",
+      "part": "input",
+      "property": "outline",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "overlay",
+      "part": "overlay",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "overlay",
+      "part": "overlay",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "padding-top",
+      "value": "10vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "position",
+      "value": "fixed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "z-index",
+      "value": "1000",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "command.shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Command",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "command.size.topOffset",
+      "value": "10vh",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Details",
       "sourceKey": ".details--right .details__icon",
       "part": "icon",
@@ -5624,6 +5784,30 @@
       "part": "root",
       "property": "skeleton.anim.easing",
       "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Spinner",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "800ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Spinner",
+      "sourceKey": "visual",
+      "part": "visual",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Spinner",
+      "sourceKey": "visual",
+      "part": "visual",
+      "property": "width",
+      "value": "1em",
       "reason": "uss-scalar"
     },
     {
