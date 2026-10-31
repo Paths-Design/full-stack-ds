@@ -54,3 +54,11 @@ contracts:
   - name: 'dialog-modal'
     type: behavior
     path: 'packages/ds-contracts/components/Dialog/Dialog.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 926add411: focused unity codegen + cli seam 223/223 pass, including the Modal dispatcher predicate from blocking/centered/persistent/close-trigger facts, the behavior-owned modal content rendering, the portal/backdrop/focus-trap runtime attach, dismissal knob wrappers and the modal boundary/style families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T13:14:22.746Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > attaches a blocking modal surface and renders its content panel for Dialog"
+    exit_code: 0
+    commit_sha: "926add4118ff132a8eb91c9c4a9b83436716f3e7"
