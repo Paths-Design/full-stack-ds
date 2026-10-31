@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.RadioGroupBuildsNativeRadiosAndCommitsTheSelection
     exit_code: 0
     commit_sha: a55618e93d7681b01360442fe9138771b49b8d73
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at a55618e93: packages/ds-unity/README.md admits RadioGroup with its generated nested option type, native radio runtime, selection/request/orientation semantics and the unclaimed markup/state-styling/name facts, and records the 86/86 lane; docs/architecture/unity-target.md records the ChoiceGroup dispatcher mode, role derivation, runtime and the 86/86 lane; docs/current-implementation-snapshot.md records the forty-fifth admitted control with those facts."
+    recorded_at: "2026-10-31T16:10:35.230Z"
+    commit_sha: a55618e93d7681b01360442fe9138771b49b8d73
