@@ -128,6 +128,7 @@ function isEmittedApiName(ctx: Context, name: string): boolean {
 /** R1/R2: the element type of a rendered node. */
 function elementType(ctx: Context, node: DomNodeIR): ElementType {
   if (node.iconGlyph !== undefined) return "GlyphElement";
+  if (ctx.lowering.behavior === "TextInput" && node.part === ctx.lowering.control.name) return NATIVE_TEXTFIELD;
   if (node.componentRef !== undefined) return identifier(node.componentRef);
   if ((node.part && ctx.triggers.has(node.part)) || node.tag === BUTTON_TAG) return NATIVE_BUTTON;
   if (!node.children.length && TEXT_LEAF_TAGS.has(node.tag) && node.content !== undefined) return "Label";
@@ -254,7 +255,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -407,6 +408,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     classes.push(root);
   }
   for (const part of ir.compoundParts) {
+    if (ctx.lowering.behavior === "TextInput") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -657,11 +659,16 @@ function composedActionRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
  * native text edition, and the disabled prop drives SetEnabled. HTML form/type/
  * validity facts are adjudicated by the boundary and never emitted here.
  */
-function textInputRootApi(ctx: Context): RootApi {
+function textInputRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
   if (lowering.behavior !== "TextInput") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a text input lowering`);
   const members: string[] = ["        public TextControl Control { get; }"];
-  const attach: string[] = ["Control = TextControl.Attach(this);"];
+  const root = classes[0]!;
+  const controlRef = lowering.control.name === ir.dom?.part
+    ? "this"
+    : root.members.find(member => member.part === lowering.control.name)?.ref;
+  if (controlRef === undefined) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its text field ${lowering.control.name} outside the root class`);
+  const attach: string[] = [`Control = TextControl.Attach(${controlRef});`];
   const defaults: string[] = [];
   const channel = lowering.channel;
   members.push(`        [UxmlAttribute] public string ${identifier(pascal(channel.valueProp))} { get => Control.Value; set => Control.Value = value; }`);
@@ -693,7 +700,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Action") return actionRootApi(ctx);
   if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   if (lowering.behavior === "Progress") return progressRootApi(ctx, classes);
-  if (lowering.behavior === "TextInput") return textInputRootApi(ctx);
+  if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];

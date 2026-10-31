@@ -10,14 +10,14 @@ namespace FullStackDS
     /// the native text edition; no HTML form participation is claimed.</summary>
     public sealed class TextControl
     {
-        private readonly TextField host;
+        private readonly UnityEngine.UIElements.TextField host;
         private string current;
         private string placeholder;
         private bool syncing;
         public bool Controlled { get; set; }
         public event Action<string> ValueRequested;
 
-        private TextControl(TextField host)
+        private TextControl(UnityEngine.UIElements.TextField host)
         {
             this.host = host ?? throw new ArgumentNullException(nameof(host));
             current = host.value ?? "";
@@ -37,7 +37,7 @@ namespace FullStackDS
             });
         }
 
-        public static TextControl Attach(TextField host) => new TextControl(host);
+        public static TextControl Attach(UnityEngine.UIElements.TextField host) => new TextControl(host);
 
         public string Value
         {

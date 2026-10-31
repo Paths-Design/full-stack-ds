@@ -182,7 +182,7 @@ describe("Unity support boundary", () => {
     // Live boundary: a non-boolean value model on an allowlisted component is unadjudicated, not silently pending.
     const contract = load("Switch");
     contract.formControl!.valueModel = "string" as never;
-    expect(() => admitContract(contract, { admitted: true })).toThrow(/UNITY_BOUNDARY_UNADJUDICATED: Switch .*contract:\/formControl\/valueModel \(rule form-control\)/);
+    expect(() => admitContract(contract, { admitted: true })).toThrow(/UNITY_BOUNDARY_UNCLASSIFIED: Switch: contract:\/formControl\/valueModel/);
   });
 
   it("valuePattern filters string leaves by regular expression and never matches non-strings", () => {

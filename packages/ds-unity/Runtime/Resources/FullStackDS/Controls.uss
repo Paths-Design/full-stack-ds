@@ -100,6 +100,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #497f21;
     --fsds-semantic-color-foreground-accent: #d92d2e;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #d92d2e;
@@ -254,6 +255,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #5b973c;
     --fsds-semantic-color-foreground-accent: #e55b5a;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #e55b5a;
@@ -331,6 +333,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #557d1b;
     --fsds-semantic-color-foreground-accent: #755600;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #755600;
@@ -410,6 +413,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #69952c;
     --fsds-semantic-color-foreground-accent: #d39500;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #d39500;
@@ -477,6 +481,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #497f21;
     --fsds-semantic-color-foreground-accent: #034fd6;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #034fd6;
@@ -559,6 +564,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #5b973c;
     --fsds-semantic-color-foreground-accent: #0089fe;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #0089fe;
@@ -626,6 +632,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #497f21;
     --fsds-semantic-color-foreground-accent: #d92d2e;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #d92d2e;
@@ -705,6 +712,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #5b973c;
     --fsds-semantic-color-foreground-accent: #e55b5a;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #e55b5a;
@@ -772,6 +780,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #247e7e;
     --fsds-semantic-color-foreground-accent: #4548d0;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #4548d0;
@@ -851,6 +860,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #249797;
     --fsds-semantic-color-foreground-accent: #797dec;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #797dec;
@@ -918,6 +928,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #0c8258;
     --fsds-semantic-color-foreground-accent: #005134;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #005134;
@@ -997,6 +1008,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #0f9c6a;
     --fsds-semantic-color-foreground-accent: #0f9c6a;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #0f9c6a;
@@ -1065,6 +1077,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #0c8258;
     --fsds-semantic-color-foreground-accent: #3a6614;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #0a6847;
@@ -1145,6 +1158,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #0f9c6a;
     --fsds-semantic-color-foreground-accent: #0f9c6a;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #0f9c6a;
@@ -1212,6 +1226,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #497f21;
     --fsds-semantic-color-foreground-accent: #07637f;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #07637f;
@@ -1291,6 +1306,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #5b973c;
     --fsds-semantic-color-foreground-accent: #1a94ba;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #3eacd2;
@@ -1358,6 +1374,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #474647;
     --fsds-semantic-color-feedback-foreground-success-default: #474647;
     --fsds-semantic-color-foreground-accent: #474647;
+    --fsds-semantic-color-foreground-danger: #474647;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #474647;
@@ -1440,6 +1457,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #a0a0a1;
     --fsds-semantic-color-feedback-foreground-success-default: #a0a0a1;
     --fsds-semantic-color-foreground-accent: #a0a0a1;
+    --fsds-semantic-color-foreground-danger: #a0a0a1;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #a0a0a1;
@@ -1507,6 +1525,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d92d2e;
     --fsds-semantic-color-feedback-foreground-success-default: #497f21;
     --fsds-semantic-color-foreground-accent: #8b4b00;
+    --fsds-semantic-color-foreground-danger: #d92d2e;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #8b4b00;
@@ -1586,6 +1605,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e55b5a;
     --fsds-semantic-color-feedback-foreground-success-default: #5b973c;
     --fsds-semantic-color-foreground-accent: #ec8802;
+    --fsds-semantic-color-foreground-danger: #e55b5a;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #ec8802;
@@ -1653,6 +1673,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #d81e73;
     --fsds-semantic-color-feedback-foreground-success-default: #497f21;
     --fsds-semantic-color-foreground-accent: #446416;
+    --fsds-semantic-color-foreground-danger: #d81e73;
     --fsds-semantic-color-foreground-disabled: #727272;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #446416;
@@ -1732,6 +1753,7 @@
     --fsds-semantic-color-feedback-foreground-danger-default: #e4558e;
     --fsds-semantic-color-feedback-foreground-success-default: #5b973c;
     --fsds-semantic-color-foreground-accent: #82ae47;
+    --fsds-semantic-color-foreground-danger: #e4558e;
     --fsds-semantic-color-foreground-disabled: #888889;
     --fsds-semantic-color-foreground-inverse: #fafafa;
     --fsds-semantic-color-foreground-link: #82ae47;
@@ -5362,4 +5384,124 @@
     border-color: var(--fsds-input-color-border-disabled, #b8b8b8);
     color: var(--fsds-input-color-text-disabled, #727272);
     opacity: var(--fsds-input-opacity-disabled, 0.5);
+}
+
+/* TextField (.text-field) */
+.text-field {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+    --fsds-box-model-padding-block-end: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+    --fsds-box-model-padding-inline-end: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+    --fsds-box-model-gap: var(--fsds-semantic-input-size-medium-gap, 8px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
+    --fsds-box-model-max-height: none;
+    --fsds-text-field-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-text-field-field-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+    --fsds-text-field-field-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+    --fsds-text-field-field-min-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
+    --fsds-text-field-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+    --fsds-text-field-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-text-field-color-input-background: var(--fsds-semantic-color-background-primary, #ffffff);
+    --fsds-text-field-color-input-text: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-text-field-color-input-placeholder: var(--fsds-semantic-color-foreground-tertiary, #727272);
+    --fsds-text-field-color-input-border: var(--fsds-semantic-color-border-default, #a0a0a1);
+    --fsds-text-field-color-input-border-hover: var(--fsds-semantic-color-border-hover, #888889);
+    --fsds-text-field-color-input-background-disabled: var(--fsds-semantic-interaction-background-disabled, #b8b8b8);
+    --fsds-text-field-color-input-text-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
+    --fsds-text-field-color-input-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
+    --fsds-text-field-color-input-border-error: var(--fsds-semantic-color-status-danger, #d92d2e);
+    --fsds-text-field-color-error: var(--fsds-semantic-color-foreground-danger, #d92d2e);
+    --fsds-text-field-color-supporting-text: var(--fsds-semantic-color-foreground-tertiary, #727272);
+    --fsds-text-field-typography-label-size: var(--fsds-semantic-typography-caption-01, 14px);
+    --fsds-text-field-typography-label-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+    --fsds-text-field-typography-label-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+    --fsds-text-field-typography-field-size: var(--fsds-semantic-typography-body-02, 16px);
+    --fsds-text-field-typography-field-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+    --fsds-text-field-typography-supporting-size: var(--fsds-semantic-typography-caption-01, 14px);
+    --fsds-text-field-typography-supporting-line-height: var(--fsds-semantic-typography-line-height-normal, 1.5);
+    --fsds-text-field-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+    --fsds-text-field-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+    --fsds-text-field-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+    --fsds-text-field-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+    --fsds-text-field-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+    --fsds-text-field-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+}
+
+.text-field {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 4px);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 4px);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 8px);
+    padding-right: var(--fsds-box-model-padding-inline-end, 8px);
+    --fsds-gap: var(--fsds-box-model-gap, 8px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 32px);
+}
+
+.text-field {
+    display: flex;
+    flex-direction: column;
+    --fsds-gap: var(--fsds-text-field-spacing-gap, 8px);
+}
+
+.text-field__label {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--fsds-text-field-typography-label-size, 14px);
+    color: var(--fsds-text-field-color-input-text, #141414);
+}
+
+.text-field__field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: var(--fsds-text-field-color-input-background, #ffffff);
+    border-color: var(--fsds-text-field-color-input-border, #a0a0a1);
+    border-width: var(--fsds-text-field-border-width, 1px);
+    border-radius: var(--fsds-text-field-border-radius, 6px);
+    color: var(--fsds-text-field-color-input-text, #141414);
+    font-size: var(--fsds-text-field-typography-field-size, 16px);
+    min-height: var(--fsds-text-field-field-min-height, 32px);
+    padding-top: var(--fsds-text-field-field-padding-block, 4px);
+    padding-bottom: var(--fsds-text-field-field-padding-block, 4px);
+    padding-left: var(--fsds-text-field-field-padding-inline, 8px);
+    padding-right: var(--fsds-text-field-field-padding-inline, 8px);
+}
+
+.text-field__description {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--fsds-text-field-typography-supporting-size, 14px);
+    color: var(--fsds-text-field-color-supporting-text, #727272);
+}
+
+.text-field__error {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--fsds-text-field-typography-supporting-size, 14px);
+    color: var(--fsds-text-field-color-error, #d92d2e);
+}
+
+.text-field__field:focus {
+    border-color: var(--fsds-text-field-focus-ring-color, #0566fe);
+    border-width: var(--fsds-text-field-focus-ring-width, 2px);
+    border-color: var(--fsds-text-field-focus-ring-color, #0566fe);
+}
+
+.text-field__field:disabled {
+    background-color: var(--fsds-text-field-color-input-background-disabled, #b8b8b8);
+    border-color: var(--fsds-text-field-color-input-border-disabled, #b8b8b8);
+    color: var(--fsds-text-field-color-input-text-disabled, #727272);
+    opacity: var(--fsds-text-field-opacity-disabled, 0.5);
 }

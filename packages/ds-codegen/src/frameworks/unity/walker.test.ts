@@ -294,6 +294,20 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/AriaLabel|public bool Required|public string Name /);
   });
 
+  it("wraps a native text field with named slots for TextField", () => {
+    const contract = loadContractWithSidecars(root, "TextField") as ComponentContract;
+    const fieldIr = buildComponentIR(contract);
+    fieldIr.name = "UnrelatedFieldGroup";
+    const source = createUnityEmitter().emitComponent(fieldIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedFieldGroup : VisualElement");
+    expect(source).toContain("public UnityEngine.UIElements.TextField Field { get; } = new UnityEngine.UIElements.TextField();");
+    expect(source).toContain('LabelSlot.AddToClassList("text-field__label");');
+    expect(source).toContain("public TextControl Control { get; }");
+    expect(source).toContain("Control = TextControl.Attach(Field);");
+    expect(source).toContain("public string Value { get => Control.Value; set => Control.Value = value; }");
+    expect(source).not.toMatch(/AriaLabel|public bool Required|public string Name /);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);
