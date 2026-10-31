@@ -58,3 +58,9 @@ contracts:
   - name: 'spinner-loop'
     type: behavior
     path: 'packages/ds-contracts/components/Spinner/Spinner.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 906bf870b2776097b59867d8565b51c14e65d9d7 plus the float/attach fixes: focused unity codegen + cli seam 246/246 pass, including the MotionLoop lowering from the normalized loop facts (no channels, one repeat rotation loop turning the declared target a full turn, duration/easing/reduced static), the fail-closed rejection of other loop shapes, the walker emitting the target element plus the explicit ReducedMotion input and the MotionLoopControl attach, and the refused variant-carrier/a11y/delay/inline families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. Landing corrections: size/thickness variant conditions proved to be custom-property/descendant-modifier carriers the native carrier projection does not express (refused, acceptance amended before evidence), and the generated easing literals needed the C# float suffix plus a host-first Attach signature."
+    recorded_at: "2026-10-31T20:41:47.000Z"
+    commit_sha: "906bf870b2776097b59867d8565b51c14e65d9d7"
