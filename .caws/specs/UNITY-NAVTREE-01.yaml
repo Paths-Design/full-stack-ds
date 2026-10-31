@@ -54,3 +54,11 @@ contracts:
   - name: 'navtree-nested-nav'
     type: behavior
     path: 'packages/ds-contracts/components/NavTree/NavTree.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 17d603ca7: focused unity codegen + cli seam 233/233 pass, including the Tree lowering predicate from the two polarities of one string prop plus a child-list insertion, the inline child-list content container with the generated compound item class, the Label heading pair with href-guarded presence, NavTreeControl pair toggling and LinkControl activation reuse, the glyph-plan behavior gate and the omitted glyph subtree (icon/iconSize/current-page refused/pending); audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T15:19:44.794Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a nested navigation scaffold with an href-guarded heading for NavTree"
+    exit_code: 0
+    commit_sha: "17d603ca7bf1d77ab5db366245e4b4b3cd340971"
