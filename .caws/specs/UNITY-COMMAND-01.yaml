@@ -60,3 +60,9 @@ evidence:
     evidence_ref: "Codegen and boundary at commit e2a516045f35d46fbab1b360e7069896a81da66f plus the timeout-hardening commit: focused unity codegen + cli seam 245/245 pass, including the Command lowering from the declared dialog surface + open/search channel pair (overlay/dialog/list/input parts, placeholder prop), the early dispatch before the generic surface branches, the walker emitting only the two-channel API plus results host, the runtime-built overlay/dialog/list shell, and the refused filter/empty-state/search-icon/a11y/authored-wrapper families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. Landing corrections: the placeholder refusal had to be reversed into an emitted property ahead of the slots-context refusal, and the command list compound class had to be skipped."
     recorded_at: "2026-10-31T20:07:32.224Z"
     commit_sha: e2a516045f35d46fbab1b360e7069896a81da66f
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "Package on main: 'pnpm run generate -- --target=unity' leaves the generated tree byte-stable; generate:check 55/55; commit e2a516045f35d46fbab1b360e7069896a81da66f carries Command.cs with the two-channel API and Results host plus the CommandControl runtime and the fifty-three-name catalog, and 58c5885fef27b22e240b72d9b9a8a912acf13aca carries the docs byte-stably."
+    recorded_at: "2026-10-31T20:07:34.135Z"
+    artifact_path: packages/ds-unity/Runtime/Components/Command/Command.cs
+    commit_sha: e2a516045f35d46fbab1b360e7069896a81da66f
