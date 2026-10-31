@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.ShowMoreOwnsTheExpansionChannelAndPaintsItsLabel
     exit_code: 0
     commit_sha: eb1b7ebca26f8050f275caf87a0c85c2099812b9
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at eb1b7ebca: packages/ds-unity/README.md admits ShowMore with its expansion attributes, contentContainer slot, label painting/state class and the withheld line-clamp/measurement/localised-message/background facts, and records the 89/89 lane; docs/architecture/unity-target.md records the Expansion dispatcher mode, the clamp-presence selection and the 89/89 lane; docs/current-implementation-snapshot.md records the forty-eighth admitted control with those facts."
+    recorded_at: "2026-10-31T17:05:30.727Z"
+    commit_sha: eb1b7ebca26f8050f275caf87a0c85c2099812b9
