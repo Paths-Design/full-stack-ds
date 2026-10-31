@@ -692,5 +692,48 @@ namespace FullStackDS.Tests
             snippet.As = "samp";
             Assert.That(snippet.ClassListContains("code-snippet--samp"), Is.True);
         }
+        [Test] public void DialogOpensAsABlockingModalAndHonoursDismissalKnobs()
+        {
+            var dialog = Mount(new FullStackDS.Dialog());
+            dialog.contentContainer.Add(new UnityEngine.UIElements.Label("Settings"));
+            int changes = 0;
+            dialog.RegisterValueChangedCallback(_ => changes++);
+            Assert.That(dialog.Open, Is.False);
+            Assert.That(dialog.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            dialog.Open = true;
+            Assert.That(dialog.Open, Is.True);
+            Assert.That(dialog.Content.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(dialog.ClassListContains("is-open"), Is.True);
+            Assert.That(changes, Is.EqualTo(1));
+            Key(dialog, KeyCode.Escape);
+            Assert.That(dialog.Open, Is.False);
+            Assert.That(dialog.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            dialog.Open = true;
+            using (var evt = PointerDownEvent.GetPooled()) { evt.target = dialog.Backdrop; dialog.Backdrop.SendEvent(evt); }
+            Assert.That(dialog.Open, Is.False);
+            dialog.Open = true;
+            Submit(dialog.CloseButton);
+            Assert.That(dialog.Open, Is.False);
+            dialog.Dismissible = false;
+            Assert.That(dialog.CloseButton.style.display.value, Is.EqualTo(DisplayStyle.None));
+            dialog.Dismissible = true;
+            dialog.CloseOnEscape = false;
+            dialog.Open = true;
+            Key(dialog, KeyCode.Escape);
+            Assert.That(dialog.Open, Is.True);
+            dialog.CloseOnBackdropClick = false;
+            using (var evt = PointerDownEvent.GetPooled()) { evt.target = dialog.Backdrop; dialog.Backdrop.SendEvent(evt); }
+            Assert.That(dialog.Open, Is.True);
+            dialog.Open = false;
+            dialog.Controlled = true;
+            bool? requested = null;
+            dialog.ValueRequested += next => requested = next;
+            dialog.Open = true;
+            Submit(dialog.CloseButton);
+            Assert.That(dialog.Open, Is.True);
+            Assert.That(requested, Is.False);
+            foreach (var prop in new[] { "AriaLabel", "InitialFocus", "ReturnFocus" })
+                Assert.That(typeof(FullStackDS.Dialog).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

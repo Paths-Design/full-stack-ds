@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction";
+export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -71,6 +71,20 @@ export interface ItemGroupLowering extends LoweringBase {
   operation: string;
   multiple: boolean;
   focus: ItemGroupFocus;
+}
+/**
+ * A blocking modal surface: a persistent, centered dialog panel that owns an
+ * open channel, a backdrop overlay and a close trigger. The runtime portals the
+ * host to the panel root, traps focus while open, and honours the declared
+ * dismissal triggers through generated knobs.
+ */
+export interface ModalLowering extends LoweringBase {
+  behavior: "Modal";
+  trigger: PartIR;
+  content: PartIR;
+  overlay?: PartIR;
+  /** The trigger's presence prop, lowered to a generated Dismissible flag. */
+  dismissibleProp?: string;
 }
 export interface AnchoredSurfaceLowering {
   behavior: "AnchoredSurface";
@@ -124,12 +138,12 @@ export interface PassiveLowering {
   /** A declared string prop the text-host root paints through `TextElement.text`. */
   textProp?: string;
 }
-export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering;
+export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering;
 export type UnityLowering = PassiveLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
-  return lowering.behavior === "BooleanControl" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure";
+  return lowering.behavior === "BooleanControl" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure" || lowering.behavior === "Modal";
 }
 
 /**
@@ -301,6 +315,29 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
         openOnFocus: ir.surface.openTriggers.includes("focus"),
         closeOnPointerLeave: ir.surface.dismissal.includes("pointer-leave"),
         contentFocusable: false,
+      };
+    }
+    const modalSurface = ir.surface.kind === "dialog" && ir.surface.modality === "blocking" &&
+      ir.surface.presence === "persistent" && ir.surface.content?.interactive === true &&
+      ir.surface.positioning?.strategy === "centered" &&
+      ir.interaction?.triggers.length === 1 && ir.interaction.triggers[0]!.operation === "close" &&
+      ir.surface.dismissal.every(dismissal => ["escape", "outside-click", "close-button"].includes(dismissal));
+    if (modalSurface) {
+      if (focus !== undefined && focus !== "none" && focus !== "auto" && focus !== "trap") refuseFocus("Modal");
+      const content = ir.surface.content!;
+      const trigger = ir.interaction!.triggers[0]!.part;
+      const triggerNode = findNode(ir.dom, trigger.name);
+      const dismissibleProp = triggerNode?.ifProp !== undefined && !triggerNode.ifNegated && propIsBoolean(ir, triggerNode.ifProp) ? triggerNode.ifProp : undefined;
+      const overlay = ir.parts.find(part => part.details?.role === "overlay");
+      const channel = ir.interaction!.channel;
+      return {
+        behavior: "Modal",
+        channel,
+        stateClass: `is-${channel.valueProp}`,
+        trigger,
+        content: content.part,
+        ...(overlay === undefined ? {} : { overlay }),
+        ...(dismissibleProp === undefined ? {} : { dismissibleProp }),
       };
     }
     if (!isPartAnchoredSurface(ir.surface) || ir.surface.modality !== "non-blocking" ||

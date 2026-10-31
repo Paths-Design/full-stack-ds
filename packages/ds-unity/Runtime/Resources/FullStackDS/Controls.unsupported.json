@@ -2451,6 +2451,318 @@
       "reason": "uss-property"
     },
     {
+      "component": "Dialog",
+      "sourceKey": ".dialog--full .dialog__modal",
+      "part": "modal",
+      "property": "height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--full .dialog__modal",
+      "part": "modal",
+      "property": "max-height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--full .dialog__modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "100vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--full .dialog__modal",
+      "part": "modal",
+      "property": "width",
+      "value": "100vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--lg .dialog__modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--sm .dialog__modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--xl .dialog__modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "95vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog:has(> .dialog__modal[aria-modal=\"false\"]) > .dialog__backdrop",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "backdrop",
+      "part": "backdrop",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "backdrop",
+      "part": "backdrop",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "body",
+      "part": "body",
+      "property": "overflow-wrap",
+      "value": "anywhere",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "body",
+      "part": "body",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:canary",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:corporate",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:default",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:developer",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:fintech",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:forest",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:marketplace",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:monochrome",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:quickserve",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:streaming",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "closeButton",
+      "part": "closeButton",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "modal",
+      "part": "modal",
+      "property": "box-shadow",
+      "value": "0px 12px 16px #0000000f, 0px 25px 50px #00000026",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "modal",
+      "part": "modal",
+      "property": "max-height",
+      "value": "90dvh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "modal",
+      "part": "modal",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "position",
+      "value": "fixed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "z-index",
+      "value": "1000",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "title",
+      "part": "title",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.elevation",
+      "value": "0px 12px 16px #0000000f, 0px 25px 50px #00000026",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.full.height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.full.width",
+      "value": "100vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.lg.maxWidth",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.md.maxWidth",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.sm.maxWidth",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.xl.maxWidth",
+      "value": "95vw",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Divider",
       "sourceKey": "--vertical",
       "part": "root",

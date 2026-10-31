@@ -201,7 +201,8 @@
         "Details",
         "Progress",
         "Chip",
-        "CodeSnippet"
+        "CodeSnippet",
+        "Dialog"
       ]
     },
     {

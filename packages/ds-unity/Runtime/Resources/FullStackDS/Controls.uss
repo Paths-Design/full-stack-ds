@@ -119,6 +119,7 @@
     --fsds-semantic-color-foreground-syntax-string: #900909;
     --fsds-semantic-color-foreground-syntax-tag: #900909;
     --fsds-semantic-color-foreground-tertiary: #727272;
+    --fsds-semantic-color-overlay-scrim: rgba(0, 0, 0, 0.4);
     --fsds-semantic-color-status-danger: #d92d2e;
     --fsds-semantic-color-status-info: #0566fe;
     --fsds-semantic-color-status-success: #497f21;
@@ -165,6 +166,7 @@
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-control-radius-pill: 9999px;
+    --fsds-semantic-shape-radius-large: 16px;
     --fsds-semantic-shape-radius-medium: 8px;
     --fsds-semantic-shape-radius-small: 4px;
     --fsds-semantic-spacing-gap-grid-small: 8px;
@@ -345,6 +347,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 10px;
+    --fsds-semantic-shape-radius-large: 16px;
     --fsds-semantic-shape-radius-medium: 32px;
     --fsds-semantic-shape-radius-small: 4px;
     --fsds-semantic-spacing-gap-grid-small: 12px;
@@ -481,6 +484,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.08;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 4px;
+    --fsds-semantic-shape-radius-large: 8px;
     --fsds-semantic-shape-radius-medium: 8px;
     --fsds-semantic-shape-radius-small: 4px;
     --fsds-semantic-spacing-gap-grid-small: 4px;
@@ -620,6 +624,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.08;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 8px;
+    --fsds-semantic-shape-radius-large: 16px;
     --fsds-semantic-shape-radius-medium: 8px;
     --fsds-semantic-shape-radius-small: 4px;
     --fsds-semantic-spacing-gap-grid-small: 8px;
@@ -756,6 +761,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.12;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
+    --fsds-semantic-shape-radius-large: 8px;
     --fsds-semantic-shape-radius-medium: 4px;
     --fsds-semantic-shape-radius-small: 2px;
     --fsds-semantic-spacing-gap-grid-small: 4px;
@@ -892,6 +898,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.08;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
+    --fsds-semantic-shape-radius-large: 8px;
     --fsds-semantic-shape-radius-medium: 8px;
     --fsds-semantic-shape-radius-small: 2px;
     --fsds-semantic-spacing-gap-grid-small: 4px;
@@ -1029,6 +1036,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.08;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 12px;
+    --fsds-semantic-shape-radius-large: 16px;
     --fsds-semantic-shape-radius-medium: 16px;
     --fsds-semantic-shape-radius-small: 8px;
     --fsds-semantic-spacing-gap-grid-small: 12px;
@@ -1166,6 +1174,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 4px;
+    --fsds-semantic-shape-radius-large: 32px;
     --fsds-semantic-shape-radius-medium: 16px;
     --fsds-semantic-shape-radius-small: 8px;
     --fsds-semantic-spacing-gap-grid-small: 2px;
@@ -1302,6 +1311,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 0px;
+    --fsds-semantic-shape-radius-large: 4px;
     --fsds-semantic-shape-radius-medium: 4px;
     --fsds-semantic-shape-radius-small: 2px;
     --fsds-semantic-spacing-gap-grid-small: 2px;
@@ -1441,6 +1451,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 12px;
+    --fsds-semantic-shape-radius-large: 32px;
     --fsds-semantic-shape-radius-medium: 32px;
     --fsds-semantic-shape-radius-small: 16px;
     --fsds-semantic-spacing-gap-grid-small: 12px;
@@ -1577,6 +1588,7 @@
     --fsds-semantic-interaction-state-layer-selected: 0.16;
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 8px;
+    --fsds-semantic-shape-radius-large: 32px;
     --fsds-semantic-shape-radius-medium: 16px;
     --fsds-semantic-shape-radius-small: 8px;
     --fsds-semantic-spacing-gap-grid-small: 4px;
@@ -4839,4 +4851,160 @@
 .code-snippet.code-snippet--samp {
     background-color: rgba(0, 0, 0, 0);
     border-color: rgba(0, 0, 0, 0);
+}
+
+/* Dialog (.dialog) */
+.dialog {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-block-end: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-padding-inline-end: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-gap: var(--fsds-semantic-surface-size-gap, 8px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: var(--fsds-semantic-surface-size-min-width, 64px);
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-dialog-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+    --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-dialog-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+    --fsds-dialog-size-radius: var(--fsds-semantic-shape-radius-large, 16px);
+    --fsds-dialog-size-sm-width: 400px;
+    --fsds-dialog-size-md-width: 500px;
+    --fsds-dialog-size-lg-width: 700px;
+    --fsds-dialog-size-xl-width: 900px;
+    --fsds-dialog-size-close-button-size: var(--fsds-core-spacing-size-08, 32px);
+    --fsds-dialog-spacing-header-padding-top: var(--fsds-core-spacing-size-06, 16px);
+    --fsds-dialog-spacing-body-padding-right: var(--fsds-core-spacing-size-07, 24px);
+    --fsds-dialog-spacing-footer-gap: var(--fsds-core-spacing-size-03, 4px);
+    --fsds-dialog-typography-title-font-size: var(--fsds-semantic-typography-heading-04, 18px);
+    --fsds-dialog-typography-title-font-weight: var(--fsds-semantic-typography-font-weight-bold, 700);
+    --fsds-dialog-typography-title-line-height: var(--fsds-semantic-typography-line-height-heading, 1);
+}
+
+.dialog {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 16px);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 16px);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 16px);
+    padding-right: var(--fsds-box-model-padding-inline-end, 16px);
+    --fsds-gap: var(--fsds-box-model-gap, 8px);
+    min-width: var(--fsds-box-model-min-width, 64px);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.dialog {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog__backdrop {
+    position: absolute;
+    --fsds-dialog-color-background: var(--fsds-semantic-color-overlay-scrim, rgba(0, 0, 0, 0.4));
+}
+
+.dialog__modal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--fsds-dialog-color-background, #ffffff);
+    color: var(--fsds-dialog-color-foreground, #141414);
+    border-color: var(--fsds-dialog-color-border, #d0d0d0);
+    border-width: 1px;
+    border-radius: var(--fsds-dialog-size-radius, 16px);
+    width: var(--fsds-dialog-size-md-width, 500px);
+    overflow: hidden;
+    min-width: 0;
+}
+
+.dialog__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
+    padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+    padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
+    padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
+    border-bottom-color: var(--fsds-dialog-color-border, #d0d0d0);
+    border-bottom-width: 1px;
+    flex-shrink: 0;
+}
+
+.dialog__title {
+    margin: 0;
+    font-size: var(--fsds-dialog-typography-title-font-size, 18px);
+    -unity-font-style: bold;
+    color: var(--fsds-dialog-color-foreground, #141414);
+}
+
+.dialog__body {
+    flex: 1 1 auto;
+    padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
+    padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+    padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
+    padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
+    --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-secondary, #474647);
+    min-width: 0;
+    min-height: 0;
+}
+
+.dialog__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    --fsds-gap: var(--fsds-dialog-spacing-footer-gap, 4px);
+    padding-top: var(--fsds-dialog-spacing-header-padding-top, 16px);
+    padding-right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+    padding-bottom: var(--fsds-dialog-spacing-header-padding-top, 16px);
+    padding-left: var(--fsds-dialog-spacing-body-padding-right, 24px);
+    border-top-color: var(--fsds-dialog-color-border, #d0d0d0);
+    border-top-width: 1px;
+    flex-shrink: 0;
+}
+
+.dialog__closeButton {
+    position: absolute;
+    top: var(--fsds-dialog-spacing-header-padding-top, 16px);
+    right: var(--fsds-dialog-spacing-body-padding-right, 24px);
+    width: var(--fsds-dialog-size-close-button-size, 32px);
+    height: var(--fsds-dialog-size-close-button-size, 32px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-radius: 9999px;
+    --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-secondary, #474647);
+}
+
+.dialog__closeButton:hover {
+    --fsds-dialog-color-background: var(--fsds-semantic-color-background-hover, #f7f7f7);
+}
+
+.dialog--sm .dialog__modal {
+    width: var(--fsds-dialog-size-sm-width, 400px);
+}
+
+.dialog--lg .dialog__modal {
+    width: var(--fsds-dialog-size-lg-width, 700px);
+}
+
+.dialog--xl .dialog__modal {
+    width: var(--fsds-dialog-size-xl-width, 900px);
+}
+
+.dialog--full .dialog__modal {
+    border-radius: 0;
 }

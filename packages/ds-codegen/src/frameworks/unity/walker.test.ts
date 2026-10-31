@@ -252,6 +252,22 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/AriaLabel|AriaExpanded|AriaPressed/);
   });
 
+  it("attaches a blocking modal surface and renders its content panel for Dialog", () => {
+    const contract = loadContractWithSidecars(root, "Dialog") as ComponentContract;
+    const dialogIr = buildComponentIR(contract);
+    dialogIr.name = "UnrelatedDialog";
+    const source = createUnityEmitter().emitComponent(dialogIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedDialog : VisualElement");
+    expect(source).toContain("public ModalSurface Surface { get; }");
+    expect(source).toContain("ModalSurface.Attach(this, content: Modal, overlay: Backdrop, trigger: CloseButton, stateClass: \"is-open\");");
+    expect(source).toContain("public override VisualElement contentContainer => Body;");
+    expect(source).toContain("public VisualElement Content => Modal;");
+    expect(source).toContain("public bool Dismissible { get => Surface.Dismissible; set => Surface.Dismissible = value; }");
+    expect(source).toContain("public bool CloseOnBackdropClick { get => Surface.CloseOnOverlayClick; set => Surface.CloseOnOverlayClick = value; }");
+    expect(source).toContain("public bool CloseOnEscape { get => Surface.CloseOnEscape; set => Surface.CloseOnEscape = value; }");
+    expect(source).not.toMatch(/AriaLabel|InitialFocus|ReturnFocus|public bool Modal /);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

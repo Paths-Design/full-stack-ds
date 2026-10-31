@@ -151,7 +151,11 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     node.ifProp === interaction.channel.valueProp && !node.ifNegated && !node.ifSlot;
   const progressGuard = ctx.lowering.behavior === "Progress" && ctx.lowering.value !== undefined &&
     node.part === ctx.lowering.value.part.name && node.ifProp === ctx.lowering.value.presenceProp && !node.ifNegated && !node.ifSlot;
-  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+  const modalGuard = ctx.lowering.behavior === "Modal" &&
+    ((ctx.lowering.overlay !== undefined && node.part === ctx.lowering.overlay.name) ||
+      (ctx.lowering.dismissibleProp !== undefined && node.part === ctx.lowering.trigger.name)) &&
+    node.ifProp === (node.part === ctx.lowering.overlay?.name ? ctx.lowering.channel.valueProp : ctx.lowering.dismissibleProp) && !node.ifNegated && !node.ifSlot;
+  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
 }
 
 /**
@@ -235,10 +239,21 @@ function insertionHost(ctx: Context, cls: ClassPlan, parent: ElementPlan, holes:
 }
 
 function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: DomNodeIR[], holes: { count: number }): void {
-  // A disclosure's content part is owned by the attached behavior, so it is
-  // rendered in the root class rather than composed as a sub-element class.
+  // A disclosure's content part, and every part inside a modal's content
+  // panel, is owned by the attached behavior, so it renders in the root class
+  // rather than being composed as a sub-element class.
   const behaviorContent = ctx.lowering.behavior === "Disclosure" ? ctx.lowering.content.name : undefined;
-  const isCompound = (node: DomNodeIR): boolean => !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent;
+  const ownedParts = new Set<string>();
+  if (ctx.lowering.behavior === "Modal") {
+    const contentNode = findNode(ctx.ir.dom, ctx.lowering.content.name);
+    const collect = (node: DomNodeIR | undefined): void => {
+      if (!node) return;
+      if (node.part !== undefined) ownedParts.add(node.part);
+      node.children.forEach(collect);
+    };
+    collect(contentNode);
+  }
+  const isCompound = (node: DomNodeIR): boolean => !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -391,6 +406,15 @@ function planClasses(ctx: Context): ClassPlan[] {
   }
   for (const part of ir.compoundParts) {
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
+    if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
+      const contentNode = findNode(ir.dom, ctx.lowering.content.name);
+      const contains = (node: DomNodeIR | undefined): boolean => {
+        if (!node) return false;
+        if (node.part === part.name) return true;
+        return node.children.some(contains);
+      };
+      return contains(contentNode);
+    })()) continue;
     const node = findNode(ir.dom, part.name);
     const cls = newClass(identifier(`${name}${pascal(part.name)}`), compoundBase(ctx, part, node), false, identityFor(ctx, part.name), part);
     if (node) {
@@ -412,7 +436,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   return classes;
 }
 
-const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure", Progress: "Progress" } as const;
+const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure", Progress: "Progress", Modal: "Surface" } as const;
 
 interface RootApi {
   members: string[];
@@ -635,7 +659,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const behavior = behaviorMember[lowering.behavior];
   // The runtime control type and the member name differ for the disclosure
   // (the member keeps the behavior name; the class is DisclosureControl).
-  const behaviorType = lowering.behavior === "Disclosure" ? "DisclosureControl" : lowering.behavior;
+  const behaviorType = lowering.behavior === "Disclosure" ? "DisclosureControl" : lowering.behavior === "Modal" ? "ModalSurface" : lowering.behavior;
   const members: string[] = [`        public ${behaviorType} ${behavior} { get; }`];
   const attach: string[] = [];
   const defaults: string[] = [];
@@ -663,6 +687,32 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
     if (!content) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its disclosure content ${lowering.content.name} outside the root class`);
     members.push(`        public ${trigger.type} Trigger => ${trigger.ref};`);
     attach.push(`${behavior} = DisclosureControl.Attach(this, summary: ${trigger.ref}, content: ${content.ref}, stateClass: ${quote(lowering.stateClass)});`);
+  } else if (lowering.behavior === "Modal") {
+    const trigger = root.members.find(m => m.part === lowering.trigger.name);
+    const content = root.members.find(m => m.part === lowering.content.name);
+    const overlay = lowering.overlay === undefined ? undefined : root.members.find(m => m.part === lowering.overlay!.name);
+    if (!trigger || trigger.type !== NATIVE_BUTTON) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its modal trigger ${lowering.trigger.name} as no native button`);
+    if (!content) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its modal content ${lowering.content.name} outside the root class`);
+    if (lowering.overlay !== undefined && !overlay) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its modal overlay ${lowering.overlay.name} outside the root class`);
+    members.push(`        public VisualElement Content => ${content.ref};`);
+    attach.push(`${behavior} = ModalSurface.Attach(this, content: ${content.ref}, overlay: ${overlay ? overlay.ref : "null"}, trigger: ${trigger.ref}, stateClass: ${quote(lowering.stateClass)});`);
+    if (lowering.dismissibleProp !== undefined) {
+      const dismissible = identifier(pascal(lowering.dismissibleProp));
+      members.push(`        [UxmlAttribute] public bool ${dismissible} { get => ${behavior}.Dismissible; set => ${behavior}.Dismissible = value; }`);
+      const literal = defaultLiteral(ir, ir.styledProps.find(p => p.name === lowering.dismissibleProp)!);
+      if (literal !== undefined) defaults.push(`${dismissible} = ${literal};`);
+    }
+    for (const trigger of ir.behavior.normalizedDismissalTriggers) {
+      for (const propName of trigger.enabledByProps ?? []) {
+        if (propName === lowering.dismissibleProp) continue;
+        const prop = ir.styledProps.find(candidate => candidate.name === propName);
+        if (prop === undefined) continue;
+        const name = identifier(pascal(propName));
+        const knob = `${behavior}.CloseOn${pascal(trigger.event)}`;
+        members.push(`        [UxmlAttribute] public bool ${name} { get => ${knob}; set => ${knob} = value; }`);
+        defaults.push(`${name} = ${trigger.defaultEnabled};`);
+      }
+    }
   } else if (lowering.behavior === "ItemGroup") {
     const { focus } = lowering;
     attach.push(`${behavior} = ItemGroup.Attach(this, triggerClass: ${quote(`${ctx.prefix}__${lowering.trigger.name}`)}, contentClass: ${quote(`${ctx.prefix}__${lowering.content.name}`)}, operation: ${quote(lowering.operation)}, stateClass: ${quote(lowering.stateClass)}, multiple: ${lowering.multiple}, focus: ${quote(focus.strategy)}, orientation: ${quote(focus.orientation)}, wrap: ${focus.wrap});`);
@@ -708,8 +758,12 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
     if (literal !== undefined && typeof literal === "string") defaults.push(`${name} = ${literal};`);
   }
   const disabled = disabledProp(ir);
-  const dismissal = lowering.behavior === "AnchoredSurface" ? ir.behavior.normalizedDismissalTriggers.filter(t => t.enabledByProp) : [];
-  const declaredDismissal = lowering.behavior === "AnchoredSurface" ? resolveAnchoredSurfacePolicy(ir.surface!).publicDismissalProps.map(d => d.prop) : [];
+  const dismissal = lowering.behavior === "AnchoredSurface" || lowering.behavior === "Modal" ? ir.behavior.normalizedDismissalTriggers.filter(t => t.enabledByProp) : [];
+  const declaredDismissal = lowering.behavior === "AnchoredSurface"
+    ? resolveAnchoredSurfacePolicy(ir.surface!).publicDismissalProps.map(d => d.prop)
+    : lowering.behavior === "Modal"
+      ? ir.behavior.normalizedDismissalTriggers.flatMap(trigger => [...(trigger.enabledByProp === undefined ? [] : [trigger.enabledByProp]), ...(trigger.enabledByProps ?? [])])
+      : [];
   const placement = lowering.behavior === "AnchoredSurface" ? ir.surface?.positioning?.placementProp : undefined;
   const channelProps = new Set([channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp]);
   const carriers = ctx.projection.carrierAxes;
