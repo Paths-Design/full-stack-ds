@@ -78,3 +78,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Checkbox/Checkbox.cs
     commit_sha: "72833ffb7bbce3e60d5110c92ca70a5f600ea9e3"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source e05ef4de9 (sourceDirty false): 54/54 passed, zero failed/skipped (test-run start 2026-10-31 09:06:44Z; resultsSha256 ca139ceb19247864006b62093c6b0a820ed74b7a98de65a4ddf3b2b4b97d6550). Added cases exercise label-host Checkbox activation via its native control and label click, disabled suppression, the absent indeterminate/size API, and ToggleSwitch root activation exactly once per activation. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T09:07:37.958Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.ToggleSwitchRootIsItsOwnTriggerAndTogglesOncePerActivation
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: e05ef4de9da34ccd6fa8fe64ad0410d31acf2d86
