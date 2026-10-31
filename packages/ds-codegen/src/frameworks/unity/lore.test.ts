@@ -39,6 +39,7 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   select: "InteractionIR trigger operation enum",
   selection: "ContractStateDimension.category enum",
   root: "ContractPartDetails.role enum value naming the component root part (compared on details.role)",
+  trigger: "ContractPartDetails.role enum value naming an interactive trigger part (composed-action dispatch predicate)",
   value: "HTML form field attribute the boundary's propRoles assigns to participating forms",
   row: "CSS flex-direction keyword (uss.ts display lowering and flex-direction vocabulary)",
   overflow: "CSS property name keyed in the uss.ts CSS-to-USS property table",

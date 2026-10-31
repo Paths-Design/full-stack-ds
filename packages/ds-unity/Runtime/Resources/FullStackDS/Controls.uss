@@ -63,6 +63,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #95dafb;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -207,6 +209,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #002782;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -283,6 +287,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #fcca30;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -354,6 +360,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #412e00;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -415,6 +423,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #95dafb;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -489,6 +499,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #002782;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -550,6 +562,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #fac2c2;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -621,6 +635,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #6a0000;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -682,6 +698,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #cbcdfb;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -753,6 +771,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #26247a;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -814,6 +834,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #8ce1be;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -885,6 +907,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #00391e;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -946,6 +970,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #ccf3e2;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -1018,6 +1044,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #00230a;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -1080,6 +1108,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #96daf3;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -1151,6 +1181,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #00354b;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -1212,6 +1244,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #d0d0d0;
     --fsds-semantic-color-background-danger-softer: #f7f7f7;
     --fsds-semantic-color-background-danger-strong: #474647;
@@ -1286,6 +1320,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #313131;
     --fsds-semantic-color-background-danger-softer: #1d1d1d;
     --fsds-semantic-color-background-danger-strong: #888889;
@@ -1347,6 +1383,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #fdc67f;
     --fsds-semantic-color-background-danger-softer: #fee4e4;
     --fsds-semantic-color-background-danger-strong: #b31b1b;
@@ -1418,6 +1456,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #4b2900;
     --fsds-semantic-color-background-danger-softer: #440000;
     --fsds-semantic-color-background-danger-strong: #d92d2e;
@@ -1479,6 +1519,8 @@
     --fsds-semantic-color-action-background-secondary-default: #fafafa;
     --fsds-semantic-color-action-background-secondary-disabled: #b8b8b8;
     --fsds-semantic-color-action-background-secondary-hover: #d0d0d0;
+    --fsds-semantic-color-action-border-secondary-default: #a0a0a1;
+    --fsds-semantic-color-action-foreground-secondary-default: #141414;
     --fsds-semantic-color-background-accent-subtle: #badc83;
     --fsds-semantic-color-background-danger-softer: #fde4ed;
     --fsds-semantic-color-background-danger-strong: #af155c;
@@ -1550,6 +1592,8 @@
     --fsds-semantic-color-action-background-secondary-default: #141414;
     --fsds-semantic-color-action-background-secondary-disabled: #474647;
     --fsds-semantic-color-action-background-secondary-hover: #313131;
+    --fsds-semantic-color-action-border-secondary-default: #5c5b5c;
+    --fsds-semantic-color-action-foreground-secondary-default: #fafafa;
     --fsds-semantic-color-background-accent-subtle: #213700;
     --fsds-semantic-color-background-danger-softer: #430015;
     --fsds-semantic-color-background-danger-strong: #d81e73;
@@ -4598,4 +4642,139 @@
 
 .progress--danger .progress__fill {
     background-color: var(--fsds-progress-color-fill-danger, #d92d2e);
+}
+
+/* Chip (.chip) */
+.chip {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: var(--fsds-semantic-display-size-gap, 4px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-chip-color-background-default: var(--fsds-semantic-color-action-background-secondary-default, #fafafa);
+    --fsds-chip-color-background-hover: var(--fsds-semantic-color-action-background-secondary-hover, #d0d0d0);
+    --fsds-chip-color-foreground-default: var(--fsds-semantic-color-action-foreground-secondary-default, #141414);
+    --fsds-chip-color-border-default: var(--fsds-semantic-color-action-border-secondary-default, #a0a0a1);
+    --fsds-chip-size-padding-horizontal: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-chip-size-padding-vertical: var(--fsds-core-spacing-size-02, 2px);
+    --fsds-chip-size-gap: var(--fsds-core-spacing-size-02, 2px);
+    --fsds-chip-size-radius: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+    --fsds-chip-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+    --fsds-chip-text-size: var(--fsds-semantic-typography-body-04, 12px);
+    --fsds-chip-text-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+    --fsds-chip-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+    --fsds-chip-size-min-height: var(--fsds-core-dimension-action-min-height, 36px);
+    --fsds-chip-color-background-selected: var(--fsds-semantic-color-background-info-subtle, #95dafb);
+    --fsds-chip-color-foreground-selected: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
+    --fsds-chip-color-border-selected: var(--fsds-semantic-color-border-info, #034fd6);
+    --fsds-chip-dismiss-size: var(--fsds-core-spacing-size-05, 12px);
+    --fsds-chip-dismiss-gap: var(--fsds-core-spacing-size-02, 2px);
+}
+
+.chip {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 4px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.chip {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    white-space: nowrap;
+    background-color: var(--fsds-chip-color-background-default, #fafafa);
+    color: var(--fsds-chip-color-foreground-default, #141414);
+    border-color: var(--fsds-chip-color-border-default, #a0a0a1);
+    border-width: var(--fsds-chip-size-border, 1px);
+    padding-top: var(--fsds-chip-size-padding-vertical, 2px);
+    padding-bottom: var(--fsds-chip-size-padding-vertical, 2px);
+    padding-left: var(--fsds-chip-size-padding-horizontal, 8px);
+    padding-right: var(--fsds-chip-size-padding-horizontal, 8px);
+    --fsds-gap: var(--fsds-chip-size-gap, 2px);
+    border-radius: var(--fsds-chip-size-radius, 9999px);
+    min-height: var(--fsds-chip-size-min-height, 36px);
+    font-size: var(--fsds-chip-text-size, 12px);
+}
+
+.chip:hover {
+    background-color: var(--fsds-chip-color-background-hover, #d0d0d0);
+}
+
+.chip__action {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.chip__dismiss {
+    flex: 0 0 auto;
+    margin-left: var(--fsds-chip-dismiss-gap, 2px);
+}
+
+.chip__icon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 2px;
+}
+
+.chip__text {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: var(--fsds-chip-text-size, 12px);
+}
+
+.chip.chip--selected {
+    --fsds-chip-color-background-default: var(--fsds-chip-color-background-selected, #95dafb);
+    --fsds-chip-color-foreground-default: var(--fsds-chip-color-foreground-selected, #013ab0);
+    --fsds-chip-color-border-default: var(--fsds-chip-color-border-selected, #034fd6);
+}
+
+.chip.chip--dismissible {
+    --fsds-chip-size-padding-horizontal: var(--fsds-core-spacing-size-05, 12px);
+}
+
+.chip.chip--small {
+    --fsds-chip-size-padding-vertical: var(--fsds-semantic-glyph-badge-size-sm-padding-y, 2px);
+    --fsds-chip-size-padding-horizontal: var(--fsds-semantic-glyph-badge-size-sm-padding-x, 4px);
+    --fsds-chip-text-size: var(--fsds-semantic-glyph-badge-size-sm-font-size, 10px);
+    --fsds-chip-size-gap: var(--fsds-semantic-glyph-badge-size-sm-gap, 2px);
+    --fsds-chip-size-min-height: var(--fsds-semantic-glyph-badge-size-sm-min-height, 16px);
+}
+
+.chip.chip--medium {
+    --fsds-chip-size-padding-vertical: var(--fsds-semantic-glyph-badge-size-md-padding-y, 2px);
+    --fsds-chip-size-padding-horizontal: var(--fsds-semantic-glyph-badge-size-md-padding-x, 8px);
+    --fsds-chip-text-size: var(--fsds-semantic-glyph-badge-size-md-font-size, 12px);
+    --fsds-chip-size-gap: var(--fsds-semantic-glyph-badge-size-md-gap, 4px);
+    --fsds-chip-size-min-height: var(--fsds-semantic-glyph-badge-size-md-min-height, 24px);
+}
+
+.chip.chip--large {
+    --fsds-chip-size-padding-vertical: var(--fsds-semantic-glyph-badge-size-lg-padding-y, 4px);
+    --fsds-chip-size-padding-horizontal: var(--fsds-semantic-glyph-badge-size-lg-padding-x, 12px);
+    --fsds-chip-text-size: var(--fsds-semantic-glyph-badge-size-lg-font-size, 14px);
+    --fsds-chip-size-gap: var(--fsds-semantic-glyph-badge-size-lg-gap, 4px);
+    --fsds-chip-size-min-height: var(--fsds-semantic-glyph-badge-size-lg-min-height, 32px);
 }
