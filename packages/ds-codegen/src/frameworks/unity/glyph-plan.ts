@@ -9,7 +9,8 @@ export interface UnityGlyphPlan {
 }
 
 /** A passive glyph host is selected by normalized anatomy, never identity. */
-export function unityGlyphPlan(ir: ComponentIR): UnityGlyphPlan | undefined {
+export function unityGlyphPlan(ir: ComponentIR, lowering?: { behavior: string }): UnityGlyphPlan | undefined {
+  if (lowering !== undefined && lowering.behavior !== "Passive") return undefined;
   const entries = collectIconGlyphNodes(ir.dom);
   if (!entries.length) return undefined;
   const fail = (reason: string): never => { throw new Error(`UNITY_UNSUPPORTED_GLYPH: ${ir.name}: ${reason}`); };

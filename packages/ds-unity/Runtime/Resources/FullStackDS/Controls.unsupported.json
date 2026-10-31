@@ -3363,6 +3363,214 @@
       "reason": "uss-property"
     },
     {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__headingLink:focus-visible",
+      "part": "headingLink",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__headingLink:hover",
+      "part": "headingLink",
+      "property": "background-color",
+      "value": "color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, 0.04) * 100%), transparent)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item > *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item > *:focus-visible",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item > *:hover",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item > *[aria-current=\"page\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "border-block-start",
+      "value": "1px solid var(--fsds-nav-tree-color-connector, #d0d0d0)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "content",
+      "value": "\"\"",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "inset-inline-start",
+      "value": "calc(-1 * var(--fsds-nav-tree-size-indent, 16px))",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "position",
+      "value": "absolute",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "top",
+      "value": "50%",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "width",
+      "value": "calc(var(--fsds-nav-tree-size-indent, 16px) - var(--fsds-nav-tree-size-gap-heading, 4px))",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "border-inline-start",
+      "value": "1px solid var(--fsds-nav-tree-color-connector, #d0d0d0)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "bottom",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "content",
+      "value": "\"\"",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "inset-inline-start",
+      "value": "calc(-1 * var(--fsds-nav-tree-size-indent, 16px))",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "position",
+      "value": "absolute",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "top",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item:last-child::before",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "heading",
+      "part": "heading",
+      "property": "letter-spacing",
+      "value": "0.04em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "heading",
+      "part": "heading",
+      "property": "text-transform",
+      "value": "uppercase",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "headingLink",
+      "part": "headingLink",
+      "property": "text-decoration",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "headingLink",
+      "part": "headingLink",
+      "property": "transition-duration",
+      "value": "120ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "headingLink",
+      "part": "headingLink",
+      "property": "transition-property",
+      "value": "background-color, color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
       "component": "Popover",
       "sourceKey": "brand:canary",
       "part": "content",

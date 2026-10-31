@@ -202,6 +202,7 @@
     --fsds-semantic-typography-body-04: 12px;
     --fsds-semantic-typography-body-small-font-size: 14px;
     --fsds-semantic-typography-caption-01: 14px;
+    --fsds-semantic-typography-caption-03: 10px;
     --fsds-semantic-typography-font-style-italic: italic;
     --fsds-semantic-typography-font-weight-bold: 700;
     --fsds-semantic-typography-font-weight-light: 300;
@@ -6292,4 +6293,123 @@
 .avatar.avatar--extra-large {
     width: var(--fsds-avatar-size-extra-large, 48px);
     height: var(--fsds-avatar-size-extra-large, 48px);
+}
+
+/* NavTree (.nav-tree) */
+.nav-tree {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: 0;
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-nav-tree-color-foreground-default: var(--fsds-semantic-color-foreground-secondary, #474647);
+    --fsds-nav-tree-color-foreground-hover: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-nav-tree-color-foreground-current: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-nav-tree-color-foreground-heading: var(--fsds-semantic-color-foreground-secondary, #474647);
+    --fsds-nav-tree-color-foreground-heading-hover: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-nav-tree-color-connector: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+    --fsds-nav-tree-color-outline-focus: var(--fsds-semantic-focus-ring-color, #0566fe);
+    --fsds-nav-tree-size-indent: var(--fsds-core-spacing-size-06, 16px);
+    --fsds-nav-tree-size-margin-group: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-nav-tree-size-padding-block: var(--fsds-core-spacing-size-02, 2px);
+    --fsds-nav-tree-size-padding-inline: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-nav-tree-size-font-size-heading: var(--fsds-semantic-typography-caption-03, 10px);
+    --fsds-nav-tree-size-font-size-item: var(--fsds-semantic-typography-body-03, 14px);
+    --fsds-nav-tree-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-nav-tree-size-gap-heading: var(--fsds-core-spacing-size-03, 4px);
+    --fsds-nav-tree-size-gap-item: var(--fsds-core-spacing-size-01, 1px);
+    --fsds-nav-tree-state-layer-hover: var(--fsds-semantic-interaction-state-layer-hover, 0.04);
+    --fsds-nav-tree-state-layer-selected: var(--fsds-semantic-interaction-state-layer-selected, 0.08);
+}
+
+.nav-tree {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 0);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.nav-tree {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--fsds-nav-tree-size-margin-group, 8px);
+}
+
+.nav-tree__heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    --fsds-gap: var(--fsds-nav-tree-size-gap-heading, 4px);
+    font-size: var(--fsds-nav-tree-size-font-size-heading, 10px);
+    -unity-font-style: bold;
+    color: var(--fsds-nav-tree-color-foreground-heading, #474647);
+}
+
+.nav-tree__icon {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+.nav-tree__headingLink {
+    color: var(--fsds-nav-tree-color-foreground-heading, #474647);
+    padding-top: var(--fsds-nav-tree-size-padding-block, 2px);
+    padding-bottom: var(--fsds-nav-tree-size-padding-block, 2px);
+    padding-left: var(--fsds-nav-tree-size-padding-inline, 8px);
+    padding-right: var(--fsds-nav-tree-size-padding-inline, 8px);
+    border-radius: var(--fsds-nav-tree-size-radius, 6px);
+}
+
+.nav-tree__headingLabel {
+    padding-top: var(--fsds-nav-tree-size-padding-block, 2px);
+    padding-bottom: var(--fsds-nav-tree-size-padding-block, 2px);
+    padding-left: var(--fsds-nav-tree-size-padding-inline, 8px);
+    padding-right: var(--fsds-nav-tree-size-padding-inline, 8px);
+    border-radius: var(--fsds-nav-tree-size-radius, 6px);
+}
+
+.nav-tree__list {
+    display: flex;
+    flex-direction: column;
+    --fsds-gap: var(--fsds-nav-tree-size-gap-item, 1px);
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: var(--fsds-nav-tree-size-indent, 16px);
+    padding-right: 0;
+}
+
+.nav-tree__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    color: var(--fsds-nav-tree-color-foreground-default, #474647);
+    font-size: var(--fsds-nav-tree-size-font-size-item, 14px);
+}
+
+.nav-tree__headingLink:hover {
+    color: var(--fsds-nav-tree-color-foreground-heading-hover, #141414);
+}
+
+.nav-tree__headingLink:focus {
+    border-color: var(--fsds-nav-tree-color-outline-focus, #0566fe);
+    border-width: var(--fsds-semantic-focus-ring-width, 2px);
 }

@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -206,6 +206,21 @@ export interface AvatarLowering {
   imageRef: string;
   imagePart: string;
 }
+/**
+ * A nested navigation scaffold: an href-guarded link/label heading pair plus a
+ * composable child list. NavTreeControl toggles the heading pair and paints its
+ * text; activation is requested through LinkControl. The glyph icon subtree is
+ * omitted (pending the P4 glyph-composition family) and no current-page or
+ * navigation state is modelled.
+ */
+export interface TreeLowering {
+  behavior: "Tree";
+  hrefProp: string;
+  labelProp: string;
+  listPart: string;
+  linkPart: string;
+  labelPart: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -219,7 +234,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -545,6 +560,18 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A nested navigation scaffold: a heading whose link and label are the two
+  // polarities of one string prop, followed by a child-list insertion container.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.behavior.normalizedChannels.length === 0 && ir.dom !== undefined) {
+    const link = ir.dom.children.flatMap(child => child.children).find(node => node.ifProp !== undefined && !node.ifNegated && node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.bindings.href?.kind === "prop");
+    const label = ir.dom.children.flatMap(child => child.children).find(node => node.ifProp !== undefined && node.ifNegated && node.content !== undefined && "kind" in node.content && node.content.kind === "prop");
+    const list = ir.dom.children.find(node => node.part !== undefined && node.children.some(child => child.tag === "children"));
+    if (link !== undefined && label !== undefined && link.ifProp === label.ifProp && list?.part !== undefined &&
+        link.part !== undefined && label.part !== undefined &&
+        link.bindings.href?.kind === "prop" && link.content !== undefined && "kind" in link.content && link.content.kind === "prop") {
+      return { behavior: "Tree", hrefProp: link.ifProp!, labelProp: link.content.prop, listPart: list.part, linkPart: link.part, labelPart: label.part };
+    }
   }
   // A guarded media composition: a referenced Image child bound to a source
   // prop plus a guarded text fallback. Runtime presence toggles both children.
