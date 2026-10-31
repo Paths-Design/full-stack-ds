@@ -79,3 +79,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: "31e37a1acf661511879c886a3bd74a0b3f83bc81"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 31e37a1ac: packages/ds-unity/README.md admits Status with its label content region, carrier axis, the omitted decoration non-claim and the StatusValue naming rule, and records the 61/61 lane; docs/architecture/unity-target.md records the decoration-instance omission and class-member suffix rules and the 61/61 lane; docs/current-implementation-snapshot.md records the twenty-first admitted control with those facts."
+    recorded_at: "2026-10-31T10:52:05.508Z"
+    commit_sha: "31e37a1acf661511879c886a3bd74a0b3f83bc81"
