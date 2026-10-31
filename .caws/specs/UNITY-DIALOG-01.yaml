@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T13:14:23.411Z"
     artifact_path: packages/ds-unity/Runtime/Components/Dialog/Dialog.cs
     commit_sha: "926add4118ff132a8eb91c9c4a9b83436716f3e7"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source cf87eff16 (sourceDirty false): 71/71 passed, zero failed/skipped (test-run start 2026-10-31 13:13:45Z; resultsSha256 742e1df313109de67c0fa7efe300568a68e37157d79ef0f1075642a59212c824). The added case opens and closes through Escape, backdrop and close-button dismissal, checks both dismissal knobs, the guarded close button, controlled requests and the absent ARIA/focus-id API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T13:14:23.958Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.DialogOpensAsABlockingModalAndHonoursDismissalKnobs
+    exit_code: 0
+    commit_sha: cf87eff166a4e39d7e4b031e8a02620027e38d04
