@@ -5,7 +5,8 @@
 //! share, the canonical switch contract, and the negative authoring paths.
 
 use game_pause_menu_gpui::seam::parity::{
-    PARITY_LAYOUT_JSON, ParityLayout, parse_parity_layout, try_load_parity_layout,
+    PARITY_LAYOUT_JSON, ParityLayout, code_two_letters, icon_code, parse_parity_layout,
+    try_load_parity_layout,
 };
 
 fn layout() -> ParityLayout {
@@ -69,6 +70,8 @@ fn tabs_are_four_equal_contiguous_columns() {
         assert_eq!(tab.w, 320.0);
         assert_eq!(tab.label, label);
     }
+    assert_eq!(layout.tab_bar.label_align, "left");
+    assert_eq!(layout.tab_bar.label_inset, 32.0);
 }
 
 #[test]
@@ -201,6 +204,56 @@ fn colours_and_type_resolve_from_the_json_maps() {
     assert!(layout.type_scale.wordmark > 0.0);
     assert!(layout.type_scale.body > 0.0);
     assert!(layout.type_scale.letter_spacing_micro > 0.0);
+}
+
+#[test]
+fn icon_art_is_the_portable_code_tile_language() {
+    let layout = layout();
+    let row = &layout.icon_art.row_tile;
+    assert_eq!(row.size, 16.0);
+    assert_eq!(row.background, "graphite");
+    assert_eq!(row.border, "ruleStrong");
+    assert_eq!(row.border_width, 1.0);
+    assert_eq!(row.radius, 0.0);
+    assert_eq!(row.font_size, 8.0);
+    assert_eq!(row.weight, 800);
+    assert_eq!(row.text, "boneBright");
+    let card = &layout.icon_art.card_tile;
+    assert_eq!(card.size, 40.0);
+    assert_eq!(card.font_size, 12.0);
+    assert_eq!(card.weight, 800);
+    assert_eq!(card.background, "graphite");
+    assert_eq!(card.border, "ruleStrong");
+    assert_eq!(card.radius, 0.0);
+    // The code language pins these exact catalog initials (parity.md).
+    for (catalog, expected) in [
+        ("Info", "IN"),
+        ("Placeholder", "PL"),
+        ("Home", "HO"),
+        ("Baseline", "BL"),
+        ("Alarm", "AL"),
+        ("CircleDot", "CD"),
+        ("ChevronRight", "CR"),
+        ("User", "US"),
+    ] {
+        assert_eq!(icon_code(catalog), expected, "icon code for {catalog}");
+    }
+    // Ability names are single uppercase words: first two letters.
+    for (ability, expected) in [
+        ("THREADING", "TH"),
+        ("OVERCLOCK", "OV"),
+        ("ION DRILL", "IO"),
+        ("RECON PING", "RE"),
+    ] {
+        assert_eq!(code_two_letters(ability), expected, "ability code for {ability}");
+    }
+}
+
+#[test]
+fn a_rounded_icon_tile_is_an_authoring_error() {
+    let broken = mutated("\"radius\": 0,\n      \"fontSize\": 8,", "\"radius\": 4,\n      \"fontSize\": 8,");
+    let error = parse_parity_layout(&broken).expect_err("icon tiles must be square");
+    assert!(error.to_string().contains("square"));
 }
 
 #[test]

@@ -38,6 +38,18 @@ pub(crate) enum Weight {
 }
 
 impl Weight {
+    /// Map a JSON weight number (e.g. `iconArt.rowTile.weight = 800`).
+    pub(crate) fn from_numeric(weight: u32) -> Self {
+        match weight {
+            300 => Weight::Regular,
+            400 => Weight::Regular,
+            500 => Weight::SemiBold,
+            600 => Weight::SemiBold,
+            700 => Weight::Bold,
+            _ => Weight::Heavy,
+        }
+    }
+
     /// The generated `Text` weight variant the lane sets.
     pub(crate) fn variant(self) -> &'static str {
         match self {

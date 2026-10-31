@@ -12,7 +12,7 @@ The lane consumes ONLY the public API of the bounded GPUI package
 Stat** — plus a lane-local data/domain seam and hand-authored plain-gpui regions
 marked `// NOT FSDS: <reason>`.
 
-> Status: **`cargo build` clean (0 warnings), 65 tests pass (default) / 68 with
+> Status: **`cargo build` clean (0 warnings), 67 tests pass (default) / 70 with
 > `--features capture`; all I1–I15 interactions are real code paths; the eight
 > parity capture states are produced at exactly 1280 × 800; all 26 shared
 > colour probes and all measured parity region boxes pass on this lane's
@@ -40,7 +40,7 @@ failure. Any lane source reaching into package internals is a boundary failure.
 ```bash
 # From the lane directory (rust-toolchain.toml pins 1.94.1):
 cargo +1.94.1 build --locked          # clean build, 0 warnings
-cargo +1.94.1 test  --locked          # 65 tests (1 lib + 2 palette + 13 parity + 49 seam)
+cargo +1.94.1 test  --locked          # 67 tests (1 lib + 2 palette + 15 parity + 49 seam)
 cargo +1.94.1 build --features capture
 cargo run                             # opens the 1280x800 pause menu on MAP
 cargo run -- --tab settings           # open a specific tab
@@ -148,6 +148,28 @@ mounted component box and track are exactly 64 × 32 at their slot origin and th
 thumb is 24 × 24; a token-cascade test asserts the resolved track/thumb
 geometry + colours.
 
+### Icon art (portable code tiles)
+
+The first parity montage showed three icon languages: Unity and Godot used their
+admitted `Icon` catalog glyphs while GPUI (no Icon component) drew placeholder
+squares. The authority now pins icon surfaces to portable two-letter code tiles
+(`fixtures/parity-layout.json` `iconArt`, `parity.md` → "Icon art"):
+
+- **Icon-visibility rows** — 16 × 16 `graphite` tile, 1 px `ruleStrong` border,
+  square corners, centred 8 px / 800 `boneBright` code = the pinned fixture
+  catalog initials (`Info→IN`, `Placeholder→PL`, `Home→HO`, `Baseline→BL`,
+  `Alarm→AL`, `CircleDot→CD`, `ChevronRight→CR`, `User→US`).
+- **Ability-card art** — 40 × 40 tile with the same fill/border/corners, centred
+  12 px / 800 `boneBright` code = the first two letters of the ability name
+  (`THREADING→TH`, `OVERCLOCK→OV`, …). The selected-card outline stays signal.
+
+The fixture catalog initials are pinned explicitly in
+`seam::parity::icon_code` (the authority's list is not derivable from the first
+two characters for `Baseline`); ability names use `code_two_letters` (first two
+alphanumeric characters, uppercased). Generated `Icon` remains the realization
+anywhere else a target admits it; on these two parity surfaces the code tile is
+the shared app-authority art, not a package change.
+
 ### DS vs fallback per region
 
 | Region | Realization | Status |
@@ -157,11 +179,11 @@ geometry + colours.
 | Header PAUSED chip | FSDS `Badge` label inside a hand-authored chip rectangle | mixed — Badge has no fixed-size/justify channel |
 | Map panel, field, 60 px grid, corner ticks, field note | hand-authored gpui drawing + FSDS `Text` | NOT FSDS — no Map/Canvas component |
 | Map markers (24 px squares, kind monograms, nav outline) | hand-authored + FSDS-palette `markerColors`/`markerMonograms` | NOT FSDS — no Icon component |
-| Map icon-visibility panel (8 rows, canonical switches) | FSDS `Switch` + FSDS `Text` rows; 16 px line glyph hand-authored | mixed — Switch **FSDS**, Icon NOT FSDS |
+| Map icon-visibility panel (8 rows, canonical switches) | FSDS `Switch` + FSDS `Text` rows; 16 px portable code tile (`iconArt.rowTile`) hand-authored | mixed — Switch **FSDS**, Icon art app-authority |
 | Marker popover (anchored, CLOSE + SET AS NAV TARGET) | hand-authored surface; FSDS `Text`/`Badge`/`Divider` + hand-authored buttons | NOT FSDS — no Popover/Button |
 | Progress roster (rows, accent bar, reputation bar, status chips, `OPEN →`) | FSDS `Text`/`Badge`; bars/rows hand-authored | mixed |
 | Progress paper dossier drawer (brief/history/perks/parts/SHOP PARTS) | hand-authored drawer + FSDS `Text`/`Badge`/`Divider` + hand-authored buttons | NOT FSDS — no Drawer/Sheet |
-| Abilities card grid (5×2, rarity chip, icon block, name, pips, installed chip) | hand-authored cards + FSDS `Badge` (rarity/installed) and `Text` | mixed — no Card/Icon |
+| Abilities card grid (5×2, rarity chip, 40 px portable code tile, name, pips, installed chip) | hand-authored cards + FSDS `Badge` (rarity/installed) and `Text` | mixed — no Card/Icon component; card art is the shared `iconArt.cardTile` code |
 | Ability hover popover | hand-authored surface; FSDS `Text`/`Badge` | NOT FSDS — no Tooltip/Popover |
 | Detail panel + vehicle loadout (2×3 slots, compatible outlines, install/remove/reject) | hand-authored rows + FSDS `Text`/`Badge` | mixed |
 | General settings switches | FSDS `Switch` + FSDS `Text` rows | **FSDS** |
@@ -233,10 +255,11 @@ not an interaction recording.
 
 ## Tests
 
-- `cargo +1.94.1 test --locked` → **65 tests**: 1 lib (`Switch` resolved-style
-  token cascade), 2 colour helpers, 13 parity-layout contract tests, 49 seam
-  tests (fixture parsing/validation and every I1–I15 domain rule).
-- `cargo +1.94.1 test --features capture` → **68 tests**: adds the 2 capture
+- `cargo +1.94.1 test --locked` → **67 tests**: 1 lib (`Switch` resolved-style
+  token cascade), 2 colour helpers, 15 parity-layout contract tests (incl. the
+  icon-art code language), 49 seam tests (fixture parsing/validation and every
+  I1–I15 domain rule).
+- `cargo +1.94.1 test --features capture` → **70 tests**: adds the 2 capture
   frame sanity tests and the mounted `Switch` geometry test (`TestAppContext`
   `debug_bounds`; 64×32 component box, 64×32 track, 24×24 thumb at slot origin).
 
