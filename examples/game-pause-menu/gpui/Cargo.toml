@@ -1,0 +1,45 @@
+[package]
+name = "game-pause-menu-gpui"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.94.1"
+publish = false
+description = "Game pause menu example lane for the GPUI target (FSDS-bounded consumer)."
+
+# Detached from any parent Cargo workspace: this lane owns its own lockfile,
+# mirroring packages/ds-gpui and examples/operations-dashboard/gpui.
+[workspace]
+
+[features]
+# Evidence capture: `--capture <dir>` renders the live window scene to PNG via
+# the pinned renderer's test-support surface (`Window::render_to_image`). The
+# default build keeps the dependency features exactly at the package pins, so
+# `cargo build` / `cargo test` exercise the same graph a normal consumer uses.
+# gpui_platform/test-support forwards to gpui/test-support AND
+# gpui_macos/test-support: the macOS PlatformWindow::render_to_image impl is
+# gated on that feature, so enabling only gpui/test-support is not enough.
+capture = ["dep:image", "gpui_platform/test-support"]
+
+[dependencies]
+# The bounded GPUI design-system package. ONLY its public API is consumed.
+full-stack-ds-gpui = { path = "../../../packages/ds-gpui" }
+# Same pinned zed revision as packages/ds-gpui/Cargo.toml (includes upstream
+# device-pixel snapping #54728 and macOS glyph dilation #54886).
+gpui = { git = "https://github.com/zed-industries/zed", rev = "a38fc8c8de6e4010fadcfde7dd111d90dfd66845", default-features = false }
+gpui_platform = { git = "https://github.com/zed-industries/zed", rev = "a38fc8c8de6e4010fadcfde7dd111d90dfd66845", default-features = false, features = [
+    "font-kit",
+    # This machine's Xcode 26 install no longer ships the standalone `metal`
+    # shader tool, so gpui_macos' build script cannot precompile shaders.metal
+    # (`xcodebuild -downloadComponent MetalToolchain` is the Apple repair; it is
+    # not available in this environment). Upstream's `runtime_shaders` feature
+    # is the supported alternative: it stitches the shader source and compiles
+    # it through Metal at renderer startup. Same zed revision, same renderer
+    # code; only shader compilation moves from build time to runtime. Recorded
+    # as an environment finding in the lane README.
+    "runtime_shaders",
+] }
+# Data-seam parsing only (pure std + serde; no gpui types on that path).
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Capture-only encoder for the evidence PNGs (feature `capture`).
+image = { version = "0.25", default-features = false, features = ["png"], optional = true }
