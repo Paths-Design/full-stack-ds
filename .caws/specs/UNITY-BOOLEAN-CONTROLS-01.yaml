@@ -61,3 +61,12 @@ contracts:
   - name: 'toggleswitch-channel'
     type: behavior
     path: 'packages/ds-contracts/components/ToggleSwitch/ToggleSwitch.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 72833ffb7: focused unity codegen suite plus cli seam 201/201 pass, including root-control and label-host boolean lowering, DOM-property refusal, commit-activation rule, P3 size-axis rule and declaration.keyPattern styles condition; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T09:07:36.618Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts > Unity capability lowering > lowers a root form-control part to a native Button boolean control"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: "72833ffb7bbce3e60d5110c92ca70a5f600ea9e3"
