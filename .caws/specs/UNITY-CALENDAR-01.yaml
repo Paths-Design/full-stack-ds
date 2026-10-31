@@ -73,3 +73,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.CalendarRendersItsMonthAndCommitsSingleDates
     exit_code: 0
     commit_sha: "2203f9e86c8f7c8b113b88a6112398f687f8e8cf"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 2203f9e86c8f7c8b113b88a6112398f687f8e8cf: packages/ds-unity/README.md admits Calendar with its ISO value/month API, invariant six-week grid, bounded month navigation, min/max enablement and the withheld range/keyboard/localisation/authored-shell facts, and records the 94/94 lane; docs/architecture/unity-target.md records the early DateGrid dispatch, runtime shell and the 94/94 lane; docs/current-implementation-snapshot.md records the fifty-second admitted control with those facts."
+    recorded_at: "2026-10-31T19:02:47.745Z"
+    commit_sha: "2203f9e86c8f7c8b113b88a6112398f687f8e8cf"
