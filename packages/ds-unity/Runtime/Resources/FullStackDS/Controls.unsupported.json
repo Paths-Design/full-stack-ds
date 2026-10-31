@@ -1714,6 +1714,46 @@
       "reason": "uss-property"
     },
     {
+      "component": "Status",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "width",
+      "value": "fit-content",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Switch",
       "sourceKey": ".switch:dir(rtl) .switch__track",
       "part": "",
