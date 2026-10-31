@@ -54,3 +54,11 @@ contracts:
   - name: 'codesnippet-text'
     type: behavior
     path: 'packages/ds-contracts/components/CodeSnippet/CodeSnippet.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 83805a28a: focused unity codegen + cli seam 222/222 pass, including the passive text-content host selection, the TextElement text-attribute projection, the carried-tag-axis rule ordering and the extended content-string rule; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T12:57:31.265Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > lowers a passive text host with a generated text attribute for CodeSnippet"
+    exit_code: 0
+    commit_sha: "83805a28a061b88d42adbb7a7e7992349b2b9fba"
