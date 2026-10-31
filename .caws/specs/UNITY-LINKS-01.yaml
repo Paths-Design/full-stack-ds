@@ -54,3 +54,11 @@ contracts:
   - name: 'links-anchor'
     type: behavior
     path: 'packages/ds-contracts/components/Links/Links.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit e53fdb35a: focused unity codegen + cli seam 230/230 pass, including the Anchor lowering predicate from the prop-bound anchor root, the generated Href/Target/Rel attributes backed by LinkControl, the Activated event and Disabled attribute, the size carrier, the destination-binding/prop boundary families, and the refused text-decoration style properties; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T14:44:17.163Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a navigation-request anchor scaffold for Links"
+    exit_code: 0
+    commit_sha: e53fdb35a56cca042f14dae870b02026beb2db6b
