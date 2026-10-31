@@ -53,3 +53,12 @@ contracts:
   - name: 'badge-container'
     type: behavior
     path: 'packages/ds-contracts/components/Badge/Badge.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 70fc48807: focused unity codegen + cli seam 203/203 pass, including the Badge carrier axes, the omitted node-content icon decoration and the absent Icon/ShowStatusIcon API; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. Boundary adds node-content decoration/part refusals, a P4 pending icon prop, a refused showStatusIcon and a generic intrinsic-sizing refusal."
+    recorded_at: "2026-10-31T09:31:58.924Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > omits a guarded node-content decoration and keeps only carrier axes for Badge"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: "70fc488076dd6bb807a97d1195b037018f9794fe"
