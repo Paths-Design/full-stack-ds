@@ -29,7 +29,7 @@ namespace FullStackDS
             Apply(0f);
         }
 
-        public static MotionLoopControl Attach(VisualElement target, int durationMs, float multiplier, float[] easing, float reducedValue)
+        public static MotionLoopControl Attach(VisualElement host, VisualElement target, int durationMs, float multiplier, float[] easing, float reducedValue)
             => new MotionLoopControl(target, durationMs, multiplier, easing, reducedValue);
 
         public bool ReducedMotion
