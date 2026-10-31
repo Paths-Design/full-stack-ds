@@ -1,9 +1,11 @@
 id: UNITY-ALERT-CONTAINERS-01
 title: 'Admit Alert and AlertNotice to the Unity target as static alert containers with omitted guarded chrome'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Alert and AlertNotice admitted to the Unity target/package (sixteenth/seventeenth allowlisted controls) as static alert containers with intent/status and level carriers, composed body/title parts, and a new generic guarded passive action-chrome omission; dismissal props/anatomy refused and dismissal selectors pending P4; codegen+cli 206/206, boundary audit clean, real Unity EditMode 58/58, package sheet regenerated'
 created_at: '2026-10-31T09:53:22.048Z'
-updated_at: '2026-10-31T10:08:49.545Z'
+updated_at: '2026-10-31T10:09:17.572Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
