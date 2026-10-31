@@ -4439,6 +4439,206 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Toast",
+      "sourceKey": ".toast__action:empty",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": ".toast__progress:dir(rtl)",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "action",
+      "part": "action",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:canary",
+      "part": "item",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:corporate",
+      "part": "item",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:default",
+      "part": "item",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:developer",
+      "part": "item",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:fintech",
+      "part": "item",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:forest",
+      "part": "item",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:marketplace",
+      "part": "item",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:monochrome",
+      "part": "item",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:quickserve",
+      "part": "item",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:streaming",
+      "part": "item",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "close",
+      "part": "close",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "description",
+      "part": "description",
+      "property": "font-size",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "box-shadow",
+      "value": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "progress",
+      "part": "progress",
+      "property": "border-end-end-radius",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "progress",
+      "part": "progress",
+      "property": "border-end-start-radius",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "progress",
+      "part": "progress",
+      "property": "inset-inline",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "progress",
+      "part": "progress",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "position",
+      "value": "fixed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "z-index",
+      "value": "1000",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "toast.surface.shadow",
+      "value": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "ToggleSwitch",
       "sourceKey": "disabled",
       "part": "root",

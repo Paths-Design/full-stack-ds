@@ -308,6 +308,22 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/AriaLabel|public bool Required|public string Name /);
   });
 
+  it("renders an ephemeral toast viewport with a runtime timer and title", () => {
+    const contract = loadContractWithSidecars(root, "Toast") as ComponentContract;
+    const toastIr = buildComponentIR(contract);
+    toastIr.name = "UnrelatedToast";
+    const source = createUnityEmitter().emitComponent(toastIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedToast : VisualElement");
+    expect(source).toContain("public ToastSurface Surface { get; }");
+    expect(source).toContain("ToastSurface.Attach(this, item: Item, close: Close, title: TitleControl, stateClass: \"is-open\");");
+    expect(source).toContain("public VisualElement Item { get; } = new VisualElement();");
+    expect(source).toContain("public Label TitleControl { get; } = new Label();");
+    expect(source).toContain("public override VisualElement contentContainer => Description;");
+    expect(source).toContain("public string Title { get => Surface.Title; set => Surface.Title = value; }");
+    expect(source).toContain("public float Duration { get => Surface.Duration; set => Surface.Duration = value; }");
+    expect(source).not.toMatch(/Politeness|AriaLabel/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

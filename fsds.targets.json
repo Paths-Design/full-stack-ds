@@ -205,7 +205,8 @@
         "Dialog",
         "Sheet",
         "Input",
-        "TextField"
+        "TextField",
+        "Toast"
       ]
     },
     {
