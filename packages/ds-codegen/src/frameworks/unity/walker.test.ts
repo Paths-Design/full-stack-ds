@@ -212,7 +212,7 @@ describe("Unity passive anatomy path", () => {
     detailsIr.name = "UnrelatedDisclosure";
     const source = createUnityEmitter().emitComponent(detailsIr, { componentsRoot: "", contractsRoot })[0]!.contents;
     expect(source).toContain("public partial class UnrelatedDisclosure : VisualElement");
-    expect(source).toContain("public Disclosure Disclosure { get; }");
+    expect(source).toContain("public DisclosureControl Disclosure { get; }");
     expect(source).toContain("DisclosureControl.Attach(this, summary: SummaryControl, content: Content, stateClass: \"is-open\");");
     expect(source).toContain('public string Summary { get => SummaryText.text; set { SummaryText.text = value ?? ""; } }');
     expect(source).toContain("public override VisualElement contentContainer => Content;");
