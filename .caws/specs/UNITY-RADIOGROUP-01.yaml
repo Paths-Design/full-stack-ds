@@ -1,9 +1,11 @@
 id: UNITY-RADIOGROUP-01
 title: 'Admit RadioGroup to the Unity target as a native radio runtime over the declared options'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'RadioGroup admitted to the Unity target/package (forty-fifth allowlisted control) as a native choice group: one string channel over an option array selects ChoiceGroup, a nested option type is generated from the iteration bindings with role-derived leaves, ChoiceGroupControl builds one native radio per option from parallel leaf arrays with authored item class/label/tooltip/disabled, selection commits or requests and the orientation carrier projects; authored internal markup, data-state styling and the form name refused; codegen+cli 237/237, boundary audit clean, root 5419/5419, real Unity EditMode 86/86, package sheet regenerated'
 created_at: '2026-10-31T15:59:21.462Z'
-updated_at: '2026-10-31T16:10:12.738Z'
+updated_at: '2026-10-31T16:10:36.199Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
