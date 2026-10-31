@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.OtpBuildsOneCharacterFieldsAndAssemblesItsValue
     exit_code: 0
     commit_sha: "83fef4a6efb25ba9c51d87447abd83d3e6e95c88"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 83fef4a6e: packages/ds-unity/README.md admits OTP with its runtime-built field group, value/mode/length semantics, completion and the withheld a11y/keyboard non-claims, and records the 85/85 lane; docs/architecture/unity-target.md records the Otp dispatcher mode, runtime materialisation and the 85/85 lane; docs/current-implementation-snapshot.md records the forty-fourth admitted control with those facts."
+    recorded_at: "2026-10-31T15:58:13.098Z"
+    commit_sha: "83fef4a6efb25ba9c51d87447abd83d3e6e95c88"
