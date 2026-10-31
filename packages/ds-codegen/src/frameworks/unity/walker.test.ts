@@ -494,6 +494,22 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Searchable|SearchInput|TriggerLabel|AriaExpanded/);
   });
 
+  it("renders the dual-list transfer from declared parts for Shuttle", () => {
+    const contract = loadContractWithSidecars(root, "Shuttle") as ComponentContract;
+    const shuttleIr = buildComponentIR(contract);
+    shuttleIr.name = "UnrelatedTransfer";
+    const source = createUnityEmitter().emitComponent(shuttleIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedTransfer : VisualElement");
+    expect(source).toContain("public TransferControl Control { get; }");
+    expect(source).toContain("public string[] Options { get => Control.Options; set => Control.Options = value; }");
+    expect(source).toContain("public string[] Value { get => Control.Value; set => Control.Value = value; }");
+    expect(source).toContain("public string[] DefaultValue { get => Control.DefaultValue; set => Control.DefaultValue = value; }");
+    expect(source).toContain("public Action<string[]> OnValueChange");
+    expect(source).toContain("public Action<string[]> ValueRequested");
+    expect(source).toContain("TransferControl.Attach(this, prefix: \"shuttle\", listPart: \"list\", controlsPart: \"controls\", itemPart: \"item\", addPart: \"add\", removePart: \"remove\");");
+    expect(source).not.toMatch(/ariaLabel|data-value|tabindex|aria-selected/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

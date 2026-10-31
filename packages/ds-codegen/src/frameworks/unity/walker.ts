@@ -435,7 +435,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     // that only holds the content region is flattened so the insertion point
     // is the control's own contentContainer.
     const action = ctx.lowering.behavior === "Action";
-    const children = action
+    const children = ctx.lowering.behavior === "Transfer" ? [] : action
       ? ir.dom.children
           .filter(node => !isOmittedActionChrome(ctx, node))
           .flatMap(node => node.children.length === 1 && isInsertion(node.children[0]!) ? node.children : [node])
@@ -1209,6 +1209,36 @@ function selectRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the dual-list transfer: the class exposes the array options/value
+ * API and the transfer runtime owns the two lists, the marking and the
+ * add/remove derivation from the declared transfer facts. The authored shell
+ * markup is recreated by the runtime from the declared list/control parts; the
+ * keyboard, a11y labels and marked-state styling are withheld.
+ */
+function transferRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Transfer") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a transfer lowering`);
+  const channel = lowering.channel;
+  const optionsName = identifier(pascal(lowering.optionsProp));
+  const members: string[] = [
+    "        public TransferControl Control { get; }",
+    "        public string[] Options { get => Control.Options; set => Control.Options = value; }",
+    `        public string[] ${identifier(pascal(channel.valueProp))} { get => Control.Value; set => Control.Value = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = TransferControl.Attach(this, prefix: ${quote(ctx.prefix!)}, listPart: ${quote(lowering.listPart)}, controlsPart: ${quote(lowering.controlsPart)}, itemPart: ${quote(lowering.itemPart)}, addPart: ${quote(lowering.addPart)}, removePart: ${quote(lowering.removePart)});`,
+  ];
+  const defaults: string[] = [];
+  if (channel.defaultValueProp !== undefined) members.push(`        public string[] ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultValue; set => Control.DefaultValue = value; }`);
+  const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
+  members.push(`        public Action<string[]> ${identifier(pascal(changeHandler))} { get => Control.ValueChanged; set => Control.ValueChanged = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<string[]> ValueRequested { get => Control.ValueRequested; set => Control.ValueRequested = value; }");
+  void optionsName;
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1226,6 +1256,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Otp") return otpRootApi(ctx, classes);
   if (lowering.behavior === "ChoiceGroup") return choiceGroupRootApi(ctx);
   if (lowering.behavior === "Select") return selectRootApi(ctx, classes);
+  if (lowering.behavior === "Transfer") return transferRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

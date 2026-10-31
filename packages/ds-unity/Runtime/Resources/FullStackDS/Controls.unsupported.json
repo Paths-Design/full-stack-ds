@@ -4827,6 +4827,70 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Shuttle",
+      "sourceKey": ".shuttle__item:focus-visible",
+      "part": "item",
+      "property": "outline-offset",
+      "value": "-2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": ".shuttle__item[aria-selected=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "add",
+      "part": "add",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "min-block-size",
+      "value": "8rem",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "min-inline-size",
+      "value": "10rem",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "remove",
+      "part": "remove",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Skeleton",
       "sourceKey": "--avatar",
       "part": "root",

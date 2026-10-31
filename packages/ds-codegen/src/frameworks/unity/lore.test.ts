@@ -49,6 +49,8 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   placeholder: "HTML input placeholder attribute bound to the native text edition",
   title: "HTML title attribute carrying the option description as a native tooltip",
   description: "Option-object description leaf projected as a native tooltip",
+  add: "Declared transfer action (contract transfer block) that moves marked items into the selection",
+  remove: "Declared transfer action (contract transfer block) that moves marked items out of the selection",
   value: "HTML form field attribute the boundary's propRoles assigns to participating forms",
   row: "CSS flex-direction keyword (uss.ts display lowering and flex-direction vocabulary)",
   overflow: "CSS property name keyed in the uss.ts CSS-to-USS property table",
