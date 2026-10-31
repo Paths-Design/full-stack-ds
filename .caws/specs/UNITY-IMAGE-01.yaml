@@ -54,3 +54,11 @@ contracts:
   - name: 'image-media'
     type: behavior
     path: 'packages/ds-contracts/components/Image/Image.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 8d7829cb6: focused unity codegen + cli seam 231/231 pass, including the Media lowering predicate from the img root with a direct source binding, the native Image base, the Src attribute backed by ImageControl, the radius carrier, the refused alt/sizing/loading/source-selection props and bindings, the pending intrinsic-geometry styles and the refused object-fit/position rules; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. The unadmitted-request CLI case now pins Avatar instead of the newly admitted Image."
+    recorded_at: "2026-10-31T14:52:58.182Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a native media element with a resources source for Image"
+    exit_code: 0
+    commit_sha: "8d7829cb6db0d43021aaffd61bd1567c5285e2e4"
