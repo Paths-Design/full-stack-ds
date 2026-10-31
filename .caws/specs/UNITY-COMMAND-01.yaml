@@ -66,3 +66,10 @@ evidence:
     recorded_at: "2026-10-31T20:07:34.135Z"
     artifact_path: packages/ds-unity/Runtime/Components/Command/Command.cs
     commit_sha: e2a516045f35d46fbab1b360e7069896a81da66f
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source b6b5b0f484285b5c0b5a095311a8fc2c7ad34444 (sourceDirty false): 95/95 passed, zero failed/skipped (test-run start 2026-10-31 20:02:43Z; resultsSha256 9922d22461af172214306995e8240de5d122d3f21bbc317a914cabe0c1411024). The added case asserts the hidden/shown palette shell, both channels with change/request semantics, the placeholder push, the consumer results host and the absent filtering/empty/a11y API. One prior lane run on the same source flaked on the unrelated pre-existing Switch pointer/focus test under concurrent agent load; the clean rerun is the cited receipt. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T20:07:35.454Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.CommandTogglesItsPaletteAndForwardsBothChannels
+    exit_code: 0
+    commit_sha: b6b5b0f484285b5c0b5a095311a8fc2c7ad34444
