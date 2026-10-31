@@ -1,0 +1,584 @@
+{
+  "$note": "Canonical layout authority for the Orion N5 game pause menu parity pass. All three engine lanes (GPUI, Unity UI Toolkit, Godot) build their UI from these absolute 1280x800 coordinates, colours, type sizes and switch geometry. The only permitted differences between engines are font rasterisation/fallback and anti-aliasing. Lane-local copies of this file are fixtures, not authority; parity.md is the human-readable companion.",
+  "viewport": {
+    "width": 1280,
+    "height": 800
+  },
+  "colors": {
+    "signal": "#EF6A3C",
+    "signalDeep": "#B83F16",
+    "signalHot": "#F78A5E",
+    "onSignal": "#191917",
+    "ink": "#141412",
+    "charcoal": "#232320",
+    "graphite": "#2E2E29",
+    "boneBright": "#F4F1E6",
+    "bone": "#E9E5D8",
+    "paper": "#E9E5D8",
+    "paperMuted": "#55554C",
+    "sage": "#C6D9C7",
+    "moss": "#7D8F82",
+    "alert": "#C8402C",
+    "clear": "#5F8F5A",
+    "rule": "#3A3A34",
+    "ruleStrong": "#56564C",
+    "muted": "#8C8C82",
+    "textSecondary": "#C6C2B4"
+  },
+  "type": {
+    "wordmark": 40,
+    "mission": 11,
+    "statLabel": 10,
+    "statValue": 20,
+    "statSub": 11,
+    "chip": 10,
+    "tab": 13,
+    "panelTitle": 11,
+    "panelMeta": 10,
+    "rowLabel": 12,
+    "rowSub": 10,
+    "value": 14,
+    "bigValue": 20,
+    "title": 24,
+    "body": 13,
+    "micro": 10,
+    "footer": 11,
+    "letterSpacingMicro": 1.2,
+    "letterSpacingTab": 1.2
+  },
+  "style": {
+    "panelBorder": 1,
+    "radius": 0,
+    "shadow": "none"
+  },
+  "switch": {
+    "width": 64,
+    "height": 32,
+    "radius": 16,
+    "thumb": 24,
+    "thumbRadius": 12,
+    "inset": 4,
+    "onTrack": "signal",
+    "offTrack": "graphite",
+    "onThumb": "onSignal",
+    "offThumb": "boneBright",
+    "onBorder": null,
+    "offBorder": "ruleStrong",
+    "borderWidth": 1,
+    "checkedThumbOffset": 36
+  },
+  "header": {
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 104
+    },
+    "background": "charcoal",
+    "ruleBottom": "rule",
+    "wordmark": {
+      "x": 32,
+      "y": 18,
+      "h": 48,
+      "textMain": "ORION",
+      "textAccent": "N5"
+    },
+    "mission": {
+      "x": 32,
+      "y": 72,
+      "text": "MARS EXPEDITION // COMMANDER D3SO"
+    },
+    "stats": [
+      {
+        "id": "ranking",
+        "x": 608,
+        "labelY": 26,
+        "valueY": 42,
+        "subY": 68,
+        "label": "RANKING",
+        "value": "PATHFINDER III",
+        "sub": "LV 12 \u00b7 GLOBAL #95 \u00b7 TOP 5%"
+      },
+      {
+        "id": "earnings",
+        "x": 800,
+        "labelY": 26,
+        "valueY": 42,
+        "subY": 68,
+        "label": "EARNINGS",
+        "value": "34,850 CR",
+        "sub": "1,200 CR PENDING"
+      },
+      {
+        "id": "followers",
+        "x": 992,
+        "labelY": 26,
+        "valueY": 42,
+        "subY": 68,
+        "label": "FOLLOWERS",
+        "value": "52,400",
+        "sub": "+3.2% THIS CYCLE"
+      }
+    ],
+    "pausedChip": {
+      "x": 1184,
+      "y": 40,
+      "w": 64,
+      "h": 24,
+      "text": "PAUSED"
+    }
+  },
+  "tabBar": {
+    "rect": {
+      "x": 0,
+      "y": 104,
+      "w": 1280,
+      "h": 56
+    },
+    "background": "charcoal",
+    "ruleBottom": "rule",
+    "tabs": [
+      {
+        "id": "map",
+        "x": 0,
+        "w": 320,
+        "label": "MAP"
+      },
+      {
+        "id": "progress",
+        "x": 320,
+        "w": 320,
+        "label": "PROGRESS"
+      },
+      {
+        "id": "abilities",
+        "x": 640,
+        "w": 320,
+        "label": "ABILITIES"
+      },
+      {
+        "id": "settings",
+        "x": 960,
+        "w": 320,
+        "label": "SETTINGS"
+      }
+    ],
+    "activeBackground": "signal",
+    "activeText": "onSignal",
+    "inactiveText": "textSecondary",
+    "separator": "rule"
+  },
+  "footer": {
+    "rect": {
+      "x": 0,
+      "y": 744,
+      "w": 1280,
+      "h": 56
+    },
+    "ruleTop": "rule",
+    "hints": {
+      "x": 24,
+      "y": 770,
+      "text": "ESC BACK   \u00b7   TAB FOCUS   \u00b7   CLICK SELECT   \u00b7   1\u20134 TABS"
+    },
+    "navTarget": {
+      "labelX": 1096,
+      "labelY": 758,
+      "label": "NAV TARGET",
+      "valueRight": 1256,
+      "valueY": 770,
+      "empty": "\u2014",
+      "align": "right"
+    }
+  },
+  "panels": {
+    "content": {
+      "x": 24,
+      "y": 176,
+      "w": 1232,
+      "h": 552
+    },
+    "headerHeight": 40,
+    "padding": 16,
+    "background": "charcoal",
+    "border": "rule"
+  },
+  "map": {
+    "mapPanel": {
+      "x": 24,
+      "y": 176,
+      "w": 872,
+      "h": 552
+    },
+    "mapTitle": {
+      "text": "ARES BASIN // SECTOR 07",
+      "meta": "SCALE 1:40K"
+    },
+    "field": {
+      "x": 40,
+      "y": 232,
+      "w": 840,
+      "h": 480
+    },
+    "fieldCornerTicks": 12,
+    "marker": {
+      "size": 24,
+      "monogram": 11
+    },
+    "fieldNote": {
+      "x": 48,
+      "yOffsetFromFieldBottom": -26,
+      "text": "MARKERS 7/8 VISIBLE \u00b7 CLICK A MARKER FOR DETAIL \u00b7 ORANGE = NAV TARGET"
+    },
+    "iconPanel": {
+      "x": 912,
+      "y": 176,
+      "w": 344,
+      "h": 552
+    },
+    "iconPanelTitle": "ICON VISIBILITY",
+    "iconPanelMeta": "7/8 PLOTTED",
+    "iconRows": {
+      "x": 928,
+      "firstY": 224,
+      "rowH": 48,
+      "width": 312,
+      "iconSize": 16,
+      "nameX": 952,
+      "nameY": 10,
+      "subY": 26,
+      "switchX": 1176,
+      "switchY": 8
+    },
+    "iconPanelNote": {
+      "x": 928,
+      "y": 636,
+      "text": "FILTER OVER THE MAP FIELD \u00b7 FIXTURE DATA IS NOT MUTATED"
+    },
+    "popover": {
+      "x": 392,
+      "y": 272,
+      "w": 360,
+      "h": 232,
+      "title": "DISTRESS BEACON",
+      "action": "SET AS NAV TARGET",
+      "cancel": "CLOSE"
+    }
+  },
+  "progress": {
+    "listPanel": {
+      "x": 24,
+      "y": 176,
+      "w": 1232,
+      "h": 552
+    },
+    "listTitle": "FACTION ROSTER",
+    "listMeta": "5 TRACKED \u00b7 3 ACCESSIBLE",
+    "rows": {
+      "x": 40,
+      "firstY": 224,
+      "rowH": 88,
+      "width": 1200,
+      "accentW": 3,
+      "nameX": 56,
+      "nameY": 12,
+      "taglineY": 36,
+      "repBarX": 800,
+      "repBarY": 44,
+      "repBarW": 200,
+      "repBarH": 6,
+      "statusX": 1080,
+      "statusY": 16,
+      "statusW": 76,
+      "statusH": 22,
+      "dossierX": 1180,
+      "dossierY": 22,
+      "dossierText": "OPEN \u2192"
+    },
+    "drawer": {
+      "rect": {
+        "x": 24,
+        "y": 176,
+        "w": 560,
+        "h": 552
+      },
+      "background": "paper",
+      "text": "ink",
+      "padding": 24,
+      "headerY": 200,
+      "close": {
+        "x": 496,
+        "y": 200,
+        "w": 64,
+        "h": 26
+      },
+      "titleY": 232,
+      "taglineY": 272,
+      "ruleY": 294,
+      "briefLabelY": 310,
+      "briefBodyY": 326,
+      "historyLabelY": 382,
+      "historyBodyY": 398,
+      "perksLabelY": 446,
+      "perksY": 464,
+      "partsLabelY": 536,
+      "partsHeaderY": 552,
+      "partRowY": 572,
+      "partRowH": 20,
+      "shopButton": {
+        "x": 24,
+        "y": 652,
+        "w": 168,
+        "h": 40
+      },
+      "shopCaptionY": 666
+    }
+  },
+  "abilities": {
+    "gridPanel": {
+      "x": 24,
+      "y": 176,
+      "w": 808,
+      "h": 552
+    },
+    "gridTitle": "ABILITY CATALOG",
+    "gridMeta": "10 MODULES \u00b7 SELECT ONE, THEN A SLOT",
+    "cards": {
+      "x": 40,
+      "firstY": 224,
+      "w": 152,
+      "h": 240,
+      "colGap": 12,
+      "rowGap": 12,
+      "cols": 5,
+      "rarityChip": {
+        "x": 8,
+        "y": -9,
+        "w": 64,
+        "h": 18
+      },
+      "iconY": 28,
+      "nameY": 84,
+      "sizeY": 106,
+      "installedY": 196
+    },
+    "detailPanel": {
+      "x": 848,
+      "y": 176,
+      "w": 408,
+      "h": 552
+    },
+    "detailTitle": "ABILITY DETAIL",
+    "detailMeta": "3 COMPATIBLE SLOTS",
+    "abilityTitleY": 232,
+    "abilityChipsY": 268,
+    "abilityBodyY": 294,
+    "statRowY": 372,
+    "loadoutTitleY": 448,
+    "vehicleNameY": 466,
+    "slots": {
+      "x": 872,
+      "firstY": 488,
+      "w": 180,
+      "h": 60,
+      "colGap": 8,
+      "rowGap": 4,
+      "cols": 2
+    },
+    "pendingNoteY": 690,
+    "hoverPopover": {
+      "x": 224,
+      "y": 320,
+      "w": 320,
+      "h": 180
+    }
+  },
+  "settings": {
+    "panels": [
+      {
+        "id": "general",
+        "rect": {
+          "x": 24,
+          "y": 176,
+          "w": 608,
+          "h": 268
+        },
+        "title": "GENERAL",
+        "meta": "PERSONAL PREFERENCES"
+      },
+      {
+        "id": "controller",
+        "rect": {
+          "x": 648,
+          "y": 176,
+          "w": 608,
+          "h": 268
+        },
+        "title": "CONTROLLER",
+        "meta": "LOOK, AIM, FEEL"
+      },
+      {
+        "id": "remap",
+        "rect": {
+          "x": 24,
+          "y": 460,
+          "w": 608,
+          "h": 268
+        },
+        "title": "CONTROLLER REMAP",
+        "meta": "CLICK A BINDING, THEN A KEY"
+      },
+      {
+        "id": "audio",
+        "rect": {
+          "x": 648,
+          "y": 460,
+          "w": 608,
+          "h": 268
+        },
+        "title": "AUDIO & SUBTITLES",
+        "meta": "MIX, LANGUAGE, SUBTITLES"
+      }
+    ],
+    "rowH": 44,
+    "firstRowY": 216,
+    "remapRowH": 36,
+    "remapFirstRowY": 496,
+    "audioRowH": 28,
+    "audioFirstRowY": 496,
+    "slider": {
+      "w": 300,
+      "h": 6,
+      "thumb": 16
+    },
+    "bindingButton": {
+      "w": 120,
+      "h": 28
+    },
+    "dropdown": {
+      "w": 200,
+      "h": 30
+    },
+    "swatch": {
+      "w": 36,
+      "h": 20,
+      "gap": 6
+    },
+    "preview": {
+      "x": 664,
+      "y": 694,
+      "w": 576,
+      "h": 26
+    },
+    "remapModal": {
+      "x": 430,
+      "y": 300,
+      "w": 420,
+      "h": 200,
+      "prompt": "PRESS ANY KEY OR BUTTON"
+    },
+    "languageLabelY": 612,
+    "dropdownY": 624,
+    "dropdownH": 28,
+    "swatchLabelY": 658,
+    "swatchY": 670,
+    "swatchH": 18
+  },
+  "markerMonograms": {
+    "relay": "R",
+    "cache": "C",
+    "pad": "P",
+    "vein": "V",
+    "beacon": "B",
+    "weather": "W",
+    "rover": "O",
+    "camp": "M"
+  },
+  "markerColors": {
+    "relay": "boneBright",
+    "cache": "signal",
+    "pad": "bone",
+    "vein": "onSignal",
+    "beacon": "alert",
+    "weather": "moss",
+    "rover": "muted",
+    "camp": "signal"
+  },
+  "rarityColors": {
+    "common": "textSecondary",
+    "uncommon": "clear",
+    "rare": "signal",
+    "epic": "alert",
+    "legendary": "signalHot"
+  },
+  "rarityTextColors": {
+    "common": "ink",
+    "uncommon": "ink",
+    "rare": "ink",
+    "epic": "boneBright",
+    "legendary": "ink"
+  },
+  "statusChip": {
+    "accessBackground": "signal",
+    "accessText": "onSignal",
+    "lockedBorder": "alert",
+    "lockedText": "alert"
+  },
+  "captures": {
+    "map": {
+      "activeTab": "map",
+      "navTarget": "cache-02",
+      "hiddenIcons": [
+        "weather-06"
+      ],
+      "popover": null
+    },
+    "map-popover": {
+      "activeTab": "map",
+      "navTarget": "cache-02",
+      "hiddenIcons": [
+        "weather-06"
+      ],
+      "popover": "beacon-05"
+    },
+    "progress": {
+      "activeTab": "progress",
+      "drawer": "ares-logistics",
+      "navTarget": "cache-02",
+      "hiddenIcons": []
+    },
+    "abilities": {
+      "activeTab": "abilities",
+      "pendingAbility": "overclock",
+      "hover": null,
+      "navTarget": "cache-02",
+      "hiddenIcons": []
+    },
+    "abilities-hover": {
+      "activeTab": "abilities",
+      "pendingAbility": "overclock",
+      "hover": "overclock",
+      "navTarget": "cache-02",
+      "hiddenIcons": []
+    },
+    "settings": {
+      "activeTab": "settings",
+      "section": "top",
+      "navTarget": "cache-02",
+      "hiddenIcons": []
+    },
+    "settings-remap-modal": {
+      "activeTab": "settings",
+      "remapModal": "interact",
+      "navTarget": "cache-02",
+      "hiddenIcons": []
+    },
+    "settings-subtitle": {
+      "activeTab": "settings",
+      "subtitleBackground": "signal",
+      "subtitleLanguage": "Fran\u00e7ais",
+      "navTarget": "cache-02",
+      "hiddenIcons": []
+    }
+  }
+}

@@ -6,14 +6,16 @@ using UnityEngine.UIElements;
 
 namespace GamePauseMenu
 {
-    /// <summary>The lane app: theme scope, shell, generated Tabs, four tab views and the shared
-    /// interaction state. Constructing it builds the whole tree synchronously; the host mounts
-    /// <see cref="Root"/> into a UIDocument and the tests mount it into an editor panel.</summary>
+    /// <summary>The parity rebuild of the pause menu. Shell bands, Tabs, four tab views and the
+    /// shared interaction state are all placed from fixtures/parity-layout.json at 1280x800.
+    /// Semantics are unchanged from the first pass: the generated Tabs still own tab selection and
+    /// the interaction handlers below are the same contract.</summary>
     public sealed class PauseMenuApp
     {
         public VisualElement Root { get; }
         public PauseMenuState State { get; }
         public OrionPalette Palette { get; }
+        public ParityLayoutData Layout { get; }
         public HeaderBand Header { get; }
         public FooterBand Footer { get; }
         public Tabs Tabs { get; }
@@ -21,6 +23,7 @@ namespace GamePauseMenu
         public ProgressTab Progress { get; }
         public AbilitiesTab Abilities { get; }
         public SettingsTab Settings { get; }
+        public VisualElement Overlay { get; }
 
         private readonly Dictionary<string, TabsTab> tabButtons = new Dictionary<string, TabsTab>();
         private readonly Dictionary<string, TabsPanel> tabPanels = new Dictionary<string, TabsPanel>();
@@ -28,8 +31,9 @@ namespace GamePauseMenu
         public PauseMenuApp(FixtureSet fixtures)
         {
             if (fixtures == null) throw new ArgumentNullException(nameof(fixtures));
+            Layout = fixtures.Parity ?? throw new ArgumentException("Fixture set carries no parity layout.");
             State = new PauseMenuState(fixtures);
-            Palette = OrionPalette.From(fixtures.Appearance);
+            Palette = OrionPalette.From(Layout);
 
             Root = new VisualElement { name = "pause-app" };
             Root.AddToClassList("pause-app");
@@ -39,14 +43,14 @@ namespace GamePauseMenu
             Theme.SetDark(Root, true);   // generated stylesheet + dark token scope
             Theme.SetBrand(Root, "orion"); // generated .fsds-brand-orion scope
             Root.styleSheets.Add(laneSheet);
+            Ui.StripBox(Root);
+            Root.style.width = (float)Layout.ViewportWidth;
+            Root.style.height = (float)Layout.ViewportHeight;
+            Root.style.backgroundColor = Layout.Color("ink");
+            Root.style.overflow = Overflow.Hidden;
 
-            var watermark = Ui.Styled(Ui.Display(Palette.Watermark), "app-watermark");
-            watermark.pickingMode = PickingMode.Ignore;
-            Root.Add(watermark);
-
-            Header = new HeaderBand(fixtures, Palette);
+            Header = new HeaderBand(fixtures, Layout, Palette);
             Root.Add(Header.Root);
-            Footer = new FooterBand(fixtures, Palette);
 
             Map = new MapTab(this);
             Progress = new ProgressTab(this);
@@ -55,24 +59,21 @@ namespace GamePauseMenu
 
             Tabs = BuildTabs();
             Root.Add(Tabs);
+
+            Footer = new FooterBand(fixtures, Layout, Palette);
             Root.Add(Footer.Root);
-            Root.Add(Settings.RemapModal);
+
+            Overlay = Ui.MakeBox("parity-overlay");
+            Ui.At(Overlay, new LayoutRect(0, 0, Layout.ViewportWidth, Layout.ViewportHeight));
+            Overlay.pickingMode = PickingMode.Ignore;
+            Root.Add(Overlay);
+            Overlay.Add(Map.PopoverHost);
+            Overlay.Add(Abilities.HoverPopoverHost);
+            Overlay.Add(Settings.RemapModal);
 
             Root.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
             AttachLaneSheet(Root, laneSheet);
             ApplyTabStyles();
-        }
-
-        /// <summary>The generated controls attach the package stylesheet to their own root, so a
-        /// consumer sheet attached only to an ancestor loses same-specificity ties (Unity resolves
-        /// ties by the later sheet on the element itself). Attach the lane sheet to every element it
-        /// styles, once, after the tree is built. Element-attached consumer sheets then win ties
-        /// with the generated component rules and the theme. Documented in the lane README.</summary>
-        private static void AttachLaneSheet(VisualElement element, StyleSheet sheet)
-        {
-            if (!element.styleSheets.Contains(sheet)) element.styleSheets.Add(sheet);
-            for (var i = 0; i < element.hierarchy.childCount; i++)
-                AttachLaneSheet(element.hierarchy[i], sheet);
         }
 
         public TabsTab TabButton(string tabId) => tabButtons[tabId];
@@ -82,6 +83,7 @@ namespace GamePauseMenu
         {
             if (!tabButtons.ContainsKey(tabId)) throw new ArgumentException("Unknown tab id '" + tabId + "'.");
             Tabs.Value = tabId;
+            State.ActiveTab = tabId;
             ApplyTabStyles();
         }
 
@@ -98,7 +100,7 @@ namespace GamePauseMenu
             State.NavTargetId = iconId;
             Map.ApplyAll();
             Footer.SetNavTarget(icon.Label);
-            Map.Marker(iconId).Open = false;
+            Map.ClosePopovers();
         }
 
         public void OpenFactionDrawer(string factionId)
@@ -113,7 +115,6 @@ namespace GamePauseMenu
         {
             State.PendingFactionId = null;
             Progress.CloseDrawer();
-            Abilities.ClearStatus();
         }
 
         public void SelectAbility(string abilityId)
@@ -135,7 +136,7 @@ namespace GamePauseMenu
                 var installedId = State.InstalledAbilityId(slotId);
                 if (installedId == null)
                 {
-                    Abilities.SetStatus("SELECT AN ABILITY CARD, THEN A SLOT");
+                    Abilities.SetStatus("SELECT AN ABILITY, THEN A COMPATIBLE SLOT");
                     return;
                 }
                 var removed = FixtureRepository.FindAbility(State.Fixtures, installedId);
@@ -151,7 +152,7 @@ namespace GamePauseMenu
                 State.PendingAbilityId = null;
                 State.RejectedSlotId = null;
                 Abilities.RefreshAll();
-                Abilities.SetStatus("INSTALLED " + ability.Name + "  //  " + slot.Label);
+                Abilities.SetStatus("INSTALLED " + ability.Name + " IN " + slot.Label);
             }
             else
             {
@@ -164,11 +165,9 @@ namespace GamePauseMenu
 
         public void OpenRemapModal(string actionId)
         {
-            var action = FindRemap(actionId);
-            if (action == null) throw new ArgumentException("Unknown remap action id '" + actionId + "'.");
+            if (FindRemap(actionId) == null) throw new ArgumentException("Unknown remap action id '" + actionId + "'.");
             State.RemapActionId = actionId;
             Settings.ShowRemapModal(actionId);
-            Settings.RemapStatus.text = "WAITING FOR INPUT — " + action.Label;
         }
 
         public void CompleteRemap(string binding)
@@ -192,6 +191,18 @@ namespace GamePauseMenu
 
         public void SetSubtitleBackground(string optionId) => Settings.SetSubtitleBackground(optionId);
 
+        /// <summary>Closes every overlay and clears pending interaction selection (capture states).</summary>
+        public void CloseAllOverlays()
+        {
+            Map.ClosePopovers();
+            Abilities.CloseHoverPopovers();
+            CloseDrawer();
+            if (State.RemapModalOpen) CancelRemap();
+            State.PendingAbilityId = null;
+            State.RejectedSlotId = null;
+            Abilities.ClearStatus();
+        }
+
         private RemapActionData FindRemap(string id)
         {
             foreach (var action in State.Fixtures.Settings.Remap) if (action.Id == id) return action;
@@ -200,15 +211,70 @@ namespace GamePauseMenu
 
         private Tabs BuildTabs()
         {
-            var tabs = new Tabs { name = "pause-tabs" };
-            tabs.AddToClassList("pause-tabs");
-            var list = new TabsList();
-            list.name = "pause-tabs-list";
+            var tabs = new Tabs { name = "parity-tabs" };
+            tabs.AddToClassList("parity-tabs");
+            Ui.At(tabs, new LayoutRect(0, 0, Layout.ViewportWidth, Layout.ViewportHeight));
+            Ui.StripBox(tabs);
+            tabs.style.flexDirection = FlexDirection.Column;
+            tabs.style.backgroundColor = Color.clear;
+            tabs.style.overflow = Overflow.Visible;
+
+            var list = new TabsList { name = "tabs-list" };
+            Ui.At(list, Layout.TabBar.Rect);
+            Ui.StripBox(list);
+            list.style.backgroundColor = Layout.Color(Layout.TabBar.Background);
+            list.style.flexDirection = FlexDirection.Row;
+            list.style.borderBottomWidth = (float)Layout.PanelBorder;
+            list.style.borderBottomColor = Layout.Color(Layout.TabBar.RuleBottom);
+            list.contentContainer.style.width = (float)Layout.ViewportWidth;
+            list.contentContainer.style.height = (float)Layout.TabBar.Rect.H;
+            list.contentContainer.style.flexDirection = FlexDirection.Row;
             tabs.Add(list);
-            AddTab(tabs, list, PauseMenuState.MapTab, "MAP", Map.Root);
-            AddTab(tabs, list, PauseMenuState.ProgressTab, "PROGRESS", Progress.Root);
-            AddTab(tabs, list, PauseMenuState.AbilitiesTab, "ABILITIES", Abilities.Root);
-            AddTab(tabs, list, PauseMenuState.SettingsTab, "SETTINGS", Settings.Root);
+
+            var content = Layout.Panels.Content;
+            for (var i = 0; i < Layout.TabBar.Tabs.Count; i++)
+            {
+                var definition = Layout.TabBar.Tabs[i];
+                var tab = new TabsTab { Value = definition.Id, text = definition.Label };
+                tab.name = "tab-" + definition.Id;
+                Ui.At(tab, new LayoutRect(definition.X, 0, definition.W, Layout.TabBar.Rect.H));
+                Ui.StripBox(tab);
+                Ui.Radius(tab, 0);
+                tab.style.paddingLeft = 0;
+                tab.style.paddingRight = 0;
+                tab.style.paddingTop = 0;
+                tab.style.paddingBottom = 0;
+                tab.style.borderTopWidth = 0;
+                tab.style.borderBottomWidth = 0;
+                tab.style.borderRightWidth = 0;
+                tab.style.fontSize = (float)Layout.Size("tab");
+                tab.style.unityFontStyleAndWeight = FontStyle.Bold;
+                tab.style.letterSpacing = (float)Layout.Size("letterSpacingTab");
+                tab.style.unityTextAlign = TextAnchor.MiddleLeft;
+                tab.style.paddingLeft = 16;
+                tab.style.whiteSpace = WhiteSpace.NoWrap;
+                if (i > 0)
+                {
+                    tab.style.borderLeftWidth = (float)Layout.PanelBorder;
+                    tab.style.borderLeftColor = Layout.Color(Layout.TabBar.Separator);
+                }
+                list.Add(tab);
+                tabButtons[definition.Id] = tab;
+
+                var panel = new TabsPanel { Value = definition.Id };
+                panel.name = "panel-" + definition.Id;
+                Ui.At(panel, content);
+                Ui.StripBox(panel);
+                panel.style.paddingLeft = 0;
+                panel.style.paddingRight = 0;
+                panel.style.paddingTop = 0;
+                panel.style.paddingBottom = 0;
+                panel.style.flexDirection = FlexDirection.Column;
+                panel.Add(TabContent(definition.Id, content));
+                tabs.Add(panel);
+                tabPanels[definition.Id] = panel;
+            }
+
             tabs.Value = PauseMenuState.MapTab;
             tabs.ValueChanged += values =>
             {
@@ -218,29 +284,31 @@ namespace GamePauseMenu
             return tabs;
         }
 
-        private void AddTab(Tabs tabs, TabsList list, string value, string label, VisualElement body)
+        private VisualElement TabContent(string tabId, LayoutRect content)
         {
-            var tab = new TabsTab { Value = value, text = label };
-            tab.name = "tab-" + value;
-            list.Add(tab);
-            var panel = new TabsPanel { Value = value };
-            panel.name = "panel-" + value;
-            panel.Add(body);
-            tabs.Add(panel);
-            tabButtons[value] = tab;
-            tabPanels[value] = panel;
+            var view = tabId == PauseMenuState.MapTab ? Map.Root
+                : tabId == PauseMenuState.ProgressTab ? Progress.Root
+                : tabId == PauseMenuState.AbilitiesTab ? Abilities.Root
+                : Settings.Root;
+            // The tab view is offset by the content origin so its children can use the layout
+            // authority's absolute viewport coordinates directly.
+            Ui.At(view, new LayoutRect(0, 0, Layout.ViewportWidth, Layout.ViewportHeight),
+                content.X, content.Y);
+            return view;
         }
 
-        /// <summary>The generated selected-tab selector is outside the native style grammar, so the
-        /// lane paints the active-tab fill on the admitted Tabs state class from the appearance
-        /// palette (documented in the lane README). Consumer styling of a generated state class.</summary>
+        /// <summary>Active-tab fill and text are pinned by the layout authority and applied to the
+        /// generated Tabs `is-selected` state class (the package sheet's selected-tab selector is a
+        /// documented uss-selector gap, so the lane paints it from the state class).</summary>
         private void ApplyTabStyles()
         {
             foreach (var pair in tabButtons)
             {
                 var active = pair.Value.ClassListContains("is-selected");
-                pair.Value.style.backgroundColor = active ? Palette.Signal : Color.clear;
-                pair.Value.style.color = active ? Palette.OnSignal : Palette.Bone;
+                pair.Value.style.backgroundColor = Layout.Color(active
+                    ? Layout.TabBar.ActiveBackground : Layout.TabBar.Background);
+                pair.Value.style.color = Layout.Color(active
+                    ? Layout.TabBar.ActiveText : Layout.TabBar.InactiveText);
             }
         }
 
@@ -252,11 +320,34 @@ namespace GamePauseMenu
                 evt.StopPropagation();
                 return;
             }
-            if (evt.keyCode == KeyCode.Escape && Progress.DrawerOpen)
+            if (evt.keyCode != KeyCode.Escape) return;
+            if (Progress.DrawerOpen)
             {
                 CloseDrawer();
                 evt.StopPropagation();
+                return;
             }
+            if (Map.HasOpenPopover)
+            {
+                Map.ClosePopovers();
+                evt.StopPropagation();
+                return;
+            }
+            if (Abilities.HasOpenHover)
+            {
+                Abilities.CloseHoverPopovers();
+                evt.StopPropagation();
+            }
+        }
+
+        /// <summary>The generated controls attach the package stylesheet to their own root, so a
+        /// consumer sheet attached only to the app root loses same-specificity ties. Attach the lane
+        /// sheet to every element, once, after the tree is built (documented in the lane README).</summary>
+        private static void AttachLaneSheet(VisualElement element, StyleSheet sheet)
+        {
+            if (!element.styleSheets.Contains(sheet)) element.styleSheets.Add(sheet);
+            for (var i = 0; i < element.hierarchy.childCount; i++)
+                AttachLaneSheet(element.hierarchy[i], sheet);
         }
     }
 }

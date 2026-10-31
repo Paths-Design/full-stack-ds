@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Builds the committed Unity scene as a standalone macOS Player, drives it through the four tabs
-# and writes map/progress/abilities/settings PNGs at 1280x800 plus result.json into evidence/.
+# Builds the committed Unity scene as a standalone macOS Player, drives the capture states
+# declared in fixtures/parity-layout.json and writes 1280x800 PNGs plus result.json into evidence/.
 # Requires an activated Unity 6000.5.3f1 Editor; override with UNITY_EDITOR.
 set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -19,8 +19,9 @@ if [[ ! -x "$editor" ]]; then
 fi
 
 rm -rf "$app"
-rm -f "$evidence/map.png" "$evidence/progress.png" "$evidence/abilities.png" "$evidence/settings.png" \
-      "$evidence/remap-modal.png" "$evidence/subtitle-picker.png" "$evidence/result.json"
+rm -f "$evidence/map.png" "$evidence/map-popover.png" "$evidence/progress.png" \
+      "$evidence/abilities.png" "$evidence/abilities-hover.png" "$evidence/settings.png" \
+      "$evidence/settings-remap-modal.png" "$evidence/settings-subtitle.png" "$evidence/result.json"
 
 echo "Building Player: $app"
 FSDS_PAUSE_APP="$app" "$editor" -batchmode -quit -projectPath "$lane" \
@@ -39,7 +40,7 @@ FSDS_PAUSE_EVIDENCE="$evidence" FSDS_PAUSE_RUN="$run_id" "$executable" \
 status=$?
 set -e
 
-for capture in map progress abilities settings remap-modal subtitle-picker; do
+for capture in map map-popover progress abilities abilities-hover settings settings-remap-modal settings-subtitle; do
     if [[ ! -s "$evidence/$capture.png" ]]; then
         echo "Missing capture $evidence/$capture.png (player exit $status; inspect $player_log)." >&2
         exit 1
@@ -55,7 +56,7 @@ if ! grep -q '"passed": true' "$evidence/result.json"; then
 fi
 
 echo "Capture witnesses:"
-for capture in map progress abilities settings remap-modal subtitle-picker; do
+for capture in map map-popover progress abilities abilities-hover settings settings-remap-modal settings-subtitle; do
     echo "  $evidence/$capture.png ($(stat -f%z "$evidence/$capture.png") bytes)"
 done
 echo "Receipt: $evidence/result.json"

@@ -5,128 +5,119 @@ using UnityEngine.UIElements;
 
 namespace GamePauseMenu
 {
-    /// <summary>Header band: brand mark, commander readout and paused chip. Container layout is
-    /// app chrome; every text/divider inside is a generated component.</summary>
+    /// <summary>Header band from the parity layout: wordmark, mission line, three stat columns and
+    /// the PAUSED chip, all at absolute JSON coordinates. Shell band chrome is hand-authored; the
+    /// text, chip and rules inside it are generated components.</summary>
     public sealed class HeaderBand
     {
-        public VisualElement Root { get; }
-        public Text RankValue { get; }
-        public Text RankSub { get; }
-        public Text CreditsValue { get; }
-        public Text CreditsSub { get; }
-        public Text FollowersValue { get; }
-        public Text FollowersSub { get; }
-        public Text StatusText { get; }
-        public Text BrandWord { get; }
-        public Text BrandNumber { get; }
-
-        public HeaderBand(FixtureSet fixtures, OrionPalette palette)
+        public sealed class StatView
         {
-            var commander = fixtures.Commander;
-            Root = Ui.Box("pause-header");
-            Root.name = "pause-header";
-
-            var brand = Ui.Box("header-brand");
-            var mark = Ui.Box("brand-mark");
-            var words = commander.Callsign.Split(' ');
-            BrandWord = Ui.Styled(Ui.Display(words[0]), "brand-word");
-            mark.Add(BrandWord);
-            if (words.Length > 1)
-            {
-                BrandNumber = Ui.Styled(Ui.Display(words[words.Length - 1]), "brand-number");
-                BrandNumber.style.color = palette.Signal;
-                mark.Add(BrandNumber);
-            }
-            brand.Add(mark);
-
-            var sub = Ui.Box("brand-sub");
-            sub.Add(Ui.Overline(commander.Mission));
-            sub.Add(Ui.Chip(commander.CallsignPlate, "plate-chip"));
-            brand.Add(sub);
-            Root.Add(brand);
-
-            Root.Add(Ui.Box("header-rule"));
-
-            var readout = Ui.Box("header-readout");
-            readout.Add(Stat("RANK", commander.Rank.Label,
-                $"LV {commander.Rank.Level}  ·  GLOBAL #{commander.Rank.GlobalPosition}  ·  {commander.Rank.Percentile}",
-                out var rankValue, out var rankSub));
-            readout.Add(Stat("EARNINGS", Ui.Number(commander.Earnings.Credits) + " " + commander.Earnings.Currency,
-                "PENDING " + Ui.Number(commander.Earnings.Pending) + " " + commander.Earnings.Currency,
-                out var creditsValue, out var creditsSub));
-            readout.Add(Stat("FOLLOWERS", Ui.Number(commander.Followers.Total),
-                commander.Followers.Trend + "  " + commander.Followers.Period,
-                out var followersValue, out var followersSub));
-            Root.Add(readout);
-            RankValue = rankValue;
-            RankSub = rankSub;
-            CreditsValue = creditsValue;
-            CreditsSub = creditsSub;
-            FollowersValue = followersValue;
-            FollowersSub = followersSub;
-
-            StatusText = Ui.Chip(commander.Status, "paused-chip");
-            StatusText.name = "paused-chip";
-            Root.Add(StatusText);
+            public string Id;
+            public Text Label;
+            public Text Value;
+            public Text Sub;
         }
 
-        private static VisualElement Stat(string label, string value, string sub, out Text valueText, out Text subText)
+        public VisualElement Root { get; }
+        public Text BrandWord { get; }
+        public Text BrandNumber { get; }
+        public Text Mission { get; }
+        public Text StatusText { get; }
+        public VisualElement PausedChip { get; }
+        public readonly List<StatView> Stats = new List<StatView>();
+
+        public HeaderBand(FixtureSet fixtures, ParityLayoutData layout, OrionPalette palette)
         {
-            var block = Ui.Box("header-stat");
-            block.Add(Ui.Overline(label));
-            valueText = Ui.Styled(Ui.Title(value), "stat-value");
-            block.Add(valueText);
-            subText = Ui.Caption(sub);
-            subText.AddToClassList("stat-sub");
-            block.Add(subText);
-            return block;
+            var header = layout.Header;
+            Root = Ui.MakeBox("pause-header");
+            Root.name = "header";
+            Ui.At(Root, header.Rect);
+            Root.style.backgroundColor = layout.Color(header.Background);
+            Root.style.borderBottomWidth = (float)layout.PanelBorder;
+            Root.style.borderBottomColor = layout.Color(header.RuleBottom);
+
+            var wordmark = Ui.MakeBox("wordmark");
+            Ui.Point(wordmark, header.Wordmark.X, header.Wordmark.Y);
+            wordmark.style.height = (float)header.Wordmark.H;
+            wordmark.style.flexDirection = FlexDirection.Row;
+            wordmark.style.alignItems = Align.Center;
+            BrandWord = Ui.MakeText(layout, header.TextMain, "wordmark", "boneBright", true);
+            BrandWord.style.height = (float)header.Wordmark.H;
+            BrandNumber = Ui.MakeText(layout, header.TextAccent, "wordmark", "signal", true);
+            BrandNumber.style.height = (float)header.Wordmark.H;
+            BrandNumber.style.marginLeft = 8;
+            wordmark.Add(BrandWord);
+            wordmark.Add(BrandNumber);
+            Root.Add(wordmark);
+
+            Mission = Ui.MakeText(layout, header.MissionText, "mission", "muted", true,
+                letterSpacing: layout.Size("letterSpacingMicro"));
+            Ui.Point(Mission, header.Mission.X, header.Mission.Y);
+            Root.Add(Mission);
+
+            foreach (var stat in header.Stats)
+            {
+                var view = new StatView { Id = stat.Id };
+                view.Label = Ui.MakeText(layout, stat.Label, "statLabel", "muted", true,
+                    letterSpacing: layout.Size("letterSpacingMicro"));
+                Ui.Point(view.Label, stat.X, stat.LabelY);
+                view.Value = Ui.MakeText(layout, stat.Value, "statValue", "boneBright", true);
+                Ui.Point(view.Value, stat.X, stat.ValueY);
+                view.Sub = Ui.MakeText(layout, stat.Sub, "statSub", "muted", false);
+                Ui.Point(view.Sub, stat.X, stat.SubY);
+                Root.Add(view.Label);
+                Root.Add(view.Value);
+                Root.Add(view.Sub);
+                Stats.Add(view);
+            }
+
+            PausedChip = Ui.MakeBadge(layout, header.PausedText, "chip", header.PausedChip,
+                layout.Color("signal"), layout.Color("onSignal"), false, Color.clear);
+            Root.Add(PausedChip);
+            StatusText = PausedChip.Query<Text>();
         }
     }
 
-    /// <summary>Footer band: control hints plus the current nav-target summary. App-level chrome
-    /// shared by every engine; the icons and labels inside are generated components.</summary>
+    /// <summary>Footer band: control hints left, NAV TARGET label/value right, at JSON coordinates.</summary>
     public sealed class FooterBand
     {
         public VisualElement Root { get; }
-        public VisualElement Hints { get; }
+        public Text Hints { get; }
+        public Text NavLabel { get; }
         public Text NavTargetValue { get; }
-        public readonly List<Text> HintLabels = new List<Text>();
 
-        public FooterBand(FixtureSet fixtures, OrionPalette palette)
+        public FooterBand(FixtureSet fixtures, ParityLayoutData layout, OrionPalette palette)
         {
-            Root = Ui.Box("pause-footer");
-            Root.name = "pause-footer";
+            var footer = layout.Footer;
+            Root = Ui.MakeBox("pause-footer");
+            Root.name = "footer";
+            Ui.At(Root, footer.Rect);
+            Root.style.borderTopWidth = (float)layout.PanelBorder;
+            Root.style.borderTopColor = layout.Color(footer.RuleTop);
 
-            Hints = Ui.Box("footer-hints");
-            Hint("arrow-left", "BACK");
-            Hint("check", "SELECT");
-            Hint("menu", "TAB");
+            Hints = Ui.MakeText(layout, footer.HintsText, "footer", "muted", false);
+            Ui.Point(Hints, footer.Hints.X, footer.Hints.Y - footer.Rect.Y);
             Root.Add(Hints);
 
-            var nav = Ui.Box("footer-nav");
-            nav.Add(Ui.Overline("NAV TARGET"));
-            NavTargetValue = Ui.Styled(Ui.Title("—"), "nav-target-value");
-            NavTargetValue.name = "nav-target-value";
-            nav.Add(NavTargetValue);
-            Root.Add(nav);
+            NavLabel = Ui.MakeText(layout, footer.NavLabelText, "statLabel", "muted", true,
+                letterSpacing: layout.Size("letterSpacingMicro"));
+            Ui.Point(NavLabel, footer.NavLabel.X, footer.NavLabel.Y - footer.Rect.Y);
+            Root.Add(NavLabel);
 
-            if (fixtures.Commander.NavTarget != null) SetNavTarget(fixtures.Commander.NavTarget);
-        }
+            // type.statLabel (10) because the type map declares no footer-value size and the pinned
+            // prose size (13) overflows the right edge from valueX=1176; JSON type map wins per authority.
+            // Pinned: right-aligned to x=1256 at y=770, 13 px / 700 signal.
+            NavTargetValue = Ui.MakeText(layout, footer.NavEmpty, "body", "signal", true,
+                new LayoutRect(footer.NavValueRight - 256, footer.NavValueY - footer.Rect.Y, 256, 18),
+                align: TextAnchor.MiddleRight);
+            Root.Add(NavTargetValue);
 
-        private void Hint(string iconName, string label)
-        {
-            var hint = Ui.Box("footer-hint");
-            hint.Add(new FullStackDS.Icon { Name = iconName, Size = "sm" });
-            var text = Ui.Caption(label);
-            HintLabels.Add(text);
-            hint.Add(text);
-            Hints.Add(hint);
+            if (!string.IsNullOrEmpty(fixtures.Commander.NavTarget)) SetNavTarget(fixtures.Commander.NavTarget);
         }
 
         public void SetNavTarget(string label)
         {
             NavTargetValue.text = string.IsNullOrEmpty(label) ? "—" : label;
-            NavTargetValue.EnableInClassList("is-set", !string.IsNullOrEmpty(label));
         }
     }
 }
