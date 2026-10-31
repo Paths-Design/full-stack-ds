@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T15:42:59.736Z"
     artifact_path: packages/ds-unity/Runtime/Components/Pagination/Pagination.cs
     commit_sha: a1d5e44859e63389051fc8d6b38201111e0ba893
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 77fd1baa7 (sourceDirty false): 84/84 passed, zero failed/skipped (test-run start 2026-10-31 15:42:20Z; resultsSha256 5b40e0a3977fcdd43aa568047495752cf41a68abb3bef06967e3b7abdf99d399). The added case sets DefaultIndex before the labels, builds three item buttons with the authored item/label/marker classes, checks the default index, commits an uncontrolled activation, raises a controlled request without committing, blocks activation while disabled, checks the presentation carrier and asserts the absent aria/current-state API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T15:43:00.277Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.PaginationBuildsItsStripFromLabelsAndCommitsTheIndex
+    exit_code: 0
+    commit_sha: "77fd1baa78f170d3ddd07840aba0880661ce09e3"
