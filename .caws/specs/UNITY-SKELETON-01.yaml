@@ -54,3 +54,12 @@ contracts:
   - name: 'skeleton-container'
     type: behavior
     path: 'packages/ds-contracts/components/Skeleton/Skeleton.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 7377f1d88: focused unity codegen + cli seam 215/215 pass, including the iteration-subtree omission, the Skeleton carrier axes, the radius/aspect-ratio/lines/decorative pending rules and the morphology box-model ledger provenance fix; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T11:33:04.830Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > omits the iteration subtree and keeps only carrier axes for Skeleton"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: "7377f1d88fbe6934d3a6e00dd0a7fdf62f9eab89"
