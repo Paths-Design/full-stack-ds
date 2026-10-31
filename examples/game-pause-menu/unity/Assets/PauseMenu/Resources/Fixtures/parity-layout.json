@@ -166,7 +166,9 @@
     "activeBackground": "signal",
     "activeText": "onSignal",
     "inactiveText": "textSecondary",
-    "separator": "rule"
+    "separator": "rule",
+    "labelAlign": "left",
+    "labelInset": 32
   },
   "footer": {
     "rect": {
@@ -579,6 +581,41 @@
       "subtitleLanguage": "Fran\u00e7ais",
       "navTarget": "cache-02",
       "hiddenIcons": []
+    }
+  },
+  "iconArt": {
+    "$note": "Icon surfaces are pinned to two-letter codes so the three engines render the same art; GPUI has no Icon component and catalog glyphs are not portable.",
+    "rowTile": {
+      "size": 16,
+      "background": "graphite",
+      "border": "ruleStrong",
+      "borderWidth": 1,
+      "radius": 0,
+      "fontSize": 8,
+      "weight": 800,
+      "text": "boneBright",
+      "source": "explicit fixture-icon \u2192 code table above",
+      "codes": {
+        "Info": "IN",
+        "Placeholder": "PL",
+        "Home": "HO",
+        "Baseline": "BL",
+        "Alarm": "AL",
+        "CircleDot": "CD",
+        "ChevronRight": "CR",
+        "User": "US"
+      }
+    },
+    "cardTile": {
+      "size": 40,
+      "background": "graphite",
+      "border": "ruleStrong",
+      "borderWidth": 1,
+      "radius": 0,
+      "fontSize": 12,
+      "weight": 800,
+      "text": "boneBright",
+      "source": "first two alphanumeric characters of the ability name, uppercased"
     }
   }
 }

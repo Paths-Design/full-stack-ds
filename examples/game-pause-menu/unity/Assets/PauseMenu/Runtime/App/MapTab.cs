@@ -19,6 +19,7 @@ namespace GamePauseMenu
         private readonly OrionPalette palette;
         private readonly Dictionary<string, DsButton> markers = new Dictionary<string, DsButton>();
         private readonly Dictionary<string, Switch> visibilitySwitches = new Dictionary<string, Switch>();
+        private readonly Dictionary<string, VisualElement> iconTiles = new Dictionary<string, VisualElement>();
         private readonly Text popoverTitle;
         private readonly Text popoverMeta;
         private readonly Text popoverBody;
@@ -137,6 +138,9 @@ namespace GamePauseMenu
             return setNavTargetButton;
         }
         public bool IsMarkerPlotted(string iconId) => markers[iconId].style.display.value != DisplayStyle.None;
+
+        /// <summary>The pinned 16x16 code tile for an icon-visibility row.</summary>
+        public VisualElement IconTile(string iconId) => iconTiles.TryGetValue(iconId, out var tile) ? tile : null;
         public string CurrentMarkerId => currentIcon == null ? null : currentIcon.Id;
 
         public void OpenPopover(string iconId)
@@ -269,9 +273,13 @@ namespace GamePauseMenu
                 row.style.borderBottomWidth = 1;
                 row.style.borderBottomColor = layout.Color("rule");
 
-                var glyph = Ui.MakeIcon(layout, icon.Icon, layout.Color("textSecondary"), (float)rows.IconSize);
-                Ui.Point(glyph, 0, (rows.RowH - rows.IconSize) / 2);
-                row.Add(glyph);
+                if (!layout.IconArt.RowTile.Codes.TryGetValue(icon.Icon, out var code))
+                    throw new FixtureFormatException("map-icons.json: icon \"" + icon.Icon
+                        + "\" has no pinned iconArt.rowTile.codes entry.");
+                var tile = Ui.MakeCodeTile(layout, layout.IconArt.RowTile, code);
+                Ui.Point(tile, 0, (rows.RowH - layout.IconArt.RowTile.Size) / 2);
+                row.Add(tile);
+                iconTiles[icon.Id] = tile;
 
                 var name = Ui.MakeText(layout, icon.Label, "rowLabel", "boneBright", true);
                 Ui.Point(name, rows.NameX - rows.X, rows.NameY);

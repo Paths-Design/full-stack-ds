@@ -145,5 +145,73 @@ namespace GamePauseMenu.Tests
             Assert.That(off.Thumb.resolvedStyle.backgroundColor,
                 Is.EqualTo(layout.Color(layout.Switch.OffThumb)));
         }
+        [Test]
+        public void PinnedIconArtRendersPortableTwoLetterTiles()
+        {
+            var layout = FixtureRepository.LoadFromResources().Parity;
+            Assert.That(layout.TabBar.LabelAlign, Is.EqualTo("left"));
+            Assert.That(layout.TabBar.LabelInset, Is.EqualTo(32));
+            Assert.That(layout.IconArt.RowTile.Size, Is.EqualTo(16));
+            Assert.That(layout.IconArt.CardTile.Size, Is.EqualTo(40));
+
+            using var host = new TestHost();
+
+            var mapTab = host.App.TabButton(PauseMenuState.MapTab);
+            Assert.That(mapTab.style.paddingLeft.value.value,
+                Is.EqualTo((float)layout.TabBar.LabelInset).Within(0.001f));
+            Assert.That(mapTab.style.unityTextAlign.value, Is.EqualTo(TextAnchor.MiddleLeft));
+
+            var codes = new List<string>();
+            foreach (var icon in host.App.State.Fixtures.Map.Icons)
+            {
+                var tile = host.App.Map.IconTile(icon.Id);
+                Assert.That(tile, Is.Not.Null, "row tile for " + icon.Id);
+                Assert.That(tile.style.width.value.value, Is.EqualTo(16).Within(0.001f));
+                Assert.That(tile.style.height.value.value, Is.EqualTo(16).Within(0.001f));
+                Assert.That(tile.style.borderTopWidth.value, Is.EqualTo(1).Within(0.001f));
+                Assert.That(tile.style.backgroundColor.value, Is.EqualTo(layout.Color("graphite")));
+                Assert.That(tile.style.borderTopColor.value, Is.EqualTo(layout.Color("ruleStrong")));
+                Assert.That(tile.Q<FullStackDS.Icon>(), Is.Null,
+                    "pinned icon surfaces render code tiles, not catalog glyphs");
+                var label = tile.Q<Text>();
+                Assert.That(label, Is.Not.Null);
+                Assert.That(label.style.fontSize.value.value, Is.EqualTo(8).Within(0.001f));
+                Assert.That(label.style.color.value, Is.EqualTo(layout.Color("boneBright")));
+                Assert.That(label.text, Is.EqualTo(layout.IconArt.RowTile.Codes[icon.Icon]));
+                codes.Add(label.text);
+            }
+
+            Assert.That(codes, Is.EquivalentTo(new[] { "IN", "PL", "HO", "BL", "AL", "CD", "CR", "US" }));
+            Assert.That(host.App.Map.IconTile("vein-04").Q<Text>().text, Is.EqualTo("BL"),
+                "the pinned table maps Baseline to BL, not the naive first two letters");
+
+            var overclock = host.App.State.Fixtures.Abilities.Abilities.First(ability => ability.Id == "overclock");
+            var art = host.App.Abilities.CardArt(overclock.Id);
+            Assert.That(art, Is.Not.Null);
+            Assert.That(art.style.width.value.value, Is.EqualTo(40).Within(0.001f));
+            Assert.That(art.style.height.value.value, Is.EqualTo(40).Within(0.001f));
+            Assert.That(art.style.backgroundColor.value, Is.EqualTo(layout.Color("graphite")));
+            Assert.That(art.style.borderTopColor.value, Is.EqualTo(layout.Color("ruleStrong")));
+            Assert.That(art.Q<FullStackDS.Icon>(), Is.Null);
+            var artLabel = art.Q<Text>();
+            Assert.That(artLabel, Is.Not.Null);
+            Assert.That(artLabel.text, Is.EqualTo("OV"));
+            Assert.That(artLabel.style.fontSize.value.value, Is.EqualTo(12).Within(0.001f));
+            var cardCodes = new List<string>();
+            foreach (var ability in host.App.State.Fixtures.Abilities.Abilities)
+            {
+                var cardTile = host.App.Abilities.CardArt(ability.Id);
+                Assert.That(cardTile, Is.Not.Null, "card art for " + ability.Id);
+                Assert.That(cardTile.Q<Text>().text, Is.EqualTo(FixtureRepository.IconCode(ability.Name)));
+                cardCodes.Add(cardTile.Q<Text>().text);
+            }
+            Assert.That(cardCodes, Is.EquivalentTo(new[] { "TH", "OV", "TH", "IO", "DR", "SI", "AE", "RE", "TH", "HA" }));
+            Assert.That(artLabel.style.color.value, Is.EqualTo(layout.Color("boneBright")));
+
+            host.App.SelectAbility(overclock.Id);
+            var selected = host.App.Abilities.CardRoot(overclock.Id);
+            Assert.That(selected.style.borderTopColor.value, Is.EqualTo(layout.Color("signal")));
+            Assert.That(selected.style.borderTopWidth.value, Is.EqualTo(2).Within(0.001f));
+        }
     }
 }
