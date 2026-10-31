@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.ShuttleDerivesBothListsAndTransfersTheSelection
     exit_code: 0
     commit_sha: "29411b6ee9468fd599fca0184c6ea75a3e1d7ca7"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 29411b6ee: packages/ds-unity/README.md admits Shuttle with its array channel API, runtime dual lists, marking/transfer derivation and the withheld keyboard/a11y/marked-state facts, and records the 88/88 lane; docs/architecture/unity-target.md records the Transfer dispatcher mode, shell recreation, array-channel non-attribute note and 88/88 lane; docs/current-implementation-snapshot.md records the forty-seventh admitted control with those facts."
+    recorded_at: "2026-10-31T16:45:46.724Z"
+    commit_sha: "29411b6ee9468fd599fca0184c6ea75a3e1d7ca7"
