@@ -597,6 +597,8 @@ func _validate_parity_layout(data: Dictionary) -> void:
 	_validate_rect(header.get("pausedChip", {}), "parity-layout.header.pausedChip")
 	var tab_bar := _dictionary(data, "tabBar", "parity-layout")
 	_validate_rect(tab_bar.get("rect", {}), "parity-layout.tabBar.rect")
+	_string(tab_bar, "labelAlign", "parity-layout.tabBar")
+	_number(tab_bar, "labelInset", "parity-layout.tabBar")
 	var tabs := _array(tab_bar, "tabs", "parity-layout.tabBar")
 	if tabs.size() != 4:
 		_fail("parity-layout.tabBar.tabs: expected four tabs, got %d" % tabs.size())
@@ -701,6 +703,16 @@ func _validate_parity_layout(data: Dictionary) -> void:
 		var group := _dictionary(data, key, "parity-layout")
 		if group.is_empty():
 			_fail("parity-layout.%s: expected entries" % key)
+	var icon_art := _dictionary(data, "iconArt", "parity-layout")
+	for key in ["rowTile", "cardTile"]:
+		var tile := _dictionary(icon_art, key, "parity-layout.iconArt")
+		for field in ["size", "borderWidth", "radius", "fontSize", "weight"]:
+			_number(tile, field, "parity-layout.iconArt." + key)
+		for field in ["background", "border", "text", "source"]:
+			_string(tile, field, "parity-layout.iconArt." + key)
+	var codes := _dictionary(icon_art.get("rowTile", {}), "codes", "parity-layout.iconArt.rowTile")
+	for catalog_name in codes.keys():
+		_string(codes, catalog_name, "parity-layout.iconArt.rowTile.codes")
 
 
 func _validate_rect(rect_dict: Dictionary, context: String) -> void:

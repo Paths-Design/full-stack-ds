@@ -58,9 +58,10 @@ static func tabs():
 static func style_tabs(node) -> void:
 	var tab_type := parity.type_size("tab")
 	var tab_spacing := orion.tab_spacing()
-	var inactive := orion.flat(orion.color("charcoal"), Color.TRANSPARENT, 0, 0.0)
-	var hover := orion.flat(orion.color("graphite"), Color.TRANSPARENT, 0, 0.0)
-	var active := orion.flat(orion.color("signal"), orion.color("signal"), 0, 0.0)
+	var label_inset := float(parity.tab_bar.get("labelInset", 32))
+	var inactive := _tab_style(orion.color("charcoal"), Color.TRANSPARENT, label_inset)
+	var hover := _tab_style(orion.color("graphite"), Color.TRANSPARENT, label_inset)
+	var active := _tab_style(orion.color("signal"), orion.color("signal"), label_inset)
 	# Ops: pinned tab label inset (parity.tabBar.labelInset).
 	for style in [inactive, hover, active]:
 		style.content_margin_left = 32
@@ -78,6 +79,7 @@ static func style_tabs(node) -> void:
 		button.add_theme_stylebox_override("hover", hover)
 		button.add_theme_stylebox_override("pressed", active)
 		button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		button.add_theme_color_override("font_color", orion.color("textSecondary"))
 		button.add_theme_color_override("font_hover_color", orion.color("boneBright"))
 		button.add_theme_color_override("font_pressed_color", orion.color("onSignal"))
@@ -90,6 +92,13 @@ static func style_tabs(node) -> void:
 	var head_y := float(parity.tab_bar["rect"]["y"])
 	node.add_theme_constant_override("separation", int(content_y - head_y - tab_height))
 	node.add_theme_constant_override("separation", int(content_y - head_y - tab_height))
+
+
+static func _tab_style(bg: Color, border: Color, label_inset: float) -> StyleBoxFlat:
+	var box := orion.flat(bg, border, 0, 0.0)
+	box.content_margin_left = label_inset
+	box.content_margin_right = label_inset
+	return box
 
 
 # --- switch ------------------------------------------------------------------
@@ -126,6 +135,13 @@ static func prepare_switch(node) -> void:
 	# and shifted every switch down by 4px relative to the parity rect).
 	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
 		trigger.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	# The parity pill has no visible label: hide the generated empty strip/content
+	# rows so the widget box collapses to exactly 64x32 instead of 48px (the VBox
+	# separation between the empty rows otherwise pushes the pill 8px low).
+	if node.strip != null:
+		node.strip.hide()
+	if node.content != null:
+		node.content.hide()
 
 
 ## 64x32 stadium track + 24px circular thumb, rendered from the parity switch
@@ -150,9 +166,8 @@ static func switch_icon(checked: bool) -> ImageTexture:
 			"#" + parity.color(str(parity.switch_data["offBorder"])).to_html(false),
 			int(parity.switch_data["borderWidth"]),
 		]
-	# The generated CheckButton centres its icon vertically in a 40px control; draw
-	# the 64x32 pill at the top of a 64x40 canvas so the painted pill aligns with
-	# the parity rect instead of sitting 4px low.
+	# The generated CheckButton reserves icon height + 8px; draw the 64x32 pill at the
+	# top of a 64x40 canvas so it paints flush to the parity rect inside that box.
 	var canvas_height := height + 8.0
 	var svg := '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">' % [int(width), int(canvas_height), int(width), int(canvas_height)]
 	svg += '<rect x="%s" y="%s" width="%s" height="%s" rx="%s" fill="%s"%s/>' % [

@@ -11,6 +11,7 @@ class_name MapTab
 var app: PauseMenuApp
 var field: MapField
 var switches: Dictionary = {}
+var icon_tiles: Dictionary = {}
 var meta_label: Label
 var map_panel: Control
 var icon_panel: Control
@@ -100,13 +101,18 @@ func _build_icon_panel() -> void:
 
 func _add_icon_row(icon: Dictionary, row_x: float, row_y: float, row_h: float, icon_size: float, name_x: float, switch_x: float, switch_y: float, width: float) -> void:
 	var icon_id := str(icon.get("id", ""))
-	var glyph = DSFactory.icon(
-		PauseFixtures.glyph_name_for(str(icon.get("icon", ""))),
+	# Parity icon art: 16x16 code tile (app-authority pin, not a package glyph).
+	var row_art: Dictionary = app.parity.raw["iconArt"]["rowTile"]
+	var icon_tile := UI.code_tile(
+		app.parity.icon_code_for_catalog(str(icon.get("icon", ""))),
 		icon_size,
-		app.orion.color("boneBright")
+		float(row_art["fontSize"]),
+		str(row_art["background"]),
+		str(row_art["border"])
 	)
-	UI.place(glyph, row_x, row_y + (row_h - icon_size) / 2.0, icon_size, icon_size)
-	icon_panel.add_child(glyph)
+	UI.place(icon_tile, row_x, row_y + (row_h - icon_size) / 2.0, icon_size, icon_size)
+	icon_panel.add_child(icon_tile)
+	icon_tiles[icon_id] = icon_tile
 	var name_label := UI.label(str(icon.get("label", "")), app.parity.type_size("rowLabel"), 700, "boneBright", 0.0)
 	UI.place(name_label, name_x, row_y + float(app.parity.map["iconRows"]["nameY"]), 260, 16)
 	icon_panel.add_child(name_label)

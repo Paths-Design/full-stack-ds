@@ -34,7 +34,7 @@ colour map, plus per-component `token_overrides` (Button/Badge/Card) and
 | `fixtures/parity-layout.json` (lane copy, committed) | Every rect, colour, type size, switch geometry, marker/rarity/status colour map, capture-state list. Parsed by `scripts/parity_layout.gd`; validated loudly by the fixture adapter. |
 | `../parity.md` | Rendering rules, per-tab composition order, switch parity, "Component styling defaults", permitted differences. |
 | `../spec.md` | App semantics + I1–I15 interaction contract (unchanged). |
-| parity branch commit `7897d0607` | "Corrections pinned after the first parity review round" — merged into this lane before the final capture: OFF-switch colours, nav target in all capture states, card/rarity-chip boxes, roster `OPEN →`, settings audio sub-layout, shortened panel metas, ink grid lines. |
+| parity branch commits `7897d0607` + `46c45e63a` | Pinned corrections merged before the final capture: OFF-switch colours, nav target in all capture states, card/rarity-chip boxes, roster `OPEN →`, settings audio sub-layout, shortened panel metas, ink grid lines, left-aligned 32 px-inset tab labels, and the portable icon-art language (explicit fixture-icon → code table + ability-name codes). |
 
 ## Setup
 
@@ -78,8 +78,8 @@ GODOT=/Applications/Godot.app/Contents/MacOS/Godot
 node ../parity-check.mjs --root /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu
 ```
 
-Measured on this machine: headless suite 191 checks / 191 passed, 4.1 s,
-`input_dispatch=viewport_push_input`; capture 4.4 s for eight 1280×800 PNGs.
+Measured on this machine: headless suite 201 checks / 201 passed, 4.1 s,
+`input_dispatch=viewport_push_input`; capture 4.8 s for eight 1280×800 PNGs.
 
 ## Parity geometry consumed
 
@@ -90,12 +90,12 @@ used directly and only y is offset.
 | Region | Geometry (JSON) | Realization |
 |---|---|---|
 | Header band | `0,0,1280,104`; wordmark at 32,18 (40 px); mission at 32,72; stats at x=608/800/992; PAUSED chip `1184,40,64,24` | native band chrome; wordmark/stats native labels; PAUSED = generated **Badge** |
-| Tab bar | `0,104,1280,56`; four `320`-wide tabs at x=0/320/640/960; active `signal` fill + `onSignal` text; inactive `textSecondary`; 1 px `rule` separators | generated **Tabs** (`add_item` content slots) with per-trigger geometry/style overrides |
+| Tab bar | `0,104,1280,56`; four `320`-wide tabs at x=0/320/640/960; labels left-aligned with a `32` px inset (`labelAlign=left` / `labelInset=32`); active `signal` fill + `onSignal` text; inactive `textSecondary`; 1 px `rule` separators | generated **Tabs** (`add_item` content slots) with per-trigger geometry/style overrides |
 | Content region | `24,176,1232,552` (tab body 1280×552) | generated Tabs body panel |
 | Footer band | `0,744,1280,56`; hints at `24,770`; NAV TARGET label at `1096,758`, target value right-aligned to `x=1256`, baseline `y=770`, 13 px/700 `signal`; every capture state carries `navTarget=cache-02` | native band chrome + labels |
-| MAP | map panel `24,176,872,552`; field `40,232,840,480` (sage, 60 px grid, 12 px ticks, 24 px markers); icon panel `912,176,344,552`; 8 rows at `firstY=224,rowH=48`, switch `x=1176,y=row+8`; popover `392,272,360,232` | panel chrome/plot/markers native; 8 generated **Switch**; 16 px generated **Icon** glyphs; top-left/title native labels |
+| MAP | map panel `24,176,872,552`; field `40,232,840,480` (sage, 60 px grid, 12 px ticks, 24 px markers); icon panel `912,176,344,552`; 8 rows at `firstY=224,rowH=48`, switch `x=1176,y=row+8`; popover `392,272,360,232` | panel chrome/plot/markers native; 8 generated **Switch**; parity 16×16 code-tile row art (IN/PL/HO/BL/AL/CD/CR/US); top-left/title native labels |
 | PROGRESS | roster `24,176,1232,552`; rows `x=40,firstY=224,rowH=88` (name x=56/y=12, tagline y=36, rep bar `800,44,200,6`, status chip `1080,16,76,22`, affordance `OPEN →` at x=1180, 11 px/700 `signal`); drawer `24,176,560,552` paper with fixed DSL rows; parts rarity chips 64×18 at 9 px | rows/rep bars/drawer native; generated **Badge** chips; generated **Button** (CLOSE/SHOP PARTS) |
-| ABILITIES | grid panel `24,176,808,552`; cards `x=40,firstY=224,w=152,h=240,colGap=12,rowGap=12` (row 2 at y=476..716 inside the 728 panel bottom; icon y=28, name y=84, size y=106, installed y=196; rarity chip exactly `8,-9,64,18` at 9 px/800); detail panel `848,176,408,552` (title y=232, chips y=268, body y=294, stats y=372, loadout y=448/466, slots `872,488,180,60` 2×3); hover popover `224,320,320,180` | generated **Card** surface+parts per card (40 px **Icon**, **Badge** rarity/installed), wrapper hit target; generated **Popover** for hover; native detail/slots |
+| ABILITIES | grid panel `24,176,808,552`; cards `x=40,firstY=224,w=152,h=240,colGap=12,rowGap=12` (row 2 at y=476..716 inside the 728 panel bottom; art y=28, name y=84, size y=106, installed y=196; rarity chip exactly `8,-9,64,18` at 9 px/800); detail panel `848,176,408,552` (title y=232, chips y=268, body y=294, stats y=372, loadout y=448/466, slots `872,488,180,60` 2×3); hover popover `224,320,320,180` | generated **Card** surface+parts per card (parity 40×40 code-tile art, **Badge** rarity/installed), wrapper hit target; generated **Popover** for hover; native detail/slots |
 | SETTINGS | four panels `24,176,608,268`, `648,176,608,268`, `24,460,608,268`, `648,460,608,268`; General/Controller rows 44 px pitch from y=216, remap rows 36 px pitch from y=496; audio rows y=496 pitch 28, language labels y=612, dropdowns y=624 (200×28), `SUBTITLE BACKGROUND` label y=658, swatches y=670 (36×18, 6 px gap), preview `664,694,576,26`; slider `300×6` thumb 16; binding button `120×28`; remap modal `430,300,420,200` | generated **Switch** (5 General rows) + **Button** (6 remap bindings + modal cancel); lane-local `ParitySlider`, native OptionButton/swatches/preview/modal |
 
 ## Admitted component inventory
@@ -108,7 +108,7 @@ used directly and only y is offset.
 | **Button** | `SET AS NAV TARGET`, popover CLOSE, drawer CLOSE, SHOP PARTS, remap CANCEL, 6 remap binding buttons | 6 sites / 12+ instances |
 | **Badge** | PAUSED chip (64×24), marker status, roster ACCESS/LOCKED (76×22), ability rarity (64×18), installed tag, part rarity, size chip | ~27 |
 | **Card** | 10 ability cards (surface + part hosts for header/content/footer) | 10 |
-| **Icon** | map-row glyphs (16 px), ability-card glyphs (40 px) | 18 |
+| **Icon** | admitted but **not used**: parity icon surfaces are the pinned two-letter code tiles (app-authority decision so all three engines render the same art) | 0 |
 | Text / Divider | admitted but **not used**: their baked type scale/foreground (`#141414`, 1 rem/0.75 rem) and Divider's baked `#d0d0d0` are not parity JSON values and have no override channel — ledgered finding (F-GODOT-2/F-GODOT-7) | 0 |
 | Accordion | admitted but unused (no accordion-shaped region in this app) | 0 |
 
@@ -149,6 +149,7 @@ Every fallback carries `# NOT FSDS: <reason>` in source.
 | Ability card internals | positioned children inside generated Card part slots | Card part hosts are flow containers; the JSON pins absolute y positions | `tabs/abilities_tab.gd` |
 | Map field (sage ground, 60 px grid, 12 px corner ticks) | hand-authored `_draw` | no map/drawing component admitted | `widgets/map_field.gd` |
 | Map markers (24 px square, monogram, nav outline) | native `Button` + `_draw` | no map-marker component admitted | `widgets/marker_button.gd` |
+| Icon-visibility row art + ability-card art | 16×16 / 40×40 graphite code tiles (`graphite` + 1 px `ruleStrong`, code label) | parity "Icon art" pin: catalog glyphs are not portable across engines, so the two-letter code tile is the shared art | `scripts/ui_kit.gd` (`code_tile`), `tabs/map_tab.gd`, `tabs/abilities_tab.gd` |
 | Roster rows, reputation bars, status/dossier links | native `Button` rows + `ProgressBar` | no List/Row/Progress component admitted | `tabs/progress_tab.gd` |
 | Drawer surface + slide animation | lane `PanelFrame` + `Tween` | no Drawer/Sheet component admitted | `tabs/progress_tab.gd` |
 | Detail panel stats, slot grid | native labels/buttons | no slot/stat component admitted | `tabs/abilities_tab.gd` |
@@ -160,7 +161,7 @@ Every fallback carries `# NOT FSDS: <reason>` in source.
 
 ## Interaction coverage (shared I1–I15)
 
-All 15 are implemented and covered by the headless suite (191 checks, including parity geometry and pinned-correction probes). Full
+All 15 are implemented and covered by the headless suite (201 checks, including parity geometry, pinned corrections and icon-art probes). Full
 screenshot evidence is the eight capture states; the four required states are
 `map`, `progress`, `abilities`, `settings`.
 
@@ -207,11 +208,22 @@ slot count, incomplete parity layout (`test_corpus`).
   label 658 / swatches 670 (36×18) and preview (664,694,576,26); the roster
   affordance is `OPEN →` at x=1180; controller/remap/audio metas are the shortened
   JSON strings; the map grid is 1 px ink at 12% opacity with 12 px corner ticks.
+- **Icon art (merged `46c45e63a`):** both icon surfaces use the portable two-letter
+  code language: MAP rows render a 16×16 `graphite`/1 px `ruleStrong` tile with an
+  8 px/800 `boneBright` code from the JSON `iconArt.rowTile.codes` table
+  (`Info→IN`, `Placeholder→PL`, `Home→HO`, `Baseline→BL`, `Alarm→AL`,
+  `CircleDot→CD`, `ChevronRight→CR`, `User→US`); ability cards render a 40×40
+  tile with a 12 px/800 code from the first two alphanumeric characters of the
+  ability name (`THREADING→TH`, `OVERCLOCK→OV`, `ION DRILL→IO`, `DRONE SWEEP→DR`,
+  `SIGNAL JAM→SI`, `AEGIS PLATE→AE`, `RECON PING→RE`, `THRUSTER BLOOM→TH`,
+  `HARDLIGHT CUT→HA`) while the selected-card signal outline stays untouched.
+  Tab labels are left-aligned with the pinned 32 px inset.
 - **Switch implementation:** generated `Switch` retained; engine-default
   CheckButton icons replaced with 64×32 SVG pill icons (see "Switch parity fix").
-  The native CheckButton widget box measures 64×40 in Godot (the 64×32 pill is
-  vertically centred inside it); that widget padding is a permitted native-control
-  difference, the painted pill is exactly the JSON geometry.
+  The native CheckButton widget box measures 64×40 in Godot (CheckButton reserves
+  icon height + 8 px); the SVG canvas is 64×40 with the pill drawn flush at its top,
+  so the painted pill is exactly the JSON 64×32 geometry at `row+8` and the widget
+  padding is the only native-control difference.
 - **Permitted differences taken:** system-font fallback and glyph
   rasterisation; letter-spacing approximated with `FontVariation.spacing_glyph`
   (integer pixels); controller description secondary lines ellipsised inside the

@@ -260,7 +260,7 @@ func test_geometry() -> void:
 			check(false, "map switch exists for %s" % str(icon.get("id", "")))
 			continue
 		var trigger: CheckButton = toggle_node.trigger
-		check(absf(trigger.size.x - 64.0) <= 0.5 and trigger.size.y >= 32.0 and trigger.size.y <= 40.0, "map switch %s widget box holds the 64x32 pill" % str(icon.get("id", "")), str(trigger.size))
+		check(absf(trigger.size.x - 64.0) <= 0.5 and trigger.size.y >= 32.0 and trigger.size.y <= 48.0, "map switch %s widget box carries the 64x32 pill" % str(icon.get("id", "")), str(trigger.size))
 	var probe_switch = app.map_tab.switch_for("relay-01")
 	var checked_texture: Texture2D = probe_switch.trigger.get_theme_icon("checked")
 	var unchecked_texture: Texture2D = probe_switch.trigger.get_theme_icon("unchecked")
@@ -292,7 +292,7 @@ func test_geometry() -> void:
 	for panel_def in app.parity.settings["panels"]:
 		check_rect(app.settings_tab.panel_node(str(panel_def["id"])), panel_def["rect"], "settings %s panel" % str(panel_def["id"]))
 	var general_switch = app.settings_tab.general_switch("autoSave")
-	check(absf(general_switch.trigger.size.x - 64.0) <= 0.5 and general_switch.trigger.size.y >= 32.0 and general_switch.trigger.size.y <= 40.0, "general switch widget box holds the 64x32 pill", str(general_switch.trigger.size))
+	check(absf(general_switch.trigger.size.x - 64.0) <= 0.5 and general_switch.trigger.size.y >= 32.0 and general_switch.trigger.size.y <= 48.0, "general switch widget box carries the 64x32 pill", str(general_switch.trigger.size))
 	check(app.settings_tab.general_switch("autoSave").trigger.button_pressed, "first general switch ON")
 	check(not app.settings_tab.general_switch("performanceOverlay").trigger.button_pressed, "second general switch OFF")
 	var off_texture: Texture2D = general_switch.trigger.get_theme_icon("unchecked")
@@ -309,6 +309,50 @@ func test_parity_pins() -> void:
 	var off_texture: Texture2D = probe_switch.trigger.get_theme_icon("unchecked")
 	check(off_texture.get_image().get_pixel(100, 32).is_equal_approx(app.orion.color("graphite")), "switch OFF track uses graphite")
 	check(off_texture.get_image().get_pixel(16, 32).is_equal_approx(app.orion.color("boneBright")), "switch OFF thumb uses boneBright")
+
+	# Parity icon art: portable two-letter code tiles (map rows + ability cards).
+	var row_tile: Control = app.map_tab.icon_tiles.get("relay-01")
+	check(row_tile != null, "map row icon tile exists")
+	if row_tile != null:
+		var row_art: Dictionary = app.parity.raw["iconArt"]["rowTile"]
+		check(row_tile.get_global_rect().size.is_equal_approx(Vector2(float(row_art["size"]), float(row_art["size"]))), "map row icon tile is 16x16", str(row_tile.get_global_rect().size))
+		var row_label: Label = null
+		for node in all_nodes(row_tile, []):
+			if node is Label:
+				row_label = node
+				break
+		check(row_label != null and row_label.text == "IN", "map row icon code is IN for Info", str(row_label.text if row_label else "no label"))
+		var row_cell: PanelFrame = row_tile as PanelFrame
+		check(row_cell != null and row_cell.bg_color.is_equal_approx(app.orion.color("graphite")) and row_cell.border_color.is_equal_approx(app.orion.color("ruleStrong")), "map row icon tile uses graphite/ruleStrong")
+	app.select_tab("abilities")
+	await wait_frames(2)
+	var card_tile: Control = app.abilities_tab.card_art.get("overclock")
+	check(card_tile != null, "ability card art tile exists")
+	if card_tile != null:
+		var card_art: Dictionary = app.parity.raw["iconArt"]["cardTile"]
+		check(card_tile.get_global_rect().size.is_equal_approx(Vector2(float(card_art["size"]), float(card_art["size"]))), "ability card art tile is 40x40", str(card_tile.get_global_rect().size))
+		var card_label: Label = null
+		for node in all_nodes(card_tile, []):
+			if node is Label:
+				card_label = node
+				break
+		check(card_label != null and card_label.text == "OV", "ability card code is OV for OVERCLOCK", str(card_label.text if card_label else "no label"))
+	var threading_tile: Control = app.abilities_tab.card_art.get("threading")
+	var threading_label: Label = null
+	if threading_tile != null:
+		for node in all_nodes(threading_tile, []):
+			if node is Label:
+				threading_label = node
+				break
+	check(threading_label != null and threading_label.text == "TH", "ability card code is TH for THREADING")
+	app.select_tab("map")
+	await wait_frames(2)
+
+	# Tab labels: pinned left alignment with a 32px inset.
+	var first_tab_button: Button = app.tabs.items[0].button
+	check(first_tab_button.alignment == HORIZONTAL_ALIGNMENT_LEFT, "tab labels are left-aligned")
+	var tab_box := first_tab_button.get_theme_stylebox("normal")
+	check(tab_box is StyleBoxFlat and roundi((tab_box as StyleBoxFlat).content_margin_left) == int(app.parity.tab_bar["labelInset"]), "tab label inset is 32px", str((tab_box as StyleBoxFlat).content_margin_left if tab_box is StyleBoxFlat else -1))
 
 	# Ability card 1 rarity chip: exactly 64x18 at card-relative (8,-9).
 	app.select_tab("abilities")

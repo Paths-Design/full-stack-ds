@@ -189,6 +189,27 @@ static func pips(count: int, maximum := 2, color_key := "signal", size := 6.0) -
 	return row
 
 
+## Parity icon-art tile: graphite square + 1px ruleStrong border + centred
+## two-letter code in boneBright (app-authority pin, not a package component).
+## `# NOT FSDS: parity icon-art language (portable code tiles)`.
+static func code_tile(code: String, tile_size: float, font_size: float, background := "graphite", border := "ruleStrong") -> Control:
+	var art: Dictionary = parity.raw.get("iconArt", {})
+	var radius := float(art.get("rowTile", {}).get("radius", 0))
+	var tile := PanelFrame.new()
+	tile.bg_color = color(background)
+	tile.border_color = color(border)
+	tile.border_width = int(art.get("rowTile", {}).get("borderWidth", 1))
+	tile.custom_minimum_size = Vector2(tile_size, tile_size)
+	tile.size = Vector2(tile_size, tile_size)
+	tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var label := label(code, int(font_size), 800, "boneBright", 0.0)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	place(label, 0, 0, tile_size, tile_size)
+	tile.add_child(label)
+	return tile
+
+
 ## Thin progress bar styled from the lane theme (graphite track, signal fill).
 static func progress_bar(width: float, height: float, value: float, maximum: float) -> ProgressBar:
 	var bar := ProgressBar.new()

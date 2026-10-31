@@ -135,6 +135,50 @@ func status_colors() -> Dictionary:
 	}
 
 
+## Pinned icon-art code for an icon-visibility row. The parity.md "Icon art"
+## section enumerates the accepted codes; camel-case names otherwise fall back to
+## their segment initials, and single words to their first two letters.
+func icon_code_for_catalog(catalog_name: String) -> String:
+	var codes: Dictionary = raw.get("iconArt", {}).get("rowTile", {}).get("codes", {})
+	if codes.has(catalog_name):
+		return str(codes[catalog_name])
+	for key in codes.keys():
+		if str(key).to_lower() == catalog_name.to_lower():
+			return str(codes[key])
+	return _segments_code(catalog_name)
+
+
+## Ability-card code: first two letters of the ability name, uppercased.
+func ability_code(ability_name: String) -> String:
+	var alphanumeric := ""
+	for index in range(ability_name.length()):
+		var ch := ability_name[index]
+		if (ch >= "a" and ch <= "z") or (ch >= "A" and ch <= "Z") or (ch >= "0" and ch <= "9"):
+			alphanumeric += ch
+	if alphanumeric.length() < 2:
+		return alphanumeric.to_upper()
+	return alphanumeric.substr(0, 2).to_upper()
+
+
+func _segments_code(raw: String) -> String:
+	var segments: Array[String] = []
+	var current := ""
+	for index in range(raw.length()):
+		var ch := raw[index]
+		if ch >= "A" and ch <= "Z" and not current.is_empty():
+			segments.append(current)
+			current = ""
+		if ch != "-" and ch != " ":
+			current += ch
+	if not current.is_empty():
+		segments.append(current)
+	if segments.size() >= 2:
+		return (segments[0].substr(0, 1) + segments[1].substr(0, 1)).to_upper()
+	if segments.size() == 1:
+		return segments[0].substr(0, 2).to_upper()
+	return "??"
+
+
 ## Contrast helper shared by marker monograms, subtitle previews and chips.
 func contrast_text(background: Color) -> Color:
 	var luminance := 0.2126 * background.r + 0.7152 * background.g + 0.0722 * background.b

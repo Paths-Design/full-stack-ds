@@ -10,6 +10,7 @@ class_name AbilitiesTab
 
 var app: PauseMenuApp
 var cards: Dictionary = {}
+var card_art: Dictionary = {}
 var slot_buttons: Dictionary = {}
 var install_labels: Dictionary = {}
 var slot_size_labels: Dictionary = {}
@@ -115,14 +116,20 @@ func _add_ability_card(ability: Dictionary, x: float, y: float, card_w: float, c
 		var icon_area := Control.new()
 		icon_area.custom_minimum_size = Vector2(0, float(cards_data["nameY"]))
 		header_part.add_child(icon_area)
-		var icon = DSFactory.icon(
-			PauseFixtures.glyph_name_for(str(ability.get("icon", ""))),
-			40.0,
-			app.orion.color("boneBright")
+		# Parity icon art: 40x40 code tile from the ability name (app-authority pin).
+		var card_art_data: Dictionary = app.parity.raw["iconArt"]["cardTile"]
+		var art_size := float(card_art_data["size"])
+		var art_tile := UI.code_tile(
+			app.parity.ability_code(str(ability.get("name", ""))),
+			art_size,
+			float(card_art_data["fontSize"]),
+			str(card_art_data["background"]),
+			str(card_art_data["border"])
 		)
-		var icon_x := (card_w - 40.0) / 2.0
-		UI.place(icon, icon_x, float(cards_data["iconY"]), 40, 40)
-		icon_area.add_child(icon)
+		var icon_x := (card_w - art_size) / 2.0
+		UI.place(art_tile, icon_x, float(cards_data["iconY"]), art_size, art_size)
+		icon_area.add_child(art_tile)
+		card_art[ability_id] = art_tile
 
 	var content_part: Control = card.get_part("content")
 	if content_part != null:
