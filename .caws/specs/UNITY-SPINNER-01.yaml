@@ -28,7 +28,11 @@ acceptance:
   - id: A1
     given: 'the Spinner contract with normalized loop and style facts'
     when: 'the Unity emitter generates and the support-boundary audit runs'
-    then: 'the generated control carries the size/thickness carrier attributes and a rotation control with the declared duration/keyframes/reduced-motion static value, the loop/type/a11y/delay/inline families are adjudicated, and no allowlisted catch-all reliance remains'
+    then: >-
+      the generated control carries the declared full-turn rotation control with its
+      declared period/easing and the explicit reduced-motion preference input, the
+      variant/a11y/delay/inline families are adjudicated, and no allowlisted
+      catch-all reliance remains
   - id: A2
     given: 'a regenerated package on main'
     when: 'generate --target=unity runs twice and generate:check runs'
