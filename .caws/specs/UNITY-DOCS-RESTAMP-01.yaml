@@ -1,9 +1,10 @@
 id: UNITY-DOCS-RESTAMP-01
 title: 'Restamp the Unity target proof receipt after the Markdown merge'
 mode: chore
-lifecycle_state: draft
+lifecycle_state: active
+worktree: unity-docs-restamp
 created_at: '2026-10-31T21:38:02.285Z'
-updated_at: '2026-10-31T21:38:02.285Z'
+updated_at: '2026-10-31T21:38:04.722Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
