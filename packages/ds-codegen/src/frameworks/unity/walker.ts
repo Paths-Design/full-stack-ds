@@ -133,6 +133,7 @@ function elementType(ctx: Context, node: DomNodeIR): ElementType {
   if (node.iconGlyph !== undefined) return "GlyphElement";
   if (ctx.lowering.behavior === "TextInput" && node.part === ctx.lowering.control.name) return NATIVE_TEXTFIELD;
   if (ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined && node.part === ctx.lowering.title.name) return "Label";
+  if (ctx.lowering.behavior === "Tree" && node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.children.length === 0) return "Label";
   if (node.componentRef !== undefined) return identifier(node.componentRef);
   if ((node.part && ctx.triggers.has(node.part)) || node.tag === BUTTON_TAG) return NATIVE_BUTTON;
   if (!node.children.length && TEXT_LEAF_TAGS.has(node.tag) && node.content !== undefined) return "Label";
@@ -160,6 +161,7 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
   const toastTitleGuard = ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined &&
     node.part === ctx.lowering.title.name && node.ifProp !== undefined && node.content !== undefined &&
     "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp;
+  const treeGuard = ctx.lowering.behavior === "Tree" && node.ifProp === ctx.lowering.hrefProp;
   const avatarGuard = ctx.lowering.behavior === "Avatar" &&
     ((node.componentRef !== undefined && node.ifProp !== undefined) ||
       (node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.ifProp === node.content.prop)) && !node.ifNegated;
@@ -170,7 +172,7 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     ((ctx.lowering.overlay !== undefined && node.part === ctx.lowering.overlay.name) ||
       (ctx.lowering.dismissibleProp !== undefined && node.part === ctx.lowering.trigger.name)) &&
     node.ifProp === (node.part === ctx.lowering.overlay?.name ? ctx.lowering.channel.valueProp : ctx.lowering.dismissibleProp) && !node.ifNegated && !node.ifSlot;
-  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots" && !avatarGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots" && !avatarGuard && !treeGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
 }
 
 /**
@@ -268,7 +270,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -283,6 +285,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   }
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
+    if (ctx.lowering.behavior === "Tree" && (node.iconGlyph !== undefined || node.children.some(child => child.iconGlyph !== undefined))) continue;
     if (ctx.lowering.behavior === "Coachmark" && node.iteration !== undefined) continue;
     if (isOmittedActionChrome(ctx, node)) continue;
     if (isOmittedNodeContentDecoration(ctx.ir, node)) continue;
@@ -430,6 +433,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   }
   for (const part of ir.compoundParts) {
     if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots" || ctx.lowering.behavior === "Coachmark") continue;
+    if (ctx.lowering.behavior === "Tree" && part.name === ctx.lowering.listPart) continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -875,6 +879,33 @@ function avatarRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the nested navigation scaffold: NavTreeControl owns the heading
+ * link/label presence pair derived from the page link and paints both texts; the
+ * link raises activation requests through LinkControl. The child list is the
+ * class content container. Glyph composition and current-page state are omitted.
+ */
+function treeRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Tree") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a tree lowering`);
+  const root = classes[0]!;
+  const link = root.members.find(member => member.part === lowering.linkPart);
+  const label = root.members.find(member => member.part === lowering.labelPart);
+  const list = root.members.find(member => member.part === lowering.listPart);
+  if (!link || link.type !== "Label") throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its heading link as no text leaf`);
+  if (!label || label.type !== "Label") throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its heading label as no text leaf`);
+  if (!list) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its child list outside the root class`);
+  const members: string[] = [
+    "        public NavTreeControl Control { get; }",
+    "        public LinkControl Link => Control.Link;",
+  ];
+  const attach: string[] = [`Control = NavTreeControl.Attach(link: ${link.ref}, label: ${label.ref});`];
+  const defaults: string[] = [];
+  members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.hrefProp))} { get => Control.Href; set => Control.Href = value; }`);
+  members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.labelProp))} { get => Control.Label; set => Control.Label = value; }`);
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -886,6 +917,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Anchor") return anchorRootApi(ctx);
   if (lowering.behavior === "Media") return mediaRootApi(ctx);
   if (lowering.behavior === "Avatar") return avatarRootApi(ctx, classes);
+  if (lowering.behavior === "Tree") return treeRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
@@ -1173,7 +1205,7 @@ export interface UnityComponentSource {
 /** The generated C# for one component: root class plus one class per compound part. */
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
-  const glyph = unityGlyphPlan(ir);
+  const glyph = unityGlyphPlan(ir, lowering);
   if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom, glyph, node => isOmittedPassiveDecoration(ir, lowering, node), lowering.textProp);
   const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [], glyph };
   const classes = planClasses(ctx);

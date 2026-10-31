@@ -396,6 +396,23 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/public string Name |public bool Priority/);
   });
 
+  it("renders a nested navigation scaffold with an href-guarded heading for NavTree", () => {
+    const contract = loadContractWithSidecars(root, "NavTree") as ComponentContract;
+    const treeIr = buildComponentIR(contract);
+    treeIr.name = "UnrelatedTree";
+    const source = createUnityEmitter().emitComponent(treeIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedTree : VisualElement");
+    expect(source).toContain("public Label HeadingLink { get; } = new Label();");
+    expect(source).toContain("public Label HeadingLabel { get; } = new Label();");
+    expect(source).toContain("public override VisualElement contentContainer => List;");
+    expect(source).toContain("public NavTreeControl Control { get; }");
+    expect(source).toContain("public LinkControl Link => Control.Link;");
+    expect(source).toContain("NavTreeControl.Attach(link: HeadingLink, label: HeadingLabel);");
+    expect(source).toContain("public string Href { get => Control.Href; set => Control.Href = value; }");
+    expect(source).toContain("public string Label { get => Control.Label; set => Control.Label = value; }");
+    expect(source).not.toMatch(/GlyphElement|IconName|IconSize/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

@@ -959,5 +959,31 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Name", "Priority", "Alt", "Loading" })
                 Assert.That(typeof(FullStackDS.Avatar).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void NavTreeSwitchesItsHeadingPairAndComposesChildItems()
+        {
+            var tree = Mount(new FullStackDS.NavTree());
+            tree.Label = "Workspace";
+            Assert.That(tree.HeadingLink.text, Is.EqualTo("Workspace"));
+            Assert.That(tree.HeadingLabel.text, Is.EqualTo("Workspace"));
+            Assert.That(tree.HeadingLink.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(tree.HeadingLabel.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            tree.Href = "/workspace";
+            Assert.That(tree.Link.Href, Is.EqualTo("/workspace"));
+            Assert.That(tree.HeadingLink.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(tree.HeadingLabel.style.display.value, Is.EqualTo(DisplayStyle.None));
+            string activated = null;
+            tree.Link.Activated += href => activated = href;
+            Click(tree.HeadingLink);
+            Assert.That(activated, Is.EqualTo("/workspace"));
+            tree.Href = "";
+            Assert.That(tree.HeadingLink.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(tree.HeadingLabel.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            var child = new FullStackDS.NavTree { Label = "Settings" };
+            tree.Add(child);
+            Assert.That(tree.contentContainer, Is.SameAs(tree.List));
+            Assert.That(tree.List.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "Icon", "IconName", "IconSize", "CurrentPage", "Navigate" })
+                Assert.That(typeof(FullStackDS.NavTree).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

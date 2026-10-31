@@ -211,6 +211,20 @@
       "via": "walker.ts (composed chrome): the reference's click callback forwards to a generated Action property, a guarded reference's presence follows a generated boolean flag, its disabled binding maps to the generated root's enabled state, and its non-decoration children render inside the native action chrome; a11y, HTML form/type and unknown prop bindings are withheld rather than forwarded."
     },
     {
+      "id": "anatomy-tree-heading-guards-lowered",
+      "match": ["contract:/anatomy/dom/children/*/children/*/if"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/*/children/*/bindings/href"], "valueIn": ["prop:href"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Tree)/NavTreeControl: the heading link and label are the two polarities of the href prop; the runtime toggles their presence from the non-empty value."
+    },
+    {
+      "id": "anatomy-tree-href-binding-lowered",
+      "match": ["contract:/anatomy/dom/children/*/children/*/bindings/href"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/*/children/*/bindings/href"], "valueIn": ["prop:href"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Tree)/NavTreeControl: the heading link's href binding becomes LinkControl's carried destination and its activation request."
+    },
+    {
       "id": "anatomy-avatar-guards-lowered",
       "match": ["contract:/anatomy/dom/children/**/if"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
@@ -615,6 +629,21 @@
       "match": ["contract:/props/*/members/form-field:*/**"],
       "disposition": "refused",
       "reason": "HTML form submission fields (name, value) have no UI Toolkit counterpart: there is no form element to serialise into."
+    },
+    {
+      "id": "prop-tree-lowered",
+      "match": ["contract:/props/*/members/plain:href/**", "contract:/props/*/members/plain:label/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/*/children/*/bindings/href"], "valueIn": ["prop:href"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Tree): the page link and label strings become generated attributes owned by NavTreeControl."
+    },
+    {
+      "id": "prop-tree-icon-refused",
+      "match": ["contract:/props/*/members/glyph-name:icon/**", "contract:/props/*/members/plain:icon/**", "contract:/props/*/members/plain:iconSize/**", "contract:/props/*/variants/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/*/children/*/children/**/iconGlyph/**"] }],
+      "disposition": "refused",
+      "reason": "The icon name/size vocabulary belongs to the omitted glyph composition; the scaffold withholds both rather than exposing attributes that change nothing."
     },
     {
       "id": "prop-avatar-lowered",
