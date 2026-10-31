@@ -71,3 +71,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Skeleton/Skeleton.cs
     commit_sha: "7377f1d88fbe6934d3a6e00dd0a7fdf62f9eab89"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 4c37623e3 (sourceDirty false): 64/64 passed, zero failed/skipped (test-run start 2026-10-31 11:32:24Z; resultsSha256 a4024de35d409e895c428b45ba14d759ef98d66982d4952353cec441e48fab99). The added case sets the variant/animate/density carriers, asserts no iterated children render, and asserts the absent lines/radius/aspect-ratio/decorative/aria-label API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T11:33:06.136Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.SkeletonCarriesPlaceholderAxesWithoutIterationOrStateApi
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: "4c37623e32a2e515d91438d25c6f79919f532b3b"
