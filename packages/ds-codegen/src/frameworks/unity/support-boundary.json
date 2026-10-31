@@ -263,6 +263,13 @@
       "reason": "DOM element properties (for example a checkbox's indeterminate flag) have no UI Toolkit consumer: BooleanControl realises the checked channel and SetEnabled only, and the generated control exposes no DOM property."
     },
     {
+      "id": "anatomy-field-association-binding",
+      "match": ["contract:/anatomy/dom/bindings/htmlFor", "contract:/anatomy/dom/bindings/form"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The label's DOM field-association bindings have no UI Toolkit form model; the passive wrapper ignores them and the field family is P4."
+    },
+    {
       "id": "anatomy-bindings",
       "match": ["contract:/anatomy/dom/bindings/**", "contract:/anatomy/dom/**/children/*/bindings/**", "contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
       "disposition": "pending",
@@ -480,7 +487,7 @@
       "id": "prop-glyph-aria-label",
       "match": ["contract:/props/*/members/plain:ariaLabel/**"],
       "disposition": "refused",
-      "reason": "UI Toolkit exposes no assistive-technology tree for the icon's ARIA label."
+      "reason": "UI Toolkit exposes no assistive-technology tree, so an aria-label prop has no native realisation; the generated control exposes no AriaLabel property."
     },
     {
       "id": "prop-passive-semantic-options",
@@ -547,6 +554,19 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "Dynamic node content needs a typed C# content projection (P4). The generated passive container exposes no Icon property and omits the guarded decoration."
+    },
+    {
+      "id": "prop-field-association-pending",
+      "match": ["contract:/props/*/members/plain:htmlFor/**", "contract:/props/*/members/plain:form/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Field association is a DOM label/form linkage; UI Toolkit has no form-association model, so the generated wrapper exposes no HtmlFor/Form property until the P4 field family."
+    },
+    {
+      "id": "prop-decorative-separator-refused",
+      "match": ["contract:/props/*/members/plain:separator/**"],
+      "disposition": "refused",
+      "reason": "Breadcrumb separators are consumer-composed decoration with no native item-separator model; the generated wrapper exposes no Separator property."
     },
     {
       "id": "prop-dismiss-chrome-refused",

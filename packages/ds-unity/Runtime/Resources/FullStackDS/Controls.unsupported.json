@@ -650,6 +650,102 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
       "component": "Button",
       "sourceKey": ".button[aria-busy=\"true\"] .button__loadingText",
       "part": "",
@@ -1096,6 +1192,14 @@
       "property": "color",
       "value": "currentColor",
       "reason": "uss-scalar"
+    },
+    {
+      "component": "Label",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.2",
+      "reason": "uss-property"
     },
     {
       "component": "List",

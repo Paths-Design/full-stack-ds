@@ -89,12 +89,12 @@ namespace FullStackDS.Tests
             var root = EditorRoot();
             var scope = new VisualElement(); Theme.Attach(scope); root.Add(scope);
             var text = new Text { text = "Menu settings", Variant = "caption" };
-            var composed = new Label("Composed child"); text.Add(composed);
+            var composed = new UnityEngine.UIElements.Label("Composed child"); text.Add(composed);
             var horizontal = new Divider();
             scope.Add(text); scope.Add(horizontal);
             var row = new VisualElement { style = { flexDirection = FlexDirection.Row, height = 80 } };
             var vertical = new Divider { Orientation = "vertical" };
-            row.Add(new Label("Left")); row.Add(vertical); row.Add(new Label("Right")); scope.Add(row);
+            row.Add(new UnityEngine.UIElements.Label("Left")); row.Add(vertical); row.Add(new UnityEngine.UIElements.Label("Right")); scope.Add(row);
             yield return Settle();
             Assert.That(text.text, Is.EqualTo("Menu settings"));
             Assert.That(composed.parent, Is.EqualTo(text.contentContainer));
@@ -125,7 +125,7 @@ namespace FullStackDS.Tests
             var light = new VisualElement(); Theme.Attach(light);
             var dark = new VisualElement(); Theme.SetDark(dark, true);
             root.Add(light); root.Add(dark);
-            var control = new Switch(); control.Add(new Label("Sound"));
+            var control = new Switch(); control.Add(new UnityEngine.UIElements.Label("Sound"));
             dark.Add(control); yield return Settle();
             ColorIs(control.Track.resolvedStyle.backgroundColor, "#474647", "dark track"); // semantic.color.background.tertiary (dark)
             light.Add(control); yield return Settle();
@@ -152,7 +152,7 @@ namespace FullStackDS.Tests
             var item = new AccordionItem(); var header = new AccordionHeader();
             var trigger = new AccordionTrigger { Value = "one", text = "One" };
             var content = new AccordionContent { Value = "one" };
-            content.Add(new Label("Visible body")); header.Add(trigger); item.Add(header); item.Add(content); accordion.Add(item); root.Add(accordion);
+            content.Add(new UnityEngine.UIElements.Label("Visible body")); header.Add(trigger); item.Add(header); item.Add(content); accordion.Add(item); root.Add(accordion);
             yield return Settle();
             Assert.That(content.resolvedStyle.opacity, Is.EqualTo(0).Within(.01));
             var duration = content.resolvedStyle.transitionDuration.First();
@@ -170,7 +170,7 @@ namespace FullStackDS.Tests
             var root = EditorRoot();
             var dark = new VisualElement(); Theme.SetDark(dark, true); root.Add(dark);
             var popover = new Popover(); var trigger = new PopoverTrigger { text = "Help" }; var content = new PopoverContent();
-            content.Add(new Label("Body")); popover.Add(trigger); popover.Add(content); dark.Add(popover);
+            content.Add(new UnityEngine.UIElements.Label("Body")); popover.Add(trigger); popover.Add(content); dark.Add(popover);
             yield return Frames(3);
             popover.CloseOnBlur = false; popover.Open = true; yield return Frames(4);
             Assert.That(content.parent, Is.EqualTo(root.panel.visualTree));
@@ -202,7 +202,7 @@ namespace FullStackDS.Tests
             Assert.That(track.resolvedStyle.borderLeftWidth, Is.EqualTo(1)); // switch track border width (contract literal)
             ColorIs(track.resolvedStyle.borderLeftColor, "#d0d0d0", "track border"); // semantic.color.border.subtle (light)
             // Contract anatomy: the children hole (the label) follows the track by the root gap.
-            var caption = control.contentContainer.Q<Label>();
+            var caption = control.contentContainer.Q<UnityEngine.UIElements.Label>();
             Assert.That(caption.text, Is.EqualTo("Enable sound"));
             Assert.That(caption.worldBound.xMin - track.worldBound.xMax, Is.EqualTo(8).Within(.5)); // semantic.action.size.medium.gap
             // Accordion trigger typography; the chevron follows the trigger's children.
@@ -236,7 +236,7 @@ namespace FullStackDS.Tests
         {
             var root = EditorRoot();
             var scope = new VisualElement(); Theme.Attach(scope); root.Add(scope);
-            var control = new Switch(); control.Add(new Label("Sound")); scope.Add(control);
+            var control = new Switch(); control.Add(new UnityEngine.UIElements.Label("Sound")); scope.Add(control);
             yield return Settle();
             var track = control.Track; var thumb = control.Thumb;
             // Offsets from the track's left edge: border 1 + left core.spacing.size.01 (switch.size.<size>.track.padding),
@@ -311,7 +311,7 @@ namespace FullStackDS.Tests
             yield return Frames();
             Assert.That(surface.Content.parent, Is.EqualTo(root.panel.visualTree));
             ColorIs(surface.Content.resolvedStyle.backgroundColor, "#ffffff", "popover content"); // semantic.color.background.elevated (light)
-            var label = surface.Content.Q<Label>();
+            var label = surface.Content.Q<UnityEngine.UIElements.Label>();
             Assert.That(label.resolvedStyle.whiteSpace, Is.EqualTo(WhiteSpace.Normal));
             Assert.That(label.worldBound.xMax, Is.LessThanOrEqualTo(surface.Content.worldBound.xMax));
             Assert.That(surface.Content.worldBound.xMax, Is.LessThanOrEqualTo(641));
@@ -338,7 +338,7 @@ namespace FullStackDS.Tests
             // The sample alone fits 320x600 under the token geometry; wrapped consumer text above the
             // controls pushes the Popover below the fold so reaching it requires scrolling.
             var body = sample.Q(className: "fsds-sample-body");
-            for (int i = 0; i < 6; i++) body.Insert(2, new Label("Consumer text above the controls wraps at the narrow width and pushes them below the fold."));
+            for (int i = 0; i < 6; i++) body.Insert(2, new UnityEngine.UIElements.Label("Consumer text above the controls wraps at the narrow width and pushes them below the fold."));
             yield return Frames();
             Assert.That(sample.verticalScroller.highValue, Is.GreaterThan(0));
             Assert.That(doc.rootVisualElement.Q<Popover>("help").Trigger.worldBound.yMin, Is.GreaterThan(600), "the Popover starts below the fold");
@@ -346,7 +346,7 @@ namespace FullStackDS.Tests
             Assert.That(doc.rootVisualElement.Q<Popover>("help").Trigger.worldBound.yMax, Is.LessThanOrEqualTo(601));
             var surface = doc.rootVisualElement.Q<Popover>("help");
             surface.CloseOnBlur = false;
-            for (int i = 0; i < 12; i++) surface.Content.Add(new Label("A long content paragraph must wrap within a narrow floating surface and remain reachable by scrolling."));
+            for (int i = 0; i < 12; i++) surface.Content.Add(new UnityEngine.UIElements.Label("A long content paragraph must wrap within a narrow floating surface and remain reachable by scrolling."));
             surface.Open = true; yield return Frames(15);
             Rect bounds = surface.Content.worldBound;
             Assert.That(bounds.width, Is.LessThanOrEqualTo(304.5));
@@ -357,7 +357,7 @@ namespace FullStackDS.Tests
             Assert.That(bounds.yMax, Is.LessThanOrEqualTo(600.5));
             var scroll = (ScrollView)surface.Content;
             Assert.That(scroll.verticalScroller.highValue, Is.GreaterThan(0));
-            var label = surface.Content.Q<Label>();
+            var label = surface.Content.Q<UnityEngine.UIElements.Label>();
             Assert.That(label.worldBound.xMax, Is.LessThanOrEqualTo(bounds.xMax));
             Capture("runtime-popover-320");
             scroll.scrollOffset = new Vector2(0, scroll.verticalScroller.highValue); yield return Frames();

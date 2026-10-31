@@ -114,4 +114,16 @@ describe("Unity passive anatomy path", () => {
     expect(notice).toContain('Variants.Get(this, "alert-notice", "page", "section", "inline")');
     expect(notice).not.toMatch(/Dismissible|OnDismiss|DismissLabel/);
   });
+
+  it("ignores passive-root DOM metadata bindings for the semantic wrappers", () => {
+    const label = emit(irFor("Label", "UnrelatedLabel"));
+    expect(label).toContain("public partial class UnrelatedLabel : TextElement");
+    expect(label).toContain('AddToClassList("label")');
+    expect(label).not.toMatch(/HtmlFor|public string Form\b/);
+    const crumbs = emit(irFor("Breadcrumbs", "UnrelatedCrumbs"));
+    expect(crumbs).toContain("public partial class UnrelatedCrumbs : VisualElement");
+    expect(crumbs).toContain("public partial class UnrelatedCrumbsList : VisualElement");
+    expect(crumbs).toContain("public partial class UnrelatedCrumbsItem : VisualElement");
+    expect(crumbs).not.toMatch(/AriaLabel|Separator/);
+  });
 });
