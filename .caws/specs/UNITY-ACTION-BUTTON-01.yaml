@@ -36,7 +36,13 @@ acceptance:
   - id: A1
     given: 'the Button contract and a renamed fact-equivalent fixture'
     when: 'the Unity emitter generates, the support-boundary audit runs and the generation gate is evaluated'
-    then: 'the action root lowers to a native UI Toolkit Button with generated click, disabled and title API, the loading, aria and form-serialization families resolve to explicit refused rules, and no allowlisted leaf relies on a catch-all rule'
+    then: >-
+      the action root lowers to a native UI Toolkit Button with a generated click
+      callback and disabled API; the loading and ARIA-state families and the HTML
+      form type resolve to explicit refused rules (the title prop remains refused by
+      the existing semantic-options rule); the guarded loading decoration and
+      loading-text wrapper are omitted; and no allowlisted leaf relies on a
+      catch-all rule
   - id: A2
     given: 'a regenerated package after the orion parent slice is merged'
     when: 'generate --target=all is run and the committed package is compared'
