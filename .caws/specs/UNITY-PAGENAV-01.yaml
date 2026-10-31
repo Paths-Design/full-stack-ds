@@ -62,3 +62,10 @@ evidence:
     test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders the paged navigator shell from declared parts for PageNavigator"
     exit_code: 0
     commit_sha: "82966fc0c0e4a9f3dc16e7f8de7e7e2bd6bb2a0c"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 5de74d6e1 (sourceDirty false): 91/91 passed, zero failed/skipped (test-run start 2026-10-31 17:57:53Z; resultsSha256 f4dd49482ec00b57ac8ca93841d1d3628bb9bbbf2f6faae60e382afe05cf5027). The added case asserts the one-based draft paint, bounded previous/next, the bounded one-based draft commit, controlled request without commit, disabled propagation and the absent composed-child/a11y API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T18:10:34.815Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.PageNavigatorBoundsNavigationAndCommitsTheOneBasedDraft
+    exit_code: 0
+    commit_sha: "5de74d6e115119537befccd44c451c97edf83560"
