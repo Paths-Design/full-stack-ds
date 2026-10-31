@@ -146,7 +146,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -631,6 +631,13 @@ describe("Unity behavior selection refusals", () => {
     });
     const source = emit(fixture("Tooltip"));
     expect(source).toContain('AnchoredSurface.Attach(this, triggerClass: "tooltip__trigger", contentClass: "tooltip__content", stateClass: null, openOnHover: true, openOnFocus: true, closeOnPointerLeave: true, contentFocusable: false);');
+  });
+
+  it("suffixes a generated member that would collide with its class name", () => {
+    const source = createUnityEmitter().emitComponent(buildComponentIR(completeFixture("Status")), { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class Status : VisualElement");
+    expect(source).toContain('public string StatusValue { get => Variants.Get(this, "status", "info", "success", "warning", "danger", "error");');
+    expect(source).not.toMatch(/public string Status \{/);
   });
 
   it("emits prefixed modifier helpers for a variant axis disambiguated by the class recipe", () => {

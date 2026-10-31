@@ -143,4 +143,13 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain('stateClass: null, openOnHover: true, openOnFocus: true, closeOnPointerLeave: true, contentFocusable: false');
     expect(source).not.toMatch(/EnableInClassList/);
   });
+
+  it("omits a decoration component instance and suffixes the colliding carrier member", () => {
+    const source = emit(irFor("Status", "UnrelatedStatus"));
+    expect(source).toContain("public partial class UnrelatedStatus : VisualElement");
+    expect(source).toContain("public VisualElement Label { get; } = new VisualElement();");
+    expect(source).toContain("public override VisualElement contentContainer => Label;");
+    expect(source).toContain('public string Status { get => Variants.Get(this, "status", "info", "success", "warning", "danger", "error");');
+    expect(source).not.toMatch(/Icon\b/);
+  });
 });

@@ -191,7 +191,8 @@
         "AlertNotice",
         "Label",
         "Breadcrumbs",
-        "Tooltip"
+        "Tooltip",
+        "Status"
       ]
     },
     {

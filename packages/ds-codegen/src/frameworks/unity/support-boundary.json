@@ -96,6 +96,21 @@
       "reason": "The node-content decoration part is omitted by the passive lowering, so its part identity is not rendered."
     },
     {
+      "id": "anatomy-decoration-ref-refused",
+      "match": ["contract:/anatomy/dom/**/children/icon/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/details/icon/role"], "valueIn": ["decoration"] }],
+      "disposition": "refused",
+      "reason": "A decoration-role composed instance cannot be materialised by the passive lowering; it is omitted by role fact and its subtree refused until P4 component composition."
+    },
+    {
+      "id": "anatomy-decoration-ref-part-refused",
+      "match": ["contract:/anatomy/parts/*"],
+      "valueIn": ["icon"],
+      "requiresAny": [{ "match": ["contract:/anatomy/details/icon/role"], "valueIn": ["decoration"] }],
+      "disposition": "refused",
+      "reason": "The decoration-role composed part is omitted by the passive lowering, so its part identity is not rendered."
+    },
+    {
       "id": "anatomy-parts",
       "match": ["contract:/anatomy/parts/*"],
       "disposition": "lowered",
