@@ -338,6 +338,206 @@
       "reason": "uss-property"
     },
     {
+      "component": "Badge",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "width",
+      "value": "fit-content",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Blockquote",
       "sourceKey": "root",
       "part": "root",

@@ -146,6 +146,19 @@ function isOmittedActionChrome(ctx: Context, node: DomNodeIR): boolean {
     node.ifProp === lowering.loading && node.componentRef !== undefined;
 }
 
+/**
+ * R1/R2: a guarded decoration whose content is a dynamic node prop (IR
+ * `nodeKind: "node-ref"`) has no static native projection. The passive
+ * lowering omits it; the boundary refuses its anatomy subtree and keeps the
+ * node-content prop pending P4. Selected by prop kind, never by name.
+ */
+function isOmittedNodeContentDecoration(ir: ComponentIR, lowering: UnityLowering, node: DomNodeIR): boolean {
+  if (lowering.behavior !== "Passive" || node.ifProp === undefined) return false;
+  const prop = ir.styledProps.find(candidate => candidate.name === node.ifProp);
+  if (!prop || prop.nodeKind !== "node-ref") return false;
+  return node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp;
+}
+
 function literalContent(node: DomNodeIR): string | undefined {
   const content = node.content;
   return content && "kind" in content && content.kind === "literal" ? content.value : undefined;
@@ -183,6 +196,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
     if (isOmittedActionChrome(ctx, node)) continue;
+    if (isOmittedNodeContentDecoration(ctx.ir, ctx.lowering, node)) continue;
     if (isCompound(node)) {
       if (composedHost && index === firstCompound) insertionHost(ctx, cls, parent, holes);
       continue;
@@ -355,8 +369,8 @@ function passiveRootApi(ctx: Context): RootApi {
   return { members, attach: ["Theme.AddStyleSheet(this);"], defaults };
 }
 
-function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan): void {
-  if (!node) return;
+function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan, omitted?: (node: DomNodeIR) => boolean): void {
+  if (!node || omitted?.(node)) return;
   // A conditional data attribute is DOM metadata, not a UI Toolkit API. The
   // admission boundary must explicitly classify it pending before generation.
   const unsupportedBindings = Object.entries(node.bindings).some(([attribute, value]) => {
@@ -375,7 +389,7 @@ function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyp
     (node.content !== undefined && (node === ir.dom || (node.part !== undefined && ir.compoundParts.some(part => part.name === node.part)) ||
       !("kind" in node.content && node.content.kind === "literal")));
   if (unhandled) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
-  for (const child of node.children) assertPassiveAnatomy(ir, child, glyph);
+  for (const child of node.children) assertPassiveAnatomy(ir, child, glyph, omitted);
 }
 
 /**
@@ -619,7 +633,7 @@ export interface UnityComponentSource {
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
   const glyph = unityGlyphPlan(ir);
-  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom, glyph);
+  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom, glyph, node => isOmittedNodeContentDecoration(ir, lowering, node));
   const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [], glyph };
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);
