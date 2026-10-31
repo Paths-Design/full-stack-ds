@@ -1,10 +1,11 @@
 id: GAME-PAUSE-UNITY-PARITY-01
 title: 'Pause menu unity lane parity rework'
 mode: refactor
-lifecycle_state: active
-worktree: game-pause-unity-parity
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Unity parity lane merged into GAME-PAUSE-MENU-PARITY-01 and landed in parity merge 511aac39b (36/36 EditMode, 8 captures)'
 created_at: '2026-10-31T19:18:54.879Z'
-updated_at: '2026-10-31T19:20:14.875Z'
+updated_at: '2026-10-31T21:21:17.554Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
