@@ -465,8 +465,15 @@
       "reason": "List spacing selects sibling children with child-combinator rules the native selector grammar refuses, so the projection carries no spacing rules and the generated control withholds Spacing until P4 lowers that selector family."
     },
     {
+      "id": "prop-interactive-hover-pending",
+      "match": ["contract:/props/*/members/plain:interactive/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The interactive hover affordance (shadow lift, translate) is a web-only motion/style state; the generated container exposes no Interactive property until the P4 motion and state-style families lower it."
+    },
+    {
       "id": "prop-passive-style-axis",
-      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**", "contract:/props/*/members/plain:status/**", "contract:/props/*/members/plain:level/**"],
+      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**", "contract:/props/*/members/plain:status/**", "contract:/props/*/members/plain:level/**", "contract:/props/*/members/plain:density/**"],
       "disposition": "lowered",
       "realizes": "emitted-property",
       "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
@@ -1073,9 +1080,9 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**"],
       "disposition": "refused",
-      "reason": "The USS projection has no transition-duration/transition-timing-function or font-style handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration or font-style handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },
     {
       "id": "styles-intrinsic-sizing",
@@ -1083,6 +1090,14 @@
       "declaration": { "valuePattern": "^\\s*(?:fit|max|min)-content\\s*$" },
       "disposition": "refused",
       "reason": "USS has no intrinsic sizing keywords; the projection lists these declarations uss-scalar in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-modifier-state-selector",
+      "match": ["styles:/**"],
+      "declaration": { "keyPattern": "--[a-z0-9-]+:(?:hover|active|focus|focus-visible)" },
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A modifier class qualified by a web-template pointer state has no native style rule: the runtime adds no such state class and uss.ts lists the key uss-selector. The P4 state-style family carries these states."
     },
     {
       "id": "styles-pseudo-element",

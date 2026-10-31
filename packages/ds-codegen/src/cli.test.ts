@@ -280,16 +280,16 @@ describe("cli main — emitter admitContract seam", () => {
     const { events } = prepareWithAdmissionRecorder([
       "--dry-run",
       "--target=unity",
-      "Card",
+      "Image",
     ]);
     vi.spyOn(console, "error").mockImplementation(() => {});
-    // Unity's own emitter may reject Card after admission; this case pins
+    // Unity's own emitter may reject Image after admission; this case pins
     // only the admission context, which is recorded before any emit.
     await import("./cli.js").catch(() => undefined);
     expect(events[0]).toEqual({
       kind: "admit",
       target: "unity",
-      component: "Card",
+      component: "Image",
       admitted: false,
     });
   });
@@ -321,6 +321,7 @@ describe("cli main — emitter admitContract seam", () => {
       "Blockquote",
       "Breadcrumbs",
       "Button",
+      "Card",
       "Checkbox",
       "Divider",
       "Icon",
@@ -455,7 +456,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     await import("./cli.js");
     expect(exit).not.toHaveBeenCalled();
     // fsds.targets.json lists the unity allowlist in this order; the corpus loads alphabetically.
-    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status"], afterEmits: 21 }]);
+    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card"], afterEmits: 22 }]);
     const lines = log.mock.calls.map((call) => String(call[0]));
     // Resolved against the package root: the components root minus the pack's Runtime/Components.
     expect(lines).toContain("  DRY RUN  target assets (unity)");
@@ -532,7 +533,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     ]);
     // Component groups keep their own contract provenance beside the asset group.
     const components = manifest.groups.filter((g) => g.component !== "(target-assets)");
-    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Badge", "Blockquote", "Breadcrumbs", "Button", "Checkbox", "Divider", "Icon", "Label", "List", "Popover", "ProfileFlag", "Stat", "Status", "Switch", "Tabs", "Text", "ToggleSwitch", "Tooltip"]);
+    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Badge", "Blockquote", "Breadcrumbs", "Button", "Card", "Checkbox", "Divider", "Icon", "Label", "List", "Popover", "ProfileFlag", "Stat", "Status", "Switch", "Tabs", "Text", "ToggleSwitch", "Tooltip"]);
     expect(components.every((g) => g.contract.path.startsWith("packages/ds-contracts/components/"))).toBe(true);
   });
 

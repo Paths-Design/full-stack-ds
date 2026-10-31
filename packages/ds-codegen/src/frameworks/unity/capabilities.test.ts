@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Checkbox", null], ["Divider", null], ["Icon", null], ["Label", null], ["List", null], ["Popover", null], ["ProfileFlag", null], ["Stat", null], ["Status", null], ["Switch", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null], ["Tooltip", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Divider", null], ["Icon", null], ["Label", null], ["List", null], ["Popover", null], ["ProfileFlag", null], ["Stat", null], ["Status", null], ["Switch", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null], ["Tooltip", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -108,7 +108,16 @@ describe("Unity capability accounting", () => {
     // A box-shadow lowering placed ahead of its refusal contradicts both shadow rows.
     const shadow: BoundaryRule = { id: "box-shadow-lowered", match: ["styles:/*/box-shadow/**"], disposition: "lowered", via: "test" };
     const lowered = { ...committed, rules: [shadow, ...committed.rules] };
-    expect(entriesOf(lowered)).toEqual(["ledger Popover content box-shadow (uss-property)", "ledger Switch thumb box-shadow (uss-property)"]);
+    expect(entriesOf(lowered)).toEqual([
+      "ledger Card .card--interactive:active box-shadow (uss-selector)",
+      "ledger Card .card--interactive:active transform (uss-selector)",
+      "ledger Card .card--interactive:hover background-color (uss-selector)",
+      "ledger Card .card--interactive:hover box-shadow (uss-selector)",
+      "ledger Card .card--interactive:hover transform (uss-selector)",
+      "ledger Card root box-shadow (uss-property)",
+      "ledger Popover content box-shadow (uss-property)",
+      "ledger Switch thumb box-shadow (uss-property)",
+    ]);
     expect(ledgerViolations(root, lowered)).toContain("ledger Popover content box-shadow (uss-property): styles:/content/box-shadow/fallback is classified lowered by rule box-shadow-lowered");
     // The join's findings fail the corpus audit (audit:unity-boundary --check).
     expect(auditUnityTarget(root, lowered).violations).toEqual(expect.arrayContaining(ledgerViolations(root, lowered)));
@@ -116,6 +125,8 @@ describe("Unity capability accounting", () => {
     const without = (id: string) => ({ ...committed, rules: committed.rules.filter(r => r.id !== id) });
     expect(entriesOf(without("tokens-non-scalar"))).toEqual([
       "ledger Button tokens button.motion.easing.standard (uss-scalar)",
+      "ledger Card tokens card.elevation.raised (uss-scalar)",
+      "ledger Card tokens card.elevation.resting (uss-scalar)",
       "ledger Popover tokens popover.elevation (uss-scalar)", "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
       "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
     ]);
