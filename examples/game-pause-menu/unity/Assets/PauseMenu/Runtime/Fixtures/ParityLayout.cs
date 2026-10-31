@@ -56,6 +56,8 @@ namespace GamePauseMenu
     {
         public LayoutRect Rect;
         public string Background, RuleBottom, ActiveBackground, ActiveText, InactiveText, Separator;
+        public string LabelAlign;
+        public double LabelInset;
         public readonly List<TabLayout> Tabs = new List<TabLayout>();
     }
 
@@ -221,6 +223,18 @@ namespace GamePauseMenu
         public double LanguageLabelY, DropdownY, DropdownH, SwatchLabelY, SwatchY, SwatchH;
     }
 
+    public sealed class IconTileLayout
+    {
+        public double Size, BorderWidth, Radius, FontSize, Weight;
+        public string Background, Border, Text, Source;
+        public readonly Dictionary<string, string> Codes = new Dictionary<string, string>();
+    }
+
+    public sealed class IconArtLayout
+    {
+        public IconTileLayout RowTile, CardTile;
+    }
+
     public sealed class StatusChipLayout
     {
         public string AccessBackground, AccessText, LockedBorder, LockedText;
@@ -263,6 +277,7 @@ namespace GamePauseMenu
         public readonly Dictionary<string, string> MarkerColors = new Dictionary<string, string>();
         public readonly Dictionary<string, string> RarityColors = new Dictionary<string, string>();
         public readonly Dictionary<string, string> RarityTextColors = new Dictionary<string, string>();
+        public IconArtLayout IconArt;
         public StatusChipLayout StatusChip;
         public readonly Dictionary<string, CaptureLayout> Captures = new Dictionary<string, CaptureLayout>();
 
@@ -303,6 +318,12 @@ namespace GamePauseMenu
             foreach (var colour in RarityColors.Values) Hex(colour);
             foreach (var colour in RarityTextColors.Values) Hex(colour);
             Hex(StatusChip.AccessBackground); Hex(StatusChip.AccessText); Hex(StatusChip.LockedBorder); Hex(StatusChip.LockedText);
+            Require(TabBar.LabelInset >= 0, "tabBar.labelInset must be non-negative");
+            Require(IconArt.RowTile.Size > 0 && IconArt.CardTile.Size > 0, "iconArt tile sizes must be positive");
+            Require(IconArt.RowTile.Codes.Count > 0, "iconArt.rowTile.codes must pin the fixture icon codes");
+            Require(IconArt.RowTile.Radius == 0 && IconArt.CardTile.Radius == 0, "iconArt tiles must be square (radius 0)");
+            Hex(IconArt.RowTile.Background); Hex(IconArt.RowTile.Border); Hex(IconArt.RowTile.Text);
+            Hex(IconArt.CardTile.Background); Hex(IconArt.CardTile.Border); Hex(IconArt.CardTile.Text);
             Hex(Progress.Drawer.Background); Hex(Progress.Drawer.TextStyle);
             Require(TabBar.Tabs.Count == 4, "tabBar.tabs must declare four tabs");
             Require(Header.Stats.Count == 3, "header.stats must declare three stat columns");
@@ -401,6 +422,12 @@ namespace GamePauseMenu
                 if (!(member.Value is JsonString value)) throw read.Error("rarityTextColors." + member.Key, "must be a string.");
                 data.RarityTextColors[member.Key] = value.Value;
             }
+            var iconArt = read.ObjectField(root, "iconArt", "iconArt");
+            data.IconArt = new IconArtLayout
+            {
+                RowTile = ParseIconTile(read, read.ObjectField(iconArt, "rowTile", "iconArt.rowTile"), "iconArt.rowTile"),
+                CardTile = ParseIconTile(read, read.ObjectField(iconArt, "cardTile", "iconArt.cardTile"), "iconArt.cardTile"),
+            };
             var status = read.ObjectField(root, "statusChip", "statusChip");
             data.StatusChip = new StatusChipLayout
             {
@@ -511,6 +538,8 @@ namespace GamePauseMenu
                 ActiveText = read.Str(root, "activeText", "tabBar.activeText"),
                 InactiveText = read.Str(root, "inactiveText", "tabBar.inactiveText"),
                 Separator = read.Str(root, "separator", "tabBar.separator"),
+                LabelAlign = read.Str(root, "labelAlign", "tabBar.labelAlign"),
+                LabelInset = read.NumberField(root, "labelInset", "tabBar.labelInset"),
             };
             var tabs = read.ArrayField(root, "tabs", "tabBar.tabs");
             for (var i = 0; i < tabs.Items.Count; i++)
@@ -734,6 +763,36 @@ namespace GamePauseMenu
             };
             abilities.HoverPopover = read.RectField(root, "hoverPopover", "abilities.hoverPopover");
             return abilities;
+        }
+
+        private static IconTileLayout ParseIconTile(Reader read, JsonObject root, string path)
+        {
+            var tile = new IconTileLayout
+            {
+                Size = read.NumberField(root, "size", path + ".size"),
+                Background = read.Str(root, "background", path + ".background"),
+                Border = read.Str(root, "border", path + ".border"),
+                BorderWidth = read.NumberField(root, "borderWidth", path + ".borderWidth"),
+                Radius = read.NumberField(root, "radius", path + ".radius"),
+                FontSize = read.NumberField(root, "fontSize", path + ".fontSize"),
+                Weight = read.NumberField(root, "weight", path + ".weight"),
+                Text = read.Str(root, "text", path + ".text"),
+                Source = read.Str(root, "source", path + ".source"),
+            };
+            if (root.TryGet("codes", out var rawCodes))
+            {
+                if (!(rawCodes is JsonObject codes))
+                    throw read.Error(path + ".codes", "must be an object.");
+                foreach (var member in codes.Members)
+                {
+                    if (!(member.Value is JsonString code))
+                        throw read.Error(path + ".codes." + member.Key, "must be a string.");
+                    if (code.Value.Length != 2 || code.Value != code.Value.ToUpperInvariant())
+                        throw read.Error(path + ".codes." + member.Key, "must be a two-letter uppercase code.");
+                    tile.Codes[member.Key] = code.Value;
+                }
+            }
+            return tile;
         }
 
         private static SettingsLayout ParseSettings(Reader read, JsonObject root)

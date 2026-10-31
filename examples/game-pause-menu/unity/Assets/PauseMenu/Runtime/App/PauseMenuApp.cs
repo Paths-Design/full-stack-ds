@@ -250,8 +250,8 @@ namespace GamePauseMenu
                 tab.style.fontSize = (float)Layout.Size("tab");
                 tab.style.unityFontStyleAndWeight = FontStyle.Bold;
                 tab.style.letterSpacing = (float)Layout.Size("letterSpacingTab");
-                tab.style.unityTextAlign = TextAnchor.MiddleLeft;
-                tab.style.paddingLeft = 32;
+                tab.style.unityTextAlign = TabLabelAlign();
+                tab.style.paddingLeft = (float)Layout.TabBar.LabelInset;
                 tab.style.whiteSpace = WhiteSpace.NoWrap;
                 if (i > 0)
                 {
@@ -300,6 +300,13 @@ namespace GamePauseMenu
         /// <summary>Active-tab fill and text are pinned by the layout authority and applied to the
         /// generated Tabs `is-selected` state class (the package sheet's selected-tab selector is a
         /// documented uss-selector gap, so the lane paints it from the state class).</summary>
+        private TextAnchor TabLabelAlign() => Layout.TabBar.LabelAlign switch
+        {
+            "center" => TextAnchor.MiddleCenter,
+            "right" => TextAnchor.MiddleRight,
+            _ => TextAnchor.MiddleLeft,
+        };
+
         private void ApplyTabStyles()
         {
             foreach (var pair in tabButtons)

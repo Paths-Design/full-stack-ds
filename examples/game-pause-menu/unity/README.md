@@ -55,12 +55,16 @@ evidence runs. Completing the package's `.meta` coverage or embedding the packag
 ### Design authority consumed
 
 - [`parity.md`](../parity.md) — rendering rules, per-tab composition order, switch root
-  cause, capture states, permitted differences.
+  cause, capture states, icon art, permitted differences.
 - [`parity-layout.json`](../fixtures/parity-layout.json) — the machine-readable
   authority (viewport, colours, type scale, style, switch geometry, header/tab/footer rects, per-tab
   panels/rows/cards/drawer/popover/settings sub-layout, marker/rarity/status colour maps, capture
   states). Copied **verbatim** to `Assets/PauseMenu/Resources/Fixtures/parity-layout.json` and
   parsed by the lane adapter; no layout constant is re-typed in UI code.
+- `parity-layout.json` `iconArt` — the pinned portable icon language: 16×16 icon-row tiles with
+  an explicit fixture-icon → code table (`Info`→IN, `Placeholder`→PL, `Home`→HO, `Baseline`→BL,
+  `Alarm`→AL, `CircleDot`→CD, `ChevronRight`→CR, `User`→US) and 40×40 ability-card tiles whose
+  codes are the first two alphanumeric characters of the ability name, uppercased (TH, OV, IO, …).
 - [`parity-check.mjs`](../parity-check.mjs) — the cross-engine probe tool. The lane's
   captures satisfy all 26 of its fixed colour probes (delta 0 at every probe point) when sampled
   with the committed probe list; the committed region-box helper has a tool defect described in the
@@ -107,7 +111,8 @@ express. Full machine-readable ledger: [`realization-ledger.json`](realization-l
 | Footer band | hand-authored shell + **FSDS** `Text` | nav value right-aligned per pinned correction |
 | Paused chip, rarity chips, status chips, installed chips | **FSDS** `Badge` (+`BadgeContent`) | chip boxes/colours from the authority; status labels 9 px at the chip edge |
 | Map / icon / roster / grid / detail / settings panels | **FSDS** `Card` + `CardHeader`/`CardContent` | 40 px panel header strips (36 px in settings), 1 px `rule` borders |
-| Ability cards | **FSDS** `Card` + generated `Button` hit target, `Badge`, `Icon`, `Text` | 152×240, rarity chip 64×18 at (8,−9), selected 2 px signal outline |
+| Ability cards | **FSDS** `Card` + generated `Button` hit target, `Badge`, `Text`, pinned code tile | 152×240, rarity chip 64×18 at (8,−9), selected 2 px signal outline |
+| Icon-visibility rows + ability-card art | pinned two-letter code tiles (`iconArt`, app authority) | 16×16 / 40×40 `graphite` + 1 px `ruleStrong`, square corners, centred `boneBright` 8 / 12 px 800 codes; the admitted `Icon` component stays available but these parity surfaces use the portable code language (GPUI has no Icon component) |
 | Icon filter toggles, general settings toggles | **FSDS** `Switch` | switch parity fix below |
 | Map marker detail, ability hover detail | **FSDS** `Popover` family | pinned popover rects (392,272,360,232) and (224,320,320,180) |
 | Reputation bars | **FSDS** `Progress` | 200×6, signal fill on graphite track |
@@ -138,16 +143,15 @@ The generated switch stylesheet projects the token pill radius verbatim
 The parity branch was re-merged before the final capture; the lane implements the correction set:
 OFF switch colour, nav target in **every** capture state with the right-aligned 13 px/700 signal
 value, ability-card boxes/rarity chip, roster `OPEN →`, the settings audio sub-layout, shortened
-panel meta lines, mission line `MARS EXPEDITION // COMMANDER D3SO`, wordmark 40 px/800, and the
-ink 12% grid / 12 px four-corner map ticks.
+panel meta lines, mission line `MARS EXPEDITION // COMMANDER D3SO`, wordmark 40 px/800, the
+ink 12% grid / 12 px four-corner map ticks, left-aligned tab labels at the 32 px inset, and the
+portable icon-art code tiles.
 
 ### Permitted differences
 
 - Font family fallback and glyph rasterisation; anti-aliasing at rect edges (Unity's UI Toolkit
   default face, uppercase labels and letter-spacing pinned from the authority).
-- Tab labels are left-aligned inside the 320 px cells (16 px padding). The authority does not pin
-  tab-label alignment; left alignment is required for the committed parity probe points (tab-fill
-  probes sample the cell centre) and matches the reference capture's solid-fill sampling.
+- Tab labels are left-aligned with the pinned 32 px inset (`tabBar.labelAlign` / `tabBar.labelInset`).
 - Status-chip labels render 9 px (normal weight) at the chip's left edge. The committed probe
   samples the chip fill at `(1118, 250)`, which only stays solid when the tag is a small edge label;
   the pinned prose says 10 px/800 and the JSON type map declares no 9 px chip size.
@@ -157,6 +161,11 @@ ink 12% grid / 12 px four-corner map ticks.
   panel-relative value is superseded.
 - Native slider/dropdown internals keep Unity theme behaviour; only their visual chrome is pinned.
 - Rarity chips use 9 px/800 (pinned prose) although the type map has no 9 px key.
+- Icon surfaces render the pinned portable code tiles instead of the admitted `Icon` catalog glyphs.
+  This is an app-authority decision (`iconArt`): the row codes come from the explicit table (so
+  `Baseline` renders BL, not the naive first two letters) and ability codes are the first two
+  alphanumeric characters of the ability name. The generated `Icon` component remains admitted and
+  is used wherever a surface is not pinned to the code language; this menu uses it nowhere else.
 
 ## Interaction coverage
 
@@ -185,22 +194,24 @@ PNG in `evidence/` that shows the resulting state.
 Additional tests: install-removal, pinned header/footer copy, four generated tabs + Orion scope,
 12 fixture/parity seam tests (malformed fixtures fail loudly with file + JSON path), and parity
 geometry tests (absolute rects applied, switch track 64×32 radius 16 / thumb 24 radius 12,
-on/off colours from the layout, 8 capture states declared).
+on/off colours from the layout, 8 capture states declared, and the pinned icon-art tiles: 16×16
+row codes from the explicit table including `Baseline`→BL, 40×40 ability codes, with the
+selected-card outline staying signal).
 
 ## Evidence
 
 Environment: Unity **6000.5.3f1** (c2eb47b3a2a9), macOS Standalone Player (`OSXPlayer`), Metal.
 
 - **EditMode** — `bash scripts/verify-unity.sh`
-  - `<test-run result="Passed" total="35" passed="35" failed="0" skipped="0">`
+  - `<test-run result="Passed" total="36" passed="36" failed="0" skipped="0">`
   - `evidence/editmode-results.xml`, `evidence/editmode.log`
 - **Player capture** — `bash scripts/capture-screenshots.sh`
   - `evidence/result.json`: `passed=true`, `editor=false`, `platform=OSXPlayer`,
     `width=1280 height=800`, 8 screenshots, 19 checks
-  - required four: `map.png` (120,116 B), `progress.png` (139,446 B), `abilities.png`
-    (132,995 B), `settings.png` (162,041 B)
-  - extra states: `map-popover.png` (142,560 B), `abilities-hover.png` (144,483 B),
-    `settings-remap-modal.png` (133,369 B), `settings-subtitle.png` (165,235 B)
+  - required four: `map.png` (119,616 B), `progress.png` (139,459 B), `abilities.png`
+    (129,715 B), `settings.png` (162,081 B)
+  - extra states: `map-popover.png` (142,092 B), `abilities-hover.png` (142,112 B),
+    `settings-remap-modal.png` (133,476 B), `settings-subtitle.png` (165,262 B)
   - `evidence/build.log`, `evidence/player.log` (includes the `FSDSPARITY` geometry probe)
 - **Parity probe self-check** — the committed `parity-check.mjs` colour probes sampled against
   these captures (all 26 expected colour points, max delta 0). The tool's region-box helper is
@@ -235,15 +246,21 @@ Environment: Unity **6000.5.3f1** (c2eb47b3a2a9), macOS Standalone Player (`OSXP
    the authority to the pixel. The awkward parts are generated component chrome (padding/gap
    defaults that must be stripped) and the floating popover placement (generated Popover anchors to
    its trigger; a fixed popover rect is reached with a zero-size anchor 4 px above the target).
-6. **The parity pass forced consumer styling of generated state classes** (`is-selected`,
+6. **Portable icon art exposed a component-language gap.** Unity and Godot could draw admitted
+   `Icon` catalog glyphs while GPUI has no Icon component, so the three interfaces used three icon
+   languages. Pinning two-letter code tiles in the app authority makes the surfaces portable; the
+   generated `Icon` component remains admitted and is simply unused on these parity surfaces. A
+   portable glyph→code fallback inside the package (or a `Text`-based icon mode) would let every
+   lane keep the component.
+7. **The parity pass forced consumer styling of generated state classes** (`is-selected`,
    `is-checked`, `is-open`), which is a stable public surface — but the lane also had to re-apply
    colours after silent state changes, an easy mistake the package could guard with a documented
    "style classes update even when the value does not notify" note.
-7. **Engine-native chrome leaks.** Sliders/dropdowns keep Unity theme internals; styling them from
+8. **Engine-native chrome leaks.** Sliders/dropdowns keep Unity theme internals; styling them from
    the JSON took discovery of the theme class names (`unity-base-slider__tracker`,
    `unity-base-slider__dragger`, `unity-base-popup-field__input/text/arrow`) — a package helper or
    documented recipe would remove a per-consumer archaeology step.
-8. **Tests stayed cheap:** 35 EditMode tests rerun in ~1.6 s after import; the Player build plus
+9. **Tests stayed cheap:** 36 EditMode tests rerun in ~1.6 s after import; the Player build plus
    eight 1280×800 captures runs in ~90 s.
 
 ## Non-claims

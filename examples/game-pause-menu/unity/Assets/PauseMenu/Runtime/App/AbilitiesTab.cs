@@ -33,6 +33,7 @@ namespace GamePauseMenu
         private readonly FixtureSet fixtures;
         private readonly ParityLayoutData layout;
         private readonly Dictionary<string, CardView> cards = new Dictionary<string, CardView>();
+        private readonly Dictionary<string, VisualElement> cardArt = new Dictionary<string, VisualElement>();
         private readonly Dictionary<string, SlotView> slots = new Dictionary<string, SlotView>();
         private readonly Text detailMeta;
         private readonly Text abilityTitle;
@@ -217,6 +218,16 @@ namespace GamePauseMenu
             return HoverPopover;
         }
 
+        /// <summary>The pinned 40x40 code tile for an ability card.</summary>
+        public VisualElement CardArt(string abilityId) => cardArt.TryGetValue(abilityId, out var art) ? art : null;
+
+        /// <summary>The generated ability-card root (holds the selected/installed state classes and outline).</summary>
+        public Card CardRoot(string abilityId)
+        {
+            if (!cards.ContainsKey(abilityId)) throw new ArgumentException("Unknown ability id '" + abilityId + "'.");
+            return cards[abilityId].Root;
+        }
+
         public DsButton CardAnchor(string abilityId)
         {
             if (!cards.ContainsKey(abilityId)) throw new ArgumentException("Unknown ability id '" + abilityId + "'.");
@@ -385,10 +396,10 @@ namespace GamePauseMenu
             rarity.style.backgroundColor = RarityColor(ability.Rarity);
             card.Add(rarity);
 
-            var iconSize = 40f;
-            var icon = Ui.MakeIcon(layout, ability.Icon, layout.Color("boneBright"), iconSize);
-            Ui.Point(icon, (rect.W - iconSize) / 2, cardsLayout.IconY);
-            card.Add(icon);
+            var art = Ui.MakeCodeTile(layout, layout.IconArt.CardTile, FixtureRepository.IconCode(ability.Name));
+            Ui.Point(art, (rect.W - layout.IconArt.CardTile.Size) / 2, cardsLayout.IconY);
+            card.Add(art);
+            cardArt[ability.Id] = art;
 
             var name = Ui.MakeText(layout, ability.Name, "rowLabel", "boneBright", true,
                 new LayoutRect(8, cardsLayout.NameY, rect.W - 16, 16), align: TextAnchor.MiddleCenter);

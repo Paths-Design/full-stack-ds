@@ -244,19 +244,35 @@ namespace GamePauseMenu
             return progress;
         }
 
-        public static FullStackDS.Icon MakeIcon(ParityLayoutData layout, string fixtureIconName, Color color,
-            float pixelSize)
+        /// <summary>The parity authority pins icon surfaces to a portable two-letter code tile
+        /// (first two letters of the source name, uppercased) so every engine renders the same art.</summary>
+        public static VisualElement MakeCodeTile(ParityLayoutData layout, IconTileLayout spec, string code)
         {
-            var icon = new FullStackDS.Icon
-            {
-                Name = FixtureRepository.IconKey(fixtureIconName),
-                Size = pixelSize >= 32 ? "xl" : pixelSize >= 24 ? "lg" : pixelSize >= 20 ? "md" : "sm",
-            };
-            icon.style.color = color;
-            icon.style.width = pixelSize;
-            icon.style.height = pixelSize;
-            icon.style.flexShrink = 0;
-            return icon;
+            var tile = new VisualElement();
+            tile.AddToClassList("parity-code-tile");
+            tile.style.width = (float)spec.Size;
+            tile.style.height = (float)spec.Size;
+            tile.style.flexShrink = 0;
+            tile.style.backgroundColor = layout.Color(spec.Background);
+            var width = (float)spec.BorderWidth;
+            tile.style.borderLeftWidth = width;
+            tile.style.borderRightWidth = width;
+            tile.style.borderTopWidth = width;
+            tile.style.borderBottomWidth = width;
+            BorderColor(tile, layout.Color(spec.Border));
+            Radius(tile, (float)spec.Radius);
+            tile.style.alignItems = Align.Center;
+            tile.style.justifyContent = Justify.Center;
+
+            var label = new Text { text = code, name = "code-tile-label" };
+            label.style.fontSize = (float)spec.FontSize;
+            label.style.unityFontStyleAndWeight = spec.Weight >= 700 ? FontStyle.Bold : FontStyle.Normal;
+            label.style.color = layout.Color(spec.Text);
+            label.style.unityTextAlign = TextAnchor.MiddleCenter;
+            label.style.letterSpacing = 0;
+            label.style.whiteSpace = WhiteSpace.NoWrap;
+            tile.Add(label);
+            return tile;
         }
 
         public static string Number(int value) =>

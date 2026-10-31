@@ -25,8 +25,7 @@
     "BadgeContent",
     "Progress",
     "Text",
-    "Divider",
-    "Icon"
+    "Divider"
   ],
   "fallbacks": [
     {
@@ -34,7 +33,10 @@
       "component": "Slider",
       "kind": "engine-native",
       "mechanism": "UnityEngine.UIElements.Slider with its theme internals styled inline from the layout authority (300x6 graphite track, 16px circular boneBright thumb) plus a lane-drawn signal fill overlay clipped to the thumb's left edge",
-      "regions": ["controller: five sliders", "audio: four sliders"],
+      "regions": [
+        "controller: five sliders",
+        "audio: four sliders"
+      ],
       "needed": "generated Slider with min/max/step/value and a fill element",
       "reason": "Unity allowlist admits no Slider; the engine slider has a tracker and dragger but no fill element",
       "swap": "replace BuildSlider with the generated control; step snapping becomes the component's step prop and the fill overlay disappears"
@@ -44,7 +46,10 @@
       "component": "Select / DropdownField",
       "kind": "engine-native",
       "mechanism": "UnityEngine.UIElements.DropdownField with theme internals (input/arrow) styled inline from the layout authority (graphite fill, ruleStrong border, boneBright text, muted chevron)",
-      "regions": ["audio language dropdown", "subtitle language dropdown"],
+      "regions": [
+        "audio language dropdown",
+        "subtitle language dropdown"
+      ],
       "needed": "generated Select with option list and value channel; the web contract already exists",
       "reason": "Unity allowlist admits no Select/DropdownField",
       "swap": "replace BuildDropdown; choices/options map directly"
@@ -54,7 +59,10 @@
       "component": "n/a",
       "kind": "hand-authored",
       "mechanism": "absolute header/footer container regions; every text, badge and rule inside is a generated component",
-      "regions": ["header band (0,0,1280,104)", "footer band (0,744,1280,56)"],
+      "regions": [
+        "header band (0,0,1280,104)",
+        "footer band (0,744,1280,56)"
+      ],
       "needed": "not a component contract; app shell chrome",
       "reason": "shell layout is app-level chrome owned by the app spec",
       "swap": "never; documented app decoration"
@@ -64,7 +72,9 @@
       "component": "n/a",
       "kind": "hand-authored",
       "mechanism": "sage field with 60px grid lines (ink 12%), 12px corner ticks, generated Button marker squares with monogram text, and a generated Popover at the pinned popover rect",
-      "regions": ["map field (40,232,840,480)"],
+      "regions": [
+        "map field (40,232,840,480)"
+      ],
       "needed": "not a component contract; map plotting surface",
       "reason": "graphic-grammar region owned by the app spec, not the component corpus",
       "swap": "never; documented app decoration"
@@ -74,7 +84,9 @@
       "component": "Drawer / Sheet",
       "kind": "hand-authored",
       "mechanism": "absolute paper panel at the pinned drawer rect; dossier/brief/history/perks/parts composed from generated Text, Divider, Badge and Button children",
-      "regions": ["progress drawer (24,176,560,552)"],
+      "regions": [
+        "progress drawer (24,176,560,552)"
+      ],
       "needed": "generated Drawer/Sheet surface that can render non-modally at a pinned rect",
       "reason": "the admitted Sheet is a modal/portal surface; parity pins a non-modal overlay at an absolute rect",
       "swap": "follow-on: replace the container with Sheet and pass the pinned rect + non-modal mode"
@@ -84,7 +96,9 @@
       "component": "Dialog",
       "kind": "hand-authored",
       "mechanism": "full-viewport dim overlay plus a panel at the pinned remap-modal rect; prompt/actions are generated Text/Button children, key capture is the lane's root key handler",
-      "regions": ["settings remap capture modal (430,300,420,200)"],
+      "regions": [
+        "settings remap capture modal (430,300,420,200)"
+      ],
       "needed": "generated Dialog with a deterministic panel rect and external key-capture hook",
       "reason": "the admitted Dialog is a portal surface with its own open/close contract; parity pins the exact panel rect and the capture state",
       "swap": "follow-on: replace the overlay container with Dialog once its rect/portal behaviour is pinned"
@@ -94,7 +108,9 @@
       "component": "n/a",
       "kind": "hand-authored",
       "mechanism": "coloured 576x26 strip plus generated Text for the preview line and language/background meta",
-      "regions": ["settings audio subtitle preview strip"],
+      "regions": [
+        "settings audio subtitle preview strip"
+      ],
       "needed": "not a component contract; live preview decoration",
       "reason": "app-level preview chrome, no component admits a subtitle preview",
       "swap": "never; documented app decoration"
@@ -104,7 +120,9 @@
       "component": "Tabs",
       "kind": "consumer-style",
       "mechanism": "generated Tabs cells pinned to 320x56 boxes; active fill and label colour applied inline from the layout authority on the generated is-selected state class (the generated sheet's selected-tab selector is a documented uss-selector gap)",
-      "regions": ["tab bar (0,104,1280,56)"],
+      "regions": [
+        "tab bar (0,104,1280,56)"
+      ],
       "needed": "a generated selected-tab style rule that can be themed",
       "reason": "consumer styling of an admitted component's state class, not a fallback",
       "swap": "n/a; styling stays consumer-side"
@@ -114,13 +132,30 @@
       "component": "Switch",
       "kind": "consumer-style",
       "mechanism": "generated Switch at size lg with lane-USS stadium radii pinned explicitly (track 64x32 r16, thumb 24x24 r12, checked offset 36px) instead of the generated 9999px pill token; on/off colours inline from the layout authority",
-      "regions": ["map icon filters x8", "settings general row 1"],
+      "regions": [
+        "map icon filters x8",
+        "settings general row 1"
+      ],
       "needed": "a generated track-radius that projects to a stadium instead of an ellipse",
       "reason": "generated border-radius projects the token 9999px verbatim and Unity paints an ellipse (the 'pinched oval' defect)",
       "swap": "package-side fix can then delete the lane override"
+    },
+    {
+      "id": "icon-art",
+      "component": "Icon",
+      "kind": "app-authority",
+      "mechanism": "portable two-letter code tiles: 16x16 icon-row tiles (explicit fixture-icon -> code table) and 40x40 ability-card tiles (first two alphanumeric characters of the ability name), graphite fill with a 1px ruleStrong border, square corners and centred boneBright 800 text at 8/12 px",
+      "regions": [
+        "map icon-visibility rows (8)",
+        "ability cards (10)"
+      ],
+      "needed": "a portable icon rendering mode (glyph -> text code) inside the admitted Icon component",
+      "reason": "the parity authority pins a portable icon language because GPUI has no Icon component; catalog glyphs are not portable across the three engines",
+      "swap": "never on these two parity surfaces (app-authority decision); generated Icon remains available elsewhere"
     }
   ],
   "admitted_not_used": [
+    "Icon (admitted; the parity authority pins portable code tiles on the two icon surfaces)",
     "Stat",
     "Chip",
     "Tooltip",
@@ -131,7 +166,14 @@
     "ToggleSwitch",
     "and the rest of the Unity target's 48-component allowlist (this app shape needs the listed subset)"
   ],
-  "swap_priority": ["Slider", "Select/DropdownField", "Dialog", "Sheet", "Tooltip", "Stat (header columns)"],
+  "swap_priority": [
+    "Slider",
+    "Select/DropdownField",
+    "Dialog",
+    "Sheet",
+    "Tooltip",
+    "Stat (header columns)"
+  ],
   "non_claims": [
     "Native slider/dropdown internals are styled to the pinned geometry but keep Unity theme behaviour; no cross-engine interaction parity is claimed for them.",
     "Hand-authored shell, map plot, drawer, modal and preview regions are app decoration, not design-system realizations.",
