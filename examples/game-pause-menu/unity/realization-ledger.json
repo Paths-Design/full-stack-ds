@@ -1,0 +1,162 @@
+{
+  "$note": "Machine-readable realization ledger for the Unity game-pause-menu lane. Generated components are consumed through public exports only; every region below the generated surface is a ledgered fallback so a later package admission can swap it mechanically. Update this file and the README ledger together.",
+  "lane": "unity",
+  "engine": "Unity 6000.5.3f1, UI Toolkit",
+  "package": "com.fullstackds.ui (packages/ds-unity, local file dependency)",
+  "generated_used": [
+    "Tabs",
+    "TabsList",
+    "TabsTab",
+    "TabsPanel",
+    "Accordion",
+    "AccordionItem",
+    "AccordionHeader",
+    "AccordionTrigger",
+    "AccordionContent",
+    "Switch",
+    "Popover",
+    "PopoverTrigger",
+    "PopoverContent",
+    "Text",
+    "Divider",
+    "Icon"
+  ],
+  "fallbacks": [
+    {
+      "id": "button",
+      "component": "Button",
+      "kind": "native",
+      "mechanism": "UnityEngine.UIElements.Button behind the single helper Ui.NativeButton",
+      "regions": [
+        "map marker detail: SET AS NAV TARGET",
+        "faction drawer: SHOP PARTS and BACK close chip",
+        "faction list rows (whole row is a Button)",
+        "controller remap: binding button",
+        "remap modal: CANCEL",
+        "subtitle background swatches"
+      ],
+      "needed": "generated Button with primary/secondary/quiet variants, disabled state, press/click callback parity with the web contract",
+      "reason": "Unity allowlist admits no Button (Godot admits Button; Unity does not)",
+      "swap": "replace the six Ui.NativeButton call sites with the generated control; store the variant in the call site"
+    },
+    {
+      "id": "badge",
+      "component": "Badge",
+      "kind": "hand-authored",
+      "mechanism": "app-authored Text chip (Ui.Chip) or styled Text with a lane USS class",
+      "regions": [
+        "header PAUSED status chip",
+        "header D3SO callsign plate",
+        "faction tier / LOCKED / UNLOCKED chips, drawer status chip",
+        "ability rarity tag (over the card top edge)",
+        "settings ON/OFF value chip",
+        "footer control-hint key chips"
+      ],
+      "needed": "generated Badge with tone/variant (neutral, signal, alert, positive) and a positioned tag use",
+      "reason": "Unity allowlist admits no Badge (Godot admits Badge)",
+      "swap": "replace Ui.Chip call sites; the rarity tag needs absolute positioning without changing the Badge contract"
+    },
+    {
+      "id": "card",
+      "component": "Card",
+      "kind": "hand-authored",
+      "mechanism": "app-authored VisualElement/Button containers styled by lane USS",
+      "regions": [
+        "faction list row",
+        "ability card (anchor is the generated Popover trigger; card chrome is authored)",
+        "map marker detail body (inside generated Popover content)",
+        "ability hover detail body (inside generated Popover content)",
+        "vehicle loadout slot"
+      ],
+      "needed": "generated Card with header/body composition and a selected state class",
+      "reason": "Unity allowlist admits no Card (Godot admits Card)",
+      "swap": "swap authored containers for the generated Card; Popover/Content composition already matches the compound API"
+    },
+    {
+      "id": "progress",
+      "component": "Progress",
+      "kind": "hand-authored",
+      "mechanism": "track VisualElement + fill VisualElement with an inline percentage width",
+      "regions": ["faction reputation bars (unlocked rows)"],
+      "needed": "generated Progress with value/max and a brandable fill token",
+      "reason": "Unity allowlist admits no Progress",
+      "swap": "replace the two-element bar with Progress { Value, Max }"
+    },
+    {
+      "id": "slider",
+      "component": "Slider",
+      "kind": "native",
+      "mechanism": "UnityEngine.UIElements.Slider with app-side step snapping via SettingsTab.Snap",
+      "regions": ["controller: five sliders", "audio: four sliders"],
+      "needed": "generated Slider with min/max/step/value, value display, and a text value channel",
+      "reason": "none of the three native allowlists admit Slider",
+      "swap": "replace BuildSlider with the generated control; snapping becomes the component's step prop"
+    },
+    {
+      "id": "select",
+      "component": "Select / DropdownField",
+      "kind": "native",
+      "mechanism": "UnityEngine.UIElements.DropdownField",
+      "regions": ["audio language dropdown", "subtitle language dropdown"],
+      "needed": "generated Select with option list and value channel; the web contract already exists",
+      "reason": "Unity allowlist admits no Select/DropdownField",
+      "swap": "replace BuildDropdown; choices/options map directly"
+    },
+    {
+      "id": "colorfield",
+      "component": "ColorField / swatch",
+      "kind": "hand-authored",
+      "mechanism": "app-authored swatch buttons painted from the fixture colour options",
+      "regions": ["subtitle background colour picker"],
+      "needed": "generated swatch grid or ColorField with option list and selected state",
+      "reason": "Unity allowlist admits no colour control",
+      "swap": "replace the swatch row; the fixture already supplies id/label/value options"
+    },
+    {
+      "id": "modal",
+      "component": "Dialog / Modal",
+      "kind": "hand-authored",
+      "mechanism": "app-authored full-panel overlay plus root-level key capture",
+      "regions": ["controller remap: PRESS ANY KEY OR BUTTON capture modal"],
+      "needed": "generated Dialog/Modal with modal focus capture and dismiss semantics",
+      "reason": "Unity allowlist admits no Dialog/Modal",
+      "swap": "replace remap-modal overlay; key capture hook moves to the component's input contract"
+    },
+    {
+      "id": "drawer",
+      "component": "Drawer / SidePanel",
+      "kind": "hand-authored",
+      "mechanism": "app-authored ScrollView panel absolutely positioned at the content region's left edge",
+      "regions": ["progress: faction detail drawer"],
+      "needed": "generated Drawer/Sheet with left-edge placement, open state class and dismiss affordance",
+      "reason": "Unity allowlist admits no Drawer/Sheet",
+      "swap": "replace faction-drawer with the generated drawer; content composition (text/rules/lists) already uses generated Text/Divider"
+    },
+    {
+      "id": "map-plot",
+      "component": "n/a (app decoration)",
+      "kind": "hand-authored",
+      "mechanism": "app-authored grid/contour/marker elements positioned from normalized fixture x/y",
+      "regions": ["map field plot, grid, contour ticks, sector label, N5 watermark"],
+      "needed": "not a design-system component; stays app chrome",
+      "reason": "graphic-grammar decoration owned by the app spec, not the component corpus",
+      "swap": "never; documented as non-DS app-layer chrome"
+    },
+    {
+      "id": "scrollview",
+      "component": "ScrollView",
+      "kind": "native",
+      "mechanism": "UnityEngine.UIElements.ScrollView",
+      "regions": ["faction list", "ability grid", "settings sections and drawer body", "icon visibility list"],
+      "needed": "not a contract component; native scroll container",
+      "reason": "layout container, not a visual component region",
+      "swap": "never; native scroll container is the intended composition primitive"
+    }
+  ],
+  "swap_priority": ["Button", "Badge", "Card", "Progress", "Slider", "Select", "ColorField", "Dialog/Modal", "Drawer"],
+  "non_claims": [
+    "A generated control admitted later does not retroactively prove the current lane used it.",
+    "Native UI Toolkit controls keep Unity chrome and focus behaviour; no cross-engine visual parity is claimed.",
+    "The map plot and shell bands are app decoration, not design-system realizations."
+  ]
+}
