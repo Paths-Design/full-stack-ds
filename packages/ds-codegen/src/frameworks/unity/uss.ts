@@ -713,7 +713,7 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
   const placeState = (owner: string | undefined): UssReason | undefined => {
     // Passive content and the native action control project no channel-driven
     // state class; only the three channel behaviors own one.
-    if (lowering.behavior === "Passive" || lowering.behavior === "Action" || lowering.behavior === "Progress" || lowering.behavior === "ComposedAction" || lowering.behavior === "TextInput" || lowering.behavior === "Toast") return "uss-selector";
+    if (lowering.behavior === "Passive" || lowering.behavior === "Action" || lowering.behavior === "Progress" || lowering.behavior === "ComposedAction" || lowering.behavior === "TextInput" || lowering.behavior === "Toast" || lowering.behavior === "Slots") return "uss-selector";
     // A hover-open surface projects no single open-state class.
     if (lowering.stateClass === undefined) return "uss-selector";
     const stateClass = `.${lowering.stateClass}`;

@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -148,6 +148,15 @@ export interface ComposedActionLowering {
   triggers: ComposedActionTrigger[];
   disabledProp?: string;
 }
+/**
+ * A slot-only composition container: the contract's structure is a set of
+ * named slot hosts plus carrier axes, and its channel is context propagation
+ * for a consumer-supplied child control. No runtime class attaches; the value
+ * context and validation state are withheld.
+ */
+export interface SlotsLowering {
+  behavior: "Slots";
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -161,7 +170,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -218,6 +227,12 @@ function isUnityStaticContainer(ir: ComponentIR): boolean {
 function declaredProp(ir: ComponentIR, name: string): ResolvedPropIR | undefined {
   return ir.styledProps.find(candidate => candidate.name === name);
 }
+function hasSlots(node: DomNodeIR | undefined): boolean {
+  if (node === undefined) return false;
+  if (node.tag === "slot") return true;
+  return node.children.some(hasSlots);
+}
+
 function propIsString(ir: ComponentIR, name: string): boolean {
   const prop = declaredProp(ir, name);
   return prop !== undefined && (prop.propType.kind === "string" || (prop.propType.kind === "fallback" && prop.propType.raw === "string"));
@@ -469,6 +484,13 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
   if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir) || isPartsOnlyContainer(ir) || textProp !== undefined)) {
     if (focus !== undefined && focus !== "none") throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which Passive does not realise`);
     return { behavior: "Passive", ...(textProp === undefined ? {} : { textProp }) };
+  }
+  // A slot-only composition container: no interaction, surface or form-control,
+  // but a channel and named slot hosts. The channel is context propagation for a
+  // consumer-supplied child control and is withheld; only the slot hosts and the
+  // carrier axes are realised.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.behavior.normalizedChannels.length > 0 && hasSlots(ir.dom)) {
+    return { behavior: "Slots" };
   }
   if (ir.formControl?.valueModel === "boolean") {
     if (focus !== undefined && focus !== "auto") refuseFocus("BooleanControl");

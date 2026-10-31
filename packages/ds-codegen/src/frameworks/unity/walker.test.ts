@@ -324,6 +324,19 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Politeness|AriaLabel/);
   });
 
+  it("renders a slot-only form row with a status carrier for Field", () => {
+    const contract = loadContractWithSidecars(root, "Field") as ComponentContract;
+    const fieldIr = buildComponentIR(contract);
+    fieldIr.name = "UnrelatedFieldRow";
+    const source = createUnityEmitter().emitComponent(fieldIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedFieldRow : VisualElement");
+    expect(source).toContain("public VisualElement ControlSlot { get; } = new VisualElement();");
+    expect(source).toContain("public VisualElement LabelSlot { get; } = new VisualElement();");
+    expect(source).toContain("public VisualElement ValidatingIndicatorSlot { get; } = new VisualElement();");
+    expect(source).toContain("public string Status { get => Variants.Get(this, \"field\", \"idle\", \"validating\", \"valid\", \"invalid\");");
+    expect(source).not.toMatch(/public string Value|public bool Disabled|public bool Validating/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);
