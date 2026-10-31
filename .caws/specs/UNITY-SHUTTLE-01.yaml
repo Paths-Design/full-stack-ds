@@ -2,7 +2,6 @@ id: UNITY-SHUTTLE-01
 title: 'Admit Shuttle to the Unity target as a dual-list transfer runtime'
 mode: feature
 lifecycle_state: active
-worktree: unity-shuttle
 created_at: '2026-10-31T16:29:03.549Z'
 updated_at: '2026-10-31T16:45:24.710Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
