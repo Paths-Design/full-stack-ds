@@ -54,3 +54,9 @@ contracts:
   - name: 'calendar-date-grid'
     type: behavior
     path: 'packages/ds-contracts/components/Calendar/Calendar.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit c0c57c267bad72b70b45df13ecc5751f1c5ecd92 plus the fix commits: focused unity codegen + cli seam 244/244 pass, including the DateGrid lowering from the declared dateGrid facts (value/month date channels, caption/min/max/disabled/mode/locale props, header/grid/nav/weekday/day parts), the early dispatch before the generic composite shape, the walker emitting only the ISO channel API with the runtime-built shell, the refused range/locale/should-close/keyboard/authored-shell families and the styles ledger refusals; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. The landing exposed genuine corrections: date-grid dispatch had to precede composite composition, the date-grid and generic binding/anatomy catch-alls were retired, and the calendar grid/nav/token/selector ledger rows needed adjudication."
+    recorded_at: "2026-10-31T19:02:45.079Z"
+    commit_sha: c0c57c267bad72b70b45df13ecc5751f1c5ecd92
