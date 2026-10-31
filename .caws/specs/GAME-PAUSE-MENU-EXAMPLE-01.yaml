@@ -73,9 +73,9 @@ evidence:
     commit_sha: cf8aea80f0291c31c8579591696b3bd65687a35f
   - criterion_id: A3
     status: pass
-    evidence_ref: "GPUI lane: cargo +1.94.1 build --locked exit 0, 0 warnings; cargo test --locked 51 pass (2 lib + 49 seam); --features capture 54 pass; 10 x 1280x800 frames rendered by Window::render_to_image including required four; lane README ledgers 5/7 admitted components used and every NOT FSDS fallback; lane commit 6b4c17b03 merged into main via d468c4503"
-    recorded_at: "2026-10-31T17:48:19.259Z"
-    artifact_path: tmp/game-pause-menu/gpui/capture-manifest.json
+    evidence_ref: "GPUI lane: cargo +1.94.1 build --locked exit 0, 0 warnings; cargo test --locked 51 pass (2 lib + 49 seam); --features capture 54 pass; 10 x 1280x800 frames rendered by Window::render_to_image including required four; README documents commands, results, component inventory and NOT FSDS ledger; lane commit 6b4c17b03 merged into main via d468c4503"
+    recorded_at: "2026-10-31T17:48:53.521Z"
+    artifact_path: examples/game-pause-menu/gpui/README.md
     commit_sha: "6b4c17b03"
   - criterion_id: A4
     status: pass
