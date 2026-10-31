@@ -556,5 +556,20 @@ namespace FullStackDS.Tests
             Assert.That(header.childCount, Is.EqualTo(1));
             Assert.That(typeof(FullStackDS.Card).GetProperty("Interactive"), Is.Null);
         }
+        [Test] public void NavListComposesItsListAndItems()
+        {
+            var nav = Mount(new FullStackDS.NavList());
+            var list = new FullStackDS.NavListList();
+            var item = new FullStackDS.NavListItem();
+            item.Add(new UnityEngine.UIElements.Label("Overview"));
+            list.Add(item);
+            nav.Add(list);
+            Assert.That(nav.ClassListContains("nav-list"), Is.True);
+            Assert.That(list.ClassListContains("nav-list__list"), Is.True);
+            Assert.That(item.ClassListContains("nav-list__item"), Is.True);
+            Assert.That(item.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.NavList).GetProperty("Orientation"), Is.Null);
+            Assert.That(typeof(FullStackDS.NavList).GetProperty("AriaLabel"), Is.Null);
+        }
     }
 }

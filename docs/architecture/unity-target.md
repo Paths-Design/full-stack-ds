@@ -5,7 +5,7 @@ status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
 updated: 2026-10-31
-verified_at_commit: 2a885bc14802fa79644520e9bb202da426031f51
+verified_at_commit: 826fe65cca87037476da9a478f434e70ef882bc7
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -79,6 +79,8 @@ At source `63fee12cf`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 43/43 Ed
 `UNITY-STATUS-01` admits Status. At source `761e6086d`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 61/61 EditMode cases (test-run start `2026-10-31 10:48:01Z`, zero failed or skipped); the added case composes text through the content container, sets the renamed `StatusValue` carrier and asserts the omitted decoration exposes no icon API. The lowering omits a decoration-role component instance by role fact (composition P4), and the realization check reads the same class-member suffix rule the walker emits.
 
 `UNITY-CARD-01` admits Card as a parts-only composed container (Godot also admits Card). At source `2a885bc14`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 62/62 EditMode cases (test-run start `2026-10-31 11:01:56Z`, zero failed or skipped); the added case composes card subcomponent parts, checks the density modifier and asserts no `Interactive` property. The dispatcher selects the passive lowering for parts-only contracts with no channel, interaction or surface; the walker synthesizes the tree from `ir.parts`, and explicit subcomponent parts become composed classes. The interactive hover affordance is pending P4 and the modifier-state style selectors stay outside the native grammar.
+
+`UNITY-NAVLIST-01` admits NavList as a semantic navigation container. At source `826fe65cc`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 63/63 EditMode cases (test-run start `2026-10-31 11:13:32Z`, zero failed or skipped); the added case composes the list and item parts and asserts the absent Orientation/AriaLabel API. A legacy styled layout axis now has its own pending rule unless its sidecar carries a USS modifier, so orientation is withheld; the a11y label binding is refused and the item's `[aria-current]` selector stays pending P4.
 
 ## Anatomy walker
 

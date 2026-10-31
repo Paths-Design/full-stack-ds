@@ -163,4 +163,14 @@ describe("Unity passive anatomy path", () => {
     }
     expect(source).not.toMatch(/Interactive/);
   });
+
+  it("lowers the semantic nav container with its composed list and item classes", () => {
+    const source = emit(irFor("NavList", "UnrelatedNav"));
+    expect(source).toContain("public partial class UnrelatedNav : VisualElement");
+    expect(source).toContain("public partial class UnrelatedNavList : VisualElement");
+    expect(source).toContain("public partial class UnrelatedNavItem : VisualElement");
+    expect(source).toContain('AddToClassList("nav-list__list");');
+    expect(source).toContain('AddToClassList("nav-list__item");');
+    expect(source).not.toMatch(/Orientation|AriaLabel/);
+  });
 });
