@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -303,6 +303,23 @@ export interface SelectLowering {
   sizeAxis?: string;
   itemType: string;
 }
+/**
+ * A dual-list transfer: a string[] selection channel over candidate ids. The
+ * runtime owns the two lists, the available/selected derivation, marking,
+ * add/remove with the declared transfer actions and the option array; the
+ * authored shell markup is recreated from the declared list/control parts. The
+ * keyboard, a11y labels and marked-state styling are withheld.
+ */
+export interface TransferLowering {
+  behavior: "Transfer";
+  channel: NormalizedChannelIR;
+  optionsProp: string;
+  listPart: string;
+  controlsPart: string;
+  itemPart: string;
+  addPart: string;
+  removePart: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -316,7 +333,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -642,6 +659,33 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A dual-list transfer: a runtime-owned transfer block over a string[] channel.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.dom !== undefined && ir.transfer !== undefined) {
+    const channel = ir.behavior.normalizedChannels.find(candidate => candidate.name === ir.transfer!.valueChannel);
+    const findParts = (node: DomNodeIR, found: DomNodeIR[]): void => {
+      if (node.iteration?.source.kind === "transfer" && node.part !== undefined) found.push(node);
+      for (const child of node.children) findParts(child, found);
+    };
+    const itemNodes: DomNodeIR[] = [];
+    findParts(ir.dom, itemNodes);
+    const list = ir.dom.children.find(node => node.part !== undefined && node.children.some(child => child.iteration?.source.kind === "transfer"));
+    const controls = ir.dom.children.find(node => node.part !== undefined && node.children.some(child =>
+      child.events.click?.kind === "transfer" && (child.events.click.action === "add" || child.events.click.action === "remove")));
+    const add = controls?.children.find(node => node.events.click?.kind === "transfer" && node.events.click.action === "add");
+    const remove = controls?.children.find(node => node.events.click?.kind === "transfer" && node.events.click.action === "remove");
+    if (channel !== undefined && itemNodes.length >= 2 && list?.part !== undefined && controls?.part !== undefined && itemNodes[0]!.part !== undefined && add?.part !== undefined && remove?.part !== undefined) {
+      return {
+        behavior: "Transfer",
+        channel,
+        optionsProp: ir.transfer.optionsProp,
+        listPart: list.part,
+        controlsPart: controls.part,
+        itemPart: itemNodes[0]!.part,
+        addPart: add.part,
+        removePart: remove.part,
+      };
+    }
   }
   // A select listbox: a selection channel plus a boolean open channel driven by
   // the trigger and a guarded content surface that contains the option array.

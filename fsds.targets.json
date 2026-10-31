@@ -217,7 +217,8 @@
         "Pagination",
         "OTP",
         "RadioGroup",
-        "Select"
+        "Select",
+        "Shuttle"
       ]
     },
     {

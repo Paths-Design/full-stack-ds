@@ -144,6 +144,48 @@
       "reason": "Per-part ARIA roles and attributes have no runtime consumer: UI Toolkit exposes no assistive-technology tree."
     },
     {
+      "id": "anatomy-shuttle-elements-lowered",
+      "match": ["contract:/anatomy/dom/**/children/list/tag", "contract:/anatomy/dom/**/children/list/part", "contract:/anatomy/dom/**/children/item/tag", "contract:/anatomy/dom/**/children/item/part", "contract:/anatomy/dom/**/children/controls/tag", "contract:/anatomy/dom/**/children/controls/part", "contract:/anatomy/dom/**/children/controls/children/*/tag", "contract:/anatomy/dom/**/children/controls/children/*/part"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Transfer)/TransferControl: the declared list/controls/item/add/remove shell is recreated by the runtime with the declared part classes instead of emitted markup."
+    },
+    {
+      "id": "anatomy-shuttle-iteration-lowered",
+      "match": ["contract:/anatomy/dom/**/children/item/iterate/**"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Transfer)/TransferControl: both transfer collections are derived by the runtime from the option/value arrays and rendered as runtime rows, so the iterated item markup is omitted."
+    },
+    {
+      "id": "anatomy-shuttle-item-binding-lowered",
+      "match": ["contract:/anatomy/dom/**/children/item/children/*/content", "contract:/anatomy/dom/**/children/item/events/click", "contract:/anatomy/dom/**/children/controls/children/*/events/click", "contract:/anatomy/dom/**/children/controls/children/*/bindings/disabled"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Transfer)/TransferControl: the item label and toggle activation become the runtime row text and row click, and the derived add/remove disabled state becomes the runtime button enablement."
+    },
+    {
+      "id": "anatomy-shuttle-keyboard-refused",
+      "match": ["contract:/anatomy/dom/**/children/list/events/keydown"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "refused",
+      "reason": "Keyboard transfer (arrow/space/enter) needs the P4 keyboard family; the runtime supports pointer marking and button transfer only."
+    },
+    {
+      "id": "anatomy-shuttle-item-attrs-refused",
+      "match": ["contract:/anatomy/dom/**/children/item/bindings/data-value", "contract:/anatomy/dom/**/children/item/bindings/tabindex"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "refused",
+      "reason": "The data-value identity and roving tabindex have no UI Toolkit consumer; the runtime keeps row identity in memory and marks items through its own state."
+    },
+    {
+      "id": "anatomy-shuttle-control-messages-refused",
+      "match": ["contract:/anatomy/dom/**/children/controls/children/*/content"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "refused",
+      "reason": "The add/remove button labels only exist as declared messages; the runtime leaves the buttons unlabelled for the consumer to set."
+    },
+    {
       "id": "anatomy-tags",
       "match": ["contract:/anatomy/details/*/tag", "contract:/anatomy/dom/tag", "contract:/anatomy/dom/**/children/*/tag"],
       "disposition": "lowered",
@@ -816,6 +858,20 @@
       "reason": "Escape and outside-click dismissal are not wired by the select runtime; it closes after a single selection only, so the declared dismissal family stays unclaimed."
     },
     {
+      "id": "prop-shuttle-options-lowered",
+      "match": ["contract:/props/*/members/plain:options/**"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Transfer): the candidate id array becomes the generated Options API backed by TransferControl."
+    },
+    {
+      "id": "prop-shuttle-channel-lowered",
+      "match": ["contract:/props/*/members/channel-value:value/**", "contract:/props/*/members/channel-default:defaultValue/**", "contract:/props/*/members/channel-change:onValueChange/**"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Transfer): the string[] channel becomes the generated Value/DefaultValue properties and the OnValueChange action; the array is not a UXML-serialisable attribute."
+    },
+    {
       "id": "prop-channel-value",
       "match": ["contract:/props/*/members/channel-value:*/**"],
       "disposition": "lowered",
@@ -1474,6 +1530,13 @@
       "via": "walker.ts (Select)/SelectControl: the open channel is exposed as the generated Open/DefaultOpen API with OpenChanged/OpenRequested semantics; the selected-channel realisation check covers the selection channel only."
     },
     {
+      "id": "channels-shuttle-lowered",
+      "match": ["contract:/channels/selection/**"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Transfer)/TransferControl: the selection channel is exposed as a plain string[] API with commit/request semantics; the selected-channel attribute realisation does not apply to array channels."
+    },
+    {
       "id": "channels",
       "match": ["contract:/channels/**"],
       "disposition": "lowered",
@@ -1624,11 +1687,11 @@
       "reason": "A month date grid (Calendar) needs a date-grid runtime behavior: locale-formatted weeks, roving focus over gridcells and the value and month channels; the dispatcher rejects it today."
     },
     {
-      "id": "transfer-list",
+      "id": "transfer-shuttle-lowered",
       "match": ["contract:/transfer/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "reason": "A dual-listbox transfer (Shuttle) needs a transfer-list runtime behavior: the available and selected lists derived from the options prop and the value channel, a mark per item, add and remove, and per-list focus; its iterated options are refused with the rest of anatomy iteration."
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Transfer)/TransferControl: the declared transfer value channel and options prop drive the runtime dual-list derivation."
     },
     {
       "id": "interaction-close-operation",
@@ -1881,6 +1944,14 @@
       "reason": "Roles, labels and ARIA attributes have no runtime consumer: UI Toolkit exposes no assistive-technology tree on desktop, and Unity's mobile AccessibilityHierarchy is not populated by UI Toolkit. Revisit when that integration exists."
     },
     {
+      "id": "messages-shuttle-pending",
+      "match": ["contract:/messages/**"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The list/button accessible message strings need the P4 message/a11y family; visible row labels are the option ids and the buttons stay unlabelled."
+    },
+    {
       "id": "messages",
       "match": ["contract:/messages/**"],
       "disposition": "pending",
@@ -2130,6 +2201,13 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "The invalid state has no native carrier on the generated text field; its modifier-state selectors wait on the P4 state-carrier family and are ledgered pending."
+    },
+    {
+      "id": "styles-shuttle-list-size-refused",
+      "match": ["styles:/list/min-block-size/**", "styles:/list/min-inline-size/**"],
+      "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
+      "disposition": "refused",
+      "reason": "The transfer list min-size presentations depend on the authored list markup the runtime recreates without those size slots; they are withheld rather than emitted partially."
     },
     {
       "id": "styles",

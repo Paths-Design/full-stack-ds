@@ -1158,5 +1158,51 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Searchable", "SearchInput", "TriggerLabel", "SearchLabel", "Multiple" })
                 Assert.That(typeof(FullStackDS.Select).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void ShuttleDerivesBothListsAndTransfersTheSelection()
+        {
+            var shuttle = Mount(new FullStackDS.Shuttle());
+            shuttle.Options = new[] { "alpha", "beta", "gamma", "delta" };
+            shuttle.DefaultValue = new[] { "beta" };
+            var buttons = shuttle.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(buttons.Count, Is.EqualTo(6));
+            Assert.That(buttons[0].text, Is.EqualTo("alpha"));
+            Assert.That(buttons[0].ClassListContains("shuttle__item"), Is.True);
+            var add = buttons[3];
+            var remove = buttons[4];
+            Assert.That(add.ClassListContains("shuttle__add"), Is.True);
+            Assert.That(add.enabledSelf, Is.False);
+            Assert.That(remove.ClassListContains("shuttle__remove"), Is.True);
+            Assert.That(buttons[5].text, Is.EqualTo("beta"));
+            string[] changed = null;
+            shuttle.OnValueChange += value => changed = value;
+            Submit(buttons[0]);
+            Assert.That(add.enabledSelf, Is.True);
+            Submit(add);
+            Assert.That(shuttle.Value, Is.EqualTo(new[] { "beta", "alpha" }));
+            Assert.That(changed, Is.EqualTo(new[] { "beta", "alpha" }));
+            var afterAdd = shuttle.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(afterAdd[0].text, Is.EqualTo("gamma"));
+            Assert.That(afterAdd[1].text, Is.EqualTo("delta"));
+            Assert.That(remove.enabledSelf, Is.False);
+            Assert.That(afterAdd[4].text, Is.EqualTo("beta"));
+            Assert.That(afterAdd[5].text, Is.EqualTo("alpha"));
+            Submit(afterAdd[4]);
+            Assert.That(remove.enabledSelf, Is.True);
+            Submit(remove);
+            Assert.That(shuttle.Value, Is.EqualTo(new[] { "alpha" }));
+            var afterRemove = shuttle.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(afterRemove[0].text, Is.EqualTo("beta"));
+            Assert.That(afterRemove[5].text, Is.EqualTo("alpha"));
+            shuttle.Controlled = true;
+            string[] requested = null;
+            shuttle.ValueRequested += value => requested = value;
+            Submit(afterRemove[1]);
+            Submit(add);
+            Assert.That(requested, Is.EqualTo(new[] { "alpha", "gamma" }));
+            Assert.That(shuttle.Value, Is.EqualTo(new[] { "alpha" }));
+            Assert.That(shuttle.childCount, Is.EqualTo(3));
+            foreach (var prop in new[] { "AriaLabel", "DataValue", "Tabindex", "AriaSelected", "Available" })
+                Assert.That(typeof(FullStackDS.Shuttle).GetProperty(prop), Is.Null, prop);
+        }
     }
 }
