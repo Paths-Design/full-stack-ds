@@ -1,9 +1,11 @@
 id: UNITY-SELECT-01
 title: 'Admit Select to the Unity target as a two-channel listbox runtime'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Select admitted to the Unity target/package (forty-sixth allowlisted control) as a two-channel listbox: selection + open channels select Select, a nested option type is generated from the iteration leaves, SelectControl builds the runtime options, paints the trigger label from selection/placeholder, toggles the surface and authored open class, commits or requests a single selection and closes on choice; multi-select, search/filtering, empty state, keyboard roving, aria mirrors, focus return and dismissal refused or pending; codegen+cli 238/238, boundary audit clean, root 5420/5420, real Unity EditMode 87/87, package sheet regenerated'
 created_at: '2026-10-31T16:12:03.620Z'
-updated_at: '2026-10-31T16:26:26.228Z'
+updated_at: '2026-10-31T16:27:19.550Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
