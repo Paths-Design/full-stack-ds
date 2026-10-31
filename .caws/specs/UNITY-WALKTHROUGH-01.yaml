@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T14:35:27.704Z"
     artifact_path: packages/ds-unity/Runtime/Components/Walkthrough/Walkthrough.cs
     commit_sha: "7e4bc30c9dd64df6e0056a4f8e32a45523c08aaa"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 61b21eda0 (sourceDirty false): 78/78 passed, zero failed/skipped (test-run start 2026-10-31 14:34:49Z; resultsSha256 91fbc664868dd955e045ed4c8bfae1f9754606c92836c584ea4793e4aabf8001). The added case composes both slot hosts, sets Index/ProgressLabel/NextLabel/PreviousDisabled, activates Skip/Prev/Next through native submit events and asserts all three generated callbacks fire, the counter/next labels paint, and the omitted API stays absent. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T14:35:28.254Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.WalkthroughComposesSlotsAndWiresItsControlCallbacks
+    exit_code: 0
+    commit_sha: "61b21eda0227e00bb114a5ba015fa4838abe182c"
