@@ -68,3 +68,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/List/List.cs
     commit_sha: dd419952943fb038012f0e7a6ae48d9d9f2a3928
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source e2880f6c0 (sourceDirty false): 57/57 passed, zero failed/skipped (test-run start 2026-10-31 09:50:00Z; resultsSha256 a52f96306d47ef7692702354e23dfac0e3e186d42cf71cf4d0fc0586dbe104a7). The added case composes items, checks list--variant-inline/list--size-lg prefixed carriers, and asserts the absent As/Marker/Spacing property. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T09:50:49.440Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.ListComposesItemsAndCarriesPrefixedAxes
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: e2880f6c015b10844e829b2447f266debe4384b4
