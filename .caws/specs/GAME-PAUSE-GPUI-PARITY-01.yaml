@@ -1,0 +1,37 @@
+id: GAME-PAUSE-GPUI-PARITY-01
+title: 'Pause menu gpui lane parity rework'
+mode: refactor
+lifecycle_state: draft
+created_at: '2026-10-31T19:18:57.099Z'
+updated_at: '2026-10-31T19:18:57.099Z'
+created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
+blast_radius:
+  modules:
+    - 'gpui parity realization of the shared pause-menu layout authority'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/game-pause-menu/gpui'
+  out: []
+invariants:
+  - 'Lane interaction semantics, fixture corpus and existing tests remain intact'
+  - 'All geometry comes from fixtures/parity-layout.json; no lane-specific redesign'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the lane sources in a worktree based on game-pause-parity; when the lane builds and its tests run; then the reworked UI compiles, interactions pass and the switch renders as a 64x32 pill with a 24px circular thumb'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the lane at 1280x800; when the map, progress, abilities and settings states are captured; then each state matches the parity geometry, colours and copy with only font rasterisation differing'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the lane README; when read; then it carries a parity section (geometry authority, DS vs fallback regions, switch fix, permitted differences, evidence)'
+non_functional: {}
+contracts:
+  - name: 'pause-menu-parity-spec'
+    type: behavior
+    path: 'examples/game-pause-menu/parity.md'
