@@ -5,7 +5,7 @@ status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
 updated: 2026-10-31
-verified_at_commit: 72833ffb7bbce3e60d5110c92ca70a5f600ea9e3
+verified_at_commit: 6a430ac8adf8ee7423fe97c845fa6d48c296ff43
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -63,6 +63,8 @@ At source `63fee12cf`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 43/43 Ed
 `UNITY-ACTION-BUTTON-01` adds the projected-children action control. At source `9c95d7513`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 51/51 EditMode cases (test-run start `2026-10-31 08:26:44Z`, zero failed or skipped); the added cases exercise native submit activation exactly once, disabled activation suppression, consumer-child composition into the control's own content container, and the size/variant class carriers. Focused codegen tests and `audit:unity-boundary` pin the action lowering and the refused pending-state facts; `tmp/unity-pilot/provenance.json` binds the NUnit XML digest to that revision. The generated sheet now carries Button rules; the loading spinner and loading-text carrier rules have no rendered element because the guarded chrome is pending P4.
 
 `UNITY-BOOLEAN-CONTROLS-01` admits the two remaining boolean forms of the same shared behavior. At source `72833ffb7`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 54/54 EditMode cases (test-run start `2026-10-31 09:01:57Z`, zero failed or skipped); the added cases exercise label-host Checkbox activation and its native child control, disabled suppression, ToggleSwitch root activation exactly once per activation, and the withheld indeterminate/size API. The boundary gains a DOM-property refusal family, a commit-activation rule for the root-control form, a P3 rule naming the size axis that has no style carriers yet, and a `declaration.keyPattern` condition so pseudo-element and web-only pseudo-class declarations are refused generically rather than via component-named rules. `tmp/unity-pilot/provenance.json` binds the NUnit XML digest to that revision.
+
+`UNITY-PASSIVE-CONTAINERS-01` admits Blockquote, Stat and ProfileFlag as carrier-backed passive containers. At source `6a430ac8a`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 55/55 EditMode cases (test-run start `2026-10-31 09:14:44Z`, zero failed or skipped); the added case composes consumer children into each container, checks the variant/size/trend class carriers, and asserts the absent Cite/Profile API. The boundary adds a generic citation refusal, a generic `font-style` styles refusal (the projection has no handler) and a P4 pending rule for structured profile data; the size and trend axes are lowered only because their style sidecars carry carriers.
 
 ## Anatomy walker
 

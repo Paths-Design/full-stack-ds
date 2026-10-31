@@ -338,6 +338,22 @@
       "reason": "uss-property"
     },
     {
+      "component": "Blockquote",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-style",
+      "value": "italic",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Blockquote",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Button",
       "sourceKey": ".button[aria-busy=\"true\"] .button__loadingText",
       "part": "",
@@ -1160,6 +1176,22 @@
       "property": "cursor",
       "value": "pointer",
       "reason": "uss-scalar"
+    },
+    {
+      "component": "Stat",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "letter-spacing",
+      "value": "-0.02em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Stat",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.1",
+      "reason": "uss-property"
     },
     {
       "component": "Switch",
