@@ -25,3 +25,9 @@ rollback:
   - 'Revert the restamp commit'
 non_functional: {}
 contracts: []
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Worktree run of node scripts/docs-claims-check.mjs: OK - 81 marked claims match derived values; 16 verified stamps fresh or ledgered. The restamped commit 9295170d8 is the Markdown merge that last changed the Unity generator; the doc claims were re-verified against the merged tree (generate --target=unity byte-stable, committed uss suite 42/42, Unity EditMode 98/98 at 712dea0d7) before restamping."
+    recorded_at: "2026-10-31T21:39:02.952Z"
+    commit_sha: "95b13db73955e37bdcd5598a2836b4b9d7103ba5"
