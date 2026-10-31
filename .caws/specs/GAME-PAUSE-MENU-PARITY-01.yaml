@@ -1,9 +1,11 @@
 id: GAME-PAUSE-MENU-PARITY-01
 title: 'Orion pause menu parity pass across GPUI, Unity and Godot'
 mode: refactor
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Orion pause menu parity pass: one absolute interface across GPUI/Unity/Godot with 195-probe/12-RMSE checker green, switch pill fixes incl Unity USS radius clamp, portable icon code tiles, docs updated'
 created_at: '2026-10-31T19:16:40.858Z'
-updated_at: '2026-10-31T20:04:45.096Z'
+updated_at: '2026-10-31T21:20:59.407Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
