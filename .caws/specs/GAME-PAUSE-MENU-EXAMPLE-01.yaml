@@ -1,0 +1,57 @@
+id: GAME-PAUSE-MENU-EXAMPLE-01
+title: 'Game pause menu example across GPUI, Unity and Godot with Orion N5 brand'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-31T07:08:40.318Z'
+updated_at: '2026-10-31T07:08:40.318Z'
+created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
+blast_radius:
+  modules:
+    - 'examples consumer-transfer surface'
+    - 'token brand layer'
+    - 'Unity generated stylesheet'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/game-pause-menu'
+    - 'packages/ds-tokens/src/brands'
+    - 'packages/ds-tokens/generated'
+    - 'packages/ds-unity/Runtime/Resources/FullStackDS'
+  out: []
+invariants:
+  - 'Existing brands and target outputs outside the orion addition are unchanged'
+  - 'Lane consumers use only public package exports and ledger every hand-authored fallback'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the token sources with an orion brand; when tokens build and the brand/contrast gates run; then the orion scope is emitted and every curated pair meets WCAG AA in light and dark'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the framework-neutral pause-menu spec and fixtures; when each engine lane parses them; then the four tabs and every named interaction are represented without rewriting app semantics per engine'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the GPUI lane; when cargo builds and tests run and the app is captured; then the pause menu renders with the orion palette and the ledgered FSDS/fallback split matches the 7-component allowlist'
+  - id: A4
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the Unity lane; when a batch-mode compile and EditMode interaction tests run and the menu is captured; then tabs, switches, popover, drawer, remap wait state and settings controls behave'
+  - id: A5
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the Godot lane; when the project runs headless interaction tests and a captured frame; then tabs, switches, popover, drawer, remap wait state and settings controls behave'
+  - id: A6
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the three lanes; when the comparison document is read; then component coverage, theme support, composition friction, evidence and non-claims are stated per engine'
+non_functional: {}
+contracts:
+  - name: 'orion-brand'
+    type: schema
+    path: 'packages/ds-tokens/src/brands/orion.tokens.json'
+  - name: 'pause-menu-app-spec'
+    type: behavior
+    path: 'examples/game-pause-menu/spec.md'
