@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T12:34:12.069Z"
     artifact_path: packages/ds-unity/Runtime/Components/Progress/Progress.cs
     commit_sha: bc01ed478fb86dc9976766ab3b9ec7ba2d0ecd2a
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 2ed04926e (sourceDirty false): 68/68 passed, zero failed/skipped (test-run start 2026-10-31 12:33:33Z; resultsSha256 e36b159e976989b0410d971c2439afef03c2cd737ae803af14221aaca3c2215b). The added case clamps the value across and beyond its range, asserts the native percentage fill width, toggles the value region presence and asserts the absent formatter/label API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T12:34:12.596Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.ProgressClampsValueIntoItsDeclaredRangeAndTogglesValuePresence
+    exit_code: 0
+    commit_sha: "2ed04926e0d022c5bbe3f4ad3c8f046b40da5111"
