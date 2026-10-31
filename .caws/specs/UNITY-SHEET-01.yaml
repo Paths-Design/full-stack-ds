@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.SheetReusesTheModalSurfaceAndAlignsToItsPlacementEdge
     exit_code: 0
     commit_sha: "3ec23646befe348cfad4624b9473e25e72894298"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 3ec23646b: packages/ds-unity/README.md admits Sheet with its modal-family reuse, edge placement axis and the withheld data-side/ARIA/viewport-style non-claims, and records the 72/72 lane; docs/architecture/unity-target.md records the viewport-edge sheet selection, runtime edge alignment and the 72/72 lane; docs/current-implementation-snapshot.md records the thirty-second admitted control with those facts."
+    recorded_at: "2026-10-31T13:23:59.914Z"
+    commit_sha: "3ec23646befe348cfad4624b9473e25e72894298"
