@@ -97,3 +97,8 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-pilot/results.xml"
     commit_sha: acbf6ea43c2b61f667f30a186536b7536db823b4
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at af73bc3ac: packages/ds-unity/README.md Button paragraph and Pilot boundary; docs/architecture/unity-target.md action paragraph, walker classes, requiresAny boundary note, P4 update and recorded 51/51 lane; docs/current-implementation-snapshot.md Unity row admits the eighth control, records action-lowering evidence and refuses pending-state/ARIA/form-type semantics."
+    recorded_at: "2026-10-31T08:45:17.254Z"
+    commit_sha: af73bc3acc1e263ea519ebd610a99ec9b0a2c488
