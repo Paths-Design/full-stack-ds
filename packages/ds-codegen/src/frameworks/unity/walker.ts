@@ -353,8 +353,8 @@ function planClasses(ctx: Context): ClassPlan[] {
     assertRenderable(ctx, ir.dom);
     // A passive text host paints consumer string content itself; a generic
     // VisualElement has no text surface. Child elements remain composable.
-    const passiveText = ctx.lowering.behavior === "Passive" && TEXT_LEAF_TAGS.has(ir.dom.tag) &&
-      ir.dom.children.length === 1 && isInsertion(ir.dom.children[0]!);
+    const passiveText = ctx.lowering.behavior === "Passive" &&
+      ((TEXT_LEAF_TAGS.has(ir.dom.tag) && ir.dom.children.length === 1 && isInsertion(ir.dom.children[0]!)) || ctx.lowering.textProp !== undefined);
     // A boolean form control whose form-control part IS the root is the button
     // element itself (ToggleSwitch); it derives the native button so the shared
     // BooleanControl binds native activation, and exposes Trigger = this.
@@ -479,10 +479,18 @@ function passiveRootApi(ctx: Context): RootApi {
     const literal = defaultLiteral(ctx.ir, prop, values);
     if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
   }
+  const passiveTextProp = ctx.lowering.behavior === "Passive" ? ctx.lowering.textProp : undefined;
+  if (passiveTextProp !== undefined) {
+    const name = identifier(pascal(passiveTextProp));
+    members.push(`        [UxmlAttribute] public string ${name} { get => this.text; set => this.text = value ?? ""; }`);
+    const prop = ctx.ir.styledProps.find(candidate => candidate.name === passiveTextProp);
+    const literal = prop === undefined ? undefined : defaultLiteral(ctx.ir, prop);
+    if (literal !== undefined && typeof literal === "string") defaults.push(`${name} = ${literal};`);
+  }
   return { members, attach: ["Theme.AddStyleSheet(this);"], defaults };
 }
 
-function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan, omitted?: (node: DomNodeIR) => boolean): void {
+function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan, omitted?: (node: DomNodeIR) => boolean, textProp?: string): void {
   if (!node || omitted?.(node)) return;
   // DOM-metadata bindings the passive lowering does not render: a11y
   // role/aria attributes on any node, `data-*` attributes on any node, and the
@@ -502,10 +510,11 @@ function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyp
     node.componentRef !== undefined || (node.iconGlyph !== undefined && !glyphNode) || node.activation !== undefined || node.focusContainer === true ||
     !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
     node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||
-    (node.content !== undefined && (node === ir.dom || (node.part !== undefined && ir.compoundParts.some(part => part.name === node.part)) ||
+    (node.content !== undefined && !(node === ir.dom && textProp !== undefined && "kind" in node.content && node.content.kind === "prop" && node.content.prop === textProp) &&
+      (node === ir.dom || (node.part !== undefined && ir.compoundParts.some(part => part.name === node.part)) ||
       !("kind" in node.content && node.content.kind === "literal")));
   if (unhandled) throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
-  for (const child of node.children) assertPassiveAnatomy(ir, child, glyph, omitted);
+  for (const child of node.children) assertPassiveAnatomy(ir, child, glyph, omitted, textProp);
 }
 
 /**
@@ -854,7 +863,7 @@ export interface UnityComponentSource {
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
   const glyph = unityGlyphPlan(ir);
-  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom, glyph, node => isOmittedPassiveDecoration(ir, lowering, node));
+  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom, glyph, node => isOmittedPassiveDecoration(ir, lowering, node), lowering.textProp);
   const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [], glyph };
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);

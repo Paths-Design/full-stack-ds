@@ -2338,6 +2338,46 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "CodeSnippet",
+      "sourceKey": "--kbd",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "--kbd",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-family",
+      "value": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "code-snippet.elevation.kbd",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Details",
       "sourceKey": ".details--right .details__icon",
       "part": "icon",
