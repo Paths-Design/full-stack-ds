@@ -96,3 +96,9 @@ evidence:
     exit_code: 0
     artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/godot/tests-run.log"
     commit_sha: "4cf479146"
+  - criterion_id: A6
+    status: pass
+    evidence_ref: "examples/game-pause-menu/README.md states per-engine component coverage, theme/brand delivery, composition friction, verification tooling, cross-cutting findings, ranked next gaps, evidence index and non-claims; each lane README carries its admitted-component inventory, realization/fallback ledger, I1-I15 coverage table and findings (GPUI/Unity/Godot). A Unity target-drift measurement caveat is stated because the parallel UNITY-*-01 admissions expanded the Unity allowlist after the lane was captured."
+    recorded_at: "2026-10-31T17:45:45.346Z"
+    artifact_path: examples/game-pause-menu/README.md
+    commit_sha: cf8aea80f0291c31c8579591696b3bd65687a35f
