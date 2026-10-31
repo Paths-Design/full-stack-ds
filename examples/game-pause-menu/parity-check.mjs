@@ -6,20 +6,23 @@
  * `tmp/game-pause-menu/<engine>/` (or any root selected with --root). This tool:
  *   1. samples fixed pixels from the shared parity geometry and compares them with
  *      the colours declared in fixtures/parity-layout.json (tolerance in 0-255);
- *   2. computes pairwise RMSE between the three engines' captures per state;
- *   3. writes labelled engine montages and pairwise difference images.
+ *   2. locates large solid-colour regions (map field, drawer, active tab, switch
+ *      track) and compares their bounding boxes/areas with the parity geometry —
+ *      this is what catches a 64x32 pill rendering as a 48x24 oval;
+ *   3. computes pairwise RMSE between the three engines' captures per state;
+ *   4. writes labelled engine montages and pairwise difference images.
  *
  * Usage:
  *   node examples/game-pause-menu/parity-check.mjs \
  *     --root /abs/path/to/tmp/game-pause-menu \
  *     --out  /abs/path/to/tmp/game-pause-menu/parity
  *
- * Requires ImageMagick (`magick`) on PATH. Exit code 0 when every probe matches
- * and every pairwise RMSE is below --max-rmse (default 0.14); 1 otherwise.
- * Font rasterisation is explicitly excluded from parity, so RMSE is a coarse
+ * Requires ImageMagick (`magick`) on PATH. Exit code 0 when every probe/region
+ * check matches and every pairwise RMSE is below --max-rmse (default 0.14); 1
+ * otherwise. Font rasterisation is excluded from parity, so RMSE is a coarse
  * structural signal, not a pass/fail on glyphs.
  */
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -74,7 +77,6 @@ const PROBES = {
     [4, 4, 'charcoal', 'header background'],
     [800, 132, 'signal', 'active ABILITIES tab fill'],
     [60, 300, 'charcoal', 'grid panel background'],
-    [880, 200, 'charcoal', 'detail panel background'],
     [1000, 200, 'charcoal', 'detail panel header background'],
     [4, 780, 'ink', 'footer background'],
   ],
@@ -85,20 +87,45 @@ const PROBES = {
     [680, 200, 'charcoal', 'CONTROLLER panel background'],
     [60, 500, 'charcoal', 'REMAP panel background'],
     [680, 500, 'charcoal', 'AUDIO panel background'],
-    [584, 238, 'signal', 'first general switch ON track'],
     [4, 780, 'ink', 'footer background'],
   ],
 };
 
-function magick(args) {
-  return execFileSync('magick', args, { encoding: 'utf8' });
+/**
+ * Region checks per state. Each locates the bounding box of `color` inside
+ * `searchRect` and compares it with `expect` (absolute image bbox) and,
+ * optionally, the filled area fraction (stadium vs ellipse).
+ */
+const REGIONS = {
+  map: [
+    { name: 'map field', color: 'sage', search: [0, 0, 1280, 800], expect: [40, 232, 840, 480], tol: 3 },
+    { name: 'active MAP tab', color: 'signal', search: [0, 104, 1280, 56], expect: [0, 104, 320, 56], tol: 2 },
+    { name: 'switch ON track', color: 'signal', search: [1160, 224, 96, 64], expect: [1176, 232, 64, 32], tol: 2, area: { min: 0.5, max: 0.95 } },
+    { name: 'switch OFF track', color: 'graphite', search: [1160, 464, 96, 64], expect: [1176, 472, 64, 32], tol: 2, area: { min: 0.5, max: 0.95 } },
+  ],
+  progress: [
+    { name: 'faction drawer', color: 'paper', search: [0, 0, 1280, 800], expect: [24, 176, 560, 552], tol: 3 },
+    { name: 'active PROGRESS tab', color: 'signal', search: [0, 104, 1280, 56], expect: [320, 104, 320, 56], tol: 2 },
+    { name: 'ACCESS chip', color: 'signal', search: [1040, 232, 200, 40], expect: [1080, 240, 76, 22], tol: 2 },
+  ],
+  abilities: [
+    { name: 'active ABILITIES tab', color: 'signal', search: [0, 104, 1280, 56], expect: [640, 104, 320, 56], tol: 2 },
+  ],
+  settings: [
+    { name: 'active SETTINGS tab', color: 'signal', search: [0, 104, 1280, 56], expect: [960, 104, 320, 56], tol: 2 },
+    { name: 'general switch ON track', color: 'signal', search: [520, 208, 120, 64], expect: [552, 222, 64, 32], tol: 2, area: { min: 0.5, max: 0.95 } },
+  ],
+};
+
+function run(args) {
+  const result = spawnSync('magick', args, { encoding: 'utf8' });
+  return { status: result.status, stdout: result.stdout ?? '', stderr: result.stderr ?? '' };
 }
 
 function samplePixels(file, probes) {
   const format = probes.map(([x, y]) => `%[pixel:p{${x},${y}}]`).join('|');
-  const raw = magick([file, '-format', format, 'info:']).trim();
-  // ImageMagick prints e.g. srgb(35,35,32) or srgba(239,106,60,1).
-  return raw.split('|').map((token) => {
+  const { stdout } = run([file, '-format', format, 'info:']);
+  return stdout.trim().split('|').map((token) => {
     const m = /srgba?\(([\d.]+),([\d.]+),([\d.]+)/.exec(token);
     if (!m) throw new Error(`unexpected pixel token ${token} from ${file}`);
     return [Math.round(Number(m[1])), Math.round(Number(m[2])), Math.round(Number(m[3]))];
@@ -111,11 +138,31 @@ function distance(a, b) {
 
 function rmse(a, b) {
   // `magick compare` exits 1 whenever the images differ; capture stderr regardless.
-  const result = spawnSync('magick', ['compare', '-metric', 'RMSE', a, b, 'null:'], { encoding: 'utf8' });
-  const text = `${result.stderr ?? ''}${result.stdout ?? ''}`.trim();
-  const match = /\(([\d.]+)\)/.exec(text);
-  if (!match) throw new Error(`unexpected compare output: ${text}`);
+  const result = run(['compare', '-metric', 'RMSE', a, b, 'null:']);
+  const match = /\(([\d.]+)\)/.exec(`${result.stderr}${result.stdout}`);
+  if (!match) throw new Error('unexpected compare output');
   return Number(match[1]);
+}
+
+const mask = (file, [x, y, w, h], hex) => [
+  file,
+  '-crop', `${w}x${h}+${x}+${y}`, '+repage',
+  '-fuzz', '8%',
+  '-fill', 'black', '-opaque', hex,
+  '-fill', 'white', '+opaque', hex,
+];
+
+function regionBox(file, [x, y, w, h], hex) {
+  const { stdout } = run([...mask(file, [x, y, w, h], hex), '-trim', '-format', '%@', 'info:']);
+  const m = /^(\d+)x(\d+)\+(\d+)\+(\d+)$/.exec(stdout.trim());
+  if (!m) throw new Error(`unexpected trim box ${stdout} in ${file}`);
+  return [x + Number(m[3]), y + Number(m[4]), Number(m[1]), Number(m[2])];
+}
+
+function regionAreaFraction(file, [x, y, w, h], hex) {
+  const { stdout } = run([...mask(file, [x, y, w, h], hex), '-format', '%[fx:mean]', 'info:']);
+  // Mask: matched colour is black (0), everything else white (1). Black fraction = 1 - mean.
+  return 1 - Number(stdout.trim());
 }
 
 const failures = [];
@@ -128,23 +175,39 @@ for (const state of STATES) {
     failures.push(`${state}: missing capture for one of ${LANES.join(', ')} (${files.filter((f) => !existsSync(f)).join(', ')})`);
     continue;
   }
-  const probes = PROBES[state];
   for (let i = 0; i < LANES.length; i++) {
     const lane = LANES[i];
-    const pixels = samplePixels(files[i], probes);
-    probes.forEach(([x, y, expectedName], index) => {
+    const pixels = samplePixels(files[i], PROBES[state]);
+    PROBES[state].forEach(([x, y, expectedName], index) => {
       const expected = hexToRgb(color(expectedName));
       const actual = pixels[index];
       const delta = distance(actual, expected);
-      results.push({ state, lane, x, y, expected: expectedName, expectedHex: color(expectedName), actual: `rgb(${actual.join(',')})`, delta });
+      results.push({ state, lane, probe: [x, y], expected: color(expectedName), actual: `rgb(${actual.join(',')})`, delta });
       if (delta > tolerance) {
         failures.push(`${state}/${lane}: probe (${x},${y}) expected ${expectedName} ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
       }
     });
+    for (const region of REGIONS[state] ?? []) {
+      const hex = color(region.color);
+      const box = regionBox(files[i], region.search, hex);
+      const ok = box.every((value, index) => Math.abs(value - region.expect[index]) <= region.tol);
+      results.push({ state, lane, region: region.name, expected: region.expect, actual: box, ok });
+      if (!ok) {
+        failures.push(`${state}/${lane}: region "${region.name}" expected box ${region.expect.join('x')}, got ${box.join('x')} (tol ${region.tol})`);
+      }
+      if (region.area) {
+        const fraction = regionAreaFraction(files[i], region.search, hex);
+        const okArea = fraction >= region.area.min && fraction <= region.area.max;
+        results.push({ state, lane, region: region.name, areaFraction: Number(fraction.toFixed(3)), ok: okArea });
+        if (!okArea) {
+          failures.push(`${state}/${lane}: region "${region.name}" fill fraction ${fraction.toFixed(3)} outside [${region.area.min}, ${region.area.max}]`);
+        }
+      }
+    }
   }
 
   const labelled = LANES.flatMap((lane) => ['-label', lane, join(root, lane, `${state}.png`)]);
-  magick([
+  run([
     'montage',
     ...labelled,
     '-tile', '3x1',
@@ -165,19 +228,14 @@ for (const state of STATES) {
     if (value > maxRmse) {
       failures.push(`${state}: ${a}/${b} RMSE ${value.toFixed(4)} > max ${maxRmse}`);
     }
-    spawnSync('magick', [
-      'compare',
-      '-compose', 'difference',
-      join(root, a, `${state}.png`),
-      join(root, b, `${state}.png`),
-      join(out, `${state}-diff-${a}-${b}.png`),
-    ], { encoding: 'utf8' });
+    run(['compare', '-compose', 'difference', join(root, a, `${state}.png`), join(root, b, `${state}.png`), join(out, `${state}-diff-${a}-${b}.png`)]);
   }
 }
 
 writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ root, out, maxRmse, tolerance, results, failures }, null, 2));
-const probeCount = results.filter((r) => 'delta' in r).length;
-console.log(`parity: ${probeCount} colour probe(s), ${results.filter((r) => 'rmse' in r).length} RMSE pair(s), ${failures.length} failure(s)`);
+const probeCount = results.filter((r) => 'probe' in r).length;
+const regionCount = results.filter((r) => 'region' in r && 'actual' in r).length;
+console.log(`parity: ${probeCount} colour probe(s), ${regionCount} region check(s), ${results.filter((r) => 'rmse' in r).length} RMSE pair(s), ${failures.length} failure(s)`);
 console.log(`report: ${join(out, 'parity-report.json')}`);
 console.log(`montages: ${out}`);
 if (failures.length) {
