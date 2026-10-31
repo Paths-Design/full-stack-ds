@@ -2,7 +2,6 @@ id: UNITY-SHEET-01
 title: 'Admit Sheet to the Unity target with the modal surface family and edge placement'
 mode: feature
 lifecycle_state: active
-worktree: unity-sheet
 created_at: '2026-10-31T13:15:37.513Z'
 updated_at: '2026-10-31T13:23:38.734Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
