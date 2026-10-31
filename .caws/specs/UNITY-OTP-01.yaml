@@ -54,3 +54,11 @@ contracts:
   - name: 'otp-field-group'
     type: behavior
     path: 'packages/ds-contracts/components/OTP/OTP.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit da7739ab3: focused unity codegen + cli seam 236/236 pass, including the Otp lowering predicate (one string channel over a counted single-character iteration whose input event sets one character), the inlined group compound, the runtime field materialisation contract, the generated value/default-value/length/mode/disabled/read-only/change/request/completion API, the mode-axis derivation without literals, and the iteration/maxlength/refused inputmode-autocomplete/index/a11y boundary families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T15:58:11.138Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a runtime-built one-character field group for OTP"
+    exit_code: 0
+    commit_sha: da7739ab37473fb44986d14b7c5c87b115f6d9c2
