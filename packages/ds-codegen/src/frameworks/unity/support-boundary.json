@@ -319,6 +319,27 @@
       "reason": "Static roles, ARIA attributes, element types and tab indices have no UI Toolkit consumer: there is no accessibility tree, the native Button owns activation, and focus order follows the element tree."
     },
     {
+      "id": "anatomy-otp-field-attrs-split",
+      "match": ["contract:/anatomy/dom/**/children/*/attrs/maxlength"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "lowered",
+      "via": "OtpControl: each runtime-built field is a one-character native TextField (maxLength 1), matching the authored single-character cell."
+    },
+    {
+      "id": "anatomy-otp-field-attrs-refused",
+      "match": ["contract:/anatomy/dom/**/children/*/attrs/inputmode", "contract:/anatomy/dom/**/children/*/attrs/autocomplete"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "refused",
+      "reason": "inputmode and one-time-code autocomplete have no UI Toolkit counterpart; the runtime filters by the declared mode instead and does not claim platform keyboard or autofill integration."
+    },
+    {
+      "id": "anatomy-otp-index-binding-refused",
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/data-otp-index"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "refused",
+      "reason": "The per-cell index data attribute is authoring metadata for styling hooks; USS cannot set data attributes and the runtime identifies cells by position instead."
+    },
+    {
       "id": "anatomy-static-attrs",
       "match": ["contract:/anatomy/dom/attrs/*", "contract:/anatomy/dom/**/children/*/attrs/*"],
       "disposition": "pending",
@@ -391,6 +412,28 @@
       "via": "walker.ts (Coachmark): the previous control's disabled binding becomes a generated bool attribute driving that native button's enabled state."
     },
     {
+      "id": "anatomy-otp-iteration-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/iterate/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Otp)/OtpControl: the declared field count materialises at runtime as that many one-character native text fields inside the group host."
+    },
+    {
+      "id": "anatomy-otp-messages-pending",
+      "match": ["contract:/messages/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The group and per-field accessible labels are message-catalog strings with no UI Toolkit assistive consumer; they wait on the P4 message/a11y family."
+    },
+    {
+      "id": "anatomy-otp-types-lowered",
+      "match": ["contract:/types/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Otp): the mode union vocabulary backs the generated Mode attribute that selects the runtime input filter."
+    },
+    {
       "id": "anatomy-pagestrip-disabled-binding-lowered",
       "match": ["contract:/anatomy/dom/**/children/*/bindings/disabled"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
@@ -425,6 +468,13 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
       "disposition": "lowered",
       "via": "walker.ts (PageStrip): the presentation/progress union vocabularies back the generated carrier attributes and their authored classes."
+    },
+    {
+      "id": "anatomy-otp-disabled-binding-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/disabled"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Otp)/OtpControl: the disabled prop drives every runtime-built field's enabled state."
     },
     {
       "id": "anatomy-disabled-binding",
@@ -1222,6 +1272,28 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["paged:request(iter:index)"] }],
       "disposition": "refused",
       "reason": "The navigation label only feeds aria-label, which UI Toolkit does not populate; the page strip withholds it while the visible page labels stay consumer-authored."
+    },
+    {
+      "id": "prop-otp-lowered",
+      "match": ["contract:/props/*/members/plain:length/**", "contract:/props/*/members/plain:mode/**", "contract:/props/*/members/plain:readOnly/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Otp): the field count, mode filter and read-only flag become generated attributes owned by OtpControl."
+    },
+    {
+      "id": "prop-otp-completion-lowered",
+      "match": ["contract:/props/*/members/plain:onComplete/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Otp)/OtpControl: the completion callback becomes a generated Completed action raised when every position is filled."
+    },
+    {
+      "id": "prop-otp-field-label-refused",
+      "match": ["contract:/props/*/members/plain:fieldLabel/**", "contract:/props/*/members/plain:label/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/kind"], "valueIn": ["count"] }],
+      "disposition": "refused",
+      "reason": "The group and per-field accessible labels only feed aria-label, which UI Toolkit does not populate; the runtime withholds them rather than faking an assistive tree."
     },
     {
       "id": "props-unadjudicated",
