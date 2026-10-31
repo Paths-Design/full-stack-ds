@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Badge", null], ["Blockquote", null], ["Button", null], ["Checkbox", null], ["Divider", null], ["Icon", null], ["List", null], ["Popover", null], ["ProfileFlag", null], ["Stat", null], ["Switch", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Button", null], ["Checkbox", null], ["Divider", null], ["Icon", null], ["List", null], ["Popover", null], ["ProfileFlag", null], ["Stat", null], ["Switch", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);

@@ -11,6 +11,7 @@
  * selected by fact.
  */
 import type { ComponentIR, DomNodeIR, PartIR, ResolvedPropIR } from "../../ir.js";
+import { isGuardedActionChrome } from "../native-emission-class.js";
 import { resolveAnchoredSurfacePolicy } from "../../semantics.js";
 import { disabledProp, findNode, hasChannel, triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
 import { projectComponent, type ComponentProjection, type ContentHost } from "./uss.js";
@@ -147,16 +148,22 @@ function isOmittedActionChrome(ctx: Context, node: DomNodeIR): boolean {
 }
 
 /**
- * R1/R2: a guarded decoration whose content is a dynamic node prop (IR
- * `nodeKind: "node-ref"`) has no static native projection. The passive
- * lowering omits it; the boundary refuses its anatomy subtree and keeps the
- * node-content prop pending P4. Selected by prop kind, never by name.
+ * R1/R2: a passive root cannot materialise guarded chrome. Two shapes are
+ * omitted by fact: a decoration whose content is a dynamic node prop (IR
+ * `nodeKind: "node-ref"`), and a guarded action chrome — a native button or
+ * componentRef element carrying an event binding — whose presence prop is a
+ * declared prop. The boundary refuses the omitted subtree and classifies the
+ * triggering props; selection is by prop kind and binding facts, never by
+ * component or part name.
  */
-function isOmittedNodeContentDecoration(ir: ComponentIR, lowering: UnityLowering, node: DomNodeIR): boolean {
+function isOmittedPassiveDecoration(ir: ComponentIR, lowering: UnityLowering, node: DomNodeIR): boolean {
   if (lowering.behavior !== "Passive" || node.ifProp === undefined) return false;
   const prop = ir.styledProps.find(candidate => candidate.name === node.ifProp);
-  if (!prop || prop.nodeKind !== "node-ref") return false;
-  return node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp;
+  if (!prop) return false;
+  if (prop.nodeKind === "node-ref") {
+    return node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp;
+  }
+  return isGuardedActionChrome(ir, node);
 }
 
 function literalContent(node: DomNodeIR): string | undefined {
@@ -196,7 +203,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
     if (isOmittedActionChrome(ctx, node)) continue;
-    if (isOmittedNodeContentDecoration(ctx.ir, ctx.lowering, node)) continue;
+    if (isOmittedPassiveDecoration(ctx.ir, ctx.lowering, node)) continue;
     if (isCompound(node)) {
       if (composedHost && index === firstCompound) insertionHost(ctx, cls, parent, holes);
       continue;
@@ -387,7 +394,11 @@ function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyp
       value.whenFalse.kind !== "literal" || value.whenFalse.value !== "false";
   });
   const glyphNode = glyph?.node === node;
-  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || (Object.keys(node.attrs).length && !glyphNode) ||
+  // A passive root's role/aria attributes are platform a11y metadata the
+  // passive lowering does not render; the admission boundary classifies the
+  // static-attribute leaves refused.
+  const rootA11yMetadata = node === ir.dom && Object.keys(node.attrs).every(attribute => attribute === "role" || attribute.startsWith("aria-"));
+  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || (Object.keys(node.attrs).length && !glyphNode && !rootA11yMetadata) ||
     node.componentRef !== undefined || (node.iconGlyph !== undefined && !glyphNode) || node.activation !== undefined || node.focusContainer === true ||
     !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
     node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||
@@ -638,7 +649,7 @@ export interface UnityComponentSource {
 export function walkComponent(ir: ComponentIR): UnityComponentSource {
   const lowering = unityLowering(ir);
   const glyph = unityGlyphPlan(ir);
-  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom, glyph, node => isOmittedNodeContentDecoration(ir, lowering, node));
+  if (lowering.behavior === "Passive") assertPassiveAnatomy(ir, ir.dom, glyph, node => isOmittedPassiveDecoration(ir, lowering, node));
   const ctx: Context = { ir, lowering, compound: new Map(ir.compoundParts.map(p => [p.name, p])), triggers: triggerParts(ir), prefix: ir.cssPrefix, projection: projectComponent(ir, lowering), hosts: [], glyph };
   const classes = planClasses(ctx);
   const api = rootApi(ctx, classes);

@@ -186,7 +186,9 @@
         "Stat",
         "ProfileFlag",
         "Badge",
-        "List"
+        "List",
+        "Alert",
+        "AlertNotice"
       ]
     },
     {

@@ -17,7 +17,7 @@
  * `lowered`.
  */
 import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, PartIR } from "../../ir.js";
-import { isBareRuleLeaf, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
+import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
 export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Action";
@@ -93,6 +93,27 @@ export function stateClassOf(ir: ComponentIR): string {
   return `is-${active[0]}`;
 }
 
+/** A passive container for the Unity target: exactly one consumer content leaf
+ * plus chrome the passive lowering can omit by fact (node-content decorations
+ * and guarded action chrome), with no channel, interaction or surface. This is
+ * the static-content class widened by facts the Unity lowering drops. */
+function isUnityStaticContainer(ir: ComponentIR): boolean {
+  if (!ir.dom || ir.surface != null) return false;
+  if (ir.behavior.normalizedChannels.length > 0) return false;
+  if (ir.dom.tag === "button" || ir.dom.tag === "input" || ir.dom.tag === "img") return false;
+  if (countChildrenLeaves(ir) !== 1) return false;
+  let essential = false;
+  const walk = (node: DomNodeIR): void => {
+    if (node !== ir.dom && node.componentRef !== undefined) {
+      const role = ir.parts.find(part => part.name === node.part)?.details?.role;
+      if (role !== "decoration" && !isGuardedActionChrome(ir, node)) essential = true;
+    }
+    (node.children ?? []).forEach(walk);
+  };
+  (ir.dom.children ?? []).forEach(walk);
+  return !essential;
+}
+
 /** Source: IR control/interaction/attachment axes. Applies by value model,
  * operation and attachment, never identity. Extend when new axes are admitted. */
 export function unityLowering(ir: ComponentIR): UnityLowering {
@@ -142,7 +163,7 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
       ...(busy !== undefined && busy.kind === "prop" ? { loading: busy.prop } : {}),
     };
   }
-  if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir))) {
+  if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir))) {
     if (focus !== undefined && focus !== "none") throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which Passive does not realise`);
     return { behavior: "Passive" };
   }
