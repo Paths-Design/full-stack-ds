@@ -1,9 +1,11 @@
 id: UNITY-OTP-01
 title: 'Admit OTP to the Unity target as a runtime-built single-character field group'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'OTP admitted to the Unity target/package (forty-fourth allowlisted control) as a runtime-built single-character field group: the counted-iteration/string-channel facts select Otp, OtpControl materialises one native text field per position inside the inlined group, assembles/distributes the value, filters by mode, fires change/completion and applies disabled/read-only; per-field maxlength realised, inputmode/autocomplete/data-index/a11y labels refused or pending; codegen+cli 236/236, boundary audit clean, root 5418/5418, real Unity EditMode 85/85, package sheet regenerated'
 created_at: '2026-10-31T15:44:25.182Z'
-updated_at: '2026-10-31T15:57:51.803Z'
+updated_at: '2026-10-31T15:58:14.063Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
