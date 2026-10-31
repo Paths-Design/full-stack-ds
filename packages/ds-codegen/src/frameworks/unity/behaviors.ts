@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Action";
+export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -46,6 +46,23 @@ export interface DisclosureLowering extends LoweringBase {
   behavior: "Disclosure";
   trigger: PartIR;
   content: PartIR;
+}
+/**
+ * A progress value: a declared numeric prop drives a decoration element's
+ * size through a CSS-variable style binding, and an optional presence-guarded
+ * label element is owned by the behavior. The runtime sets the fill's native
+ * percentage length and toggles the label's presence; no event channel is
+ * involved (the contract declares a plain value prop, not a channel).
+ */
+export interface ProgressLowering {
+  behavior: "Progress";
+  fill: PartIR;
+  /** The declared numeric prop the fill's style binding reads. */
+  valueProp: string;
+  /** The presence-guarded value label the runtime shows/hides. */
+  value?: { part: PartIR; presenceProp: string };
+  min: number;
+  max: number;
 }
 export interface ItemGroupLowering extends LoweringBase {
   behavior: "ItemGroup";
@@ -89,7 +106,7 @@ export interface PassiveLowering {
   behavior: "Passive";
 }
 export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering;
-export type UnityLowering = PassiveLowering | ActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | ActionLowering | ProgressLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -141,6 +158,49 @@ function isUnityStaticContainer(ir: ComponentIR): boolean {
   };
   (ir.dom.children ?? []).forEach(walk);
   return !essential;
+}
+
+/**
+ * A value-fill shape: a decoration element whose CSS-variable style binding is
+ * driven by a declared numeric prop, and optionally one presence-guarded label
+ * driven by a declared boolean prop. The range comes from the root's
+ * `aria-valuemin` / `aria-valuemax` literal bindings when present. Selected by
+ * binding, prop type and guard facts, never by component or part name.
+ */
+function valueFillLowering(ir: ComponentIR): ProgressLowering | undefined {
+  if (!ir.dom) return undefined;
+  const numeric = (name: string): boolean => {
+    const prop = ir.styledProps.find(candidate => candidate.name === name);
+    return prop !== undefined && (prop.propType.kind === "number" || (prop.propType.kind === "fallback" && prop.propType.raw === "number"));
+  };
+  const booleanProp = (name: string): boolean => {
+    const prop = ir.styledProps.find(candidate => candidate.name === name);
+    return prop !== undefined && (prop.propType.kind === "boolean" || (prop.propType.kind === "fallback" && prop.propType.raw === "boolean"));
+  };
+  const range = (attribute: string, fallback: number): number => {
+    const binding = ir.dom!.bindings[attribute];
+    if (binding?.kind !== "literal") return fallback;
+    const parsed = Number(binding.value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+  let fill: PartIR | undefined;
+  let valueProp: string | undefined;
+  let value: ProgressLowering["value"];
+  const walk = (node: DomNodeIR): void => {
+    if (!fill && node.cssVarBindings.some(binding => binding.value.kind === "prop" && numeric(binding.value.prop))) {
+      const binding = node.cssVarBindings.find(candidate => candidate.value.kind === "prop" && numeric((candidate.value as { prop: string }).prop))!;
+      const part = node.part === undefined ? undefined : ir.parts.find(candidate => candidate.name === node.part);
+      if (part) { fill = part; valueProp = (binding.value as { prop: string }).prop; }
+    }
+    if (!value && node.ifProp !== undefined && !node.ifNegated && booleanProp(node.ifProp)) {
+      const part = node.part === undefined ? undefined : ir.parts.find(candidate => candidate.name === node.part);
+      if (part) value = { part, presenceProp: node.ifProp };
+    }
+    node.children.forEach(walk);
+  };
+  walk(ir.dom);
+  if (!fill || valueProp === undefined) return undefined;
+  return { behavior: "Progress", fill, valueProp, ...(value ? { value } : {}), min: range("aria-valuemin", 0), max: range("aria-valuemax", 100) };
 }
 
 /** Source: IR control/interaction/attachment axes. Applies by value model,
@@ -213,6 +273,10 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
       ...(disabled !== undefined && disabled.kind === "prop" ? { disabled: disabled.prop } : {}),
       ...(busy !== undefined && busy.kind === "prop" ? { loading: busy.prop } : {}),
     };
+  }
+  if (!ir.interaction && !ir.formControl && ir.behavior.normalizedChannels.length === 0) {
+    const progress = valueFillLowering(ir);
+    if (progress) return progress;
   }
   if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir) || isPartsOnlyContainer(ir))) {
     if (focus !== undefined && focus !== "none") throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which Passive does not realise`);

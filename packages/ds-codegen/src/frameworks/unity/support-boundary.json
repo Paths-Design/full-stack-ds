@@ -242,6 +242,13 @@
       "reason": "Static DOM attributes (SVG presentation, text-input hints, spellcheck and other metadata) are not lowered by the passive walker; a11y/role/type/tabindex subsets are refused by the rule above."
     },
     {
+      "id": "anatomy-value-fill-binding-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/cssVariableBindings/**", "contract:/anatomy/dom/cssVariableBindings/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/bindings/aria-valuenow"], "valuePattern": "^prop:" }],
+      "disposition": "lowered",
+      "via": "walker.ts (value-fill): a decoration element whose CSS-variable style binding is driven by a declared numeric prop is owned by the Progress behavior, whose runtime converts the value to a clamped native percentage width; the walker asserts the bound prop is numeric and refuses anything else."
+    },
+    {
       "id": "anatomy-channel-binding",
       "match": ["contract:/anatomy/dom/bindings/*", "contract:/anatomy/dom/**/children/*/bindings/*"],
       "valuePattern": "^channel:[A-Za-z_$][\\w$-]*\\.value$",
@@ -333,6 +340,13 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "Prop, message, projection and transform content needs typed C# props and the message catalog; the walker renders the element (a Label for text leaves) without text. Only literal content lowers (Label.text / Button.text, R5)."
+    },
+    {
+      "id": "anatomy-value-presence-guard-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/if"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:showValue/name"], "valueIn": ["showValue"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (value-fill): the presence-guarded value label is owned by the Progress behavior; the runtime toggles its presence from the generated ShowValue attribute instead of unmounting it."
     },
     {
       "id": "anatomy-guards",
@@ -548,6 +562,22 @@
       "reason": "The syntax-highlighting pipeline (source transform, token stream, line numbers) has no native lowering; the generated shell withholds these props until the P4 content-transform family."
     },
     {
+      "id": "prop-value-fill-variant-pending",
+      "match": ["contract:/props/*/members/plain:variant/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/bindings/aria-valuenow"], "valuePattern": "^prop:value$" }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The linear/circular form axis has no USS carrier in the Progress sidecar, so the generated control withholds it until a native carrier exists."
+    },
+    {
+      "id": "prop-value-fill-size-pending",
+      "match": ["contract:/props/*/members/plain:size/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/bindings/aria-valuenow"], "valuePattern": "^prop:value$" }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The value-fill size axis has no USS carrier in the Progress sidecar, so the generated control withholds it until a native carrier exists."
+    },
+    {
       "id": "prop-passive-style-axis",
       "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**", "contract:/props/*/members/plain:status/**", "contract:/props/*/members/plain:level/**", "contract:/props/*/members/plain:density/**", "contract:/props/*/members/plain:animate/**"],
       "disposition": "lowered",
@@ -678,6 +708,37 @@
       "match": ["contract:/props/*/members/plain:showStatusIcon/**"],
       "disposition": "refused",
       "reason": "The status-icon flag only selects the omitted node-content icon decoration; the generated container exposes no ShowStatusIcon property."
+    },
+    {
+      "id": "prop-value-fill-lowered",
+      "match": ["contract:/props/*/members/plain:value/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/bindings/aria-valuenow"], "valuePattern": "^prop:value$" }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (value-fill): the numeric value prop is a generated UxmlAttribute the Progress runtime clamps into the declared range and projects to the fill's native percentage width."
+    },
+    {
+      "id": "prop-show-value-lowered",
+      "match": ["contract:/props/*/members/plain:showValue/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/if"], "valueIn": ["showValue"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (value-fill): the show-value flag is a generated UxmlAttribute controlling the behavior-owned value label's presence."
+    },
+    {
+      "id": "prop-progress-label-pending",
+      "match": ["contract:/props/*/members/plain:label/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/bindings/aria-valuenow"], "valuePattern": "^prop:value$" }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The label feeds aria-label, which UI Toolkit does not render; the generated control withholds it until the P4 a11y family."
+    },
+    {
+      "id": "prop-progress-format-callback-pending",
+      "match": ["contract:/props/*/members/plain:formatValue/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A value formatter needs a generated text target and a typed callback declaration; the behavior-owned label renders consumer content, so the formatter stays pending P4."
     },
     {
       "id": "prop-text-content-lowered",

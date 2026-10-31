@@ -2835,6 +2835,30 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Progress",
+      "sourceKey": "fill",
+      "part": "fill",
+      "property": "width",
+      "value": "calc(var(--fsds-progress-fill-width, 0) * 1%)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Progress",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "1500ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Progress",
+      "sourceKey": "value",
+      "part": "value",
+      "property": "font-size",
+      "value": "0.875em",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Skeleton",
       "sourceKey": "--avatar",
       "part": "root",

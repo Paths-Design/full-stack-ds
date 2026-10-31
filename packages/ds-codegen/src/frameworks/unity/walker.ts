@@ -115,6 +115,7 @@ const isNamedSlot = (node: DomNodeIR): boolean => node.tag === SLOT_TAG && !!nod
  * would take the same identifier is suffixed instead of colliding.
  */
 function isEmittedApiName(ctx: Context, name: string): boolean {
+  if (ctx.lowering.behavior === "Progress" && (name === ctx.lowering.valueProp || (ctx.lowering.value !== undefined && name === ctx.lowering.value.presenceProp))) return true;
   if (hasChannel(ctx.lowering) && [ctx.lowering.channel.valueProp, ctx.lowering.channel.defaultValueProp, ctx.lowering.channel.changeHandlerProp].includes(name)) return true;
   const prop = ctx.ir.styledProps.find(candidate => candidate.name === name);
   if (!prop || !ctx.ir.variants[name]) return false;
@@ -148,7 +149,9 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
   const interaction = ctx.ir.interaction;
   const presenceGuard = interaction && interaction.presence === "unmount" && node.part === interaction.content.name &&
     node.ifProp === interaction.channel.valueProp && !node.ifNegated && !node.ifSlot;
-  if ((node.ifProp || node.ifSlot) && !presenceGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+  const progressGuard = ctx.lowering.behavior === "Progress" && ctx.lowering.value !== undefined &&
+    node.part === ctx.lowering.value.part.name && node.ifProp === ctx.lowering.value.presenceProp && !node.ifNegated && !node.ifSlot;
+  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
 }
 
 /**
@@ -382,7 +385,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   return classes;
 }
 
-const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure" } as const;
+const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure", Progress: "Progress" } as const;
 
 interface RootApi {
   members: string[];
@@ -508,11 +511,46 @@ function actionRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6–R8 for the value-fill behavior: the numeric value is a generated float
+ * attribute the runtime clamps and converts to the fill's native percentage
+ * width; the presence-guarded label is shown/hidden from a generated boolean
+ * attribute. Carrier-backed axes emit as modifier attributes, and nothing is
+ * emitted for the callback/label props the boundary classifies pending.
+ */
+function progressRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Progress") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a progress lowering`);
+  const root = classes[0]!;
+  const members: string[] = [`        public ProgressControl ValueFill { get; }`];
+  const attach: string[] = [];
+  const defaults: string[] = [];
+  const fill = root.members.find(m => m.part === lowering.fill.name);
+  const value = lowering.value === undefined ? undefined : root.members.find(m => m.part === lowering.value!.part.name);
+  if (!fill) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its value fill ${lowering.fill.name} outside the root class`);
+  if (lowering.value !== undefined && !value) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its value label ${lowering.value.part.name} outside the root class`);
+  attach.push(`ValueFill = ProgressControl.Attach(this, fill: ${fill.ref}, valueElement: ${value ? value.ref : "null"}, min: ${lowering.min}, max: ${lowering.max});`);
+  members.push(`        [UxmlAttribute] public float Value { get => (float)ValueFill.Value; set => ValueFill.Value = value; }`);
+  if (lowering.value !== undefined) {
+    members.push(`        [UxmlAttribute] public bool ShowValue { get => ValueFill.ShowValue; set => ValueFill.ShowValue = value; }`);
+  }
+  for (const prop of ir.styledProps) {
+    if (prop.name === lowering.valueProp || (lowering.value !== undefined && prop.name === lowering.value.presenceProp)) continue;
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6–R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
   if (lowering.behavior === "Action") return actionRootApi(ctx);
   if (lowering.behavior === "Passive") return passiveRootApi(ctx);
+  if (lowering.behavior === "Progress") return progressRootApi(ctx, classes);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];
   // The runtime control type and the member name differ for the disclosure
@@ -761,5 +799,5 @@ export function rootPublicMembers(source: string, rootClass: string): Set<string
   if (start < 0) return new Set();
   const next = source.indexOf("[UxmlElement]", start);
   const body = source.slice(start, next < 0 ? undefined : next);
-  return new Set([...body.matchAll(/public (?:new )?(?:bool|string|Action) (\w+) \{/g)].map(m => m[1]!));
+  return new Set([...body.matchAll(/public (?:new )?(?:bool|string|float|double|int|Action) (\w+) \{/g)].map(m => m[1]!));
 }
