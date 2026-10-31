@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T13:41:00.250Z"
     artifact_path: packages/ds-unity/Runtime/Components/Input/Input.cs
     commit_sha: "16039754d792b9ea77073e7e8128c211a7e4be79"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 421a45c4f (sourceDirty false): 73/73 passed, zero failed/skipped (test-run start 2026-10-31 13:40:21Z; resultsSha256 9f934ed3ebdd9be8f9608659b2e6043c1ff2ca6599cf774047ad3b39715287d0). The added case checks the native TextField base, placeholder, silent/native edits, the controlled revert/request path, the disabled field and the absent form/ARIA API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T13:41:00.780Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.InputMapsItsStringChannelToTheNativeTextField
+    exit_code: 0
+    commit_sha: "421a45c4fc6c852e11a85284f15d57271ff8e4b9"
