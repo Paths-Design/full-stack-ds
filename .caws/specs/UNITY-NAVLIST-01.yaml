@@ -54,3 +54,12 @@ contracts:
   - name: 'navlist-container'
     type: behavior
     path: 'packages/ds-contracts/components/NavList/NavList.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 826fe65cc: focused unity codegen + cli seam 214/214 pass, including the semantic nav container, its composed list/item classes, the legacy styled layout-axis pending rule and the a11y-label/binding refusals; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T11:17:40.504Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > lowers the semantic nav container with its composed list and item classes"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: "826fe65cca87037476da9a478f434e70ef882bc7"
