@@ -57,3 +57,12 @@ contracts:
   - name: 'breadcrumbs-wrapper'
     type: behavior
     path: 'packages/ds-contracts/components/Breadcrumbs/Breadcrumbs.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit f9ced227b: focused unity codegen + cli seam 207/207 pass, including the passive-root DOM-metadata binding allowance (a11y role/aria, htmlFor/form), the Label TextElement lowering and the Breadcrumbs semantic composition; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T10:22:54.110Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > ignores passive-root DOM metadata bindings for the semantic wrappers"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: f9ced227b32be4f3a9ddaf6a216478ffc23f045b
