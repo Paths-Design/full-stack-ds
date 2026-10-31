@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T12:57:31.990Z"
     artifact_path: packages/ds-unity/Runtime/Components/CodeSnippet/CodeSnippet.cs
     commit_sha: "83805a28a061b88d42adbb7a7e7992349b2b9fba"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source ed96f32a8 (sourceDirty false): 70/70 passed, zero failed/skipped (test-run start 2026-10-31 12:56:51Z; resultsSha256 bf43c19bff1fda745700c8017e6059555433ebf33d40682c0cff4d39146115f5). The added case paints the text attribute, switches the carried as modifier and asserts the TextElement base. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T12:57:32.556Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.CodeSnippetPaintsItsTextAttributeAndCarriesTheAsModifier
+    exit_code: 0
+    commit_sha: ed96f32a8ca03c6bd247ca0aea130b137acc5e68
