@@ -39,7 +39,7 @@ acceptance:
     then: 'packages/ds-unity contains the Spinner control and MotionLoopControl runtime, the fifty-four-name component catalog and its USS rules byte-stably, and the generated tree is git-clean'
   - id: A3
     given: 'the Unity EditMode lane with the package imported'
-    when: 'size/thickness carriers, rotation time and the explicit reduced-motion input are exercised'
+    when: 'rotation time and the explicit reduced-motion input are exercised'
     then: 'the visual element rotates on the declared loop period, holds the authored static value when reduced motion is requested, and emits no delay/inline/a11y/native-pixel API'
   - id: A4
     given: 'the package README, unity-target architecture doc and implementation snapshot'
