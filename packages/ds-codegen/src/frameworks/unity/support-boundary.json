@@ -250,6 +250,20 @@
       "via": "The glyph anatomy plan validates the SVG presentation vocabulary; GlyphElement paints the authored catalog paths."
     },
     {
+      "id": "anatomy-textinput-bindings-lowered",
+      "match": ["contract:/anatomy/dom/bindings/placeholder", "contract:/anatomy/dom/bindings/value", "contract:/anatomy/dom/bindings/disabled"],
+      "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
+      "disposition": "lowered",
+      "via": "walker.ts / TextControl: the placeholder binding drives the native text edition, the value binding is the string channel the runtime owns, and the disabled binding drives SetEnabled on the generated TextField."
+    },
+    {
+      "id": "anatomy-textinput-form-bindings-refused",
+      "match": ["contract:/anatomy/dom/bindings/type", "contract:/anatomy/dom/bindings/name", "contract:/anatomy/dom/bindings/required", "contract:/anatomy/dom/bindings/aria-invalid"],
+      "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
+      "disposition": "refused",
+      "reason": "HTML input type/name/required and ARIA validity bindings have no UI Toolkit counterpart; the native TextField exposes none of them and the generated control withholds those props."
+    },
+    {
       "id": "anatomy-static-attrs-refused",
       "match": ["contract:/anatomy/dom/attrs/role", "contract:/anatomy/dom/attrs/aria-*", "contract:/anatomy/dom/attrs/type", "contract:/anatomy/dom/attrs/tabindex", "contract:/anatomy/dom/**/children/*/attrs/role", "contract:/anatomy/dom/**/children/*/attrs/aria-*", "contract:/anatomy/dom/**/children/*/attrs/type", "contract:/anatomy/dom/**/children/*/attrs/tabindex"],
       "disposition": "refused",
@@ -478,6 +492,13 @@
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valuePattern": "^prop:" }],
       "disposition": "refused",
       "reason": "The composed trigger's HTML form type has no UI Toolkit counterpart; the native action chrome is a plain Button and the generated control withholds the type prop."
+    },
+    {
+      "id": "prop-textinput-form-fields-refused",
+      "match": ["contract:/props/*/members/plain:type/**", "contract:/props/*/members/plain:name/**", "contract:/props/*/members/plain:required/**", "contract:/props/*/members/plain:invalid/**"],
+      "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
+      "disposition": "refused",
+      "reason": "HTML input type, form name/required and validity state have no UI Toolkit counterpart; the generated TextField exposes no form or ARIA validity API."
     },
     {
       "id": "prop-item-group-options",
@@ -838,6 +859,14 @@
       "via": "walker.ts (R5b passive text host): a non-interactive text-host root with a declared string content prop derives TextElement and emits a generated string attribute that paints its text."
     },
     {
+      "id": "prop-textinput-lowered",
+      "match": ["contract:/props/*/members/plain:placeholder/**"],
+      "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (TextInput): the placeholder prop becomes a generated string UxmlAttribute that drives the native text edition's placeholder."
+    },
+    {
       "id": "prop-text-content-lowered",
       "match": ["contract:/props/*/members/plain:summary/**"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/content"], "valuePattern": "^prop:" }],
@@ -926,6 +955,13 @@
       "via": "The dispatcher attaches the BooleanControl behavior for boolean value models (R7)."
     },
     {
+      "id": "form-control-text",
+      "match": ["contract:/formControl/valueModel"],
+      "valueIn": ["text"],
+      "disposition": "lowered",
+      "via": "The dispatcher attaches the TextInput behavior for a text value model whose form-control part is the input root; the generated class derives the native TextField (R7)."
+    },
+    {
       "id": "form-control-part-channel",
       "match": ["contract:/formControl/part", "contract:/formControl/channel"],
       "disposition": "lowered",
@@ -944,6 +980,13 @@
       "valueIn": ["activation"],
       "disposition": "lowered",
       "via": "BooleanControl.Attach binds the control's native Button.clicked event, which is the activation commit the contract declares; no separate change event is emitted."
+    },
+    {
+      "id": "form-control-text-commit",
+      "match": ["contract:/formControl/commit"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
+      "disposition": "lowered",
+      "via": "TextControl commits on the native text change event, which is the input-committed update the contract declares for a root input control."
     },
     {
       "id": "form-control",
@@ -1445,6 +1488,13 @@
       "declaration": { "valuePattern": "^(?:fixed|sticky)$" },
       "disposition": "refused",
       "reason": "UI Toolkit has no fixed/sticky positioning; the projection lists the declaration uss-scalar and ModalSurface sets its own absolute blocking layout."
+    },
+    {
+      "id": "styles-invalid-state-modifier-pending",
+      "match": ["styles:/--invalid/**", "styles:/.input--invalid/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The invalid state has no native carrier on the generated text field; its modifier-state selectors wait on the P4 state-carrier family and are ledgered pending."
     },
     {
       "id": "styles",
