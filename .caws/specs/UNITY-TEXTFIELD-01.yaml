@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.TextFieldWrapsItsNativeFieldAndExposesNamedSlots
     exit_code: 0
     commit_sha: "721f6edb0135698516fb380d052033a1509f3ceb"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 721f6edb0: packages/ds-unity/README.md admits TextField with its wrapper/field split, named slots, channel API and the refused form/validity/ARIA non-claims plus the native-name shadowing note, and records the 74/74 lane; docs/architecture/unity-target.md records the wrapper/child text-input shape, the child-bound TextControl and the 74/74 lane; docs/current-implementation-snapshot.md records the thirty-fourth admitted control with those facts."
+    recorded_at: "2026-10-31T13:52:25.133Z"
+    commit_sha: "721f6edb0135698516fb380d052033a1509f3ceb"
