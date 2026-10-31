@@ -195,7 +195,8 @@
         "Status",
         "Card",
         "NavList",
-        "Skeleton"
+        "Skeleton",
+        "Table"
       ]
     },
     {

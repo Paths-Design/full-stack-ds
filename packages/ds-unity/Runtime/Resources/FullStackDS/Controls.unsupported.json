@@ -2652,6 +2652,62 @@
       "longhand": "transition-timing-function"
     },
     {
+      "component": "Table",
+      "sourceKey": "caption",
+      "part": "caption",
+      "property": "text-align",
+      "value": "start",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "container",
+      "part": "container",
+      "property": "border-collapse",
+      "value": "collapse",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "footer",
+      "part": "footer",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "headerCell",
+      "part": "headerCell",
+      "property": "text-align",
+      "value": "start",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-x",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "selected",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
       "component": "Tabs",
       "sourceKey": "--pills __tab--active",
       "part": "",

@@ -5,7 +5,7 @@ status: active
 title: Unity UI Toolkit pilot
 owner: "@darianrosebrook"
 updated: 2026-10-31
-verified_at_commit: 7377f1d88fbe6934d3a6e00dd0a7fdf62f9eab89
+verified_at_commit: 70358eb8de8a3385fa33b5621efc3f2c7501aec9
 governs:
   - packages/ds-codegen/src/frameworks/unity/**
   - packages/ds-unity/Runtime/**
@@ -83,6 +83,8 @@ At source `63fee12cf`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 43/43 Ed
 `UNITY-NAVLIST-01` admits NavList as a semantic navigation container. At source `826fe65cc`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 63/63 EditMode cases (test-run start `2026-10-31 11:13:32Z`, zero failed or skipped); the added case composes the list and item parts and asserts the absent Orientation/AriaLabel API. A legacy styled layout axis now has its own pending rule unless its sidecar carries a USS modifier, so orientation is withheld; the a11y label binding is refused and the item's `[aria-current]` selector stays pending P4.
 
 `UNITY-SKELETON-01` admits Skeleton as a carrier-backed loading placeholder. At source `7377f1d88`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 64/64 EditMode cases (test-run start `2026-10-31 11:28:53Z`, zero failed or skipped); the added case sets the variant/animate/density carriers, asserts no iterated children render and asserts the absent lines/radius/aspect-ratio/decorative/aria-label API. The passive lowering omits a subtree containing iteration by fact; the boundary classifies the omitted anatomy/props/selectors, and the ledger join recognizes morphology box-model defaults as canonical-primitive rows rather than component leaves.
+
+`UNITY-TABLE-01` admits Table as a semantic table container. At source `70358eb8d`, `pnpm run test:unity` on Unity 6000.5.3f1 passed 65/65 EditMode cases (test-run start `2026-10-31 11:40:59Z`, zero failed or skipped); the added case composes a row and cell through the table region and asserts the absent Responsive/AriaLabel API. The a11y keyboard claim now carries a contract-fact precondition (a channel or a projected action-root click binding), so a keyboard-rich passive container such as Table records refused rather than lowered navigation claims; `border-collapse`/`overflow-x` and the responsive flag are refused/pending rather than approximated.
 
 ## Anatomy walker
 

@@ -582,5 +582,22 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Lines", "Radius", "AspectRatio", "Decorative", "AriaLabel" })
                 Assert.That(typeof(FullStackDS.Skeleton).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void TableComposesRowsAndCellsInsideItsRegion()
+        {
+            var table = Mount(new FullStackDS.Table());
+            var row = new FullStackDS.TableRow();
+            var cell = new FullStackDS.TableCell();
+            cell.Add(new UnityEngine.UIElements.Label("42"));
+            row.Add(cell);
+            table.Add(row);
+            Assert.That(table.ClassListContains("table"), Is.True);
+            Assert.That(table.Container.ClassListContains("table__container"), Is.True);
+            Assert.That(table.contentContainer, Is.SameAs(table.Container));
+            Assert.That(table.Container.childCount, Is.EqualTo(1));
+            Assert.That(row.ClassListContains("table__row"), Is.True);
+            Assert.That(cell.ClassListContains("table__cell"), Is.True);
+            Assert.That(typeof(FullStackDS.Table).GetProperty("Responsive"), Is.Null);
+            Assert.That(typeof(FullStackDS.Table).GetProperty("AriaLabel"), Is.Null);
+        }
     }
 }

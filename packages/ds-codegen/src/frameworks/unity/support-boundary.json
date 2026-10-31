@@ -493,6 +493,13 @@
       "reason": "A style-value binding (aspect ratio) has no native property projection; the generated control withholds it until the P4 style-value family."
     },
     {
+      "id": "prop-responsive-overflow-pending",
+      "match": ["contract:/props/*/members/plain:responsive/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A responsive horizontal-overflow modifier has no USS carrier in the sidecar, so the generated wrapper withholds the flag until a native scroll/overflow carrier exists."
+    },
+    {
       "id": "prop-lines-iteration-pending",
       "match": ["contract:/props/*/members/plain:lines/**"],
       "disposition": "pending",
@@ -969,8 +976,9 @@
     {
       "id": "a11y-keyboard",
       "match": ["contract:/a11y/keyboard/**"],
+      "requiresAny": [{ "match": ["contract:/channels/**"] }, { "match": ["contract:/anatomy/dom/events/click"] }],
       "disposition": "lowered",
-      "via": "ItemGroup arrow / Home / End navigation and native Button submit activation (Space / Enter) through NavigationSubmitEvent."
+      "via": "ItemGroup arrow / Home / End navigation and native Button submit activation (Space / Enter) through NavigationSubmitEvent; a keyboard declaration on a contract with no channel and no projected action root is not lowered by this claim."
     },
     {
       "id": "a11y",
@@ -1116,9 +1124,9 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**"],
       "disposition": "refused",
-      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio or font-style handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse or overflow-axis handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },
     {
       "id": "styles-modifier-height-refused",
