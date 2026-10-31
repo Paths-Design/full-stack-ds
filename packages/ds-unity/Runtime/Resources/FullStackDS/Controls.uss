@@ -2,7 +2,7 @@
 
 /* Sources: packages/ds-tokens/generated/resolved.tokens.json, packages/ds-tokens/generated/tokens.css (@layer brand), and each admitted component's contract and sidecars. Declarations USS cannot realise are listed in Controls.unsupported.json. */
 
-/* Brands: canary, corporate, default, developer, fintech, forest, marketplace, monochrome, quickserve, streaming */
+/* Brands: canary, corporate, default, developer, fintech, forest, marketplace, monochrome, orion, quickserve, streaming */
 
 /* Rem projection: 1rem = 16px; fixed CSS root baseline, independent of consumer font size. */
 
@@ -1637,6 +1637,173 @@
     --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
+}
+
+/* Brand orion */
+.fsds-theme.fsds-brand-orion {
+    --fsds-semantic-color-action-background-danger-disabled: #d8d4c6;
+    --fsds-semantic-color-action-background-primary-active: #d9582d;
+    --fsds-semantic-color-action-background-primary-default: #ef6a3c;
+    --fsds-semantic-color-action-background-primary-disabled: #d8d4c6;
+    --fsds-semantic-color-action-background-primary-hover: #f78a5e;
+    --fsds-semantic-color-action-background-secondary-active: #c9c4b6;
+    --fsds-semantic-color-action-background-secondary-default: #e9e5d8;
+    --fsds-semantic-color-action-background-secondary-disabled: #d8d4c6;
+    --fsds-semantic-color-action-background-secondary-hover: #d8d4c6;
+    --fsds-semantic-color-action-border-secondary-default: #8a8578;
+    --fsds-semantic-color-action-foreground-primary-default: #191917;
+    --fsds-semantic-color-action-foreground-secondary-default: #141412;
+    --fsds-semantic-color-background-accent: #ef6a3c;
+    --fsds-semantic-color-background-accent-subtle: #f7d8c9;
+    --fsds-semantic-color-background-danger-softer: #fbe9e2;
+    --fsds-semantic-color-background-danger-strong: #8f2415;
+    --fsds-semantic-color-background-danger-subtle: #f6d3c8;
+    --fsds-semantic-color-background-disabled: #d8d4c6;
+    --fsds-semantic-color-background-elevated: #f4f1e6;
+    --fsds-semantic-color-background-highlight: #c6d9c7;
+    --fsds-semantic-color-background-hover: #e9e5d8;
+    --fsds-semantic-color-background-info-softer: #e3f0fd;
+    --fsds-semantic-color-background-info-subtle: #cfe4fa;
+    --fsds-semantic-color-background-inverse: #141412;
+    --fsds-semantic-color-background-primary: #f4f1e6;
+    --fsds-semantic-color-background-secondary: #e9e5d8;
+    --fsds-semantic-color-background-success-softer: #e4f1db;
+    --fsds-semantic-color-background-success-subtle: #cfe6c2;
+    --fsds-semantic-color-background-tertiary: #d8d4c6;
+    --fsds-semantic-color-background-warning-softer: #fbecd5;
+    --fsds-semantic-color-background-warning-subtle: #f7ddb8;
+    --fsds-semantic-color-border-accent: #b83f16;
+    --fsds-semantic-color-border-bold: #8a8578;
+    --fsds-semantic-color-border-danger: #8f2415;
+    --fsds-semantic-color-border-default: #a8a396;
+    --fsds-semantic-color-border-disabled: #c9c4b6;
+    --fsds-semantic-color-border-focus: #b83f16;
+    --fsds-semantic-color-border-hover: #8a8578;
+    --fsds-semantic-color-border-info: #03449b;
+    --fsds-semantic-color-border-light: #c9c4b6;
+    --fsds-semantic-color-border-primary: #a8a396;
+    --fsds-semantic-color-border-subtle: #c9c4b6;
+    --fsds-semantic-color-border-success: #2f5a10;
+    --fsds-semantic-color-border-warning: #6e3a00;
+    --fsds-semantic-color-feedback-foreground-danger-default: #a93222;
+    --fsds-semantic-color-feedback-foreground-success-default: #3a6614;
+    --fsds-semantic-color-foreground-accent: #b83f16;
+    --fsds-semantic-color-foreground-danger: #a93222;
+    --fsds-semantic-color-foreground-disabled: #6b6b60;
+    --fsds-semantic-color-foreground-hover: #141412;
+    --fsds-semantic-color-foreground-inverse: #191917;
+    --fsds-semantic-color-foreground-link: #b83f16;
+    --fsds-semantic-color-foreground-link-hover: #8f2f0f;
+    --fsds-semantic-color-foreground-link-visited: #8a4a2a;
+    --fsds-semantic-color-foreground-on-brand: #191917;
+    --fsds-semantic-color-foreground-on-color: #191917;
+    --fsds-semantic-color-foreground-on-danger-subtle: #8f2415;
+    --fsds-semantic-color-foreground-on-info-subtle: #03449b;
+    --fsds-semantic-color-foreground-on-inverse: #f4f1e6;
+    --fsds-semantic-color-foreground-on-success-subtle: #2f5a10;
+    --fsds-semantic-color-foreground-on-warning-subtle: #6e3a00;
+    --fsds-semantic-color-foreground-placeholder: #6b6b60;
+    --fsds-semantic-color-foreground-primary: #141412;
+    --fsds-semantic-color-foreground-secondary: #33332e;
+    --fsds-semantic-color-foreground-success: #3a6614;
+    --fsds-semantic-color-foreground-tertiary: #55554c;
+    --fsds-semantic-color-status-danger: #a93222;
+    --fsds-semantic-color-status-info: #034fd6;
+    --fsds-semantic-color-status-success: #3a6614;
+    --fsds-semantic-color-status-warning: #8b4b00;
+    --fsds-semantic-focus-ring-color: #b83f16;
+    --fsds-semantic-focus-ring-intent-danger: #a93222;
+    --fsds-semantic-focus-ring-offset: 2px;
+    --fsds-semantic-focus-ring-style: solid;
+    --fsds-semantic-focus-ring-width: 2px;
+    --fsds-semantic-interaction-background-active: #d8d4c6;
+    --fsds-semantic-interaction-background-disabled: #d8d4c6;
+    --fsds-semantic-interaction-background-hover: #e9e5d8;
+    --fsds-semantic-interaction-border-hover: #8a8578;
+    --fsds-semantic-interaction-disabled-opacity: 0.24;
+    --fsds-semantic-interaction-state-layer-hover: 0.12;
+    --fsds-semantic-interaction-state-layer-selected: 0.16;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
+    --fsds-semantic-shape-control-border-default-width: 2px;
+    --fsds-semantic-shape-control-radius-default: 0px;
+    --fsds-semantic-shape-radius-large: 0px;
+    --fsds-semantic-shape-radius-medium: 0px;
+    --fsds-semantic-shape-radius-small: 0px;
+    --fsds-semantic-spacing-gap-grid-small: 4px;
+    --fsds-semantic-typography-line-height-body: 1.45;
+    --fsds-semantic-typography-line-height-heading: 1;
+    --fsds-semantic-typography-line-height-tight: 1.1;
+}
+
+.fsds-theme.fsds-brand-orion.fsds-theme--dark {
+    --fsds-semantic-color-action-background-danger-disabled: #3a3a34;
+    --fsds-semantic-color-action-background-primary-disabled: #3a3a34;
+    --fsds-semantic-color-action-background-secondary-active: #3a3a34;
+    --fsds-semantic-color-action-background-secondary-default: #232320;
+    --fsds-semantic-color-action-background-secondary-disabled: #2e2e29;
+    --fsds-semantic-color-action-background-secondary-hover: #2e2e29;
+    --fsds-semantic-color-action-border-secondary-default: #6b6b60;
+    --fsds-semantic-color-action-foreground-secondary-default: #f4f1e6;
+    --fsds-semantic-color-background-accent-subtle: #4a2418;
+    --fsds-semantic-color-background-danger-softer: #3a1710;
+    --fsds-semantic-color-background-danger-strong: #d95f45;
+    --fsds-semantic-color-background-danger-subtle: #4a1d14;
+    --fsds-semantic-color-background-disabled: #2e2e29;
+    --fsds-semantic-color-background-elevated: #232320;
+    --fsds-semantic-color-background-highlight: #2e3a30;
+    --fsds-semantic-color-background-hover: #2e2e29;
+    --fsds-semantic-color-background-info-softer: #0c1f33;
+    --fsds-semantic-color-background-info-subtle: #102a45;
+    --fsds-semantic-color-background-inverse: #f4f1e6;
+    --fsds-semantic-color-background-primary: #141412;
+    --fsds-semantic-color-background-secondary: #232320;
+    --fsds-semantic-color-background-success-softer: #172b0f;
+    --fsds-semantic-color-background-success-subtle: #1f3a14;
+    --fsds-semantic-color-background-tertiary: #2e2e29;
+    --fsds-semantic-color-background-warning-softer: #38270c;
+    --fsds-semantic-color-background-warning-subtle: #4a3410;
+    --fsds-semantic-color-border-accent: #f78a5e;
+    --fsds-semantic-color-border-bold: #6b6b60;
+    --fsds-semantic-color-border-danger: #f07866;
+    --fsds-semantic-color-border-default: #56564c;
+    --fsds-semantic-color-border-disabled: #3a3a34;
+    --fsds-semantic-color-border-focus: #f78a5e;
+    --fsds-semantic-color-border-hover: #6b6b60;
+    --fsds-semantic-color-border-info: #8cbfff;
+    --fsds-semantic-color-border-light: #3a3a34;
+    --fsds-semantic-color-border-primary: #56564c;
+    --fsds-semantic-color-border-subtle: #3a3a34;
+    --fsds-semantic-color-border-success: #8cc46a;
+    --fsds-semantic-color-border-warning: #e0a050;
+    --fsds-semantic-color-feedback-foreground-danger-default: #f07866;
+    --fsds-semantic-color-feedback-foreground-success-default: #8cc46a;
+    --fsds-semantic-color-foreground-accent: #f78a5e;
+    --fsds-semantic-color-foreground-danger: #f07866;
+    --fsds-semantic-color-foreground-disabled: #8c8c82;
+    --fsds-semantic-color-foreground-hover: #ffffff;
+    --fsds-semantic-color-foreground-link: #f78a5e;
+    --fsds-semantic-color-foreground-link-hover: #ffb08c;
+    --fsds-semantic-color-foreground-link-visited: #d8a184;
+    --fsds-semantic-color-foreground-on-danger-subtle: #f7b0a2;
+    --fsds-semantic-color-foreground-on-info-subtle: #b9d9ff;
+    --fsds-semantic-color-foreground-on-inverse: #141412;
+    --fsds-semantic-color-foreground-on-success-subtle: #c9e6b4;
+    --fsds-semantic-color-foreground-on-warning-subtle: #f2c98e;
+    --fsds-semantic-color-foreground-placeholder: #8c8c82;
+    --fsds-semantic-color-foreground-primary: #f4f1e6;
+    --fsds-semantic-color-foreground-secondary: #c6c2b4;
+    --fsds-semantic-color-foreground-success: #8cc46a;
+    --fsds-semantic-color-foreground-tertiary: #9c988b;
+    --fsds-semantic-color-status-danger: #f07866;
+    --fsds-semantic-color-status-info: #8cbfff;
+    --fsds-semantic-color-status-success: #8cc46a;
+    --fsds-semantic-color-status-warning: #e0a050;
+    --fsds-semantic-focus-ring-color: #f78a5e;
+    --fsds-semantic-focus-ring-intent-danger: #f07866;
+    --fsds-semantic-interaction-background-active: #3a3a34;
+    --fsds-semantic-interaction-background-disabled: #2e2e29;
+    --fsds-semantic-interaction-background-hover: #2e2e29;
+    --fsds-semantic-interaction-border-hover: #6b6b60;
 }
 
 /* Brand quickserve */

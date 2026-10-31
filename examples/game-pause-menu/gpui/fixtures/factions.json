@@ -1,0 +1,124 @@
+{
+  "factions": [
+    {
+      "id": "ares-logistics",
+      "name": "ARES LOGISTICS GUILD",
+      "tagline": "FREIGHT, FUEL AND THE ROADS BETWEEN",
+      "unlocked": true,
+      "tier": 3,
+      "reputation": 68,
+      "reputationMax": 100,
+      "requirement": "",
+      "detail": {
+        "description": "The guild owns every viable freight lane in the basin. They pay reliably and inspect everything twice.",
+        "history": "Chartered by the first colony council to keep the pads open. Their orange plate is the only colour allowed on a landing apron.",
+        "perks": [
+          "Freight lanes cost 20% less",
+          "Fuel reserve refills at any guild pad",
+          "Crawler plating discount at tier 4"
+        ],
+        "parts": [
+          { "name": "Cargo Clamp Mk III", "cost": 6400, "rarity": "uncommon", "size": 1 },
+          { "name": "Fuel Cell Stack", "cost": 12800, "rarity": "rare", "size": 2 },
+          { "name": "Axle Reinforcement", "cost": 4200, "rarity": "common", "size": 1 }
+        ]
+      }
+    },
+    {
+      "id": "hellforge",
+      "name": "HELLFORGE SYNDICATE",
+      "tagline": "ROUGH PARTS, PROVEN IN THE OPEN",
+      "unlocked": true,
+      "tier": 1,
+      "reputation": 22,
+      "reputationMax": 100,
+      "requirement": "",
+      "detail": {
+        "description": "An independent forge that outfits the crawler crews the guild will not touch. Loud, cheap, and surprisingly durable.",
+        "history": "Started as a salvage ring around the Hecate crash sites. Still refuses to register a corporate seal.",
+        "perks": [
+          "Salvage yields +15%",
+          "Repair bays open outside guild hours",
+          "Reckless driving penalty waived"
+        ],
+        "parts": [
+          { "name": "Thermal Shield", "cost": 5200, "rarity": "uncommon", "size": 2 },
+          { "name": "Hardlight Cutter", "cost": 14800, "rarity": "epic", "size": 2 },
+          { "name": "Signal Jammer", "cost": 3600, "rarity": "uncommon", "size": 1 }
+        ]
+      }
+    },
+    {
+      "id": "solaris-cartel",
+      "name": "SOLARIS CARTEL",
+      "tagline": "THE SUN ALWAYS GETS ITS CUT",
+      "unlocked": false,
+      "tier": 0,
+      "reputation": 0,
+      "reputationMax": 100,
+      "requirement": "REACH PATHFINDER IV + 7,500 CR",
+      "detail": {
+        "description": "Orbital brokers who sell parts that never officially entered the colony. Their catalogue is the only source of legendary frames.",
+        "history": "Filed a sanction in the first cycle and never lost an appeal.",
+        "perks": [
+          "Legendary vehicle frames",
+          "Black-market ability mods",
+          "Crawler respray suites"
+        ],
+        "parts": [
+          { "name": "Aegis Plate", "cost": 32000, "rarity": "legendary", "size": 2 },
+          { "name": "Cartel Drive Core", "cost": 96000, "rarity": "legendary", "size": 2 },
+          { "name": "Ore Fence Contact", "cost": 8000, "rarity": "epic", "size": 1 }
+        ]
+      }
+    },
+    {
+      "id": "meridian-survey",
+      "name": "MERIDIAN SURVEY CORPS",
+      "tagline": "THE MAP ENDS WHERE WE STOP WALKING",
+      "unlocked": false,
+      "tier": 0,
+      "reputation": 0,
+      "reputationMax": 100,
+      "requirement": "COMPLETE 3 CORE SURVEYS",
+      "detail": {
+        "description": "The explorers who chart the ice veins and storm fronts the guild needs but cannot reach. Membership is earned in the field.",
+        "history": "Founded after the second expedition lost its primary survey team to a basin storm.",
+        "perks": [
+          "Survey contracts",
+          "Reachable weather telemetry",
+          "Ice-vein extraction licences"
+        ],
+        "parts": [
+          { "name": "Survey Drone Rack", "cost": 11800, "rarity": "rare", "size": 2 },
+          { "name": "Resonance Scanner", "cost": 7600, "rarity": "uncommon", "size": 1 },
+          { "name": "Storm Weave Coating", "cost": 15400, "rarity": "epic", "size": 1 }
+        ]
+      }
+    },
+    {
+      "id": "dust-runners",
+      "name": "DUST RUNNER UNION",
+      "tagline": "ALL PADS OPEN TO ANY CREW",
+      "unlocked": true,
+      "tier": 2,
+      "reputation": 41,
+      "reputationMax": 100,
+      "requirement": "",
+      "detail": {
+        "description": "A crew cooperative that keeps the outer routes open. Nothing is free, but nothing is refused either.",
+        "history": "Built from shuttle mechanics who walked off the first pad dispute and set up their own runway.",
+        "perks": [
+          "Emergency towing, any sector",
+          "Shared pad reservations",
+          "Union salvage crews join recoveries"
+        ],
+        "parts": [
+          { "name": "Roter Tow Arm", "cost": 5600, "rarity": "common", "size": 2 },
+          { "name": "Shared Beacon Key", "cost": 2400, "rarity": "common", "size": 1 },
+          { "name": "Runner Aero Kit", "cost": 9200, "rarity": "rare", "size": 1 }
+        ]
+      }
+    }
+  ]
+}

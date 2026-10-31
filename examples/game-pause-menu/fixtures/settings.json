@@ -1,0 +1,55 @@
+{
+  "general": [
+    { "id": "autoSave", "label": "AUTO-SAVE", "description": "Write a checkpoint at every pad handshake.", "value": true },
+    { "id": "performanceOverlay", "label": "PERFORMANCE OVERLAY", "description": "Show frame timing over the crawler HUD.", "value": false },
+    { "id": "cameraShake", "label": "CAMERA SHAKE", "description": "Chassis and storm shake on the external camera.", "value": true },
+    { "id": "routeHints", "label": "ROUTE HINTS", "description": "Draw a breadcrumb line to the active nav target.", "value": true },
+    { "id": "matchmaking", "label": "OPEN MATCHMAKING", "description": "Let other crews join a public basin run.", "value": false }
+  ],
+  "controller": [
+    { "id": "lookSensitivity", "label": "LOOK SENSITIVITY", "description": "Camera speed for aiming and survey scanning.", "min": 10, "max": 100, "step": 5, "value": 45, "unit": "%" },
+    { "id": "aimSensitivity", "label": "AIM SENSITIVITY", "description": "Camera speed while a weapon or tool is drawn.", "min": 10, "max": 100, "step": 5, "value": 30, "unit": "%" },
+    { "id": "deadZone", "label": "STICK DEAD ZONE", "description": "Ignore input below this radius to stop drift.", "min": 0, "max": 40, "step": 2, "value": 12, "unit": "%" },
+    { "id": "vibration", "label": "VIBRATION", "description": "Haptic strength for damage, traction and storms.", "min": 0, "max": 100, "step": 5, "value": 65, "unit": "%" },
+    { "id": "responseCurve", "label": "RESPONSE CURVE", "description": "Even response, or faster at the stick's edge.", "min": 0, "max": 100, "step": 5, "value": 50, "unit": "%" }
+  ],
+  "remap": [
+    { "id": "interact", "label": "INTERACT", "binding": "E" },
+    { "id": "vehicleBoost", "label": "BOOST", "binding": "SHIFT" },
+    { "id": "mapToggle", "label": "MAP", "binding": "M" },
+    { "id": "capacityScan", "label": "SCAN", "binding": "Q" },
+    { "id": "firePrimary", "label": "FIRE", "binding": "MOUSE 1" },
+    { "id": "thruster", "label": "THRUSTER", "binding": "SPACE" }
+  ],
+  "audio": {
+    "sliders": [
+      { "id": "master", "label": "MASTER", "value": 80, "unit": "%" },
+      { "id": "music", "label": "MUSIC", "value": 65, "unit": "%" },
+      { "id": "effects", "label": "EFFECTS", "value": 90, "unit": "%" },
+      { "id": "voice", "label": "VOICE", "value": 75, "unit": "%" }
+    ],
+    "audioLanguage": {
+      "label": "AUDIO LANGUAGE",
+      "value": "English",
+      "options": ["English", "Español", "Français", "Deutsch", "日本語", "Português"]
+    },
+    "subtitleLanguage": {
+      "label": "SUBTITLE LANGUAGE",
+      "value": "English",
+      "options": ["English", "Español", "Français", "Deutsch", "日本語", "Português"]
+    },
+    "subtitleBackground": {
+      "label": "SUBTITLE BACKGROUND",
+      "value": "charcoal",
+      "options": [
+        { "id": "charcoal", "label": "CHARCOAL", "value": "#191917" },
+        { "id": "ink", "label": "INK", "value": "#141412" },
+        { "id": "bone", "label": "BONE", "value": "#E9E5D8" },
+        { "id": "signal", "label": "SIGNAL", "value": "#EF6A3C" },
+        { "id": "mint", "label": "MINT", "value": "#C6D9C7" },
+        { "id": "black", "label": "BLACK", "value": "#000000" }
+      ]
+    },
+    "previewLine": "WARNING: DUST FRONT CROSSING THE BASIN. RETURN TO THE PAD."
+  }
+}

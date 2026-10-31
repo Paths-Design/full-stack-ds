@@ -1,0 +1,8 @@
+{
+  "name": "GamePauseMenu.Runtime",
+  "rootNamespace": "GamePauseMenu",
+  "references": [
+    "FullStackDS.Runtime"
+  ],
+  "autoReferenced": true
+}

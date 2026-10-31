@@ -1,10 +1,11 @@
 id: GAME-PAUSE-MENU-EXAMPLE-01
 title: 'Game pause menu example across GPUI, Unity and Godot with Orion N5 brand'
 mode: feature
-lifecycle_state: active
-worktree: game-pause-menu
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Orion N5 game pause menu app shape landed: orion brand in ds-tokens, framework-neutral spec+fixtures, GPUI/Unity/Godot lanes with build/test/capture evidence, and the usability comparison README; Unity lane measured the 7-component base allowlist and compiles/tests against the expanded target.'
 created_at: '2026-10-31T07:08:40.318Z'
-updated_at: '2026-10-31T07:23:48.912Z'
+updated_at: '2026-10-31T17:49:14.985Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
@@ -74,27 +75,21 @@ evidence:
     commit_sha: cf8aea80f0291c31c8579591696b3bd65687a35f
   - criterion_id: A3
     status: pass
-    evidence_ref: "GPUI lane on its own branch/worktree: cargo +1.94.1 build --locked exit 0 with 0 warnings; cargo test --locked 51 pass (2 lib + 49 seam); --features capture 54 pass; 10 x 1280x800 frames rendered by Window::render_to_image including required map/progress/abilities/settings; lane README ledgers the 5/7 admitted components used and every NOT FSDS fallback; commit 6b4c17b03 merged into parent"
-    recorded_at: "2026-10-31T17:45:21.456Z"
-    command: "cargo +1.94.1 build --locked && cargo +1.94.1 test --locked"
-    exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/gpui/capture-manifest.json"
+    evidence_ref: "GPUI lane: cargo +1.94.1 build --locked exit 0, 0 warnings; cargo test --locked 51 pass (2 lib + 49 seam); --features capture 54 pass; 10 x 1280x800 frames rendered by Window::render_to_image including required four; README documents commands, results, component inventory and NOT FSDS ledger; lane commit 6b4c17b03 merged into main via d468c4503"
+    recorded_at: "2026-10-31T17:48:53.521Z"
+    artifact_path: examples/game-pause-menu/gpui/README.md
     commit_sha: "6b4c17b03"
   - criterion_id: A4
     status: pass
-    evidence_ref: "Unity lane: 31/31 EditMode tests passed (test-run result Passed) and still 31/31 after merging current main and regenerating the expanded 48-component sheet; standalone macOS Player capture passed=true with 13 checks and six 1280x800 PNGs including required map/progress/abilities/settings; lane README carries admitted inventory, fallback ledger and target-drift note; lane commits 85885adf2 + integration fixes d93248e4f merged into parent"
-    recorded_at: "2026-10-31T17:45:30.549Z"
-    command: bash examples/game-pause-menu/unity/scripts/verify-unity.sh
-    exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/unity/result.json"
+    evidence_ref: "Unity lane: 31/31 EditMode tests passed, and still 31/31 after merging current main and regenerating the expanded 48-component sheet; standalone macOS Player capture passed=true with 13 checks and six 1280x800 PNGs including required four; README documents commands, results, inventory, fallback ledger and target-drift note; lane commits 85885adf2 plus integration fix d93248e4f merged into main via d468c4503"
+    recorded_at: "2026-10-31T17:49:00.136Z"
+    artifact_path: examples/game-pause-menu/unity/README.md
     commit_sha: "85885adf2"
   - criterion_id: A5
     status: pass
-    evidence_ref: "Godot lane: committed project + setup.sh addon materialization; headless interaction run 134/134 checks passed (I1-I15 plus fixture-corpus failure paths, real viewport input dispatch) in 3.6 s; non-headless capture wrote eight 1280x800 PNGs in 2.9 s including required map/progress/abilities/settings, mirrored by the Godot process into canonical tmp; lane README carries inventory, fallback ledger and nine findings; commit 4cf479146 merged into parent"
-    recorded_at: "2026-10-31T17:45:38.396Z"
-    command: "Godot --headless --path examples/game-pause-menu/godot res://tests/test_main.tscn"
-    exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/godot/tests-run.log"
+    evidence_ref: "Godot lane: committed project plus setup.sh addon materialization; headless interaction run 134/134 checks passed (I1-I15 plus fixture-corpus failure paths, viewport input dispatch) in 3.6 s; windowed capture wrote eight 1280x800 PNGs in 2.9 s including required four; README documents setup/run/verify commands, results, inventory, fallback ledger and findings; lane commit 4cf479146 merged into main via d468c4503"
+    recorded_at: "2026-10-31T17:49:05.923Z"
+    artifact_path: examples/game-pause-menu/godot/README.md
     commit_sha: "4cf479146"
   - criterion_id: A6
     status: pass
