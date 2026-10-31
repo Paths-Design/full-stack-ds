@@ -54,3 +54,11 @@ contracts:
   - name: 'shuttle-transfer'
     type: behavior
     path: 'packages/ds-contracts/components/Shuttle/Shuttle.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 2a5ec36de: focused unity codegen + cli seam 239/239 pass, including the Transfer lowering predicate (contract transfer block over a string[] selection channel), the runtime shell omission with declared parts, the array Options/Value/DefaultValue/OnValueChange/Controlled/ValueRequested API, the runtime dual-list derivation/marking/add-remove lowering and the transfer/element/iteration/binding/keyboard/data-message boundary families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. The transfer action vocabulary (add/remove) was added to the lore allowance and the shuttle list min-size style declarations are refused."
+    recorded_at: "2026-10-31T16:45:44.824Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders the dual-list transfer from declared parts for Shuttle"
+    exit_code: 0
+    commit_sha: "2a5ec36de0f9ec0a7b7fc4b5ccd3f7b03a04b985"
