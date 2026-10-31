@@ -59,3 +59,12 @@ contracts:
   - name: 'profileflag-container'
     type: behavior
     path: 'packages/ds-contracts/components/ProfileFlag/ProfileFlag.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 6a430ac8a: focused unity codegen + cli seam 202/202 pass, including the carrier-backed Variant/Size/Trend attributes for Blockquote/Stat and the absent Cite/Profile API; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. Boundary adds generic citation and font-style refusals and a P4 pending structured-profile rule."
+    recorded_at: "2026-10-31T09:18:58.920Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > emits only carrier-backed axes for the admitted passive containers"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: "6a430ac8adf8ee7423fe97c845fa6d48c296ff43"
