@@ -113,10 +113,10 @@ ledger lists the controls/regions that are not generated components.
 | Icon visibility filters, general toggles | **FSDS** `Switch` | admitted; label-host click toggles exactly once |
 | Marker detail, ability hover detail | **FSDS** `Popover` family | admitted; click-open contract, hover driven through `Open` |
 | Settings sections | **FSDS** `Accordion` family | admitted; `Type="multiple"`, all sections open initially |
-| Labels, values, stat blocks, list rows text | **FSDS** `Text` | admitted; ~200 instances |
+| Labels, values, stat blocks, list rows text | **FSDS** `Text` | admitted; hundreds of instances |
 | Rules | **FSDS** `Divider` | admitted |
 | Marker/ability/hint glyphs | **FSDS** `Icon` | admitted; fixture PascalCase names adapted to catalog kebab keys |
-| SET AS NAV TARGET, SHOP PARTS, drawer BACK/CANCEL, faction rows, remap binding, swatches | **Native** `Button` via one helper `Ui.NativeButton` | Unity allowlist admits no Button (Godot does) |
+| SET AS NAV TARGET, SHOP PARTS, drawer BACK/CANCEL, faction rows, loadout slots, remap binding, swatches | **Native** `Button` via one helper `Ui.NativeButton` (8 call sites) | Unity allowlist admits no Button (Godot does) |
 | Paused chip, D3SO plate, tier/locked/unlocked chips, rarity tags, size tags, ON/OFF chips, footer key hints | **Hand-authored** chip (`Ui.Chip`) | no Badge in the Unity allowlist |
 | Faction rows, ability card chrome, map/ability detail bodies, loadout slots | **Hand-authored** containers | no Card in the Unity allowlist |
 | Faction reputation bars | **Hand-authored** track + fill | no Progress in the Unity allowlist |
@@ -214,7 +214,7 @@ Environment: Unity **6000.5.3f1** (c2eb47b3a2a9), macOS Standalone Player (`OSXP
    and all toggles were the cheapest regions in the lane.
 3. **Coverage gap dominates the visual result.** The Unity allowlist (7 components) had no
    Button, Badge, Card, Progress, Slider, Select, colour control, Dialog or Drawer. Those are
-   most of a game pause menu, so hand-authored/native chrome carries ~60% of the screen. The
+   most of a game pause menu, so hand-authored/native chrome carries the majority of the screen. The
    design-system inheritance shows through in the tab bar, toggles, sections, popovers,
    typography, rules and icons — not in the faction rows, ability cards, loadout or settings
    controls. Native `Slider`/`DropdownField` keep Unity's default theme chrome (rounded, grey),
@@ -233,7 +233,7 @@ Environment: Unity **6000.5.3f1** (c2eb47b3a2a9), macOS Standalone Player (`OSXP
 6. **Small component gaps that forced app code:** no Slider step prop (app-side snapping), no
    `text-transform` (uppercase strings live in the adapter), no `gap` in USS (dense card/grid
    spacing is margins), unsupported line-height/intermediate weights (micro-label density tuned
-   per element). Individually small, together they are why the lane's USS is ~900 lines.
+   per element). Individually small, together they are why the lane's USS is ~1,400 lines.
 7. **The brand path works and is cheap.** `Theme.SetDark` + `Theme.SetBrand(container, "orion")`
    resolved the generated token scope with zero package changes; zero control radius, dark
    surfaces and orange accents came through. The raw signal/sage/alert graphics needed by the app
