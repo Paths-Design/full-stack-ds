@@ -1,0 +1,10 @@
+{
+  "name": "GamePauseMenu.Editor",
+  "rootNamespace": "GamePauseMenu.Editor",
+  "references": [
+    "GamePauseMenu.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

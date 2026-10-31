@@ -1,0 +1,35 @@
+{
+  "$note": "Lane-consumption copy of the Orion N5 appearance. The brand layer packages/ds-tokens/src/brands/orion.tokens.json is the authority for the palette; this copy exists for engines whose theme path does not load brand overlays (GPUI, Godot). Unity consumes the generated .fsds-brand-orion scope and should not need this file.",
+  "palette": {
+    "signal": "#EF6A3C",
+    "signalDeep": "#B83F16",
+    "signalHot": "#F78A5E",
+    "onSignal": "#191917",
+    "ink": "#141412",
+    "charcoal": "#232320",
+    "graphite": "#2E2E29",
+    "boneBright": "#F4F1E6",
+    "bone": "#E9E5D8",
+    "sage": "#C6D9C7",
+    "moss": "#7D8F82",
+    "alert": "#C8402C",
+    "clear": "#5F8F5A"
+  },
+  "surface": {
+    "app": "#141412",
+    "panel": "#232320",
+    "raised": "#2E2E29",
+    "rule": "#3A3A34",
+    "ruleStrong": "#56564C",
+    "muted": "#8C8C82",
+    "telemetry": "#C6D9C7"
+  },
+  "style": {
+    "radius": 0,
+    "borderWidth": 1,
+    "microLabelLetterSpacing": 1.4,
+    "uppercaseLabels": true,
+    "watermark": "N5",
+    "fontNote": "No bundled condensed grotesque font: use the engine's default UI face with heavy weights, uppercase micro-labels and letter-spacing."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "GamePauseMenu.Tests",
+  "rootNamespace": "GamePauseMenu.Tests",
+  "references": [
+    "GamePauseMenu.Runtime",
+    "FullStackDS.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "defineConstraints": [
+    "FSDS_TEST_FRAMEWORK"
+  ],
+  "versionDefines": [
+    {
+      "name": "com.unity.test-framework",
+      "expression": "1.0.0",
+      "define": "FSDS_TEST_FRAMEWORK"
+    }
+  ]
+}

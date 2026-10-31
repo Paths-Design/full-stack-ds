@@ -1,0 +1,12 @@
+{
+  "name": "D3SO CRAWLER",
+  "chassis": "ANVIL-CLASS",
+  "slots": [
+    { "id": "CORE-A", "label": "CORE A", "size": 2, "abilityId": "thermal-shield" },
+    { "id": "CORE-B", "label": "CORE B", "size": 2, "abilityId": null },
+    { "id": "AUX-A", "label": "AUX A", "size": 1, "abilityId": "threading" },
+    { "id": "AUX-B", "label": "AUX B", "size": 1, "abilityId": null },
+    { "id": "UTIL-A", "label": "UTIL A", "size": 2, "abilityId": null },
+    { "id": "UTIL-B", "label": "UTIL B", "size": 1, "abilityId": null }
+  ]
+}

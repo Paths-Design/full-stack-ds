@@ -1,0 +1,5 @@
+# Lane-local Rust build products and captured evidence. Source, fixtures and
+# the dependency lock (Cargo.lock) remain tracked, mirroring
+# packages/ds-gpui's posture in the root .gitignore.
+/target
+/evidence
