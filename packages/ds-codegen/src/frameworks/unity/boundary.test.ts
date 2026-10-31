@@ -28,7 +28,7 @@ const boundaryOf = (rules: Record<string, unknown>[]): Boundary => validateBound
 // Corpus-wide cases load, build the IR for and classify every contract (about
 // 1s alone); under the root suite's parallel load they overran vitest's 5s
 // default. The budget covers that work; it relaxes no assertion.
-const CORPUS_TIMEOUT_MS = 20_000;
+const CORPUS_TIMEOUT_MS = 120_000;
 
 describe("Unity support boundary", () => {
   it("classifies every leaf of the live corpus and its sidecars with no dead rules", () => {
@@ -99,7 +99,7 @@ describe("Unity support boundary", () => {
     // The generic anatomy-bindings catch-all is retired: every allowlisted binding
     // family now carries its own rule, so an unknown shape stays unclassified.
     expect(shape("/anatomy/dom/children/x/bindings/href", "channel:open.onChange")).toEqual({ rule: null, disposition: "unclassified", phase: undefined });
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it("admits every allowlisted component and refuses nothing it carries today", () => {
     for (const name of unityAllowlist(root)) {

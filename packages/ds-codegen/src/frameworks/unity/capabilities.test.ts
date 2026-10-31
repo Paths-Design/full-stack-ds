@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Calendar", null], ["Card", null], ["Carousel", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["PageNavigator", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Select", null], ["Sheet", null], ["ShowMore", null], ["Shuttle", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Truncate", null], ["Walkthrough", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Calendar", null], ["Card", null], ["Carousel", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Command", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["PageNavigator", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Select", null], ["Sheet", null], ["ShowMore", null], ["Shuttle", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Truncate", null], ["Walkthrough", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -119,6 +119,7 @@ describe("Unity capability accounting", () => {
       "ledger Card .card--interactive:hover transform (uss-selector)",
       "ledger Card root box-shadow (uss-property)",
       "ledger CodeSnippet --kbd box-shadow (uss-property)",
+      "ledger Command dialog box-shadow (uss-property)",
       "ledger Dialog modal box-shadow (uss-property)",
       "ledger Popover content box-shadow (uss-property)",
       "ledger Select content box-shadow (uss-property)",
@@ -140,6 +141,8 @@ describe("Unity capability accounting", () => {
       "ledger Card tokens card.elevation.resting (uss-scalar)",
       "ledger Carousel tokens carousel.motion.easing (uss-scalar)",
       "ledger CodeSnippet tokens code-snippet.elevation.kbd (uss-scalar)",
+      "ledger Command tokens command.shadow (uss-scalar)",
+      "ledger Command tokens command.size.topOffset (uss-scalar)",
       "ledger Dialog tokens dialog.elevation (uss-scalar)",
       "ledger Dialog tokens dialog.size.full.height (uss-scalar)",
       "ledger Dialog tokens dialog.size.full.width (uss-scalar)",
@@ -179,6 +182,7 @@ describe("Unity capability accounting", () => {
       'ledger CodeBlock .code-block__token[data-token="static"] (uss-selector)',
       'ledger CodeBlock .code-block__token[data-token="string"] (uss-selector)',
       'ledger CodeBlock .code-block__token[data-token="tag"] (uss-selector)',
+      'ledger Command .command__item[aria-selected="true"] (uss-selector)',
       "ledger Details .details[open] .details__icon (uss-selector)",
       'ledger Dialog .dialog:has(> .dialog__modal[aria-modal="false"]) > .dialog__backdrop (uss-selector)',
       "ledger Field .field--disabled .field__header, .field--disabled .field__meta (uss-selector)",

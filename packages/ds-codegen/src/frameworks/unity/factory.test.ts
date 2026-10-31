@@ -150,7 +150,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links", "Image", "Avatar", "NavTree", "Postcard", "Pagination", "OTP", "RadioGroup", "Select", "Shuttle", "ShowMore", "Truncate", "PageNavigator", "Carousel", "Calendar"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links", "Image", "Avatar", "NavTree", "Postcard", "Pagination", "OTP", "RadioGroup", "Select", "Shuttle", "ShowMore", "Truncate", "PageNavigator", "Carousel", "Calendar", "Command"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });

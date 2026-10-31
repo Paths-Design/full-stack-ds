@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "DateGrid" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "DateGrid" | "Command" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -397,6 +397,22 @@ export interface DateGridLowering {
   modeProp?: string;
   localeProp?: string;
 }
+/**
+ * A command palette: a boolean open channel plus a search string channel over a
+ * dialog panel whose result list is a consumer slot. The runtime owns the shell,
+ * both channels and the results host; filtering, the empty state, dismissal,
+ * keyboard navigation and a11y wiring are withheld.
+ */
+export interface CommandLowering {
+  behavior: "Command";
+  openChannel: NormalizedChannelIR;
+  searchChannel: NormalizedChannelIR;
+  overlayPart: string;
+  dialogPart: string;
+  listPart: string;
+  inputPart: string;
+  placeholderProp?: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -410,7 +426,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | DateGridLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | DateGridLowering | CommandLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -573,6 +589,40 @@ function valueFillLowering(ir: ComponentIR): ProgressLowering | undefined {
 /** Source: IR control/interaction/attachment axes. Applies by value model,
  * operation and attachment, never identity. Extend when new axes are admitted. */
 export function unityLowering(ir: ComponentIR): UnityLowering {
+  // A command palette: open + search channels over a dialog panel with a
+  // consumer result slot. No interaction controller declares the palette, so a
+  // dedicated lowering owns the shell and both channels.
+  if (ir.surface?.kind === "dialog" && ir.dom !== undefined && ir.behavior.normalizedChannels.length === 2) {
+    const open = ir.behavior.normalizedChannels.find(candidate => candidate.valueType === "boolean");
+    const search = ir.behavior.normalizedChannels.find(candidate => candidate.valueType === "string");
+    const findDescendant = (root: DomNodeIR, predicate: (node: DomNodeIR) => boolean): DomNodeIR | undefined => {
+      for (const child of root.children) {
+        if (predicate(child)) return child;
+        const found = findDescendant(child, predicate);
+        if (found) return found;
+      }
+      return undefined;
+    };
+    const slot = findDescendant(ir.dom, node => node.tag === "slot");
+    const input = search === undefined ? undefined : findDescendant(ir.dom, node => node.tag === "input" && node.bindings.value?.kind === "channel" && node.bindings.value.channel === search.name);
+    const guarded = open === undefined ? [] : ir.dom.children.filter(node => node.ifProp === open.valueProp);
+    const overlay = guarded.find(node => node.children.length === 0);
+    const dialog = guarded.find(node => node.children.length > 0);
+    const list = dialog === undefined ? undefined : findDescendant(dialog, node => node.part !== undefined && node.children.some(child => child.tag === "slot"));
+    if (open !== undefined && search !== undefined && overlay?.part !== undefined && dialog?.part !== undefined && list?.part !== undefined && input?.part !== undefined && slot !== undefined) {
+      const placeholder = input.bindings["placeholder"];
+      return {
+        behavior: "Command",
+        openChannel: open,
+        searchChannel: search,
+        overlayPart: overlay.part,
+        dialogPart: dialog.part,
+        listPart: list.part,
+        inputPart: input.part,
+        ...(placeholder?.kind === "prop" && !placeholder.path?.length ? { placeholderProp: placeholder.prop } : {}),
+      };
+    }
+  }
   // A date grid: the declared date-grid facts name the value/month channels and
   // the caption/min/max/disabled/mode/locale props. The runtime owns a six-week
   // grid and bounded month navigation; the single-date ISO form is realised.
