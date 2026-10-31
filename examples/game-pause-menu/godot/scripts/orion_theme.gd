@@ -4,27 +4,41 @@ extends RefCounted
 ## Lane-local brand projection for the Godot target.
 ##
 ## The Godot package has no resolved brand projection (no `data-brand` scope, no
-## token graph loader), so the Orion N5 palette from
-## `fixtures/orion-appearance.json` is applied through this lane-local Theme plus
-## `token_overrides` / `add_theme_*_override` on generated components. This is
-## the lane's honest brand-delivery mechanism and is recorded in the lane README.
+## token-graph loader), so the Orion palette is applied through this lane-local
+## Theme plus `token_overrides` / `add_theme_*_override` on generated components.
+## All values come from the parsed parity layout (`ParityLayout`), which is the
+## lane's design authority for the parity pass.
 
 const TRANSPARENT := Color(0, 0, 0, 0)
 
+var layout: ParityLayout
 var palette: Dictionary = {}
 var surface: Dictionary = {}
 var style: Dictionary = {}
-var _rarity_cache: Dictionary = {}
 
-static func from_appearance(appearance: Dictionary) -> OrionTheme:
+
+static func from_parity(parity: ParityLayout) -> OrionTheme:
 	var theme := OrionTheme.new()
-	var raw_palette: Dictionary = appearance.get("palette", {})
-	for key in raw_palette:
-		theme.palette[key] = Color(str(raw_palette[key]))
-	var raw_surface: Dictionary = appearance.get("surface", {})
-	for key in raw_surface:
-		theme.surface[key] = Color(str(raw_surface[key]))
-	theme.style = appearance.get("style", {}).duplicate(true)
+	theme.layout = parity
+	var colors := parity.colors
+	for key in colors:
+		theme.palette[key] = colors[key]
+	# The surface vocabulary used by the shell/chrome helpers is derived from the
+	# parity colour map (no new hues are invented).
+	theme.surface = {
+		"app": colors["ink"],
+		"panel": colors["charcoal"],
+		"raised": colors["graphite"],
+		"rule": colors["rule"],
+		"ruleStrong": colors["ruleStrong"],
+		"muted": colors["muted"],
+		"telemetry": colors["sage"],
+	}
+	theme.style = {
+		"radius": float(parity.style.get("radius", 0)),
+		"borderWidth": float(parity.style.get("panelBorder", 1)),
+		"microLabelLetterSpacing": parity.letter_spacing("letterSpacingMicro"),
+	}
 	return theme
 
 
@@ -37,14 +51,29 @@ func color(key: String) -> Color:
 	return Color.MAGENTA
 
 
-## `LABEL — VALUE` graphic grammar uses uppercase, letter-spaced micro labels.
+func type_size(key: String) -> int:
+	return layout.type_size(key)
+
+
 func micro_spacing() -> float:
-	return float(style.get("microLabelLetterSpacing", 1.4))
+	return float(style.get("microLabelLetterSpacing", 1.2))
 
 
-## System-font projection with the Orion type treatment. This target bundles no
-## condensed grotesque face (see the appearance fixture's `fontNote`), so heavy
-## weights plus letter-spaced caps approximate the reference type.
+func tab_spacing() -> float:
+	return layout.letter_spacing("letterSpacingTab")
+
+
+func radius() -> int:
+	return int(style.get("radius", 0))
+
+
+func border_width() -> int:
+	return int(style.get("borderWidth", 1))
+
+
+## System-font projection with the Orion type treatment. The target bundles no
+## condensed grotesque face, so weights plus letter-spaced caps approximate it
+## (permitted parity difference: font fallback/rasterisation, letter-spacing).
 func font(size: int, weight: int, spacing := 0.0) -> Font:
 	var system := SystemFont.new()
 	system.font_weight = clampi(weight, 100, 900)
@@ -57,19 +86,7 @@ func font(size: int, weight: int, spacing := 0.0) -> Font:
 	return variation
 
 
-func radius() -> int:
-	return int(style.get("radius", 0))
-
-
-func border_width() -> int:
-	return int(style.get("borderWidth", 1))
-
-
-func watermark() -> String:
-	return str(style.get("watermark", "N5"))
-
-
-## Zero-radius, no-shadow StyleBoxFlat in the graph-paper vocabulary.
+## Zero-radius, no-shadow StyleBoxFlat.
 func flat(bg: Color, border := TRANSPARENT, width := 0, margin := 0.0) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
 	box.bg_color = bg
@@ -86,54 +103,10 @@ func flat(bg: Color, border := TRANSPARENT, width := 0, margin := 0.0) -> StyleB
 
 func panel_style(bg_key: String, border_key := "", width := -1, margin := 0.0) -> StyleBoxFlat:
 	var border := TRANSPARENT if border_key.is_empty() else color(border_key)
-	var border_px := border_width() if border_key.is_empty() and width < 0 else width
-	if width >= 0:
-		border_px = width
+	var border_px := border_width() if width < 0 else width
+	if border_key.is_empty() and width < 0:
+		border_px = 0
 	return flat(color(bg_key), border, border_px, margin)
-
-
-## Rarity chips are app data, not a brand token; this is the lane's mapping of the
-## fixture rarity vocabulary onto the Orion palette.
-func rarity(rarity_name: String) -> Dictionary:
-	if _rarity_cache.has(rarity_name):
-		return _rarity_cache[rarity_name]
-	var mapping: Dictionary
-	match rarity_name:
-		"common":
-			mapping = {"bg": surface["ruleStrong"], "fg": palette["boneBright"], "border": surface["rule"]}
-		"uncommon":
-			mapping = {"bg": palette["clear"], "fg": palette["ink"], "border": palette["clear"]}
-		"rare":
-			mapping = {"bg": palette["signalHot"], "fg": palette["onSignal"], "border": palette["signalHot"]}
-		"epic":
-			mapping = {"bg": palette["signal"], "fg": palette["onSignal"], "border": palette["signal"]}
-		"legendary":
-			mapping = {"bg": palette["boneBright"], "fg": palette["ink"], "border": palette["signal"]}
-		_:
-			mapping = {"bg": surface["rule"], "fg": palette["bone"], "border": surface["ruleStrong"]}
-	_rarity_cache[rarity_name] = mapping
-	return mapping
-
-
-func kind_color(kind: String) -> Color:
-	match kind:
-		"relay":
-			return palette["sage"]
-		"cache":
-			return palette["signalHot"]
-		"pad":
-			return palette["boneBright"]
-		"vein":
-			return surface["telemetry"]
-		"beacon":
-			return palette["alert"]
-		"weather":
-			return palette["moss"]
-		"rover":
-			return surface["muted"]
-		"camp":
-			return palette["signal"]
-	return palette["bone"]
 
 
 # --- themes ------------------------------------------------------------------
@@ -141,69 +114,70 @@ func kind_color(kind: String) -> Color:
 ## Root shell theme: native chrome (labels, panels, sliders, dropdowns, bars).
 func shell_theme() -> Theme:
 	var theme := Theme.new()
-	theme.default_font_size = 13
-	theme.set_color("font_color", "Label", palette["bone"])
-	theme.set_color("font_color", "Button", palette["bone"])
-	theme.set_color("font_color", "CheckButton", palette["bone"])
-	theme.set_color("font_color", "OptionButton", palette["bone"])
-	theme.set_color("font_color", "MenuButton", palette["bone"])
-	theme.set_color("font_color", "PopupMenu", palette["bone"])
+	var text_primary: Color = palette["boneBright"]
+	theme.default_font_size = type_size("body")
+	theme.set_color("font_color", "Label", text_primary)
+	theme.set_color("font_color", "Button", text_primary)
+	theme.set_color("font_color", "CheckButton", text_primary)
+	theme.set_color("font_color", "OptionButton", palette["boneBright"])
+	theme.set_color("font_color", "MenuButton", text_primary)
+	theme.set_color("font_color", "PopupMenu", text_primary)
 	theme.set_color("font_hover_color", "PopupMenu", palette["boneBright"])
-	theme.set_color("font_disabled_color", "Label", surface["muted"])
-	theme.set_color("font_selected_color", "OptionButton", palette["boneBright"])
+	theme.set_color("font_disabled_color", "Label", palette["muted"])
 
-	theme.set_stylebox("normal", "Button", flat(surface["raised"], surface["rule"], border_width(), 0.0))
-	theme.set_stylebox("hover", "Button", flat(surface["rule"], surface["ruleStrong"], border_width(), 0.0))
-	theme.set_stylebox("pressed", "Button", flat(surface["ruleStrong"], surface["ruleStrong"], border_width(), 0.0))
+	theme.set_stylebox("normal", "Button", flat(palette["graphite"], palette["ruleStrong"], border_width(), 0.0))
+	theme.set_stylebox("hover", "Button", flat(palette["charcoal"], palette["muted"], border_width(), 0.0))
+	theme.set_stylebox("pressed", "Button", flat(palette["charcoal"], palette["signal"], border_width(), 0.0))
 	theme.set_stylebox("focus", "Button", StyleBoxEmpty.new())
 
-	theme.set_stylebox("normal", "OptionButton", flat(surface["raised"], surface["rule"], border_width(), 0.0))
-	theme.set_stylebox("hover", "OptionButton", flat(surface["rule"], surface["ruleStrong"], border_width(), 0.0))
-	theme.set_stylebox("pressed", "OptionButton", flat(surface["rule"], surface["ruleStrong"], border_width(), 0.0))
+	theme.set_stylebox("normal", "OptionButton", flat(palette["graphite"], palette["ruleStrong"], border_width(), 0.0))
+	theme.set_stylebox("hover", "OptionButton", flat(palette["charcoal"], palette["muted"], border_width(), 0.0))
+	theme.set_stylebox("pressed", "OptionButton", flat(palette["charcoal"], palette["signal"], border_width(), 0.0))
 	theme.set_stylebox("focus", "OptionButton", StyleBoxEmpty.new())
 
-	theme.set_stylebox("panel", "PanelContainer", flat(surface["panel"], surface["rule"], border_width(), 0.0))
-	theme.set_stylebox("panel", "PopupMenu", flat(surface["panel"], surface["ruleStrong"], border_width(), 0.0))
-	theme.set_stylebox("hover", "PopupMenu", flat(surface["raised"], TRANSPARENT, 0, 0.0))
+	theme.set_stylebox("panel", "PanelContainer", flat(palette["charcoal"], palette["rule"], border_width(), 0.0))
+	theme.set_stylebox("panel", "PopupMenu", flat(palette["charcoal"], palette["ruleStrong"], border_width(), 0.0))
+	theme.set_stylebox("hover", "PopupMenu", flat(palette["graphite"], TRANSPARENT, 0, 0.0))
 
-	theme.set_stylebox("background", "ProgressBar", flat(surface["rule"], TRANSPARENT, 0, 0.0))
+	theme.set_stylebox("background", "ProgressBar", flat(palette["graphite"], TRANSPARENT, 0, 0.0))
 	theme.set_stylebox("fill", "ProgressBar", flat(palette["signal"], TRANSPARENT, 0, 0.0))
 
-	var track: StyleBoxFlat = flat(surface["rule"], TRANSPARENT, 0, 0.0)
-	track.content_margin_top = 2.0
-	track.content_margin_bottom = 2.0
+	# Slider: 300x6 graphite track, signal fill, 16px boneBright thumb (the thumb
+	# is a theme icon; lane-local SVG override is applied in DSFactory/UI).
+	var track := flat(palette["graphite"], TRANSPARENT, 0, 0.0)
+	track.content_margin_top = 5.0
+	track.content_margin_bottom = 5.0
 	theme.set_stylebox("slider", "HSlider", track)
 	theme.set_stylebox("grabber_area", "HSlider", flat(palette["signal"], TRANSPARENT, 0, 0.0))
 	theme.set_stylebox("grabber_area_highlight", "HSlider", flat(palette["signalHot"], TRANSPARENT, 0, 0.0))
 
-	theme.set_stylebox("scroll", "VScrollBar", flat(surface["panel"], TRANSPARENT, 0, 0.0))
-	theme.set_stylebox("grabber", "VScrollBar", flat(surface["ruleStrong"], TRANSPARENT, 0, 0.0))
-	theme.set_stylebox("grabber_highlight", "VScrollBar", flat(surface["muted"], TRANSPARENT, 0, 0.0))
+	theme.set_stylebox("scroll", "VScrollBar", flat(palette["charcoal"], TRANSPARENT, 0, 0.0))
+	theme.set_stylebox("grabber", "VScrollBar", flat(palette["ruleStrong"], TRANSPARENT, 0, 0.0))
+	theme.set_stylebox("grabber_highlight", "VScrollBar", flat(palette["muted"], TRANSPARENT, 0, 0.0))
 	theme.set_stylebox("grabber_pressed", "VScrollBar", flat(palette["signal"], TRANSPARENT, 0, 0.0))
-	theme.set_stylebox("scroll", "HScrollBar", flat(surface["panel"], TRANSPARENT, 0, 0.0))
-	theme.set_stylebox("grabber", "HScrollBar", flat(surface["ruleStrong"], TRANSPARENT, 0, 0.0))
-	theme.set_stylebox("grabber_highlight", "HScrollBar", flat(surface["muted"], TRANSPARENT, 0, 0.0))
+	theme.set_stylebox("scroll", "HScrollBar", flat(palette["charcoal"], TRANSPARENT, 0, 0.0))
+	theme.set_stylebox("grabber", "HScrollBar", flat(palette["ruleStrong"], TRANSPARENT, 0, 0.0))
+	theme.set_stylebox("grabber_highlight", "HScrollBar", flat(palette["muted"], TRANSPARENT, 0, 0.0))
 	theme.set_stylebox("grabber_pressed", "HScrollBar", flat(palette["signal"], TRANSPARENT, 0, 0.0))
 	return theme
 
 
-## Theme for generated control-family scenes (Switch / Tabs / Popover). Their
-## owned theme resources only project a light-theme Button foreground, so the lane
-## assigns this theme after instantiation to keep native child controls legible on
-## the ink ground. Its internal Button/CheckButton styleboxes are emptied because
-## the generated control rows draw their own chrome.
+## Theme for generated control-family scenes (Switch/Tabs/Popover). Their owned
+## theme resources only project a light-theme foreground, so the lane assigns this
+## theme after instantiation; internal Button/CheckButton styleboxes are emptied
+## because the generated control rows draw their own chrome (switches use the
+## lane's 64x32 icon overrides).
 func control_theme() -> Theme:
 	var theme := shell_theme()
 	var empty := StyleBoxEmpty.new()
 	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
 		theme.set_stylebox(state, "CheckButton", empty)
 		theme.set_stylebox(state, "Button", empty)
-	theme.set_color("font_color", "CheckButton", palette["bone"])
-	theme.set_color("font_color", "Button", palette["bone"])
+	theme.set_color("font_color", "CheckButton", palette["boneBright"])
+	theme.set_color("font_color", "Button", palette["boneBright"])
 	return theme
 
 
-## Small theme that recolors informative glyphs (DSIcon inherits Label font color).
 func label_color_theme(font_color: Color) -> Theme:
 	var theme := Theme.new()
 	theme.set_color("font_color", "Label", font_color)

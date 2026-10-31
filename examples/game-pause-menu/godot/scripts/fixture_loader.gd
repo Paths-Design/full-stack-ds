@@ -18,6 +18,7 @@ const FIXTURE_PATHS := {
 	"vehicle": "res://fixtures/vehicle.json",
 	"settings": "res://fixtures/settings.json",
 	"appearance": "res://fixtures/orion-appearance.json",
+	"parity_layout": "res://fixtures/parity-layout.json",
 }
 const GLYPH_CATALOG_PATH := "res://addons/full_stack_ds/runtime/glyph_catalog.json"
 const RARITIES := ["common", "uncommon", "rare", "epic", "legendary"]
@@ -32,6 +33,7 @@ var abilities: Dictionary = {}
 var vehicle: Dictionary = {}
 var settings: Dictionary = {}
 var appearance: Dictionary = {}
+var parity_layout: Dictionary = {}
 var glyph_names: Dictionary = {}
 
 
@@ -142,6 +144,8 @@ func _validate(fixture_name: String, data: Dictionary) -> void:
 			_validate_settings(data)
 		"appearance":
 			_validate_appearance(data)
+		"parity_layout":
+			_validate_parity_layout(data)
 		_:
 			_passive_validate(fixture_name, data)
 
@@ -549,6 +553,162 @@ func _validate_appearance(data: Dictionary) -> void:
 	_bool_field(style, "uppercaseLabels", "orion-appearance.style")
 	_string(style, "watermark", "orion-appearance.style")
 	_string(style, "fontNote", "orion-appearance.style")
+
+
+func _validate_parity_layout(data: Dictionary) -> void:
+	# `fixtures/parity-layout.json` is the parity-pass design authority. Shape
+	# errors fail loudly like every other fixture; the app never re-types a
+	# geometry, colour or type value.
+	var viewport := _dictionary(data, "viewport", "parity-layout")
+	_number(viewport, "width", "parity-layout.viewport")
+	_number(viewport, "height", "parity-layout.viewport")
+	var colors := _dictionary(data, "colors", "parity-layout")
+	for key in ["signal", "signalDeep", "signalHot", "onSignal", "ink", "charcoal", "graphite",
+			"boneBright", "bone", "paper", "paperMuted", "sage", "moss", "alert", "clear",
+			"rule", "ruleStrong", "muted", "textSecondary"]:
+		_color_hex(colors, key, "parity-layout.colors")
+	var type_map := _dictionary(data, "type", "parity-layout")
+	for key in ["wordmark", "mission", "statLabel", "statValue", "statSub", "chip", "tab",
+			"panelTitle", "panelMeta", "rowLabel", "rowSub", "value", "bigValue", "title",
+			"body", "micro", "footer", "letterSpacingMicro", "letterSpacingTab"]:
+		_number(type_map, key, "parity-layout.type")
+	var style := _dictionary(data, "style", "parity-layout")
+	_number(style, "panelBorder", "parity-layout.style")
+	_number(style, "radius", "parity-layout.style")
+	_string(style, "shadow", "parity-layout.style", true)
+	var switch_map := _dictionary(data, "switch", "parity-layout")
+	for key in ["width", "height", "radius", "thumb", "thumbRadius", "inset", "borderWidth", "checkedThumbOffset"]:
+		_number(switch_map, key, "parity-layout.switch")
+	for key in ["onTrack", "offTrack", "onThumb", "offThumb", "offBorder"]:
+		_string(switch_map, key, "parity-layout.switch")
+	_validate_rect(_dictionary(data, "header", "parity-layout").get("rect", {}), "parity-layout.header.rect")
+	var header := _dictionary(data, "header", "parity-layout")
+	var stats := _array(header, "stats", "parity-layout.header")
+	if stats.size() != 3:
+		_fail("parity-layout.header.stats: expected three stat columns, got %d" % stats.size())
+	for index in range(stats.size()):
+		var context := "parity-layout.header.stats[%d]" % index
+		if not stats[index] is Dictionary:
+			_fail("%s: expected object" % context)
+			continue
+		_number(stats[index], "x", context)
+		for key in ["label", "value", "sub"]:
+			_string(stats[index], key, context)
+	_validate_rect(header.get("pausedChip", {}), "parity-layout.header.pausedChip")
+	var tab_bar := _dictionary(data, "tabBar", "parity-layout")
+	_validate_rect(tab_bar.get("rect", {}), "parity-layout.tabBar.rect")
+	var tabs := _array(tab_bar, "tabs", "parity-layout.tabBar")
+	if tabs.size() != 4:
+		_fail("parity-layout.tabBar.tabs: expected four tabs, got %d" % tabs.size())
+	for index in range(tabs.size()):
+		var context := "parity-layout.tabBar.tabs[%d]" % index
+		if not tabs[index] is Dictionary:
+			_fail("%s: expected object" % context)
+			continue
+		_string(tabs[index], "id", context)
+		_string(tabs[index], "label", context)
+		_number(tabs[index], "x", context)
+		_number(tabs[index], "w", context)
+	var footer := _dictionary(data, "footer", "parity-layout")
+	_validate_rect(footer.get("rect", {}), "parity-layout.footer.rect")
+	var footer_hints := _dictionary(footer, "hints", "parity-layout.footer")
+	_string(footer_hints, "text", "parity-layout.footer.hints")
+	_number(footer_hints, "x", "parity-layout.footer.hints")
+	_number(footer_hints, "y", "parity-layout.footer.hints")
+	var nav_target := _dictionary(footer, "navTarget", "parity-layout.footer")
+	for key in ["label", "empty"]:
+		_string(nav_target, key, "parity-layout.footer.navTarget")
+	for key in ["labelX", "labelY", "valueRight", "valueY"]:
+		_number(nav_target, key, "parity-layout.footer.navTarget")
+	_string(nav_target, "align", "parity-layout.footer.navTarget")
+	var panels := _dictionary(data, "panels", "parity-layout")
+	_validate_rect(panels.get("content", {}), "parity-layout.panels.content")
+	_number(panels, "headerHeight", "parity-layout.panels")
+	var map := _dictionary(data, "map", "parity-layout")
+	for key in ["mapPanel", "field"]:
+		_validate_rect(map.get(key, {}), "parity-layout.map." + key)
+	_validate_rect(map.get("iconPanel", {}), "parity-layout.map.iconPanel")
+	_validate_rect(map.get("popover", {}), "parity-layout.map.popover")
+	_number(map, "fieldCornerTicks", "parity-layout.map")
+	_string(map, "iconPanelTitle", "parity-layout.map")
+	_string(map, "iconPanelMeta", "parity-layout.map")
+	var rows := _dictionary(map, "iconRows", "parity-layout.map")
+	for key in ["x", "firstY", "rowH", "width", "iconSize", "nameX", "nameY", "subY", "switchX", "switchY"]:
+		_number(rows, key, "parity-layout.map.iconRows")
+	var progress := _dictionary(data, "progress", "parity-layout")
+	_validate_rect(progress.get("listPanel", {}), "parity-layout.progress.listPanel")
+	var progress_rows := _dictionary(progress, "rows", "parity-layout.progress")
+	for key in ["x", "firstY", "rowH", "width", "accentW", "nameX", "nameY", "taglineY",
+			"repBarX", "repBarY", "repBarW", "repBarH", "statusX", "statusY", "statusW",
+			"statusH", "dossierX", "dossierY"]:
+		_number(progress_rows, key, "parity-layout.progress.rows")
+	_string(progress_rows, "dossierText", "parity-layout.progress.rows")
+	var drawer := _dictionary(progress, "drawer", "parity-layout")
+	_validate_rect(drawer.get("rect", {}), "parity-layout.progress.drawer.rect")
+	for key in ["padding", "headerY", "titleY", "taglineY", "ruleY", "briefLabelY", "briefBodyY",
+			"historyLabelY", "historyBodyY", "perksLabelY", "perksY", "partsLabelY",
+			"partsHeaderY", "partRowY", "partRowH", "shopCaptionY"]:
+		_number(drawer, key, "parity-layout.progress.drawer")
+	_validate_rect(drawer.get("close", {}), "parity-layout.progress.drawer.close")
+	_validate_rect(drawer.get("shopButton", {}), "parity-layout.progress.drawer.shopButton")
+	var abilities := _dictionary(data, "abilities", "parity-layout")
+	for key in ["gridPanel", "detailPanel"]:
+		_validate_rect(abilities.get(key, {}), "parity-layout.abilities." + key)
+	_validate_rect(abilities.get("hoverPopover", {}), "parity-layout.abilities.hoverPopover")
+	var cards := _dictionary(abilities, "cards", "parity-layout.abilities")
+	for key in ["x", "firstY", "w", "h", "colGap", "rowGap", "cols", "iconY", "nameY", "sizeY", "installedY"]:
+		_number(cards, key, "parity-layout.abilities.cards")
+	_validate_rect(cards.get("rarityChip", {}), "parity-layout.abilities.cards.rarityChip")
+	var slots := _dictionary(abilities, "slots", "parity-layout.abilities")
+	for key in ["x", "firstY", "w", "h", "colGap", "rowGap", "cols"]:
+		_number(slots, key, "parity-layout.abilities.slots")
+	for key in ["abilityTitleY", "abilityChipsY", "abilityBodyY", "statRowY", "loadoutTitleY",
+			"vehicleNameY", "pendingNoteY"]:
+		_number(abilities, key, "parity-layout.abilities")
+	var settings := _dictionary(data, "settings", "parity-layout")
+	var settings_panels := _array(settings, "panels", "parity-layout.settings")
+	if settings_panels.size() != 4:
+		_fail("parity-layout.settings.panels: expected four panels, got %d" % settings_panels.size())
+	for index in range(settings_panels.size()):
+		var context := "parity-layout.settings.panels[%d]" % index
+		if not settings_panels[index] is Dictionary:
+			_fail("%s: expected object" % context)
+			continue
+		_string(settings_panels[index], "id", context)
+		_string(settings_panels[index], "title", context)
+		_validate_rect(settings_panels[index].get("rect", {}), context + ".rect")
+	for key in ["rowH", "firstRowY", "remapRowH", "remapFirstRowY", "audioRowH", "audioFirstRowY",
+			"languageLabelY", "dropdownY", "dropdownH", "swatchLabelY", "swatchY", "swatchH"]:
+		_number(settings, key, "parity-layout.settings")
+	for group in ["slider", "bindingButton", "dropdown", "swatch"]:
+		var block := _dictionary(settings, group, "parity-layout.settings")
+		for key in ["w", "h"]:
+			_number(block, key, "parity-layout.settings." + group)
+	_validate_rect(_dictionary(settings, "preview", "parity-layout.settings"), "parity-layout.settings.preview")
+	_validate_rect(_dictionary(settings, "remapModal", "parity-layout.settings"), "parity-layout.settings.remapModal")
+	var captures := _dictionary(data, "captures", "parity-layout")
+	for key in ["map", "map-popover", "progress", "abilities", "abilities-hover", "settings",
+			"settings-remap-modal", "settings-subtitle"]:
+		if not captures.has(key):
+			_fail("parity-layout.captures: missing state '%s'" % key)
+			continue
+		if not captures[key] is Dictionary:
+			_fail("parity-layout.captures.%s: expected object" % key)
+			continue
+		_string(captures[key], "navTarget", "parity-layout.captures." + key)
+		_array(captures[key], "hiddenIcons", "parity-layout.captures." + key)
+	for key in ["markerMonograms", "markerColors", "rarityColors", "rarityTextColors"]:
+		var group := _dictionary(data, key, "parity-layout")
+		if group.is_empty():
+			_fail("parity-layout.%s: expected entries" % key)
+
+
+func _validate_rect(rect_dict: Dictionary, context: String) -> void:
+	if rect_dict.is_empty():
+		_fail("%s: expected {x,y,w,h}" % context)
+		return
+	for key in ["x", "y", "w", "h"]:
+		_number(rect_dict, key, context)
 
 
 func _passive_validate(fixture_name: String, data: Dictionary) -> void:

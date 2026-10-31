@@ -1,16 +1,27 @@
 extends Control
 
-## Screenshot capture harness: boots the pause menu, drives a representative
-## state per tab, and saves 1280x800 PNGs.
+## Parity capture harness: boots the menu and captures exactly the `captures`
+## states declared in `fixtures/parity-layout.json`.
 ##
 ## Run non-headless (capture reads the rendered viewport texture):
 ##   /Applications/Godot.app/Contents/MacOS/Godot \
 ##     --path <lane> res://tools/capture.tscn \
 ##     -- --out=/abs/lane/evidence --mirror=/abs/canonical/tmp/game-pause-menu/godot
 ##
-## The default output directory is <lane>/evidence/ (gitignored). `--mirror`
-## writes the same bytes to a second directory from inside the Godot process
-## (the canonical checkout is never mutated by shell copy tools).
+## Required four: map, progress, abilities, settings. Extra states:
+## map-popover, abilities-hover, settings-remap-modal, settings-subtitle.
+## The default output directory is <lane>/evidence/ (gitignored).
+
+const STATE_ORDER := [
+	"map",
+	"map-popover",
+	"progress",
+	"abilities",
+	"abilities-hover",
+	"settings",
+	"settings-remap-modal",
+	"settings-subtitle",
+]
 
 var app
 var out_dir := ""
@@ -18,8 +29,6 @@ var mirror_dir := ""
 
 
 func _ready() -> void:
-	# Watchdog: a script error inside an awaited coroutine aborts the harness
-	# without reaching quit, leaving a window open forever. Fail loudly instead.
 	var watchdog := Timer.new()
 	watchdog.one_shot = true
 	watchdog.wait_time = 60.0
@@ -38,42 +47,10 @@ func _ready() -> void:
 	add_child(app)
 	await _settle(4)
 
-	# Map: nav target set (footer + marker highlight).
-	app.select_tab("map")
-	app.set_nav_target("cache-02")
-	await _capture("map")
-
-	# Marker detail popover, viewport-clamped anchor.
-	app.open_marker_popover("beacon-05")
-	await _capture("popover")
-	app.close_marker_popover()
-
-	# Progress: left-edge faction dossier drawer.
-	app.select_tab("progress")
-	app.select_faction("ares-logistics")
-	await _settle(20) # drawer slide
-	await _capture("progress")
-	await _capture("drawer")
-
-	app.close_drawer()
-	app.select_tab("abilities")
-	app.select_ability("overclock") # size 2 -> compatible slots highlighted
-	await _capture("abilities")
-
-	app.select_tab("settings")
-	await _capture("settings")
-
-	# Remap modal waiting for input.
-	app.open_remap("interact")
-	await _capture("remap-modal")
-	app.cancel_remap()
-
-	# Subtitle background swatch + language reflected in the preview strip.
-	app.set_subtitle_background("signal")
-	app.set_subtitle_language(1)
-	app.settings_tab.scroll_to_bottom()
-	await _settle(3)
-	await _capture("subtitle-picker")
+	for state_name in STATE_ORDER:
+		app.apply_capture_state(state_name)
+		await _settle(24) # drawer slide + popover surface settle
+		await _capture(state_name)
 
 	print("FSDS_GODOT_CAPTURE_OK " + out_dir + ((" mirror=" + mirror_dir) if not mirror_dir.is_empty() else ""))
 	get_tree().quit(0)
@@ -92,10 +69,10 @@ func _settle(frames: int) -> void:
 
 
 func _capture(name: String) -> void:
-	await _settle(3)
+	await _settle(2)
 	if DisplayServer.get_name() == "headless":
-		# Headless has no rendered viewport texture; this mode exists only to
-		# validate the capture flow (script/state errors) in CI-like runs.
+		# Headless has no rendered viewport texture; this mode only validates the
+		# capture flow (state application / script errors).
 		print("FSDS_GODOT_CAPTURE_SKIPPED_HEADLESS %s" % name)
 		return
 	await RenderingServer.frame_post_draw

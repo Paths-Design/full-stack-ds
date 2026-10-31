@@ -1,186 +1,147 @@
 extends Control
 class_name MapTab
 
-## Map tab: stylized plot (lane-local drawing), icon-visibility filter rows using
-## the generated Switch, and the detailed commander stat row.
+## Parity MAP tab: 872x552 map panel (40px header + 840x480 sage field) and the
+## 344x552 icon-visibility panel with eight 64x32 generated switches.
 ##
-## Generated components used here: Switch (one per fixture icon), Text + Divider
-## (map chrome on the light telemetry ground). Markers/map drawing/stat chrome
-## are engine-native app layers (`# NOT FSDS` at each site).
+## Generated components: Switch (8 icon filters), Icon (row glyphs), Badge
+## (session chip in the shell). Map plot/markers/panel chrome are lane-local
+## native fallbacks (`# NOT FSDS` at each site).
 
 var app: PauseMenuApp
 var field: MapField
 var switches: Dictionary = {}
-var contacts_label: Label
+var meta_label: Label
+var map_panel: Control
+var icon_panel: Control
+var _origin: Vector2
 
 
 func _ready() -> void:
-	custom_minimum_size = PauseMenuApp.BODY_SIZE
-	add_child(_build_ground())
-	_build_map()
-	_build_stat_row()
+	custom_minimum_size = Vector2(float(app.parity.panels["content"]["w"]) + float(app.parity.panels["content"]["x"]) * 2.0, float(app.parity.panels["content"]["h"]))
+	_origin = Vector2(0.0, float(app.parity.panels["content"]["y"]))
+	_build_map_panel()
 	_build_icon_panel()
 
 
-func _build_ground() -> Control:
-	var ground := UI.frame("panel", "rule", false)
-	UI.place(ground, 0, 0, PauseMenuApp.BODY_SIZE.x, PauseMenuApp.BODY_SIZE.y)
-	return ground
+func _local(json_rect: Dictionary) -> Rect2:
+	return UI.local(json_rect, _origin)
 
 
-func _build_map() -> void:
+func _build_map_panel() -> void:
+	var rect := _local(app.parity.map["mapPanel"])
+	map_panel = Control.new()
+	map_panel.name = "MapPanel"
+	UI.place_rect(map_panel, rect)
+	add_child(map_panel)
+	var frame := UI.frame("charcoal", "rule")
+	frame.position = Vector2.ZERO
+	frame.size = rect.size
+	frame.custom_minimum_size = rect.size
+	map_panel.add_child(frame)
+	var title_data: Dictionary = app.parity.map["mapTitle"]
+	UI.panel_header(map_panel, rect.size.x, str(title_data["text"]), str(title_data["meta"]))
+
 	field = MapField.new()
 	field.name = "MapField"
-	field.sector = str(app.fixtures.map_icons.get("sector", ""))
-	field.scale_label = "SCALE " + str(app.fixtures.map_icons.get("scale", ""))
 	field.icons = app.fixtures.map_icons.get("icons", [])
 	field.visibility = app.icon_visible.duplicate()
 	field.nav_target = app.nav_target
-	field.position = Vector2(16, 16)
-	field.size = Vector2(800, 384)
-	field.custom_minimum_size = Vector2(800, 384)
-	add_child(field)
+	var panel_rect := _local(app.parity.map["mapPanel"])
+	var field_rect := _local(app.parity.map["field"])
+	UI.place_rect(field, Rect2(field_rect.position - panel_rect.position, field_rect.size))
+	map_panel.add_child(field)
 	for icon in app.fixtures.map_icons.get("icons", []):
 		var marker: MarkerButton = field.markers.get(str(icon.get("id", "")))
 		if marker != null:
 			marker.pressed.connect(app.open_marker.bind(str(icon.get("id", ""))))
-	# Lane-local corner ticks bracket the plot region.
-	var ticks := CornerTicks.new()
-	ticks.color = app.orion.surface["ruleStrong"]
-	UI.place(ticks, 16, 16, 800, 384)
-	ticks.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(ticks)
-
-
-func _build_stat_row() -> void:
-	var frame := UI.frame("panel", "rule", true)
-	UI.place(frame, 16, 412, 800, 144)
-	add_child(frame)
-	var margin := UI.vbox(6)
-	UI.place(margin, 16, 14, 768, 116)
-	frame.add_child(margin)
-
-	var cells := UI.hbox(24)
-	margin.add_child(cells)
-	var commander: Dictionary = app.fixtures.commander
-	var rank: Dictionary = commander.get("rank", {})
-	var earnings: Dictionary = commander.get("earnings", {})
-	var followers: Dictionary = commander.get("followers", {})
-
-	cells.add_child(_stat_cell("RANKING", str(rank.get("label", "")), "%d" % int(rank.get("level", 0)), "LEVEL"))
-	cells.add_child(UI.vrule("rule", 1))
-	cells.add_child(_stat_cell("EARNINGS", "%s CR" % UI.fmt_int(int(earnings.get("credits", 0))), "", ""))
-	cells.add_child(UI.vrule("rule", 1))
-	cells.add_child(_stat_cell("FOLLOWERS", UI.fmt_int(int(followers.get("total", 0))), "", ""))
-	cells.add_child(UI.vrule("rule", 1))
-	var position_cell := UI.vbox(2)
-	position_cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	position_cell.add_child(UI.micro("GLOBAL POSITION", "muted"))
-	position_cell.add_child(UI.heavy("#%d" % int(rank.get("globalPosition", 0)), 22, "boneBright"))
-	position_cell.add_child(UI.micro(str(rank.get("percentile", "")), "signalHot"))
-	cells.add_child(position_cell)
-
-	var progress_row := UI.hbox(12)
-	margin.add_child(progress_row)
-	progress_row.add_child(UI.micro("RANK PROGRESSION", "muted"))
-	var bar := ProgressBar.new()
-	bar.min_value = 0.0
-	bar.max_value = float(rank.get("nextLevelAt", 1))
-	bar.value = float(rank.get("points", 0))
-	bar.show_percentage = false
-	bar.custom_minimum_size = Vector2(300, 8)
-	progress_row.add_child(bar)
-	progress_row.add_child(UI.label("%s / %s XP" % [UI.fmt_int(int(rank.get("points", 0))), UI.fmt_int(int(rank.get("nextLevelAt", 0)))], 11, 600, "bone"))
-	var trend := UI.micro("%s %s · PENDING %s CR" % [followers.get("trend", ""), followers.get("period", ""), UI.fmt_int(int(earnings.get("pending", 0)))], "clear")
-	progress_row.add_child(UI.spacer())
-	progress_row.add_child(trend)
-
-
-func _stat_cell(caption: String, value: String, suffix: String, suffix_caption: String) -> VBoxContainer:
-	var cell := UI.vbox(2)
-	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	cell.add_child(UI.micro(caption, "muted"))
-	var row := UI.hbox(6)
-	row.add_child(UI.heavy(value, 22, "boneBright"))
-	if not suffix.is_empty():
-		row.add_child(UI.micro(suffix, "muted"))
-	cell.add_child(row)
-	if not suffix_caption.is_empty():
-		cell.add_child(UI.micro(suffix_caption, "muted"))
-	return cell
 
 
 func _build_icon_panel() -> void:
-	var frame := UI.frame("raised", "rule", true)
-	UI.place(frame, 832, 16, 400, 540)
-	add_child(frame)
+	var rect := _local(app.parity.map["iconPanel"])
+	icon_panel = Control.new()
+	icon_panel.name = "IconPanel"
+	UI.place_rect(icon_panel, rect)
+	add_child(icon_panel)
+	var frame := UI.frame("charcoal", "rule")
+	frame.position = Vector2.ZERO
+	frame.size = rect.size
+	frame.custom_minimum_size = rect.size
+	icon_panel.add_child(frame)
+	meta_label = UI.panel_header(icon_panel, rect.size.x, str(app.parity.map["iconPanelTitle"]), "")
 
-	var header := UI.hbox(8)
-	UI.place(header, 16, 14, 368, 18)
-	frame.add_child(header)
-	header.add_child(UI.micro("ICON VISIBILITY", "boneBright"))
-	header.add_child(UI.spacer())
-	contacts_label = UI.micro("", "muted")
-	header.add_child(contacts_label)
-
-	var rule := UI.rule("rule", 1)
-	UI.place(rule, 16, 40, 368, 1)
-	frame.add_child(rule)
-
-	var row_y := 48.0
+	var rows: Dictionary = app.parity.map["iconRows"]
+	var panel_origin := _origin + rect.position
+	var row_x := float(rows["x"]) - panel_origin.x
+	var first_y := float(rows["firstY"]) - panel_origin.y
+	var row_h := float(rows["rowH"])
+	var icon_size := float(rows["iconSize"])
+	var name_x := float(rows["nameX"]) - panel_origin.x
+	var switch_x := float(rows["switchX"]) - panel_origin.x
+	var switch_y := float(rows["switchY"])
+	var width := float(rows["width"])
+	var index := 0
 	for icon in app.fixtures.map_icons.get("icons", []):
-		_add_icon_row(frame, icon, row_y)
-		row_y += 56.0
+		_add_icon_row(icon, row_x, first_y + index * row_h, row_h, icon_size, name_x, switch_x, switch_y, width)
+		index += 1
 
-	var footer_note := UI.micro("FILTER OVER THE MAP FIELD · FIXTURE DATA IS NOT MUTATED", "muted")
-	footer_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	UI.place(footer_note, 16, 500, 368, 34)
-	frame.add_child(footer_note)
-	_refresh_contacts()
+	var note_data: Dictionary = app.parity.map["iconPanelNote"]
+	var note := UI.sub(str(note_data["text"]), "muted")
+	UI.place(
+		note,
+		float(note_data["x"]) - panel_origin.x,
+		float(note_data["y"]) - panel_origin.y,
+		width,
+		14
+	)
+	icon_panel.add_child(note)
+	_refresh_meta()
 
 
-func _add_icon_row(frame: Control, icon: Dictionary, y: float) -> void:
+func _add_icon_row(icon: Dictionary, row_x: float, row_y: float, row_h: float, icon_size: float, name_x: float, switch_x: float, switch_y: float, width: float) -> void:
 	var icon_id := str(icon.get("id", ""))
-	var kind_bar := ColorRect.new()
-	kind_bar.color = app.orion.kind_color(str(icon.get("kind", "")))
-	UI.place(kind_bar, 16, y + 8, 3, 30)
-	kind_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	frame.add_child(kind_bar)
+	var glyph = DSFactory.icon(
+		PauseFixtures.glyph_name_for(str(icon.get("icon", ""))),
+		icon_size,
+		app.orion.color("boneBright")
+	)
+	UI.place(glyph, row_x, row_y + (row_h - icon_size) / 2.0, icon_size, icon_size)
+	icon_panel.add_child(glyph)
+	var name_label := UI.label(str(icon.get("label", "")), app.parity.type_size("rowLabel"), 700, "boneBright", 0.0)
+	UI.place(name_label, name_x, row_y + float(app.parity.map["iconRows"]["nameY"]), 260, 16)
+	icon_panel.add_child(name_label)
+	var status := UI.sub("%s · %s KM" % [str(icon.get("status", "")), str(icon.get("distanceKm", ""))], "muted")
+	UI.place(status, name_x, row_y + float(app.parity.map["iconRows"]["subY"]), 260, 14)
+	icon_panel.add_child(status)
 
-	var labels := UI.vbox(1)
-	UI.place(labels, 28, y + 2, 290, 44)
-	frame.add_child(labels)
-	labels.add_child(UI.micro(str(icon.get("label", "")), "bone"))
-	labels.add_child(UI.micro("%s · %s KM" % [str(icon.get("status", "")), str(icon.get("distanceKm", ""))], "muted"))
-
-	# Generated Switch drives the marker visibility filter.
-	var visibility_switch = DSFactory.toggle("")
-	visibility_switch.name = "Switch_" + icon_id
-	visibility_switch.custom_minimum_size = Vector2(44, 40)
-	UI.place(visibility_switch, 332, y + 6, 44, 40)
-	frame.add_child(visibility_switch)
-	visibility_switch.value = "true" if bool(app.icon_visible.get(icon_id, false)) else "false"
-	visibility_switch.value_changed.connect(_on_icon_switch_changed.bind(icon_id))
-	switches[icon_id] = visibility_switch
-
+	var toggle_node = DSFactory.toggle()
+	var switch_width := float(app.parity.switch_data["width"])
+	var switch_height := float(app.parity.switch_data["height"])
+	UI.place(toggle_node, switch_x, row_y + switch_y, switch_width, switch_height)
+	icon_panel.add_child(toggle_node)
+	DSFactory.prepare_switch(toggle_node)
+	toggle_node.value = "true" if bool(app.icon_visible.get(icon_id, false)) else "false"
+	toggle_node.value_changed.connect(_on_icon_switch_changed.bind(icon_id))
+	switches[icon_id] = toggle_node
 	var separator := UI.rule("rule", 1)
-	UI.place(separator, 16, y + 50, 368, 1)
-	frame.add_child(separator)
+	UI.place(separator, row_x, row_y + row_h - 1, width, 1)
+	icon_panel.add_child(separator)
 
 
 func _on_icon_switch_changed(next: String, icon_id: String) -> void:
 	app.set_icon_visibility(icon_id, next == "true")
-	_refresh_contacts()
+	_refresh_meta()
 
 
-func _refresh_contacts() -> void:
-	if contacts_label == null:
+func _refresh_meta() -> void:
+	if meta_label == null:
 		return
+	var icons: Array = app.fixtures.map_icons.get("icons", [])
 	var plotted := 0
-	for icon in app.fixtures.map_icons.get("icons", []):
+	for icon in icons:
 		if bool(app.icon_visible.get(str(icon.get("id", "")), false)):
 			plotted += 1
-	contacts_label.text = "%d / %d PLOTTED" % [plotted, app.fixtures.map_icons.get("icons", []).size()]
+	meta_label.text = ("%d/%d PLOTTED" % [plotted, icons.size()]).to_upper()
 
 
 func apply_state(visibility: Dictionary, nav_target: String) -> void:
@@ -191,7 +152,7 @@ func apply_state(visibility: Dictionary, nav_target: String) -> void:
 		var next := "true" if bool(visibility.get(icon_id, false)) else "false"
 		if str(toggle_node.value) != next:
 			toggle_node.value = next
-	_refresh_contacts()
+	_refresh_meta()
 
 
 func switch_for(icon_id: String):
