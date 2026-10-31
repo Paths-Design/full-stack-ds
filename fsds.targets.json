@@ -193,7 +193,8 @@
         "Breadcrumbs",
         "Tooltip",
         "Status",
-        "Card"
+        "Card",
+        "NavList"
       ]
     },
     {

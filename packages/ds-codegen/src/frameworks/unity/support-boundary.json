@@ -411,6 +411,13 @@
       "realizes": "emitted-property"
     },
     {
+      "id": "prop-styled-layout-axis-pending",
+      "match": ["contract:/props/styled/members/plain:orientation/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A legacy styled orientation prop on a passive container has no USS layout carrier in its style sidecar, so the generated control withholds the axis until one exists."
+    },
+    {
       "id": "prop-item-group-options",
       "match": [
         "contract:/props/*/members/plain:collapsible/**",
