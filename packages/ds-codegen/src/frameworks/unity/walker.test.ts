@@ -68,4 +68,17 @@ describe("Unity passive anatomy path", () => {
     compoundContent.dom!.children = [{ ...compoundContent.dom!, tag: "span", part: "caption", content: { kind: "literal", value: "VISIBLE" }, children: [] }];
     expect(() => emit(compoundContent)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: UnrelatedContent caption has unlowered authored facts");
   });
+
+  it("emits only carrier-backed axes for the admitted passive containers", () => {
+    const quote = emit(irFor("Blockquote", "UnrelatedQuote"));
+    expect(quote).toContain('[UxmlAttribute] public string Variant { get => Variants.Get(this, "blockquote", "default", "bordered", "highlighted");');
+    expect(quote).toContain('[UxmlAttribute] public string Size { get => Variants.Get(this, "blockquote", "sm", "md", "lg");');
+    expect(quote).not.toMatch(/Cite/);
+    const stat = emit(irFor("Stat", "UnrelatedStat"));
+    expect(stat).toContain('[UxmlAttribute] public string Size { get => Variants.Get(this, "stat", "sm", "md", "lg");');
+    expect(stat).toContain('[UxmlAttribute] public string Trend { get => Variants.Get(this, "stat", "up", "down", "neutral");');
+    const flag = emit(irFor("ProfileFlag", "UnrelatedFlag"));
+    expect(flag).toContain("public partial class UnrelatedFlag : VisualElement");
+    expect(flag).not.toMatch(/Profile\b(?!Flag)/);
+  });
 });

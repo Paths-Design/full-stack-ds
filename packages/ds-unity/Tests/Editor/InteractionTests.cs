@@ -424,5 +424,24 @@ namespace FullStackDS.Tests
             Submit(toggle);
             Assert.That(toggle.Checked, Is.False, "disabled activation is suppressed");
         }
+        [Test] public void PassiveContainersComposeChildrenAndCarryStyleAxes()
+        {
+            var stat = Mount(new FullStackDS.Stat { Size = "lg", Trend = "up" });
+            stat.Add(new Label("42"));
+            Assert.That(stat.ClassListContains("stat--lg"), Is.True);
+            Assert.That(stat.ClassListContains("stat--up"), Is.True);
+            Assert.That(stat.contentContainer.childCount, Is.EqualTo(1));
+            var quote = Mount(new FullStackDS.Blockquote { Variant = "bordered", Size = "sm" });
+            quote.Add(new Label("quoted"));
+            Assert.That(quote.ClassListContains("blockquote--bordered"), Is.True);
+            Assert.That(quote.ClassListContains("blockquote--sm"), Is.True);
+            Assert.That(quote.contentContainer.childCount, Is.EqualTo(1));
+            var flag = Mount(new FullStackDS.ProfileFlag());
+            flag.Add(new Label("Commander"));
+            Assert.That(flag.ClassListContains("profile-flag"), Is.True);
+            Assert.That(flag.contentContainer.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.ProfileFlag).GetProperty("Profile"), Is.Null);
+            Assert.That(typeof(FullStackDS.Blockquote).GetProperty("Cite"), Is.Null);
+        }
     }
 }

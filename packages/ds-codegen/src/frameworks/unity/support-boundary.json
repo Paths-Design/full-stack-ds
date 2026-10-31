@@ -399,7 +399,7 @@
     },
     {
       "id": "prop-passive-style-axis",
-      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**"],
+      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**"],
       "disposition": "lowered",
       "realizes": "emitted-property",
       "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
@@ -481,6 +481,19 @@
       "match": ["contract:/props/passthrough/**"],
       "disposition": "refused",
       "reason": "DOM attribute passthrough; UI Toolkit controls expose typed properties, not arbitrary host attributes."
+    },
+    {
+      "id": "prop-citation-refused",
+      "match": ["contract:/props/*/members/plain:cite/**"],
+      "disposition": "refused",
+      "reason": "The citation URL is a document-link semantic (HTML cite) with no UI Toolkit consumer; the generated container exposes no Cite property."
+    },
+    {
+      "id": "prop-structured-data-pending",
+      "match": ["contract:/props/*/members/plain:profile/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Structured object props need typed C# declaration lowering and a native content composer; the generated container exposes no Profile property until that P4 family lands."
     },
     {
       "id": "props-unadjudicated",
@@ -950,9 +963,9 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**"],
       "disposition": "refused",
-      "reason": "The USS projection has no transition-duration/transition-timing-function handler and USS has no user-select property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function or font-style handler and USS has no user-select property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },
     {
       "id": "styles-pseudo-element",

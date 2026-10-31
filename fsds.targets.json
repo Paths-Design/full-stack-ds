@@ -181,7 +181,10 @@
         "Icon",
         "Button",
         "Checkbox",
-        "ToggleSwitch"
+        "ToggleSwitch",
+        "Blockquote",
+        "Stat",
+        "ProfileFlag"
       ]
     },
     {
