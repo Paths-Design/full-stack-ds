@@ -354,6 +354,20 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Steps|Placement|CloseOnOutsideClick/);
   });
 
+  it("renders a navigation-request anchor scaffold for Links", () => {
+    const contract = loadContractWithSidecars(root, "Links") as ComponentContract;
+    const linksIr = buildComponentIR(contract);
+    linksIr.name = "UnrelatedAnchor";
+    const source = createUnityEmitter().emitComponent(linksIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedAnchor : VisualElement");
+    expect(source).toContain("public LinkControl Control { get; }");
+    expect(source).toContain("public string Href { get => Control.Href; set => Control.Href = value; }");
+    expect(source).toContain("public string Target { get => Control.Target; set => Control.Target = value; }");
+    expect(source).toContain("public event Action<string> Activated");
+    expect(source).toContain("[UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }");
+    expect(source).not.toMatch(/Visited|Navigate|ClickHandler/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

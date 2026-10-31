@@ -333,6 +333,7 @@ describe("cli main — emitter admitContract seam", () => {
       "Icon",
       "Input",
       "Label",
+      "Links",
       "List",
       "NavList",
       "Popover",
@@ -471,7 +472,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     await import("./cli.js");
     expect(exit).not.toHaveBeenCalled();
     // fsds.targets.json lists the unity allowlist in this order; the corpus loads alphabetically.
-    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough"], afterEmits: 37 }]);
+    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links"], afterEmits: 38 }]);
     const lines = log.mock.calls.map((call) => String(call[0]));
     // Resolved against the package root: the components root minus the pack's Runtime/Components.
     expect(lines).toContain("  DRY RUN  target assets (unity)");
@@ -548,7 +549,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     ]);
     // Component groups keep their own contract provenance beside the asset group.
     const components = manifest.groups.filter((g) => g.component !== "(target-assets)");
-    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Badge", "Blockquote", "Breadcrumbs", "Button", "Card", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Details", "Dialog", "Divider", "Field", "Icon", "Input", "Label", "List", "NavList", "Popover", "ProfileFlag", "Progress", "Sheet", "Skeleton", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Walkthrough"]);
+    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Badge", "Blockquote", "Breadcrumbs", "Button", "Card", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Details", "Dialog", "Divider", "Field", "Icon", "Input", "Label", "Links", "List", "NavList", "Popover", "ProfileFlag", "Progress", "Sheet", "Skeleton", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Walkthrough"]);
     expect(components.every((g) => g.contract.path.startsWith("packages/ds-contracts/components/"))).toBe(true);
   });
 

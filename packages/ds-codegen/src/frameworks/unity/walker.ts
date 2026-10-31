@@ -766,6 +766,38 @@ function coachmarkRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the anchor scaffold: LinkControl carries the destination metadata
+ * (href/target/rel) as generated string attributes and raises an activation
+ * request on click while the host is enabled; the size axis projects its
+ * carrier classes. No navigation or visited state is realised.
+ */
+function anchorRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Anchor") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not an anchor lowering`);
+  const members: string[] = ["        public LinkControl Control { get; }"];
+  const attach: string[] = ["Control = LinkControl.Attach(this);"];
+  const defaults: string[] = [];
+  const attribute = (propName: string): string => {
+    const name = identifier(pascal(propName));
+    members.push(`        [UxmlAttribute] public string ${name} { get => Control.${name}; set => Control.${name} = value; }`);
+    return name;
+  };
+  attribute(lowering.hrefProp);
+  if (lowering.targetProp !== undefined) attribute(lowering.targetProp);
+  if (lowering.relProp !== undefined) attribute(lowering.relProp);
+  members.push("        public event Action<string> Activated { add => Control.Activated += value; remove => Control.Activated -= value; }");
+  if (lowering.disabledProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(lowering.disabledProp))} { get => !enabledSelf; set => SetEnabled(!value); }`);
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -774,6 +806,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Progress") return progressRootApi(ctx, classes);
   if (lowering.behavior === "Slots") return slotsRootApi(ctx);
   if (lowering.behavior === "Coachmark") return coachmarkRootApi(ctx, classes);
+  if (lowering.behavior === "Anchor") return anchorRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
