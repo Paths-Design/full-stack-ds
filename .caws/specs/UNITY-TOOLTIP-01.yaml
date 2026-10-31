@@ -52,3 +52,12 @@ contracts:
   - name: 'tooltip-surface'
     type: behavior
     path: 'packages/ds-contracts/components/Tooltip/Tooltip.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit e9e5ef644: focused unity codegen + cli seam 209/209 pass, including the contract-fact hover/focus-open surface mode (factory lowering + generated Attach options), the Tooltip composite emission and the surface/state/a11y boundary adjudication; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T10:40:32.501Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts > Unity behavior selection refusals > lowers a tooltip surface in hover/focus-open mode"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: e9e5ef644fd687c128ecd1ad8d3cde0736f5d224
