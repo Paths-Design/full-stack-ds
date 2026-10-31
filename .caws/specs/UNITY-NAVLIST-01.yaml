@@ -2,7 +2,6 @@ id: UNITY-NAVLIST-01
 title: 'Admit NavList to the Unity target as a semantic parts container'
 mode: feature
 lifecycle_state: active
-worktree: unity-navlist
 created_at: '2026-10-31T11:08:13.296Z'
 updated_at: '2026-10-31T11:17:20.238Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
