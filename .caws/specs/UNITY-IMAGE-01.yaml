@@ -2,7 +2,6 @@ id: UNITY-IMAGE-01
 title: 'Admit Image to the Unity target as a native texture media element'
 mode: feature
 lifecycle_state: active
-worktree: unity-image
 created_at: '2026-10-31T14:46:19.029Z'
 updated_at: '2026-10-31T14:52:39.011Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
