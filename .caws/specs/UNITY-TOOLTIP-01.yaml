@@ -69,3 +69,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Tooltip/Tooltip.cs
     commit_sha: e9e5ef644fd687c128ecd1ad8d3cde0736f5d224
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source fa017e247 (sourceDirty false): 60/60 passed, zero failed/skipped (test-run start 2026-10-31 10:39:51Z; resultsSha256 2894d6ab4e12e33c85cfb44bd2b2ca44af13e8928aa98fc011402b828f8fc6c0). The added case opens the tooltip on pointer enter and trigger focus, closes it on pointer leave and Escape, and asserts a disabled trigger does not open it, while the existing Popover and UXML lanes stay green. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T10:40:33.846Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.TooltipOpensOnHoverAndFocusAndClosesOnLeaveAndEscape
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: fa017e2478ddc1fd3875a84ca22f667f0b3b2845
