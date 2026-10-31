@@ -71,3 +71,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Card/Card.cs
     commit_sha: "2a885bc14802fa79644520e9bb202da426031f51"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 402c469f9 (sourceDirty false): 62/62 passed, zero failed/skipped (test-run start 2026-10-31 11:06:16Z; resultsSha256 72baadc62ed6dcc3f949b9ed50b67a64e30d2404e3860f9fb2c86569d42bd02b). The added case composes CardHeader/CardContent/CardActions, checks the density modifier and asserts no Interactive property. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T11:06:58.238Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.CardComposesSubcomponentPartsAndDensityCarrier
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: "402c469f99bc3b6a7a1fac6300d8eeb3d5e63859"
