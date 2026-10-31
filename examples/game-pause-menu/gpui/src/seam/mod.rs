@@ -12,10 +12,17 @@
 //! exercises every domain rule without a platform backend.
 
 pub mod adapter;
+pub mod parity;
 pub mod state;
 pub mod types;
 
 pub use adapter::{FixtureError, Fixtures, load_fixtures, try_load_fixtures, RARITIES};
+pub use parity::{
+    AbilitiesLayout, CaptureSpec, Cards, ChipRect, Colors, Drawer, Footer, Header, HeaderStat,
+    IconRows, MapLayout, ParityError, ParityLayout, ProgressLayout, Rect, SettingsLayout, Size,
+    SlotGrid, StatusChip, StyleBlock, SwitchGeometry, SwitchStyle, TabBar, TypeScale,
+    load_parity_layout, parse_parity_layout, try_load_parity_layout,
+};
 pub use state::{
     AppState, CaptureOutcome, Dismissed, DropdownKind, RemapRow, RejectReason, SlotOutcome,
     SlotReject, SlotState, SliderState, Tab, ToggleState, format_grouped, normalize_binding,

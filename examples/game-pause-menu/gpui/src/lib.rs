@@ -19,5 +19,5 @@ pub use seam::{
     Part, Rank, RemapAction, RemapRow, RejectReason, Settings, SlotOutcome, SlotReject, SlotState,
     SliderState, StyleConstants, SubtitleBackground, Surface, Swatch, Tab, ToggleState, Vehicle,
     VehicleSlot, contrast_ratio, format_grouped, hex_rgb, load_fixtures,
-    normalize_binding, relative_luminance, try_load_fixtures, RARITIES,
+    normalize_binding, relative_luminance, try_load_fixtures, ParityLayout, RARITIES,
 };
