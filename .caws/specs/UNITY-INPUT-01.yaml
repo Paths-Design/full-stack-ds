@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.InputMapsItsStringChannelToTheNativeTextField
     exit_code: 0
     commit_sha: "421a45c4fc6c852e11a85284f15d57271ff8e4b9"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 421a45c4f: packages/ds-unity/README.md admits Input with its native TextField mapping, string channel, placeholder and the refused form/type/ARIA non-claims, and records the 73/73 lane; docs/architecture/unity-target.md records the TextInput dispatcher mode, TextControl adapter and the 73/73 lane; docs/current-implementation-snapshot.md records the thirty-third admitted control with those facts."
+    recorded_at: "2026-10-31T13:41:01.497Z"
+    commit_sha: "421a45c4fc6c852e11a85284f15d57271ff8e4b9"
