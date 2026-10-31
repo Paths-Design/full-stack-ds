@@ -54,3 +54,11 @@ contracts:
   - name: 'codeblock-container'
     type: behavior
     path: 'packages/ds-contracts/components/CodeBlock/CodeBlock.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit d84db3072: focused unity codegen + cli seam 218/218 pass, including the CodeBlock shell, the content-transform omission, DOM-metadata data-*/attr tolerance and the refused white-space/tab-size/inherit declarations; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T11:57:57.376Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > omits the content-transform chrome and keeps a consumer code region for CodeBlock"
+    exit_code: 0
+    commit_sha: d84db3072c593e25b3da772fefcdb8f7ec94097f
