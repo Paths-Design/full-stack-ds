@@ -4813,6 +4813,166 @@
       "property": "z-index",
       "value": "1800",
       "reason": "uss-property"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "description",
+      "part": "description",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "dot",
+      "part": "dot",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "next",
+      "part": "next",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "prev",
+      "part": "prev",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "max-height",
+      "value": "calc(100dvh - 32px)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "max-width",
+      "value": "calc(100vw - 32px)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "skip",
+      "part": "skip",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "walkthrough.surface.shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-scalar"
     }
   ]
 }

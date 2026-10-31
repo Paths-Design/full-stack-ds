@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -157,6 +157,19 @@ export interface ComposedActionLowering {
 export interface SlotsLowering {
   behavior: "Slots";
 }
+/**
+ * An inline coachmark scaffold: the persistent non-blocking tour card renders
+ * its slot hosts and native controls inline. The numeric step channel becomes a
+ * consumer-managed attribute; the skip/previous/next callback props become
+ * generated actions wired to the native buttons. Anchoring, message labels,
+ * and the dots iteration are withheld/pending.
+ */
+export interface CoachmarkLowering {
+  behavior: "Coachmark";
+  channel: NormalizedChannelIR;
+  callbacks: { part: string; prop: string }[];
+  disabled?: { part: string; prop: string };
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -170,11 +183,11 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
-  return lowering.behavior === "BooleanControl" || lowering.behavior === "TextInput" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure" || lowering.behavior === "Modal" || lowering.behavior === "Toast";
+  return lowering.behavior === "BooleanControl" || lowering.behavior === "TextInput" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure" || lowering.behavior === "Modal" || lowering.behavior === "Toast" || lowering.behavior === "Coachmark";
 }
 
 /**
@@ -358,6 +371,23 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
         closeOnPointerLeave: ir.surface.dismissal.includes("pointer-leave"),
         contentFocusable: false,
       };
+    }
+    const inlineCoachmark = ir.surface.kind === "coachmark" && ir.surface.modality === "non-blocking" &&
+      ir.surface.presence === "persistent" && ir.dom !== undefined && !ir.interaction &&
+      ir.behavior.normalizedChannels.length === 1 && ir.behavior.normalizedChannels[0]!.valueType === "number";
+    if (inlineCoachmark) {
+      const channel = ir.behavior.normalizedChannels[0]!;
+      const callbacks: { part: string; prop: string }[] = [];
+      let disabled: { part: string; prop: string } | undefined;
+      const walk = (node: DomNodeIR): void => {
+        const click = node.events.click;
+        if (node.part !== undefined && click?.kind === "prop" && !click.path?.length) callbacks.push({ part: node.part, prop: click.prop });
+        const bind = node.bindings["disabled"];
+        if (node.part !== undefined && bind?.kind === "prop" && !bind.path?.length && disabled === undefined) disabled = { part: node.part, prop: bind.prop };
+        node.children.forEach(walk);
+      };
+      walk(ir.dom!);
+      return { behavior: "Coachmark", channel, callbacks, ...(disabled === undefined ? {} : { disabled }) };
     }
     const ephemeralToast = ir.surface.kind === "toast" && ir.surface.modality === "non-blocking" &&
       ir.surface.presence === "ephemeral" && ir.surface.positioning?.strategy === "viewport-edge" &&

@@ -263,7 +263,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -278,6 +278,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   }
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
+    if (ctx.lowering.behavior === "Coachmark" && node.iteration !== undefined) continue;
     if (isOmittedActionChrome(ctx, node)) continue;
     if (isOmittedNodeContentDecoration(ctx.ir, node)) continue;
     if (isOmittedPassiveDecoration(ctx.ir, ctx.lowering, node)) continue;
@@ -336,7 +337,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       if (ctx.lowering.behavior === "Passive") throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ctx.ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
       const contentProp = ctx.ir.styledProps.find(candidate => candidate.name === contentBinding);
       if (!contentProp || !isStringProp(contentProp)) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} <${node.tag}> content prop ${contentBinding} is not a declared string prop`);
-      if (type !== "Label" || node.children.length) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} <${node.tag}> content prop ${contentBinding} does not lower to a text leaf`);
+      if ((type !== "Label" && type !== NATIVE_BUTTON) || node.children.length) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} <${node.tag}> content prop ${contentBinding} does not lower to a text leaf`);
     }
     const element: ElementPlan = ctx.glyph?.node === node
       ? { ref: "glyphElement", declaration: "private", type: "GlyphElement", children: [], glyph: true }
@@ -416,7 +417,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     classes.push(root);
   }
   for (const part of ir.compoundParts) {
-    if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots") continue;
+    if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots" || ctx.lowering.behavior === "Coachmark") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -721,6 +722,50 @@ function slotsRootApi(ctx: Context): RootApi {
   return { members, attach: [], defaults };
 }
 
+/**
+ * R6-R8 for the inline coachmark scaffold: the numeric step channel becomes a
+ * consumer-managed int attribute, the callback props become generated actions
+ * wired to the native controls, string content props paint their text leaves and
+ * the disabled binding drives the control it names. No runtime class attaches.
+ */
+function coachmarkRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Coachmark") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a coachmark lowering`);
+  const root = classes[0]!;
+  const members: string[] = [];
+  const attach: string[] = [];
+  const defaults: string[] = [];
+  const channel = lowering.channel;
+  members.push(`        [UxmlAttribute] public int ${identifier(pascal(channel.valueProp))} { get; set; }`);
+  for (const callback of lowering.callbacks) {
+    const part = root.members.find(member => member.part === callback.part);
+    if (!part) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its coachmark control ${callback.part} outside the root class`);
+    if (part.type !== NATIVE_BUTTON) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its coachmark control ${callback.part} as no native button`);
+    const name = identifier(pascal(callback.prop));
+    members.push(`        public Action ${name} { get; set; }`);
+    attach.push(`${part.ref}.clicked += () => ${name}?.Invoke();`);
+  }
+  if (lowering.disabled !== undefined) {
+    const part = root.members.find(member => member.part === lowering.disabled!.part);
+    if (!part) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its disabled coachmark control ${lowering.disabled.part} outside the root class`);
+    const name = identifier(pascal(lowering.disabled.prop));
+    members.push(`        [UxmlAttribute] public bool ${name} { get => !${part.ref}.enabledSelf; set => ${part.ref}.SetEnabled(!value); }`);
+  }
+  for (const member of root.members) {
+    if (!member.textBinding) continue;
+    const name = identifier(pascal(member.textBinding));
+    members.push(`        [UxmlAttribute] public string ${name} { get => ${member.ref}.text; set { ${member.ref}.text = value ?? ""; } }`);
+  }
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -728,6 +773,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   if (lowering.behavior === "Progress") return progressRootApi(ctx, classes);
   if (lowering.behavior === "Slots") return slotsRootApi(ctx);
+  if (lowering.behavior === "Coachmark") return coachmarkRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

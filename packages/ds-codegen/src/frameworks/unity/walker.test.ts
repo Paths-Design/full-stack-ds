@@ -337,6 +337,23 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/public string Value|public bool Disabled|public bool Validating/);
   });
 
+  it("renders an inline coachmark card with callback controls for Walkthrough", () => {
+    const contract = loadContractWithSidecars(root, "Walkthrough") as ComponentContract;
+    const walkthroughIr = buildComponentIR(contract);
+    walkthroughIr.name = "UnrelatedTour";
+    const source = createUnityEmitter().emitComponent(walkthroughIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedTour : VisualElement");
+    expect(source).toContain("public VisualElement TitleSlot { get; } = new VisualElement();");
+    expect(source).toContain("public VisualElement DescriptionSlot { get; } = new VisualElement();");
+    expect(source).toContain("public UnityEngine.UIElements.Button Skip { get; } = new UnityEngine.UIElements.Button();");
+    expect(source).toContain("[UxmlAttribute] public int Index { get; set; }");
+    expect(source).toContain("public Action OnSkip { get; set; }");
+    expect(source).toContain("[UxmlAttribute] public bool PreviousDisabled { get => !Prev.enabledSelf; set => Prev.SetEnabled(!value); }");
+    expect(source).toContain("Skip.clicked += () => OnSkip?.Invoke();");
+    expect(source).toContain("Next.clicked += () => OnNext?.Invoke();");
+    expect(source).not.toMatch(/Steps|Placement|CloseOnOutsideClick/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);
