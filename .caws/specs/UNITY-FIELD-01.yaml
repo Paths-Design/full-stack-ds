@@ -54,3 +54,11 @@ contracts:
   - name: 'field-slot-scaffold'
     type: behavior
     path: 'packages/ds-contracts/components/Field/Field.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 20267ceeb: focused unity codegen + cli seam 228/228 pass, including the Slots lowering predicate (no interaction/surface/form-control plus a channel and named slot hosts), the inline slot hosts (including the compound header), the status carrier property, the refused channel/props families and the pending validating-guard rule; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T14:18:48.443Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a slot-only form row with a status carrier for Field"
+    exit_code: 0
+    commit_sha: "20267ceeb2389c0c47bc1b832554b3c3b050b51c"
