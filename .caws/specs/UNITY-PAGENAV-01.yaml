@@ -2,7 +2,6 @@ id: UNITY-PAGENAV-01
 title: 'Admit PageNavigator to the Unity target as a runtime paged-set navigator'
 mode: feature
 lifecycle_state: active
-worktree: unity-pagenav
 created_at: '2026-10-31T17:45:55.372Z'
 updated_at: '2026-10-31T18:10:01.907Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
