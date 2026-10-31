@@ -79,3 +79,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: "4c37623e32a2e515d91438d25c6f79919f532b3b"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 4c37623e3: packages/ds-unity/README.md admits Skeleton with its carriers and omitted iteration/animation non-claims, and records the 64/64 lane; docs/architecture/unity-target.md records the iteration-subtree omission and box-model ledger provenance rules and the 64/64 lane; docs/current-implementation-snapshot.md records the twenty-fourth admitted control with those facts."
+    recorded_at: "2026-10-31T11:33:06.952Z"
+    commit_sha: "4c37623e32a2e515d91438d25c6f79919f532b3b"
