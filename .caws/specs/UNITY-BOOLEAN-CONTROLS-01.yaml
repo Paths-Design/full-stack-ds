@@ -86,3 +86,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: e05ef4de9da34ccd6fa8fe64ad0410d31acf2d86
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at e05ef4de9: packages/ds-unity/README.md admits Checkbox/ToggleSwitch with their shared BooleanControl semantics, withheld size axis and refused indeterminate/ARIA/form facts, and records the 54/54 lane; docs/architecture/unity-target.md records the root-control form, DOM-property/keyPattern boundary mechanisms, P3 usage and the 54/54 lane; docs/current-implementation-snapshot.md records the ninth and tenth admitted controls with the refused facts and lane evidence."
+    recorded_at: "2026-10-31T09:07:38.784Z"
+    commit_sha: e05ef4de9da34ccd6fa8fe64ad0410d31acf2d86
