@@ -694,8 +694,19 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
     if (!trigger || trigger.type !== NATIVE_BUTTON) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its modal trigger ${lowering.trigger.name} as no native button`);
     if (!content) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its modal content ${lowering.content.name} outside the root class`);
     if (lowering.overlay !== undefined && !overlay) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its modal overlay ${lowering.overlay.name} outside the root class`);
-    members.push(`        public VisualElement Content => ${content.ref};`);
+    if (content.ref !== "Content") members.push(`        public VisualElement Content => ${content.ref};`);
     attach.push(`${behavior} = ModalSurface.Attach(this, content: ${content.ref}, overlay: ${overlay ? overlay.ref : "null"}, trigger: ${trigger.ref}, stateClass: ${quote(lowering.stateClass)});`);
+    if (lowering.placementProp !== undefined) {
+      const placement = ir.styledProps.find(prop => prop.name === lowering.placementProp);
+      const values = ir.variants[lowering.placementProp];
+      if (placement !== undefined && values !== undefined && ctx.projection.carrierAxes.has(lowering.placementProp)) {
+        const name = identifier(pascal(lowering.placementProp));
+        const args = values.map(quote).join(", ");
+        members.push(`        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${quote(ir.classRecipe.base)}, ${args}); set { Variants.Set(this, ${quote(ir.classRecipe.base)}, value, ${args}); ${behavior}.Placement = value; } }`);
+        const literal = defaultLiteral(ir, placement, values);
+        if (literal !== undefined) defaults.push(`${name} = ${literal};`);
+      }
+    }
     if (lowering.dismissibleProp !== undefined) {
       const dismissible = identifier(pascal(lowering.dismissibleProp));
       members.push(`        [UxmlAttribute] public bool ${dismissible} { get => ${behavior}.Dismissible; set => ${behavior}.Dismissible = value; }`);
@@ -769,6 +780,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const carriers = ctx.projection.carrierAxes;
   for (const prop of ir.styledProps) {
     if (channelProps.has(prop.name) || textProps.has(prop.name)) continue;
+    if (lowering.behavior === "Modal" && lowering.placementProp === prop.name) continue;
     const name = identifier(pascal(prop.name));
     if (prop.name === disabled) {
       members.push(`        [UxmlAttribute] public bool ${name} { get => !enabledSelf; set => SetEnabled(!value); }`);

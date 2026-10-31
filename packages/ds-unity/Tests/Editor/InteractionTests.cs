@@ -735,5 +735,29 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "AriaLabel", "InitialFocus", "ReturnFocus" })
                 Assert.That(typeof(FullStackDS.Dialog).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void SheetReusesTheModalSurfaceAndAlignsToItsPlacementEdge()
+        {
+            var sheet = Mount(new FullStackDS.Sheet());
+            sheet.contentContainer.Add(new UnityEngine.UIElements.Label("Panel"));
+            Assert.That(sheet.Open, Is.False);
+            Assert.That(sheet.Side, Is.EqualTo("right"));
+            Assert.That(sheet.ClassListContains("sheet--right"), Is.True);
+            sheet.Open = true;
+            Assert.That(sheet.Content.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(sheet.ClassListContains("is-open"), Is.True);
+            sheet.Side = "left";
+            Assert.That(sheet.Surface.Placement, Is.EqualTo("left"));
+            Assert.That(sheet.ClassListContains("sheet--left"), Is.True);
+            Key(sheet, KeyCode.Escape);
+            Assert.That(sheet.Open, Is.False);
+            sheet.Open = true;
+            using (var evt = PointerDownEvent.GetPooled()) { evt.target = sheet.Overlay; sheet.Overlay.SendEvent(evt); }
+            Assert.That(sheet.Open, Is.False);
+            sheet.Open = true;
+            Submit(sheet.Close);
+            Assert.That(sheet.Open, Is.False);
+            foreach (var prop in new[] { "AriaLabel", "Modal" })
+                Assert.That(typeof(FullStackDS.Sheet).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

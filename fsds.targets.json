@@ -202,7 +202,8 @@
         "Progress",
         "Chip",
         "CodeSnippet",
-        "Dialog"
+        "Dialog",
+        "Sheet"
       ]
     },
     {

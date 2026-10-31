@@ -3355,6 +3355,134 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Sheet",
+      "sourceKey": ".sheet--left .sheet__content",
+      "part": "content",
+      "property": "max-height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": ".sheet--right .sheet__content",
+      "part": "content",
+      "property": "max-height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": ".sheet:has(> .sheet__content[aria-modal=\"false\"]) > .sheet__overlay",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "body",
+      "part": "body",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "close",
+      "part": "close",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "max-height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "overlay",
+      "part": "overlay",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "overlay",
+      "part": "overlay",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "position",
+      "value": "fixed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "z-index",
+      "value": "1000",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "title",
+      "part": "title",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "sheet.shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Skeleton",
       "sourceKey": "--avatar",
       "part": "root",

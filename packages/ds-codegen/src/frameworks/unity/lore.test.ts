@@ -43,6 +43,7 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   dialog: "SurfaceIR.kind enum value naming a blocking dialog surface",
   close: "InteractionIR trigger operation enum (modal close trigger)",
   overlay: "ContractPartDetails.role enum value naming the modal backdrop overlay part",
+  sheet: "SurfaceIR.kind enum value naming a blocking viewport-edge sheet surface",
   value: "HTML form field attribute the boundary's propRoles assigns to participating forms",
   row: "CSS flex-direction keyword (uss.ts display lowering and flex-direction vocabulary)",
   overflow: "CSS property name keyed in the uss.ts CSS-to-USS property table",
