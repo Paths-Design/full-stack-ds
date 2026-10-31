@@ -85,11 +85,9 @@ evidence:
     commit_sha: "85885adf2"
   - criterion_id: A5
     status: pass
-    evidence_ref: "Godot lane: committed project + setup.sh addon materialization; headless interaction run 134/134 checks passed (I1-I15 plus fixture-corpus failure paths, real viewport input dispatch) in 3.6 s; non-headless capture wrote eight 1280x800 PNGs in 2.9 s including required map/progress/abilities/settings, mirrored by the Godot process into canonical tmp; lane README carries inventory, fallback ledger and nine findings; commit 4cf479146 merged into parent"
-    recorded_at: "2026-10-31T17:45:38.396Z"
-    command: "Godot --headless --path examples/game-pause-menu/godot res://tests/test_main.tscn"
-    exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/godot/tests-run.log"
+    evidence_ref: "Godot lane: committed project plus setup.sh addon materialization; headless interaction run 134/134 checks passed (I1-I15 plus fixture-corpus failure paths, viewport input dispatch) in 3.6 s; windowed capture wrote eight 1280x800 PNGs in 2.9 s including required four and mirrored them into canonical tmp; lane README carries inventory, fallback ledger and nine findings; lane commit 4cf479146 merged into main via d468c4503"
+    recorded_at: "2026-10-31T17:48:33.321Z"
+    artifact_path: tmp/game-pause-menu/godot/tests-run.log
     commit_sha: "4cf479146"
   - criterion_id: A6
     status: pass
