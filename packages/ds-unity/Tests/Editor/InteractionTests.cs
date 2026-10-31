@@ -1403,8 +1403,8 @@ namespace FullStackDS.Tests
             string requested = null;
             calendar.ValueRequested += value => requested = value;
             calendar.Month = "2026-03-01";
-            Submit(calendar.Query<UnityEngine.UIElements.Button>().ToList()[10]);
-            Assert.That(requested, Is.EqualTo("2026-03-09"));
+            Submit(calendar.Query<UnityEngine.UIElements.Button>().ToList()[11]);
+            Assert.That(requested, Is.EqualTo("2026-03-10"));
             Assert.That(calendar.Value, Is.EqualTo("2026-03-15"));
             calendar.Disabled = true;
             Assert.That(calendar.Query<UnityEngine.UIElements.Button>().ToList()[1].enabledSelf, Is.False);
