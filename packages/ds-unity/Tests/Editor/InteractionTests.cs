@@ -571,5 +571,16 @@ namespace FullStackDS.Tests
             Assert.That(typeof(FullStackDS.NavList).GetProperty("Orientation"), Is.Null);
             Assert.That(typeof(FullStackDS.NavList).GetProperty("AriaLabel"), Is.Null);
         }
+        [Test] public void SkeletonCarriesPlaceholderAxesWithoutIterationOrStateApi()
+        {
+            var skeleton = Mount(new FullStackDS.Skeleton { Variant = "text", Animate = "none", Density = "compact" });
+            Assert.That(skeleton.ClassListContains("skeleton"), Is.True);
+            Assert.That(skeleton.ClassListContains("skeleton--text"), Is.True);
+            Assert.That(skeleton.ClassListContains("skeleton--none"), Is.True);
+            Assert.That(skeleton.ClassListContains("skeleton--compact"), Is.True);
+            Assert.That(skeleton.childCount, Is.EqualTo(0));
+            foreach (var prop in new[] { "Lines", "Radius", "AspectRatio", "Decorative", "AriaLabel" })
+                Assert.That(typeof(FullStackDS.Skeleton).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

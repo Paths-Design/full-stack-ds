@@ -479,8 +479,37 @@
       "reason": "The interactive hover affordance (shadow lift, translate) is a web-only motion/style state; the generated container exposes no Interactive property until the P4 motion and state-style families lower it."
     },
     {
+      "id": "prop-radius-without-carrier-pending",
+      "match": ["contract:/props/*/members/plain:radius/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A radius axis has no USS carrier in the sidecar, so the generated control withholds it until a native radius modifier exists."
+    },
+    {
+      "id": "prop-aspect-ratio-pending",
+      "match": ["contract:/props/*/members/plain:aspectRatio/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A style-value binding (aspect ratio) has no native property projection; the generated control withholds it until the P4 style-value family."
+    },
+    {
+      "id": "prop-lines-iteration-pending",
+      "match": ["contract:/props/*/members/plain:lines/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The lines prop drives anatomy iteration, which the passive lowering omits; the generated control withholds it until P4 iteration."
+    },
+    {
+      "id": "prop-decorative-state-pending",
+      "match": ["contract:/props/*/members/plain:decorative/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/bindings/role"], "valuePattern": "^conditional:" }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "A decorative flag drives conditional a11y attributes (role/aria-hidden/aria-busy) that UI Toolkit cannot render; the generated control exposes no Decorative property until the P4 a11y family."
+    },
+    {
       "id": "prop-passive-style-axis",
-      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**", "contract:/props/*/members/plain:status/**", "contract:/props/*/members/plain:level/**", "contract:/props/*/members/plain:density/**"],
+      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**", "contract:/props/*/members/plain:status/**", "contract:/props/*/members/plain:level/**", "contract:/props/*/members/plain:density/**", "contract:/props/*/members/plain:animate/**"],
       "disposition": "lowered",
       "realizes": "emitted-property",
       "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
@@ -1087,9 +1116,15 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**"],
       "disposition": "refused",
-      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration or font-style handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio or font-style handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-modifier-height-refused",
+      "match": ["styles:/--*/height/**"],
+      "disposition": "refused",
+      "reason": "A modifier-block height resolves through the typography ramp to a relative rem value the fixed-root projection does not carry for non-typography geometry; the projection lists the declaration uss-scalar."
     },
     {
       "id": "styles-intrinsic-sizing",

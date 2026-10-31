@@ -194,7 +194,8 @@
         "Tooltip",
         "Status",
         "Card",
-        "NavList"
+        "NavList",
+        "Skeleton"
       ]
     },
     {

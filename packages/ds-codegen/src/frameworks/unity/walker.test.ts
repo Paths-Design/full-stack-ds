@@ -173,4 +173,14 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain('AddToClassList("nav-list__item");');
     expect(source).not.toMatch(/Orientation|AriaLabel/);
   });
+
+  it("omits the iteration subtree and keeps only carrier axes for Skeleton", () => {
+    const source = emit(irFor("Skeleton", "UnrelatedPlaceholder"));
+    expect(source).toContain("public partial class UnrelatedPlaceholder : VisualElement");
+    expect(source).toContain('Variants.Get(this, "skeleton", "block", "text", "avatar", "media", "dataviz", "actions")');
+    expect(source).toContain('Variants.Get(this, "skeleton", "shimmer", "wipe", "pulse", "none")');
+    expect(source).toContain('Variants.Get(this, "skeleton", "compact", "regular", "spacious")');
+    expect(source).not.toMatch(/UnrelatedPlaceholder(?:Stack|Row|Shape)\b/);
+    expect(source).not.toMatch(/Lines|Radius|AspectRatio|Decorative|AriaLabel/);
+  });
 });
