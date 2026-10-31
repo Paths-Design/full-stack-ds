@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.ImageLoadsItsResourcesSourceAndProjectsCarriers
     exit_code: 0
     commit_sha: "96d9cdeabba952c0830bfced5f6c2fadd65df202"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 96d9cdeab: packages/ds-unity/README.md admits Image with its native element, Resources-source mapping, carriers and the refused URL/alt/sizing/placeholder non-claims, and records the 80/80 lane; docs/architecture/unity-target.md records the Media dispatcher mode, ImageControl runtime and the 80/80 lane; docs/current-implementation-snapshot.md records the thirty-ninth admitted control with those facts."
+    recorded_at: "2026-10-31T14:53:00.153Z"
+    commit_sha: "96d9cdeabba952c0830bfced5f6c2fadd65df202"
