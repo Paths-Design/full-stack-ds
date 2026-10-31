@@ -1,11 +1,9 @@
 id: UNITY-AVATAR-01
 title: 'Admit Avatar to the Unity target as a guarded media-plus-initials composition'
 mode: feature
-lifecycle_state: closed
-resolution: completed
-closure_notes: 'Avatar admitted to the Unity target/package (fortieth allowlisted control) as a guarded media composition: generic referenced-child+fallback facts select Avatar, the generated root composes the admitted Image child plus initials Label, AvatarControl owns both presence toggles, forwards the source and paints initials, carrier-axis attributes emit without a designed prop; name/priority/alt/aria-label refused; lore fix removed component identity from selection; codegen+cli 232/232, boundary audit clean, root 5414/5414, real Unity EditMode 81/81, package sheet regenerated'
+lifecycle_state: active
 created_at: '2026-10-31T14:54:09.523Z'
-updated_at: '2026-10-31T15:06:37.756Z'
+updated_at: '2026-10-31T15:07:21.295Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
