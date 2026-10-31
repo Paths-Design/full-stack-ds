@@ -2226,7 +2226,7 @@
     border-color: var(--fsds-switch-color-track-border, #d0d0d0);
     width: var(--fsds-switch-size-md-track-width, 48px);
     height: var(--fsds-switch-size-md-track-height, 24px);
-    border-radius: var(--fsds-switch-size-md-track-radius, 9999px);
+    border-radius: 12px;
     padding: var(--fsds-switch-size-md-track-padding, 1px);
     display: flex;
     flex-direction: column;
@@ -2307,7 +2307,7 @@
 .switch--sm .switch__track {
     width: var(--fsds-switch-size-sm-track-width, 32px);
     height: var(--fsds-switch-size-sm-track-height, 16px);
-    border-radius: var(--fsds-switch-size-sm-track-radius, 9999px);
+    border-radius: 8px;
     padding: var(--fsds-switch-size-sm-track-padding, 1px);
 }
 
@@ -2325,7 +2325,7 @@
 .switch--lg .switch__track {
     width: var(--fsds-switch-size-lg-track-width, 64px);
     height: var(--fsds-switch-size-lg-track-height, 32px);
-    border-radius: var(--fsds-switch-size-lg-track-radius, 9999px);
+    border-radius: 16px;
     padding: var(--fsds-switch-size-lg-track-padding, 1px);
 }
 
@@ -3088,7 +3088,7 @@
     color: var(--fsds-button-color-foreground-default, #fafafa);
     border-color: var(--fsds-button-color-border-default, #a0a0a1);
     --fsds-gap: var(--fsds-button-size-gap, 8px);
-    border-radius: var(--fsds-button-size-radius, 9999px);
+    border-radius: 16px;
     border-width: var(--fsds-button-size-border, 1px);
     font-size: var(--fsds-button-size-font-size-medium, 16px);
 }
@@ -3341,7 +3341,7 @@
     background-color: var(--fsds-toggle-switch-color-background-default, #f7f7f7);
     color: var(--fsds-toggle-switch-color-foreground, #141414);
     border-color: var(--fsds-toggle-switch-color-border, #a0a0a1);
-    border-radius: var(--fsds-toggle-switch-border-radius, 9999px);
+    border-radius: 16px;
     border-width: 1px;
 }
 
@@ -3642,7 +3642,7 @@
     color: var(--fsds-badge-color-foreground-primary, #141414);
     border-color: var(--fsds-badge-color-border, #d0d0d0);
     border-width: var(--fsds-badge-size-border, 1px);
-    border-radius: var(--fsds-badge-size-radius, 9999px);
+    border-radius: 8px;
     --fsds-gap: var(--fsds-badge-spacing-gap, 4px);
     padding-top: var(--fsds-badge-size-padding-y, 2px);
     padding-bottom: var(--fsds-badge-size-padding-y, 2px);
@@ -4367,7 +4367,7 @@
     color: var(--fsds-status-color-foreground-primary, #474647);
     border-color: var(--fsds-status-color-border, #d0d0d0);
     border-width: var(--fsds-status-size-border, 1px);
-    border-radius: var(--fsds-status-size-radius, 9999px);
+    border-radius: 12px;
     min-height: var(--fsds-status-size-min-height, 24px);
     font-size: var(--fsds-status-size-font-size, 12px);
 }
@@ -5201,7 +5201,7 @@
     padding-left: var(--fsds-chip-size-padding-horizontal, 8px);
     padding-right: var(--fsds-chip-size-padding-horizontal, 8px);
     --fsds-gap: var(--fsds-chip-size-gap, 2px);
-    border-radius: var(--fsds-chip-size-radius, 9999px);
+    border-radius: 18px;
     min-height: var(--fsds-chip-size-min-height, 36px);
     font-size: var(--fsds-chip-text-size, 12px);
 }
@@ -5465,7 +5465,7 @@
     justify-content: center;
     background-color: rgba(0, 0, 0, 0);
     border-width: 0;
-    border-radius: 9999px;
+    border-radius: 16px;
     --fsds-dialog-color-foreground: var(--fsds-semantic-color-foreground-secondary, #474647);
 }
 
@@ -5614,7 +5614,7 @@
     justify-content: center;
     background-color: rgba(0, 0, 0, 0);
     border-width: 0;
-    border-radius: 9999px;
+    border-radius: 8px;
     color: var(--fsds-sheet-color-text-description, #474647);
 }
 
@@ -6498,7 +6498,7 @@
     justify-content: center;
     overflow: hidden;
     position: relative;
-    border-radius: var(--fsds-avatar-size-radius, 9999px);
+    border-radius: 8px;
     background-color: var(--fsds-avatar-color-background, #f7f7f7);
     color: var(--fsds-avatar-color-foreground-primary, #141414);
     border-color: var(--fsds-avatar-color-border, #d0d0d0);
@@ -6850,7 +6850,7 @@
 .pagination__marker {
     width: var(--fsds-pagination-size-dot-size, 8px);
     height: var(--fsds-pagination-size-dot-size, 8px);
-    border-radius: var(--fsds-pagination-size-radius, 9999px);
+    border-radius: 4px;
     overflow: hidden;
     background-color: var(--fsds-pagination-color-track, #d0d0d0);
     display: flex;
@@ -7540,7 +7540,7 @@
     position: relative;
     min-width: var(--fsds-carousel-size-control-size, 32px);
     min-height: var(--fsds-carousel-size-control-size, 32px);
-    border-radius: var(--fsds-carousel-size-radius, 9999px);
+    border-radius: 16px;
     background-color: rgba(0, 0, 0, 0);
 }
 
@@ -7552,7 +7552,7 @@
     position: relative;
     min-width: var(--fsds-carousel-size-control-size, 32px);
     min-height: var(--fsds-carousel-size-control-size, 32px);
-    border-radius: var(--fsds-carousel-size-radius, 9999px);
+    border-radius: 16px;
     background-color: rgba(0, 0, 0, 0);
 }
 
@@ -7564,7 +7564,7 @@
     position: relative;
     min-width: var(--fsds-carousel-size-control-size, 32px);
     min-height: var(--fsds-carousel-size-control-size, 32px);
-    border-radius: var(--fsds-carousel-size-radius, 9999px);
+    border-radius: 16px;
     background-color: rgba(0, 0, 0, 0);
     align-self: flex-start;
     padding-left: 12px;

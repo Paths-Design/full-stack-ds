@@ -796,6 +796,60 @@ const isDefinition = (declaration: NativeStyleDeclarationIR): boolean => declara
 export const cssVar = (tokenPath: string): string => `--${tokenSlug(tokenPath)}`;
 
 /** Project one admitted component's native style rules into USS rules and ledger entries. */
+
+/**
+ * UI Toolkit border-radius is a per-corner elliptical radius: each corner's
+ * horizontal and vertical radii are clamped independently to half the box, so a
+ * single oversized (pill) radius on a wide track degenerates into a full ellipse
+ * instead of the CSS stadium. Clamp such radii to half the rule's smaller known
+ * dimension, using literal lengths or a var()'s fallback. Non-pill radii and
+ * rules without a known dimension are left untouched.
+ */
+const RADIUS_PROPERTY = /^border(-(top|bottom)-(left|right))?-radius$/;
+function lengthPx(value: string): number | undefined {
+  const plain = /^(-?\d+(?:\.\d+)?)px$/.exec(value.trim());
+  if (plain) return Number(plain[1]);
+  const fallback = /,\s*(-?\d+(?:\.\d+)?)px\s*\)$/.exec(value.trim());
+  return fallback ? Number(fallback[1]) : undefined;
+}
+function clampPillRadii(rules: readonly UssRule[]): void {
+  // A rule may be split between sizing and paint declarations (e.g. `.button`
+  // declares min-width/min-height in one block and border-radius in another), so
+  // collect the dimensions each selector declares anywhere in the sheet first.
+  const selectorDimensions = new Map<string, number>();
+  for (const rule of rules) {
+    for (const [property, value] of rule.declarations) {
+      if (property !== "width" && property !== "height" && property !== "min-width" && property !== "min-height") continue;
+      const px = lengthPx(value);
+      if (px === undefined || px <= 0) continue;
+      const current = selectorDimensions.get(rule.selector);
+      selectorDimensions.set(rule.selector, current === undefined ? px : Math.min(current, px));
+    }
+  }
+  for (const rule of rules) {
+    const dimensions = rule.declarations
+      .filter(([property]) => property === "width" || property === "height" || property === "min-width" || property === "min-height")
+      .map(([, value]) => lengthPx(value))
+      .filter((value): value is number => value !== undefined && value > 0);
+    const selectorDimension = selectorDimensions.get(rule.selector);
+    if (selectorDimension !== undefined) dimensions.push(selectorDimension);
+    if (!dimensions.length) continue;
+    const limit = Math.min(...dimensions) / 2;
+    for (const declaration of rule.declarations) {
+      if (!RADIUS_PROPERTY.test(declaration[0])) continue;
+      const parts = splitTop(declaration[1].trim(), " ");
+      let changed = false;
+      const clamped = parts.map((part) => {
+        const px = lengthPx(part);
+        if (px === undefined || px <= limit) return part;
+        changed = true;
+        return `${Math.round(limit * 100) / 100}px`;
+      });
+      if (changed) declaration[1] = clamped.join(" ");
+    }
+  }
+}
+
 export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unityLowering(ir), hosts: readonly ContentHost[] = [], scopeValues?: ScopeValues): ComponentProjection {
   const ctx = buildContext(ir, lowering);
   const out: ComponentProjection = { component: ir.name, rules: [], unsupported: [], graphTokens: new Set(), carrierAxes: new Set(), designSlots: new Map(), gapClasses: new Set() };
@@ -1008,6 +1062,7 @@ export function projectComponent(ir: ComponentIR, lowering: UnityLowering = unit
     const read = new Set(out.rules.flatMap(rule => rule.declarations.flatMap(([, value]) => [...value.matchAll(VAR_READ)].map(m => m[1]!))));
     for (const token of [...out.graphTokens]) if (!read.has(cssVar(token))) out.graphTokens.delete(token);
   }
+  clampPillRadii(out.rules);
   for (const refused of ir.nativeStyleRules?.unsupported ?? []) {
     out.unsupported.push({ component: ir.name, sourceKey: refused.sourceKey, part: "", property: "", value: refused.reason, reason: "uss-selector" });
   }
