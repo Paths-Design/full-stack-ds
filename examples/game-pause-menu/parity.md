@@ -113,6 +113,50 @@ Canonical switch geometry (all engines):
   radii per lane; the package-level follow-up is a radius-geometry contract or a
   per-engine pill translation.
 
+## Component styling defaults
+
+Pinned so the three engines cannot drift on "reasonable" choices:
+
+- **Panels** — `charcoal` ground, 1 px `rule` border, 40 px header strip with a
+  1 px `rule` bottom edge. Panel title: 11 px / 700 / uppercase / `boneBright`
+  letter-spaced; panel meta right-aligned 10 px / 600 / `muted`.
+- **Rows** — 1 px `rule` separators; primary label 12 px / 700 / uppercase /
+  `boneBright`; secondary line 10 px / 400 / `muted`.
+- **Cards** (ability cards) — `charcoal` ground, 1 px `rule` border; selected
+  card 2 px `signal` outline; rarity chip per the JSON rarity maps; icon area
+  40 px; name 12 px / 700; size line `SIZE n` 10 px `muted` with pips in
+  `signal`; installed chip `clear` fill with `ink` text.
+- **Buttons (primary)** — `signal` fill, `onSignal` text, 13 px / 800 /
+  uppercase, square corners; 40 px tall in the drawer, 32 px in popovers.
+  Secondary/outline buttons: transparent fill, 1 px `ruleStrong` border,
+  `boneBright` text.
+- **Status chips** — 10 px / 800 / uppercase, square corners, 22 px tall:
+  `ACCESS` = JSON `statusChip.accessBackground` + `accessText`; `LOCKED` =
+  transparent fill + 1 px `lockedBorder` + `lockedText`.
+- **Rarity chips** — 9 px / 800 / uppercase, 18 px tall, background from JSON
+  `rarityColors`, text from `rarityTextColors`.
+- **Switches** — exactly the "Switch parity" geometry above; no shadows.
+- **Sliders** — 300 × 6 track `graphite`, filled portion `signal`, 16 px
+  circular `boneBright` thumb, value 14 px / 700 `boneBright` right-aligned.
+- **Dropdowns** — 200 × 30 `graphite` fill, 1 px `ruleStrong` border,
+  `boneBright` 12 px text, `muted` chevron. Binding buttons 120 × 28 with the
+  same fill/border and 11 px / 700 text.
+- **Colour swatches** — 36 × 20 with 1 px `ruleStrong` border; selected swatch
+  carries a 2 px `signal` outline.
+- **Map markers** — 24 × 24 squares with a 1 px `ink` border, background from
+  JSON `markerColors`, 11 px / 800 monogram from `markerMonograms` in `ink`
+  (or `boneBright` when the fill is `onSignal`). Nav target: 3 px `signal`
+  outline around the marker.
+- **Drawer** — `paper` ground with `ink` text: micro-labels 10 px / 700
+  letter-spaced `paperMuted`, title 28 px / 800, body 13 px / 400, perks and
+  parts 11 px.
+- **Header** — stat labels 10 px / 700 letter-spaced `muted`; values 20 px /
+  800 `boneBright`; sublines 11 px / 400 `muted`. Wordmark `ORION` 40 px / 800
+  `boneBright` + `N5` 40 px / 800 `signal`; mission line 11 px / 600
+  letter-spaced `muted`.
+- **Footer** — hints 11 px / 400 `muted`; `NAV TARGET` label 10 px / 700
+  letter-spaced `muted`; target value 13 px / 700 `signal`.
+
 ## Per-tab composition
 
 All coordinates are in `fixtures/parity-layout.json`. Draw order is back to
