@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.DialogOpensAsABlockingModalAndHonoursDismissalKnobs
     exit_code: 0
     commit_sha: cf87eff166a4e39d7e4b031e8a02620027e38d04
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at cf87eff16: packages/ds-unity/README.md admits Dialog with its modal surface behavior, channel API, dismissal knobs, slots/content region and the withheld ARIA/focus-id/non-modal/scroll-lock/viewport-style non-claims, and records the 71/71 lane; docs/architecture/unity-target.md records the Modal dispatcher mode, behavior-owned content rendering, attach/runtime boundary and the 71/71 lane; docs/current-implementation-snapshot.md records the thirty-first admitted control with those facts."
+    recorded_at: "2026-10-31T13:14:24.703Z"
+    commit_sha: cf87eff166a4e39d7e4b031e8a02620027e38d04
