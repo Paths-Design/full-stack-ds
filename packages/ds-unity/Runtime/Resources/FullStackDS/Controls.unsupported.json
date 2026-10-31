@@ -2370,6 +2370,158 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Skeleton",
+      "sourceKey": "--avatar",
+      "part": "root",
+      "property": "aspect-ratio",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--dataviz",
+      "part": "root",
+      "property": "aspect-ratio",
+      "value": "4 / 3",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--media",
+      "part": "root",
+      "property": "aspect-ratio",
+      "value": "16 / 9",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--none",
+      "part": "root",
+      "property": "animation",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--text",
+      "part": "root",
+      "property": "height",
+      "value": "1rem",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--wipe",
+      "part": "root",
+      "property": "animation",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "animation",
+      "value": "skeleton-wipe calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "background",
+      "value": "linear-gradient(90deg, transparent, var(--fsds-skeleton-color-highlight, rgba(255,255,255,0.55)), transparent)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "content",
+      "value": "\"\"",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "position",
+      "value": "absolute",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "transform",
+      "value": "translateX(-100%)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton:has(.skeleton__stack)",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton:has(.skeleton__stack) .skeleton__shape",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "400ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "structure",
+      "part": "root",
+      "property": "min-height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "box-model.min-height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "skeleton.anim.easing",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Stat",
       "sourceKey": "root",
       "part": "root",
