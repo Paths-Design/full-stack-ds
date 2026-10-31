@@ -252,7 +252,13 @@ function planClasses(ctx: Context): ClassPlan[] {
     // VisualElement has no text surface. Child elements remain composable.
     const passiveText = ctx.lowering.behavior === "Passive" && TEXT_LEAF_TAGS.has(ir.dom.tag) &&
       ir.dom.children.length === 1 && isInsertion(ir.dom.children[0]!);
-    const root = newClass(name, ctx.lowering.behavior === "Action" ? NATIVE_BUTTON : passiveText ? "TextElement" : "VisualElement", true, rootIdentity(ctx, ir.dom.part));
+    // A boolean form control whose form-control part IS the root is the button
+    // element itself (ToggleSwitch); it derives the native button so the shared
+    // BooleanControl binds native activation, and exposes Trigger = this.
+    const rootControl = ctx.lowering.behavior === "BooleanControl" && ctx.lowering.control.name === ir.dom.part && ir.dom.tag === BUTTON_TAG;
+    const root = newClass(name,
+      ctx.lowering.behavior === "Action" || rootControl ? NATIVE_BUTTON : passiveText ? "TextElement" : "VisualElement",
+      true, rootIdentity(ctx, ir.dom.part));
     // A native action control projects the consumer's children itself: the
     // contract's guarded loading chrome is omitted (pending P4) and a wrapper
     // that only holds the content region is flattened so the insertion point
@@ -415,11 +421,20 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const root = classes[0]!;
   const boolean = channel.valueType === "boolean";
   if (lowering.behavior === "BooleanControl") {
+    // The form-control part is either a rendered child (Switch/Checkbox) or the
+    // root itself (ToggleSwitch); the latter binds native activation on the
+    // generated root and exposes Trigger = this.
     const control = root.members.find(m => m.part === lowering.control.name);
-    if (!control) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its form-control part ${lowering.control.name} outside the root class`);
-    members.push(`        public ${control.type} Trigger => ${control.ref};`);
-    // HTML label semantics: a `label` root activates the control it contains.
-    attach.push(`${behavior} = BooleanControl.Attach(this, control: ${control.ref}, stateClass: ${quote(lowering.stateClass)}, labelHost: ${ir.dom?.tag === LABEL_TAG ? "this" : "null"});`);
+    if (lowering.control.name === ir.dom?.part) {
+      if (ir.dom.tag !== BUTTON_TAG) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} root form-control part must be a button element`);
+      members.push(`        public ${NATIVE_BUTTON} Trigger => this;`);
+      attach.push(`${behavior} = BooleanControl.Attach(this, control: this, stateClass: ${quote(lowering.stateClass)}, labelHost: null);`);
+    } else {
+      if (!control) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its form-control part ${lowering.control.name} outside the root class`);
+      members.push(`        public ${control.type} Trigger => ${control.ref};`);
+      // HTML label semantics: a `label` root activates the control it contains.
+      attach.push(`${behavior} = BooleanControl.Attach(this, control: ${control.ref}, stateClass: ${quote(lowering.stateClass)}, labelHost: ${ir.dom?.tag === LABEL_TAG ? "this" : "null"});`);
+    }
   } else if (lowering.behavior === "ItemGroup") {
     const { focus } = lowering;
     attach.push(`${behavior} = ItemGroup.Attach(this, triggerClass: ${quote(`${ctx.prefix}__${lowering.trigger.name}`)}, contentClass: ${quote(`${ctx.prefix}__${lowering.content.name}`)}, operation: ${quote(lowering.operation)}, stateClass: ${quote(lowering.stateClass)}, multiple: ${lowering.multiple}, focus: ${quote(focus.strategy)}, orientation: ${quote(focus.orientation)}, wrap: ${focus.wrap});`);
