@@ -71,3 +71,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Status/Status.cs
     commit_sha: "761e6086d9ff7f1a40e204c3a50e1a7e7cbc1de8"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 31e37a1ac (sourceDirty false): 61/61 passed, zero failed/skipped (test-run start 2026-10-31 10:51:21Z; resultsSha256 180f6fc2d9974336c8f009db6b8fcb7d70abc83d1bb1bf4c998eafb8beb8e5a2). The added case composes text through the content container, sets the renamed StatusValue carrier and asserts the omitted decoration exposes no Icon API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T10:52:04.602Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.StatusComposesTextAndCarriesItsRenamedAxis
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: "31e37a1acf661511879c886a3bd74a0b3f83bc81"
