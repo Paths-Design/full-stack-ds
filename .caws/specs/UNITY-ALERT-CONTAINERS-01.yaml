@@ -58,3 +58,12 @@ contracts:
   - name: 'alert-notice-container'
     type: behavior
     path: 'packages/ds-contracts/components/AlertNotice/AlertNotice.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit e13bcb88b: focused unity codegen + cli seam 206/206 pass, including the guarded passive action-chrome omission (node-content icon plus native-button/componentRef dismiss chrome), Alert/AlertNotice carrier axes and the refused dismissal props/anatomy/part identities; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T10:09:14.023Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > omits guarded alert chrome and emits only its carrier axes"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: e13bcb88bc318815de76b9bd75dd45a1da562b6b
