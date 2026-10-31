@@ -54,3 +54,12 @@ contracts:
   - name: 'table-container'
     type: behavior
     path: 'packages/ds-contracts/components/Table/Table.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 70358eb8d: focused unity codegen + cli seam 217/217 pass, including the semantic table container/region, the a11y-keyboard contract-fact precondition (refused for Table, lowered for Tabs), and the responsive/overflow/border-collapse adjudication; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T11:44:39.675Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > lowers the semantic table container with its native region and composed parts"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: "70358eb8de8a3385fa33b5621efc3f2c7501aec9"
