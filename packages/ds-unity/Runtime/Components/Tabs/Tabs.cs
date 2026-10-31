@@ -55,7 +55,7 @@ namespace FullStackDS
     }
 
     [UxmlElement]
-    public partial class TabsTab : Button, IKeyedPart
+    public partial class TabsTab : UnityEngine.UIElements.Button, IKeyedPart
     {
         [UxmlAttribute] public string Value { get; set; }
         [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }

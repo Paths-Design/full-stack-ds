@@ -45,9 +45,10 @@ describe("Unity support boundary", () => {
     // P2 (the anatomy walker) is discharged: no leaf anywhere waits on it.
     expect(audit.perPhase.P2).toBeUndefined();
     expect(loadBoundary().rules.filter(r => r.phase === "P2")).toEqual([]);
-    // So is P3 (the styling projection): what it does not lower is refused or waits on P4.
-    expect(audit.perPhase.P3).toBeUndefined();
-    expect(loadBoundary().rules.filter(r => r.phase === "P3")).toEqual([]);
+    // P3 (the styling projection) is used only by the two admitted boolean
+    // controls' withheld size axis: their contracts carry no size style rules.
+    expect(audit.perPhase.P3).toBeGreaterThan(0);
+    expect(loadBoundary().rules.filter(r => r.phase === "P3").map(r => r.id)).toEqual(["prop-size-boolean-unstyled"]);
   }, CORPUS_TIMEOUT_MS);
 
   it("resolves every anatomy node kind of the allowlist to exactly one walker lowering or an explicit pending/refused rule", () => {
@@ -120,7 +121,7 @@ describe("Unity support boundary", () => {
     expect(propRoles(load("Avatar")).has("name")).toBe(false);
     expect(propRoles(load("Icon")).get("name")).toBe("glyph-name");
     const avatarName = classifyContract(load("Avatar")).find(l => l.keyed === "/props/designed/members/plain:name/name");
-    expect(avatarName?.rule).toBe("props-unadjudicated");
+    expect(avatarName?.rule).toBe("prop-avatar-priority-refused");
     const switchName = classifyContract(load("Switch")).find(l => l.keyed === "/props/designed/members/form-field:name/name");
     expect(switchName).toMatchObject({ rule: "prop-form-field", disposition: "refused" });
   });
@@ -181,7 +182,7 @@ describe("Unity support boundary", () => {
     // Live boundary: a non-boolean value model on an allowlisted component is unadjudicated, not silently pending.
     const contract = load("Switch");
     contract.formControl!.valueModel = "string" as never;
-    expect(() => admitContract(contract, { admitted: true })).toThrow(/UNITY_BOUNDARY_UNADJUDICATED: Switch .*contract:\/formControl\/valueModel \(rule form-control\)/);
+    expect(() => admitContract(contract, { admitted: true })).toThrow(/UNITY_BOUNDARY_UNCLASSIFIED: Switch: contract:\/formControl\/valueModel/);
   });
 
   it("valuePattern filters string leaves by regular expression and never matches non-strings", () => {
@@ -250,10 +251,12 @@ describe("Unity support boundary", () => {
     ["invalid valuePattern", rule({ valuePattern: "(" }), /valuePattern "\(" is not a valid regular expression/],
     ["declaration on a contract pattern", rule({ declaration: { valuePattern: "x" } }), /declaration conditions apply to tokens: and styles: patterns only/],
     ["declaration that is not an object", rule({ match: ["styles:/**"], declaration: [] }), /declaration must be an object/],
-    ["empty declaration", rule({ match: ["styles:/**"], declaration: {} }), /declaration takes valuePattern and\/or nativeGrammar/],
-    ["unknown declaration condition", rule({ match: ["styles:/**"], declaration: { keyPattern: "x" } }), /declaration takes valuePattern and\/or nativeGrammar/],
+    ["empty declaration", rule({ match: ["styles:/**"], declaration: {} }), /declaration takes valuePattern, nativeGrammar and keyPattern/],
+    ["unknown declaration condition", rule({ match: ["styles:/**"], declaration: { nested: {} } }), /declaration takes valuePattern, nativeGrammar and keyPattern/],
     ["invalid declaration.valuePattern", rule({ match: ["styles:/**"], declaration: { valuePattern: "(" } }), /declaration.valuePattern "\(" is not a valid regular expression/],
+    ["invalid declaration.keyPattern", rule({ match: ["styles:/**"], declaration: { keyPattern: "(" } }), /declaration.keyPattern "\(" is not a valid regular expression/],
     ["nativeGrammar on a tokens pattern", rule({ match: ["tokens:/**"], declaration: { nativeGrammar: false } }), /nativeGrammar applies to styles: patterns only/],
+    ["keyPattern on a tokens pattern", rule({ match: ["tokens:/**"], declaration: { keyPattern: "x" } }), /keyPattern applies to styles: patterns only/],
     ["non-boolean nativeGrammar", rule({ match: ["styles:/**"], declaration: { nativeGrammar: "no" } }), /nativeGrammar must be a boolean/],
   ])("rejects a malformed boundary: %s", (_label, bad, message) => {
     expect(() => boundaryOf([bad])).toThrow(message);

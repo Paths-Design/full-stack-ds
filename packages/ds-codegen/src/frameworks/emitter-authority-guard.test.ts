@@ -183,7 +183,7 @@ const FROZEN_SUBSTRATE_INVENTORY: readonly string[] = [
   "hasEssentialComponentInstance", "includesConventionalProp",
   "isAnchoredSurface", "isBareRuleLeaf", "isCenteredSurface",
   "isCoachmarkSurface", "isCompoundPartComposer", "isCountIteratedFieldGroup",
-  "isDateGridSurface", "isGlyphHost", "isIconDecoratedContent",
+  "isDateGridSurface", "isGlyphHost", "isGuardedActionChrome", "isIconDecoratedContent",
   "isInteractiveComposite", "isLabeledTextControl", "isMediaLeaf",
   "isNamedSlotComposer", "isPagedNavigatorComposite", "isPagedPositionSet",
   "isPassiveTreeItem", "isProjectedChildrenAction", "isReferencedActionComposite",

@@ -36,6 +36,27 @@ namespace FullStackDS
                 if (other != value) root.RemoveFromClassList(prefix + "--" + other);
             root.AddToClassList(prefix + "--" + value);
         }
+
+        /// <summary>The declared value whose prefixed modifier class
+        /// (<c>&lt;cssPrefix&gt;--&lt;valuePrefix&gt;&lt;value&gt;</c>, e.g. <c>list--marker-disc</c>)
+        /// is on <paramref name="root"/>, or null. A prefixed axis exists where the web
+        /// class recipe disambiguates colliding axis values.</summary>
+        public static string GetAxis(VisualElement root, string prefix, string valuePrefix, params string[] values)
+        {
+            foreach (var value in values)
+                if (root.ClassListContains(prefix + "--" + valuePrefix + value)) return value;
+            return null;
+        }
+
+        /// <summary>Validates <paramref name="value"/> against the declared values and swaps the prefixed modifier class.</summary>
+        public static void SetAxis(VisualElement root, string prefix, string valuePrefix, string value, params string[] values)
+        {
+            if (value == null || Array.IndexOf(values, value) < 0)
+                throw new ArgumentException($"{prefix}--{valuePrefix}: expected one of {string.Join(", ", values)}, got {value ?? "null"}.");
+            foreach (var other in values)
+                if (other != value) root.RemoveFromClassList(prefix + "--" + valuePrefix + other);
+            root.AddToClassList(prefix + "--" + valuePrefix + value);
+        }
     }
 
     /// <summary>Discovers composed sub-elements by part class. A behavior claims

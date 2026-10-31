@@ -3,6 +3,8 @@
   "reasons": {
     "uss-design-slot": "A brand overrides a component design slot. Projecting it needs a nested var() fallback (design slot, then token slot), which this projection does not emit; follow-up in P4.",
     "uss-property": "The CSS property has no USS counterpart (or only one this projection does not map); the declaration is not realised.",
+    "uss-pseudo": "USS has no pseudo-class for this state (indeterminate).",
+    "uss-pseudo-element": "USS has no ::before / ::after pseudo-elements.",
     "uss-scalar": "The value is not a supported USS scalar (composite shadow, cubic-bezier easing, calc(), em or other relative units, rem outside the typography projection, a keyword USS lacks, or a weight USS cannot express); it is not emitted.",
     "uss-selector": "The selector has no USS realisation: either the IR's native selector grammar refused the styles key (attribute selectors such as [aria-expanded] and web-template classes such as <part>--<state> are not contract state facts; promoting a11y-attribute selectors to IR state predicates is deferred to the IR-facts spec that follows P3), or the rule needs a negated state or a modifier class no Unity runtime sets."
   },
@@ -352,10 +354,2523 @@
       "reason": "uss-property"
     },
     {
+      "component": "Alert",
+      "sourceKey": ".alert__dismiss:focus-visible",
+      "part": "dismiss",
+      "property": "outline",
+      "value": "2px solid currentColor",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": ".alert__dismiss:focus-visible",
+      "part": "dismiss",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": ".alert-notice__dismiss:focus-visible",
+      "part": "dismiss",
+      "property": "outline",
+      "value": "2px solid currentColor",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": ".alert-notice__dismiss:focus-visible",
+      "part": "dismiss",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Avatar",
+      "sourceKey": "image",
+      "part": "image",
+      "property": "object-fit",
+      "value": "cover",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Avatar",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-family",
+      "value": "\"Inter\", sans-serif",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Avatar",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Avatar",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "avatar.typography.fontFamily.sans",
+      "value": "\"Inter\", sans-serif",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Badge",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "width",
+      "value": "fit-content",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Blockquote",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-style",
+      "value": "italic",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Blockquote",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Breadcrumbs",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Button",
+      "sourceKey": ".button[aria-busy=\"true\"] .button__loadingText",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "font-weight",
+      "value": "700",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "font-weight",
+      "value": "600",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "font-weight",
+      "value": "600",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "font-weight",
+      "value": "600",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "font-weight",
+      "value": "600",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "font-weight",
+      "value": "700",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "font-weight",
+      "value": "700",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "font-weight",
+      "value": "700",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "user-select",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "spinner",
+      "part": "spinner",
+      "property": "animation",
+      "value": "spin 1s linear infinite",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "spinner",
+      "part": "spinner",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "spinner",
+      "part": "spinner",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Button",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "button.motion.easing.standard",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:active",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:active",
+      "part": "root",
+      "property": "transform",
+      "value": "translateY(0)",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:hover",
+      "part": "root",
+      "property": "background-color",
+      "value": "#f7f7f7",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:hover",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:hover",
+      "part": "root",
+      "property": "transform",
+      "value": "translateY(-1px)",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card__link:hover",
+      "part": "link",
+      "property": "text-decoration",
+      "value": "underline",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "media",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "gap",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "padding",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "media",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "gap",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "media",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "media",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "gap",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "media",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "gap",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "media",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "gap",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "padding",
+      "value": "28px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "media",
+      "property": "border-radius",
+      "value": "2px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "gap",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "padding",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "media",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "media",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "padding",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "media",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "focus",
+      "part": "root",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "header",
+      "part": "header",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "link",
+      "part": "link",
+      "property": "text-decoration",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "note",
+      "part": "note",
+      "property": "font-size",
+      "value": "0.875em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "note",
+      "part": "note",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-property",
+      "value": "box-shadow, border-color, background-color, transform",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "card.elevation.raised",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "card.elevation.resting",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "border-style",
+      "value": "solid",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "border-width",
+      "value": "0 2px 2px 0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "height",
+      "value": "9px",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "opacity",
+      "value": "1",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "transform",
+      "value": "translate(-50%, -65%) rotate(45deg)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "width",
+      "value": "5px",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:focus-visible) .checkbox__indicator",
+      "part": "indicator",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator",
+      "part": "indicator",
+      "property": "checkbox.color.background",
+      "value": "#0566fe",
+      "reason": "uss-pseudo"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "background-color",
+      "value": "#ffffff",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "border-width",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "height",
+      "value": "2px",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "opacity",
+      "value": "1",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "transform",
+      "value": "translate(-50%, -50%)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox:has(.checkbox__input:indeterminate) .checkbox__indicator::after",
+      "part": "indicator",
+      "property": "width",
+      "value": "8px",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "border-color",
+      "value": "#ffffff",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "box-sizing",
+      "value": "border-box",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "content",
+      "value": "\"\"",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "left",
+      "value": "50%",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "opacity",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "position",
+      "value": "absolute",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": ".checkbox__indicator::after",
+      "part": "indicator",
+      "property": "top",
+      "value": "50%",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": "indicator",
+      "part": "indicator",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": "input",
+      "part": "input",
+      "property": "clip",
+      "value": "rect(0, 0, 0, 0)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Checkbox",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": ".chip__action.button",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": ".chip__dismiss.button",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "9999px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "user-select",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Chip",
+      "sourceKey": "text",
+      "part": "text",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block[data-line-numbers=\"true\"] .code-block__gutter",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__gutter::before",
+      "part": "gutter",
+      "property": "content",
+      "value": "attr(data-line)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__line",
+      "part": "line",
+      "property": "white-space",
+      "value": "pre",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"comment\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"definition\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"keyword\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"plain\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"property\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"punctuation\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"static\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"string\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"tag\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "code",
+      "part": "code",
+      "property": "font-family",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "code",
+      "part": "code",
+      "property": "font-size",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-family",
+      "value": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-x",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "tab-size",
+      "value": "2",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "white-space",
+      "value": "pre",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "--kbd",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "--kbd",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-family",
+      "value": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeSnippet",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "code-snippet.elevation.kbd",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Details",
+      "sourceKey": ".details--right .details__icon",
+      "part": "icon",
+      "property": "order",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": ".details[open] .details__icon",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Details",
+      "sourceKey": ".details__summary:focus-visible",
+      "part": "summary",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "transition",
+      "value": "transform 200ms ease",
+      "reason": "uss-property",
+      "longhand": "transition-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "summary",
+      "part": "summary",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "summary",
+      "part": "summary",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "summary",
+      "part": "summary",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--full .dialog__modal",
+      "part": "modal",
+      "property": "height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--full .dialog__modal",
+      "part": "modal",
+      "property": "max-height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--full .dialog__modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "100vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--full .dialog__modal",
+      "part": "modal",
+      "property": "width",
+      "value": "100vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--lg .dialog__modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--sm .dialog__modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog--xl .dialog__modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "95vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": ".dialog:has(> .dialog__modal[aria-modal=\"false\"]) > .dialog__backdrop",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "backdrop",
+      "part": "backdrop",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "backdrop",
+      "part": "backdrop",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "body",
+      "part": "body",
+      "property": "overflow-wrap",
+      "value": "anywhere",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "body",
+      "part": "body",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:canary",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:corporate",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:default",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:developer",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:fintech",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:forest",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:marketplace",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:monochrome",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:quickserve",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "brand:streaming",
+      "part": "modal",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "closeButton",
+      "part": "closeButton",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "modal",
+      "part": "modal",
+      "property": "box-shadow",
+      "value": "0px 12px 16px #0000000f, 0px 25px 50px #00000026",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "modal",
+      "part": "modal",
+      "property": "max-height",
+      "value": "90dvh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "modal",
+      "part": "modal",
+      "property": "max-width",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "modal",
+      "part": "modal",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "position",
+      "value": "fixed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "z-index",
+      "value": "1000",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "title",
+      "part": "title",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.elevation",
+      "value": "0px 12px 16px #0000000f, 0px 25px 50px #00000026",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.full.height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.full.width",
+      "value": "100vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.lg.maxWidth",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.md.maxWidth",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.sm.maxWidth",
+      "value": "90vw",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Dialog",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "dialog.size.xl.maxWidth",
+      "value": "95vw",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Divider",
       "sourceKey": "--vertical",
       "part": "root",
       "property": "min-height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": ".field--disabled .field__header, .field--disabled .field__meta",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "error",
+      "part": "error",
+      "property": "font-size",
+      "value": "0.875em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "header",
+      "part": "header",
+      "property": "align-items",
+      "value": "baseline",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "help",
+      "part": "help",
+      "property": "font-size",
+      "value": "0.875em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "label",
+      "part": "label",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "validatingIndicator",
+      "part": "validatingIndicator",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "validatingIndicator",
+      "part": "validatingIndicator",
+      "property": "width",
       "value": "1em",
       "reason": "uss-scalar"
     },
@@ -366,6 +2881,806 @@
       "property": "color",
       "value": "currentColor",
       "reason": "uss-scalar"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "aspect-ratio",
+      "value": "var(--fsds-image-prop-aspect-ratio, auto)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "height",
+      "value": "revert-layer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "max-width",
+      "value": "100%",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "object-fit",
+      "value": "var(--fsds-image-prop-object-fit, fill)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "object-position",
+      "value": "var(--fsds-image-prop-object-position, 50% 50%)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "width",
+      "value": "revert-layer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "structure",
+      "part": "root",
+      "property": "max-width",
+      "value": "100%",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "--invalid",
+      "part": "root",
+      "property": "border-color",
+      "value": "#b31b1b",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Input",
+      "sourceKey": ".input--invalid:focus-visible",
+      "part": "root",
+      "property": "border-color",
+      "value": "#b31b1b",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Input",
+      "sourceKey": ".input--invalid:focus-visible",
+      "part": "root",
+      "property": "outline-color",
+      "value": "#b31b1b",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "::placeholder",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "focus",
+      "part": "root",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-property",
+      "value": "background-color, border-color, color, outline-color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "input.motion.easing.standard",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Label",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.2",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "text-decoration-line",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "focus",
+      "part": "root",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "hover",
+      "part": "root",
+      "property": "text-decoration-color",
+      "value": "#b31b1b",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "text-decoration-color",
+      "value": "#b8b8b8",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "text-decoration-line",
+      "value": "underline",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "text-underline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-property",
+      "value": "color, text-decoration-color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Links",
+      "sourceKey": "visited",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-alpha",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "lower-alpha",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-circle",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "circle",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-decimal",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "decimal",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-disc",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "disc",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-none",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-roman",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "lower-roman",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-square",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "square",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--spacing-lg > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--spacing-md > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--spacing-none > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--spacing-sm > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--variant-divided > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--variant-inline",
+      "part": "root",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--variant-spaced > *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--variant-unstyled",
+      "part": "root",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": ".nav-list__item:focus-visible",
+      "part": "item",
+      "property": "outline-offset",
+      "value": "-2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": ".nav-list__item:hover",
+      "part": "item",
+      "property": "background-color",
+      "value": "color-mix(in srgb, var(--fsds-nav-list-color-background-hover, #d0d0d0) calc(var(--fsds-nav-list-state-layer-hover, 0.04) * 100%), transparent)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": ".nav-list__item[aria-current=\"page\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "transition-duration",
+      "value": "120ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "transition-property",
+      "value": "background-color, color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__headingLink:focus-visible",
+      "part": "headingLink",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__headingLink:hover",
+      "part": "headingLink",
+      "property": "background-color",
+      "value": "color-mix(in srgb, currentColor calc(var(--fsds-nav-tree-state-layer-hover, 0.04) * 100%), transparent)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item > *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item > *:focus-visible",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item > *:hover",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item > *[aria-current=\"page\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "border-block-start",
+      "value": "1px solid var(--fsds-nav-tree-color-connector, #d0d0d0)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "content",
+      "value": "\"\"",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "inset-inline-start",
+      "value": "calc(-1 * var(--fsds-nav-tree-size-indent, 16px))",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "position",
+      "value": "absolute",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "top",
+      "value": "50%",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::after",
+      "part": "item",
+      "property": "width",
+      "value": "calc(var(--fsds-nav-tree-size-indent, 16px) - var(--fsds-nav-tree-size-gap-heading, 4px))",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "border-inline-start",
+      "value": "1px solid var(--fsds-nav-tree-color-connector, #d0d0d0)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "bottom",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "content",
+      "value": "\"\"",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "inset-inline-start",
+      "value": "calc(-1 * var(--fsds-nav-tree-size-indent, 16px))",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "position",
+      "value": "absolute",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item::before",
+      "part": "item",
+      "property": "top",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": ".nav-tree__item:last-child::before",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "heading",
+      "part": "heading",
+      "property": "letter-spacing",
+      "value": "0.04em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "heading",
+      "part": "heading",
+      "property": "text-transform",
+      "value": "uppercase",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "headingLink",
+      "part": "headingLink",
+      "property": "text-decoration",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "headingLink",
+      "part": "headingLink",
+      "property": "transition-duration",
+      "value": "120ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "headingLink",
+      "part": "headingLink",
+      "property": "transition-property",
+      "value": "background-color, color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "NavTree",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "OTP",
+      "sourceKey": ".otp__field:disabled",
+      "part": "field",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "OTP",
+      "sourceKey": ".otp__field:focus-visible",
+      "part": "field",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "OTP",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "text-align",
+      "value": "center",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination--indicators .pagination__item[data-current=\"true\"] .pagination__marker",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination--pages .pagination__item[data-current=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination--pages .pagination__label",
+      "part": "label",
+      "property": "display",
+      "value": "inline",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination__fill:dir(rtl)",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination__fill[hidden]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": "fill",
+      "part": "fill",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
     },
     {
       "component": "Popover",
@@ -776,6 +4091,1134 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Postcard",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Postcard",
+      "sourceKey": "displayName",
+      "part": "displayName",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Postcard",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Progress",
+      "sourceKey": "fill",
+      "part": "fill",
+      "property": "width",
+      "value": "calc(var(--fsds-progress-fill-width, 0) * 1%)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Progress",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "1500ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Progress",
+      "sourceKey": "value",
+      "part": "value",
+      "property": "font-size",
+      "value": "0.875em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": ".radio-group__item:focus-within",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": ".radio-group__item[data-checked=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": ".radio-group__item[data-disabled=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": "label",
+      "part": "label",
+      "property": "overflow-wrap",
+      "value": "anywhere",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "opacity",
+      "value": "0.5",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "select.color.background",
+      "value": "#d0d0d0",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "select.color.border",
+      "value": "#b8b8b8",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--disabled .select__trigger",
+      "part": "trigger",
+      "property": "select.color.foreground",
+      "value": "#727272",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select--open .select__trigger",
+      "part": "trigger",
+      "property": "select.color.border",
+      "value": "#d92d2e",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select__option[aria-selected=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select__searchInput:focus-visible",
+      "part": "searchInput",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": ".select__trigger:focus-visible",
+      "part": "trigger",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "content",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "option",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:canary",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "content",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "option",
+      "property": "border-radius",
+      "value": "2px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:corporate",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "content",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "option",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:default",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "option",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:developer",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "option",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:fintech",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "content",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "content",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "option",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:forest",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "option",
+      "property": "border-radius",
+      "value": "2px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:marketplace",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "content",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "content",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "option",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:monochrome",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "content",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "content",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "option",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:quickserve",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "content",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "content",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-overlay)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "option",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "brand:streaming",
+      "part": "trigger",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "0 4px 16px rgba(0,0,0,0.12)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "emptyState",
+      "part": "emptyState",
+      "property": "text-align",
+      "value": "center",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "option",
+      "part": "option",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "option",
+      "part": "option",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "option",
+      "part": "option",
+      "property": "text-align",
+      "value": "start",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "options",
+      "part": "options",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "searchInput",
+      "part": "searchInput",
+      "property": "font-family",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "searchInput",
+      "part": "searchInput",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "text",
+      "part": "text",
+      "property": "text-align",
+      "value": "start",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "trigger",
+      "part": "trigger",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Select",
+      "sourceKey": "trigger",
+      "part": "trigger",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": ".sheet--left .sheet__content",
+      "part": "content",
+      "property": "max-height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": ".sheet--right .sheet__content",
+      "part": "content",
+      "property": "max-height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": ".sheet:has(> .sheet__content[aria-modal=\"false\"]) > .sheet__overlay",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "body",
+      "part": "body",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "close",
+      "part": "close",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "max-height",
+      "value": "100vh",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "overlay",
+      "part": "overlay",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "overlay",
+      "part": "overlay",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "position",
+      "value": "fixed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "z-index",
+      "value": "1000",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "title",
+      "part": "title",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Sheet",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "sheet.shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": ".show-more--expanded .show-more__content",
+      "part": "content",
+      "property": "-webkit-line-clamp",
+      "value": "unset",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": ".show-more--expanded .show-more__content",
+      "part": "content",
+      "property": "display",
+      "value": "block",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": ".show-more--expanded .show-more__content",
+      "part": "content",
+      "property": "line-clamp",
+      "value": "unset",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "-webkit-box-orient",
+      "value": "vertical",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "-webkit-line-clamp",
+      "value": "var(--fsds-show-more-content-max-lines, 3)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "display",
+      "value": "-webkit-box",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "line-clamp",
+      "value": "var(--fsds-show-more-content-max-lines, 3)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "trigger",
+      "part": "trigger",
+      "property": "background",
+      "value": "none",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "trigger",
+      "part": "trigger",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": ".shuttle__item:focus-visible",
+      "part": "item",
+      "property": "outline-offset",
+      "value": "-2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": ".shuttle__item[aria-selected=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "add",
+      "part": "add",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "min-block-size",
+      "value": "8rem",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "min-inline-size",
+      "value": "10rem",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Shuttle",
+      "sourceKey": "remove",
+      "part": "remove",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--avatar",
+      "part": "root",
+      "property": "aspect-ratio",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--dataviz",
+      "part": "root",
+      "property": "aspect-ratio",
+      "value": "4 / 3",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--media",
+      "part": "root",
+      "property": "aspect-ratio",
+      "value": "16 / 9",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--none",
+      "part": "root",
+      "property": "animation",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--text",
+      "part": "root",
+      "property": "height",
+      "value": "1rem",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "--wipe",
+      "part": "root",
+      "property": "animation",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "animation",
+      "value": "skeleton-wipe calc(var(--fsds-skeleton-anim-duration, 400ms) * 2) var(--fsds-skeleton-anim-easing, cubic-bezier(0.4, 0, 0.2, 1)) infinite",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "background",
+      "value": "linear-gradient(90deg, transparent, var(--fsds-skeleton-color-highlight, rgba(255,255,255,0.55)), transparent)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "content",
+      "value": "\"\"",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "position",
+      "value": "absolute",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton--wipe::after",
+      "part": "root",
+      "property": "transform",
+      "value": "translateX(-100%)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton:has(.skeleton__stack)",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": ".skeleton:has(.skeleton__stack) .skeleton__shape",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "400ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "structure",
+      "part": "root",
+      "property": "min-height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "box-model.min-height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Skeleton",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "skeleton.anim.easing",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Stat",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "letter-spacing",
+      "value": "-0.02em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Stat",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Status",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "width",
+      "value": "fit-content",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Switch",
       "sourceKey": ".switch:dir(rtl) .switch__track",
       "part": "",
@@ -848,6 +5291,62 @@
       "value": "var(--fsds-switch-motion-easing)",
       "reason": "uss-scalar",
       "longhand": "transition-timing-function"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "caption",
+      "part": "caption",
+      "property": "text-align",
+      "value": "start",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "container",
+      "part": "container",
+      "property": "border-collapse",
+      "value": "collapse",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "footer",
+      "part": "footer",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "headerCell",
+      "part": "headerCell",
+      "property": "text-align",
+      "value": "start",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-x",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Table",
+      "sourceKey": "selected",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
     },
     {
       "component": "Tabs",
@@ -1178,6 +5677,614 @@
       "property": "line-height",
       "value": "1.5",
       "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field--invalid .text-field__field",
+      "part": "field",
+      "property": "border-color",
+      "value": "#d92d2e",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field--invalid .text-field__field:focus-visible",
+      "part": "field",
+      "property": "border-color",
+      "value": "#d92d2e",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field--invalid .text-field__field:focus-visible",
+      "part": "field",
+      "property": "outline-color",
+      "value": "#d92d2e",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field__field::placeholder",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field__field:disabled",
+      "part": "field",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field__field:focus-visible",
+      "part": "field",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field__field:hover:not(:disabled)",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "description",
+      "part": "description",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "error",
+      "part": "error",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "transition-property",
+      "value": "background-color, border-color, color, outline-color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "label",
+      "part": "label",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "label",
+      "part": "label",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "text-field.motion.easing.standard",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": ".toast__action:empty",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": ".toast__progress:dir(rtl)",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "action",
+      "part": "action",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:canary",
+      "part": "item",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:corporate",
+      "part": "item",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:default",
+      "part": "item",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:developer",
+      "part": "item",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:fintech",
+      "part": "item",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:forest",
+      "part": "item",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:marketplace",
+      "part": "item",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:monochrome",
+      "part": "item",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:quickserve",
+      "part": "item",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "brand:streaming",
+      "part": "item",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "close",
+      "part": "close",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "description",
+      "part": "description",
+      "property": "font-size",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "box-shadow",
+      "value": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "pointer-events",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "progress",
+      "part": "progress",
+      "property": "border-end-end-radius",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "progress",
+      "part": "progress",
+      "property": "border-end-start-radius",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "progress",
+      "part": "progress",
+      "property": "inset-inline",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "progress",
+      "part": "progress",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "position",
+      "value": "fixed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "z-index",
+      "value": "1000",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Toast",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "toast.surface.shadow",
+      "value": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ToggleSwitch",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ToggleSwitch",
+      "sourceKey": "focus",
+      "part": "root",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ToggleSwitch",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ToggleSwitch",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:canary",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:corporate",
+      "part": "content",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:default",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:developer",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:fintech",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:forest",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:marketplace",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:monochrome",
+      "part": "content",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:quickserve",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:streaming",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "z-index",
+      "value": "1800",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "14px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "description",
+      "part": "description",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "dot",
+      "part": "dot",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "next",
+      "part": "next",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "prev",
+      "part": "prev",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "max-height",
+      "value": "calc(100dvh - 32px)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "max-width",
+      "value": "calc(100vw - 32px)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-y",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "skip",
+      "part": "skip",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Walkthrough",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "walkthrough.surface.shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-scalar"
     }
   ]
 }

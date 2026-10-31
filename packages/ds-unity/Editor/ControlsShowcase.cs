@@ -28,11 +28,11 @@ namespace FullStackDS.Editor
         private static void Page(Tabs tabs, TabsList list, string value, string title, string body)
         {
             list.Add(new TabsTab { Value = value, text = title });
-            var panel = new TabsPanel { Value = value }; panel.Add(new Label(body)); tabs.Add(panel);
+            var panel = new TabsPanel { Value = value }; panel.Add(new UnityEngine.UIElements.Label(body)); tabs.Add(panel);
         }
         private static Switch Labeled(string text, bool on = false)
         {
-            var control = new Switch { Checked = on }; control.Add(new Label(text)); return control;
+            var control = new Switch { Checked = on }; control.Add(new UnityEngine.UIElements.Label(text)); return control;
         }
         public void CreateGUI()
         {
@@ -44,8 +44,8 @@ namespace FullStackDS.Editor
             minSize = new UnityEngine.Vector2(320, 480);
             var sound = Labeled("Enable sound", true);
             var accordion = new Accordion { Collapsible = true };
-            Section(accordion, "graphics", "Graphics", new Label("Rendering preferences"), Labeled("High quality textures"));
-            Section(accordion, "audio", "Audio", new Label("Music and sound effects"));
+            Section(accordion, "graphics", "Graphics", new UnityEngine.UIElements.Label("Rendering preferences"), Labeled("High quality textures"));
+            Section(accordion, "audio", "Audio", new UnityEngine.UIElements.Label("Music and sound effects"));
             var tabs = new Tabs(); var list = new TabsList(); tabs.Add(list);
             Page(tabs, list, "overview", "Overview", "Your adventure starts here.");
             Page(tabs, list, "inventory", "Inventory", "Your collected items appear here.");
@@ -54,14 +54,14 @@ namespace FullStackDS.Editor
             var content = new PopoverContent();
             // Open content floats to the panel root, outside this window's tree, so it carries the sample sheet itself.
             if (sample != null) content.styleSheets.Add(sample);
-            content.Add(new Label("Generated from the same contracts as the web packages."));
-            var close = new Button(() => popover.Open = false) { text = "Close" };
+            content.Add(new UnityEngine.UIElements.Label("Generated from the same contracts as the web packages."));
+            var close = new UnityEngine.UIElements.Button(() => popover.Open = false) { text = "Close" };
             close.AddToClassList("fsds-sample-content-action");
             content.Add(close);
             popover.Add(content);
-            var title = new Label("Your experience"); title.AddToClassList("fsds-sample-title");
+            var title = new UnityEngine.UIElements.Label("Your experience"); title.AddToClassList("fsds-sample-title");
             rootVisualElement.Add(title);
-            var description = new Label("Full Stack DS · Unity UI Toolkit"); description.AddToClassList("fsds-sample-description");
+            var description = new UnityEngine.UIElements.Label("Full Stack DS · Unity UI Toolkit"); description.AddToClassList("fsds-sample-description");
             rootVisualElement.Add(description);
             accordion.AddToClassList("fsds-sample-section"); tabs.AddToClassList("fsds-sample-section"); popover.AddToClassList("fsds-sample-section");
             rootVisualElement.Add(sound); rootVisualElement.Add(accordion);

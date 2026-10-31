@@ -18,9 +18,9 @@ namespace FullStackDS
         private readonly VisualElement host;
         private readonly string triggerClass, contentClass, stateClass;
         private readonly bool select, roving, allowMultiple;
-        private readonly Dictionary<Button, Action> hooked = new Dictionary<Button, Action>();
+        private readonly Dictionary<UnityEngine.UIElements.Button, Action> hooked = new Dictionary<UnityEngine.UIElements.Button, Action>();
         private readonly Dictionary<VisualElement, Mount> unmounted = new Dictionary<VisualElement, Mount>();
-        private List<Button> triggers = new List<Button>();
+        private List<UnityEngine.UIElements.Button> triggers = new List<UnityEngine.UIElements.Button>();
         private List<VisualElement> contents = new List<VisualElement>();
         private string[] selected = Array.Empty<string>();
         private bool explicitValue, multiple, unmount;
@@ -33,7 +33,7 @@ namespace FullStackDS
         public event Action<string[]> ValueChanged;
         public bool Loop { get; set; }
         public bool Collapsible { get; set; }
-        public IReadOnlyList<Button> Triggers { get { Synchronize(); return triggers.AsReadOnly(); } }
+        public IReadOnlyList<UnityEngine.UIElements.Button> Triggers { get { Synchronize(); return triggers.AsReadOnly(); } }
 
         private ItemGroup(VisualElement host, string triggerClass, string contentClass, string operation, string stateClass, bool multiple, string focus, string orientation, bool wrap)
         {
@@ -56,7 +56,7 @@ namespace FullStackDS
         private void HookPending(IEventHandler target)
         {
             for (var node = target as VisualElement; node != null && node != host; node = node.hierarchy.parent)
-                if (node is Button button && button.ClassListContains(triggerClass) && !hooked.ContainsKey(button) && PartDiscovery.Owner(button, triggerClass) == host) { Synchronize(); return; }
+                if (node is UnityEngine.UIElements.Button button && button.ClassListContains(triggerClass) && !hooked.ContainsKey(button) && PartDiscovery.Owner(button, triggerClass) == host) { Synchronize(); return; }
         }
 
         public static ItemGroup Attach(VisualElement host, string triggerClass, string contentClass, string operation, string stateClass, bool multiple, string focus, string orientation, bool wrap)
@@ -124,7 +124,7 @@ namespace FullStackDS
         /// keys, and presents selection on triggers and content.</summary>
         public void Synchronize()
         {
-            var nextTriggers = PartDiscovery.Find(host, triggerClass).OfType<Button>().Where(t => t is IKeyedPart).ToList();
+            var nextTriggers = PartDiscovery.Find(host, triggerClass).OfType<UnityEngine.UIElements.Button>().Where(t => t is IKeyedPart).ToList();
             var keys = nextTriggers.Select(PartDiscovery.Key).ToList();
             if (keys.Any(string.IsNullOrEmpty) || keys.Distinct().Count() != keys.Count)
                 throw new ArgumentException("Trigger values must be non-empty and unique.");
@@ -174,7 +174,7 @@ namespace FullStackDS
             }
         }
 
-        private void Activate(Button trigger)
+        private void Activate(UnityEngine.UIElements.Button trigger)
         {
             // A trigger moved out of this host keeps a stale handler until the next
             // discovery; ownership is re-checked here so it never activates twice.
@@ -195,9 +195,9 @@ namespace FullStackDS
             var key = evt.keyCode;
             if (!host.enabledInHierarchy || (key != KeyCode.Home && key != KeyCode.End && key != KeyCode.LeftArrow && key != KeyCode.RightArrow && key != KeyCode.UpArrow && key != KeyCode.DownArrow)) return;
             Synchronize();
-            Button trigger = null;
+            UnityEngine.UIElements.Button trigger = null;
             for (var node = evt.target as VisualElement; node != null && node != host && trigger == null; node = node.hierarchy.parent)
-                if (node is Button button && triggers.Contains(button)) trigger = button;
+                if (node is UnityEngine.UIElements.Button button && triggers.Contains(button)) trigger = button;
             if (trigger == null || !trigger.enabledSelf) return;
             var candidates = triggers.Where(t => t.enabledSelf).ToList();
             var index = candidates.IndexOf(trigger);

@@ -43,7 +43,7 @@ namespace FullStackDS.Tests
 
         [UnityTest] public IEnumerator SwitchLabelFollowsTheTrackByTheBoxModelGap()
         {
-            var control = new Switch(); var caption = new Label("Sound"); control.Add(caption);
+            var control = new Switch(); var caption = new UnityEngine.UIElements.Label("Sound"); control.Add(caption);
             scope.Add(control); yield return Frames();
             Assert.That(Gap.Resolved(control), Is.EqualTo(8)); // box-model.gap -> semantic.action.size.medium.gap
             Assert.That(Row(control.Track, control.contentContainer), Is.EqualTo(8).Within(.5));
@@ -97,7 +97,7 @@ namespace FullStackDS.Tests
         [UnityTest] public IEnumerator PopoverContentSpacesItsScrollContent()
         {
             var popover = new Popover(); var trigger = new PopoverTrigger { text = "Help" }; var content = new PopoverContent();
-            var text = new Label("Body"); var action = new Button { text = "Action" };
+            var text = new UnityEngine.UIElements.Label("Body"); var action = new Button { text = "Action" };
             content.Add(text); content.Add(action); popover.Add(trigger); popover.Add(content); scope.Add(popover);
             yield return Frames();
             popover.CloseOnBlur = false; popover.Open = true; yield return Frames(4);

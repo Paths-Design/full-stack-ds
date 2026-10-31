@@ -19,7 +19,7 @@ namespace FullStackDS.Tests
         }
         [TearDown] public void Teardown() => window.Close();
         private static string[] Brands(VisualElement e) => e.GetClasses().Where(c => c.StartsWith(Theme.BrandClassPrefix)).ToArray();
-        private static void Submit(Button button)
+        private static void Submit(UnityEngine.UIElements.Button button)
         {
             using (var evt = NavigationSubmitEvent.GetPooled()) { evt.target = button; button.SendEvent(evt); }
         }
@@ -103,7 +103,7 @@ namespace FullStackDS.Tests
 
         [UnityTest] public IEnumerator SwitchMirrorsControlPointerAndFocusStateOntoHostClasses()
         {
-            var control = new Switch(); control.Add(new Label("Sound"));
+            var control = new Switch(); control.Add(new UnityEngine.UIElements.Label("Sound"));
             window.rootVisualElement.Add(control);
             yield return null;
             var input = control.Trigger;

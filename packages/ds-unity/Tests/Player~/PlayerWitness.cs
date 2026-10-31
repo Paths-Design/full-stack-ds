@@ -32,7 +32,7 @@ public class PlayerWitness : MonoBehaviour
             return count;
         } finally { UnityEngine.Object.Destroy(image); }
     }
-    private static void Submit(Button button) { using (var e = NavigationSubmitEvent.GetPooled()) { e.target = button; button.SendEvent(e); } }
+    private static void Submit(UnityEngine.UIElements.Button button) { using (var e = NavigationSubmitEvent.GetPooled()) { e.target = button; button.SendEvent(e); } }
     private IEnumerator Start()
     {
         Application.runInBackground = true;

@@ -1,0 +1,51 @@
+id: GODOT-PASSIVE-PARITY-01
+title: 'Extend Godot parity to Skeleton, Table and CodeBlock'
+mode: feature
+lifecycle_state: closed
+resolution: abandoned
+closure_notes: 'Godot emitter refuses the three contracts'' props (GODOT_UNSUPPORTED_PROP), so extending the Godot allowlist needs a Godot prop-policy slice first; the worktree was not merged and no bytes changed'
+created_at: '2026-10-31T12:36:41.483Z'
+updated_at: '2026-10-31T12:37:54.350Z'
+created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
+blast_radius:
+  modules:
+    - 'Godot passive parity: admit the passive engine-neutral containers already admitted on Unity'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'fsds.targets.json'
+    - 'packages/ds-godot'
+    - 'packages/ds-codegen/src/frameworks/godot'
+    - 'docs/architecture/godot-target.md'
+    - 'docs/current-implementation-snapshot.md'
+    - 'scripts/godot-pilot.mjs'
+  out: []
+invariants:
+  - 'Existing Godot-admitted components and their generated addon bytes are unaffected; an admitted component either generates and their pilot observations hold or is not admitted'
+acceptance:
+  - id: A1
+    given: 'Skeleton, Table and CodeBlock in the Godot registry allowlist'
+    when: 'generate --target=godot and generate:check run'
+    then: 'the addon emits the three components byte-stably and the target registry stays valid'
+  - id: A2
+    given: 'the Godot factory and plan tests'
+    when: 'run'
+    then: 'they cover the three newly admitted components and the existing admitted set is unchanged'
+  - id: A3
+    given: 'the Godot pilot lane with a real editor'
+    when: 'run'
+    then: 'it checks serialization/observations for the extended allowlist and reports no added failures'
+  - id: A4
+    given: 'the Godot target doc and implementation snapshot'
+    when: 'read'
+    then: 'the three additions and their passive parity non-claims are stated'
+observability:
+  - 'tmp/godot-pilot output and provenance bind the extended addon to the tested revision'
+rollback:
+  - 'Revert the slice commits and remove the three names from the Godot allowlist'
+non_functional: {}
+contracts:
+  - name: 'skeleton-table-codeblock-parity'
+    type: behavior
+    path: 'packages/ds-contracts/components/Table/Table.contract.json'

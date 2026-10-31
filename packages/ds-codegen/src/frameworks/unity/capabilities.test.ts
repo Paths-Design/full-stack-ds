@@ -18,7 +18,7 @@ describe("Unity capability accounting", () => {
     expect(rows.map(r => r.component)).toEqual(listComponentContracts(path.join(root, "packages/ds-contracts")).map(e => e.name));
     expect(rows.find(r => r.component === "Text")!.status).toBe("pilot-partial");
     expect(rows.find(r => r.component === "Divider")!.status).toBe("pilot-partial");
-    expect(rows.find(r => r.component === "Dialog")!.status).toBe("unsupported-shape");
+    expect(rows.find(r => r.component === "Dialog")!.status).toBe("pilot-partial");
     expect(rows.find(r => r.component === "Switch")!.status).toBe("pilot-partial");
     expect(rows.every(r => r.proof === "source-accounting-only")).toBe(true);
     // Every leaf of every component, sidecars included, carries a boundary rule.
@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Divider", null], ["Icon", null], ["Popover", null], ["Switch", null], ["Tabs", null], ["Text", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Select", null], ["Sheet", null], ["ShowMore", null], ["Shuttle", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Walkthrough", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -79,6 +79,7 @@ describe("Unity capability accounting", () => {
       ".switch:dir(rtl) .switch__track/scale pending:styles-outside-native-grammar",
       ".switch:has(.switch__input:focus-visible) .switch__track/outline-offset refused:styles-outline-offset",
       "input/clip refused:styles-uss-absent-property",
+      "root/align-items refused:styles-unhandled-property",
       "root/cursor refused:styles-cursor",
       "thumb/box-shadow refused:styles-uss-absent-property",
       "thumb/transition refused:styles-transition-unrealised",
@@ -108,22 +109,96 @@ describe("Unity capability accounting", () => {
     // A box-shadow lowering placed ahead of its refusal contradicts both shadow rows.
     const shadow: BoundaryRule = { id: "box-shadow-lowered", match: ["styles:/*/box-shadow/**"], disposition: "lowered", via: "test" };
     const lowered = { ...committed, rules: [shadow, ...committed.rules] };
-    expect(entriesOf(lowered)).toEqual(["ledger Popover content box-shadow (uss-property)", "ledger Switch thumb box-shadow (uss-property)"]);
+    expect(entriesOf(lowered)).toEqual([
+      "ledger Card .card--interactive:active box-shadow (uss-selector)",
+      "ledger Card .card--interactive:active transform (uss-selector)",
+      "ledger Card .card--interactive:hover background-color (uss-selector)",
+      "ledger Card .card--interactive:hover box-shadow (uss-selector)",
+      "ledger Card .card--interactive:hover transform (uss-selector)",
+      "ledger Card root box-shadow (uss-property)",
+      "ledger CodeSnippet --kbd box-shadow (uss-property)",
+      "ledger Dialog modal box-shadow (uss-property)",
+      "ledger Popover content box-shadow (uss-property)",
+      "ledger Select content box-shadow (uss-property)",
+      "ledger Sheet content box-shadow (uss-property)",
+      "ledger Switch thumb box-shadow (uss-property)",
+      "ledger Toast item box-shadow (uss-property)",
+      "ledger Walkthrough root box-shadow (uss-property)",
+    ]);
     expect(ledgerViolations(root, lowered)).toContain("ledger Popover content box-shadow (uss-property): styles:/content/box-shadow/fallback is classified lowered by rule box-shadow-lowered");
     // The join's findings fail the corpus audit (audit:unity-boundary --check).
     expect(auditUnityTarget(root, lowered).violations).toEqual(expect.arrayContaining(ledgerViolations(root, lowered)));
     // Without the token and selector refusals, token rows and refused-selector rows fall to the blanket lowered rules.
     const without = (id: string) => ({ ...committed, rules: committed.rules.filter(r => r.id !== id) });
     expect(entriesOf(without("tokens-non-scalar"))).toEqual([
-      "ledger Popover tokens popover.elevation (uss-scalar)", "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
+      "ledger Avatar tokens avatar.typography.fontFamily.sans (uss-scalar)",
+      "ledger Button tokens button.motion.easing.standard (uss-scalar)",
+      "ledger Card tokens card.elevation.raised (uss-scalar)",
+      "ledger Card tokens card.elevation.resting (uss-scalar)",
+      "ledger CodeSnippet tokens code-snippet.elevation.kbd (uss-scalar)",
+      "ledger Dialog tokens dialog.elevation (uss-scalar)",
+      "ledger Dialog tokens dialog.size.full.height (uss-scalar)",
+      "ledger Dialog tokens dialog.size.full.width (uss-scalar)",
+      "ledger Dialog tokens dialog.size.lg.maxWidth (uss-scalar)",
+      "ledger Dialog tokens dialog.size.md.maxWidth (uss-scalar)",
+      "ledger Dialog tokens dialog.size.sm.maxWidth (uss-scalar)",
+      "ledger Dialog tokens dialog.size.xl.maxWidth (uss-scalar)",
+      "ledger Input tokens input.motion.easing.standard (uss-scalar)",
+      "ledger Popover tokens popover.elevation (uss-scalar)", "ledger Sheet tokens sheet.shadow (uss-scalar)", "ledger Skeleton tokens skeleton.anim.easing (uss-scalar)",
+      "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
       "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
+      "ledger TextField tokens text-field.motion.easing.standard (uss-scalar)",
+      "ledger Toast tokens toast.surface.shadow (uss-scalar)",
+      "ledger Walkthrough tokens walkthrough.surface.shadow (uss-scalar)",
     ]);
     expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
       'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)',
       "ledger Accordion @starting-style (uss-selector)",
+      'ledger Button .button[aria-busy="true"] .button__loadingText (uss-selector)',
+      "ledger Chip .chip__action.button (uss-selector)",
+      "ledger Chip .chip__dismiss.button (uss-selector)",
+      'ledger CodeBlock .code-block[data-line-numbers="true"] .code-block__gutter (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="comment"] (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="definition"] (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="keyword"] (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="plain"] (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="property"] (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="punctuation"] (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="static"] (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="string"] (uss-selector)',
+      'ledger CodeBlock .code-block__token[data-token="tag"] (uss-selector)',
+      "ledger Details .details[open] .details__icon (uss-selector)",
+      'ledger Dialog .dialog:has(> .dialog__modal[aria-modal="false"]) > .dialog__backdrop (uss-selector)',
+      "ledger Field .field--disabled .field__header, .field--disabled .field__meta (uss-selector)",
+      "ledger Links visited (uss-selector)",
+      "ledger List .list--spacing-lg > * + * (uss-selector)",
+      "ledger List .list--spacing-md > * + * (uss-selector)",
+      "ledger List .list--spacing-none > * + * (uss-selector)",
+      "ledger List .list--spacing-sm > * + * (uss-selector)",
+      "ledger List .list--variant-divided > * + * (uss-selector)",
+      "ledger List .list--variant-spaced > * (uss-selector)",
+      'ledger NavList .nav-list__item[aria-current="page"] (uss-selector)',
+      "ledger NavTree .nav-tree__item > * (uss-selector)",
+      "ledger NavTree .nav-tree__item > *:focus-visible (uss-selector)",
+      "ledger NavTree .nav-tree__item > *:hover (uss-selector)",
+      "ledger NavTree .nav-tree__item > *[aria-current=\"page\"] (uss-selector)",
+      "ledger Pagination .pagination__fill:dir(rtl) (uss-selector)",
+      "ledger Pagination .pagination__fill[hidden] (uss-selector)",
+      "ledger RadioGroup .radio-group__item:focus-within (uss-selector)",
+      "ledger RadioGroup .radio-group__item[data-checked=\"true\"] (uss-selector)",
+      "ledger RadioGroup .radio-group__item[data-disabled=\"true\"] (uss-selector)",
+      "ledger Select .select__option[aria-selected=\"true\"] (uss-selector)",
+      'ledger Sheet .sheet:has(> .sheet__content[aria-modal="false"]) > .sheet__overlay (uss-selector)',
+      "ledger Shuttle .shuttle__item[aria-selected=\"true\"] (uss-selector)",
+      "ledger Skeleton .skeleton:has(.skeleton__stack) (uss-selector)",
+      "ledger Skeleton .skeleton:has(.skeleton__stack) .skeleton__shape (uss-selector)",
       "ledger Switch .switch:dir(rtl) .switch__track (uss-selector)",
+      "ledger Table selected (uss-selector)",
       "ledger Tabs --pills __tab--active (uss-selector)", "ledger Tabs tab--active (uss-selector)",
       'ledger Text .text[data-truncate="true"] (uss-selector)',
+      "ledger TextField .text-field__field:hover:not(:disabled) (uss-selector)",
+      "ledger Toast .toast__action:empty (uss-selector)",
+      "ledger Toast .toast__progress:dir(rtl) (uss-selector)",
     ]);
   }, CORPUS_TIMEOUT_MS);
   it("counts a ledger entry no sidecar leaf backs as a violation, and skips brand design-slot and token-section rows", () => {

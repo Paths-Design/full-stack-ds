@@ -5,7 +5,7 @@ import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
 import { createUnityEmitter, unityLowering } from "./factory.js";
 import { createDefaultRegistry } from "../../registry.js";
-import { classifyContract, loadContractWithSidecars } from "./boundary.js";
+import { classifyContract, loadBoundary, loadContractWithSidecars } from "./boundary.js";
 import { rootPublicMembers } from "./walker.js";
 
 const root = path.resolve(__dirname, "../../../../..");
@@ -30,11 +30,15 @@ describe("Unity capability lowering", () => {
     expect(source).toContain(` = ${expected}.Attach(this, `);
     expect(source).not.toMatch(/: (?:BooleanControl|ItemGroup|AnchoredSurface)\b/);
   });
-  it("routes channel-free content and rule leaves through a passive host while refusing modal surfaces", () => {
+  it("routes channel-free content and rule leaves through a passive host and lowers blocking dialogs", () => {
     expect(unityLowering(buildComponentIR(fixture("Text"))).behavior).toBe("Passive");
     expect(unityLowering(buildComponentIR(fixture("Divider"))).behavior).toBe("Passive");
     for (const name of ["Text", "Divider", "Icon"]) expect(emit(fixture(name))).toContain("Theme.AddStyleSheet(this);");
-    expect(() => emit(fixture("Dialog"))).toThrow("UNITY_UNSUPPORTED_SURFACE");
+    const dialogIr = buildComponentIR(fixture("Dialog"));
+    expect(unityLowering(dialogIr).behavior).toBe("Modal");
+    const unsupportedDismissal = fixture("Dialog") as unknown as Record<string, any>;
+    unsupportedDismissal.surface.dismissal = [...unsupportedDismissal.surface.dismissal, "routeChange"];
+    expect(() => unityLowering(buildComponentIR(unsupportedDismissal as unknown as ComponentContract))).toThrow("UNITY_UNSUPPORTED_SURFACE");
   });
   it("carries channel and anatomy names rather than assuming checked/input", () => {
     const ir = buildComponentIR(fixture("Switch"));
@@ -47,7 +51,7 @@ describe("Unity capability lowering", () => {
     expect(source).toContain('ChannelName = "armed"');
     expect(source).toContain('ChangeHandler = "onArmed"');
     expect(source).toContain("[UxmlAttribute] public bool Armed { get => Control.Value; set => Control.Value = value; }");
-    expect(source).toContain("public Button Actuator { get; } = new Button();");
+    expect(source).toContain("public UnityEngine.UIElements.Button Actuator { get; } = new UnityEngine.UIElements.Button();");
     expect(source).toContain('Actuator.AddToClassList("switch__actuator");');
     expect(source).toContain('Control = BooleanControl.Attach(this, control: Actuator, stateClass: "is-checked", labelHost: this);');
     expect(source).not.toMatch(/\bInput\b|"checked"\.|onChange/);
@@ -146,7 +150,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links", "Image", "Avatar", "NavTree", "Postcard", "Pagination", "OTP", "RadioGroup", "Select", "Shuttle", "ShowMore"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -280,8 +284,8 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     expect(unityLowering(ir)).toMatchObject({ behavior: "ItemGroup", trigger: { name: "notch" }, content: { name: "well" }, operation: "select", multiple: false, stateClass: "is-chosen", focus: { strategy: "manual", orientation: "vertical", wrap: false } });
     const source = emit(contract);
     // R1: one root class plus one class per compound part, in ir.compoundParts order.
-    expect([...source.matchAll(/public partial class (\w+) : ([\w, <>]+)\n/g)].map(m => `${m[1]} : ${m[2]}`))
-      .toEqual(["Dial : VisualElement", "DialRail : VisualElement", "DialNotch : Button, IKeyedPart", "DialWell : VisualElement, IKeyedPart"]);
+    expect([...source.matchAll(/public partial class (\w+) : ([\w, .<>]+)\n/g)].map(m => `${m[1]} : ${m[2]}`))
+      .toEqual(["Dial : VisualElement", "DialRail : VisualElement", "DialNotch : UnityEngine.UIElements.Button, IKeyedPart", "DialWell : VisualElement, IKeyedPart"]);
     // R2 + R5: the literal-content text leaf is a Label carrying its text; compound
     // parts emit nothing inline (R4), so the root renders only the caption.
     expect(source).toContain("        public Label Caption { get; } = new Label();\n");
@@ -308,7 +312,7 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     expect(classBody(source, "DialWell")).toContain("        public override VisualElement contentContainer => WellBody;\n");
     expect(source.match(/contentContainer/g)).toHaveLength(2);
     // R4: pairing key on the trigger and content parts, Disabled on the trigger only.
-    expect(source).toContain("    public partial class DialNotch : Button, IKeyedPart\n    {\n        [UxmlAttribute] public string Value { get; set; }\n        [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }\n");
+    expect(source).toContain("    public partial class DialNotch : UnityEngine.UIElements.Button, IKeyedPart\n    {\n        [UxmlAttribute] public string Value { get; set; }\n        [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }\n");
     expect(source).toContain("    public partial class DialWell : VisualElement, IKeyedPart\n    {\n        public VisualElement WellBody { get; } = new VisualElement();\n        public override VisualElement contentContainer => WellBody;\n        [UxmlAttribute] public string Value { get; set; }\n        public DialWell()");
     // R8: the string channel API is named by the channel's own value prop.
     expect(source).toContain("[UxmlAttribute] public string Picked { get => Group.Value; set => Group.Value = value; }");
@@ -396,13 +400,13 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     expect(source).toContain("    public partial class Lamp : VisualElement, INotifyValueChanged<bool>\n");
     // R2/R3: part properties first, then the private children host that is the contentContainer.
     expect(source).toContain([
-      "        public Button Actuator { get; } = new Button();",
+      "        public UnityEngine.UIElements.Button Actuator { get; } = new UnityEngine.UIElements.Button();",
       "        public VisualElement LeadSlot { get; } = new VisualElement();",
       "        public VisualElement Tail { get; } = new VisualElement();",
       "        private readonly VisualElement children = new VisualElement();",
       "        public override VisualElement contentContainer => children;",
       "        public BooleanControl Control { get; }",
-      "        public Button Trigger => Actuator;",
+      "        public UnityEngine.UIElements.Button Trigger => Actuator;",
       "        [UxmlAttribute] public bool Lit { get => Control.Value; set => Control.Value = value; }",
     ].join("\n"));
     // R6: the disabled prop is whatever the control part's disabled binding names.
@@ -431,8 +435,8 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     const contract = flyout();
     expect(() => createUnityEmitter().admitContract!(contract, { admitted: false })).not.toThrow();
     const source = emit(contract);
-    expect([...source.matchAll(/public partial class (\w+) : ([\w, <>]+)\n/g)].map(m => `${m[1]} : ${m[2]}`))
-      .toEqual(["Flyout : VisualElement, INotifyValueChanged<bool>", "FlyoutOpener : Button", "FlyoutSheet : ScrollView"]);
+    expect([...source.matchAll(/public partial class (\w+) : ([\w, .<>]+)\n/g)].map(m => `${m[1]} : ${m[2]}`))
+      .toEqual(["Flyout : VisualElement, INotifyValueChanged<bool>", "FlyoutOpener : UnityEngine.UIElements.Button", "FlyoutSheet : ScrollView"]);
     expect(ctor(source, "Flyout")).toBe(lines(
       'name = "root";',
       'AddToClassList("flyout");',
@@ -446,7 +450,7 @@ describe("Unity anatomy walker on synthetic contracts", () => {
     ));
     // No pairing key without an item group; the anchor still carries Disabled (R4).
     expect(source).not.toContain("IKeyedPart");
-    expect(source).toContain("    public partial class FlyoutOpener : Button\n    {\n        [UxmlAttribute] public bool Disabled");
+    expect(source).toContain("    public partial class FlyoutOpener : UnityEngine.UIElements.Button\n    {\n        [UxmlAttribute] public bool Disabled");
     expect(ctor(source, "FlyoutSheet")).toBe(lines('name = "sheet";', 'AddToClassList("flyout__sheet");'));
   });
 
@@ -623,10 +627,51 @@ describe("Unity behavior selection refusals", () => {
     expect(() => unityLowering(ir)).toThrow('UNITY_UNSUPPORTED_SURFACE: Popover declares dismissal trigger "routeChange"');
   });
 
-  it("refuses a variant axis whose class-recipe modifier is prefixed for disambiguation", () => {
+  it("lowers a tooltip surface in hover/focus-open mode", () => {
+    const ir = buildComponentIR(fixture("Tooltip"));
+    expect(unityLowering(ir)).toMatchObject({
+      behavior: "AnchoredSurface", trigger: { name: "trigger" }, content: { name: "content" },
+      openOnHover: true, openOnFocus: true, closeOnPointerLeave: true, contentFocusable: false,
+    });
+    const source = emit(fixture("Tooltip"));
+    expect(source).toContain('AnchoredSurface.Attach(this, triggerClass: "tooltip__trigger", contentClass: "tooltip__content", stateClass: null, openOnHover: true, openOnFocus: true, closeOnPointerLeave: true, contentFocusable: false);');
+  });
+
+  it("routes a parts-only container through the passive lowering", () => {
+    const ir = buildComponentIR(fixture("Card"));
+    expect(unityLowering(ir).behavior).toBe("Passive");
+    const source = createUnityEmitter().emitComponent(buildComponentIR(completeFixture("Card")), { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class Card : VisualElement");
+    expect(source).toContain("public partial class CardHeader : VisualElement");
+    expect(source).toContain('public string Density { get => Variants.Get(this, "card", "default", "inset");');
+    expect(source).not.toMatch(/Interactive/);
+  });
+
+  it("keeps the keyboard claim lowered only where a channel or projected action root realises it", () => {
+    const boundary = loadBoundary();
+    const keyboardOf = (name: string) => classifyContract(loadContractWithSidecars(root, name) as never, boundary)
+      .filter(leaf => leaf.keyed.startsWith("/a11y/keyboard/"));
+    const table = keyboardOf("Table");
+    expect(table.length).toBeGreaterThan(0);
+    expect(table.every(leaf => leaf.disposition === "refused")).toBe(true);
+    const tabs = keyboardOf("Tabs");
+    expect(tabs.length).toBeGreaterThan(0);
+    expect(tabs.every(leaf => leaf.disposition === "lowered")).toBe(true);
+  });
+
+  it("suffixes a generated member that would collide with its class name", () => {
+    const source = createUnityEmitter().emitComponent(buildComponentIR(completeFixture("Status")), { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class Status : VisualElement");
+    expect(source).toContain('public string StatusValue { get => Variants.Get(this, "status", "info", "success", "warning", "danger", "error");');
+    expect(source).not.toMatch(/public string Status \{/);
+  });
+
+  it("emits prefixed modifier helpers for a variant axis disambiguated by the class recipe", () => {
     const ir = buildComponentIR(fixture("Tabs"));
     ir.classRecipe.valueModifiers = ir.classRecipe.valueModifiers.map(m => m.propName === "appearance" ? { ...m, valuePrefix: "appearance-" } : m);
-    expect(() => createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })).toThrow('UNITY_UNSUPPORTED_VARIANT: Tabs.appearance shares values with another axis (class-recipe prefix "appearance-")');
+    const source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain('Variants.GetAxis(this, "tabs", "appearance-",');
+    expect(source).toContain('Variants.SetAxis(this, "tabs", "appearance-", value,');
   });
 
   it("refuses anatomy bindings the attached behavior does not realise", () => {
@@ -648,5 +693,60 @@ describe("Unity behavior selection refusals", () => {
     disabledOff.anatomy.dom.children[1].bindings = { disabled: "prop:disabled" };
     expect(() => emitter.admitContract!(disabledOff as unknown as ComponentContract, { admitted: true }))
       .toThrow("UNITY_BOUNDARY_UNREALIZED: Switch on BooleanControl does not realise binding /anatomy/dom/children/track/bindings/disabled (rule anatomy-disabled-binding claims bound-prop-property)");
+  });
+
+  it("lowers a projected-children action to a native Button with callback, disabled and content host", () => {
+    const contract = completeFixture("Button") as unknown as ComponentContract;
+    const ir = buildComponentIR(contract);
+    expect(unityLowering(ir).behavior).toBe("Action");
+    const source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toMatch(/partial class Button : UnityEngine\.UIElements\.Button\b/);
+    expect(source).toContain("public Action OnClick { get; set; }");
+    expect(source).toContain("clicked += () => OnClick?.Invoke();");
+    expect(source).toContain("[UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }");
+    // The pending-state chrome is a conditional componentRef pending P4 and the
+    // loading-text wrapper is flattened: the control's own contentContainer is
+    // the projection point, so neither is rendered or exposed.
+    expect(source).not.toMatch(/\bSpinner\b/);
+    expect(source).not.toMatch(/LoadingText|contentContainer/);
+    expect(source).not.toMatch(/public (?:bool|string) (?:Loading|Type|AriaExpanded|AriaPressed) \{/);
+  });
+
+  it("carries the DOM click binding name into the generated action callback", () => {
+    const contract = fixture("Button") as unknown as Record<string, any>;
+    contract.anatomy.dom.events.click = "prop:onActivate";
+    contract.props.designed.members.push({ name: "onActivate", propType: { kind: "callback", params: [], returns: { kind: "void" } }, description: "Activation." });
+    const source = emit(contract as unknown as ComponentContract);
+    expect(source).toContain("public Action OnActivate { get; set; }");
+    expect(source).toContain("clicked += () => OnActivate?.Invoke();");
+    expect(source).not.toContain("OnClick");
+  });
+
+  it("refuses an action root without a click prop binding", () => {
+    const contract = fixture("Button") as unknown as Record<string, any>;
+    delete contract.anatomy.dom.events.click;
+    expect(() => unityLowering(buildComponentIR(contract as unknown as ComponentContract)))
+      .toThrow("UNITY_UNSUPPORTED_INTERACTION: Button action root declares no click prop binding");
+  });
+
+  it("lowers a root form-control part to a native Button boolean control", () => {
+    const contract = fixture("ToggleSwitch") as unknown as ComponentContract;
+    contract.name = "UnrelatedToggle";
+    const ir = buildComponentIR(contract);
+    expect(unityLowering(ir).behavior).toBe("BooleanControl");
+    const source = emit(contract);
+    expect(source).toMatch(/partial class UnrelatedToggle : UnityEngine\.UIElements\.Button, INotifyValueChanged<bool>/);
+    expect(source).toContain("public UnityEngine.UIElements.Button Trigger => this;");
+    expect(source).toContain('Control = BooleanControl.Attach(this, control: this, stateClass: "is-checked", labelHost: null);');
+  });
+
+  it("lowers a label-host checkbox with its native control child and no withheld axis", () => {
+    const contract = fixture("Checkbox") as unknown as ComponentContract;
+    contract.name = "UnrelatedCheck";
+    const source = emit(contract);
+    expect(source).toContain("public UnityEngine.UIElements.Button Input { get; } = new UnityEngine.UIElements.Button();");
+    expect(source).toContain('Control = BooleanControl.Attach(this, control: Input, stateClass: "is-checked", labelHost: this);');
+    // indeterminate and the size axis are not realised: no emitted API for either.
+    expect(source).not.toMatch(/Indeterminate|public string Size/);
   });
 });

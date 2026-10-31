@@ -5,9 +5,9 @@ import type { FrameworkEmitter } from "../../emitter.js";
 import type { ComponentIR } from "../../ir.js";
 import { buildComponentIR } from "../../ir.js";
 import { admitContract, loadBoundary, unityAllowlist, type ClassifiedLeaf, type ContractWithSidecars } from "./boundary.js";
-import { triggerParts } from "./behaviors.js";
+import { triggerParts, unityLowering } from "./behaviors.js";
 import { loadTokenSources, projectStylesheet } from "./uss.js";
-import { identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
+import { classMemberName, identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
 import { collectIconGlyphNodes } from "../icon-glyph.js";
 import { unityGlyphCatalog } from "./glyph-catalog.js";
 
@@ -22,7 +22,15 @@ function assertAdmittedRefs(ir: ComponentIR, contractsRoot: string): void {
     ? path.resolve(contractsRoot, "../..")
     : path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../..");
   const admitted = new Set(unityAllowlist(workspaceRoot));
+  // A native action lowering omits the guarded loading decoration (a
+  // conditional componentRef pending P4), so the walker never emits that
+  // reference; it is not an unadmitted reference the component carries.
+  const lowering = unityLowering(ir);
+  const omittedChrome = (node: NonNullable<ComponentIR["dom"]>): boolean =>
+    lowering.behavior === "Action" && lowering.loading !== undefined &&
+    node.ifProp === lowering.loading && node.componentRef !== undefined;
   const visit = (node: NonNullable<ComponentIR["dom"]>): void => {
+    if (omittedChrome(node)) return;
     if (node.componentRef && !admitted.has(node.componentRef))
       throw new Error(`UNITY_UNSUPPORTED_REF: ${ir.name} references unadmitted ${node.componentRef}`);
     node.children.forEach(visit);
@@ -55,7 +63,7 @@ function domNodeKey(keyed: string, ir: ComponentIR): string | undefined {
 export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, classified: ClassifiedLeaf[]): void {
   const { lowering, source } = walkComponent(ir);
   const { behavior } = lowering;
-  const channel = lowering.behavior === "Passive" ? undefined : lowering.channel;
+  const channel = "channel" in lowering ? lowering.channel : undefined;
   const emitted = rootPublicMembers(source, ir.name);
   const triggers = triggerParts(ir);
   const rules = new Map(loadBoundary().rules.map(r => [r.id, r]));
@@ -74,7 +82,7 @@ export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, 
     let subject: string;
     switch (rule.realizes) {
       case "emitted-property":
-        ok = member !== undefined && emitted.has(pascal(member)); subject = `prop ${member}`; break;
+        ok = member !== undefined && emitted.has(classMemberName(ir.name, member)); subject = `prop ${member}`; break;
       case "selected-channel-member":
         ok = member !== undefined && channel !== undefined && [channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp].includes(member); subject = `prop ${member}`; break;
       case "selected-channel":
@@ -83,8 +91,11 @@ export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, 
         ok = channel !== undefined && eventKey !== undefined && (events[eventKey]?.emittedVia ?? []).includes(channel.changeHandlerProp); subject = `event ${eventKey}`; break;
       case "selected-channel-binding":
         // The behavior's state class realises a binding to the selected
-        // channel's value only on a trigger part it owns.
-        ok = channel !== undefined && binding === `channel:${channel.name}.value` && node !== undefined && triggers.has(node); subject = `binding ${leaf.keyed}`; break;
+        // channel's value on a trigger part it owns; a disclosure also mirrors
+        // the open state on the host and content it owns, so its host binding
+        // is realised without a trigger part.
+        ok = channel !== undefined && binding === `channel:${channel.name}.value` &&
+          ((node !== undefined && triggers.has(node)) || behavior === "Disclosure"); subject = `binding ${leaf.keyed}`; break;
       case "bound-prop-property":
         ok = binding.startsWith("prop:") && node !== undefined && triggers.has(node) && emitted.has(pascal(binding.slice(5))); subject = `binding ${leaf.keyed}`; break;
     }

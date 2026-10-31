@@ -19,7 +19,7 @@ namespace FullStackDS.Tests
         }
         [TearDown] public void Teardown() => window.Close();
         private T Mount<T>(T element) where T : VisualElement { window.rootVisualElement.Add(element); return element; }
-        private static void Submit(Button button)
+        private static void Submit(UnityEngine.UIElements.Button button)
         {
             using (var evt = NavigationSubmitEvent.GetPooled()) { evt.target = button; button.SendEvent(evt); }
         }
@@ -40,7 +40,7 @@ namespace FullStackDS.Tests
             if (list == null) { list = new TabsList(); root.Add(list); }
             var tab = new TabsTab { Value = value, text = value, Disabled = disabled };
             list.Add(tab);
-            var panel = new TabsPanel { Value = value }; panel.Add(new Label("Content " + value));
+            var panel = new TabsPanel { Value = value }; panel.Add(new UnityEngine.UIElements.Label("Content " + value));
             root.Add(panel);
             return (tab, panel);
         }
@@ -48,7 +48,7 @@ namespace FullStackDS.Tests
         {
             var item = new AccordionItem(); var header = new AccordionHeader();
             var trigger = new AccordionTrigger { Value = value, text = value };
-            var content = new AccordionContent { Value = value }; content.Add(new Label("Content " + value));
+            var content = new AccordionContent { Value = value }; content.Add(new UnityEngine.UIElements.Label("Content " + value));
             header.Add(trigger); item.Add(header); item.Add(content); root.Add(item);
             return (trigger, content);
         }
@@ -84,7 +84,7 @@ namespace FullStackDS.Tests
         [Test] public void SwitchTreeFollowsContractAnatomyAndLabelHostTogglesOnce()
         {
             // dom: label.root > [input.input, span.track > span.thumb, <children>]; root tag label selects the label host.
-            var control = Mount(new Switch()); var caption = new Label("Enable sound"); control.Add(caption);
+            var control = Mount(new Switch()); var caption = new UnityEngine.UIElements.Label("Enable sound"); control.Add(caption);
             Assert.That(control.hierarchy.Children().Select(c => c.name).ToArray(), Is.EqualTo(new[] { "input", "track", "children" }));
             Assert.That(control.Input.ClassListContains("switch__input"), Is.True);
             Assert.That(control.Thumb.hierarchy.parent, Is.EqualTo(control.Track));
@@ -96,7 +96,7 @@ namespace FullStackDS.Tests
             int count = 0; control.RegisterValueChangedCallback(_ => count++);
             Click(caption);
             Assert.That(control.Checked, Is.True); Assert.That(count, Is.EqualTo(1));
-            // A click whose target is the control itself arrives through Button.clicked; the label host must not add a second toggle.
+            // A click whose target is the control itself arrives through UnityEngine.UIElements.Button.clicked; the label host must not add a second toggle.
             Click(control.Input);
             Assert.That(control.Checked, Is.True); Assert.That(count, Is.EqualTo(1));
             control.Disabled = true; Click(caption);
@@ -159,7 +159,7 @@ namespace FullStackDS.Tests
             var list = root.Q<TabsList>();
             Assert.That(a.tab.hierarchy.parent, Is.EqualTo(list.contentContainer)); Assert.That(list.contentContainer.ClassListContains("tabs__children"), Is.True);
             Assert.That(list.hierarchy.Children().Select(c => c.name).ToArray(), Is.EqualTo(new[] { "children", "indicator" }));
-            Assert.That(root.Group.Triggers, Is.EqualTo(new Button[] { a.tab, b.tab }));
+            Assert.That(root.Group.Triggers, Is.EqualTo(new UnityEngine.UIElements.Button[] { a.tab, b.tab }));
             Assert.Throws<ArgumentException>(() => root.Values = new[] { "a", "b" });
             var duplicate = new TabsTab { Value = "b", text = "b" }; root.Q<TabsList>().Add(duplicate);
             Assert.Throws<ArgumentException>(() => root.Group.Synchronize());
@@ -288,7 +288,7 @@ namespace FullStackDS.Tests
         [UnityTest] public IEnumerator ContentComposedIntoAnAttachedClosedPopoverIsParked()
         {
             var popover = Mount(new Popover()); yield return null;
-            var trigger = new PopoverTrigger { text = "Help" }; var content = new PopoverContent(); content.Add(new Label("Late content"));
+            var trigger = new PopoverTrigger { text = "Help" }; var content = new PopoverContent(); content.Add(new UnityEngine.UIElements.Label("Late content"));
             popover.Add(trigger); popover.Add(content);
             yield return null; yield return null;
             // Layout alone (no getter, no channel call) must apply the closed presentation.
@@ -313,8 +313,8 @@ namespace FullStackDS.Tests
         [Test] public void PopoverPointerBoundaryExcludesItsOwnContent()
         {
             // Isolate pointer dismissal; pointer focus changes independently exercise blur.
-            var popover = new Popover { CloseOnBlur = false }; var parts = Compose(popover); var inner = new Button(); parts.content.Add(inner);
-            Mount(popover); var outside = Mount(new Button()); popover.Open = true;
+            var popover = new Popover { CloseOnBlur = false }; var parts = Compose(popover); var inner = new UnityEngine.UIElements.Button(); parts.content.Add(inner);
+            Mount(popover); var outside = Mount(new UnityEngine.UIElements.Button()); popover.Open = true;
             using (var evt = PointerDownEvent.GetPooled()) { evt.target = inner; inner.SendEvent(evt); }
             Assert.That(popover.Open, Is.True);
             popover.CloseOnOutsideClick = false;
@@ -326,8 +326,8 @@ namespace FullStackDS.Tests
         }
         [UnityTest] public IEnumerator PopoverBlurTracksAnchorAndContentUnion()
         {
-            var popover = new Popover(); var parts = Compose(popover); var inner = new Button(); parts.content.Add(inner);
-            Mount(popover); var outside = Mount(new Button());
+            var popover = new Popover(); var parts = Compose(popover); var inner = new UnityEngine.UIElements.Button(); parts.content.Add(inner);
+            Mount(popover); var outside = Mount(new UnityEngine.UIElements.Button());
             popover.Open = true; popover.Trigger.Focus(); yield return null;
             inner.Focus(); yield return null; Assert.That(popover.Open, Is.True);
             outside.Focus(); yield return null; Assert.That(popover.Open, Is.False);
@@ -346,7 +346,7 @@ namespace FullStackDS.Tests
             asset.CloneTree(window.rootVisualElement);
             yield return null; yield return null;
             var sound = window.rootVisualElement.Q<Switch>("sound");
-            Assert.That(sound.Checked, Is.True); Assert.That(sound.contentContainer.Q<Label>().text, Is.EqualTo("Enable sound"));
+            Assert.That(sound.Checked, Is.True); Assert.That(sound.contentContainer.Q<UnityEngine.UIElements.Label>().text, Is.EqualTo("Enable sound"));
             var accordion = window.rootVisualElement.Q<Accordion>("settings");
             Assert.That(accordion.Group.Triggers.Count, Is.EqualTo(2)); Assert.That(accordion.Value, Is.EqualTo("graphics"));
             Assert.That(accordion.Q<AccordionContent>().ClassListContains("is-open"), Is.True);
@@ -355,8 +355,888 @@ namespace FullStackDS.Tests
             Assert.That(tabs.Value, Is.EqualTo("inventory"));
             Assert.That(tabs.Group.Triggers[2].enabledSelf, Is.False);
             var popover = window.rootVisualElement.Q<Popover>("help"); Submit(popover.Trigger);
-            Assert.That(popover.Open, Is.True); Assert.That(popover.Content.Q<Button>(), Is.Not.Null);
+            Assert.That(popover.Open, Is.True); Assert.That(popover.Content.Q<UnityEngine.UIElements.Button>(), Is.Not.Null);
             Assert.That(popover.Content.parent, Is.EqualTo(window.rootVisualElement.panel.visualTree));
+        }
+        [Test] public void ActionButtonFiresOncePerActivationAndSuppressesDisabled()
+        {
+            var fired = 0;
+            var button = Mount(new FullStackDS.Button());
+            button.OnClick = () => fired++;
+            Submit(button);
+            Assert.That(fired, Is.EqualTo(1));
+            button.Disabled = true;
+            Submit(button);
+            Assert.That(fired, Is.EqualTo(1), "a disabled action control suppresses activation");
+        }
+        [Test] public void ActionButtonRoutesConsumerChildrenIntoItsContentHost()
+        {
+            var button = Mount(new FullStackDS.Button());
+            var label = new UnityEngine.UIElements.Label("Resume");
+            button.Add(label);
+            Assert.That(button.contentContainer, Is.SameAs(button));
+            Assert.That(label.parent, Is.SameAs(button));
+            Assert.That(button.ClassListContains("button"), Is.True);
+            Assert.That(button.ClassListContains("button--primary"), Is.True);
+        }
+        [Test] public void ActionButtonVariantAndSizeSetClassCarriers()
+        {
+            var button = Mount(new FullStackDS.Button { Variant = "ghost", Size = "large" });
+            Assert.That(button.ClassListContains("button--ghost"), Is.True);
+            Assert.That(button.ClassListContains("button--large"), Is.True);
+            Assert.That(button.enabledSelf, Is.True);
+        }
+        [Test] public void CheckboxActivatesThroughItsNativeControlAndItsLabelHostOnce()
+        {
+            var checkbox = Mount(new FullStackDS.Checkbox());
+            var changes = 0;
+            checkbox.RegisterValueChangedCallback(_ => changes++);
+            Submit(checkbox.Trigger);
+            Assert.That(checkbox.Checked, Is.True);
+            Assert.That(changes, Is.EqualTo(1));
+            // The label host is the root: a click outside the native control toggles once.
+            Click(checkbox);
+            Assert.That(checkbox.Checked, Is.False);
+            Assert.That(changes, Is.EqualTo(2));
+            checkbox.Disabled = true;
+            Submit(checkbox.Trigger);
+            Assert.That(checkbox.Checked, Is.False, "disabled activation is suppressed");
+        }
+        [Test] public void CheckboxExposesNoIndeterminateOrSizeApi()
+        {
+            Assert.That(typeof(FullStackDS.Checkbox).GetProperty("Indeterminate"), Is.Null);
+            Assert.That(typeof(FullStackDS.Checkbox).GetProperty("Size"), Is.Null);
+        }
+        [Test] public void ToggleSwitchRootIsItsOwnTriggerAndTogglesOncePerActivation()
+        {
+            var toggle = Mount(new FullStackDS.ToggleSwitch());
+            var changes = 0;
+            INotifyValueChanged<bool> channel = toggle;
+            channel.RegisterValueChangedCallback(_ => changes++);
+            Assert.That(toggle.Trigger, Is.SameAs(toggle));
+            Submit(toggle);
+            Assert.That(toggle.Checked, Is.True);
+            Assert.That(changes, Is.EqualTo(1));
+            Submit(toggle);
+            Assert.That(toggle.Checked, Is.False);
+            Assert.That(changes, Is.EqualTo(2));
+            toggle.Disabled = true;
+            Submit(toggle);
+            Assert.That(toggle.Checked, Is.False, "disabled activation is suppressed");
+        }
+        [Test] public void PassiveContainersComposeChildrenAndCarryStyleAxes()
+        {
+            var stat = Mount(new FullStackDS.Stat { Size = "lg", Trend = "up" });
+            stat.Add(new UnityEngine.UIElements.Label("42"));
+            Assert.That(stat.ClassListContains("stat--lg"), Is.True);
+            Assert.That(stat.ClassListContains("stat--up"), Is.True);
+            Assert.That(stat.contentContainer.childCount, Is.EqualTo(1));
+            var quote = Mount(new FullStackDS.Blockquote { Variant = "bordered", Size = "sm" });
+            quote.Add(new UnityEngine.UIElements.Label("quoted"));
+            Assert.That(quote.ClassListContains("blockquote--bordered"), Is.True);
+            Assert.That(quote.ClassListContains("blockquote--sm"), Is.True);
+            Assert.That(quote.contentContainer.childCount, Is.EqualTo(1));
+            var flag = Mount(new FullStackDS.ProfileFlag());
+            flag.Add(new UnityEngine.UIElements.Label("Commander"));
+            Assert.That(flag.ClassListContains("profile-flag"), Is.True);
+            Assert.That(flag.contentContainer.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.ProfileFlag).GetProperty("Profile"), Is.Null);
+            Assert.That(typeof(FullStackDS.Blockquote).GetProperty("Cite"), Is.Null);
+        }
+        [Test] public void BadgeCarriesAxesAndItsNodeContentIconIsOmitted()
+        {
+            var badge = Mount(new FullStackDS.Badge { Variant = "tag", Intent = "success", Size = "lg" });
+            var content = new FullStackDS.BadgeContent();
+            content.Add(new UnityEngine.UIElements.Label("New"));
+            badge.Add(content);
+            Assert.That(badge.ClassListContains("badge--tag"), Is.True);
+            Assert.That(badge.ClassListContains("badge--success"), Is.True);
+            Assert.That(badge.ClassListContains("badge--lg"), Is.True);
+            Assert.That(content.parent, Is.SameAs(badge));
+            Assert.That(content.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.Badge).GetProperty("Icon"), Is.Null);
+            Assert.That(typeof(FullStackDS.Badge).GetProperty("ShowStatusIcon"), Is.Null);
+        }
+        [Test] public void ListComposesItemsAndCarriesPrefixedAxes()
+        {
+            var list = Mount(new FullStackDS.List { Variant = "inline", Size = "lg" });
+            list.Add(new UnityEngine.UIElements.Label("one"));
+            list.Add(new UnityEngine.UIElements.Label("two"));
+            Assert.That(list.ClassListContains("list"), Is.True);
+            Assert.That(list.ClassListContains("list--variant-inline"), Is.True);
+            Assert.That(list.ClassListContains("list--size-lg"), Is.True);
+            Assert.That(list.contentContainer, Is.SameAs(list));
+            Assert.That(list.contentContainer.childCount, Is.EqualTo(2));
+            foreach (var prop in new[] { "As", "Marker", "Spacing" })
+                Assert.That(typeof(FullStackDS.List).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void AlertContainersCarryAxesAndOmitGuardedChrome()
+        {
+            var alert = Mount(new FullStackDS.Alert { Intent = "warning", Level = "section" });
+            alert.Add(new UnityEngine.UIElements.Label("Careful"));
+            Assert.That(alert.ClassListContains("alert--warning"), Is.True);
+            Assert.That(alert.ClassListContains("alert--section"), Is.True);
+            Assert.That(alert.contentContainer.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "Icon", "Dismissible", "OnDismiss", "DismissLabel" })
+                Assert.That(typeof(FullStackDS.Alert).GetProperty(prop), Is.Null, prop);
+            var notice = Mount(new FullStackDS.AlertNotice { Status = "error", Level = "page" });
+            notice.Add(new FullStackDS.AlertNoticeTitle());
+            Assert.That(notice.ClassListContains("alert-notice--error"), Is.True);
+            Assert.That(notice.ClassListContains("alert-notice--page"), Is.True);
+            Assert.That(notice.contentContainer.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "Icon", "Dismissible", "OnDismiss", "DismissLabel" })
+                Assert.That(typeof(FullStackDS.AlertNotice).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void SemanticWrappersComposeContentAndIgnoreDomMetadata()
+        {
+            var label = Mount(new FullStackDS.Label());
+            label.text = "Capacity";
+            Assert.That(label.text, Is.EqualTo("Capacity"));
+            Assert.That(label.ClassListContains("label"), Is.True);
+            Assert.That(typeof(FullStackDS.Label).GetProperty("HtmlFor"), Is.Null);
+            Assert.That(typeof(FullStackDS.Label).GetProperty("Form"), Is.Null);
+            var crumbs = Mount(new FullStackDS.Breadcrumbs());
+            var list = new FullStackDS.BreadcrumbsList();
+            var item = new FullStackDS.BreadcrumbsItem();
+            item.Add(new UnityEngine.UIElements.Label("Home"));
+            list.Add(item);
+            crumbs.Add(list);
+            Assert.That(crumbs.ClassListContains("breadcrumbs"), Is.True);
+            Assert.That(list.ClassListContains("breadcrumbs__list"), Is.True);
+            Assert.That(item.ClassListContains("breadcrumbs__item"), Is.True);
+            Assert.That(item.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.Breadcrumbs).GetProperty("AriaLabel"), Is.Null);
+            Assert.That(typeof(FullStackDS.Breadcrumbs).GetProperty("Separator"), Is.Null);
+        }
+        [Test] public void TooltipOpensOnHoverAndFocusAndClosesOnLeaveAndEscape()
+        {
+            var tooltip = new FullStackDS.Tooltip();
+            var trigger = new FullStackDS.TooltipTrigger { text = "Hover" };
+            var content = new FullStackDS.TooltipContent(); content.Add(new UnityEngine.UIElements.Label("Help"));
+            tooltip.Add(trigger); tooltip.Add(content);
+            Mount(tooltip);
+            Assert.That(tooltip.Open, Is.False);
+            using (var evt = PointerEnterEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Assert.That(tooltip.Open, Is.True, "pointer enter opens the tooltip");
+            using (var evt = PointerLeaveEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Assert.That(tooltip.Open, Is.False, "pointer leave closes the tooltip");
+            using (var evt = PointerEnterEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Key(trigger, KeyCode.Escape);
+            Assert.That(tooltip.Open, Is.False, "escape closes the tooltip");
+            trigger.Focus();
+            Assert.That(tooltip.Open, Is.True, "trigger focus opens the tooltip");
+            using (var evt = PointerLeaveEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Assert.That(tooltip.Open, Is.False, "pointer leave closes the focused tooltip");
+            tooltip.Disabled = true;
+            using (var evt = PointerEnterEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Assert.That(tooltip.Open, Is.False, "a disabled trigger does not open the tooltip");
+        }
+        [Test] public void StatusComposesTextAndCarriesItsRenamedAxis()
+        {
+            var status = Mount(new FullStackDS.Status { StatusValue = "danger" });
+            status.contentContainer.Add(new UnityEngine.UIElements.Label("Offline"));
+            Assert.That(status.ClassListContains("status"), Is.True);
+            Assert.That(status.ClassListContains("status--danger"), Is.True);
+            Assert.That(status.contentContainer.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.Status).GetProperty("Icon"), Is.Null);
+        }
+        [Test] public void CardComposesSubcomponentPartsAndDensityCarrier()
+        {
+            var card = Mount(new FullStackDS.Card { Density = "inset" });
+            var header = new FullStackDS.CardHeader();
+            header.Add(new UnityEngine.UIElements.Label("Title"));
+            var content = new FullStackDS.CardContent();
+            content.Add(new UnityEngine.UIElements.Label("Body"));
+            var actions = new FullStackDS.CardActions();
+            card.Add(header); card.Add(content); card.Add(actions);
+            Assert.That(card.ClassListContains("card"), Is.True);
+            Assert.That(card.ClassListContains("card--inset"), Is.True);
+            Assert.That(header.ClassListContains("card__header"), Is.True);
+            Assert.That(content.ClassListContains("card__content"), Is.True);
+            Assert.That(header.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.Card).GetProperty("Interactive"), Is.Null);
+        }
+        [Test] public void NavListComposesItsListAndItems()
+        {
+            var nav = Mount(new FullStackDS.NavList());
+            var list = new FullStackDS.NavListList();
+            var item = new FullStackDS.NavListItem();
+            item.Add(new UnityEngine.UIElements.Label("Overview"));
+            list.Add(item);
+            nav.Add(list);
+            Assert.That(nav.ClassListContains("nav-list"), Is.True);
+            Assert.That(list.ClassListContains("nav-list__list"), Is.True);
+            Assert.That(item.ClassListContains("nav-list__item"), Is.True);
+            Assert.That(item.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.NavList).GetProperty("Orientation"), Is.Null);
+            Assert.That(typeof(FullStackDS.NavList).GetProperty("AriaLabel"), Is.Null);
+        }
+        [Test] public void SkeletonCarriesPlaceholderAxesWithoutIterationOrStateApi()
+        {
+            var skeleton = Mount(new FullStackDS.Skeleton { Variant = "text", Animate = "none", Density = "compact" });
+            Assert.That(skeleton.ClassListContains("skeleton"), Is.True);
+            Assert.That(skeleton.ClassListContains("skeleton--text"), Is.True);
+            Assert.That(skeleton.ClassListContains("skeleton--none"), Is.True);
+            Assert.That(skeleton.ClassListContains("skeleton--compact"), Is.True);
+            Assert.That(skeleton.childCount, Is.EqualTo(0));
+            foreach (var prop in new[] { "Lines", "Radius", "AspectRatio", "Decorative", "AriaLabel" })
+                Assert.That(typeof(FullStackDS.Skeleton).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void TableComposesRowsAndCellsInsideItsRegion()
+        {
+            var table = Mount(new FullStackDS.Table());
+            var row = new FullStackDS.TableRow();
+            var cell = new FullStackDS.TableCell();
+            cell.Add(new UnityEngine.UIElements.Label("42"));
+            row.Add(cell);
+            table.Add(row);
+            Assert.That(table.ClassListContains("table"), Is.True);
+            Assert.That(table.Container.ClassListContains("table__container"), Is.True);
+            Assert.That(table.contentContainer, Is.SameAs(table.Container));
+            Assert.That(table.Container.childCount, Is.EqualTo(1));
+            Assert.That(row.ClassListContains("table__row"), Is.True);
+            Assert.That(cell.ClassListContains("table__cell"), Is.True);
+            Assert.That(typeof(FullStackDS.Table).GetProperty("Responsive"), Is.Null);
+            Assert.That(typeof(FullStackDS.Table).GetProperty("AriaLabel"), Is.Null);
+        }
+        [Test] public void CodeBlockComposesLinesInsideItsCodeRegion()
+        {
+            var code = Mount(new FullStackDS.CodeBlock());
+            code.contentContainer.Add(new UnityEngine.UIElements.Label("var answer = 42;"));
+            Assert.That(code.ClassListContains("code-block"), Is.True);
+            Assert.That(code.Code.ClassListContains("code-block__code"), Is.True);
+            Assert.That(code.Code.childCount, Is.EqualTo(1));
+            Assert.That(code.contentContainer, Is.SameAs(code.Code.Children().First()));
+            foreach (var prop in new[] { "Language", "Highlight", "Tokens", "ShowLineNumbers" })
+                Assert.That(typeof(FullStackDS.CodeBlock).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void DetailsDisclosureTogglesContentPresenceAndRaisesChangeEvent()
+        {
+            var details = Mount(new FullStackDS.Details { Summary = "Advanced settings" });
+            var changes = new System.Collections.Generic.List<bool>();
+            details.RegisterValueChangedCallback(evt => changes.Add(evt.newValue));
+            Assert.That(details.Open, Is.False);
+            Assert.That(details.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(details.SummaryText.text, Is.EqualTo("Advanced settings"));
+            Submit(details.Trigger);
+            Assert.That(details.Open, Is.True);
+            Assert.That(details.Content.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(changes, Is.EqualTo(new[] { true }));
+            details.SetValueWithoutNotify(false);
+            Assert.That(details.Open, Is.False);
+            Assert.That(details.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            details.Disabled = true;
+            Assert.That(details.enabledSelf, Is.False);
+        }
+        [Test] public void ProgressClampsValueIntoItsDeclaredRangeAndTogglesValuePresence()
+        {
+            var progress = Mount(new FullStackDS.Progress());
+            progress.contentContainer.Add(new UnityEngine.UIElements.Label("50%"));
+            Assert.That(progress.ClassListContains("progress"), Is.True);
+            Assert.That(progress.Fill.ClassListContains("progress__fill"), Is.True);
+            Assert.That(progress.contentContainer, Is.SameAs(progress.ValueControl));
+            Assert.That(progress.Value, Is.EqualTo(0f));
+            Assert.That(progress.Fill.style.width.value.unit, Is.EqualTo(LengthUnit.Percent));
+            progress.Value = 50f;
+            Assert.That(progress.Fill.style.width.value.value, Is.EqualTo(50f).Within(0.01f));
+            progress.Value = 150f;
+            Assert.That(progress.Value, Is.EqualTo(100f));
+            Assert.That(progress.Fill.style.width.value.value, Is.EqualTo(100f).Within(0.01f));
+            progress.Value = -25f;
+            Assert.That(progress.Value, Is.EqualTo(0f));
+            Assert.That(progress.ValueControl.style.display.value, Is.EqualTo(DisplayStyle.None));
+            progress.ShowValue = true;
+            Assert.That(progress.ValueControl.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            progress.ShowValue = false;
+            Assert.That(progress.ValueControl.style.display.value, Is.EqualTo(DisplayStyle.None));
+            foreach (var prop in new[] { "FormatValue", "Label" })
+                Assert.That(typeof(FullStackDS.Progress).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void ChipForwardsComposedActionAndDismissAndGuardsDismissPresence()
+        {
+            var chip = Mount(new FullStackDS.Chip());
+            chip.contentContainer.Add(new UnityEngine.UIElements.Label("Filter"));
+            int clicks = 0; int dismisses = 0;
+            chip.OnClick = () => clicks++;
+            chip.OnDismiss = () => dismisses++;
+            Assert.That(chip.ClassListContains("chip"), Is.True);
+            Assert.That(chip.Action.ClassListContains("chip__action"), Is.True);
+            Assert.That(chip.Dismiss.ClassListContains("chip__dismiss"), Is.True);
+            Assert.That(chip.contentContainer, Is.SameAs(chip.Text));
+            Assert.That(chip.Dismissible, Is.False);
+            Assert.That(chip.Dismiss.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Submit(chip.Action);
+            Assert.That(clicks, Is.EqualTo(1));
+            chip.Dismissible = true;
+            Assert.That(chip.Dismiss.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Submit(chip.Dismiss);
+            Assert.That(dismisses, Is.EqualTo(1));
+            chip.Disabled = true;
+            Submit(chip.Action);
+            Submit(chip.Dismiss);
+            Assert.That(clicks, Is.EqualTo(1));
+            Assert.That(dismisses, Is.EqualTo(1));
+            foreach (var prop in new[] { "AriaLabel", "AriaExpanded", "AriaPressed", "Type" })
+                Assert.That(typeof(FullStackDS.Chip).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void CodeSnippetPaintsItsTextAttributeAndCarriesTheAsModifier()
+        {
+            var snippet = Mount(new FullStackDS.CodeSnippet());
+            Assert.That(snippet, Is.InstanceOf<TextElement>());
+            Assert.That(snippet.ClassListContains("code-snippet"), Is.True);
+            snippet.Text = "git status";
+            Assert.That(snippet.text, Is.EqualTo("git status"));
+            snippet.As = "kbd";
+            Assert.That(snippet.ClassListContains("code-snippet--kbd"), Is.True);
+            Assert.That(snippet.ClassListContains("code-snippet--code"), Is.False);
+            snippet.As = "samp";
+            Assert.That(snippet.ClassListContains("code-snippet--samp"), Is.True);
+        }
+        [Test] public void DialogOpensAsABlockingModalAndHonoursDismissalKnobs()
+        {
+            var dialog = Mount(new FullStackDS.Dialog());
+            dialog.contentContainer.Add(new UnityEngine.UIElements.Label("Settings"));
+            int changes = 0;
+            dialog.RegisterValueChangedCallback(_ => changes++);
+            Assert.That(dialog.Open, Is.False);
+            Assert.That(dialog.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            dialog.Open = true;
+            Assert.That(dialog.Open, Is.True);
+            Assert.That(dialog.Content.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(dialog.ClassListContains("is-open"), Is.True);
+            Assert.That(changes, Is.EqualTo(1));
+            Key(dialog, KeyCode.Escape);
+            Assert.That(dialog.Open, Is.False);
+            Assert.That(dialog.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            dialog.Open = true;
+            using (var evt = PointerDownEvent.GetPooled()) { evt.target = dialog.Backdrop; dialog.Backdrop.SendEvent(evt); }
+            Assert.That(dialog.Open, Is.False);
+            dialog.Open = true;
+            Submit(dialog.CloseButton);
+            Assert.That(dialog.Open, Is.False);
+            dialog.Dismissible = false;
+            Assert.That(dialog.CloseButton.style.display.value, Is.EqualTo(DisplayStyle.None));
+            dialog.Dismissible = true;
+            dialog.CloseOnEscape = false;
+            dialog.Open = true;
+            Key(dialog, KeyCode.Escape);
+            Assert.That(dialog.Open, Is.True);
+            dialog.CloseOnBackdropClick = false;
+            using (var evt = PointerDownEvent.GetPooled()) { evt.target = dialog.Backdrop; dialog.Backdrop.SendEvent(evt); }
+            Assert.That(dialog.Open, Is.True);
+            dialog.Open = false;
+            dialog.Controlled = true;
+            bool? requested = null;
+            dialog.ValueRequested += next => requested = next;
+            dialog.Open = true;
+            Submit(dialog.CloseButton);
+            Assert.That(dialog.Open, Is.True);
+            Assert.That(requested, Is.False);
+            foreach (var prop in new[] { "AriaLabel", "InitialFocus", "ReturnFocus" })
+                Assert.That(typeof(FullStackDS.Dialog).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void SheetReusesTheModalSurfaceAndAlignsToItsPlacementEdge()
+        {
+            var sheet = Mount(new FullStackDS.Sheet());
+            sheet.contentContainer.Add(new UnityEngine.UIElements.Label("Panel"));
+            Assert.That(sheet.Open, Is.False);
+            Assert.That(sheet.Side, Is.EqualTo("right"));
+            Assert.That(sheet.ClassListContains("sheet--right"), Is.True);
+            sheet.Open = true;
+            Assert.That(sheet.Content.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(sheet.ClassListContains("is-open"), Is.True);
+            sheet.Side = "left";
+            Assert.That(sheet.Surface.Placement, Is.EqualTo("left"));
+            Assert.That(sheet.ClassListContains("sheet--left"), Is.True);
+            Key(sheet, KeyCode.Escape);
+            Assert.That(sheet.Open, Is.False);
+            sheet.Open = true;
+            using (var evt = PointerDownEvent.GetPooled()) { evt.target = sheet.Overlay; sheet.Overlay.SendEvent(evt); }
+            Assert.That(sheet.Open, Is.False);
+            sheet.Open = true;
+            Submit(sheet.Close);
+            Assert.That(sheet.Open, Is.False);
+            foreach (var prop in new[] { "AriaLabel", "Modal" })
+                Assert.That(typeof(FullStackDS.Sheet).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void InputMapsItsStringChannelToTheNativeTextField()
+        {
+            var input = Mount(new FullStackDS.Input());
+            Assert.That(input, Is.InstanceOf<UnityEngine.UIElements.TextField>());
+            Assert.That(input.ClassListContains("input"), Is.True);
+            input.Placeholder = "Search";
+            Assert.That(input.textEdition.placeholder, Is.EqualTo("Search"));
+            input.SetValueWithoutNotify("typed");
+            Assert.That(input.Value, Is.EqualTo("typed"));
+            using (var evt = ChangeEvent<string>.GetPooled("", "edited")) { evt.target = input; input.SendEvent(evt); }
+            Assert.That(input.Value, Is.EqualTo("edited"));
+            input.Controlled = true;
+            string requested = null;
+            input.ValueRequested += next => requested = next;
+            using (var evt = ChangeEvent<string>.GetPooled("edited", "blocked")) { evt.target = input; input.SendEvent(evt); }
+            Assert.That(requested, Is.EqualTo("blocked"));
+            Assert.That(input.Value, Is.EqualTo("edited"));
+            input.SetValueWithoutNotify("committed");
+            Assert.That(input.Value, Is.EqualTo("committed"));
+            input.Disabled = true;
+            Assert.That(input.enabledSelf, Is.False);
+            foreach (var prop in new[] { "Type", "Name", "Required", "Invalid", "AriaLabel" })
+                Assert.That(typeof(FullStackDS.Input).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void TextFieldWrapsItsNativeFieldAndExposesNamedSlots()
+        {
+            var field = Mount(new FullStackDS.TextField());
+            Assert.That(field, Is.Not.InstanceOf<UnityEngine.UIElements.TextField>());
+            Assert.That(field.Field, Is.InstanceOf<UnityEngine.UIElements.TextField>());
+            Assert.That(field.ClassListContains("text-field"), Is.True);
+            Assert.That(field.LabelSlot.ClassListContains("text-field__label"), Is.True);
+            field.LabelSlot.Add(new UnityEngine.UIElements.Label("Name"));
+            field.DescriptionSlot.Add(new UnityEngine.UIElements.Label("Your display name"));
+            field.ErrorSlot.Add(new UnityEngine.UIElements.Label("Required"));
+            Assert.That(field.LabelSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.DescriptionSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.ErrorSlot.childCount, Is.EqualTo(1));
+            field.SetValueWithoutNotify("typed");
+            Assert.That(field.Value, Is.EqualTo("typed"));
+            Assert.That(field.Field.value, Is.EqualTo("typed"));
+            field.Controlled = true;
+            string requested = null;
+            field.ValueRequested += next => requested = next;
+            using (var evt = ChangeEvent<string>.GetPooled("typed", "blocked")) { evt.target = field.Field; field.Field.SendEvent(evt); }
+            Assert.That(requested, Is.EqualTo("blocked"));
+            Assert.That(field.Value, Is.EqualTo("typed"));
+            field.Disabled = true;
+            Assert.That(field.enabledSelf, Is.False);
+        }
+        [Test] public void ToastPresenceTitleAndCloseFollowTheSurface()
+        {
+            var toast = Mount(new FullStackDS.Toast());
+            toast.contentContainer.Add(new UnityEngine.UIElements.Label("Saved"));
+            Assert.That(toast.ClassListContains("toast"), Is.True);
+            Assert.That(toast.Open, Is.False);
+            Assert.That(toast.Item.style.display.value, Is.EqualTo(DisplayStyle.None));
+            toast.Open = true;
+            Assert.That(toast.Item.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(toast.ClassListContains("is-open"), Is.True);
+            toast.Title = "Saved";
+            Assert.That(toast.TitleControl.text, Is.EqualTo("Saved"));
+            Assert.That(toast.TitleControl.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            toast.Variant = "success";
+            Assert.That(toast.ClassListContains("toast--success"), Is.True);
+            Submit(toast.Close);
+            Assert.That(toast.Open, Is.False);
+            toast.Open = true;
+            Key(toast, KeyCode.Escape);
+            Assert.That(toast.Open, Is.False);
+            toast.Controlled = true;
+            bool? requested = null;
+            toast.ValueRequested += next => requested = next;
+            toast.Open = true;
+            Submit(toast.Close);
+            Assert.That(toast.Open, Is.True);
+            Assert.That(requested, Is.False);
+            foreach (var prop in new[] { "Politeness", "AriaLabel" })
+                Assert.That(typeof(FullStackDS.Toast).GetProperty(prop), Is.Null, prop);
+        }
+        [UnityTest] public IEnumerator ToastAutoDismissesAfterItsDuration()
+        {
+            var toast = Mount(new FullStackDS.Toast { Duration = 10f });
+            toast.Open = true;
+            Assert.That(toast.Open, Is.True);
+            var deadline = Time.realtimeSinceStartup + 2f;
+            while (toast.Open && Time.realtimeSinceStartup < deadline) yield return null;
+            Assert.That(toast.Open, Is.False);
+        }
+        [Test] public void FieldExposesItsSlotHostsAndStatusCarrier()
+        {
+            var field = Mount(new FullStackDS.Field());
+            Assert.That(field.ClassListContains("field"), Is.True);
+            field.LabelSlot.Add(new UnityEngine.UIElements.Label("Name"));
+            field.ControlSlot.Add(new FullStackDS.Input());
+            field.HelpSlot.Add(new UnityEngine.UIElements.Label("Shown on your profile"));
+            field.ErrorSlot.Add(new UnityEngine.UIElements.Label("Required"));
+            Assert.That(field.LabelSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.ControlSlot[0], Is.InstanceOf<FullStackDS.Input>());
+            Assert.That(field.HelpSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.ErrorSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.ValidatingIndicatorSlot.childCount, Is.EqualTo(0));
+            field.Status = "valid";
+            Assert.That(field.ClassListContains("field--valid"), Is.True);
+            field.Status = "invalid";
+            Assert.That(field.ClassListContains("field--invalid"), Is.True);
+            foreach (var prop in new[] { "Value", "Disabled", "Name", "Required", "Validating", "ReadOnly" })
+                Assert.That(typeof(FullStackDS.Field).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void WalkthroughComposesSlotsAndWiresItsControlCallbacks()
+        {
+            var tour = Mount(new FullStackDS.Walkthrough());
+            tour.TitleSlot.Add(new UnityEngine.UIElements.Label("Step one"));
+            tour.DescriptionSlot.Add(new UnityEngine.UIElements.Label("Try the settings tab"));
+            Assert.That(tour.TitleSlot.childCount, Is.EqualTo(1));
+            Assert.That(tour.DescriptionSlot.childCount, Is.EqualTo(1));
+            tour.Index = 2;
+            Assert.That(tour.Index, Is.EqualTo(2));
+            tour.ProgressLabel = "2 of 3";
+            Assert.That(tour.Counter.text, Is.EqualTo("2 of 3"));
+            tour.NextLabel = "Continue";
+            Assert.That(tour.Next.text, Is.EqualTo("Continue"));
+            tour.PreviousDisabled = true;
+            Assert.That(tour.Prev.enabledSelf, Is.False);
+            tour.PreviousDisabled = false;
+            Assert.That(tour.Prev.enabledSelf, Is.True);
+            int skipped = 0, previous = 0, next = 0;
+            tour.OnSkip = () => skipped++;
+            tour.OnPrevious = () => previous++;
+            tour.OnNext = () => next++;
+            Submit(tour.Skip);
+            Submit(tour.Prev);
+            Submit(tour.Next);
+            Assert.That(skipped, Is.EqualTo(1));
+            Assert.That(previous, Is.EqualTo(1));
+            Assert.That(next, Is.EqualTo(1));
+            Assert.That(tour.Dots.childCount, Is.EqualTo(0));
+            foreach (var prop in new[] { "Steps", "Placement", "CloseOnOutsideClick", "AutoStart", "StorageKey" })
+                Assert.That(typeof(FullStackDS.Walkthrough).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void LinksCarriesItsDestinationAndRaisesAnActivationRequest()
+        {
+            var link = Mount(new FullStackDS.Links());
+            link.Add(new UnityEngine.UIElements.Label("Open settings"));
+            Assert.That(link.ClassListContains("links"), Is.True);
+            link.Href = "/settings";
+            link.Target = "_blank";
+            link.Rel = "noopener";
+            Assert.That(link.Href, Is.EqualTo("/settings"));
+            Assert.That(link.Target, Is.EqualTo("_blank"));
+            Assert.That(link.Rel, Is.EqualTo("noopener"));
+            string activated = null;
+            link.Activated += href => activated = href;
+            Click(link);
+            Assert.That(activated, Is.EqualTo("/settings"));
+            link.Disabled = true;
+            activated = null;
+            Click(link);
+            Assert.That(activated, Is.Null);
+            link.Disabled = false;
+            link.Size = "large";
+            Assert.That(link.ClassListContains("links--large"), Is.True);
+            foreach (var prop in new[] { "Visited", "Navigate", "OnClick" })
+                Assert.That(typeof(FullStackDS.Links).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void ImageLoadsItsResourcesSourceAndProjectsCarriers()
+        {
+            var media = Mount(new FullStackDS.Image());
+            Assert.That(media, Is.InstanceOf<UnityEngine.UIElements.Image>());
+            Assert.That(media.ClassListContains("image"), Is.True);
+            media.Src = "missing-texture";
+            Assert.That(media.image, Is.Null);
+            media.Src = "";
+            Assert.That(media.image, Is.Null);
+            media.Radius = "full";
+            Assert.That(media.ClassListContains("image--radius-full"), Is.True);
+            foreach (var prop in new[] { "Alt", "Width", "Height", "Loading", "Sizes", "AspectRatio", "ObjectFit", "ObjectPosition", "FallbackSrc" })
+                Assert.That(typeof(FullStackDS.Image).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void AvatarGuardsItsImageAndInitialsFallback()
+        {
+            var avatar = Mount(new FullStackDS.Avatar());
+            Assert.That(avatar.Image, Is.InstanceOf<FullStackDS.Image>());
+            Assert.That(avatar.InitialsControl, Is.InstanceOf<Label>());
+            Assert.That(avatar.Image.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(avatar.InitialsControl.style.display.value, Is.EqualTo(DisplayStyle.None));
+            avatar.Src = "missing-avatar-texture";
+            Assert.That(avatar.Image.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(avatar.Image.Src, Is.EqualTo("missing-avatar-texture"));
+            avatar.Src = "";
+            Assert.That(avatar.Image.style.display.value, Is.EqualTo(DisplayStyle.None));
+            avatar.Initials = "DR";
+            Assert.That(avatar.InitialsControl.text, Is.EqualTo("DR"));
+            Assert.That(avatar.InitialsControl.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            avatar.Initials = "";
+            Assert.That(avatar.InitialsControl.style.display.value, Is.EqualTo(DisplayStyle.None));
+            avatar.Size = "large";
+            Assert.That(avatar.ClassListContains("avatar--large"), Is.True);
+            foreach (var prop in new[] { "Name", "Priority", "Alt", "Loading" })
+                Assert.That(typeof(FullStackDS.Avatar).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void NavTreeSwitchesItsHeadingPairAndComposesChildItems()
+        {
+            var tree = Mount(new FullStackDS.NavTree());
+            tree.Label = "Workspace";
+            Assert.That(tree.HeadingLink.text, Is.EqualTo("Workspace"));
+            Assert.That(tree.HeadingLabel.text, Is.EqualTo("Workspace"));
+            Assert.That(tree.HeadingLink.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(tree.HeadingLabel.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            tree.Href = "/workspace";
+            Assert.That(tree.Link.Href, Is.EqualTo("/workspace"));
+            Assert.That(tree.HeadingLink.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(tree.HeadingLabel.style.display.value, Is.EqualTo(DisplayStyle.None));
+            string activated = null;
+            tree.Link.Activated += href => activated = href;
+            Click(tree.HeadingLink);
+            Assert.That(activated, Is.EqualTo("/workspace"));
+            tree.Href = "";
+            Assert.That(tree.HeadingLink.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(tree.HeadingLabel.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            var child = new FullStackDS.NavTree { Label = "Settings" };
+            tree.Add(child);
+            Assert.That(tree.contentContainer, Is.SameAs(tree.List));
+            Assert.That(tree.List.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "Icon", "IconName", "IconSize", "CurrentPage", "Navigate" })
+                Assert.That(typeof(FullStackDS.NavTree).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void PostcardProjectsObjectPathTextAndComposesItsBody()
+        {
+            var postcard = Mount(new FullStackDS.Postcard());
+            postcard.AuthorName = "Ada Lovelace";
+            postcard.AuthorHandle = "@ada";
+            postcard.Timestamp = "2h ago";
+            postcard.StatsLikes = "42";
+            Assert.That(postcard.DisplayName.text, Is.EqualTo("Ada Lovelace"));
+            Assert.That(postcard.Handle.text, Is.EqualTo("@ada"));
+            Assert.That(postcard.TimestampControl.text, Is.EqualTo("2h ago"));
+            Assert.That(postcard.Stat.text, Is.EqualTo("42"));
+            Assert.That(postcard.contentContainer, Is.SameAs(postcard.Content));
+            postcard.Add(new FullStackDS.Text());
+            Assert.That(postcard.Content.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "Author", "PostId", "Embed", "Datetime", "AriaLabelledby" })
+                Assert.That(typeof(FullStackDS.Postcard).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void PaginationBuildsItsStripFromLabelsAndCommitsTheIndex()
+        {
+            var pages = Mount(new FullStackDS.Pagination());
+            pages.DefaultIndex = 1;
+            pages.Pages = new[] { "1", "2", "3" };
+            Assert.That(pages.Index, Is.EqualTo(1));
+            Assert.That(pages.childCount, Is.EqualTo(3));
+            var buttons = pages.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(buttons.Count, Is.EqualTo(3));
+            Assert.That(buttons[0].ClassListContains("pagination__item"), Is.True);
+            Assert.That(buttons[0].Q<Label>().ClassListContains("pagination__label"), Is.True);
+            Assert.That(buttons[0].Q<Label>(className: "pagination__label").text, Is.EqualTo("1"));
+            Assert.That(buttons[0].Q<VisualElement>(className: "pagination__marker"), Is.Not.Null);
+            int changed = -1, requested = -1;
+            pages.OnIndexChange += value => changed = value;
+            pages.PageRequested += value => requested = value;
+            Submit(buttons[2]);
+            Assert.That(pages.Index, Is.EqualTo(2));
+            Assert.That(changed, Is.EqualTo(2));
+            pages.Controlled = true;
+            Submit(buttons[0]);
+            Assert.That(requested, Is.EqualTo(0));
+            Assert.That(pages.Index, Is.EqualTo(2));
+            pages.Disabled = true;
+            Submit(buttons[1]);
+            Assert.That(pages.Index, Is.EqualTo(2));
+            pages.Presentation = "pages";
+            Assert.That(pages.ClassListContains("pagination--pages"), Is.True);
+            foreach (var prop in new[] { "Label", "AriaLabel", "Current", "DataCurrent" })
+                Assert.That(typeof(FullStackDS.Pagination).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void OtpBuildsOneCharacterFieldsAndAssemblesItsValue()
+        {
+            var otp = Mount(new FullStackDS.OTP { Length = 4 });
+            Assert.That(otp.Group.childCount, Is.EqualTo(4));
+            var fields = otp.Group.Query<UnityEngine.UIElements.TextField>().ToList();
+            Assert.That(fields.Count, Is.EqualTo(4));
+            Assert.That(fields[0].maxLength, Is.EqualTo(1));
+            Assert.That(fields[0].ClassListContains("otp__field"), Is.True);
+            string changed = null, completed = null;
+            otp.OnChange += value => changed = value;
+            otp.Completed += value => completed = value;
+            otp.Value = "12";
+            Assert.That(otp.Value, Is.EqualTo("12"));
+            Assert.That(fields[0].value, Is.EqualTo("1"));
+            Assert.That(fields[2].value, Is.EqualTo(""));
+            fields[2].value = "3";
+            Assert.That(changed, Is.EqualTo("123"));
+            fields[3].value = "4";
+            Assert.That(completed, Is.EqualTo("1234"));
+            fields[2].value = "x";
+            Assert.That(otp.Value, Is.EqualTo("1234"));
+            otp.Mode = "alphanumeric";
+            fields[2].value = "a";
+            Assert.That(otp.Value, Is.EqualTo("12a4"));
+            otp.Controlled = true;
+            string requested = null;
+            otp.ValueRequested += value => requested = value;
+            fields[1].value = "9";
+            Assert.That(requested, Is.EqualTo("19a4"));
+            Assert.That(otp.Value, Is.EqualTo("12a4"));
+            otp.Disabled = true;
+            Assert.That(fields[0].enabledSelf, Is.False);
+            otp.ReadOnly = true;
+            Assert.That(fields[0].isReadOnly, Is.True);
+            foreach (var prop in new[] { "FieldLabel", "Label", "AriaDescribedby" })
+                Assert.That(typeof(FullStackDS.OTP).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void RadioGroupBuildsNativeRadiosAndCommitsTheSelection()
+        {
+            var group = Mount(new FullStackDS.RadioGroup());
+            group.Options = new[]
+            {
+                new FullStackDS.RadioGroup.RadioGroupOption(false, "First choice", "alpha", "Alpha"),
+                new FullStackDS.RadioGroup.RadioGroupOption(false, "Second choice", "beta", "Beta"),
+                new FullStackDS.RadioGroup.RadioGroupOption(true, "Unavailable", "gamma", "Gamma"),
+            };
+            Assert.That(group.childCount, Is.EqualTo(3));
+            var radios = group.Query<UnityEngine.UIElements.RadioButton>().ToList();
+            Assert.That(radios.Count, Is.EqualTo(3));
+            Assert.That(radios[0].ClassListContains("radio-group__item"), Is.True);
+            Assert.That(radios[0].label, Is.EqualTo("Alpha"));
+            Assert.That(radios[0].tooltip, Is.EqualTo("First choice"));
+            Assert.That(radios[2].enabledSelf, Is.False);
+            group.Value = "beta";
+            Assert.That(radios[1].value, Is.True);
+            Assert.That(radios[0].value, Is.False);
+            string changed = null, requested = null;
+            group.OnChange += value => changed = value;
+            group.ValueRequested += value => requested = value;
+            radios[0].value = true;
+            Assert.That(group.Value, Is.EqualTo("alpha"));
+            Assert.That(changed, Is.EqualTo("alpha"));
+            group.Controlled = true;
+            radios[1].value = true;
+            Assert.That(requested, Is.EqualTo("beta"));
+            Assert.That(group.Value, Is.EqualTo("alpha"));
+            Assert.That(radios[0].value, Is.True);
+            group.Orientation = "horizontal";
+            Assert.That(group.ClassListContains("radio-group--horizontal"), Is.True);
+            foreach (var prop in new[] { "Name", "AriaLabel", "DataChecked" })
+                Assert.That(typeof(FullStackDS.RadioGroup).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void SelectBuildsItsListboxAndOwnsBothChannels()
+        {
+            var select = Mount(new FullStackDS.Select());
+            select.Placeholder = "Pick a page";
+            Assert.That(select.Text.text, Is.EqualTo("Pick a page"));
+            select.Options = new[]
+            {
+                new FullStackDS.Select.SelectOption("alpha", false, "Alpha"),
+                new FullStackDS.Select.SelectOption("beta", false, "Beta"),
+                new FullStackDS.Select.SelectOption("gamma", true, "Gamma"),
+            };
+            Assert.That(select.OptionsControl.childCount, Is.EqualTo(3));
+            var options = select.OptionsControl.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(options.Count, Is.EqualTo(3));
+            Assert.That(options[0].ClassListContains("select__option"), Is.True);
+            Assert.That(options[0].text, Is.EqualTo("Alpha"));
+            Assert.That(options[2].enabledSelf, Is.False);
+            Assert.That(select.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            select.Open = true;
+            Assert.That(select.Content.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(select.ClassListContains("select--open"), Is.True);
+            bool? openChanged = null;
+            string changed = null;
+            select.OnOpenChange += value => openChanged = value;
+            select.OnChange += value => changed = value;
+            Submit(select.Trigger);
+            Assert.That(openChanged, Is.False);
+            Assert.That(select.Open, Is.False);
+            select.Open = true;
+            Submit(options[1]);
+            Assert.That(select.Value, Is.EqualTo("beta"));
+            Assert.That(changed, Is.EqualTo("beta"));
+            Assert.That(select.Text.text, Is.EqualTo("Beta"));
+            Assert.That(select.Open, Is.False);
+            select.Controlled = true;
+            string requested = null;
+            select.ValueRequested += value => requested = value;
+            select.Open = true;
+            Submit(options[0]);
+            Assert.That(requested, Is.EqualTo("alpha"));
+            Assert.That(select.Value, Is.EqualTo("beta"));
+            select.OpenControlled = true;
+            bool? openRequested = null;
+            select.OpenRequested += value => openRequested = value;
+            Submit(select.Trigger);
+            Assert.That(openRequested, Is.True);
+            select.Disabled = true;
+            Assert.That(select.Trigger.enabledSelf, Is.False);
+            select.Size = "lg";
+            Assert.That(select.ClassListContains("select--lg"), Is.True);
+            foreach (var prop in new[] { "Searchable", "SearchInput", "TriggerLabel", "SearchLabel", "Multiple" })
+                Assert.That(typeof(FullStackDS.Select).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void ShuttleDerivesBothListsAndTransfersTheSelection()
+        {
+            var shuttle = Mount(new FullStackDS.Shuttle());
+            shuttle.Options = new[] { "alpha", "beta", "gamma", "delta" };
+            shuttle.DefaultValue = new[] { "beta" };
+            var buttons = shuttle.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(buttons.Count, Is.EqualTo(6));
+            Assert.That(buttons[0].text, Is.EqualTo("alpha"));
+            Assert.That(buttons[0].ClassListContains("shuttle__item"), Is.True);
+            var add = buttons[3];
+            var remove = buttons[4];
+            Assert.That(add.ClassListContains("shuttle__add"), Is.True);
+            Assert.That(add.enabledSelf, Is.False);
+            Assert.That(remove.ClassListContains("shuttle__remove"), Is.True);
+            Assert.That(buttons[5].text, Is.EqualTo("beta"));
+            string[] changed = null;
+            shuttle.OnValueChange += value => changed = value;
+            Submit(buttons[0]);
+            Assert.That(add.enabledSelf, Is.True);
+            Submit(add);
+            Assert.That(shuttle.Value, Is.EqualTo(new[] { "beta", "alpha" }));
+            Assert.That(changed, Is.EqualTo(new[] { "beta", "alpha" }));
+            var afterAdd = shuttle.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(afterAdd[0].text, Is.EqualTo("gamma"));
+            Assert.That(afterAdd[1].text, Is.EqualTo("delta"));
+            Assert.That(remove.enabledSelf, Is.False);
+            Assert.That(afterAdd[4].text, Is.EqualTo("beta"));
+            Assert.That(afterAdd[5].text, Is.EqualTo("alpha"));
+            Submit(afterAdd[4]);
+            Assert.That(remove.enabledSelf, Is.True);
+            Submit(remove);
+            Assert.That(shuttle.Value, Is.EqualTo(new[] { "alpha" }));
+            var afterRemove = shuttle.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(afterRemove[0].text, Is.EqualTo("beta"));
+            Assert.That(afterRemove[5].text, Is.EqualTo("alpha"));
+            shuttle.Controlled = true;
+            string[] requested = null;
+            shuttle.ValueRequested += value => requested = value;
+            Submit(afterRemove[1]);
+            Submit(add);
+            Assert.That(requested, Is.EqualTo(new[] { "alpha", "gamma" }));
+            Assert.That(shuttle.Value, Is.EqualTo(new[] { "alpha" }));
+            Assert.That(shuttle.childCount, Is.EqualTo(3));
+            foreach (var prop in new[] { "AriaLabel", "DataValue", "Tabindex", "AriaSelected", "Available" })
+                Assert.That(typeof(FullStackDS.Shuttle).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void ShowMoreOwnsTheExpansionChannelAndPaintsItsLabel()
+        {
+            var showMore = Mount(new FullStackDS.ShowMore());
+            Assert.That(showMore.hierarchy.childCount, Is.EqualTo(2));
+            Assert.That(showMore.childCount, Is.EqualTo(0));
+            showMore.Content.Add(new Label { text = "Clamped body" });
+            Assert.That(showMore.Content.childCount, Is.EqualTo(1));
+            Assert.That(showMore.childCount, Is.EqualTo(1));
+            showMore.ShowMoreLabel = "Show more";
+            showMore.ShowLessLabel = "Show less";
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show more"));
+            showMore.DefaultExpanded = true;
+            Assert.That(showMore.Expanded, Is.True);
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show less"));
+            Assert.That(showMore.ClassListContains("show-more--expanded"), Is.True);
+            showMore.Expanded = false;
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show more"));
+            Assert.That(showMore.ClassListContains("show-more--expanded"), Is.False);
+            bool? changed = null;
+            showMore.OnExpandedChange += value => changed = value;
+            Submit(showMore.Trigger);
+            Assert.That(showMore.Expanded, Is.True);
+            Assert.That(changed, Is.True);
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show less"));
+            Assert.That(showMore.ClassListContains("show-more--expanded"), Is.True);
+            showMore.Controlled = true;
+            bool? requested = null;
+            showMore.ExpandedRequested += value => requested = value;
+            Submit(showMore.Trigger);
+            Assert.That(requested, Is.False);
+            Assert.That(showMore.Expanded, Is.True);
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show less"));
+            Assert.That(typeof(FullStackDS.ShowMore).GetProperty("MaxLines"), Is.Null);
         }
     }
 }
