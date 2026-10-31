@@ -2,7 +2,6 @@ id: UNITY-BADGE-01
 title: 'Admit Badge to the Unity UI Toolkit target as a carrier-backed container with a refused node-content icon chrome'
 mode: feature
 lifecycle_state: active
-worktree: unity-badge
 created_at: '2026-10-31T09:21:00.248Z'
 updated_at: '2026-10-31T09:31:34.466Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
