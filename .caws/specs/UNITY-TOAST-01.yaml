@@ -54,3 +54,11 @@ contracts:
   - name: 'toast-overlay'
     type: behavior
     path: 'packages/ds-contracts/components/Toast/Toast.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 16922b56c: focused unity codegen + cli seam 227/227 pass, including the ephemeral-toast lowering predicate, ToastSurface attach with item/close/title/state class, behaviour-owned item/title/slot guards, title/duration emitted properties, the toast portal/dismissal families and the removal of the obsolete portal and surface-presence catch-alls (novel leaves now fail classification); audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T14:07:44.396Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders an ephemeral toast viewport with a runtime timer and title"
+    exit_code: 0
+    commit_sha: "16922b56c1b5ab5f0948fad16d8237ae1c1d925c"
