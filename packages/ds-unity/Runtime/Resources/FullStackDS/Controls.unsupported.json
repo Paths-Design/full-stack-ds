@@ -986,6 +986,630 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Card",
+      "sourceKey": ".card--interactive:active",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:active",
+      "part": "root",
+      "property": "transform",
+      "value": "translateY(0)",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:hover",
+      "part": "root",
+      "property": "background-color",
+      "value": "#f7f7f7",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:hover",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card--interactive:hover",
+      "part": "root",
+      "property": "transform",
+      "value": "translateY(-1px)",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Card",
+      "sourceKey": ".card__link:hover",
+      "part": "link",
+      "property": "text-decoration",
+      "value": "underline",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "media",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "gap",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "padding",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "media",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "gap",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "media",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "media",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "gap",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "media",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "gap",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "media",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "gap",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "padding",
+      "value": "28px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "media",
+      "property": "border-radius",
+      "value": "2px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "gap",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "padding",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "media",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-width",
+      "value": "1px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "media",
+      "property": "border-radius",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-raised)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "padding",
+      "value": "24px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "media",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "gap",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "focus",
+      "part": "root",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "header",
+      "part": "header",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "link",
+      "part": "link",
+      "property": "text-decoration",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "note",
+      "part": "note",
+      "property": "font-size",
+      "value": "0.875em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "note",
+      "part": "note",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-property",
+      "value": "box-shadow, border-color, background-color, transform",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "card.elevation.raised",
+      "value": "0px 2px 4px #0000000f, 0px 4px 8px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Card",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "card.elevation.resting",
+      "value": "0px 1px 2px #0000000f, 0px 1px 3px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Checkbox",
       "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
       "part": "indicator",
