@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T12:47:58.911Z"
     artifact_path: packages/ds-unity/Runtime/Components/Chip/Chip.cs
     commit_sha: "49fc0c3a2e6745ba7d160e6a7f69384497844275"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 397e2c34b (sourceDirty false): 69/69 passed, zero failed/skipped (test-run start 2026-10-31 12:47:21Z; resultsSha256 af17e6769040b1d1b83c7d643a2c947955df5671c22a7f6e910035c66a4afb33). The added case composes a label into the action button, fires the forwarded click/dismiss callbacks, checks the guarded dismiss presence and disabled state, and asserts the absent ARIA/form-type API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T12:47:59.443Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.ChipForwardsComposedActionAndDismissAndGuardsDismissPresence
+    exit_code: 0
+    commit_sha: "397e2c34bdf838bf84e791f9d9d450ad22f42e23"
