@@ -1,9 +1,11 @@
 id: UNITY-POSTCARD-01
 title: 'Admit Postcard to the Unity target with projected object-path text attributes'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Postcard admitted to the Unity target/package (forty-second allowlisted control) with projected object-path text: ProjectedText renders the inline header/content/footer scaffold with a body content container and paints nested-property leaves through flattened generated attributes; object author/stats, post id, embed, machine datetime and aria-labelledby refused; element accessor renamed on collision; codegen+cli 234/234, boundary audit clean, root 5416/5416, real Unity EditMode 83/83, package sheet regenerated'
 created_at: '2026-10-31T15:20:53.895Z'
-updated_at: '2026-10-31T15:28:19.898Z'
+updated_at: '2026-10-31T15:28:43.616Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
