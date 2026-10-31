@@ -16,7 +16,7 @@ namespace FullStackDS
         private readonly VisualElement host;
         private readonly UnityEngine.UIElements.Button previousButton;
         private readonly UnityEngine.UIElements.Button nextButton;
-        private readonly Label caption;
+        private readonly UnityEngine.UIElements.Label caption;
         private readonly VisualElement grid;
         private readonly string prefix;
         private readonly string weekdayClass;
