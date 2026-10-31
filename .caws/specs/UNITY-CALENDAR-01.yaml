@@ -66,3 +66,10 @@ evidence:
     recorded_at: "2026-10-31T19:02:46.003Z"
     artifact_path: packages/ds-unity/Runtime/Components/Calendar/Calendar.cs
     commit_sha: c0c57c267bad72b70b45df13ecc5751f1c5ecd92
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 2203f9e86c8f7c8b113b88a6112398f687f8e8cf (sourceDirty false): 94/94 passed, zero failed/skipped (test-run start 2026-10-31 19:01:45Z; resultsSha256 961624fa42916e10cf30d7dadf00c4de3f8eeeb95c06541a6ae3f6c5923d4996). The added case asserts the rendered caption, the 44-control shell (two nav buttons plus a six-week grid), single-date selection with change callback, bounded month navigation, min/max day enablement, controlled value request without commit, disabled propagation and the absent range/keyboard/localisation API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T19:02:46.720Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.CalendarRendersItsMonthAndCommitsSingleDates
+    exit_code: 0
+    commit_sha: "2203f9e86c8f7c8b113b88a6112398f687f8e8cf"
