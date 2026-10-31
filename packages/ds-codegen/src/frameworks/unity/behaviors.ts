@@ -45,10 +45,19 @@ export interface ItemGroupLowering extends LoweringBase {
   multiple: boolean;
   focus: ItemGroupFocus;
 }
-export interface AnchoredSurfaceLowering extends LoweringBase {
+export interface AnchoredSurfaceLowering {
   behavior: "AnchoredSurface";
+  channel: NormalizedChannelIR;
+  /** `is-<value>` for the projected state dimension; absent in hover-open mode,
+   * whose contract projects a multi-value transition rather than one open class. */
+  stateClass?: string;
   trigger: PartIR;
   content: PartIR;
+  /** Contract-fact hover/focus open mode (tooltip surface); click mode when absent. */
+  openOnHover?: boolean;
+  openOnFocus?: boolean;
+  closeOnPointerLeave?: boolean;
+  contentFocusable?: boolean;
 }
 /**
  * A projected-children action: a native action affordance whose content is
@@ -121,6 +130,28 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
   const portal = ir.behavior.portal?.enabled === true;
   const refuseFocus = (behavior: UnityBehavior): never => { throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which ${behavior} does not realise`); };
   if (ir.surface) {
+    // Hover/focus-open anchored surface: a non-interactive content surface that
+    // opens from pointer hover (and focus) and closes on pointer leave. The
+    // contract facts select the mode; the click-opened surface below is the
+    // other mode of the same behavior.
+    const hoverSurface = ir.surface.kind === "tooltip" && isPartAnchoredSurface(ir.surface) &&
+      ir.surface.modality === "non-blocking" && ir.surface.content?.interactive === false &&
+      ir.surface.openTriggers.includes("hover") && portal &&
+      (focus === undefined || focus === "none") &&
+      ir.interaction?.triggers.length === 1 && ir.interaction.triggers[0]!.operation === "open" &&
+      ir.surface.anchor !== undefined && ir.surface.content !== undefined;
+    if (hoverSurface) {
+      return {
+        behavior: "AnchoredSurface",
+        channel: ir.interaction!.channel,
+        trigger: ir.surface.anchor!.part,
+        content: ir.surface.content!.part,
+        openOnHover: true,
+        openOnFocus: ir.surface.openTriggers.includes("focus"),
+        closeOnPointerLeave: ir.surface.dismissal.includes("pointer-leave"),
+        contentFocusable: false,
+      };
+    }
     if (!isPartAnchoredSurface(ir.surface) || ir.surface.modality !== "non-blocking" ||
         ir.surface.openTriggers.join() !== "click" || ir.interaction?.triggers[0]?.operation !== "toggle" ||
         ir.surface.dismissal.some(d => !["escape", "outside-click", "blur"].includes(d))) {

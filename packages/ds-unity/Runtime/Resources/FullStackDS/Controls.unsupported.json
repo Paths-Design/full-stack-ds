@@ -2140,6 +2140,94 @@
       "property": "transition-duration",
       "value": "150ms",
       "reason": "uss-property"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:canary",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:corporate",
+      "part": "content",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:default",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:developer",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:fintech",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:forest",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:marketplace",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:monochrome",
+      "part": "content",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:quickserve",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "brand:streaming",
+      "part": "content",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tooltip",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "z-index",
+      "value": "1800",
+      "reason": "uss-property"
     }
   ]
 }

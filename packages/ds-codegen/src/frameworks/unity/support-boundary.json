@@ -707,9 +707,9 @@
     {
       "id": "interaction-operation",
       "match": ["contract:/interaction/triggers/*/operation"],
-      "valueIn": ["select", "toggle-item", "toggle"],
+      "valueIn": ["select", "toggle-item", "toggle", "open"],
       "disposition": "lowered",
-      "via": "The dispatcher attaches ItemGroup for select / toggle-item and AnchoredSurface for toggle; ItemGroup.Attach(…, operation, …) carries the operation into the runtime."
+      "via": "The dispatcher attaches ItemGroup for select / toggle-item, and AnchoredSurface for toggle (click mode) or open (hover/focus-open mode); ItemGroup.Attach(…, operation, …) carries the operation into the runtime."
     },
     {
       "id": "interaction-parts-channel",
@@ -817,9 +817,9 @@
     {
       "id": "dismissal-supported",
       "match": ["contract:/dismissal/triggers/*/event", "contract:/surface/dismissal/*"],
-      "valueIn": ["escape", "outsideClick", "outside-click", "blur"],
+      "valueIn": ["escape", "outsideClick", "outside-click", "blur", "pointer-leave"],
       "disposition": "lowered",
-      "via": "AnchoredSurface CloseOnEscape / CloseOnOutsideClick / CloseOnBlur over the anchor/content union."
+      "via": "AnchoredSurface CloseOnEscape / CloseOnOutsideClick / CloseOnBlur over the anchor/content union; hover mode closes on pointer leave when the surface declares it."
     },
     {
       "id": "dismissal-enabled-by",
@@ -851,9 +851,9 @@
     {
       "id": "surface-open-click",
       "match": ["contract:/surface/openTriggers/*"],
-      "valueIn": ["click"],
+      "valueIn": ["click", "hover", "focus"],
       "disposition": "lowered",
-      "via": "The trigger Button's clicked event toggles the surface."
+      "via": "Click mode toggles on the trigger Button's clicked event; the hover/focus open mode listens for pointer enter and focus on the trigger and closes on pointer leave."
     },
     {
       "id": "surface-anchor-content",
@@ -864,9 +864,9 @@
     {
       "id": "surface-content-interactive",
       "match": ["contract:/surface/content/interactive"],
-      "valueIn": [true],
+      "valueIn": [true, false],
       "disposition": "lowered",
-      "via": "Interactive surface content is a generated ScrollView sub-element (R1) the behavior makes focusable; the dispatcher refuses non-interactive content because the runtime cannot make it inert (UNITY_UNSUPPORTED_SURFACE)."
+      "via": "Interactive surface content is a generated focusable sub-element (R1); non-interactive content (tooltip) is generated non-focusable and the hover mode never focus-traps it."
     },
     {
       "id": "surface-anchor-relation",
@@ -877,9 +877,9 @@
     {
       "id": "surface-positioning",
       "match": ["contract:/surface/positioning/strategy", "contract:/surface/positioning/collision", "contract:/surface/kind"],
-      "valueIn": ["anchored", "flip-shift", "popover"],
+      "valueIn": ["anchored", "flip-shift", "popover", "tooltip"],
       "disposition": "lowered",
-      "via": "The dispatcher admits part-anchored popovers only; AnchoredSurface.Reposition anchors to the trigger and flips/shifts at panel edges."
+      "via": "The dispatcher admits part-anchored popovers and tooltips only; AnchoredSurface.Reposition anchors to the trigger and flips/shifts at panel edges."
     },
     {
       "id": "surface-placement-prop",
@@ -890,9 +890,9 @@
     {
       "id": "surface-persistent",
       "match": ["contract:/surface/presence"],
-      "valueIn": ["persistent"],
+      "valueIn": ["persistent", "ephemeral"],
       "disposition": "lowered",
-      "via": "The Content object is retained while closed (detached from the hierarchy, not disposed); the dispatcher refuses other presence values (UNITY_UNSUPPORTED_SURFACE)."
+      "via": "Click mode retains the Content object while closed (detached from the hierarchy, not disposed). Hover mode's ephemeral content is created on open and removed on close; no retained-state promise follows for it."
     },
     {
       "id": "surface",

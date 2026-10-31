@@ -714,6 +714,8 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
     // Passive content and the native action control project no channel-driven
     // state class; only the three channel behaviors own one.
     if (lowering.behavior === "Passive" || lowering.behavior === "Action") return "uss-selector";
+    // A hover-open surface projects no single open-state class.
+    if (lowering.stateClass === undefined) return "uss-selector";
     const stateClass = `.${lowering.stateClass}`;
     if (lowering.behavior === "ItemGroup") {
       const paired = owner !== undefined && (owner === lowering.trigger.name || owner === lowering.content.name);

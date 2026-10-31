@@ -146,7 +146,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -621,6 +621,16 @@ describe("Unity behavior selection refusals", () => {
     const ir = buildComponentIR(fixture("Popover"));
     ir.behavior.normalizedDismissalTriggers = [...ir.behavior.normalizedDismissalTriggers, { event: "routeChange", defaultEnabled: true }];
     expect(() => unityLowering(ir)).toThrow('UNITY_UNSUPPORTED_SURFACE: Popover declares dismissal trigger "routeChange"');
+  });
+
+  it("lowers a tooltip surface in hover/focus-open mode", () => {
+    const ir = buildComponentIR(fixture("Tooltip"));
+    expect(unityLowering(ir)).toMatchObject({
+      behavior: "AnchoredSurface", trigger: { name: "trigger" }, content: { name: "content" },
+      openOnHover: true, openOnFocus: true, closeOnPointerLeave: true, contentFocusable: false,
+    });
+    const source = emit(fixture("Tooltip"));
+    expect(source).toContain('AnchoredSurface.Attach(this, triggerClass: "tooltip__trigger", contentClass: "tooltip__content", stateClass: null, openOnHover: true, openOnFocus: true, closeOnPointerLeave: true, contentFocusable: false);');
   });
 
   it("emits prefixed modifier helpers for a variant axis disambiguated by the class recipe", () => {

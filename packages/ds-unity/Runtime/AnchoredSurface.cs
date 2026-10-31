@@ -7,14 +7,17 @@ namespace FullStackDS
 {
     /// <summary>Anchored floating-surface behavior over a boolean open channel,
     /// attached by a generated constructor when the contract declares a
-    /// part-anchored, non-blocking, click-opened surface. The trigger (anchor) and
-    /// content are composed sub-elements discovered under the host by part class.
-    /// While open, content is reparented to the panel root and positioned against
-    /// the trigger; while closed or detached it is out of the hierarchy.</summary>
+    /// part-anchored, non-blocking surface. Click mode toggles on the trigger;
+    /// hover mode opens on pointer enter/focus and closes on pointer leave. The
+    /// trigger (anchor) and content are composed sub-elements discovered under the
+    /// host by part class. While open, content is reparented to the panel root and
+    /// positioned against the trigger; while closed or detached it is out of the
+    /// hierarchy.</summary>
     public sealed class AnchoredSurface
     {
         private readonly VisualElement host;
         private readonly string triggerClass, contentClass, stateClass;
+        private readonly bool openOnHover, openOnFocus, closeOnPointerLeave, contentFocusable;
         private UnityEngine.UIElements.Button trigger;
         private VisualElement content;
         private bool current;
@@ -27,10 +30,13 @@ namespace FullStackDS
         public bool CloseOnOutsideClick { get; set; }
         public bool CloseOnBlur { get; set; }
 
-        private AnchoredSurface(VisualElement host, string triggerClass, string contentClass, string stateClass)
+        private AnchoredSurface(VisualElement host, string triggerClass, string contentClass, string stateClass,
+            bool openOnHover, bool openOnFocus, bool closeOnPointerLeave, bool contentFocusable)
         {
             this.host = host ?? throw new ArgumentNullException(nameof(host));
             this.triggerClass = triggerClass; this.contentClass = contentClass; this.stateClass = stateClass;
+            this.openOnHover = openOnHover; this.openOnFocus = openOnFocus;
+            this.closeOnPointerLeave = closeOnPointerLeave; this.contentFocusable = contentFocusable;
             Theme.AddStyleSheet(host);
             PartDiscovery.Claim(host, triggerClass, contentClass);
             host.RegisterCallback<AttachToPanelEvent>(OnAttach);
@@ -42,8 +48,9 @@ namespace FullStackDS
             host.RegisterCallback<NavigationSubmitEvent>(_ => Discover(), TrickleDown.TrickleDown);
         }
 
-        public static AnchoredSurface Attach(VisualElement host, string triggerClass, string contentClass, string stateClass)
-            => new AnchoredSurface(host, triggerClass, contentClass, stateClass);
+        public static AnchoredSurface Attach(VisualElement host, string triggerClass, string contentClass, string stateClass,
+            bool openOnHover = false, bool openOnFocus = false, bool closeOnPointerLeave = false, bool contentFocusable = true)
+            => new AnchoredSurface(host, triggerClass, contentClass, stateClass, openOnHover, openOnFocus, closeOnPointerLeave, contentFocusable);
 
         public UnityEngine.UIElements.Button Trigger { get { Discover(); return trigger; } }
         public VisualElement Content { get { Discover(); return content; } }
@@ -74,9 +81,28 @@ namespace FullStackDS
             bool changed = false;
             var nextTrigger = PartDiscovery.Find(host, triggerClass).OfType<UnityEngine.UIElements.Button>().FirstOrDefault();
             if (nextTrigger != trigger) {
-                if (trigger != null) { trigger.clicked -= Toggle; trigger.UnregisterCallback<GeometryChangedEvent>(AnchorGeometry); }
+                if (trigger != null) {
+                    trigger.clicked -= Toggle;
+                    trigger.UnregisterCallback<GeometryChangedEvent>(AnchorGeometry);
+                    trigger.UnregisterCallback<PointerEnterEvent>(OpenOnPointer);
+                    trigger.UnregisterCallback<PointerLeaveEvent>(CloseOnPointerLeave);
+                    trigger.UnregisterCallback<FocusInEvent>(OpenOnFocus);
+                    trigger.UnregisterCallback<FocusOutEvent>(CloseOnFocusLeave);
+                }
                 trigger = nextTrigger;
-                if (trigger != null) { trigger.clicked += Toggle; trigger.RegisterCallback<GeometryChangedEvent>(AnchorGeometry); }
+                if (trigger != null) {
+                    trigger.RegisterCallback<GeometryChangedEvent>(AnchorGeometry);
+                    if (openOnHover) {
+                        trigger.RegisterCallback<PointerEnterEvent>(OpenOnPointer);
+                        trigger.RegisterCallback<PointerLeaveEvent>(CloseOnPointerLeave);
+                    }
+                    if (openOnFocus) {
+                        trigger.RegisterCallback<FocusInEvent>(OpenOnFocus);
+                        trigger.RegisterCallback<FocusOutEvent>(CloseOnFocusLeave);
+                    }
+                    // Click mode toggles; hover/focus modes are driven by pointer and focus.
+                    if (!openOnHover && !openOnFocus) trigger.clicked += Toggle;
+                }
                 changed = true;
             }
             // Content leaves the host while closed or floating, so it has no ancestor to prove
@@ -92,7 +118,7 @@ namespace FullStackDS
                     // Floating content leaves the tree that carries the consumer's theme scope.
                     Theme.Follow(content, host);
                     content.style.position = Position.Absolute;
-                    content.focusable = true;
+                    content.focusable = contentFocusable;
                     content.RegisterCallback<GeometryChangedEvent>(AnchorGeometry);
                     changed = true;
                 }
@@ -101,6 +127,22 @@ namespace FullStackDS
         }
 
         private void Toggle() => RequestValue(!current);
+        private void OpenOnPointer(PointerEnterEvent _)
+        {
+            if (trigger != null && trigger.enabledInHierarchy) RequestValue(true);
+        }
+        private void CloseOnPointerLeave(PointerLeaveEvent _)
+        {
+            if (closeOnPointerLeave) RequestValue(false);
+        }
+        private void OpenOnFocus(FocusInEvent _)
+        {
+            if (trigger != null && trigger.enabledInHierarchy) RequestValue(true);
+        }
+        private void CloseOnFocusLeave(FocusOutEvent _)
+        {
+            if (CloseOnBlur) RequestValue(false);
+        }
         private void AnchorGeometry(GeometryChangedEvent _) => Reposition();
 
         private void OnAttach(AttachToPanelEvent evt)
@@ -135,7 +177,11 @@ namespace FullStackDS
         private void Escape(KeyDownEvent evt)
         {
             if (current && host.enabledInHierarchy && CloseOnEscape && evt.keyCode == KeyCode.Escape && Inside(evt.target as VisualElement)) {
-                evt.StopPropagation(); RequestValue(false); trigger?.Focus();
+                evt.StopPropagation(); RequestValue(false);
+                // Click mode returns focus to the anchor. Hover/focus mode never moves
+                // focus into the non-interactive content, so it must not re-fire the
+                // trigger's focus-open handler.
+                if (!openOnHover && !openOnFocus) trigger?.Focus();
             }
         }
         private void Blur(FocusOutEvent evt)
@@ -159,7 +205,8 @@ namespace FullStackDS
         private void Refresh() { Discover(); Present(); }
         private void Present()
         {
-            host.EnableInClassList(stateClass, current && host.enabledInHierarchy);
+            if (!string.IsNullOrEmpty(stateClass))
+                host.EnableInClassList(stateClass, current && host.enabledInHierarchy);
             if (panelRoot == null) return;
             if (current) tracking?.Resume(); else tracking?.Pause();
             if (content == null) return;
