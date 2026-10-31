@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.LinksCarriesItsDestinationAndRaisesAnActivationRequest
     exit_code: 0
     commit_sha: "5bbcf549598d64f1bb60696264d262ff0dd3c845"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 5bbcf5495: packages/ds-unity/README.md admits Links with its destination metadata, activation request, disabled/size surface and the unclaimed navigation/visited/target-semantics facts, and records the 79/79 lane; docs/architecture/unity-target.md records the Anchor dispatcher mode, LinkControl runtime and the 79/79 lane; docs/current-implementation-snapshot.md records the thirty-eighth admitted control with those facts."
+    recorded_at: "2026-10-31T14:44:19.229Z"
+    commit_sha: "5bbcf549598d64f1bb60696264d262ff0dd3c845"
