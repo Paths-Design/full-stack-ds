@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T14:18:49.073Z"
     artifact_path: packages/ds-unity/Runtime/Components/Field/Field.cs
     commit_sha: "20267ceeb2389c0c47bc1b832554b3c3b050b51c"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 5084a74ff (sourceDirty false): 77/77 passed, zero failed/skipped (test-run start 2026-10-31 14:18:13Z; resultsSha256 db88d894a8da95eded3a9049bc4a61a75a29cb64d562cd3cea5ef25aaf0b3082). The added case composes every slot host (including a generated Input in the control slot), checks the idle/valid/invalid status modifiers and asserts the absent context/validation/disabled API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T14:18:49.573Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.FieldExposesItsSlotHostsAndStatusCarrier
+    exit_code: 0
+    commit_sha: "5084a74ff33ae9931306640fd59473ce4f52d40c"
