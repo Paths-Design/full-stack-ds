@@ -2,7 +2,6 @@ id: UNITY-CALENDAR-01
 title: 'Admit Calendar to the Unity target as a single-date runtime date grid'
 mode: feature
 lifecycle_state: active
-worktree: unity-calendar
 created_at: '2026-10-31T18:40:27.092Z'
 updated_at: '2026-10-31T19:02:27.116Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
