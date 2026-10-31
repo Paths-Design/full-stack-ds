@@ -397,14 +397,14 @@
     },
     {
       "id": "anatomy-select-aria-expanded-refused",
-      "match": ["contract:/anatomy/dom/children/trigger/bindings/aria-expanded"],
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/aria-expanded"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/children/trigger/events/click"], "valueIn": ["channel:open.onChange"] }],
       "disposition": "refused",
       "reason": "The aria-expanded mirror has no UI Toolkit assistive consumer; the runtime exposes open state through the listbox surface presence and the authored open class instead."
     },
     {
       "id": "anatomy-expansion-aria-refused",
-      "match": ["contract:/anatomy/dom/children/trigger/bindings/aria-expanded"],
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/aria-expanded"],
       "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
       "disposition": "refused",
       "reason": "The aria-expanded mirror has no UI Toolkit assistive consumer; the runtime exposes the state through the authored expanded class and the trigger label."
@@ -729,6 +729,13 @@
       "via": "walker.ts (Toast): the close control's channel-bound click is wired by ToastSurface to a closed-value request."
     },
     {
+      "id": "anatomy-expansion-trigger-toggle-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/events/click"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (Expansion)/ExpansionControl: the trigger activation toggles the expansion channel with commit/request semantics."
+    },
+    {
       "id": "anatomy-events",
       "match": ["contract:/anatomy/dom/events/**", "contract:/anatomy/dom/**/children/*/events/**"],
       "disposition": "pending",
@@ -793,6 +800,13 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "The validating indicator's presence depends on a validation runtime the scaffold does not own; the slot host renders empty regardless and the guard waits on the P4 validation family."
+    },
+    {
+      "id": "anatomy-expansion-trigger-guard-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/if"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}, {"match": ["contract:/props/designed/members/plain:expandable/name"], "valueIn": ["expandable"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (Expansion)/ExpansionControl: the expandable guard becomes the generated Expandable toggle switch; the runtime hides the trigger when it is false."
     },
     {
       "id": "anatomy-guards",
@@ -1536,6 +1550,14 @@
       "reason": "Line clamping needs text measurement the expansion runtime does not own; the max-lines presentation is withheld rather than approximated."
     },
     {
+      "id": "prop-truncate-toggle-lowered",
+      "match": ["contract:/props/*/members/plain:expandable/**", "contract:/props/*/members/plain:expandText/**", "contract:/props/*/members/plain:collapseText/**"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Expansion): the expandable switch and both state-dependent labels become generated carrier attributes painted by the runtime."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -2258,6 +2280,13 @@
       "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
       "disposition": "refused",
       "reason": "The authored trigger background is not projected onto the native button chrome; the declaration is withheld rather than emitted partially."
+    },
+    {
+      "id": "styles-truncate-clamp-refused",
+      "match": ["styles:/content/overflow/**", "styles:/content/display/**", "styles:/content/-webkit-box-orient/**", "styles:/content/-webkit-line-clamp/**", "styles:/content/line-clamp/**", "styles:/.truncate--expanded .truncate__content/**"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "refused",
+      "reason": "The web line-clamp presentation and its expanded reset are not expressible in the native text grammar; they are withheld rather than emitted partially."
     },
     {
       "id": "styles",

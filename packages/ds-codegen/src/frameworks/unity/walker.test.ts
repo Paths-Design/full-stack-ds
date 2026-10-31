@@ -531,6 +531,25 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/maxLines|MaxLines|line-clamp/);
   });
 
+  it("renders a guarded expansion with an expandable toggle for Truncate", () => {
+    const contract = loadContractWithSidecars(root, "Truncate") as ComponentContract;
+    const truncateIr = buildComponentIR(contract);
+    truncateIr.name = "UnrelatedTruncate";
+    const source = createUnityEmitter().emitComponent(truncateIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedTruncate : VisualElement");
+    expect(source).toContain("public ExpansionControl Control { get; }");
+    expect(source).toContain("public VisualElement Content { get; } = new VisualElement();");
+    expect(source).toContain("public override VisualElement contentContainer => Content;");
+    expect(source).toContain("public UnityEngine.UIElements.Button Toggle { get; } = new UnityEngine.UIElements.Button();");
+    expect(source).toContain("[UxmlAttribute] public bool Expanded");
+    expect(source).toContain("[UxmlAttribute] public bool Expandable");
+    expect(source).toContain("[UxmlAttribute] public string ExpandText");
+    expect(source).toContain("[UxmlAttribute] public string CollapseText");
+    expect(source).toContain("public Action<bool> OnExpandedChange");
+    expect(source).toContain("ExpansionControl.Attach(this, trigger: Toggle, prefix: \"truncate\", stateClass: \"truncate--expanded\");");
+    expect(source).not.toMatch(/Lines|line-clamp/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

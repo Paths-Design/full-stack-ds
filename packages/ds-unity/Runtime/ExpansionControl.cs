@@ -17,6 +17,7 @@ namespace FullStackDS
         private bool defaultExpanded;
         private string expandedLabel = "";
         private string collapsedLabel = "";
+        private bool expandable = true;
         private bool expandedExplicit;
         public bool Controlled { get; set; }
         public Action<bool> ExpandedChanged;
@@ -59,6 +60,17 @@ namespace FullStackDS
             }
         }
 
+        /// <summary>Whether the trigger toggle is present; the guarded toggle switch.</summary>
+        public bool Expandable
+        {
+            get => expandable;
+            set
+            {
+                expandable = value;
+                Apply();
+            }
+        }
+
         public string ExpandedLabel
         {
             get => expandedLabel;
@@ -95,6 +107,7 @@ namespace FullStackDS
         private void Apply()
         {
             trigger.text = expanded ? expandedLabel : collapsedLabel;
+            trigger.style.display = expandable ? DisplayStyle.Flex : DisplayStyle.None;
             if (!string.IsNullOrEmpty(stateClass)) host.EnableInClassList(stateClass, expanded);
         }
     }

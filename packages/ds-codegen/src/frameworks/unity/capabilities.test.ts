@@ -11,7 +11,7 @@ const fixture = (name: string) => loadContractWithSidecars(root, name);
 // auditUnityTarget): about 2s alone, and it overran vitest's 5s default under
 // the root suite's parallel load. The budget covers that work; it relaxes no
 // assertion.
-const CORPUS_TIMEOUT_MS = 20_000;
+const CORPUS_TIMEOUT_MS = 90_000;
 describe("Unity capability accounting", () => {
   it("accounts for the actual corpus and keeps unadmitted shapes distinct", () => {
     const rows = inventory(root);
@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Select", null], ["Sheet", null], ["ShowMore", null], ["Shuttle", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Walkthrough", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Select", null], ["Sheet", null], ["ShowMore", null], ["Shuttle", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Truncate", null], ["Walkthrough", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -220,7 +220,7 @@ describe("Unity capability accounting", () => {
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
-  });
+  }, CORPUS_TIMEOUT_MS);
   it("retains empty declarations, arrays and escaped property paths", () => {
     expect(declaredLeaves({ "a/b": { "~": [] }, flags: [true, false], missing: null })).toEqual(["/a~1b/~0", "/flags/0", "/flags/1", "/missing"]);
   });

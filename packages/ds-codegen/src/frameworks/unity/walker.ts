@@ -172,6 +172,7 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp;
   const treeGuard = ctx.lowering.behavior === "Tree" && node.ifProp === ctx.lowering.hrefProp;
   const selectGuard = ctx.lowering.behavior === "Select" && node.ifProp === ctx.lowering.openChannel.valueProp;
+  const expansionGuard = ctx.lowering.behavior === "Expansion" && ctx.lowering.guardProp !== undefined && node.ifProp === ctx.lowering.guardProp;
   const avatarGuard = ctx.lowering.behavior === "Avatar" &&
     ((node.componentRef !== undefined && node.ifProp !== undefined) ||
       (node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.ifProp === node.content.prop)) && !node.ifNegated;
@@ -182,7 +183,7 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     ((ctx.lowering.overlay !== undefined && node.part === ctx.lowering.overlay.name) ||
       (ctx.lowering.dismissibleProp !== undefined && node.part === ctx.lowering.trigger.name)) &&
     node.ifProp === (node.part === ctx.lowering.overlay?.name ? ctx.lowering.channel.valueProp : ctx.lowering.dismissibleProp) && !node.ifNegated && !node.ifSlot;
-  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots" && !avatarGuard && !treeGuard && !selectGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots" && !avatarGuard && !treeGuard && !selectGuard && !expansionGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
 }
 
 /**
@@ -1268,6 +1269,7 @@ function expansionRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (channel.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultExpanded; set => Control.DefaultExpanded = value; }`);
   const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
   members.push(`        public Action<bool> ${identifier(pascal(changeHandler))} { get => Control.ExpandedChanged; set => Control.ExpandedChanged = value; }`);
+  if (lowering.guardProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(lowering.guardProp))} { get => Control.Expandable; set => Control.Expandable = value; }`);
   members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
   members.push("        public Action<bool> ExpandedRequested { get => Control.ExpandedRequested; set => Control.ExpandedRequested = value; }");
   return { members, attach, defaults };
