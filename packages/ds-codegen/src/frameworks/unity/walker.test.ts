@@ -413,6 +413,20 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/GlyphElement|IconName|IconSize/);
   });
 
+  it("projects object-path text leaves as flattened attributes for Postcard", () => {
+    const contract = loadContractWithSidecars(root, "Postcard") as ComponentContract;
+    const postcardIr = buildComponentIR(contract);
+    postcardIr.name = "UnrelatedPostcard";
+    const source = createUnityEmitter().emitComponent(postcardIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedPostcard : VisualElement");
+    expect(source).toContain("public override VisualElement contentContainer => Content;");
+    expect(source).toContain("public string AuthorName { get => DisplayName.text; set { DisplayName.text = value ?? \"\"; } }");
+    expect(source).toContain("public string AuthorHandle { get => Handle.text; set { Handle.text = value ?? \"\"; } }");
+    expect(source).toContain("public string Timestamp { get => TimestampControl.text; set { TimestampControl.text = value ?? \"\"; } }");
+    expect(source).toContain("public string StatsLikes { get => Stat.text; set { Stat.text = value ?? \"\"; } }");
+    expect(source).not.toMatch(/public string Author |public string Stats |public string PostId|public string Embed/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

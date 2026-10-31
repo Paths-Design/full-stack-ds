@@ -460,6 +460,20 @@
       "via": "walker.ts (Anchor)/LinkControl: the prop-bound href/target/rel destination metadata becomes generated string attributes the runtime carries; the host never navigates."
     },
     {
+      "id": "anatomy-projected-content-lowered",
+      "match": ["contract:/anatomy/dom/**/content"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/content"], "valueIn": ["prop:author.name", "prop:author.handle", "prop:stats.likes"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (ProjectedText): each nested-property content leaf becomes a flattened generated attribute that paints its label (AuthorName, AuthorHandle, StatsLikes); the object props themselves are withheld."
+    },
+    {
+      "id": "anatomy-projected-timestamp-binding-refused",
+      "match": ["contract:/anatomy/dom/**/bindings/datetime"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/content"], "valueIn": ["prop:author.name"] }],
+      "disposition": "refused",
+      "reason": "The machine-readable datetime attribute has no UI Toolkit consumer; the visible timestamp text is projected, the datetime wiring is withheld."
+    },
+    {
       "id": "anatomy-bindings",
       "match": ["contract:/anatomy/dom/bindings/**", "contract:/anatomy/dom/**/children/*/bindings/**", "contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
       "disposition": "pending",
@@ -1135,6 +1149,21 @@
       "requiresAny": [{ "match": ["contract:/variants/icon/*"] }],
       "disposition": "lowered",
       "via": "walker.ts (S6): a declared variant axis with a USS carrier emits a UxmlAttribute modifier (<prefix>--<value>); the projection refuses an axis with no carrier."
+    },
+    {
+      "id": "prop-postcard-timestamp-lowered",
+      "match": ["contract:/props/*/members/plain:timestamp/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/content"], "valueIn": ["prop:author.name"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (ProjectedText): the visible timestamp string becomes a generated Timestamp attribute painting its label."
+    },
+    {
+      "id": "prop-postcard-objects-refused",
+      "match": ["contract:/props/*/members/plain:postId/**", "contract:/props/*/members/plain:author/**", "contract:/props/*/members/plain:stats/**", "contract:/props/*/members/plain:embed/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/content"], "valueIn": ["prop:author.name"] }],
+      "disposition": "refused",
+      "reason": "Object-valued author/stats/embed data and the post id cannot be carried by UXML attributes; only the declared string leaves are projected and the object props are withheld rather than serialised."
     },
     {
       "id": "props-unadjudicated",
