@@ -18,10 +18,11 @@ namespace GamePauseMenu
         public const string VehicleFile = "vehicle";
         public const string SettingsFile = "settings";
         public const string AppearanceFile = "orion-appearance";
+        public const string ParityLayoutFile = "parity-layout";
 
         public static readonly string[] Files =
         {
-            CommanderFile, MapIconsFile, FactionsFile, AbilitiesFile, VehicleFile, SettingsFile, AppearanceFile
+            CommanderFile, MapIconsFile, FactionsFile, AbilitiesFile, VehicleFile, SettingsFile, AppearanceFile, ParityLayoutFile
         };
 
         /// <summary>Parses the whole lane fixture corpus. <paramref name="rawFiles"/> is keyed by
@@ -47,6 +48,7 @@ namespace GamePauseMenu
             };
             set.Vehicle = ParseVehicle(new Reader(VehicleFile), bodies[VehicleFile], set.Abilities);
             set.Settings = ParseSettings(new Reader(SettingsFile), bodies[SettingsFile]);
+            set.Parity = ParityLayoutParser.Parse(ParityLayoutFile, bodies[ParityLayoutFile]);
 
             if (set.Commander.NavTarget != null && FindIcon(set.Map, set.Commander.NavTarget) == null)
                 throw new FixtureFormatException(
@@ -96,6 +98,23 @@ namespace GamePauseMenu
         /// <summary>The fixture carries the iconography catalog's PascalCase authoring name,
         /// for example <c>CircleDot</c>; the generated Icon component resolves the catalog's
         /// kebab-case key <c>circle-dot</c>.</summary>
+        /// <summary>The parity ability-card art renders a portable two-letter code: the first two
+        /// alphanumeric characters of the ability name, uppercased (THERMAL SHIELD -> TH).</summary>
+        public static string IconCode(string sourceName)
+        {
+            if (string.IsNullOrEmpty(sourceName))
+                throw new FixtureFormatException("fixtures: an icon source name must be a non-empty string.");
+            var code = string.Empty;
+            foreach (var character in sourceName)
+            {
+                if (!char.IsLetterOrDigit(character)) continue;
+                code += char.ToUpperInvariant(character);
+                if (code.Length == 2) return code;
+            }
+            throw new FixtureFormatException("fixtures: icon source name \"" + sourceName
+                + "\" has fewer than two alphanumeric characters.");
+        }
+
         public static string IconKey(string fixtureIconName)
         {
             if (string.IsNullOrEmpty(fixtureIconName))

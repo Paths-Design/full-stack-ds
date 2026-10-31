@@ -2,14 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using FullStackDS;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace GamePauseMenu
 {
-    /// <summary>Standalone Player witness: switches through the tabs, records 1280x800 PNG
-    /// captures and a result receipt, then quits. Synthetic app-API state changes prove the panel
-    /// renders those states inside a real Player; they are not input-device integration proof.</summary>
+    /// <summary>Standalone Player witness for the parity pass: drives the capture states declared in
+    /// fixtures/parity-layout.json, records 1280x800 PNGs and a receipt, then quits. Synthetic
+    /// app-API state changes prove the panel renders those states inside a real Player; they are not
+    /// input-device integration proof.</summary>
     public sealed class CaptureHarness : MonoBehaviour
     {
         [Serializable]
@@ -25,14 +28,6 @@ namespace GamePauseMenu
             public int height;
             public string[] screenshots;
             public string[] checks;
-        }
-
-        private sealed class Step
-        {
-            public string Tab;
-            public string File;
-            public Action<PauseMenuApp> Prepare;
-            public bool ScrollSettingsToBottom;
         }
 
         private sealed class CaptureContext
@@ -63,53 +58,11 @@ namespace GamePauseMenu
             }
         }
 
-        // Four required tab captures, plus two extra interaction-state captures for the comparison doc.
-        private static readonly Step[] Steps =
+        private static readonly string[] RequiredStates = { "map", "progress", "abilities", "settings" };
+        private static readonly string[] StateOrder =
         {
-            new Step
-            {
-                Tab = PauseMenuState.MapTab, File = "map.png",
-                Prepare = app =>
-                {
-                    // Plot state: a chosen nav target plus one filtered-off marker.
-                    app.SetNavTarget("cache-02");
-                    app.SetIconVisible("weather-06", false);
-                },
-            },
-            new Step
-            {
-                Tab = PauseMenuState.ProgressTab, File = "progress.png",
-                Prepare = app => app.OpenFactionDrawer("ares-logistics"),
-            },
-            new Step
-            {
-                Tab = PauseMenuState.AbilitiesTab, File = "abilities.png",
-                Prepare = app => app.SelectAbility("overclock"),
-            },
-            new Step
-            {
-                Tab = PauseMenuState.SettingsTab, File = "settings.png",
-                Prepare = app =>
-                {
-                    if (app.State.RemapModalOpen) app.CancelRemap();
-                },
-            },
-            new Step
-            {
-                Tab = PauseMenuState.SettingsTab, File = "remap-modal.png",
-                Prepare = app => app.OpenRemapModal("interact"),
-            },
-            new Step
-            {
-                Tab = PauseMenuState.SettingsTab, File = "subtitle-picker.png",
-                ScrollSettingsToBottom = true,
-                Prepare = app =>
-                {
-                    if (app.State.RemapModalOpen) app.CancelRemap();
-                    app.Settings.SubtitleLanguageDropdown.value = "Français";
-                    app.SetSubtitleBackground("signal");
-                },
-            },
+            "map", "map-popover", "progress", "abilities", "abilities-hover",
+            "settings", "settings-remap-modal", "settings-subtitle",
         };
 
         private PauseMenuHost host;
@@ -138,25 +91,23 @@ namespace GamePauseMenu
             catch (Exception error) { context.Fail(null, error.ToString()); }
 
             yield return null;
-            try { LogLayout(); }
-            catch (Exception error) { Debug.LogWarning("Layout probe failed: " + error.Message); }
+            try { LogParityFacts(); }
+            catch (Exception error) { Debug.LogWarning("Parity probe failed: " + error.Message); }
 
             if (context.Error == null)
             {
-                foreach (var step in Steps)
+                foreach (var state in StateOrder)
                 {
-                    try { PrepareStep(step); }
-                    catch (Exception error) { context.Fail(step.Tab, error.ToString()); }
+                    try { PrepareState(state); }
+                    catch (Exception error) { context.Fail(state, error.ToString()); }
                     if (context.Error != null) break;
 
                     yield return null;
-                    if (step.ScrollSettingsToBottom)
-                        host.App.Settings.Scroller.scrollOffset = new Vector2(0f, 10000f);
                     yield return null;
                     yield return new WaitForEndOfFrame();
 
-                    try { CaptureStep(step, context); }
-                    catch (Exception error) { context.Fail(step.Tab, error.ToString()); }
+                    try { CaptureState(state, context); }
+                    catch (Exception error) { context.Fail(state, error.ToString()); }
                     if (context.Error != null) break;
                 }
             }
@@ -182,47 +133,61 @@ namespace GamePauseMenu
             context.Check(app.Root.ClassListContains(Theme.BrandClassPrefix + "orion"), "orion-brand-class");
             context.Check(Screen.width == 1280 && Screen.height == 800, "capture-size-1280x800",
                 Screen.width + "x" + Screen.height);
-            context.Check(app.Root.styleSheets.count >= 2, "lane-and-generated-sheets",
-                app.Root.styleSheets.count.ToString());
+            foreach (var state in RequiredStates)
+                context.Check(app.Layout.Captures.ContainsKey(state), "capture-state-" + state);
+            context.Check(app.Layout.Captures.Count >= 8, "eight-capture-states",
+                app.Layout.Captures.Count.ToString());
         }
 
-        private void LogLayout()
+        private void LogParityFacts()
         {
             var app = host.App;
-            Debug.Log("FSDSPLAYOUT root=" + app.Root.worldBound + " panel=" + app.Root.panel.visualTree.worldBound
-                      + " headerPaused=" + app.Header.StatusText.worldBound
-                      + " rankSub=" + app.Header.RankSub.worldBound
-                      + " rankSubWs=" + app.Header.RankSub.resolvedStyle.whiteSpace);
-            var widths = string.Empty;
-            foreach (var label in app.Footer.HintLabels)
-                widths += label.text + ":" + label.worldBound.width + "x" + label.worldBound.height + " ";
-            Debug.Log("FSDSPLAYOUT footer=" + app.Footer.Root.worldBound + " hints=" + app.Footer.Hints.worldBound
-                      + " labels=" + widths);
-            var marker = app.Map.Marker("relay-01");
-            Debug.Log("FSDSPLAYOUT field=" + app.Map.Field.worldBound
-                      + " markerPos=" + marker.resolvedStyle.position + " marker=" + marker.worldBound
-                      + " anchor=" + app.Map.MarkerAnchor("relay-01").worldBound);
-            var sector = app.Map.SectorLabel;
-            Debug.Log("FSDSPLAYOUT sector=" + sector.worldBound + " size=" + sector.resolvedStyle.fontSize
-                      + " ws=" + sector.resolvedStyle.whiteSpace);
+            Debug.Log("FSDSPARITY root=" + app.Root.worldBound
+                      + " tabs=" + app.Tabs.worldBound
+                      + " list=" + app.Tabs.Q<TabsList>().worldBound
+                      + " panel=" + app.TabPanel(PauseMenuState.MapTab).worldBound);
+            Debug.Log("FSDSPARITY mapField=" + app.Map.Field.worldBound
+                      + " marker=" + app.Map.MarkerAnchor("relay-01").worldBound
+                      + " header=" + app.Header.Root.worldBound
+                      + " footer=" + app.Footer.Root.worldBound
+                      + " tab0=" + app.TabButton(PauseMenuState.MapTab).worldBound);
+            var toggle = app.Map.VisibilitySwitch("relay-01");
+            Debug.Log("FSDSPARITY switchRoot=" + toggle.worldBound
+                      + " track=" + toggle.Track.worldBound
+                      + " trackRadius=" + toggle.Track.resolvedStyle.borderTopLeftRadius
+                      + " thumbRadius=" + toggle.Thumb.resolvedStyle.borderTopLeftRadius
+                      + " thumb=" + toggle.Thumb.worldBound);
         }
 
-        private void PrepareStep(Step step)
+        private void PrepareState(string state)
         {
-            step.Prepare(host.App);
-            host.App.SelectTab(step.Tab);
+            if (!host.App.Layout.Captures.TryGetValue(state, out var capture))
+                throw new ArgumentException("parity-layout.json declares no capture state '" + state + "'.");
+            var app = host.App;
+            app.CloseAllOverlays();
+            if (!string.IsNullOrEmpty(capture.ActiveTab)) app.SelectTab(capture.ActiveTab);
+            if (!string.IsNullOrEmpty(capture.NavTarget)) app.SetNavTarget(capture.NavTarget);
+            foreach (var icon in capture.HiddenIcons) app.SetIconVisible(icon, false);
+            if (!string.IsNullOrEmpty(capture.Drawer)) app.OpenFactionDrawer(capture.Drawer);
+            if (!string.IsNullOrEmpty(capture.PendingAbility)) app.SelectAbility(capture.PendingAbility);
+            if (!string.IsNullOrEmpty(capture.Popover)) app.Map.OpenPopover(capture.Popover);
+            if (!string.IsNullOrEmpty(capture.Hover)) app.Abilities.OpenHover(capture.Hover);
+            if (!string.IsNullOrEmpty(capture.RemapModal)) app.OpenRemapModal(capture.RemapModal);
+            if (!string.IsNullOrEmpty(capture.SubtitleBackground)) app.SetSubtitleBackground(capture.SubtitleBackground);
+            if (!string.IsNullOrEmpty(capture.SubtitleLanguage))
+                app.Settings.SubtitleLanguageDropdown.value = capture.SubtitleLanguage;
         }
 
-        private void CaptureStep(Step step, CaptureContext context)
+        private void CaptureState(string state, CaptureContext context)
         {
+            var file = state + ".png";
             var texture = ScreenCapture.CaptureScreenshotAsTexture();
             try
             {
                 var bytes = texture.EncodeToPNG();
-                File.WriteAllBytes(Path.Combine(context.Directory, step.File), bytes);
-                context.Screenshots.Add(step.File);
-                context.Check(bytes.Length > 1024, "capture-" + step.Tab
-                                                   + (step.File == step.Tab + ".png" ? string.Empty : "-" + step.File));
+                File.WriteAllBytes(Path.Combine(context.Directory, file), bytes);
+                context.Screenshots.Add(file);
+                context.Check(bytes.Length > 1024, "capture-" + state);
             }
             finally
             {

@@ -119,6 +119,44 @@ function compositeVars(uss: string): [string, string][] {
     /var\([^;]*\)\s*[\s,]\s*\S/.test(value) || /\S\s*[\s,]\s*var\(/.test(value) || /var\(--[\w-]+,\s*[^()\s,]+[\s,]+[^()\s,]/.test(value));
 }
 
+/** A synthetic box for the pill-radius clamp: 48x24 by default. */
+function box(): Record<string, any> {
+  return {
+    name: "Box", cssPrefix: "box", layer: "primitive", category: "layout",
+    description: "Synthetic box for corner-radius projection.",
+    anatomy: { parts: ["track"], details: { track: { tag: "div", role: "root" } }, dom: { tag: "div", part: "track" } },
+    props: { designed: { members: [] } },
+    tokens: {},
+    styles: { track: { width: web("48px"), height: web("24px"), "border-radius": web("9999px") } },
+  };
+}
+
+describe("Unity USS projection: pill corner radii", () => {
+  it("clamps an oversized pill radius to half the smaller box dimension", () => {
+    expect(rule(sheetOf(box()).uss, ".box")).toContain("border-radius: 12px;");
+  });
+
+  it("leaves a radius that fits inside the box untouched", () => {
+    const contract = box();
+    contract.styles.track["border-radius"] = web("8px");
+    expect(rule(sheetOf(contract).uss, ".box")).toContain("border-radius: 8px;");
+  });
+
+  it("clamps a token-backed pill radius to its resolved/stadium value", () => {
+    const contract = box();
+    contract.tokens = { "box.radius.pill": { literal: "9999px" } };
+    contract.styles.track["border-radius"] = { resolvesTo: "box.radius.pill", fallback: "9999px" };
+    expect(rule(sheetOf(contract).uss, ".box")).toContain("border-radius: 12px;");
+  });
+
+  it("projects every committed Switch track as a stadium, not a 9999px ellipse", () => {
+    const committed = fs.readFileSync(committedSheet, "utf8");
+    expect(rule(committed, ".switch__track")).toContain("border-radius: 12px;");
+    expect(rule(committed, ".switch--sm .switch__track")).toContain("border-radius: 8px;");
+    expect(rule(committed, ".switch--lg .switch__track")).toContain("border-radius: 16px;");
+  });
+});
+
 describe("Unity USS projection: var() inside multi-component declarations", () => {
   it("never emits a var() inside a multi-component value, in the synthetic sheet or the committed Controls.uss", () => {
     const { uss } = sheetOf(knob());

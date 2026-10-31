@@ -239,5 +239,6 @@ namespace GamePauseMenu
         public VehicleData Vehicle;
         public SettingsData Settings;
         public OrionAppearanceData Appearance;
+        public ParityLayoutData Parity;
     }
 }

@@ -1,338 +1,302 @@
-# Game pause menu — GPUI lane (Orion N5)
+# Game pause menu — GPUI lane (Orion N5, parity rebuild)
 
 A standalone macOS **GPUI** consumer lane for the game pause-menu example
-([`../spec.md`](../spec.md)). It realizes the app shape by consuming ONLY the
-public API of the bounded GPUI package (`packages/ds-gpui`, the path dependency
-`full-stack-ds-gpui`): the target's 7-component allowlist — **Switch,
-ToggleSwitch, Checkbox, Text, Badge, Divider, Stat** — plus a lane-local
-data/domain seam and hand-authored plain-gpui regions marked
-`// NOT FSDS: <reason>`.
+([`../spec.md`](../spec.md)), rebuilt in the parity pass
+([`../parity.md`](../parity.md)) so its four required captures are structurally
+indistinguishable from the Unity and Godot lanes: same 1280 × 800 grid, same
+panel/row/card rectangles, same copy, same palette, same canonical switch.
 
-> Status: **builds clean (`cargo build`, 0 warnings) and 51 seam/lib tests pass;
-> all 15 shared interactions are implemented code paths; four required per-tab
-> screenshots plus six interaction-state screenshots are captured from the
-> running app** — see [Evidence](#evidence) and [Non-claims](#non-claims).
+The lane consumes ONLY the public API of the bounded GPUI package
+(`packages/ds-gpui`, path dependency `full-stack-ds-gpui`): the target's
+7-component allowlist — **Switch, ToggleSwitch, Checkbox, Text, Badge, Divider,
+Stat** — plus a lane-local data/domain seam and hand-authored plain-gpui regions
+marked `// NOT FSDS: <reason>`.
+
+> Status: **`cargo build` clean (0 warnings), 67 tests pass (default) / 70 with
+> `--features capture`; all I1–I15 interactions are real code paths; the eight
+> parity capture states are produced at exactly 1280 × 800; all 26 shared
+> colour probes and all measured parity region boxes pass on this lane's
+> captures** — see [Parity pass](#parity-pass) and [Evidence](#evidence).
 
 ## Claim
 
 The framework-neutral pause-menu spec — four tabs (MAP / PROGRESS / ABILITIES /
-SETTINGS), the Orion N5 graphic style, and interactions I1–I15 over one fixture
-corpus — can be realized in a native GPUI app from the generated package's public
-exports alone, with the same domain semantics as the other engine lanes, and
-every region the 7-component allowlist does not admit ledgered as a
-hand-authored fallback rather than silently counted as design-system
-realization.
+SETTINGS), interactions I1–I15 over one fixture corpus, and the parity layout
+authority — can be realized in a native GPUI app from the generated package's
+public exports alone, at the **same absolute geometry and colours** as the other
+engine lanes, with every region the 7-component allowlist does not admit
+ledgered as a hand-authored fallback rather than silently counted as
+design-system realization.
 
 **Falsifiers.** Removing, renaming or privatizing any public symbol this lane
 uses (`components::{Switch, Text, Badge, Divider, Stat}`,
 `control::{ChangeRequest, BooleanState}`, `content::NativeContent`,
-`style::Theme`) fails `cargo build`. Any lane source reaching into package
-internals or copying generated component code is a boundary failure. A spec
-interaction that only works by changing app semantics per engine is a spec
-violation; the domain rules live in `src/seam/` and are engine-independent.
+`style::Theme`) fails `cargo build`. A layout/colour value that is not read from
+`fixtures/parity-layout.json` (or a `parity.md`-pinned default) is a parity
+failure. Any lane source reaching into package internals is a boundary failure.
 
 ## Commands
 
 ```bash
 # From the lane directory (rust-toolchain.toml pins 1.94.1):
-cargo build                      # clean build, 0 warnings
-cargo test                       # 2 lib + 49 seam tests
-cargo build --features capture   # unlocks --capture (see Evidence)
-cargo run                        # opens the 1280x800 pause menu on MAP
-cargo run -- --tab settings      # open on a specific tab
+cargo +1.94.1 build --locked          # clean build, 0 warnings
+cargo +1.94.1 test  --locked          # 67 tests (1 lib + 2 palette + 15 parity + 49 seam)
+cargo +1.94.1 build --features capture
+cargo run                             # opens the 1280x800 pause menu on MAP
+cargo run -- --tab settings           # open a specific tab
 
-# From the repo root, if preferred (the toolchain file is discovered from the
-# CWD, so qualify the toolchain explicitly):
-cargo +1.94.1 build --manifest-path examples/game-pause-menu/gpui/Cargo.toml
-cargo +1.94.1 test  --manifest-path examples/game-pause-menu/gpui/Cargo.toml
+# Evidence (writes PNGs + capture-manifest.json directly to the target dir):
+cd examples/game-pause-menu/gpui
+cargo +1.94.1 run --locked --features capture -- \
+  --capture /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/gpui
 ```
 
-`rust-toolchain.toml` pins channel `1.94.1`, the toolchain `packages/ds-gpui`
-requires. `Cargo.lock` is committed after a successful resolve; `target/` and
-`evidence/` are ignored by the lane `.gitignore`.
+`rust-toolchain.toml` pins channel `1.94.1`; `Cargo.lock` is committed after a
+successful resolve; `target/` and `evidence/` are lane-gitignored.
 
-### Environment workarounds (recorded as findings)
+### Environment workarounds
 
 1. **Metal toolchain.** This machine's Xcode 26 no longer ships the standalone
    `xcrun metal` shader compiler, so `gpui_macos`'s build script cannot
    precompile `shaders.metal` (`error: cannot execute tool 'metal' due to
    missing Metal Toolchain`). The lane enables upstream's
-   `gpui_platform` feature **`runtime_shaders`**: same pinned zed revision
-   (`a38fc8c8…`), same renderer, but the shader library is compiled at renderer
-   startup instead of at build time. Apple's repair is
-   `xcodebuild -downloadComponent MetalToolchain`; it is not available in this
-   environment.
+   `gpui_platform` feature **`runtime_shaders`** (same pinned zed revision
+   `a38fc8c8…`; shaders compile at renderer startup). Apple's repair is
+   `xcodebuild -downloadComponent MetalToolchain`, unavailable here.
 2. **Evidence capture.** macOS Screen Recording permission is denied to the
-   agent shell: `screencapture -l <windowid>` and full-screen `screencapture -x`
-   both fail with "could not create image from window/display" (verified against
-   an unrelated GPUI app after resolving its CGWindow id). Instead the pinned
-   GPUI revision's `Window::render_to_image()` renders the current frame's scene
-   to an RGBA image without presenting it and without a TCC grant. That method
-   is gated behind gpui/gpui_macos `test-support`, so the lane exposes it as an
-   opt-in cargo feature: `capture = ["dep:image", "gpui_platform/test-support"]`
-   (plus `runtime_shaders`). The default build/test graph keeps the package
-   pins unchanged.
+   agent shell (`screencapture -l <windowid>` and full-screen `screencapture -x`
+   both report "could not create image from window/display"). The pinned GPUI
+   revision's `Window::render_to_image()` renders the current frame's scene
+   without presenting it and without a TCC grant; it is gated behind
+   gpui/gpui_macos `test-support`, so the lane exposes it as an opt-in cargo
+   feature `capture = ["dep:image", "gpui_platform/test-support"]` (also
+   forwarding `runtime_shaders`). Default build/test keeps the package pins
+   unchanged.
 
-## What is consumed from the package (public exports only)
+## Parity pass
 
-| Component | Where used | Instances |
+### Design authority consumed
+
+`examples/game-pause-menu/fixtures/parity-layout.json` (the machine-readable
+authority; lane copy embedded with `include_str!`) is parsed by
+`src/seam/parity.rs` and validated before use:
+
+- **viewport / shell**: header `(0,0,1280,104)`, tab bar `(0,104,1280,56)` with
+  four equal 320-wide tabs, content `(24,176,1232,552)`, footer
+  `(0,744,1280,56)`, right-aligned `NAV TARGET` value at x = 1256 / y = 770.
+- **per tab**: MAP map panel `(24,176,872,552)` with sage field
+  `(40,232,840,480)`, 24 px markers, icon panel `(912,176,344,552)` and 8 rows
+  at `firstY 224 / rowH 48`; PROGRESS roster `(24,176,1232,552)` with 88 px
+  rows and a paper drawer `(24,176,560,552)`; ABILITIES grid
+  `(24,176,808,552)` with 5×2 152×240 cards (`firstY 224`, 12 px gaps) and
+  detail panel `(848,176,408,552)` with a 2×3 slot grid; SETTINGS 2×2 panels at
+  `(24,176)/(648,176)/(24,460)/(648,460)`, each 608×268 with a 36 px header.
+- **settings sub-layout** pinned in the JSON: controller/audio rows, remap rows
+  starting at y = 496, language labels at 612, dropdowns at 624 (200×28),
+  `SUBTITLE BACKGROUND` label at 658, swatches at 670 (36×18), preview strip at
+  `(664,694,576,26)`.
+- **palette / type / switch**: every colour role and every type size comes from
+  the JSON maps; the only type/chrome values not present in the JSON are the
+  `parity.md` "Component styling defaults" pinned in `src/app/style.rs`
+  (e.g. 9 px/800 rarity chips, 28 px/800 drawer title, 13 px/800 primary
+  buttons) — one module, each value citing the parity document.
+- **captures**: the JSON `captures` map drives the capture task; all states set
+  the shared nav target `cache-02`.
+
+The view is absolute-positioned from these rects (`src/app/widgets.rs` `at()` /
+`rect_box()`); there is no responsive reflow or per-lane flex page frame.
+
+### Canonical switch (the "pinched oval" fix)
+
+Parity pins a stadium track with a circular thumb:
+
+| Property | Value |
+|---|---|
+| track | 64 × 32 px, radius 16 px (half height) |
+| track fill | ON `signal` #EF6A3C · OFF `graphite` #2E2E29 |
+| track border | ON none · OFF 1 px `ruleStrong` #56564C |
+| thumb | 24 × 24 px circle, radius 12 px, inset 4 px |
+| thumb fill | ON `onSignal` #191917 · OFF `boneBright` #F4F1E6 |
+| thumb offset | ON x = 36 px · OFF x = 4 px |
+
+Root cause in this lane was two-fold, and both parts are fixed through explicit
+per-instance `Theme::with_token` overrides on the generated `Switch`:
+
+1. The first lane override set `switch.design.track.shape.radius` /
+   `switch.design.thumb.shape.radius` to `0` for a square look, leaving a
+   rounded-square thumb inside a pill track. The overrides are gone; the lane
+   now pins `switch.size.lg.track.radius` = 16 px and
+   `switch.design.thumb.shape.radius` = 12 px.
+2. The generated `lg` control carries large-action **root chrome** (16 px inline
+   padding, 8 px block padding, 12 px gap, 48 px min box) which inflated the
+   component box to 96 × 48 and offset the track by (16,8) inside its slot. The
+   lane pins the generated semantic size tokens
+   (`semantic.action.size.large.padding-inline` / `padding-block` / `gap` /
+   `min-width` / `min-height`) to `0` so the component box is exactly 64 × 32.
+   The track and thumb geometry tokens
+   (`switch.size.lg.track.width/height/radius`, `switch.size.lg.thumb.size/height`,
+   `switch.size.lg.thumb.translate.off/on`, track padding, thumb radius and the
+   track/thumb colour consumer tokens) are all overridden from the JSON switch
+   contract.
+
+Because the target's generated `Switch` exposes no state-conditional border
+token, the lane retains **two pre-themed `Switch` entities** per toggle (OFF =
+bordered graphite, ON = borderless signal) and renders the one matching the
+domain state; both are controlled through `ChangeRequest`. A mounted GPUI layout
+test (`src/app/mod.rs` → `mounted_switch_geometry_matches_parity`) asserts the
+mounted component box and track are exactly 64 × 32 at their slot origin and the
+thumb is 24 × 24; a token-cascade test asserts the resolved track/thumb
+geometry + colours.
+
+### Icon art (portable code tiles)
+
+The first parity montage showed three icon languages: Unity and Godot used their
+admitted `Icon` catalog glyphs while GPUI (no Icon component) drew placeholder
+squares. The authority now pins icon surfaces to portable two-letter code tiles
+(`fixtures/parity-layout.json` `iconArt`, `parity.md` → "Icon art"):
+
+- **Icon-visibility rows** — 16 × 16 `graphite` tile, 1 px `ruleStrong` border,
+  square corners, centred 8 px / 800 `boneBright` code = the pinned fixture
+  catalog initials (`Info→IN`, `Placeholder→PL`, `Home→HO`, `Baseline→BL`,
+  `Alarm→AL`, `CircleDot→CD`, `ChevronRight→CR`, `User→US`).
+- **Ability-card art** — 40 × 40 tile with the same fill/border/corners, centred
+  12 px / 800 `boneBright` code = the first two letters of the ability name
+  (`THREADING→TH`, `OVERCLOCK→OV`, …). The selected-card outline stays signal.
+
+The fixture catalog initials are pinned explicitly in
+`seam::parity::icon_code` (the authority's list is not derivable from the first
+two characters for `Baseline`); ability names use `code_two_letters` (first two
+alphanumeric characters, uppercased). Generated `Icon` remains the realization
+anywhere else a target admits it; on these two parity surfaces the code tile is
+the shared app-authority art, not a package change.
+
+### DS vs fallback per region
+
+| Region | Realization | Status |
 |---|---|---|
-| `Switch` | MAP icon-visibility filter (I2), SETTINGS General toggles (I11) | 13 controlled switches (8 + 5) retained at startup, subscribed via `ChangeRequest` |
-| `Text` | every label, value, caption, tab label, section heading, hint, modal copy, footer | retained `Text` pool keyed by logical site (~200 entities) |
-| `Badge` | map status tags, rarity tags, faction ACCESS/LOCKED, PAUSED chip, INSTALLED, COMPATIBLE, REJECTED | retained `Badge` pool keyed by site (~45 entities) |
-| `Divider` | section rules, popover/drawer/modal rules | retained per insertion site (12) |
-| `Stat` | header ranking/level/earnings/followers, MAP commander readout, audio/ability stats values | retained `Stat` pool (~11 entities) |
-| `Theme` | per-instance Orion token overrides on every component above (no brand loader exists on this target) | each retained entity carries a `Theme::with_token(..)` set |
-| `ChangeRequest` / `BooleanState` / `NativeContent` | controlled value acceptance and hover/selection-independent state sync | — |
+| Header band / tab bar / footer band (chrome, rules) | plain gpui frame + FSDS `Text`/`Stat`/`Divider`; tab buttons hand-authored | NOT FSDS frame — no Tabs/Stack/Card component |
+| Header stat readouts (rank, level, earnings, followers) | FSDS `Stat` (forced 20 px/800 via tokens) + FSDS `Text` | **FSDS** |
+| Header PAUSED chip | FSDS `Badge` label inside a hand-authored chip rectangle | mixed — Badge has no fixed-size/justify channel |
+| Map panel, field, 60 px grid, corner ticks, field note | hand-authored gpui drawing + FSDS `Text` | NOT FSDS — no Map/Canvas component |
+| Map markers (24 px squares, kind monograms, nav outline) | hand-authored + FSDS-palette `markerColors`/`markerMonograms` | NOT FSDS — no Icon component |
+| Map icon-visibility panel (8 rows, canonical switches) | FSDS `Switch` + FSDS `Text` rows; 16 px portable code tile (`iconArt.rowTile`) hand-authored | mixed — Switch **FSDS**, Icon art app-authority |
+| Marker popover (anchored, CLOSE + SET AS NAV TARGET) | hand-authored surface; FSDS `Text`/`Badge`/`Divider` + hand-authored buttons | NOT FSDS — no Popover/Button |
+| Progress roster (rows, accent bar, reputation bar, status chips, `OPEN →`) | FSDS `Text`/`Badge`; bars/rows hand-authored | mixed |
+| Progress paper dossier drawer (brief/history/perks/parts/SHOP PARTS) | hand-authored drawer + FSDS `Text`/`Badge`/`Divider` + hand-authored buttons | NOT FSDS — no Drawer/Sheet |
+| Abilities card grid (5×2, rarity chip, 40 px portable code tile, name, pips, installed chip) | hand-authored cards + FSDS `Badge` (rarity/installed) and `Text` | mixed — no Card/Icon component; card art is the shared `iconArt.cardTile` code |
+| Ability hover popover | hand-authored surface; FSDS `Text`/`Badge` | NOT FSDS — no Tooltip/Popover |
+| Detail panel + vehicle loadout (2×3 slots, compatible outlines, install/remove/reject) | hand-authored rows + FSDS `Text`/`Badge` | mixed |
+| General settings switches | FSDS `Switch` + FSDS `Text` rows | **FSDS** |
+| Controller sliders / audio sliders | hand-authored 300×6 track + 16 px circular thumb, 20 click cells | NOT FSDS — no Slider |
+| Remap rows + key-waiting modal | hand-authored modal; FSDS `Text`/`Divider`; hand-authored binding buttons | NOT FSDS — no Dialog/Button |
+| Language dropdowns | hand-authored 200×28 graphite dropdowns | NOT FSDS — no Select |
+| Subtitle background swatches + live preview | hand-authored swatches; FSDS `Text` preview; foreground picked from the palette | NOT FSDS — no ColorPicker |
+| Rules / separators | FSDS `Divider` (margin zeroed via tokens) at JSON rects | **FSDS** |
 
-`ToggleSwitch` and `Checkbox` are admitted by the target but **no region in the
-pause-menu spec requires multi-select or radio semantics**, so the lane does not
-invent a use for them. (The generated Switch supports Space/Enter activation and
-Tab focus; the lane host adds Escape and 1–4 tab keys.)
+Five of the seven admitted components are used (Switch, Text, Badge, Divider,
+Stat); ToggleSwitch and Checkbox have no spec region requiring their semantics.
+No layout number, colour or type size is re-typed in `src/app/`: geometry/colour
+come from the parsed JSON; the handful of parity-document-pinned type/chrome
+values live in `src/app/style.rs` with their source named.
 
-## Realization ledger
+### Permitted differences (recorded)
 
-Every row is a region the spec requires that the 7-component allowlist cannot
-express, realized as hand-authored plain gpui and marked
-`// NOT FSDS: <reason>` in source (`src/app/*.rs`).
+- **Font family / rasterisation.** The lane uses the native UI face (no bundled
+  condensed grotesque); glyph rasterisation, anti-aliasing and sub-pixel
+  baselines differ from the other engines. `parity.md` allows this.
+- **Letter-spacing.** The GPUI target's generated style vocabulary has no
+  `letter-spacing` consumer property, so the JSON `letterSpacingMicro/Tab`
+  values cannot be expressed; uppercase labels are used instead. Recorded as a
+  permitted difference.
+- **Line-height.** Absolute single-line text boxes are pinned to line-height 1
+  (body copy 1.2) so JSON y positions land on the intended baselines; this is a
+  font-metric choice, not a layout repositioning.
+- **Chips.** FSDS `Badge` provides chip typography but the target's Badge has no
+  width/height/justify channel, so the exact chip rectangle is a hand-authored
+  surface and the Badge label is centred inside it (ledger above).
 
-| Spec region | Realized through | Status |
-|---|---|---|
-| Header band (brand mark, mission, commander readouts, PAUSED chip) | FSDS `Text`/`Stat`/`Badge` inside a hand-authored flex band + orange action strip | mixed — text/stat/badge **FSDS**, band chrome NOT FSDS (no Stack/Card) |
-| Four-tab bar, exclusive active state (I1) | hand-authored square tab buttons with FSDS `Text` labels | NOT FSDS — no Tabs component on the target |
-| Map plot (grid, contour ticks, corner brackets, sector label, N5 watermark) | hand-authored gpui drawing with FSDS `Text` labels | NOT FSDS — no Map/Canvas/Icon component |
-| Map markers: shape, status color, kind monogram, nav-target highlight | hand-authored absolute-positioned squares + plain text monogram | NOT FSDS — no Map/Icon component |
-| Icon visibility panel (I2) | FSDS `Switch` + FSDS `Text`/`Badge` rows | **FSDS** controls, hand-authored page-frame rows |
-| Marker popover, anchored, Escape/outside dismissal (I3/I4/I15) | hand-authored absolute panel + FSDS `Text`/`Badge`/`Divider` + hand-authored action button | NOT FSDS — no Popover/Overlay component |
-| Commander readout in MAP (stat row) | FSDS `Text` + `Stat` rows | **FSDS** values, hand-authored row grid |
-| Faction roster (locked/unlocked, reputation bars, requirement) | FSDS `Text`/`Badge`; hand-authored rows and hard-edged reputation bar | mixed — no Progress/Table component |
-| Faction left drawer, overlays list, disabled shop on locked faction (I5/I6/I15) | hand-authored drawer surface + FSDS `Text`/`Badge`/`Divider` + hand-authored action button | NOT FSDS — no Drawer/Sheet component |
-| Ability card grid; rarity tag over the card's top edge (I7) | hand-authored cards + FSDS `Badge` (rarity tag) and `Text` | mixed — no Card/Tag/Icon; tag is real FSDS Badge |
-| Ability hover tooltip with description/stats/rarity/size (I10) | hand-authored absolute tooltip; FSDS `Text`/`Badge`/`Divider` inside | NOT FSDS — no Tooltip/Popover component |
-| Vehicle loadout rows, compatible-slot highlight, install/remove, reject state (I8/I9) | hand-authored rows + FSDS `Text`/`Badge`/`Divider` | mixed — no List/Progress/Alert component |
-| General settings switches (I11) | FSDS `Switch` + FSDS `Text` rows | **FSDS** |
-| Controller stepped sliders (I12) | hand-authored tick-track slider (each tick a pointer target) + FSDS `Text` value | NOT FSDS — no Slider component on the target |
-| Controller remap rows + key-waiting modal (I13/I15) | hand-authored modal/backdrop with focus + key capture; FSDS `Text`/`Divider`; hand-authored binding buttons | NOT FSDS — no Dialog/Modal/Button component |
-| Audio sliders, language dropdowns, subtitle background swatch picker, live preview (I14) | hand-authored stepped sliders/dropdowns/swatches; FSDS `Text`; preview foreground picked from the Orion palette by the seam | NOT FSDS — no Slider/Select/ColorPicker component |
-| Action buttons (SET AS NAV TARGET, SHOP PARTS, CLOSE/CANCEL, ×) | hand-authored square buttons, zero radius, signal-orange fill / disabled inset styling | NOT FSDS — no Button component on the target |
-| Page frame (bands, content region, panels, scroll regions) | plain gpui flex layout | NOT FSDS — the target's allowlist claims no layout/page-frame component |
+### Verification
 
-**Fallback summary:** 5 of the 7 admitted components are used (Switch, Text,
-Badge, Divider, Stat); 2 have no spec region that needs their semantics
-(ToggleSwitch, Checkbox). Every such region class is necessarily hand-authored
-(header/footer chrome, tab bar, map plot/markers/watermark, marker popover,
-faction drawer, ability cards/glyphs, tooltip, stepped sliders/language
-dropdowns/swatches, remap modal, action buttons). GPUI therefore has the largest
-fallback ledger of the three engine lanes by construction — its allowlist has no
-Tabs, Popover, Overlay, Slider, Select, Button, Card or Icon.
+- Per-state **colour probes** from `examples/game-pause-menu/parity-check.mjs`:
+  all 26 probes match the JSON palette on this lane's captures (including both
+  switch tracks, the active tab fills, map field, panels, drawer ground, ACCESS
+  chip and footer ground).
+- **Region boxes** measured from the captures match the authority: map field
+  `40,232,840,480`; active tab columns `0/320/640/960 × 320 × 56`; switch ON
+  `1176,232,64,32` and OFF `1176,472,64,32`; SETTINGS general switch
+  `552,222,64,32`; ACCESS chip `1080,240,76,22`; footer NAV TARGET value
+  right-aligned to x = 1256; drawer paper occupies `24,176,560,552`.
+- The lane's `tests/parity.rs` (13 tests) pins the JSON contract (shell rects,
+  tab columns, per-tab rects, switch contract incl. off/on colours and pill
+  math, palette/type maps, capture plan, settings sub-layout, nav-target pin)
+  and the negative authoring paths.
 
-## Theme delivery (Orion N5, no brand-graph loader)
+## Evidence
 
-The authority for the palette is the brand layer
-`packages/ds-tokens/src/brands/orion.tokens.json`; GPUI has no brand loader, so
-the lane consumes the lane-copied
-[`fixtures/orion-appearance.json`](fixtures/orion-appearance.json) and applies it
-through two explicit mechanisms, exactly as the app spec's "Theme path honesty"
-doctrine requires:
-
-1. **Generated components** receive per-instance
-   `Theme::with_token(<address>, <value>)` overrides at the token addresses the
-   generated contracts resolve:
-   - `Text` → `text.design.root.foreground.color`
-   - `Badge` → `badge.color.background.default` / `.hover`,
-     `badge.color.foreground.primary`, `badge.color.border`,
-     `semantic.shape.control.radius.default` (zero radius)
-   - `Divider` → `divider.color`
-   - `Stat` → `stat.color.foreground.value`
-   - `Switch` → `semantic.color.background.tertiary` (off track),
-     `semantic.color.foreground.accent` (on track),
-     `semantic.color.background.primary` / `semantic.color.foreground.on.brand`
-     (thumb), `semantic.color.border.subtle`,
-     `switch.design.track.shape.radius` / `.thumb.shape.radius` (Orion's zero
-     radius), `semantic.focus.ring.color`
-2. **Hand-authored regions** use plain-gpui colors derived from the same
-   fixture (`src/app/palette.rs`); every mixed surface tone is computed from a
-   brand color (e.g. `map_ground = mix(ink, sage, 10%)`), never hard-coded.
-
-Zero radius, uppercase micro-labels, hairline 1px rules, orange action blocks
-with near-black on-color text and oversized numerals all follow the visual
-direction; no bundled condensed grotesque exists, so the lane uses the native UI
-face with heavy weights/letter-spaced overline roles (recorded in the fixture's
-`fontNote`).
-
-## Interaction coverage (I1–I15)
-
-All paths are implemented in the app and their domain rules are unit-tested in
-`tests/seam.rs`; the GPUI layer projects the same state.
-
-| ID | Interaction | GPUI call path | Seam rule (tested) |
-|---|---|---|---|
-| I1 | Select MAP/PROGRESS/ABILITIES/SETTINGS | tab buttons / keys 1–4 → `select_tab` | `AppState::select_tab`; exactly one active tab by construction |
-| I2 | Toggle an icon-visibility switch OFF then ON | controlled `Switch` → `ChangeRequest` subscription → `toggle_icon` | filter flips exactly one marker, fixtures immutable |
-| I3 | Activate a visible marker | marker `on_click` → `open_marker` | hidden markers cannot be activated |
-| I4 | Activate SET AS NAV TARGET | popover action → `set_nav_target` | one nav target, footer label updates, popover closes |
-| I5 | Select an unlocked faction row | row `on_click` → `open_faction` | unlocked drawer enables SHOP PARTS |
-| I6 | Select a locked faction row | row `on_click` → `open_faction` | locked drawer carries requirement + disabled action |
-| I7 | Select an ability card | card `on_click` → `select_ability` | pending selection clears reject, computes compatible slots |
-| I8 | Activate a compatible slot | slot `on_click` → `activate_slot` | installs, replaces occupant, one ability per slot |
-| I9 | Activate an incompatible slot | slot `on_click` → `activate_slot` | no mutation + visible reject state |
-| I10 | Hover an ability card | `on_hover` → `hover_ability` | tooltip content from fixture |
-| I11 | Toggle a General switch | controlled `Switch` subscription → `toggle_general` | flips exactly one row once |
-| I12 | Adjust a Controller slider | hand-authored tick track → `set_slider` | quantize to step, clamp to range, value displayed |
-| I13 | Activate a remap binding, then press a key | modal focused; `on_key_down` → `capture_keystroke` | waits, next key binds and closes; Escape cancels |
-| I14 | Adjust audio slider / change language / pick subtitle background | sliders, dropdowns, swatches → `set_audio` / `select_language` / `select_background` | values update; preview line reflects background + language; AA contrast foreground chosen |
-| I15 | Close drawer / popover / remap modal with cancel | Escape action → `dismiss_overlay` | dismisses exactly one overlay, topmost first, data unchanged |
-
-Escape is bound at the window level; number keys 1–4 select tabs. Overlay
-dismissal order is modal → drawer → popover → dropdown, implemented in the seam
-so it is engine-independent.
-
-## Data / seam layering
-
-```
-fixtures/*.json  →  src/seam/adapter.rs  →  src/seam/state.rs  →  src/app/*.rs
-raw fixture shape    parses + validates     domain transitions      the only caller
-                     (panic on malformed =  (I1–I15, pure std)      (GPUI projection)
-                      authoring error)
-```
-
-- `src/seam/types.rs` — serde types for the seven fixtures plus WCAG luminance /
-  contrast helpers. Wire names are camelCase; the UI never sees raw JSON.
-- `src/seam/adapter.rs` — the only fixture-shape reader; embeds the verbatim
-  fixture copies (`include_str!`) and validates cross-file invariants (unique
-  ids, normalized marker positions, known rarities, six vehicle slots with known
-  ability ids, slider ranges/steps, declared language/background values,
-  `#RRGGBB` palette, non-zero Orion radius rejected). Malformed fixtures panic
-  with `GPUI_LANE_FIXTURE_INVALID` (authoring error) — exercised by tests.
-- `src/seam/state.rs` — the pure domain state + every interaction transition
-  listed above, plus `format_grouped` and the binding normalizer.
-- `src/app/` — the GPUI owner entity (`Menu`), retained generated-component
-  pools, hand-authored chrome/tabs/tabs/map/drawer/cards/settings/modal, and the
-  capture task. No gpui type crosses into `src/seam/`.
-
-The fixtures are verbatim copies of `examples/game-pause-menu/fixtures/` (they
-belong to the Lead-owned scaffold; this lane does not edit them).
-
-## Capture mechanism (evidence)
-
-`cargo run --features capture -- --capture <dir>` starts the real app window at
-1280×800, puts the domain into ten representative states (one at a time), waits
-for a paint, reads the last rendered frame with `Window::render_to_image()`,
-writes a PNG, and exits after recording `capture-manifest.json`. Frame-readiness
-is asserted by sampling distinct colors (uniform/undrawn frames retry), so a
-blank window fails loudly instead of producing black evidence.
-
-Captured states (`evidence/`, gitignored; Lead copies them):
+`cargo run --features capture -- --capture <dir>` starts the real 1280×800
+window, applies each state from the JSON `captures` map, waits for a paint,
+reads the rendered frame with `Window::render_to_image()`, writes a PNG per
+state and a `capture-manifest.json`, then exits. Captures are written to
+`/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/gpui/`:
 
 | File | State |
 |---|---|
-| `map.png` | MAP tab, default marker filter, commander readout |
-| `progress.png` | PROGRESS tab, unlocked faction drawer with enabled SHOP PARTS |
-| `abilities.png` | ABILITIES tab, size-2 ability pending, compatible slots highlighted, loadout rows |
-| `settings.png` | SETTINGS tab scrolled to top (General + Controller) |
-| `map-popover.png` | marker popover open on a beacon, nav target set (footer + orange marker) |
-| `progress-locked-drawer.png` | locked faction drawer: requirement + disabled SHOP PARTS |
-| `abilities-hover.png` | I10 hover tooltip over an ability card |
-| `abilities-reject.png` | I9 reject state on an incompatible slot |
-| `settings-remap-modal.png` | I13 remap modal waiting in “PRESS ANY KEY OR BUTTON” |
-| `settings-audio.png` | I14 audio sliders, language dropdowns, swatch picker, live preview |
+| `map.png` | MAP tab, nav target cache-02, weather-06 hidden |
+| `progress.png` | PROGRESS tab, ares-logistics dossier drawer |
+| `abilities.png` | ABILITIES tab, overclock pending, compatible slots outlined |
+| `settings.png` | SETTINGS tab (all four panels) |
+| `map-popover.png` | MAP tab with the beacon-05 popover |
+| `abilities-hover.png` | ABILITIES hover popover over overclock |
+| `settings-remap-modal.png` | remap modal waiting for INTERACT |
+| `settings-subtitle.png` | SIGNAL swatch + Français subtitle preview |
 
 Screenshots are sampled states of the running app, not physical-device proof and
 not an interaction recording.
 
 ## Tests
 
-`cargo test` (default features): 2 lib tests (`src/app/palette.rs` mix/hex
-round-trips) + 49 seam tests (`tests/seam.rs`). The seam suite covers:
+- `cargo +1.94.1 test --locked` → **67 tests**: 1 lib (`Switch` resolved-style
+  token cascade), 2 colour helpers, 15 parity-layout contract tests (incl. the
+  icon-art code language), 49 seam tests (fixture parsing/validation and every
+  I1–I15 domain rule).
+- `cargo +1.94.1 test --features capture` → **70 tests**: adds the 2 capture
+  frame sanity tests and the mounted `Switch` geometry test (`TestAppContext`
+  `debug_bounds`; 64×32 component box, 64×32 track, 24×24 thumb at slot origin).
 
-- fixture loading counts + committed-corpus values; malformed JSON, missing
-  field, duplicate id, non-normalized marker, unknown rarity, dangling slot
-  ability, dangling nav target, invalid slider step, undeclared background,
-  non-zero radius — each as a typed authoring error — and the loud panic
-  boundary;
-- I1 exactly-one-tab and tab-switch overlay scoping; I2 per-marker isolation +
-  fixture immutability; I3/I4 visibility + single nav target; I5/I6
-  drawer/locked-shop; I7–I9 compatibility, install/replace/single-instance,
-  reject-without-mutation, remove, no-pending no-op, fixture `installed` field
-  non-authoritative; I11 one-row toggle; I12 quantize/clamp/display; I13
-  wait/bind/cancel/escape/one-modal; I14 sliders/languages/swatches/preview AA
-  contrast; I15 one-overlay-at-a-time dismissal and data preservation.
-- `cargo test --features capture` adds 3 capture tests (uniform frame ignored,
-  varied frame meaningful, the four required tab files are planned, 54 total).
+The GPUI app has no automated end-to-end interaction/screenshot baseline; the
+domain interactions are seam-tested and the parity evidence is state-driven
+frame capture.
 
-The GPUI app layer itself is not mounted in tests: this lane has no automated
-mounted-engine interaction test. Interaction evidence is the state-driven
-screenshots above plus the seam rules they exercise; the package's own
-`native_runtime` tests cover the generated components, not this consumer.
+## Interaction coverage (I1–I15)
+
+All interactions remain real code paths over the pure-std seam state; the parity
+pass changed layout, not semantics. Mapping: I1 tab selection, I2 icon
+visibility filter, I3/I4 marker popover + nav target, I5/I6 faction drawer +
+disabled locked shop, I7–I9 ability selection / compatible install / reject +
+remove, I10 hover popover, I11 General switches, I12 controller sliders, I13
+remap wait/capture/cancel, I14 audio/language/subtitle swatch + preview, I15
+one-overlay-at-a-time Escape dismissal. Escape and 1–4 tab keys are bound at the
+window level; the domain rules are covered by the 49 seam tests.
 
 ## Non-claims
 
-- **No automated visual/runtime interaction proof.** Screenshots are
-  state-driven samples from the running app; no screenshot baseline, mounted
-  GPUI input test, or pixel-parity claim is made.
-- **Not accessibility proof.** Focus handles, Escape/1–4 keys and hover paths
-  exist, but no a11y standard or screen-reader behavior is claimed. Gamepad
-  navigation is not simulated.
-- **No cross-engine parity claim.** This lane realizes the shared spec
-  independently; idiom (focus model, hand-authored chrome) differs from the
-  Unity and Godot lanes.
+- **No automated visual/interaction proof.** The parity evidence is sampled
+  frames of the running app; no screenshot baseline, mounted input test or
+  cross-engine pixel-parity claim is made here.
+- **Not accessibility proof.** Focus keys and hover paths exist; no a11y
+  standard is claimed. Gamepad navigation is not simulated.
 - **Partial realization.** Every NOT-FSDS row above is a fallback forced by the
   7-component allowlist, not a claim that the hand-authored surface equals a
   package component.
 - **Theme delivery is explicit overrides, not brand-graph loading.** GPUI has no
-  automatic brand/dark loader; the lane applies the fixture palette per instance
-  and states so.
-- **Build environment deviation.** `runtime_shaders` (same zed revision) is
-  enabled because this machine's Xcode lacks the standalone Metal tool; the
-  default lane pins are otherwise unchanged, but this build does not use
-  build-time precompiled shaders.
+  automatic brand/dark loader; the lane applies the JSON palette through
+  per-instance `Theme::with_token` and lane-local colour constants.
+- **Build environment deviation.** `runtime_shaders` is enabled on the same
+  pinned zed revision because this machine's Xcode lacks the standalone Metal
+  tool; the default build otherwise matches the package pins.
 - **Not generated-artifact admission.** GPUI remains outside the TypeScript
   admission rail; this lane is hand-written consumer code plus a path
   dependency.
-
-## Findings for the usability comparison
-
-1. **Largest fallback surface of the three engines.** With only 7 admitted
-   components and no Tabs/Popover/Overlay/Slider/Select/Button/Card/Icon, nine
-   region classes must be hand-authored. Composition is possible — the app runs
-   and the domain is fully realized — but most of the visible UI is app code,
-   not design-system code, and the DS contribution is concentrated in
-   boolean controls, text, tags, rules and stat readouts.
-2. **Generated `Text` is excellent for typographic roles, but sizing inside
-   nested flex is consumer-owned.** Text variants/size/weight carry the type
-   scale, yet inside nested flex columns and scroll containers the intrinsic
-   text measure collapsed to near-zero in several placements (labels wrapped
-   one character per line) until the lane wrapped every text site in explicit
-   `w_full()`/fixed-width containers. Layout properties are not on the
-   components and the page frame is consumer-owned, so this friction is
-   structural on this target.
-3. **Controlled Switch works well, but the consumer pays the label styling.**
-   Subscribing to `ChangeRequest`, accepting explicitly and setting
-   `checked(Some(..))` is a clear contract; the lane suppresses the generated
-   label and renders a separate FSDS `Text` for micro-label styling and
-   inherits near-black-on-dark otherwise. Per-instance theme tokens make the
-   Orion track/thumb/zero-radius restyle possible, but each switch needs ~8
-   token overrides — there is no brand layer to do it once.
-4. **No overlay/dismissal/focus contract.** Popover, left drawer and modal are
-   all consumer-authored. Escape precedence, backdrop clicks, focus routing to
-   the waiting modal and one-at-a-time dismissal had to be designed by the lane
-   (and are seam-tested) rather than consumed from a package primitive.
-5. **Hover is consumer state.** The generated components don't expose a
-   hover-popover channel; the ability tooltip renders from lane hover state,
-   which also means the evidence capture drives the tooltip by setting that
-   state rather than moving the mouse.
-6. **Slider/Select/ColorPicker gaps are the biggest interaction cost.** Nine
-   sliders (controller + audio), two language dropdowns and a six-swatch color
-   picker had to be hand-authored with pointer targets; the seam owns
-   quantization/clamping so semantics stay engine-independent.
-7. **Verification tooling is the strongest part of the GPUI lane.** Once the
-   `test-support` feature is enabled, `Window::render_to_image()` gives a
-   dependency-free, permission-free way to capture exact app frames; that is
-   cheaper and more reproducible than OS window capture. The friction is that
-   this session path is behind a feature not exposed for normal consumers
-   (`render_to_image` on macOS is gated on gpui_macos `test-support`), so a
-   consumer lane must recompile the renderer graph to get screenshot evidence.
-8. **Environment portability.** The documented GPUI lane prerequisites (Xcode +
-   Metal tool + macOS) are now sharper: Xcode 26 without the downloadable Metal
-   Toolchain component cannot build the pinned renderer's shaders, and the
-   runtime-shader feature is the practical fallback.
+- **Cross-engine RMSE is not claimed by this lane.** The shared
+  `parity-check.mjs` montage/RMSE comparison runs where all three lanes'
+  captures exist; this lane only asserts its own probe/region geometry.

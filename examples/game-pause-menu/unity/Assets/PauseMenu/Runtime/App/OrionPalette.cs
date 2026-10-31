@@ -25,6 +25,64 @@ namespace GamePauseMenu
         public Color Alert;
         public Color Clear;
 
+        // Parity-pass additions: the shared layout authority declares these roles directly.
+        public Color Paper;
+        public Color PaperMuted;
+        public Color Rule;
+        public Color RuleStrong;
+        public Color Muted;
+        public Color TextSecondary;
+        public System.Collections.Generic.Dictionary<string, string> MarkerColors =
+            new System.Collections.Generic.Dictionary<string, string>();
+        public System.Collections.Generic.Dictionary<string, string> RarityColors =
+            new System.Collections.Generic.Dictionary<string, string>();
+        public System.Collections.Generic.Dictionary<string, string> RarityTextColors =
+            new System.Collections.Generic.Dictionary<string, string>();
+
+        /// <summary>The parity layout authority's colour table is the only colour source for the
+        /// rebuilt UI; this builds the lane palette from it.</summary>
+        public static OrionPalette From(ParityLayoutData layout)
+        {
+            if (layout == null) throw new ArgumentNullException(nameof(layout));
+            return new OrionPalette
+            {
+                Signal = layout.Color("signal"),
+                SignalDeep = layout.Color("signalDeep"),
+                SignalHot = layout.Color("signalHot"),
+                OnSignal = layout.Color("onSignal"),
+                Ink = layout.Color("ink"),
+                Charcoal = layout.Color("charcoal"),
+                Graphite = layout.Color("graphite"),
+                BoneBright = layout.Color("boneBright"),
+                Bone = layout.Color("bone"),
+                Sage = layout.Color("sage"),
+                Moss = layout.Color("moss"),
+                Alert = layout.Color("alert"),
+                Clear = layout.Color("clear"),
+                Paper = layout.Color("paper"),
+                PaperMuted = layout.Color("paperMuted"),
+                Rule = layout.Color("rule"),
+                RuleStrong = layout.Color("ruleStrong"),
+                Muted = layout.Color("muted"),
+                TextSecondary = layout.Color("textSecondary"),
+                SurfaceApp = layout.Color("ink"),
+                SurfacePanel = layout.Color("charcoal"),
+                SurfaceRaised = layout.Color("graphite"),
+                SurfaceRule = layout.Color("rule"),
+                SurfaceRuleStrong = layout.Color("ruleStrong"),
+                SurfaceMuted = layout.Color("muted"),
+                SurfaceTelemetry = layout.Color("sage"),
+                Radius = (int)layout.Radius,
+                BorderWidth = (int)layout.PanelBorder,
+                Watermark = "N5",
+                UppercaseLabels = true,
+                MicroLabelLetterSpacing = (float)layout.Size("letterSpacingMicro"),
+                MarkerColors = layout.MarkerColors,
+                RarityColors = layout.RarityColors,
+                RarityTextColors = layout.RarityTextColors,
+            };
+        }
+
         public Color SurfaceApp;
         public Color SurfacePanel;
         public Color SurfaceRaised;

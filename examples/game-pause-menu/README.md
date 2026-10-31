@@ -26,6 +26,68 @@ oversized numerals and no rounded corners. The style is registered as the
 | **Transfer** | The app spec is engine-neutral. Lanes differ in idiom (UXML/USS vs `.tscn`/GDScript vs Rust views) but not in tab set, data meaning, or interaction result. |
 | **Evidence closure** | Each lane's README names its build/test/capture commands; per-lane build logs, test results and four-tab screenshots are produced under `tmp/game-pause-menu/<engine>/` from committed sources plus each lane's documented setup step. |
 
+## Parity pass — one interface, three engines
+
+The first realization produced three visibly different interfaces. A second
+slice (`GAME-PAUSE-MENU-PARITY-01`) pinned a single design authority and rebuilt
+all three lanes to it:
+
+- [`parity.md`](parity.md) and [`fixtures/parity-layout.json`](fixtures/parity-layout.json)
+  define the absolute 1280 × 800 grid, colours, type scale, per-tab rects,
+  switch geometry, icon-art tiles and the eight capture states. Every lane
+  consumes a verbatim copy of the JSON through a typed, validating parser; no
+  layout number is re-typed in app code.
+- Verification: the committed [`parity-check.mjs`](parity-check.mjs) samples 195
+  fixed pixels across the three engines' captures (layout extents, panel/tab/chip
+  boxes, switch pill geometry, thumb centres) and computes pairwise RMSE. The
+  final run reports **0 failures** for map, progress, abilities and settings;
+  labelled montages and difference images land under
+  `tmp/parity-evidence/report/`.
+- Cross-engine residual after the pass: **font family/rasterisation**, glyph
+  anti-aliasing, and letter-spacing where the engine has no channel. Geometry,
+  colours, copy, component states and control shapes are identical.
+
+### Why the switches looked like pinched ovals — and the fix
+
+Three engines rendered three different switches for the same component because
+the design system's "pill" is a token value rather than a geometry contract:
+
+- **Unity** projected the token `switch...track.radius → 9999px` verbatim into
+  USS. UI Toolkit treats `border-radius` as per-corner *elliptical* radii and
+  does not collapse an oversized value into a stadium, so the 64 × 32 track
+  painted as an ellipse. Fixed at both levels: the package's USS projection now
+  clamps oversized corner radii to half the rule's smaller known dimension
+  (`packages/ds-codegen/src/frameworks/unity/uss.ts`, unit-tested; Switch md
+  12 px, lg 16 px, Button 16 px, badges/chips/dialogs et al. get stadium radii),
+  and the lane sheet pins explicit 16 px track / 12 px thumb radii as
+  belt-and-braces.
+- **GPUI**'s generated large Switch carried large-action root chrome (16 px
+  inline padding, 8 px block padding, 12 px gap, 48 px minimum box), which
+  inflated the component to 96 × 48 and offset the 64 × 32 track by (16, 8);
+  the lane had also overridden the thumb radius to 0. Fixed by pinning
+  `semantic.action.size.large.*` to zero, using the JSON track/thumb radii, and
+  pre-theming separate ON/OFF entities for the border contract.
+- **Godot**'s generated boolean runtime is a `CheckButton` painted with
+  default-theme icons: it never received the Orion fill, so the ON state looked
+  like a plain light pill. Fixed with 64 × 32 SVG icon overrides for
+  checked/unchecked that draw the JSON stadium, thumb and colours, with the
+  lane-local theme emptying the CheckButton state styleboxes.
+- The common root cause is recorded in [`parity.md`](parity.md): an oversized
+  corner radius is a token value each engine interprets differently. The
+  package-level USS clamp removes the Unity manifestation for every consumer;
+  the GPUI/Godot lanes pin their composite/icon realizations.
+
+### Icon art
+
+The first parity montage still showed two glyph languages (Unity/Godot catalog
+icons) and one placeholder (GPUI has no Icon component). Icon surfaces are now
+pinned to a portable code language in `parity-layout.json` `iconArt`: 16 × 16
+`graphite`/`ruleStrong` tiles holding explicit two-letter codes for the
+icon-visibility rows (`IN, PL, HO, BL, AL, CD, CR, US`), and 40 × 40 tiles
+holding the first two letters of each ability name on ability cards
+(`TH, OV, IO, …`). Generated `Icon` remains the realization elsewhere; on these
+two parity surfaces the shared code tile is the art.
+
 ## The app
 
 Base viewport 1280 × 800, full-screen pause overlay:
@@ -97,13 +159,13 @@ their engine's theme mechanism and state that in their READMEs.
 | Concern | GPUI | Unity UI Toolkit | Godot |
 |---|---|---|---|
 | Package | `packages/ds-gpui` | `packages/ds-unity` | `packages/ds-godot` |
-| Allowlist at slice base | 7: Switch, ToggleSwitch, Checkbox, Text, Badge, Divider, Stat | 7: Switch, Accordion, Popover, Tabs, Text, Divider, Icon | 10: Switch, Accordion, Popover, Tabs, Text, Divider, Button, Badge, Card, Icon |
-| Allowlist on current `main` | 7 (unchanged) | **48** after the parallel `UNITY-*-01` admission series (Button, Badge, Card, Progress, Tooltip, Dialog, Sheet, Select, Input/TextField, …); the lane measured the base 7, and its ledger's `swap` entries name the now-admitted replacements | 10 (unchanged) |
-| Generated components used by the lane | 5 of 7: Switch, Text, Badge, Divider, Stat (ToggleSwitch/Checkbox have no spec region) | 7 of 7: Tabs family, Switch, Popover family, Accordion family, Text, Divider, Icon | 9 of 10: Tabs, Switch ×13, Popover ×2, Button ×13, Badge ×22, Card ×10, Icon ×18, Text, Divider (Accordion admitted, no accordion-shaped region) |
-| Brand path | explicit `Theme::with_token` per instance; no brand-graph loader | generated `.fsds-brand-orion` scope via `Theme.SetDark` + `Theme.SetBrand` | lane-local Orion `Theme` built from `fixtures/orion-appearance.json`; no resolved brand projection |
-| Build / test | `cargo +1.94.1 build` 0 warnings; 51 tests pass (54 with `--features capture`) | Unity 6000.5.3f1 EditMode: 31 tests pass; standalone Player capture: `passed=true`, 13 checks | Godot 4.7.2 headless: 134/134 checks pass (I1–I15 + fixture-corpus failure paths, real viewport input dispatch); setup <1 s, tests 3.6 s |
-| Screenshot path | `Window::render_to_image()` behind a lane `capture` feature; 10 frames | Standalone macOS Player + `ScreenCapture`; 6 frames | viewport texture capture in a windowed run; 8 frames |
+| Allowlist at the parity pass | 7: Switch, ToggleSwitch, Checkbox, Text, Badge, Divider, Stat | **48** (the `UNITY-*-01` admission series landed while the first pass was in flight) | 10: Switch, Accordion, Popover, Tabs, Text, Divider, Button, Badge, Card, Icon |
+| Generated components used by the lane | 5 of 7: Switch, Text, Badge, Divider, Stat (ToggleSwitch/Checkbox have no spec region; icon art is a pinned code tile because GPUI admits no Icon) | 11 of 48: Tabs family, Switch, Popover family, Card family, Badge, Button, Progress, Text, Divider (Icon admitted; parity icon surfaces use code tiles) | 9 of 10: Tabs, Switch ×13, Popover ×2, Button, Badge ×~27, Card ×10; Accordion unused, Text/Divider/Icon admitted-but-unused (baked scales/colours have no override channel — ledgered finding) |
+| Brand path | explicit `Theme::with_token` per instance; no brand-graph loader | generated `.fsds-brand-orion` scope via `Theme.SetDark` + `Theme.SetBrand` | lane-local Orion `Theme` built from the appearance fixture; no resolved brand projection |
+| Build / test | `cargo +1.94.1 build --locked` 0 warnings; 67 tests (70 with `--features capture`) | Unity 6000.5.3f1 EditMode: 36 tests pass; standalone Player capture `passed=true`, eight 1280 × 800 states + witness checks | Godot 4.7.2 headless: 201/201 checks pass (I1–I15 + parity geometry + icon art + fixture negatives, viewport input dispatch); setup <1 s |
+| Screenshot path | `Window::render_to_image()` behind a lane `capture` feature; 8 states | Standalone macOS Player + `ScreenCapture`; 8 states | Viewport texture capture in a windowed run; 8 states |
 | Lane evidence | `tmp/game-pause-menu/gpui/` | `tmp/game-pause-menu/unity/` | `tmp/game-pause-menu/godot/` |
+| Parity result | **pass** — 195-pixel checker, 0 failures; montage identical to Unity/Godot apart from fonts | **pass** | **pass** |
 
 ## Usability comparison
 
@@ -116,16 +178,15 @@ fallbacks that it had to ledger. The comparison below is a judgment over the
 lanes' READMEs, the code they produced and the captured states — not a benchmark
 and not a pixel-parity test.
 
-**Measurement caveat — the Unity target moved under the lane.** The Unity lane
-was built and captured against the target's 7-component allowlist. While the
-slice was in flight, a separate package-side workstream landed the `UNITY-*-01`
-admission series on `main`, expanding the Unity target to 48 components. The
-merged lane still compiles and passes its 31 EditMode tests against the enlarged
-package (only explicit native-`Button` alias edits were needed), but its
-fallback ledger and screenshots measure the base allowlist. Read the Unity column
-as "Unity at the slice base", not "Unity as it is today"; a follow-on lane re-run
-against the enlarged allowlist is the obvious next falsifier and should shrink
-its fallback ledger substantially.
+The comparison was made in two rounds. The first realization measured each
+engine against the allowlist it had: Unity at that moment admitted only 7
+components, so most of its screen was ledgered native/hand-authored chrome. The
+parity pass then rebuilt the same interface on current `main` — Unity now
+consumes 11 of its 48 admitted components (Tabs, Switch, Popover, Card, Badge,
+Button, Progress, Text, Divider) — and pinned one absolute layout for all three
+engines. The usability findings below describe where each package still helps or
+fights a consumer; they are observations over the lanes' code and READMEs, not a
+benchmark, and the parity pass supersedes the earlier visual differences.
 
 ### Verdict at a glance
 
@@ -265,19 +326,24 @@ target, so the lane owns the palette mapping.
 
 ## Evidence index
 
-All screenshots are 1280 × 800. Required four per lane: `map.png`,
-`progress.png`, `abilities.png`, `settings.png`; extras capture interaction
-states for this comparison.
+All screenshots are 1280 × 800; each lane captures the same eight states
+(required four + `map-popover`, `abilities-hover`, `settings-remap-modal`,
+`settings-subtitle`). Raw captures are produced by the lane's committed capture
+command into its gitignored `evidence/` directory and mirrored to the `tmp/`
+paths below; `tmp/` is not committed.
 
 | Lane | Evidence directory | Test/build receipts | Captures |
 |---|---|---|---|
-| GPUI | `tmp/game-pause-menu/gpui/` | `build.log`, `test.log`, `test-capture.log`, `capture-manifest.json` | 10: required four + `map-popover`, `progress-locked-drawer`, `abilities-hover`, `abilities-reject`, `settings-remap-modal`, `settings-audio` |
-| Unity | `tmp/game-pause-menu/unity/` | `editmode-results.xml`, `editmode.log`, `player.log`, `result.json` | 6: required four + `remap-modal`, `subtitle-picker` |
-| Godot | `tmp/game-pause-menu/godot/` | `tests-run.log` (134/134), `capture-run.log`, `capture-diagnose.log` | 8: required four + `popover`, `drawer`, `remap-modal`, `subtitle-picker` |
+| GPUI | `tmp/game-pause-menu/gpui/` | `build.log`, `test.log`, `test-capture.log`, `capture.log`, `capture-manifest.json` | 8 |
+| Unity | `tmp/game-pause-menu/unity/` | `editmode-results.xml` (36/36), `editmode.log`, `player.log`, `result.json`, `build.log` | 8 |
+| Godot | `tmp/game-pause-menu/godot/` | `parity-tests.log` (201/201), `parity-capture.log` | 8 |
 
-Raw screenshot evidence is produced by the lane's committed capture command into
-its gitignored `evidence/` directory and mirrored to the `tmp/` paths above; the
-lane READMEs state the exact commands. `tmp/` is not committed.
+Cross-engine verification: run `node examples/game-pause-menu/parity-check.mjs
+--root tmp/parity-evidence` after pointing a `tmp/parity-evidence/{gpui,unity,godot}`
+aggregate root at the three capture directories. The committed run report,
+per-state montages and pairwise difference images are under
+`tmp/parity-evidence/report/` (`parity-report.json` records the 195 probes and
+12 RMSE pairs; the final run has 0 failures).
 
 ## How to run
 
@@ -292,29 +358,34 @@ cargo run --features capture -- --capture /abs/evidence-dir
 # Unity (Unity 6000.5.3f1 with an activated license, macOS)
 cd examples/game-pause-menu/unity
 bash scripts/verify-unity.sh                # EditMode seam + I1..I15 tests
-bash scripts/capture-screenshots.sh         # standalone Player + six captures
+bash scripts/capture-screenshots.sh         # standalone Player + eight captures
 
 # Godot (Godot 4.7.2; GODOT=/path/to/godot to override)
 cd examples/game-pause-menu/godot
 ./setup.sh                                  # copies the generated addon; copy is gitignored
-"$GODOT" --headless --path "$PWD" res://tests/test_main.tscn   # 134/134 checks
+"$GODOT" --headless --path "$PWD" res://tests/test_main.tscn   # 201/201 checks
 "$GODOT" --path "$PWD" res://tools/capture.tscn -- --out="$PWD/evidence" \
-  --mirror="$PWD/../../../tmp/game-pause-menu/godot"           # 8 captures, 2.9 s
+  --mirror="$PWD/../../../tmp/game-pause-menu/godot"           # 8 captures
+
+# Cross-engine parity check (needs ImageMagick; point at an aggregate capture root)
+node examples/game-pause-menu/parity-check.mjs --root tmp/parity-evidence --out tmp/parity-evidence/report
 ```
 
 ## Non-claims
 
 - Not a shipping game, game-framework integration, or input-system simulation;
   screenshots are sampled states, not physical-device proof.
-- Not visual-quality or cross-engine pixel-parity proof. Type metrics, focus
-  models and native control chrome differ by engine.
+- Not pixel-identical cross-engine rendering. The parity pass pins the interface
+  structurally and compositionally; font family/rasterisation, glyph
+  anti-aliasing and letter-spacing where an engine lacks the channel remain
+  engine-specific.
 - Not accessibility adequacy proof.
 - Not generated-artifact admission: native targets are outside the TypeScript
-  admission rail.
-- The Unity lane's capture evidence measures the 7-component allowlist at this
-  slice's base, not the 48-component target on current `main`; it compiles and
-  tests against the merged package, but it does not claim to consume the new
-  admissions.
+  admission rail. The Unity pill-radius clamp is a projection fix with unit
+  tests and a regenerated sheet, not admission.
 - The Orion graphic grammar is composed per lane from the palette and the
   appearance fixture; only the Unity lane resolves it through the generated
   brand scope. GPUI/Godot decoration is app-owned, not a brand-projection claim.
+- Parity checker assertions are sampled pixels and RMSE, not a visual baseline:
+  they catch geometry/colour divergence at the pinned points and coarse
+  structural drift, not every layout regression.
