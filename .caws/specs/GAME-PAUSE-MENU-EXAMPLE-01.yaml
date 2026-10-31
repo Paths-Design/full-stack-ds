@@ -4,7 +4,7 @@ mode: feature
 lifecycle_state: active
 worktree: game-pause-menu
 created_at: '2026-10-31T07:08:40.318Z'
-updated_at: '2026-10-31T07:08:51.366Z'
+updated_at: '2026-10-31T07:23:48.912Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
@@ -19,6 +19,7 @@ scope:
     - 'packages/ds-tokens/src/brands'
     - 'packages/ds-tokens/generated'
     - 'packages/ds-unity/Runtime/Resources/FullStackDS'
+    - examples/README.md
   out: []
 invariants:
   - 'Existing brands and target outputs outside the orion addition are unchanged'
