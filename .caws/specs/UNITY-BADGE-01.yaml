@@ -70,3 +70,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Badge/Badge.cs
     commit_sha: "70fc488076dd6bb807a97d1195b037018f9794fe"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 395780b62 (sourceDirty false): 56/56 passed, zero failed/skipped (test-run start 2026-10-31 09:31:11Z; resultsSha256 0260ab6bc278455d5218877ce65c706821598cd21c89c7ca1cbc9994e85f26c3). The added case composes a BadgeContent child, checks badge--tag/badge--success/badge--lg carriers and asserts no Icon/ShowStatusIcon property. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T09:32:00.525Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.BadgeCarriesAxesAndItsNodeContentIconIsOmitted
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: "395780b6233ea78768e54beab47cffe53926092e"
