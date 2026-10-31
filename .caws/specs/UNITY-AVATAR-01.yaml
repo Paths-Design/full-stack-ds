@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T15:06:35.731Z"
     artifact_path: packages/ds-unity/Runtime/Components/Avatar/Avatar.cs
     commit_sha: "7d8fa002c11ad33d1c32ac0c61129ed3fcf6de44"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 029fa253b (sourceDirty false): 81/81 passed, zero failed/skipped (test-run start 2026-10-31 15:05:55Z; resultsSha256 405b2718bda441b4fb4263be97801cd3b0ebdc7147e730ac189acac8f4a1ac85). The added case checks both guarded children (source forwarding and display, initials text and display, clearing each), the size carrier class and that the name/priority/alt/loading API is absent. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T15:06:36.223Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.AvatarGuardsItsImageAndInitialsFallback
+    exit_code: 0
+    commit_sha: "029fa253bd71c0cc90e2a5479322a60f9be7be3d"
