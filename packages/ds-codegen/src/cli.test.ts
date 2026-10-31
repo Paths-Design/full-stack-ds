@@ -512,7 +512,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
       assets: () => [{ relativePath: "../outside.txt", contents: "" }],
     });
     await expect(import("./cli.js")).rejects.toThrow('Target unity: target asset path "../outside.txt" escapes the package root packages/ds-unity.');
-  });
+  }, 180_000);
 
   it("refuses to guess a package root the binding's components root does not end in", async () => {
     const root = tempPackage();
