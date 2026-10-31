@@ -590,6 +590,27 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Indicator|public string Label|ariaLabel/);
   });
 
+  it("renders a runtime six-week grid from the date-grid facts for Calendar", () => {
+    const contract = loadContractWithSidecars(root, "Calendar") as ComponentContract;
+    const calendarIr = buildComponentIR(contract);
+    calendarIr.name = "UnrelatedCalendar";
+    const source = createUnityEmitter().emitComponent(calendarIr, { emitTargetAssets: false, componentsRoot: "", contractsRoot } as never)[0]?.contents ?? createUnityEmitter().emitComponent(calendarIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedCalendar : VisualElement");
+    expect(source).toContain("public DateGridControl Control { get; }");
+    expect(source).toContain("[UxmlAttribute] public string Value");
+    expect(source).toContain("[UxmlAttribute] public string Month");
+    expect(source).toContain("[UxmlAttribute] public string Caption");
+    expect(source).toContain("[UxmlAttribute] public string MinDate");
+    expect(source).toContain("[UxmlAttribute] public string MaxDate");
+    expect(source).toContain("[UxmlAttribute] public bool Disabled");
+    expect(source).toContain("public Action<string> OnChange");
+    expect(source).toContain("public Action<string> OnMonthChange");
+    expect(source).toContain("public bool MonthControlled");
+    expect(source).toContain("public Action<string> MonthRequested");
+    expect(source).toContain("DateGridControl.Attach(this, prefix: \"calendar\", headerPart: \"header\", captionPart: \"caption\", gridPart: \"grid\", navPart: \"nav\", weekdayPart: \"weekday\", dayPart: \"day\");");
+    expect(source).not.toMatch(/Mode|Locale|ShouldCloseOnSelect|ariaLabel/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

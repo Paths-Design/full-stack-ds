@@ -1370,5 +1370,47 @@ namespace FullStackDS.Tests
             Assert.That(carousel.Index, Is.EqualTo(1));
             Assert.That(carousel.Viewport[1].style.display.value, Is.EqualTo(DisplayStyle.Flex));
         }
+        [Test] public void CalendarRendersItsMonthAndCommitsSingleDates()
+        {
+            var calendar = Mount(new FullStackDS.Calendar());
+            calendar.Caption = "Choose a date";
+            calendar.Month = "2026-02-01";
+            Assert.That(calendar.Month, Is.EqualTo("2026-02-01"));
+            var labels = calendar.Query<UnityEngine.UIElements.Label>().ToList();
+            Assert.That(labels[0].text, Is.EqualTo("Choose a date"));
+            var buttons = calendar.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(buttons.Count, Is.EqualTo(44));
+            Assert.That(buttons[0].ClassListContains("calendar__nav"), Is.True);
+            Assert.That(buttons[2].ClassListContains("calendar__day"), Is.True);
+            Assert.That(buttons[2].text, Is.EqualTo("1"));
+            string changed = null;
+            calendar.OnChange += value => changed = value;
+            Submit(buttons[2]);
+            Assert.That(calendar.Value, Is.EqualTo("2026-02-01"));
+            Assert.That(changed, Is.EqualTo("2026-02-01"));
+            string monthChanged = null;
+            calendar.OnMonthChange += value => monthChanged = value;
+            Submit(buttons[1]);
+            Assert.That(calendar.Month, Is.EqualTo("2026-03-01"));
+            Assert.That(monthChanged, Is.EqualTo("2026-03-01"));
+            calendar.MinDate = "2026-03-10";
+            Assert.That(calendar.Query<UnityEngine.UIElements.Button>().ToList()[2].enabledSelf, Is.False);
+            calendar.MaxDate = "2026-03-20";
+            Assert.That(calendar.Query<UnityEngine.UIElements.Button>().ToList()[11].enabledSelf, Is.True);
+            calendar.Value = "2026-03-15";
+            Assert.That(calendar.Value, Is.EqualTo("2026-03-15"));
+            calendar.Controlled = true;
+            string requested = null;
+            calendar.ValueRequested += value => requested = value;
+            calendar.Month = "2026-03-01";
+            Submit(calendar.Query<UnityEngine.UIElements.Button>().ToList()[11]);
+            Assert.That(requested, Is.EqualTo("2026-03-10"));
+            Assert.That(calendar.Value, Is.EqualTo("2026-03-15"));
+            calendar.Disabled = true;
+            Assert.That(calendar.Query<UnityEngine.UIElements.Button>().ToList()[1].enabledSelf, Is.False);
+            Assert.That(calendar.Query<UnityEngine.UIElements.Button>().ToList()[2].enabledSelf, Is.False);
+            foreach (var prop in new[] { "Mode", "Locale", "ShouldCloseOnSelect", "AriaLabel" })
+                Assert.That(typeof(FullStackDS.Calendar).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

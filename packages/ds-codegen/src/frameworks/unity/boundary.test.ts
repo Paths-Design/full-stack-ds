@@ -96,7 +96,9 @@ describe("Unity support boundary", () => {
     expect(shape("/anatomy/dom/children/item/children/content/tag", "div")).toEqual({ rule: "anatomy-tags", disposition: "lowered", phase: undefined });
     // A channel binding is lowered only for the `.value` field shape; other channel fields fall through.
     expect(shape("/anatomy/dom/children/x/bindings/aria-expanded", "channel:open.onChange")).toEqual({ rule: "anatomy-aria-binding", disposition: "refused", phase: undefined });
-    expect(shape("/anatomy/dom/children/x/bindings/href", "channel:open.onChange")).toEqual({ rule: "anatomy-bindings", disposition: "pending", phase: "P4" });
+    // The generic anatomy-bindings catch-all is retired: every allowlisted binding
+    // family now carries its own rule, so an unknown shape stays unclassified.
+    expect(shape("/anatomy/dom/children/x/bindings/href", "channel:open.onChange")).toEqual({ rule: null, disposition: "unclassified", phase: undefined });
   });
 
   it("admits every allowlisted component and refuses nothing it carries today", () => {

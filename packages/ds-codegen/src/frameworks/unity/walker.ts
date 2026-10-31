@@ -437,7 +437,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     // is the control's own contentContainer.
     const action = ctx.lowering.behavior === "Action";
     const sequenceViewport = ctx.lowering.behavior === "Sequence" ? ctx.lowering.viewportPart : undefined;
-    const children = ctx.lowering.behavior === "Transfer" || ctx.lowering.behavior === "PagedSet" ? [] : ctx.lowering.behavior === "Sequence"
+    const children = ctx.lowering.behavior === "Transfer" || ctx.lowering.behavior === "PagedSet" || ctx.lowering.behavior === "DateGrid" ? [] : ctx.lowering.behavior === "Sequence"
       ? ir.dom.children.filter(node => node.part === sequenceViewport)
       : action
       ? ir.dom.children
@@ -464,7 +464,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   for (const part of ir.compoundParts) {
     if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots" || ctx.lowering.behavior === "Coachmark") continue;
     if (ctx.lowering.behavior === "Tree" && part.name === ctx.lowering.listPart) continue;
-    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "Select" || ctx.lowering.behavior === "Expansion") continue;
+    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "Select" || ctx.lowering.behavior === "Expansion" || ctx.lowering.behavior === "DateGrid") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -1342,6 +1342,40 @@ function sequenceRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/** R6-R8 for the date grid: ISO date value/month channels, caption/min/max/
+ * disabled attributes, and the runtime-built six-week grid shell. Range mode,
+ * keyboard roving and localised formats are withheld. */
+function dateGridRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "DateGrid") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a date-grid lowering`);
+  const value = lowering.valueChannel;
+  const month = lowering.monthChannel;
+  const members: string[] = [
+    "        public DateGridControl Control { get; }",
+    `        [UxmlAttribute] public string ${identifier(pascal(value.valueProp))} { get => Control.Value; set => Control.Value = value; }`,
+    `        [UxmlAttribute] public string ${identifier(pascal(month.valueProp))} { get => Control.Month; set => Control.Month = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = DateGridControl.Attach(this, prefix: ${quote(ctx.prefix!)}, headerPart: ${quote(lowering.headerPart)}, captionPart: ${quote(lowering.captionPart)}, gridPart: ${quote(lowering.gridPart)}, navPart: ${quote(lowering.navPart)}, weekdayPart: ${quote(lowering.weekdayPart)}, dayPart: ${quote(lowering.dayPart)});`,
+  ];
+  const defaults: string[] = [];
+  if (value.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(value.defaultValueProp))} { get => Control.DefaultValue; set => Control.DefaultValue = value; }`);
+  if (month.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(month.defaultValueProp))} { get => Control.DefaultMonth; set => Control.DefaultMonth = value; }`);
+  if (lowering.captionProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.captionProp))} { get => Control.Caption; set => Control.Caption = value; }`);
+  if (lowering.minProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.minProp))} { get => Control.MinDate; set => Control.MinDate = value; }`);
+  if (lowering.maxProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.maxProp))} { get => Control.MaxDate; set => Control.MaxDate = value; }`);
+  if (lowering.disabledProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(lowering.disabledProp))} { get => Control.Disabled; set => Control.Disabled = value; }`);
+  const valueHandler = value.changeHandlerProp ?? `${value.valueProp}Changed`;
+  const monthHandler = month.changeHandlerProp ?? `${month.valueProp}Changed`;
+  members.push(`        public Action<string> ${identifier(pascal(valueHandler))} { get => Control.ValueChanged; set => Control.ValueChanged = value; }`);
+  members.push(`        public Action<string> ${identifier(pascal(monthHandler))} { get => Control.MonthChanged; set => Control.MonthChanged = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<string> ValueRequested { get => Control.ValueRequested; set => Control.ValueRequested = value; }");
+  members.push("        public bool MonthControlled { get => Control.MonthControlled; set => Control.MonthControlled = value; }");
+  members.push("        public Action<string> MonthRequested { get => Control.MonthRequested; set => Control.MonthRequested = value; }");
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1363,6 +1397,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Expansion") return expansionRootApi(ctx, classes);
   if (lowering.behavior === "PagedSet") return pagedSetRootApi(ctx);
   if (lowering.behavior === "Sequence") return sequenceRootApi(ctx, classes);
+  if (lowering.behavior === "DateGrid") return dateGridRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "DateGrid" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -374,6 +374,29 @@ export interface SequenceLowering {
   previousLabelKey?: string;
   nextLabelKey?: string;
 }
+/**
+ * A date grid: a single-date value channel plus a visible-month channel over a
+ * runtime six-week grid with bounded month navigation. Dates cross the generated
+ * API as ISO yyyy-MM-dd strings. Range mode, keyboard roving, localised formats
+ * and the authored shell markup are withheld.
+ */
+export interface DateGridLowering {
+  behavior: "DateGrid";
+  valueChannel: NormalizedChannelIR;
+  monthChannel: NormalizedChannelIR;
+  headerPart: string;
+  captionPart: string;
+  gridPart: string;
+  navPart: string;
+  weekdayPart: string;
+  dayPart: string;
+  captionProp?: string;
+  minProp?: string;
+  maxProp?: string;
+  disabledProp?: string;
+  modeProp?: string;
+  localeProp?: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -387,7 +410,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | DateGridLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -550,6 +573,56 @@ function valueFillLowering(ir: ComponentIR): ProgressLowering | undefined {
 /** Source: IR control/interaction/attachment axes. Applies by value model,
  * operation and attachment, never identity. Extend when new axes are admitted. */
 export function unityLowering(ir: ComponentIR): UnityLowering {
+  // A date grid: the declared date-grid facts name the value/month channels and
+  // the caption/min/max/disabled/mode/locale props. The runtime owns a six-week
+  // grid and bounded month navigation; the single-date ISO form is realised.
+  if (ir.dateGrid !== undefined && ir.dom !== undefined) {
+    const grid = ir.dateGrid;
+    const findDescendant = (root: DomNodeIR, predicate: (node: DomNodeIR) => boolean): DomNodeIR | undefined => {
+      for (const child of root.children) {
+        if (predicate(child)) return child;
+        const found = findDescendant(child, predicate);
+        if (found) return found;
+      }
+      return undefined;
+    };
+    const findParent = (root: DomNodeIR, target: DomNodeIR): DomNodeIR | undefined => {
+      for (const child of root.children) {
+        if (child === target) return root;
+        const found = findParent(child, target);
+        if (found) return found;
+      }
+      return undefined;
+    };
+    const valueChannel = ir.behavior.normalizedChannels.find(candidate => candidate.name === grid.valueChannel);
+    const monthChannel = ir.behavior.normalizedChannels.find(candidate => candidate.name === grid.monthChannel);
+    const caption = grid.captionProp === undefined ? undefined : findDescendant(ir.dom, node => node.part === grid.captionProp);
+    const header = caption === undefined ? undefined : findParent(ir.dom, caption);
+    const nav = findDescendant(ir.dom, node => node.events.click?.kind === "dateGrid" && node.events.click.action === "previous");
+    const gridNode = findDescendant(ir.dom, node => node.events.keydown?.kind === "dateGrid");
+    const weekday = gridNode === undefined ? undefined : findDescendant(gridNode, node => node.iteration?.source.kind === "dateGrid" && node.iteration.source.field === "weekdays");
+    const day = gridNode === undefined ? undefined : findDescendant(gridNode, node => node.part !== undefined && node.events.click?.kind === "dateGrid" && node.events.click.action === "select");
+    if (valueChannel !== undefined && monthChannel !== undefined && header?.part !== undefined && caption?.part !== undefined &&
+        gridNode?.part !== undefined && nav?.part !== undefined && weekday?.part !== undefined && day?.part !== undefined) {
+      return {
+        behavior: "DateGrid",
+        valueChannel,
+        monthChannel,
+        headerPart: header.part,
+        captionPart: caption.part,
+        gridPart: gridNode.part,
+        navPart: nav.part,
+        weekdayPart: weekday.part,
+        dayPart: day.part,
+        ...(grid.captionProp === undefined ? {} : { captionProp: grid.captionProp }),
+        ...(grid.minProp === undefined ? {} : { minProp: grid.minProp }),
+        ...(grid.maxProp === undefined ? {} : { maxProp: grid.maxProp }),
+        ...(grid.disabledProp === undefined ? {} : { disabledProp: grid.disabledProp }),
+        ...(grid.modeProp === undefined ? {} : { modeProp: grid.modeProp }),
+        ...(grid.localeProp === undefined ? {} : { localeProp: grid.localeProp }),
+      };
+    }
+  }
   const focus = ir.behavior.focus?.strategy;
   const portal = ir.behavior.portal?.enabled === true;
   const refuseFocus = (behavior: UnityBehavior): never => { throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which ${behavior} does not realise`); };
