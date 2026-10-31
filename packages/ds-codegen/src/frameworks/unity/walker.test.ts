@@ -152,4 +152,15 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain('public string Status { get => Variants.Get(this, "status", "info", "success", "warning", "danger", "error");');
     expect(source).not.toMatch(/Icon\b/);
   });
+
+  it("synthesizes a parts-only container and its composed subcomponent classes", () => {
+    const source = emit(irFor("Card", "UnrelatedCard"));
+    expect(source).toContain("public partial class UnrelatedCard : VisualElement");
+    expect(source).toContain('public string Density { get => Variants.Get(this, "card", "default", "inset");');
+    for (const part of ["Header", "Media", "Content", "Footer", "Actions", "Badge", "Description", "Link", "Note"]) {
+      expect(source).toContain(`public partial class UnrelatedCard${part} : VisualElement`);
+      expect(source).toContain(`AddToClassList("card__${part.toLowerCase()}");`);
+    }
+    expect(source).not.toMatch(/Interactive/);
+  });
 });

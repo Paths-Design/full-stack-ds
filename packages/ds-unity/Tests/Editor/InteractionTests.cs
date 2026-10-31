@@ -540,5 +540,21 @@ namespace FullStackDS.Tests
             Assert.That(status.contentContainer.childCount, Is.EqualTo(1));
             Assert.That(typeof(FullStackDS.Status).GetProperty("Icon"), Is.Null);
         }
+        [Test] public void CardComposesSubcomponentPartsAndDensityCarrier()
+        {
+            var card = Mount(new FullStackDS.Card { Density = "inset" });
+            var header = new FullStackDS.CardHeader();
+            header.Add(new UnityEngine.UIElements.Label("Title"));
+            var content = new FullStackDS.CardContent();
+            content.Add(new UnityEngine.UIElements.Label("Body"));
+            var actions = new FullStackDS.CardActions();
+            card.Add(header); card.Add(content); card.Add(actions);
+            Assert.That(card.ClassListContains("card"), Is.True);
+            Assert.That(card.ClassListContains("card--inset"), Is.True);
+            Assert.That(header.ClassListContains("card__header"), Is.True);
+            Assert.That(content.ClassListContains("card__content"), Is.True);
+            Assert.That(header.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.Card).GetProperty("Interactive"), Is.Null);
+        }
     }
 }

@@ -146,7 +146,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -631,6 +631,16 @@ describe("Unity behavior selection refusals", () => {
     });
     const source = emit(fixture("Tooltip"));
     expect(source).toContain('AnchoredSurface.Attach(this, triggerClass: "tooltip__trigger", contentClass: "tooltip__content", stateClass: null, openOnHover: true, openOnFocus: true, closeOnPointerLeave: true, contentFocusable: false);');
+  });
+
+  it("routes a parts-only container through the passive lowering", () => {
+    const ir = buildComponentIR(fixture("Card"));
+    expect(unityLowering(ir).behavior).toBe("Passive");
+    const source = createUnityEmitter().emitComponent(buildComponentIR(completeFixture("Card")), { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class Card : VisualElement");
+    expect(source).toContain("public partial class CardHeader : VisualElement");
+    expect(source).toContain('public string Density { get => Variants.Get(this, "card", "default", "inset");');
+    expect(source).not.toMatch(/Interactive/);
   });
 
   it("suffixes a generated member that would collide with its class name", () => {

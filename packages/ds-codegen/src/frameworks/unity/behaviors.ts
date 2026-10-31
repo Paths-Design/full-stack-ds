@@ -102,6 +102,16 @@ export function stateClassOf(ir: ComponentIR): string {
   return `is-${active[0]}`;
 }
 
+/** A parts-only contract with no dom tree selects the passive lowering when it
+ * declares no channel, interaction or surface: the walker synthesizes the tree
+ * from `ir.parts`, and explicit subcomponent parts become composed classes. */
+function isPartsOnlyContainer(ir: ComponentIR): boolean {
+  if (ir.dom) return false;
+  if (ir.parts.length === 0) return false;
+  if (ir.behavior.normalizedChannels.length > 0) return false;
+  return true;
+}
+
 /** A passive container for the Unity target: exactly one consumer content leaf
  * plus chrome the passive lowering can omit by fact (node-content decorations
  * and guarded action chrome), with no channel, interaction or surface. This is
@@ -194,7 +204,7 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
       ...(busy !== undefined && busy.kind === "prop" ? { loading: busy.prop } : {}),
     };
   }
-  if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir))) {
+  if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir) || isUnityStaticContainer(ir) || isPartsOnlyContainer(ir))) {
     if (focus !== undefined && focus !== "none") throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which Passive does not realise`);
     return { behavior: "Passive" };
   }
