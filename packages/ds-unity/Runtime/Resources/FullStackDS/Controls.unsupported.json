@@ -3907,6 +3907,22 @@
       "reason": "uss-property"
     },
     {
+      "component": "Markdown",
+      "sourceKey": "codeBlock",
+      "part": "codeBlock",
+      "property": "white-space",
+      "value": "pre",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Markdown",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
       "component": "NavList",
       "sourceKey": ".nav-list__item:focus-visible",
       "part": "item",

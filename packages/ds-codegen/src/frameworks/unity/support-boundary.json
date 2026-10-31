@@ -1700,12 +1700,12 @@
       "reason": "Range selection, localised dates/weekday formats and should-close wiring are not realised by the single-date ISO runtime; they are withheld rather than approximated."
     },
     {
-      "id": "props-unadjudicated",
-      "match": ["contract:/props/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "Prop families not yet adjudicated for UI Toolkit. An allowlisted component may not rely on this rule: add a family rule above."
+      "id": "prop-content-transform-source-lowered",
+      "match": ["contract:/props/*/members/plain:content/**"],
+      "requiresAny": [{"match": ["contract:/anatomy/dom/content/transform"], "valueIn": ["markdown", "highlight"]}],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (TextSource): the declared transform's source string becomes the generated Content attribute painted on the native text element (the documented Compose-target degradation)."
     },
     {
       "id": "channel-coachmark-lowered",
@@ -1778,6 +1778,14 @@
       "requiresAny": [{"match": ["contract:/motion/loops/*/effect/kind"], "valueIn": ["rotation"]}, {"match": ["contract:/motion/loops/*/driver/kind"], "valueIn": ["repeat"]}],
       "disposition": "refused",
       "reason": "The size/thickness unions only back the withheld variant carriers; no generated option type is claimed."
+    },
+    {
+      "id": "props-unadjudicated",
+      "match": ["contract:/props/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "catchAll": true,
+      "reason": "Prop families not yet adjudicated for UI Toolkit. An allowlisted component may not rely on this rule: add a family rule above."
     },
     {
       "id": "types",

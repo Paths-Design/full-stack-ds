@@ -1478,5 +1478,14 @@ namespace FullStackDS.Tests
             spinner.ReducedMotion = true;
             Assert.That(Math.Abs(spinner.Visual.style.rotate.value.angle.value), Is.LessThan(0.001f));
         }
+        [Test] public void MarkdownPaintsTheDeclaredSourceTextOnly()
+        {
+            var markdown = Mount(new FullStackDS.Markdown());
+            Assert.That(markdown.ClassListContains("markdown"), Is.True);
+            markdown.Content = "# Title\n\nBody with **strong** text.";
+            Assert.That(markdown.text, Is.EqualTo("# Title\n\nBody with **strong** text."));
+            foreach (var prop in new[] { "Heading", "Paragraph", "CodeBlock", "Emphasis", "Strong", "Link" })
+                Assert.That(typeof(FullStackDS.Markdown).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

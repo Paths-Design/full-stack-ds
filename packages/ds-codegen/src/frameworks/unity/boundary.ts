@@ -511,7 +511,7 @@ export function auditBoundary(root: string, boundary: Boundary = loadBoundary())
       if (leaf.catchAll && admitted.has(entry.name)) audit.unadjudicated.push({ component: entry.name, leaf: `${leaf.source}:${leaf.keyed}`, rule: leaf.rule! });
     }
   }
-  audit.deadRules = boundary.rules.filter(r => !used.has(r.id)).map(r => r.id);
+  audit.deadRules = boundary.rules.filter(rule => !used.has(rule.id) && rule.catchAll !== true).map(rule => rule.id);
   for (const u of audit.unclassified) audit.violations.push(`unclassified ${u.component} ${u.leaf}`);
   for (const u of audit.unadjudicated) audit.violations.push(`unadjudicated ${u.component} ${u.leaf} (catch-all ${u.rule})`);
   for (const id of audit.deadRules) audit.violations.push(`dead rule ${id} matches no live leaf`);

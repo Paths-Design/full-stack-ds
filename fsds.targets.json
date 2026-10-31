@@ -225,7 +225,8 @@
         "Carousel",
         "Calendar",
         "Command",
-        "Spinner"
+        "Spinner",
+        "Markdown"
       ]
     },
     {
