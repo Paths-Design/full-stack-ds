@@ -1,9 +1,10 @@
 id: GAME-PAUSE-GPUI-PARITY-01
 title: 'Pause menu gpui lane parity rework'
 mode: refactor
-lifecycle_state: draft
+lifecycle_state: active
+worktree: game-pause-gpui-parity
 created_at: '2026-10-31T19:18:57.099Z'
-updated_at: '2026-10-31T19:18:57.099Z'
+updated_at: '2026-10-31T19:20:21.302Z'
 created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
 blast_radius:
   modules:
