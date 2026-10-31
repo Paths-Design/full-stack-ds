@@ -11,6 +11,14 @@ governs:
 
 # Game pause menu — Orion N5
 
+> **Parity pass (authority added 2026-10-31).** The first realization produced
+> three visually different interfaces. [`parity.md`](parity.md) and
+> [`fixtures/parity-layout.json`](fixtures/parity-layout.json) are now the
+> single design authority for layout, component geometry, colours, copy and
+> capture states: all three lanes must render the same 1280 × 800 interface,
+> with only font rasterisation differing. The app semantics and interaction
+> contract below are unchanged.
+
 A game pause menu for the fictional *Orion N5 — Mars Expedition* game, realized
 in three engine lanes built from the repository's generated design-system
 packages: **GPUI** (`packages/ds-gpui`), **Unity** (`packages/ds-unity`), and
