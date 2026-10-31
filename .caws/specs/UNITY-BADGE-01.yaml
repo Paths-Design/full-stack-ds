@@ -1,9 +1,11 @@
 id: UNITY-BADGE-01
 title: 'Admit Badge to the Unity UI Toolkit target as a carrier-backed container with a refused node-content icon chrome'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Badge admitted to the Unity target/package (fourteenth allowlisted control): carrier-backed Variant/Intent/Size with composed BadgeContent, node-content icon chrome omitted by fact with icon pending P4 and showStatusIcon refused, generic intrinsic-sizing refusal added; codegen+cli 203/203, boundary audit clean, real Unity EditMode 56/56, package sheet regenerated'
 created_at: '2026-10-31T09:21:00.248Z'
-updated_at: '2026-10-31T09:31:34.466Z'
+updated_at: '2026-10-31T09:32:02.829Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
