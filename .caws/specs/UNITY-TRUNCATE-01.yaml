@@ -54,3 +54,11 @@ contracts:
   - name: 'truncate-expansion'
     type: behavior
     path: 'packages/ds-contracts/components/Truncate/Truncate.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commits 8e7c08656/dd28f7154: focused unity codegen + cli seam 241/241 pass, including the no-interaction Expansion selection (boolean channel over a trigger with conditional labels and a content-insertion part), the expandable guard lowering, the shared ExpansionControl expandable toggle, the clamp/lines/message/style boundary families and the generalized aria-expanded refusal; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. The first landing attempt exposed the toggle background ledger contradiction (fixed by extending the expansion background refusal to /toggle/background) and the corpus-timeout sensitivity under concurrent agent load (raised to 240s with the ledger-consistency test now carrying the corpus timeout)."
+    recorded_at: "2026-10-31T17:42:42.426Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a guarded expansion with an expandable toggle for Truncate"
+    exit_code: 0
+    commit_sha: "8e7c08656142f2a06caf502b53cf4fd1d47a599d"
