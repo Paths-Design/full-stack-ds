@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T16:10:33.947Z"
     artifact_path: packages/ds-unity/Runtime/Components/RadioGroup/RadioGroup.cs
     commit_sha: "95c3a551a3455d2b7c3b02df47912a36776adab7"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source a55618e93 (sourceDirty false): 86/86 passed, zero failed/skipped (test-run start 2026-10-31 16:09:54Z; resultsSha256 5798b061158f04fea76e38a12d4882a84a95776f048e8cca191ca4e222b4b8d5). The added case builds three native radios (label, tooltip, item class, disabled option), syncs a controlled value, commits an uncontrolled choice, requests a controlled one without committing, projects the orientation carrier and asserts the absent name/aria/state API. The lane caught a Value-setter shadowing defect fixed before landing. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T16:10:34.485Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.RadioGroupBuildsNativeRadiosAndCommitsTheSelection
+    exit_code: 0
+    commit_sha: a55618e93d7681b01360442fe9138771b49b8d73
