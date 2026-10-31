@@ -79,3 +79,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: "91b556c3705a0b3c18e824a0974027676ac93c5d"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 91b556c37: packages/ds-unity/README.md admits Table with its region/parts, refused responsive/aria facts and keyboard honesty note, and records the 65/65 lane; docs/architecture/unity-target.md records the a11y-keyboard precondition and the 65/65 lane; docs/current-implementation-snapshot.md records the twenty-fifth admitted control with those facts."
+    recorded_at: "2026-10-31T11:44:41.843Z"
+    commit_sha: "91b556c3705a0b3c18e824a0974027676ac93c5d"
