@@ -1802,6 +1802,398 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block[data-line-numbers=\"true\"] .code-block__gutter",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__gutter::before",
+      "part": "gutter",
+      "property": "content",
+      "value": "attr(data-line)",
+      "reason": "uss-pseudo-element"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__line",
+      "part": "line",
+      "property": "white-space",
+      "value": "pre",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"comment\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"definition\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"keyword\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"plain\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"property\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"punctuation\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"static\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"string\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": ".code-block__token[data-token=\"tag\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "padding",
+      "value": "16px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "code",
+      "part": "code",
+      "property": "font-family",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "code",
+      "part": "code",
+      "property": "font-size",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-family",
+      "value": "\"Monaspace\", ui-monospace, SFMono-Regular, Menlo, monospace",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "overflow-x",
+      "value": "auto",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "tab-size",
+      "value": "2",
+      "reason": "uss-property"
+    },
+    {
+      "component": "CodeBlock",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "white-space",
+      "value": "pre",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Divider",
       "sourceKey": "--vertical",
       "part": "root",
