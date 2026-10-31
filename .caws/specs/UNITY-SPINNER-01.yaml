@@ -70,3 +70,10 @@ evidence:
     recorded_at: "2026-10-31T20:41:47.928Z"
     artifact_path: packages/ds-unity/Runtime/Components/Spinner/Spinner.cs
     commit_sha: "906bf870b2776097b59867d8565b51c14e65d9d7"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source c1d390559af671debc66ce4bf72466cdbe8d07f5 (sourceDirty false): 97/97 passed, zero failed/skipped (test-run start 2026-10-31 20:40:59Z; resultsSha256 492b8a6200852f355a3c744a787a61b834bfc8057398c951818bec53d0a03176). The added cases assert the static hold under the explicit reduced-motion input, the declared loop rotating the visual over time, and the absent variant/delay/inline/a11y API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T20:41:48.616Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.SpinnerRotatesOnTheDeclaredLoop
+    exit_code: 0
+    commit_sha: c1d390559af671debc66ce4bf72466cdbe8d07f5
