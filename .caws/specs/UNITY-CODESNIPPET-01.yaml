@@ -1,9 +1,11 @@
 id: UNITY-CODESNIPPET-01
 title: 'Admit CodeSnippet to the Unity target as a styled text-content host'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'CodeSnippet admitted to the Unity target/package (thirtieth allowlisted control) as a passive text-content host: root derives TextElement with a generated string text attribute, the as axis emits carried modifier classes, the code/kbd/samp element switch and kbd elevation remain refused/pending; codegen+cli 222/222, boundary audit clean, real Unity EditMode 70/70, package sheet regenerated'
 created_at: '2026-10-31T12:49:13.825Z'
-updated_at: '2026-10-31T12:57:11.754Z'
+updated_at: '2026-10-31T12:57:34.443Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
