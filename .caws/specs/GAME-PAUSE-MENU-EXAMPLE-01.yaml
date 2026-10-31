@@ -66,3 +66,9 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-tokens/src/brands/orion.tokens.json
     commit_sha: cf8aea80f0291c31c8579591696b3bd65687a35f
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "framework-neutral spec with shell/four tabs/data contract/I1-I15 interaction table and realization doctrine, plus 7 shared fixtures. Each lane parses lane-local fixture copies with loud malformed-input failures: Unity 13 FixtureSeamTests, GPUI 49 seam tests including malformed-fixture authoring errors, Godot fixture-corpus negative checks inside its 134-check headless run. Lanes do not change app semantics."
+    recorded_at: "2026-10-31T17:45:08.585Z"
+    artifact_path: examples/game-pause-menu/spec.md
+    commit_sha: cf8aea80f0291c31c8579591696b3bd65687a35f
