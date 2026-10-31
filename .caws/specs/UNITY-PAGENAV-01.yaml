@@ -69,3 +69,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.PageNavigatorBoundsNavigationAndCommitsTheOneBasedDraft
     exit_code: 0
     commit_sha: "5de74d6e115119537befccd44c451c97edf83560"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 5de74d6e1: packages/ds-unity/README.md admits PageNavigator with its int position API, bounded navigation, one-based draft commit, count/disabled state and the withheld composed-child/pages-choice/a11y facts, and records the 91/91 lane; docs/architecture/unity-target.md records the PagedSet dispatcher mode, shell construction and the 91/91 lane; docs/current-implementation-snapshot.md records the fiftieth admitted control with those facts."
+    recorded_at: "2026-10-31T18:10:36.159Z"
+    commit_sha: "5de74d6e115119537befccd44c451c97edf83560"
