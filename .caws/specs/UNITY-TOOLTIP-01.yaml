@@ -2,7 +2,6 @@ id: UNITY-TOOLTIP-01
 title: 'Admit Tooltip to the Unity target with hover/focus-open anchored surface behavior'
 mode: feature
 lifecycle_state: active
-worktree: unity-tooltip
 created_at: '2026-10-31T10:25:01.066Z'
 updated_at: '2026-10-31T10:25:03.036Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
