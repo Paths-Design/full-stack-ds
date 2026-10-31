@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Divider", null], ["Icon", null], ["Label", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Stat", null], ["Status", null], ["Switch", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null], ["Tooltip", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Divider", null], ["Icon", null], ["Label", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null], ["Tooltip", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -127,7 +127,8 @@ describe("Unity capability accounting", () => {
       "ledger Button tokens button.motion.easing.standard (uss-scalar)",
       "ledger Card tokens card.elevation.raised (uss-scalar)",
       "ledger Card tokens card.elevation.resting (uss-scalar)",
-      "ledger Popover tokens popover.elevation (uss-scalar)", "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
+      "ledger Popover tokens popover.elevation (uss-scalar)", "ledger Skeleton tokens skeleton.anim.easing (uss-scalar)",
+      "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
       "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
     ]);
     expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
@@ -141,6 +142,8 @@ describe("Unity capability accounting", () => {
       "ledger List .list--variant-divided > * + * (uss-selector)",
       "ledger List .list--variant-spaced > * (uss-selector)",
       'ledger NavList .nav-list__item[aria-current="page"] (uss-selector)',
+      "ledger Skeleton .skeleton:has(.skeleton__stack) (uss-selector)",
+      "ledger Skeleton .skeleton:has(.skeleton__stack) .skeleton__shape (uss-selector)",
       "ledger Switch .switch:dir(rtl) .switch__track (uss-selector)",
       "ledger Tabs --pills __tab--active (uss-selector)", "ledger Tabs tab--active (uss-selector)",
       'ledger Text .text[data-truncate="true"] (uss-selector)',

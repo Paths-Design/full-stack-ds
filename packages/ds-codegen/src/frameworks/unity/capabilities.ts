@@ -154,6 +154,10 @@ export function ledgerViolations(root: string, boundary: Boundary = loadBoundary
         ? ["tokens", `/${escape(entry.property)}`]
         : ["styles", `/${escape(entry.sourceKey)}/${escape(entry.property)}`];
     const backing = leavesOf(entry.component).filter(leaf => leaf.source === source && (leaf.pointer === prefix || leaf.pointer.startsWith(`${prefix}/`)));
+    // Morphology box-model defaults — the synthetic `structure` source and the
+    // canonical `box-model.*` token rows — come from the BoxModel primitive, not
+    // a component sidecar, so there is no contract leaf to classify.
+    if (!backing.length && (entry.sourceKey === "structure" || (entry.sourceKey === "tokens" && entry.property.startsWith("box-model.")))) continue;
     const where = `${entry.component} ${entry.sourceKey}${entry.property ? ` ${entry.property}` : ""} (${entry.reason})`;
     if (!backing.length) { violations.push(`ledger ${where}: no ${source} leaf under ${prefix}`); continue; }
     for (const leaf of backing) if (leaf.disposition === "lowered") violations.push(`ledger ${where}: ${source}:${leaf.keyed} is classified lowered by rule ${leaf.rule}`);

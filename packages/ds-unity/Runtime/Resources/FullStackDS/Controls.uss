@@ -17,6 +17,7 @@
     --fsds-core-icon-size-xl: 32px;
     --fsds-core-layer-dropdown: 1000;
     --fsds-core-layer-tooltip: 1800;
+    --fsds-core-motion-duration-long: 400ms;
     --fsds-core-motion-duration-short: 150ms;
     --fsds-core-spacing-size-00: 0px;
     --fsds-core-spacing-size-01: 1px;
@@ -67,6 +68,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #f5a2a1;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #cfeefe;
     --fsds-semantic-color-background-info-subtle: #95dafb;
@@ -197,6 +199,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #900909;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #000a69;
     --fsds-semantic-color-background-info-subtle: #000a69;
@@ -259,6 +262,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #fcca30;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #d0effb;
     --fsds-semantic-color-background-info-subtle: #96daf3;
@@ -325,6 +329,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #412e00;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #001f34;
     --fsds-semantic-color-background-info-subtle: #001f34;
@@ -381,6 +386,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #cfeefe;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #cfeefe;
     --fsds-semantic-color-background-info-subtle: #95dafb;
@@ -450,6 +456,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #002782;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #000a69;
     --fsds-semantic-color-background-info-subtle: #000a69;
@@ -506,6 +513,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #f5a2a1;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #cfeefe;
     --fsds-semantic-color-background-info-subtle: #95dafb;
@@ -572,6 +580,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #900909;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #000a69;
     --fsds-semantic-color-background-info-subtle: #000a69;
@@ -628,6 +637,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #e7e8fe;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #e7e8fe;
     --fsds-semantic-color-background-info-subtle: #cbcdfb;
@@ -694,6 +704,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #170862;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #170862;
     --fsds-semantic-color-background-info-subtle: #170862;
@@ -750,6 +761,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #ccf3e2;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #cfeefe;
     --fsds-semantic-color-background-info-subtle: #95dafb;
@@ -816,6 +828,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #00230a;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #000a69;
     --fsds-semantic-color-background-info-subtle: #000a69;
@@ -872,6 +885,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #def0be;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #def0be;
     --fsds-semantic-color-background-info-subtle: #95dddc;
@@ -939,6 +953,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #1e3703;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #0b2200;
     --fsds-semantic-color-background-info-subtle: #052122;
@@ -996,6 +1011,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #96daf3;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #d0effb;
     --fsds-semantic-color-background-info-subtle: #96daf3;
@@ -1062,6 +1078,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #00354b;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #001f34;
     --fsds-semantic-color-background-info-subtle: #001f34;
@@ -1118,6 +1135,7 @@
     --fsds-semantic-color-background-danger-subtle: #b8b8b8;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #d0d0d0;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #f7f7f7;
     --fsds-semantic-color-background-info-subtle: #b8b8b8;
@@ -1187,6 +1205,7 @@
     --fsds-semantic-color-background-danger-subtle: #313131;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #313131;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #1d1d1d;
     --fsds-semantic-color-background-info-subtle: #313131;
@@ -1243,6 +1262,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac2c2;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #fdc67f;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #cff0ef;
     --fsds-semantic-color-background-info-subtle: #95dddc;
@@ -1309,6 +1329,7 @@
     --fsds-semantic-color-background-danger-subtle: #440000;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #4b2900;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #052122;
     --fsds-semantic-color-background-info-subtle: #052122;
@@ -1365,6 +1386,7 @@
     --fsds-semantic-color-background-danger-subtle: #fac1d6;
     --fsds-semantic-color-background-disabled: #d0d0d0;
     --fsds-semantic-color-background-elevated: #ffffff;
+    --fsds-semantic-color-background-highlight: #badc83;
     --fsds-semantic-color-background-hover: #f7f7f7;
     --fsds-semantic-color-background-info-softer: #ffe0ff;
     --fsds-semantic-color-background-info-subtle: #ffbafe;
@@ -1431,6 +1453,7 @@
     --fsds-semantic-color-background-danger-subtle: #430015;
     --fsds-semantic-color-background-disabled: #313131;
     --fsds-semantic-color-background-elevated: #141414;
+    --fsds-semantic-color-background-highlight: #213700;
     --fsds-semantic-color-background-hover: #474647;
     --fsds-semantic-color-background-info-softer: #3b003b;
     --fsds-semantic-color-background-info-subtle: #3b003b;
@@ -3956,4 +3979,120 @@
 .nav-list__item:focus {
     border-width: var(--fsds-semantic-focus-ring-width, 2px);
     border-color: var(--fsds-nav-list-color-outline-focus, #0566fe);
+}
+
+/* Skeleton (.skeleton) */
+.skeleton {
+    --fsds-box-model-width: 100%;
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: 0;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-max-height: none;
+    --fsds-skeleton-color-base: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+    --fsds-skeleton-color-highlight: var(--fsds-semantic-color-background-highlight, #f5a2a1);
+    --fsds-skeleton-radius-sm: var(--fsds-semantic-shape-radius-small, 4px);
+    --fsds-skeleton-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
+    --fsds-skeleton-gap-compact: var(--fsds-core-spacing-size-03, 4px);
+    --fsds-skeleton-gap-md: var(--fsds-core-spacing-size-05, 12px);
+    --fsds-skeleton-gap-spacious: var(--fsds-core-spacing-size-07, 24px);
+    --fsds-skeleton-anim-duration: var(--fsds-core-motion-duration-long, 400ms);
+    --fsds-skeleton-shape-height-text: var(--fsds-core-typography-ramp-4, 16px);
+}
+
+.skeleton {
+    width: var(--fsds-box-model-width, 100%);
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 0);
+    min-width: var(--fsds-box-model-min-width, 0);
+    display: flex;
+    flex-direction: column;
+}
+
+.skeleton {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--fsds-skeleton-color-base, #f7f7f7);
+    border-radius: var(--fsds-skeleton-radius-md, 8px);
+}
+
+.skeleton__shape {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--fsds-skeleton-color-base, #f7f7f7);
+    border-radius: var(--fsds-skeleton-radius-md, 8px);
+}
+
+.skeleton__stack {
+    display: flex;
+    flex-direction: column;
+    --fsds-gap: var(--fsds-skeleton-gap-md, 12px);
+}
+
+.skeleton.skeleton--block {
+    --fsds-skeleton-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
+    border-radius: var(--fsds-skeleton-radius-md, 8px);
+}
+
+.skeleton.skeleton--text {
+    --fsds-skeleton-radius-md: var(--fsds-semantic-shape-radius-small, 4px);
+    --fsds-skeleton-shape-height-text: var(--fsds-core-typography-ramp-4, 16px);
+    border-radius: var(--fsds-skeleton-radius-md, 8px);
+}
+
+.skeleton.skeleton--avatar {
+    --fsds-skeleton-radius-md: var(--fsds-semantic-shape-control-radius-pill, 9999px);
+    border-radius: var(--fsds-skeleton-radius-md, 8px);
+}
+
+.skeleton.skeleton--media {
+    --fsds-skeleton-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
+    border-radius: var(--fsds-skeleton-radius-md, 8px);
+    width: 100%;
+}
+
+.skeleton.skeleton--dataviz {
+    --fsds-skeleton-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
+    border-radius: var(--fsds-skeleton-radius-md, 8px);
+    width: 100%;
+}
+
+.skeleton.skeleton--actions {
+    --fsds-skeleton-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
+    border-radius: var(--fsds-skeleton-radius-md, 8px);
+    height: 36px;
+    min-width: 80px;
+}
+
+.skeleton.skeleton--wipe {
+    --fsds-skeleton-color-base: var(--fsds-semantic-color-background-tertiary, #d0d0d0);
+    overflow: hidden;
+    position: relative;
+}
+
+.skeleton.skeleton--compact {
+    --fsds-skeleton-gap-md: var(--fsds-skeleton-gap-compact, 4px);
+}
+
+.skeleton.skeleton--regular {
+    --fsds-skeleton-gap-md: var(--fsds-core-spacing-size-05, 12px);
+}
+
+.skeleton.skeleton--spacious {
+    --fsds-skeleton-gap-md: var(--fsds-skeleton-gap-spacious, 24px);
 }

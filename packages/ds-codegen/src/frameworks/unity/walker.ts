@@ -147,17 +147,25 @@ function isOmittedActionChrome(ctx: Context, node: DomNodeIR): boolean {
     node.ifProp === lowering.loading && node.componentRef !== undefined;
 }
 
+/** Whether a subtree contains an iteration node; a passive root cannot lower
+ * iteration, so the topmost such subtree is omitted by fact. */
+function containsIteration(node: DomNodeIR): boolean {
+  return node.iteration !== undefined || node.children.some(containsIteration);
+}
+
 /**
- * R1/R2: a passive root cannot materialise chrome or composed instances. Three
- * shapes are omitted by fact: a decoration whose content is a dynamic node prop
- * (IR `nodeKind: "node-ref"`), a guarded action chrome — a native button or
- * componentRef element carrying an event binding — whose presence prop is a
- * declared prop, and a decoration-role component instance (composition is P4).
- * The boundary refuses each omitted subtree; selection is by prop kind, binding
- * and part-role facts, never by component or part name.
+ * R1/R2: a passive root cannot materialise chrome, composed instances or
+ * iteration. Four shapes are omitted by fact: a decoration whose content is a
+ * dynamic node prop (IR `nodeKind: "node-ref"`), a guarded action chrome — a
+ * native button or componentRef element carrying an event binding — whose
+ * presence prop is a declared prop, a decoration-role component instance, and
+ * any subtree containing iteration. The boundary refuses each omitted subtree;
+ * selection is by prop kind, binding and part-role facts, never by component or
+ * part name.
  */
 function isOmittedPassiveDecoration(ir: ComponentIR, lowering: UnityLowering, node: DomNodeIR): boolean {
   if (lowering.behavior !== "Passive") return false;
+  if (containsIteration(node)) return true;
   const role = node.part === undefined ? undefined : ir.parts.find(part => part.name === node.part)?.details?.role;
   if (node.componentRef !== undefined && role === "decoration") return true;
   if (node.ifProp === undefined) return false;
