@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T12:21:00.942Z"
     artifact_path: packages/ds-unity/Runtime/Components/Details/Details.cs
     commit_sha: "01e28b01b4ead956cc96a5c9001e1e7a3449c311"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 9ee6b0470 (sourceDirty false): 67/67 passed, zero failed/skipped (test-run start 2026-10-31 12:18:43Z; resultsSha256 b8c40f41f8a0e0fb79476a52379e395917877dbe14fc7d26e04224b28bb0f06e). The added case activates the summary button, asserts the content presence and the root ChangeEvent, and covers the silent setter and disabled paths. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T12:21:01.496Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.DetailsDisclosureTogglesContentPresenceAndRaisesChangeEvent
+    exit_code: 0
+    commit_sha: "9ee6b047089b778cb059f2d46311d0f8c4125251"
