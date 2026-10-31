@@ -18,7 +18,7 @@ namespace FullStackDS
             Visual.AddToClassList("spinner__visual");
             hierarchy.Add(Visual);
             Gap.Attach(this);
-            Control = MotionLoopControl.Attach(this, target: Visual, durationMs: 800, multiplier: 1, easing: new float[] { 0.000, 0.000, 1.000, 1.000 }, reducedValue: 0);
+            Control = MotionLoopControl.Attach(this, target: Visual, durationMs: 800, multiplier: 1, easing: new float[] { 0.000f, 0.000f, 1.000f, 1.000f }, reducedValue: 0);
         }
     }
 }

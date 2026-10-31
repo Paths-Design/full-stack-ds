@@ -1421,7 +1421,7 @@ function motionLoopRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
     "        [UxmlAttribute] public bool ReducedMotion { get => Control.ReducedMotion; set => Control.ReducedMotion = value; }",
   ];
   const attach: string[] = [
-    `Control = MotionLoopControl.Attach(this, target: ${target.ref}, durationMs: ${lowering.durationMs}, multiplier: ${lowering.multiplier}, easing: new float[] { ${easing.map(value => value.toFixed(3)).join(", ")} }, reducedValue: ${lowering.reducedValue});`,
+    `Control = MotionLoopControl.Attach(this, target: ${target.ref}, durationMs: ${lowering.durationMs}, multiplier: ${lowering.multiplier}, easing: new float[] { ${easing.map(value => `${value.toFixed(3)}f`).join(", ")} }, reducedValue: ${lowering.reducedValue});`,
   ];
   return { members, attach, defaults: [] };
 }
