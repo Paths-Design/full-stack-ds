@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T17:05:29.412Z"
     artifact_path: packages/ds-unity/Runtime/Components/ShowMore/ShowMore.cs
     commit_sha: "7ce631b3ffc00c1a82e1a5e6edb062df6a94d469"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source eb1b7ebca (sourceDirty false): 89/89 passed, zero failed/skipped (test-run start 2026-10-31 17:04:42Z; resultsSha256 ff0b24e1416302d4b489734b13efb7571ab45da50954f2a2641f3aba05cec9dc). The added case asserts the content-slot insertion, label painting for both states, the state class, default-vs-explicit precedence, uncontrolled toggle with change callback, controlled request without commit, and the absent line-clamp API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T17:05:29.958Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.ShowMoreOwnsTheExpansionChannelAndPaintsItsLabel
+    exit_code: 0
+    commit_sha: eb1b7ebca26f8050f275caf87a0c85c2099812b9
