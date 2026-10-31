@@ -73,3 +73,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.MarkdownPaintsTheDeclaredSourceTextOnly
     exit_code: 0
     commit_sha: "3bc525b30ac0103b8b8a87a1a84dd56784ad15bb"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at abb46d4d53d70af35d8663b409b4abe6e957ee98: packages/ds-unity/README.md admits Markdown as the documented source-prop text degradation with the unclaimed block/mark/link/styling facts and the 98/98 lane; docs/architecture/unity-target.md records the TextSource dispatcher mode, the Compose precedent and the 98/98 lane; docs/current-implementation-snapshot.md records the fifty-fifth admitted control; the same commit repairs the stale derived doc markers (token-shard count, snapshot date) carried from main."
+    recorded_at: "2026-10-31T21:36:31.503Z"
+    commit_sha: abb46d4d53d70af35d8663b409b4abe6e957ee98
