@@ -71,3 +71,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/NavList/NavList.cs
     commit_sha: "826fe65cca87037476da9a478f434e70ef882bc7"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 88ec60f4b (sourceDirty false): 63/63 passed, zero failed/skipped (test-run start 2026-10-31 11:17:02Z; resultsSha256 effb0434eed3cbe090628ed90917d87210c1bd2523d8bd5a589a4dc618e33b8b). The added case composes the nav list and item parts and asserts the absent Orientation/AriaLabel API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T11:17:41.823Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.NavListComposesItsListAndItems
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: "88ec60f4b9ed8536659b595d37de8a9d10126b85"
