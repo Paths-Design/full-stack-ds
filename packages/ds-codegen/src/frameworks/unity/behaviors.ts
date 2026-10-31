@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "DateGrid" | "Command" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "DateGrid" | "Command" | "MotionLoop" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -413,6 +413,21 @@ export interface CommandLowering {
   inputPart: string;
   placeholderProp?: string;
 }
+/**
+ * A self-animating decorative control: no channels, exactly one declared repeat
+ * rotation loop that turns a target part a full turn. The runtime executes the
+ * declared period with an explicit reduced-motion preference input; OS
+ * preference integration, delay/inline behaviour and native arc rendering are
+ * withheld.
+ */
+export interface MotionLoopLowering {
+  behavior: "MotionLoop";
+  targetPart: string;
+  durationMs: number;
+  multiplier: number;
+  easing?: [number, number, number, number];
+  reducedValue: number;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -426,7 +441,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | DateGridLowering | CommandLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | DateGridLowering | CommandLowering | MotionLoopLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -589,6 +604,32 @@ function valueFillLowering(ir: ComponentIR): ProgressLowering | undefined {
 /** Source: IR control/interaction/attachment axes. Applies by value model,
  * operation and attachment, never identity. Extend when new axes are admitted. */
 export function unityLowering(ir: ComponentIR): UnityLowering {
+  // A self-animating rotation loop: no channels, one repeat rotation loop that
+  // turns the declared target a full turn. The runtime executes the declared
+  // period; other loop shapes fail closed rather than approximating.
+  if (ir.behavior.normalizedChannels.length === 0 && ir.dom !== undefined && ir.motion.loops.length === 1) {
+    const loop = ir.motion.loops[0]!;
+    const effect = loop.effect;
+    const keyframes = effect.kind === "rotation" ? effect.keyframes : undefined;
+    const fullTurn = keyframes !== undefined && keyframes.length === 2 &&
+      keyframes[0]!.offset === 0 && keyframes[0]!.value === 0 &&
+      keyframes[1]!.offset === 1 && keyframes[1]!.value === 360;
+    if (loop.driver === "repeat" && fullTurn) {
+      const duration = loop.timing.duration.rawValue;
+      const match = typeof duration === "string" ? duration.match(/^(\d+(?:\.\d+)?)(ms|s)$/) : null;
+      if (match !== null) {
+        const easing = "cubicBezier" in loop.timing.easing ? loop.timing.easing.cubicBezier : undefined;
+        return {
+          behavior: "MotionLoop",
+          targetPart: loop.target.name,
+          durationMs: Number(match[1]) * (match[2] === "s" ? 1000 : 1),
+          multiplier: loop.timing.multiplier,
+          ...(easing === undefined ? {} : { easing }),
+          reducedValue: loop.reducedMotion.value,
+        };
+      }
+    }
+  }
   // A command palette: open + search channels over a dialog panel with a
   // consumer result slot. No interaction controller declares the palette, so a
   // dedicated lowering owns the shell and both channels.

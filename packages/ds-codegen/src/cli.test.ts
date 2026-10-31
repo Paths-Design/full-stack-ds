@@ -355,6 +355,7 @@ describe("cli main — emitter admitContract seam", () => {
       "ShowMore",
       "Shuttle",
       "Skeleton",
+      "Spinner",
       "Stat",
       "Status",
       "Switch",
@@ -487,7 +488,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     await import("./cli.js");
     expect(exit).not.toHaveBeenCalled();
     // fsds.targets.json lists the unity allowlist in this order; the corpus loads alphabetically.
-    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links", "Image", "Avatar", "NavTree", "Postcard", "Pagination", "OTP", "RadioGroup", "Select", "Shuttle", "ShowMore", "Truncate", "PageNavigator", "Carousel", "Calendar", "Command"], afterEmits: 53 }]);
+    expect(calls).toEqual([{ target: "unity", components: ["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table", "CodeBlock", "Details", "Progress", "Chip", "CodeSnippet", "Dialog", "Sheet", "Input", "TextField", "Toast", "Field", "Walkthrough", "Links", "Image", "Avatar", "NavTree", "Postcard", "Pagination", "OTP", "RadioGroup", "Select", "Shuttle", "ShowMore", "Truncate", "PageNavigator", "Carousel", "Calendar", "Command", "Spinner"], afterEmits: 54 }]);
     const lines = log.mock.calls.map((call) => String(call[0]));
     // Resolved against the package root: the components root minus the pack's Runtime/Components.
     expect(lines).toContain("  DRY RUN  target assets (unity)");
@@ -519,7 +520,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
       binding: (binding) => ({ ...binding, componentsRoot: path.join(root, "Elsewhere") }),
     });
     await expect(import("./cli.js")).rejects.toThrow('does not end with the target pack\'s outputs.componentsRoot "Runtime/Components"');
-  });
+  }, 180_000);
 
   it("writes the assets under the package root and records them for a rail target, bound to the target registry", async () => {
     const root = tempPackage();
@@ -564,7 +565,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     ]);
     // Component groups keep their own contract provenance beside the asset group.
     const components = manifest.groups.filter((g) => g.component !== "(target-assets)");
-    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Avatar", "Badge", "Blockquote", "Breadcrumbs", "Button", "Calendar", "Card", "Carousel", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Command", "Details", "Dialog", "Divider", "Field", "Icon", "Image", "Input", "Label", "Links", "List", "NavList", "NavTree", "OTP", "PageNavigator", "Pagination", "Popover", "Postcard", "ProfileFlag", "Progress", "RadioGroup", "Select", "Sheet", "ShowMore", "Shuttle", "Skeleton", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Truncate", "Walkthrough"]);
+    expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Avatar", "Badge", "Blockquote", "Breadcrumbs", "Button", "Calendar", "Card", "Carousel", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Command", "Details", "Dialog", "Divider", "Field", "Icon", "Image", "Input", "Label", "Links", "List", "NavList", "NavTree", "OTP", "PageNavigator", "Pagination", "Popover", "Postcard", "ProfileFlag", "Progress", "RadioGroup", "Select", "Sheet", "ShowMore", "Shuttle", "Skeleton", "Spinner", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Truncate", "Walkthrough"]);
     expect(components.every((g) => g.contract.path.startsWith("packages/ds-contracts/components/"))).toBe(true);
   }, 180_000);
 

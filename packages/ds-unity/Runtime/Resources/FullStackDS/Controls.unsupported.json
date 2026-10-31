@@ -5787,6 +5787,30 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Spinner",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "800ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Spinner",
+      "sourceKey": "visual",
+      "part": "visual",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Spinner",
+      "sourceKey": "visual",
+      "part": "visual",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Stat",
       "sourceKey": "root",
       "part": "root",

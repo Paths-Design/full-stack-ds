@@ -633,6 +633,19 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toContain("UnrelatedPaletteList");
   });
 
+  it("renders the declared rotation loop and reduced-motion input for Spinner", () => {
+    const contract = loadContractWithSidecars(root, "Spinner") as ComponentContract;
+    const spinnerIr = buildComponentIR(contract);
+    spinnerIr.name = "UnrelatedSpinner";
+    const source = createUnityEmitter().emitComponent(spinnerIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedSpinner : VisualElement");
+    expect(source).toContain("public MotionLoopControl Control { get; }");
+    expect(source).toContain("public VisualElement Visual { get; } = new VisualElement();");
+    expect(source).toContain("[UxmlAttribute] public bool ReducedMotion");
+    expect(source).toContain("MotionLoopControl.Attach(this, target: Visual, durationMs: 800, multiplier: 1, easing: new float[]");
+    expect(source).not.toMatch(/Size|Thickness|ShowAfterMs|Inline|ariaHidden/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

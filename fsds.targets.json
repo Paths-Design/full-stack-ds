@@ -224,7 +224,8 @@
         "PageNavigator",
         "Carousel",
         "Calendar",
-        "Command"
+        "Command",
+        "Spinner"
       ]
     },
     {

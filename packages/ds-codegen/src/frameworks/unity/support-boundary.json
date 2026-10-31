@@ -1352,6 +1352,13 @@
       "reason": "ARIA labelling and description relationships have no UI Toolkit consumer: the runtime exposes no assistive-technology tree, so the generated control does not emit these props."
     },
     {
+      "id": "prop-motion-loop-refused",
+      "match": ["contract:/props/*/members/plain:ariaHidden/**", "contract:/props/*/members/plain:label/**", "contract:/props/*/members/plain:inline/**", "contract:/props/*/members/plain:showAfterMs/**", "contract:/props/*/members/plain:size/**", "contract:/props/*/members/plain:thickness/**"],
+      "requiresAny": [{"match": ["contract:/motion/loops/*/effect/kind"], "valueIn": ["rotation"]}, {"match": ["contract:/motion/loops/*/driver/kind"], "valueIn": ["repeat"]}],
+      "disposition": "refused",
+      "reason": "The aria-hidden/label wiring, the inline/delay presentation and the size/thickness variant knobs are withheld: the runtime renders a decorative rotating visual with an explicit reduced-motion input and no assistive labels, delay/inline behaviour or native variant-carrier projection."
+    },
+    {
       "id": "prop-size",
       "match": ["contract:/props/*/members/plain:size/**"],
       "disposition": "lowered",
@@ -1766,11 +1773,25 @@
       "reason": "The trigger/search accessible message strings need the P4 message/a11y family; the visible placeholder and option labels remain consumer-authored."
     },
     {
+      "id": "types-motion-loop-refused",
+      "match": ["contract:/types/**"],
+      "requiresAny": [{"match": ["contract:/motion/loops/*/effect/kind"], "valueIn": ["rotation"]}, {"match": ["contract:/motion/loops/*/driver/kind"], "valueIn": ["repeat"]}],
+      "disposition": "refused",
+      "reason": "The size/thickness unions only back the withheld variant carriers; no generated option type is claimed."
+    },
+    {
       "id": "types",
       "match": ["contract:/types/**", "contract:/dataModel/**"],
       "disposition": "pending",
       "phase": "P4",
       "reason": "Named types lower to C# string/bool today; enums, unions and records need typed C# declarations."
+    },
+    {
+      "id": "variants-motion-loop-refused",
+      "match": ["contract:/variants/**"],
+      "requiresAny": [{"match": ["contract:/motion/loops/*/effect/kind"], "valueIn": ["rotation"]}, {"match": ["contract:/motion/loops/*/driver/kind"], "valueIn": ["repeat"]}],
+      "disposition": "refused",
+      "reason": "The authored size/thickness variant conditions are carried by custom-property and descendant-modifier selectors that the native carrier projection does not express; no variant attributes are generated."
     },
     {
       "id": "variants",
@@ -1789,6 +1810,20 @@
       "match": ["contract:/keyframes/**"],
       "disposition": "refused",
       "reason": "USS has no @keyframes; it supports property transitions only. Keyframe animation would need a scheduler-driven C# runtime, which is not an idiomatic lowering of a stylesheet fact."
+    },
+    {
+      "id": "motion-loops-lowered",
+      "match": ["contract:/motion/loops/**"],
+      "requiresAny": [{"match": ["contract:/motion/loops/*/effect/kind"], "valueIn": ["rotation"]}, {"match": ["contract:/motion/loops/*/driver/kind"], "valueIn": ["repeat"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (MotionLoop)/MotionLoopControl: the declared full-turn repeat rotation loop becomes the runtime rotation of the declared target on its declared period and easing."
+    },
+    {
+      "id": "motion-loop-reduced-lowered",
+      "match": ["contract:/motion/reducedMotion"],
+      "requiresAny": [{"match": ["contract:/motion/loops/*/effect/kind"], "valueIn": ["rotation"]}, {"match": ["contract:/motion/loops/*/driver/kind"], "valueIn": ["repeat"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (MotionLoop)/MotionLoopControl: the declared respect preference is honoured through the explicit ReducedMotion input, which holds the loop's authored static value; OS preference integration is not claimed."
     },
     {
       "id": "motion",
