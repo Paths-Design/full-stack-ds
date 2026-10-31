@@ -622,4 +622,18 @@ describe("Unity USS projection: gap and composed-content hosts (A4)", () => {
     const ungapped = createUnityEmitter().emitComponent(irOf(knobWith({}, {}, withHole)), { componentsRoot: "", contractsRoot })[0]!.contents;
     expect(ungapped).not.toContain("Gap.Attach");
   });
+
+  it("projects prefixed modifier carriers for colliding axes", () => {
+    const directory = path.join(contractsRoot, "components/List");
+    const contract = JSON.parse(fs.readFileSync(path.join(directory, "List.contract.json"), "utf8"));
+    contract.tokens = JSON.parse(fs.readFileSync(path.join(directory, "List.tokens.json"), "utf8"));
+    contract.styles = JSON.parse(fs.readFileSync(path.join(directory, "List.styles.json"), "utf8"));
+    const { uss, components } = projectStylesheet([irOf(contract)], loadTokenSources(contractsRoot));
+    expect([...components[0]!.carrierAxes]).toEqual(expect.arrayContaining(["variant", "size"]));
+    expect(rule(uss, ".list.list--variant-inline")).toContain("display: flex;");
+    expect(rule(uss, ".list.list--size-lg")).toEqual(expect.arrayContaining([expect.stringMatching(/^font-size: /)]));
+    const source = createUnityEmitter().emitComponent(irOf(contract), { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain('Variants.GetAxis(this, "list", "variant-", "default", "unstyled", "inline", "divided", "spaced")');
+    expect(source).toContain('Variants.GetAxis(this, "list", "size-", "sm", "md", "lg")');
+  });
 });

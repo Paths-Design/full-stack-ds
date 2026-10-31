@@ -335,11 +335,16 @@ function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], k
   const name = identifier(pascal(prop.name));
   const modifier = ctx.ir.classRecipe.valueModifiers.find(m => m.propName === prop.name);
   if (!modifier) throw new Error(`UNITY_UNSUPPORTED_VARIANT: ${ctx.ir.name}.${prop.name} is a variant axis without a class-recipe value modifier`);
-  // A colliding axis is disambiguated as `<base>--<prop>-<value>`; the runtime
-  // helper keys classes as `<prefix>--<value>` and cannot express it.
-  if (modifier.valuePrefix) throw new Error(`UNITY_UNSUPPORTED_VARIANT: ${ctx.ir.name}.${prop.name} shares values with another axis (class-recipe prefix ${JSON.stringify(modifier.valuePrefix)}), which Variants does not key`);
-  const args = `${quote(ctx.ir.classRecipe.base)}, ${values.map(quote).join(", ")}`;
-  return `        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${args}); set { Variants.Set(this, ${quote(ctx.ir.classRecipe.base)}, value, ${values.map(quote).join(", ")});${knob ? ` ${knob} = value;` : ""} } }`;
+  const base = quote(ctx.ir.classRecipe.base);
+  if (modifier.valuePrefix) {
+    // A colliding axis is disambiguated by the class recipe's prefix
+    // (`<base>--<prop>-<value>`); the prefixed runtime helpers key that spelling.
+    const valuePrefix = quote(modifier.valuePrefix);
+    const args = `${base}, ${valuePrefix}, ${values.map(quote).join(", ")}`;
+    return `        [UxmlAttribute] public string ${name} { get => Variants.GetAxis(this, ${args}); set { Variants.SetAxis(this, ${base}, ${valuePrefix}, value, ${values.map(quote).join(", ")});${knob ? ` ${knob} = value;` : ""} } }`;
+  }
+  const args = `${base}, ${values.map(quote).join(", ")}`;
+  return `        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${args}); set { Variants.Set(this, ${base}, value, ${values.map(quote).join(", ")});${knob ? ` ${knob} = value;` : ""} } }`;
 }
 
 /** A passive host has no channel or behavior to attach. Only variant axes

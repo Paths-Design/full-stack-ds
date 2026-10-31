@@ -413,8 +413,23 @@
       "via": "[UxmlAttribute] Placement on the generated root, validated against its variant axis, drives the attached AnchoredSurface; floating content flips and shifts at panel edges."
     },
     {
+      "id": "prop-list-marker-refused",
+      "match": ["contract:/props/*/members/plain:marker/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:marker/propType/to"], "valueIn": ["ListMarker"] }],
+      "disposition": "refused",
+      "reason": "The list-marker axis projects only to CSS list-style-type, which USS does not implement; the generated control exposes no Marker property and the marker declarations stay ledgered."
+    },
+    {
+      "id": "prop-list-spacing-pending",
+      "match": ["contract:/props/*/members/plain:spacing/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:spacing/propType/to"], "valueIn": ["ListSpacing"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "List spacing selects sibling children with child-combinator rules the native selector grammar refuses, so the projection carries no spacing rules and the generated control withholds Spacing until P4 lowers that selector family."
+    },
+    {
       "id": "prop-passive-style-axis",
-      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**"],
+      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**"],
       "disposition": "lowered",
       "realizes": "emitted-property",
       "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
@@ -992,9 +1007,9 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**"],
       "disposition": "refused",
-      "reason": "The USS projection has no transition-duration/transition-timing-function or font-style handler and USS has no user-select property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function or font-style handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },
     {
       "id": "styles-intrinsic-sizing",

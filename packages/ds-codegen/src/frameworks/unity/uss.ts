@@ -733,9 +733,8 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
         if (channel !== undefined && predicate.value === "true" && predicate.axis === channel.valueProp) { failure = placeState(undefined); break; }
         if (predicate.value === "true" && predicate.axis === ctx.disabledProp) { failure = atOwner(undefined, ":disabled", hostPseudo); break; }
         const modifier = ctx.ir.classRecipe.valueModifiers.find(m => m.propName === predicate.axis);
-        // The walker refuses a prefixed (colliding) axis, so it has no carrier.
-        if (!modifier || modifier.valuePrefix || !ctx.ir.variants[predicate.axis]?.includes(predicate.value)) { failure = "uss-selector"; break; }
-        hostVariant.push(`.${ctx.prefix}--${predicate.value}`);
+        if (!modifier || !ctx.ir.variants[predicate.axis]?.includes(predicate.value)) { failure = "uss-selector"; break; }
+        hostVariant.push(`.${ctx.prefix}--${modifier.valuePrefix ?? ""}${predicate.value}`);
         carriers.push(predicate.axis);
         break;
       }
