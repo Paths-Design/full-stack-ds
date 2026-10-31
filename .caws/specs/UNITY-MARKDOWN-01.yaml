@@ -2,7 +2,6 @@ id: UNITY-MARKDOWN-01
 title: 'Admit Markdown to the Unity target as the documented source-prop text degradation'
 mode: feature
 lifecycle_state: active
-worktree: unity-markdown
 created_at: '2026-10-31T20:43:53.143Z'
 updated_at: '2026-10-31T21:32:27.645Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
