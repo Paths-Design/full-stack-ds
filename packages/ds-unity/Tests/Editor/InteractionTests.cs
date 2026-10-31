@@ -1238,5 +1238,34 @@ namespace FullStackDS.Tests
             Assert.That(showMore.Trigger.text, Is.EqualTo("Show less"));
             Assert.That(typeof(FullStackDS.ShowMore).GetProperty("MaxLines"), Is.Null);
         }
+        [Test] public void TruncateGuardsItsToggleAndOwnsTheExpansionChannel()
+        {
+            var truncate = Mount(new FullStackDS.Truncate());
+            Assert.That(truncate.hierarchy.childCount, Is.EqualTo(2));
+            truncate.Content.Add(new Label { text = "Long body" });
+            Assert.That(truncate.Content.childCount, Is.EqualTo(1));
+            truncate.ExpandText = "Expand";
+            truncate.CollapseText = "Collapse";
+            Assert.That(truncate.Toggle.text, Is.EqualTo("Expand"));
+            Assert.That(truncate.Toggle.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            truncate.Expandable = false;
+            Assert.That(truncate.Toggle.style.display.value, Is.EqualTo(DisplayStyle.None));
+            truncate.Expandable = true;
+            Assert.That(truncate.Toggle.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            bool? changed = null;
+            truncate.OnExpandedChange += value => changed = value;
+            Submit(truncate.Toggle);
+            Assert.That(truncate.Expanded, Is.True);
+            Assert.That(changed, Is.True);
+            Assert.That(truncate.Toggle.text, Is.EqualTo("Collapse"));
+            Assert.That(truncate.ClassListContains("truncate--expanded"), Is.True);
+            truncate.Controlled = true;
+            bool? requested = null;
+            truncate.ExpandedRequested += value => requested = value;
+            Submit(truncate.Toggle);
+            Assert.That(requested, Is.False);
+            Assert.That(truncate.Expanded, Is.True);
+            Assert.That(typeof(FullStackDS.Truncate).GetProperty("Lines"), Is.Null);
+        }
     }
 }

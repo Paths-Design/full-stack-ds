@@ -219,7 +219,8 @@
         "RadioGroup",
         "Select",
         "Shuttle",
-        "ShowMore"
+        "ShowMore",
+        "Truncate"
       ]
     },
     {

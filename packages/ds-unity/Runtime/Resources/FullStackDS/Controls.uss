@@ -7190,3 +7190,58 @@
     border-color: var(--fsds-show-more-color-border, #d0d0d0);
     padding: 0;
 }
+
+/* Truncate (.truncate) */
+.truncate {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: var(--fsds-semantic-display-size-gap, 4px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-truncate-color-foreground-link: var(--fsds-semantic-color-foreground-link, #d92d2e);
+    --fsds-truncate-typography-font-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+    --fsds-truncate-spacing-toggle: var(--fsds-core-spacing-size-02, 2px);
+}
+
+.truncate {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 4px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.truncate {
+    display: flex;
+    flex-direction: column;
+}
+
+.truncate__content {
+    overflow: hidden;
+}
+
+.truncate__toggle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--fsds-truncate-color-foreground-link, #d92d2e);
+    margin-top: var(--fsds-truncate-spacing-toggle, 2px);
+    border-width: 0;
+    padding: 0;
+}
