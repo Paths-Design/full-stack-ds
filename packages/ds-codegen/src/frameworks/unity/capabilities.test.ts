@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Progress", null], ["Sheet", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Walkthrough", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Progress", null], ["Sheet", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Walkthrough", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -130,6 +130,7 @@ describe("Unity capability accounting", () => {
     // Without the token and selector refusals, token rows and refused-selector rows fall to the blanket lowered rules.
     const without = (id: string) => ({ ...committed, rules: committed.rules.filter(r => r.id !== id) });
     expect(entriesOf(without("tokens-non-scalar"))).toEqual([
+      "ledger Avatar tokens avatar.typography.fontFamily.sans (uss-scalar)",
       "ledger Button tokens button.motion.easing.standard (uss-scalar)",
       "ledger Card tokens card.elevation.raised (uss-scalar)",
       "ledger Card tokens card.elevation.resting (uss-scalar)",

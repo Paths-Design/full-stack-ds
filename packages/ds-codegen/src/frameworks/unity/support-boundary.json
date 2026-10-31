@@ -211,6 +211,27 @@
       "via": "walker.ts (composed chrome): the reference's click callback forwards to a generated Action property, a guarded reference's presence follows a generated boolean flag, its disabled binding maps to the generated root's enabled state, and its non-decoration children render inside the native action chrome; a11y, HTML form/type and unknown prop bindings are withheld rather than forwarded."
     },
     {
+      "id": "anatomy-avatar-guards-lowered",
+      "match": ["contract:/anatomy/dom/children/**/if"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Avatar)/AvatarControl: the image's source guard and the initials text guard are runtime presence toggles owned by AvatarControl."
+    },
+    {
+      "id": "anatomy-avatar-source-binding-lowered",
+      "match": ["contract:/anatomy/dom/children/**/bindings/src"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Avatar)/AvatarControl: the Avatar source prop is forwarded to the composed Image child's own Src attribute."
+    },
+    {
+      "id": "anatomy-avatar-bindings-refused",
+      "match": ["contract:/anatomy/dom/children/**/bindings/alt", "contract:/anatomy/dom/children/**/bindings/aria-label"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
+      "disposition": "refused",
+      "reason": "The avatar's decorative alt and the root aria-label have no UI Toolkit assistive-technology consumer; the generated composition withholds them."
+    },
+    {
       "id": "anatomy-component-ref-dynamic",
       "match": ["contract:/anatomy/dom/**/children/ref:*/bindings/**", "contract:/anatomy/dom/**/children/ref:*/events/**", "contract:/anatomy/dom/**/children/ref:*/if", "contract:/anatomy/dom/**/children/ref:*/children/**"],
       "disposition": "pending",
@@ -594,6 +615,21 @@
       "match": ["contract:/props/*/members/form-field:*/**"],
       "disposition": "refused",
       "reason": "HTML form submission fields (name, value) have no UI Toolkit counterpart: there is no form element to serialise into."
+    },
+    {
+      "id": "prop-avatar-lowered",
+      "match": ["contract:/props/*/members/plain:src/**", "contract:/props/*/members/plain:initials/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Avatar): the source and initials strings become generated attributes owned by AvatarControl."
+    },
+    {
+      "id": "prop-avatar-priority-refused",
+      "match": ["contract:/props/*/members/plain:priority/**", "contract:/props/*/members/plain:name/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
+      "disposition": "refused",
+      "reason": "The avatar name is an assistive-technology label with no UI Toolkit consumer, and loading priority is an image-fetch policy the native texture element does not expose; both are withheld."
     },
     {
       "id": "prop-media-source-lowered",
@@ -1640,7 +1676,7 @@
     {
       "id": "styles-image-object-fit-refused",
       "match": ["styles:/*/object-fit/**", "styles:/*/object-position/**"],
-      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }, { "match": ["contract:/anatomy/dom/children/ref:*/componentRef"], "valueIn": ["fsds.Image"] }],
       "disposition": "refused",
       "reason": "USS has no object-fit/object-position; the native Image element exposes only low-level scale/source-rect primitives that the generated media API does not claim."
     },

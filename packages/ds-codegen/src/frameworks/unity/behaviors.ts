@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -193,6 +193,19 @@ export interface MediaLowering {
   behavior: "Media";
   srcProp: string;
 }
+/**
+ * A guarded media composition: an admitted Image child and a text fallback, each
+ * shown when its declared string prop is non-empty. AvatarControl owns the
+ * presence of both children and paints the fallback text; no a11y label or
+ * priority semantics are realised.
+ */
+export interface AvatarLowering {
+  behavior: "Avatar";
+  srcProp: string;
+  initialsProp: string;
+  imageRef: string;
+  imagePart: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -206,7 +219,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -532,6 +545,19 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A guarded media composition: a referenced Image child bound to a source
+  // prop plus a guarded text fallback. Runtime presence toggles both children.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.behavior.normalizedChannels.length === 0 && ir.dom !== undefined) {
+    const imageNode = ir.dom.children.find(node => node.componentRef !== undefined &&
+      node.bindings.src?.kind === "prop" && node.ifProp !== undefined);
+    const fallback = ir.dom.children.find(node => node.content !== undefined && "kind" in node.content &&
+      node.content.kind === "prop" && node.ifProp === node.content.prop && node.part !== undefined);
+    if (imageNode?.componentRef === "Image" && imageNode.bindings.src?.kind === "prop" && imageNode.ifProp !== undefined &&
+        fallback !== undefined && fallback.part !== undefined) {
+      if (imageNode.part === undefined) throw new Error(`UNITY_UNSUPPORTED_REF: ${ir.name} image reference carries no part`);
+      return { behavior: "Avatar", srcProp: imageNode.bindings.src.prop, initialsProp: fallback.ifProp!, imageRef: "Image", imagePart: imageNode.part };
+    }
   }
   // A native media element: an `<img>` root with a prop-bound source. The host
   // derives the UI Toolkit Image element and ImageControl loads the source as a

@@ -380,6 +380,22 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Alt|Width|Height|Loading|Sizes|AspectRatio|FallbackSrc/);
   });
 
+  it("composes the admitted image child and initials fallback for Avatar", () => {
+    const contract = loadContractWithSidecars(root, "Avatar") as ComponentContract;
+    const avatarIr = buildComponentIR(contract);
+    avatarIr.name = "UnrelatedAvatar";
+    const source = createUnityEmitter().emitComponent(avatarIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedAvatar : VisualElement");
+    expect(source).toContain("public Image Image { get; } = new Image();");
+    expect(source).toContain("public Label InitialsControl { get; } = new Label();");
+    expect(source).toContain("public AvatarControl Control { get; }");
+    expect(source).toContain("AvatarControl.Attach(this, image: Image, initials: InitialsControl);");
+    expect(source).toContain("public string Src { get => Control.Src; set => Control.Src = value; }");
+    expect(source).toContain("public string Initials { get => Control.Initials; set => Control.Initials = value; }");
+    expect(source).toContain("public string Size { get => Variants.Get(this, \"avatar\", \"small\", \"medium\", \"large\", \"extra-large\");");
+    expect(source).not.toMatch(/public string Name |public bool Priority/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

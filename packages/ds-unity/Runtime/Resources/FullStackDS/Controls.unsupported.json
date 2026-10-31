@@ -434,6 +434,38 @@
       "reason": "uss-property"
     },
     {
+      "component": "Avatar",
+      "sourceKey": "image",
+      "part": "image",
+      "property": "object-fit",
+      "value": "cover",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Avatar",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-family",
+      "value": "\"Inter\", sans-serif",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Avatar",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Avatar",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "avatar.typography.fontFamily.sans",
+      "value": "\"Inter\", sans-serif",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Badge",
       "sourceKey": "brand:canary",
       "part": "root",
