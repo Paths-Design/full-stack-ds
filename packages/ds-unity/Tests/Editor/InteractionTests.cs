@@ -470,5 +470,22 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "As", "Marker", "Spacing" })
                 Assert.That(typeof(FullStackDS.List).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void AlertContainersCarryAxesAndOmitGuardedChrome()
+        {
+            var alert = Mount(new FullStackDS.Alert { Intent = "warning", Level = "section" });
+            alert.Add(new Label("Careful"));
+            Assert.That(alert.ClassListContains("alert--warning"), Is.True);
+            Assert.That(alert.ClassListContains("alert--section"), Is.True);
+            Assert.That(alert.contentContainer.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "Icon", "Dismissible", "OnDismiss", "DismissLabel" })
+                Assert.That(typeof(FullStackDS.Alert).GetProperty(prop), Is.Null, prop);
+            var notice = Mount(new FullStackDS.AlertNotice { Status = "error", Level = "page" });
+            notice.Add(new FullStackDS.AlertNoticeTitle());
+            Assert.That(notice.ClassListContains("alert-notice--error"), Is.True);
+            Assert.That(notice.ClassListContains("alert-notice--page"), Is.True);
+            Assert.That(notice.contentContainer.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "Icon", "Dismissible", "OnDismiss", "DismissLabel" })
+                Assert.That(typeof(FullStackDS.AlertNotice).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

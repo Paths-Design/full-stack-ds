@@ -102,4 +102,16 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain('Variants.GetAxis(this, "list", "size-", "sm", "md", "lg")');
     expect(source).not.toMatch(/public string (?:As|Marker|Spacing)\b/);
   });
+
+  it("omits guarded alert chrome and emits only its carrier axes", () => {
+    const alert = emit(irFor("Alert", "UnrelatedAlert"));
+    expect(alert).toContain('Variants.Get(this, "alert", "info", "success", "warning", "danger")');
+    expect(alert).toContain('Variants.Get(this, "alert", "inline", "section", "page")');
+    expect(alert).toContain("public partial class UnrelatedAlertBody : VisualElement");
+    expect(alert).not.toMatch(/Dismissible|OnDismiss|DismissLabel/);
+    const notice = emit(irFor("AlertNotice", "UnrelatedNotice"));
+    expect(notice).toContain('Variants.Get(this, "alert-notice", "info", "success", "warning", "error")');
+    expect(notice).toContain('Variants.Get(this, "alert-notice", "page", "section", "inline")');
+    expect(notice).not.toMatch(/Dismissible|OnDismiss|DismissLabel/);
+  });
 });

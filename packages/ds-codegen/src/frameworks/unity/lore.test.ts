@@ -31,6 +31,8 @@ const IDENTITY_ACCESSORS = new Set([
 const PLATFORM_VOCABULARY: Record<string, string> = {
   label: "HTML <label> tag on DomNodeIR.tag (label-host semantics, text-leaf tags)",
   button: "HTML <button> tag on DomNodeIR.tag / PartIR.nativeTag (Button element type)",
+  input: "HTML <input> tag on DomNodeIR.tag (native form-control exclusion in the dispatch predicate)",
+  img: "HTML <img> tag on DomNodeIR.tag (native image exclusion in the dispatch predicate)",
   toggle: "InteractionIR trigger operation enum",
   select: "InteractionIR trigger operation enum",
   selection: "ContractStateDimension.category enum",

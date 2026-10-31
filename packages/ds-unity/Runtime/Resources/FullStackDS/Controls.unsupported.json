@@ -338,6 +338,102 @@
       "reason": "uss-property"
     },
     {
+      "component": "Alert",
+      "sourceKey": ".alert__dismiss:focus-visible",
+      "part": "dismiss",
+      "property": "outline",
+      "value": "2px solid currentColor",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": ".alert__dismiss:focus-visible",
+      "part": "dismiss",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Alert",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": ".alert-notice__dismiss:focus-visible",
+      "part": "dismiss",
+      "property": "outline",
+      "value": "2px solid currentColor",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": ".alert-notice__dismiss:focus-visible",
+      "part": "dismiss",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "AlertNotice",
+      "sourceKey": "dismiss",
+      "part": "dismiss",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
       "component": "Badge",
       "sourceKey": "brand:canary",
       "part": "root",

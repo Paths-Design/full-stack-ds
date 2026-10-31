@@ -109,6 +109,21 @@ export function hasEssentialComponentInstance(ir: ComponentIR): boolean {
 }
 
 /**
+ * A guarded action chrome: a native button or componentRef node whose presence
+ * a declared boolean prop guards and which carries an event binding. Targets
+ * that cannot compose the referenced action omit this chrome by fact; it is
+ * therefore not an essential component instance for their static-shape
+ * predicates.
+ */
+export function isGuardedActionChrome(ir: ComponentIR, node: DomNodeIR): boolean {
+  if (node.ifProp === undefined) return false;
+  if (node.tag !== "button" && node.componentRef === undefined) return false;
+  const guarded = ir.styledProps.find((prop) => prop.name === node.ifProp);
+  if (!guarded || guarded.propType.kind !== "boolean") return false;
+  return Object.values(node.events ?? {}).some((binding) => binding.kind === "prop");
+}
+
+/**
  * The static-content class: a passive root (no channels, no surface, not
  * an action/control element) whose tree projects at most one consumer
  * content region and holds no essential component instances.

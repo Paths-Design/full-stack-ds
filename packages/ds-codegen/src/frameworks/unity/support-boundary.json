@@ -66,6 +66,21 @@
       "reason": "The spinner part is the guarded loading decoration of a DOM action control. Conditional componentRef composition is pending P4 and Spinner is not admitted to Unity, so the generated action control omits the part and exposes no loading state."
     },
     {
+      "id": "anatomy-dismiss-chrome-refused",
+      "match": ["contract:/anatomy/dom/**/children/dismiss/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:dismissible/name"], "valueIn": ["dismissible"] }],
+      "disposition": "refused",
+      "reason": "The guarded dismiss control is a native button or a composed Button carrying the dismissal callback; the passive lowering omits it and the boundary refuses its bindings, attributes and event. Composing the action control is the P4 composition family."
+    },
+    {
+      "id": "anatomy-dismiss-part-refused",
+      "match": ["contract:/anatomy/parts/*"],
+      "valueIn": ["dismiss"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:dismissible/name"], "valueIn": ["dismissible"] }],
+      "disposition": "refused",
+      "reason": "The dismiss part is guarded chrome omitted by the passive lowering, so its part identity is not rendered."
+    },
+    {
       "id": "anatomy-node-content-decoration",
       "match": ["contract:/anatomy/dom/**/children/icon/**", "contract:/anatomy/details/icon/**"],
       "requiresAny": [{ "match": ["contract:/props/*/members/plain:icon/propType/kind"], "valueIn": ["node"] }],
@@ -429,7 +444,7 @@
     },
     {
       "id": "prop-passive-style-axis",
-      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**"],
+      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**", "contract:/props/*/members/plain:marker/**", "contract:/props/*/members/plain:spacing/**", "contract:/props/*/members/plain:status/**", "contract:/props/*/members/plain:level/**"],
       "disposition": "lowered",
       "realizes": "emitted-property",
       "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
@@ -532,6 +547,13 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "Dynamic node content needs a typed C# content projection (P4). The generated passive container exposes no Icon property and omits the guarded decoration."
+    },
+    {
+      "id": "prop-dismiss-chrome-refused",
+      "match": ["contract:/props/*/members/plain:dismissible/**", "contract:/props/*/members/plain:onDismiss/**", "contract:/props/*/members/plain:dismissLabel/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:dismissible/propType/kind"], "valueIn": ["boolean"] }],
+      "disposition": "refused",
+      "reason": "Dismissal is action chrome on a guarded child the passive lowering omits; the flag, callback and label are refused rather than exposed as an inert API, and composing the action control is P4."
     },
     {
       "id": "prop-status-icon-refused",
@@ -988,6 +1010,15 @@
       },
       "disposition": "refused",
       "reason": "A component slot is defined only with one USS scalar (length, percentage, number, time, angle, colour, keyword, a rem value resolved against the fixed 16px native root, or a var() with a scalar fallback). A multi-component value (shadow list, two-value padding, font-family list), an easing function or an unresolved relative unit (em, ch, vw, vh) has no USS custom-property form uss.ts emits; each definition is listed uss-scalar."
+    },
+    {
+      "id": "styles-dismiss-chrome-selector",
+      "match": ["styles:/**"],
+      "declaration": { "keyPattern": "(?:^|__)dismiss(?::|$)" },
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:dismissible/name"], "valueIn": ["dismissible"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The dismissal style selectors target the omitted guarded chrome; P4 composition re-enables the action control and its state styles."
     },
     {
       "id": "styles-outside-native-grammar",
