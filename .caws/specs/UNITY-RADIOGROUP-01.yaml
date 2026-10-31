@@ -2,7 +2,6 @@ id: UNITY-RADIOGROUP-01
 title: 'Admit RadioGroup to the Unity target as a native radio runtime over the declared options'
 mode: feature
 lifecycle_state: active
-worktree: unity-radiogroup
 created_at: '2026-10-31T15:59:21.462Z'
 updated_at: '2026-10-31T16:10:12.738Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
