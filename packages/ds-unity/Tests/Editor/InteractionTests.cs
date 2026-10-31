@@ -40,7 +40,7 @@ namespace FullStackDS.Tests
             if (list == null) { list = new TabsList(); root.Add(list); }
             var tab = new TabsTab { Value = value, text = value, Disabled = disabled };
             list.Add(tab);
-            var panel = new TabsPanel { Value = value }; panel.Add(new Label("Content " + value));
+            var panel = new TabsPanel { Value = value }; panel.Add(new UnityEngine.UIElements.Label("Content " + value));
             root.Add(panel);
             return (tab, panel);
         }
@@ -48,7 +48,7 @@ namespace FullStackDS.Tests
         {
             var item = new AccordionItem(); var header = new AccordionHeader();
             var trigger = new AccordionTrigger { Value = value, text = value };
-            var content = new AccordionContent { Value = value }; content.Add(new Label("Content " + value));
+            var content = new AccordionContent { Value = value }; content.Add(new UnityEngine.UIElements.Label("Content " + value));
             header.Add(trigger); item.Add(header); item.Add(content); root.Add(item);
             return (trigger, content);
         }
@@ -84,7 +84,7 @@ namespace FullStackDS.Tests
         [Test] public void SwitchTreeFollowsContractAnatomyAndLabelHostTogglesOnce()
         {
             // dom: label.root > [input.input, span.track > span.thumb, <children>]; root tag label selects the label host.
-            var control = Mount(new Switch()); var caption = new Label("Enable sound"); control.Add(caption);
+            var control = Mount(new Switch()); var caption = new UnityEngine.UIElements.Label("Enable sound"); control.Add(caption);
             Assert.That(control.hierarchy.Children().Select(c => c.name).ToArray(), Is.EqualTo(new[] { "input", "track", "children" }));
             Assert.That(control.Input.ClassListContains("switch__input"), Is.True);
             Assert.That(control.Thumb.hierarchy.parent, Is.EqualTo(control.Track));
@@ -288,7 +288,7 @@ namespace FullStackDS.Tests
         [UnityTest] public IEnumerator ContentComposedIntoAnAttachedClosedPopoverIsParked()
         {
             var popover = Mount(new Popover()); yield return null;
-            var trigger = new PopoverTrigger { text = "Help" }; var content = new PopoverContent(); content.Add(new Label("Late content"));
+            var trigger = new PopoverTrigger { text = "Help" }; var content = new PopoverContent(); content.Add(new UnityEngine.UIElements.Label("Late content"));
             popover.Add(trigger); popover.Add(content);
             yield return null; yield return null;
             // Layout alone (no getter, no channel call) must apply the closed presentation.
@@ -346,7 +346,7 @@ namespace FullStackDS.Tests
             asset.CloneTree(window.rootVisualElement);
             yield return null; yield return null;
             var sound = window.rootVisualElement.Q<Switch>("sound");
-            Assert.That(sound.Checked, Is.True); Assert.That(sound.contentContainer.Q<Label>().text, Is.EqualTo("Enable sound"));
+            Assert.That(sound.Checked, Is.True); Assert.That(sound.contentContainer.Q<UnityEngine.UIElements.Label>().text, Is.EqualTo("Enable sound"));
             var accordion = window.rootVisualElement.Q<Accordion>("settings");
             Assert.That(accordion.Group.Triggers.Count, Is.EqualTo(2)); Assert.That(accordion.Value, Is.EqualTo("graphics"));
             Assert.That(accordion.Q<AccordionContent>().ClassListContains("is-open"), Is.True);
@@ -372,7 +372,7 @@ namespace FullStackDS.Tests
         [Test] public void ActionButtonRoutesConsumerChildrenIntoItsContentHost()
         {
             var button = Mount(new FullStackDS.Button());
-            var label = new Label("Resume");
+            var label = new UnityEngine.UIElements.Label("Resume");
             button.Add(label);
             Assert.That(button.contentContainer, Is.SameAs(button));
             Assert.That(label.parent, Is.SameAs(button));
@@ -427,17 +427,17 @@ namespace FullStackDS.Tests
         [Test] public void PassiveContainersComposeChildrenAndCarryStyleAxes()
         {
             var stat = Mount(new FullStackDS.Stat { Size = "lg", Trend = "up" });
-            stat.Add(new Label("42"));
+            stat.Add(new UnityEngine.UIElements.Label("42"));
             Assert.That(stat.ClassListContains("stat--lg"), Is.True);
             Assert.That(stat.ClassListContains("stat--up"), Is.True);
             Assert.That(stat.contentContainer.childCount, Is.EqualTo(1));
             var quote = Mount(new FullStackDS.Blockquote { Variant = "bordered", Size = "sm" });
-            quote.Add(new Label("quoted"));
+            quote.Add(new UnityEngine.UIElements.Label("quoted"));
             Assert.That(quote.ClassListContains("blockquote--bordered"), Is.True);
             Assert.That(quote.ClassListContains("blockquote--sm"), Is.True);
             Assert.That(quote.contentContainer.childCount, Is.EqualTo(1));
             var flag = Mount(new FullStackDS.ProfileFlag());
-            flag.Add(new Label("Commander"));
+            flag.Add(new UnityEngine.UIElements.Label("Commander"));
             Assert.That(flag.ClassListContains("profile-flag"), Is.True);
             Assert.That(flag.contentContainer.childCount, Is.EqualTo(1));
             Assert.That(typeof(FullStackDS.ProfileFlag).GetProperty("Profile"), Is.Null);
@@ -447,7 +447,7 @@ namespace FullStackDS.Tests
         {
             var badge = Mount(new FullStackDS.Badge { Variant = "tag", Intent = "success", Size = "lg" });
             var content = new FullStackDS.BadgeContent();
-            content.Add(new Label("New"));
+            content.Add(new UnityEngine.UIElements.Label("New"));
             badge.Add(content);
             Assert.That(badge.ClassListContains("badge--tag"), Is.True);
             Assert.That(badge.ClassListContains("badge--success"), Is.True);
@@ -460,8 +460,8 @@ namespace FullStackDS.Tests
         [Test] public void ListComposesItemsAndCarriesPrefixedAxes()
         {
             var list = Mount(new FullStackDS.List { Variant = "inline", Size = "lg" });
-            list.Add(new Label("one"));
-            list.Add(new Label("two"));
+            list.Add(new UnityEngine.UIElements.Label("one"));
+            list.Add(new UnityEngine.UIElements.Label("two"));
             Assert.That(list.ClassListContains("list"), Is.True);
             Assert.That(list.ClassListContains("list--variant-inline"), Is.True);
             Assert.That(list.ClassListContains("list--size-lg"), Is.True);
@@ -473,7 +473,7 @@ namespace FullStackDS.Tests
         [Test] public void AlertContainersCarryAxesAndOmitGuardedChrome()
         {
             var alert = Mount(new FullStackDS.Alert { Intent = "warning", Level = "section" });
-            alert.Add(new Label("Careful"));
+            alert.Add(new UnityEngine.UIElements.Label("Careful"));
             Assert.That(alert.ClassListContains("alert--warning"), Is.True);
             Assert.That(alert.ClassListContains("alert--section"), Is.True);
             Assert.That(alert.contentContainer.childCount, Is.EqualTo(1));
@@ -486,6 +486,27 @@ namespace FullStackDS.Tests
             Assert.That(notice.contentContainer.childCount, Is.EqualTo(1));
             foreach (var prop in new[] { "Icon", "Dismissible", "OnDismiss", "DismissLabel" })
                 Assert.That(typeof(FullStackDS.AlertNotice).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void SemanticWrappersComposeContentAndIgnoreDomMetadata()
+        {
+            var label = Mount(new FullStackDS.Label());
+            label.text = "Capacity";
+            Assert.That(label.text, Is.EqualTo("Capacity"));
+            Assert.That(label.ClassListContains("label"), Is.True);
+            Assert.That(typeof(FullStackDS.Label).GetProperty("HtmlFor"), Is.Null);
+            Assert.That(typeof(FullStackDS.Label).GetProperty("Form"), Is.Null);
+            var crumbs = Mount(new FullStackDS.Breadcrumbs());
+            var list = new FullStackDS.BreadcrumbsList();
+            var item = new FullStackDS.BreadcrumbsItem();
+            item.Add(new UnityEngine.UIElements.Label("Home"));
+            list.Add(item);
+            crumbs.Add(list);
+            Assert.That(crumbs.ClassListContains("breadcrumbs"), Is.True);
+            Assert.That(list.ClassListContains("breadcrumbs__list"), Is.True);
+            Assert.That(item.ClassListContains("breadcrumbs__item"), Is.True);
+            Assert.That(item.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.Breadcrumbs).GetProperty("AriaLabel"), Is.Null);
+            Assert.That(typeof(FullStackDS.Breadcrumbs).GetProperty("Separator"), Is.Null);
         }
     }
 }

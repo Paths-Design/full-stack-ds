@@ -188,7 +188,9 @@
         "Badge",
         "List",
         "Alert",
-        "AlertNotice"
+        "AlertNotice",
+        "Label",
+        "Breadcrumbs"
       ]
     },
     {

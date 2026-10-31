@@ -103,7 +103,7 @@ namespace FullStackDS.Tests
 
         [UnityTest] public IEnumerator SwitchMirrorsControlPointerAndFocusStateOntoHostClasses()
         {
-            var control = new Switch(); control.Add(new Label("Sound"));
+            var control = new Switch(); control.Add(new UnityEngine.UIElements.Label("Sound"));
             window.rootVisualElement.Add(control);
             yield return null;
             var input = control.Trigger;
