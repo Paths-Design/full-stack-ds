@@ -54,3 +54,11 @@ contracts:
   - name: 'input-text'
     type: behavior
     path: 'packages/ds-contracts/components/Input/Input.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 16039754d: focused unity codegen + cli seam 224/224 pass, including the TextInput lowering predicate from text-form-control facts, the native TextField root, the TextControl string-channel API, the placeholder binding and the form/text boundary families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T13:40:59.604Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > lowers a native text input with a string channel for Input"
+    exit_code: 0
+    commit_sha: "16039754d792b9ea77073e7e8128c211a7e4be79"
