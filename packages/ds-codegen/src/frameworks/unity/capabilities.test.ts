@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["PageNavigator", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Select", null], ["Sheet", null], ["ShowMore", null], ["Shuttle", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Truncate", null], ["Walkthrough", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Carousel", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["PageNavigator", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Select", null], ["Sheet", null], ["ShowMore", null], ["Shuttle", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Truncate", null], ["Walkthrough", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -135,6 +135,7 @@ describe("Unity capability accounting", () => {
       "ledger Button tokens button.motion.easing.standard (uss-scalar)",
       "ledger Card tokens card.elevation.raised (uss-scalar)",
       "ledger Card tokens card.elevation.resting (uss-scalar)",
+      "ledger Carousel tokens carousel.motion.easing (uss-scalar)",
       "ledger CodeSnippet tokens code-snippet.elevation.kbd (uss-scalar)",
       "ledger Dialog tokens dialog.elevation (uss-scalar)",
       "ledger Dialog tokens dialog.size.full.height (uss-scalar)",
@@ -155,6 +156,10 @@ describe("Unity capability accounting", () => {
       'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)',
       "ledger Accordion @starting-style (uss-selector)",
       'ledger Button .button[aria-busy="true"] .button__loadingText (uss-selector)',
+      "ledger Carousel .carousel [hidden] (uss-selector)",
+      "ledger Carousel .carousel--next .carousel__ring, .carousel--both .carousel__ring (uss-selector)",
+      "ledger Carousel .carousel:not([data-sequence-root]) > .carousel__viewport (uss-selector)",
+      "ledger Carousel .carousel__viewport > [hidden] (uss-selector)",
       "ledger Chip .chip__action.button (uss-selector)",
       "ledger Chip .chip__dismiss.button (uss-selector)",
       'ledger CodeBlock .code-block[data-line-numbers="true"] .code-block__gutter (uss-selector)',

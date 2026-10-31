@@ -436,7 +436,10 @@ function planClasses(ctx: Context): ClassPlan[] {
     // that only holds the content region is flattened so the insertion point
     // is the control's own contentContainer.
     const action = ctx.lowering.behavior === "Action";
-    const children = ctx.lowering.behavior === "Transfer" || ctx.lowering.behavior === "PagedSet" ? [] : action
+    const sequenceViewport = ctx.lowering.behavior === "Sequence" ? ctx.lowering.viewportPart : undefined;
+    const children = ctx.lowering.behavior === "Transfer" || ctx.lowering.behavior === "PagedSet" ? [] : ctx.lowering.behavior === "Sequence"
+      ? ir.dom.children.filter(node => node.part === sequenceViewport)
+      : action
       ? ir.dom.children
           .filter(node => !isOmittedActionChrome(ctx, node))
           .flatMap(node => node.children.length === 1 && isInsertion(node.children[0]!) ? node.children : [node])
@@ -1304,6 +1307,41 @@ function pagedSetRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/** R6-R8 for the slide sequence: the index channel, slide labels, autoplay dwell
+ * and consumer-authored control labels; the runtime builds the controls and
+ * switches viewport children by visibility. */
+function sequenceRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Sequence") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a sequence lowering`);
+  const channel = lowering.channel;
+  const viewport = classes[0]!.members.find(member => member.part === lowering.viewportPart);
+  if (!viewport) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its sequence viewport outside the root class`);
+  const members: string[] = [
+    "        public SequenceControl Control { get; }",
+    `        public int ${identifier(pascal(channel.valueProp))} { get => Control.Index; set => Control.Index = value; }`,
+    `        public string[] ${identifier(pascal(lowering.itemsProp))} { get => Control.Items; set => Control.Items = value; }`,
+    `        [UxmlAttribute] public string ${identifier(pascal(lowering.startLabelKey))} { get => Control.StartLabel; set => Control.StartLabel = value; }`,
+    `        [UxmlAttribute] public string ${identifier(pascal(lowering.stopLabelKey))} { get => Control.StopLabel; set => Control.StopLabel = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = SequenceControl.Attach(this, viewport: ${viewport.ref}, prefix: ${quote(ctx.prefix!)});`,
+  ];
+  const defaults: string[] = [];
+  if (channel.defaultValueProp !== undefined) members.push(`        public int ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultIndex; set => Control.DefaultIndex = value; }`);
+  const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
+  members.push(`        public Action<int> ${identifier(pascal(changeHandler))} { get => Control.IndexChanged; set => Control.IndexChanged = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<int> IndexRequested { get => Control.IndexRequested; set => Control.IndexRequested = value; }");
+  if (lowering.autoPlayProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(lowering.autoPlayProp))} { get => Control.AutoPlay; set => Control.AutoPlay = value; }`);
+  if (lowering.durationProp !== undefined) {
+    members.push(`        [UxmlAttribute] public int ${identifier(pascal(lowering.durationProp))} { get => Control.Duration; set => Control.Duration = value; }`);
+    if (lowering.defaultDurationMs !== undefined) defaults.push(`${identifier(pascal(lowering.durationProp))} = ${lowering.defaultDurationMs};`);
+  }
+  if (lowering.previousLabelKey !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.previousLabelKey))} { get => Control.PreviousLabel; set => Control.PreviousLabel = value; }`);
+  if (lowering.nextLabelKey !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.nextLabelKey))} { get => Control.NextLabel; set => Control.NextLabel = value; }`);
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1324,6 +1362,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Transfer") return transferRootApi(ctx);
   if (lowering.behavior === "Expansion") return expansionRootApi(ctx, classes);
   if (lowering.behavior === "PagedSet") return pagedSetRootApi(ctx);
+  if (lowering.behavior === "Sequence") return sequenceRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

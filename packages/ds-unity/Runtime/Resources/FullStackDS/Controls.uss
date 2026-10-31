@@ -20,7 +20,9 @@
     --fsds-core-layer-tooltip: 1800;
     --fsds-core-motion-duration-extra-long1: 1500ms;
     --fsds-core-motion-duration-long: 400ms;
+    --fsds-core-motion-duration-medium: 250ms;
     --fsds-core-motion-duration-short: 150ms;
+    --fsds-core-motion-dwell-medium: 6000ms;
     --fsds-core-shape-radius-full: 9999px;
     --fsds-core-spacing-size-00: 0px;
     --fsds-core-spacing-size-01: 1px;
@@ -7460,4 +7462,111 @@
 
 .page-navigator__input {
     width: 100%;
+}
+
+/* Carousel (.carousel) */
+.carousel {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: 0;
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-carousel-color-foreground: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-carousel-color-progress: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-carousel-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-carousel-timing-advance: var(--fsds-core-motion-dwell-medium, 6000ms);
+    --fsds-carousel-size-control-size: var(--fsds-core-spacing-size-08, 32px);
+    --fsds-carousel-size-radius: var(--fsds-core-shape-radius-full, 9999px);
+    --fsds-carousel-motion-duration: var(--fsds-core-motion-duration-medium, 250ms);
+}
+
+.carousel {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 0);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.carousel {
+    display: flex;
+    flex-direction: column;
+    --fsds-gap: var(--fsds-carousel-spacing-gap, 8px);
+    color: var(--fsds-carousel-color-foreground, #141414);
+}
+
+.carousel__viewport {
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel__controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    --fsds-gap: var(--fsds-carousel-spacing-gap, 8px);
+}
+
+.carousel__ring {
+    position: absolute;
+    border-radius: 50%;
+    color: var(--fsds-carousel-color-progress, #141414);
+    display: none;
+}
+
+.carousel__next {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-width: var(--fsds-carousel-size-control-size, 32px);
+    min-height: var(--fsds-carousel-size-control-size, 32px);
+    border-radius: var(--fsds-carousel-size-radius, 9999px);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.carousel__previous {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-width: var(--fsds-carousel-size-control-size, 32px);
+    min-height: var(--fsds-carousel-size-control-size, 32px);
+    border-radius: var(--fsds-carousel-size-radius, 9999px);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.carousel__rotation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-width: var(--fsds-carousel-size-control-size, 32px);
+    min-height: var(--fsds-carousel-size-control-size, 32px);
+    border-radius: var(--fsds-carousel-size-radius, 9999px);
+    background-color: rgba(0, 0, 0, 0);
+    align-self: flex-start;
+    padding-left: 12px;
+    padding-right: 12px;
 }

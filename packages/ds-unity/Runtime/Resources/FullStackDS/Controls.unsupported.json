@@ -1746,6 +1746,158 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Carousel",
+      "sourceKey": ".carousel [hidden]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": ".carousel--next .carousel__ring, .carousel--both .carousel__ring",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": ".carousel:not([data-sequence-root]) > .carousel__viewport",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": ".carousel__viewport > [hidden]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "next",
+      "part": "next",
+      "property": "border",
+      "value": "1px solid currentColor",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "next",
+      "part": "next",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "next",
+      "part": "next",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "previous",
+      "part": "previous",
+      "property": "border",
+      "value": "1px solid currentColor",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "previous",
+      "part": "previous",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "previous",
+      "part": "previous",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "ring",
+      "part": "ring",
+      "property": "background",
+      "value": "conic-gradient(currentColor calc(var(--sequence-progress, 0) * 1turn), transparent 0)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "ring",
+      "part": "ring",
+      "property": "inset",
+      "value": "-4px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "ring",
+      "part": "ring",
+      "property": "mask",
+      "value": "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 0)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "ring",
+      "part": "ring",
+      "property": "pointer-events",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "rotation",
+      "part": "rotation",
+      "property": "border",
+      "value": "1px solid currentColor",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "rotation",
+      "part": "rotation",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "rotation",
+      "part": "rotation",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "rotation",
+      "part": "rotation",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Carousel",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "carousel.motion.easing",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Checkbox",
       "sourceKey": ".checkbox:has(.checkbox__input:checked) .checkbox__indicator::after",
       "part": "indicator",

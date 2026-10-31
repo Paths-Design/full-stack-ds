@@ -221,7 +221,8 @@
         "Shuttle",
         "ShowMore",
         "Truncate",
-        "PageNavigator"
+        "PageNavigator",
+        "Carousel"
       ]
     },
     {
