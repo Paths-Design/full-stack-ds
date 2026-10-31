@@ -1946,6 +1946,54 @@
       "reason": "uss-property"
     },
     {
+      "component": "NavList",
+      "sourceKey": ".nav-list__item:focus-visible",
+      "part": "item",
+      "property": "outline-offset",
+      "value": "-2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": ".nav-list__item:hover",
+      "part": "item",
+      "property": "background-color",
+      "value": "color-mix(in srgb, var(--fsds-nav-list-color-background-hover, #d0d0d0) calc(var(--fsds-nav-list-state-layer-hover, 0.04) * 100%), transparent)",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": ".nav-list__item[aria-current=\"page\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "transition-duration",
+      "value": "120ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "transition-property",
+      "value": "background-color, color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "NavList",
+      "sourceKey": "list",
+      "part": "list",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
       "component": "Popover",
       "sourceKey": "brand:canary",
       "part": "content",
