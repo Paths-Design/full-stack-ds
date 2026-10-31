@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.FieldExposesItsSlotHostsAndStatusCarrier
     exit_code: 0
     commit_sha: "5084a74ff33ae9931306640fd59473ce4f52d40c"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 5084a74ff: packages/ds-unity/README.md admits Field with its slot hosts, status carrier and the withheld context/validation/disabled/indicator non-claims, and records the 77/77 lane; docs/architecture/unity-target.md records the Slots dispatcher mode, inline slot hosts and the 77/77 lane; docs/current-implementation-snapshot.md records the thirty-sixth admitted control with those facts."
+    recorded_at: "2026-10-31T14:18:50.259Z"
+    commit_sha: "5084a74ff33ae9931306640fd59473ce4f52d40c"
