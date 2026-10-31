@@ -321,6 +321,13 @@
       "reason": "Authored DOM event handlers need P4 callback declarations. The form-control change event and trigger activation are synthesized by the IR and realised by the attached behavior, not authored here."
     },
     {
+      "id": "anatomy-content-string-prop-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/content", "contract:/anatomy/dom/**/children/*/content/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/*/propType/kind"], "valueIn": ["string"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (R5b): a text leaf bound to a declared string prop lowers the element to a Label plus a root string UxmlAttribute that paints its text; the walker asserts the bound prop is a declared string, and a non-string or non-text-leaf binding is refused at generation. Only literal and string-property content lower; transforms and node-content props are adjudicated by the rules above."
+    },
+    {
       "id": "anatomy-content",
       "match": ["contract:/anatomy/dom/content", "contract:/anatomy/dom/content/**", "contract:/anatomy/dom/**/children/*/content", "contract:/anatomy/dom/**/children/*/content/**"],
       "disposition": "pending",
@@ -673,6 +680,20 @@
       "reason": "The status-icon flag only selects the omitted node-content icon decoration; the generated container exposes no ShowStatusIcon property."
     },
     {
+      "id": "prop-text-content-lowered",
+      "match": ["contract:/props/*/members/plain:summary/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/content"], "valuePattern": "^prop:" }],
+      "disposition": "lowered",
+      "via": "walker.ts (R5b): the string prop bound to a text leaf becomes a generated string UxmlAttribute painting that leaf's Label; the walker asserts the binding is a declared string and refuses anything else."
+    },
+    {
+      "id": "prop-variant-carrier-axis",
+      "match": ["contract:/props/*/members/plain:icon/**"],
+      "requiresAny": [{ "match": ["contract:/variants/icon/*"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (S6): a declared variant axis with a USS carrier emits a UxmlAttribute modifier (<prefix>--<value>); the projection refuses an axis with no carrier."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -800,7 +821,7 @@
       "match": ["contract:/interaction/triggers/*/operation"],
       "valueIn": ["select", "toggle-item", "toggle", "open"],
       "disposition": "lowered",
-      "via": "The dispatcher attaches ItemGroup for select / toggle-item, and AnchoredSurface for toggle (click mode) or open (hover/focus-open mode); ItemGroup.Attach(…, operation, …) carries the operation into the runtime."
+      "via": "The dispatcher attaches ItemGroup for select / toggle-item, AnchoredSurface for toggle with a surface (click mode) or open (hover/focus-open mode), and Disclosure for a surface-less toggle whose single trigger owns one presence-tracked content part; ItemGroup.Attach(…, operation, …) carries the operation into the runtime."
     },
     {
       "id": "interaction-parts-channel",
@@ -1150,9 +1171,9 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**"],
       "disposition": "refused",
-      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse, overflow-axis or tab-size handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse, overflow-axis, tab-size or order handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },
     {
       "id": "styles-inherit-keyword-refused",

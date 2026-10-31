@@ -610,5 +610,23 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Language", "Highlight", "Tokens", "ShowLineNumbers" })
                 Assert.That(typeof(FullStackDS.CodeBlock).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void DetailsDisclosureTogglesContentPresenceAndRaisesChangeEvent()
+        {
+            var details = Mount(new FullStackDS.Details { Summary = "Advanced settings" });
+            var changes = new System.Collections.Generic.List<bool>();
+            details.RegisterValueChangedCallback(evt => changes.Add(evt.newValue));
+            Assert.That(details.Open, Is.False);
+            Assert.That(details.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(details.SummaryText.text, Is.EqualTo("Advanced settings"));
+            Submit(details.Trigger);
+            Assert.That(details.Open, Is.True);
+            Assert.That(details.Content.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(changes, Is.EqualTo(new[] { true }));
+            details.SetValueWithoutNotify(false);
+            Assert.That(details.Open, Is.False);
+            Assert.That(details.Content.style.display.value, Is.EqualTo(DisplayStyle.None));
+            details.Disabled = true;
+            Assert.That(details.enabledSelf, Is.False);
+        }
     }
 }

@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Action";
+export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Action";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -36,6 +36,16 @@ interface LoweringBase {
 export interface BooleanControlLowering extends LoweringBase {
   behavior: "BooleanControl";
   control: PartIR;
+}
+/**
+ * A disclosure: one trigger toggles one presence-tracked content part on a
+ * boolean channel. The trigger is a native button; the runtime toggles the
+ * content's presence and mirrors the open state class.
+ */
+export interface DisclosureLowering extends LoweringBase {
+  behavior: "Disclosure";
+  trigger: PartIR;
+  content: PartIR;
 }
 export interface ItemGroupLowering extends LoweringBase {
   behavior: "ItemGroup";
@@ -78,12 +88,12 @@ export interface ActionLowering {
 export interface PassiveLowering {
   behavior: "Passive";
 }
-export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering;
+export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering;
 export type UnityLowering = PassiveLowering | ActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
-  return lowering.behavior === "BooleanControl" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface";
+  return lowering.behavior === "BooleanControl" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure";
 }
 
 /**
@@ -213,6 +223,15 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     return { behavior: "BooleanControl", channel: ir.formControl.channel, control: ir.formControl.part, stateClass: stateClassOf(ir) };
   }
   const interaction = ir.interaction;
+  // A disclosure: one trigger toggles one presence-tracked content part on a
+  // boolean channel, with no surface. The runtime toggles the content's
+  // presence and mirrors the state class; the trigger is a native button.
+  if (interaction?.triggers.length === 1 && interaction.triggers[0]!.operation === "toggle" && !ir.surface) {
+    if (interaction.channel.valueType !== "boolean") throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} disclosure channel is not boolean`);
+    if (interaction.presence !== "unmount") throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} declares presence ${JSON.stringify(interaction.presence)}, which Disclosure does not realise`);
+    if (focus !== undefined && focus !== "none" && focus !== "auto") refuseFocus("Disclosure");
+    return { behavior: "Disclosure", channel: interaction.channel, trigger: interaction.triggers[0]!.part, content: interaction.content, stateClass: stateClassOf(ir) };
+  }
   if (interaction?.triggers.length === 1 && ["select", "toggle-item"].includes(interaction.triggers[0]!.operation)) {
     if (interaction.presence !== "hidden") throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} declares presence ${JSON.stringify(interaction.presence)}, which ItemGroup does not realise`);
     if (focus !== "roving" && focus !== "manual") return refuseFocus("ItemGroup");
