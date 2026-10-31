@@ -611,6 +611,28 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Mode|Locale|ShouldCloseOnSelect|ariaLabel/);
   });
 
+  it("renders the command palette channels and results host for Command", () => {
+    const contract = loadContractWithSidecars(root, "Command") as ComponentContract;
+    const commandIr = buildComponentIR(contract);
+    commandIr.name = "UnrelatedPalette";
+    const source = createUnityEmitter().emitComponent(commandIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedPalette : VisualElement");
+    expect(source).toContain("public CommandControl Control { get; }");
+    expect(source).toContain("[UxmlAttribute] public bool Open");
+    expect(source).toContain("[UxmlAttribute] public string Search");
+    expect(source).toContain("public VisualElement Results");
+    expect(source).toContain("[UxmlAttribute] public bool DefaultOpen");
+    expect(source).toContain("[UxmlAttribute] public string DefaultSearch");
+    expect(source).toContain("[UxmlAttribute] public string Placeholder");
+    expect(source).toContain("public Action<bool> OnOpenChange");
+    expect(source).toContain("public Action<string> OnSearchChange");
+    expect(source).toContain("public bool SearchControlled");
+    expect(source).toContain("public Action<string> SearchRequested");
+    expect(source).toContain("CommandControl.Attach(this, prefix: \"command\", overlayPart: \"overlay\", dialogPart: \"dialog\", listPart: \"list\", inputPart: \"input\");");
+    expect(source).not.toMatch(/ShouldFilter|EmptyMessage|public string Label|ariaLabel/);
+    expect(source).not.toContain("UnrelatedPaletteList");
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);
