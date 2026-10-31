@@ -2,7 +2,7 @@
 
 /* Sources: packages/ds-tokens/generated/resolved.tokens.json, packages/ds-tokens/generated/tokens.css (@layer brand), and each admitted component's contract and sidecars. Declarations USS cannot realise are listed in Controls.unsupported.json. */
 
-/* Brands: canary, corporate, default, developer, fintech, forest, marketplace, monochrome, quickserve, streaming */
+/* Brands: canary, corporate, default, developer, fintech, forest, marketplace, monochrome, orion, quickserve, streaming */
 
 /* Rem projection: 1rem = 16px; fixed CSS root baseline, independent of consumer font size. */
 
@@ -508,6 +508,54 @@
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #888889;
     --fsds-semantic-interaction-background-hover: #474647;
+}
+
+/* Brand orion */
+.fsds-theme.fsds-brand-orion {
+    --fsds-semantic-color-background-disabled: #d8d4c6;
+    --fsds-semantic-color-background-elevated: #f4f1e6;
+    --fsds-semantic-color-background-hover: #e9e5d8;
+    --fsds-semantic-color-background-primary: #f4f1e6;
+    --fsds-semantic-color-background-secondary: #e9e5d8;
+    --fsds-semantic-color-background-tertiary: #d8d4c6;
+    --fsds-semantic-color-border-accent: #b83f16;
+    --fsds-semantic-color-border-subtle: #c9c4b6;
+    --fsds-semantic-color-foreground-accent: #b83f16;
+    --fsds-semantic-color-foreground-disabled: #6b6b60;
+    --fsds-semantic-color-foreground-on-brand: #191917;
+    --fsds-semantic-color-foreground-primary: #141412;
+    --fsds-semantic-color-foreground-secondary: #33332e;
+    --fsds-semantic-color-foreground-tertiary: #55554c;
+    --fsds-semantic-focus-ring-color: #b83f16;
+    --fsds-semantic-focus-ring-offset: 2px;
+    --fsds-semantic-focus-ring-style: solid;
+    --fsds-semantic-focus-ring-width: 2px;
+    --fsds-semantic-interaction-background-hover: #e9e5d8;
+    --fsds-semantic-interaction-disabled-opacity: 0.24;
+    --fsds-semantic-shape-control-border-default-width: 2px;
+    --fsds-semantic-shape-control-radius-default: 0px;
+    --fsds-semantic-shape-radius-small: 0px;
+    --fsds-semantic-typography-line-height-body: 1.45;
+    --fsds-semantic-typography-line-height-heading: 1;
+    --fsds-semantic-typography-line-height-tight: 1.1;
+}
+
+.fsds-theme.fsds-brand-orion.fsds-theme--dark {
+    --fsds-semantic-color-background-disabled: #2e2e29;
+    --fsds-semantic-color-background-elevated: #232320;
+    --fsds-semantic-color-background-hover: #2e2e29;
+    --fsds-semantic-color-background-primary: #141412;
+    --fsds-semantic-color-background-secondary: #232320;
+    --fsds-semantic-color-background-tertiary: #2e2e29;
+    --fsds-semantic-color-border-accent: #f78a5e;
+    --fsds-semantic-color-border-subtle: #3a3a34;
+    --fsds-semantic-color-foreground-accent: #f78a5e;
+    --fsds-semantic-color-foreground-disabled: #8c8c82;
+    --fsds-semantic-color-foreground-primary: #f4f1e6;
+    --fsds-semantic-color-foreground-secondary: #c6c2b4;
+    --fsds-semantic-color-foreground-tertiary: #9c988b;
+    --fsds-semantic-focus-ring-color: #f78a5e;
+    --fsds-semantic-interaction-background-hover: #2e2e29;
 }
 
 /* Brand quickserve */

@@ -1,0 +1,26 @@
+{
+  "id": "cmdr-orion-n5",
+  "callsign": "ORION N5",
+  "callsignPlate": "D3SO",
+  "mission": "MARS EXPEDITION",
+  "status": "PAUSED",
+  "rank": {
+    "label": "PATHFINDER III",
+    "level": 12,
+    "globalPosition": 95,
+    "percentile": "TOP 5%",
+    "points": 7250,
+    "nextLevelAt": 9000
+  },
+  "earnings": {
+    "credits": 34850,
+    "pending": 1200,
+    "currency": "CR"
+  },
+  "followers": {
+    "total": 52400,
+    "trend": "+3.2%",
+    "period": "THIS CYCLE"
+  },
+  "navTarget": null
+}

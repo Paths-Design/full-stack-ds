@@ -204,6 +204,22 @@
     },
     {
       "component": "Accordion",
+      "sourceKey": "brand:orion",
+      "part": "item",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Accordion",
+      "sourceKey": "brand:orion",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Accordion",
       "sourceKey": "brand:quickserve",
       "part": "item",
       "property": "border-radius",
@@ -609,6 +625,38 @@
     },
     {
       "component": "Popover",
+      "sourceKey": "brand:orion",
+      "part": "content",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Popover",
+      "sourceKey": "brand:orion",
+      "part": "content",
+      "property": "border-width",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Popover",
+      "sourceKey": "brand:orion",
+      "part": "content",
+      "property": "box-shadow",
+      "value": "var(--fsds-semantic-elevation-surface-flat)",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Popover",
+      "sourceKey": "brand:orion",
+      "part": "content",
+      "property": "padding",
+      "value": "20px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Popover",
       "sourceKey": "brand:quickserve",
       "part": "content",
       "property": "border-radius",
@@ -885,6 +933,14 @@
     {
       "component": "Tabs",
       "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Tabs",
+      "sourceKey": "brand:orion",
       "part": "root",
       "property": "border-radius",
       "value": "0px",
