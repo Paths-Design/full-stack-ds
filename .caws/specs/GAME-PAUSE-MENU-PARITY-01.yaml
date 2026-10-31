@@ -52,3 +52,7 @@ evidence:
     status: pass
     evidence_ref: "examples/game-pause-menu/parity.md + examples/game-pause-menu/fixtures/parity-layout.json (design authority: 1280x800 grid, per-tab rects, switch geometry, icon art); landed in 511aac39b"
     recorded_at: "2026-10-31T21:20:25.161Z"
+  - criterion_id: A2
+    status: pass
+    evidence_ref: "node examples/game-pause-menu/parity-check.mjs --root tmp/parity-evidence: 195 fixed-pixel probes, 12 pairwise RMSE checks, 0 failures across map/progress/abilities/settings on merged-branch captures (unity/godot recaptured from 211aac+ tree; gpui lane captures from addb617)"
+    recorded_at: "2026-10-31T21:20:27.389Z"
