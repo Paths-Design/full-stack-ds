@@ -72,3 +72,12 @@ contracts:
   - name: 'button-action'
     type: behavior
     path: 'packages/ds-contracts/components/Button/Button.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Unity action lowering and boundary accounting at af73bc3ac: 169/169 unity codegen tests (action factory/walker cases + requiresAny boundary rules) and capabilities --check reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. Loading/ARIA-state/form-type are explicit refused rules; title stays refused by prop-passive-semantic-options; guarded chrome omitted."
+    recorded_at: "2026-10-31T08:45:15.292Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/factory.test.ts > Unity capability lowering > lowers a projected-children action to a native Button with callback, disabled and content host"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: af73bc3acc1e263ea519ebd610a99ec9b0a2c488
