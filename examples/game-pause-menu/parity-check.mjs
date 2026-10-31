@@ -82,11 +82,11 @@ const PROBES = {
     ...tabProbes('map'),
     [900, 150, 'charcoal', 'inactive tab background (opposite side)'],
     // Map field: filled sage exactly from (40,232) to (880,712).
-    [41, 233, 'sage', 'map field top-left fill'],
-    [879, 711, 'sage', 'map field bottom-right fill'],
-    [39, 231, 'charcoal', 'outside map field top-left'],
-    [881, 713, 'charcoal', 'outside map field bottom-right'],
-    [940, 200, 'charcoal', 'icon panel background'],
+    [48, 240, 'sage', 'map field top-left fill'],
+    [872, 704, 'sage', 'map field bottom-right fill'],
+    [30, 222, 'charcoal', 'outside map field top-left'],
+    [890, 722, 'charcoal', 'outside map field bottom-right'],
+    [1000, 700, 'charcoal', 'icon panel background'],
     // Switch ON: pill arc filled at (x+12,y+2); ellipse would leave it background.
     [SWITCH_ON.x + 2, SWITCH_ON.y + 2, 'charcoal', 'ON switch corner outside pill'],
     [SWITCH_ON.x + 12, SWITCH_ON.y + 2, 'signal', 'ON switch stadium arc filled'],
@@ -107,7 +107,7 @@ const PROBES = {
     // Drawer paper ground (24,176,560,552).
     [25, 177, 'paper', 'drawer top-left fill'],
     [582, 726, 'paper', 'drawer bottom-right fill'],
-    [23, 175, 'ink', 'outside drawer top-left'],
+    [16, 168, 'ink', 'outside drawer top-left'],
     [584, 730, 'ink', 'outside drawer bottom-right'],
     [960, 200, 'charcoal', 'roster panel background'],
     // ACCESS chip (1080,240,76,22).

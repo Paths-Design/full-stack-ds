@@ -154,6 +154,8 @@ Pinned so the three engines cannot drift on "reasonable" choices:
   800 `boneBright`; sublines 11 px / 400 `muted`. Wordmark `ORION` 40 px / 800
   `boneBright` + `N5` 40 px / 800 `signal`; mission line 11 px / 600
   letter-spaced `muted`.
+- **Tab labels** — left-aligned with a 32 px inset inside each 320 px tab
+  (`tabBar.labelAlign` / `tabBar.labelInset`).
 - **Footer** — hints 11 px / 400 `muted`; `NAV TARGET` label 10 px / 700
   letter-spaced `muted`; target value 13 px / 700 `signal`.
 
@@ -280,3 +282,25 @@ Godot lanes; they are binding for all three lanes:
 
 Agents must re-merge `game-pause-parity` before their final capture so these
 pins are in their lane branch.
+
+## Icon art (pinned after the first parity montage review)
+
+The three lanes were rendering three different icon languages: Unity and Godot
+used the admitted `Icon` catalog glyphs while GPUI (which has no Icon
+component) drew placeholder squares. Icon surfaces are now pinned to a portable
+two-letter code language so the interfaces match:
+
+- **Icon-visibility rows**: a 16 × 16 square, `graphite` fill, 1 px
+  `ruleStrong` border, square corners, containing the first two letters of the
+  fixture's `icon` catalog name uppercased (Info → `IN`, Placeholder → `PL`,
+  Home → `HO`, Baseline → `BL`, Alarm → `AL`, CircleDot → `CD`,
+  ChevronRight → `CR`, User → `US`), 8 px / 800 `boneBright`, centred.
+- **Ability-card art**: a 40 × 40 square with the same fill/border/corners,
+  containing the first two letters of the ability name uppercased
+  (THREADING → `TH`, OVERCLOCK → `OV`, …), 12 px / 800 `boneBright`, centred.
+  The selected-card outline stays signal.
+
+Generated `Icon` remains the realization anywhere else a target admits it; on
+these two parity surfaces the code tile is the shared art. This is an
+app-authority decision (see `fixtures/parity-layout.json` `iconArt`), not a
+package change.

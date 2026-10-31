@@ -61,6 +61,10 @@ static func style_tabs(node) -> void:
 	var inactive := orion.flat(orion.color("charcoal"), Color.TRANSPARENT, 0, 0.0)
 	var hover := orion.flat(orion.color("graphite"), Color.TRANSPARENT, 0, 0.0)
 	var active := orion.flat(orion.color("signal"), orion.color("signal"), 0, 0.0)
+	# Ops: pinned tab label inset (parity.tabBar.labelInset).
+	for style in [inactive, hover, active]:
+		style.content_margin_left = 32
+		style.content_margin_right = 0
 	var tab_width := float(parity.tab_bar["tabs"][0]["w"])
 	var tab_height := float(parity.tab_bar["rect"]["h"])
 	for index in range(node.items.size()):
@@ -79,6 +83,7 @@ static func style_tabs(node) -> void:
 		button.add_theme_color_override("font_pressed_color", orion.color("onSignal"))
 		button.add_theme_font_override("font", orion.font(tab_type, 700, tab_spacing))
 		button.add_theme_font_size_override("font_size", tab_type)
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		item.body.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	node.strip.add_theme_constant_override("separation", 0)
 	var content_y := float(parity.panels["content"]["y"])
@@ -116,6 +121,11 @@ static func prepare_switch(node) -> void:
 	trigger.add_theme_icon_override("unchecked_disabled", switch_icon(false))
 	trigger.add_theme_constant_override("icon_max_width", int(switch_width))
 	trigger.add_theme_constant_override("h_separation", 0)
+	# Remove the theme styleboxes so their content margins cannot inflate the
+	# CheckButton minimum height (the 40px box vertically centred the 32px pill
+	# and shifted every switch down by 4px relative to the parity rect).
+	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
+		trigger.add_theme_stylebox_override(state, StyleBoxEmpty.new())
 
 
 ## 64x32 stadium track + 24px circular thumb, rendered from the parity switch
@@ -140,7 +150,11 @@ static func switch_icon(checked: bool) -> ImageTexture:
 			"#" + parity.color(str(parity.switch_data["offBorder"])).to_html(false),
 			int(parity.switch_data["borderWidth"]),
 		]
-	var svg := '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">' % [int(width), int(height), int(width), int(height)]
+	# The generated CheckButton centres its icon vertically in a 40px control; draw
+	# the 64x32 pill at the top of a 64x40 canvas so the painted pill aligns with
+	# the parity rect instead of sitting 4px low.
+	var canvas_height := height + 8.0
+	var svg := '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">' % [int(width), int(canvas_height), int(width), int(canvas_height)]
 	svg += '<rect x="%s" y="%s" width="%s" height="%s" rx="%s" fill="%s"%s/>' % [
 		"0.5" if not checked else "0",
 		"0.5" if not checked else "0",

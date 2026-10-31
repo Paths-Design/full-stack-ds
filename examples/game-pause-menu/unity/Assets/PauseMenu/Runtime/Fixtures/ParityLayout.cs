@@ -370,6 +370,8 @@ namespace GamePauseMenu
             data.TabBar = ParseTabBar(read, read.ObjectField(root, "tabBar", "tabBar"));
             data.Footer = ParseFooter(read, read.ObjectField(root, "footer", "footer"));
             data.Panels = ParsePanels(read, read.ObjectField(root, "panels", "panels"));
+            data.PanelHeaderHeight = data.Panels.HeaderHeight;
+            data.PanelPadding = data.Panels.Padding;
             data.Map = ParseMap(read, read.ObjectField(root, "map", "map"));
             data.Progress = ParseProgress(read, read.ObjectField(root, "progress", "progress"));
             data.Abilities = ParseAbilities(read, read.ObjectField(root, "abilities", "abilities"));

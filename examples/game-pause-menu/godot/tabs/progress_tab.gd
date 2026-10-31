@@ -123,7 +123,7 @@ func _add_faction_row(faction: Dictionary, row_x: float, row_y: float, width: fl
 		UI.place(rep_label, rep_x, float(rows_data["repBarY"]) - 16.0, 260, 14)
 		row.add_child(rep_label)
 
-	var status_x := float(rows_data["statusX"]) - panel_origin.x
+	var status_x := float(rows_data["statusX"]) - float(rows_data["x"])
 	var status = null
 	if unlocked:
 		status = DSFactory.chip("ACCESS", app.parity.color("signal"), app.parity.color("onSignal"), app.parity.color("signal"), float(rows_data["statusW"]), float(rows_data["statusH"]), app.parity.type_size("micro"))

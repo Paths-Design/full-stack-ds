@@ -166,7 +166,9 @@
     "activeBackground": "signal",
     "activeText": "onSignal",
     "inactiveText": "textSecondary",
-    "separator": "rule"
+    "separator": "rule",
+    "labelAlign": "left",
+    "labelInset": 32
   },
   "footer": {
     "rect": {
@@ -579,6 +581,31 @@
       "subtitleLanguage": "Fran\u00e7ais",
       "navTarget": "cache-02",
       "hiddenIcons": []
+    }
+  },
+  "iconArt": {
+    "$note": "Icon surfaces are pinned to two-letter codes so the three engines render the same art; GPUI has no Icon component and catalog glyphs are not portable.",
+    "rowTile": {
+      "size": 16,
+      "background": "graphite",
+      "border": "ruleStrong",
+      "borderWidth": 1,
+      "radius": 0,
+      "fontSize": 8,
+      "weight": 800,
+      "text": "boneBright",
+      "source": "first two letters of the fixture icon catalog name, uppercased"
+    },
+    "cardTile": {
+      "size": 40,
+      "background": "graphite",
+      "border": "ruleStrong",
+      "borderWidth": 1,
+      "radius": 0,
+      "fontSize": 12,
+      "weight": 800,
+      "text": "boneBright",
+      "source": "first two letters of the ability name, uppercased"
     }
   }
 }

@@ -105,7 +105,7 @@ func _build_general(panel_def: Dictionary) -> void:
 		UI.place(description, 16, row_y + 24, width - 120, 14)
 		panel.add_child(description)
 		var toggle_node = DSFactory.toggle()
-		UI.place(toggle_node, width - 16 - switch_w, row_y + (row_h - switch_h) / 2.0, switch_w, switch_h)
+		UI.place(toggle_node, width - 16 - switch_w, row_y + (row_h - switch_h) / 2.0 - 4.0, switch_w, switch_h)
 		panel.add_child(toggle_node)
 		DSFactory.prepare_switch(toggle_node)
 		toggle_node.value = "true" if bool(app.general_values.get(toggle_id, false)) else "false"

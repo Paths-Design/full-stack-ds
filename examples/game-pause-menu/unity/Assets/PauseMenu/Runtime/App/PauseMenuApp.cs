@@ -251,7 +251,7 @@ namespace GamePauseMenu
                 tab.style.unityFontStyleAndWeight = FontStyle.Bold;
                 tab.style.letterSpacing = (float)Layout.Size("letterSpacingTab");
                 tab.style.unityTextAlign = TextAnchor.MiddleLeft;
-                tab.style.paddingLeft = 16;
+                tab.style.paddingLeft = 32;
                 tab.style.whiteSpace = WhiteSpace.NoWrap;
                 if (i > 0)
                 {

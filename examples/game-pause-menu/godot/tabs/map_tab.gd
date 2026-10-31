@@ -117,7 +117,7 @@ func _add_icon_row(icon: Dictionary, row_x: float, row_y: float, row_h: float, i
 	var toggle_node = DSFactory.toggle()
 	var switch_width := float(app.parity.switch_data["width"])
 	var switch_height := float(app.parity.switch_data["height"])
-	UI.place(toggle_node, switch_x, row_y + switch_y, switch_width, switch_height)
+	UI.place(toggle_node, switch_x, row_y + switch_y - 4.0, switch_width, switch_height)
 	icon_panel.add_child(toggle_node)
 	DSFactory.prepare_switch(toggle_node)
 	toggle_node.value = "true" if bool(app.icon_visible.get(icon_id, false)) else "false"
