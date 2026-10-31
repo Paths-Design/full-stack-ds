@@ -73,3 +73,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.CommandTogglesItsPaletteAndForwardsBothChannels
     exit_code: 0
     commit_sha: b6b5b0f484285b5c0b5a095311a8fc2c7ad34444
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 58c5885fef27b22e240b72d9b9a8a912acf13aca: packages/ds-unity/README.md admits Command with its open/search channel API, dialog shell, placeholder and consumer results host, and the withheld filtering/empty/dismissal/keyboard/a11y facts, and records the 95/95 lane; docs/architecture/unity-target.md records the Command dispatcher mode, runtime shell and the 95/95 lane; docs/current-implementation-snapshot.md records the fifty-third admitted control with those facts."
+    recorded_at: "2026-10-31T20:07:38.579Z"
+    commit_sha: "58c5885fef27b22e240b72d9b9a8a912acf13aca"
