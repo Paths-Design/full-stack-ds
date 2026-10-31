@@ -1204,5 +1204,39 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "AriaLabel", "DataValue", "Tabindex", "AriaSelected", "Available" })
                 Assert.That(typeof(FullStackDS.Shuttle).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void ShowMoreOwnsTheExpansionChannelAndPaintsItsLabel()
+        {
+            var showMore = Mount(new FullStackDS.ShowMore());
+            Assert.That(showMore.hierarchy.childCount, Is.EqualTo(2));
+            Assert.That(showMore.childCount, Is.EqualTo(0));
+            showMore.Content.Add(new Label { text = "Clamped body" });
+            Assert.That(showMore.Content.childCount, Is.EqualTo(1));
+            Assert.That(showMore.childCount, Is.EqualTo(1));
+            showMore.ShowMoreLabel = "Show more";
+            showMore.ShowLessLabel = "Show less";
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show more"));
+            showMore.DefaultExpanded = true;
+            Assert.That(showMore.Expanded, Is.True);
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show less"));
+            Assert.That(showMore.ClassListContains("show-more--expanded"), Is.True);
+            showMore.Expanded = false;
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show more"));
+            Assert.That(showMore.ClassListContains("show-more--expanded"), Is.False);
+            bool? changed = null;
+            showMore.OnExpandedChange += value => changed = value;
+            Submit(showMore.Trigger);
+            Assert.That(showMore.Expanded, Is.True);
+            Assert.That(changed, Is.True);
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show less"));
+            Assert.That(showMore.ClassListContains("show-more--expanded"), Is.True);
+            showMore.Controlled = true;
+            bool? requested = null;
+            showMore.ExpandedRequested += value => requested = value;
+            Submit(showMore.Trigger);
+            Assert.That(requested, Is.False);
+            Assert.That(showMore.Expanded, Is.True);
+            Assert.That(showMore.Trigger.text, Is.EqualTo("Show less"));
+            Assert.That(typeof(FullStackDS.ShowMore).GetProperty("MaxLines"), Is.Null);
+        }
     }
 }

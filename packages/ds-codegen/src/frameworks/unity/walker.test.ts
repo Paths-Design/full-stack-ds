@@ -510,6 +510,27 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/ariaLabel|data-value|tabindex|aria-selected/);
   });
 
+  it("renders a controlled expansion over a consumer content slot for ShowMore", () => {
+    const contract = loadContractWithSidecars(root, "ShowMore") as ComponentContract;
+    const expansionIr = buildComponentIR(contract);
+    expansionIr.name = "UnrelatedExpansion";
+    const source = createUnityEmitter().emitComponent(expansionIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedExpansion : VisualElement");
+    expect(source).toContain("public ExpansionControl Control { get; }");
+    expect(source).toContain("public VisualElement Content { get; } = new VisualElement();");
+    expect(source).toContain("public UnityEngine.UIElements.Button Trigger { get; } = new UnityEngine.UIElements.Button();");
+    expect(source).toContain("public override VisualElement contentContainer => Content;");
+    expect(source).toContain("[UxmlAttribute] public bool Expanded");
+    expect(source).toContain("[UxmlAttribute] public bool DefaultExpanded");
+    expect(source).toContain("[UxmlAttribute] public string ShowLessLabel");
+    expect(source).toContain("[UxmlAttribute] public string ShowMoreLabel");
+    expect(source).toContain("public Action<bool> OnExpandedChange");
+    expect(source).toContain("public bool Controlled");
+    expect(source).toContain("public Action<bool> ExpandedRequested");
+    expect(source).toContain("ExpansionControl.Attach(this, trigger: Trigger, prefix: \"show-more\", stateClass: \"show-more--expanded\");");
+    expect(source).not.toMatch(/maxLines|MaxLines|line-clamp/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

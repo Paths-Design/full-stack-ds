@@ -403,6 +403,13 @@
       "reason": "The aria-expanded mirror has no UI Toolkit assistive consumer; the runtime exposes open state through the listbox surface presence and the authored open class instead."
     },
     {
+      "id": "anatomy-expansion-aria-refused",
+      "match": ["contract:/anatomy/dom/children/trigger/bindings/aria-expanded"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "refused",
+      "reason": "The aria-expanded mirror has no UI Toolkit assistive consumer; the runtime exposes the state through the authored expanded class and the trigger label."
+    },
+    {
       "id": "anatomy-channel-binding",
       "match": ["contract:/anatomy/dom/bindings/*", "contract:/anatomy/dom/**/children/*/bindings/*"],
       "valuePattern": "^channel:[A-Za-z_$][\\w$-]*\\.value$",
@@ -728,6 +735,13 @@
       "phase": "P4",
       "catchAll": true,
       "reason": "Authored DOM event handlers need P4 callback declarations. The form-control change event and trigger activation are synthesized by the IR and realised by the attached behavior, not authored here."
+    },
+    {
+      "id": "anatomy-expansion-label-lowered",
+      "match": ["contract:/anatomy/dom/children/trigger/content"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (Expansion)/ExpansionControl: the conditional label content becomes the runtime trigger label painted from the declared expanded/collapsed label props."
     },
     {
       "id": "anatomy-content-string-prop-lowered",
@@ -1507,6 +1521,21 @@
       "reason": "The trigger and search accessible labels only feed aria attributes with no UI Toolkit consumer; they are withheld."
     },
     {
+      "id": "prop-showmore-labels-lowered",
+      "match": ["contract:/props/*/members/plain:showMoreLabel/**", "contract:/props/*/members/plain:showLessLabel/**"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Expansion): both state-dependent labels become generated carrier attributes painted by the runtime."
+    },
+    {
+      "id": "prop-showmore-maxlines-refused",
+      "match": ["contract:/props/*/members/plain:maxLines/**"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "refused",
+      "reason": "Line clamping needs text measurement the expansion runtime does not own; the max-lines presentation is withheld rather than approximated."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -1727,12 +1756,11 @@
       "via": "The dispatcher admits hidden only on ItemGroup (inactive content hidden, detached when UnmountInactive is set) and unmount only on AnchoredSurface (floating content removed on close); other pairings are refused."
     },
     {
-      "id": "interaction",
-      "match": ["contract:/interaction/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "Other operations (open, close, …), multi-trigger interactions and remaining interaction facts have no runtime behavior and need an explicit decision here."
+      "id": "interaction-showmore-presence-refused",
+      "match": ["contract:/interaction/presence"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "refused",
+      "reason": "The declared clamp presence needs text measurement the expansion runtime does not own; the runtime toggles the state class but does not clamp the content."
     },
     {
       "id": "focus-orientation-wrap",
@@ -1950,6 +1978,14 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "The list/button accessible message strings need the P4 message/a11y family; visible row labels are the option ids and the buttons stay unlabelled."
+    },
+    {
+      "id": "messages-showmore-pending",
+      "match": ["contract:/messages/**"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The show-more/show-less message defaults need the P4 message family; the label attributes stay consumer-authored."
     },
     {
       "id": "messages",
@@ -2208,6 +2244,20 @@
       "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
       "disposition": "refused",
       "reason": "The transfer list min-size presentations depend on the authored list markup the runtime recreates without those size slots; they are withheld rather than emitted partially."
+    },
+    {
+      "id": "styles-showmore-clamp-refused",
+      "match": ["styles:/content/overflow/**", "styles:/content/display/**", "styles:/content/-webkit-box-orient/**", "styles:/content/-webkit-line-clamp/**", "styles:/content/line-clamp/**", "styles:/.show-more--expanded .show-more__content/**"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "refused",
+      "reason": "The web line-clamp presentation and its expanded reset are not expressible in the native text grammar; they are withheld rather than emitted partially."
+    },
+    {
+      "id": "styles-showmore-trigger-background-refused",
+      "match": ["styles:/trigger/background/**"],
+      "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
+      "disposition": "refused",
+      "reason": "The authored trigger background is not projected onto the native button chrome; the declaration is withheld rather than emitted partially."
     },
     {
       "id": "styles",
