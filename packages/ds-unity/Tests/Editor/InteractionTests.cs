@@ -937,5 +937,27 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Alt", "Width", "Height", "Loading", "Sizes", "AspectRatio", "ObjectFit", "ObjectPosition", "FallbackSrc" })
                 Assert.That(typeof(FullStackDS.Image).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void AvatarGuardsItsImageAndInitialsFallback()
+        {
+            var avatar = Mount(new FullStackDS.Avatar());
+            Assert.That(avatar.Image, Is.InstanceOf<FullStackDS.Image>());
+            Assert.That(avatar.InitialsControl, Is.InstanceOf<Label>());
+            Assert.That(avatar.Image.style.display.value, Is.EqualTo(DisplayStyle.None));
+            Assert.That(avatar.InitialsControl.style.display.value, Is.EqualTo(DisplayStyle.None));
+            avatar.Src = "missing-avatar-texture";
+            Assert.That(avatar.Image.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(avatar.Image.Src, Is.EqualTo("missing-avatar-texture"));
+            avatar.Src = "";
+            Assert.That(avatar.Image.style.display.value, Is.EqualTo(DisplayStyle.None));
+            avatar.Initials = "DR";
+            Assert.That(avatar.InitialsControl.text, Is.EqualTo("DR"));
+            Assert.That(avatar.InitialsControl.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            avatar.Initials = "";
+            Assert.That(avatar.InitialsControl.style.display.value, Is.EqualTo(DisplayStyle.None));
+            avatar.Size = "large";
+            Assert.That(avatar.ClassListContains("avatar--large"), Is.True);
+            foreach (var prop in new[] { "Name", "Priority", "Alt", "Loading" })
+                Assert.That(typeof(FullStackDS.Avatar).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

@@ -121,7 +121,7 @@ describe("Unity support boundary", () => {
     expect(propRoles(load("Avatar")).has("name")).toBe(false);
     expect(propRoles(load("Icon")).get("name")).toBe("glyph-name");
     const avatarName = classifyContract(load("Avatar")).find(l => l.keyed === "/props/designed/members/plain:name/name");
-    expect(avatarName?.rule).toBe("props-unadjudicated");
+    expect(avatarName?.rule).toBe("prop-avatar-priority-refused");
     const switchName = classifyContract(load("Switch")).find(l => l.keyed === "/props/designed/members/form-field:name/name");
     expect(switchName).toMatchObject({ rule: "prop-form-field", disposition: "refused" });
   });

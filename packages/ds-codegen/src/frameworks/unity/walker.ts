@@ -118,6 +118,7 @@ const isNamedSlot = (node: DomNodeIR): boolean => node.tag === SLOT_TAG && !!nod
  */
 function isEmittedApiName(ctx: Context, name: string): boolean {
   if (ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined && name === ctx.lowering.title.name) return true;
+  if (ctx.lowering.behavior === "Avatar" && name === ctx.lowering.initialsProp) return true;
   if (ctx.lowering.behavior === "Progress" && (name === ctx.lowering.valueProp || (ctx.lowering.value !== undefined && name === ctx.lowering.value.presenceProp))) return true;
   if (hasChannel(ctx.lowering) && [ctx.lowering.channel.valueProp, ctx.lowering.channel.defaultValueProp, ctx.lowering.channel.changeHandlerProp].includes(name)) return true;
   const prop = ctx.ir.styledProps.find(candidate => candidate.name === name);
@@ -159,6 +160,9 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
   const toastTitleGuard = ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined &&
     node.part === ctx.lowering.title.name && node.ifProp !== undefined && node.content !== undefined &&
     "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp;
+  const avatarGuard = ctx.lowering.behavior === "Avatar" &&
+    ((node.componentRef !== undefined && node.ifProp !== undefined) ||
+      (node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.ifProp === node.content.prop)) && !node.ifNegated;
   const toastGuard = ctx.lowering.behavior === "Toast" && !node.ifNegated &&
     ((node.part === ctx.lowering.content.name && node.ifProp === ctx.lowering.channel.valueProp) ||
       toastTitleGuard || (node.ifSlot !== undefined && node.ifProp === undefined));
@@ -166,7 +170,7 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     ((ctx.lowering.overlay !== undefined && node.part === ctx.lowering.overlay.name) ||
       (ctx.lowering.dismissibleProp !== undefined && node.part === ctx.lowering.trigger.name)) &&
     node.ifProp === (node.part === ctx.lowering.overlay?.name ? ctx.lowering.channel.valueProp : ctx.lowering.dismissibleProp) && !node.ifNegated && !node.ifSlot;
-  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots") throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots" && !avatarGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
 }
 
 /**
@@ -322,10 +326,16 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       continue;
     }
     const type = elementType(ctx, node);
+    const avatarImage = ctx.lowering.behavior === "Avatar" && node.componentRef !== undefined && node.part !== undefined;
     if (node.componentRef !== undefined &&
-        (Object.keys(node.bindings).length || Object.keys(node.events).length || node.children.length ||
+        (Object.keys(node.events).length || node.children.length ||
          Object.keys(node.propertyBindings).length || node.componentInstance?.attrs.some(attr => attr.kind !== "prop")))
       throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} ${node.componentRef} carries unlowered bindings, events or children`);
+    if (!avatarImage && node.componentRef !== undefined &&
+        (Object.keys(node.bindings).length || Object.keys(node.propertyBindings).length))
+      throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} ${node.componentRef} carries unlowered bindings, events or children`);
+    if (avatarImage && Object.keys(node.bindings).some(attribute => attribute !== "src" && attribute !== "alt"))
+      throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} ${node.componentRef} carries an unlowered binding`);
     const text = literalContent(node);
     if (text !== undefined && type === "VisualElement") throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} <${node.tag}> carries literal content but lowers to no text element`);
     // R5b: a text leaf bound to a declared string prop paints the generated
@@ -347,7 +357,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       : { ref: `node${++cls.locals}`, declaration: "local", type, children: [] };
     if (text !== undefined) element.text = text;
     if (contentBinding !== undefined) element.textBinding = contentBinding;
-    if (node.componentRef !== undefined) {
+    if (node.componentRef !== undefined && !avatarImage) {
       const instance = node.componentInstance;
       if (instance && (instance.ref !== node.componentRef || !instance.targetGlyph))
         throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} ${node.componentRef} has no admitted glyph mount capability`);
@@ -824,6 +834,47 @@ function mediaRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the guarded media composition: AvatarControl receives the admitted
+ * Image child and the initials label, owns both presence toggles, paints the
+ * fallback text and loads the source through the Image child's own control; the
+ * size axis projects its carrier classes. No name/priority/alt semantics.
+ */
+function avatarRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Avatar") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not an avatar lowering`);
+  const root = classes[0]!;
+  const image = root.members.find(member => member.part === lowering.imagePart);
+  const initials = root.members.find(member => member.textBinding === lowering.initialsProp) ??
+    root.members.find(member => member.part === ir.dom?.children.find(node => node.ifProp === lowering.initialsProp)?.part);
+  if (!image) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders no avatar image child`);
+  if (!initials) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders no initials fallback`);
+  const members: string[] = ["        public AvatarControl Control { get; }"];
+  const attach: string[] = [`Control = AvatarControl.Attach(this, image: ${image.ref}, initials: ${initials.ref});`];
+  const defaults: string[] = [];
+  members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.srcProp))} { get => Control.Src; set => Control.Src = value; }`);
+  members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.initialsProp))} { get => Control.Initials; set => Control.Initials = value; }`);
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  // A declared carrier axis without a matching designed prop (the avatar's size
+  // vocabulary) still gets a generated attribute so the authored classes are
+  // reachable from UXML and C#.
+  for (const axis of ctx.projection.carrierAxes) {
+    if (ir.styledProps.some(prop => prop.name === axis)) continue;
+    const values = ir.variants[axis];
+    if (!values) continue;
+    const name = identifier(pascal(axis));
+    const args = values.map(quote).join(", ");
+    members.push(`        [UxmlAttribute] public string ${name} { get => Variants.Get(this, ${quote(ir.classRecipe.base)}, ${args}); set { Variants.Set(this, ${quote(ir.classRecipe.base)}, value, ${args}); } }`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -834,6 +885,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Coachmark") return coachmarkRootApi(ctx, classes);
   if (lowering.behavior === "Anchor") return anchorRootApi(ctx);
   if (lowering.behavior === "Media") return mediaRootApi(ctx);
+  if (lowering.behavior === "Avatar") return avatarRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
