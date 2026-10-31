@@ -54,3 +54,11 @@ contracts:
   - name: 'progress-value'
     type: behavior
     path: 'packages/ds-contracts/components/Progress/Progress.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 2ed04926e: focused unity codegen + cli seam 220/220 pass, including the Progress lowering selection from CSS-variable/guard facts, the value-fill API, the disclosure rule ordering and the lore-test name-literal cleanup; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T12:34:11.406Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > attaches a value fill and projects the numeric value for Progress"
+    exit_code: 0
+    commit_sha: "2ed04926e0d022c5bbe3f4ad3c8f046b40da5111"
