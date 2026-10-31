@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.PaginationBuildsItsStripFromLabelsAndCommitsTheIndex
     exit_code: 0
     commit_sha: "77fd1baa78f170d3ddd07840aba0880661ce09e3"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 77fd1baa7: packages/ds-unity/README.md admits Pagination with its runtime-built item buttons, index/default-index/callback API, carriers and the refused current-position/navigation-label non-claims, and records the 84/84 lane; docs/architecture/unity-target.md records the PageStrip dispatcher mode, runtime item projection, current-state refusal and the 84/84 lane; docs/current-implementation-snapshot.md records the forty-third admitted control with those facts."
+    recorded_at: "2026-10-31T15:43:00.996Z"
+    commit_sha: "77fd1baa78f170d3ddd07840aba0880661ce09e3"
