@@ -57,6 +57,7 @@ const BUTTON_TAG = "button";
 const LABEL_TAG = "label";
 const TEXT_LEAF_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", LABEL_TAG]);
 const NATIVE_TEXTFIELD = "UnityEngine.UIElements.TextField";
+const NATIVE_IMAGE = "UnityEngine.UIElements.Image";
 /** Source: `ContractPartDetails.role` enum value naming the component root part. */
 const ROOT_ROLE = "root";
 
@@ -386,8 +387,9 @@ function planClasses(ctx: Context): ClassPlan[] {
     // BooleanControl binds native activation, and exposes Trigger = this.
     const rootControl = ctx.lowering.behavior === "BooleanControl" && ctx.lowering.control.name === ir.dom.part && ir.dom.tag === BUTTON_TAG;
     const textInputRoot = ctx.lowering.behavior === "TextInput" && ctx.lowering.control.name === ir.dom.part;
+    const mediaRoot = ctx.lowering.behavior === "Media";
     const root = newClass(name,
-      ctx.lowering.behavior === "Action" || rootControl ? NATIVE_BUTTON : textInputRoot ? NATIVE_TEXTFIELD : passiveText ? "TextElement" : "VisualElement",
+      ctx.lowering.behavior === "Action" || rootControl ? NATIVE_BUTTON : textInputRoot ? NATIVE_TEXTFIELD : mediaRoot ? NATIVE_IMAGE : passiveText ? "TextElement" : "VisualElement",
       true, rootIdentity(ctx, ir.dom.part));
     // A native action control projects the consumer's children itself: the
     // contract's guarded loading chrome is omitted (pending P4) and a wrapper
@@ -798,6 +800,30 @@ function anchorRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the native media element: ImageControl loads the declared source as
+ * a Resources texture into the host's `image` property and the size/radius axes
+ * project their carrier classes. No alt text, URL fetching or responsive source
+ * selection is realised.
+ */
+function mediaRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Media") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a media lowering`);
+  const members: string[] = ["        public ImageControl Control { get; }"];
+  const attach: string[] = ["Control = ImageControl.Attach(this);"];
+  const defaults: string[] = [];
+  const name = identifier(pascal(lowering.srcProp));
+  members.push(`        [UxmlAttribute] public string ${name} { get => Control.Src; set => Control.Src = value; }`);
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -807,6 +833,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Slots") return slotsRootApi(ctx);
   if (lowering.behavior === "Coachmark") return coachmarkRootApi(ctx, classes);
   if (lowering.behavior === "Anchor") return anchorRootApi(ctx);
+  if (lowering.behavior === "Media") return mediaRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

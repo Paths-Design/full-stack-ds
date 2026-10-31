@@ -368,6 +368,18 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Visited|Navigate|ClickHandler/);
   });
 
+  it("renders a native media element with a resources source for Image", () => {
+    const contract = loadContractWithSidecars(root, "Image") as ComponentContract;
+    const imageIr = buildComponentIR(contract);
+    imageIr.name = "UnrelatedMedia";
+    const source = createUnityEmitter().emitComponent(imageIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedMedia : UnityEngine.UIElements.Image");
+    expect(source).toContain("public ImageControl Control { get; }");
+    expect(source).toContain("public string Src { get => Control.Src; set => Control.Src = value; }");
+    expect(source).toContain("Control = ImageControl.Attach(this);");
+    expect(source).not.toMatch(/Alt|Width|Height|Loading|Sizes|AspectRatio|FallbackSrc/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

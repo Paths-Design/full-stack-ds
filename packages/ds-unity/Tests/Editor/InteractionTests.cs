@@ -923,5 +923,19 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Visited", "Navigate", "OnClick" })
                 Assert.That(typeof(FullStackDS.Links).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void ImageLoadsItsResourcesSourceAndProjectsCarriers()
+        {
+            var media = Mount(new FullStackDS.Image());
+            Assert.That(media, Is.InstanceOf<UnityEngine.UIElements.Image>());
+            Assert.That(media.ClassListContains("image"), Is.True);
+            media.Src = "missing-texture";
+            Assert.That(media.image, Is.Null);
+            media.Src = "";
+            Assert.That(media.image, Is.Null);
+            media.Radius = "full";
+            Assert.That(media.ClassListContains("image--radius-full"), Is.True);
+            foreach (var prop in new[] { "Alt", "Width", "Height", "Loading", "Sizes", "AspectRatio", "ObjectFit", "ObjectPosition", "FallbackSrc" })
+                Assert.That(typeof(FullStackDS.Image).GetProperty(prop), Is.Null, prop);
+        }
     }
 }
