@@ -196,7 +196,8 @@
         "Card",
         "NavList",
         "Skeleton",
-        "Table"
+        "Table",
+        "CodeBlock"
       ]
     },
     {
