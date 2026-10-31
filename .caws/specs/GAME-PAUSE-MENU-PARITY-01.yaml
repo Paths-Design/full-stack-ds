@@ -47,3 +47,8 @@ contracts:
   - name: 'pause-menu-parity-spec'
     type: behavior
     path: 'examples/game-pause-menu/parity.md'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "examples/game-pause-menu/parity.md + examples/game-pause-menu/fixtures/parity-layout.json (design authority: 1280x800 grid, per-tab rects, switch geometry, icon art); landed in 511aac39b"
+    recorded_at: "2026-10-31T21:20:25.161Z"
