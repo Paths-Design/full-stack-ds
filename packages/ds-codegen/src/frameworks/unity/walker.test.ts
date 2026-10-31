@@ -427,6 +427,22 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/public string Author |public string Stats |public string PostId|public string Embed/);
   });
 
+  it("renders a runtime-built page strip for Pagination", () => {
+    const contract = loadContractWithSidecars(root, "Pagination") as ComponentContract;
+    const paginationIr = buildComponentIR(contract);
+    paginationIr.name = "UnrelatedPages";
+    const source = createUnityEmitter().emitComponent(paginationIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedPages : VisualElement");
+    expect(source).toContain("public PageStripControl Control { get; }");
+    expect(source).toContain("[UxmlAttribute] public int Index { get => Control.Index; set => Control.Index = value; }");
+    expect(source).toContain("[UxmlAttribute] public int DefaultIndex { get => Control.DefaultIndex; set => Control.DefaultIndex = value; }");
+    expect(source).toContain("public string[] Pages { get => Control.Pages; set => Control.Pages = value; }");
+    expect(source).toContain("public Action<int> OnIndexChange");
+    expect(source).toContain("public Action<int> PageRequested");
+    expect(source).toContain("PageStripControl.Attach(this, prefix: \"pagination\", itemPart: \"item\", markerPart: \"marker\", fillPart: \"fill\", labelPart: \"label\");");
+    expect(source).not.toMatch(/public Button Item|public Label Label|AriaCurrent/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

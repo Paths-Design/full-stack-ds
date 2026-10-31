@@ -294,7 +294,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
     if (ctx.lowering.behavior === "Tree" && (node.iconGlyph !== undefined || node.children.some(child => child.iconGlyph !== undefined))) continue;
-    if (ctx.lowering.behavior === "Coachmark" && node.iteration !== undefined) continue;
+    if ((ctx.lowering.behavior === "Coachmark" || ctx.lowering.behavior === "PageStrip") && node.iteration !== undefined) continue;
     if (isOmittedActionChrome(ctx, node)) continue;
     if (isOmittedNodeContentDecoration(ctx.ir, node)) continue;
     if (isOmittedPassiveDecoration(ctx.ir, ctx.lowering, node)) continue;
@@ -961,6 +961,42 @@ function projectedTextRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach: ["Theme.AddStyleSheet(this);"], defaults };
 }
 
+/**
+ * R6-R8 for the numeric page strip: the runtime builds the item buttons from the
+ * declared label list, so the class exposes the index/default-index/pages API and
+ * the controlled/commit events instead of static item accessors; the
+ * presentation/progress axes project their carrier classes. Current-position
+ * styling and the accessible navigation label are withheld.
+ */
+function pageStripRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "PageStrip") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a page strip lowering`);
+  const channel = lowering.channel;
+  const members: string[] = [
+    "        public PageStripControl Control { get; }",
+    `        [UxmlAttribute] public int ${identifier(pascal(channel.valueProp))} { get => Control.Index; set => Control.Index = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = PageStripControl.Attach(this, prefix: ${quote(ctx.prefix!)}, itemPart: ${quote(lowering.itemPart)}, markerPart: ${quote(lowering.markerPart)}, fillPart: ${quote(lowering.fillPart)}, labelPart: ${quote(lowering.labelPart)});`,
+  ];
+  const defaults: string[] = [];
+  if (channel.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public int ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultIndex; set => Control.DefaultIndex = value; }`);
+  const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
+  members.push(`        public string[] Pages { get => Control.Pages; set => Control.Pages = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<int> PageRequested { get => Control.PageRequested; set => Control.PageRequested = value; }");
+  members.push(`        public Action<int> ${identifier(pascal(changeHandler))} { get => Control.IndexChanged; set => Control.IndexChanged = value; }`);
+  if (lowering.disabledProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(lowering.disabledProp))} { get => Control.Disabled; set => Control.Disabled = value; }`);
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -974,6 +1010,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Avatar") return avatarRootApi(ctx, classes);
   if (lowering.behavior === "Tree") return treeRootApi(ctx, classes);
   if (lowering.behavior === "ProjectedText") return projectedTextRootApi(ctx, classes);
+  if (lowering.behavior === "PageStrip") return pageStripRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

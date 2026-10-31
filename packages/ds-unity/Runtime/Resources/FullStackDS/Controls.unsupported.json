@@ -3571,6 +3571,78 @@
       "reason": "uss-property"
     },
     {
+      "component": "Pagination",
+      "sourceKey": ".pagination--indicators .pagination__item[data-current=\"true\"] .pagination__marker",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination--pages .pagination__item[data-current=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination--pages .pagination__label",
+      "part": "label",
+      "property": "display",
+      "value": "inline",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination__fill:dir(rtl)",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": ".pagination__fill[hidden]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": "fill",
+      "part": "fill",
+      "property": "inset",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Pagination",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "font",
+      "value": "inherit",
+      "reason": "uss-property"
+    },
+    {
       "component": "Popover",
       "sourceKey": "brand:canary",
       "part": "content",
