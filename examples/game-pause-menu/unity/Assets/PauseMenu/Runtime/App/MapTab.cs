@@ -1,67 +1,161 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using FullStackDS;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Button = UnityEngine.UIElements.Button; // native fallback; FullStackDS now admits Button
+using DsButton = FullStackDS.Button;
 
 namespace GamePauseMenu
 {
-    /// <summary>Map tab: hand-authored map field plot + generated Switch filter + generated
-    /// Popover marker detail. Fixture only supplies data; the plot is lane-local drawing.</summary>
+    /// <summary>MAP tab on the parity grid: map panel with pinned field + marker squares + note,
+    /// icon panel with eight generated Switch rows, and one generated Popover at the pinned popover
+    /// rect. The plot is app decoration; the switches and popover are generated components.</summary>
     public sealed class MapTab
     {
         private readonly PauseMenuApp app;
         private readonly FixtureSet fixtures;
+        private readonly ParityLayoutData layout;
         private readonly OrionPalette palette;
-        private readonly Dictionary<string, Popover> markers = new Dictionary<string, Popover>();
-        private readonly Dictionary<string, PopoverTrigger> markerAnchors = new Dictionary<string, PopoverTrigger>();
+        private readonly Dictionary<string, DsButton> markers = new Dictionary<string, DsButton>();
         private readonly Dictionary<string, Switch> visibilitySwitches = new Dictionary<string, Switch>();
-        private readonly Dictionary<string, Button> setNavButtons = new Dictionary<string, Button>();
-        private readonly Dictionary<string, Text> visibilityStates = new Dictionary<string, Text>();
+        private readonly Text popoverTitle;
+        private readonly Text popoverMeta;
+        private readonly Text popoverBody;
+        private readonly Text popoverReward;
+        private readonly DsButton setNavTargetButton;
+        private MapIconData currentIcon;
 
         public VisualElement Root { get; }
+        public VisualElement PopoverHost { get; }
+        public Popover MarkerPopover { get; }
         public VisualElement Field { get; }
-        public VisualElement SidePanel { get; }
-        public VisualElement StatsRow { get; }
-        public Text SectorLabel { get; private set; }
-        public Text ScaleLabel { get; private set; }
+        public bool HasOpenPopover => MarkerPopover.Open;
 
         public MapTab(PauseMenuApp app)
         {
             this.app = app;
             fixtures = app.State.Fixtures;
+            layout = app.Layout;
             palette = app.Palette;
+            var contentRect = layout.Panels.Content;
 
-            Root = Ui.Box("map-tab");
+            Root = Ui.MakeBox("tab-view map-tab");
             Root.name = "map-tab";
-            var main = Ui.Box("map-main");
-            main.name = "map-main";
 
-            Field = Ui.Box("map-field");
+            Root.Add(Ui.MakePanel(layout, layout.Map.MapPanel, layout.Map.TitleText, layout.Map.TitleMeta,
+                layout.Panels.HeaderHeight).Root);
+            var bodyX = layout.Map.MapPanel.X;
+            var bodyY = layout.Map.MapPanel.Y + layout.Panels.HeaderHeight;
+            var fieldRect = layout.Map.Field;
+            Field = Ui.MakeBox("map-field");
             Field.name = "map-field";
-            Field.style.backgroundColor = palette.Sage;
+            Ui.At(Field, fieldRect);
+            Field.style.backgroundColor = layout.Color("sage");
             BuildPlot();
-            foreach (var icon in fixtures.Map.Icons) Field.Add(BuildMarker(icon));
-            main.Add(Field);
+            foreach (var icon in fixtures.Map.Icons)
+            {
+                var marker = BuildMarker(icon);
+                Field.Add(marker);
+                markers[icon.Id] = marker;
+            }
+            Root.Add(Field);
 
-            SidePanel = BuildSidePanel();
-            main.Add(SidePanel);
-            Root.Add(main);
+            var note = layout.Map.FieldNote;
+            var fieldNote = Ui.MakeText(layout, note.Text, "micro", "ink", false);
+            Ui.Point(fieldNote, note.X - fieldRect.X, fieldRect.H + note.YOffsetFromFieldBottom);
+            Field.Add(fieldNote);
 
-            StatsRow = BuildStats();
-            Root.Add(StatsRow);
-            ApplyAll();
+            var iconPanel = layout.Map.IconPanel;
+            Root.Add(Ui.MakePanel(layout, iconPanel, layout.Map.IconPanelTitle, layout.Map.IconPanelMeta,
+                layout.Panels.HeaderHeight).Root);
+            BuildIconRows();
+            var panelNote = layout.Map.IconPanelNote;
+            var filterNote = Ui.MakeText(layout, panelNote.Text, "micro", "muted", false);
+            Ui.Point(filterNote, panelNote.X, panelNote.YOffsetFromFieldBottom);
+            Root.Add(filterNote);
+
+            PopoverHost = Ui.MakeBox("popover-host");
+            Ui.At(PopoverHost, 0, 0, 0, 0);
+
+            MarkerPopover = new Popover { name = "map-popover", Placement = "bottom" };
+            MarkerPopover.AddToClassList("parity-popover");
+            MarkerPopover.style.position = Position.Absolute;
+            Ui.StripBox(MarkerPopover);
+            var anchor = new PopoverTrigger { name = "map-popover-anchor", text = string.Empty };
+            Ui.At(anchor, new LayoutRect(layout.Map.Popover.Rect.X, layout.Map.Popover.Rect.Y - 4, 0, 0));
+            anchor.pickingMode = PickingMode.Ignore;
+            anchor.style.opacity = 0;
+            MarkerPopover.Add(anchor);
+
+            var content = new PopoverContent { name = "map-popover-content" };
+            content.AddToClassList("parity-popover-content");
+            Ui.At(content, layout.Map.Popover.Rect);
+            Ui.StripBox(content);
+            content.style.backgroundColor = layout.Color("charcoal");
+            Ui.BorderWidth(content, layout.PanelBorder);
+            Ui.BorderColor(content, layout.Color("rule"));
+            content.style.borderTopWidth = 2;
+            content.style.borderTopColor = layout.Color("signal");
+            content.style.overflow = Overflow.Hidden;
+            content.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            content.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+
+            popoverTitle = Ui.MakeText(layout, layout.Map.Popover.Title, "title", "boneBright", true);
+            Ui.Point(popoverTitle, 16, 14);
+            content.Add(popoverTitle);
+            popoverMeta = Ui.MakeText(layout, string.Empty, "rowSub", "muted", false);
+            Ui.Point(popoverMeta, 16, 48);
+            content.Add(popoverMeta);
+            popoverBody = Ui.MakeText(layout, string.Empty, "body", "textSecondary", false,
+                new LayoutRect(16, 70, layout.Map.Popover.Rect.W - 32, 106), wrap: true);
+            content.Add(popoverBody);
+            popoverReward = Ui.MakeText(layout, string.Empty, "micro", "signal", true);
+            Ui.Point(popoverReward, 16, 180);
+            content.Add(popoverReward);
+            setNavTargetButton = Ui.MakeButton(layout, layout.Map.Popover.Action,
+                new LayoutRect(16, 194, 196, 28), () => app.SetNavTarget(currentIcon.Id), true);
+            content.Add(setNavTargetButton);
+            var close = Ui.MakeButton(layout, layout.Map.Popover.Cancel,
+                new LayoutRect(220, 194, 124, 28), () => ClosePopovers(), false);
+            content.Add(close);
+            MarkerPopover.Add(content);
+            PopoverHost.Add(MarkerPopover);
         }
 
-        public Popover Marker(string iconId) => markers[iconId];
-        public PopoverTrigger MarkerAnchor(string iconId) => markerAnchors[iconId];
         public Switch VisibilitySwitch(string iconId) => visibilitySwitches[iconId];
-        public Button SetNavTargetButton(string iconId) => setNavButtons[iconId];
-        public Text VisibilityState(string iconId) => visibilityStates[iconId];
+        public DsButton MarkerAnchor(string iconId) => markers[iconId];
+        public Popover Marker(string iconId)
+        {
+            if (!markers.ContainsKey(iconId)) throw new ArgumentException("Unknown map icon id '" + iconId + "'.");
+            return MarkerPopover;
+        }
+        public DsButton SetNavTargetButton(string iconId)
+        {
+            if (currentIcon == null || currentIcon.Id != iconId)
+                throw new InvalidOperationException("Open marker '" + iconId + "' before using its nav-target action.");
+            return setNavTargetButton;
+        }
+        public bool IsMarkerPlotted(string iconId) => markers[iconId].style.display.value != DisplayStyle.None;
+        public string CurrentMarkerId => currentIcon == null ? null : currentIcon.Id;
 
-        /// <summary>True when the marker root participates in layout (the fixture filter plots it).</summary>
-        public bool IsMarkerPlotted(string iconId) => markers[iconId].style.display.value == DisplayStyle.Flex;
+        public void OpenPopover(string iconId)
+        {
+            var icon = FixtureRepository.FindIcon(fixtures.Map, iconId);
+            if (icon == null) throw new ArgumentException("Unknown map icon id '" + iconId + "'.");
+            currentIcon = icon;
+            popoverTitle.text = icon.Label;
+            popoverMeta.text = icon.Sector + "  ·  " + icon.DistanceKm.ToString("0.0", CultureInfo.InvariantCulture)
+                               + " KM  ·  " + icon.Status;
+            popoverBody.text = icon.Detail;
+            popoverReward.text = icon.Reward;
+            MarkerPopover.Open = true;
+        }
+
+        public void ClosePopovers()
+        {
+            MarkerPopover.Open = false;
+        }
 
         public void ApplyAll()
         {
@@ -75,163 +169,127 @@ namespace GamePauseMenu
         public void ApplyVisibility(string iconId)
         {
             var visible = app.State.IsIconVisible(iconId);
-            var marker = markers[iconId];
-            marker.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
-            if (!visible) marker.Open = false;
-            visibilityStates[iconId].text = visible ? "PLOTTED" : "HIDDEN";
-            visibilitySwitches[iconId].SetValueWithoutNotify(visible);
+            markers[iconId].style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (!visible && currentIcon != null && currentIcon.Id == iconId) ClosePopovers();
+            var toggle = visibilitySwitches[iconId];
+            toggle.SetValueWithoutNotify(visible);
+            // Silent value changes do not raise ChangeEvent, so re-apply the inline on/off colours.
+            Ui.ApplySwitchState(layout, toggle, visible);
         }
 
         public void ApplyNavTarget(string iconId)
         {
+            var marker = markers[iconId];
             var isTarget = app.State.NavTargetId == iconId;
-            markerAnchors[iconId].EnableInClassList("is-nav-target", isTarget);
-            markers[iconId].EnableInClassList("is-nav-target", isTarget);
+            Ui.BorderWidth(marker, isTarget ? 3 : 1);
+            Ui.BorderColor(marker, layout.Color(isTarget ? "signal" : "ink"));
+            marker.EnableInClassList("is-nav-target", isTarget);
         }
 
         private void BuildPlot()
         {
-            for (var i = 1; i < 8; i++)
+            var field = layout.Map.Field;
+            for (var i = 1; i * 60 < field.W; i++)
             {
-                var line = Ui.Box("map-grid-line");
-                line.style.left = Length.Percent(i * 12.5f);
+                var line = Ui.MakeBox("map-grid-line");
+                Ui.Point(line, i * 60, 0);
+                line.style.width = 1;
+                line.style.height = Length.Percent(100);
+                line.style.backgroundColor = layout.Color("ink");
+                line.style.opacity = 0.12f;
                 Field.Add(line);
             }
-            for (var i = 1; i < 6; i++)
+            for (var i = 1; i * 60 < field.H; i++)
             {
-                var line = Ui.Box("map-grid-line map-grid-line--h");
-                line.style.top = Length.Percent(i * 16.66f);
+                var line = Ui.MakeBox("map-grid-line");
+                Ui.Point(line, 0, i * 60);
+                line.style.height = 1;
+                line.style.width = Length.Percent(100);
+                line.style.backgroundColor = layout.Color("ink");
+                line.style.opacity = 0.12f;
                 Field.Add(line);
             }
-            for (var i = 0; i < 4; i++)
+            var tick = (float)layout.Map.FieldCornerTicks;
+            for (var corner = 0; corner < 4; corner++)
             {
-                var tick = Ui.Box("map-corner-tick");
-                tick.AddToClassList(i % 2 == 0 ? "map-corner-tick--left" : "map-corner-tick--right");
-                tick.AddToClassList(i < 2 ? "map-corner-tick--top" : "map-corner-tick--bottom");
-                Field.Add(tick);
+                var element = Ui.MakeBox("map-corner-tick");
+                Ui.Point(element, corner % 2 == 0 ? 0 : field.W - tick, corner < 2 ? 0 : field.H - tick);
+                element.style.width = tick;
+                element.style.height = tick;
+                element.style.borderLeftWidth = corner % 2 == 0 ? 2 : 0;
+                element.style.borderRightWidth = corner % 2 == 1 ? 2 : 0;
+                element.style.borderTopWidth = corner < 2 ? 2 : 0;
+                element.style.borderBottomWidth = corner >= 2 ? 2 : 0;
+                Ui.BorderColor(element, layout.Color("ink"));
+                Field.Add(element);
             }
-            var header = Ui.Box("map-plot-header");
-            SectorLabel = Ui.Styled(Ui.Overline(fixtures.Map.Sector), "map-sector");
-            header.Add(SectorLabel);
-            ScaleLabel = Ui.Styled(Ui.Overline("SCALE " + fixtures.Map.Scale), "map-scale");
-            header.Add(ScaleLabel);
-            Field.Add(header);
-
-            var watermark = Ui.Styled(Ui.Display(palette.Watermark), "map-watermark");
-            watermark.pickingMode = PickingMode.Ignore;
-            Field.Add(watermark);
         }
 
-        private Popover BuildMarker(MapIconData icon)
+        private DsButton BuildMarker(MapIconData icon)
         {
-            var popover = new Popover { name = "marker-" + icon.Id, Placement = "right" };
-            popover.AddToClassList("map-marker-popover");
-            popover.style.left = Length.Percent((float)(icon.X * 100));
-            popover.style.top = Length.Percent((float)((1 - icon.Y) * 100));
-            popover.style.translate = new Translate(Length.Percent(-50), Length.Percent(-50));
-
-            var anchor = new PopoverTrigger { name = "marker-anchor-" + icon.Id };
-            anchor.AddToClassList("map-marker");
-            anchor.AddToClassList("map-marker--" + icon.Kind);
-            var glyph = new FullStackDS.Icon { Name = PauseMenuState.IconKey(icon.Icon), Size = "md" };
-            anchor.Add(glyph);
-            var kind = Ui.Styled(Ui.Overline(icon.Kind.ToUpperInvariant()), "map-marker-kind");
-            anchor.Add(kind);
-            Ui.IgnorePicking(glyph, kind);
-            popover.Add(anchor);
-
-            var content = new PopoverContent { name = "marker-detail-" + icon.Id };
-            content.AddToClassList("map-detail");
-            // Floating content leaves the app tree; carry the lane app class so app chrome rules
-            // (detail rows, primary action, type sizes) keep applying to the portalled surface.
-            content.AddToClassList("pause-app");
-            content.style.backgroundColor = palette.SurfacePanel;
-            content.style.borderTopColor = palette.Signal;
-            content.style.borderLeftColor = palette.SurfaceRuleStrong;
-            content.Add(Ui.Overline("MARKER // " + icon.Kind.ToUpperInvariant()));
-            content.Add(Ui.Styled(Ui.Title(icon.Label), "detail-title"));
-            content.Add(Ui.Rule());
-            content.Add(DetailRow("SECTOR", icon.Sector));
-            content.Add(DetailRow("DISTANCE", icon.DistanceKm.ToString("0.0") + " KM"));
-            content.Add(DetailRow("STATUS", icon.Status));
-            var copy = Ui.Body(icon.Detail);
-            copy.AddToClassList("detail-copy");
-            content.Add(copy);
-            content.Add(DetailRow("REWARD", icon.Reward));
-            var setTarget = Ui.NativeButton("SET AS NAV TARGET", "primary-action", () => app.SetNavTarget(icon.Id));
-            setTarget.name = "set-nav-target-" + icon.Id;
-            content.Add(setTarget);
-            popover.Add(content);
-
-            markers[icon.Id] = popover;
-            markerAnchors[icon.Id] = anchor;
-            setNavButtons[icon.Id] = setTarget;
-            return popover;
+            var size = layout.Map.Marker.Size;
+            var field = layout.Map.Field;
+            var marker = new DsButton { Size = "small", Variant = "ghost", text = layout.MarkerMonograms[icon.Kind] };
+            marker.name = "marker-" + icon.Id;
+            marker.AddToClassList("map-marker");
+            marker.AddToClassList("map-marker--" + icon.Kind);
+            Ui.At(marker, new LayoutRect(icon.X * field.W - size / 2, icon.Y * field.H - size / 2, size, size));
+            Ui.StripBox(marker);
+            Ui.Radius(marker, 0);
+            Ui.BorderWidth(marker, 1);
+            Ui.BorderColor(marker, layout.Color("ink"));
+            marker.style.backgroundColor = layout.Color(layout.MarkerColors[icon.Kind]);
+            marker.style.color = MarkerTextColor(icon.Kind);
+            marker.style.fontSize = (float)layout.Map.Marker.Monogram;
+            marker.style.unityFontStyleAndWeight = FontStyle.Bold;
+            marker.style.unityTextAlign = TextAnchor.MiddleCenter;
+            marker.style.paddingLeft = 0;
+            marker.style.paddingRight = 0;
+            marker.style.paddingTop = 0;
+            marker.style.paddingBottom = 0;
+            marker.OnClick = () => OpenPopover(icon.Id);
+            return marker;
         }
 
-        private VisualElement BuildSidePanel()
+        private Color MarkerTextColor(string kind)
         {
-            var panel = Ui.Box("map-side");
-            panel.name = "map-side";
-            var head = Ui.Box("map-side-head");
-            head.Add(Ui.Styled(Ui.Overline("ICON VISIBILITY"), "panel-label"));
-            head.Add(Ui.Caption("FILTER OVER THE MAP FIELD"));
-            panel.Add(head);
-            panel.Add(Ui.Rule());
+            var fill = layout.MarkerColors[kind];
+            return fill == "onSignal" ? layout.Color("boneBright") : layout.Color("ink");
+        }
 
-            var list = new ScrollView(ScrollViewMode.Vertical);
-            list.AddToClassList("icon-filter-list");
-            foreach (var icon in fixtures.Map.Icons)
+        private void BuildIconRows()
+        {
+            var rows = layout.Map.IconRows;
+            for (var i = 0; i < fixtures.Map.Icons.Count; i++)
             {
-                var row = Ui.Box("filter-row");
-                row.name = "filter-row-" + icon.Id;
-                row.Add(new FullStackDS.Icon { Name = PauseMenuState.IconKey(icon.Icon), Size = "sm" });
-                var toggle = new Switch { name = "icon-switch-" + icon.Id, Checked = app.State.IsIconVisible(icon.Id) };
-                toggle.AddToClassList("filter-switch");
-                toggle.Add(Ui.Caption(icon.Label));
+                var icon = fixtures.Map.Icons[i];
+                var row = Ui.MakeBox("icon-row");
+                row.name = "icon-row-" + icon.Id;
+                Ui.At(row, new LayoutRect(rows.X, rows.FirstY + i * rows.RowH, rows.Width, rows.RowH));
+                row.style.borderBottomWidth = 1;
+                row.style.borderBottomColor = layout.Color("rule");
+
+                var glyph = Ui.MakeIcon(layout, icon.Icon, layout.Color("textSecondary"), (float)rows.IconSize);
+                Ui.Point(glyph, 0, (rows.RowH - rows.IconSize) / 2);
+                row.Add(glyph);
+
+                var name = Ui.MakeText(layout, icon.Label, "rowLabel", "boneBright", true);
+                Ui.Point(name, rows.NameX - rows.X, rows.NameY);
+                row.Add(name);
+
+                var sub = Ui.MakeText(layout, icon.Status + "  ·  "
+                                             + icon.DistanceKm.ToString("0.0", CultureInfo.InvariantCulture) + " KM",
+                    "rowSub", "muted", false);
+                Ui.Point(sub, rows.NameX - rows.X, rows.SubY);
+                row.Add(sub);
+
+                var toggle = Ui.MakeSwitch(layout, app.State.IsIconVisible(icon.Id),
+                    value => app.SetIconVisible(icon.Id, value));
+                Ui.Point(toggle, rows.SwitchX - rows.X, rows.SwitchY);
                 row.Add(toggle);
-                var state = Ui.Styled(Ui.Overline(""), "filter-state");
-                visibilityStates[icon.Id] = state;
-                row.Add(state);
-                toggle.RegisterValueChangedCallback(evt => app.SetIconVisible(icon.Id, evt.newValue));
                 visibilitySwitches[icon.Id] = toggle;
-                list.Add(row);
+                Root.Add(row);
             }
-            panel.Add(list);
-            return panel;
-        }
-
-        private VisualElement BuildStats()
-        {
-            var commander = fixtures.Commander;
-            var row = Ui.Box("map-stats");
-            row.name = "map-stats";
-            row.Add(Stat("RANK", commander.Rank.Label, $"LV {commander.Rank.Level}  ·  GLOBAL #{commander.Rank.GlobalPosition}"));
-            row.Add(Stat("PROGRESSION", Ui.Number(commander.Rank.Points) + " / " + Ui.Number(commander.Rank.NextLevelAt),
-                "POINTS TO NEXT RANK"));
-            row.Add(Stat("EARNINGS", Ui.Number(commander.Earnings.Credits) + " " + commander.Earnings.Currency,
-                "PENDING " + Ui.Number(commander.Earnings.Pending)));
-            row.Add(Stat("FOLLOWERS", Ui.Number(commander.Followers.Total), commander.Followers.Trend + "  " + commander.Followers.Period));
-            return row;
-        }
-
-        private static VisualElement Stat(string label, string value, string sub)
-        {
-            var block = Ui.Box("map-stat");
-            block.Add(Ui.Overline(label));
-            block.Add(Ui.Styled(Ui.Title(value), "stat-value"));
-            block.Add(Ui.Caption(sub));
-            return block;
-        }
-
-        private static VisualElement DetailRow(string label, string value)
-        {
-            var row = Ui.Box("detail-row");
-            row.Add(Ui.Styled(Ui.Overline(label), "detail-label"));
-            var text = Ui.Caption(value);
-            text.AddToClassList("detail-value");
-            row.Add(text);
-            return row;
         }
     }
 }

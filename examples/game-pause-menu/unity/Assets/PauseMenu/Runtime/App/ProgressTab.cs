@@ -1,34 +1,36 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using FullStackDS;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Button = UnityEngine.UIElements.Button; // native fallback; FullStackDS now admits Button
+using DsButton = FullStackDS.Button;
 
 namespace GamePauseMenu
 {
-    /// <summary>Progress tab: faction list plus a left drawer that overlays the list. The row and
-    /// drawer chrome is app-authored (the Unity allowlist admits no Card/Progress/Badge); the
-    /// labels and rules inside them are generated components.</summary>
+    /// <summary>PROGRESS tab: generated Card roster panel with five pinned rows (accent bar,
+    /// generated Progress reputation bar, generated Badge status chip, generated Button row hit
+    /// target) and a hand-authored paper drawer at the pinned rect. Drawer body text uses the
+    /// generated Text/Divider components.</summary>
     public sealed class ProgressTab
     {
         private readonly PauseMenuApp app;
         private readonly FixtureSet fixtures;
+        private readonly ParityLayoutData layout;
         private readonly OrionPalette palette;
-        private readonly Dictionary<string, Button> rows = new Dictionary<string, Button>();
+        private readonly Dictionary<string, DsButton> rows = new Dictionary<string, DsButton>();
         private readonly Dictionary<string, VisualElement> rowRoots = new Dictionary<string, VisualElement>();
         private readonly Dictionary<string, Text> rowReputations = new Dictionary<string, Text>();
         private readonly Dictionary<string, VisualElement> rowRepFills = new Dictionary<string, VisualElement>();
 
         public VisualElement Root { get; }
-        public VisualElement List { get; }
         public VisualElement Drawer { get; }
-        public Button CloseButton { get; }
-        public Button ShopButton { get; }
+        public DsButton CloseButton { get; }
+        public DsButton ShopButton { get; }
         public Text DrawerName { get; }
         public Text DrawerTagline { get; }
         public Text DrawerTier { get; }
-        public Text DrawerStatus { get; }
+        public Badge DrawerStatus { get; }
         public Text DrawerRequirement { get; }
         public Text DrawerDescription { get; }
         public Text DrawerHistory { get; }
@@ -40,23 +42,16 @@ namespace GamePauseMenu
         {
             this.app = app;
             fixtures = app.State.Fixtures;
+            layout = app.Layout;
             palette = app.Palette;
 
-            Root = Ui.Box("progress-tab");
+            Root = Ui.MakeBox("tab-view progress-tab");
             Root.name = "progress-tab";
-            Root.style.position = Position.Relative;
-            Root.style.overflow = Overflow.Hidden;
 
-            var head = Ui.Box("tab-head");
-            head.Add(Ui.Styled(Ui.Overline("FACTIONS"), "panel-label"));
-            head.Add(Ui.Caption(fixtures.Factions.Factions.Count + " TRACKED  //  SELECT A ROW TO OPEN ITS FILE"));
-            Root.Add(head);
-            Root.Add(Ui.Rule(true));
-
-            List = new ScrollView(ScrollViewMode.Vertical);
-            List.AddToClassList("faction-list");
-            foreach (var faction in fixtures.Factions.Factions) List.Add(BuildRow(faction));
-            Root.Add(List);
+            var listPanel = layout.Progress.ListPanel;
+            Root.Add(Ui.MakePanel(layout, listPanel, layout.Progress.ListTitle, layout.Progress.ListMeta,
+                layout.Panels.HeaderHeight).Root);
+            foreach (var faction in fixtures.Factions.Factions) Root.Add(BuildRow(faction));
 
             Drawer = BuildDrawer(out var closeButton, out var shopButton, out var drawerName, out var drawerTagline,
                 out var drawerTier, out var drawerStatus, out var drawerRequirement, out var drawerDescription,
@@ -75,47 +70,57 @@ namespace GamePauseMenu
             Root.Add(Drawer);
         }
 
-        public Button Row(string factionId) => rows[factionId];
+        public DsButton Row(string factionId) => rows[factionId];
         public VisualElement RowRoot(string factionId) => rowRoots[factionId];
         public Text RowReputation(string factionId) => rowReputations[factionId];
         public VisualElement RowReputationFill(string factionId) => rowRepFills[factionId];
         public bool DrawerOpen => Drawer.style.display.value == DisplayStyle.Flex;
-
-        public bool RowUnlocked(string factionId)
-        {
-            var faction = FixtureRepository.FindFaction(fixtures, factionId);
-            return faction != null && faction.Unlocked;
-        }
+        public string DrawerStatusText => DrawerStatus.Q<Text>()?.text ?? string.Empty;
 
         public void ShowDrawer(FactionData faction)
         {
             CurrentFaction = faction;
+            var drawer = layout.Progress.Drawer;
+            var paperMuted = layout.Color("paperMuted");
             DrawerName.text = faction.Name;
             DrawerTagline.text = faction.Tagline;
-            DrawerTier.text = "TIER " + faction.Tier + "  //  REPUTATION " + faction.Reputation + " / " + faction.ReputationMax
-                + (faction.Unlocked ? "  //  UNLOCKED" : "  //  LOCKED");
-            DrawerStatus.text = faction.Unlocked ? "OPEN CONTRACT" : "CONTRACT LOCKED";
-            DrawerStatus.EnableInClassList("is-locked", !faction.Unlocked);
-            DrawerRequirement.text = faction.Unlocked
-                ? "REPUTATION " + faction.Reputation + " / " + faction.ReputationMax
-                : "UNLOCK REQUIREMENT — " + faction.Requirement;
-            DrawerRequirement.EnableInClassList("is-locked", !faction.Unlocked);
+            DrawerTier.text = "DOSSIER  ·  TIER " + faction.Tier + "  ·  "
+                               + (faction.Unlocked ? "UNLOCKED" : "LOCKED");
+            var locked = !faction.Unlocked;
+            UpdateDrawerStatus(locked);
+            DrawerRequirement.text = locked ? "UNLOCK — " + faction.Requirement
+                : "REPUTATION " + faction.Reputation + " / " + faction.ReputationMax;
+            DrawerRequirement.style.color = layout.Color(locked ? layout.StatusChip.LockedText : "paperMuted");
             DrawerDescription.text = faction.Detail.Description;
             DrawerHistory.text = faction.Detail.History;
 
             PerksList.Clear();
-            foreach (var perk in faction.Detail.Perks)
+            for (var i = 0; i < faction.Detail.Perks.Count; i++)
             {
-                var row = Ui.Box("perk-row");
-                row.Add(Ui.Styled(Ui.Overline("+"), "perk-mark"));
-                row.Add(Ui.Body(perk));
+                var row = Ui.MakeBox("perk-row");
+                Ui.At(row, new LayoutRect(0, i * 18, 512, 18));
+                var bullet = Ui.MakeText(layout, "+", "mission", "signal", true);
+                Ui.Point(bullet, 0, 0);
+                row.Add(bullet);
+                var text = Ui.MakeText(layout, faction.Detail.Perks[i], "mission", "ink", false);
+                Ui.Point(text, 14, 0);
+                row.Add(text);
                 PerksList.Add(row);
             }
 
             PartsTable.Clear();
-            PartsTable.Add(PartRow("PART", "COST", "RARITY", "SIZE", true));
-            foreach (var part in faction.Detail.Parts)
-                PartsTable.Add(PartRow(part.Name, Ui.Number(part.Cost) + " CR", part.Rarity.ToUpperInvariant(), part.Size.ToString(), false));
+            var headerRow = PartRow("PART", "COST", "RARITY", "SIZE", true, paperMuted);
+            Ui.At(headerRow, 0, 0, 512, layout.Progress.Drawer.PartRowH);
+            PartsTable.Add(headerRow);
+            for (var i = 0; i < faction.Detail.Parts.Count; i++)
+            {
+                var part = faction.Detail.Parts[i];
+                var row = PartRow(part.Name, Ui.Number(part.Cost) + " CR", part.Rarity.ToUpperInvariant(),
+                    part.Size.ToString(CultureInfo.InvariantCulture), false, layout.Color("ink"));
+                Ui.At(row, new LayoutRect(0, layout.Progress.Drawer.PartRowH * (i + 1),
+                    512, layout.Progress.Drawer.PartRowH));
+                PartsTable.Add(row);
+            }
 
             ShopButton.SetEnabled(faction.Unlocked);
             Drawer.style.display = DisplayStyle.Flex;
@@ -132,129 +137,212 @@ namespace GamePauseMenu
 
         private VisualElement BuildRow(FactionData faction)
         {
-            var row = Ui.NativeButton(string.Empty, "faction-row", () => app.OpenFactionDrawer(faction.Id));
+            var rowsLayout = layout.Progress.Rows;
+            var row = new DsButton { Size = "medium", Variant = "ghost", text = string.Empty };
             row.name = "faction-row-" + faction.Id;
-            row.AddToClassList(faction.Unlocked ? "is-unlocked" : "is-locked");
+            row.AddToClassList("roster-row");
+            Ui.At(row, new LayoutRect(rowsLayout.X, rowsLayout.FirstY + rows.Count * rowsLayout.RowH,
+                rowsLayout.Width, rowsLayout.RowH));
+            Ui.StripBox(row);
+            Ui.Radius(row, 0);
+            row.style.paddingLeft = 0;
+            row.style.paddingRight = 0;
+            row.style.paddingTop = 0;
+            row.style.paddingBottom = 0;
+            row.style.borderBottomWidth = 1;
+            row.style.borderBottomColor = layout.Color("rule");
+            row.style.backgroundColor = Color.clear;
+            row.OnClick = () => app.OpenFactionDrawer(faction.Id);
 
-            var top = Ui.Box("faction-row-top");
-            top.Add(Ui.Styled(Ui.Title(faction.Name), "faction-name"));
-            top.Add(Ui.Chip("TIER " + faction.Tier, "tier-chip"));
-            top.Add(Ui.Chip(faction.Unlocked ? "UNLOCKED" : "LOCKED", faction.Unlocked ? "unlocked-chip" : "lock-chip"));
-            row.Add(top);
-            row.Add(Ui.Caption(faction.Tagline));
+            var locked = !faction.Unlocked;
+            var accent = Ui.MakeBox("row-accent");
+            Ui.Point(accent, 0, 0);
+            accent.style.width = (float)rowsLayout.AccentW;
+            accent.style.height = (float)rowsLayout.RowH;
+            accent.style.backgroundColor = layout.Color(locked ? "alert" : "signal");
+            row.Add(accent);
 
-            var rep = Ui.Box("faction-rep");
-            var track = Ui.Box("rep-track");
-            var fill = Ui.Box("rep-fill");
-            fill.style.width = Length.Percent(100f * faction.Reputation / Mathf.Max(1, faction.ReputationMax));
-            fill.style.backgroundColor = faction.Unlocked ? palette.Signal : palette.Moss;
-            track.Add(fill);
-            rep.Add(track);
-            var repText = Ui.Styled(Ui.Caption(faction.Unlocked
-                ? faction.Reputation + " / " + faction.ReputationMax + " REPUTATION"
-                : "REQUIRES — " + faction.Requirement), "rep-text");
-            rep.Add(repText);
+            var name = Ui.MakeText(layout, faction.Name, "rowLabel", "boneBright", true);
+            Ui.Point(name, rowsLayout.NameX - rowsLayout.X, rowsLayout.NameY);
+            row.Add(name);
+
+            var tagline = Ui.MakeText(layout, faction.Tagline, "rowSub", "muted", false);
+            Ui.Point(tagline, rowsLayout.NameX - rowsLayout.X, rowsLayout.TaglineY);
+            row.Add(tagline);
+
+            var rep = Ui.MakeProgress(layout, new LayoutRect(rowsLayout.RepBarX - rowsLayout.X,
+                rowsLayout.RepBarY, rowsLayout.RepBarW, rowsLayout.RepBarH),
+                faction.ReputationMax == 0 ? 0 : 100.0 * faction.Reputation / faction.ReputationMax,
+                "graphite", "signal");
             row.Add(rep);
 
-            rows[faction.Id] = row;
+            var repLabel = Ui.MakeText(layout,
+                "REPUTATION " + faction.Reputation + " / " + faction.ReputationMax,
+                "rowSub", "muted", false);
+            Ui.Point(repLabel, rowsLayout.RepBarX - rowsLayout.X + rowsLayout.RepBarW + 12,
+                rowsLayout.RepBarY - 5);
+            row.Add(repLabel);
+
+            var status = Ui.MakeBadge(layout, locked ? "LOCKED" : "ACCESS", "chip",
+                new LayoutRect(rowsLayout.StatusX - rowsLayout.X, rowsLayout.StatusY,
+                    rowsLayout.StatusW, rowsLayout.StatusH),
+                layout.Color(layout.StatusChip.AccessBackground), layout.Color(layout.StatusChip.AccessText),
+                locked, layout.Color(layout.StatusChip.LockedBorder));
+            StyleChipLabel(status, locked);
+            row.Add(status);
+
+            var dossier = Ui.MakeText(layout, "OPEN →", "rowSub", "textSecondary", true);
+            Ui.Point(dossier, rowsLayout.DossierX - rowsLayout.X, rowsLayout.DossierY);
+            row.Add(dossier);
+
+            Ui.PassThroughChildren(row);
             rowRoots[faction.Id] = row;
-            rowReputations[faction.Id] = repText;
-            rowRepFills[faction.Id] = fill;
+            rows[faction.Id] = row;
+            rowReputations[faction.Id] = repLabel;
+            rowRepFills[faction.Id] = rep.Fill;
             return row;
         }
 
-        private VisualElement BuildDrawer(out Button closeButton, out Button shopButton, out Text drawerName,
-            out Text drawerTagline, out Text drawerTier, out Text drawerStatus, out Text drawerRequirement,
-            out Text drawerDescription, out Text drawerHistory, out VisualElement perksList, out VisualElement partsTable)
+        private VisualElement BuildDrawer(out DsButton closeButton, out DsButton shopButton, out Text drawerName,
+            out Text drawerTagline, out Text drawerTier, out Badge drawerStatus, out Text drawerRequirement,
+            out Text drawerDescription, out Text drawerHistory, out VisualElement perksList,
+            out VisualElement partsTable)
         {
-            // A ScrollView so the drawer stays usable down to the 960x640 supported viewport.
-            var drawer = new ScrollView(ScrollViewMode.Vertical);
-            drawer.AddToClassList("faction-drawer");
+            var drawerLayout = layout.Progress.Drawer;
+            var rect = drawerLayout.Rect;
+            var paperMuted = layout.Color("paperMuted");
+            var ink = layout.Color("ink");
+            var drawer = Ui.MakeBox("faction-drawer");
             drawer.name = "faction-drawer";
+            Ui.At(drawer, rect);
+            drawer.style.backgroundColor = layout.Color(drawerLayout.Background);
+            Ui.BorderWidth(drawer, 0);
             drawer.style.display = DisplayStyle.None;
-            drawer.style.backgroundColor = palette.SurfacePanel;
-            drawer.style.borderRightColor = palette.Signal;
-            drawer.style.borderRightWidth = palette.BorderWidth * 2;
+            drawer.style.overflow = Overflow.Hidden;
 
-            var top = Ui.Box("drawer-top");
-            closeButton = Ui.NativeButton("BACK", "key-chip", () => app.CloseDrawer());
-            closeButton.name = "drawer-close";
-            top.Add(closeButton);
-            var kicker = Ui.Overline("FACTION FILE");
-            kicker.AddToClassList("drawer-kicker");
-            top.Add(kicker);
-            drawer.Add(top);
-
-            drawerName = Ui.Styled(Ui.Headline(""), "drawer-name");
-            drawerName.name = "drawer-name";
-            drawer.Add(drawerName);
-            drawerTagline = Ui.Caption("");
-            drawerTagline.name = "drawer-tagline";
-            drawer.Add(drawerTagline);
-            drawerTier = Ui.Overline("");
-            drawerTier.name = "drawer-tier";
+            drawerTier = Ui.MakeText(layout, "DOSSIER", "micro", paperMuted, true,
+                letterSpacing: layout.Size("letterSpacingMicro"));
+            Ui.Point(drawerTier, 24, drawerLayout.HeaderY - rect.Y);
             drawer.Add(drawerTier);
-            drawer.Add(Ui.Rule());
 
-            var statusRow = Ui.Box("drawer-status-row");
-            drawerStatus = Ui.Chip("", "drawer-status");
-            drawerStatus.name = "drawer-status";
-            statusRow.Add(drawerStatus);
-            drawerRequirement = Ui.Styled(Ui.Body(""), "drawer-requirement");
-            drawerRequirement.name = "drawer-requirement";
-            statusRow.Add(drawerRequirement);
-            drawer.Add(statusRow);
-            drawer.Add(Ui.Rule());
+            closeButton = Ui.MakeButton(layout, "CLOSE",
+                new LayoutRect(drawerLayout.Close.X - rect.X, drawerLayout.Close.Y - rect.Y,
+                    drawerLayout.Close.W, drawerLayout.Close.H), () => app.CloseDrawer(), false);
+            closeButton.style.color = ink;
+            Ui.BorderColor(closeButton, paperMuted);
+            drawer.Add(closeButton);
 
-            drawer.Add(Ui.Styled(Ui.Overline("BRIEF"), "block-label"));
-            drawerDescription = Ui.Body("");
-            drawerDescription.name = "drawer-description";
+            drawerName = Ui.MakeText(layout, string.Empty, "title", ink, true,
+                new LayoutRect(24, drawerLayout.TitleY - rect.Y, 440, 34));
+            drawer.Add(drawerName);
+            drawerTagline = Ui.MakeText(layout, string.Empty, "rowSub", paperMuted, false,
+                new LayoutRect(24, drawerLayout.TaglineY - rect.Y, 512, 16));
+            drawer.Add(drawerTagline);
+
+            var rule = Ui.MakeRule(layout, paperMuted, new LayoutRect(0, drawerLayout.RuleY - rect.Y, rect.W, 1));
+            drawer.Add(rule);
+
+            drawer.Add(SectionLabel("BRIEF", 24, drawerLayout.BriefLabelY - rect.Y, paperMuted));
+            drawerDescription = Ui.MakeText(layout, string.Empty, "body", ink, false,
+                new LayoutRect(24, drawerLayout.BriefBodyY - rect.Y, 512, 48), wrap: true);
             drawer.Add(drawerDescription);
-            drawer.Add(Ui.Styled(Ui.Overline("HISTORY"), "block-label"));
-            drawerHistory = Ui.Body("");
-            drawerHistory.name = "drawer-history";
+            drawer.Add(SectionLabel("HISTORY", 24, drawerLayout.HistoryLabelY - rect.Y, paperMuted));
+            drawerHistory = Ui.MakeText(layout, string.Empty, "body", ink, false,
+                new LayoutRect(24, drawerLayout.HistoryBodyY - rect.Y, 512, 40), wrap: true);
             drawer.Add(drawerHistory);
-
-            drawer.Add(Ui.Styled(Ui.Overline("PERKS"), "block-label"));
-            perksList = Ui.Box("drawer-perks");
-            perksList.name = "drawer-perks";
+            drawer.Add(SectionLabel("PERKS", 24, drawerLayout.PerksLabelY - rect.Y, paperMuted));
+            perksList = Ui.MakeBox("drawer-perks");
+            Ui.At(perksList, new LayoutRect(24, drawerLayout.PerksY - rect.Y, 512, 64));
             drawer.Add(perksList);
-
-            drawer.Add(Ui.Styled(Ui.Overline("PARTS"), "block-label"));
-            partsTable = Ui.Box("drawer-parts");
-            partsTable.name = "drawer-parts";
+            drawer.Add(SectionLabel("PARTS", 24, drawerLayout.PartsLabelY - rect.Y, paperMuted));
+            partsTable = Ui.MakeBox("drawer-parts");
+            Ui.At(partsTable, new LayoutRect(24, drawerLayout.PartsHeaderY - rect.Y, 512, 96));
             drawer.Add(partsTable);
 
-            var actions = Ui.Box("drawer-actions");
-            shopButton = Ui.NativeButton("SHOP PARTS", "primary-action", () => Shop());
-            shopButton.name = "shop-parts";
-            actions.Add(shopButton);
-            drawer.Add(actions);
+            var shopRect = drawerLayout.ShopButton;
+            shopButton = Ui.MakeButton(layout, "SHOP PARTS",
+                new LayoutRect(shopRect.X - rect.X, shopRect.Y - rect.Y, shopRect.W, shopRect.H),
+                () => Shop(), true);
+            drawer.Add(shopButton);
+
+            drawerStatus = Ui.MakeBadge(layout, "ACCESS", "chip", new LayoutRect(340, 24, 76, 22),
+                layout.Color(layout.StatusChip.AccessBackground), layout.Color(layout.StatusChip.AccessText),
+                false, layout.Color(layout.StatusChip.LockedBorder));
+            drawerStatus.name = "drawer-status";
+            drawer.Add(drawerStatus);
+
+            drawerRequirement = Ui.MakeText(layout, string.Empty, "micro", paperMuted, true,
+                new LayoutRect(shopRect.X - rect.X + shopRect.W + 16, drawerLayout.ShopCaptionY - rect.Y, 340, 16));
+            drawer.Add(drawerRequirement);
             return drawer;
+        }
+
+        /// <summary>Status-chip labels render as a small left-aligned tag inside the 76 px chip
+        /// (the pinned layout samples the chip fill at its centre, so the label stays at the edge).</summary>
+        private void StyleChipLabel(Badge chip, bool locked)
+        {
+            chip.style.justifyContent = Justify.FlexStart;
+            var content = chip.Q<VisualElement>(className: "badge__content");
+            if (content == null) return;
+            content.style.justifyContent = Justify.FlexStart;
+            content.style.flexGrow = 0;
+            content.style.width = Length.Percent(100);
+            var label = content.Q<Text>();
+            if (label == null) return;
+            content.style.alignItems = Align.Center;
+            label.style.fontSize = 9;
+            label.style.unityFontStyleAndWeight = FontStyle.Normal;
+            label.style.letterSpacing = 0;
+            label.style.unityTextAlign = TextAnchor.MiddleLeft;
+            label.style.color = layout.Color(locked
+                ? layout.StatusChip.LockedText : layout.StatusChip.AccessText);
+        }
+
+        private void UpdateDrawerStatus(bool locked)
+        {
+            var content = DrawerStatus.Q<VisualElement>(className: "badge__content");
+            if (content != null) content.Clear();
+            var label = Ui.MakeText(layout, locked ? "LOCKED" : "ACCESS", "chip",
+                locked ? layout.Color(layout.StatusChip.LockedText) : layout.Color(layout.StatusChip.AccessText),
+                true, align: TextAnchor.MiddleCenter);
+            label.style.letterSpacing = 1.1f;
+            if (content != null) content.Add(label);
+            DrawerStatus.style.backgroundColor = locked ? Color.clear : layout.Color(layout.StatusChip.AccessBackground);
+            Ui.BorderWidth(DrawerStatus, locked ? 1 : 0);
+            if (locked) Ui.BorderColor(DrawerStatus, layout.Color(layout.StatusChip.LockedBorder));
+            DrawerStatus.EnableInClassList("is-locked", locked);
+        }
+
+        private Text SectionLabel(string label, double x, double y, Color color)
+        {
+            var text = Ui.MakeText(layout, label, "micro", color, true,
+                letterSpacing: layout.Size("letterSpacingMicro"));
+            Ui.Point(text, x, y);
+            return text;
         }
 
         private void Shop()
         {
             if (CurrentFaction == null || !CurrentFaction.Unlocked) return;
-            DrawerStatus.text = "PARTS ORDER QUEUED  //  " + CurrentFaction.Name;
+            DrawerRequirement.text = "ORDER QUEUED — " + CurrentFaction.Name;
         }
 
-        private static VisualElement PartRow(string name, string cost, string rarity, string size, bool header)
+        private VisualElement PartRow(string name, string cost, string rarity, string size, bool header, Color color)
         {
-            var row = Ui.Box("part-row");
-            if (header) row.AddToClassList("part-row--head");
-            var nameText = Ui.Caption(name);
-            nameText.AddToClassList("part-name");
-            var costText = Ui.Caption(cost);
-            costText.AddToClassList("part-cost");
-            var rarityText = Ui.Caption(rarity);
-            rarityText.AddToClassList("part-rarity");
-            var sizeText = Ui.Caption(size);
-            sizeText.AddToClassList("part-size");
+            var row = Ui.MakeBox("part-row");
+            var nameText = Ui.MakeText(layout, name, "mission", color, header,
+                new LayoutRect(0, 0, 300, 16));
             row.Add(nameText);
+            var costText = Ui.MakeText(layout, cost, "mission", color, header,
+                new LayoutRect(300, 0, 82, 16), align: TextAnchor.MiddleRight);
             row.Add(costText);
+            var rarityText = Ui.MakeText(layout, rarity, "mission", color, header,
+                new LayoutRect(382, 0, 84, 16), align: TextAnchor.MiddleRight);
             row.Add(rarityText);
+            var sizeText = Ui.MakeText(layout, size, "mission", color, header,
+                new LayoutRect(466, 0, 46, 16), align: TextAnchor.MiddleRight);
             row.Add(sizeText);
+            row.style.height = (float)layout.Progress.Drawer.PartRowH;
             return row;
         }
     }
