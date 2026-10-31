@@ -15,7 +15,7 @@ namespace FullStackDS
         private readonly UnityEngine.UIElements.Button previousButton;
         private readonly UnityEngine.UIElements.Button nextButton;
         private readonly UnityEngine.UIElements.Button commitButton;
-        private readonly TextField input;
+        private readonly UnityEngine.UIElements.TextField input;
         private readonly Label context;
         private readonly string prefix;
         private string[] items = Array.Empty<string>();
@@ -40,7 +40,7 @@ namespace FullStackDS
             nextButton.AddToClassList($"{prefix}__{nextPart}");
             var field = new VisualElement();
             field.AddToClassList($"{prefix}__{fieldPart}");
-            input = new TextField();
+            input = new UnityEngine.UIElements.TextField();
             input.AddToClassList($"{prefix}__{inputPart}");
             field.Add(input);
             context = new Label();
@@ -58,7 +58,7 @@ namespace FullStackDS
             input.RegisterValueChangedCallback(evt => draft = evt.newValue ?? "");
             input.RegisterCallback<KeyDownEvent>(evt =>
             {
-                if (evt.keyCode != KeyCode.Return && evt.keyCode != KeyCode.KeypadEnter) return;
+                if (evt.keyCode != UnityEngine.KeyCode.Return && evt.keyCode != UnityEngine.KeyCode.KeypadEnter) return;
                 CommitDraft();
                 evt.StopPropagation();
             });
