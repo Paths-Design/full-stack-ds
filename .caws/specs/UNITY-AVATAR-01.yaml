@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.AvatarGuardsItsImageAndInitialsFallback
     exit_code: 0
     commit_sha: "029fa253bd71c0cc90e2a5479322a60f9be7be3d"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 029fa253b: packages/ds-unity/README.md admits Avatar with its composed Image child, guarded initials fallback, size carriers and the refused a11y-name/priority/alt non-claims, and records the 81/81 lane; docs/architecture/unity-target.md records the Avatar dispatcher mode, AvatarControl presence runtime, carrier-axis attribute and the 81/81 lane; docs/current-implementation-snapshot.md records the fortieth admitted control with those facts."
+    recorded_at: "2026-10-31T15:06:36.876Z"
+    commit_sha: "029fa253bd71c0cc90e2a5479322a60f9be7be3d"
