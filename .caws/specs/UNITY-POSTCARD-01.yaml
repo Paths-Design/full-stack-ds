@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.PostcardProjectsObjectPathTextAndComposesItsBody
     exit_code: 0
     commit_sha: "712fed7e621e8413ab27579d13bec69b3151107a"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 712fed7e6: packages/ds-unity/README.md admits Postcard with its inline sections, body insertion, flattened projected attributes and the refused object/id/embed/datetime non-claims, and records the 83/83 lane; docs/architecture/unity-target.md records the ProjectedText dispatcher mode, flattening mechanism, collision rename and the 83/83 lane; docs/current-implementation-snapshot.md records the forty-second admitted control with those facts."
+    recorded_at: "2026-10-31T15:28:42.652Z"
+    commit_sha: "712fed7e621e8413ab27579d13bec69b3151107a"
