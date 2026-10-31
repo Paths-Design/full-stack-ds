@@ -2,7 +2,6 @@ id: UNITY-FIELD-01
 title: 'Admit Field to the Unity target as a slot-only form row scaffold'
 mode: feature
 lifecycle_state: active
-worktree: unity-field
 created_at: '2026-10-31T14:10:02.282Z'
 updated_at: '2026-10-31T14:18:30.871Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
