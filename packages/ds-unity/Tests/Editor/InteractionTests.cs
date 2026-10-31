@@ -443,5 +443,19 @@ namespace FullStackDS.Tests
             Assert.That(typeof(FullStackDS.ProfileFlag).GetProperty("Profile"), Is.Null);
             Assert.That(typeof(FullStackDS.Blockquote).GetProperty("Cite"), Is.Null);
         }
+        [Test] public void BadgeCarriesAxesAndItsNodeContentIconIsOmitted()
+        {
+            var badge = Mount(new FullStackDS.Badge { Variant = "tag", Intent = "success", Size = "lg" });
+            var content = new FullStackDS.BadgeContent();
+            content.Add(new Label("New"));
+            badge.Add(content);
+            Assert.That(badge.ClassListContains("badge--tag"), Is.True);
+            Assert.That(badge.ClassListContains("badge--success"), Is.True);
+            Assert.That(badge.ClassListContains("badge--lg"), Is.True);
+            Assert.That(content.parent, Is.SameAs(badge));
+            Assert.That(content.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.Badge).GetProperty("Icon"), Is.Null);
+            Assert.That(typeof(FullStackDS.Badge).GetProperty("ShowStatusIcon"), Is.Null);
+        }
     }
 }

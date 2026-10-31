@@ -184,7 +184,8 @@
         "ToggleSwitch",
         "Blockquote",
         "Stat",
-        "ProfileFlag"
+        "ProfileFlag",
+        "Badge"
       ]
     },
     {

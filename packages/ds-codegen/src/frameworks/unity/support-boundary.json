@@ -66,6 +66,21 @@
       "reason": "The spinner part is the guarded loading decoration of a DOM action control. Conditional componentRef composition is pending P4 and Spinner is not admitted to Unity, so the generated action control omits the part and exposes no loading state."
     },
     {
+      "id": "anatomy-node-content-decoration",
+      "match": ["contract:/anatomy/dom/**/children/icon/**", "contract:/anatomy/details/icon/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:icon/propType/kind"], "valueIn": ["node"] }],
+      "disposition": "refused",
+      "reason": "A guarded decoration whose content is a dynamic node prop has no static native projection. The passive lowering omits the decoration; the node-content prop stays pending P4."
+    },
+    {
+      "id": "anatomy-node-content-part",
+      "match": ["contract:/anatomy/parts/*"],
+      "valueIn": ["icon"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:icon/propType/kind"], "valueIn": ["node"] }],
+      "disposition": "refused",
+      "reason": "The node-content decoration part is omitted by the passive lowering, so its part identity is not rendered."
+    },
+    {
       "id": "anatomy-parts",
       "match": ["contract:/anatomy/parts/*"],
       "disposition": "lowered",
@@ -399,7 +414,7 @@
     },
     {
       "id": "prop-passive-style-axis",
-      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**"],
+      "match": ["contract:/props/*/members/plain:variant/**", "contract:/props/*/members/plain:weight/**", "contract:/props/*/members/plain:trend/**", "contract:/props/*/members/plain:intent/**"],
       "disposition": "lowered",
       "realizes": "emitted-property",
       "via": "The generated [UxmlAttribute] property validates the authored axis and switches the root modifier class. Admission checks that the corresponding USS carrier exists."
@@ -494,6 +509,20 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "Structured object props need typed C# declaration lowering and a native content composer; the generated container exposes no Profile property until that P4 family lands."
+    },
+    {
+      "id": "prop-node-content-pending",
+      "match": ["contract:/props/*/members/plain:icon/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:icon/propType/kind"], "valueIn": ["node"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Dynamic node content needs a typed C# content projection (P4). The generated passive container exposes no Icon property and omits the guarded decoration."
+    },
+    {
+      "id": "prop-status-icon-refused",
+      "match": ["contract:/props/*/members/plain:showStatusIcon/**"],
+      "disposition": "refused",
+      "reason": "The status-icon flag only selects the omitted node-content icon decoration; the generated container exposes no ShowStatusIcon property."
     },
     {
       "id": "props-unadjudicated",
@@ -966,6 +995,13 @@
       "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**"],
       "disposition": "refused",
       "reason": "The USS projection has no transition-duration/transition-timing-function or font-style handler and USS has no user-select property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-intrinsic-sizing",
+      "match": ["styles:/**"],
+      "declaration": { "valuePattern": "^\\s*(?:fit|max|min)-content\\s*$" },
+      "disposition": "refused",
+      "reason": "USS has no intrinsic sizing keywords; the projection lists these declarations uss-scalar in Controls.unsupported.json."
     },
     {
       "id": "styles-pseudo-element",

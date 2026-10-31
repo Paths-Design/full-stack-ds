@@ -81,4 +81,16 @@ describe("Unity passive anatomy path", () => {
     expect(flag).toContain("public partial class UnrelatedFlag : VisualElement");
     expect(flag).not.toMatch(/Profile\b(?!Flag)/);
   });
+
+  it("omits a guarded node-content decoration and keeps only carrier axes for Badge", () => {
+    const source = emit(irFor("Badge", "UnrelatedBadge"));
+    expect(source).toContain('Variants.Get(this, "badge", "default", "status", "counter", "tag")');
+    expect(source).toContain('Variants.Get(this, "badge", "info", "success", "warning", "danger")');
+    expect(source).toContain('Variants.Get(this, "badge", "sm", "md", "lg")');
+    // The guarded node-content icon decoration is omitted; only the composed content part remains.
+    expect(source).not.toMatch(/Icon\b/);
+    expect(source).not.toMatch(/ShowStatusIcon/);
+    expect(source).toContain("public partial class UnrelatedBadgeContent : VisualElement");
+    expect(source).toContain('AddToClassList("badge__content")');
+  });
 });
