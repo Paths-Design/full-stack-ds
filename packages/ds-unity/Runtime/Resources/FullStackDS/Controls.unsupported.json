@@ -4091,6 +4091,46 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "RadioGroup",
+      "sourceKey": ".radio-group__item:focus-within",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": ".radio-group__item[data-checked=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": ".radio-group__item[data-disabled=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": "item",
+      "part": "item",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "RadioGroup",
+      "sourceKey": "label",
+      "part": "label",
+      "property": "overflow-wrap",
+      "value": "anywhere",
+      "reason": "uss-property"
+    },
+    {
       "component": "Sheet",
       "sourceKey": ".sheet--left .sheet__content",
       "part": "content",

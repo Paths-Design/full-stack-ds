@@ -498,6 +498,27 @@
       "reason": "Dynamic roles and ARIA attributes have no runtime consumer: UI Toolkit exposes no assistive-technology tree."
     },
     {
+      "id": "anatomy-choicegroup-iteration-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/iterate/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/itemType"], "valueIn": ["RadioGroupOption"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (ChoiceGroup)/ChoiceGroupControl: the option array drives runtime-built native radio buttons from the declared option leaves; the nested option type carries only those leaves."
+    },
+    {
+      "id": "anatomy-choicegroup-option-bindings-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/children/*/bindings/value", "contract:/anatomy/dom/**/children/*/children/*/bindings/checked", "contract:/anatomy/dom/**/children/*/children/*/bindings/disabled", "contract:/anatomy/dom/**/children/*/bindings/title"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/itemType"], "valueIn": ["RadioGroupOption"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (ChoiceGroup)/ChoiceGroupControl: the option value and checked comparison map to the native radio's value and selection sync; the per-option disabled leaf drives SetEnabled."
+    },
+    {
+      "id": "anatomy-choicegroup-state-bindings-refused",
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/data-checked", "contract:/anatomy/dom/**/children/*/bindings/data-disabled"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/itemType"], "valueIn": ["RadioGroupOption"] }],
+      "disposition": "refused",
+      "reason": "The authored data-state attributes only drive CSS state selectors USS cannot reproduce; the runtime tracks selection and the native radio carries the checked indication instead."
+    },
+    {
       "id": "anatomy-conditional-data-binding",
       "match": ["contract:/anatomy/dom/bindings/data-*", "contract:/anatomy/dom/**/children/*/bindings/data-*"],
       "disposition": "pending",
@@ -1296,6 +1317,20 @@
       "reason": "The group and per-field accessible labels only feed aria-label, which UI Toolkit does not populate; the runtime withholds them rather than faking an assistive tree."
     },
     {
+      "id": "prop-choicegroup-options-lowered",
+      "match": ["contract:/props/*/members/plain:options/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/itemType"], "valueIn": ["RadioGroupOption"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (ChoiceGroup): the option array becomes the generated Options API over the nested option type, which the runtime translates to parallel leaf arrays for the native radios."
+    },
+    {
+      "id": "prop-choicegroup-name-refused",
+      "match": ["contract:/props/*/members/plain:name/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/itemType"], "valueIn": ["RadioGroupOption"] }],
+      "disposition": "refused",
+      "reason": "The HTML form-group name has no UI Toolkit counterpart and the group is not submitted with a form; the generated control withholds it."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -1317,6 +1352,13 @@
       "disposition": "lowered",
       "realizes": "selected-channel",
       "via": "The one channel the dispatcher selects maps its value/default/change trio to the C# value property, pre-attachment assignment and change callback or event; Controlled + ValueRequested carry owner-controlled state. A second channel is unrealised and refuses generation."
+    },
+    {
+      "id": "types-choicegroup-lowered",
+      "match": ["contract:/types/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/iterate/itemType"], "valueIn": ["RadioGroupOption"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (ChoiceGroup): the orientation union vocabulary backs the generated orientation carrier attribute."
     },
     {
       "id": "types",

@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -264,6 +264,22 @@ export interface OtpLowering {
   fieldPart: string;
   groupPart: string;
 }
+/**
+ * A native choice group: the declared option array drives runtime-built native
+ * radio buttons and the string selection channel. A nested option type is
+ * generated from the iteration bindings so consumers set strongly shaped
+ * options; the runtime reads parallel leaf arrays and never claims the authored
+ * internal item markup or the data-state selector styling.
+ */
+export interface ChoiceGroupLowering {
+  behavior: "ChoiceGroup";
+  channel: NormalizedChannelIR;
+  optionsProp: string;
+  itemType: string;
+  itemPart: string;
+  fields: { name: string; type: "string" | "bool"; role: "value" | "label" | "description" | "disabled" | "other" }[];
+  orientationProp?: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -277,7 +293,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -603,6 +619,58 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A native choice group: one string channel over an option array whose item
+  // carries a checked comparison against the channel.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.dom !== undefined &&
+      ir.behavior.normalizedChannels.length === 1 && ir.behavior.normalizedChannels[0]!.valueType === "string") {
+    const channel = ir.behavior.normalizedChannels[0]!;
+    const findIteration = (node: DomNodeIR): DomNodeIR | undefined =>
+      node.iteration?.kind === "array" ? node : node.children.map(findIteration).find(Boolean);
+    const item = findIteration(ir.dom);
+    const source = item?.iteration?.source;
+    const optionsProp = source?.kind === "prop" && !source.path?.length ? source.prop : undefined;
+    if (item !== undefined && item.iteration?.itemType !== undefined && optionsProp !== undefined && item.part !== undefined) {
+      const leaves: { path: string[]; role: "value" | "label" | "description" | "disabled" | "other" }[] = [];
+      const roleOfAttribute = (attribute: string): "value" | "label" | "description" | "disabled" | "other" => {
+        if (attribute === "checked" || attribute === "value") return "value";
+        if (attribute === "title") return "description";
+        if (attribute === "disabled") return "disabled";
+        if (attribute === "aria-label") return "label";
+        return "other";
+      };
+      const visit = (node: DomNodeIR): void => {
+        for (const [attribute, binding] of Object.entries(node.bindings)) {
+          if (binding.kind !== "iterationLocal" || binding.path === undefined) continue;
+          if (binding.path.includes("disabled")) leaves.push({ path: binding.path, role: "disabled" });
+          else leaves.push({ path: binding.path, role: roleOfAttribute(attribute) });
+        }
+        if (node.content !== undefined && "kind" in node.content && node.content.kind === "iterationLocal" && node.content.path !== undefined) {
+          leaves.push({ path: node.content.path, role: "label" });
+        }
+        for (const child of node.children) visit(child);
+      };
+      visit(item);
+      const fields: { name: string; type: "string" | "bool"; role: "value" | "label" | "description" | "disabled" | "other" }[] = [];
+      for (const leaf of leaves) {
+        const name = leaf.path.map(segment => segment[0]!.toUpperCase() + segment.slice(1)).join("");
+        if (fields.some(field => field.name === name)) continue;
+        const boolean = leaf.role === "disabled";
+        fields.push({ name, type: boolean ? "bool" : "string", role: leaf.role });
+      }
+      if (fields.length > 0) {
+        const orientationAxis = Object.keys(ir.variants).find(axis => ir.styledProps.some(prop => prop.name === axis && prop.propType.kind === "ref"));
+        return {
+          behavior: "ChoiceGroup",
+          channel,
+          optionsProp,
+          itemType: item.iteration.itemType,
+          itemPart: item.part,
+          fields,
+          ...(orientationAxis === undefined ? {} : { orientationProp: orientationAxis }),
+        };
+      }
+    }
   }
   // A one-time-password field group: one string channel over a counted iteration
   // of single-character native inputs whose input event sets one character.

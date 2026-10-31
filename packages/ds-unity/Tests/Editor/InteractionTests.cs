@@ -1070,5 +1070,40 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "FieldLabel", "Label", "AriaDescribedby" })
                 Assert.That(typeof(FullStackDS.OTP).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void RadioGroupBuildsNativeRadiosAndCommitsTheSelection()
+        {
+            var group = Mount(new FullStackDS.RadioGroup());
+            group.Options = new[]
+            {
+                new FullStackDS.RadioGroup.RadioGroupOption(false, "First choice", "alpha", "Alpha"),
+                new FullStackDS.RadioGroup.RadioGroupOption(false, "Second choice", "beta", "Beta"),
+                new FullStackDS.RadioGroup.RadioGroupOption(true, "Unavailable", "gamma", "Gamma"),
+            };
+            Assert.That(group.childCount, Is.EqualTo(3));
+            var radios = group.Query<UnityEngine.UIElements.RadioButton>().ToList();
+            Assert.That(radios.Count, Is.EqualTo(3));
+            Assert.That(radios[0].ClassListContains("radio-group__item"), Is.True);
+            Assert.That(radios[0].label, Is.EqualTo("Alpha"));
+            Assert.That(radios[0].tooltip, Is.EqualTo("First choice"));
+            Assert.That(radios[2].enabledSelf, Is.False);
+            group.Value = "beta";
+            Assert.That(radios[1].value, Is.True);
+            Assert.That(radios[0].value, Is.False);
+            string changed = null, requested = null;
+            group.OnChange += value => changed = value;
+            group.ValueRequested += value => requested = value;
+            radios[0].value = true;
+            Assert.That(group.Value, Is.EqualTo("alpha"));
+            Assert.That(changed, Is.EqualTo("alpha"));
+            group.Controlled = true;
+            radios[1].value = true;
+            Assert.That(requested, Is.EqualTo("beta"));
+            Assert.That(group.Value, Is.EqualTo("alpha"));
+            Assert.That(radios[0].value, Is.True);
+            group.Orientation = "horizontal";
+            Assert.That(group.ClassListContains("radio-group--horizontal"), Is.True);
+            foreach (var prop in new[] { "Name", "AriaLabel", "DataChecked" })
+                Assert.That(typeof(FullStackDS.RadioGroup).GetProperty(prop), Is.Null, prop);
+        }
     }
 }
