@@ -594,7 +594,17 @@
       "fontSize": 8,
       "weight": 800,
       "text": "boneBright",
-      "source": "first two letters of the fixture icon catalog name, uppercased"
+      "source": "explicit fixture-icon \u2192 code table above",
+      "codes": {
+        "Info": "IN",
+        "Placeholder": "PL",
+        "Home": "HO",
+        "Baseline": "BL",
+        "Alarm": "AL",
+        "CircleDot": "CD",
+        "ChevronRight": "CR",
+        "User": "US"
+      }
     },
     "cardTile": {
       "size": 40,
@@ -605,7 +615,7 @@
       "fontSize": 12,
       "weight": 800,
       "text": "boneBright",
-      "source": "first two letters of the ability name, uppercased"
+      "source": "first two alphanumeric characters of the ability name, uppercased"
     }
   }
 }

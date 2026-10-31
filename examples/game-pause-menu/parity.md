@@ -291,13 +291,15 @@ component) drew placeholder squares. Icon surfaces are now pinned to a portable
 two-letter code language so the interfaces match:
 
 - **Icon-visibility rows**: a 16 × 16 square, `graphite` fill, 1 px
-  `ruleStrong` border, square corners, containing the first two letters of the
-  fixture's `icon` catalog name uppercased (Info → `IN`, Placeholder → `PL`,
-  Home → `HO`, Baseline → `BL`, Alarm → `AL`, CircleDot → `CD`,
-  ChevronRight → `CR`, User → `US`), 8 px / 800 `boneBright`, centred.
+  `ruleStrong` border, square corners, containing the pinned code from
+  `iconArt.rowTile.codes` (Info → `IN`, Placeholder → `PL`, Home → `HO`,
+  Baseline → `BL`, Alarm → `AL`, CircleDot → `CD`, ChevronRight → `CR`,
+  User → `US`; explicit table, not a naive first-two rule), 8 px / 800
+  `boneBright`, centred.
 - **Ability-card art**: a 40 × 40 square with the same fill/border/corners,
-  containing the first two letters of the ability name uppercased
-  (THREADING → `TH`, OVERCLOCK → `OV`, …), 12 px / 800 `boneBright`, centred.
+  containing the first two alphanumeric characters of the ability name
+  uppercased (THREADING → `TH`, OVERCLOCK → `OV`, ION DRILL → `IO`, …),
+  12 px / 800 `boneBright`, centred.
   The selected-card outline stays signal.
 
 Generated `Icon` remains the realization anywhere else a target admits it; on
