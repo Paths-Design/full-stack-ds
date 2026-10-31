@@ -76,3 +76,11 @@ evidence:
     exit_code: 0
     artifact_path: packages/ds-unity/Runtime/Components/Stat/Stat.cs
     commit_sha: "6a430ac8adf8ee7423fe97c845fa6d48c296ff43"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source e032d54c9 (sourceDirty false): 55/55 passed, zero failed/skipped (test-run start 2026-10-31 09:18:15Z; resultsSha256 73c848efcd7911c7ca02adc09efdb7c8e2193d9a86765ab33c8ad33b6ed49a10). The added case composes consumer children into Stat/Blockquote/ProfileFlag, checks stat--lg/stat--up and blockquote--bordered/blockquote--sm carriers, and asserts no Cite/Profile property is exposed. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T09:19:00.232Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.PassiveContainersComposeChildrenAndCarryStyleAxes
+    command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
+    exit_code: 0
+    commit_sha: e032d54c98da2ea7e347aa6bd04660d055bb9cce
