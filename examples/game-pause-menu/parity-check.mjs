@@ -19,7 +19,7 @@
  * Font rasterisation is explicitly excluded from parity, so RMSE is a coarse
  * structural signal, not a pass/fail on glyphs.
  */
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -67,7 +67,7 @@ const PROBES = {
     [480, 132, 'signal', 'active PROGRESS tab fill'],
     [300, 420, 'paper', 'faction drawer paper ground'],
     [960, 300, 'charcoal', 'roster panel background'],
-    [1176, 244, 'signal', 'ACCESS status chip fill'],
+    [1118, 250, 'signal', 'ACCESS status chip fill'],
     [4, 780, 'ink', 'footer background'],
   ],
   abilities: [
@@ -75,7 +75,7 @@ const PROBES = {
     [800, 132, 'signal', 'active ABILITIES tab fill'],
     [60, 300, 'charcoal', 'grid panel background'],
     [880, 200, 'charcoal', 'detail panel background'],
-    [1220, 260, 'boneBright', 'detail panel text area'],
+    [1000, 200, 'charcoal', 'detail panel header background'],
     [4, 780, 'ink', 'footer background'],
   ],
   settings: [
@@ -85,7 +85,7 @@ const PROBES = {
     [680, 200, 'charcoal', 'CONTROLLER panel background'],
     [60, 500, 'charcoal', 'REMAP panel background'],
     [680, 500, 'charcoal', 'AUDIO panel background'],
-    [1208, 260, 'signal', 'first general switch ON track'],
+    [584, 238, 'signal', 'first general switch ON track'],
     [4, 780, 'ink', 'footer background'],
   ],
 };
@@ -110,11 +110,12 @@ function distance(a, b) {
 }
 
 function rmse(a, b) {
-  const raw = execFileSync('magick', ['compare', '-metric', 'RMSE', a, b, 'null:'], {
-    encoding: 'utf8',
-    stdio: ['ignore', 'ignore', 'pipe'],
-  });
-  return Number(raw.trim());
+  // `magick compare` exits 1 whenever the images differ; capture stderr regardless.
+  const result = spawnSync('magick', ['compare', '-metric', 'RMSE', a, b, 'null:'], { encoding: 'utf8' });
+  const text = `${result.stderr ?? ''}${result.stdout ?? ''}`.trim();
+  const match = /\(([\d.]+)\)/.exec(text);
+  if (!match) throw new Error(`unexpected compare output: ${text}`);
+  return Number(match[1]);
 }
 
 const failures = [];
@@ -164,13 +165,13 @@ for (const state of STATES) {
     if (value > maxRmse) {
       failures.push(`${state}: ${a}/${b} RMSE ${value.toFixed(4)} > max ${maxRmse}`);
     }
-    magick([
+    spawnSync('magick', [
       'compare',
       '-compose', 'difference',
       join(root, a, `${state}.png`),
       join(root, b, `${state}.png`),
       join(out, `${state}-diff-${a}-${b}.png`),
-    ]);
+    ], { encoding: 'utf8' });
   }
 }
 
