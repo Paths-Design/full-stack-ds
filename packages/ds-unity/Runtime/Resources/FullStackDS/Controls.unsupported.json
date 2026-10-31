@@ -1074,6 +1074,134 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Calendar",
+      "sourceKey": ".calendar__day:focus-visible",
+      "part": "day",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": ".calendar__day[aria-current=\"date\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": ".calendar__day[aria-selected=\"true\"]",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": ".calendar__grid > *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": ".calendar__grid > * > *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "caption",
+      "part": "caption",
+      "property": "line-height",
+      "value": "1.2",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "day",
+      "part": "day",
+      "property": "aspect-ratio",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "day",
+      "part": "day",
+      "property": "color",
+      "value": "inherit",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "day",
+      "part": "day",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "grid",
+      "part": "grid",
+      "property": "border-spacing",
+      "value": "0",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "grid",
+      "part": "grid",
+      "property": "display",
+      "value": "grid",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "grid",
+      "part": "grid",
+      "property": "grid-template-columns",
+      "value": "repeat(7, 1fr)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "nav",
+      "part": "nav",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "nav",
+      "part": "nav",
+      "property": "line-height",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "box-shadow",
+      "value": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Calendar",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "calendar.elevation",
+      "value": "0px 4px 6px #0000000d, 0px 10px 15px #0000001a",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Card",
       "sourceKey": ".card--interactive:active",
       "part": "root",

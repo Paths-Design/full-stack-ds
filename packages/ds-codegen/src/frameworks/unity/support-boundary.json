@@ -186,6 +186,42 @@
       "reason": "The add/remove button labels only exist as declared messages; the runtime leaves the buttons unlabelled for the consumer to set."
     },
     {
+      "id": "anatomy-dategrid-actions-lowered",
+      "match": ["contract:/anatomy/dom/**/children/header/children/nav/events/click", "contract:/anatomy/dom/**/children/grid/children/1/children/0/children/day/events/click"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (DateGrid)/DateGridControl: the declared previous/next month actions become the runtime bounded navigation and the day selection action becomes the runtime single-date selection."
+    },
+    {
+      "id": "anatomy-dategrid-keyboard-refused",
+      "match": ["contract:/anatomy/dom/**/children/grid/events/keydown"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "refused",
+      "reason": "Keyboard roving over the day grid needs the P4 keyboard family; the runtime supports pointer month navigation and day selection only."
+    },
+    {
+      "id": "anatomy-dategrid-iteration-lowered",
+      "match": ["contract:/anatomy/dom/**/children/grid/**/iterate/**"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (DateGrid)/DateGridControl: the declared weekday and six-week row/day collections are derived by the runtime from the visible month instead of emitted markup."
+    },
+    {
+      "id": "anatomy-dategrid-day-state-refused",
+      "match": ["contract:/anatomy/dom/**/children/grid/**/children/day/bindings/tabindex", "contract:/anatomy/dom/**/children/grid/**/children/day/bindings/data-date", "contract:/anatomy/dom/**/children/grid/**/children/day/bindings/data-outside-month"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "refused",
+      "reason": "The roving tabindex and the data-date/outside-month attributes have no UI Toolkit consumer; the runtime keeps day identity in memory and marks out-of-month days with an authored class."
+    },
+    {
+      "id": "anatomy-dategrid-shell-pending",
+      "match": ["contract:/anatomy/dom/**/children/header/**", "contract:/anatomy/dom/**/children/grid/**"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The authored header/table shell markup is recreated by the runtime from the declared parts rather than emitted; the authored table semantics stay pending."
+    },
+    {
       "id": "anatomy-tags",
       "match": ["contract:/anatomy/details/*/tag", "contract:/anatomy/dom/tag", "contract:/anatomy/dom/**/children/*/tag"],
       "disposition": "lowered",
@@ -715,14 +751,6 @@
       "reason": "The machine-readable datetime attribute has no UI Toolkit consumer; the visible timestamp text is projected, the datetime wiring is withheld."
     },
     {
-      "id": "anatomy-bindings",
-      "match": ["contract:/anatomy/dom/bindings/**", "contract:/anatomy/dom/**/children/*/bindings/**", "contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "Other attribute and DOM-property bindings need typed C# props; an allowlisted component that declares one must be adjudicated here."
-    },
-    {
       "id": "anatomy-action-event-click",
       "match": ["contract:/anatomy/dom/events/click"],
       "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
@@ -756,14 +784,6 @@
       "requiresAny": [{"match": ["contract:/pagedSet/channel"], "valueIn": ["page"]}],
       "disposition": "lowered",
       "via": "walker.ts (PagedSet)/PagedSetControl: the paged actions become the runtime previous/next/commit/edit/commitOnEnter handlers and the paged field bindings become the runtime draft/count/disabled state."
-    },
-    {
-      "id": "anatomy-events",
-      "match": ["contract:/anatomy/dom/events/**", "contract:/anatomy/dom/**/children/*/events/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "Authored DOM event handlers need P4 callback declarations. The form-control change event and trigger activation are synthesized by the IR and realised by the attached behavior, not authored here."
     },
     {
       "id": "anatomy-expansion-label-lowered",
@@ -920,6 +940,13 @@
       "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
       "disposition": "lowered",
       "via": "walker.ts (Transfer): the string[] channel becomes the generated Value/DefaultValue properties and the OnValueChange action; the array is not a UXML-serialisable attribute."
+    },
+    {
+      "id": "prop-calendar-channels-lowered",
+      "match": ["contract:/props/*/members/channel-value:value/**", "contract:/props/*/members/channel-default:defaultValue/**", "contract:/props/*/members/channel-change:onChange/**", "contract:/props/*/members/channel-value:month/**", "contract:/props/*/members/channel-default:defaultMonth/**", "contract:/props/*/members/channel-change:onMonthChange/**"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (DateGrid): both channels become generated ISO string attributes plus change/request callbacks; the date reference types cross the API as ISO strings."
     },
     {
       "id": "prop-channel-value",
@@ -1615,6 +1642,21 @@
       "reason": "The indicator presentation needs the composed Pagination picker the runtime withholds, and the region label only feeds aria attributes with no UI Toolkit consumer."
     },
     {
+      "id": "prop-calendar-date-api-lowered",
+      "match": ["contract:/props/*/members/plain:caption/**", "contract:/props/*/members/plain:minDate/**", "contract:/props/*/members/plain:maxDate/**", "contract:/props/*/members/plain:disabled/**"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (DateGrid): the caption, min/max dates (ISO strings) and disabled flag become generated carrier attributes owned by the date-grid runtime."
+    },
+    {
+      "id": "prop-calendar-mode-locale-refused",
+      "match": ["contract:/props/*/members/plain:mode/**", "contract:/props/*/members/plain:locale/**", "contract:/props/*/members/plain:shouldCloseOnSelect/**"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "refused",
+      "reason": "Range selection, localised dates/weekday formats and should-close wiring are not realised by the single-date ISO runtime; they are withheld rather than approximated."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -1643,6 +1685,13 @@
       "requiresAny": [{ "match": ["contract:/transfer/valueChannel"], "valueIn": ["selection"] }],
       "disposition": "lowered",
       "via": "walker.ts (Transfer)/TransferControl: the selection channel is exposed as a plain string[] API with commit/request semantics; the selected-channel attribute realisation does not apply to array channels."
+    },
+    {
+      "id": "channels-calendar-lowered",
+      "match": ["contract:/channels/**"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (DateGrid)/DateGridControl: both date channels are exposed as ISO yyyy-MM-dd string API with commit/request semantics; the reference-date types are not UXML-serialisable channel attributes, so the selected-channel realisation check does not apply."
     },
     {
       "id": "channels",
@@ -1788,11 +1837,11 @@
       "reason": "Composite controls (Select, RadioGroup, …) need a composite runtime behavior; the dispatcher rejects them today."
     },
     {
-      "id": "date-grid",
+      "id": "date-grid-calendar-lowered",
       "match": ["contract:/dateGrid/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "reason": "A month date grid (Calendar) needs a date-grid runtime behavior: locale-formatted weeks, roving focus over gridcells and the value and month channels; the dispatcher rejects it today."
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (DateGrid)/DateGridControl: the declared date-grid channels and caption/min/max/disabled/mode/locale props drive the runtime six-week grid, ISO date channels and the runtime-built shell."
     },
     {
       "id": "transfer-shuttle-lowered",
@@ -1971,12 +2020,11 @@
       "via": "behaviors.ts (Toast): timeout dismissal runs through the auto-dismiss timer, Escape through the host key handler and close-button through the close control's native activation."
     },
     {
-      "id": "dismissal",
-      "match": ["contract:/dismissal/**", "contract:/surface/dismissal/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "pointer-leave, close-button and other dismissal triggers need the blocking and hover surface behaviors and an explicit decision here."
+      "id": "dismissal-calendar-refused",
+      "match": ["contract:/dismissal/**"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "refused",
+      "reason": "The declared dismissal triggers only feed composer-owned close behaviour; the date-grid runtime neither opens a surface nor closes on selection, so the family stays unclaimed."
     },
     {
       "id": "surface-open-click",
@@ -2365,6 +2413,13 @@
       "requiresAny": [{"match": ["contract:/sequence/channel"], "valueIn": ["slide"]}],
       "disposition": "refused",
       "reason": "The authored border shorthand on the control parts is not projected onto the runtime-built native controls; the declarations are withheld rather than emitted partially."
+    },
+    {
+      "id": "styles-calendar-grid-layout-refused",
+      "match": ["styles:/grid/border-spacing/**", "styles:/grid/grid-template-columns/**"],
+      "requiresAny": [{"match": ["contract:/dateGrid/valueChannel"], "valueIn": ["value"]}],
+      "disposition": "refused",
+      "reason": "Table border-spacing and CSS grid-template-columns are not expressible in the native layout grammar; the declarations are withheld rather than emitted partially."
     },
     {
       "id": "styles",

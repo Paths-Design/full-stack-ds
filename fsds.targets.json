@@ -222,7 +222,8 @@
         "ShowMore",
         "Truncate",
         "PageNavigator",
-        "Carousel"
+        "Carousel",
+        "Calendar"
       ]
     },
     {
