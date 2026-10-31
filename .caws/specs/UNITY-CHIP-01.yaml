@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.ChipForwardsComposedActionAndDismissAndGuardsDismissPresence
     exit_code: 0
     commit_sha: "397e2c34bdf838bf84e791f9d9d450ad22f42e23"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 397e2c34b: packages/ds-unity/README.md admits Chip with its native action chrome, forwarded callbacks, guard/disabled flags and the withheld composed Button visuals/form type/ARIA/icon non-claims, and records the 69/69 lane; docs/architecture/unity-target.md records the composed-action dispatcher mode, the no-runtime attach path and the 69/69 lane; docs/current-implementation-snapshot.md records the twenty-ninth admitted control with those facts."
+    recorded_at: "2026-10-31T12:48:00.207Z"
+    commit_sha: "397e2c34bdf838bf84e791f9d9d450ad22f42e23"
