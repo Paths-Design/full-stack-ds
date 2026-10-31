@@ -2835,6 +2835,62 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "aspect-ratio",
+      "value": "var(--fsds-image-prop-aspect-ratio, auto)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "height",
+      "value": "revert-layer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "max-width",
+      "value": "100%",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "object-fit",
+      "value": "var(--fsds-image-prop-object-fit, fill)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "object-position",
+      "value": "var(--fsds-image-prop-object-position, 50% 50%)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "width",
+      "value": "revert-layer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Image",
+      "sourceKey": "structure",
+      "part": "root",
+      "property": "max-width",
+      "value": "100%",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Input",
       "sourceKey": "--invalid",
       "part": "root",

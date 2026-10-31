@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -183,6 +183,16 @@ export interface AnchorLowering {
   relProp?: string;
   disabledProp?: string;
 }
+/**
+ * A native media element: the generated class derives the UI Toolkit Image
+ * element, and the declared source string is loaded as a Resources texture by
+ * ImageControl. URL fetching, alternative text semantics and responsive source
+ * selection are not realised.
+ */
+export interface MediaLowering {
+  behavior: "Media";
+  srcProp: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -196,7 +206,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -522,6 +532,15 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A native media element: an `<img>` root with a prop-bound source. The host
+  // derives the UI Toolkit Image element and ImageControl loads the source as a
+  // Resources texture; no URL fetching or alternative text is realised.
+  if (ir.dom?.tag === "img" && ir.dom.bindings.src?.kind === "prop" && !ir.interaction && !ir.formControl &&
+      ir.surface === undefined && ir.behavior.normalizedChannels.length === 0) {
+    const src = ir.dom.bindings.src;
+    if (src.kind !== "prop" || src.path?.length) throw new Error(`UNITY_UNSUPPORTED_MEDIA: ${ir.name} source binding is not a direct prop`);
+    return { behavior: "Media", srcProp: src.prop };
   }
   // A navigable anchor: an `<a>` root whose destination metadata is
   // prop-bound. The generated host never navigates; the runtime raises an

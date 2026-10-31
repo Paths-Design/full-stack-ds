@@ -179,8 +179,10 @@
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-control-radius-pill: 9999px;
+    --fsds-semantic-shape-radius-full: 9999px;
     --fsds-semantic-shape-radius-large: 16px;
     --fsds-semantic-shape-radius-medium: 8px;
+    --fsds-semantic-shape-radius-none: 0px;
     --fsds-semantic-shape-radius-small: 4px;
     --fsds-semantic-spacing-density-compact-sm: 8px;
     --fsds-semantic-spacing-gap-grid-small: 8px;
@@ -6091,4 +6093,108 @@
     border-width: var(--fsds-links-focus-ring-width, 2px);
     border-color: var(--fsds-links-focus-ring-color, #0566fe);
     border-radius: var(--fsds-links-focus-ring-radius, 4px);
+}
+
+/* Image (.image) */
+.image {
+    --fsds-box-model-max-width: 100%;
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: 0;
+    --fsds-box-model-padding-block-end: 0;
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: 0;
+    --fsds-box-model-padding-inline-end: 0;
+    --fsds-box-model-gap: var(--fsds-semantic-display-size-gap, 4px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-image-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+    --fsds-image-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-image-size-xs: 24px;
+    --fsds-image-size-sm: 32px;
+    --fsds-image-size-md: 48px;
+    --fsds-image-size-lg: 64px;
+    --fsds-image-size-xl: 96px;
+    --fsds-image-radius-none: var(--fsds-semantic-shape-radius-none, 0px);
+    --fsds-image-radius-sm: var(--fsds-semantic-shape-radius-small, 4px);
+    --fsds-image-radius-md: var(--fsds-semantic-shape-radius-medium, 8px);
+    --fsds-image-radius-lg: var(--fsds-semantic-shape-radius-large, 16px);
+    --fsds-image-radius-full: var(--fsds-semantic-shape-radius-full, 9999px);
+}
+
+.image {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 0);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 0);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 0);
+    padding-right: var(--fsds-box-model-padding-inline-end, 0);
+    --fsds-gap: var(--fsds-box-model-gap, 4px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+    display: flex;
+    flex-direction: column;
+}
+
+.image {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--fsds-image-color-background, #f7f7f7);
+    color: var(--fsds-image-color-foreground-primary, #141414);
+}
+
+.image.image--size-xs {
+    width: var(--fsds-image-size-xs, 24px);
+    height: var(--fsds-image-size-xs, 24px);
+}
+
+.image.image--size-sm {
+    width: var(--fsds-image-size-sm, 32px);
+    height: var(--fsds-image-size-sm, 32px);
+}
+
+.image.image--size-md {
+    width: var(--fsds-image-size-md, 48px);
+    height: var(--fsds-image-size-md, 48px);
+}
+
+.image.image--size-lg {
+    width: var(--fsds-image-size-lg, 64px);
+    height: var(--fsds-image-size-lg, 64px);
+}
+
+.image.image--size-xl {
+    width: var(--fsds-image-size-xl, 96px);
+    height: var(--fsds-image-size-xl, 96px);
+}
+
+.image.image--size-full {
+    width: 100%;
+    height: auto;
+}
+
+.image.image--radius-none {
+    border-radius: var(--fsds-image-radius-none, 0px);
+}
+
+.image.image--radius-sm {
+    border-radius: var(--fsds-image-radius-sm, 4px);
+}
+
+.image.image--radius-md {
+    border-radius: var(--fsds-image-radius-md, 8px);
+}
+
+.image.image--radius-lg {
+    border-radius: var(--fsds-image-radius-lg, 16px);
+}
+
+.image.image--radius-full {
+    border-radius: var(--fsds-image-radius-full, 9999px);
 }

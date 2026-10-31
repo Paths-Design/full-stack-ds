@@ -404,6 +404,20 @@
       "reason": "The label's DOM field-association bindings have no UI Toolkit form model; the passive wrapper ignores them and the field family is P4."
     },
     {
+      "id": "anatomy-media-source-binding-lowered",
+      "match": ["contract:/anatomy/dom/bindings/src"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Media)/ImageControl: the prop-bound source is loaded as a Resources texture into the native Image element; the runtime never fetches URLs."
+    },
+    {
+      "id": "anatomy-media-bindings-refused",
+      "match": ["contract:/anatomy/dom/bindings/alt", "contract:/anatomy/dom/bindings/width", "contract:/anatomy/dom/bindings/height", "contract:/anatomy/dom/bindings/loading", "contract:/anatomy/dom/bindings/sizes"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }],
+      "disposition": "refused",
+      "reason": "Alternative text, intrinsic sizing and responsive loading attributes have no UI Toolkit counterpart; the generated media element withholds them rather than approximating assistive or responsive behaviour."
+    },
+    {
       "id": "anatomy-anchor-destination-bindings-lowered",
       "match": ["contract:/anatomy/dom/bindings/href", "contract:/anatomy/dom/bindings/target", "contract:/anatomy/dom/bindings/rel"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["a"] }],
@@ -580,6 +594,21 @@
       "match": ["contract:/props/*/members/form-field:*/**"],
       "disposition": "refused",
       "reason": "HTML form submission fields (name, value) have no UI Toolkit counterpart: there is no form element to serialise into."
+    },
+    {
+      "id": "prop-media-source-lowered",
+      "match": ["contract:/props/*/members/plain:src/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Media): the source prop becomes a generated attribute backed by ImageControl's Resources texture loading."
+    },
+    {
+      "id": "prop-media-refused",
+      "match": ["contract:/props/*/members/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }],
+      "disposition": "refused",
+      "reason": "Alternative text, intrinsic sizing, aspect ratio, fit/position, loading strategy, sizes, validation/placeholder and fallback-source props exceed the native texture element; they are withheld rather than approximated."
     },
     {
       "id": "prop-anchor-destination-lowered",
@@ -1599,6 +1628,21 @@
       "declaration": { "valuePattern": "^(?:pre|pre-wrap|pre-line|break-spaces)$" },
       "disposition": "refused",
       "reason": "USS white-space supports only normal/nowrap; the projection lists the declaration uss-scalar and the passive lowering does not approximate it."
+    },
+    {
+      "id": "styles-image-intrinsic-geometry-pending",
+      "match": ["styles:/*/width/**", "styles:/*/height/**", "styles:/*/max-width/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Fixed intrinsic media geometry resolves through authored relative lengths the native texture element does not carry; the declarations are ledgered uss-scalar pending the P4 sizing family."
+    },
+    {
+      "id": "styles-image-object-fit-refused",
+      "match": ["styles:/*/object-fit/**", "styles:/*/object-position/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["img"] }],
+      "disposition": "refused",
+      "reason": "USS has no object-fit/object-position; the native Image element exposes only low-level scale/source-rect primitives that the generated media API does not claim."
     },
     {
       "id": "styles-modifier-height-refused",
