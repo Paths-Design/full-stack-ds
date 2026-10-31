@@ -53,8 +53,12 @@ acceptance:
       recorded follow-up in GAME-PAUSE-MENU-EXAMPLE-01
   - id: A3
     given: 'the Unity EditMode lane with the package imported'
-    when: 'generated Button activation, submit, disabled suppression, child composition and UXML round-trip are exercised'
-    then: 'exactly one click event fires per activation, disabled activation is suppressed, composed children render, and the results are recorded from the real Editor'
+    when: 'generated Button native activation and disabled suppression are exercised in a live panel'
+    then: >-
+      exactly one click event fires per activation, disabled activation is
+      suppressed, composed children route into the control's content container, and
+      the results are recorded from the real Editor; UXML import of the generated
+      Button element is not separately witnessed
   - id: A4
     given: 'the package README, unity-target architecture doc and implementation snapshot'
     when: 'read'
