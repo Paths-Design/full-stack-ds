@@ -1,9 +1,11 @@
 id: UNITY-WALKTHROUGH-01
 title: 'Admit Walkthrough to the Unity target as an inline coachmark scaffold'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Walkthrough admitted to the Unity target/package (thirty-seventh allowlisted control) as an inline coachmark scaffold: title/description slot hosts, native skip/previous/next controls wired to generated actions, consumer-managed numeric step attribute, previous-disabled and counter/next-label attributes; dots iteration, message labels, selector anchoring/placement, dismissal and auto-start/storage refused/pending, obsolete generic surface catch-all removed; codegen+cli 229/229, boundary audit clean, real Unity EditMode 78/78, package sheet regenerated'
 created_at: '2026-10-31T14:20:43.695Z'
-updated_at: '2026-10-31T14:35:07.759Z'
+updated_at: '2026-10-31T14:35:30.008Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
