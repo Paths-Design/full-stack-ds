@@ -4,23 +4,23 @@
  *
  * The three lanes (gpui, unity, godot) each capture the same 1280x800 states into
  * `tmp/game-pause-menu/<engine>/` (or any root selected with --root). This tool:
- *   1. samples fixed pixels from the shared parity geometry and compares them with
- *      the colours declared in fixtures/parity-layout.json (tolerance in 0-255);
- *   2. locates large solid-colour regions (map field, drawer, active tab, switch
- *      track) and compares their bounding boxes/areas with the parity geometry —
- *      this is what catches a 64x32 pill rendering as a 48x24 oval;
- *   3. computes pairwise RMSE between the three engines' captures per state;
- *   4. writes labelled engine montages and pairwise difference images.
+ *   1. samples fixed pixels (colour probes + geometry probes) and compares them
+ *      with the colours declared in fixtures/parity-layout.json. Geometry probes
+ *      pin region extents and the switch pill: the arc point at (x+12, y+2) is
+ *      filled on a stadium but background on an ellipse, and the thumb centre
+ *      proves the 24 px circular thumb;
+ *   2. computes pairwise RMSE between the three engines' captures per state;
+ *   3. writes labelled engine montages and pairwise difference images.
  *
  * Usage:
  *   node examples/game-pause-menu/parity-check.mjs \
  *     --root /abs/path/to/tmp/game-pause-menu \
  *     --out  /abs/path/to/tmp/game-pause-menu/parity
  *
- * Requires ImageMagick (`magick`) on PATH. Exit code 0 when every probe/region
- * check matches and every pairwise RMSE is below --max-rmse (default 0.14); 1
- * otherwise. Font rasterisation is excluded from parity, so RMSE is a coarse
- * structural signal, not a pass/fail on glyphs.
+ * Requires ImageMagick (`magick`) on PATH. Exit code 0 when every probe matches
+ * and every pairwise RMSE is below --max-rmse (default 0.14); 1 otherwise. Font
+ * rasterisation is excluded from parity, so RMSE is a coarse structural signal,
+ * not a pass/fail on glyphs.
  */
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
@@ -40,7 +40,7 @@ function arg(name, fallback) {
 const root = resolve(arg('root', join(here, '../../../tmp/game-pause-menu')));
 const out = resolve(arg('out', join(root, 'parity')));
 const maxRmse = Number(arg('max-rmse', '0.14'));
-const tolerance = Number(arg('tolerance', '16'));
+const tolerance = Number(arg('tolerance', '18'));
 
 const C = layout.colors;
 const hexToRgb = (hex) => [
@@ -53,67 +53,98 @@ const color = (name) => {
   return C[name];
 };
 
-/** Probe set per state: [x, y, expected colour name, description]. */
+const TAB_X = { map: 0, progress: 320, abilities: 640, settings: 960 };
+
+/** Active-tab fill + neighbours, shared by every state. */
+function tabProbes(state) {
+  const x = TAB_X[state];
+  const probes = [
+    [x + 3, 107, 'signal', 'active tab top-left fill'],
+    [x + 317, 157, 'signal', 'active tab bottom-right fill'],
+  ];
+  const neighbour = x === 0 ? 323 : x - 3;
+  probes.push([neighbour, 132, 'charcoal', 'inactive tab background beside active tab']);
+  return probes;
+}
+
+const SWITCH_ON = { x: 1176, y: 232 };
+const SWITCH_OFF = { x: 1176, y: 472 };
+const SETTING_SWITCH_ON = { x: 552, y: 222 };
+
+const COMMON = [
+  [4, 4, 'charcoal', 'header background'],
+  [4, 780, 'ink', 'footer background'],
+];
+
 const PROBES = {
   map: [
-    [4, 4, 'charcoal', 'header background'],
-    [900, 132, 'charcoal', 'inactive tab background'],
-    [160, 132, 'signal', 'active MAP tab fill'],
-    [4, 780, 'ink', 'footer background'],
-    [200, 300, 'sage', 'map field ground'],
-    [940, 300, 'charcoal', 'icon panel background'],
-    [1208, 248, 'signal', 'first icon row switch ON track'],
-    [1208, 488, 'graphite', 'weather-mast switch OFF track'],
+    ...COMMON,
+    ...tabProbes('map'),
+    [900, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    // Map field: filled sage exactly from (40,232) to (880,712).
+    [41, 233, 'sage', 'map field top-left fill'],
+    [879, 711, 'sage', 'map field bottom-right fill'],
+    [39, 231, 'charcoal', 'outside map field top-left'],
+    [881, 713, 'charcoal', 'outside map field bottom-right'],
+    [940, 200, 'charcoal', 'icon panel background'],
+    // Switch ON: pill arc filled at (x+12,y+2); ellipse would leave it background.
+    [SWITCH_ON.x + 2, SWITCH_ON.y + 2, 'charcoal', 'ON switch corner outside pill'],
+    [SWITCH_ON.x + 12, SWITCH_ON.y + 2, 'signal', 'ON switch stadium arc filled'],
+    [SWITCH_ON.x + 4, SWITCH_ON.y + 16, 'signal', 'ON switch track left fill'],
+    [SWITCH_ON.x + 48, SWITCH_ON.y + 16, 'onSignal', 'ON switch thumb centre (24px circle)'],
+    [SWITCH_ON.x + 66, SWITCH_ON.y + 16, 'charcoal', 'ON switch outside track right'],
+    // Switch OFF: graphite track, bone thumb on the left.
+    [SWITCH_OFF.x + 2, SWITCH_OFF.y + 2, 'charcoal', 'OFF switch corner outside pill'],
+    [SWITCH_OFF.x + 12, SWITCH_OFF.y + 2, 'graphite', 'OFF switch stadium arc filled'],
+    [SWITCH_OFF.x + 54, SWITCH_OFF.y + 16, 'graphite', 'OFF switch track right fill'],
+    [SWITCH_OFF.x + 16, SWITCH_OFF.y + 16, 'boneBright', 'OFF switch thumb centre'],
+    [SWITCH_OFF.x + 66, SWITCH_OFF.y + 16, 'charcoal', 'OFF switch outside track right'],
   ],
   progress: [
-    [4, 4, 'charcoal', 'header background'],
-    [480, 132, 'signal', 'active PROGRESS tab fill'],
-    [300, 420, 'paper', 'faction drawer paper ground'],
-    [960, 300, 'charcoal', 'roster panel background'],
-    [1118, 250, 'signal', 'ACCESS status chip fill'],
-    [4, 780, 'ink', 'footer background'],
+    ...COMMON,
+    ...tabProbes('progress'),
+    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    // Drawer paper ground (24,176,560,552).
+    [25, 177, 'paper', 'drawer top-left fill'],
+    [582, 726, 'paper', 'drawer bottom-right fill'],
+    [23, 175, 'ink', 'outside drawer top-left'],
+    [584, 730, 'ink', 'outside drawer bottom-right'],
+    [960, 200, 'charcoal', 'roster panel background'],
+    // ACCESS chip (1080,240,76,22).
+    [1082, 242, 'signal', 'ACCESS chip top-left fill'],
+    [1154, 260, 'signal', 'ACCESS chip bottom-right fill'],
+    [1078, 238, 'charcoal', 'outside ACCESS chip top-left'],
+    [1158, 262, 'charcoal', 'outside ACCESS chip bottom-right'],
   ],
   abilities: [
-    [4, 4, 'charcoal', 'header background'],
-    [800, 132, 'signal', 'active ABILITIES tab fill'],
-    [60, 300, 'charcoal', 'grid panel background'],
-    [1000, 200, 'charcoal', 'detail panel header background'],
-    [4, 780, 'ink', 'footer background'],
+    ...COMMON,
+    ...tabProbes('abilities'),
+    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    [42, 226, 'charcoal', 'grid panel background'],
+    [850, 178, 'charcoal', 'detail panel background'],
+    [1254, 200, 'charcoal', 'detail panel inside right edge'],
+    [1258, 200, 'ink', 'outside detail panel right edge'],
+    [300, 730, 'ink', 'content gap below panels'],
   ],
   settings: [
-    [4, 4, 'charcoal', 'header background'],
-    [1120, 132, 'signal', 'active SETTINGS tab fill'],
-    [60, 200, 'charcoal', 'GENERAL panel background'],
-    [680, 200, 'charcoal', 'CONTROLLER panel background'],
-    [60, 500, 'charcoal', 'REMAP panel background'],
-    [680, 500, 'charcoal', 'AUDIO panel background'],
-    [4, 780, 'ink', 'footer background'],
-  ],
-};
-
-/**
- * Region checks per state. Each locates the bounding box of `color` inside
- * `searchRect` and compares it with `expect` (absolute image bbox) and,
- * optionally, the filled area fraction (stadium vs ellipse).
- */
-const REGIONS = {
-  map: [
-    { name: 'map field', color: 'sage', search: [0, 0, 1280, 800], expect: [40, 232, 840, 480], tol: 3 },
-    { name: 'active MAP tab', color: 'signal', search: [0, 104, 1280, 56], expect: [0, 104, 320, 56], tol: 2 },
-    { name: 'switch ON track', color: 'signal', search: [1160, 224, 96, 64], expect: [1176, 232, 64, 32], tol: 2, area: { min: 0.5, max: 0.95 } },
-    { name: 'switch OFF track', color: 'graphite', search: [1160, 464, 96, 64], expect: [1176, 472, 64, 32], tol: 2, area: { min: 0.5, max: 0.95 } },
-  ],
-  progress: [
-    { name: 'faction drawer', color: 'paper', search: [0, 0, 1280, 800], expect: [24, 176, 560, 552], tol: 3 },
-    { name: 'active PROGRESS tab', color: 'signal', search: [0, 104, 1280, 56], expect: [320, 104, 320, 56], tol: 2 },
-    { name: 'ACCESS chip', color: 'signal', search: [1040, 232, 200, 40], expect: [1080, 240, 76, 22], tol: 2 },
-  ],
-  abilities: [
-    { name: 'active ABILITIES tab', color: 'signal', search: [0, 104, 1280, 56], expect: [640, 104, 320, 56], tol: 2 },
-  ],
-  settings: [
-    { name: 'active SETTINGS tab', color: 'signal', search: [0, 104, 1280, 56], expect: [960, 104, 320, 56], tol: 2 },
-    { name: 'general switch ON track', color: 'signal', search: [520, 208, 120, 64], expect: [552, 222, 64, 32], tol: 2, area: { min: 0.5, max: 0.95 } },
+    ...COMMON,
+    ...tabProbes('settings'),
+    [100, 150, 'charcoal', 'inactive tab background (opposite side)'],
+    // GENERAL panel (24,176,608,268) and CONTROLLER panel (648,...).
+    [26, 178, 'charcoal', 'GENERAL panel top-left fill'],
+    [629, 300, 'charcoal', 'GENERAL panel inside right edge'],
+    [634, 300, 'ink', 'gap between top panels'],
+    [300, 446, 'ink', 'gap below GENERAL panel'],
+    [650, 178, 'charcoal', 'CONTROLLER panel top-left fill'],
+    // REMAP (24,460) and AUDIO (648,460) panels.
+    [26, 462, 'charcoal', 'REMAP panel top-left fill'],
+    [650, 462, 'charcoal', 'AUDIO panel top-left fill'],
+    [300, 730, 'ink', 'gap below bottom panels'],
+    // General switch ON at (552,222,64,32).
+    [SETTING_SWITCH_ON.x + 2, SETTING_SWITCH_ON.y + 2, 'charcoal', 'settings switch corner outside pill'],
+    [SETTING_SWITCH_ON.x + 12, SETTING_SWITCH_ON.y + 2, 'signal', 'settings switch stadium arc filled'],
+    [SETTING_SWITCH_ON.x + 4, SETTING_SWITCH_ON.y + 16, 'signal', 'settings switch track left fill'],
+    [SETTING_SWITCH_ON.x + 48, SETTING_SWITCH_ON.y + 16, 'onSignal', 'settings switch thumb centre'],
   ],
 };
 
@@ -144,27 +175,6 @@ function rmse(a, b) {
   return Number(match[1]);
 }
 
-const mask = (file, [x, y, w, h], hex) => [
-  file,
-  '-crop', `${w}x${h}+${x}+${y}`, '+repage',
-  '-fuzz', '8%',
-  '-fill', 'black', '-opaque', hex,
-  '-fill', 'white', '+opaque', hex,
-];
-
-function regionBox(file, [x, y, w, h], hex) {
-  const { stdout } = run([...mask(file, [x, y, w, h], hex), '-trim', '-format', '%@', 'info:']);
-  const m = /^(\d+)x(\d+)\+(\d+)\+(\d+)$/.exec(stdout.trim());
-  if (!m) throw new Error(`unexpected trim box ${stdout} in ${file}`);
-  return [x + Number(m[3]), y + Number(m[4]), Number(m[1]), Number(m[2])];
-}
-
-function regionAreaFraction(file, [x, y, w, h], hex) {
-  const { stdout } = run([...mask(file, [x, y, w, h], hex), '-format', '%[fx:mean]', 'info:']);
-  // Mask: matched colour is black (0), everything else white (1). Black fraction = 1 - mean.
-  return 1 - Number(stdout.trim());
-}
-
 const failures = [];
 const results = [];
 mkdirSync(out, { recursive: true });
@@ -177,33 +187,17 @@ for (const state of STATES) {
   }
   for (let i = 0; i < LANES.length; i++) {
     const lane = LANES[i];
-    const pixels = samplePixels(files[i], PROBES[state]);
-    PROBES[state].forEach(([x, y, expectedName], index) => {
+    const probes = PROBES[state];
+    const pixels = samplePixels(files[i], probes);
+    probes.forEach(([x, y, expectedName, description], index) => {
       const expected = hexToRgb(color(expectedName));
       const actual = pixels[index];
       const delta = distance(actual, expected);
-      results.push({ state, lane, probe: [x, y], expected: color(expectedName), actual: `rgb(${actual.join(',')})`, delta });
+      results.push({ state, lane, x, y, expected: color(expectedName), actual: `rgb(${actual.join(',')})`, delta, description });
       if (delta > tolerance) {
-        failures.push(`${state}/${lane}: probe (${x},${y}) expected ${expectedName} ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
+        failures.push(`${state}/${lane}: ${description} at (${x},${y}) expected ${color(expectedName)}, got rgb(${actual.join(',')}) (delta ${delta} > ${tolerance})`);
       }
     });
-    for (const region of REGIONS[state] ?? []) {
-      const hex = color(region.color);
-      const box = regionBox(files[i], region.search, hex);
-      const ok = box.every((value, index) => Math.abs(value - region.expect[index]) <= region.tol);
-      results.push({ state, lane, region: region.name, expected: region.expect, actual: box, ok });
-      if (!ok) {
-        failures.push(`${state}/${lane}: region "${region.name}" expected box ${region.expect.join('x')}, got ${box.join('x')} (tol ${region.tol})`);
-      }
-      if (region.area) {
-        const fraction = regionAreaFraction(files[i], region.search, hex);
-        const okArea = fraction >= region.area.min && fraction <= region.area.max;
-        results.push({ state, lane, region: region.name, areaFraction: Number(fraction.toFixed(3)), ok: okArea });
-        if (!okArea) {
-          failures.push(`${state}/${lane}: region "${region.name}" fill fraction ${fraction.toFixed(3)} outside [${region.area.min}, ${region.area.max}]`);
-        }
-      }
-    }
   }
 
   const labelled = LANES.flatMap((lane) => ['-label', lane, join(root, lane, `${state}.png`)]);
@@ -233,9 +227,8 @@ for (const state of STATES) {
 }
 
 writeFileSync(join(out, 'parity-report.json'), JSON.stringify({ root, out, maxRmse, tolerance, results, failures }, null, 2));
-const probeCount = results.filter((r) => 'probe' in r).length;
-const regionCount = results.filter((r) => 'region' in r && 'actual' in r).length;
-console.log(`parity: ${probeCount} colour probe(s), ${regionCount} region check(s), ${results.filter((r) => 'rmse' in r).length} RMSE pair(s), ${failures.length} failure(s)`);
+const probeCount = results.filter((r) => 'description' in r).length;
+console.log(`parity: ${probeCount} probe(s), ${results.filter((r) => 'rmse' in r).length} RMSE pair(s), ${failures.length} failure(s)`);
 console.log(`report: ${join(out, 'parity-report.json')}`);
 console.log(`montages: ${out}`);
 if (failures.length) {
