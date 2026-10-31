@@ -75,8 +75,8 @@ namespace FullStackDS
             set
             {
                 valueExplicit = true;
-                hasValue = TryParse(value, out value);
-                if (hasValue) month = new DateTime(value.Year, value.Month, 1);
+                hasValue = TryParse(value, out var parsed);
+                if (hasValue) { value = parsed; month = new DateTime(parsed.Year, parsed.Month, 1); }
                 Apply();
             }
         }
@@ -87,8 +87,8 @@ namespace FullStackDS
             set
             {
                 if (valueExplicit) return;
-                hasValue = TryParse(value, out value);
-                if (hasValue) month = new DateTime(value.Year, value.Month, 1);
+                hasValue = TryParse(value, out var parsed);
+                if (hasValue) { value = parsed; month = new DateTime(parsed.Year, parsed.Month, 1); }
                 Apply();
             }
         }
