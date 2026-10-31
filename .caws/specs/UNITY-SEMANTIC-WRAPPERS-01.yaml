@@ -82,3 +82,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: "24b8ea1c6213a1a4fd77d05146074d62e51e0311"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 24b8ea1c6: packages/ds-unity/README.md admits Label and Breadcrumbs with their content regions, refused pending DOM-metadata non-claims and the native Label qualification note, and records the 59/59 lane; docs/architecture/unity-target.md records the passive-root metadata binding rule and the 59/59 lane; docs/current-implementation-snapshot.md records the eighteenth and nineteenth admitted controls with those facts."
+    recorded_at: "2026-10-31T10:22:56.134Z"
+    commit_sha: "24b8ea1c6213a1a4fd77d05146074d62e51e0311"
