@@ -79,9 +79,9 @@ evidence:
     commit_sha: "6b4c17b03"
   - criterion_id: A4
     status: pass
-    evidence_ref: "Unity lane: 31/31 EditMode tests passed, and still 31/31 after merging current main and regenerating the expanded 48-component sheet; standalone macOS Player capture passed=true with 13 checks and six 1280x800 PNGs including required four; lane README carries inventory, fallback ledger and target-drift note; lane commits 85885adf2 plus integration fix d93248e4f merged into main via d468c4503"
-    recorded_at: "2026-10-31T17:48:26.253Z"
-    artifact_path: tmp/game-pause-menu/unity/result.json
+    evidence_ref: "Unity lane: 31/31 EditMode tests passed, and still 31/31 after merging current main and regenerating the expanded 48-component sheet; standalone macOS Player capture passed=true with 13 checks and six 1280x800 PNGs including required four; README documents commands, results, inventory, fallback ledger and target-drift note; lane commits 85885adf2 plus integration fix d93248e4f merged into main via d468c4503"
+    recorded_at: "2026-10-31T17:49:00.136Z"
+    artifact_path: examples/game-pause-menu/unity/README.md
     commit_sha: "85885adf2"
   - criterion_id: A5
     status: pass
