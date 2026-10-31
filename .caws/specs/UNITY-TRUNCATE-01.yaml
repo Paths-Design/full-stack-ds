@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.TruncateGuardsItsToggleAndOwnsTheExpansionChannel
     exit_code: 0
     commit_sha: "01c88ac69142e0314c1b274e049f9e5beb5b360f"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 01c88ac69: packages/ds-unity/README.md admits Truncate as the guarded expansion with its contentContainer slot, expandable switch, label attributes and the withheld line-count/clamp facts, and records the 90/90 lane; docs/architecture/unity-target.md records the no-interaction Expansion selection and the 90/90 lane; docs/current-implementation-snapshot.md records the forty-ninth admitted control with those facts."
+    recorded_at: "2026-10-31T17:42:45.665Z"
+    commit_sha: "01c88ac69142e0314c1b274e049f9e5beb5b360f"
