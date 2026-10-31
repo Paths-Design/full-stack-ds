@@ -79,3 +79,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: "402c469f99bc3b6a7a1fac6300d8eeb3d5e63859"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 402c469f9: packages/ds-unity/README.md admits Card with its composed parts, density carrier, refused interactive affordance and the Godot parity note, and records the 62/62 lane; docs/architecture/unity-target.md records the parts-only passive class and the 62/62 lane; docs/current-implementation-snapshot.md records the twenty-second admitted control with those facts."
+    recorded_at: "2026-10-31T11:06:59.097Z"
+    commit_sha: "402c469f99bc3b6a7a1fac6300d8eeb3d5e63859"
