@@ -78,3 +78,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: "395780b6233ea78768e54beab47cffe53926092e"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 395780b62: packages/ds-unity/README.md admits Badge with its carrier axes, composed BadgeContent and the pending/refused icon facts, and records the 56/56 lane; docs/architecture/unity-target.md records the node-content omission by fact, boundary additions and the 56/56 lane; docs/current-implementation-snapshot.md records the fourteenth admitted control with carrier/omission facts and lane evidence."
+    recorded_at: "2026-10-31T09:32:01.565Z"
+    commit_sha: "395780b6233ea78768e54beab47cffe53926092e"
