@@ -402,16 +402,14 @@ function passiveRootApi(ctx: Context): RootApi {
 
 function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan, omitted?: (node: DomNodeIR) => boolean): void {
   if (!node || omitted?.(node)) return;
-  // A conditional data attribute is DOM metadata, not a UI Toolkit API. The
-  // admission boundary must explicitly classify it pending before generation.
   // A passive root's DOM-metadata bindings are platform facts the passive
-  // lowering does not render: a11y role/aria attributes, and field-association
-  // attributes (htmlFor, form). The admission boundary classifies their leaves.
+  // lowering does not render: a11y role/aria attributes on any node, and the
+  // root's field-association attributes (htmlFor, form). The admission boundary
+  // classifies their leaves.
   const unsupportedBindings = Object.entries(node.bindings).some(([attribute, value]) => {
-    const rootMetadataBinding = node === ir.dom &&
-      (attribute === "role" || attribute.startsWith("aria-") || attribute === "htmlFor" || attribute === "form");
+    if (attribute === "role" || attribute.startsWith("aria-")) return false;
+    const rootMetadataBinding = node === ir.dom && (attribute === "htmlFor" || attribute === "form");
     if (rootMetadataBinding) return false;
-    if (glyph && node === ir.dom && (attribute === "role" || attribute.startsWith("aria-"))) return false;
     if (!/^data-[a-z][a-z0-9-]*$/.test(attribute) || value.kind !== "conditional" || value.condition.kind !== "prop") return true;
     const sourceProp = value.condition.prop;
     return !ir.styledProps.some(prop => prop.name === sourceProp) ||

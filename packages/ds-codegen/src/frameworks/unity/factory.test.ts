@@ -5,7 +5,7 @@ import type { ComponentContract } from "../../contract.js";
 import { buildComponentIR } from "../../ir.js";
 import { createUnityEmitter, unityLowering } from "./factory.js";
 import { createDefaultRegistry } from "../../registry.js";
-import { classifyContract, loadContractWithSidecars } from "./boundary.js";
+import { classifyContract, loadBoundary, loadContractWithSidecars } from "./boundary.js";
 import { rootPublicMembers } from "./walker.js";
 
 const root = path.resolve(__dirname, "../../../../..");
@@ -146,7 +146,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List", "Alert", "AlertNotice", "Label", "Breadcrumbs", "Tooltip", "Status", "Card", "NavList", "Skeleton", "Table"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -641,6 +641,18 @@ describe("Unity behavior selection refusals", () => {
     expect(source).toContain("public partial class CardHeader : VisualElement");
     expect(source).toContain('public string Density { get => Variants.Get(this, "card", "default", "inset");');
     expect(source).not.toMatch(/Interactive/);
+  });
+
+  it("keeps the keyboard claim lowered only where a channel or projected action root realises it", () => {
+    const boundary = loadBoundary();
+    const keyboardOf = (name: string) => classifyContract(loadContractWithSidecars(root, name) as never, boundary)
+      .filter(leaf => leaf.keyed.startsWith("/a11y/keyboard/"));
+    const table = keyboardOf("Table");
+    expect(table.length).toBeGreaterThan(0);
+    expect(table.every(leaf => leaf.disposition === "refused")).toBe(true);
+    const tabs = keyboardOf("Tabs");
+    expect(tabs.length).toBeGreaterThan(0);
+    expect(tabs.every(leaf => leaf.disposition === "lowered")).toBe(true);
   });
 
   it("suffixes a generated member that would collide with its class name", () => {

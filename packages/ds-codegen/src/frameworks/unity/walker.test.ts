@@ -183,4 +183,16 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/UnrelatedPlaceholder(?:Stack|Row|Shape)\b/);
     expect(source).not.toMatch(/Lines|Radius|AspectRatio|Decorative|AriaLabel/);
   });
+
+  it("lowers the semantic table container with its native region and composed parts", () => {
+    const source = emit(irFor("Table", "UnrelatedGrid"));
+    expect(source).toContain("public partial class UnrelatedGrid : VisualElement");
+    expect(source).toContain("public VisualElement Container { get; } = new VisualElement();");
+    expect(source).toContain("public override VisualElement contentContainer => Container;");
+    expect(source).toContain('AddToClassList("table__container");');
+    for (const part of ["Caption", "Head", "Body", "Footer", "Row", "Cell", "HeaderCell"]) {
+      expect(source).toContain(`public partial class UnrelatedGrid${part} : VisualElement`);
+    }
+    expect(source).not.toMatch(/Responsive|AriaLabel/);
+  });
 });
