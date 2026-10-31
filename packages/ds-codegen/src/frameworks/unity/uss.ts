@@ -59,7 +59,7 @@ import path from "node:path";
 import type { ComponentIR } from "../../ir.js";
 import type { NativeStyleDeclarationIR, NativeStylePredicateIR, NativeStyleRuleIR } from "../../native-style-rules.js";
 import { tokenSlug } from "../../token-path.js";
-import { disabledProp, unityLowering, type UnityLowering } from "./behaviors.js";
+import { disabledProp, hasChannel, unityLowering, type UnityLowering } from "./behaviors.js";
 
 export type UssReason =
   | "uss-property"
@@ -698,6 +698,7 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
   const owners = new Map<string, string[]>();
   const carriers: string[] = [];
   const { lowering } = ctx;
+  const channel = hasChannel(lowering) ? lowering.channel : undefined;
   const atOwner = (owner: string | undefined, qualifier: string, host: string[]): UssReason | undefined => {
     const ownerSelector = owner === undefined ? ctx.rootSelector : ctx.selectorOf.get(owner);
     if (ownerSelector === undefined) return "uss-owner-mismatch";
@@ -710,7 +711,9 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
   // defines: BooleanControl and AnchoredSurface toggle it on the host,
   // ItemGroup on its paired trigger/content parts.
   const placeState = (owner: string | undefined): UssReason | undefined => {
-    if (lowering.behavior === "Passive") return "uss-selector";
+    // Passive content and the native action control project no channel-driven
+    // state class; only the three channel behaviors own one.
+    if (lowering.behavior === "Passive" || lowering.behavior === "Action") return "uss-selector";
     const stateClass = `.${lowering.stateClass}`;
     if (lowering.behavior === "ItemGroup") {
       const paired = owner !== undefined && (owner === lowering.trigger.name || owner === lowering.content.name);
@@ -727,7 +730,7 @@ export function lowerSelector(ctx: Context, rule: NativeStyleRuleIR): Lowered | 
     let failure: UssReason | undefined;
     switch (predicate.kind) {
       case "variant": {
-        if (lowering.behavior !== "Passive" && predicate.value === "true" && predicate.axis === lowering.channel.valueProp) { failure = placeState(undefined); break; }
+        if (channel !== undefined && predicate.value === "true" && predicate.axis === channel.valueProp) { failure = placeState(undefined); break; }
         if (predicate.value === "true" && predicate.axis === ctx.disabledProp) { failure = atOwner(undefined, ":disabled", hostPseudo); break; }
         const modifier = ctx.ir.classRecipe.valueModifiers.find(m => m.propName === predicate.axis);
         // The walker refuses a prefixed (colliding) axis, so it has no carrier.

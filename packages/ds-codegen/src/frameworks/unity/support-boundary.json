@@ -51,6 +51,21 @@
       "via": "uss.ts (S3): the box-model geometry profile reaches ir.nativeStyleRules as box-model.* slot definitions and structure consumers, which project into the generated Controls.uss."
     },
     {
+      "id": "anatomy-action-loading-text-chrome",
+      "match": ["contract:/anatomy/dom/**/children/loadingText/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "refused",
+      "reason": "The loading-text wrapper exists only to hold the pending-state chrome around the projected content. The native action lowering flattens the wrapper and makes the control's own contentContainer the projection point, so the wrapper is not rendered."
+    },
+    {
+      "id": "anatomy-action-pending-part",
+      "match": ["contract:/anatomy/parts/*"],
+      "valueIn": ["spinner"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "refused",
+      "reason": "The spinner part is the guarded loading decoration of a DOM action control. Conditional componentRef composition is pending P4 and Spinner is not admitted to Unity, so the generated action control omits the part and exposes no loading state."
+    },
+    {
       "id": "anatomy-parts",
       "match": ["contract:/anatomy/parts/*"],
       "disposition": "lowered",
@@ -120,6 +135,13 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "Dynamic prop forwarding, event callbacks, guarded instance presence and nested instance content have no native component-ref lowering."
+    },
+    {
+      "id": "anatomy-action-loading-chrome",
+      "match": ["contract:/anatomy/dom/**/children/ref:*/**", "contract:/anatomy/details/spinner/componentRef"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "refused",
+      "reason": "The loading decoration is a conditional componentRef to Spinner. Conditional componentRef composition is pending P4 and Spinner is not admitted to Unity, so the native action lowering omits the decoration instead of rendering an unadmitted reference."
     },
     {
       "id": "anatomy-component-ref",
@@ -198,12 +220,26 @@
       "reason": "A conditional DOM data attribute is not a UI Toolkit property. The passive walker checks its syntax and omits it; a target behavior must consume the prop before the attribute can affect rendering."
     },
     {
+      "id": "anatomy-action-form-type-binding",
+      "match": ["contract:/anatomy/dom/bindings/type"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "refused",
+      "reason": "The root's type binding selects native form submission; UI Toolkit has no form element to serialise into, so the native action root does not lower it."
+    },
+    {
       "id": "anatomy-bindings",
       "match": ["contract:/anatomy/dom/bindings/**", "contract:/anatomy/dom/**/children/*/bindings/**", "contract:/anatomy/dom/properties/**", "contract:/anatomy/dom/**/children/*/properties/**"],
       "disposition": "pending",
       "phase": "P4",
       "catchAll": true,
       "reason": "Other attribute and DOM-property bindings need typed C# props; an allowlisted component that declares one must be adjudicated here."
+    },
+    {
+      "id": "anatomy-action-event-click",
+      "match": ["contract:/anatomy/dom/events/click"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "lowered",
+      "via": "The generated root derives from UnityEngine.UIElements.Button; its native clicked event (pointer activation and Space/Enter submit alike) invokes the generated callback property named from this binding."
     },
     {
       "id": "anatomy-events",
@@ -286,6 +322,35 @@
       "disposition": "lowered",
       "realizes": "emitted-property",
       "via": "[UxmlAttribute] Disabled mapped to SetEnabled on the control root; disabled activation leaves state unchanged."
+    },
+    {
+      "id": "prop-action-form-type",
+      "match": ["contract:/props/*/members/plain:type/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "refused",
+      "reason": "The DOM button type selects native form submission; UI Toolkit has no form element to serialise into, so the generated action control exposes no Type property."
+    },
+    {
+      "id": "prop-action-pending-state",
+      "match": ["contract:/props/*/members/plain:loading/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "refused",
+      "reason": "The pending state renders through a conditional Spinner decoration (pending P4, Spinner unadmitted). The generated action control exposes no Loading property and omits the decoration."
+    },
+    {
+      "id": "prop-action-aria-state",
+      "match": ["contract:/props/*/members/plain:ariaExpanded/**", "contract:/props/*/members/plain:ariaPressed/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "refused",
+      "reason": "ARIA state attributes have no UI Toolkit consumer: the runtime exposes no assistive-technology tree."
+    },
+    {
+      "id": "prop-action-callback",
+      "match": ["contract:/props/*/members/plain:onClick/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "lowered",
+      "via": "The generated action root exposes a public Action property named from this callback prop; the native Button.clicked event invokes it (pointer activation and Space/Enter submit alike).",
+      "realizes": "emitted-property"
     },
     {
       "id": "prop-item-group-options",
@@ -849,6 +914,13 @@
       "match": ["tokens:/**"],
       "disposition": "lowered",
       "via": "uss.ts (S2/S3): token bindings become component custom properties var(--fsds-<graph path>, <fallback>) over a generated token section (.fsds-theme light, .fsds-theme--dark, .fsds-brand-<id>) projected from resolved.tokens.json and the token build's @layer brand."
+    },
+    {
+      "id": "styles-action-unsupported-declaration",
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**"],
+      "requiresAny": [{ "match": ["contract:/props/*/members/plain:type/propType/to"], "valueIn": ["ButtonType"] }],
+      "disposition": "refused",
+      "reason": "The action control's declarations here are not realised: the USS projection has no transition-duration/transition-timing-function handler and USS has no user-select property. The projection lists each declaration uss-property in Controls.unsupported.json."
     },
     {
       "id": "styles",

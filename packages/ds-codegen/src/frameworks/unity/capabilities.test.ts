@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Divider", null], ["Icon", null], ["Popover", null], ["Switch", null], ["Tabs", null], ["Text", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Button", null], ["Divider", null], ["Icon", null], ["Popover", null], ["Switch", null], ["Tabs", null], ["Text", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -115,12 +115,14 @@ describe("Unity capability accounting", () => {
     // Without the token and selector refusals, token rows and refused-selector rows fall to the blanket lowered rules.
     const without = (id: string) => ({ ...committed, rules: committed.rules.filter(r => r.id !== id) });
     expect(entriesOf(without("tokens-non-scalar"))).toEqual([
+      "ledger Button tokens button.motion.easing.standard (uss-scalar)",
       "ledger Popover tokens popover.elevation (uss-scalar)", "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
       "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
     ]);
     expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
       'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)',
       "ledger Accordion @starting-style (uss-selector)",
+      'ledger Button .button[aria-busy="true"] .button__loadingText (uss-selector)',
       "ledger Switch .switch:dir(rtl) .switch__track (uss-selector)",
       "ledger Tabs --pills __tab--active (uss-selector)", "ledger Tabs tab--active (uss-selector)",
       'ledger Text .text[data-truncate="true"] (uss-selector)',

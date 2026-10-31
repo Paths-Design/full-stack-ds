@@ -12,7 +12,7 @@
  */
 import type { ComponentIR, DomNodeIR, PartIR, ResolvedPropIR } from "../../ir.js";
 import { resolveAnchoredSurfacePolicy } from "../../semantics.js";
-import { disabledProp, findNode, triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
+import { disabledProp, findNode, hasChannel, triggerParts, unityLowering, type UnityLowering } from "./behaviors.js";
 import { projectComponent, type ComponentProjection, type ContentHost } from "./uss.js";
 import { unityGlyphPlan, type UnityGlyphPlan } from "./glyph-plan.js";
 
@@ -22,6 +22,15 @@ export const identifier = (s: string): string => {
   if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(s)) throw new Error(`UNITY_IDENTIFIER: ${s}`);
   return s;
 };
+
+/**
+ * The native UI Toolkit button type, fully qualified. The generated action
+ * root and the native trigger parts derive from it; once a `FullStackDS.Button`
+ * element exists, an unqualified `Button` inside `namespace FullStackDS` would
+ * resolve to the generated element instead, so every native reference names it
+ * explicitly.
+ */
+const NATIVE_BUTTON = "UnityEngine.UIElements.Button";
 
 /**
  * Item-group option vocabulary (R6). Source: support-boundary.json rules
@@ -101,14 +110,14 @@ const isNamedSlot = (node: DomNodeIR): boolean => node.tag === SLOT_TAG && !!nod
 function elementType(ctx: Context, node: DomNodeIR): ElementType {
   if (node.iconGlyph !== undefined) return "GlyphElement";
   if (node.componentRef !== undefined) return identifier(node.componentRef);
-  if ((node.part && ctx.triggers.has(node.part)) || node.tag === BUTTON_TAG) return "Button";
+  if ((node.part && ctx.triggers.has(node.part)) || node.tag === BUTTON_TAG) return NATIVE_BUTTON;
   if (!node.children.length && TEXT_LEAF_TAGS.has(node.tag) && node.content !== undefined) return "Label";
   return "VisualElement";
 }
 
 /** R1: the base type of a compound sub-element class. */
 function compoundBase(ctx: Context, part: PartIR, node: DomNodeIR | undefined): string {
-  if (ctx.triggers.has(part.name) || (node?.tag ?? part.nativeTag) === BUTTON_TAG) return "Button";
+  if (ctx.triggers.has(part.name) || (node?.tag ?? part.nativeTag) === BUTTON_TAG) return NATIVE_BUTTON;
   const content = ctx.ir.surface?.content;
   if (content && content.part.name === part.name && content.interactive) return "ScrollView";
   return "VisualElement";
@@ -123,6 +132,18 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
   const presenceGuard = interaction && interaction.presence === "unmount" && node.part === interaction.content.name &&
     node.ifProp === interaction.channel.valueProp && !node.ifNegated && !node.ifSlot;
   if ((node.ifProp || node.ifSlot) && !presenceGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+}
+
+/**
+ * R1: chrome a native action control does not realise — the guarded loading
+ * decoration is a conditional componentRef (pending P4) — is omitted rather
+ * than rendered from a fact the lowering does not carry; the support boundary
+ * classifies those leaves refused.
+ */
+function isOmittedActionChrome(ctx: Context, node: DomNodeIR): boolean {
+  const { lowering } = ctx;
+  return lowering.behavior === "Action" && lowering.loading !== undefined &&
+    node.ifProp === lowering.loading && node.componentRef !== undefined;
 }
 
 function literalContent(node: DomNodeIR): string | undefined {
@@ -161,6 +182,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   }
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
+    if (isOmittedActionChrome(ctx, node)) continue;
     if (isCompound(node)) {
       if (composedHost && index === firstCompound) insertionHost(ctx, cls, parent, holes);
       continue;
@@ -230,8 +252,18 @@ function planClasses(ctx: Context): ClassPlan[] {
     // VisualElement has no text surface. Child elements remain composable.
     const passiveText = ctx.lowering.behavior === "Passive" && TEXT_LEAF_TAGS.has(ir.dom.tag) &&
       ir.dom.children.length === 1 && isInsertion(ir.dom.children[0]!);
-    const root = newClass(name, passiveText ? "TextElement" : "VisualElement", true, rootIdentity(ctx, ir.dom.part));
-    walkChildren(ctx, root, root.root, ir.dom.children, { count: 0 });
+    const root = newClass(name, ctx.lowering.behavior === "Action" ? NATIVE_BUTTON : passiveText ? "TextElement" : "VisualElement", true, rootIdentity(ctx, ir.dom.part));
+    // A native action control projects the consumer's children itself: the
+    // contract's guarded loading chrome is omitted (pending P4) and a wrapper
+    // that only holds the content region is flattened so the insertion point
+    // is the control's own contentContainer.
+    const action = ctx.lowering.behavior === "Action";
+    const children = action
+      ? ir.dom.children
+          .filter(node => !isOmittedActionChrome(ctx, node))
+          .flatMap(node => node.children.length === 1 && isInsertion(node.children[0]!) ? node.children : [node])
+      : ir.dom.children;
+    walkChildren(ctx, root, root.root, children, { count: 0 });
     classes.push(root);
   } else {
     // R9: parts-only contract. The part declaring the root role is the class
@@ -241,7 +273,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     const root = newClass(name, "VisualElement", true, rootIdentity(ctx, rootPart?.name));
     for (const part of ir.parts) {
       if (part === rootPart || ctx.compound.has(part.name)) continue;
-      const type: ElementType = ctx.triggers.has(part.name) || part.nativeTag === BUTTON_TAG ? "Button" : "VisualElement";
+      const type: ElementType = ctx.triggers.has(part.name) || part.nativeTag === BUTTON_TAG ? NATIVE_BUTTON : "VisualElement";
       const element: ElementPlan = { ref: identifier(pascal(part.name)), declaration: "property", type, identity: identityFor(ctx, part.name), part: part.name, children: [] };
       root.root.children.push(element);
       root.members.push(element);
@@ -340,9 +372,40 @@ function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyp
   for (const child of node.children) assertPassiveAnatomy(ir, child, glyph);
 }
 
+/**
+ * R6–R8: an action root's API. The native control owns activation; the DOM
+ * click binding becomes a generated callback property invoked from the native
+ * `clicked` event, the bound disabled prop drives SetEnabled, and carrier-
+ * backed variant axes reuse the class-recipe modifier projection.
+ */
+function actionRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Action") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not an action lowering`);
+  const members: string[] = [];
+  const attach: string[] = ["Theme.AddStyleSheet(this);"];
+  const defaults: string[] = [];
+  const actionName = identifier(pascal(lowering.action));
+  members.push(`        public Action ${actionName} { get; set; }`);
+  attach.push(`clicked += () => ${actionName}?.Invoke();`);
+  const disabled = disabledProp(ir);
+  if (disabled !== undefined) {
+    const name = identifier(pascal(disabled));
+    members.push(`        [UxmlAttribute] public bool ${name} { get => !enabledSelf; set => SetEnabled(!value); }`);
+  }
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6–R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
+  if (lowering.behavior === "Action") return actionRootApi(ctx);
   if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];
@@ -361,7 +424,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
     const { focus } = lowering;
     attach.push(`${behavior} = ItemGroup.Attach(this, triggerClass: ${quote(`${ctx.prefix}__${lowering.trigger.name}`)}, contentClass: ${quote(`${ctx.prefix}__${lowering.content.name}`)}, operation: ${quote(lowering.operation)}, stateClass: ${quote(lowering.stateClass)}, multiple: ${lowering.multiple}, focus: ${quote(focus.strategy)}, orientation: ${quote(focus.orientation)}, wrap: ${focus.wrap});`);
   } else {
-    members.push(`        public Button Trigger => ${behavior}.Trigger;`, `        public VisualElement Content => ${behavior}.Content;`);
+    members.push(`        public ${NATIVE_BUTTON} Trigger => ${behavior}.Trigger;`, `        public VisualElement Content => ${behavior}.Content;`);
     // A declared placement default reaches the surface through the Placement
     // prop's default assignment below, not through Attach.
     attach.push(`${behavior} = AnchoredSurface.Attach(this, triggerClass: ${quote(`${ctx.prefix}__${lowering.trigger.name}`)}, contentClass: ${quote(`${ctx.prefix}__${lowering.content.name}`)}, stateClass: ${quote(lowering.stateClass)});`);
@@ -490,11 +553,12 @@ function assertUniqueMembers(ctx: Context, cls: ClassPlan, members: string[]): v
 }
 
 function emitClass(ctx: Context, cls: ClassPlan, api: RootApi | undefined): string {
+  const channel = hasChannel(ctx.lowering) ? ctx.lowering.channel : undefined;
   const interfaces = cls.isRoot
-    ? (ctx.lowering.behavior !== "Passive" && ctx.lowering.channel.valueType === "boolean" ? ", INotifyValueChanged<bool>" : "")
+    ? (channel?.valueType === "boolean" ? ", INotifyValueChanged<bool>" : "")
     : (keyedRole(ctx, cls.part).keyed ? `, ${KEYED_PART_INTERFACE}` : "");
   const members: string[] = [];
-  if (cls.isRoot && ctx.lowering.behavior !== "Passive") members.push(`        public const string ChannelName = ${quote(ctx.lowering.channel.name)};`, `        public const string ChangeHandler = ${quote(ctx.lowering.channel.changeHandlerProp)};`);
+  if (cls.isRoot && channel) members.push(`        public const string ChannelName = ${quote(channel.name)};`, `        public const string ChangeHandler = ${quote(channel.changeHandlerProp)};`);
   // Public part properties (document order) precede the private insertion host.
   members.push(...cls.members.filter(m => m.declaration === "property").map(declaration), ...cls.members.filter(m => m.declaration === "private").map(declaration));
   if (cls.contentContainer) members.push(`        public override VisualElement contentContainer => ${cls.contentContainer};`);
@@ -556,5 +620,5 @@ export function rootPublicMembers(source: string, rootClass: string): Set<string
   if (start < 0) return new Set();
   const next = source.indexOf("[UxmlElement]", start);
   const body = source.slice(start, next < 0 ? undefined : next);
-  return new Set([...body.matchAll(/public (?:new )?(?:bool|string) (\w+) \{/g)].map(m => m[1]!));
+  return new Set([...body.matchAll(/public (?:new )?(?:bool|string|Action) (\w+) \{/g)].map(m => m[1]!));
 }

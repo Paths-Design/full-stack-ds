@@ -19,7 +19,7 @@ namespace FullStackDS.Tests
         }
         [TearDown] public void Teardown() => window.Close();
         private static string[] Brands(VisualElement e) => e.GetClasses().Where(c => c.StartsWith(Theme.BrandClassPrefix)).ToArray();
-        private static void Submit(Button button)
+        private static void Submit(UnityEngine.UIElements.Button button)
         {
             using (var evt = NavigationSubmitEvent.GetPooled()) { evt.target = button; button.SendEvent(evt); }
         }

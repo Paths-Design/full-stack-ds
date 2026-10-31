@@ -178,7 +178,8 @@
         "Tabs",
         "Text",
         "Divider",
-        "Icon"
+        "Icon",
+        "Button"
       ]
     },
     {

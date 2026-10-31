@@ -1,6 +1,6 @@
 # Full Stack DS for Unity UI Toolkit
 
-A local UPM package with contract-generated Switch, Accordion, Popover, Tabs, Text, Divider and Icon controls. Unity 6 is the API baseline. Generated controls carry `[UxmlElement]` and are usable from C#, UXML and UI Builder; the same runtime assembly serves Editor windows and `UIDocument` panels.
+A local UPM package with contract-generated Switch, Accordion, Popover, Tabs, Text, Divider, Icon and Button controls. Unity 6 is the API baseline. Generated controls carry `[UxmlElement]` and are usable from C#, UXML and UI Builder; the same runtime assembly serves Editor windows and `UIDocument` panels.
 
 ## Import
 
@@ -29,6 +29,7 @@ Open **Window → Full Stack DS → Interactive Controls** for the C# showcase. 
         <ds:PopoverTrigger text="Help" />
         <ds:PopoverContent><ui:Label text="Helpful content" /></ds:PopoverContent>
     </ds:Popover>
+    <ds:Button variant="primary">Resume</ds:Button>
 </ui:UXML>
 ```
 
@@ -42,6 +43,8 @@ Accordion and Tabs expose `Value`, `Values`, `ValueChanged`, and `Group.SetValue
 
 Accordion defaults to single selection with `Collapsible = false`; use `Type = "multiple"` and `Values` for multiple sections. Tabs supports horizontal/vertical orientation, automatic/manual activation, looping, disabled items, Home/End, arrow navigation and `UnmountInactive`. Native UI Toolkit buttons own pointer and submit activation. Accordion's vertical arrows move focus without selecting.
 
+`Button` is an action control rather than a channel: the generated class derives the native `UnityEngine.UIElements.Button`, so pointer activation and Space/Enter submit activation are the platform's. Assign `OnClick` to receive activation; `Disabled` gates it through `SetEnabled`. Consumer content composes into the control's own content container; the contract's loading-text wrapper is flattened and the guarded loading chrome is omitted (pending P4). `Size` / `Variant` set the `button--<size>` / `button--<variant>` class carriers. The contract's pending state is not realised: `Loading`, the ARIA state props and the HTML form `type` are refused by the support boundary, so the control exposes no loading affordance and consumers own any pending presentation.
+
 Values assigned before attachment provide initial state. For owner-controlled state, set `Controlled = true`, handle `ValueRequested`, and commit an accepted value through `Checked`, `Open`, `Value` or `Values`. A request alone does not change presentation. This is a C# adaptation of the contract's controlled/default channel trio; C# event signatures use arrays for both Accordion selection modes.
 
 Popover portals content to its current panel root. It uses the anchor/content union for outside-pointer and blur dismissal, returns focus to the trigger on Escape, and flips/shifts at panel edges. Dismissal flags remain configurable. Removing a Popover unregisters its panel callbacks and removes the floating content.
@@ -52,11 +55,12 @@ Popover portals content to its current panel root. It uses the anchor/content un
 
 An ItemGroup's hidden-content presence fact lowers `:not([hidden])` onto its content state class, so open Accordion content receives its opacity and padding rules. A literal graph `var()` without an authored fallback receives the graph's light value as a fallback for controls outside a theme scope.
 
-Three visible gaps follow from facts this projection does not carry:
+Four visible gaps follow from facts this projection does not carry:
 
 - The Accordion chevron is the contract's static `componentRef: fsds.Icon` (`chevron-down`). The walker constructs the admitted Icon, forwards its authored name and size, and paints catalog geometry through `GlyphElement`. Dynamic reference bindings and references to unadmitted targets fail generation.
 - The chevron's rotation while expanded (`[aria-expanded="true"]`) and the selected-tab styling (`tab--active`) use selectors outside the native style grammar; they are `uss-selector` ledger entries until the IR carries them as state predicates.
 - Brand overrides of component design slots are `uss-design-slot` ledger entries; brands reach the controls through the token variables only.
+- Button's contract styles a loading spinner and loading-text chrome, but the generated action control omits the guarded Spinner decoration and flattens the loading-text wrapper (both pending-P4 chrome). The sheet still carries the contract's `button__spinner` and `button__loadingText` rules, which have no live elements in the generated control.
 
 Controls add the stylesheet to their own root but do not open a theme scope there, so the scope belongs to a consumer container:
 
@@ -93,6 +97,8 @@ pnpm run test:unity
 
 The generated styling candidate at source `f85a48f16` passed 42/42 EditMode cases on Unity 6000.5.3f1, with zero failures or skips (test-run start `2026-10-30 06:28:44Z`). Its six local PNG witnesses cover light, dark and narrow Player-context panels inside the Editor. The separate standalone Player lane below has its own source and receipt.
 
+The Button action admission at source `9c95d7513` passed 51/51 EditMode cases on Unity 6000.5.3f1, with zero failures or skips (test-run start `2026-10-31 08:26:44Z`), including native submit activation, disabled suppression, content-host composition and size/variant carriers. `tmp/unity-pilot/provenance.json` binds the NUnit XML digest to that revision.
+
 `node scripts/unity-player.mjs` builds and launches a fresh standalone macOS consumer, writes source-bound evidence under `tmp/unity-player/<run-id>`, and rejects absent/mismatched results. Its synthetic UI events prove bounded in-Player behavior, not input-device integration. The recorded environment is Unity 6000.5.3f1 with Metal; the declared 6000.0 minimum and other platforms remain unverified.
 
 `node scripts/unity-tests.mjs --compile-only` is a separate diagnostic using the installed macOS Unity SDK, real Unity assemblies and Unity's UXML source generator. It checks runtime, Editor showcase and sample compilation; it does **not** run Unity, import UXML or execute tests.
@@ -103,4 +109,4 @@ The allowlist is in the repository's `fsds.targets.json`. The Unity backend is s
 
 [`support-boundary.json`](../ds-codegen/src/frameworks/unity/support-boundary.json) is the machine-readable statement of what the Unity target lowers, leaves pending for a named parity phase, or refuses, with the mechanism or reason for each rule. Generation fails when a contract carries a fact no rule classifies, when an allowlisted component relies on a catch-all rule, or when a lowered claim is not realised by the control a component gets; see [Support boundary](../../docs/architecture/unity-target.md#support-boundary).
 
-This slice implements the interactions above. It does not claim full framework parity, screen-reader integration, controller/gamepad navigation, cross-platform player-build admission, or full visual parity. Styling is the generated projection described above; what it does not realise is listed in `Controls.unsupported.json`. Transitions keep their properties and durations, but a non-keyword easing is reduced to `ease`. The Accordion chevron paints its Icon componentRef; expanded-state rotation remains an unsupported selector. Browser form props and DOM IDs are not ported. Tabs keeps an inactive panel's object state even when detached.
+This slice implements the interactions above. It does not claim full framework parity, screen-reader integration, controller/gamepad navigation, cross-platform player-build admission, or full visual parity. Styling is the generated projection described above; what it does not realise is listed in `Controls.unsupported.json`. Transitions keep their properties and durations, but a non-keyword easing is reduced to `ease`. The Accordion chevron paints its Icon componentRef; expanded-state rotation remains an unsupported selector. The action control carries no loading affordance, ARIA state or HTML form serialization. Browser form props and DOM IDs are not ported. Tabs keeps an inactive panel's object state even when detached.

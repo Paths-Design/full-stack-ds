@@ -17,10 +17,10 @@
  * `lowered`.
  */
 import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, PartIR } from "../../ir.js";
-import { isBareRuleLeaf, isStaticContent } from "../native-emission-class.js";
+import { isBareRuleLeaf, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface";
+export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Action";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -50,10 +50,32 @@ export interface AnchoredSurfaceLowering extends LoweringBase {
   trigger: PartIR;
   content: PartIR;
 }
+/**
+ * A projected-children action: a native action affordance whose content is
+ * the consumer's projected children. It owns no channel; the native control's
+ * activation event invokes the generated callback property. Chrome around the
+ * content region (a guarded loading decoration) is not part of the class and
+ * is omitted until the P4 conditional componentRef family lands.
+ */
+export interface ActionLowering {
+  behavior: "Action";
+  /** The DOM click event's prop binding, realised as a generated callback property. */
+  action: string;
+  /** The control's disabled prop when its root binds one. */
+  disabled?: string;
+  /** The pending-state prop bound to aria-busy; its decoration is pending P4. */
+  loading?: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
 }
-export type UnityLowering = PassiveLowering | BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering;
+export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering;
+export type UnityLowering = PassiveLowering | ActionLowering | ChannelLowering;
+
+/** Whether the selected lowering owns a normalized channel trio. */
+export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
+  return lowering.behavior === "BooleanControl" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface";
+}
 
 /**
  * Source: `ir.states.dimensions`. The dimension a behavior projects is the
@@ -95,6 +117,31 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     return { behavior: "AnchoredSurface", channel: ir.interaction.channel, trigger: ir.surface.anchor!.part, content: ir.surface.content.part, stateClass: stateClassOf(ir) };
   }
   if (portal) throw new Error(`UNITY_UNSUPPORTED_PORTAL: ${ir.name} enables a portal but only anchored surfaces reparent content`);
+  // A native action affordance: the consumer's content is projected children
+  // and the control owns no channel. Its activation is the native platform
+  // button's click, so the DOM click binding becomes a generated callback
+  // property. The loading chrome around the content region is a conditional
+  // componentRef (pending P4), so it is omitted rather than silently rendered.
+  if (isProjectedChildrenAction(ir)) {
+    if (focus !== undefined && focus !== "auto")
+      throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which the native action control does not realise`);
+    const root = ir.dom!;
+    const click = root.events.click;
+    const action = click?.kind === "prop" && !click.path?.length ? click.prop : undefined;
+    if (!action) throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} action root declares no click prop binding`);
+    const busy = root.bindings["aria-busy"];
+    if (busy !== undefined && (busy.kind !== "prop" || busy.path?.length))
+      throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} loading binding is not a direct prop`);
+    const disabled = root.bindings[DISABLED_ATTRIBUTE];
+    if (disabled !== undefined && (disabled.kind !== "prop" || disabled.path?.length))
+      throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} disabled binding is not a direct prop`);
+    return {
+      behavior: "Action",
+      action,
+      ...(disabled !== undefined && disabled.kind === "prop" ? { disabled: disabled.prop } : {}),
+      ...(busy !== undefined && busy.kind === "prop" ? { loading: busy.prop } : {}),
+    };
+  }
   if (!ir.interaction && !ir.formControl && (isBareRuleLeaf(ir) || isStaticContent(ir))) {
     if (focus !== undefined && focus !== "none") throw new Error(`UNITY_UNSUPPORTED_FOCUS: ${ir.name} declares focus.strategy ${JSON.stringify(focus)}, which Passive does not realise`);
     return { behavior: "Passive" };
@@ -152,7 +199,11 @@ export function disabledProp(ir: ComponentIR): string | undefined {
   if (ir.interaction?.disabledProp) return ir.interaction.disabledProp;
   const control = ir.formControl && findNode(ir.dom, ir.formControl.part.name);
   const binding: BindingExpression | undefined = control?.bindings[DISABLED_ATTRIBUTE];
-  return binding?.kind === "prop" ? binding.prop : undefined;
+  if (binding?.kind === "prop") return binding.prop;
+  // An action root binds disabled on itself; the generated property still
+  // drives SetEnabled on the root, and the USS projection reads the same fact.
+  const rootBinding: BindingExpression | undefined = ir.dom?.bindings[DISABLED_ATTRIBUTE];
+  return rootBinding?.kind === "prop" && !rootBinding.path?.length ? rootBinding.prop : undefined;
 }
 
 /** Trigger parts (R1): the form control part, every interaction trigger part
@@ -162,5 +213,8 @@ export function triggerParts(ir: ComponentIR): Set<string> {
   if (ir.formControl) parts.add(ir.formControl.part.name);
   for (const trigger of ir.interaction?.triggers ?? []) parts.add(trigger.part.name);
   if (ir.surface?.anchor) parts.add(ir.surface.anchor.part.name);
+  // A projected-children action root is itself the native activation
+  // affordance, so bindings on it (disabled) are trigger-part bindings.
+  if (isProjectedChildrenAction(ir) && ir.dom?.part) parts.add(ir.dom.part);
   return parts;
 }

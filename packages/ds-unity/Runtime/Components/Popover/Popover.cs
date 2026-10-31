@@ -10,7 +10,7 @@ namespace FullStackDS
         public const string ChannelName = "open";
         public const string ChangeHandler = "onOpenChange";
         public AnchoredSurface Surface { get; }
-        public Button Trigger => Surface.Trigger;
+        public UnityEngine.UIElements.Button Trigger => Surface.Trigger;
         public VisualElement Content => Surface.Content;
         [UxmlAttribute] public bool Open { get => Surface.Value; set => Surface.Value = value; }
         public bool value { get => Surface.Value; set => Surface.Value = value; }
@@ -36,7 +36,7 @@ namespace FullStackDS
     }
 
     [UxmlElement]
-    public partial class PopoverTrigger : Button
+    public partial class PopoverTrigger : UnityEngine.UIElements.Button
     {
         [UxmlAttribute] public bool Disabled { get => !enabledSelf; set => SetEnabled(!value); }
         public PopoverTrigger()

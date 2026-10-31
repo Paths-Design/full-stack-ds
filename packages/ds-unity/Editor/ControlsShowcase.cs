@@ -55,7 +55,7 @@ namespace FullStackDS.Editor
             // Open content floats to the panel root, outside this window's tree, so it carries the sample sheet itself.
             if (sample != null) content.styleSheets.Add(sample);
             content.Add(new Label("Generated from the same contracts as the web packages."));
-            var close = new Button(() => popover.Open = false) { text = "Close" };
+            var close = new UnityEngine.UIElements.Button(() => popover.Open = false) { text = "Close" };
             close.AddToClassList("fsds-sample-content-action");
             content.Add(close);
             popover.Add(content);

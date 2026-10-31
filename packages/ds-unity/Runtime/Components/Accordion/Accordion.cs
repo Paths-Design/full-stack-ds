@@ -40,7 +40,7 @@ namespace FullStackDS
     }
 
     [UxmlElement]
-    public partial class AccordionTrigger : Button, IKeyedPart
+    public partial class AccordionTrigger : UnityEngine.UIElements.Button, IKeyedPart
     {
         public Icon Chevron { get; } = new Icon();
         private readonly VisualElement children = new VisualElement();
