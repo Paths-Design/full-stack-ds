@@ -1,29 +1,40 @@
-# Orion N5 game pause menu — Godot lane
+# Orion N5 game pause menu — Godot lane (parity pass)
 
 The Godot consumer realization of the shared game pause-menu app
 ([`../spec.md`](../spec.md)) for the fictional *Orion N5 — Mars Expedition*
-game, built from the generated Full Stack DS Godot package
-(`packages/ds-godot/addons/full_stack_ds`) on **Godot 4.7.2**.
+game, rebuilt to the parity design authority
+([`../parity.md`](../parity.md) +
+[`fixtures/parity-layout.json`](fixtures/parity-layout.json)) on **Godot 4.7.2**,
+from the generated Full Stack DS Godot package (`packages/ds-godot/addons`).
 
-This is a lane of the `GAME-PAUSE-MENU-EXAMPLE-01` slice: the app spec,
-fixtures, and comparison document are owned by the slice, not by this lane.
+This lane is one of three parity-realizations of the same interface; the app
+spec, fixtures and comparison document are owned by the slice.
 
 ## Claim
 
 The four-tab pause menu (MAP / PROGRESS / ABILITIES / SETTINGS), the shared
-I1–I15 interaction semantics, and the shared fixture corpus are realized on the
-Godot Control substrate using the package's generated components wherever the
-Godot target admits them (Tabs, Switch, Popover, Button, Badge, Card, Icon,
-Text, Divider). Every region realized with engine-native or hand-authored UI is
-marked `# NOT FSDS: <reason>` in source and ledgered below.
+I1–I15 interaction semantics and the shared fixture corpus are realized on the
+Godot Control substrate at the **same 1280 × 800 boxes, colours and type sizes**
+as the other engine lanes, using the package's generated components wherever the
+Godot target admits them. Every layout constant is parsed from
+`fixtures/parity-layout.json` — no geometry, colour or type size is re-typed in
+lane source.
 
 **Brand delivery.** The Godot target has no resolved brand projection (no
-`data-brand` scope, no token-graph loader), so the Orion palette from
-[`fixtures/orion-appearance.json`](fixtures/orion-appearance.json) is applied
-by a lane-local `Theme` (`scripts/orion_theme.gd`) plus per-component
-`token_overrides` (Button/Badge/Card) and `add_theme_*_override` fallbacks on
-generated control-family nodes (Switch/Tabs/Popover). This is the lane's
-honest brand mechanism and is itself a package finding (F-GODOT-8).
+`data-brand` scope, no token-graph loader), so the Orion palette is applied by a
+lane-local `Theme` (`scripts/orion_theme.gd`) projected from the same JSON
+colour map, plus per-component `token_overrides` (Button/Badge/Card) and
+`add_theme_*_override`/icon overrides on generated control-family nodes
+(Tabs/Switch/Popover). This remains a package finding (F-GODOT-1).
+
+## Design authority
+
+| Source | Use in this lane |
+|---|---|
+| `fixtures/parity-layout.json` (lane copy, committed) | Every rect, colour, type size, switch geometry, marker/rarity/status colour map, capture-state list. Parsed by `scripts/parity_layout.gd`; validated loudly by the fixture adapter. |
+| `../parity.md` | Rendering rules, per-tab composition order, switch parity, "Component styling defaults", permitted differences. |
+| `../spec.md` | App semantics + I1–I15 interaction contract (unchanged). |
+| parity branch commit `7897d0607` | "Corrections pinned after the first parity review round" — merged into this lane before the final capture: OFF-switch colours, nav target in all capture states, card/rarity-chip boxes, roster `OPEN →`, settings audio sub-layout, shortened panel metas, ink grid lines. |
 
 ## Setup
 
@@ -39,183 +50,267 @@ cd examples/game-pause-menu/godot
 
 `addons/full_stack_ds/`, `.godot/`, `*.uid` and `evidence/` are gitignored. Set
 `FSDS_GODOT_PACKAGE=/abs/path/to/packages/ds-godot` to copy from another
-checkout.
+checkout. Measured: setup 0.06 s.
 
-## Run
+## Run / verify
 
 Requires `/Applications/Godot.app/Contents/MacOS/Godot` (4.7.2); override with
 `GODOT=/path/to/godot`.
 
 ```sh
-# Interactive menu (window 1280x800, gl_compatibility)
 GODOT=/Applications/Godot.app/Contents/MacOS/Godot
+
+# Interactive menu (window 1280x800, gl_compatibility)
 "$GODOT" --path "$PWD"
 
-# Headless interaction tests (I1..I15 + fixture-corpus failure paths)
+# Headless interaction + geometry tests (I1..I15, parity rects, switch icons,
+# fixture failure paths). Exit 0 = all pass; prints TEST_PASS/TEST_FAIL lines.
 "$GODOT" --headless --path "$PWD" res://tests/test_main.tscn
-# exit 0 = all checks passed; prints TEST_PASS/TEST_FAIL lines and a
-# TESTS_TOTAL/PASSED/FAILED summary (+ JSON at user://godot-lane-test-results.json)
 
-# Screenshot capture (non-headless; reads the rendered viewport texture)
+# Parity capture states (non-headless; reads the rendered viewport texture).
+# Writes all eight `captures` states from the JSON and mirrors them into the
+# slice evidence directory from inside the Godot process.
 "$GODOT" --path "$PWD" res://tools/capture.tscn -- \
   --out="$PWD/evidence" \
   --mirror=/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/godot
+
+# Cross-engine probe/montage (shared, run by the slice):
+node ../parity-check.mjs --root /Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu
 ```
 
-Measured on this machine: setup <1 s, capture 2.9 s (8 PNGs), tests 3.6 s
-(134 checks, 134 passed / 0 failed, `input_dispatch=viewport_push_input`).
+Measured on this machine: headless suite 191 checks / 191 passed, 4.1 s,
+`input_dispatch=viewport_push_input`; capture 4.4 s for eight 1280×800 PNGs.
 
-## Generated component inventory (admitted and used)
+## Parity geometry consumed
 
-| Component | Where it is used | Runtime instances |
+All boxes come from the JSON. The lane-local layout root is the tab content origin
+(`content.x=24`, `content.y=176`); tab bodies span the full 1280 px so JSON x is
+used directly and only y is offset.
+
+| Region | Geometry (JSON) | Realization |
 |---|---|---|
-| **Tabs** | Shell tab bar; each tab body is an `add_item` content slot (`scripts/app.gd`) | 1 tab bar / 4 item bodies |
-| **Switch** | MAP icon-visibility filter rows (one per fixture icon); SETTINGS General toggles (one per fixture toggle) (`tabs/map_tab.gd`, `tabs/settings_tab.gd`) | 13 |
-| **Popover** | MAP marker-detail anchored surface; ABILITIES card-hover tooltip (`scripts/app.gd`) | 2 |
-| **Button** | `SET AS NAV TARGET`, popover CLOSE, dossier CLOSE, SHOP PARTS, remap CANCEL, one binding button per remap action (`scripts/app.gd`, `tabs/progress_tab.gd`, `tabs/settings_tab.gd`) | 7 static + 6 bindings |
-| **Badge** | PAUSED chip, D3SO callsign plate, marker status, faction tier/locked tags, ability rarity tags, part rarity tags, installed tag (`scripts/app.gd`, `tabs/progress_tab.gd`, `tabs/abilities_tab.gd`) | ~22 |
-| **Card** | ABILITIES ability cards (part hosts: header/content/footer) (`tabs/abilities_tab.gd`) | 10 |
-| **Icon** | Map marker glyphs, ability-card glyphs (`widgets/marker_button.gd`, `tabs/abilities_tab.gd`) | 18 |
-| **Text** | Map chrome (sector/scale captions on the sage telemetry ground), dossier description/history on the bone paper drawer (`widgets/map_field.gd`, `tabs/progress_tab.gd`) | 4 |
-| **Divider** | Map field header rule, dossier rule (`widgets/map_field.gd`, `tabs/progress_tab.gd`) | 2 |
-| Accordion | Admitted but unused — the app spec has no accordion-shaped region | 0 |
+| Header band | `0,0,1280,104`; wordmark at 32,18 (40 px); mission at 32,72; stats at x=608/800/992; PAUSED chip `1184,40,64,24` | native band chrome; wordmark/stats native labels; PAUSED = generated **Badge** |
+| Tab bar | `0,104,1280,56`; four `320`-wide tabs at x=0/320/640/960; active `signal` fill + `onSignal` text; inactive `textSecondary`; 1 px `rule` separators | generated **Tabs** (`add_item` content slots) with per-trigger geometry/style overrides |
+| Content region | `24,176,1232,552` (tab body 1280×552) | generated Tabs body panel |
+| Footer band | `0,744,1280,56`; hints at `24,770`; NAV TARGET label at `1096,758`, target value right-aligned to `x=1256`, baseline `y=770`, 13 px/700 `signal`; every capture state carries `navTarget=cache-02` | native band chrome + labels |
+| MAP | map panel `24,176,872,552`; field `40,232,840,480` (sage, 60 px grid, 12 px ticks, 24 px markers); icon panel `912,176,344,552`; 8 rows at `firstY=224,rowH=48`, switch `x=1176,y=row+8`; popover `392,272,360,232` | panel chrome/plot/markers native; 8 generated **Switch**; 16 px generated **Icon** glyphs; top-left/title native labels |
+| PROGRESS | roster `24,176,1232,552`; rows `x=40,firstY=224,rowH=88` (name x=56/y=12, tagline y=36, rep bar `800,44,200,6`, status chip `1080,16,76,22`, affordance `OPEN →` at x=1180, 11 px/700 `signal`); drawer `24,176,560,552` paper with fixed DSL rows; parts rarity chips 64×18 at 9 px | rows/rep bars/drawer native; generated **Badge** chips; generated **Button** (CLOSE/SHOP PARTS) |
+| ABILITIES | grid panel `24,176,808,552`; cards `x=40,firstY=224,w=152,h=240,colGap=12,rowGap=12` (row 2 at y=476..716 inside the 728 panel bottom; icon y=28, name y=84, size y=106, installed y=196; rarity chip exactly `8,-9,64,18` at 9 px/800); detail panel `848,176,408,552` (title y=232, chips y=268, body y=294, stats y=372, loadout y=448/466, slots `872,488,180,60` 2×3); hover popover `224,320,320,180` | generated **Card** surface+parts per card (40 px **Icon**, **Badge** rarity/installed), wrapper hit target; generated **Popover** for hover; native detail/slots |
+| SETTINGS | four panels `24,176,608,268`, `648,176,608,268`, `24,460,608,268`, `648,460,608,268`; General/Controller rows 44 px pitch from y=216, remap rows 36 px pitch from y=496; audio rows y=496 pitch 28, language labels y=612, dropdowns y=624 (200×28), `SUBTITLE BACKGROUND` label y=658, swatches y=670 (36×18, 6 px gap), preview `664,694,576,26`; slider `300×6` thumb 16; binding button `120×28`; remap modal `430,300,420,200` | generated **Switch** (5 General rows) + **Button** (6 remap bindings + modal cancel); lane-local `ParitySlider`, native OptionButton/swatches/preview/modal |
 
-Consumed only through public exports: the shipped `.tscn` scenes, `content`/
-`value` channels, `add_item`, `value_requested`/`value_changed`, `activated`,
-`token_overrides`, `add_theme_*_override` fallbacks. No generated component
-source is copied into the lane, and `packages/ds-godot` is not modified.
+## Admitted component inventory
+
+| Component | Parity use | Instances |
+|---|---|---|
+| **Tabs** | shell tab bar + content `add_item` bodies; triggers forced to the four 320×56 boxes, active/inactive styles from JSON | 1 bar / 4 bodies |
+| **Switch** | MAP icon-visibility filters (8); SETTINGS General toggles (5); 64×32 pill with SVG icon overrides | 13 |
+| **Popover** | marker detail (360×232) and ability hover (320×180) surfaces | 2 |
+| **Button** | `SET AS NAV TARGET`, popover CLOSE, drawer CLOSE, SHOP PARTS, remap CANCEL, 6 remap binding buttons | 6 sites / 12+ instances |
+| **Badge** | PAUSED chip (64×24), marker status, roster ACCESS/LOCKED (76×22), ability rarity (64×18), installed tag, part rarity, size chip | ~27 |
+| **Card** | 10 ability cards (surface + part hosts for header/content/footer) | 10 |
+| **Icon** | map-row glyphs (16 px), ability-card glyphs (40 px) | 18 |
+| Text / Divider | admitted but **not used**: their baked type scale/foreground (`#141414`, 1 rem/0.75 rem) and Divider's baked `#d0d0d0` are not parity JSON values and have no override channel — ledgered finding (F-GODOT-2/F-GODOT-7) | 0 |
+| Accordion | admitted but unused (no accordion-shaped region in this app) | 0 |
+
+Consumed only through public exports: shipped `.tscn` scenes, `value` /
+`value_requested` / `value_changed`, `add_item`, `content`, `activated`,
+`token_overrides`, plus `add_theme_*_override` and icon overrides on generated
+control-family nodes. No generated component source is copied into the lane and
+`packages/ds-godot` is not modified.
+
+## Switch parity fix (root cause)
+
+The generated boolean runtime is a Godot `CheckButton`; its track and thumb are
+engine default-theme icons, so on this target the Orion pill never painted. The
+lane supplies **SVG icon overrides** for `checked`/`unchecked` (plus `*_disabled`)
+that draw the JSON switch geometry: 64×32 stadium track (radius 16), 24 px circular
+thumb (radius 12, inset 4), ON track `signal` + `onSignal` thumb at x=36, OFF track
+`graphite` + 1 px `ruleStrong` border + `boneBright` thumb. Icons are rasterised at
+2× and drawn at 64×32 through the `icon_max_width` theme constant; the lane-local
+theme empties the CheckButton state styleboxes so only the pill paints. Measured on
+the final captures: ON track `#EF6A3C` / thumb `#191917`, OFF track `#2E2E29`
+(1 px `#56564C` border) / thumb `#F4F1E6`. The headless suite samples the override
+textures to assert those colours and asserts every generated switch uses the
+64×32 pill.
 
 ## Realization ledger (engine-native / hand-authored fallbacks)
 
-Every fallback is marked `# NOT FSDS: <reason>` in source. "Native" means a
-Godot Control; "hand-authored" means a lane-local `_draw`/scene composition.
+Every fallback carries `# NOT FSDS: <reason>` in source.
 
-| Region | Mechanism | Why (allowlist / package gap) | Source |
+| Region | Mechanism | Why | Source |
 |---|---|---|---|
-| App shell: header band, tab-bar grounds, footer band, content grounds, section chrome | Native `Control`/`ColorRect`/`PanelFrame` (`# NOT FSDS`) | No layout/surface primitive is admitted for app composition | `scripts/app.gd`, `widgets/panel_frame.gd` |
-| Header stat readouts, footer hints, labels on ink/charcoal grounds | Native `Label` (`# NOT FSDS`) | **F-GODOT-1**: generated Text projects a fixed light-theme `#141414` foreground and has no `token_overrides`/theme channel → unusable on the dark ground | `scripts/app.gd`, `tabs/*` |
-| Map field (grid, contour ticks, sector chrome, corner ticks) | Hand-authored `_draw` (`# NOT FSDS`) | No map/canvas/drawing component is admitted | `widgets/map_field.gd`, `widgets/corner_ticks.gd` |
-| Map markers (shape per kind, nav-target highlight, status dot) | Native `Button` + `_draw`, generated Icon inside (`# NOT FSDS`) | No map-marker component is admitted | `widgets/marker_button.gd` |
-| Icon-visibility panel rows, faction list rows | Native `Button` rows + labels (`# NOT FSDS`) | No List/ListItem/Row component is admitted | `tabs/map_tab.gd`, `tabs/progress_tab.gd` |
-| Reputation bars, rank progression bar | Native `ProgressBar` (`# NOT FSDS`) | No Progress/Stat component is admitted | `tabs/map_tab.gd`, `tabs/progress_tab.gd` |
-| Faction drawer surface and slide animation | Native PanelFrame + `Tween` (`# NOT FSDS`) | No Drawer/Sheet component is admitted | `tabs/progress_tab.gd` |
-| Vehicle loadout slots + remove affordance | Native `Button` + lane stylebox states (`# NOT FSDS`) | No slot/stat component is admitted | `tabs/abilities_tab.gd` |
-| Card hit target / selected + installed surfaces | Native wrapper `Button` (`# NOT FSDS`) | **F-GODOT-6**: generated Card has no activation/selected channel (`interactive` styles hover only) | `tabs/abilities_tab.gd` |
-| Controller/audio sliders | Native `HSlider` (`# NOT FSDS`) | No Slider component is admitted on the Godot target | `tabs/settings_tab.gd` |
-| Audio/subtitle language dropdowns | Native `OptionButton` (`# NOT FSDS`) | No Select/Dropdown component is admitted | `tabs/settings_tab.gd` |
-| Subtitle background swatches | Native color-block `Button`s (`# NOT FSDS`) | No ColorPicker/Swatch component is admitted | `tabs/settings_tab.gd` |
-| Subtitle preview strip | Native `PanelContainer` + adaptive-contrast native label (`# NOT FSDS`) | Preview foreground must adapt to the picked background; generated Text's foreground is fixed (F-GODOT-1) | `tabs/settings_tab.gd` |
-| Remap modal overlay (waits for input) | Native dim + panel + label overlay (`# NOT FSDS`) | No Dialog/Modal/Sheet component is admitted | `scripts/app.gd` |
-| Scroll region in Settings | Native `ScrollContainer` (`# NOT FSDS`) | No Scroll/field-list component is admitted | `tabs/settings_tab.gd` |
-| Hairline rules and dashed separators on the ink ground | Native `ColorRect` / `DashedRule` (`# NOT FSDS`) | **F-GODOT-7**: generated Divider's color is fixed `#d0d0d0` and has no override channel — acceptable on paper, too bright for dark hairlines | `widgets/dashed_rule.gd`, `tabs/*` |
-| Brand styling of generated control-family nodes (Switch/Tabs/Popover internals) | Lane `Theme` assignment + `add_theme_*_override` on generated trigger/surface nodes (`# NOT FSDS`) | **F-GODOT-2/F-GODOT-5**: no `token_overrides`/selected-tab style channel; authored theme projects a light-theme foreground | `scripts/ds_factory.gd` |
-| Popover surface sizing/placement and outside-click dismissal | Lane re-fit after layout + viewport clamp (`# NOT FSDS`) | **F-GODOT-3/F-GODOT-4**: generated surface sizes from the first layout pass, defaults to 280×90 below the trigger, and only dismisses on Escape | `scripts/app.gd` |
-| Popover trigger hidden for external anchors | `trigger.hide()` in `DSFactory.prepare_popover` (`# NOT FSDS`) | The generated Popover is trigger-driven; the app anchors its surface to a map marker/card instead | `scripts/ds_factory.gd` |
-
-No other region uses hand-authored UI: tab bar, switches, popovers, action
-buttons, tags, ability cards, map/drawer glyphs, and paper/dark captions use
-generated components where the ground allows.
+| Shell bands (header/tab-bar grounds/footer), panel chrome | native `Control`/`ColorRect`/`PanelFrame` | no layout/surface primitive admitted | `scripts/app.gd`, `widgets/panel_frame.gd` |
+| Header wordmark/stats/mission, footer hints/nav value, panel titles/meta/rows | native `Label` | generated Text projects a fixed light-theme foreground and fixed type scale — cannot meet the JSON colours/sizes on ink grounds (F-GODOT-2) | `scripts/app.gd`, `tabs/*` |
+| Tab selected/inactive styling; tab box geometry | `add_theme_*_override` on generated Tabs triggers | generated Tabs has no selected-tab style or per-tab geometry channel (F-GODOT-5) | `scripts/ds_factory.gd` |
+| Switch track/thumb icons | SVG icon overrides on the generated CheckButton | **switch parity fix** (above; F-GODOT-10) | `scripts/ds_factory.gd` |
+| Popover trigger hidden; surface size/style/placement | app-level surface override + parity rect / anchored clamp | generated Popover is trigger-driven, sizes from its content's first layout pass, and only positions below the trigger with Escape-only dismissal (F-GODOT-3/F-GODOT-4) | `scripts/ds_factory.gd`, `scripts/app.gd` |
+| Badge content alignment | `content_label` centering | generated Badge exposes no content alignment channel | `scripts/ds_factory.gd` |
+| Ability card hit target + selected outline | native wrapper `Button`; Card made transparent | generated Card has no activation/selected channel (F-GODOT-6) | `tabs/abilities_tab.gd` |
+| Ability card internals | positioned children inside generated Card part slots | Card part hosts are flow containers; the JSON pins absolute y positions | `tabs/abilities_tab.gd` |
+| Map field (sage ground, 60 px grid, 12 px corner ticks) | hand-authored `_draw` | no map/drawing component admitted | `widgets/map_field.gd` |
+| Map markers (24 px square, monogram, nav outline) | native `Button` + `_draw` | no map-marker component admitted | `widgets/marker_button.gd` |
+| Roster rows, reputation bars, status/dossier links | native `Button` rows + `ProgressBar` | no List/Row/Progress component admitted | `tabs/progress_tab.gd` |
+| Drawer surface + slide animation | lane `PanelFrame` + `Tween` | no Drawer/Sheet component admitted | `tabs/progress_tab.gd` |
+| Detail panel stats, slot grid | native labels/buttons | no slot/stat component admitted | `tabs/abilities_tab.gd` |
+| Sliders (5 controller + 4 audio) | lane-local `ParitySlider` | no Slider component admitted; JSON track/thumb geometry consumed | `widgets/parity_slider.gd` |
+| Language dropdowns | native `OptionButton` | no Select/Dropdown component admitted | `tabs/settings_tab.gd` |
+| Subtitle background swatches + preview strip | native colour-block `Button`s + panel/label | no ColorPicker/Swatch component admitted; preview foreground must adapt to the picked background | `tabs/settings_tab.gd` |
+| Remap modal | native dim + panel overlay | no Dialog/Modal/Sheet component admitted | `scripts/app.gd` |
+| Rules/separators | native `ColorRect` 1 px `rule`/`paperMuted` | generated Divider's colour is baked and not a parity value (F-GODOT-7) | `tabs/*` |
 
 ## Interaction coverage (shared I1–I15)
 
-| ID | Interaction | Implementation | Tested (headless) | Screenshot |
-|---|---|---|---|---|
-| I1 | Select one of four tabs | generated Tabs `add_item`/`activate`, exactly one body visible | `test_i1` (20 checks over 4 tabs) | `map/progress/abilities/settings.png` |
-| I2 | Toggle icon-visibility switch OFF/ON | generated Switch `activate` → app filter → marker visibility; fixture untouched | `test_i2` | map filter list in `map.png` |
-| I3 | Activate a visible marker → anchored popover | native marker `pressed` → generated Popover open, clamped anchor | `test_i3_i4` | `popover.png` |
-| I4 | SET AS NAV TARGET | generated Button `activated` → footer summary + marker highlight + popover close | `test_i3_i4` | `popover.png`, `map.png` footer |
-| I5 | Unlocked faction → left drawer, enabled SHOP PARTS | native row → dossier drawer, generated Badge/Button/Text/Divider | `test_i5` | `progress.png`, `drawer.png` |
-| I6 | Locked faction → drawer with requirement, disabled SHOP PARTS | same drawer, disabled generated Button | `test_i6` | drawer states in test log; capture shows unlocked drawer |
-| I7 | Select ability card → selected + compatible slots highlighted | native card hit → lane style states; generated Icon/Badge inside Card | `test_i7` | `abilities.png` |
-| I8 | Install into compatible slot (replace) | native slot `pressed` → fixture slot update + card/loadout refresh | `test_i8` | `abilities.png` installed/selected states |
-| I9 | Incompatible slot → no install + reject state | lane reject style + timer | `test_i9` | not captured (transient state) |
-| I10 | Hover ability card → tooltip popover | generated Popover, dark-themed attached content | `test_i10` | not captured (pointer state; covered by popover capture of the same component) |
-| I11 | Toggle a General switch | generated Switch `value_changed` → app state + ON/OFF chip | `test_i11` | `settings.png` |
-| I12 | Adjust a Controller slider | native HSlider `value_changed` → app state + readout | `test_i12` | `settings.png` |
-| I13 | Remap binding → modal waits → capture; cancel unchanged | native modal + viewport key dispatch → generated Button reflects binding | `test_i13` (viewport `push_input`) | `remap-modal.png` |
-| I14 | Audio slider, language dropdowns, subtitle background swatch + preview | native HSlider/OptionButton/swatch → adaptive preview strip | `test_i14` | `subtitle-picker.png` |
-| I15 | Cancel closes popover/drawer/modal without data change | Escape via viewport input / close affordances; state asserted unchanged | `test_i15`, `test_i13` cancel path | `popover.png`/`drawer.png` (open states) |
+All 15 are implemented and covered by the headless suite (191 checks, including parity geometry and pinned-correction probes). Full
+screenshot evidence is the eight capture states; the four required states are
+`map`, `progress`, `abilities`, `settings`.
 
-Fixture failure paths are covered too: malformed JSON, missing required keys,
-unknown glyph name, wrong vehicle slot count (`test_corpus`).
+| ID | Interaction | Test | Screenshot |
+|---|---|---|---|
+| I1 | select one of four tabs | `test_i1` (+ tab geometry in `test_geometry`, pinned values in `test_parity_pins`) | all four required states |
+| I2 | toggle icon visibility OFF/ON | `test_i2` | map icon panel |
+| I3 | activate marker → anchored popover | `test_i3_i4` | `map-popover.png` |
+| I4 | SET AS NAV TARGET → footer + marker highlight | `test_i3_i4` | `map.png`, `map-popover.png` |
+| I5 | unlocked faction → drawer + enabled SHOP PARTS | `test_i5` | `progress.png` |
+| I6 | locked faction → requirement + disabled SHOP PARTS | `test_i6` | progress state (test-only assertion) |
+| I7 | select card → selected + compatible slots | `test_i7` | `abilities.png` |
+| I8 | install/replace in compatible slot | `test_i8` | `abilities.png` |
+| I9 | incompatible slot → no install + reject | `test_i9` | transient, test-only |
+| I10 | hover card → tooltip popover | `test_i10` | `abilities-hover.png` |
+| I11 | toggle General switch | `test_i11` | `settings.png` |
+| I12 | adjust Controller slider | `test_i12` | `settings.png` |
+| I13 | remap waits → captures; cancel unchanged | `test_i13` (viewport input) | `settings-remap-modal.png` |
+| I14 | audio slider/languages/subtitle background + preview | `test_i14` | `settings-subtitle.png` |
+| I15 | cancel closes popover/drawer/modal unchanged | `test_i15` (+I13) | map/progress states |
+
+Fixture failure paths: malformed JSON, missing keys, unknown glyph, wrong vehicle
+slot count, incomplete parity layout (`test_corpus`).
+
+## Parity pass
+
+- **Geometry authority consumed:** `scripts/parity_layout.gd` wraps the parsed
+  JSON; `UI.place_rect`/`UI.local` place every region from it. The suite asserts
+  global rects for header/tab-bar/footer, all four tab triggers (320×56), content
+  bodies (1280×552), map panel/field/icon panel, drawer, ability grid/detail panel,
+  first card, first loadout slot and all four settings panels. No layout number is
+  re-typed in lane source.
+- **DS vs fallback per region:** see the inventory + ledger tables above. Generated
+  components realize the tab bar, 13 switches, 2 popovers, all action buttons,
+  ~27 chips, 10 cards and 18 icons; lane-local native chrome covers the shell
+  bands, map plot/markers, roster rows, drawer surface, slots, sliders, dropdowns,
+  swatches, preview and modal.
+- **Pinned-correction round (merged parity `7897d0607`):** OFF switch samples the
+  graphite track and `boneBright` thumb; every capture state now sets
+  `navTarget=cache-02` and the footer value is right-aligned to x=1256; ability
+  cards and their 64×18/9 px rarity chips were measured in the captures
+  (chip x=48..112, y=215..233 inside the 152×240 card); the audio sub-layout is the
+  pinned `496/28` row pitch with labels at 612, dropdowns at 624 (200×28), swatch
+  label 658 / swatches 670 (36×18) and preview (664,694,576,26); the roster
+  affordance is `OPEN →` at x=1180; controller/remap/audio metas are the shortened
+  JSON strings; the map grid is 1 px ink at 12% opacity with 12 px corner ticks.
+- **Switch implementation:** generated `Switch` retained; engine-default
+  CheckButton icons replaced with 64×32 SVG pill icons (see "Switch parity fix").
+  The native CheckButton widget box measures 64×40 in Godot (the 64×32 pill is
+  vertically centred inside it); that widget padding is a permitted native-control
+  difference, the painted pill is exactly the JSON geometry.
+- **Permitted differences taken:** system-font fallback and glyph
+  rasterisation; letter-spacing approximated with `FontVariation.spacing_glyph`
+  (integer pixels); controller description secondary lines ellipsised inside the
+  44 px row; drawer/parts micro-labels use the system face. Everything else
+  (rects, colours, copy, switch geometry, active/selected states, overlays) is
+  parity-pinned.
+- **Cross-engine checker note:** running the shared `parity-check.mjs` against the
+  three lanes currently flags two checker-side issues that affect **every** lane
+  identically, not this lane:
+  1. *Glyph-pixel probes.* The colour probes at `(160/480/800/1120, 132)` land on
+     the centered tab labels and `(1118,250)` on the centered `ACCESS` chip text —
+     glyph anti-aliasing, not fill. This lane's fills are exact when sampled off
+     glyph (`160,112`/`160,150` = signal; `1118,245`/`1118,260` = signal; first
+     General switch `584,238` = signal). Recommend probing a solid band
+     (`y=112/150`) or a median patch.
+  2. *Region checks.* Every region check reports a degenerate `1×1` box at
+     `searchRect+1` and `areaFraction=0` for all three lanes (e.g. drawer expect
+     `24x176x560x552`, got `1x1x1x1`; ON-switch expect `552x222x64x32`, got
+     `521x209x1x1`). The mask pipeline (`-fill black -opaque hex` followed by
+     `-fill white +opaque hex`) converts the matched pixels to black and then the
+     second `+opaque` also clears them, so `-trim` sees no target region. Suggested
+     mask: match first, then set **non-black** pixels white
+     (`-fill white +opaque black`), and add a `-bordercolor white -border 1` before
+     `-trim` so regions touching the search-rect corner (active tabs start at
+     `x=0`) do not invert the trim.
+- **Evidence:** eight 1280×800 PNGs in `evidence/` (required four + four extra),
+  mirrored byte-identically to the slice directory by the capture tool.
 
 ## Evidence
 
 Lane-local (gitignored): `examples/game-pause-menu/godot/evidence/`
-- `map.png`, `progress.png`, `abilities.png`, `settings.png` — required four tabs, 1280×800
-- `popover.png` (marker detail), `drawer.png` (faction dossier), `remap-modal.png` (PRESS ANY KEY OR BUTTON), `subtitle-picker.png` (swatch + preview)
+- required: `map.png`, `progress.png`, `abilities.png`, `settings.png`
+- extras: `map-popover.png`, `abilities-hover.png`, `settings-remap-modal.png`,
+  `settings-subtitle.png`
 
-Mirrored to the slice evidence directory by the capture tool itself (the Godot
-process writes there; no shell copy crosses the worktree boundary):
+Mirror (written by the Godot process, not a shell copy):
 `/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/game-pause-menu/godot/`
-
-Raw logs: `.../tmp/game-pause-menu/godot/capture-run.log`, `tests-run.log`.
+Logs there: `parity-capture.log`, `parity-tests.log`,
+`parity-capture-headless.log`.
 
 ## Source size
 
 Source only, excluding the gitignored generated addon copy and fixtures:
-**4,281 GDScript lines** (`scripts/` 2,020 · `tabs/` 1,287 · `widgets/` 334 ·
-`tests/` 528 · `tools/` 112), **30 `.tscn` lines**, **65 shell lines**
-(`setup.sh`). No TypeScript is authored by this lane. The copied addon is
-~1,366 GDScript/runtime lines + generated component artifacts, all generated.
+**4,867 GDScript lines** (`scripts/` 2,465 · `tabs/` 1,331 · `widgets/` 286 ·
+`tests/` 696 · `tools/` 89), **30 `.tscn` lines**, **65 shell lines**
+(`setup.sh`). No TypeScript is authored by this lane.
 
 ## Findings (feed the usability comparison)
 
-- **F-GODOT-1 — Text is theme-locked and collapses.** `DSText` always projects
-  `#141414` (its root style rule has no predicate and no override channel), so
-  it is unusable on the dark ground, and its autowrapped `Label` reports a
-  ~1-character minimum width: as an HBox child or an absolutely-positioned node
-  it renders one character per line. The lane limits Text to light grounds and
-  gives every absolute/HBox use an explicit minimum width.
-- **F-GODOT-2 — Two incompatible styling surfaces.** Only action/composite
-  runtimes (Button, Badge, Card) accept `token_overrides`; control-family
-  runtimes (Switch, Tabs, Popover) accept none and their authored theme projects
-  a light-theme foreground. Branding them requires assigning a lane-local Theme
-  and overriding generated trigger/surface nodes.
-- **F-GODOT-3 — Popover surface sizing is first-layout-pass based.** Attaching
-  content whose wrapped minimum is only known after layout inflates the surface
-  (measured 3,584 px tall panel for 219 px of content) and the runtime only
-  positions below the trigger with a 280×90 default plus a 90 px viewport clamp.
-  The lane re-fits the surface after two frames and re-anchors it with
-  above/left fallbacks.
-- **F-GODOT-4 — Attached Popover content loses the consumer theme scope.**
-  Content is reparented into a `CanvasLayer` surface; a consumer theme applied to
-  the app root does not reach it, so attached content must be authored against
-  the surface's own theme. This is the same class of detached-surface theming
-  gap recorded for Unity's portal.
-- **F-GODOT-5 — Tabs has no selected-tab channel.** The active-tab block
-  (orange fill, on-signal text) and the tab body panel styleboxes must be
-  overridden per generated trigger/body node.
-- **F-GODOT-6 — Card is presentation only.** `interactive` styles hover but
-  there is no activated/selected channel, so a consumer must wrap Card in its own
-  hit target to build a selectable card grid.
-- **F-GODOT-7 — Divider/Text have no theme channel.** Fixed rule color
-  `#d0d0d0` is fine on paper but too bright for ink-ground hairlines.
-- **F-GODOT-8 — No resolved brand projection on the Godot target.** Unlike the
-  Unity lane's `.fsds-brand-orion` scope, Godot consumers receive no brand
-  tokens; every engine lane on this target must project the palette itself
-  (this lane uses the shared appearance fixture + a lane-local Theme).
+- **F-GODOT-1 — No resolved brand projection.** Godot consumers receive no brand
+  tokens; this lane projects the palette from the parity JSON through a lane-local
+  Theme.
+- **F-GODOT-2 — Text is theme- and type-locked.** `DSText` always projects
+  `#141414` with its contract type scale and no override channel: it cannot serve
+  dark-ground copy and cannot hit the parity 10/11/12/13 px scale. The lane uses
+  native labels and ledgers Text as admitted-but-unused for parity.
+- **F-GODOT-3 — Two incompatible styling surfaces.** Only action/composite
+  runtimes (Button/Badge/Card) accept `token_overrides`; control-family runtimes
+  (Switch/Tabs/Popover) accept none and their authored theme projects a light-theme
+  foreground, so branding them needs a lane Theme plus per-node overrides.
+- **F-GODOT-4 — Popover surface is first-layout-pass sized and
+  trigger-positioned.** Attaching content inflates the surface from the first
+  layout pass (measured 3,584 px panel for 219 px of content) and the runtime only
+  positions below the trigger with a 280×90 default; there is no placement or
+  outside-click channel. The lane re-fits and re-anchors the surface.
+- **F-GODOT-5 — Attached Popover content loses the consumer theme scope.**
+  Content is reparented into a `CanvasLayer` surface, so it must be authored
+  against the surface's own theme (same class as Unity's portal).
+- **F-GODOT-6 — Tabs has no selected-tab or per-tab geometry channel.** The four
+  320×56 parity boxes and active/inactive fills are forced with per-trigger
+  `add_theme_*_override`; tab bodies default to a light PanelContainer stylebox
+  from `control.gd` `_ready` and need a body override.
+- **F-GODOT-7 — Card is presentation-only.** No activated/selected channel:
+  the lane wraps each Card in a native hit target and repaints the surface.
+- **F-GODOT-8 — Divider colour is baked.** `#d0d0d0` is not a parity colour and
+  there is no override channel; the lane uses native 1 px rules.
 - **F-GODOT-9 — Control-family `_ready` mutates the shared authored theme
-  resource.** `control.gd` writes light-theme Button/PanelContainer styleboxes
-  into the loaded `theme.tres` at `_ready`; the lane avoids relying on that
-  resource by assigning its own theme after instantiation.
+  resource** (light-theme Button/PanelContainer styleboxes); the lane assigns its
+  own theme after instantiation to avoid depending on that state.
+- **F-GODOT-10 — Switch has no track/thumb styling channel.** The boolean runtime
+  paints engine-default CheckButton icons; the lane must supply 64×32 SVG icon
+  overrides (the parity switch fix). A radius/geometry contract (or a per-engine
+  pill translation) would remove this per-lane work.
 
 ## Non-claims
 
 - Not a shipping game, not a game-framework input integration, not an
-  input-system simulation. The remap modal is exercised with a synthetic
+  input-system simulation. Remap capture is exercised with a synthetic
   `InputEventKey` pushed through the viewport, not physical OS input; gamepad
-  capture code exists but is not exercised.
-- Not visual-quality proof of the design system: the hand-authored regions are
-  app-layer chrome and their appearance is not a component-quality claim.
-- Not cross-engine pixel parity; focus models, native control chrome, and type
-  metrics differ between Unity, GPUI and Godot.
+  capture code exists but is unexercised.
+- Not visual-quality proof of the design system: hand-authored regions are
+  app-layer chrome and are not component-quality claims.
+- Not cross-engine pixel parity proof by this lane alone: the shared
+  `parity-check.mjs` montage/RMSE/probe run across all three lanes is the slice's
+  evidence; its current probe-point issue is noted above.
 - Not accessibility adequacy proof: focus/keyboard paths are exercised, but no
   a11y standard or screen-reader delivery is claimed.
-- The screenshots are sampled states of one 1280×800 viewport, not
-  physical-device or multi-resolution proof (`window/stretch/mode=canvas_items`
-  scales the fixed design).
+- Screenshots are sampled 1280×800 states (`window/stretch/mode=canvas_items`),
+  not physical-device or multi-resolution proof.
 - Not generated-artifact admission: the Godot target is outside the TypeScript
-  admission rail.
-- The copied addon directory is generated; only the setup script and consumer
-  sources are committed by this lane.
+  admission rail. The copied addon directory is generated and gitignored; only
+  lane sources are committed.

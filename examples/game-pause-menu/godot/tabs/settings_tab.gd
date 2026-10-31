@@ -1,17 +1,15 @@
 extends Control
 class_name SettingsTab
 
-## Settings tab: four stacked sections inside a scroll region.
+## Parity SETTINGS tab: four 608x268 panels in a 2x2 grid.
 ##
-## Generated components used here: Switch (one per General toggle), Button (one
-## binding button per remap action). Sliders, dropdowns, swatches, section chrome
-## and the remap modal are engine-native fallbacks (`# NOT FSDS` at each site):
-## the Godot allowlist admits no Slider, Select/OptionButton, ColorPicker or
-## Dialog/Sheet component.
+## Generated components: Switch (5 General rows) and Button (6 remap binding
+## buttons). Sliders, dropdowns, colour swatches, preview strip and modal are
+## lane-local native fallbacks (`# NOT FSDS` at each site) driven by the parity
+## JSON geometry.
 
 var app: PauseMenuApp
 var general_switches: Dictionary = {}
-var general_chips: Dictionary = {}
 var controller_sliders: Dictionary = {}
 var controller_labels: Dictionary = {}
 var remap_buttons: Dictionary = {}
@@ -23,268 +21,302 @@ var swatch_buttons: Dictionary = {}
 var preview_panel: PanelContainer
 var preview_label: Label
 var preview_tag: Label
-var form_scroll: ScrollContainer
+var _origin: Vector2
+var _panels: Dictionary = {}
 
 
 func _ready() -> void:
-	custom_minimum_size = PauseMenuApp.BODY_SIZE
-	add_child(_build_ground())
-	_build_form()
+	custom_minimum_size = Vector2(float(app.parity.panels["content"]["w"]) + float(app.parity.panels["content"]["x"]) * 2.0, float(app.parity.panels["content"]["h"]))
+	_origin = Vector2(0.0, float(app.parity.panels["content"]["y"]))
+	var panel_defs: Array = app.parity.settings["panels"]
+	var by_id: Dictionary = {}
+	for panel_def in panel_defs:
+		by_id[str(panel_def["id"])] = panel_def
+	_build_general(by_id["general"])
+	_build_controller(by_id["controller"])
+	_build_remap(by_id["remap"])
+	_build_audio(by_id["audio"])
 
 
-func _build_ground() -> Control:
-	var ground := UI.frame("panel", "rule", false)
-	UI.place(ground, 0, 0, PauseMenuApp.BODY_SIZE.x, PauseMenuApp.BODY_SIZE.y)
-	return ground
+func _local(json_rect: Dictionary) -> Rect2:
+	return UI.local(json_rect, _origin)
 
 
-func _build_form() -> void:
-	# NOT FSDS: no ScrollContainer/field-list component is admitted; the tab uses
-	# Godot's native ScrollContainer so stacked sections stay reachable.
-	var scroll := ScrollContainer.new()
-	scroll.name = "SettingsScroll"
-	scroll.position = Vector2.ZERO
-	scroll.size = PauseMenuApp.BODY_SIZE
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	add_child(scroll)
-	form_scroll = scroll
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_top", 18)
-	margin.add_theme_constant_override("margin_bottom", 28)
-	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(margin)
-	var content := UI.vbox(16)
-	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	margin.add_child(content)
-
-	content.add_child(_build_general())
-	content.add_child(_build_controller())
-	content.add_child(_build_remap())
-	content.add_child(_build_audio())
+func _panel_rect_for(panel_id: String) -> Dictionary:
+	for panel_def in app.parity.settings["panels"]:
+		if str(panel_def["id"]) == panel_id:
+			return panel_def["rect"]
+	return {}
 
 
-func _heading(title: String, detail: String) -> Control:
-	var row := UI.hbox(14)
-	var title_label := UI.micro(title, "boneBright")
-	row.add_child(title_label)
-	row.add_child(UI.micro(detail, "muted"))
-	row.add_child(UI.spacer())
-	var dash := UI.dashed()
-	dash.custom_minimum_size = Vector2(240, 1)
-	dash.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(dash)
-	return row
+func _build_panel(panel_def: Dictionary, header_height := 40.0) -> Dictionary:
+	var rect := _local(panel_def["rect"])
+	var panel := Control.new()
+	panel.name = "Panel_" + str(panel_def["id"])
+	UI.place_rect(panel, rect)
+	add_child(panel)
+	var frame := UI.frame("charcoal", "rule")
+	frame.position = Vector2.ZERO
+	frame.size = rect.size
+	frame.custom_minimum_size = rect.size
+	panel.add_child(frame)
+	var meta := _panel_header(panel, rect.size.x, str(panel_def["title"]), str(panel_def["meta"]), header_height)
+	_panels[str(panel_def["id"])] = panel
+	return {"panel": panel, "rect": rect, "meta": meta}
 
 
-func _describe(label_text: String, description: String) -> VBoxContainer:
-	var column := UI.vbox(1)
-	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_child(UI.label(label_text, 13, 700, "bone"))
-	var description_label := UI.label(description, 11, 500, "muted")
-	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	column.add_child(description_label)
-	return column
+func _panel_header(parent: Control, width: float, title_text: String, meta_text: String, header_height: float) -> Label:
+	var padding := float(app.parity.panels.get("padding", 16))
+	var strip := UI.rect_node("charcoal")
+	UI.place(strip, 0, 0, width, header_height)
+	parent.add_child(strip)
+	var title_label := UI.panel_title(title_text)
+	UI.place(title_label, padding, (header_height - 18) / 2.0, width - padding * 2, 16)
+	parent.add_child(title_label)
+	var meta_label := UI.panel_meta(meta_text)
+	meta_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	UI.place(meta_label, padding, (header_height - 16) / 2.0, width - padding * 2, 14)
+	parent.add_child(meta_label)
+	var rule_node := UI.rule("rule", 1)
+	UI.place(rule_node, 0, header_height - 1, width, 1)
+	parent.add_child(rule_node)
+	return meta_label
 
 
-func _build_general() -> VBoxContainer:
-	var section := UI.vbox(8)
-	section.add_child(_heading("GENERAL", "PERSONAL PREFERENCES"))
+# --- General -----------------------------------------------------------------
+
+func _build_general(panel_def: Dictionary) -> void:
+	var built := _build_panel(panel_def)
+	var panel: Control = built["panel"]
+	var width := float(panel_def["rect"]["w"])
+	var row_h := float(app.parity.settings["rowH"])
+	var first_y := float(app.parity.settings["firstRowY"]) - float(panel_def["rect"]["y"])
+	var switches_data := app.parity.switch_data
+	var switch_w := float(switches_data["width"])
+	var switch_h := float(switches_data["height"])
+	var index := 0
 	for toggle in app.fixtures.settings.get("general", []):
 		var toggle_id := str(toggle.get("id", ""))
-		var row := UI.hbox(16)
-		row.add_child(_describe(str(toggle.get("label", "")), str(toggle.get("description", ""))))
-		var chip := UI.value_chip(bool(toggle.get("value", false)))
-		row.add_child(chip)
-		general_chips[toggle_id] = chip
-		# Generated Switch (projection of the General toggle).
-		var toggle_node = DSFactory.toggle("")
-		toggle_node.name = "GeneralSwitch_" + toggle_id
-		toggle_node.custom_minimum_size = Vector2(44, 40)
+		var row_y := first_y + index * row_h
+		var name_label := UI.label(str(toggle.get("label", "")), app.parity.type_size("rowLabel"), 700, "boneBright", 0.0)
+		UI.place(name_label, 16, row_y + 6, width - 120, 16)
+		panel.add_child(name_label)
+		var description := UI.sub(str(toggle.get("description", "")), "muted")
+		UI.place(description, 16, row_y + 24, width - 120, 14)
+		panel.add_child(description)
+		var toggle_node = DSFactory.toggle()
+		UI.place(toggle_node, width - 16 - switch_w, row_y + (row_h - switch_h) / 2.0, switch_w, switch_h)
+		panel.add_child(toggle_node)
+		DSFactory.prepare_switch(toggle_node)
 		toggle_node.value = "true" if bool(app.general_values.get(toggle_id, false)) else "false"
 		toggle_node.value_changed.connect(_on_general_changed.bind(toggle_id))
-		row.add_child(toggle_node)
 		general_switches[toggle_id] = toggle_node
-		section.add_child(row)
-		section.add_child(UI.rule("rule", 1))
-	return section
+		var separator := UI.rule("rule", 1)
+		UI.place(separator, 16, row_y + row_h - 1, width - 32, 1)
+		panel.add_child(separator)
+		index += 1
 
 
 func _on_general_changed(next: String, toggle_id: String) -> void:
 	app.set_general(toggle_id, next == "true")
 
 
-func _build_controller() -> VBoxContainer:
-	var section := UI.vbox(8)
-	section.add_child(_heading("CONTROLLER", "LOOK, AIM, FEEL · ENGINE-NATIVE HSlider (NO SLIDER COMPONENT ADMITTED)"))
+# --- Controller --------------------------------------------------------------
+
+func _build_controller(panel_def: Dictionary) -> void:
+	var built := _build_panel(panel_def)
+	var panel: Control = built["panel"]
+	var width := float(panel_def["rect"]["w"])
+	var row_h := float(app.parity.settings["rowH"])
+	var first_y := float(app.parity.settings["firstRowY"]) - float(panel_def["rect"]["y"])
+	var slider_data: Dictionary = app.parity.settings["slider"]
+	var index := 0
 	for setting in app.fixtures.settings.get("controller", []):
 		var setting_id := str(setting.get("id", ""))
-		var row := UI.hbox(16)
-		row.add_child(_describe(str(setting.get("label", "")), str(setting.get("description", ""))))
-		# NOT FSDS: the Godot target admits no Slider component; native HSlider.
-		var slider := HSlider.new()
+		var row_y := first_y + index * row_h
+		var name_label := UI.label(str(setting.get("label", "")), app.parity.type_size("rowLabel"), 700, "boneBright", 0.0)
+		UI.place(name_label, 16, row_y + 6, 240, 16)
+		panel.add_child(name_label)
+		var description := UI.sub(str(setting.get("description", "")), "muted")
+		description.autowrap_mode = TextServer.AUTOWRAP_OFF
+		description.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		UI.place(description, 16, row_y + 24, 176, 14)
+		panel.add_child(description)
+		# NOT FSDS: no Slider component is admitted on the Godot target.
+		var slider := ParitySlider.new()
 		slider.name = "ControllerSlider_" + setting_id
-		slider.min_value = float(setting.get("min", 0))
-		slider.max_value = float(setting.get("max", 100))
-		slider.step = float(setting.get("step", 1))
-		slider.value = float(app.controller_values.get(setting_id, 0))
-		slider.custom_minimum_size = Vector2(260, 24)
-		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		slider.configure(float(setting["min"]), float(setting["max"]), float(setting["step"]), float(app.controller_values.get(setting_id, 0)), float(slider_data["w"]))
+		UI.place(slider, 200, row_y + 12, float(slider_data["w"]), 20)
 		slider.value_changed.connect(_on_controller_changed.bind(setting_id))
-		row.add_child(slider)
-		var value_label := UI.label("", 12, 700, "bone")
-		value_label.custom_minimum_size = Vector2(64, 0)
+		panel.add_child(slider)
+		var value_label := UI.label("", app.parity.type_size("value"), 700, "boneBright", 0.0)
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		UI.place(value_label, width - 16 - 84, row_y + 8, 84, 20)
 		value_label.text = "%d%s" % [int(slider.value), str(setting.get("unit", ""))]
-		row.add_child(value_label)
+		panel.add_child(value_label)
 		controller_sliders[setting_id] = slider
 		controller_labels[setting_id] = value_label
-		section.add_child(row)
-		section.add_child(UI.rule("rule", 1))
-	return section
+		var separator := UI.rule("rule", 1)
+		UI.place(separator, 16, row_y + row_h - 1, width - 32, 1)
+		panel.add_child(separator)
+		index += 1
 
 
 func _on_controller_changed(value: float, setting_id: String) -> void:
 	app.set_controller(setting_id, value)
 
 
-func _build_remap() -> VBoxContainer:
-	var section := UI.vbox(8)
-	section.add_child(_heading("CONTROLLER REMAP", "ACTIVATE A BINDING, THEN PRESS ANY KEY OR BUTTON"))
+# --- Remap -------------------------------------------------------------------
+
+func _build_remap(panel_def: Dictionary) -> void:
+	var built := _build_panel(panel_def)
+	var panel: Control = built["panel"]
+	var width := float(panel_def["rect"]["w"])
+	var row_h := float(app.parity.settings["remapRowH"])
+	# JSON `remapFirstRowY` is inconsistent with the panel rect (212 is above the
+	# remap panel); the lane uses the same 36px content inset as the audio panel.
+	var first_y := 36.0
+	var binding_size: Dictionary = app.parity.settings["bindingButton"]
+	var index := 0
 	for action in app.fixtures.settings.get("remap", []):
 		var action_id := str(action.get("id", ""))
-		var row := UI.hbox(16)
-		var label_column := UI.vbox(1)
-		label_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		label_column.add_child(UI.label(str(action.get("label", "")), 13, 700, "bone"))
-		label_column.add_child(UI.micro("CURRENT BINDING", "muted"))
-		row.add_child(label_column)
-		var binding = DSFactory.action(str(app.remap_bindings.get(action_id, "")), "outline", "small")
+		var row_y := first_y + index * row_h
+		var name_label := UI.label(str(action.get("label", "")), 11, 700, "boneBright", 0.0)
+		UI.place(name_label, 16, row_y + 10, 240, 16)
+		panel.add_child(name_label)
+		var binding = DSFactory.action(
+			str(app.remap_bindings.get(action_id, "")),
+			"binding",
+			float(binding_size["w"]),
+			float(binding_size["h"]),
+			11
+		)
 		binding.name = "RemapButton_" + action_id
-		binding.custom_minimum_size = Vector2(150, 0)
+		UI.place(binding, width - 16 - float(binding_size["w"]), row_y + 4, float(binding_size["w"]), float(binding_size["h"]))
 		binding.activated.connect(app.open_remap.bind(action_id))
-		row.add_child(binding)
+		panel.add_child(binding)
 		remap_buttons[action_id] = binding
-		section.add_child(row)
-		section.add_child(UI.rule("rule", 1))
-	return section
+		var separator := UI.rule("rule", 1)
+		UI.place(separator, 16, row_y + row_h - 1, width - 32, 1)
+		panel.add_child(separator)
+		index += 1
 
 
-func _build_audio() -> VBoxContainer:
-	var section := UI.vbox(10)
-	section.add_child(_heading("AUDIO & SUBTITLES", "MIX, LANGUAGE AND SUBTITLE PRESENTATION"))
+# --- Audio & subtitles -------------------------------------------------------
+
+func _build_audio(panel_def: Dictionary) -> void:
+	# Audio rows start 36px below the panel top in the JSON, so this panel's header
+	# strip is 36px tall rather than the standard 40px.
+	var built := _build_panel(panel_def, 36.0)
+	var panel: Control = built["panel"]
+	var width := float(panel_def["rect"]["w"])
+	var row_h := float(app.parity.settings["audioRowH"])
+	var first_y := float(app.parity.settings["audioFirstRowY"]) - float(panel_def["rect"]["y"])
+	var slider_data: Dictionary = app.parity.settings["slider"]
 	var audio: Dictionary = app.fixtures.settings.get("audio", {})
-	for slider_data in audio.get("sliders", []):
-		var slider_id := str(slider_data.get("id", ""))
-		var row := UI.hbox(16)
-		row.add_child(_describe(str(slider_data.get("label", "")), "MIX LEVEL"))
-		# NOT FSDS: no Slider component on the Godot allowlist; native HSlider.
-		var slider := HSlider.new()
+	var index := 0
+	for slider_data_item in audio.get("sliders", []):
+		var slider_id := str(slider_data_item.get("id", ""))
+		var row_y := first_y + index * row_h
+		var name_label := UI.label(str(slider_data_item.get("label", "")), 11, 700, "boneBright", 0.0)
+		UI.place(name_label, 16, row_y + 6, 130, 16)
+		panel.add_child(name_label)
+		# NOT FSDS: no Slider component is admitted on the Godot target.
+		var slider := ParitySlider.new()
 		slider.name = "AudioSlider_" + slider_id
-		slider.min_value = 0.0
-		slider.max_value = 100.0
-		slider.step = 5.0
-		slider.value = float(app.audio_values.get(slider_id, 0))
-		slider.custom_minimum_size = Vector2(260, 24)
-		slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		slider.configure(0.0, 100.0, 5.0, float(app.audio_values.get(slider_id, 0)), float(slider_data["w"]))
+		UI.place(slider, 150, row_y + 4, float(slider_data["w"]), 20)
 		slider.value_changed.connect(_on_audio_slider_changed.bind(slider_id))
-		row.add_child(slider)
-		var value_label := UI.label("%d%s" % [int(slider.value), "%"], 12, 700, "bone")
-		value_label.custom_minimum_size = Vector2(64, 0)
+		panel.add_child(slider)
+		var value_label := UI.label("", app.parity.type_size("value"), 700, "boneBright", 0.0)
 		value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		row.add_child(value_label)
+		UI.place(value_label, width - 16 - 80, row_y + 4, 80, 20)
+		value_label.text = "%d%%" % int(slider.value)
+		panel.add_child(value_label)
 		audio_sliders[slider_id] = slider
 		audio_labels[slider_id] = value_label
-		section.add_child(row)
-		section.add_child(UI.rule("rule", 1))
+		index += 1
 
-	var languages := UI.hbox(28)
-	languages.add_child(_build_language_dropdown(audio.get("audioLanguage", {}), true))
-	languages.add_child(_build_language_dropdown(audio.get("subtitleLanguage", {}), false))
-	section.add_child(languages)
+	var audio_panel_rect := UI.rect(panel_def["rect"])
+	var language_label_y := float(app.parity.settings["languageLabelY"]) - audio_panel_rect.position.y
+	var dropdown_y := float(app.parity.settings["dropdownY"]) - audio_panel_rect.position.y
+	var dropdown_h := float(app.parity.settings["dropdownH"])
+	audio_option = _build_language_dropdown(panel, audio.get("audioLanguage", {}), 16.0, language_label_y, dropdown_y, dropdown_h, true)
+	subtitle_option = _build_language_dropdown(panel, audio.get("subtitleLanguage", {}), 232.0, language_label_y, dropdown_y, dropdown_h, false)
+	_build_background_swatches(panel, audio.get("subtitleBackground", {}))
+	_build_preview(panel, str(audio.get("previewLine", "")))
+	apply_subtitle_background()
+	apply_audio_languages()
 
-	section.add_child(_build_subtitle_background(audio.get("subtitleBackground", {})))
-	section.add_child(_build_preview(str(audio.get("previewLine", ""))))
-	return section
 
-
-func _build_language_dropdown(config: Dictionary, is_audio: bool) -> VBoxContainer:
-	var column := UI.vbox(4)
-	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_child(UI.micro(str(config.get("label", "")), "muted"))
-	# NOT FSDS: no Select/Dropdown component is admitted on the Godot target;
-	# the lane uses the native OptionButton.
+func _build_language_dropdown(parent: Control, config: Dictionary, x: float, label_y: float, control_y: float, control_h: float, is_audio: bool) -> OptionButton:
+	var label := UI.micro(str(config.get("label", "")), "muted")
+	UI.place(label, x, label_y, 200, 12)
+	parent.add_child(label)
+	# NOT FSDS: no Select/Dropdown component is admitted on this target.
+	var dropdown_data: Dictionary = app.parity.settings["dropdown"]
 	var option := OptionButton.new()
 	option.name = "AudioLanguage" if is_audio else "SubtitleLanguage"
 	var options: Array = config.get("options", [])
-	for index in range(options.size()):
-		option.add_item(str(options[index]))
+	for option_index in range(options.size()):
+		option.add_item(str(options[option_index]))
 	var selected := options.find(str(config.get("value", "")))
 	option.selected = maxi(selected, 0)
-	option.custom_minimum_size = Vector2(0, 34)
+	UI.place(option, x, control_y, float(dropdown_data["w"]), control_h)
 	if is_audio:
 		option.item_selected.connect(app.set_audio_language)
-		audio_option = option
 	else:
 		option.item_selected.connect(app.set_subtitle_language)
-		subtitle_option = option
-	column.add_child(option)
-	return column
+	parent.add_child(option)
+	return option
 
 
-func _build_subtitle_background(config: Dictionary) -> VBoxContainer:
-	var column := UI.vbox(6)
-	column.add_child(UI.micro(str(config.get("label", "")), "muted"))
-	var swatches := UI.hbox(8)
+func _build_background_swatches(parent: Control, config: Dictionary) -> void:
+	var swatch_data: Dictionary = app.parity.settings["swatch"]
+	var settings_data: Dictionary = app.parity.settings
+	var audio_panel_rect := UI.rect(app.parity.settings["panels"][3]["rect"])
+	var swatch_y := float(settings_data["swatchY"]) - audio_panel_rect.position.y
+	var swatch_h := float(settings_data["swatchH"])
+	var label_y := float(settings_data["swatchLabelY"]) - audio_panel_rect.position.y
 	var options: Array = config.get("options", [])
+	var x := 16.0
+	var gap := float(swatch_data["gap"])
 	for option in options:
 		var option_id := str(option.get("id", ""))
-		# NOT FSDS: no ColorPicker/Swatch component is admitted; lane-local
-		# color-block buttons built from the fixture swatch options.
+		# NOT FSDS: no ColorPicker/Swatch component is admitted on this target.
 		var button := Button.new()
 		button.name = "Swatch_" + option_id
-		button.text = str(option.get("label", ""))
-		button.custom_minimum_size = Vector2(112, 40)
-		button.add_theme_font_override("font", app.orion.font(10, 700, 1.0))
-		button.add_theme_font_size_override("font_size", 10)
-		var swatch_color := Color(str(option.get("value", "#000000")))
-		button.add_theme_color_override("font_color", _contrast_text(swatch_color))
-		button.add_theme_color_override("font_hover_color", _contrast_text(swatch_color))
-		button.add_theme_color_override("font_pressed_color", _contrast_text(swatch_color))
-		button.add_theme_stylebox_override("normal", app.orion.flat(swatch_color, app.orion.color("rule"), 1, 0.0))
-		button.add_theme_stylebox_override("hover", app.orion.flat(swatch_color, app.orion.color("boneBright"), 2, 0.0))
-		button.add_theme_stylebox_override("pressed", app.orion.flat(swatch_color, app.orion.color("signal"), 2, 0.0))
+		UI.place(button, x, swatch_y, float(swatch_data["w"]), swatch_h)
 		button.pressed.connect(app.set_subtitle_background.bind(option_id))
-		swatches.add_child(button)
+		parent.add_child(button)
 		swatch_buttons[option_id] = button
-	column.add_child(swatches)
-	return column
+		x += float(swatch_data["w"]) + gap
+	var label := UI.micro("SUBTITLE BACKGROUND", "muted")
+	UI.place(label, 280, label_y, 240, 12)
+	parent.add_child(label)
+	apply_subtitle_background()
 
 
-func _build_preview(preview_line: String) -> VBoxContainer:
-	var column := UI.vbox(4)
-	column.add_child(UI.micro("SUBTITLE PREVIEW", "muted"))
+func _build_preview(parent: Control, preview_line: String) -> void:
+	var preview_rect := UI.rect(app.parity.settings["preview"])
 	preview_panel = PanelContainer.new()
 	preview_panel.name = "SubtitlePreview"
-	preview_panel.custom_minimum_size = Vector2(0, 56)
-	column.add_child(preview_panel)
-	var row := UI.hbox(14)
-	preview_panel.add_child(UI.margin(row, 16, 8, 16, 8))
-	preview_label = UI.label(preview_line, 13, 600, "bone")
+	var audio_panel_rect := UI.rect(_panel_rect_for("audio"))
+	var local_position := preview_rect.position - audio_panel_rect.position
+	UI.place(preview_panel, local_position.x, local_position.y, preview_rect.size.x, preview_rect.size.y)
+	parent.add_child(preview_panel)
+	var row := UI.hbox(12)
+	preview_panel.add_child(row)
+	preview_label = UI.label(preview_line, 11, 400, "bone", 0.0)
 	preview_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	preview_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	row.add_child(preview_label)
 	preview_tag = UI.micro("", "muted")
 	row.add_child(preview_tag)
-	return column
 
 
-func _contrast_text(background: Color) -> Color:
-	# 0.45 keeps near-black copy on the signal-orange swatch (luminance ~0.51)
-	# while staying light on ink/charcoal/black swatches.
-	var luminance := 0.2126 * background.r + 0.7152 * background.g + 0.0722 * background.b
-	return app.orion.color("ink") if luminance > 0.45 else app.orion.color("boneBright")
+func _on_audio_slider_changed(value: float, slider_id: String) -> void:
+	app.set_audio_slider(slider_id, value)
 
 
 # --- app-driven refreshes ----------------------------------------------------
@@ -295,15 +327,11 @@ func apply_general(toggle_id: String, value: bool) -> void:
 		var next := "true" if value else "false"
 		if str(toggle_node.value) != next:
 			toggle_node.value = next
-	if general_chips.has(toggle_id):
-		var chip: Label = general_chips[toggle_id]
-		chip.text = "ON" if value else "OFF"
-		chip.add_theme_color_override("font_color", app.orion.color("signalHot" if value else "muted"))
 
 
 func apply_controller(setting_id: String, value: float) -> void:
-	var slider: HSlider = controller_sliders.get(setting_id)
-	if slider != null and not is_equal_approx(slider.value, value):
+	var slider: ParitySlider = controller_sliders.get(setting_id)
+	if slider != null:
 		slider.set_value_no_signal(value)
 	if controller_labels.has(setting_id):
 		var unit := ""
@@ -320,8 +348,8 @@ func apply_remap(action_id: String, binding: String) -> void:
 
 
 func apply_audio_slider(slider_id: String, value: float) -> void:
-	var slider: HSlider = audio_sliders.get(slider_id)
-	if slider != null and not is_equal_approx(slider.value, value):
+	var slider: ParitySlider = audio_sliders.get(slider_id)
+	if slider != null:
 		slider.set_value_no_signal(value)
 	if audio_labels.has(slider_id):
 		audio_labels[slider_id].text = "%d%%" % int(value)
@@ -347,12 +375,11 @@ func apply_subtitle_background() -> void:
 			continue
 		var swatch_color := Color(str(option.get("value", "#000000")))
 		var selected := option_id == app.subtitle_background
-		button.add_theme_stylebox_override("normal", app.orion.flat(
-			swatch_color,
-			app.orion.color("signal") if selected else app.orion.color("rule"),
-			2 if selected else 1,
-			0.0
-		))
+		var border_width := 2 if selected else 1
+		var border_color := app.orion.color("signal") if selected else app.orion.color("ruleStrong")
+		button.add_theme_stylebox_override("normal", app.orion.flat(swatch_color, border_color, border_width, 0.0))
+		button.add_theme_stylebox_override("hover", app.orion.flat(swatch_color, app.orion.color("boneBright"), 2, 0.0))
+		button.add_theme_stylebox_override("pressed", app.orion.flat(swatch_color, app.orion.color("signal"), 2, 0.0))
 	_refresh_preview()
 
 
@@ -363,24 +390,24 @@ func _refresh_preview() -> void:
 	for option in app.subtitle_background_options():
 		if str(option.get("id", "")) == app.subtitle_background:
 			background = Color(str(option.get("value", "#191917")))
-	var text_color := _contrast_text(background)
-	preview_panel.add_theme_stylebox_override("panel", app.orion.flat(background, app.orion.surface["ruleStrong"], 1, 0.0))
+	var text_color := app.parity.contrast_text(background)
+	preview_panel.add_theme_stylebox_override("panel", app.orion.flat(background, app.orion.color("ruleStrong"), 1, 4.0))
 	preview_label.add_theme_color_override("font_color", text_color)
 	preview_tag.add_theme_color_override("font_color", text_color)
-	preview_tag.text = str(app.subtitle_background).to_upper() + " · " + app.subtitle_language.to_upper()
-
-
-func _on_audio_slider_changed(value: float, slider_id: String) -> void:
-	app.set_audio_slider(slider_id, value)
+	preview_tag.text = str(app.subtitle_background).to_upper()
 
 
 # --- node accessors used by the interaction tests ----------------------------
+
+func panel_node(panel_id: String) -> Control:
+	return _panels.get(panel_id)
+
 
 func general_switch(toggle_id: String):
 	return general_switches.get(toggle_id)
 
 
-func controller_slider(setting_id: String) -> HSlider:
+func controller_slider(setting_id: String):
 	return controller_sliders.get(setting_id)
 
 
@@ -388,7 +415,7 @@ func remap_button(action_id: String):
 	return remap_buttons.get(action_id)
 
 
-func audio_slider(slider_id: String) -> HSlider:
+func audio_slider(slider_id: String):
 	return audio_sliders.get(slider_id)
 
 
@@ -415,13 +442,3 @@ func preview_text_color() -> Color:
 
 func preview_text() -> String:
 	return preview_label.text
-
-
-func scroll_to(y: float) -> void:
-	if form_scroll != null:
-		form_scroll.scroll_vertical = int(y)
-
-
-func scroll_to_bottom() -> void:
-	if form_scroll != null:
-		form_scroll.scroll_vertical = int(maxf(form_scroll.get_v_scroll_bar().max_value, 0.0))
