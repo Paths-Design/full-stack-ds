@@ -44,7 +44,9 @@ acceptance:
   - id: A4
     given: 'the package README, unity-target architecture doc and implementation snapshot'
     when: 'read'
-    then: 'Spinner, its motion-loop runtime, the explicit reduced-motion input and the unclaimed OS-preference/delay/inline/pixel facts are stated'
+    then: >-
+      Spinner, its motion-loop runtime, the explicit reduced-motion input and the
+      unclaimed variant-carrier/OS-preference/delay/inline/pixel facts are stated
 observability:
   - 'tmp/unity-pilot results.xml and provenance bind the Spinner behavior to the tested revision'
 rollback:
