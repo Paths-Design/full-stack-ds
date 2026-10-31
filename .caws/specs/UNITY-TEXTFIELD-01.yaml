@@ -54,3 +54,11 @@ contracts:
   - name: 'textfield-text'
     type: behavior
     path: 'packages/ds-contracts/components/TextField/TextField.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit f8c500576: focused unity codegen + cli seam 226/226 pass, including the wrapper/child text-input shape, the child-bound TextControl attach, the inline compound description with named slots, the nested-binding boundary families and the obsolete form-control catch-all removal (novel form-control leaves now fail as unclassified, and the boundary test asserts that); audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T13:52:23.255Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > wraps a native text field with named slots for TextField"
+    exit_code: 0
+    commit_sha: f8c500576e75c8d35822a67e282eb83bd8f7b922
