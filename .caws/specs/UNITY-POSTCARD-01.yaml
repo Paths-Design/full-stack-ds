@@ -54,3 +54,11 @@ contracts:
   - name: 'postcard-projected-text'
     type: behavior
     path: 'packages/ds-contracts/components/Postcard/Postcard.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 087e58bff: focused unity codegen + cli seam 234/234 pass, including the ProjectedText lowering predicate from nested-property content leaves plus an insertion hole, flattened generated attributes (AuthorName/AuthorHandle/Timestamp/StatsLikes) painting their Labels, the inline section scaffold with the body content container, the timestamp/element-accessor collision rename, and the refused object/id/embed/datetime/aria families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T15:28:40.777Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > projects object-path text leaves as flattened attributes for Postcard"
+    exit_code: 0
+    commit_sha: "087e58bffe9269dc84b51b507f9731064304a26f"
