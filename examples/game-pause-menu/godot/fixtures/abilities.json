@@ -1,0 +1,104 @@
+{
+  "abilities": [
+    {
+      "id": "threading",
+      "name": "THREADING",
+      "description": "Counter pressure shrinks the opponent's decision window by 80%.",
+      "rarity": "rare",
+      "size": 1,
+      "icon": "CircleDot",
+      "stats": { "heat": 12, "cooldown": "8s", "draw": "2.5 AGI" },
+      "detail": "Threading is a timing tool, not a damage tool. It buys the quarter second that turns a losing exchange into a clean exit."
+    },
+    {
+      "id": "overclock",
+      "name": "OVERCLOCK",
+      "description": "Raises drive output 40% for six seconds, then cooks the heat sink.",
+      "rarity": "epic",
+      "size": 2,
+      "icon": "Maximize",
+      "stats": { "heat": 48, "cooldown": "22s", "draw": "6.0 PWR" },
+      "detail": "The crawler will outrun anything on the flats and then need a repair bay. Overclock is a route tool for people who planned the exit."
+    },
+    {
+      "id": "thermal-shield",
+      "name": "THERMAL SHIELD",
+      "description": "Wraps the chassis in a heat envelope rated for storm crossing.",
+      "rarity": "uncommon",
+      "size": 2,
+      "icon": "Baseline",
+      "stats": { "heat": 8, "cooldown": "30s", "draw": "3.0 PWR" },
+      "detail": "Standard issue for survey crews. The shield does not make the crawler fast; it makes the storm survivable."
+    },
+    {
+      "id": "ion-drill",
+      "name": "ION DRILL",
+      "description": "Cuts an extraction shaft through the ice shelf.",
+      "rarity": "common",
+      "size": 1,
+      "icon": "Calculator",
+      "stats": { "heat": 16, "cooldown": "12s", "draw": "1.5 PWR" },
+      "detail": "Ion drills are slow and cheap and every crew owns one. The guild buys ice by the tonne."
+    },
+    {
+      "id": "drone-sweep",
+      "name": "DRONE SWEEP",
+      "description": "Launches a survey ring that marks intel objects in a 400 m radius.",
+      "rarity": "rare",
+      "size": 2,
+      "icon": "Search",
+      "stats": { "heat": 4, "cooldown": "18s", "draw": "4.5 PWR" },
+      "detail": "The sweep does not reveal everything. It reveals what the drone can see, which is usually enough to choose a direction."
+    },
+    {
+      "id": "signal-jam",
+      "name": "SIGNAL JAM",
+      "description": "Scrambles hostile tracking for four seconds.",
+      "rarity": "uncommon",
+      "size": 1,
+      "icon": "Alarm",
+      "stats": { "heat": 20, "cooldown": "14s", "draw": "2.0 PWR" },
+      "detail": "Jamming is a blunt instrument. It also breaks the crawler's own nav feed for the same four seconds."
+    },
+    {
+      "id": "aegis-plate",
+      "name": "AEGIS PLATE",
+      "description": "Deploys a hardlight plate across the forward chassis arc.",
+      "rarity": "legendary",
+      "size": 2,
+      "icon": "TriangleAlert",
+      "stats": { "heat": 24, "cooldown": "25s", "draw": "5.5 PWR" },
+      "detail": "Cartel manufacture. The plate eats a rail hit and the crawler keeps its nose. The heat sink notices."
+    },
+    {
+      "id": "recon-ping",
+      "name": "RECON PING",
+      "description": "Sends a pulse that echoes off viable cargo.",
+      "rarity": "common",
+      "size": 1,
+      "icon": "Circle",
+      "stats": { "heat": 2, "cooldown": "6s", "draw": "0.5 PWR" },
+      "detail": "Cheap, quiet and useful. Every pad runner leaves one installed unless a bigger ability needs the slot."
+    },
+    {
+      "id": "thruster-bloom",
+      "name": "THRUSTER BLOOM",
+      "description": "Vents the rear diffuser for a short hop over broken ground.",
+      "rarity": "rare",
+      "size": 1,
+      "icon": "ArrowUpDown",
+      "stats": { "heat": 32, "cooldown": "16s", "draw": "3.5 PWR" },
+      "detail": "A bloom is not flight. It clears the washboard and lands hard, and the suspension fee is real."
+    },
+    {
+      "id": "hardlight-cut",
+      "name": "HARDLIGHT CUT",
+      "description": "A sustained cutting beam for salvage and forced entry.",
+      "rarity": "epic",
+      "size": 2,
+      "icon": "PanelLeft",
+      "stats": { "heat": 38, "cooldown": "19s", "draw": "4.0 PWR" },
+      "detail": "Hellforge manufacture. Cuts rover frames in half; lights the basalt on fire if the operator is careless."
+    }
+  ]
+}
