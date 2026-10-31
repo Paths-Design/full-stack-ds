@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.ProgressClampsValueIntoItsDeclaredRangeAndTogglesValuePresence
     exit_code: 0
     commit_sha: "2ed04926e0d022c5bbe3f4ad3c8f046b40da5111"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 2ed04926e: packages/ds-unity/README.md admits Progress with its value-fill behavior, projected value and refused variant/size/label/formatter non-claims, and records the 68/68 lane; docs/architecture/unity-target.md records the Progress dispatcher mode, attach path, range facts and the 68/68 lane; docs/current-implementation-snapshot.md records the twenty-eighth admitted control with those facts."
+    recorded_at: "2026-10-31T12:34:13.350Z"
+    commit_sha: "2ed04926e0d022c5bbe3f4ad3c8f046b40da5111"
