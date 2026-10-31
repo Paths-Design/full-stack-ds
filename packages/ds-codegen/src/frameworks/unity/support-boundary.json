@@ -234,6 +234,13 @@
       "reason": "The composed Button/Input/Pagination/Icon children are not instantiated by the paged navigator; the runtime builds a native shell for the declared parts and owns no child-component composition."
     },
     {
+      "id": "anatomy-carousel-shell-refused",
+      "match": ["contract:/anatomy/dom/**/children/rotation/**", "contract:/anatomy/dom/**/children/controls/**", "contract:/anatomy/details/rotation/**", "contract:/anatomy/details/controls/**", "contract:/anatomy/details/previous/**", "contract:/anatomy/details/next/**", "contract:/anatomy/details/pagination/**", "contract:/anatomy/details/ring/**"],
+      "requiresAny": [{"match": ["contract:/sequence/channel"], "valueIn": ["slide"]}],
+      "disposition": "refused",
+      "reason": "The authored rotation/controls shell and its composed Pagination/Icon children are not emitted; the sequence runtime builds its own native rotation/previous/next controls and owns no picker or icon composition."
+    },
+    {
       "id": "anatomy-component-ref-identity",
       "match": ["contract:/anatomy/dom/**/children/ref:*/part"],
       "disposition": "lowered",
@@ -1594,6 +1601,20 @@
       "reason": "The accessible labels only feed aria attributes with no UI Toolkit consumer; the runtime builds unlabelled native controls and withholds the labels."
     },
     {
+      "id": "prop-carousel-sequence-lowered",
+      "match": ["contract:/props/*/members/plain:slides/**", "contract:/props/*/members/plain:autoPlay/**", "contract:/props/*/members/plain:duration/**"],
+      "requiresAny": [{"match": ["contract:/sequence/channel"], "valueIn": ["slide"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (Sequence)/SequenceControl: the slide labels, autoplay opt-in and dwell duration become the generated Slides/AutoPlay/Duration attributes owned by the sequence runtime."
+    },
+    {
+      "id": "prop-carousel-presentation-refused",
+      "match": ["contract:/props/*/members/plain:indicator/**", "contract:/props/*/members/plain:label/**"],
+      "requiresAny": [{"match": ["contract:/sequence/channel"], "valueIn": ["slide"]}],
+      "disposition": "refused",
+      "reason": "The indicator presentation needs the composed Pagination picker the runtime withholds, and the region label only feeds aria attributes with no UI Toolkit consumer."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -2058,6 +2079,13 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "Truncation policy needs USS text-overflow projection and a measuring runtime."
+    },
+    {
+      "id": "sequence-carousel-lowered",
+      "match": ["contract:/sequence/**"],
+      "requiresAny": [{"match": ["contract:/sequence/channel"], "valueIn": ["slide"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (Sequence)/SequenceControl: the declared sequence block drives the runtime slide channel, wrapped navigation, autoplay dwell and rotation controls."
     },
     {
       "id": "sequence",

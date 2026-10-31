@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "Sequence" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -351,6 +351,29 @@ export interface PagedSetLowering {
   disabledProp?: string;
   parts: { previous: string; next: string; commit: string; field: string; input: string; context: string };
 }
+/**
+ * A slide sequence: a numeric index channel over declared slide labels with
+ * wrapped previous/next navigation, an autoplay dwell timer and focus-stopped
+ * rotation. The viewport hosts consumer slides and the runtime switches them by
+ * visibility; the picker composition, message-derived labels and transitions
+ * are withheld.
+ */
+export interface SequenceLowering {
+  behavior: "Sequence";
+  channel: NormalizedChannelIR;
+  itemsProp: string;
+  viewportPart: string;
+  previousPart: string;
+  nextPart: string;
+  rotationPart: string;
+  durationProp?: string;
+  autoPlayProp?: string;
+  defaultDurationMs?: number;
+  startLabelKey: string;
+  stopLabelKey: string;
+  previousLabelKey?: string;
+  nextLabelKey?: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -364,7 +387,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | SequenceLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -1091,6 +1114,48 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
         ...(ir.pagedSet.countProp === undefined ? {} : { countProp: ir.pagedSet.countProp }),
         ...(ir.pagedSet.disabledProp === undefined ? {} : { disabledProp: ir.pagedSet.disabledProp }),
         parts: { previous: previous.part, next: next.part, commit: commit.part, field: field.part, input: input.part, context: context.part },
+      };
+    }
+  }
+  // A slide sequence: the normalized sequence block supplies the numeric index
+  // channel, slide labels, wrapped navigation parts, rotation part and dwell
+  // timing. The runtime owns the shell and the channel; the picker composition
+  // and the message-derived labels are withheld.
+  if (ir.motion.sequence != null && ir.dom !== undefined) {
+    const sequence = ir.motion.sequence!;
+    const channel = ir.behavior.normalizedChannels.find(candidate => candidate.name === sequence.channel);
+    const find = (part: string): DomNodeIR | undefined => {
+      const visit = (node: DomNodeIR): DomNodeIR | undefined => {
+        if (node.part === part) return node;
+        for (const child of node.children) {
+          const found = visit(child);
+          if (found) return found;
+        }
+        return undefined;
+      };
+      return visit(ir.dom!);
+    };
+    const viewport = find(sequence.viewport);
+    const messageKey = (part: string): string | undefined => {
+      const binding = find(part)?.bindings["aria-label"];
+      return binding?.kind === "message" ? binding.key : undefined;
+    };
+    if (channel !== undefined && viewport?.part !== undefined) {
+      return {
+        behavior: "Sequence",
+        channel,
+        itemsProp: sequence.itemsProp,
+        viewportPart: viewport.part,
+        previousPart: sequence.previous,
+        nextPart: sequence.next,
+        rotationPart: sequence.rotation,
+        ...(sequence.timing.durationProp === undefined ? {} : { durationProp: sequence.timing.durationProp }),
+        ...(sequence.timing.autoPlayProp === undefined ? {} : { autoPlayProp: sequence.timing.autoPlayProp }),
+        ...(sequence.timing.defaultMs === undefined ? {} : { defaultDurationMs: sequence.timing.defaultMs }),
+        startLabelKey: sequence.labels.start,
+        stopLabelKey: sequence.labels.stop,
+        ...(messageKey(sequence.previous) === undefined ? {} : { previousLabelKey: messageKey(sequence.previous) }),
+        ...(messageKey(sequence.next) === undefined ? {} : { nextLabelKey: messageKey(sequence.next) }),
       };
     }
   }

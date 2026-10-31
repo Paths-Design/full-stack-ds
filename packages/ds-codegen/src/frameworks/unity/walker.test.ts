@@ -569,6 +569,27 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Presentation|ShowChoices|PreviousLabel|ariaLabel/);
   });
 
+  it("renders the slide sequence with a consumer viewport for Carousel", () => {
+    const contract = loadContractWithSidecars(root, "Carousel") as ComponentContract;
+    const carouselIr = buildComponentIR(contract);
+    carouselIr.name = "UnrelatedCarousel";
+    const source = createUnityEmitter().emitComponent(carouselIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedCarousel : VisualElement");
+    expect(source).toContain("public SequenceControl Control { get; }");
+    expect(source).toContain("public VisualElement Viewport { get; } = new VisualElement();");
+    expect(source).toContain("public override VisualElement contentContainer => Viewport;");
+    expect(source).toContain("public int Index");
+    expect(source).toContain("public int DefaultIndex");
+    expect(source).toContain("public string[] Slides");
+    expect(source).toContain("[UxmlAttribute] public bool AutoPlay");
+    expect(source).toContain("[UxmlAttribute] public int Duration");
+    expect(source).toContain("[UxmlAttribute] public string RotationStart");
+    expect(source).toContain("[UxmlAttribute] public string RotationStop");
+    expect(source).toContain("public Action<int> OnIndexChange");
+    expect(source).toContain("SequenceControl.Attach(this, viewport: Viewport, prefix: \"carousel\");");
+    expect(source).not.toMatch(/Indicator|public string Label|ariaLabel/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

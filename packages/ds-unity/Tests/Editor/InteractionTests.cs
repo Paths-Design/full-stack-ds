@@ -1308,5 +1308,67 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Presentation", "ShowChoices", "PreviousLabel", "Label" })
                 Assert.That(typeof(FullStackDS.PageNavigator).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void CarouselSwitchesItsSlideAndWrapsNavigation()
+        {
+            var carousel = Mount(new FullStackDS.Carousel());
+            carousel.Slides = new[] { "One", "Two", "Three" };
+            carousel.Add(new Label { text = "One" });
+            carousel.Add(new Label { text = "Two" });
+            carousel.Add(new Label { text = "Three" });
+            carousel.RotationStart = "Start";
+            carousel.RotationStop = "Stop";
+            carousel.PreviousSlide = "Previous";
+            carousel.NextSlide = "Next";
+            var buttons = carousel.Query<UnityEngine.UIElements.Button>().ToList();
+            Assert.That(buttons.Count, Is.EqualTo(3));
+            var rotation = buttons[0];
+            var previous = buttons[1];
+            var next = buttons[2];
+            Assert.That(rotation.text, Is.EqualTo("Start"));
+            Assert.That(previous.text, Is.EqualTo("Previous"));
+            Assert.That(next.text, Is.EqualTo("Next"));
+            Assert.That(carousel.Index, Is.EqualTo(0));
+            Assert.That(carousel.Viewport[0].style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(carousel.Viewport[1].style.display.value, Is.EqualTo(DisplayStyle.None));
+            int changed = -1;
+            carousel.OnIndexChange += value => changed = value;
+            Submit(next);
+            Assert.That(carousel.Index, Is.EqualTo(1));
+            Assert.That(changed, Is.EqualTo(1));
+            Assert.That(carousel.Viewport[1].style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Submit(previous);
+            Assert.That(carousel.Index, Is.EqualTo(0));
+            Submit(previous);
+            Assert.That(carousel.Index, Is.EqualTo(2));
+            Submit(next);
+            Assert.That(carousel.Index, Is.EqualTo(0));
+            Submit(rotation);
+            Assert.That(rotation.text, Is.EqualTo("Stop"));
+            carousel.Controlled = true;
+            int requested = -1;
+            carousel.IndexRequested += value => requested = value;
+            Submit(next);
+            Assert.That(requested, Is.EqualTo(1));
+            Assert.That(carousel.Index, Is.EqualTo(0));
+            foreach (var prop in new[] { "Indicator", "Label", "AutoPlayLabel" })
+                Assert.That(typeof(FullStackDS.Carousel).GetProperty(prop), Is.Null, prop);
+        }
+        [UnityTest] public System.Collections.IEnumerator CarouselAdvancesOnTheDeclaredDwell()
+        {
+            var carousel = Mount(new FullStackDS.Carousel());
+            carousel.Slides = new[] { "One", "Two", "Three" };
+            carousel.Add(new Label { text = "One" });
+            carousel.Add(new Label { text = "Two" });
+            carousel.Add(new Label { text = "Three" });
+            carousel.AutoPlay = true;
+            carousel.Duration = 50;
+            var deadline = UnityEngine.Time.realtimeSinceStartup + 3f;
+            while (UnityEngine.Time.realtimeSinceStartup < deadline && carousel.Index == 0)
+            {
+                yield return null;
+            }
+            Assert.That(carousel.Index, Is.EqualTo(1));
+            Assert.That(carousel.Viewport[1].style.display.value, Is.EqualTo(DisplayStyle.Flex));
+        }
     }
 }
