@@ -76,3 +76,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: e2880f6c015b10844e829b2447f266debe4384b4
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at e2880f6c0: packages/ds-unity/README.md admits List with its prefixed Variant/Size carriers and refused As/Marker plus pending Spacing, and records the 57/57 lane; docs/architecture/unity-target.md records the prefixed carrier lowering, List boundary classification and the 57/57 lane; docs/current-implementation-snapshot.md records the fifteenth admitted control with prefixed-carrier and refusal facts."
+    recorded_at: "2026-10-31T09:50:50.386Z"
+    commit_sha: e2880f6c015b10844e829b2447f266debe4384b4
