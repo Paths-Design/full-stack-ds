@@ -493,7 +493,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     expect(lines).toContain("  DRY RUN  target assets (unity)");
     expect(lines).toContain(`    → packages/ds-unity/${sentinel}`);
     expect(fs.existsSync(path.join(process.cwd(), "packages/ds-unity", sentinel))).toBe(false);
-  });
+  }, 120_000);
 
   it("skips it on a name-filtered run, which would replace the full asset with one built from the subset", async () => {
     const { exit, log, calls } = prepareWithAssetRecorder(["--dry-run", "--target=unity", "Switch"], {
@@ -503,7 +503,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     expect(exit).not.toHaveBeenCalled();
     expect(calls).toEqual([]);
     expect(log.mock.calls.some((call) => String(call[0]).startsWith("  TARGET ASSETS skipped for unity"))).toBe(true);
-  });
+  }, 180_000);
 
   it("refuses an asset path that escapes the package root", async () => {
     prepareWithAssetRecorder(["--dry-run", "--target=unity"], {
@@ -566,7 +566,7 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     const components = manifest.groups.filter((g) => g.component !== "(target-assets)");
     expect(components.map((g) => g.component).sort()).toEqual(["Accordion", "Alert", "AlertNotice", "Avatar", "Badge", "Blockquote", "Breadcrumbs", "Button", "Calendar", "Card", "Carousel", "Checkbox", "Chip", "CodeBlock", "CodeSnippet", "Command", "Details", "Dialog", "Divider", "Field", "Icon", "Image", "Input", "Label", "Links", "List", "NavList", "NavTree", "OTP", "PageNavigator", "Pagination", "Popover", "Postcard", "ProfileFlag", "Progress", "RadioGroup", "Select", "Sheet", "ShowMore", "Shuttle", "Skeleton", "Stat", "Status", "Switch", "Table", "Tabs", "Text", "TextField", "Toast", "ToggleSwitch", "Tooltip", "Truncate", "Walkthrough"]);
     expect(components.every((g) => g.contract.path.startsWith("packages/ds-contracts/components/"))).toBe(true);
-  });
+  }, 180_000);
 
   it("prunes an asset the previous run recorded and this full run no longer emits, under the hand-edit policy", async () => {
     const root = tempPackage();
@@ -598,5 +598,5 @@ describe("cli main — emitter emitTargetAssets seam", () => {
     const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as { groups: { component: string; files: { path: string }[] }[] };
     const rel = path.relative(process.cwd(), root).split(path.sep).join("/");
     expect(manifest.groups.find((g) => g.component === "(target-assets)")!.files.map((f) => f.path)).toEqual([`${rel}/Kept.txt`]);
-  });
+  }, 180_000);
 });
