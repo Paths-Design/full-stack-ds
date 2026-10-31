@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["CodeBlock", null], ["Divider", null], ["Icon", null], ["Label", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null], ["Tooltip", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["CodeBlock", null], ["Details", null], ["Divider", null], ["Icon", null], ["Label", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["ToggleSwitch", null], ["Tooltip", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -145,6 +145,7 @@ describe("Unity capability accounting", () => {
       'ledger CodeBlock .code-block__token[data-token="static"] (uss-selector)',
       'ledger CodeBlock .code-block__token[data-token="string"] (uss-selector)',
       'ledger CodeBlock .code-block__token[data-token="tag"] (uss-selector)',
+      "ledger Details .details[open] .details__icon (uss-selector)",
       "ledger List .list--spacing-lg > * + * (uss-selector)",
       "ledger List .list--spacing-md > * + * (uss-selector)",
       "ledger List .list--spacing-none > * + * (uss-selector)",

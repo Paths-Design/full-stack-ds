@@ -70,6 +70,8 @@ interface ElementPlan {
   identity?: { name: string; className: string };
   /** Literal content (R5). */
   text?: string;
+  /** R5b: declared string prop whose value this text leaf paints. */
+  textBinding?: string;
   part?: string;
   children: ElementPlan[];
   /** The private composed-content host (R3), owned by its parent element. */
@@ -106,6 +108,20 @@ interface Context {
 
 const isInsertion = (node: DomNodeIR): boolean => node.tag === INSERTION_TAG || (node.tag === SLOT_TAG && !node.slotName);
 const isNamedSlot = (node: DomNodeIR): boolean => node.tag === SLOT_TAG && !!node.slotName;
+
+/**
+ * Whether a prop with this name is emitted as a root API member (channel props,
+ * carried variant axes, the placement knob). A rendered part whose accessor
+ * would take the same identifier is suffixed instead of colliding.
+ */
+function isEmittedApiName(ctx: Context, name: string): boolean {
+  if (hasChannel(ctx.lowering) && [ctx.lowering.channel.valueProp, ctx.lowering.channel.defaultValueProp, ctx.lowering.channel.changeHandlerProp].includes(name)) return true;
+  const prop = ctx.ir.styledProps.find(candidate => candidate.name === name);
+  if (!prop || !ctx.ir.variants[name]) return false;
+  const option = ctx.lowering.behavior === "ItemGroup" ? ITEM_GROUP_OPTIONS[name] : undefined;
+  const placement = ctx.lowering.behavior === "AnchoredSurface" ? ctx.ir.surface?.positioning?.placementProp : undefined;
+  return !!option || name === placement || ctx.projection.carrierAxes.has(name);
+}
 
 /** R1/R2: the element type of a rendered node. */
 function elementType(ctx: Context, node: DomNodeIR): ElementType {
@@ -180,6 +196,12 @@ function isOmittedPassiveDecoration(ir: ComponentIR, lowering: UnityLowering, no
   return isGuardedActionChrome(ir, node);
 }
 
+/** Whether a declared prop narrows to a string: an inline narrowed type or a
+ * deferred reference to one. Only a string content binding has a text surface. */
+function isStringProp(prop: ResolvedPropIR): boolean {
+  return prop.propType.kind === "string" || (prop.propType.kind === "fallback" && prop.propType.raw === "string");
+}
+
 function literalContent(node: DomNodeIR): string | undefined {
   const content = node.content;
   return content && "kind" in content && content.kind === "literal" ? content.value : undefined;
@@ -201,7 +223,10 @@ function insertionHost(ctx: Context, cls: ClassPlan, parent: ElementPlan, holes:
 }
 
 function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: DomNodeIR[], holes: { count: number }): void {
-  const isCompound = (node: DomNodeIR): boolean => !!node.part && ctx.compound.has(node.part);
+  // A disclosure's content part is owned by the attached behavior, so it is
+  // rendered in the root class rather than composed as a sub-element class.
+  const behaviorContent = ctx.lowering.behavior === "Disclosure" ? ctx.lowering.content.name : undefined;
+  const isCompound = (node: DomNodeIR): boolean => !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent;
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -246,12 +271,25 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       throw new Error(`UNITY_UNSUPPORTED_REF: ${ctx.ir.name} ${node.componentRef} carries unlowered bindings, events or children`);
     const text = literalContent(node);
     if (text !== undefined && type === "VisualElement") throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} <${node.tag}> carries literal content but lowers to no text element`);
+    // R5b: a text leaf bound to a declared string prop paints the generated
+    // string attribute through its Label. The root class exposes the property;
+    // the walker asserts the prop exists and is a string so no binding is
+    // silently dropped. The passive lowering already omits such nodes.
+    const contentBinding = node.content !== undefined && "kind" in node.content &&
+      node.content.kind === "prop" && !node.content.path?.length ? node.content.prop : undefined;
+    if (contentBinding !== undefined) {
+      if (ctx.lowering.behavior === "Passive") throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ctx.ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
+      const contentProp = ctx.ir.styledProps.find(candidate => candidate.name === contentBinding);
+      if (!contentProp || !isStringProp(contentProp)) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} <${node.tag}> content prop ${contentBinding} is not a declared string prop`);
+      if (type !== "Label" || node.children.length) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} <${node.tag}> content prop ${contentBinding} does not lower to a text leaf`);
+    }
     const element: ElementPlan = ctx.glyph?.node === node
       ? { ref: "glyphElement", declaration: "private", type: "GlyphElement", children: [], glyph: true }
       : node.part
-      ? { ref: identifier(pascal(node.part)), declaration: "property", type, identity: identityFor(ctx, node.part), part: node.part, children: [] }
+      ? { ref: identifier(pascal(node.part)) + (!ctx.compound.has(node.part) && isEmittedApiName(ctx, node.part) ? "Control" : ""), declaration: "property", type, identity: identityFor(ctx, node.part), part: node.part, children: [] }
       : { ref: `node${++cls.locals}`, declaration: "local", type, children: [] };
     if (text !== undefined) element.text = text;
+    if (contentBinding !== undefined) element.textBinding = contentBinding;
     if (node.componentRef !== undefined) {
       const instance = node.componentInstance;
       if (instance && (instance.ref !== node.componentRef || !instance.targetGlyph))
@@ -322,6 +360,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     classes.push(root);
   }
   for (const part of ir.compoundParts) {
+    if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     const node = findNode(ir.dom, part.name);
     const cls = newClass(identifier(`${name}${pascal(part.name)}`), compoundBase(ctx, part, node), false, identityFor(ctx, part.name), part);
     if (node) {
@@ -330,10 +369,20 @@ function planClasses(ctx: Context): ClassPlan[] {
     }
     classes.push(cls);
   }
+  // A string content property named like another member (a trigger part named
+  // for the same word) keeps the contract name on the property and suffixes the
+  // element accessor, so both remain addressable in C#.
+  for (const cls of classes) {
+    for (const member of cls.members) {
+      if (!member.textBinding) continue;
+      const propName = identifier(pascal(member.textBinding));
+      for (const other of cls.members) if (other !== member && other.ref === propName) other.ref = identifier(`${other.ref}Control`);
+    }
+  }
   return classes;
 }
 
-const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface" } as const;
+const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure" } as const;
 
 interface RootApi {
   members: string[];
@@ -466,7 +515,10 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];
-  const members: string[] = [`        public ${lowering.behavior} ${behavior} { get; }`];
+  // The runtime control type and the member name differ for the disclosure
+  // (the member keeps the behavior name; the class is DisclosureControl).
+  const behaviorType = lowering.behavior === "Disclosure" ? "DisclosureControl" : lowering.behavior;
+  const members: string[] = [`        public ${behaviorType} ${behavior} { get; }`];
   const attach: string[] = [];
   const defaults: string[] = [];
   const root = classes[0]!;
@@ -486,6 +538,13 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
       // HTML label semantics: a `label` root activates the control it contains.
       attach.push(`${behavior} = BooleanControl.Attach(this, control: ${control.ref}, stateClass: ${quote(lowering.stateClass)}, labelHost: ${ir.dom?.tag === LABEL_TAG ? "this" : "null"});`);
     }
+  } else if (lowering.behavior === "Disclosure") {
+    const trigger = root.members.find(m => m.part === lowering.trigger.name);
+    const content = root.members.find(m => m.part === lowering.content.name);
+    if (!trigger || trigger.type !== NATIVE_BUTTON) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its disclosure trigger ${lowering.trigger.name} as no native button`);
+    if (!content) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its disclosure content ${lowering.content.name} outside the root class`);
+    members.push(`        public ${trigger.type} Trigger => ${trigger.ref};`);
+    attach.push(`${behavior} = DisclosureControl.Attach(this, summary: ${trigger.ref}, content: ${content.ref}, stateClass: ${quote(lowering.stateClass)});`);
   } else if (lowering.behavior === "ItemGroup") {
     const { focus } = lowering;
     attach.push(`${behavior} = ItemGroup.Attach(this, triggerClass: ${quote(`${ctx.prefix}__${lowering.trigger.name}`)}, contentClass: ${quote(`${ctx.prefix}__${lowering.content.name}`)}, operation: ${quote(lowering.operation)}, stateClass: ${quote(lowering.stateClass)}, multiple: ${lowering.multiple}, focus: ${quote(focus.strategy)}, orientation: ${quote(focus.orientation)}, wrap: ${focus.wrap});`);
@@ -519,6 +578,17 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
       `        public event Action<string[]> ValueChanged { add => ${behavior}.ValueChanged += value; remove => ${behavior}.ValueChanged -= value; }`,
     );
   }
+  // R5b: a string prop bound to a rendered text leaf becomes a UxmlAttribute
+  // that paints the label's text; the leaf keeps its part identity and styles.
+  const textProps = new Map<string, ElementPlan>();
+  for (const member of root.members) if (member.textBinding && !textProps.has(member.textBinding)) textProps.set(member.textBinding, member);
+  for (const [propName, member] of textProps) {
+    const name = identifier(pascal(propName));
+    members.push(`        [UxmlAttribute] public string ${name} { get => ${member.ref}.text; set { ${member.ref}.text = value ?? ""; } }`);
+    const prop = ir.styledProps.find(candidate => candidate.name === propName);
+    const literal = prop === undefined ? undefined : defaultLiteral(ir, prop);
+    if (literal !== undefined && typeof literal === "string") defaults.push(`${name} = ${literal};`);
+  }
   const disabled = disabledProp(ir);
   const dismissal = lowering.behavior === "AnchoredSurface" ? ir.behavior.normalizedDismissalTriggers.filter(t => t.enabledByProp) : [];
   const declaredDismissal = lowering.behavior === "AnchoredSurface" ? resolveAnchoredSurfacePolicy(ir.surface!).publicDismissalProps.map(d => d.prop) : [];
@@ -526,7 +596,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const channelProps = new Set([channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp]);
   const carriers = ctx.projection.carrierAxes;
   for (const prop of ir.styledProps) {
-    if (channelProps.has(prop.name)) continue;
+    if (channelProps.has(prop.name) || textProps.has(prop.name)) continue;
     const name = identifier(pascal(prop.name));
     if (prop.name === disabled) {
       members.push(`        [UxmlAttribute] public bool ${name} { get => !enabledSelf; set => SetEnabled(!value); }`);

@@ -91,8 +91,11 @@ export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, 
         ok = channel !== undefined && eventKey !== undefined && (events[eventKey]?.emittedVia ?? []).includes(channel.changeHandlerProp); subject = `event ${eventKey}`; break;
       case "selected-channel-binding":
         // The behavior's state class realises a binding to the selected
-        // channel's value only on a trigger part it owns.
-        ok = channel !== undefined && binding === `channel:${channel.name}.value` && node !== undefined && triggers.has(node); subject = `binding ${leaf.keyed}`; break;
+        // channel's value on a trigger part it owns; a disclosure also mirrors
+        // the open state on the host and content it owns, so its host binding
+        // is realised without a trigger part.
+        ok = channel !== undefined && binding === `channel:${channel.name}.value` &&
+          ((node !== undefined && triggers.has(node)) || behavior === "Disclosure"); subject = `binding ${leaf.keyed}`; break;
       case "bound-prop-property":
         ok = binding.startsWith("prop:") && node !== undefined && triggers.has(node) && emitted.has(pascal(binding.slice(5))); subject = `binding ${leaf.keyed}`; break;
     }

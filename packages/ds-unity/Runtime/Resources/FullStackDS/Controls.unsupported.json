@@ -2194,6 +2194,79 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Details",
+      "sourceKey": ".details--right .details__icon",
+      "part": "icon",
+      "property": "order",
+      "value": "1",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": ".details[open] .details__icon",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Details",
+      "sourceKey": ".details__summary:focus-visible",
+      "part": "summary",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "icon",
+      "part": "icon",
+      "property": "transition",
+      "value": "transform 200ms ease",
+      "reason": "uss-property",
+      "longhand": "transition-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "summary",
+      "part": "summary",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "summary",
+      "part": "summary",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Details",
+      "sourceKey": "summary",
+      "part": "summary",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
       "component": "Divider",
       "sourceKey": "--vertical",
       "part": "root",

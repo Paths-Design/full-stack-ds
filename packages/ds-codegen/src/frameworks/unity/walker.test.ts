@@ -205,4 +205,17 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/UnrelatedCode(?:Source|Line|Gutter|Token)\b/);
     expect(source).not.toMatch(/public string (?:Code|Language|Highlight|Tokens|ShowLineNumbers)\b/);
   });
+
+  it("attaches a disclosure and projects the summary string for Details", () => {
+    const contract = loadContractWithSidecars(root, "Details") as ComponentContract;
+    const detailsIr = buildComponentIR(contract);
+    detailsIr.name = "UnrelatedDisclosure";
+    const source = createUnityEmitter().emitComponent(detailsIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedDisclosure : VisualElement");
+    expect(source).toContain("public Disclosure Disclosure { get; }");
+    expect(source).toContain("DisclosureControl.Attach(this, summary: SummaryControl, content: Content, stateClass: \"is-open\");");
+    expect(source).toContain('public string Summary { get => SummaryText.text; set { SummaryText.text = value ?? ""; } }');
+    expect(source).toContain("public override VisualElement contentContainer => Content;");
+    expect(source).toContain("public UnityEngine.UIElements.Button Trigger => SummaryControl;");
+  });
 });
