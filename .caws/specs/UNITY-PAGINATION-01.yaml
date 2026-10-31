@@ -2,7 +2,6 @@ id: UNITY-PAGINATION-01
 title: 'Admit Pagination to the Unity target as a runtime-built page strip'
 mode: feature
 lifecycle_state: active
-worktree: unity-pagination
 created_at: '2026-10-31T15:31:08.213Z'
 updated_at: '2026-10-31T15:42:38.469Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
