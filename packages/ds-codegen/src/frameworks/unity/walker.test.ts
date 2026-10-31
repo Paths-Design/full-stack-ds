@@ -93,4 +93,13 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain("public partial class UnrelatedBadgeContent : VisualElement");
     expect(source).toContain('AddToClassList("badge__content")');
   });
+
+  it("emits prefixed modifier carriers for List and withholds the uncarried axes", () => {
+    const source = emit(irFor("List", "UnrelatedList"));
+    expect(source).toContain("public partial class UnrelatedList : VisualElement");
+    expect(source).toContain('AddToClassList("list")');
+    expect(source).toContain('Variants.GetAxis(this, "list", "variant-", "default", "unstyled", "inline", "divided", "spaced")');
+    expect(source).toContain('Variants.GetAxis(this, "list", "size-", "sm", "md", "lg")');
+    expect(source).not.toMatch(/public string (?:As|Marker|Spacing)\b/);
+  });
 });

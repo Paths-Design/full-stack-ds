@@ -457,5 +457,18 @@ namespace FullStackDS.Tests
             Assert.That(typeof(FullStackDS.Badge).GetProperty("Icon"), Is.Null);
             Assert.That(typeof(FullStackDS.Badge).GetProperty("ShowStatusIcon"), Is.Null);
         }
+        [Test] public void ListComposesItemsAndCarriesPrefixedAxes()
+        {
+            var list = Mount(new FullStackDS.List { Variant = "inline", Size = "lg" });
+            list.Add(new Label("one"));
+            list.Add(new Label("two"));
+            Assert.That(list.ClassListContains("list"), Is.True);
+            Assert.That(list.ClassListContains("list--variant-inline"), Is.True);
+            Assert.That(list.ClassListContains("list--size-lg"), Is.True);
+            Assert.That(list.contentContainer, Is.SameAs(list));
+            Assert.That(list.contentContainer.childCount, Is.EqualTo(2));
+            foreach (var prop in new[] { "As", "Marker", "Spacing" })
+                Assert.That(typeof(FullStackDS.List).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

@@ -146,7 +146,7 @@ describe("Unity capability lowering", () => {
     const registry = createDefaultRegistry({ workspaceRoot: root, contractsRoot });
     expect(registry.available()).toContain("unity");
     const unity = registry.get("unity");
-    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge"]);
+    expect(unity.admittedComponents).toEqual(["Switch", "Accordion", "Popover", "Tabs", "Text", "Divider", "Icon", "Button", "Checkbox", "ToggleSwitch", "Blockquote", "Stat", "ProfileFlag", "Badge", "List"]);
     expect(unity.railFrameworkId).toBeUndefined();
     expect(unity.componentsRoot).toBe(path.join(root, "packages/ds-unity/Runtime/Components"));
   });
@@ -623,10 +623,12 @@ describe("Unity behavior selection refusals", () => {
     expect(() => unityLowering(ir)).toThrow('UNITY_UNSUPPORTED_SURFACE: Popover declares dismissal trigger "routeChange"');
   });
 
-  it("refuses a variant axis whose class-recipe modifier is prefixed for disambiguation", () => {
+  it("emits prefixed modifier helpers for a variant axis disambiguated by the class recipe", () => {
     const ir = buildComponentIR(fixture("Tabs"));
     ir.classRecipe.valueModifiers = ir.classRecipe.valueModifiers.map(m => m.propName === "appearance" ? { ...m, valuePrefix: "appearance-" } : m);
-    expect(() => createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })).toThrow('UNITY_UNSUPPORTED_VARIANT: Tabs.appearance shares values with another axis (class-recipe prefix "appearance-")');
+    const source = createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain('Variants.GetAxis(this, "tabs", "appearance-",');
+    expect(source).toContain('Variants.SetAxis(this, "tabs", "appearance-", value,');
   });
 
   it("refuses anatomy bindings the attached behavior does not realise", () => {
