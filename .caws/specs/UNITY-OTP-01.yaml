@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T15:58:11.794Z"
     artifact_path: packages/ds-unity/Runtime/Components/OTP/OTP.cs
     commit_sha: da7739ab37473fb44986d14b7c5c87b115f6d9c2
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 83fef4a6e (sourceDirty false): 85/85 passed, zero failed/skipped (test-run start 2026-10-31 15:57:33Z; resultsSha256 999a94916c5b9e453db8a45ad68def94e1e68f127f8bea6c8110f3d269302d32). The added case builds four one-character fields, distributes and joins values, fires the change/completion callbacks, rejects out-of-mode characters, switches to alphanumeric filtering, requests without committing in controlled mode, applies disabled/read-only and asserts the absent a11y API. It also caught two runtime defects: mode changes re-sanitise the current value rather than the mode string, and invalid edits are ignored instead of clearing the cell. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T15:58:12.344Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.OtpBuildsOneCharacterFieldsAndAssemblesItsValue
+    exit_code: 0
+    commit_sha: "83fef4a6efb25ba9c51d87447abd83d3e6e95c88"
