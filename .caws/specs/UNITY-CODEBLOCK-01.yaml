@@ -1,9 +1,11 @@
 id: UNITY-CODEBLOCK-01
 title: 'Admit CodeBlock to the Unity target as a styled code shell with transform chrome omitted'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'CodeBlock admitted to the Unity target/package (twenty-sixth allowlisted control) as a styled code shell: content-transform highlight subtree and token/line/gutter parts omitted by fact, syntax props refused/pending, data-*/attr DOM metadata tolerated and classified, white-space pre/tab-size/keyword inheritance refused; codegen+cli 218/218, boundary audit clean, real Unity EditMode 66/66, package sheet regenerated'
 created_at: '2026-10-31T11:45:52.868Z'
-updated_at: '2026-10-31T11:57:38.281Z'
+updated_at: '2026-10-31T11:58:00.210Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
