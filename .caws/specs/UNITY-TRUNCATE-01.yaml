@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T17:42:43.225Z"
     artifact_path: packages/ds-unity/Runtime/Components/Truncate/Truncate.cs
     commit_sha: "8e7c08656142f2a06caf502b53cf4fd1d47a599d"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 01c88ac69 (sourceDirty false): 90/90 passed, zero failed/skipped (test-run start 2026-10-31 17:41:57Z; resultsSha256 223baf70f24b16b2ef8abb5a1cc4675cc2b81ea2816ce03571fcdd8c74c35df2). The added case asserts the guarded toggle visibility, consumer content insertion, label painting, the state class, uncontrolled toggle with change callback, controlled request without commit, and the absent line-count API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T17:42:43.877Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.TruncateGuardsItsToggleAndOwnsTheExpansionChannel
+    exit_code: 0
+    commit_sha: "01c88ac69142e0314c1b274e049f9e5beb5b360f"
