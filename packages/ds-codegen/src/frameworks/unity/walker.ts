@@ -278,7 +278,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && ctx.lowering.behavior !== "ProjectedText" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && ctx.lowering.behavior !== "ProjectedText" && ctx.lowering.behavior !== "Otp" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -294,7 +294,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
     if (ctx.lowering.behavior === "Tree" && (node.iconGlyph !== undefined || node.children.some(child => child.iconGlyph !== undefined))) continue;
-    if ((ctx.lowering.behavior === "Coachmark" || ctx.lowering.behavior === "PageStrip") && node.iteration !== undefined) continue;
+    if ((ctx.lowering.behavior === "Coachmark" || ctx.lowering.behavior === "PageStrip" || ctx.lowering.behavior === "Otp") && node.iteration !== undefined) continue;
     if (isOmittedActionChrome(ctx, node)) continue;
     if (isOmittedNodeContentDecoration(ctx.ir, node)) continue;
     if (isOmittedPassiveDecoration(ctx.ir, ctx.lowering, node)) continue;
@@ -457,7 +457,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   for (const part of ir.compoundParts) {
     if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots" || ctx.lowering.behavior === "Coachmark") continue;
     if (ctx.lowering.behavior === "Tree" && part.name === ctx.lowering.listPart) continue;
-    if (ctx.lowering.behavior === "ProjectedText") continue;
+    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -997,6 +997,53 @@ function pageStripRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the OTP field group: the runtime builds one one-character text field
+ * per declared position, so the class exposes the length/value/default-value/
+ * disabled/read-only/mode API and the change/request/completion callbacks; the
+ * accessible labels and describedby wiring are withheld.
+ */
+function otpRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Otp") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not an OTP lowering`);
+  const root = classes[0]!;
+  const group = root.members.find(member => member.part === lowering.groupPart);
+  const fieldNode = ir.dom === undefined ? undefined : (() => {
+    const find = (node: NonNullable<Context["ir"]["dom"]>): NonNullable<Context["ir"]["dom"]> | undefined =>
+      node.iteration !== undefined ? node : node.children.map(find).find(Boolean);
+    return find(ir.dom);
+  })();
+  if (!group) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders no OTP field group host`);
+  if (fieldNode === undefined) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders no OTP field iteration`);
+  const channel = lowering.channel;
+  const members: string[] = [
+    "        public OtpControl Control { get; }",
+    `        [UxmlAttribute] public string ${identifier(pascal(channel.valueProp))} { get => Control.Value; set => Control.Value = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = OtpControl.Attach(group: ${group.ref}, prefix: ${quote(ctx.prefix!)}, fieldPart: ${quote(lowering.fieldPart)});`,
+  ];
+  const defaults: string[] = [];
+  if (channel.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultValue; set => Control.DefaultValue = value; }`);
+  const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
+  members.push(`        public Action<string> ${identifier(pascal(changeHandler))} { get => Control.ValueChanged; set => Control.ValueChanged = value; }`);
+  members.push("        public Action<string> Completed { get => Control.Completed; set => Control.Completed = value; }");
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<string> ValueRequested { get => Control.ValueRequested; set => Control.ValueRequested = value; }");
+  members.push(`        [UxmlAttribute] public int ${identifier(pascal(lowering.lengthProp))} { get => Control.Length; set => Control.Length = value; }`);
+  if (lowering.disabledProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(lowering.disabledProp))} { get => Control.Disabled; set => Control.Disabled = value; }`);
+  if (lowering.readOnlyProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(lowering.readOnlyProp))} { get => Control.ReadOnly; set => Control.ReadOnly = value; }`);
+  if (lowering.modeProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.modeProp))} { get => Control.Mode; set => Control.Mode = value; }`);
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1011,6 +1058,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Tree") return treeRootApi(ctx, classes);
   if (lowering.behavior === "ProjectedText") return projectedTextRootApi(ctx, classes);
   if (lowering.behavior === "PageStrip") return pageStripRootApi(ctx);
+  if (lowering.behavior === "Otp") return otpRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

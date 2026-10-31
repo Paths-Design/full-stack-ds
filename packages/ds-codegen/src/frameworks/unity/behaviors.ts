@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -247,6 +247,23 @@ export interface PageStripLowering {
   fillPart: string;
   labelPart: string;
 }
+/**
+ * A one-time-password field group: the declared field count is materialised by the
+ * runtime as that many one-character native text fields; the string value channel
+ * is assembled from their characters, the mode filters numeric input and the
+ * completion callback fires when every position is filled. Accessible labels and
+ * describedby wiring are not realised.
+ */
+export interface OtpLowering {
+  behavior: "Otp";
+  channel: NormalizedChannelIR;
+  lengthProp: string;
+  disabledProp?: string;
+  readOnlyProp?: string;
+  modeProp?: string;
+  fieldPart: string;
+  groupPart: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -260,7 +277,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -586,6 +603,33 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A one-time-password field group: one string channel over a counted iteration
+  // of single-character native inputs whose input event sets one character.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.dom !== undefined &&
+      ir.behavior.normalizedChannels.length === 1 && ir.behavior.normalizedChannels[0]!.valueType === "string") {
+    const findField = (node: DomNodeIR): DomNodeIR | undefined => node.iteration?.kind === "count" ? node : node.children.map(findField).find(Boolean);
+    const field = findField(ir.dom);
+    const update = field?.events.input;
+    if (field?.part !== undefined && field.iteration?.sourceProp !== undefined && field.tag === "input" &&
+        update?.kind === "channelUpdate" && update.channel === ir.behavior.normalizedChannels[0]!.name) {
+      const group = ir.dom.children.find(child => child.children.some(grand => grand === field));
+      const bind = (attribute: string): string | undefined => {
+        const binding = field.bindings[attribute];
+        return binding?.kind === "prop" && !binding.path?.length ? binding.prop : undefined;
+      };
+      const modeAxis = Object.keys(ir.variants).find(axis => ir.styledProps.some(prop => prop.name === axis && prop.propType.kind === "ref"));
+      return {
+        behavior: "Otp",
+        channel: ir.behavior.normalizedChannels[0]!,
+        lengthProp: field.iteration.sourceProp,
+        ...(bind("disabled") === undefined ? {} : { disabledProp: bind("disabled") }),
+        ...(bind("aria-readonly") === undefined ? {} : { readOnlyProp: bind("aria-readonly") }),
+        ...(modeAxis === undefined ? {} : { modeProp: modeAxis }),
+        fieldPart: field.part,
+        groupPart: group?.part ?? ir.dom.part ?? "root",
+      };
+    }
   }
   // A numeric page strip: one numeric channel and one iterated item whose
   // activation requests the iteration index. The runtime builds the item

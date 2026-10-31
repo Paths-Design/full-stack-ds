@@ -1033,5 +1033,42 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Label", "AriaLabel", "Current", "DataCurrent" })
                 Assert.That(typeof(FullStackDS.Pagination).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void OtpBuildsOneCharacterFieldsAndAssemblesItsValue()
+        {
+            var otp = Mount(new FullStackDS.OTP { Length = 4 });
+            Assert.That(otp.Group.childCount, Is.EqualTo(4));
+            var fields = otp.Group.Query<UnityEngine.UIElements.TextField>().ToList();
+            Assert.That(fields.Count, Is.EqualTo(4));
+            Assert.That(fields[0].maxLength, Is.EqualTo(1));
+            Assert.That(fields[0].ClassListContains("otp__field"), Is.True);
+            string changed = null, completed = null;
+            otp.OnChange += value => changed = value;
+            otp.Completed += value => completed = value;
+            otp.Value = "12";
+            Assert.That(otp.Value, Is.EqualTo("12"));
+            Assert.That(fields[0].value, Is.EqualTo("1"));
+            Assert.That(fields[2].value, Is.EqualTo(""));
+            fields[2].value = "3";
+            Assert.That(changed, Is.EqualTo("123"));
+            fields[3].value = "4";
+            Assert.That(completed, Is.EqualTo("1234"));
+            fields[2].value = "x";
+            Assert.That(otp.Value, Is.EqualTo("1234"));
+            otp.Mode = "alphanumeric";
+            fields[2].value = "a";
+            Assert.That(otp.Value, Is.EqualTo("12a4"));
+            otp.Controlled = true;
+            string requested = null;
+            otp.ValueRequested += value => requested = value;
+            fields[1].value = "9";
+            Assert.That(requested, Is.EqualTo("19a4"));
+            Assert.That(otp.Value, Is.EqualTo("12a4"));
+            otp.Disabled = true;
+            Assert.That(fields[0].enabledSelf, Is.False);
+            otp.ReadOnly = true;
+            Assert.That(fields[0].isReadOnly, Is.True);
+            foreach (var prop in new[] { "FieldLabel", "Label", "AriaDescribedby" })
+                Assert.That(typeof(FullStackDS.OTP).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

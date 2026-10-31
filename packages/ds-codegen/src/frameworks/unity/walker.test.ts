@@ -443,6 +443,22 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/public Button Item|public Label Label|AriaCurrent/);
   });
 
+  it("renders a runtime-built one-character field group for OTP", () => {
+    const contract = loadContractWithSidecars(root, "OTP") as ComponentContract;
+    const otpIr = buildComponentIR(contract);
+    otpIr.name = "UnrelatedCode";
+    const source = createUnityEmitter().emitComponent(otpIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedCode : VisualElement");
+    expect(source).toContain("public OtpControl Control { get; }");
+    expect(source).toContain("public VisualElement Group { get; } = new VisualElement();");
+    expect(source).toContain("public string Value { get => Control.Value; set => Control.Value = value; }");
+    expect(source).toContain("public string DefaultValue { get => Control.DefaultValue; set => Control.DefaultValue = value; }");
+    expect(source).toContain("[UxmlAttribute] public int Length { get => Control.Length; set => Control.Length = value; }");
+    expect(source).toContain("[UxmlAttribute] public string Mode { get => Control.Mode; set => Control.Mode = value; }");
+    expect(source).toContain("OtpControl.Attach(group: Group, prefix: \"otp\", fieldPart: \"field\");");
+    expect(source).not.toMatch(/FieldLabel|AriaDescribedby|data-otp/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

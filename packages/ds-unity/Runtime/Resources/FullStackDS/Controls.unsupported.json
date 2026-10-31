@@ -3571,6 +3571,30 @@
       "reason": "uss-property"
     },
     {
+      "component": "OTP",
+      "sourceKey": ".otp__field:disabled",
+      "part": "field",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "OTP",
+      "sourceKey": ".otp__field:focus-visible",
+      "part": "field",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "OTP",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "text-align",
+      "value": "center",
+      "reason": "uss-property"
+    },
+    {
       "component": "Pagination",
       "sourceKey": ".pagination--indicators .pagination__item[data-current=\"true\"] .pagination__marker",
       "part": "",
