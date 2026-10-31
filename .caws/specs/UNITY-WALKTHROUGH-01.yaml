@@ -54,3 +54,11 @@ contracts:
   - name: 'walkthrough-coachmark'
     type: behavior
     path: 'packages/ds-contracts/components/Walkthrough/Walkthrough.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 7e4bc30c9: focused unity codegen + cli seam 229/229 pass, including the Coachmark lowering predicate, the inline card with slot hosts and native controls, the skip/previous/next callback actions wired to clicked, the consumer-managed numeric step attribute, the PreviousDisabled and ProgressLabel/NextLabel attributes, the omitted dots/message facts, the coachmark anchor/surface/dismissal boundary families and the removal of the obsolete generic surface catch-all; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T14:35:27.028Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders an inline coachmark card with callback controls for Walkthrough"
+    exit_code: 0
+    commit_sha: "7e4bc30c9dd64df6e0056a4f8e32a45523c08aaa"
