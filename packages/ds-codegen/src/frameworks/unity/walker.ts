@@ -294,7 +294,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
   const composedHost = firstCompound >= 0 && nodes.slice(firstCompound + 1).some(rendered);
   for (const [index, node] of nodes.entries()) {
     if (ctx.lowering.behavior === "Tree" && (node.iconGlyph !== undefined || node.children.some(child => child.iconGlyph !== undefined))) continue;
-    if ((ctx.lowering.behavior === "Coachmark" || ctx.lowering.behavior === "PageStrip" || ctx.lowering.behavior === "Otp") && node.iteration !== undefined) continue;
+    if ((ctx.lowering.behavior === "Coachmark" || ctx.lowering.behavior === "PageStrip" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "ChoiceGroup") && node.iteration !== undefined) continue;
     if (isOmittedActionChrome(ctx, node)) continue;
     if (isOmittedNodeContentDecoration(ctx.ir, node)) continue;
     if (isOmittedPassiveDecoration(ctx.ir, ctx.lowering, node)) continue;
@@ -1044,6 +1044,81 @@ function otpRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the native choice group: a nested option type is generated from the
+ * iteration bindings, the class exposes the options/value/controlled/request/
+ * change API and the orientation carriers, and ChoiceGroupControl builds native
+ * radio buttons from parallel leaf arrays. The authored internal item markup and
+ * the data-state selector styling are not reproduced.
+ */
+function choiceGroupRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "ChoiceGroup") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a choice-group lowering`);
+  const channel = lowering.channel;
+  const optionType = identifier(lowering.itemType);
+  const fieldRef = (role: string): string => {
+    const field = lowering.fields.find(candidate => candidate.role === role);
+    if (!field) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} option type declares no ${role} leaf`);
+    return identifier(field.name);
+  };
+  const struct = [
+    `        public readonly struct ${optionType}`,
+    "        {",
+    ...lowering.fields.map(field => `            public readonly ${field.type} ${identifier(field.name)};`),
+    `            public ${optionType}(${lowering.fields.map(field => `${field.type} ${identifier(field.name).toLowerCase()}`).join(", ")})`,
+    "            {",
+    ...lowering.fields.map(field => `                this.${identifier(field.name)} = ${identifier(field.name).toLowerCase()};`),
+    "            }",
+    "        }",
+  ];
+  const members: string[] = [
+    "        public ChoiceGroupControl Control { get; }",
+    struct.join("\n"),
+    `        [UxmlAttribute] public string ${identifier(pascal(channel.valueProp))} { get => Control.Value; set => Control.Value = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = ChoiceGroupControl.Attach(this, prefix: ${quote(ctx.prefix!)}, itemPart: ${quote(lowering.itemPart)});`,
+  ];
+  const defaults: string[] = [];
+  if (channel.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public string ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultValue; set => Control.DefaultValue = value; }`);
+  const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
+  members.push(`        public Action<string> ${identifier(pascal(changeHandler))} { get => Control.ValueChanged; set => Control.ValueChanged = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<string> ValueRequested { get => Control.ValueRequested; set => Control.ValueRequested = value; }");
+  const optionName = identifier(pascal(lowering.optionsProp));
+  const disabledField = lowering.fields.find(field => field.role === "disabled");
+  const descriptionField = lowering.fields.find(field => field.role === "description");
+  const converted = (role: string, type: string): string => {
+    const field = lowering.fields.find(candidate => candidate.role === role);
+    if (!field) return `System.Array.Empty<${type}>()`;
+    return `list.Length == 0 ? System.Array.Empty<${type}>() : System.Array.ConvertAll(list, option => option.${identifier(field.name)})`;
+  };
+  void disabledField;
+  void descriptionField;
+  void fieldRef;
+  members.push(
+    `        public ${optionType}[] ${optionName}`,
+    "        {",
+    `            get => Control.GetOptions<${optionType}>((value, label, description, disabled) => new ${optionType}(${lowering.fields.map(field => field.role === "value" ? "value" : field.role === "label" ? "label" : field.role === "description" ? "description" : field.role === "disabled" ? "disabled" : field.type === "bool" ? "false" : "\"\"").join(", ")}));`,
+    "            set",
+    "            {",
+    `                var list = value ?? System.Array.Empty<${optionType}>();`,
+    `                Control.SetOptions(${converted("value", "string")}, ${converted("label", "string")}, ${converted("description", "string")}, ${converted("disabled", "bool")});`,
+    "            }",
+    "        }",
+  );
+  if (lowering.orientationProp !== undefined) {
+    const prop = ir.styledProps.find(candidate => candidate.name === lowering.orientationProp);
+    const values = ir.variants[lowering.orientationProp];
+    if (prop !== undefined && values !== undefined) {
+      members.push(variantProperty(ctx, prop, values, undefined));
+      const literal = defaultLiteral(ir, prop, values);
+      if (literal !== undefined) defaults.push(`${identifier(pascal(lowering.orientationProp))} = ${literal};`);
+    }
+  }
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1059,6 +1134,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "ProjectedText") return projectedTextRootApi(ctx, classes);
   if (lowering.behavior === "PageStrip") return pageStripRootApi(ctx);
   if (lowering.behavior === "Otp") return otpRootApi(ctx, classes);
+  if (lowering.behavior === "ChoiceGroup") return choiceGroupRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

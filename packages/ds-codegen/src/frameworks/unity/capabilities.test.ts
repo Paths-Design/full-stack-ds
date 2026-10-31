@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["Sheet", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Walkthrough", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Avatar", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Field", null], ["Icon", null], ["Image", null], ["Input", null], ["Label", null], ["Links", null], ["List", null], ["NavList", null], ["NavTree", null], ["OTP", null], ["Pagination", null], ["Popover", null], ["Postcard", null], ["ProfileFlag", null], ["Progress", null], ["RadioGroup", null], ["Sheet", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null], ["Walkthrough", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -183,6 +183,9 @@ describe("Unity capability accounting", () => {
       "ledger NavTree .nav-tree__item > *[aria-current=\"page\"] (uss-selector)",
       "ledger Pagination .pagination__fill:dir(rtl) (uss-selector)",
       "ledger Pagination .pagination__fill[hidden] (uss-selector)",
+      "ledger RadioGroup .radio-group__item:focus-within (uss-selector)",
+      "ledger RadioGroup .radio-group__item[data-checked=\"true\"] (uss-selector)",
+      "ledger RadioGroup .radio-group__item[data-disabled=\"true\"] (uss-selector)",
       'ledger Sheet .sheet:has(> .sheet__content[aria-modal="false"]) > .sheet__overlay (uss-selector)',
       "ledger Skeleton .skeleton:has(.skeleton__stack) (uss-selector)",
       "ledger Skeleton .skeleton:has(.skeleton__stack) .skeleton__shape (uss-selector)",

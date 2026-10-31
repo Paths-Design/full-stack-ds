@@ -459,6 +459,22 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/FieldLabel|AriaDescribedby|data-otp/);
   });
 
+  it("renders native radio choices from a nested option type for RadioGroup", () => {
+    const contract = loadContractWithSidecars(root, "RadioGroup") as ComponentContract;
+    const radioIr = buildComponentIR(contract);
+    radioIr.name = "UnrelatedChoices";
+    const source = createUnityEmitter().emitComponent(radioIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedChoices : VisualElement");
+    expect(source).toContain("public ChoiceGroupControl Control { get; }");
+    expect(source).toContain("public readonly struct RadioGroupOption");
+    expect(source).toContain("public RadioGroupOption[] Options");
+    expect(source).toContain("Control.SetOptions(");
+    expect(source).toContain("Control.GetOptions<RadioGroupOption>((value, label, description, disabled) => new RadioGroupOption(");
+    expect(source).toContain("public string Value { get => Control.Value; set => Control.Value = value; }");
+    expect(source).toContain("ChoiceGroupControl.Attach(this, prefix: \"radio-group\", itemPart: \"item\");");
+    expect(source).not.toMatch(/public string Name |AriaLabel|data-checked/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

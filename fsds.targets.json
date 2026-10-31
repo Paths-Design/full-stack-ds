@@ -215,7 +215,8 @@
         "NavTree",
         "Postcard",
         "Pagination",
-        "OTP"
+        "OTP",
+        "RadioGroup"
       ]
     },
     {

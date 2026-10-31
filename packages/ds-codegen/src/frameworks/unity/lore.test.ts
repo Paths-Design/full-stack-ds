@@ -47,6 +47,8 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   text: "FormControlIR.valueModel enum value naming the text value model",
   toast: "SurfaceIR.kind enum value naming a non-blocking ephemeral toast surface",
   placeholder: "HTML input placeholder attribute bound to the native text edition",
+  title: "HTML title attribute carrying the option description as a native tooltip",
+  description: "Option-object description leaf projected as a native tooltip",
   value: "HTML form field attribute the boundary's propRoles assigns to participating forms",
   row: "CSS flex-direction keyword (uss.ts display lowering and flex-direction vocabulary)",
   overflow: "CSS property name keyed in the uss.ts CSS-to-USS property table",
