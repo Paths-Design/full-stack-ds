@@ -16,6 +16,21 @@ Claim: the four-tab menu and the I1..I15 semantics run from committed project fi
 the workspace package, every region the Unity allowlist does not admit is ledgered, and the
 build/test/capture loop is reproducible with the two scripts below.
 
+### Target drift during this slice (read before the ledger)
+
+This lane was designed, built and captured against the Unity target's **7-component allowlist**
+at the slice base commit `dddf4ee6b` (Switch, Accordion, Popover, Tabs, Text, Divider, Icon).
+While the slice was in flight, a separate package-side workstream landed the `UNITY-*-01`
+admission series on `main`, expanding the Unity target to **48 components** (Button, Badge,
+Card, Progress, Tooltip, Dialog, Sheet, Select, Input/TextField, Toast, …). The lane source is
+unchanged and still compiles and passes its 31 EditMode tests against the merged package: the
+only integration edits were explicit `using Button = UnityEngine.UIElements.Button` aliases
+where the newly admitted generated `Button` made the bare identifier ambiguous. The capture
+evidence and the fallback ledger below therefore measure **the base allowlist, not today's 48**.
+The ledger's `swap` column names the generated control that can replace each fallback;
+re-running the lane against today's allowlist is a follow-on pass deliberately outside this
+slice. See the [usability comparison](../README.md#usability-comparison).
+
 ## Open, run, verify
 
 Prerequisites: Unity **6000.5.3f1** with an activated license (macOS; the screenshot lane
@@ -105,7 +120,8 @@ ring, zero control radius) resolve from that generated scope. No package file is
 
 Every region the Unity allowlist does not admit is a ledgered fallback; the machine-readable
 copy is [`realization-ledger.json`](realization-ledger.json). Containers are app layout; the
-ledger lists the controls/regions that are not generated components.
+ledger lists the controls/regions that are not generated components. **These rows describe the
+7-component base allowlist — see the target-drift note above.**
 
 | Region | Realization | Why |
 |---|---|---|

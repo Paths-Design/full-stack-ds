@@ -3,6 +3,7 @@ using FullStackDS;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Button = UnityEngine.UIElements.Button; // native fallback; FullStackDS now admits Button
 
 namespace GamePauseMenu.Tests
 {

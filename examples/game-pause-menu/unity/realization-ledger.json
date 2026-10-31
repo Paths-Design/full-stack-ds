@@ -1,5 +1,5 @@
 {
-  "$note": "Machine-readable realization ledger for the Unity game-pause-menu lane. Generated components are consumed through public exports only; every region below the generated surface is a ledgered fallback so a later package admission can swap it mechanically. Update this file and the README ledger together.",
+  "$note": "Machine-readable realization ledger for the Unity game-pause-menu lane. Generated components are consumed through public exports only; every region below the generated surface is a ledgered fallback so a later package admission can swap it mechanically. Update this file and the README ledger together. SCOPE: this ledger measures the Unity target's 7-component allowlist at slice base dddf4ee6b; a parallel package-side workstream has since expanded the Unity target to 48 components on main, and the 'swap' fields name the generated controls that can replace these fallbacks in a follow-on pass.",
   "lane": "unity",
   "engine": "Unity 6000.5.3f1, UI Toolkit",
   "package": "com.fullstackds.ui (packages/ds-unity, local file dependency)",
