@@ -89,6 +89,8 @@
     --fsds-semantic-color-border-bold: #888889;
     --fsds-semantic-color-border-danger: #b31b1b;
     --fsds-semantic-color-border-default: #a0a0a1;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #0566fe;
     --fsds-semantic-color-border-hover: #888889;
     --fsds-semantic-color-border-info: #034fd6;
     --fsds-semantic-color-border-primary: #a0a0a1;
@@ -107,6 +109,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #2c4f09;
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #474647;
     --fsds-semantic-color-foreground-syntax-comment-color: #474647;
@@ -155,6 +158,7 @@
     --fsds-semantic-input-size-medium-padding-block: 4px;
     --fsds-semantic-input-size-medium-padding-inline: 8px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.5;
@@ -239,6 +243,8 @@
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-danger: #d92d2e;
     --fsds-semantic-color-border-default: #5c5b5c;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #0089fe;
     --fsds-semantic-color-border-hover: #727272;
     --fsds-semantic-color-border-info: #0566fe;
     --fsds-semantic-color-border-primary: #5c5b5c;
@@ -257,6 +263,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #6eb157;
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-syntax-comment-color: #a0a0a1;
@@ -275,6 +282,7 @@
     --fsds-semantic-color-status-warning: #cc7201;
     --fsds-semantic-focus-ring-color: #0566fe;
     --fsds-semantic-interaction-background-active: #474647;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #313131;
     --fsds-semantic-interaction-border-hover: #727272;
     --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.60);
@@ -315,6 +323,8 @@
     --fsds-semantic-color-border-accent: #755600;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #a0a0a1;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #755600;
     --fsds-semantic-color-border-hover: #b28000;
     --fsds-semantic-color-border-primary: #d39500;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -330,6 +340,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #364d10;
     --fsds-semantic-color-foreground-on-warning-subtle: #594300;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #313131;
     --fsds-semantic-color-foreground-tertiary: #5c5b5c;
@@ -343,6 +354,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 3px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
@@ -390,6 +402,8 @@
     --fsds-semantic-color-border-accent: #b28000;
     --fsds-semantic-color-border-bold: #888889;
     --fsds-semantic-color-border-default: #5c5b5c;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #b28000;
     --fsds-semantic-color-border-hover: #946b00;
     --fsds-semantic-color-border-primary: #755600;
     --fsds-semantic-color-border-subtle: #474647;
@@ -405,6 +419,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #82ae47;
     --fsds-semantic-color-foreground-on-warning-subtle: #d39500;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #b8b8b8;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -415,6 +430,7 @@
     --fsds-semantic-focus-ring-color: #b28000;
     --fsds-semantic-focus-ring-intent-danger: #e55b5a;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -453,6 +469,8 @@
     --fsds-semantic-color-border-accent: #034fd6;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #a0a0a1;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #034fd6;
     --fsds-semantic-color-border-hover: #0089fe;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -468,6 +486,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #2c4f09;
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #474647;
     --fsds-semantic-color-foreground-tertiary: #727272;
@@ -481,6 +500,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.16;
@@ -531,6 +551,8 @@
     --fsds-semantic-color-border-accent: #0566fe;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #5c5b5c;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #0089fe;
     --fsds-semantic-color-border-hover: #0566fe;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
@@ -546,6 +568,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #6eb157;
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -556,6 +579,7 @@
     --fsds-semantic-focus-ring-color: #0089fe;
     --fsds-semantic-focus-ring-intent-danger: #e55b5a;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -594,6 +618,8 @@
     --fsds-semantic-color-border-accent: #d92d2e;
     --fsds-semantic-color-border-bold: #888889;
     --fsds-semantic-color-border-default: #a0a0a1;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #d92d2e;
     --fsds-semantic-color-border-hover: #888889;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -609,6 +635,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #2c4f09;
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #474647;
     --fsds-semantic-color-foreground-tertiary: #727272;
@@ -622,6 +649,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.16;
@@ -669,6 +697,8 @@
     --fsds-semantic-color-border-accent: #e55b5a;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #5c5b5c;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #e55b5a;
     --fsds-semantic-color-border-hover: #727272;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
@@ -684,6 +714,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #6eb157;
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -694,6 +725,7 @@
     --fsds-semantic-focus-ring-color: #e55b5a;
     --fsds-semantic-focus-ring-intent-danger: #e55b5a;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -732,6 +764,8 @@
     --fsds-semantic-color-border-accent: #4548d0;
     --fsds-semantic-color-border-bold: #888889;
     --fsds-semantic-color-border-default: #b8b8b8;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #4548d0;
     --fsds-semantic-color-border-hover: #797dec;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -747,6 +781,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #1e4d4d;
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #5c5b5c;
     --fsds-semantic-color-foreground-tertiary: #727272;
@@ -760,6 +795,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
@@ -807,6 +843,8 @@
     --fsds-semantic-color-border-accent: #797dec;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #474647;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #797dec;
     --fsds-semantic-color-border-hover: #5d62e5;
     --fsds-semantic-color-border-primary: #5c5b5c;
     --fsds-semantic-color-border-subtle: #474647;
@@ -822,6 +860,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #22b2b2;
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -832,6 +871,7 @@
     --fsds-semantic-focus-ring-color: #797dec;
     --fsds-semantic-focus-ring-intent-danger: #e55b5a;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -870,6 +910,8 @@
     --fsds-semantic-color-border-accent: #0a6847;
     --fsds-semantic-color-border-bold: #888889;
     --fsds-semantic-color-border-default: #b8b8b8;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #0a6847;
     --fsds-semantic-color-border-hover: #0f9c6a;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -885,6 +927,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #005134;
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #474647;
     --fsds-semantic-color-foreground-tertiary: #5c5b5c;
@@ -898,6 +941,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.16;
@@ -945,6 +989,8 @@
     --fsds-semantic-color-border-accent: #0f9c6a;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #474647;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #0f9c6a;
     --fsds-semantic-color-border-hover: #0c8258;
     --fsds-semantic-color-border-primary: #5c5b5c;
     --fsds-semantic-color-border-subtle: #474647;
@@ -960,6 +1006,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #38b483;
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -970,6 +1017,7 @@
     --fsds-semantic-focus-ring-color: #0f9c6a;
     --fsds-semantic-focus-ring-intent-danger: #e55b5a;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -1009,6 +1057,8 @@
     --fsds-semantic-color-border-accent: #497f21;
     --fsds-semantic-color-border-bold: #a0a0a1;
     --fsds-semantic-color-border-default: #91c680;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #3a6614;
     --fsds-semantic-color-border-hover: #38b483;
     --fsds-semantic-color-border-primary: #55cd9d;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -1024,6 +1074,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #005134;
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #5c5b5c;
     --fsds-semantic-color-foreground-tertiary: #727272;
@@ -1037,6 +1088,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.16;
@@ -1085,6 +1137,8 @@
     --fsds-semantic-color-border-accent: #0f9c6a;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #2c4f09;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #0f9c6a;
     --fsds-semantic-color-border-hover: #0c8258;
     --fsds-semantic-color-border-primary: #0a6847;
     --fsds-semantic-color-border-subtle: #474647;
@@ -1100,6 +1154,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #38b483;
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -1110,6 +1165,7 @@
     --fsds-semantic-focus-ring-color: #5b973c;
     --fsds-semantic-focus-ring-intent-danger: #e55b5a;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -1148,6 +1204,8 @@
     --fsds-semantic-color-border-accent: #087b9e;
     --fsds-semantic-color-border-bold: #a0a0a1;
     --fsds-semantic-color-border-default: #a0a0a1;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #087b9e;
     --fsds-semantic-color-border-hover: #1a94ba;
     --fsds-semantic-color-border-primary: #888889;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -1163,6 +1221,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #2c4f09;
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #5c5b5c;
     --fsds-semantic-color-foreground-tertiary: #727272;
@@ -1176,6 +1235,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
@@ -1223,6 +1283,8 @@
     --fsds-semantic-color-border-accent: #1a94ba;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #5c5b5c;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #1a94ba;
     --fsds-semantic-color-border-hover: #1a94ba;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
@@ -1238,6 +1300,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #6eb157;
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -1248,6 +1311,7 @@
     --fsds-semantic-focus-ring-color: #1a94ba;
     --fsds-semantic-focus-ring-intent-danger: #e55b5a;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -1286,6 +1350,8 @@
     --fsds-semantic-color-border-accent: #474647;
     --fsds-semantic-color-border-bold: #5c5b5c;
     --fsds-semantic-color-border-default: #a0a0a1;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #313131;
     --fsds-semantic-color-border-hover: #727272;
     --fsds-semantic-color-border-primary: #888889;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -1301,6 +1367,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #313131;
     --fsds-semantic-color-foreground-on-warning-subtle: #313131;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #313131;
     --fsds-semantic-color-foreground-tertiary: #5c5b5c;
@@ -1314,6 +1381,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
@@ -1364,6 +1432,8 @@
     --fsds-semantic-color-border-accent: #888889;
     --fsds-semantic-color-border-bold: #a0a0a1;
     --fsds-semantic-color-border-default: #5c5b5c;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #b8b8b8;
     --fsds-semantic-color-border-hover: #888889;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
@@ -1379,6 +1449,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #d0d0d0;
     --fsds-semantic-color-foreground-on-warning-subtle: #d0d0d0;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #b8b8b8;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -1389,6 +1460,7 @@
     --fsds-semantic-focus-ring-color: #888889;
     --fsds-semantic-focus-ring-intent-danger: #888889;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -1427,6 +1499,8 @@
     --fsds-semantic-color-border-accent: #8b4b00;
     --fsds-semantic-color-border-bold: #a0a0a1;
     --fsds-semantic-color-border-default: #b8b8b8;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #8b4b00;
     --fsds-semantic-color-border-hover: #cc7201;
     --fsds-semantic-color-border-primary: #a0a0a1;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -1442,6 +1516,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #2c4f09;
     --fsds-semantic-color-foreground-on-warning-subtle: #594300;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #474647;
     --fsds-semantic-color-foreground-tertiary: #727272;
@@ -1455,6 +1530,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 3px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
@@ -1502,6 +1578,8 @@
     --fsds-semantic-color-border-accent: #cc7201;
     --fsds-semantic-color-border-bold: #727272;
     --fsds-semantic-color-border-default: #474647;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #cc7201;
     --fsds-semantic-color-border-hover: #ae5d00;
     --fsds-semantic-color-border-primary: #727272;
     --fsds-semantic-color-border-subtle: #474647;
@@ -1517,6 +1595,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #6eb157;
     --fsds-semantic-color-foreground-on-warning-subtle: #d39500;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -1527,6 +1606,7 @@
     --fsds-semantic-focus-ring-color: #cc7201;
     --fsds-semantic-focus-ring-intent-danger: #e55b5a;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -1565,6 +1645,8 @@
     --fsds-semantic-color-border-accent: #446416;
     --fsds-semantic-color-border-bold: #5c5b5c;
     --fsds-semantic-color-border-default: #b8b8b8;
+    --fsds-semantic-color-border-disabled: #b8b8b8;
+    --fsds-semantic-color-border-focus: #446416;
     --fsds-semantic-color-border-hover: #69952c;
     --fsds-semantic-color-border-primary: #b8b8b8;
     --fsds-semantic-color-border-subtle: #d0d0d0;
@@ -1580,6 +1662,7 @@
     --fsds-semantic-color-foreground-on-inverse: #fafafa;
     --fsds-semantic-color-foreground-on-success-subtle: #2c4f09;
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
+    --fsds-semantic-color-foreground-placeholder: #888889;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #5c5b5c;
     --fsds-semantic-color-foreground-tertiary: #727272;
@@ -1593,6 +1676,7 @@
     --fsds-semantic-focus-ring-style: solid;
     --fsds-semantic-focus-ring-width: 2px;
     --fsds-semantic-interaction-background-active: #d0d0d0;
+    --fsds-semantic-interaction-background-disabled: #b8b8b8;
     --fsds-semantic-interaction-background-hover: #f7f7f7;
     --fsds-semantic-interaction-border-hover: #888889;
     --fsds-semantic-interaction-disabled-opacity: 0.24;
@@ -1640,6 +1724,8 @@
     --fsds-semantic-color-border-accent: #69952c;
     --fsds-semantic-color-border-bold: #888889;
     --fsds-semantic-color-border-default: #474647;
+    --fsds-semantic-color-border-disabled: #474647;
+    --fsds-semantic-color-border-focus: #69952c;
     --fsds-semantic-color-border-hover: #557d1b;
     --fsds-semantic-color-border-primary: #474647;
     --fsds-semantic-color-border-subtle: #474647;
@@ -1655,6 +1741,7 @@
     --fsds-semantic-color-foreground-on-inverse: #141414;
     --fsds-semantic-color-foreground-on-success-subtle: #6eb157;
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
+    --fsds-semantic-color-foreground-placeholder: #727272;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
     --fsds-semantic-color-foreground-tertiary: #888889;
@@ -1665,6 +1752,7 @@
     --fsds-semantic-focus-ring-color: #69952c;
     --fsds-semantic-focus-ring-intent-danger: #e4558e;
     --fsds-semantic-interaction-background-active: #5c5b5c;
+    --fsds-semantic-interaction-background-disabled: #474647;
     --fsds-semantic-interaction-background-hover: #474647;
     --fsds-semantic-interaction-border-hover: #727272;
 }
@@ -5187,4 +5275,91 @@
     width: 100%;
     max-height: var(--fsds-sheet-size-height, 300px);
     border-radius: var(--fsds-sheet-border-radius, 6px);
+}
+
+/* Input (.input) */
+.input {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+    --fsds-box-model-padding-block-end: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+    --fsds-box-model-padding-inline-end: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+    --fsds-box-model-gap: var(--fsds-semantic-input-size-medium-gap, 8px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
+    --fsds-box-model-max-height: none;
+    --fsds-input-color-bg-default: var(--fsds-semantic-color-background-primary, #ffffff);
+    --fsds-input-color-bg-disabled: var(--fsds-semantic-interaction-background-disabled, #b8b8b8);
+    --fsds-input-color-text-default: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-input-color-text-placeholder: var(--fsds-semantic-color-foreground-placeholder, #888889);
+    --fsds-input-color-text-disabled: var(--fsds-semantic-color-foreground-disabled, #727272);
+    --fsds-input-color-border-default: var(--fsds-semantic-color-border-default, #a0a0a1);
+    --fsds-input-color-border-hover: var(--fsds-semantic-color-border-hover, #888889);
+    --fsds-input-color-border-disabled: var(--fsds-semantic-color-border-disabled, #b8b8b8);
+    --fsds-input-size-height: var(--fsds-semantic-input-size-medium-min-height, 32px);
+    --fsds-input-size-padding-block: var(--fsds-semantic-input-size-medium-padding-block, 4px);
+    --fsds-input-size-padding-inline: var(--fsds-semantic-input-size-medium-padding-inline, 8px);
+    --fsds-input-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-input-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+    --fsds-input-color-focus: var(--fsds-semantic-color-border-focus, #0566fe);
+    --fsds-input-color-invalid: var(--fsds-semantic-color-border-danger, #b31b1b);
+    --fsds-input-typography-size: var(--fsds-semantic-typography-body-02, 16px);
+    --fsds-input-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+    --fsds-input-opacity-disabled: var(--fsds-semantic-interaction-disabled-opacity, 0.5);
+    --fsds-input-focus-ring-width: var(--fsds-semantic-focus-ring-width, 2px);
+    --fsds-input-focus-ring-color: var(--fsds-semantic-focus-ring-color, #0566fe);
+    --fsds-input-focus-ring-style: var(--fsds-semantic-focus-ring-style, solid);
+    --fsds-input-focus-ring-offset: var(--fsds-semantic-focus-ring-offset, 2px);
+    --fsds-input-motion-duration-fast: var(--fsds-core-motion-duration-short, 150ms);
+}
+
+.input {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 4px);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 4px);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 8px);
+    padding-right: var(--fsds-box-model-padding-inline-end, 8px);
+    --fsds-gap: var(--fsds-box-model-gap, 8px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 32px);
+}
+
+.input {
+    border-width: var(--fsds-input-size-border, 1px);
+    background-color: var(--fsds-input-color-bg-default, #ffffff);
+    color: var(--fsds-input-color-text-default, #141414);
+    border-color: var(--fsds-input-color-border-default, #a0a0a1);
+    min-height: var(--fsds-input-size-height, 32px);
+    border-radius: var(--fsds-input-size-radius, 6px);
+    font-size: var(--fsds-input-typography-size, 16px);
+    padding-top: var(--fsds-input-size-padding-block, 4px);
+    padding-bottom: var(--fsds-input-size-padding-block, 4px);
+    padding-left: var(--fsds-input-size-padding-inline, 8px);
+    padding-right: var(--fsds-input-size-padding-inline, 8px);
+}
+
+.input:hover {
+    border-color: var(--fsds-input-color-border-hover, #888889);
+}
+
+.input:focus {
+    border-color: var(--fsds-input-color-focus, #0566fe);
+    border-width: var(--fsds-input-focus-ring-width, 2px);
+    border-color: var(--fsds-input-focus-ring-color, #0566fe);
+}
+
+.input:disabled {
+    background-color: var(--fsds-input-color-bg-disabled, #b8b8b8);
+    border-color: var(--fsds-input-color-border-disabled, #b8b8b8);
+    color: var(--fsds-input-color-text-disabled, #727272);
+    opacity: var(--fsds-input-opacity-disabled, 0.5);
 }

@@ -759,5 +759,29 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "AriaLabel", "Modal" })
                 Assert.That(typeof(FullStackDS.Sheet).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void InputMapsItsStringChannelToTheNativeTextField()
+        {
+            var input = Mount(new FullStackDS.Input());
+            Assert.That(input, Is.InstanceOf<TextField>());
+            Assert.That(input.ClassListContains("input"), Is.True);
+            input.Placeholder = "Search";
+            Assert.That(input.textEdition.placeholder, Is.EqualTo("Search"));
+            input.SetValueWithoutNotify("typed");
+            Assert.That(input.Value, Is.EqualTo("typed"));
+            using (var evt = ChangeEvent<string>.GetPooled("", "edited")) { evt.target = input; input.SendEvent(evt); }
+            Assert.That(input.Value, Is.EqualTo("edited"));
+            input.Controlled = true;
+            string requested = null;
+            input.ValueRequested += next => requested = next;
+            using (var evt = ChangeEvent<string>.GetPooled("edited", "blocked")) { evt.target = input; input.SendEvent(evt); }
+            Assert.That(requested, Is.EqualTo("blocked"));
+            Assert.That(input.Value, Is.EqualTo("edited"));
+            input.SetValueWithoutNotify("committed");
+            Assert.That(input.Value, Is.EqualTo("committed"));
+            input.Disabled = true;
+            Assert.That(input.enabledSelf, Is.False);
+            foreach (var prop in new[] { "Type", "Name", "Required", "Invalid", "AriaLabel" })
+                Assert.That(typeof(FullStackDS.Input).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

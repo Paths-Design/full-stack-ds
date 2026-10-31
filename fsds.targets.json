@@ -203,7 +203,8 @@
         "Chip",
         "CodeSnippet",
         "Dialog",
-        "Sheet"
+        "Sheet",
+        "Input"
       ]
     },
     {

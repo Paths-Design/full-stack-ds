@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "BooleanControl" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal";
+export type UnityBehavior = "Passive" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -140,12 +140,19 @@ export interface PassiveLowering {
   /** A declared string prop the text-host root paints through `TextElement.text`. */
   textProp?: string;
 }
-export type ChannelLowering = BooleanControlLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering;
+export interface TextInputLowering {
+  behavior: "TextInput";
+  channel: NormalizedChannelIR;
+  control: PartIR;
+  /** The placeholder binding prop, realised through the native text edition. */
+  placeholderProp?: string;
+}
+export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering;
 export type UnityLowering = PassiveLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
-  return lowering.behavior === "BooleanControl" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure" || lowering.behavior === "Modal";
+  return lowering.behavior === "BooleanControl" || lowering.behavior === "TextInput" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure" || lowering.behavior === "Modal";
 }
 
 /**
@@ -400,6 +407,20 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
   if (ir.formControl?.valueModel === "boolean") {
     if (focus !== undefined && focus !== "auto") refuseFocus("BooleanControl");
     return { behavior: "BooleanControl", channel: ir.formControl.channel, control: ir.formControl.part, stateClass: stateClassOf(ir) };
+  }
+  // A native text input: the form-control part is the root input element and its
+  // value model is text; the generated class derives TextField and the string
+  // value channel is wired through TextControl.
+  if (ir.formControl?.valueModel === "text") {
+    if (ir.formControl.part.name !== ir.dom?.part || ir.dom?.tag !== "input") throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} text form control is not the input root`);
+    if (focus !== undefined && focus !== "none" && focus !== "auto") refuseFocus("TextInput");
+    const placeholder = findNode(ir.dom, ir.formControl.part.name)?.bindings["placeholder"];
+    return {
+      behavior: "TextInput",
+      channel: ir.formControl.channel,
+      control: ir.formControl.part,
+      ...(placeholder?.kind === "prop" && !placeholder.path?.length ? { placeholderProp: placeholder.prop } : {}),
+    };
   }
   const interaction = ir.interaction;
   // A disclosure: one trigger toggles one presence-tracked content part on a

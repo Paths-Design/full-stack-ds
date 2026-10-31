@@ -2779,6 +2779,174 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Input",
+      "sourceKey": "--invalid",
+      "part": "root",
+      "property": "border-color",
+      "value": "#b31b1b",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Input",
+      "sourceKey": ".input--invalid:focus-visible",
+      "part": "root",
+      "property": "border-color",
+      "value": "#b31b1b",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Input",
+      "sourceKey": ".input--invalid:focus-visible",
+      "part": "root",
+      "property": "outline-color",
+      "value": "#b31b1b",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "::placeholder",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:canary",
+      "part": "root",
+      "property": "border-radius",
+      "value": "10px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:corporate",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:default",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:developer",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:fintech",
+      "part": "root",
+      "property": "border-radius",
+      "value": "6px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:forest",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:marketplace",
+      "part": "root",
+      "property": "border-radius",
+      "value": "4px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:monochrome",
+      "part": "root",
+      "property": "border-radius",
+      "value": "0px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:quickserve",
+      "part": "root",
+      "property": "border-radius",
+      "value": "12px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "brand:streaming",
+      "part": "root",
+      "property": "border-radius",
+      "value": "8px",
+      "reason": "uss-design-slot"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "disabled",
+      "part": "root",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "focus",
+      "part": "root",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-property",
+      "value": "background-color, border-color, color, outline-color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Input",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "input.motion.easing.standard",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Label",
       "sourceKey": "root",
       "part": "root",

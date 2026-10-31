@@ -56,6 +56,7 @@ const SLOT_TAG = "slot";
 const BUTTON_TAG = "button";
 const LABEL_TAG = "label";
 const TEXT_LEAF_TAGS = new Set(["h1", "h2", "h3", "h4", "h5", "h6", "p", "span", LABEL_TAG]);
+const NATIVE_TEXTFIELD = "UnityEngine.UIElements.TextField";
 /** Source: `ContractPartDetails.role` enum value naming the component root part. */
 const ROOT_ROLE = "root";
 
@@ -374,8 +375,9 @@ function planClasses(ctx: Context): ClassPlan[] {
     // element itself (ToggleSwitch); it derives the native button so the shared
     // BooleanControl binds native activation, and exposes Trigger = this.
     const rootControl = ctx.lowering.behavior === "BooleanControl" && ctx.lowering.control.name === ir.dom.part && ir.dom.tag === BUTTON_TAG;
+    const textInputRoot = ctx.lowering.behavior === "TextInput" && ctx.lowering.control.name === ir.dom.part;
     const root = newClass(name,
-      ctx.lowering.behavior === "Action" || rootControl ? NATIVE_BUTTON : passiveText ? "TextElement" : "VisualElement",
+      ctx.lowering.behavior === "Action" || rootControl ? NATIVE_BUTTON : textInputRoot ? NATIVE_TEXTFIELD : passiveText ? "TextElement" : "VisualElement",
       true, rootIdentity(ctx, ir.dom.part));
     // A native action control projects the consumer's children itself: the
     // contract's guarded loading chrome is omitted (pending P4) and a wrapper
@@ -436,7 +438,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   return classes;
 }
 
-const behaviorMember = { BooleanControl: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure", Progress: "Progress", Modal: "Surface" } as const;
+const behaviorMember = { BooleanControl: "Control", TextInput: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure", Progress: "Progress", Modal: "Surface" } as const;
 
 interface RootApi {
   members: string[];
@@ -648,12 +650,50 @@ function composedActionRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * Root API for the native text input: the generated class derives TextField and
+ * the string value channel is exposed through TextControl (Value, Controlled,
+ * ValueRequested, silent setter and request), the placeholder binding drives the
+ * native text edition, and the disabled prop drives SetEnabled. HTML form/type/
+ * validity facts are adjudicated by the boundary and never emitted here.
+ */
+function textInputRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "TextInput") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a text input lowering`);
+  const members: string[] = ["        public TextControl Control { get; }"];
+  const attach: string[] = ["Control = TextControl.Attach(this);"];
+  const defaults: string[] = [];
+  const channel = lowering.channel;
+  members.push(`        [UxmlAttribute] public string ${identifier(pascal(channel.valueProp))} { get => Control.Value; set => Control.Value = value; }`);
+  members.push(
+    "        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }",
+    "        public event Action<string> ValueRequested { add => Control.ValueRequested += value; remove => Control.ValueRequested -= value; }",
+    "        public void SetValueWithoutNotify(string next) => Control.SetValueWithoutNotify(next);",
+    "        public void RequestValue(string next) => Control.RequestValue(next);",
+  );
+  if (lowering.placeholderProp !== undefined) {
+    members.push(`        [UxmlAttribute] public string ${identifier(pascal(lowering.placeholderProp))} { get => Control.Placeholder; set => Control.Placeholder = value; }`);
+  }
+  const disabled = disabledProp(ir);
+  if (disabled !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(disabled))} { get => !enabledSelf; set => SetEnabled(!value); }`);
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach, defaults };
+}
+
+
 /** R6–R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
   if (lowering.behavior === "Action") return actionRootApi(ctx);
   if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   if (lowering.behavior === "Progress") return progressRootApi(ctx, classes);
+  if (lowering.behavior === "TextInput") return textInputRootApi(ctx);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
   const behavior = behaviorMember[lowering.behavior];
