@@ -190,7 +190,8 @@
         "Alert",
         "AlertNotice",
         "Label",
-        "Breadcrumbs"
+        "Breadcrumbs",
+        "Tooltip"
       ]
     },
     {

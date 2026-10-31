@@ -478,7 +478,12 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
     members.push(`        public ${NATIVE_BUTTON} Trigger => ${behavior}.Trigger;`, `        public VisualElement Content => ${behavior}.Content;`);
     // A declared placement default reaches the surface through the Placement
     // prop's default assignment below, not through Attach.
-    attach.push(`${behavior} = AnchoredSurface.Attach(this, triggerClass: ${quote(`${ctx.prefix}__${lowering.trigger.name}`)}, contentClass: ${quote(`${ctx.prefix}__${lowering.content.name}`)}, stateClass: ${quote(lowering.stateClass)});`);
+    const classes = `triggerClass: ${quote(`${ctx.prefix}__${lowering.trigger.name}`)}, contentClass: ${quote(`${ctx.prefix}__${lowering.content.name}`)}`;
+    if (lowering.openOnHover) {
+      attach.push(`${behavior} = AnchoredSurface.Attach(this, ${classes}, stateClass: null, openOnHover: true, openOnFocus: ${lowering.openOnFocus === true}, closeOnPointerLeave: ${lowering.closeOnPointerLeave === true}, contentFocusable: ${lowering.contentFocusable !== false});`);
+    } else {
+      attach.push(`${behavior} = AnchoredSurface.Attach(this, ${classes}, stateClass: ${quote(lowering.stateClass!)});`);
+    }
   }
   const valueProp = identifier(pascal(channel.valueProp));
   if (boolean) {

@@ -18,6 +18,14 @@ function irFor(name: string, replacement: string) {
 
 const emit = (ir: ReturnType<typeof irFor>): string => createUnityEmitter().emitComponent(ir, { componentsRoot: "", contractsRoot })[0]!.contents;
 
+function surfaceIr(name: string, replacement: string) {
+  const contract = loadContractWithSidecars(root, name) as ComponentContract;
+  const ir = buildComponentIR(contract);
+  ir.name = replacement;
+  expect(unityLowering(ir).behavior).toBe("AnchoredSurface");
+  return ir;
+}
+
 describe("Unity passive anatomy path", () => {
   it("emits a channel-free rule host with a real orientation style carrier", () => {
     const ir = irFor("Divider", "UnrelatedRule");
@@ -125,5 +133,14 @@ describe("Unity passive anatomy path", () => {
     expect(crumbs).toContain("public partial class UnrelatedCrumbsList : VisualElement");
     expect(crumbs).toContain("public partial class UnrelatedCrumbsItem : VisualElement");
     expect(crumbs).not.toMatch(/AriaLabel|Separator/);
+  });
+
+  it("attaches the tooltip surface in hover/focus-open mode", () => {
+    const source = emit(surfaceIr("Tooltip", "UnrelatedTip") as ReturnType<typeof irFor>);
+    expect(source).toContain("public partial class UnrelatedTip : VisualElement, INotifyValueChanged<bool>");
+    expect(source).toContain("public partial class UnrelatedTipTrigger : UnityEngine.UIElements.Button");
+    expect(source).toContain("public partial class UnrelatedTipContent");
+    expect(source).toContain('stateClass: null, openOnHover: true, openOnFocus: true, closeOnPointerLeave: true, contentFocusable: false');
+    expect(source).not.toMatch(/EnableInClassList/);
   });
 });

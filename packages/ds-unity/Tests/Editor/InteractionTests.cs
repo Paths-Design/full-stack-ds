@@ -508,5 +508,28 @@ namespace FullStackDS.Tests
             Assert.That(typeof(FullStackDS.Breadcrumbs).GetProperty("AriaLabel"), Is.Null);
             Assert.That(typeof(FullStackDS.Breadcrumbs).GetProperty("Separator"), Is.Null);
         }
+        [Test] public void TooltipOpensOnHoverAndFocusAndClosesOnLeaveAndEscape()
+        {
+            var tooltip = new FullStackDS.Tooltip();
+            var trigger = new FullStackDS.TooltipTrigger { text = "Hover" };
+            var content = new FullStackDS.TooltipContent(); content.Add(new UnityEngine.UIElements.Label("Help"));
+            tooltip.Add(trigger); tooltip.Add(content);
+            Mount(tooltip);
+            Assert.That(tooltip.Open, Is.False);
+            using (var evt = PointerEnterEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Assert.That(tooltip.Open, Is.True, "pointer enter opens the tooltip");
+            using (var evt = PointerLeaveEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Assert.That(tooltip.Open, Is.False, "pointer leave closes the tooltip");
+            using (var evt = PointerEnterEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Key(trigger, KeyCode.Escape);
+            Assert.That(tooltip.Open, Is.False, "escape closes the tooltip");
+            trigger.Focus();
+            Assert.That(tooltip.Open, Is.True, "trigger focus opens the tooltip");
+            using (var evt = PointerLeaveEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Assert.That(tooltip.Open, Is.False, "pointer leave closes the focused tooltip");
+            tooltip.Disabled = true;
+            using (var evt = PointerEnterEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
+            Assert.That(tooltip.Open, Is.False, "a disabled trigger does not open the tooltip");
+        }
     }
 }

@@ -34,6 +34,8 @@ const PLATFORM_VOCABULARY: Record<string, string> = {
   input: "HTML <input> tag on DomNodeIR.tag (native form-control exclusion in the dispatch predicate)",
   img: "HTML <img> tag on DomNodeIR.tag (native image exclusion in the dispatch predicate)",
   toggle: "InteractionIR trigger operation enum",
+  open: "InteractionIR trigger operation enum (hover/focus-open surface mode)",
+  tooltip: "SurfaceIR kind enum value naming a hover-open anchored surface",
   select: "InteractionIR trigger operation enum",
   selection: "ContractStateDimension.category enum",
   root: "ContractPartDetails.role enum value naming the component root part (compared on details.role)",
