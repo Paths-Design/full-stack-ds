@@ -111,6 +111,21 @@
       "reason": "The decoration-role composed part is omitted by the passive lowering, so its part identity is not rendered."
     },
     {
+      "id": "anatomy-content-transform-refused",
+      "match": ["contract:/anatomy/dom/**/children/source/**", "contract:/anatomy/dom/**/children/*/children/source/**"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/source/content/transform"], "valueIn": ["highlight"] }],
+      "disposition": "refused",
+      "reason": "A content transform (syntax highlighting) has no static projection; the passive lowering omits the transformed subtree and does not render tokens or line numbers."
+    },
+    {
+      "id": "anatomy-content-transform-parts-refused",
+      "match": ["contract:/anatomy/parts/*"],
+      "valueIn": ["source", "line", "gutter", "token"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/source/content/transform"], "valueIn": ["highlight"] }],
+      "disposition": "refused",
+      "reason": "The content-transform-owned parts are omitted by the passive lowering, so their part identities are not rendered."
+    },
+    {
       "id": "anatomy-parts",
       "match": ["contract:/anatomy/parts/*"],
       "disposition": "lowered",
@@ -224,8 +239,7 @@
       "match": ["contract:/anatomy/dom/attrs/*", "contract:/anatomy/dom/**/children/*/attrs/*"],
       "disposition": "pending",
       "phase": "P4",
-      "catchAll": true,
-      "reason": "Other static attributes (SVG presentation, text-input hints, data attributes) are not lowered; an allowlisted component that declares one must be adjudicated here."
+      "reason": "Static DOM attributes (SVG presentation, text-input hints, spellcheck and other metadata) are not lowered by the passive walker; a11y/role/type/tabindex subsets are refused by the rule above."
     },
     {
       "id": "anatomy-channel-binding",
@@ -259,10 +273,9 @@
     {
       "id": "anatomy-conditional-data-binding",
       "match": ["contract:/anatomy/dom/bindings/data-*", "contract:/anatomy/dom/**/children/*/bindings/data-*"],
-      "valuePattern": "^conditional:prop:[A-Za-z_$][\\w$-]*\\|literal:true\\|literal:false$",
       "disposition": "pending",
       "phase": "P4",
-      "reason": "A conditional DOM data attribute is not a UI Toolkit property. The passive walker checks its syntax and omits it; a target behavior must consume the prop before the attribute can affect rendering."
+      "reason": "A DOM data attribute is metadata, not a UI Toolkit property. The passive lowering omits it; a target behavior must consume the prop before the attribute can affect rendering."
     },
     {
       "id": "anatomy-action-form-type-binding",
@@ -513,6 +526,19 @@
       "disposition": "pending",
       "phase": "P4",
       "reason": "A decorative flag drives conditional a11y attributes (role/aria-hidden/aria-busy) that UI Toolkit cannot render; the generated control exposes no Decorative property until the P4 a11y family."
+    },
+    {
+      "id": "prop-content-transform-pending",
+      "match": [
+        "contract:/props/*/members/plain:code/**",
+        "contract:/props/*/members/plain:language/**",
+        "contract:/props/*/members/plain:highlight/**",
+        "contract:/props/*/members/plain:tokens/**",
+        "contract:/props/*/members/plain:showLineNumbers/**"
+      ],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The syntax-highlighting pipeline (source transform, token stream, line numbers) has no native lowering; the generated shell withholds these props until the P4 content-transform family."
     },
     {
       "id": "prop-passive-style-axis",
@@ -1124,9 +1150,23 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**"],
       "disposition": "refused",
-      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse or overflow-axis handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+      "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse, overflow-axis or tab-size handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
+    },
+    {
+      "id": "styles-inherit-keyword-refused",
+      "match": ["styles:/**"],
+      "declaration": { "valuePattern": "^inherit$" },
+      "disposition": "refused",
+      "reason": "The fixed-root projection does not carry CSS keyword inheritance for a component declaration; the projection lists the declaration uss-scalar."
+    },
+    {
+      "id": "styles-white-space-keyword-refused",
+      "match": ["styles:/**/white-space/**"],
+      "declaration": { "valuePattern": "^(?:pre|pre-wrap|pre-line|break-spaces)$" },
+      "disposition": "refused",
+      "reason": "USS white-space supports only normal/nowrap; the projection lists the declaration uss-scalar and the passive lowering does not approximate it."
     },
     {
       "id": "styles-modifier-height-refused",

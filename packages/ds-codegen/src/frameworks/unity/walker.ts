@@ -154,18 +154,21 @@ function containsIteration(node: DomNodeIR): boolean {
 }
 
 /**
- * R1/R2: a passive root cannot materialise chrome, composed instances or
- * iteration. Four shapes are omitted by fact: a decoration whose content is a
- * dynamic node prop (IR `nodeKind: "node-ref"`), a guarded action chrome — a
- * native button or componentRef element carrying an event binding — whose
- * presence prop is a declared prop, a decoration-role component instance, and
- * any subtree containing iteration. The boundary refuses each omitted subtree;
- * selection is by prop kind, binding and part-role facts, never by component or
- * part name.
+ * R1/R2: a passive root cannot materialise chrome, composed instances,
+ * iteration or content transforms. Five shapes are omitted by fact: a
+ * decoration whose content is a dynamic node prop (IR `nodeKind:
+ * "node-ref"`), a guarded action chrome — a native button or componentRef
+ * element carrying an event binding — whose presence prop is a declared prop,
+ * a decoration-role component instance, any subtree containing iteration, and
+ * a node whose content is a content transform. The boundary refuses each
+ * omitted subtree; selection is by prop kind, binding, part-role and content
+ * facts, never by component or part name.
  */
 function isOmittedPassiveDecoration(ir: ComponentIR, lowering: UnityLowering, node: DomNodeIR): boolean {
   if (lowering.behavior !== "Passive") return false;
   if (containsIteration(node)) return true;
+  // A content transform (no binding discriminator) has no static projection.
+  if (node.content !== undefined && !("kind" in node.content)) return true;
   const role = node.part === undefined ? undefined : ir.parts.find(part => part.name === node.part)?.details?.role;
   if (node.componentRef !== undefined && role === "decoration") return true;
   if (node.ifProp === undefined) return false;
@@ -402,26 +405,21 @@ function passiveRootApi(ctx: Context): RootApi {
 
 function assertPassiveAnatomy(ir: ComponentIR, node: DomNodeIR | undefined, glyph?: UnityGlyphPlan, omitted?: (node: DomNodeIR) => boolean): void {
   if (!node || omitted?.(node)) return;
-  // A passive root's DOM-metadata bindings are platform facts the passive
-  // lowering does not render: a11y role/aria attributes on any node, and the
+  // DOM-metadata bindings the passive lowering does not render: a11y
+  // role/aria attributes on any node, `data-*` attributes on any node, and the
   // root's field-association attributes (htmlFor, form). The admission boundary
   // classifies their leaves.
-  const unsupportedBindings = Object.entries(node.bindings).some(([attribute, value]) => {
+  const unsupportedBindings = Object.entries(node.bindings).some(([attribute]) => {
     if (attribute === "role" || attribute.startsWith("aria-")) return false;
+    if (/^data-[a-z][a-z0-9-]*$/.test(attribute)) return false;
     const rootMetadataBinding = node === ir.dom && (attribute === "htmlFor" || attribute === "form");
-    if (rootMetadataBinding) return false;
-    if (!/^data-[a-z][a-z0-9-]*$/.test(attribute) || value.kind !== "conditional" || value.condition.kind !== "prop") return true;
-    const sourceProp = value.condition.prop;
-    return !ir.styledProps.some(prop => prop.name === sourceProp) ||
-      value.whenTrue.kind !== "literal" || value.whenTrue.value !== "true" ||
-      value.whenFalse.kind !== "literal" || value.whenFalse.value !== "false";
+    return !rootMetadataBinding;
   });
   const glyphNode = glyph?.node === node;
-  // A passive root's role/aria attributes are platform a11y metadata the
-  // passive lowering does not render; the admission boundary classifies the
-  // static-attribute leaves refused.
-  const rootA11yMetadata = node === ir.dom && Object.keys(node.attrs).every(attribute => attribute === "role" || attribute.startsWith("aria-"));
-  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length || (Object.keys(node.attrs).length && !glyphNode && !rootA11yMetadata) ||
+  // Static attributes are DOM metadata (role/aria/type/spellcheck and similar)
+  // the passive lowering does not render; the admission boundary classifies
+  // every static-attribute leaf.
+  const unhandled = unsupportedBindings || Object.keys(node.propertyBindings).length || Object.keys(node.events).length ||
     node.componentRef !== undefined || (node.iconGlyph !== undefined && !glyphNode) || node.activation !== undefined || node.focusContainer === true ||
     !!node.keyboardActions?.length || node.keyboardPanel === true || node.keyboardAnchor === true || !!node.cssVarBindings.length ||
     node.generatedIdSlug !== undefined || !!node.idRefAttrs.length || node.nativeTextChannel !== undefined || node.nativeRadioChannel !== undefined ||

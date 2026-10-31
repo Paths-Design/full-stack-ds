@@ -106,6 +106,15 @@
     --fsds-semantic-color-foreground-on-warning-subtle: #6c3a00;
     --fsds-semantic-color-foreground-primary: #141414;
     --fsds-semantic-color-foreground-secondary: #474647;
+    --fsds-semantic-color-foreground-syntax-comment-color: #474647;
+    --fsds-semantic-color-foreground-syntax-definition: #900909;
+    --fsds-semantic-color-foreground-syntax-keyword: #013ab0;
+    --fsds-semantic-color-foreground-syntax-plain: #141414;
+    --fsds-semantic-color-foreground-syntax-property: #6c3a00;
+    --fsds-semantic-color-foreground-syntax-punctuation: #013ab0;
+    --fsds-semantic-color-foreground-syntax-static: #900909;
+    --fsds-semantic-color-foreground-syntax-string: #900909;
+    --fsds-semantic-color-foreground-syntax-tag: #900909;
     --fsds-semantic-color-foreground-tertiary: #727272;
     --fsds-semantic-display-size-gap: 4px;
     --fsds-semantic-feedback-size-gap: 8px;
@@ -237,6 +246,15 @@
     --fsds-semantic-color-foreground-on-warning-subtle: #ec8802;
     --fsds-semantic-color-foreground-primary: #fafafa;
     --fsds-semantic-color-foreground-secondary: #a0a0a1;
+    --fsds-semantic-color-foreground-syntax-comment-color: #a0a0a1;
+    --fsds-semantic-color-foreground-syntax-definition: #ee8181;
+    --fsds-semantic-color-foreground-syntax-keyword: #00a9fb;
+    --fsds-semantic-color-foreground-syntax-plain: #fafafa;
+    --fsds-semantic-color-foreground-syntax-property: #ec8802;
+    --fsds-semantic-color-foreground-syntax-punctuation: #00a9fb;
+    --fsds-semantic-color-foreground-syntax-static: #ee8181;
+    --fsds-semantic-color-foreground-syntax-string: #ee8181;
+    --fsds-semantic-color-foreground-syntax-tag: #ee8181;
     --fsds-semantic-color-foreground-tertiary: #888889;
     --fsds-semantic-focus-ring-color: #0566fe;
     --fsds-semantic-interaction-background-active: #474647;
@@ -4193,4 +4211,81 @@
 
 .table:hover {
     background-color: var(--fsds-table-color-background-hover, #f7f7f7);
+}
+
+/* CodeBlock (.code-block) */
+.code-block {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-block-end: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-padding-inline-end: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-gap: var(--fsds-semantic-display-size-gap, 4px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: 0;
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-code-block-color-background: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+    --fsds-code-block-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-code-block-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+    --fsds-code-block-size-padding: var(--fsds-core-spacing-size-06, 16px);
+    --fsds-code-block-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-code-block-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+    --fsds-code-block-size-font-size: var(--fsds-core-typography-ramp-3, 14px);
+    --fsds-code-block-typography-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+    --fsds-code-block-token-color-plain: var(--fsds-semantic-color-foreground-syntax-plain, #141414);
+    --fsds-code-block-token-color-comment: var(--fsds-semantic-color-foreground-syntax-comment-color, #474647);
+    --fsds-code-block-token-color-keyword: var(--fsds-semantic-color-foreground-syntax-keyword, #013ab0);
+    --fsds-code-block-token-color-definition: var(--fsds-semantic-color-foreground-syntax-definition, #900909);
+    --fsds-code-block-token-color-punctuation: var(--fsds-semantic-color-foreground-syntax-punctuation, #013ab0);
+    --fsds-code-block-token-color-property: var(--fsds-semantic-color-foreground-syntax-property, #6c3a00);
+    --fsds-code-block-token-color-static: var(--fsds-semantic-color-foreground-syntax-static, #900909);
+    --fsds-code-block-token-color-string: var(--fsds-semantic-color-foreground-syntax-string, #900909);
+    --fsds-code-block-token-color-tag: var(--fsds-semantic-color-foreground-syntax-tag, #900909);
+    --fsds-code-block-gutter-color-number: var(--fsds-semantic-color-foreground-secondary, #474647);
+    --fsds-code-block-gutter-size-gap: var(--fsds-core-spacing-size-03, 4px);
+}
+
+.code-block {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 16px);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 16px);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 16px);
+    padding-right: var(--fsds-box-model-padding-inline-end, 16px);
+    --fsds-gap: var(--fsds-box-model-gap, 4px);
+    min-width: var(--fsds-box-model-min-width, 0);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.code-block {
+    background-color: var(--fsds-code-block-color-background, #f7f7f7);
+    border-color: var(--fsds-code-block-color-border, #d0d0d0);
+    border-width: var(--fsds-code-block-size-border, 1px);
+    border-radius: var(--fsds-code-block-size-radius, 6px);
+    color: var(--fsds-code-block-color-foreground-primary, #141414);
+    font-size: var(--fsds-code-block-size-font-size, 14px);
+    margin: 0;
+    padding: var(--fsds-code-block-size-padding, 16px);
+}
+
+.code-block__code {
+    display: flex;
+    flex-direction: column;
+}
+
+.code-block__code > .code-block__children {
+    display: flex;
+    flex-direction: column;
+}
+
+.code-block__gutter {
+    display: none;
 }

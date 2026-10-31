@@ -65,7 +65,7 @@ describe("Unity passive anatomy path", () => {
     rootContent.dom!.content = { kind: "literal", value: "Hidden" };
     expect(() => emit(rootContent)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: UnrelatedRule root has unlowered authored facts");
     const arbitraryDataBinding = irFor("Text", "UnrelatedContent");
-    arbitraryDataBinding.dom!.bindings["data-truncate"] = { kind: "prop", prop: "truncate" };
+    arbitraryDataBinding.dom!.bindings["title"] = { kind: "prop", prop: "truncate" };
     expect(() => emit(arbitraryDataBinding)).toThrow("UNITY_UNSUPPORTED_PASSIVE_ANATOMY: UnrelatedContent root has unlowered authored facts");
     const compoundContent = irFor("Text", "UnrelatedContent");
     compoundContent.styledProps = [];
@@ -194,5 +194,15 @@ describe("Unity passive anatomy path", () => {
       expect(source).toContain(`public partial class UnrelatedGrid${part} : VisualElement`);
     }
     expect(source).not.toMatch(/Responsive|AriaLabel/);
+  });
+
+  it("omits the content-transform chrome and keeps a consumer code region for CodeBlock", () => {
+    const source = emit(irFor("CodeBlock", "UnrelatedCode"));
+    expect(source).toContain("public partial class UnrelatedCode : VisualElement");
+    expect(source).toContain("public VisualElement Code { get; } = new VisualElement();");
+    expect(source).toContain('AddToClassList("code-block__code");');
+    expect(source).toContain("public override VisualElement contentContainer => children;");
+    expect(source).not.toMatch(/UnrelatedCode(?:Source|Line|Gutter|Token)\b/);
+    expect(source).not.toMatch(/public string (?:Code|Language|Highlight|Tokens|ShowLineNumbers)\b/);
   });
 });

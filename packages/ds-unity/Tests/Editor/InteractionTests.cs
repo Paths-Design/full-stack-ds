@@ -599,5 +599,16 @@ namespace FullStackDS.Tests
             Assert.That(typeof(FullStackDS.Table).GetProperty("Responsive"), Is.Null);
             Assert.That(typeof(FullStackDS.Table).GetProperty("AriaLabel"), Is.Null);
         }
+        [Test] public void CodeBlockComposesLinesInsideItsCodeRegion()
+        {
+            var code = Mount(new FullStackDS.CodeBlock());
+            code.contentContainer.Add(new UnityEngine.UIElements.Label("var answer = 42;"));
+            Assert.That(code.ClassListContains("code-block"), Is.True);
+            Assert.That(code.Code.ClassListContains("code-block__code"), Is.True);
+            Assert.That(code.Code.childCount, Is.EqualTo(1));
+            Assert.That(code.contentContainer, Is.SameAs(code.Code.Children().First()));
+            foreach (var prop in new[] { "Language", "Highlight", "Tokens", "ShowLineNumbers" })
+                Assert.That(typeof(FullStackDS.CodeBlock).GetProperty(prop), Is.Null, prop);
+        }
     }
 }
