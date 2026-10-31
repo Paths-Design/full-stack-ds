@@ -182,6 +182,37 @@
     "preview": { "x": 664, "y": 696, "w": 576, "h": 28 },
     "remapModal": { "x": 430, "y": 300, "w": 420, "h": 200, "prompt": "PRESS ANY KEY OR BUTTON" }
   },
+  "markerMonograms": { "relay": "R", "cache": "C", "pad": "P", "vein": "V", "beacon": "B", "weather": "W", "rover": "O", "camp": "M" },
+  "markerColors": {
+    "relay": "boneBright",
+    "cache": "signal",
+    "pad": "bone",
+    "vein": "onSignal",
+    "beacon": "alert",
+    "weather": "moss",
+    "rover": "muted",
+    "camp": "signal"
+  },
+  "rarityColors": {
+    "common": "textSecondary",
+    "uncommon": "clear",
+    "rare": "signal",
+    "epic": "alert",
+    "legendary": "signalHot"
+  },
+  "rarityTextColors": {
+    "common": "ink",
+    "uncommon": "ink",
+    "rare": "ink",
+    "epic": "boneBright",
+    "legendary": "ink"
+  },
+  "statusChip": {
+    "accessBackground": "signal",
+    "accessText": "onSignal",
+    "lockedBorder": "alert",
+    "lockedText": "alert"
+  },
   "captures": {
     "map": { "activeTab": "map", "navTarget": "cache-02", "hiddenIcons": ["weather-06"], "popover": null },
     "map-popover": { "activeTab": "map", "navTarget": "cache-02", "hiddenIcons": ["weather-06"], "popover": "beacon-05" },
