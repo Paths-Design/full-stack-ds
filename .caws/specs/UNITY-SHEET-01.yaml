@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T13:23:58.690Z"
     artifact_path: packages/ds-unity/Runtime/Components/Sheet/Sheet.cs
     commit_sha: c0fc822250beed98415fd64bd783482745aae34f
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 3ec23646b (sourceDirty false): 72/72 passed, zero failed/skipped (test-run start 2026-10-31 13:23:19Z; resultsSha256 1c6e66c651f775dd54dd76219869f28cf619dea0a029b714354e5fcce147552e). The added case reuses the modal surface, checks the default Side, the runtime Placement update, Escape/backdrop/close-button dismissal and the absent ARIA/modal API. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T13:23:59.203Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.SheetReusesTheModalSurfaceAndAlignsToItsPlacementEdge
+    exit_code: 0
+    commit_sha: "3ec23646befe348cfad4624b9473e25e72894298"
