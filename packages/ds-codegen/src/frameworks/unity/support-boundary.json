@@ -264,6 +264,20 @@
       "reason": "HTML input type/name/required and ARIA validity bindings have no UI Toolkit counterpart; the native TextField exposes none of them and the generated control withholds those props."
     },
     {
+      "id": "anatomy-textinput-child-bindings-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/value", "contract:/anatomy/dom/**/children/*/bindings/disabled", "contract:/anatomy/dom/**/children/*/bindings/placeholder"],
+      "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
+      "disposition": "lowered",
+      "via": "walker.ts / TextControl: the child input's value binding is the string channel the runtime owns, the disabled binding drives SetEnabled, and a placeholder binding drives the native text edition."
+    },
+    {
+      "id": "anatomy-textinput-child-form-bindings-refused",
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/type", "contract:/anatomy/dom/**/children/*/bindings/name", "contract:/anatomy/dom/**/children/*/bindings/required", "contract:/anatomy/dom/**/children/*/bindings/aria-invalid", "contract:/anatomy/dom/**/children/*/bindings/aria-describedby", "contract:/anatomy/dom/**/children/*/bindings/aria-labelledby"],
+      "requiresAny": [{ "match": ["contract:/formControl/valueModel"], "valueIn": ["text"] }],
+      "disposition": "refused",
+      "reason": "HTML input type/name/required and ARIA relationship bindings have no UI Toolkit counterpart; the generated field exposes none of them."
+    },
+    {
       "id": "anatomy-static-attrs-refused",
       "match": ["contract:/anatomy/dom/attrs/role", "contract:/anatomy/dom/attrs/aria-*", "contract:/anatomy/dom/attrs/type", "contract:/anatomy/dom/attrs/tabindex", "contract:/anatomy/dom/**/children/*/attrs/role", "contract:/anatomy/dom/**/children/*/attrs/aria-*", "contract:/anatomy/dom/**/children/*/attrs/type", "contract:/anatomy/dom/**/children/*/attrs/tabindex"],
       "disposition": "refused",
@@ -982,19 +996,18 @@
       "via": "BooleanControl.Attach binds the control's native Button.clicked event, which is the activation commit the contract declares; no separate change event is emitted."
     },
     {
+      "id": "form-control-text-child-commit",
+      "match": ["contract:/formControl/commit"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/tag"], "valueIn": ["input"] }],
+      "disposition": "lowered",
+      "via": "TextControl commits on the native text change event of the child input that the wrapper exposes."
+    },
+    {
       "id": "form-control-text-commit",
       "match": ["contract:/formControl/commit"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/tag"], "valueIn": ["input"] }],
       "disposition": "lowered",
       "via": "TextControl commits on the native text change event, which is the input-committed update the contract declares for a root input control."
-    },
-    {
-      "id": "form-control",
-      "match": ["contract:/formControl/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "Non-boolean value models and commit policies need their own runtime behavior and an explicit decision here."
     },
     {
       "id": "composite-control",
@@ -1490,8 +1503,16 @@
       "reason": "UI Toolkit has no fixed/sticky positioning; the projection lists the declaration uss-scalar and ModalSurface sets its own absolute blocking layout."
     },
     {
+      "id": "styles-invalid-state-variable-pending",
+      "match": ["styles:/--invalid/**"],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The invalid state variable has no native carrier on the generated text field; its declarations wait on the P4 state-carrier family and are ledgered pending."
+    },
+    {
       "id": "styles-invalid-state-modifier-pending",
-      "match": ["styles:/--invalid/**", "styles:/.input--invalid/**"],
+      "match": ["styles:/**"],
+      "declaration": { "keyPattern": "^[.]?[a-z-]+--invalid([^a-z-]|$)" },
       "disposition": "pending",
       "phase": "P4",
       "reason": "The invalid state has no native carrier on the generated text field; its modifier-state selectors wait on the P4 state-carrier family and are ledgered pending."

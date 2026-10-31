@@ -762,7 +762,7 @@ namespace FullStackDS.Tests
         [Test] public void InputMapsItsStringChannelToTheNativeTextField()
         {
             var input = Mount(new FullStackDS.Input());
-            Assert.That(input, Is.InstanceOf<TextField>());
+            Assert.That(input, Is.InstanceOf<UnityEngine.UIElements.TextField>());
             Assert.That(input.ClassListContains("input"), Is.True);
             input.Placeholder = "Search";
             Assert.That(input.textEdition.placeholder, Is.EqualTo("Search"));
@@ -782,6 +782,31 @@ namespace FullStackDS.Tests
             Assert.That(input.enabledSelf, Is.False);
             foreach (var prop in new[] { "Type", "Name", "Required", "Invalid", "AriaLabel" })
                 Assert.That(typeof(FullStackDS.Input).GetProperty(prop), Is.Null, prop);
+        }
+        [Test] public void TextFieldWrapsItsNativeFieldAndExposesNamedSlots()
+        {
+            var field = Mount(new FullStackDS.TextField());
+            Assert.That(field, Is.Not.InstanceOf<UnityEngine.UIElements.TextField>());
+            Assert.That(field.Field, Is.InstanceOf<UnityEngine.UIElements.TextField>());
+            Assert.That(field.ClassListContains("text-field"), Is.True);
+            Assert.That(field.LabelSlot.ClassListContains("text-field__label"), Is.True);
+            field.LabelSlot.Add(new UnityEngine.UIElements.Label("Name"));
+            field.DescriptionSlot.Add(new UnityEngine.UIElements.Label("Your display name"));
+            field.ErrorSlot.Add(new UnityEngine.UIElements.Label("Required"));
+            Assert.That(field.LabelSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.DescriptionSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.ErrorSlot.childCount, Is.EqualTo(1));
+            field.SetValueWithoutNotify("typed");
+            Assert.That(field.Value, Is.EqualTo("typed"));
+            Assert.That(field.Field.value, Is.EqualTo("typed"));
+            field.Controlled = true;
+            string requested = null;
+            field.ValueRequested += next => requested = next;
+            using (var evt = ChangeEvent<string>.GetPooled("typed", "blocked")) { evt.target = field.Field; field.Field.SendEvent(evt); }
+            Assert.That(requested, Is.EqualTo("blocked"));
+            Assert.That(field.Value, Is.EqualTo("typed"));
+            field.Disabled = true;
+            Assert.That(field.enabledSelf, Is.False);
         }
     }
 }

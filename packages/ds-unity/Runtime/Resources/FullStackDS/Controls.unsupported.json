@@ -4311,6 +4311,134 @@
       "reason": "uss-property"
     },
     {
+      "component": "TextField",
+      "sourceKey": ".text-field--invalid .text-field__field",
+      "part": "field",
+      "property": "border-color",
+      "value": "#d92d2e",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field--invalid .text-field__field:focus-visible",
+      "part": "field",
+      "property": "border-color",
+      "value": "#d92d2e",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field--invalid .text-field__field:focus-visible",
+      "part": "field",
+      "property": "outline-color",
+      "value": "#d92d2e",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field__field::placeholder",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field__field:disabled",
+      "part": "field",
+      "property": "cursor",
+      "value": "not-allowed",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field__field:focus-visible",
+      "part": "field",
+      "property": "outline-offset",
+      "value": "2px",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": ".text-field__field:hover:not(:disabled)",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "description",
+      "part": "description",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "error",
+      "part": "error",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "transition-duration",
+      "value": "150ms",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "transition-property",
+      "value": "background-color, border-color, color, outline-color",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "field",
+      "part": "field",
+      "property": "transition-timing-function",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "label",
+      "part": "label",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "label",
+      "part": "label",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "TextField",
+      "sourceKey": "tokens",
+      "part": "root",
+      "property": "text-field.motion.easing.standard",
+      "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "ToggleSwitch",
       "sourceKey": "disabled",
       "part": "root",

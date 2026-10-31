@@ -412,7 +412,7 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
   // value model is text; the generated class derives TextField and the string
   // value channel is wired through TextControl.
   if (ir.formControl?.valueModel === "text") {
-    if (ir.formControl.part.name !== ir.dom?.part || ir.dom?.tag !== "input") throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} text form control is not the input root`);
+    if (findNode(ir.dom, ir.formControl.part.name)?.tag !== "input") throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name} text form control is not an input element`);
     if (focus !== undefined && focus !== "none" && focus !== "auto") refuseFocus("TextInput");
     const placeholder = findNode(ir.dom, ir.formControl.part.name)?.bindings["placeholder"];
     return {
