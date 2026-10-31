@@ -54,3 +54,12 @@ contracts:
   - name: 'status-container'
     type: behavior
     path: 'packages/ds-contracts/components/Status/Status.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 761e6086d: focused unity codegen + cli seam 211/211 pass, including the decoration-role component-instance omission, the class-name/member suffix rule (Status.StatusValue) and its realization check, and the Status carrier axis; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T10:52:03.152Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > omits a decoration component instance and suffixes the colliding carrier member"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: "761e6086d9ff7f1a40e204c3a50e1a7e7cbc1de8"
