@@ -2325,6 +2325,13 @@
       "reason": "The web line-clamp presentation and its expanded reset are not expressible in the native text grammar; they are withheld rather than emitted partially."
     },
     {
+      "id": "styles-pagedset-context-numerals-refused",
+      "match": ["styles:/context/font-variant-numeric/**"],
+      "requiresAny": [{"match": ["contract:/pagedSet/channel"], "valueIn": ["page"]}],
+      "disposition": "refused",
+      "reason": "Tabular-figure numerals are not expressible in the native text grammar; the context declaration is withheld rather than emitted partially."
+    },
+    {
       "id": "styles",
       "match": ["styles:/**"],
       "disposition": "lowered",
