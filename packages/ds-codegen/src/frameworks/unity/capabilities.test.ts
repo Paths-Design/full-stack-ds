@@ -135,6 +135,7 @@ describe("Unity capability accounting", () => {
       "ledger Button tokens button.motion.easing.standard (uss-scalar)",
       "ledger Card tokens card.elevation.raised (uss-scalar)",
       "ledger Card tokens card.elevation.resting (uss-scalar)",
+      "ledger Carousel tokens carousel.motion.easing (uss-scalar)",
       "ledger CodeSnippet tokens code-snippet.elevation.kbd (uss-scalar)",
       "ledger Dialog tokens dialog.elevation (uss-scalar)",
       "ledger Dialog tokens dialog.size.full.height (uss-scalar)",
