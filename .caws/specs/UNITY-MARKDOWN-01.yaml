@@ -66,3 +66,10 @@ evidence:
     recorded_at: "2026-10-31T21:36:28.354Z"
     artifact_path: packages/ds-unity/Runtime/Components/Markdown/Markdown.cs
     commit_sha: c97182700a20e40b1527be8c74784e01c6453484
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at clean source 3bc525b30ac0103b8b8a87a1a84dd56784ad15bb (sourceDirty false): 98/98 passed, zero failed/skipped (test-run start 2026-10-31 21:31:30Z; resultsSha256 df74dcc621b33460b4c88253462eb64626e49df18d10c9c1dfcecce7838b75a1). The added case asserts the raw source text painting and the absent block/mark/link API. A post-merge rerun on main HEAD 712dea0d7 also passed 98/98 (test-run start 2026-10-31 21:35:52Z) with sourceDirty true only because the canonical checkout preserves untracked .dsh/hooks; the tracked tree was clean. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T21:36:29.684Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.MarkdownPaintsTheDeclaredSourceTextOnly
+    exit_code: 0
+    commit_sha: "3bc525b30ac0103b8b8a87a1a84dd56784ad15bb"
