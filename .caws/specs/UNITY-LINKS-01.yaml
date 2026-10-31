@@ -1,9 +1,11 @@
 id: UNITY-LINKS-01
 title: 'Admit Links to the Unity target as a navigation-request anchor scaffold'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Links admitted to the Unity target/package (thirty-eighth allowlisted control) as a navigation-request anchor scaffold: prop-bound anchor root selects Anchor, generated Href/Target/Rel attributes and size carriers, LinkControl raises the activation request with href on click while enabled, Disabled disables pointer activation; navigation, visited state and target semantics unclaimed; text-decoration styles refused; codegen+cli 230/230, boundary audit clean, real Unity EditMode 79/79, package sheet regenerated'
 created_at: '2026-10-31T14:36:31.083Z'
-updated_at: '2026-10-31T14:43:58.565Z'
+updated_at: '2026-10-31T14:44:20.270Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
