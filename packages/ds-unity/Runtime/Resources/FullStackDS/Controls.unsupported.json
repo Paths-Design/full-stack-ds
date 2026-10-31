@@ -3747,6 +3747,14 @@
       "reason": "uss-property"
     },
     {
+      "component": "PageNavigator",
+      "sourceKey": "context",
+      "part": "context",
+      "property": "font-variant-numeric",
+      "value": "tabular-nums",
+      "reason": "uss-property"
+    },
+    {
       "component": "Pagination",
       "sourceKey": ".pagination--indicators .pagination__item[data-current=\"true\"] .pagination__marker",
       "part": "",

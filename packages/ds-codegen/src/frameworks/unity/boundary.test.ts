@@ -104,7 +104,7 @@ describe("Unity support boundary", () => {
       const classified = admitContract(load(name), { admitted: true });
       expect(classified.some(l => l.disposition === "unclassified" || l.catchAll)).toBe(false);
     }
-  });
+  }, CORPUS_TIMEOUT_MS);
 
   it("derives prop roles from the contract's own channels and form blocks, not from prop names", () => {
     const sw = propRoles(load("Switch"));

@@ -550,6 +550,25 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/Lines|line-clamp/);
   });
 
+  it("renders the paged navigator shell from declared parts for PageNavigator", () => {
+    const contract = loadContractWithSidecars(root, "PageNavigator") as ComponentContract;
+    const navigatorIr = buildComponentIR(contract);
+    navigatorIr.name = "UnrelatedNavigator";
+    const source = createUnityEmitter().emitComponent(navigatorIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedNavigator : VisualElement");
+    expect(source).toContain("public PagedSetControl Control { get; }");
+    expect(source).toContain("public int Index");
+    expect(source).toContain("public int DefaultIndex");
+    expect(source).toContain("public Action<int> OnIndexChange");
+    expect(source).toContain("public bool Controlled");
+    expect(source).toContain("public Action<int> IndexRequested");
+    expect(source).toContain("public string[] Pages");
+    expect(source).toContain("public int PageCount");
+    expect(source).toContain("public bool Disabled");
+    expect(source).toContain("PagedSetControl.Attach(this, prefix: \"page-navigator\", previousPart: \"previous\", nextPart: \"next\", commitPart: \"commit\", fieldPart: \"field\", inputPart: \"input\", contextPart: \"context\");");
+    expect(source).not.toMatch(/Presentation|ShowChoices|PreviousLabel|ariaLabel/);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);

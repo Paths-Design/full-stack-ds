@@ -220,7 +220,8 @@
         "Select",
         "Shuttle",
         "ShowMore",
-        "Truncate"
+        "Truncate",
+        "PageNavigator"
       ]
     },
     {

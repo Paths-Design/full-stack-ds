@@ -226,6 +226,14 @@
       "reason": "A collapse intent replaces the anatomy with a native platform primitive; UI Toolkit's Toggle and Foldout own fixed internal trees the contract's anatomy does not describe, so the walker realises the declared anatomy instead."
     },
     {
+      "id": "anatomy-paged-composition-pending",
+      "match": ["contract:/anatomy/dom/**/ref:*/**", "contract:/anatomy/details/*/componentRef", "contract:/anatomy/details/*/subcomponent"],
+      "requiresAny": [{"match": ["contract:/pagedSet/channel"], "valueIn": ["page"]}],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The composed Button/Input/Pagination/Icon children are not instantiated by the paged navigator; the runtime builds a native shell for the declared parts and owns no child-component composition."
+    },
+    {
       "id": "anatomy-component-ref-identity",
       "match": ["contract:/anatomy/dom/**/children/ref:*/part"],
       "disposition": "lowered",
@@ -734,6 +742,13 @@
       "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
       "disposition": "lowered",
       "via": "walker.ts (Expansion)/ExpansionControl: the trigger activation toggles the expansion channel with commit/request semantics."
+    },
+    {
+      "id": "anatomy-paged-actions-lowered",
+      "match": ["contract:/anatomy/dom/**/events/click", "contract:/anatomy/dom/**/events/keydown", "contract:/anatomy/dom/**/events/focusout", "contract:/anatomy/dom/**/events/change", "contract:/anatomy/dom/**/bindings/**"],
+      "requiresAny": [{"match": ["contract:/pagedSet/channel"], "valueIn": ["page"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (PagedSet)/PagedSetControl: the paged actions become the runtime previous/next/commit/edit/commitOnEnter handlers and the paged field bindings become the runtime draft/count/disabled state."
     },
     {
       "id": "anatomy-events",
@@ -1558,6 +1573,27 @@
       "via": "walker.ts (Expansion): the expandable switch and both state-dependent labels become generated carrier attributes painted by the runtime."
     },
     {
+      "id": "prop-pagedset-items-count-disabled-lowered",
+      "match": ["contract:/props/*/members/plain:pages/**", "contract:/props/*/members/plain:pageCount/**", "contract:/props/*/members/plain:disabled/**"],
+      "requiresAny": [{"match": ["contract:/pagedSet/channel"], "valueIn": ["page"]}],
+      "disposition": "lowered",
+      "via": "walker.ts (PagedSet): the page labels, declared count and disabled flag become the generated Pages/PageCount/Disabled attributes backed by PagedSetControl."
+    },
+    {
+      "id": "prop-pagedset-presentation-choices-refused",
+      "match": ["contract:/props/*/members/plain:presentation/**", "contract:/props/*/members/plain:showChoices/**"],
+      "requiresAny": [{"match": ["contract:/pagedSet/channel"], "valueIn": ["page"]}],
+      "disposition": "refused",
+      "reason": "The composed page-choice presentation requires instantiating the admitted Pagination child, which the paged navigator runtime does not own; both knobs are withheld."
+    },
+    {
+      "id": "prop-pagedset-a11y-labels-refused",
+      "match": ["contract:/props/*/members/plain:label/**", "contract:/props/*/members/plain:pageLabel/**", "contract:/props/*/members/plain:previousLabel/**", "contract:/props/*/members/plain:nextLabel/**", "contract:/props/*/members/plain:commitLabel/**"],
+      "requiresAny": [{"match": ["contract:/pagedSet/channel"], "valueIn": ["page"]}],
+      "disposition": "refused",
+      "reason": "The accessible labels only feed aria attributes with no UI Toolkit consumer; the runtime builds unlabelled native controls and withholds the labels."
+    },
+    {
       "id": "props-unadjudicated",
       "match": ["contract:/props/**"],
       "disposition": "pending",
@@ -2287,6 +2323,13 @@
       "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
       "disposition": "refused",
       "reason": "The web line-clamp presentation and its expanded reset are not expressible in the native text grammar; they are withheld rather than emitted partially."
+    },
+    {
+      "id": "styles-pagedset-context-numerals-refused",
+      "match": ["styles:/context/font-variant-numeric/**"],
+      "requiresAny": [{"match": ["contract:/pagedSet/channel"], "valueIn": ["page"]}],
+      "disposition": "refused",
+      "reason": "Tabular-figure numerals are not expressible in the native text grammar; the context declaration is withheld rather than emitted partially."
     },
     {
       "id": "styles",
