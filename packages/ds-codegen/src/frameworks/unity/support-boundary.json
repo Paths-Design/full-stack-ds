@@ -412,6 +412,36 @@
       "via": "walker.ts (value-fill): the presence-guarded value label is owned by the Progress behavior; the runtime toggles its presence from the generated ShowValue attribute instead of unmounting it."
     },
     {
+      "id": "prop-slots-status-lowered",
+      "match": ["contract:/props/*/members/plain:status/**"],
+      "requiresAny": [{ "match": ["contract:/form/participates"], "valueIn": [false] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Slots): the status variant axis becomes a generated modifier property through the projection carrier axes."
+    },
+    {
+      "id": "prop-slots-context-refused",
+      "match": ["contract:/props/*/members/**"],
+      "requiresAny": [{ "match": ["contract:/form/participates"], "valueIn": [false] }],
+      "disposition": "refused",
+      "reason": "The slot-only row has no native context propagation or validation runtime; name/id/required/disabled/readOnly/value/defaultValue/onChange/validate/validating props are withheld and the consumer wires the child control it composes into the control slot."
+    },
+    {
+      "id": "channels-slots-refused",
+      "match": ["contract:/channels/**"],
+      "requiresAny": [{ "match": ["contract:/form/participates"], "valueIn": [false] }],
+      "disposition": "refused",
+      "reason": "The channel is context propagation for a consumer-supplied child control; UI Toolkit has no field-context primitive, so the scaffold withholds the value channel rather than approximating it."
+    },
+    {
+      "id": "anatomy-slots-guard-pending",
+      "match": ["contract:/anatomy/dom/**/children/*/if"],
+      "requiresAny": [{ "match": ["contract:/form/participates"], "valueIn": [false] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The validating indicator's presence depends on a validation runtime the scaffold does not own; the slot host renders empty regardless and the guard waits on the P4 validation family."
+    },
+    {
       "id": "anatomy-guards",
       "match": ["contract:/anatomy/dom/if", "contract:/anatomy/dom/**/children/*/if"],
       "disposition": "pending",
@@ -1471,7 +1501,7 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**", "styles:/**/inset/**", "styles:/**/inset-inline/**", "styles:/**/overflow-y/**", "styles:/**/overflow-wrap/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**", "styles:/**/inset/**", "styles:/**/inset-inline/**", "styles:/**/align-items/**", "styles:/**/overflow-y/**", "styles:/**/overflow-wrap/**"],
       "disposition": "refused",
       "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse, overflow-axis, tab-size, order, inset or overflow-wrap handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },

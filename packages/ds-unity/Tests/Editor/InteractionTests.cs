@@ -847,5 +847,25 @@ namespace FullStackDS.Tests
             while (toast.Open && Time.realtimeSinceStartup < deadline) yield return null;
             Assert.That(toast.Open, Is.False);
         }
+        [Test] public void FieldExposesItsSlotHostsAndStatusCarrier()
+        {
+            var field = Mount(new FullStackDS.Field());
+            Assert.That(field.ClassListContains("field"), Is.True);
+            field.LabelSlot.Add(new UnityEngine.UIElements.Label("Name"));
+            field.ControlSlot.Add(new FullStackDS.Input());
+            field.HelpSlot.Add(new UnityEngine.UIElements.Label("Shown on your profile"));
+            field.ErrorSlot.Add(new UnityEngine.UIElements.Label("Required"));
+            Assert.That(field.LabelSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.ControlSlot[0], Is.InstanceOf<FullStackDS.Input>());
+            Assert.That(field.HelpSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.ErrorSlot.childCount, Is.EqualTo(1));
+            Assert.That(field.ValidatingIndicatorSlot.childCount, Is.EqualTo(0));
+            field.Status = "valid";
+            Assert.That(field.ClassListContains("field--valid"), Is.True);
+            field.Status = "invalid";
+            Assert.That(field.ClassListContains("field--invalid"), Is.True);
+            foreach (var prop in new[] { "Value", "Disabled", "Name", "Required", "Validating", "ReadOnly" })
+                Assert.That(typeof(FullStackDS.Field).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

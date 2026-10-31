@@ -2771,6 +2771,62 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Field",
+      "sourceKey": ".field--disabled .field__header, .field--disabled .field__meta",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "error",
+      "part": "error",
+      "property": "font-size",
+      "value": "0.875em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "header",
+      "part": "header",
+      "property": "align-items",
+      "value": "baseline",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "help",
+      "part": "help",
+      "property": "font-size",
+      "value": "0.875em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "label",
+      "part": "label",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "validatingIndicator",
+      "part": "validatingIndicator",
+      "property": "height",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Field",
+      "sourceKey": "validatingIndicator",
+      "part": "validatingIndicator",
+      "property": "width",
+      "value": "1em",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Icon",
       "sourceKey": "root",
       "part": "root",

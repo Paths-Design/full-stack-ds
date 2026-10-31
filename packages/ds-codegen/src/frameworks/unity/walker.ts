@@ -165,7 +165,7 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     ((ctx.lowering.overlay !== undefined && node.part === ctx.lowering.overlay.name) ||
       (ctx.lowering.dismissibleProp !== undefined && node.part === ctx.lowering.trigger.name)) &&
     node.ifProp === (node.part === ctx.lowering.overlay?.name ? ctx.lowering.channel.valueProp : ctx.lowering.dismissibleProp) && !node.ifNegated && !node.ifSlot;
-  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard && ctx.lowering.behavior !== "Slots") throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
 }
 
 /**
@@ -263,7 +263,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -416,7 +416,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     classes.push(root);
   }
   for (const part of ir.compoundParts) {
-    if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast") continue;
+    if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -702,12 +702,32 @@ function textInputRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
 }
 
 
-/** R6–R8: the root's behavior, channel API and props. */
+/**
+ * R6-R8 for a slot-only container: no behavior class and no channel API (the
+ * channel is context propagation for a consumer-supplied child control); only
+ * the declared carrier axes become modifier properties.
+ */
+function slotsRootApi(ctx: Context): RootApi {
+  const { ir } = ctx;
+  const members: string[] = [];
+  const defaults: string[] = [];
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach: [], defaults };
+}
+
+/** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
   if (lowering.behavior === "Action") return actionRootApi(ctx);
   if (lowering.behavior === "Passive") return passiveRootApi(ctx);
   if (lowering.behavior === "Progress") return progressRootApi(ctx, classes);
+  if (lowering.behavior === "Slots") return slotsRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
