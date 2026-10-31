@@ -54,3 +54,11 @@ contracts:
   - name: 'pagenav-paged-set'
     type: behavior
     path: 'packages/ds-contracts/components/PageNavigator/PageNavigator.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 82966fc0c plus the merge/fix commits (e0531b03a merge main, 627b3a068 native qualifications, boundary fixes): focused unity codegen + cli seam 242/242 pass, including the PagedSet lowering predicate (the contract pagedSet block: numeric channel, page items, count/disabled props), the no-shell walker omission with runtime-built declared parts, the generated int Index/DefaultIndex/Pages/PageCount/Disabled API with change/request, the composition-pending rule for the composed children, the refused page-choice/presentation/accessible-label props and the styles ledger refusals; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. The landing exposed genuine corrections: the composed-child leaves needed a scoped pending rule before the component-ref rules, the native TextField/KeyCode required qualification against the generated types, and the paged context tabular-numeral declaration had to be refused."
+    recorded_at: "2026-10-31T18:10:33.412Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders the paged navigator shell from declared parts for PageNavigator"
+    exit_code: 0
+    commit_sha: "82966fc0c0e4a9f3dc16e7f8de7e7e2bd6bb2a0c"
