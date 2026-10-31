@@ -531,5 +531,14 @@ namespace FullStackDS.Tests
             using (var evt = PointerEnterEvent.GetPooled()) { evt.target = trigger; trigger.SendEvent(evt); }
             Assert.That(tooltip.Open, Is.False, "a disabled trigger does not open the tooltip");
         }
+        [Test] public void StatusComposesTextAndCarriesItsRenamedAxis()
+        {
+            var status = Mount(new FullStackDS.Status { StatusValue = "danger" });
+            status.contentContainer.Add(new UnityEngine.UIElements.Label("Offline"));
+            Assert.That(status.ClassListContains("status"), Is.True);
+            Assert.That(status.ClassListContains("status--danger"), Is.True);
+            Assert.That(status.contentContainer.childCount, Is.EqualTo(1));
+            Assert.That(typeof(FullStackDS.Status).GetProperty("Icon"), Is.Null);
+        }
     }
 }

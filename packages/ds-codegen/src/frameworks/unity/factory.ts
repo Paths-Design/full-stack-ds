@@ -7,7 +7,7 @@ import { buildComponentIR } from "../../ir.js";
 import { admitContract, loadBoundary, unityAllowlist, type ClassifiedLeaf, type ContractWithSidecars } from "./boundary.js";
 import { hasChannel, triggerParts, unityLowering } from "./behaviors.js";
 import { loadTokenSources, projectStylesheet } from "./uss.js";
-import { identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
+import { classMemberName, identifier, pascal, rootPublicMembers, walkComponent } from "./walker.js";
 import { collectIconGlyphNodes } from "../icon-glyph.js";
 import { unityGlyphCatalog } from "./glyph-catalog.js";
 
@@ -82,7 +82,7 @@ export function assertRealized(contract: ContractWithSidecars, ir: ComponentIR, 
     let subject: string;
     switch (rule.realizes) {
       case "emitted-property":
-        ok = member !== undefined && emitted.has(pascal(member)); subject = `prop ${member}`; break;
+        ok = member !== undefined && emitted.has(classMemberName(ir.name, member)); subject = `prop ${member}`; break;
       case "selected-channel-member":
         ok = member !== undefined && channel !== undefined && [channel.valueProp, channel.defaultValueProp, channel.changeHandlerProp].includes(member); subject = `prop ${member}`; break;
       case "selected-channel":

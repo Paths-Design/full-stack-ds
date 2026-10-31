@@ -148,16 +148,19 @@ function isOmittedActionChrome(ctx: Context, node: DomNodeIR): boolean {
 }
 
 /**
- * R1/R2: a passive root cannot materialise guarded chrome. Two shapes are
- * omitted by fact: a decoration whose content is a dynamic node prop (IR
- * `nodeKind: "node-ref"`), and a guarded action chrome — a native button or
+ * R1/R2: a passive root cannot materialise chrome or composed instances. Three
+ * shapes are omitted by fact: a decoration whose content is a dynamic node prop
+ * (IR `nodeKind: "node-ref"`), a guarded action chrome — a native button or
  * componentRef element carrying an event binding — whose presence prop is a
- * declared prop. The boundary refuses the omitted subtree and classifies the
- * triggering props; selection is by prop kind and binding facts, never by
- * component or part name.
+ * declared prop, and a decoration-role component instance (composition is P4).
+ * The boundary refuses each omitted subtree; selection is by prop kind, binding
+ * and part-role facts, never by component or part name.
  */
 function isOmittedPassiveDecoration(ir: ComponentIR, lowering: UnityLowering, node: DomNodeIR): boolean {
-  if (lowering.behavior !== "Passive" || node.ifProp === undefined) return false;
+  if (lowering.behavior !== "Passive") return false;
+  const role = node.part === undefined ? undefined : ir.parts.find(part => part.name === node.part)?.details?.role;
+  if (node.componentRef !== undefined && role === "decoration") return true;
+  if (node.ifProp === undefined) return false;
   const prop = ir.styledProps.find(candidate => candidate.name === node.ifProp);
   if (!prop) return false;
   if (prop.nodeKind === "node-ref") {
@@ -334,12 +337,20 @@ function defaultLiteral(ir: ComponentIR, prop: ResolvedPropIR, values?: string[]
   return typeof value === "string" ? quote(value) : String(value);
 }
 
+/** C# forbids a member that shares its enclosing type's name; a colliding
+ * generated member takes a `Value` suffix (`Status.StatusValue`). The
+ * realization check in factory.ts reads the same rule. */
+export function classMemberName(className: string, base: string): string {
+  const name = identifier(pascal(base));
+  return name === className ? `${name}Value` : name;
+}
+
 /** R6: a variant-axis prop validated against the axis values. The root
  * modifier class follows `ir.classRecipe.valueModifiers` (`<base>--<value>`,
  * as on the web) and is the single record of the current value (runtime
  * `Variants`); a vocabulary knob follows it. */
 function variantProperty(ctx: Context, prop: ResolvedPropIR, values: string[], knob: string | undefined): string {
-  const name = identifier(pascal(prop.name));
+  const name = classMemberName(ctx.ir.name, prop.name);
   const modifier = ctx.ir.classRecipe.valueModifiers.find(m => m.propName === prop.name);
   if (!modifier) throw new Error(`UNITY_UNSUPPORTED_VARIANT: ${ctx.ir.name}.${prop.name} is a variant axis without a class-recipe value modifier`);
   const base = quote(ctx.ir.classRecipe.base);
