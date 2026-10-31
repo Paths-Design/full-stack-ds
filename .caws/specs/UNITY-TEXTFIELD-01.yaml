@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T13:52:23.893Z"
     artifact_path: packages/ds-unity/Runtime/Components/TextField/TextField.cs
     commit_sha: f8c500576e75c8d35822a67e282eb83bd8f7b922
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source 721f6edb0 (sourceDirty false): 74/74 passed, zero failed/skipped (test-run start 2026-10-31 13:51:45Z; resultsSha256 6f8260bbae510be30ddec83d1bd4632fdba20fd41bf3e679a30afa09a3b041a0). The added case composes label/description/error slots, checks the native field child, the silent and controlled channel paths and the disabled state. The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T13:52:24.404Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.TextFieldWrapsItsNativeFieldAndExposesNamedSlots
+    exit_code: 0
+    commit_sha: "721f6edb0135698516fb380d052033a1509f3ceb"
