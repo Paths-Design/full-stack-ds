@@ -1002,6 +1002,126 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "List",
+      "sourceKey": ".list--marker-alpha",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "lower-alpha",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-circle",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "circle",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-decimal",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "decimal",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-disc",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "disc",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-none",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-roman",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "lower-roman",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--marker-square",
+      "part": "root",
+      "property": "list-style-type",
+      "value": "square",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--spacing-lg > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--spacing-md > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--spacing-none > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--spacing-sm > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--variant-divided > * + *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--variant-inline",
+      "part": "root",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--variant-spaced > *",
+      "part": "",
+      "property": "",
+      "value": "selector outside normalized native grammar",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "List",
+      "sourceKey": ".list--variant-unstyled",
+      "part": "root",
+      "property": "list-style",
+      "value": "none",
+      "reason": "uss-property"
+    },
+    {
       "component": "Popover",
       "sourceKey": "brand:canary",
       "part": "content",
