@@ -306,6 +306,56 @@
       "via": "The attached behavior's state class (R7): a binding to the selected channel's value on a trigger part is realised by BooleanControl, ItemGroup or AnchoredSurface toggling is-<value> on the host and, for item groups, on the paired parts. A binding to another channel or on a non-trigger part is unrealised and refuses generation."
     },
     {
+      "id": "surface-coachmark-lowered",
+      "match": ["contract:/surface/kind", "contract:/surface/modality", "contract:/surface/presence", "contract:/surface/attachment"],
+      "valueIn": ["coachmark", "non-blocking", "persistent", "selector"],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Coachmark): a persistent non-blocking coachmark renders inline as a card scaffold; its step channel becomes a consumer-managed attribute and its controls become native buttons wired to generated actions."
+    },
+    {
+      "id": "surface-coachmark-anchor-selector-refused",
+      "match": ["contract:/surface/anchor/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "refused",
+      "reason": "The step-indexed selector anchor is data the inline scaffold cannot resolve; anchoring is withheld and the card renders in the consumer's layout."
+    },
+    {
+      "id": "surface-coachmark-anchoring-refused",
+      "match": ["contract:/surface/selectorAnchor/**", "contract:/surface/positioning/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "refused",
+      "reason": "Selector anchoring needs a resolved anchor element and collision placement, which the inline scaffold does not own; the card renders in the consumer's layout and the anchor/placement props are withheld."
+    },
+    {
+      "id": "dismissal-coachmark-refused",
+      "match": ["contract:/surface/dismissal/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "refused",
+      "reason": "Escape/outside-click dismissal belongs to an overlay runtime the inline card does not have; the scaffold exposes no dismiss-knob API and the consumer owns tour lifecycle."
+    },
+    {
+      "id": "anatomy-coachmark-callback-events-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/events/click"],
+      "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/events/click"], "valueIn": ["prop:onSkip", "prop:onPrevious", "prop:onNext"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Coachmark): each native control's click callback prop becomes a generated Action property wired to the control's activation."
+    },
+    {
+      "id": "anatomy-coachmark-events-pending",
+      "match": ["contract:/anatomy/dom/**/children/*/events/**", "contract:/anatomy/dom/**/children/*/iterate/**", "contract:/anatomy/dom/**/children/*/content"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "The dots iteration, its step-selection events and message-key labels need the P4 iteration/message families; the scaffold omits them rather than rendering static stand-ins."
+    },
+    {
+      "id": "anatomy-coachmark-disabled-binding-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/bindings/disabled"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Coachmark): the previous control's disabled binding becomes a generated bool attribute driving that native button's enabled state."
+    },
+    {
       "id": "anatomy-disabled-binding",
       "match": ["contract:/anatomy/dom/bindings/disabled", "contract:/anatomy/dom/**/children/*/bindings/disabled"],
       "valuePattern": "^prop:[A-Za-z_$][\\w$-]*$",
@@ -473,6 +523,29 @@
       "match": ["contract:/slots/**"],
       "disposition": "lowered",
       "via": "walker.ts (R2, R3): slot anchors are the walker's part identity (UQuery by name or <cssPrefix>__<part> class replaces the DOM data-slot selector) and named-slot hosts; required is a composition obligation the usage audit checks, not a runtime fact."
+    },
+    {
+      "id": "prop-coachmark-callbacks-lowered",
+      "match": ["contract:/props/*/members/plain:onSkip/**", "contract:/props/*/members/plain:onPrevious/**", "contract:/props/*/members/plain:onNext/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Coachmark): skip/previous/next callback props become generated Action properties on the generated card."
+    },
+    {
+      "id": "prop-coachmark-text-lowered",
+      "match": ["contract:/props/*/members/plain:nextLabel/**", "contract:/props/*/members/plain:progressLabel/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Coachmark): the next-label and progress-label strings paint the native next control's text and the counter label."
+    },
+    {
+      "id": "prop-coachmark-context-refused",
+      "match": ["contract:/props/*/members/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "refused",
+      "reason": "Steps/anchor data, storage, auto-start, complete/step-change callbacks, placement, outside-click dismissal and disabled props exceed the inline scaffold; they are withheld rather than approximated."
     },
     {
       "id": "prop-channel-value",
@@ -963,6 +1036,14 @@
       "reason": "Prop families not yet adjudicated for UI Toolkit. An allowlisted component may not rely on this rule: add a family rule above."
     },
     {
+      "id": "channel-coachmark-lowered",
+      "match": ["contract:/channels/*/value", "contract:/channels/*/valueType", "contract:/channels/*/description"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["coachmark"] }],
+      "disposition": "lowered",
+      "realizes": "selected-channel",
+      "via": "walker.ts (Coachmark): the numeric step channel is exposed as a generated int UXML attribute the consumer manages; no controlled/request semantics are claimed."
+    },
+    {
       "id": "channels",
       "match": ["contract:/channels/**"],
       "disposition": "lowered",
@@ -1277,13 +1358,6 @@
       "reason": "pointer-leave, close-button and other dismissal triggers need the blocking and hover surface behaviors and an explicit decision here."
     },
     {
-      "id": "surface-non-blocking",
-      "match": ["contract:/surface/modality"],
-      "valueIn": ["non-blocking"],
-      "disposition": "lowered",
-      "via": "The dispatcher attaches AnchoredSurface for non-blocking surfaces."
-    },
-    {
       "id": "surface-open-click",
       "match": ["contract:/surface/openTriggers/*"],
       "valueIn": ["click", "hover", "focus"],
@@ -1335,14 +1409,6 @@
       "match": ["contract:/surface/positioning/placementProp"],
       "disposition": "lowered",
       "via": "The named prop is emitted as [UxmlAttribute] Placement and drives Reposition."
-    },
-    {
-      "id": "surface",
-      "match": ["contract:/surface/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "Blocking modality, hover/focus open triggers and remaining surface facts need the blocking and hover surface behaviors and an explicit decision here."
     },
     {
       "id": "relationships",

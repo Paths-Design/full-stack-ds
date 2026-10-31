@@ -207,7 +207,8 @@
         "Input",
         "TextField",
         "Toast",
-        "Field"
+        "Field",
+        "Walkthrough"
       ]
     },
     {

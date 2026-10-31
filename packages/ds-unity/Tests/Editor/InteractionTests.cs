@@ -867,5 +867,36 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Value", "Disabled", "Name", "Required", "Validating", "ReadOnly" })
                 Assert.That(typeof(FullStackDS.Field).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void WalkthroughComposesSlotsAndWiresItsControlCallbacks()
+        {
+            var tour = Mount(new FullStackDS.Walkthrough());
+            tour.TitleSlot.Add(new UnityEngine.UIElements.Label("Step one"));
+            tour.DescriptionSlot.Add(new UnityEngine.UIElements.Label("Try the settings tab"));
+            Assert.That(tour.TitleSlot.childCount, Is.EqualTo(1));
+            Assert.That(tour.DescriptionSlot.childCount, Is.EqualTo(1));
+            tour.Index = 2;
+            Assert.That(tour.Index, Is.EqualTo(2));
+            tour.ProgressLabel = "2 of 3";
+            Assert.That(tour.Counter.text, Is.EqualTo("2 of 3"));
+            tour.NextLabel = "Continue";
+            Assert.That(tour.Next.text, Is.EqualTo("Continue"));
+            tour.PreviousDisabled = true;
+            Assert.That(tour.Prev.enabledSelf, Is.False);
+            tour.PreviousDisabled = false;
+            Assert.That(tour.Prev.enabledSelf, Is.True);
+            int skipped = 0, previous = 0, next = 0;
+            tour.OnSkip = () => skipped++;
+            tour.OnPrevious = () => previous++;
+            tour.OnNext = () => next++;
+            Submit(tour.Skip);
+            Submit(tour.Prev);
+            Submit(tour.Next);
+            Assert.That(skipped, Is.EqualTo(1));
+            Assert.That(previous, Is.EqualTo(1));
+            Assert.That(next, Is.EqualTo(1));
+            Assert.That(tour.Dots.childCount, Is.EqualTo(0));
+            foreach (var prop in new[] { "Steps", "Placement", "CloseOnOutsideClick", "AutoStart", "StorageKey" })
+                Assert.That(typeof(FullStackDS.Walkthrough).GetProperty(prop), Is.Null, prop);
+        }
     }
 }
