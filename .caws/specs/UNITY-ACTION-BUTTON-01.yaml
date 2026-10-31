@@ -91,12 +91,11 @@ evidence:
     commit_sha: af73bc3acc1e263ea519ebd610a99ec9b0a2c488
   - criterion_id: A3
     status: pass
-    evidence_ref: "Real Unity EditMode lane at merged main acbf6ea43: 51/51 passed, zero failed/skipped (test-run start 2026-10-31 08:44:51Z); provenance sourceRevision acbf6ea43, sourceDirty only from unrelated untracked .dsh/hooks. Added cases cover native submit activation once, disabled suppression, content-container composition and size/variant carriers; UXML import of ds:Button is not separately witnessed (recorded non-claim)."
-    recorded_at: "2026-10-31T08:45:16.588Z"
+    evidence_ref: "Real Unity EditMode lane at merged main acbf6ea43: 51/51 passed, zero failed/skipped (test-run start 2026-10-31 08:44:51Z; provenance sourceRevision acbf6ea43, resultsSha256 08d09078539c9461368a74344b0400deae0c1af9ef762d36980d9b28e80668b5). Local receipt is the gitignored tmp/unity-pilot/results.xml; the suite is the real Editor NUnit lane, not vitest, so no tracked artifact is available by repo convention. Added cases cover native submit activation once, disabled suppression, content-container composition and size/variant carriers; UXML import of ds:Button is not separately witnessed (recorded non-claim)."
+    recorded_at: "2026-10-31T08:46:04.250Z"
     test_nodeid: FullStackDS.Tests.InteractionTests.ActionButtonFiresOncePerActivationAndSuppressesDisabled
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
-    artifact_path: "/Users/darianrosebrook/Desktop/Projects/full-stack-ds/tmp/unity-pilot/results.xml"
     commit_sha: acbf6ea43c2b61f667f30a186536b7536db823b4
   - criterion_id: A4
     status: pass
