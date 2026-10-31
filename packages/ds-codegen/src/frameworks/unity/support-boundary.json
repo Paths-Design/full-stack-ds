@@ -606,6 +606,14 @@
       "reason": "The value-fill size axis has no USS carrier in the Progress sidecar, so the generated control withholds it until a native carrier exists."
     },
     {
+      "id": "prop-modal-placement-axis-lowered",
+      "match": ["contract:/props/*/members/plain:side/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["sheet"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts (Modal): a viewport-edge sheet's placement axis emits a generated modifier attribute whose setter also drives ModalSurface.Placement, which aligns the panel to the declared edge."
+    },
+    {
       "id": "prop-modal-modality-pending",
       "match": ["contract:/props/*/members/plain:modal/**"],
       "requiresAny": [{ "match": ["contract:/surface/modality"], "valueIn": ["blocking"] }],
@@ -1169,7 +1177,7 @@
     {
       "id": "surface-modal-dialog-lowered",
       "match": ["contract:/surface/kind", "contract:/surface/modality", "contract:/surface/presence", "contract:/surface/content/part", "contract:/surface/attachment", "contract:/surface/positioning/**"],
-      "valueIn": ["dialog", "blocking", "persistent", "viewport", "centered"],
+      "valueIn": ["dialog", "sheet", "blocking", "persistent", "viewport", "centered", "viewport-edge"],
       "disposition": "lowered",
       "via": "behaviors.ts (Modal): a centered, persistent, viewport-attached blocking dialog surface lowers to ModalSurface, which portals the host, fills the panel, centers the content and renders the overlay backdrop."
     },

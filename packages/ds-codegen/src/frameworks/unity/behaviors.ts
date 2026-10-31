@@ -85,6 +85,8 @@ export interface ModalLowering extends LoweringBase {
   overlay?: PartIR;
   /** The trigger's presence prop, lowered to a generated Dismissible flag. */
   dismissibleProp?: string;
+  /** The surface's edge placement prop, realised by the runtime's Placement. */
+  placementProp?: string;
 }
 export interface AnchoredSurfaceLowering {
   behavior: "AnchoredSurface";
@@ -317,9 +319,10 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
         contentFocusable: false,
       };
     }
-    const modalSurface = ir.surface.kind === "dialog" && ir.surface.modality === "blocking" &&
+    const centeredDialog = ir.surface.kind === "dialog" && ir.surface.positioning?.strategy === "centered";
+    const edgeSheet = ir.surface.kind === "sheet" && ir.surface.positioning?.strategy === "viewport-edge";
+    const modalSurface = ir.surface.modality === "blocking" && (centeredDialog || edgeSheet) &&
       ir.surface.presence === "persistent" && ir.surface.content?.interactive === true &&
-      ir.surface.positioning?.strategy === "centered" &&
       ir.interaction?.triggers.length === 1 && ir.interaction.triggers[0]!.operation === "close" &&
       ir.surface.dismissal.every(dismissal => ["escape", "outside-click", "close-button"].includes(dismissal));
     if (modalSurface) {
@@ -338,6 +341,7 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
         content: content.part,
         ...(overlay === undefined ? {} : { overlay }),
         ...(dismissibleProp === undefined ? {} : { dismissibleProp }),
+        ...(ir.surface.positioning?.placementProp === undefined ? {} : { placementProp: ir.surface.positioning.placementProp }),
       };
     }
     if (!isPartAnchoredSurface(ir.surface) || ir.surface.modality !== "non-blocking" ||

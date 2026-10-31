@@ -24,6 +24,29 @@ namespace FullStackDS
         public bool CloseOnEscape { get; set; } = true;
         public bool CloseOnOverlayClick { get; set; } = true;
         private bool dismissible = true;
+        private string placement = "";
+
+        /// <summary>Edge placement for a viewport-edge sheet: top/right/bottom/left;
+        /// an empty value centers the panel (dialog).</summary>
+        public string Placement
+        {
+            get => placement;
+            set
+            {
+                placement = value ?? "";
+                ApplyPlacement();
+            }
+        }
+
+        private void ApplyPlacement()
+        {
+            Host.style.flexDirection = placement == "left" || placement == "right" ? FlexDirection.Row : FlexDirection.Column;
+            Host.style.alignItems = placement == "" ? Align.Center : Align.Stretch;
+            Host.style.justifyContent = placement == "right" ? Justify.FlexEnd
+                : placement == "bottom" ? Justify.FlexEnd
+                : placement == "left" || placement == "top" ? Justify.FlexStart
+                : Justify.Center;
+        }
         public bool Dismissible
         {
             get => dismissible;
@@ -71,6 +94,7 @@ namespace FullStackDS
             }
             Trigger.clicked += () => RequestValue(false);
             Dismissible = true;
+            ApplyPlacement();
             SetValueWithoutNotify(false);
         }
 

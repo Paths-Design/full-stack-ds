@@ -163,6 +163,7 @@
     --fsds-semantic-motion-interaction-enter-duration: 250ms;
     --fsds-semantic-motion-interaction-exit-duration: 167ms;
     --fsds-semantic-motion-interaction-press-duration: 100ms;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.40);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-control-radius-pill: 9999px;
@@ -193,6 +194,7 @@
     --fsds-semantic-typography-heading-01: 32px;
     --fsds-semantic-typography-heading-02: 24px;
     --fsds-semantic-typography-heading-04: 18px;
+    --fsds-semantic-typography-heading-06: 14px;
     --fsds-semantic-typography-letter-spacing-tight: -0.288px;
     --fsds-semantic-typography-letter-spacing-wide: 0.288px;
     --fsds-semantic-typography-line-height-body: 1.5;
@@ -275,6 +277,7 @@
     --fsds-semantic-interaction-background-active: #474647;
     --fsds-semantic-interaction-background-hover: #313131;
     --fsds-semantic-interaction-border-hover: #727272;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.60);
     --fsds-semantic-surface-border-subtle: #474647;
 }
 
@@ -345,6 +348,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.24;
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.6);
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 10px;
     --fsds-semantic-shape-radius-large: 16px;
@@ -482,6 +486,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.16;
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 4px;
     --fsds-semantic-shape-radius-large: 8px;
@@ -622,6 +627,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.16;
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 8px;
     --fsds-semantic-shape-radius-large: 16px;
@@ -759,6 +765,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.24;
     --fsds-semantic-interaction-state-layer-hover: 0.08;
     --fsds-semantic-interaction-state-layer-selected: 0.12;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-radius-large: 8px;
@@ -896,6 +903,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.16;
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.502);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 6px;
     --fsds-semantic-shape-radius-large: 8px;
@@ -1034,6 +1042,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.16;
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 12px;
     --fsds-semantic-shape-radius-large: 16px;
@@ -1172,6 +1181,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.24;
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 4px;
     --fsds-semantic-shape-radius-large: 32px;
@@ -1309,6 +1319,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.24;
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.6);
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 0px;
     --fsds-semantic-shape-radius-large: 4px;
@@ -1449,6 +1460,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.24;
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.4);
     --fsds-semantic-shape-control-border-default-width: 2px;
     --fsds-semantic-shape-control-radius-default: 12px;
     --fsds-semantic-shape-radius-large: 32px;
@@ -1586,6 +1598,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.24;
     --fsds-semantic-interaction-state-layer-hover: 0.12;
     --fsds-semantic-interaction-state-layer-selected: 0.16;
+    --fsds-semantic-overlay-scrim-medium: rgba(0, 0, 0, 0.6);
     --fsds-semantic-shape-control-border-default-width: 1px;
     --fsds-semantic-shape-control-radius-default: 8px;
     --fsds-semantic-shape-radius-large: 32px;
@@ -5007,4 +5020,171 @@
 
 .dialog--full .dialog__modal {
     border-radius: 0;
+}
+
+/* Sheet (.sheet) */
+.sheet {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-block-end: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-padding-inline-end: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-gap: var(--fsds-semantic-surface-size-gap, 8px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: var(--fsds-semantic-surface-size-min-width, 64px);
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-sheet-color-overlay: var(--fsds-semantic-overlay-scrim-medium, rgba(0, 0, 0, 0.40));
+    --fsds-sheet-color-background: var(--fsds-semantic-color-background-primary, #ffffff);
+    --fsds-sheet-color-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+    --fsds-sheet-color-text: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-sheet-color-text-title: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-sheet-color-text-description: var(--fsds-semantic-color-foreground-secondary, #474647);
+    --fsds-sheet-border-width: var(--fsds-semantic-shape-control-border-default-width, 1px);
+    --fsds-sheet-border-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-sheet-size-width: 400px;
+    --fsds-sheet-size-height: 300px;
+    --fsds-sheet-size-close: var(--fsds-core-spacing-size-06, 16px);
+    --fsds-sheet-spacing-padding: var(--fsds-core-spacing-size-06, 16px);
+    --fsds-sheet-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-sheet-text-size: var(--fsds-semantic-typography-body-02, 16px);
+    --fsds-sheet-text-size-title: var(--fsds-semantic-typography-heading-06, 14px);
+    --fsds-sheet-text-weight-title: var(--fsds-semantic-typography-font-weight-medium, 500);
+}
+
+.sheet {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 16px);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 16px);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 16px);
+    padding-right: var(--fsds-box-model-padding-inline-end, 16px);
+    --fsds-gap: var(--fsds-box-model-gap, 8px);
+    min-width: var(--fsds-box-model-min-width, 64px);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.sheet {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.sheet__overlay {
+    position: absolute;
+    background-color: var(--fsds-sheet-color-overlay, rgba(0, 0, 0, 0.40));
+}
+
+.sheet__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--fsds-sheet-color-background, #ffffff);
+    color: var(--fsds-sheet-color-text, #141414);
+    border-color: var(--fsds-sheet-color-border, #d0d0d0);
+    border-width: var(--fsds-sheet-border-width, 1px);
+    width: var(--fsds-sheet-size-width, 400px);
+    overflow: hidden;
+}
+
+.sheet__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: var(--fsds-sheet-spacing-padding, 16px);
+    border-bottom-color: var(--fsds-sheet-color-border, #d0d0d0);
+    border-bottom-width: 1px;
+    --fsds-gap: var(--fsds-sheet-spacing-gap, 8px);
+}
+
+.sheet__title {
+    margin: 0;
+    font-size: var(--fsds-sheet-text-size-title, 14px);
+    color: var(--fsds-sheet-color-text-title, #141414);
+    flex: 1 1 auto;
+}
+
+.sheet__description {
+    margin: 0;
+    color: var(--fsds-sheet-color-text-description, #474647);
+    font-size: var(--fsds-sheet-text-size, 16px);
+}
+
+.sheet__body {
+    flex: 1 1 auto;
+    padding: var(--fsds-sheet-spacing-padding, 16px);
+    color: var(--fsds-sheet-color-text, #141414);
+}
+
+.sheet__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    --fsds-gap: var(--fsds-sheet-spacing-gap, 8px);
+    padding: var(--fsds-sheet-spacing-padding, 16px);
+    border-top-color: var(--fsds-sheet-color-border, #d0d0d0);
+    border-top-width: 1px;
+}
+
+.sheet__close {
+    position: absolute;
+    top: var(--fsds-sheet-spacing-padding, 16px);
+    right: var(--fsds-sheet-spacing-padding, 16px);
+    width: var(--fsds-sheet-size-close, 16px);
+    height: var(--fsds-sheet-size-close, 16px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-radius: 9999px;
+    color: var(--fsds-sheet-color-text-description, #474647);
+}
+
+.sheet--right .sheet__content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--fsds-sheet-size-width, 400px);
+    border-radius: var(--fsds-sheet-border-radius, 6px);
+}
+
+.sheet--left .sheet__content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--fsds-sheet-size-width, 400px);
+    border-radius: var(--fsds-sheet-border-radius, 6px);
+}
+
+.sheet--top .sheet__content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: var(--fsds-sheet-size-height, 300px);
+    border-radius: var(--fsds-sheet-border-radius, 6px);
+}
+
+.sheet--bottom .sheet__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: var(--fsds-sheet-size-height, 300px);
+    border-radius: var(--fsds-sheet-border-radius, 6px);
 }

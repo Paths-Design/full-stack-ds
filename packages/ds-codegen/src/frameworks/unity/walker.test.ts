@@ -268,6 +268,19 @@ describe("Unity passive anatomy path", () => {
     expect(source).not.toMatch(/AriaLabel|InitialFocus|ReturnFocus|public bool Modal /);
   });
 
+  it("reuses the modal surface for an edge-placed Sheet and drives placement", () => {
+    const contract = loadContractWithSidecars(root, "Sheet") as ComponentContract;
+    const sheetIr = buildComponentIR(contract);
+    sheetIr.name = "UnrelatedPanel";
+    const source = createUnityEmitter().emitComponent(sheetIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedPanel : VisualElement");
+    expect(source).toContain("public ModalSurface Surface { get; }");
+    expect(source).toContain("ModalSurface.Attach(this, content: Content, overlay: Overlay, trigger: Close, stateClass: \"is-open\");");
+    expect(source).toContain('public string Side { get => Variants.Get(this, "sheet", "top", "right", "bottom", "left"); set { Variants.Set(this, "sheet", value, "top", "right", "bottom", "left"); Surface.Placement = value; } }');
+    expect(source).toContain("public override VisualElement contentContainer => Body;");
+    expect(source).not.toMatch(/AriaLabel|public bool Modal /);
+  });
+
   it("lowers a passive text host with a generated text attribute for CodeSnippet", () => {
     const contract = loadContractWithSidecars(root, "CodeSnippet") as ComponentContract;
     const snippetIr = buildComponentIR(contract);
