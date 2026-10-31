@@ -280,7 +280,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && ctx.lowering.behavior !== "ProjectedText" && ctx.lowering.behavior !== "Otp" && ctx.lowering.behavior !== "Select" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && ctx.lowering.behavior !== "ProjectedText" && ctx.lowering.behavior !== "Otp" && ctx.lowering.behavior !== "Select" && ctx.lowering.behavior !== "Expansion" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -460,7 +460,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   for (const part of ir.compoundParts) {
     if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots" || ctx.lowering.behavior === "Coachmark") continue;
     if (ctx.lowering.behavior === "Tree" && part.name === ctx.lowering.listPart) continue;
-    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "Select") continue;
+    if (ctx.lowering.behavior === "ProjectedText" || ctx.lowering.behavior === "Otp" || ctx.lowering.behavior === "Select" || ctx.lowering.behavior === "Expansion") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -1239,6 +1239,40 @@ function transferRootApi(ctx: Context): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the controlled expansion: the channel becomes the Expanded/
+ * DefaultExpanded attributes and the change/request pair, the trigger's
+ * conditional label props are painted by the runtime, and the content slot is
+ * consumer-owned. Line-clamp measurement and the localised message defaults are
+ * withheld.
+ */
+function expansionRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "Expansion") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not an expansion lowering`);
+  const channel = lowering.channel;
+  const root = classes[0]!;
+  const trigger = root.members.find(member => member.part === lowering.triggerPart);
+  const content = root.members.find(member => member.part === lowering.contentPart);
+  if (!trigger || trigger.type !== NATIVE_BUTTON) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its expansion trigger as no native button`);
+  if (!content) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its content slot outside the root class`);
+  const members: string[] = [
+    "        public ExpansionControl Control { get; }",
+    `        [UxmlAttribute] public bool ${identifier(pascal(channel.valueProp))} { get => Control.Expanded; set => Control.Expanded = value; }`,
+    `        [UxmlAttribute] public string ${identifier(pascal(lowering.expandedLabelProp))} { get => Control.ExpandedLabel; set => Control.ExpandedLabel = value; }`,
+    `        [UxmlAttribute] public string ${identifier(pascal(lowering.collapsedLabelProp))} { get => Control.CollapsedLabel; set => Control.CollapsedLabel = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = ExpansionControl.Attach(this, trigger: ${trigger.ref}, prefix: ${quote(ctx.prefix!)}, stateClass: ${quote(`${ctx.prefix}--${channel.valueProp}`)});`,
+  ];
+  const defaults: string[] = [];
+  if (channel.defaultValueProp !== undefined) members.push(`        [UxmlAttribute] public bool ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultExpanded; set => Control.DefaultExpanded = value; }`);
+  const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
+  members.push(`        public Action<bool> ${identifier(pascal(changeHandler))} { get => Control.ExpandedChanged; set => Control.ExpandedChanged = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<bool> ExpandedRequested { get => Control.ExpandedRequested; set => Control.ExpandedRequested = value; }");
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1257,6 +1291,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "ChoiceGroup") return choiceGroupRootApi(ctx);
   if (lowering.behavior === "Select") return selectRootApi(ctx, classes);
   if (lowering.behavior === "Transfer") return transferRootApi(ctx);
+  if (lowering.behavior === "Expansion") return expansionRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;

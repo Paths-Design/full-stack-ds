@@ -4827,6 +4827,78 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "ShowMore",
+      "sourceKey": ".show-more--expanded .show-more__content",
+      "part": "content",
+      "property": "-webkit-line-clamp",
+      "value": "unset",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": ".show-more--expanded .show-more__content",
+      "part": "content",
+      "property": "display",
+      "value": "block",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": ".show-more--expanded .show-more__content",
+      "part": "content",
+      "property": "line-clamp",
+      "value": "unset",
+      "reason": "uss-selector"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "-webkit-box-orient",
+      "value": "vertical",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "-webkit-line-clamp",
+      "value": "var(--fsds-show-more-content-max-lines, 3)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "display",
+      "value": "-webkit-box",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "line-clamp",
+      "value": "var(--fsds-show-more-content-max-lines, 3)",
+      "reason": "uss-property"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "trigger",
+      "part": "trigger",
+      "property": "background",
+      "value": "none",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "ShowMore",
+      "sourceKey": "trigger",
+      "part": "trigger",
+      "property": "cursor",
+      "value": "pointer",
+      "reason": "uss-scalar"
+    },
+    {
       "component": "Shuttle",
       "sourceKey": ".shuttle__item:focus-visible",
       "part": "item",

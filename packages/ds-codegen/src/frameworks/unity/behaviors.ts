@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -320,6 +320,21 @@ export interface TransferLowering {
   addPart: string;
   removePart: string;
 }
+/**
+ * A controlled expansion over an always-mounted content slot: a boolean channel
+ * driven by a trigger button whose label switches with the state. The runtime
+ * paints the label from the declared conditional props and toggles the authored
+ * state class; the content slot is consumer-owned. Line-clamp measurement and
+ * the localised message defaults are withheld.
+ */
+export interface ExpansionLowering {
+  behavior: "Expansion";
+  channel: NormalizedChannelIR;
+  contentPart: string;
+  triggerPart: string;
+  expandedLabelProp: string;
+  collapsedLabelProp: string;
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -333,7 +348,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -951,6 +966,28 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     };
   }
   const interaction = ir.interaction;
+  // A controlled expansion: one trigger toggles one always-mounted content slot
+  // whose presence semantic is clamp (not unmount), with a state-dependent
+  // trigger label. The runtime paints the label and toggles the authored state
+  // class but does not measure or clamp text.
+  if (interaction?.triggers.length === 1 && interaction.triggers[0]!.operation === "toggle" && !ir.surface &&
+      interaction.presence !== "unmount" && interaction.channel.valueType === "boolean" && ir.dom !== undefined) {
+    const trigger = findNode(ir.dom, interaction.triggers[0]!.part.name);
+    const content = findNode(ir.dom, interaction.content.name);
+    const label = trigger?.content;
+    if (trigger?.tag === "button" && content !== undefined && content.children.some(child => child.tag === "children") &&
+        label !== undefined && "kind" in label && label.kind === "conditional" &&
+        label.whenTrue?.kind === "prop" && label.whenFalse?.kind === "prop") {
+      return {
+        behavior: "Expansion",
+        channel: interaction.channel,
+        contentPart: content.part!,
+        triggerPart: trigger.part!,
+        expandedLabelProp: label.whenTrue.prop,
+        collapsedLabelProp: label.whenFalse.prop,
+      };
+    }
+  }
   // A disclosure: one trigger toggles one presence-tracked content part on a
   // boolean channel, with no surface. The runtime toggles the content's
   // presence and mirrors the state class; the trigger is a native button.
