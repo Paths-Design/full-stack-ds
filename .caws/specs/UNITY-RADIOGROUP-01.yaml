@@ -54,3 +54,11 @@ contracts:
   - name: 'radiogroup-choice-group'
     type: behavior
     path: 'packages/ds-contracts/components/RadioGroup/RadioGroup.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 95c3a551a: focused unity codegen + cli seam 237/237 pass, including the ChoiceGroup lowering predicate (string channel over an option array with a channel-checked leaf), the generated nested option type with role-derived leaves (value/label/description/disabled), the Options/GetOptions/SetOptions API, the orientation carrier, the omitted iterated markup and the iteration/state-selector/name/type boundary families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. The lore vocabulary gained the title/description DOM attributes and the manifest pin was corrected after a duplicate Progress entry."
+    recorded_at: "2026-10-31T16:10:33.278Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders native radio choices from a nested option type for RadioGroup"
+    exit_code: 0
+    commit_sha: "95c3a551a3455d2b7c3b02df47912a36776adab7"
