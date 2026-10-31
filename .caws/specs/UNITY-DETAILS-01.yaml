@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.DetailsDisclosureTogglesContentPresenceAndRaisesChangeEvent
     exit_code: 0
     commit_sha: "9ee6b047089b778cb059f2d46311d0f8c4125251"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 9ee6b0470: packages/ds-unity/README.md admits Details with its disclosure behavior, summary projection and refused chevron/a11y non-claims, and records the 67/67 lane; docs/architecture/unity-target.md records the Disclosure dispatcher mode, attach path, R5b content projection and the 67/67 lane; docs/current-implementation-snapshot.md records the twenty-seventh admitted control with those facts."
+    recorded_at: "2026-10-31T12:21:02.275Z"
+    commit_sha: "9ee6b047089b778cb059f2d46311d0f8c4125251"
