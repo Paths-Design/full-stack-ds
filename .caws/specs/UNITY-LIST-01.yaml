@@ -51,3 +51,12 @@ contracts:
   - name: 'list-container'
     type: behavior
     path: 'packages/ds-contracts/components/List/List.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit dd4199529: focused unity codegen + cli seam 205/205 pass, including the prefixed modifier carrier projection/lowering (uss.test List carriers, factory prefixed helper, walker List axes), List Variant/Size emission and its refused As/Marker and pending Spacing facts; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T09:50:47.870Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > emits prefixed modifier carriers for List and withholds the uncarried axes"
+    command: "pnpm exec vitest run packages/ds-codegen/src/frameworks/unity packages/ds-codegen/src/cli.test.ts && node packages/ds-codegen/dist/frameworks/unity/capabilities.js . --check"
+    exit_code: 0
+    commit_sha: dd419952943fb038012f0e7a6ae48d9d9f2a3928
