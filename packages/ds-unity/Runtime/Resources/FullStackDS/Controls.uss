@@ -165,6 +165,7 @@
     --fsds-semantic-interaction-disabled-opacity: 0.5;
     --fsds-semantic-interaction-state-layer-hover: 0.04;
     --fsds-semantic-interaction-state-layer-selected: 0.08;
+    --fsds-semantic-motion-dwell-notification: 6000ms;
     --fsds-semantic-motion-interaction-enter-duration: 250ms;
     --fsds-semantic-motion-interaction-exit-duration: 167ms;
     --fsds-semantic-motion-interaction-press-duration: 100ms;
@@ -5504,4 +5505,144 @@
     border-color: var(--fsds-text-field-color-input-border-disabled, #b8b8b8);
     color: var(--fsds-text-field-color-input-text-disabled, #727272);
     opacity: var(--fsds-text-field-opacity-disabled, 0.5);
+}
+
+/* Toast (.toast) */
+.toast {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-block-end: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-padding-inline-end: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-gap: var(--fsds-semantic-surface-size-gap, 8px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: var(--fsds-semantic-surface-size-min-width, 64px);
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-toast-surface-bg: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+    --fsds-toast-surface-border: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+    --fsds-toast-surface-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-toast-color: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-toast-spacing-padding: var(--fsds-core-spacing-size-05, 12px);
+    --fsds-toast-spacing-gap: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-toast-spacing-stack-gap: var(--fsds-core-spacing-size-04, 8px);
+    --fsds-toast-size-max-width: 400px;
+    --fsds-toast-timing-auto-dismiss: var(--fsds-semantic-motion-dwell-notification, 6000ms);
+    --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-toast-progress-height: var(--fsds-core-spacing-size-02, 2px);
+}
+
+.toast {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 16px);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 16px);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 16px);
+    padding-right: var(--fsds-box-model-padding-inline-end, 16px);
+    --fsds-gap: var(--fsds-box-model-gap, 8px);
+    min-width: var(--fsds-box-model-min-width, 64px);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.toast {
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    --fsds-gap: var(--fsds-toast-spacing-stack-gap, 8px);
+}
+
+.toast__item {
+    background-color: var(--fsds-toast-surface-bg, #f7f7f7);
+    border-color: var(--fsds-toast-surface-border, #d0d0d0);
+    border-width: 1px;
+    border-radius: var(--fsds-toast-surface-radius, 6px);
+    padding: var(--fsds-toast-spacing-padding, 12px);
+    max-width: var(--fsds-toast-size-max-width, 400px);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.toast__row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    --fsds-gap: var(--fsds-toast-spacing-gap, 8px);
+    flex: 1 1 auto;
+}
+
+.toast__title {
+    margin: 0;
+    -unity-font-style: bold;
+    flex: 1 1 auto;
+}
+
+.toast__description {
+    flex: 1 1 auto;
+    color: var(--fsds-toast-color, #141414);
+}
+
+.toast__action {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    color: var(--fsds-toast-color, #141414);
+}
+
+.toast__close {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-radius: 9999px;
+    color: var(--fsds-toast-color, #141414);
+    flex-shrink: 0;
+}
+
+.toast.toast--info {
+    --fsds-toast-surface-bg: var(--fsds-semantic-color-background-info-subtle, #95dafb);
+    --fsds-toast-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
+    --fsds-toast-surface-border: var(--fsds-semantic-color-border-info, #034fd6);
+    --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-info-subtle, #013ab0);
+}
+
+.toast.toast--success {
+    --fsds-toast-surface-bg: var(--fsds-semantic-color-background-success-subtle, #b3dba7);
+    --fsds-toast-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
+    --fsds-toast-surface-border: var(--fsds-semantic-color-border-success, #3a6614);
+    --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-success-subtle, #2c4f09);
+}
+
+.toast.toast--warning {
+    --fsds-toast-surface-bg: var(--fsds-semantic-color-background-warning-subtle, #fdc67f);
+    --fsds-toast-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
+    --fsds-toast-surface-border: var(--fsds-semantic-color-border-warning, #8b4b00);
+    --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-warning-subtle, #6c3a00);
+}
+
+.toast.toast--error {
+    --fsds-toast-surface-bg: var(--fsds-semantic-color-background-danger-subtle, #fac2c2);
+    --fsds-toast-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
+    --fsds-toast-surface-border: var(--fsds-semantic-color-border-danger, #b31b1b);
+    --fsds-toast-progress-color: var(--fsds-semantic-color-foreground-on-danger-subtle, #900909);
+}
+
+.toast__progress {
+    position: absolute;
+    bottom: 0;
+    transform-origin: left center;
+    height: var(--fsds-toast-progress-height, 2px);
+    background-color: var(--fsds-toast-progress-color, #141414);
 }

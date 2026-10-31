@@ -369,6 +369,20 @@
       "via": "The generated root derives from UnityEngine.UIElements.Button; its native clicked event (pointer activation and Space/Enter submit alike) invokes the generated callback property named from this binding."
     },
     {
+      "id": "anatomy-toast-guards-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/if"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["toast"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Toast): the item's open guard is realised by the runtime presence toggle, the title's string-prop guard by the runtime title display, and a slot guard by an always-rendered empty slot host that contributes no size until composed."
+    },
+    {
+      "id": "anatomy-toast-close-event-lowered",
+      "match": ["contract:/anatomy/dom/**/children/*/events/click"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["toast"] }],
+      "disposition": "lowered",
+      "via": "walker.ts (Toast): the close control's channel-bound click is wired by ToastSurface to a closed-value request."
+    },
+    {
       "id": "anatomy-events",
       "match": ["contract:/anatomy/dom/events/**", "contract:/anatomy/dom/**/children/*/events/**"],
       "disposition": "pending",
@@ -881,6 +895,22 @@
       "via": "walker.ts (TextInput): the placeholder prop becomes a generated string UxmlAttribute that drives the native text edition's placeholder."
     },
     {
+      "id": "prop-toast-lowered",
+      "match": ["contract:/props/*/members/plain:title/**", "contract:/props/*/members/plain:duration/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["toast"] }],
+      "disposition": "lowered",
+      "realizes": "emitted-property",
+      "via": "walker.ts/ToastSurface: title becomes a generated string attribute that paints and shows/hides the title label; duration becomes a generated float attribute driving the auto-dismiss timer (milliseconds)."
+    },
+    {
+      "id": "prop-toast-politeness-pending",
+      "match": ["contract:/props/*/members/plain:politeness/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["toast"] }],
+      "disposition": "pending",
+      "phase": "P4",
+      "reason": "Politeness only sets aria-live, which UI Toolkit does not populate; the generated control withholds it until the P4 a11y family."
+    },
+    {
       "id": "prop-text-content-lowered",
       "match": ["contract:/props/*/members/plain:summary/**"],
       "requiresAny": [{ "match": ["contract:/anatomy/dom/**/children/*/content"], "valuePattern": "^prop:" }],
@@ -1162,12 +1192,11 @@
       "via": "behaviors.ts (Modal): ModalSurface portals the host to the panel root and renders the contract's backdrop as the overlay; the modality gate prop is consumed by the selected blocking mode."
     },
     {
-      "id": "portal",
-      "match": ["contract:/portal/**"],
-      "disposition": "pending",
-      "phase": "P4",
-      "catchAll": true,
-      "reason": "Other portal targets, positioning or collision policies need an explicit decision here."
+      "id": "portal-toast-lowered",
+      "match": ["contract:/portal/positioning", "contract:/portal/backdrop", "contract:/portal/enabled"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["toast"] }],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Toast): ToastSurface portals the host to the panel root and anchors it to the viewport edge; no backdrop is drawn for an ephemeral non-blocking surface."
     },
     {
       "id": "dismissal-modal-supported",
@@ -1201,6 +1230,13 @@
       "match": ["contract:/dismissal/triggers"],
       "disposition": "lowered",
       "via": "An empty trigger list declares no dismissal; the attached behaviors register none."
+    },
+    {
+      "id": "dismissal-toast-lowered",
+      "match": ["contract:/dismissal/**", "contract:/surface/dismissal/**"],
+      "requiresAny": [{ "match": ["contract:/surface/kind"], "valueIn": ["toast"] }],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Toast): timeout dismissal runs through the auto-dismiss timer, Escape through the host key handler and close-button through the close control's native activation."
     },
     {
       "id": "dismissal",
@@ -1238,6 +1274,13 @@
       "via": "behaviors.ts (Modal): a centered, persistent, viewport-attached blocking dialog surface lowers to ModalSurface, which portals the host, fills the panel, centers the content and renders the overlay backdrop."
     },
     {
+      "id": "surface-toast-ephemeral-lowered",
+      "match": ["contract:/surface/kind", "contract:/surface/modality", "contract:/surface/presence", "contract:/surface/attachment", "contract:/surface/content/part", "contract:/surface/content/interactive", "contract:/surface/positioning/**", "contract:/surface/timing/**"],
+      "valueIn": ["toast", "non-blocking", "ephemeral", "viewport", "item", false, "viewport-edge", "duration"],
+      "disposition": "lowered",
+      "via": "behaviors.ts (Toast): an ephemeral non-blocking viewport-edge toast lowers to ToastSurface, which portals the host, anchors it to the viewport edge, toggles the item's presence and owns the auto-dismiss timer from the declared timing prop."
+    },
+    {
       "id": "surface-content-interactive",
       "match": ["contract:/surface/content/interactive"],
       "valueIn": [true, false],
@@ -1262,13 +1305,6 @@
       "match": ["contract:/surface/positioning/placementProp"],
       "disposition": "lowered",
       "via": "The named prop is emitted as [UxmlAttribute] Placement and drives Reposition."
-    },
-    {
-      "id": "surface-persistent",
-      "match": ["contract:/surface/presence"],
-      "valueIn": ["persistent", "ephemeral"],
-      "disposition": "lowered",
-      "via": "Click mode retains the Content object while closed (detached from the hierarchy, not disposed). Hover mode's ephemeral content is created on open and removed on close; no retained-state promise follows for it."
     },
     {
       "id": "surface",
@@ -1435,7 +1471,7 @@
     },
     {
       "id": "styles-unhandled-property",
-      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**", "styles:/**/inset/**", "styles:/**/overflow-y/**", "styles:/**/overflow-wrap/**"],
+      "match": ["styles:/*/transition-duration/**", "styles:/*/transition-timing-function/**", "styles:/*/user-select/**", "styles:/*/font-style/**", "styles:/**/list-style-type/**", "styles:/**/list-style/**", "styles:/**/text-decoration/**", "styles:/**/transition-property/**", "styles:/**/aspect-ratio/**", "styles:/**/border-collapse/**", "styles:/**/overflow-x/**", "styles:/**/tab-size/**", "styles:/**/order/**", "styles:/**/inset/**", "styles:/**/inset-inline/**", "styles:/**/overflow-y/**", "styles:/**/overflow-wrap/**"],
       "disposition": "refused",
       "reason": "The USS projection has no transition-duration/transition-timing-function, transition-property, text-decoration, aspect-ratio, border-collapse, overflow-axis, tab-size, order, inset or overflow-wrap handler and USS has no user-select, list-style-type or list-style property; the projection lists each such declaration uss-property in Controls.unsupported.json."
     },

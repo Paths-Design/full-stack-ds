@@ -29,7 +29,7 @@ describe("Unity capability accounting", () => {
     // Every prop carries the rule that classifies its family.
     expect(rows.flatMap(r => r.props).filter(p => p.boundary.rule === null)).toEqual([]);
     // Every allowlisted component realises every lowered claim its leaves carry.
-    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Icon", null], ["Input", null], ["Label", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Progress", null], ["Sheet", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["ToggleSwitch", null], ["Tooltip", null]]);
+    expect(rows.filter(r => r.admitted).map(r => [r.component, r.unrealized])).toEqual([["Accordion", null], ["Alert", null], ["AlertNotice", null], ["Badge", null], ["Blockquote", null], ["Breadcrumbs", null], ["Button", null], ["Card", null], ["Checkbox", null], ["Chip", null], ["CodeBlock", null], ["CodeSnippet", null], ["Details", null], ["Dialog", null], ["Divider", null], ["Icon", null], ["Input", null], ["Label", null], ["List", null], ["NavList", null], ["Popover", null], ["ProfileFlag", null], ["Progress", null], ["Sheet", null], ["Skeleton", null], ["Stat", null], ["Status", null], ["Switch", null], ["Table", null], ["Tabs", null], ["Text", null], ["TextField", null], ["Toast", null], ["ToggleSwitch", null], ["Tooltip", null]]);
     const audit = auditUnityTarget(root);
     expect(audit.violations).toEqual([]);
     expect(audit.unrealized).toEqual([]);
@@ -120,6 +120,7 @@ describe("Unity capability accounting", () => {
       "ledger Popover content box-shadow (uss-property)",
       "ledger Sheet content box-shadow (uss-property)",
       "ledger Switch thumb box-shadow (uss-property)",
+      "ledger Toast item box-shadow (uss-property)",
     ]);
     expect(ledgerViolations(root, lowered)).toContain("ledger Popover content box-shadow (uss-property): styles:/content/box-shadow/fallback is classified lowered by rule box-shadow-lowered");
     // The join's findings fail the corpus audit (audit:unity-boundary --check).
@@ -143,6 +144,7 @@ describe("Unity capability accounting", () => {
       "ledger Switch tokens switch.color.thumb.shadow (uss-scalar)",
       "ledger Switch tokens switch.motion.easing (uss-scalar)", "ledger Tabs tokens tabs.spacing.pillPadding (uss-scalar)",
       "ledger TextField tokens text-field.motion.easing.standard (uss-scalar)",
+      "ledger Toast tokens toast.surface.shadow (uss-scalar)",
     ]);
     expect(entriesOf(without("styles-outside-native-grammar"))).toEqual([
       'ledger Accordion .accordion__trigger[aria-expanded="true"] .accordion__chevron (uss-selector)',
@@ -177,6 +179,8 @@ describe("Unity capability accounting", () => {
       "ledger Tabs --pills __tab--active (uss-selector)", "ledger Tabs tab--active (uss-selector)",
       'ledger Text .text[data-truncate="true"] (uss-selector)',
       "ledger TextField .text-field__field:hover:not(:disabled) (uss-selector)",
+      "ledger Toast .toast__action:empty (uss-selector)",
+      "ledger Toast .toast__progress:dir(rtl) (uss-selector)",
     ]);
   }, CORPUS_TIMEOUT_MS);
   it("counts a ledger entry no sidecar leaf backs as a violation, and skips brand design-slot and token-section rows", () => {

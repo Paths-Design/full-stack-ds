@@ -808,5 +808,44 @@ namespace FullStackDS.Tests
             field.Disabled = true;
             Assert.That(field.enabledSelf, Is.False);
         }
+        [Test] public void ToastPresenceTitleAndCloseFollowTheSurface()
+        {
+            var toast = Mount(new FullStackDS.Toast());
+            toast.contentContainer.Add(new UnityEngine.UIElements.Label("Saved"));
+            Assert.That(toast.ClassListContains("toast"), Is.True);
+            Assert.That(toast.Open, Is.False);
+            Assert.That(toast.Item.style.display.value, Is.EqualTo(DisplayStyle.None));
+            toast.Open = true;
+            Assert.That(toast.Item.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            Assert.That(toast.ClassListContains("is-open"), Is.True);
+            toast.Title = "Saved";
+            Assert.That(toast.TitleControl.text, Is.EqualTo("Saved"));
+            Assert.That(toast.TitleControl.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            toast.Variant = "success";
+            Assert.That(toast.ClassListContains("toast--success"), Is.True);
+            Submit(toast.Close);
+            Assert.That(toast.Open, Is.False);
+            toast.Open = true;
+            Key(toast, KeyCode.Escape);
+            Assert.That(toast.Open, Is.False);
+            toast.Controlled = true;
+            bool? requested = null;
+            toast.ValueRequested += next => requested = next;
+            toast.Open = true;
+            Submit(toast.Close);
+            Assert.That(toast.Open, Is.True);
+            Assert.That(requested, Is.False);
+            foreach (var prop in new[] { "Politeness", "AriaLabel" })
+                Assert.That(typeof(FullStackDS.Toast).GetProperty(prop), Is.Null, prop);
+        }
+        [UnityTest] public IEnumerator ToastAutoDismissesAfterItsDuration()
+        {
+            var toast = Mount(new FullStackDS.Toast { Duration = 10f });
+            toast.Open = true;
+            Assert.That(toast.Open, Is.True);
+            var deadline = Time.realtimeSinceStartup + 2f;
+            while (toast.Open && Time.realtimeSinceStartup < deadline) yield return null;
+            Assert.That(toast.Open, Is.False);
+        }
     }
 }

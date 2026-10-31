@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal";
+export type UnityBehavior = "Passive" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -88,6 +88,19 @@ export interface ModalLowering extends LoweringBase {
   /** The surface's edge placement prop, realised by the runtime's Placement. */
   placementProp?: string;
 }
+/**
+ * A non-blocking ephemeral viewport surface: a toast card that owns an open
+ * channel, an auto-dismiss timer, a title text and a close control. The runtime
+ * portals the host to the panel root and anchors it to the viewport edge.
+ */
+export interface ToastLowering extends LoweringBase {
+  behavior: "Toast";
+  content: PartIR;
+  close: PartIR;
+  title?: PartIR;
+  action?: PartIR;
+  timingProp?: string;
+}
 export interface AnchoredSurfaceLowering {
   behavior: "AnchoredSurface";
   channel: NormalizedChannelIR;
@@ -147,12 +160,12 @@ export interface TextInputLowering {
   /** The placeholder binding prop, realised through the native text edition. */
   placeholderProp?: string;
 }
-export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering;
+export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
 export type UnityLowering = PassiveLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
-  return lowering.behavior === "BooleanControl" || lowering.behavior === "TextInput" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure" || lowering.behavior === "Modal";
+  return lowering.behavior === "BooleanControl" || lowering.behavior === "TextInput" || lowering.behavior === "ItemGroup" || lowering.behavior === "AnchoredSurface" || lowering.behavior === "Disclosure" || lowering.behavior === "Modal" || lowering.behavior === "Toast";
 }
 
 /**
@@ -205,6 +218,11 @@ function isUnityStaticContainer(ir: ComponentIR): boolean {
 function declaredProp(ir: ComponentIR, name: string): ResolvedPropIR | undefined {
   return ir.styledProps.find(candidate => candidate.name === name);
 }
+function propIsString(ir: ComponentIR, name: string): boolean {
+  const prop = declaredProp(ir, name);
+  return prop !== undefined && (prop.propType.kind === "string" || (prop.propType.kind === "fallback" && prop.propType.raw === "string"));
+}
+
 function propIsBoolean(ir: ComponentIR, name: string): boolean {
   const prop = declaredProp(ir, name);
   return prop !== undefined && (prop.propType.kind === "boolean" || (prop.propType.kind === "fallback" && prop.propType.raw === "boolean"));
@@ -325,6 +343,54 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
         closeOnPointerLeave: ir.surface.dismissal.includes("pointer-leave"),
         contentFocusable: false,
       };
+    }
+    const ephemeralToast = ir.surface.kind === "toast" && ir.surface.modality === "non-blocking" &&
+      ir.surface.presence === "ephemeral" && ir.surface.positioning?.strategy === "viewport-edge" &&
+      ir.surface.content !== undefined && !ir.interaction &&
+      ir.behavior.normalizedChannels.length === 1 && ir.behavior.normalizedChannels[0]!.valueType === "boolean";
+    if (ephemeralToast) {
+      const channel = ir.behavior.normalizedChannels[0]!;
+      const content = ir.surface.content!;
+      const closeNode = ir.parts.find(part => part.details?.role === "trigger" &&
+        findNode(ir.dom, part.name)?.events.click?.kind === "channel" &&
+        (findNode(ir.dom, part.name)?.events.click as { channel?: string } | undefined)?.channel === channel.name);
+      const titleNode = ir.dom === undefined ? undefined : (() => {
+        let found: DomNodeIR | undefined;
+        const walk = (node: DomNodeIR): void => {
+          if (found) return;
+          if (node.ifProp !== undefined && node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp && propIsString(ir, node.ifProp)) found = node;
+          node.children.forEach(walk);
+        };
+        walk(ir.dom!);
+        return found;
+      })();
+      const actionNode = ir.dom === undefined ? undefined : (() => {
+        let found: DomNodeIR | undefined;
+        const walk = (node: DomNodeIR): void => {
+          if (found) return;
+          if (node.ifSlot !== undefined) found = node;
+          node.children.forEach(walk);
+        };
+        walk(ir.dom!);
+        return found;
+      })();
+      const partOf = (node: DomNodeIR | undefined): PartIR | undefined => node?.part === undefined ? undefined : ir.parts.find(part => part.name === node.part);
+      if (ir.behavior.normalizedChannels.length === 1 && content.part !== undefined) {
+        const triggerPart = closeNode === undefined ? undefined : partOf(findNode(ir.dom, closeNode.name)!);
+        if (triggerPart !== undefined) {
+          return {
+            behavior: "Toast",
+            channel,
+            stateClass: `is-${channel.valueProp}`,
+            content: content.part,
+            close: triggerPart,
+            ...(titleNode === undefined || partOf(titleNode) === undefined ? {} : { title: partOf(titleNode)! }),
+            ...(actionNode === undefined || partOf(actionNode) === undefined ? {} : { action: partOf(actionNode)! }),
+            ...(ir.surface.timing?.autoDismissProp === undefined ? {} : { timingProp: ir.surface.timing.autoDismissProp }),
+          };
+        }
+      }
+      throw new Error(`UNITY_UNSUPPORTED_SURFACE: ${ir.name} ephemeral toast declares no channel-bound close trigger`);
     }
     const centeredDialog = ir.surface.kind === "dialog" && ir.surface.positioning?.strategy === "centered";
     const edgeSheet = ir.surface.kind === "sheet" && ir.surface.positioning?.strategy === "viewport-edge";

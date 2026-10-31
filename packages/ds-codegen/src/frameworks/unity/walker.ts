@@ -116,6 +116,7 @@ const isNamedSlot = (node: DomNodeIR): boolean => node.tag === SLOT_TAG && !!nod
  * would take the same identifier is suffixed instead of colliding.
  */
 function isEmittedApiName(ctx: Context, name: string): boolean {
+  if (ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined && name === ctx.lowering.title.name) return true;
   if (ctx.lowering.behavior === "Progress" && (name === ctx.lowering.valueProp || (ctx.lowering.value !== undefined && name === ctx.lowering.value.presenceProp))) return true;
   if (hasChannel(ctx.lowering) && [ctx.lowering.channel.valueProp, ctx.lowering.channel.defaultValueProp, ctx.lowering.channel.changeHandlerProp].includes(name)) return true;
   const prop = ctx.ir.styledProps.find(candidate => candidate.name === name);
@@ -129,6 +130,7 @@ function isEmittedApiName(ctx: Context, name: string): boolean {
 function elementType(ctx: Context, node: DomNodeIR): ElementType {
   if (node.iconGlyph !== undefined) return "GlyphElement";
   if (ctx.lowering.behavior === "TextInput" && node.part === ctx.lowering.control.name) return NATIVE_TEXTFIELD;
+  if (ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined && node.part === ctx.lowering.title.name) return "Label";
   if (node.componentRef !== undefined) return identifier(node.componentRef);
   if ((node.part && ctx.triggers.has(node.part)) || node.tag === BUTTON_TAG) return NATIVE_BUTTON;
   if (!node.children.length && TEXT_LEAF_TAGS.has(node.tag) && node.content !== undefined) return "Label";
@@ -153,11 +155,17 @@ function assertRenderable(ctx: Context, node: DomNodeIR): void {
     node.ifProp === interaction.channel.valueProp && !node.ifNegated && !node.ifSlot;
   const progressGuard = ctx.lowering.behavior === "Progress" && ctx.lowering.value !== undefined &&
     node.part === ctx.lowering.value.part.name && node.ifProp === ctx.lowering.value.presenceProp && !node.ifNegated && !node.ifSlot;
+  const toastTitleGuard = ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined &&
+    node.part === ctx.lowering.title.name && node.ifProp !== undefined && node.content !== undefined &&
+    "kind" in node.content && node.content.kind === "prop" && node.content.prop === node.ifProp;
+  const toastGuard = ctx.lowering.behavior === "Toast" && !node.ifNegated &&
+    ((node.part === ctx.lowering.content.name && node.ifProp === ctx.lowering.channel.valueProp) ||
+      toastTitleGuard || (node.ifSlot !== undefined && node.ifProp === undefined));
   const modalGuard = ctx.lowering.behavior === "Modal" &&
     ((ctx.lowering.overlay !== undefined && node.part === ctx.lowering.overlay.name) ||
       (ctx.lowering.dismissibleProp !== undefined && node.part === ctx.lowering.trigger.name)) &&
     node.ifProp === (node.part === ctx.lowering.overlay?.name ? ctx.lowering.channel.valueProp : ctx.lowering.dismissibleProp) && !node.ifNegated && !node.ifSlot;
-  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
+  if ((node.ifProp || node.ifSlot) && !presenceGuard && !progressGuard && !modalGuard && !toastGuard) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${where} declares a conditional guard (pending P4)`);
 }
 
 /**
@@ -255,7 +263,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -333,7 +341,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     const element: ElementPlan = ctx.glyph?.node === node
       ? { ref: "glyphElement", declaration: "private", type: "GlyphElement", children: [], glyph: true }
       : node.part
-      ? { ref: identifier(pascal(node.part)) + (!ctx.compound.has(node.part) && isEmittedApiName(ctx, node.part) ? "Control" : ""), declaration: "property", type, identity: identityFor(ctx, node.part), part: node.part, children: [] }
+      ? { ref: identifier(pascal(node.part)) + (isEmittedApiName(ctx, node.part) && (ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "TextInput" || !ctx.compound.has(node.part)) ? "Control" : ""), declaration: "property", type, identity: identityFor(ctx, node.part), part: node.part, children: [] }
       : { ref: `node${++cls.locals}`, declaration: "local", type, children: [] };
     if (text !== undefined) element.text = text;
     if (contentBinding !== undefined) element.textBinding = contentBinding;
@@ -408,7 +416,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     classes.push(root);
   }
   for (const part of ir.compoundParts) {
-    if (ctx.lowering.behavior === "TextInput") continue;
+    if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -440,7 +448,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   return classes;
 }
 
-const behaviorMember = { BooleanControl: "Control", TextInput: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure", Progress: "Progress", Modal: "Surface" } as const;
+const behaviorMember = { BooleanControl: "Control", TextInput: "Control", ItemGroup: "Group", AnchoredSurface: "Surface", Disclosure: "Disclosure", Progress: "Progress", Modal: "Surface", Toast: "Surface" } as const;
 
 interface RootApi {
   members: string[];
@@ -706,7 +714,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const behavior = behaviorMember[lowering.behavior];
   // The runtime control type and the member name differ for the disclosure
   // (the member keeps the behavior name; the class is DisclosureControl).
-  const behaviorType = lowering.behavior === "Disclosure" ? "DisclosureControl" : lowering.behavior === "Modal" ? "ModalSurface" : lowering.behavior;
+  const behaviorType = lowering.behavior === "Disclosure" ? "DisclosureControl" : lowering.behavior === "Modal" ? "ModalSurface" : lowering.behavior === "Toast" ? "ToastSurface" : lowering.behavior;
   const members: string[] = [`        public ${behaviorType} ${behavior} { get; }`];
   const attach: string[] = [];
   const defaults: string[] = [];
@@ -771,6 +779,16 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
         defaults.push(`${name} = ${trigger.defaultEnabled};`);
       }
     }
+  } else if (lowering.behavior === "Toast") {
+    const item = root.members.find(m => m.part === lowering.content.name);
+    const close = root.members.find(m => m.part === lowering.close.name);
+    const title = lowering.title === undefined ? undefined : root.members.find(m => m.part === lowering.title!.name);
+    if (!item) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its toast item ${lowering.content.name} outside the root class`);
+    if (!close || close.type !== NATIVE_BUTTON) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its toast close ${lowering.close.name} as no native button`);
+    if (lowering.title !== undefined && !title) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ir.name} renders its toast title ${lowering.title.name} outside the root class`);
+    attach.push(`${behavior} = ToastSurface.Attach(this, item: ${item.ref}, close: ${close.ref}, title: ${title ? title.ref : "null"}, stateClass: ${quote(lowering.stateClass)});`);
+    if (title) members.push(`        [UxmlAttribute] public string Title { get => ${behavior}.Title; set => ${behavior}.Title = value; }`);
+    if (lowering.timingProp !== undefined) members.push(`        [UxmlAttribute] public float Duration { get => ${behavior}.Duration; set => ${behavior}.Duration = value; }`);
   } else if (lowering.behavior === "ItemGroup") {
     const { focus } = lowering;
     attach.push(`${behavior} = ItemGroup.Attach(this, triggerClass: ${quote(`${ctx.prefix}__${lowering.trigger.name}`)}, contentClass: ${quote(`${ctx.prefix}__${lowering.content.name}`)}, operation: ${quote(lowering.operation)}, stateClass: ${quote(lowering.stateClass)}, multiple: ${lowering.multiple}, focus: ${quote(focus.strategy)}, orientation: ${quote(focus.orientation)}, wrap: ${focus.wrap});`);
@@ -807,7 +825,9 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   // R5b: a string prop bound to a rendered text leaf becomes a UxmlAttribute
   // that paints the label's text; the leaf keeps its part identity and styles.
   const textProps = new Map<string, ElementPlan>();
-  for (const member of root.members) if (member.textBinding && !textProps.has(member.textBinding)) textProps.set(member.textBinding, member);
+  if (lowering.behavior !== "Toast") {
+    for (const member of root.members) if (member.textBinding && !textProps.has(member.textBinding)) textProps.set(member.textBinding, member);
+  }
   for (const [propName, member] of textProps) {
     const name = identifier(pascal(propName));
     members.push(`        [UxmlAttribute] public string ${name} { get => ${member.ref}.text; set { ${member.ref}.text = value ?? ""; } }`);
