@@ -334,6 +334,7 @@ export interface ExpansionLowering {
   triggerPart: string;
   expandedLabelProp: string;
   collapsedLabelProp: string;
+  guardProp?: string;
 }
 export interface PassiveLowering {
   behavior: "Passive";
@@ -985,6 +986,30 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
         triggerPart: trigger.part!,
         expandedLabelProp: label.whenTrue.prop,
         collapsedLabelProp: label.whenFalse.prop,
+        ...(trigger.ifProp !== undefined && propIsBoolean(ir, trigger.ifProp) ? { guardProp: trigger.ifProp } : {}),
+      };
+    }
+  }
+  // A controlled expansion without an interaction block: the same channel and
+  // state-dependent trigger label facts drive it, and a boolean guard on the
+  // trigger becomes the expandable toggle switch.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.dom !== undefined &&
+      ir.behavior.normalizedChannels.length === 1 && ir.behavior.normalizedChannels[0]!.valueType === "boolean") {
+    const channel = ir.behavior.normalizedChannels[0]!;
+    const trigger = ir.dom.children.find(node => node.part !== undefined && node.tag === "button" &&
+      node.events.click?.kind === "channel" && (node.events.click as { channel?: string }).channel === channel.name);
+    const content = ir.dom.children.find(node => node.part !== undefined && node.children.some(child => child.tag === "children"));
+    const label = trigger?.content;
+    if (trigger?.part !== undefined && content?.part !== undefined && label !== undefined &&
+        "kind" in label && label.kind === "conditional" && label.whenTrue?.kind === "prop" && label.whenFalse?.kind === "prop") {
+      return {
+        behavior: "Expansion",
+        channel,
+        contentPart: content.part,
+        triggerPart: trigger.part,
+        expandedLabelProp: label.whenTrue.prop,
+        collapsedLabelProp: label.whenFalse.prop,
+        ...(trigger.ifProp !== undefined && propIsBoolean(ir, trigger.ifProp) ? { guardProp: trigger.ifProp } : {}),
       };
     }
   }
