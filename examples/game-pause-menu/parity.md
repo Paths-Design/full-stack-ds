@@ -247,3 +247,36 @@ Per lane, after rework:
 
 Everything else — positions, sizes, colours, copy, component shapes, switch
 geometry, active states and overlay states — is parity.
+
+## Corrections pinned after the first parity review round
+
+These were discovered by reviewing the first parity captures of the Unity and
+Godot lanes; they are binding for all three lanes:
+
+- **OFF switches**: track `graphite` #2E2E29 with a 1 px `ruleStrong` border and
+  a `boneBright` circular thumb. The first parity captures rendered the OFF
+  track light (bone) — that is wrong. ON = signal track + `#191917` thumb.
+- **Every capture state sets the nav target** (`captures[state].navTarget =
+  cache-02`), so the footer shows `SUPPLY CACHE 02` in all four required tabs.
+  Right-align the value to x = 1256, baseline y = 770, 13 px / 700 `signal`.
+- **Ability cards**: card box is exactly 152 × 240 at firstY = 224 with a 12 px
+  row gap (second row starts at 476 and ends at 716, inside the 728 panel
+  bottom). Rarity chip is exactly 64 × 18 at card-relative (8, −9), 9 px / 800
+  text; no card content may overflow the card box.
+- **Progress roster affordance**: use `OPEN →` (not `OPEN DOSSIER →`) at
+  x = 1180 so it stays inside the panel's right edge.
+- **Settings audio panel sub-layout** (pinned in `settings.*`): 4 audio rows at
+  496/28 px, language labels at 612 with dropdowns at 624 (200 × 28), the
+  `SUBTITLE BACKGROUND` label at 658 above swatches at 670 (36 × 18, 6 px gap),
+  and the preview strip at (664, 694, 576, 26). Nothing may spill past the
+  panel bottom (728).
+- **Panel meta lines** are shortened in the JSON (`LOOK, AIM, FEEL`,
+  `CLICK A BINDING, THEN A KEY`, `MIX, LANGUAGE, SUBTITLES`) so they never clip
+  at the panel's right padding.
+- **Header**: wordmark `ORION` and `N5` are both 40 px / 800; mission line is
+  exactly `MARS EXPEDITION // COMMANDER D3SO` (no colon after EXPEDITION).
+- **Map field** draws 12 px corner ticks at all four corners; grid lines are
+  1 px `#141412` at 12% opacity.
+
+Agents must re-merge `game-pause-parity` before their final capture so these
+pins are in their lane branch.
