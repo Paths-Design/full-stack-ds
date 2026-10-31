@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.ToastAutoDismissesAfterItsDuration
     exit_code: 0
     commit_sha: d17d53a2a047cd1d8724600401fd07eeb3e7358e
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at d17d53a2a: packages/ds-unity/README.md admits Toast with its ephemeral viewport surface, presence/title/variant/duration/close behaviour and the unclaimed ARIA/progress/stacking facts, and records the 76/76 lane; docs/architecture/unity-target.md records the Toast dispatcher mode, ToastSurface runtime and the 76/76 lane; docs/current-implementation-snapshot.md records the thirty-fifth admitted control with those facts."
+    recorded_at: "2026-10-31T14:07:46.194Z"
+    commit_sha: d17d53a2a047cd1d8724600401fd07eeb3e7358e
