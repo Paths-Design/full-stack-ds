@@ -54,3 +54,9 @@ contracts:
   - name: 'carousel-slide'
     type: behavior
     path: 'packages/ds-contracts/components/Carousel/Carousel.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 5eac6d1be0360af13ec63064c5dc546d23ab0be6 plus e81ff8f2b62e7d95484f8db18cc58bdf86b24cd9/fix commits: focused unity codegen + cli seam 243/243 pass, including the Sequence lowering from the normalized motion.sequence block (index channel, slide labels, previous/next/rotation parts, timing duration/autoPlay), the walker rendering only the consumer viewport plus the channel/label API, the generated Index/DefaultIndex/Slides/AutoPlay/Duration/RotationStart/RotationStop/PreviousSlide/NextSlide API, the sequence-fact lowering rule, the refused authored shell/picker/indicator/label families and the styles ledger refusals; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. The landing exposed genuine corrections: the sequence facts are keyed under /sequence (not /motion/sequence), the labels needed repaint-on-set, and the control border/token/selector ledger rows needed adjudication."
+    recorded_at: "2026-10-31T18:38:13.603Z"
+    commit_sha: "5eac6d1be0360af13ec63064c5dc546d23ab0be6"
