@@ -68,3 +68,10 @@ evidence:
     recorded_at: "2026-10-31T14:07:45.017Z"
     artifact_path: packages/ds-unity/Runtime/Components/Toast/Toast.cs
     commit_sha: "16922b56c1b5ab5f0948fad16d8237ae1c1d925c"
+  - criterion_id: A3
+    status: pass
+    evidence_ref: "Real Unity EditMode lane at source d17d53a2a (sourceDirty false): 76/76 passed, zero failed/skipped (test-run start 2026-10-31 14:07:10Z; resultsSha256 baa0323654ea597765b3e253ed4f7d90e459e1ca90d22485db311168ad87847d). The added cases cover presence/title/variant/close/Escape/controlled requests and the real auto-dismiss timer (the timer case pumps editor updates until the runtime closes the toast). The NUnit receipt is the gitignored tmp/unity-pilot/results.xml, so no tracked artifact is cited for this Editor-runner claim."
+    recorded_at: "2026-10-31T14:07:45.512Z"
+    test_nodeid: FullStackDS.Tests.InteractionTests.ToastAutoDismissesAfterItsDuration
+    exit_code: 0
+    commit_sha: d17d53a2a047cd1d8724600401fd07eeb3e7358e
