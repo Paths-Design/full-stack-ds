@@ -84,3 +84,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: e032d54c98da2ea7e347aa6bd04660d055bb9cce
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at e032d54c9: packages/ds-unity/README.md admits the three passive containers, their carrier axes and the refused/pending Cite/Profile facts, and records the 55/55 lane; docs/architecture/unity-target.md records the passive-container lowering, boundary additions and the 55/55 lane; docs/current-implementation-snapshot.md records the eleventh to thirteenth admitted controls with carrier/refusal facts and lane evidence."
+    recorded_at: "2026-10-31T09:19:01.061Z"
+    commit_sha: e032d54c98da2ea7e347aa6bd04660d055bb9cce
