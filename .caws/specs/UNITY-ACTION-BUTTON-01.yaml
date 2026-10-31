@@ -44,9 +44,13 @@ acceptance:
       loading-text wrapper are omitted; and no allowlisted leaf relies on a
       catch-all rule
   - id: A2
-    given: 'a regenerated package after the orion parent slice is merged'
+    given: 'a regenerated package on main before the orion parent slice merges'
     when: 'generate --target=all is run and the committed package is compared'
-    then: 'packages/ds-unity contains the generated Button control, component catalog entry and USS carriers byte-stably, and the tree is git-clean'
+    then: >-
+      packages/ds-unity contains the generated Button control, component catalog
+      entry and USS carriers byte-stably across two generate:unity runs, and the
+      generated tree is git-clean; the orion-branded sheet regeneration is a
+      recorded follow-up in GAME-PAUSE-MENU-EXAMPLE-01
   - id: A3
     given: 'the Unity EditMode lane with the package imported'
     when: 'generated Button activation, submit, disabled suppression, child composition and UXML round-trip are exercised'
