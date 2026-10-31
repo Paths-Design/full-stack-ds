@@ -2360,6 +2360,13 @@
       "reason": "Tabular-figure numerals are not expressible in the native text grammar; the context declaration is withheld rather than emitted partially."
     },
     {
+      "id": "styles-carousel-controls-refused",
+      "match": ["styles:/rotation/border/**", "styles:/previous/border/**", "styles:/next/border/**"],
+      "requiresAny": [{"match": ["contract:/sequence/channel"], "valueIn": ["slide"]}],
+      "disposition": "refused",
+      "reason": "The authored border shorthand on the control parts is not projected onto the runtime-built native controls; the declarations are withheld rather than emitted partially."
+    },
+    {
       "id": "styles",
       "match": ["styles:/**"],
       "disposition": "lowered",
