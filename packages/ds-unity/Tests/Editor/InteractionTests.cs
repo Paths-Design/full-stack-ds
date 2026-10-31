@@ -1267,5 +1267,46 @@ namespace FullStackDS.Tests
             Assert.That(truncate.Expanded, Is.True);
             Assert.That(typeof(FullStackDS.Truncate).GetProperty("Lines"), Is.Null);
         }
+        [Test] public void PageNavigatorBoundsNavigationAndCommitsTheOneBasedDraft()
+        {
+            var navigator = Mount(new FullStackDS.PageNavigator());
+            navigator.Pages = new[] { "One", "Two", "Three", "Four", "Five" };
+            var buttons = navigator.Query<UnityEngine.UIElements.Button>().ToList();
+            var input = navigator.Query<UnityEngine.UIElements.TextField>().First();
+            Assert.That(buttons.Count, Is.EqualTo(3));
+            Assert.That(buttons[0].ClassListContains("page-navigator__previous"), Is.True);
+            Assert.That(buttons[0].enabledSelf, Is.False);
+            Assert.That(buttons[2].enabledSelf, Is.True);
+            Assert.That(input.value, Is.EqualTo("1"));
+            string changed = null;
+            navigator.OnIndexChange += value => changed = value.ToString();
+            Submit(buttons[2]);
+            Assert.That(navigator.Index, Is.EqualTo(1));
+            Assert.That(changed, Is.EqualTo("1"));
+            Assert.That(input.value, Is.EqualTo("2"));
+            Assert.That(buttons[0].enabledSelf, Is.True);
+            input.value = "4";
+            Submit(buttons[1]);
+            Assert.That(navigator.Index, Is.EqualTo(3));
+            Assert.That(input.value, Is.EqualTo("4"));
+            input.value = "99";
+            Submit(buttons[1]);
+            Assert.That(navigator.Index, Is.EqualTo(4));
+            Assert.That(input.value, Is.EqualTo("5"));
+            Assert.That(buttons[2].enabledSelf, Is.False);
+            navigator.Controlled = true;
+            int requested = -1;
+            navigator.IndexRequested += value => requested = value;
+            Submit(buttons[0]);
+            Assert.That(requested, Is.EqualTo(3));
+            Assert.That(navigator.Index, Is.EqualTo(4));
+            navigator.Disabled = true;
+            Assert.That(buttons[0].enabledSelf, Is.False);
+            Assert.That(buttons[1].enabledSelf, Is.False);
+            Assert.That(buttons[2].enabledSelf, Is.False);
+            Assert.That(input.enabledSelf, Is.False);
+            foreach (var prop in new[] { "Presentation", "ShowChoices", "PreviousLabel", "Label" })
+                Assert.That(typeof(FullStackDS.PageNavigator).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

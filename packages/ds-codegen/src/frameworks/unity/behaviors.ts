@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "PageStrip" | "Otp" | "ChoiceGroup" | "Select" | "Transfer" | "Expansion" | "PagedSet" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -336,6 +336,21 @@ export interface ExpansionLowering {
   collapsedLabelProp: string;
   guardProp?: string;
 }
+/**
+ * A paged set: a numeric position channel over declared page items with
+ * previous/next bounded navigation and a one-based draft field committed as a
+ * bounded position. The runtime builds the declared native shell; composed
+ * Button/Input/Pagination/Icon children, page-choice composition, a11y labels
+ * and message templates are withheld.
+ */
+export interface PagedSetLowering {
+  behavior: "PagedSet";
+  channel: NormalizedChannelIR;
+  itemsProp: string;
+  countProp?: string;
+  disabledProp?: string;
+  parts: { previous: string; next: string; commit: string; field: string; input: string; context: string };
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -349,7 +364,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | PageStripLowering | OtpLowering | ChoiceGroupLowering | SelectLowering | TransferLowering | ExpansionLowering | PagedSetLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -1044,6 +1059,40 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
       focus: { strategy: focus, orientation, wrap: ir.behavior.focus?.wrap === true },
       stateClass: stateClassOf(ir),
     };
+  }
+  // A paged set: a numeric position channel over declared page items with a
+  // committed one-based draft and bounded previous/next navigation. The runtime
+  // owns the native shell; the composed sub-components are not instantiated.
+  if (ir.pagedSet !== undefined && ir.dom !== undefined) {
+    const channel = ir.behavior.normalizedChannels.find(candidate => candidate.name === ir.pagedSet!.channel);
+    const find = (predicate: (node: DomNodeIR) => boolean): DomNodeIR | undefined => {
+      const visit = (node: DomNodeIR): DomNodeIR | undefined => {
+        if (predicate(node)) return node;
+        for (const child of node.children) {
+          const found = visit(child);
+          if (found) return found;
+        }
+        return undefined;
+      };
+      return visit(ir.dom!);
+    };
+    const previous = find(node => node.events.click?.kind === "paged" && node.events.click.action === "previous");
+    const next = find(node => node.events.click?.kind === "paged" && node.events.click.action === "next");
+    const commit = find(node => node.events.click?.kind === "paged" && node.events.click.action === "commit");
+    const field = find(node => node.events.keydown?.kind === "paged" && node.events.keydown.action === "commitOnEnter");
+    const input = find(node => node.events.change?.kind === "paged" && node.events.change.action === "edit");
+    const context = find(node => node.content !== undefined && "kind" in node.content && node.content.kind === "message" && node.content.params.some(param => param.value.kind === "paged" && param.value.field === "count"));
+    if (channel !== undefined && previous?.part !== undefined && next?.part !== undefined && commit?.part !== undefined &&
+        field?.part !== undefined && input?.part !== undefined && context?.part !== undefined) {
+      return {
+        behavior: "PagedSet",
+        channel,
+        itemsProp: ir.pagedSet.itemsProp,
+        ...(ir.pagedSet.countProp === undefined ? {} : { countProp: ir.pagedSet.countProp }),
+        ...(ir.pagedSet.disabledProp === undefined ? {} : { disabledProp: ir.pagedSet.disabledProp }),
+        parts: { previous: previous.part, next: next.part, commit: commit.part, field: field.part, input: input.part, context: context.part },
+      };
+    }
   }
   throw new Error(`UNITY_UNSUPPORTED_INTERACTION: ${ir.name}`);
 }

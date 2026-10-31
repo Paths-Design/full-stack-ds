@@ -436,7 +436,7 @@ function planClasses(ctx: Context): ClassPlan[] {
     // that only holds the content region is flattened so the insertion point
     // is the control's own contentContainer.
     const action = ctx.lowering.behavior === "Action";
-    const children = ctx.lowering.behavior === "Transfer" ? [] : action
+    const children = ctx.lowering.behavior === "Transfer" || ctx.lowering.behavior === "PagedSet" ? [] : action
       ? ir.dom.children
           .filter(node => !isOmittedActionChrome(ctx, node))
           .flatMap(node => node.children.length === 1 && isInsertion(node.children[0]!) ? node.children : [node])
@@ -1275,6 +1275,35 @@ function expansionRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for the paged set: the numeric channel becomes the int Index/
+ * DefaultIndex attributes with change/request, the declared count/disabled props
+ * become generated attributes, and PagedSetControl builds the native navigator
+ * shell. The composed Button/Input/Pagination/Icon children are not instantiated.
+ */
+function pagedSetRootApi(ctx: Context): RootApi {
+  const { ir, lowering } = ctx;
+  if (lowering.behavior !== "PagedSet") throw new Error(`UNITY_UNREACHABLE: ${ir.name} is not a paged-set lowering`);
+  const channel = lowering.channel;
+  const members: string[] = [
+    "        public PagedSetControl Control { get; }",
+    `        public int ${identifier(pascal(channel.valueProp))} { get => Control.Index; set => Control.Index = value; }`,
+  ];
+  const attach: string[] = [
+    `Control = PagedSetControl.Attach(this, prefix: ${quote(ctx.prefix!)}, previousPart: ${quote(lowering.parts.previous)}, nextPart: ${quote(lowering.parts.next)}, commitPart: ${quote(lowering.parts.commit)}, fieldPart: ${quote(lowering.parts.field)}, inputPart: ${quote(lowering.parts.input)}, contextPart: ${quote(lowering.parts.context)});`,
+  ];
+  const defaults: string[] = [];
+  if (channel.defaultValueProp !== undefined) members.push(`        public int ${identifier(pascal(channel.defaultValueProp))} { get => Control.DefaultIndex; set => Control.DefaultIndex = value; }`);
+  const changeHandler = channel.changeHandlerProp ?? `${channel.valueProp}Changed`;
+  members.push(`        public Action<int> ${identifier(pascal(changeHandler))} { get => Control.IndexChanged; set => Control.IndexChanged = value; }`);
+  members.push("        public bool Controlled { get => Control.Controlled; set => Control.Controlled = value; }");
+  members.push("        public Action<int> IndexRequested { get => Control.IndexRequested; set => Control.IndexRequested = value; }");
+  members.push(`        public string[] ${identifier(pascal(lowering.itemsProp))} { get => Control.Items; set => Control.Items = value; }`);
+  if (lowering.countProp !== undefined) members.push(`        public int ${identifier(pascal(lowering.countProp))} { get => Control.Count; set => Control.Count = value; }`);
+  if (lowering.disabledProp !== undefined) members.push(`        public bool ${identifier(pascal(lowering.disabledProp))} { get => Control.Disabled; set => Control.Disabled = value; }`);
+  return { members, attach, defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -1294,6 +1323,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Select") return selectRootApi(ctx, classes);
   if (lowering.behavior === "Transfer") return transferRootApi(ctx);
   if (lowering.behavior === "Expansion") return expansionRootApi(ctx, classes);
+  if (lowering.behavior === "PagedSet") return pagedSetRootApi(ctx);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
