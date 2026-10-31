@@ -218,4 +218,19 @@ describe("Unity passive anatomy path", () => {
     expect(source).toContain("public override VisualElement contentContainer => Content;");
     expect(source).toContain("public UnityEngine.UIElements.Button Trigger => SummaryControl;");
   });
+
+  it("attaches a value fill and projects the numeric value for Progress", () => {
+    const contract = loadContractWithSidecars(root, "Progress") as ComponentContract;
+    const progressIr = buildComponentIR(contract);
+    progressIr.name = "UnrelatedMeter";
+    const source = createUnityEmitter().emitComponent(progressIr, { componentsRoot: "", contractsRoot })[0]!.contents;
+    expect(source).toContain("public partial class UnrelatedMeter : VisualElement");
+    expect(source).toContain("public ProgressControl ValueFill { get; }");
+    expect(source).toContain("ValueFill = ProgressControl.Attach(this, fill: Fill, valueElement: ValueControl, min: 0, max: 100);");
+    expect(source).toContain("public float Value { get => (float)ValueFill.Value; set => ValueFill.Value = value; }");
+    expect(source).toContain("public bool ShowValue { get => ValueFill.ShowValue; set => ValueFill.ShowValue = value; }");
+    expect(source).toContain('Variants.Get(this, "progress", "info", "success", "warning", "danger")');
+    expect(source).toContain("public override VisualElement contentContainer => ValueControl;");
+    expect(source).not.toMatch(/FormatValue|public string Label/);
+  });
 });

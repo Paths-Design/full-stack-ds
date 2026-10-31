@@ -198,7 +198,8 @@
         "Skeleton",
         "Table",
         "CodeBlock",
-        "Details"
+        "Details",
+        "Progress"
       ]
     },
     {

@@ -628,5 +628,29 @@ namespace FullStackDS.Tests
             details.Disabled = true;
             Assert.That(details.enabledSelf, Is.False);
         }
+        [Test] public void ProgressClampsValueIntoItsDeclaredRangeAndTogglesValuePresence()
+        {
+            var progress = Mount(new FullStackDS.Progress());
+            progress.contentContainer.Add(new UnityEngine.UIElements.Label("50%"));
+            Assert.That(progress.ClassListContains("progress"), Is.True);
+            Assert.That(progress.Fill.ClassListContains("progress__fill"), Is.True);
+            Assert.That(progress.contentContainer, Is.SameAs(progress.ValueControl));
+            Assert.That(progress.Value, Is.EqualTo(0f));
+            Assert.That(progress.Fill.style.width.value.unit, Is.EqualTo(LengthUnit.Percent));
+            progress.Value = 50f;
+            Assert.That(progress.Fill.style.width.value.value, Is.EqualTo(50f).Within(0.01f));
+            progress.Value = 150f;
+            Assert.That(progress.Value, Is.EqualTo(100f));
+            Assert.That(progress.Fill.style.width.value.value, Is.EqualTo(100f).Within(0.01f));
+            progress.Value = -25f;
+            Assert.That(progress.Value, Is.EqualTo(0f));
+            Assert.That(progress.ValueControl.style.display.value, Is.EqualTo(DisplayStyle.None));
+            progress.ShowValue = true;
+            Assert.That(progress.ValueControl.style.display.value, Is.EqualTo(DisplayStyle.Flex));
+            progress.ShowValue = false;
+            Assert.That(progress.ValueControl.style.display.value, Is.EqualTo(DisplayStyle.None));
+            foreach (var prop in new[] { "FormatValue", "Label" })
+                Assert.That(typeof(FullStackDS.Progress).GetProperty(prop), Is.Null, prop);
+        }
     }
 }
