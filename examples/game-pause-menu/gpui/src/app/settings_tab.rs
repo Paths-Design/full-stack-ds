@@ -1,605 +1,585 @@
-//! Settings tab: General switches (I11), Controller sliders (I12), remap modal
-//! that waits for the next key (I13), Audio & subtitles (I14), and the
-//! one-at-a-time overlay dismissal model (I15).
+//! SETTINGS tab: 2x2 panels — General switches (I11), Controller sliders (I12),
+//! Controller remap + key-waiting modal (I13), Audio & subtitles (I14), with the
+//! one-overlay-at-a-time dismissal model (I15). Geometry from
+//! `parity-layout.json`; sliders/dropdowns/swatches are hand-authored fallbacks.
 
-use gpui::prelude::*;
-use gpui::{
-    AnyElement, Context, InteractiveElement, IntoElement, MouseButton, ParentElement, Styled,
-    div, px,
-};
+use gpui::{div, px, AnyElement, Context, IntoElement, ParentElement, Styled, prelude::*};
 
-use super::palette::{Colors, parse};
-use super::widgets::outline_button;
-use super::{Menu, SliderTarget, TextRole};
-use game_pause_menu_gpui::seam::{DropdownKind, SliderState};
+use game_pause_menu_gpui::seam::{DropdownKind, Rect, SliderState};
+
+use super::{colors, style, widgets, Menu, SliderTarget};
 
 impl Menu {
     pub(crate) fn render_settings_tab(&mut self, cx: &mut Context<Self>) -> AnyElement {
-        let general = self.render_general_section(cx);
-        let controller = self.render_controller_section(cx);
-        let remap = self.render_remap_section(cx);
-        let audio = self.render_audio_section(cx);
-        let scroll = self.settings_scroll.clone();
-        div()
-            .id("settings-scroll")
-            .size_full()
-            .overflow_y_scroll()
-            .track_scroll(&scroll)
-            .flex()
-            .flex_col()
-            .gap_3()
-            .child(general)
-            .child(controller)
-            .child(remap)
-            .child(audio)
-            .into_any_element()
-    }
-
-    // -- General (I11) -------------------------------------------------
-
-    fn render_general_section(&mut self, cx: &mut Context<Self>) -> AnyElement {
-        let colors = self.colors;
-        let rows = self
-            .state
-            .general()
-            .to_vec()
-            .iter()
-            .enumerate()
-            .map(|(index, row)| {
-                let switch = self
-                    .general_switches
-                    .iter()
-                    .find(|(id, _)| id == &row.id)
-                    .map(|(_, switch)| switch.clone())
-                    .expect("general switch retained at startup");
-                let label = self.text(
-                    cx,
-                    format!("general:{}:label", row.id),
-                    TextRole::Value,
-                    row.label.clone(),
-                );
-                let description = self.text(
-                    cx,
-                    format!("general:{}:description", row.id),
-                    TextRole::Micro,
-                    row.description.clone(),
-                );
-                div()
-                    .id(("general-row", index))
-                    .h(px(46.))
-                    .flex()
-                    .flex_row()
-                    .items_center()
-                    .gap_4()
-                    .border_b_1()
-                    .border_color(Colors::paint(colors.rule))
-                    .child(switch)
-                    .child(
-                        div()
-                            .flex()
-                            .flex_col()
-                            .gap(px(1.))
-                            .flex_1()
-                            .child(label)
-                            .child(description),
-                    )
-                    .into_any_element()
-            })
-            .collect::<Vec<_>>();
-        super::section(
-            self,
-            cx,
-            "settings-general",
-            "GENERAL",
-            Some("GENERATED SWITCH PER FIXTURE TOGGLE".to_string()),
-            rows,
-        )
-    }
-
-    // -- Controller sliders (I12) --------------------------------------
-
-    fn render_controller_section(&mut self, cx: &mut Context<Self>) -> AnyElement {
-        let rows = self
-            .state
-            .controller()
-            .to_vec()
-            .iter()
-            .enumerate()
-            .map(|(index, row)| {
-                let label = self.text(
-                    cx,
-                    format!("controller:{}:label", row.id),
-                    TextRole::Value,
-                    row.label.clone(),
-                );
-                let description = self.text(
-                    cx,
-                    format!("controller:{}:description", row.id),
-                    TextRole::Micro,
-                    row.description.clone(),
-                );
-                let value = self.text(
-                    cx,
-                    format!("controller:{}:value", row.id),
-                    TextRole::ValueLarge,
-                    row.value_label(),
-                );
-                let track = self.slider(cx, SliderTarget::Controller, row, index);
-                div()
-                    .id(("controller-row", index))
-                    .h(px(54.))
-                    .flex()
-                    .flex_row()
-                    .items_center()
-                    .gap_4()
-                    .border_b_1()
-                    .border_color(Colors::paint(self.colors.rule))
-                    .child(
-                        div()
-                            .flex()
-                            .flex_col()
-                            .gap(px(1.))
-                            .w(px(380.))
-                            .child(label)
-                            .child(description),
-                    )
-                    .child(track)
-                    .child(div().w(px(74.)).flex().justify_end().child(value))
-                    .into_any_element()
-            })
-            .collect::<Vec<_>>();
-        super::section(
-            self,
-            cx,
-            "settings-controller",
-            "CONTROLLER",
-            Some("HAND-AUTHORED STEPPED SLIDERS (NO SLIDER ON THE TARGET)".to_string()),
-            rows,
-        )
-    }
-
-    // -- Remap (I13) ---------------------------------------------------
-
-    fn render_remap_section(&mut self, cx: &mut Context<Self>) -> AnyElement {
-        let colors = self.colors;
-        let rows = self
-            .state
-            .remap()
-            .to_vec()
-            .iter()
-            .enumerate()
-            .map(|(index, row)| {
-                let label = self.text(
-                    cx,
-                    format!("remap:{}:label", row.id),
-                    TextRole::Value,
-                    row.label.clone(),
-                );
-                let binding = self.text(
-                    cx,
-                    format!("remap:{}:binding", row.id),
-                    TextRole::MicroBright,
-                    row.binding.clone(),
-                );
-                let action_id = row.id.clone();
-                let button = outline_button(
-                    "remap-binding-button",
-                    binding,
-                    colors,
-                    cx.listener(move |this, _, window, cx| {
-                        this.begin_remap(&action_id, window, cx)
-                    }),
-                );
-                div()
-                    .id(("remap-row", index))
-                    .h(px(42.))
-                    .flex()
-                    .flex_row()
-                    .items_center()
-                    .justify_between()
-                    .border_b_1()
-                    .border_color(Colors::paint(colors.rule))
-                    .child(label)
-                    .child(
-                        div()
-                            .flex()
-                            .flex_row()
-                            .items_center()
-                            .gap_3()
-                            .child(
-                                self.text(
-                                    cx,
-                                    format!("remap:{}:caption", row.id),
-                                    TextRole::Micro,
-                                    "BINDING",
-                                ),
-                            )
-                            .child(button),
-                    )
-                    .into_any_element()
-            })
-            .collect::<Vec<_>>();
-        super::section(
-            self,
-            cx,
-            "settings-remap",
-            "CONTROLLER REMAP",
-            Some("ACTIVATE A BINDING TO OPEN THE KEY-WAITING MODAL".to_string()),
-            rows,
-        )
-    }
-
-    // -- Audio & subtitles (I14) ---------------------------------------
-
-    fn render_audio_section(&mut self, cx: &mut Context<Self>) -> AnyElement {
-        let colors = self.colors;
-        let sliders = self
-            .state
-            .audio_sliders()
-            .to_vec()
-            .iter()
-            .enumerate()
-            .map(|(index, row)| {
-                let label = self.text(
-                    cx,
-                    format!("audio:{}:label", row.id),
-                    TextRole::Value,
-                    row.label.clone(),
-                );
-                let value = self.text(
-                    cx,
-                    format!("audio:{}:value", row.id),
-                    TextRole::Value,
-                    row.value_label(),
-                );
-                let track = self.slider(cx, SliderTarget::Audio, row, index);
-                div()
-                    .id(("audio-row", index))
-                    .h(px(42.))
-                    .flex()
-                    .flex_row()
-                    .items_center()
-                    .gap_4()
-                    .border_b_1()
-                    .border_color(Colors::paint(colors.rule))
-                    .child(div().w(px(120.)).child(label))
-                    .child(track)
-                    .child(div().w(px(60.)).flex().justify_end().child(value))
-                    .into_any_element()
-            })
-            .collect::<Vec<_>>();
-
-        let audio_language = self.language_dropdown(cx, DropdownKind::AudioLanguage);
-        let subtitle_language = self.language_dropdown(cx, DropdownKind::SubtitleLanguage);
-
-        let background_label = self.text(
-            cx,
-            "audio:background:label",
-            TextRole::Micro,
-            "SUBTITLE BACKGROUND",
-        );
-        let swatches = self
-            .state
-            .subtitle_background_options()
-            .to_vec()
-            .iter()
-            .enumerate()
-            .map(|(index, swatch)| {
-                let selected = self.state.subtitle_background().id == swatch.id;
-                let color = parse(&swatch.value);
-                let swatch_id = swatch.id.clone();
-                let colors = self.colors;
-                div()
-                    .id(("subtitle-swatch", index))
-                    .w(px(34.))
-                    .h(px(34.))
-                    .bg(Colors::paint(color))
-                    .border_1()
-                    .border_color(Colors::paint(if selected {
-                        colors.bone_bright
-                    } else {
-                        colors.rule_strong
-                    }))
-                    .when(selected, |this| this.border_2())
-                    .cursor_pointer()
-                    .on_click(cx.listener(move |this, _, _, cx| {
-                        this.select_background(&swatch_id, cx)
-                    }))
-                    .into_any_element()
-            })
-            .collect::<Vec<_>>();
-        let selected_swatch = self.state.subtitle_background().label.clone();
-        let swatch_caption = self.text(
-            cx,
-            "audio:background:caption",
-            TextRole::Micro,
-            format!("SELECTED  ·  {selected_swatch}"),
-        );
-
-        let preview = self.render_subtitle_preview(cx);
-
+        let layout = self.layout.clone();
         let mut children: Vec<AnyElement> = Vec::new();
-        children.extend(sliders);
-        children.push(
-            div()
-                .flex()
-                .flex_row()
-                .items_start()
-                .gap_5()
-                .pt_1()
-                .child(audio_language)
-                .child(subtitle_language)
-                .into_any_element(),
-        );
-        children.push(
-            div()
-                .w_full()
-                .flex()
-                .flex_col()
-                .gap_2()
-                .pt_1()
-                .child(
-                    div()
-                        .flex()
-                        .flex_row()
-                        .items_center()
-                        .gap_3()
-                        .child(div().flex_none().child(background_label))
-                        .child(div().flex_none().child(swatch_caption)),
-                )
-                .child(
-                    div()
-                        .flex()
-                        .flex_row()
-                        .items_center()
-                        .gap_2()
-                        .children(swatches),
-                )
-                .into_any_element(),
-        );
-        children.push(preview);
-        super::section(
-            self,
-            cx,
-            "settings-audio",
-            "AUDIO & SUBTITLES",
-            Some("PREVIEW STRIP REFLECTS BACKGROUND + SUBTITLE LANGUAGE".to_string()),
-            children,
-        )
+        for panel in layout.settings.panels.clone() {
+            children.push(widgets::panel(&layout, panel.rect).into_any_element());
+            children.push(self.text_at(
+                cx,
+                format!("settings:{}:title", panel.id),
+                style::panel_title(&layout.type_scale),
+                &layout.colors.bone_bright,
+                panel.title.clone(),
+                panel.rect.x + layout.panels.padding,
+                panel.rect.y + (style::SETTINGS_HEADER_HEIGHT - layout.type_scale.panel_title) / 2.0,
+            ));
+            children.push(self.text_right(
+                cx,
+                format!("settings:{}:meta", panel.id),
+                style::panel_meta(&layout.type_scale),
+                &layout.colors.muted,
+                panel.meta.clone(),
+                Rect {
+                    x: panel.rect.right() - layout.panels.padding - 420.0,
+                    y: panel.rect.y
+                        + (style::SETTINGS_HEADER_HEIGHT - layout.type_scale.panel_meta) / 2.0,
+                    w: 420.0,
+                    h: style::SETTINGS_HEADER_HEIGHT,
+                },
+            ));
+            children.push(self.rule(
+                cx,
+                settings_rule_key(&panel.id),
+                Rect {
+                    x: panel.rect.x,
+                    y: panel.rect.y + style::SETTINGS_HEADER_HEIGHT,
+                    w: panel.rect.w,
+                    h: layout.style.panel_border,
+                },
+            ));
+        }
+        children.extend(self.render_general(cx));
+        children.extend(self.render_controller(cx));
+        children.extend(self.render_remap(cx));
+        children.extend(self.render_audio(cx));
+        div().children(children).into_any_element()
     }
 
-    /// Live subtitle preview strip: the selected swatch is the background and
-    /// the palette's higher-contrast foreground is picked by the seam.
-    fn render_subtitle_preview(&mut self, cx: &mut Context<Self>) -> AnyElement {
-        let colors = self.colors;
-        let swatch = self.state.subtitle_background().clone();
-        let background = parse(&swatch.value);
-        let foreground = self.state.subtitle_preview_text_color().to_string();
-        let on_ink = foreground == Colors::hex(colors.bone_bright);
-        let role = if on_ink {
-            TextRole::PreviewOnInk
-        } else {
-            TextRole::PreviewOnBone
-        };
-        let line = self.text(
+    // -- GENERAL -------------------------------------------------------
+
+    fn render_general(&mut self, cx: &mut Context<Self>) -> Vec<AnyElement> {
+        let layout = self.layout.clone();
+        let panel = layout.panel("general").expect("parity settings panel").rect;
+        let padding = layout.panels.padding;
+        let row_h = layout.settings.row_h;
+        let mut children: Vec<AnyElement> = Vec::new();
+        for (index, row) in self.state.general().to_vec().iter().enumerate() {
+            let row_y = layout.settings.first_row_y + index as f32 * row_h;
+            children.push(self.text_at(
+                cx,
+                format!("general:{}:label", row.id),
+                style::row_label(&layout.type_scale),
+                &layout.colors.bone_bright,
+                row.label.clone(),
+                panel.x + padding,
+                row_y + (row_h - layout.type_scale.row_label) / 2.0,
+            ));
+            children.push(self.text_at(
+                cx,
+                format!("general:{}:description", row.id),
+                style::row_sub(&layout.type_scale),
+                &layout.colors.muted,
+                row.description.clone(),
+                panel.x + padding,
+                row_y + (row_h - layout.type_scale.row_label) / 2.0 + 16.0,
+            ));
+            let switch = self
+                .general_switches
+                .iter()
+                .find(|(id, _)| id == &row.id)
+                .map(|(_, pair)| Menu::switch_for(pair, row.value));
+            if let Some(switch) = switch {
+                children.push(
+                    widgets::at(
+                        panel.right() - padding - layout.switch.width,
+                        row_y + (row_h - layout.switch.height) / 2.0,
+                        layout.switch.width,
+                        layout.switch.height,
+                    )
+                    .flex()
+                    .flex_col()
+                    .items_start()
+                    .child(switch)
+                    .into_any_element(),
+                );
+            }
+            children.push(self.rule(
+                cx,
+                general_rule_key(index),
+                Rect {
+                    x: panel.x + padding,
+                    y: row_y + row_h - layout.style.panel_border,
+                    w: panel.w - padding * 2.0,
+                    h: layout.style.panel_border,
+                },
+            ));
+        }
+        children
+    }
+
+    // -- CONTROLLER ----------------------------------------------------
+
+    fn render_controller(&mut self, cx: &mut Context<Self>) -> Vec<AnyElement> {
+        let layout = self.layout.clone();
+        let panel = layout.panel("controller").expect("parity settings panel").rect;
+        let padding = layout.panels.padding;
+        let row_h = layout.settings.row_h;
+        let mut children: Vec<AnyElement> = Vec::new();
+        for (index, row) in self.state.controller().to_vec().iter().enumerate() {
+            let row_y = layout.settings.first_row_y + index as f32 * row_h;
+            let value_w = 44.0;
+            let value_x = panel.right() - padding - value_w;
+            let slider_x = value_x - 8.0 - layout.settings.slider.w;
+            let label_w = slider_x - (panel.x + padding) - 16.0;
+            children.push(self.text_box(
+                cx,
+                format!("controller:{}:label", row.id),
+                style::row_label(&layout.type_scale),
+                &layout.colors.bone_bright,
+                row.label.clone(),
+                Rect {
+                    x: panel.x + padding,
+                    y: row_y + 4.0,
+                    w: label_w,
+                    h: layout.type_scale.row_label + 2.0,
+                },
+            ));
+            children.push(self.text_box(
+                cx,
+                format!("controller:{}:description", row.id),
+                style::row_sub(&layout.type_scale),
+                &layout.colors.muted,
+                row.description.clone(),
+                Rect {
+                    x: panel.x + padding,
+                    y: row_y + 20.0,
+                    w: label_w,
+                    h: 14.0,
+                },
+            ));
+            let slider_y = row_y + (row_h - layout.settings.slider.thumb) / 2.0;
+            children.push(self.render_slider(
+                cx,
+                format!("controller:{}", row.id),
+                slider_x,
+                slider_y,
+                row,
+                SliderTarget::Controller,
+            ));
+            children.push(self.text_right(
+                cx,
+                format!("controller:{}:value", row.id),
+                style::slider_value(&layout.type_scale),
+                &layout.colors.bone_bright,
+                row.value_label(),
+                Rect {
+                    x: value_x,
+                    y: row_y + (row_h - layout.type_scale.value) / 2.0,
+                    w: value_w,
+                    h: layout.type_scale.value,
+                },
+            ));
+            children.push(self.rule(
+                cx,
+                controller_rule_key(index),
+                Rect {
+                    x: panel.x + padding,
+                    y: row_y + row_h - layout.style.panel_border,
+                    w: panel.w - padding * 2.0,
+                    h: layout.style.panel_border,
+                },
+            ));
+        }
+        children
+    }
+
+    // -- REMAP ---------------------------------------------------------
+
+    fn render_remap(&mut self, cx: &mut Context<Self>) -> Vec<AnyElement> {
+        let layout = self.layout.clone();
+        let panel = layout.panel("remap").expect("parity settings panel").rect;
+        let padding = layout.panels.padding;
+        let row_h = layout.settings.remap_row_h;
+        let button = layout.settings.binding_button.clone();
+        let mut children: Vec<AnyElement> = Vec::new();
+        for (index, row) in self.state.remap().to_vec().iter().enumerate() {
+            let row_y = layout.settings.remap_first_row_y + index as f32 * row_h;
+            children.push(self.text_at(
+                cx,
+                format!("remap:{}:label", row.id),
+                style::row_label(&layout.type_scale),
+                &layout.colors.bone_bright,
+                row.label.clone(),
+                panel.x + padding,
+                row_y + (row_h - layout.type_scale.row_label) / 2.0,
+            ));
+            let binding = self.text(
+                cx,
+                format!("remap:{}:binding", row.id),
+                style::button_secondary(),
+                &layout.colors.bone_bright,
+                row.binding.clone(),
+            );
+            let action_id = row.id.clone();
+            // Binding button: graphite fill, ruleStrong border, 11px/700 text.
+            let binding_button = div()
+                .id(("binding-button", index))
+                .w(px(button.w))
+                .h(px(button.h))
+                .flex()
+                .items_center()
+                .justify_center()
+                .bg(colors::paint(&layout.colors.graphite))
+                .border_1()
+                .border_color(colors::paint(&layout.colors.rule_strong))
+                .cursor_pointer()
+                .on_click(cx.listener(move |this, _, window, cx| {
+                    this.begin_remap(&action_id, window, cx)
+                }))
+                .child(binding);
+            children.push(
+                widgets::at(
+                    panel.right() - padding - button.w,
+                    row_y + (row_h - button.h) / 2.0,
+                    button.w,
+                    button.h,
+                )
+                .child(binding_button)
+                .into_any_element(),
+            );
+            children.push(self.rule(
+                cx,
+                remap_rule_key(index),
+                Rect {
+                    x: panel.x + padding,
+                    y: row_y + row_h - layout.style.panel_border,
+                    w: panel.w - padding * 2.0,
+                    h: layout.style.panel_border,
+                },
+            ));
+        }
+        children
+    }
+
+    // -- AUDIO & SUBTITLES ---------------------------------------------
+
+    fn render_audio(&mut self, cx: &mut Context<Self>) -> Vec<AnyElement> {
+        let layout = self.layout.clone();
+        let panel = layout.panel("audio").expect("parity settings panel").rect;
+        let padding = layout.panels.padding;
+        let row_h = layout.settings.audio_row_h;
+        let mut children: Vec<AnyElement> = Vec::new();
+        for (index, row) in self.state.audio_sliders().to_vec().iter().enumerate() {
+            let row_y = layout.settings.audio_first_row_y + index as f32 * row_h;
+            children.push(self.text_at(
+                cx,
+                format!("audio:{}:label", row.id),
+                style::row_label(&layout.type_scale),
+                &layout.colors.bone_bright,
+                row.label.clone(),
+                panel.x + padding,
+                row_y + (row_h - layout.type_scale.row_label) / 2.0,
+            ));
+            let value_x = panel.right() - padding - layout.settings.slider.w - 68.0;
+            let slider_x = panel.right() - padding - layout.settings.slider.w;
+            let slider_y = row_y + (row_h - layout.settings.slider.thumb) / 2.0;
+            children.push(self.render_slider(
+                cx,
+                format!("audio:{}", row.id),
+                slider_x,
+                slider_y,
+                row,
+                SliderTarget::Audio,
+            ));
+            children.push(self.text_right(
+                cx,
+                format!("audio:{}:value", row.id),
+                style::slider_value(&layout.type_scale),
+                &layout.colors.bone_bright,
+                row.value_label(),
+                Rect {
+                    x: value_x,
+                    y: row_y + (row_h - layout.type_scale.value) / 2.0,
+                    w: 56.0,
+                    h: layout.type_scale.value,
+                },
+            ));
+            children.push(self.rule(
+                cx,
+                audio_rule_key(index),
+                Rect {
+                    x: panel.x + padding,
+                    y: row_y + row_h - layout.style.panel_border,
+                    w: panel.w - padding * 2.0,
+                    h: layout.style.panel_border,
+                },
+            ));
+        }
+        let dropdown_w = layout.settings.dropdown.w;
+        let dropdown_h = layout.settings.dropdown_h;
+        let dropdown_y = layout.settings.dropdown_y;
+        children.push(self.render_language_dropdown(
             cx,
-            "audio:preview:line",
-            role,
+            DropdownKind::AudioLanguage,
+            panel.x + padding,
+            layout.settings.language_label_y,
+            dropdown_y,
+            dropdown_h,
+        ));
+        children.push(self.render_language_dropdown(
+            cx,
+            DropdownKind::SubtitleLanguage,
+            panel.x + padding + dropdown_w + padding,
+            layout.settings.language_label_y,
+            dropdown_y,
+            dropdown_h,
+        ));
+        // Swatches.
+        let swatch = layout.settings.swatch.clone();
+        let swatch_y = layout.settings.swatch_y;
+        children.push(self.text_at(
+            cx,
+            "audio:swatch-label",
+            style::micro(&layout.type_scale),
+            &layout.colors.muted,
+            "SUBTITLE BACKGROUND",
+            panel.x + padding,
+            layout.settings.swatch_label_y,
+        ));
+        let selected = self.state.subtitle_background().id.clone();
+        for (index, option) in self.state.subtitle_background_options().to_vec().iter().enumerate() {
+            let is_selected = option.id == selected;
+            let swatch_id = option.id.clone();
+            let x = panel.x + padding + index as f32 * (swatch.w + swatch.gap);
+            let mut block = div()
+                .id(("subtitle-swatch", index))
+                .absolute()
+                .left(px(x))
+                .top(px(swatch_y))
+                .w(px(swatch.w))
+                .h(px(layout.settings.swatch_h))
+                .bg(colors::paint(&option.value))
+                .border_1()
+                .border_color(colors::paint(&layout.colors.rule_strong))
+                .cursor_pointer()
+                .on_click(cx.listener(move |this, _, _, cx| {
+                    this.select_background(&swatch_id, cx)
+                }));
+            if is_selected {
+                block = block.border_2().border_color(colors::paint(&layout.colors.signal));
+            }
+            children.push(block.into_any_element());
+        }
+        // Live subtitle preview strip.
+        let preview = layout.settings.preview;
+        let background = self.state.subtitle_background().value.clone();
+        let foreground = self.state.subtitle_preview_text_color().to_string();
+        let preview_text = self.text(
+            cx,
+            "audio:preview",
+            style::copy(&layout.type_scale),
+            &foreground,
             format!(
                 "{}   [{}]",
                 self.state.subtitle_preview_line(),
                 self.state.subtitle_language()
             ),
         );
-        let caption = self.text(
-            cx,
-            "audio:preview:caption",
-            TextRole::Micro,
-            format!(
-                "SUBTITLE PREVIEW  ·  {}  ·  {}",
-                swatch.label,
-                self.state.subtitle_language()
-            ),
+        children.push(
+            widgets::rect_box(preview)
+                .bg(colors::paint(&background))
+                .px(px(12.))
+                .flex()
+                .items_center()
+                .border_1()
+                .border_color(colors::paint(&layout.colors.rule_strong))
+                .child(preview_text)
+                .into_any_element(),
         );
-        div()
-            .flex()
-            .flex_col()
-            .gap_1()
-            .child(
-                div()
-                    .w_full()
-                    .px_3()
-                    .py_2()
-                    .bg(Colors::paint(background))
-                    .border_1()
-                    .border_color(Colors::paint(colors.rule_strong))
-                    .child(line),
-            )
-            .child(caption)
-            .into_any_element()
+        children
     }
 
-    /// NOT FSDS: hand-authored stepped slider track — the target admits no
-    /// Slider component. Each tick is a pointer target; the filled prefix and
-    /// value label follow the seam's stepped value.
-    fn slider(
+    /// NOT FSDS: no Slider component on the target. 300x6 graphite track with a
+    /// signal fill and a 16 px circular boneBright thumb; the whole track is
+    /// divided into 20 pointer cells so a click sets the stepped value (I12/I14).
+    fn render_slider(
         &mut self,
         cx: &mut Context<Self>,
-        target: SliderTarget,
+        key: String,
+        x: f32,
+        y: f32,
         row: &SliderState,
-        row_index: usize,
+        target: SliderTarget,
     ) -> AnyElement {
-        let colors = self.colors;
-        let row = row.clone();
-        let steps = (((row.max - row.min) / row.step).round() as usize).max(1);
-        let current = (((row.value - row.min) / row.step).round() as usize).min(steps);
-        let seed_base = match target {
-            SliderTarget::Controller => 0usize,
-            SliderTarget::Audio => 1000usize,
-        };
-        let ticks = (0..=steps)
-            .map(|tick| {
-                let value = row.min + tick as f32 * row.step;
-                let filled = tick <= current;
-                let id = row.id.clone();
+        let layout = self.layout.clone();
+        let spec = layout.settings.slider.clone();
+        let fraction = row.fraction();
+        let thumb = spec.thumb;
+        let track_y = y + (thumb - spec.h) / 2.0;
+        let fill_w = (spec.w - thumb) * fraction + thumb;
+        let thumb_x = (spec.w - thumb) * fraction;
+        let steps = 20usize;
+        let mut cells: Vec<AnyElement> = Vec::new();
+        for step in 0..steps {
+            let value = row.min + (row.max - row.min) * (step as f32 + 0.5) / steps as f32;
+            let click_id = row.id.clone();
+            cells.push(
                 div()
-                    .id(("slider-tick", seed_base + row_index * 64 + tick))
-                    .w(px(7.))
-                    .h(px(18.))
-                    .bg(Colors::paint(if filled {
-                        colors.signal
-                    } else {
-                        colors.inset
-                    }))
-                    .border_1()
-                    .border_color(Colors::paint(if filled {
-                        colors.signal
-                    } else {
-                        colors.rule
-                    }))
+                    .id(("slider-cell", slider_seed(&key) * 32 + step))
+                    .w(px(spec.w / steps as f32))
+                    .h(px(thumb))
                     .cursor_pointer()
-                    .hover(move |style| style.bg(Colors::paint(colors.signal_hot)))
                     .on_click(cx.listener(move |this, _, _, cx| {
-                        this.set_slider(target, &id, value, cx)
+                        this.set_slider(target, &click_id, value, cx)
                     }))
-                    .into_any_element()
-            })
-            .collect::<Vec<_>>();
+                    .into_any_element(),
+            );
+        }
         div()
-            .flex()
-            .flex_row()
-            .items_center()
-            .gap(px(2.))
-            .px_1()
-            .py_1()
-            .bg(Colors::paint(colors.charcoal))
-            .border_1()
-            .border_color(Colors::paint(colors.rule))
-            .children(ticks)
+            .absolute()
+            .left(px(x))
+            .top(px(y))
+            .w(px(spec.w))
+            .h(px(thumb))
+            .child(
+                div()
+                    .absolute()
+                    .left(px(0.))
+                    .top(px(track_y - y))
+                    .w(px(spec.w))
+                    .h(px(spec.h))
+                    .bg(colors::paint(&layout.colors.graphite)),
+            )
+            .child(
+                div()
+                    .absolute()
+                    .left(px(0.))
+                    .top(px(track_y - y))
+                    .w(px(fill_w))
+                    .h(px(spec.h))
+                    .bg(colors::paint(&layout.colors.signal)),
+            )
+            .child(
+                div()
+                    .absolute()
+                    .left(px(thumb_x))
+                    .top(px(0.))
+                    .w(px(thumb))
+                    .h(px(thumb))
+                    .rounded(px(thumb / 2.0))
+                    .bg(colors::paint(&layout.colors.bone_bright)),
+            )
+            .child(div().flex().flex_row().children(cells))
             .into_any_element()
     }
 
-    /// NOT FSDS: no Select/Dropdown component on the target; each language
-    /// picker is a hand-authored button + option list.
-    fn language_dropdown(&mut self, cx: &mut Context<Self>, kind: DropdownKind) -> AnyElement {
-        let colors = self.colors;
+    /// NOT FSDS: no Select component on the target — 200x30 graphite dropdown.
+    fn render_language_dropdown(
+        &mut self,
+        cx: &mut Context<Self>,
+        kind: DropdownKind,
+        x: f32,
+        label_y: f32,
+        y: f32,
+        height: f32,
+    ) -> AnyElement {
+        let layout = self.layout.clone();
+        let spec = layout.settings.dropdown.clone();
         let value = match kind {
             DropdownKind::AudioLanguage => self.state.audio_language().to_string(),
             DropdownKind::SubtitleLanguage => self.state.subtitle_language().to_string(),
         };
+        let label_text = match kind {
+            DropdownKind::AudioLanguage => "AUDIO LANGUAGE",
+            DropdownKind::SubtitleLanguage => "SUBTITLE LANGUAGE",
+        };
         let open = self.state.dropdown() == Some(kind);
-        let label = self.text(
+        let label = self.text_at(
             cx,
-            format!("language:{:?}:label", kind),
-            TextRole::Micro,
-            kind.label(),
+            format!("dropdown:{kind:?}:label"),
+            style::micro(&layout.type_scale),
+            &layout.colors.muted,
+            label_text,
+            x,
+            label_y,
         );
-        let current = self.text(
+        let value = self.text(
             cx,
-            format!("language:{:?}:value", kind),
-            TextRole::MicroBright,
+            format!("dropdown:{kind:?}:value"),
+            style::button_secondary(),
+            &layout.colors.bone_bright,
             value.clone(),
         );
-        let caret = div()
-            .text_size(px(11.))
+        let chevron = div()
+            .text_size(px(layout.type_scale.chip))
             .font_weight(gpui::FontWeight::BOLD)
-            .text_color(Colors::paint(colors.bone))
+            .text_color(colors::paint(&layout.colors.muted))
             .child(if open { "▴" } else { "▾" });
-        let button_id = match kind {
-            DropdownKind::AudioLanguage => "audio-language-button",
-            DropdownKind::SubtitleLanguage => "subtitle-language-button",
-        };
-        let button = outline_button(
-            button_id,
-            div()
-                .flex()
-                .flex_row()
-                .items_center()
-                .gap_2()
-                .w(px(250.))
-                .justify_between()
-                .child(current)
-                .child(caret),
-            colors,
-            cx.listener(move |this, _, _, cx| {
+        let button = div()
+            .id(match kind {
+                DropdownKind::AudioLanguage => "audio-language-button",
+                DropdownKind::SubtitleLanguage => "subtitle-language-button",
+            })
+            .absolute()
+            .left(px(x))
+            .top(px(y))
+            .w(px(spec.w))
+            .h(px(height))
+            .flex()
+            .items_center()
+            .justify_between()
+            .px(px(8.))
+            .bg(colors::paint(&layout.colors.graphite))
+            .border_1()
+            .border_color(colors::paint(&layout.colors.rule_strong))
+            .cursor_pointer()
+            .on_click(cx.listener(move |this, _, _, cx| {
                 this.state.toggle_dropdown(kind);
                 cx.notify();
-            }),
-        );
-        let options = if open {
-            let rows = self
-                .state
-                .language_options(kind)
-                .to_vec()
-                .iter()
-                .enumerate()
-                .map(|(index, option)| {
-                    let selected = option == &value;
-                    let option_value = option.clone();
-                    let option_label = self.text(
-                        cx,
-                        format!("language:{:?}:option:{index}", kind),
-                        if selected {
-                            TextRole::MicroSignal
-                        } else {
-                            TextRole::MicroBright
-                        },
-                        option.clone(),
-                    );
+            }))
+            .child(value)
+            .child(chevron);
+        let mut children: Vec<AnyElement> = vec![label, button.into_any_element()];
+        if open {
+            let options = self.state.language_options(kind).to_vec();
+            for (index, option) in options.iter().enumerate() {
+                let selected = option == &value_text(&self.state, kind);
+                let option_value = option.clone();
+                let option_label = self.text(
+                    cx,
+                    format!("dropdown:{kind:?}:option:{index}"),
+                    style::button_secondary(),
+                    &layout.color(if selected { "signal" } else { "boneBright" }),
+                    option.clone(),
+                );
+                children.push(
                     div()
                         .id(("language-option", index))
-                        .h(px(28.))
-                        .px_2()
+                        .absolute()
+                        .left(px(x))
+                        .top(px(y + height + index as f32 * 24.0))
+                        .w(px(spec.w))
+                        .h(px(24.))
                         .flex()
                         .items_center()
-                        .bg(Colors::paint(if selected {
-                            colors.inset
-                        } else {
-                            colors.charcoal
-                        }))
+                        .px(px(8.))
+                        .bg(colors::paint(&layout.colors.charcoal))
+                        .border_1()
+                        .border_color(colors::paint(&layout.colors.rule_strong))
                         .cursor_pointer()
-                        .hover(move |style| style.bg(Colors::paint(colors.row_hover)))
                         .on_click(cx.listener(move |this, _, _, cx| {
                             this.select_language(kind, &option_value, cx)
                         }))
                         .child(option_label)
-                        .into_any_element()
-                })
-                .collect::<Vec<_>>();
-            Some(
-                div()
-                    .id("language-options")
-                    .absolute()
-                    .top(px(52.))
-                    .left_0()
-                    .w(px(252.))
-                    .p_1()
-                    .flex()
-                    .flex_col()
-                    .gap(px(1.))
-                    .bg(Colors::paint(colors.ink))
-                    .border_2()
-                    .border_color(Colors::paint(colors.signal))
-                    .children(rows)
-                    .into_any_element(),
-            )
-        } else {
-            None
-        };
-        div()
-            .relative()
-            .flex()
-            .flex_col()
-            .gap_1()
-            .w(px(260.))
-            .child(label)
-            .child(button)
-            .children(options)
-            .into_any_element()
+                        .into_any_element(),
+                );
+            }
+        }
+        div().children(children).into_any_element()
     }
 
-    /// I13: the single remap modal. It owns focus while waiting, so the next
-    /// keystroke reaches `capture_keystroke` (Escape cancels without binding).
+    /// I13: the key-waiting remap modal (no Dialog component on the target).
     pub(crate) fn render_remap_modal(&mut self, cx: &mut Context<Self>) -> Option<AnyElement> {
         let action_id = self.state.remap_waiting()?.to_string();
         let row = self
@@ -608,110 +588,153 @@ impl Menu {
             .iter()
             .find(|row| row.id == action_id)?
             .clone();
-        let colors = self.colors;
+        let layout = self.layout.clone();
+        let spec = layout.settings.remap_modal.clone();
+        let rect = Rect {
+            x: spec.x,
+            y: spec.y,
+            w: spec.w,
+            h: spec.h,
+        };
         let focus = self.remap_focus.clone();
-
-        let eyebrow = self.text(
+        let action_label = self.text(
             cx,
-            "remap-modal:eyebrow",
-            TextRole::MicroSignal,
-            "CONTROLLER REMAP",
-        );
-        let title = self.text(
-            cx,
-            "remap-modal:title",
-            TextRole::Title,
+            "remap-modal:action",
+            style::row_label(&layout.type_scale),
+            &layout.colors.muted,
             format!("REBIND  {}", row.label),
         );
-        let waiting = self.text(
+        let prompt = self.text(
             cx,
-            "remap-modal:waiting",
-            TextRole::Headline,
-            "PRESS ANY KEY OR BUTTON",
+            "remap-modal:prompt",
+            style::prompt(&layout.type_scale),
+            &layout.colors.bone_bright,
+            spec.prompt.clone(),
         );
-        let current = self.text(
+        let binding = self.text(
             cx,
-            "remap-modal:current",
-            TextRole::Value,
-            format!("CURRENT BINDING  ·  {}", row.binding),
+            "remap-modal:binding",
+            style::value(&layout.type_scale),
+            &layout.colors.muted,
+            format!("CURRENT BINDING · {}", row.binding),
         );
         let hint = self.text(
             cx,
             "remap-modal:hint",
-            TextRole::Micro,
-            "THE NEXT KEY REPLACES THE BINDING  ·  ESC CANCELS WITHOUT CHANGING IT",
-        );
-        let caption = self.text(
-            cx,
-            "remap-modal:caption",
-            TextRole::Micro,
-            "ONLY ONE REMAP MODAL CAN BE OPEN AT A TIME",
+            style::micro(&layout.type_scale),
+            &layout.colors.muted,
+            "NEXT KEY REPLACES BINDING · ESC CANCELS",
         );
         let cancel_label = self.text(
             cx,
-            "remap-modal:cancel-label",
-            TextRole::MicroBright,
+            "remap-modal:cancel",
+            style::button_secondary(),
+            &layout.colors.bone_bright,
             "CANCEL",
         );
-        let cancel = outline_button(
-            "remap-modal-cancel",
-            cancel_label,
-            colors,
-            cx.listener(|this, _, window, cx| this.cancel_remap_modal(window, cx)),
-        );
-        let divider = self.divider(cx, "divider:remap-caption");
-
+        let cancel = div()
+            .absolute()
+            .left(px(rect.w - 16.0 - layout.settings.binding_button.w))
+            .top(px(rect.h - 16.0 - layout.settings.binding_button.h))
+            .child(widgets::outline_button(
+                "remap-modal-cancel",
+                cancel_label,
+                layout.settings.binding_button.w,
+                layout.settings.binding_button.h,
+                &layout,
+                cx.listener(|this, _, window, cx| this.cancel_remap_modal(window, cx)),
+            ));
         Some(
-            div()
-                .id("remap-backdrop")
-                .absolute()
-                .inset_0()
+            widgets::rect_box(rect)
+                .id("remap-modal")
                 .flex()
+                .flex_col()
                 .items_center()
-                .justify_center()
-                .bg(Colors::paint_alpha(0x000000B8))
-                .on_mouse_down(
-                    MouseButton::Left,
-                    cx.listener(|this, _, window, cx| this.cancel_remap_modal(window, cx)),
+                .gap(px(10.))
+                .py(px(20.))
+                .bg(colors::paint(&layout.colors.charcoal))
+                .border_2()
+                .border_color(colors::paint(&layout.colors.signal))
+                .track_focus(&focus)
+                .on_key_down(
+                    cx.listener(|this, event: &gpui::KeyDownEvent, window, cx| {
+                        this.capture_keystroke(event, window, cx)
+                    }),
                 )
-                .child(
-                    div()
-                        .id("remap-modal")
-                        .w(px(540.))
-                        .p_6()
-                        .flex()
-                        .flex_col()
-                        .gap_3()
-                        .bg(Colors::paint(colors.charcoal))
-                        .border_2()
-                        .border_color(Colors::paint(colors.signal))
-                        .track_focus(&focus)
-                        .on_key_down(cx.listener(
-                            |this, event: &gpui::KeyDownEvent, window, cx| {
-                                this.capture_keystroke(event, window, cx)
-                            },
-                        ))
-                        .on_mouse_down(
-                            MouseButton::Left,
-                            cx.listener(|_, _, _, cx| cx.stop_propagation()),
-                        )
-                        .child(eyebrow)
-                        .child(title)
-                        .child(waiting)
-                        .child(current)
-                        .child(hint)
-                        .child(divider)
-                        .child(
-                            div()
-                                .flex()
-                                .flex_row()
-                                .items_center()
-                                .justify_between()
-                                .child(caption)
-                                .child(cancel),
-                        ),
-                )
+                .child(action_label)
+                .child(prompt)
+                .child(binding)
+                .child(hint)
+                .child(cancel)
                 .into_any_element(),
         )
     }
+}
+
+fn value_text(state: &game_pause_menu_gpui::seam::AppState, kind: DropdownKind) -> String {
+    match kind {
+        DropdownKind::AudioLanguage => state.audio_language().to_string(),
+        DropdownKind::SubtitleLanguage => state.subtitle_language().to_string(),
+    }
+}
+
+fn slider_seed(id: &str) -> usize {
+    let mut seed = 0usize;
+    for byte in id.bytes() {
+        seed = seed.wrapping_mul(31).wrapping_add(byte as usize);
+    }
+    seed % 64
+}
+
+fn settings_rule_key(id: &str) -> &'static str {
+    match id {
+        "general" => "rule:settings-general-header",
+        "controller" => "rule:settings-controller-header",
+        "remap" => "rule:settings-remap-header",
+        _ => "rule:settings-audio-header",
+    }
+}
+
+fn general_rule_key(index: usize) -> &'static str {
+    const KEYS: [&str; 5] = [
+        "rule:general-row-0",
+        "rule:general-row-1",
+        "rule:general-row-2",
+        "rule:general-row-3",
+        "rule:general-row-4",
+    ];
+    KEYS[index.min(4)]
+}
+
+fn controller_rule_key(index: usize) -> &'static str {
+    const KEYS: [&str; 5] = [
+        "rule:controller-row-0",
+        "rule:controller-row-1",
+        "rule:controller-row-2",
+        "rule:controller-row-3",
+        "rule:controller-row-4",
+    ];
+    KEYS[index.min(4)]
+}
+
+fn remap_rule_key(index: usize) -> &'static str {
+    const KEYS: [&str; 6] = [
+        "rule:remap-row-0",
+        "rule:remap-row-1",
+        "rule:remap-row-2",
+        "rule:remap-row-3",
+        "rule:remap-row-4",
+        "rule:remap-row-5",
+    ];
+    KEYS[index.min(5)]
+}
+
+fn audio_rule_key(index: usize) -> &'static str {
+    const KEYS: [&str; 4] = [
+        "rule:audio-row-0",
+        "rule:audio-row-1",
+        "rule:audio-row-2",
+        "rule:audio-row-3",
+    ];
+    KEYS[index.min(3)]
 }

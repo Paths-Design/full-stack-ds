@@ -1,162 +1,30 @@
-//! Evidence capture for the GPUI lane (`--features capture -- --capture <dir>`).
+//! Evidence capture for the parity pass (`--features capture -- --capture <dir>`).
 //!
-//! Why this path exists: macOS Screen Recording permission is denied to the
-//! agent shell, so `screencapture -l <windowid>` and full-screen captures
-//! return "could not create image from window/display" (verified on this
-//! machine against an unrelated GPUI app). The pinned gpui revision instead
-//! exposes `Window::render_to_image()` behind gpui's `test-support` feature:
-//! it renders the current frame's scene to an RGBA image without presenting
-//! it, so capture needs no TCC grant. The lane enables that feature only under
-//! its own `capture` cargo feature; the default build keeps the package pins.
-//!
-//! The app mutates its domain state into representative states per tab,
-//! waits for a paint, reads the last rendered frame, and writes PNGs plus a
-//! capture manifest. Screenshots are sampled states, not physical-device proof.
+//! The capture states are the JSON `captures` map: for each state the task
+//! resets domain state, applies that capture's selectors, focuses the window,
+//! waits for a paint, reads the last rendered frame with
+//! `Window::render_to_image()` (the pinned gpui revision's test-support surface;
+//! macOS Screen Recording is unavailable to this shell), saves a PNG and finally
+//! writes `capture-manifest.json` and quits. Screenshots are sampled states of
+//! the running app, not physical-device proof.
 
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::path::PathBuf;
 use std::time::Duration;
 
-use gpui::{AsyncWindowContext, Context, WeakEntity, Window, point, px};
+use gpui::{AsyncWindowContext, Context, WeakEntity, Window};
 
-use game_pause_menu_gpui::seam::{AppState, Tab};
+use game_pause_menu_gpui::seam::{AppState, CaptureSpec, Tab};
 
 use super::Menu;
 
-/// Time allowed for the state change to be painted before the first read.
 const SETTLE: Duration = Duration::from_millis(320);
-/// Retry cadence when the frame is still blank / the drawable is unavailable.
 const RETRY: Duration = Duration::from_millis(160);
 const MAX_ATTEMPTS: usize = 30;
 
-struct CaptureStep {
-    file: &'static str,
-    tab: Tab,
-    describe: &'static str,
-    prepare: fn(&mut Menu, Tab),
-}
-
-/// The four required per-tab captures, followed by extra interaction-state
-/// captures that show overlays, reject states and the remap modal.
-const STEPS: &[CaptureStep] = &[
-    CaptureStep {
-        file: "map.png",
-        tab: Tab::Map,
-        describe: "MAP tab, default marker filter and commander readout",
-        prepare: reset_to,
-    },
-    CaptureStep {
-        file: "progress.png",
-        tab: Tab::Progress,
-        describe: "PROGRESS tab with the unlocked faction drawer open",
-        prepare: progress_unlocked,
-    },
-    CaptureStep {
-        file: "abilities.png",
-        tab: Tab::Abilities,
-        describe: "ABILITIES tab with a size-2 ability pending and compatible slots highlighted",
-        prepare: abilities_pending,
-    },
-    CaptureStep {
-        file: "settings.png",
-        tab: Tab::Settings,
-        describe: "SETTINGS tab, top of the scroll: General + Controller",
-        prepare: reset_to,
-    },
-    CaptureStep {
-        file: "map-popover.png",
-        tab: Tab::Map,
-        describe: "MAP tab with the marker popover open and a nav target set",
-        prepare: map_popover,
-    },
-    CaptureStep {
-        file: "progress-locked-drawer.png",
-        tab: Tab::Progress,
-        describe: "PROGRESS tab with a locked faction drawer (disabled SHOP PARTS)",
-        prepare: progress_locked,
-    },
-    CaptureStep {
-        file: "abilities-hover.png",
-        tab: Tab::Abilities,
-        describe: "ABILITIES tab hover tooltip over a card (I10)",
-        prepare: abilities_hover,
-    },
-    CaptureStep {
-        file: "abilities-reject.png",
-        tab: Tab::Abilities,
-        describe: "ABILITIES tab incompatible-slot reject state (I9)",
-        prepare: abilities_reject,
-    },
-    CaptureStep {
-        file: "settings-remap-modal.png",
-        tab: Tab::Settings,
-        describe: "SETTINGS remap modal waiting for the next key (I13)",
-        prepare: settings_remap_modal,
-    },
-    CaptureStep {
-        file: "settings-audio.png",
-        tab: Tab::Settings,
-        describe: "SETTINGS tab scrolled to the Audio & subtitles section (I14)",
-        prepare: settings_audio,
-    },
-];
-
-fn reset_to(menu: &mut Menu, tab: Tab) {
-    let fixtures = menu.state.fixtures().clone();
-    menu.state = AppState::new(fixtures);
-    menu.state.select_tab(tab);
-    menu.hovered_ability = None;
-    menu.settings_scroll.set_offset(point(px(0.), px(0.)));
-    menu.ability_scroll.set_offset(point(px(0.), px(0.)));
-}
-
-fn progress_unlocked(menu: &mut Menu, tab: Tab) {
-    reset_to(menu, tab);
-    menu.state.open_faction("ares-logistics");
-}
-
-fn progress_locked(menu: &mut Menu, tab: Tab) {
-    reset_to(menu, tab);
-    menu.state.open_faction("solaris-cartel");
-}
-
-fn abilities_pending(menu: &mut Menu, tab: Tab) {
-    reset_to(menu, tab);
-    menu.state.select_ability("overclock");
-}
-
-fn abilities_hover(menu: &mut Menu, tab: Tab) {
-    reset_to(menu, tab);
-    menu.state.select_ability("overclock");
-    menu.hovered_ability = Some("drone-sweep".to_string());
-}
-
-fn abilities_reject(menu: &mut Menu, tab: Tab) {
-    reset_to(menu, tab);
-    menu.state.select_ability("aegis-plate");
-    menu.state.activate_slot("AUX-A");
-    // The compact detail section leaves the AUX rows in view without scrolling.
-}
-
-fn map_popover(menu: &mut Menu, tab: Tab) {
-    reset_to(menu, tab);
-    menu.state.set_nav_target("relay-01");
-    menu.state.open_marker("beacon-05");
-}
-
-fn settings_remap_modal(menu: &mut Menu, tab: Tab) {
-    reset_to(menu, tab);
-    menu.state.begin_remap("interact");
-}
-
-fn settings_audio(menu: &mut Menu, tab: Tab) {
-    reset_to(menu, tab);
-    // The audio section is the fourth child of the settings scroll container.
-    menu.settings_scroll.scroll_to_top_of_item(3);
-}
-
 impl Menu {
-    /// Spawn the capture task on the window; called only when the binary was
-    /// built with `--features capture` and given `--capture <dir>`.
+    /// Spawn the capture task; called when the binary was built with
+    /// `--features capture` and given `--capture <dir>`.
     pub(crate) fn start_capture(
         &mut self,
         window: &mut Window,
@@ -170,35 +38,53 @@ impl Menu {
             );
             std::process::exit(1);
         }
+        let captures: Vec<(String, CaptureSpec)> = self
+            .layout
+            .captures
+            .iter()
+            .map(|(name, spec)| (name.clone(), spec.clone()))
+            .collect();
+        let order = [
+            "map",
+            "progress",
+            "abilities",
+            "settings",
+            "map-popover",
+            "abilities-hover",
+            "settings-remap-modal",
+            "settings-subtitle",
+        ];
+        let mut ordered: Vec<(String, CaptureSpec)> = Vec::new();
+        for name in order {
+            if let Some((_, spec)) = captures.iter().find(|(key, _)| key == name) {
+                ordered.push((name.to_string(), spec.clone()));
+            }
+        }
         eprintln!(
-            "game-pause-menu-gpui: capturing {} states into {}",
-            STEPS.len(),
+            "game-pause-menu-gpui: capturing {} parity states into {}",
+            ordered.len(),
             directory.display()
         );
         cx.spawn_in(window, async move |this, cx| {
-            let mut manifest: Vec<serde_json::Value> = Vec::new();
-            for step in STEPS {
-                if !prepare(&this, cx, step, &directory).await {
-                    eprintln!("game-pause-menu-gpui: capture failed at {}", step.file);
+            let mut states: Vec<serde_json::Value> = Vec::new();
+            for (name, spec) in ordered {
+                if !prepare(&this, cx, &spec, &directory, &name).await {
+                    eprintln!("game-pause-menu-gpui: capture failed at {name}");
                     std::process::exit(1);
                 }
-                eprintln!(
-                    "game-pause-menu-gpui: captured {} ({})",
-                    step.file, step.describe
-                );
-                manifest.push(serde_json::json!({
-                    "file": step.file,
-                    "tab": step.tab.key(),
-                    "describe": step.describe,
+                eprintln!("game-pause-menu-gpui: captured {name}.png");
+                states.push(serde_json::json!({
+                    "file": format!("{name}.png"),
+                    "activeTab": spec.active_tab,
                 }));
             }
             let manifest_path = directory.join("capture-manifest.json");
             let document = serde_json::json!({
+                "layout": "fixtures/parity-layout.json",
                 "window": { "width": 1280, "height": 800 },
                 "capture": "gpui Window::render_to_image() (pinned zed rev, gpui test-support feature)",
                 "renderer": "gpui_macos runtime_shaders feature (Xcode 26 lacks the standalone metal tool on this machine)",
-                "theme": "Orion N5 palette from fixtures/orion-appearance.json via per-instance gpui Theme token overrides",
-                "states": manifest,
+                "states": states,
             });
             match std::fs::write(
                 &manifest_path,
@@ -216,30 +102,30 @@ impl Menu {
     }
 }
 
-/// Apply one capture state, wait for it to paint, then save the rendered frame.
+/// Apply one JSON capture state, wait for a paint, save the rendered frame.
 async fn prepare(
     menu: &WeakEntity<Menu>,
     cx: &mut AsyncWindowContext,
-    step: &'static CaptureStep,
+    spec: &CaptureSpec,
     directory: &Path,
+    name: &str,
 ) -> bool {
     let prepared = menu.update_in(cx, |menu, window, cx| {
-        (step.prepare)(menu, step.tab);
+        apply_capture(menu, spec);
         if menu.state.remap_waiting().is_some() {
             window.focus(&menu.remap_focus, cx);
         } else {
             window.focus(&menu.focus, cx);
         }
-        menu.sync_controls(cx);
         cx.notify();
     });
     if prepared.is_err() {
-        eprintln!("game-pause-menu-gpui: window closed before {}", step.file);
+        eprintln!("game-pause-menu-gpui: window closed before {name}");
         return false;
     }
     cx.background_executor().timer(SETTLE).await;
 
-    let path = directory.join(step.file);
+    let path = directory.join(format!("{name}.png"));
     for attempt in 1..=MAX_ATTEMPTS {
         let read = menu.update_in(cx, |_menu, window, _cx| match window.render_to_image() {
             Ok(image) => {
@@ -258,8 +144,7 @@ async fn prepare(
         match read {
             Ok(Ok(Some((width, height)))) => {
                 eprintln!(
-                    "game-pause-menu-gpui: {} -> {} ({width}x{height})",
-                    step.file,
+                    "game-pause-menu-gpui: {name}.png -> {} ({width}x{height})",
                     path.display()
                 );
                 return true;
@@ -267,33 +152,64 @@ async fn prepare(
             Ok(Ok(None)) => {
                 if attempt == MAX_ATTEMPTS {
                     eprintln!(
-                        "game-pause-menu-gpui: {} stayed blank after {MAX_ATTEMPTS} attempts",
-                        step.file
+                        "game-pause-menu-gpui: {name}.png stayed blank after {MAX_ATTEMPTS} attempts"
                     );
                 }
             }
             Ok(Err(message)) => {
                 if attempt == 1 || attempt == MAX_ATTEMPTS {
-                    eprintln!("game-pause-menu-gpui: {}: {message}", step.file);
+                    eprintln!("game-pause-menu-gpui: {name}.png: {message}");
                 }
             }
             Err(_) => {
-                eprintln!(
-                    "game-pause-menu-gpui: window closed while capturing {}",
-                    step.file
-                );
+                eprintln!("game-pause-menu-gpui: window closed while capturing {name}");
                 return false;
             }
         }
-        // Nudge another paint and retry.
         let _ = menu.update_in(cx, |_menu, _window, cx| cx.notify());
         cx.background_executor().timer(RETRY).await;
     }
     false
 }
 
+/// Apply the JSON capture selectors to a freshly reset domain state.
+fn apply_capture(menu: &mut Menu, spec: &CaptureSpec) {
+    let fixtures = menu.state.fixtures().clone();
+    menu.state = AppState::new(fixtures);
+    if let Some(tab) = Tab::from_key(&spec.active_tab) {
+        menu.state.select_tab(tab);
+    }
+    for icon_id in &spec.hidden_icons {
+        if menu.state.icon_visible(icon_id) {
+            menu.state.toggle_icon(icon_id);
+        }
+    }
+    if let Some(target) = &spec.nav_target {
+        menu.state.set_nav_target(target);
+    }
+    if let Some(ability) = &spec.pending_ability {
+        menu.state.select_ability(ability);
+    }
+    if let Some(faction) = &spec.drawer {
+        menu.state.open_faction(faction);
+    }
+    if let Some(icon) = &spec.popover {
+        menu.state.open_marker(icon);
+    }
+    menu.hovered_ability = spec.hover.clone();
+    if let Some(action) = &spec.remap_modal {
+        menu.state.begin_remap(action);
+    }
+    if let Some(swatch) = &spec.subtitle_background {
+        menu.state.set_subtitle_background(swatch);
+    }
+    if let Some(language) = &spec.subtitle_language {
+        menu.state.set_subtitle_language(language);
+    }
+}
+
 /// A frame is meaningful when its sampled pixels carry more than a handful of
-/// distinct colors — a not-yet-drawn surface reads as uniform.
+/// distinct colours — an undrawn surface reads as uniform.
 fn meaningful(image: &image::RgbaImage) -> bool {
     let (width, height) = image.dimensions();
     if width < 2 || height < 2 {
@@ -335,17 +251,5 @@ mod tests {
             }
         }
         assert!(meaningful(&image));
-    }
-
-    #[test]
-    fn the_required_four_tab_captures_are_present() {
-        let names: Vec<&str> = STEPS.iter().map(|step| step.file).collect();
-        for required in ["map.png", "progress.png", "abilities.png", "settings.png"] {
-            assert!(names.contains(&required), "{required} is required evidence");
-        }
-        let tabs: Vec<Tab> = STEPS.iter().map(|step| step.tab).collect();
-        for tab in Tab::ALL {
-            assert!(tabs.contains(&tab), "{} must be captured", tab.label());
-        }
     }
 }
