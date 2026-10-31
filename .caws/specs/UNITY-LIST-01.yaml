@@ -1,9 +1,10 @@
 id: UNITY-LIST-01
 title: 'Admit List to the Unity UI Toolkit target with marker/size carriers and withheld combinator-only axes'
 mode: feature
-lifecycle_state: draft
+lifecycle_state: active
+worktree: unity-list
 created_at: '2026-10-31T09:33:25.693Z'
-updated_at: '2026-10-31T09:33:25.693Z'
+updated_at: '2026-10-31T09:33:27.132Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
