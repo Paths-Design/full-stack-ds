@@ -985,5 +985,22 @@ namespace FullStackDS.Tests
             foreach (var prop in new[] { "Icon", "IconName", "IconSize", "CurrentPage", "Navigate" })
                 Assert.That(typeof(FullStackDS.NavTree).GetProperty(prop), Is.Null, prop);
         }
+        [Test] public void PostcardProjectsObjectPathTextAndComposesItsBody()
+        {
+            var postcard = Mount(new FullStackDS.Postcard());
+            postcard.AuthorName = "Ada Lovelace";
+            postcard.AuthorHandle = "@ada";
+            postcard.Timestamp = "2h ago";
+            postcard.StatsLikes = "42";
+            Assert.That(postcard.DisplayName.text, Is.EqualTo("Ada Lovelace"));
+            Assert.That(postcard.Handle.text, Is.EqualTo("@ada"));
+            Assert.That(postcard.TimestampControl.text, Is.EqualTo("2h ago"));
+            Assert.That(postcard.Stat.text, Is.EqualTo("42"));
+            Assert.That(postcard.contentContainer, Is.SameAs(postcard.Content));
+            postcard.Add(new FullStackDS.Text());
+            Assert.That(postcard.Content.childCount, Is.EqualTo(1));
+            foreach (var prop in new[] { "Author", "PostId", "Embed", "Datetime", "AriaLabelledby" })
+                Assert.That(typeof(FullStackDS.Postcard).GetProperty(prop), Is.Null, prop);
+        }
     }
 }

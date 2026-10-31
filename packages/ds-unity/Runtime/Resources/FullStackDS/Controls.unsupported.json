@@ -3947,6 +3947,30 @@
       "reason": "uss-scalar"
     },
     {
+      "component": "Postcard",
+      "sourceKey": "content",
+      "part": "content",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
+      "component": "Postcard",
+      "sourceKey": "displayName",
+      "part": "displayName",
+      "property": "font-weight",
+      "value": "500",
+      "reason": "uss-scalar"
+    },
+    {
+      "component": "Postcard",
+      "sourceKey": "root",
+      "part": "root",
+      "property": "line-height",
+      "value": "1.5",
+      "reason": "uss-property"
+    },
+    {
       "component": "Progress",
       "sourceKey": "fill",
       "part": "fill",

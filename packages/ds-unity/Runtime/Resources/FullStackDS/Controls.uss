@@ -6413,3 +6413,135 @@
     border-color: var(--fsds-nav-tree-color-outline-focus, #0566fe);
     border-width: var(--fsds-semantic-focus-ring-width, 2px);
 }
+
+/* Postcard (.postcard) */
+.postcard {
+    --fsds-box-model-padding: 0;
+    --fsds-box-model-padding-block: 0;
+    --fsds-box-model-padding-block-start: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-block-end: var(--fsds-semantic-surface-size-padding-block, 16px);
+    --fsds-box-model-padding-inline: 0;
+    --fsds-box-model-padding-inline-start: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-padding-inline-end: var(--fsds-semantic-surface-size-padding-inline, 16px);
+    --fsds-box-model-gap: var(--fsds-semantic-surface-size-gap, 8px);
+    --fsds-box-model-width: auto;
+    --fsds-box-model-min-width: var(--fsds-semantic-surface-size-min-width, 64px);
+    --fsds-box-model-max-width: none;
+    --fsds-box-model-height: auto;
+    --fsds-box-model-min-height: 0;
+    --fsds-box-model-max-height: none;
+    --fsds-postcard-color-background-default: var(--fsds-semantic-color-background-primary, #ffffff);
+    --fsds-postcard-color-background-hover: var(--fsds-semantic-color-background-secondary, #f7f7f7);
+    --fsds-postcard-color-border-default: var(--fsds-semantic-surface-border-subtle, #d0d0d0);
+    --fsds-postcard-color-border-hover: var(--fsds-semantic-color-border-bold, #888889);
+    --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-primary, #141414);
+    --fsds-postcard-size-padding: var(--fsds-core-spacing-size-06, 16px);
+    --fsds-postcard-size-radius: var(--fsds-semantic-shape-control-radius-default, 6px);
+    --fsds-postcard-size-gap: var(--fsds-core-spacing-size-05, 12px);
+    --fsds-postcard-size-border: var(--fsds-semantic-shape-control-border-default-width, 1px);
+    --fsds-postcard-typography-display-name-font-size: var(--fsds-semantic-typography-body-02, 16px);
+    --fsds-postcard-typography-display-name-font-weight: var(--fsds-semantic-typography-font-weight-medium, 500);
+    --fsds-postcard-typography-handle-font-size: var(--fsds-semantic-typography-body-03, 14px);
+    --fsds-postcard-typography-content-font-size: var(--fsds-semantic-typography-body-02, 16px);
+    --fsds-postcard-typography-content-line-height: var(--fsds-semantic-typography-line-height-body, 1.5);
+    --fsds-postcard-typography-footer-font-size: var(--fsds-semantic-typography-body-03, 14px);
+}
+
+.postcard {
+    padding: var(--fsds-box-model-padding, 0);
+    padding-top: var(--fsds-box-model-padding-block, 0);
+    padding-bottom: var(--fsds-box-model-padding-block, 0);
+    padding-top: var(--fsds-box-model-padding-block-start, 16px);
+    padding-bottom: var(--fsds-box-model-padding-block-end, 16px);
+    padding-left: var(--fsds-box-model-padding-inline, 0);
+    padding-right: var(--fsds-box-model-padding-inline, 0);
+    padding-left: var(--fsds-box-model-padding-inline-start, 16px);
+    padding-right: var(--fsds-box-model-padding-inline-end, 16px);
+    --fsds-gap: var(--fsds-box-model-gap, 8px);
+    min-width: var(--fsds-box-model-min-width, 64px);
+    min-height: var(--fsds-box-model-min-height, 0);
+}
+
+.postcard {
+    background-color: var(--fsds-postcard-color-background-default, #ffffff);
+    padding: var(--fsds-postcard-size-padding, 16px);
+    border-radius: var(--fsds-postcard-size-radius, 6px);
+    --fsds-gap: var(--fsds-postcard-size-gap, 12px);
+    display: flex;
+    flex-direction: column;
+    border-width: var(--fsds-postcard-size-border, 1px);
+    border-color: var(--fsds-postcard-color-border-default, #d0d0d0);
+    color: var(--fsds-postcard-color-foreground-primary, #141414);
+}
+
+.postcard:hover {
+    background-color: var(--fsds-postcard-color-background-hover, #f7f7f7);
+    border-color: var(--fsds-postcard-color-border-hover, #888889);
+}
+
+.postcard__content {
+    display: flex;
+    flex-direction: column;
+    --fsds-gap: var(--fsds-postcard-size-gap, 12px);
+    color: var(--fsds-postcard-color-foreground-primary, #141414);
+    font-size: var(--fsds-postcard-typography-content-font-size, 16px);
+}
+
+.postcard__header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    --fsds-gap: var(--fsds-postcard-size-gap, 12px);
+}
+
+.postcard__userInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1 1 auto;
+    --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
+}
+
+.postcard__displayName {
+    font-size: var(--fsds-postcard-typography-display-name-font-size, 16px);
+    color: var(--fsds-postcard-color-foreground-primary, #141414);
+}
+
+.postcard__handle {
+    font-size: var(--fsds-postcard-typography-handle-font-size, 14px);
+    --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
+}
+
+.postcard__timestamp {
+    font-size: var(--fsds-postcard-typography-footer-font-size, 14px);
+    flex-shrink: 0;
+    --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
+}
+
+.postcard__footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    --fsds-gap: var(--fsds-postcard-size-gap, 12px);
+    padding-top: var(--fsds-postcard-size-padding, 16px);
+    border-top-color: var(--fsds-postcard-color-border-default, #d0d0d0);
+    border-top-width: var(--fsds-postcard-size-border, 1px);
+    font-size: var(--fsds-postcard-typography-footer-font-size, 14px);
+}
+
+.postcard__stats {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    --fsds-gap: var(--fsds-postcard-size-gap, 12px);
+}
+
+.postcard__stat {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: var(--fsds-postcard-typography-footer-font-size, 14px);
+    --fsds-postcard-size-gap: var(--fsds-core-spacing-size-03, 4px);
+    --fsds-postcard-color-foreground-primary: var(--fsds-semantic-color-foreground-secondary, #474647);
+}

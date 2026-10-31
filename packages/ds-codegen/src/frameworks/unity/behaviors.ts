@@ -20,7 +20,7 @@ import type { BindingExpression, ComponentIR, DomNodeIR, NormalizedChannelIR, Pa
 import { countChildrenLeaves, isBareRuleLeaf, isGuardedActionChrome, isProjectedChildrenAction, isStaticContent } from "../native-emission-class.js";
 import { isPartAnchoredSurface } from "../../semantics.js";
 
-export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
+export type UnityBehavior = "Passive" | "Slots" | "Coachmark" | "Anchor" | "Media" | "Avatar" | "Tree" | "ProjectedText" | "BooleanControl" | "TextInput" | "ItemGroup" | "AnchoredSurface" | "Disclosure" | "Progress" | "Action" | "ComposedAction" | "Modal" | "Toast";
 
 export interface ItemGroupFocus {
   strategy: "roving" | "manual";
@@ -221,6 +221,15 @@ export interface TreeLowering {
   linkPart: string;
   labelPart: string;
 }
+/**
+ * A static projection host: object-path content leaves are painted through
+ * flattened generated attributes (author.name -> AuthorName) because UXML
+ * attributes cannot bind nested object properties. The object props themselves
+ * are not serialised; only their declared string leaves are projected.
+ */
+export interface ProjectedTextLowering {
+  behavior: "ProjectedText";
+}
 export interface PassiveLowering {
   behavior: "Passive";
   /** A declared string prop the text-host root paints through `TextElement.text`. */
@@ -234,7 +243,7 @@ export interface TextInputLowering {
   placeholderProp?: string;
 }
 export type ChannelLowering = BooleanControlLowering | TextInputLowering | ItemGroupLowering | AnchoredSurfaceLowering | DisclosureLowering | ModalLowering | ToastLowering;
-export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
+export type UnityLowering = PassiveLowering | SlotsLowering | CoachmarkLowering | AnchorLowering | MediaLowering | AvatarLowering | TreeLowering | ProjectedTextLowering | ActionLowering | ProgressLowering | ComposedActionLowering | ChannelLowering;
 
 /** Whether the selected lowering owns a normalized channel trio. */
 export function hasChannel(lowering: UnityLowering): lowering is ChannelLowering {
@@ -560,6 +569,17 @@ export function unityLowering(ir: ComponentIR): UnityLowering {
     if (progress) return progress;
     const composed = composedActionLowering(ir);
     if (composed) return composed;
+  }
+  // A static projection host: nested-property text leaves with no interaction,
+  // channel, surface or form control. The projection paints those leaves as
+  // flattened attributes; the object props are withheld.
+  if (!ir.interaction && !ir.formControl && ir.surface === undefined && ir.behavior.normalizedChannels.length === 0 && ir.dom !== undefined) {
+    const hasProjected = (node: DomNodeIR): boolean =>
+      (node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && (node.content.path?.length ?? 0) > 0) ||
+      node.children.some(hasProjected);
+    const hasInsertion = (node: DomNodeIR): boolean =>
+      node.tag === "children" || node.children.some(hasInsertion);
+    if (hasProjected(ir.dom) && hasInsertion(ir.dom)) return { behavior: "ProjectedText" };
   }
   // A nested navigation scaffold: a heading whose link and label are the two
   // polarities of one string prop, followed by a child-list insertion container.

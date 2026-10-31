@@ -128,12 +128,20 @@ function isEmittedApiName(ctx: Context, name: string): boolean {
   return !!option || name === placement || ctx.projection.carrierAxes.has(name);
 }
 
+/** The generated attribute name for a projected object-path content leaf. */
+function flattenedProjectionName(ctx: Context, prop: string, path: string[]): string {
+  const base = identifier(pascal(prop) + path.map(segment => pascal(segment)).join(""));
+  const taken = new Set(ctx.ir.styledProps.map(candidate => candidate.name));
+  if (!taken.has(base)) return base;
+  return identifier(`${base}Value`);
+}
+
 /** R1/R2: the element type of a rendered node. */
 function elementType(ctx: Context, node: DomNodeIR): ElementType {
   if (node.iconGlyph !== undefined) return "GlyphElement";
   if (ctx.lowering.behavior === "TextInput" && node.part === ctx.lowering.control.name) return NATIVE_TEXTFIELD;
   if (ctx.lowering.behavior === "Toast" && ctx.lowering.title !== undefined && node.part === ctx.lowering.title.name) return "Label";
-  if (ctx.lowering.behavior === "Tree" && node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.children.length === 0) return "Label";
+  if ((ctx.lowering.behavior === "Tree" || ctx.lowering.behavior === "ProjectedText") && node.content !== undefined && "kind" in node.content && node.content.kind === "prop" && node.children.length === 0) return "Label";
   if (node.componentRef !== undefined) return identifier(node.componentRef);
   if ((node.part && ctx.triggers.has(node.part)) || node.tag === BUTTON_TAG) return NATIVE_BUTTON;
   if (!node.children.length && TEXT_LEAF_TAGS.has(node.tag) && node.content !== undefined) return "Label";
@@ -270,7 +278,7 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     };
     collect(contentNode);
   }
-  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
+  const isCompound = (node: DomNodeIR): boolean => ctx.lowering.behavior !== "TextInput" && ctx.lowering.behavior !== "Toast" && ctx.lowering.behavior !== "Slots" && ctx.lowering.behavior !== "Coachmark" && ctx.lowering.behavior !== "Tree" && ctx.lowering.behavior !== "ProjectedText" && !!node.part && ctx.compound.has(node.part) && node.part !== behaviorContent && !ownedParts.has(node.part);
   // R4: compound nodes are composed by the consumer. When a rendered sibling
   // follows the first of them, composed content keeps document order through
   // an insertion host at that position; otherwise the default contentContainer
@@ -347,6 +355,13 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
     // silently dropped. The passive lowering already omits such nodes.
     const contentBinding = node.content !== undefined && "kind" in node.content &&
       node.content.kind === "prop" && !node.content.path?.length ? node.content.prop : undefined;
+    const projected = ctx.lowering.behavior === "ProjectedText" && node.content !== undefined && "kind" in node.content &&
+      node.content.kind === "prop" && (node.content.path?.length ?? 0) > 0 ? node.content : undefined;
+    if (projected !== undefined) {
+      const owner = ctx.ir.styledProps.find(candidate => candidate.name === projected.prop);
+      if (!owner) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} projects an undeclared prop ${projected.prop}`);
+      if (type !== "Label" || node.children.length) throw new Error(`UNITY_UNSUPPORTED_ANATOMY: ${ctx.ir.name} projected content ${projected.prop}.${projected.path!.join(".")} does not lower to a text leaf`);
+    }
     if (contentBinding !== undefined) {
       if (ctx.lowering.behavior === "Passive") throw new Error(`UNITY_UNSUPPORTED_PASSIVE_ANATOMY: ${ctx.ir.name} ${node.part ?? node.tag} has unlowered authored facts`);
       const contentProp = ctx.ir.styledProps.find(candidate => candidate.name === contentBinding);
@@ -360,6 +375,14 @@ function walkChildren(ctx: Context, cls: ClassPlan, parent: ElementPlan, nodes: 
       : { ref: `node${++cls.locals}`, declaration: "local", type, children: [] };
     if (text !== undefined) element.text = text;
     if (contentBinding !== undefined) element.textBinding = contentBinding;
+    if (contentBinding !== undefined && ctx.lowering.behavior === "ProjectedText" && element.ref === identifier(pascal(contentBinding))) {
+      element.ref = identifier(`${pascal(contentBinding)}Control`);
+    }
+    if (projected !== undefined) {
+      const flattened = flattenedProjectionName(ctx, projected.prop, projected.path!);
+      element.textBinding = flattened;
+      if (element.ref === identifier(pascal(flattened))) element.ref = identifier(`${pascal(flattened)}Control`);
+    }
     if (node.componentRef !== undefined && !avatarImage) {
       const instance = node.componentInstance;
       if (instance && (instance.ref !== node.componentRef || !instance.targetGlyph))
@@ -434,6 +457,7 @@ function planClasses(ctx: Context): ClassPlan[] {
   for (const part of ir.compoundParts) {
     if (ctx.lowering.behavior === "TextInput" || ctx.lowering.behavior === "Toast" || ctx.lowering.behavior === "Slots" || ctx.lowering.behavior === "Coachmark") continue;
     if (ctx.lowering.behavior === "Tree" && part.name === ctx.lowering.listPart) continue;
+    if (ctx.lowering.behavior === "ProjectedText") continue;
     if (ctx.lowering.behavior === "Disclosure" && part.name === ctx.lowering.content.name) continue;
     if (ctx.lowering.behavior === "Modal" && findNode(ir.dom, ctx.lowering.content.name)?.part !== undefined && (() => {
       const contentNode = findNode(ir.dom, ctx.lowering.content.name);
@@ -906,6 +930,37 @@ function treeRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   return { members, attach, defaults };
 }
 
+/**
+ * R6-R8 for a static projection host: every painted text leaf exposes a
+ * generated string attribute that writes its label (direct string props and the
+ * flattened object-path leaves alike), and the carrier axes project their
+ * classes. Object props, ids and embeds are withheld.
+ */
+function projectedTextRootApi(ctx: Context, classes: ClassPlan[]): RootApi {
+  const { ir } = ctx;
+  const root = classes[0]!;
+  const members: string[] = [];
+  const defaults: string[] = [];
+  for (const member of root.members) {
+    if (!member.textBinding || member.declaration === "local") continue;
+    const name = identifier(pascal(member.textBinding));
+    members.push(`        [UxmlAttribute] public string ${name} { get => ${member.ref}.text; set { ${member.ref}.text = value ?? ""; } }`);
+    const prop = ir.styledProps.find(candidate => candidate.name === member.textBinding);
+    if (prop !== undefined) {
+      const literal = defaultLiteral(ir, prop);
+      if (literal !== undefined && typeof literal === "string") defaults.push(`${name} = ${literal};`);
+    }
+  }
+  for (const prop of ir.styledProps) {
+    const values = ir.variants[prop.name];
+    if (!values || !ctx.projection.carrierAxes.has(prop.name)) continue;
+    members.push(variantProperty(ctx, prop, values, undefined));
+    const literal = defaultLiteral(ir, prop, values);
+    if (literal !== undefined) defaults.push(`${identifier(pascal(prop.name))} = ${literal};`);
+  }
+  return { members, attach: ["Theme.AddStyleSheet(this);"], defaults };
+}
+
 /** R6-R8: the root's behavior, channel API and props. */
 function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   const { ir, lowering } = ctx;
@@ -918,6 +973,7 @@ function rootApi(ctx: Context, classes: ClassPlan[]): RootApi {
   if (lowering.behavior === "Media") return mediaRootApi(ctx);
   if (lowering.behavior === "Avatar") return avatarRootApi(ctx, classes);
   if (lowering.behavior === "Tree") return treeRootApi(ctx, classes);
+  if (lowering.behavior === "ProjectedText") return projectedTextRootApi(ctx, classes);
   if (lowering.behavior === "TextInput") return textInputRootApi(ctx, classes);
   if (lowering.behavior === "ComposedAction") return composedActionRootApi(ctx, classes);
   const { channel } = lowering;
