@@ -54,3 +54,11 @@ contracts:
   - name: 'showmore-expansion'
     type: behavior
     path: 'packages/ds-contracts/components/ShowMore/ShowMore.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 7ce631b3f: focused unity codegen + cli seam 240/240 pass, including the Expansion lowering predicate (one boolean channel over a trigger whose conditional label switches with the state and a content part whose declared presence is clamp, not unmount), the consumer content slot as contentContainer, the Expanded/DefaultExpanded/ShowMoreLabel/ShowLessLabel/OnExpandedChange/Controlled/ExpandedRequested API, the runtime label painting/state class and the presence/clamp/style/message boundary families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised on the allowlist. The oracle caught two genuine defects before landing: the initial expansion detection was shadowed by the Disclosure branch (the clamp presence is now the selecting fact) and the probe showed VisualElement.childCount reports contentContainer children, so the slot assertions were corrected."
+    recorded_at: "2026-10-31T17:05:28.730Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > renders a controlled expansion over a consumer content slot for ShowMore"
+    exit_code: 0
+    commit_sha: "7ce631b3ffc00c1a82e1a5e6edb062df6a94d469"
