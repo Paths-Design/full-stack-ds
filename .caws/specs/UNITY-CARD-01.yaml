@@ -1,9 +1,11 @@
 id: UNITY-CARD-01
 title: 'Admit Card to the Unity target as a parts-only composed container (Godot parity)'
 mode: feature
-lifecycle_state: active
+lifecycle_state: closed
+resolution: completed
+closure_notes: 'Card admitted to the Unity target/package (twenty-second allowlisted control) as a parts-only composed container closing the Godot parity gap: dispatcher passive class for parts-only shapes, composed subcomponent classes and density carrier, interactive hover affordance pending P4; codegen+cli 213/213, boundary audit clean, real Unity EditMode 62/62, package sheet regenerated'
 created_at: '2026-10-31T10:53:54.860Z'
-updated_at: '2026-10-31T11:06:35.666Z'
+updated_at: '2026-10-31T11:07:00.249Z'
 created_by_session: 'session-5800e41f-e414-466a-a520-b46288f6bf5f'
 blast_radius:
   modules:
