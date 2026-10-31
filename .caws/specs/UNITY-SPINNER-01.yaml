@@ -77,3 +77,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.SpinnerRotatesOnTheDeclaredLoop
     exit_code: 0
     commit_sha: c1d390559af671debc66ce4bf72466cdbe8d07f5
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at c1d390559af671debc66ce4bf72466cdbe8d07f5: packages/ds-unity/README.md admits Spinner with its declared rotation loop, explicit reduced-motion hold and the withheld variant-carrier/OS-preference/delay/inline/a11y/native-arc facts, and records the 97/97 lane; docs/architecture/unity-target.md records the MotionLoop dispatcher mode, the fail-closed loop-shape policy and the 97/97 lane; docs/current-implementation-snapshot.md records the fifty-fourth admitted control with those facts."
+    recorded_at: "2026-10-31T20:41:49.553Z"
+    commit_sha: c1d390559af671debc66ce4bf72466cdbe8d07f5
