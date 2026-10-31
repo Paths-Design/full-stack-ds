@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.CodeSnippetPaintsItsTextAttributeAndCarriesTheAsModifier
     exit_code: 0
     commit_sha: ed96f32a8ca03c6bd247ca0aea130b137acc5e68
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at ed96f32a8: packages/ds-unity/README.md admits CodeSnippet with its TextElement text projection, carried as modifiers and the non-realised element-switch/kbd-elevation non-claims, and records the 70/70 lane; docs/architecture/unity-target.md records the passive text-host selection and projection with the 70/70 lane; docs/current-implementation-snapshot.md records the thirtieth admitted control with those facts."
+    recorded_at: "2026-10-31T12:57:33.365Z"
+    commit_sha: ed96f32a8ca03c6bd247ca0aea130b137acc5e68
