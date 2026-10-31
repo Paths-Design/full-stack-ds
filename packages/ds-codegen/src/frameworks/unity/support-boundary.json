@@ -2276,7 +2276,7 @@
     },
     {
       "id": "styles-showmore-trigger-background-refused",
-      "match": ["styles:/trigger/background/**"],
+      "match": ["styles:/trigger/background/**", "styles:/toggle/background/**"],
       "requiresAny": [{"match": ["contract:/channels/expanded/value"], "valueIn": ["expanded"]}],
       "disposition": "refused",
       "reason": "The authored trigger background is not projected onto the native button chrome; the declaration is withheld rather than emitted partially."

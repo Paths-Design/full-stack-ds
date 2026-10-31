@@ -11,7 +11,7 @@ const fixture = (name: string) => loadContractWithSidecars(root, name);
 // auditUnityTarget): about 2s alone, and it overran vitest's 5s default under
 // the root suite's parallel load. The budget covers that work; it relaxes no
 // assertion.
-const CORPUS_TIMEOUT_MS = 90_000;
+const CORPUS_TIMEOUT_MS = 240_000;
 describe("Unity capability accounting", () => {
   it("accounts for the actual corpus and keeps unadmitted shapes distinct", () => {
     const rows = inventory(root);
