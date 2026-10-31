@@ -79,3 +79,8 @@ evidence:
     command: "UNITY_EDITOR=/Applications/Unity/Hub/Editor/6000.5.3f1/Unity.app/Contents/MacOS/Unity pnpm run test:unity"
     exit_code: 0
     commit_sha: "88ec60f4b9ed8536659b595d37de8a9d10126b85"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 88ec60f4b: packages/ds-unity/README.md admits NavList with its list/item regions and refused/pending axes, and records the 63/63 lane; docs/architecture/unity-target.md records the styled layout-axis pending family and the 63/63 lane; docs/current-implementation-snapshot.md records the twenty-third admitted control with those facts."
+    recorded_at: "2026-10-31T11:17:42.616Z"
+    commit_sha: "88ec60f4b9ed8536659b595d37de8a9d10126b85"
