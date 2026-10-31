@@ -161,26 +161,34 @@ impl Menu {
             )
             .child(rarity_label),
         );
-        // NOT FSDS: no Icon component — 40 px ability glyph block.
+        // NOT FSDS: no Icon component. Parity pins ability-card art to a
+        // 40 px code tile (`iconArt.cardTile`), two letters of the ability name.
+        let tile = layout.icon_art.card_tile.clone();
+        let code = game_pause_menu_gpui::seam::parity::code_two_letters(&ability.name);
+        let code_text = self.text(
+            cx,
+            format!("ability:{}:code", ability.id),
+            style::TextStyleSpec::new(
+                tile.font_size,
+                style::Weight::from_numeric(tile.weight),
+                1.0,
+            ),
+            &layout.color(&tile.text),
+            code,
+        );
         let glyph = div()
             .absolute()
-            .left(px((rect.w - 40.0) / 2.0))
+            .left(px((rect.w - tile.size) / 2.0))
             .top(px(cards.icon_y))
-            .w(px(40.))
-            .h(px(40.))
+            .w(px(tile.size))
+            .h(px(tile.size))
             .flex()
             .items_center()
             .justify_center()
-            .bg(colors::paint(&layout.colors.graphite))
-            .border_1()
-            .border_color(colors::paint(&layout.color(&rarity_role)))
-            .child(
-                div()
-                    .text_size(px(14.))
-                    .font_weight(gpui::FontWeight::BOLD)
-                    .text_color(colors::paint(&layout.colors.bone_bright))
-                    .child(ability.name.chars().take(2).collect::<String>()),
-            );
+            .bg(colors::paint(&layout.color(&tile.background)))
+            .border(px(tile.border_width))
+            .border_color(colors::paint(&layout.color(&tile.border)))
+            .child(code_text);
         let name = self.text(
             cx,
             format!("ability:{}:name", ability.id),

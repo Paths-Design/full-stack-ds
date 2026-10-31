@@ -721,7 +721,7 @@ impl Menu {
                 .h_full()
                 .flex()
                 .items_center()
-                .pl(px(32.))
+                .pl(px(layout.tab_bar.label_inset))
                 .child(label);
             tab_children.push(
                 widgets::tab_surface(

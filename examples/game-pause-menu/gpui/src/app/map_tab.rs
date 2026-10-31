@@ -246,28 +246,36 @@ impl Menu {
             .get(&icon.kind)
             .cloned()
             .unwrap_or_else(|| "?".to_string());
-        let glyph_size = rows.icon_size;
-        // NOT FSDS: no Icon component on the target — 16 px kind glyph chip.
-        // NOT FSDS: no Icon component — a 16 px line glyph: transparent
-        // interior, kind-colour edge marks, so the panel ground shows through.
+        // NOT FSDS: no Icon component on the target. The parity authority pins
+        // these surfaces to a portable two-letter code tile (`iconArt.rowTile`)
+        // so GPUI, Unity and Godot render the same icon language.
         let _ = (&monogram, &kind_color);
+        let tile = layout.icon_art.row_tile.clone();
+        let code = game_pause_menu_gpui::seam::parity::icon_code(&icon.icon);
+        let code_text = self.text(
+            cx,
+            format!("icon-row:{}:code", icon.id),
+            style::TextStyleSpec::new(
+                tile.font_size,
+                style::Weight::from_numeric(tile.weight),
+                1.0,
+            ),
+            &layout.color(&tile.text),
+            code,
+        );
         let glyph = div()
             .absolute()
             .left(px(0.))
-            .top(px((rows.row_h - glyph_size) / 2.0))
-            .w(px(glyph_size))
-            .h(px(glyph_size))
-            .border(px(1.))
-            .border_color(colors::paint(&layout.color("ruleStrong")))
-            .child(
-                div()
-                    .absolute()
-                    .left(px(4.))
-                    .top(px(4.))
-                    .w(px(glyph_size - 8.0))
-                    .h(px(glyph_size - 8.0))
-                    .bg(colors::paint(&layout.color("graphite"))),
-            );
+            .top(px((rows.row_h - tile.size) / 2.0))
+            .w(px(tile.size))
+            .h(px(tile.size))
+            .flex()
+            .items_center()
+            .justify_center()
+            .bg(colors::paint(&layout.color(&tile.background)))
+            .border(px(tile.border_width))
+            .border_color(colors::paint(&layout.color(&tile.border)))
+            .child(code_text);
         // Child coordinates are row-relative; the JSON row helpers give
         // canvas x positions, so subtract the row origin.
         let name = self.text_at(

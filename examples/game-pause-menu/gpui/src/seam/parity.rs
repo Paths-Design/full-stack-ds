@@ -273,6 +273,8 @@ pub struct TabBar {
     pub active_text: String,
     pub inactive_text: String,
     pub separator: String,
+    pub label_align: String,
+    pub label_inset: f32,
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
@@ -575,6 +577,32 @@ pub struct StatusChip {
     pub locked_text: String,
 }
 
+/// A portable two-letter code tile (`iconArt` in the parity authority).
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IconTileSpec {
+    #[serde(rename = "$note", default)]
+    pub note: Option<String>,
+    pub size: f32,
+    pub background: String,
+    pub border: String,
+    pub border_width: f32,
+    pub radius: f32,
+    pub font_size: f32,
+    pub weight: u32,
+    pub text: String,
+    pub source: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IconArt {
+    #[serde(rename = "$note", default)]
+    pub note: Option<String>,
+    pub row_tile: IconTileSpec,
+    pub card_tile: IconTileSpec,
+}
+
 /// One capture state from the JSON `captures` map. All optional selectors are
 /// applied to a freshly reset [`crate::seam::state::AppState`].
 #[derive(Debug, Clone, PartialEq, Deserialize, Default)]
@@ -633,6 +661,55 @@ pub struct ParityLayout {
     pub rarity_text_colors: BTreeMap<String, String>,
     pub status_chip: StatusChip,
     pub captures: BTreeMap<String, CaptureSpec>,
+    pub icon_art: IconArt,
+}
+
+/// The portable icon code for a catalog name (`parity.md` → "Icon art").
+///
+/// The authority pins outputs such as `Info → IN`, `CircleDot → CD` and
+/// `ChevronRight → CR`: the first character plus the first following uppercase
+/// character (CamelCase initials), falling back to the second character and
+/// finally to the single character. Both characters are uppercased.
+pub fn code_two_letters(source: &str) -> String {
+    let letters: Vec<char> = source
+        .chars()
+        .filter(|character| character.is_alphanumeric())
+        .collect();
+    let Some(&first) = letters.first() else {
+        return String::new();
+    };
+    let second = letters
+        .iter()
+        .skip(1)
+        .find(|character| character.is_uppercase())
+        .or_else(|| letters.get(1))
+        .copied()
+        .unwrap_or(first);
+    format!(
+        "{}{}",
+        first.to_uppercase(),
+        second.to_uppercase()
+    )
+}
+
+/// The pinned code for one of the fixture's icon-catalog names.
+///
+/// `parity.md` → "Icon art" pins these exact outputs for the shared corpus
+/// (`Baseline → BL` is not derivable from the first two characters, so the
+/// fixture vocabulary is pinned explicitly); unknown catalog names fall back to
+/// [`code_two_letters`] so the language is still deterministic.
+pub fn icon_code(catalog_name: &str) -> String {
+    match catalog_name {
+        "Info" => "IN".to_string(),
+        "Placeholder" => "PL".to_string(),
+        "Home" => "HO".to_string(),
+        "Baseline" => "BL".to_string(),
+        "Alarm" => "AL".to_string(),
+        "CircleDot" => "CD".to_string(),
+        "ChevronRight" => "CR".to_string(),
+        "User" => "US".to_string(),
+        other => code_two_letters(other),
+    }
 }
 
 impl ParityLayout {
@@ -748,6 +825,7 @@ fn validate(layout: &ParityLayout) -> Result<(), ParityError> {
     validate_rects(layout)?;
     validate_colours(layout)?;
     validate_captures(layout)?;
+    validate_icon_art(layout)?;
     Ok(())
 }
 
@@ -844,6 +922,12 @@ fn validate_tabs(layout: &ParityLayout) -> Result<(), ParityError> {
     }
     if (expected_x - layout.tab_bar.rect.right()).abs() > f32::EPSILON {
         return Err(invalid("tabs must span the tab bar width"));
+    }
+    if layout.tab_bar.label_align != "left" {
+        return Err(invalid("tab labels must be left-aligned (`tabBar.labelAlign`)"));
+    }
+    if layout.tab_bar.label_inset < 0.0 || layout.tab_bar.label_inset > layout.tab_bar.rect.w / 4.0 {
+        return Err(invalid("tab label inset must fit one tab column"));
     }
     Ok(())
 }
@@ -982,6 +1066,33 @@ fn validate_colours(layout: &ParityLayout) -> Result<(), ParityError> {
         return Err(invalid(
             "rarityColors and rarityTextColors must cover the same rarities",
         ));
+    }
+    Ok(())
+}
+
+fn validate_icon_art(layout: &ParityLayout) -> Result<(), ParityError> {
+    for (name, tile) in [
+        ("iconArt.rowTile", &layout.icon_art.row_tile),
+        ("iconArt.cardTile", &layout.icon_art.card_tile),
+    ] {
+        if tile.size <= 0.0 || tile.font_size <= 0.0 || tile.border_width < 0.0 {
+            return Err(invalid(format!("{name} must declare positive geometry")));
+        }
+        if tile.radius != 0.0 {
+            return Err(invalid(format!("{name} must be square (radius 0)")));
+        }
+        if tile.font_size >= tile.size {
+            return Err(invalid(format!("{name} text must fit inside the tile")));
+        }
+        if layout.colors.role(&tile.background).is_none() {
+            return Err(invalid(format!("{name} background is not a colour role")));
+        }
+        if layout.colors.role(&tile.border).is_none() {
+            return Err(invalid(format!("{name} border is not a colour role")));
+        }
+        if layout.colors.role(&tile.text).is_none() {
+            return Err(invalid(format!("{name} text is not a colour role")));
+        }
     }
     Ok(())
 }
