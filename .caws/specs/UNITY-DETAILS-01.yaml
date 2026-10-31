@@ -54,3 +54,11 @@ contracts:
   - name: 'details-disclosure'
     type: behavior
     path: 'packages/ds-contracts/components/Details/Details.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit 71bc73390: focused unity codegen + cli seam 219/219 pass, including the Disclosure selection from toggle facts, the DisclosureControl attach/member typing, the text content-property projection, axis/member collision suffixing and the Details boundary rules; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T12:21:00.247Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > attaches a disclosure and projects the summary string for Details"
+    exit_code: 0
+    commit_sha: "71bc73390aec9669a6ea7d2bb482c5621feeb765"
