@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.CodeBlockComposesLinesInsideItsCodeRegion
     exit_code: 0
     commit_sha: "73f6aab214ef305c5de0fb0edb167d42fb5f617e"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 73f6aab21: packages/ds-unity/README.md admits CodeBlock with its code region, refused syntax declarations and omitted highlight/token/gutter/line-number non-claims, and records the 66/66 lane; docs/architecture/unity-target.md records the content-transform omission and the 66/66 lane; docs/current-implementation-snapshot.md records the twenty-sixth admitted control with those facts."
+    recorded_at: "2026-10-31T11:57:59.249Z"
+    commit_sha: "73f6aab214ef305c5de0fb0edb167d42fb5f617e"
