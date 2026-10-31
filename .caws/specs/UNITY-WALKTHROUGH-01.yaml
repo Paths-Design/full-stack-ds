@@ -75,3 +75,8 @@ evidence:
     test_nodeid: FullStackDS.Tests.InteractionTests.WalkthroughComposesSlotsAndWiresItsControlCallbacks
     exit_code: 0
     commit_sha: "61b21eda0227e00bb114a5ba015fa4838abe182c"
+  - criterion_id: A4
+    status: pass
+    evidence_ref: "Inspected committed docs at 61b21eda0: packages/ds-unity/README.md admits Walkthrough with its inline coachmark card, slots, step attribute, callback controls and the withheld anchoring/dismissal/dots/message/auto-start non-claims, and records the 78/78 lane; docs/architecture/unity-target.md records the Coachmark dispatcher mode, inline scaffold and the 78/78 lane; docs/current-implementation-snapshot.md records the thirty-seventh admitted control with those facts."
+    recorded_at: "2026-10-31T14:35:29.013Z"
+    commit_sha: "61b21eda0227e00bb114a5ba015fa4838abe182c"
