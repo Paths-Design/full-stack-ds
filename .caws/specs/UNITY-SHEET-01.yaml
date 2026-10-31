@@ -54,3 +54,11 @@ contracts:
   - name: 'sheet-modal'
     type: behavior
     path: 'packages/ds-contracts/components/Sheet/Sheet.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit c0fc82225: focused unity codegen + cli seam 224/224 pass, including the viewport-edge sheet surface predicate reusing Modal, the runtime placement attribute, the modal-content rendering and the modal boundary families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised."
+    recorded_at: "2026-10-31T13:23:58.034Z"
+    test_nodeid: "packages/ds-codegen/src/frameworks/unity/walker.test.ts > Unity passive anatomy path > reuses the modal surface for an edge-placed Sheet and drives placement"
+    exit_code: 0
+    commit_sha: c0fc822250beed98415fd64bd783482745aae34f
