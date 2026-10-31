@@ -1,0 +1,37 @@
+id: GAME-PAUSE-GODOT-LANE-01
+title: 'Game pause menu godot lane (Orion N5)'
+mode: feature
+lifecycle_state: draft
+created_at: '2026-10-31T07:28:37.538Z'
+updated_at: '2026-10-31T07:28:37.538Z'
+created_by_session: 'session-ba5ce796-fd14-433c-a00f-27158dcb307a'
+blast_radius:
+  modules:
+    - 'godot native consumer lane for the game pause menu app shape'
+  data_migration: false
+operational_rollback_slo: 5m
+scope:
+  in:
+    - 'examples/game-pause-menu/godot'
+  out: []
+invariants:
+  - 'Lane consumes only public package exports and ledgers every hand-authored fallback'
+  - 'Existing repository targets and package outputs are unchanged'
+acceptance:
+  - id: A1
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the committed godot lane sources; when its documented build and test commands run; then the four-tab pause menu and the shared I1..I15 interaction semantics are realized'
+  - id: A2
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the running godot lane; when four tab captures are taken; then Map, Progress, Abilities and Settings states are recorded'
+  - id: A3
+    given: 'The spec implementation is complete.'
+    when: 'The acceptance statement is evaluated.'
+    then: 'given the lane README; when read by a reviewer; then admitted components, fallback ledger, interaction coverage, evidence paths, findings and non-claims are stated'
+non_functional: {}
+contracts:
+  - name: 'pause-menu-app-spec'
+    type: behavior
+    path: 'examples/game-pause-menu/spec.md'
