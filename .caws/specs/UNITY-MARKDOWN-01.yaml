@@ -54,3 +54,9 @@ contracts:
   - name: 'markdown-content-transform'
     type: behavior
     path: 'packages/ds-contracts/components/Markdown/Markdown.contract.json'
+evidence:
+  - criterion_id: A1
+    status: pass
+    evidence_ref: "Codegen and boundary at commit c97182700a20e40b1527be8c74784e01c6453484 plus the deadline-hardening commit: focused unity codegen + cli seam 246/246 pass, including the TextSource lowering from the declared content-transform facts (no channels, transform + sourceProp + no DOM children), the native TextElement class painting the Content attribute, and the adjudicated/a11y/style families; audit:unity-boundary reports every leaf classified, no dead rules, no allowlisted catch-all reliance, every lowered claim realised. Boundary correction: the last corpus leaf made props-unadjudicated dead, so the audit now treats a catch-all as a synthetic-contract safety net while keeping allowlisted reliance fatal; Markdown's own prop family is adjudicated by a scoped lowered rule."
+    recorded_at: "2026-10-31T21:36:26.493Z"
+    commit_sha: c97182700a20e40b1527be8c74784e01c6453484
